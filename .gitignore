@@ -33,3 +33,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# my values
+
+venv
+celerydb.sqlite
+data.sqlite
+local.cfg
