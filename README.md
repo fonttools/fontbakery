@@ -1,4 +1,6 @@
 bakery
 ======
 
-Font bakery service
+Font bakery service. 
+
+License GPLv3.

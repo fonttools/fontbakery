@@ -1,3 +1,5 @@
+run:
+	gunicorn -w 2 -b 0.0.0.0:4000 bakery:app
 
 babel:
 	pybabel extract -F babel.cfg -o messages.pot .
