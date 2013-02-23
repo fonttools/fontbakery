@@ -1,32 +1,46 @@
-from flask import Flask
-from celery import Celery
+# coding: utf-8
 
-from flask.ext.mail import Mail
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.github import GithubAuth
+from flask import Flask, request, render_template
+from flaskext.babel import Babel
+
+from .extensions import db, mail, celery #, github
 
 
-def make_celery(_app):
-    _celery = Celery(_app.import_name, broker=_app.config['CELERY_BROKER_URL'])
-    _celery.conf.update(_app.config)
-    TaskBase = _celery.Task
-    class ContextTask(TaskBase):
-        abstract = True
-        def __call__(self, *args, **kwargs):
-            with _app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-    _celery.Task = ContextTask
-    return _celery
+# For import *
+__all__ = ['create_app']
 
-app = Flask('fontbakery')
-app.config.from_object('config')
-app.config.from_pyfile('local.cfg', silent=True)
-celery = make_celery(app)
-db = SQLAlchemy(app)
-#Auth(app)
-mail = Mail(app)
-github = GithubAuth(
-    client_id=app.config['GITHUB_CLIENT_ID'],
-    client_secret=app.config['GITHUB_CLIENT_ID'],
-    session_key='user_id'
-)
+
+def create_app(app_name=__name__):
+
+    app = Flask(app_name)
+    extensions_fabrics(app)
+    error_pages(app)
+
+    return app
+
+def extensions_fabrics(app):
+    db.init_app(app)
+    mail.init_app(app)
+    babel = Babel(app)
+
+    @babel.localeselector
+    def get_locale():
+        accept_languages = app.config.get('ACCEPT_LANGUAGES')
+        return request.accept_languages.best_match(accept_languages)
+
+    celery.config_from_object(app.config)
+
+
+def error_pages(app):
+
+    @app.errorhandler(403)
+    def forbidden_page(error):
+        return render_template("pages/403.html"), 403
+
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template("pages/404.html"), 404
+
+    @app.errorhandler(500)
+    def server_error_page(error):
+        return render_template("pages/500.html"), 500
