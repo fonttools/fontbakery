@@ -3,8 +3,8 @@
 from flask import Flask, request, render_template
 from flaskext.babel import Babel
 
-from .extensions import db, mail, celery #, github
-
+from .extensions import db, mail, celery, github
+from .gitauth import gitauth
 
 # For import *
 __all__ = ['create_app']
@@ -13,8 +13,11 @@ __all__ = ['create_app']
 def create_app(app_name=__name__):
 
     app = Flask(app_name)
+    app.register_blueprint(gitauth)
+
     extensions_fabrics(app)
     error_pages(app)
+
 
     return app
 
@@ -22,6 +25,9 @@ def extensions_fabrics(app):
     db.init_app(app)
     mail.init_app(app)
     babel = Babel(app)
+
+    github.client_id = app.config.get('GITHUB_CLIENT_ID')
+    github.client_secret = app.config.get('GITHUB_SECRET')
 
     @babel.localeselector
     def get_locale():
