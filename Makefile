@@ -16,7 +16,7 @@ upd:
 	pybabel update -i messages.pot -d translations
 
 celery:
-	venv/bin/celery -A bakery worker
+	venv/bin/celery -A entry-celery worker
 
 mail:
 	python -m smtpd -n -c DebuggingServer localhost:20025

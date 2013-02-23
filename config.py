@@ -8,9 +8,10 @@ CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
 # echo enables verbose logging from SQLAlchemy.
 CELERY_RESULT_ENGINE_OPTIONS = {"echo": True}
 
-# default values
+# default babel values
 BABEL_DEFAULT_LOCALE = 'en'
 BABEL_DEFAULT_TIMEZONE = 'UTC'
+ACCEPT_LANGUAGES = ['en']
 
 # make sure that you have started debug mail server using command
 # $ make mail
