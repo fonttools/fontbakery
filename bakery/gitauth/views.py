@@ -16,14 +16,10 @@ def before_request():
     if 'user_id' in session:
         g.user = User.query.get(session['user_id'])
 
-@app.after_request
+@gitauth.after_request
 def after_request(response):
-    db_session.remove()
+    # db_session.remove()
     return response
-
-@gitauth.route('/')
-def index():
-    return 'Hello!'
 
 @github.access_token_getter
 def token_getter():
