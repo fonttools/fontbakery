@@ -5,6 +5,9 @@ from flask import Blueprint, render_template, request, flash, g, session, redire
 from .models import User
 from ..extensions import db, github
 
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
 gitauth = Blueprint('gitauth', __name__, url_prefix='/')
 
 @gitauth.before_request
@@ -13,10 +16,10 @@ def before_request():
     if 'user_id' in session:
         g.user = User.query.get(session['user_id'])
 
-# @app.after_request
-# def after_request(response):
-#     db_session.remove()
-#     return response
+@app.after_request
+def after_request(response):
+    db_session.remove()
+    return response
 
 @gitauth.route('/')
 def index():
