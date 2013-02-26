@@ -28,49 +28,8 @@
 <body>
 
     {% block topbar %}
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
+        {% include "header.html" %}
 
-                <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Project") }}</a>
-                {% if g.user %}
-                <form class="navbar-search pull-left" action="{{ url_for('frontend.search') }}">
-                    <input type='text' class="search-query" name='keywords' value='{{ keywords|default('') }}' placeholder='Search' />
-                </form>
-                <div class="nav-collapse collapse pull-right">
-                    <ul class="nav">
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ g.user.name }} <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            {% if g.user.is_admin() %}
-                            <li><a href="{{ url_for('admin.index') }}">{{ g.user.name }}</a></li>
-                            {% else %}
-                            <li><a href="{{ url_for('user.index') }}">{{ g.user.name }}</a></li>
-                            {% endif %}
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('settings.profile') }}">Settings</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('frontend.help') }}">Help</a></li>
-                            <li><a href="{{ url_for('frontend.logout') }}">Log out</a></li>
-                        </ul>
-                        </li>
-                    </ul>
-                </div>
-                {% else %}
-                <div class="nav-collapse collapse pull-right">
-                    <ul class="nav">
-                        <li><span><a class="btn btn-success" href="{{ url_for('gitauth.login') }}"><strong>Login</strong></a></span></li>
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
     {% endblock %}
 
     {% from 'macros/_misc.html' import render_flash_message %}
