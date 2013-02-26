@@ -9,6 +9,7 @@ mail = Mail()
 from celery import Celery
 celery = Celery()
 
+from flask.ext.oauth import OAuth
 from flask.ext.github import GithubAuth
 # github doesn't support class fabric so data is hardcoded
 github = GithubAuth(

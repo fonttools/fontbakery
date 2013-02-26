@@ -8,7 +8,7 @@ from ..extensions import db, github
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-gitauth = Blueprint('gitauth', __name__, url_prefix='/')
+gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
 
 @gitauth.before_request
 def before_request():
@@ -48,7 +48,7 @@ def authorized(resp):
 @gitauth.route('/login')
 def login():
     if session.get('user_id', None) is None:
-        return github.authorize(callback_url=url_for('authorized'))
+        return github.authorize(callback_url=url_for('gitauth.authorized'))
     else:
         return 'Already logged in'
 
