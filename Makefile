@@ -35,5 +35,8 @@ updlang: venv/bin/activate
 celery: venv/bin/activate
 	. venv/bin/activate; celery -A entry-celery worker
 
+freeze: venv/bin/activate
+	. venv/bin/activate; pip freeze -r requiremets.dev.txt > requiremets.txt
+
 mail: setup
 	python -m smtpd -n -c DebuggingServer localhost:20025
