@@ -17,6 +17,7 @@ setup(
         'Flask-SQLAlchemy',
         'Flask-Babel',
         'Flask-Mail',
+        'Flask-OAuth',
     ],
     classifiers=[
         'Environment :: Web Environment',
