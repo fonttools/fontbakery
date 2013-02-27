@@ -20,4 +20,3 @@ def make_celery(_app):
 # Celery.
 from celery import Celery
 celery = make_celery(app)
-import ipdb; ipdb.set_trace()
