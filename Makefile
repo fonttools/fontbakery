@@ -10,7 +10,7 @@ else
 endif
 
 venv/bin/activate:
-	virtualenv venv --distribute --relocatable
+	virtualenv --distribute venv
 
 setup: venv/bin/activate requiremets.txt
 	. venv/bin/activate; pip install -Ur requiremets.txt
