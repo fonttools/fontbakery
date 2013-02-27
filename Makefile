@@ -2,12 +2,12 @@ VENV=venv
 
 all: setup
 
-ifdef DEV
-	REQ=requiremets.dev.txt
-else
-	REQ=requiremets.txt
-	@echo "Use `make DEV` for development environment"
-endif
+# ifdef DEV
+# 	REQ=requiremets.dev.txt
+# else
+# 	REQ=requiremets.txt
+# 	@echo "Use `make DEV` for development environment"
+# endif
 
 venv/bin/activate:
 	virtualenv --distribute venv
@@ -29,7 +29,7 @@ lazybabel: venv/bin/activate
 addlang: venv/bin/activate
 	. venv/bin/activate; pybabel init -i messages.pot -d translations -l $LANG
 
-upd: venv/bin/activate
+updlang: venv/bin/activate
 	. venv/bin/activate; pybabel update -i messages.pot -d translations
 
 celery: venv/bin/activate
