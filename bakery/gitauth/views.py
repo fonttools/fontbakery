@@ -21,11 +21,11 @@ def after_request(response):
     # db_session.remove()
     return response
 
-@github.access_token_getter
+@github.tokengetter
 def token_getter():
     user = g.user
     if user is not None:
-        return user.github_access_token
+        return user.oauth_token, user.oauth_secret
 
 @gitauth.route('/oauth/callback')
 @github.authorized_handler
