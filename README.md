@@ -1,15 +1,12 @@
-bakery
-======
+# Bakery
 
-Font bakery service. 
+Font bakery service project. Currently in **DEVELOPMENT MODE**.
 
-License
---------
+## License
 
-[GNU General Public License v3.0, or later](http://www.gnu.org/licenses/gpl)
+All code made for this project distibuted under [GNU General Public License v3.0, or later](http://www.gnu.org/licenses/gpl). 
 
-Installation
---------------
+## Installation
 
 Requirements:
 
@@ -17,10 +14,17 @@ Requirements:
 * [GNU Make](http://www.gnu.org/software/make/), a compilation manager
 * [pip](http://www.pip-installer.org), a great Python package manager
 * [libevent](http://libevent.org/), a library for noticing when files are updated
+* Celery server for background task processing (install automatically, but need separate running process).
+
+Production mode requirements:
+
+* PostgreSQL for production database
 
 On Mac OS X you can install libevent with [Homebrew](http://mxcl.github.com/homebrew/), a great Mac OS X package manager. 
 
     brew install libevent
+
+NB: Prefered way to use `python` package from brew, more information [in wiki page](https://github.com/mxcl/homebrew/wiki/Homebrew-and-Python).
 
 You can install pip with easy_install, an older Python package manager. 
 
@@ -37,3 +41,15 @@ Then you can automatically install all other requirements and compile the progra
 To run it on a localhost webserver, simply run,
 
     make run
+
+Backery also uses celery for background task processing. So you need to run in different terminal window:
+
+    make celery
+
+During development process you probably need runing fake mail server for debuging, also could be run in separate terminal window:
+
+    make mail
+
+## Production mode 
+
+More information about configuration available in example configuration file `local.example.cfg`. Without this file server working in development mode. 
