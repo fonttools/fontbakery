@@ -5,17 +5,17 @@ all: setup
 # ifdef DEV
 # 	REQ=requiremets.dev.txt
 # else
-# 	REQ=requiremets.txt
+# 	REQ=requirements.txt
 # 	@echo "Use `make DEV` for development environment"
 # endif
 
 venv/bin/activate:
 	virtualenv --distribute venv
 
-setup: venv/bin/activate requiremets.txt
-	. venv/bin/activate; pip install -Ur requiremets.txt
+setup: venv/bin/activate requirements.txt
+	. venv/bin/activate; pip install -Ur requirements.txt
 
-run: venv/bin/activate requiremets.txt
+run: venv/bin/activate requirements.txt
 	. venv/bin/activate; gunicorn -w 2 -b 0.0.0.0:5001 entry:app
 
 babel: venv/bin/activate
