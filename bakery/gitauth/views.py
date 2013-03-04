@@ -5,8 +5,8 @@ from flask import Blueprint, render_template, request, flash, g, session, redire
 from .models import User
 from ..extensions import db, github
 
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import scoped_session, sessionmaker
+# from sqlalchemy.ext.declarative import declarative_base
 
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
 
@@ -27,10 +27,10 @@ def token_getter():
     if user is not None:
         return user.oauth_token, user.oauth_secret
 
-@gitauth.route('/oauth/callback')
+@gitauth.route('/callback')
 @github.authorized_handler
 def authorized(resp):
-    next_url = request.args.get('next') or url_for('index')
+    next_url = request.args.get('next') or url_for('frontend.splash')
     if resp is None:
         return redirect(next_url)
 
@@ -45,19 +45,25 @@ def authorized(resp):
 
     return 'Success'
 
+
 @gitauth.route('/login')
 def login():
-    if session.get('user_id', None) is None:
-        return github.authorize(callback_url=url_for('gitauth.authorized'))
-    else:
-        return 'Already logged in'
+    return github.authorize(callback=url_for('gitauth.authorized',
+        next=request.args.get('next') or request.referrer or None))
 
-@gitauth.route('/orgs/<name>')
-def orgs(name):
-    if github.has_org_access(name):
-        return 'Heck yeah he does!'
-    else:
-        return redirect(url_for('index'))
+# @gitauth.route('/login')
+# def login():
+#     if session.get('user_id', None) is None:
+#         return github.authorize(callback_url=url_for('gitauth.authorized'))
+#     else:
+#         return 'Already logged in'
+
+# @gitauth.route('/orgs/<name>')
+# def orgs(name):
+#     if github.has_org_access(name):
+#         return 'Heck yeah he does!'
+#     else:
+#         return redirect(url_for('index'))
 
 @gitauth.route('/logout')
 def logout():
