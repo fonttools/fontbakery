@@ -6,4 +6,4 @@ app.config.from_object('config')
 app.config.from_pyfile('local.cfg', silent=True)
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(port=5000)
