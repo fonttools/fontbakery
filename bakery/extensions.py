@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from flask import config
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
@@ -12,12 +13,12 @@ celery = Celery()
 from flask.ext.oauth import OAuth
 oauth = OAuth()
 
-github = None
-
-# from flask.ext.github import GithubAuth
-# # github doesn't support class fabric so data is hardcoded
-# github = GithubAuth(
-#     client_id=None,
-#     client_secret=None,
-#     session_key='user_id'
-# )
+github = oauth.remote_app('github',
+    base_url='https://api.github.com/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize',
+    consumer_key='4a1a8295dacab483f1b5',
+    # I know it is awful but I dunno how to make it right way
+    consumer_secret=open('gitsecret', 'r').readlines()[0]
+)

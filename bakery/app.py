@@ -35,18 +35,6 @@ def extensions_fabrics(app):
 
     celery.config_from_object(app.config)
 
-    global github
-    github = oauth.remote_app('github',
-        base_url='https://api.github.com/',
-        request_token_url='https://api.twitter.com/oauth/request_token',
-        access_token_url='https://github.com/login/oauth/access_token',
-        authorize_url='https://github.com/login/oauth/authorize',
-        consumer_key=app.config.get('GITHUB_CLIENT_ID'),
-        consumer_secret=app.config.get('GITHUB_SECRET')
-    )
-
-
-
 def error_pages(app):
 
     @app.errorhandler(403)
