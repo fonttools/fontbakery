@@ -9,7 +9,10 @@ frontend = Blueprint('frontend', __name__, url_prefix='/')
 def splash():
     return render_template('splash.html')
 
-
 @frontend.route('/about')
 def about():
+    return render_template('splash.html')
+
+@frontend.route('/docs')
+def docs():
     return render_template('splash.html')
