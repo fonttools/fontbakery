@@ -1,9 +1,14 @@
 # coding: utf-8
-from flask import Blueprint, render_template
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
+from flask import Blueprint, render_template, Response
 
 from ..extensions import db, mail
 
-frontend = Blueprint('frontend', __name__, url_prefix='/')
+frontend = Blueprint('frontend', __name__)
 
 @frontend.route('/')
 def splash():
@@ -16,3 +21,7 @@ def about():
 @frontend.route('/docs')
 def docs():
     return render_template('splash.html')
+
+@frontend.route('/quicksearch', methods=['GET', 'POST'])
+def quicksearch():
+    return Response(json.dumps(['xen/font', 'dave/font', 'xen/font2']))
