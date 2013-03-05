@@ -1,27 +1,67 @@
-        <div class="span3">
-<form action="" method="GET">
-  <input type="text" id="searchfield" class="input-medium" placeholder="Quick find…">
-  <span class="help-block">Type user/repo</span>
-</form>
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
+<div class="span3">
+    <form action="" method="GET">
+    <input type="text" id="searchfield" class="span12" placeholder="Quick find…">
+    </form>
+
+{#     <div class="well sidebar-nav">
+        <ul class="nav nav-list">
+          <li><a href="#"><i class="icon icon-remove-sign"></i>Link <small>5</small></a></li>
+        <li class="active"><a href="#thumbnails"><i class="icon-chevron-right"></i> Thumbnails</a></li>
+        </ul>
+    </div><!--/.well -->
+ #}
+
+
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Recent</a></li>
+    <li><a href="#tab2" data-toggle="tab">Personal</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+
+    <div class="well sidebar-nav">
+        <ul class="nav nav-list">
+          <li class="nav-header">Current repo</li>
+          <li class="active"><a href="#"><i class="icon icon-home"></i>Link <small>5</small></a></li>
+
+          <li><a href="#"><i class="icon icon-remove-sign"></i>Link <small>5</small></a></li>
+          <li><a href="#"><i class="icon icon-ok-sign"></i>Link <small>5</small></a></li>
+
+
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="nav-header">Last 10</li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+        </ul>
+    </div><!--/.well -->
+
+    </div>
+    <div class="tab-pane" id="tab2">
+
+    <div class="well sidebar-nav">
+        <ul class="nav nav-list">
+          <li class="nav-header">Current repo</li>
+          <li class="active"><a href="#"><i class="icon icon-home"></i>Link <small>5</small></a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="nav-header">Last 10</li>
+          <li><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+        </ul>
+    </div><!--/.well -->
+
+    </div>
+  </div>
+</div>
+
+
+</div><!--/span-->
 
