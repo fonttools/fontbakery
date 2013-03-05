@@ -7,11 +7,22 @@
                     <span class="icon-bar"></span>
                 </a>
 
-                <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Project") }}</a>
+                <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font backery") }}</a>
+
+         <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="{{ url_for('frontend.splash') }}">{{ _("Home") }}</a></li>
+              <li><a href="{{ url_for('frontend.about') }}">{{ _("About") }}</a></li>
+              <li><a href="{{ url_for('frontend.docs') }}">{{ _("Docs") }}</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+
                 {% if g.user %}
                 <form class="navbar-search pull-left" action="{{ url_for('frontend.search') }}">
                     <input type='text' class="search-query" name='keywords' value='{{ keywords|default('') }}' placeholder='Search' />
                 </form>
+
+
                 <div class="nav-collapse collapse pull-right">
                     <ul class="nav">
                         <li class="dropdown">
