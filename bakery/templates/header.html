@@ -12,8 +12,8 @@
          <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="{{ url_for('frontend.splash') }}">{{ _("Home") }}</a></li>
-              <li><a href="{{ url_for('frontend.about') }}">{{ _("About") }}</a></li>
-              <li><a href="{{ url_for('frontend.docs') }}">{{ _("Docs") }}</a></li>
+              <li><a href="{{ url_for('frontend.page', path='about') }}">{{ _("About") }}</a></li>
+              <li><a href="{{ url_for('frontend.page', path='docs') }}">{{ _("Docs") }}</a></li>
             </ul>
           </div><!--/.nav-collapse -->
 
