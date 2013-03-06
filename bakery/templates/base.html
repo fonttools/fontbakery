@@ -37,21 +37,35 @@
 
     {% block container %}
     <div class="container-fluid">
+      <div class="row-fluid">
 
-        {% block top %}
-            <ul class="nav nav-pills">
-                {% for tab, link in tabs %}
-                <li class="{% if active == tab %}active{% endif %}">
-                    <a href="{{ link }}">{{ tab|capitalize }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        {% endblock %}
+        {% block sidebar %}
+            {% include "sidebar.html" %}
+        {% endblock sidebar %}
 
         {% block body %}
-        {% endblock %}
+            {% block top %}
+                <ul class="nav nav-pills">
+                    {% for tab, link in tabs %}
+                    <li class="{% if active == tab %}active{% endif %}">
+                        <a href="{{ link }}">{{ tab|capitalize }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+            <div class="span9">
+              <div class="hero-unit">
+                <h1>Hello, world!</h1>
+                <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+                <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+              </div>
+            </div>
+        {% endblock body %}
+
+      </div>
 
     </div>
+
     {% endblock %}
 
     {% block footer %}
