@@ -7,7 +7,9 @@
             <li class="muted">&middot;</li>
             <li><a href='http://fontforge.org/'>Fontforge.org</a></li>
             <li class="muted">&middot;</li>
-            <li><a href='{{ url_for('frontend.about') }}'>About</a></li>
+            <li><a href='{{ url_for('frontend.page', path='about') }}'>About</a></li>
+            <li class="muted">&middot;</li>
+            <li><a href='{{ url_for('frontend.page', path='contact') }}'>Contact</a></li>
         </ul>
     </div>
 </footer>

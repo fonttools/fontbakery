@@ -1,12 +1,13 @@
-## The following requirements were added by pip --freeze:
 Babel==0.9.6
 Flask==0.9
 Flask-Babel==0.8
-Flask-Github==0.1.3
+Flask-FlatPages==0.3
 Flask-Mail==0.7.4
 Flask-OAuth==0.12
 Flask-SQLAlchemy==0.16
 Jinja2==2.6
+Markdown==2.2.1
+PyYAML==3.10
 SQLAlchemy==0.8.0b2
 Werkzeug==0.8.3
 amqp==1.0.8

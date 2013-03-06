@@ -22,3 +22,6 @@ github = oauth.remote_app('github',
     # I know it is awful but I dunno how to make it right way
     consumer_secret=open('gitsecret', 'r').readlines()[0]
 )
+
+from flask_flatpages import FlatPages
+pages = FlatPages()

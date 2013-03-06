@@ -24,4 +24,12 @@ MAIL_USERNAME = 'm@xen.ru'
 
 # github app data
 GITHUB_CLIENT_ID = '4a1a8295dacab483f1b5'
+# please make file 'gitsecret' in this folder and put secret code provided
+# by Github into 1st line
 GITHUB_SECRET = None
+
+# flatpages
+FLATPAGES_EXTENSION = '.md'
+import os
+FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'docs')
+del os

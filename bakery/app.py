@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template
 from flaskext.babel import Babel
 
-from .extensions import db, mail, celery, oauth, github
+from .extensions import db, mail, celery, pages
 from .gitauth import gitauth
 from .frontend import frontend
 
@@ -27,6 +27,7 @@ def extensions_fabrics(app):
     db.init_app(app)
     mail.init_app(app)
     babel = Babel(app)
+    pages.init_app(app)
 
     @babel.localeselector
     def get_locale():
