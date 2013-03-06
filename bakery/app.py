@@ -6,6 +6,7 @@ from flaskext.babel import Babel
 from .extensions import db, mail, celery, pages
 from .gitauth import gitauth
 from .frontend import frontend
+from .project import project
 
 # For import *
 __all__ = ['create_app']
@@ -16,6 +17,7 @@ def create_app(app_name=__name__):
     app = Flask(app_name)
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
+    app.register_blueprint(project)
 
     extensions_fabrics(app)
     error_pages(app)
