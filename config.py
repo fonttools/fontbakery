@@ -1,7 +1,7 @@
 DEBUG = True
 SECRET_KEY = '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xcfag'
 
-DATABASE_URI = 'sqlite:///data.sqlite',
+SQLALCHEMY_DATABASE_URI = 'sqlite:///data.sqlite'
 CELERY_BROKER_URL = 'sqla+sqlite:///celerydb.sqlite'
 CELERY_RESULT_DBURI = "sqlite:///celerydb.sqlite"
 CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
