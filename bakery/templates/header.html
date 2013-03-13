@@ -16,7 +16,6 @@
               <li><a href="{{ url_for('frontend.page', path='docs') }}">{{ _("Docs") }}</a></li>
             </ul>
           </div><!--/.nav-collapse -->
-
                 {% if g.user %}
                 <form class="navbar-search pull-left" action="{{ url_for('frontend.search') }}">
                     <input type='text' class="search-query" name='keywords' value='{{ keywords|default('') }}' placeholder='Search' />

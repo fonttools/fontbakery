@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, g, session
 from flaskext.babel import Babel
 
 from .extensions import db, mail, celery, pages
@@ -21,7 +21,7 @@ def create_app(app_name=__name__):
 
     extensions_fabrics(app)
     error_pages(app)
-
+    gvars(app)
 
     return app
 
@@ -51,3 +51,18 @@ def error_pages(app):
     @app.errorhandler(500)
     def server_error_page(error):
         return render_template("pages/500.html"), 500
+
+
+def gvars(app):
+    from gitauth.models import User
+
+    @app.before_request
+    def before_request():
+        print(session)
+        g.user = None
+        if 'user_id' in session:
+            try:
+                g.user = User.query.get(session['user_id'])
+            except:
+                pass
+
