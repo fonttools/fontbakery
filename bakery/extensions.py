@@ -20,7 +20,8 @@ github = oauth.remote_app('github',
     authorize_url='https://github.com/login/oauth/authorize',
     consumer_key='4a1a8295dacab483f1b5',
     # I know it is awful but I dunno how to make it right way
-    consumer_secret=open('gitsecret', 'r').readlines()[0]
+    consumer_secret=open('gitsecret', 'r').readlines()[0],
+    request_token_params={'scope': 'user:email,public_repo'}
 )
 
 from flask_flatpages import FlatPages
