@@ -58,11 +58,10 @@ def gvars(app):
 
     @app.before_request
     def before_request():
-        print(session)
         g.user = None
         if 'user_id' in session:
-            try:
+            if session['user_id']: 
                 g.user = User.query.get(session['user_id'])
-            except:
-                pass
+            else:
+                del session['user_id']
 

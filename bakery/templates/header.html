@@ -1,55 +1,38 @@
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+ 
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+ 
+      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font backery") }}</a>
+ 
+      <!-- Everything you want hidden at 940px or less, place within here -->
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="{{ url_for('frontend.splash') }}">{{ _("Home") }}</a></li>
+          <li><a href="{{ url_for('frontend.page', path='about') }}">{{ _("About") }}</a></li>
+          <li><a href="{{ url_for('frontend.page', path='docs') }}">{{ _("Docs") }}</a></li>
+        </ul>
 
-                <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font backery") }}</a>
-
-         <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="{{ url_for('frontend.splash') }}">{{ _("Home") }}</a></li>
-              <li><a href="{{ url_for('frontend.page', path='about') }}">{{ _("About") }}</a></li>
-              <li><a href="{{ url_for('frontend.page', path='docs') }}">{{ _("Docs") }}</a></li>
+        <ul class="nav pull-right">
+          {% if g.user %}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ g.user.name }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url_for('gitauth.settings') }}">Settings</a></li>
+              <li><a href="{{ url_for('gitauth.logout') }}">Log out</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
-                {% if g.user %}
-                <form class="navbar-search pull-left" action="{{ url_for('frontend.search') }}">
-                    <input type='text' class="search-query" name='keywords' value='{{ keywords|default('') }}' placeholder='Search' />
-                </form>
-
-
-                <div class="nav-collapse collapse pull-right">
-                    <ul class="nav">
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ g.user.name }} <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            {% if g.user.is_admin() %}
-                            <li><a href="{{ url_for('admin.index') }}">{{ g.user.name }}</a></li>
-                            {% else %}
-                            <li><a href="{{ url_for('user.index') }}">{{ g.user.name }}</a></li>
-                            {% endif %}
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('settings.profile') }}">Settings</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('frontend.help') }}">Help</a></li>
-                            <li><a href="{{ url_for('frontend.logout') }}">Log out</a></li>
-                        </ul>
-                        </li>
-                    </ul>
-                </div>
-                {% else %}
-                <div class="nav-collapse collapse pull-right">
-
-                    <ul class="nav">
-                        <li>
-                            <span><a class="btn btn-inverse" href="{{ url_for('gitauth.login') }}"><i class="icon-user icon-white"></i> <strong>Login</strong></a></span></li>
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-        </div>
+          </li>
+          {% else %}
+          <li><a class="btn btn-inverse" href="{{ url_for('gitauth.login') }}"><i class="icon-user icon-white"></i> <strong>Login</strong></a></li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
