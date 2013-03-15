@@ -18,8 +18,10 @@ def create_app(app_name=__name__):
     app = Flask(app_name)
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
-    app.register_blueprint(project)
     app.register_blueprint(settings)
+
+    # keep it last
+    app.register_blueprint(project)
 
     extensions_fabrics(app)
     error_pages(app)
@@ -44,15 +46,15 @@ def error_pages(app):
 
     @app.errorhandler(403)
     def forbidden_page(error):
-        return render_template("pages/403.html"), 403
+        return render_template("misc/403.html"), 403
 
     @app.errorhandler(404)
     def page_not_found(error):
-        return render_template("pages/404.html"), 404
+        return render_template("misc/404.html"), 404
 
     @app.errorhandler(500)
     def server_error_page(error):
-        return render_template("pages/500.html"), 500
+        return render_template("misc/500.html"), 500
 
 
 def gvars(app):
