@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
+from flask import Blueprint, render_template, request, flash, g
 
-from flask import Blueprint, render_template, current_app, request, flash, g
-
-from ..extensions import db, github
+from ..extensions import github
 from ..decorators import login_required
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
@@ -19,5 +17,5 @@ def repos():
             _repos = resp.data
         else:
             flash('Unable to load repos list.')
-    return render_template('user/settings.html', repos=_repos)
+    return render_template('user/repos.html', repos=_repos)
 

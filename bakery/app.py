@@ -7,6 +7,7 @@ from .extensions import db, mail, celery, pages
 from .gitauth import gitauth
 from .frontend import frontend
 from .project import project
+from .settings import settings
 
 # For import *
 __all__ = ['create_app']
@@ -18,6 +19,7 @@ def create_app(app_name=__name__):
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
     app.register_blueprint(project)
+    app.register_blueprint(settings)
 
     extensions_fabrics(app)
     error_pages(app)
@@ -60,7 +62,7 @@ def gvars(app):
     def before_request():
         g.user = None
         if 'user_id' in session:
-            if session['user_id']: 
+            if session['user_id']:
                 g.user = User.query.get(session['user_id'])
             else:
                 del session['user_id']
