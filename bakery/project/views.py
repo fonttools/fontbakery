@@ -26,4 +26,3 @@ def history(username, repo):
 def build(username, repo, build_id):
     return render_template('project/build.html')
 
-

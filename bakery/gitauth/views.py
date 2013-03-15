@@ -35,17 +35,6 @@ def login():
     else:
         return 'Already logged in'
 
-@gitauth.route('/settings')
-def settings():
-    repos = None
-    if g.user is not None:
-        resp = github.get('/user/repos', data = {'type': 'public'})
-        if resp.status == 200:
-            repos = resp.data
-        else:
-            flash('Unable to load repos list.')
-    return render_template('user/settings.html', repos=repos)
-
 @gitauth.route('/callback')
 @github.authorized_handler
 def authorized(resp):
