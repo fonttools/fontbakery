@@ -17,5 +17,5 @@ def repos():
             _repos = resp.data
         else:
             flash('Unable to load repos list.')
-    return render_template('user/repos.html', repos=_repos)
+    return render_template('settings/repos.html', repos=_repos)
 
