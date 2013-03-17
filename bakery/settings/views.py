@@ -19,3 +19,40 @@ def repos():
             flash('Unable to load repos list.')
     return render_template('settings/repos.html', repos=_repos)
 
+@login_required
+@settings.route('/update', methods=['POST'])
+def repos():
+    _repos = None
+    if g.user is not None:
+        resp = github.get('/user/repos', data = {'type': 'public'})
+        if resp.status == 200:
+            _repos = resp.data
+        else:
+            flash('Unable to load repos list.')
+    return render_template('settings/repos.html', repos=_repos)
+
+
+@login_required
+@settings.route('/profile', methods=['GET', 'POST'])
+def repos():
+    _repos = None
+    if g.user is not None:
+        resp = github.get('/user/repos', data = {'type': 'public'})
+        if resp.status == 200:
+            _repos = resp.data
+        else:
+            flash('Unable to load repos list.')
+    return render_template('settings/repos.html', repos=_repos)
+
+@login_required
+@settings.route('/addhook', methods=['POST'])
+def repos():
+    _repos = None
+    if g.user is not None:
+        resp = github.get('/user/repos', data = {'type': 'public'})
+        if resp.status == 200:
+            _repos = resp.data
+        else:
+            flash('Unable to load repos list.')
+    return render_template('settings/repos.html', repos=_repos)
+
