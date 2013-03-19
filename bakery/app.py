@@ -26,6 +26,7 @@ def create_app(app_name=__name__):
     extensions_fabrics(app)
     error_pages(app)
     gvars(app)
+    register_filters(app)
 
     return app
 
@@ -67,5 +68,11 @@ def gvars(app):
             if session['user_id']:
                 g.user = User.query.get(session['user_id'])
             else:
+                # this session is broken
                 del session['user_id']
+
+def register_filters(app):
+    from utils import pretty_date
+
+    app.jinja_env.filters['pretty_date'] = pretty_date
 
