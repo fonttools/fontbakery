@@ -40,3 +40,6 @@ freeze: venv/bin/activate
 
 mail: setup
 	python -m smtpd -n -c DebuggingServer localhost:20025
+
+init: venv/bin/activate requirements.txt
+	. venv/bin/activate; python init.py
