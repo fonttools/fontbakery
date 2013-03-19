@@ -1,7 +1,25 @@
+{% extends "base.html" %}
 {% set page_title = _("User repositories") %}
 
-{% extends "base.html" %}
-
 {% block body %}
-{{ repos }}
+
+<div class="span9">
+    <h2>{{ _("Select repositories") }}</h2>
+
+    <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
+        {% if cache %}
+            Last update was {{ cache.updated | pretty_date}}
+            {% else %}
+            Never updated
+        {% endif %}
+        <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
+    </form>
+
+    {% if cache %}
+        {{ cache.repos }}
+    {% else %}
+        <p class="muted">Refresh repositories list</p>    
+    {% endif %}
+
+</div>
 {% endblock %}
