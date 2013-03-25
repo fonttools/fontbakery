@@ -10,6 +10,12 @@ from ..extensions import db
 
 project = Blueprint('project', __name__)
 
+# @app.route('/user/<username>')
+# def show_user(username):
+#     user = User.query.filter_by(username=username).first_or_404()
+#     return render_template('show_user.html', user=user)
+
+
 @project.route('/<username>/')
 def user(username):
     return render_template('project/user.html')

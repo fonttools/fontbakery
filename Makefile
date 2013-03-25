@@ -4,7 +4,7 @@ all: setup
 
 # ifdef DEV
 # 	REQ=requiremets.dev.txt
-# else
+# elseс
 # 	REQ=requirements.txt
 # 	@echo "Use `make DEV` for development environment"
 # endif
@@ -33,7 +33,7 @@ updlang: venv/bin/activate
 	. venv/bin/activate; pybabel update -i messages.pot -d translations
 
 celery: venv/bin/activate
-	. venv/bin/activate; celery -A entry-celery worker
+	. venv/bin/activate; celery -A entry-celery worker --loglevel=info
 
 freeze: venv/bin/activate
 	. venv/bin/activate; pip freeze -r requirements.dev.txt > requirements.txt
