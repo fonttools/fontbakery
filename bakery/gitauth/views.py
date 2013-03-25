@@ -33,7 +33,8 @@ def login():
         return github.authorize(callback = url_for('gitauth.authorized',
             next=request.args.get('next') or request.referrer or None, _external=True))
     else:
-        return 'Already logged in'
+        flash('Already logged in')
+        return redirect(url_for('frontend.splash'))
 
 @gitauth.route('/callback')
 @github.authorized_handler

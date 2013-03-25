@@ -11,7 +11,7 @@ def pretty_date(dt, default=None):
     """
 
     if default is None:
-        default = 'just now'
+        default = 'just .now'
 
     now = datetime.utcnow()
     diff = now - dt

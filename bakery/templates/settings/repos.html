@@ -15,11 +15,28 @@
         <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
     </form>
 
+<table class="table table-striped">
+  <tbody>
     {% if cache %}
-        {{ cache.repos }}
+
+        {% for item in cache.data %}
+
+    <tr>
+      <td>{% if item.full_name in projects %}<a class="btn btn-mini btn-inverse" href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star icon-white"></i></a>{% else %}<a class="btn btn-mini" href="{{ url_for('settings.addhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% endif %}</td>
+      <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+      <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
+      <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-cog"></i></a></td>
+    </tr>
+        {% endfor %}
     {% else %}
-        <p class="muted">Refresh repositories list</p>    
+    <tr>
+        <td colspan="4">
+            <p class="muted">Refresh repositories list</p>
+        </td>
+    </tr> 
     {% endif %}
+  </tbody>
+</table>
 
 </div>
 {% endblock %}
