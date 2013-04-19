@@ -4,7 +4,7 @@ Font bakery service project. Currently in **DEVELOPMENT MODE**.
 
 ## License
 
-All code made for this project distibuted under [GNU General Public License v3.0, or later](http://www.gnu.org/licenses/gpl). 
+This code distibuted under Apache License, Version 2.0. 
 
 ## Installation
 
