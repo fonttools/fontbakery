@@ -15,9 +15,6 @@ setup(
     install_requires=[
         'Flask',
         'Flask-SQLAlchemy',
-        'Flask-Babel',
-        'Flask-Mail',
-        'Flask-OAuth',
     ],
     classifiers=[
         'Environment :: Web Environment',
