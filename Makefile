@@ -12,7 +12,13 @@ all: setup
 venv/bin/activate:
 	virtualenv --distribute venv
 
-setup: venv/bin/activate requirements.txt
+bakery/static/bootstrap/css/bootstrap.css:
+	cd bakery/static && curl -O http://twitter.github.io/bootstrap/assets/bootstrap.zip && unzip bootstrap.zip
+
+bakery/static/jquery-2.0.0.min.js:
+	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
+
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 run: venv/bin/activate requirements.txt
