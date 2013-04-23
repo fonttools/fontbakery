@@ -10,18 +10,13 @@ mail = Mail()
 from celery import Celery
 celery = Celery()
 
-from flask.ext.oauth import OAuth
-oauth = OAuth()
+from flask.ext.rauth import RauthOAuth2
 
-github = oauth.remote_app('github',
+github = RauthOAuth2(
+    name='github',
     base_url='https://api.github.com/',
-    request_token_url=None,
     access_token_url='https://github.com/login/oauth/access_token',
-    authorize_url='https://github.com/login/oauth/authorize',
-    consumer_key='4a1a8295dacab483f1b5',
-    # I know it is awful but I dunno how to make it right way
-    consumer_secret=open('gitsecret', 'r').readlines()[0],
-    request_token_params={'scope': 'user:email,public_repo'}
+    authorize_url='https://github.com/login/oauth/authorize'
 )
 
 from flask_flatpages import FlatPages
