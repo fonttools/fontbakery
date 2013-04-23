@@ -1,5 +1,5 @@
 *.py[cod]
-
+*.sublime-*
 # C extensions
 *.so
 
@@ -29,11 +29,6 @@ nosetests.xml
 # Translations
 *.mo
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
 # secure
 gitsecret
 
@@ -43,3 +38,7 @@ venv
 celerydb.sqlite
 data.sqlite
 local.cfg
+
+# static
+bakery/static/bootstrap*
+bakery/static/jquery-2.0.0.min.js
