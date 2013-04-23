@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template, g, session
 from flaskext.babel import Babel
 
-from .extensions import db, mail, celery, pages
+from .extensions import db, mail, celery, pages, github
 from .gitauth import gitauth
 from .frontend import frontend
 from .project import project
@@ -11,7 +11,6 @@ from .settings import settings
 
 # For import *
 __all__ = ['create_app']
-
 
 def create_app(app_name=__name__):
 
@@ -35,6 +34,7 @@ def extensions_fabrics(app):
     mail.init_app(app)
     babel = Babel(app)
     pages.init_app(app)
+    github.init_app(app)
 
     @babel.localeselector
     def get_locale():
