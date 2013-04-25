@@ -10,3 +10,7 @@ gunicorn
 psycopg2
 pysqlite
 requests
+
+# builder deps
+TTFQuery
+fonttools2
