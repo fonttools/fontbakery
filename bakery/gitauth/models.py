@@ -10,11 +10,18 @@ class User(db.Model):
     github_access_token = db.Column(db.String(200),
         nullable = False, index=True)
 
-    def __init__(self, github_access_token):
-        self.github_access_token = github_access_token
+    def __init__(self, login):
+        self.login = login
 
     def getAvatar(self, size=24):
         return "https://www.gravatar.com/avatar/%s?s=%d&d=mm" % (self.avatar, size)
 
     def getGithub(self):
         return "https://github.com/%s" % self.login
+
+    @staticmethod    
+    def get_or_init(login):
+        user = User.query.filter_by(login=login).first()
+        if user is None:
+            user = User(login)
+        return user

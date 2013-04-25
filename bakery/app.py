@@ -34,7 +34,7 @@ def extensions_fabrics(app):
     mail.init_app(app)
     babel = Babel(app)
     pages.init_app(app)
-    github.init_app(app)
+    # github.init_app(app)
 
     @babel.localeselector
     def get_locale():
