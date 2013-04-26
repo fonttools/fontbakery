@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
+from flask.ext.babel import gettext as _
+
 from flask import Blueprint, render_template, request, flash, g, redirect, url_for, session
 
 from ..extensions import github, db
@@ -41,9 +43,9 @@ def update():
 
             db.session.add(cache)
             db.session.commit()
-            flash('Repositories refreshed.')
+            flash(_('Repositories refreshed.'))
         else:
-            flash('Unable to load repos list.')
+            flash(_('Unable to load repos list.'))
     return redirect(url_for('settings.repos'))
 
 @login_required
@@ -55,7 +57,7 @@ def profile():
         if resp.status == 200:
             _repos = resp.data
         else:
-            flash('Unable to load repos list.')
+            flash(_('Unable to load repos list.'))
     return render_template('settings/repos.html', repos=_repos)
 
 HOOK_URL = 'http://requestb.in/185gvyw1'
@@ -67,7 +69,7 @@ def addhook(full_name):
     old_hooks = github.get('/repos/%s/hooks' % full_name)
     if old_hooks.status != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
-        flash('Github API access error, please try again later')
+        flash(_('Github API access error, please try again later'))
         return redirect(url_for('settings.repos'))
 
     exist_id = False
@@ -83,7 +85,7 @@ def addhook(full_name):
         logging.warn('Delete old webhook for user %s, repo %s and id %s' % (g.user.login, full_name, exist_id))
         resp = github.delete('/repos/%(full_name)s/hooks/%(id)s' % {'full_name': full_name, 'id': exist_id})
         if resp.status != 204:
-            flash('Error deleting old webhook, delete if manually or retry')
+            flash(_('Error deleting old webhook, delete if manually or retry'))
             return redirect(url_for('settings.repos'))
 
     resp = github.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
@@ -111,20 +113,20 @@ def addhook(full_name):
         if project_data.status == 200:
             project.cache_update(data = project_data.data)
         else:
-            flash('Repository information update error')
+            flash(_('Repository information update error'))
             return redirect(url_for('settings.repos'))
         db.session.add(project)
         db.session.commit()
     else:
         logging.error('Web hook registration error for %s' % full_name)
-        flash('Repository webhook update error')
+        flash(_('Repository webhook update error'))
         return redirect(url_for('settings.repos'))
 
-    flash('Added webhook for %s.' % (full_name))
+    flash(_('Added webhook for %s.' % (full_name)))
     return redirect(url_for('settings.repos'))
 
 @login_required
 @settings.route('/delhook', methods=['GET'])
 def delhook(full_name=''):
-    flash('Deleted webhook for %s to list.' % full_name)
+    flash(_('Deleted webhook for %s to list.' % full_name))
     return redirect(url_for('settings.repos'))
