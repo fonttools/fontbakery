@@ -67,7 +67,6 @@ HOOK_URL = 'http://requestb.in/nrgo4inr'
 @login_required
 @settings.route('/addhook/<path:full_name>') #, methods=['GET'])
 def addhook(full_name):
-    import ipdb; ipdb.set_trace()
     auth = github.get_session(token = session['token'])
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
@@ -126,7 +125,36 @@ def addhook(full_name):
     return redirect(url_for('settings.repos'))
 
 @login_required
-@settings.route('/delhook', methods=['GET'])
-def delhook(full_name=''):
-    flash(_('Deleted webhook for %s to list.' % full_name))
+@settings.route('/delhook/<path:full_name>', methods=['GET'])
+def delhook(full_name):
+    auth = github.get_session(token = session['token'])
+
+    old_hooks = auth.get('/repos/%s/hooks' % full_name)
+    print(old_hooks.content)
+    if old_hooks.status_code != 200:
+        logging.error('Repos API reading error for user %s' % g.user.login)
+        flash(_('Github API access error, please try again later'))
+        return redirect(url_for('settings.repos'))
+
+    exist_id = False
+    if old_hooks.json():
+        for i in old_hooks.json():
+            if i.has_key('name') and i['name'] == 'web':
+                if i.has_key('config') and i['config'].has_key('url') \
+                    and i['config']['url'] == HOOK_URL:
+                    exist_id = i['id']
+
+    if exist_id:
+        resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' % {'full_name': full_name, 'id': exist_id})
+        if resp.status_code != 204:
+            flash(_('Error deleting old webhook, delete if manually or retry'))
+    else:
+        flash(_("Webhook is not registered on github, probably it was deleted manually"))
+
+    project = Project.query.filter_by(login = g.user.login, full_name = full_name).first()
+
+    if project:
+        db.session.delete(project)
+        db.session.commit()
+
     return redirect(url_for('settings.repos'))
