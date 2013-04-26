@@ -44,6 +44,7 @@ def extensions_fabrics(app):
     celery.config_from_object(app.config)
 
 def error_pages(app):
+    # define error pages
 
     @app.errorhandler(403)
     def forbidden_page(error):
@@ -56,7 +57,6 @@ def error_pages(app):
     @app.errorhandler(500)
     def server_error_page(error):
         return render_template("misc/500.html"), 500
-
 
 def gvars(app):
     from gitauth.models import User
