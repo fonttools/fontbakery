@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import json
 import logging
 from flask.ext.babel import gettext as _
 
@@ -51,45 +52,46 @@ def update():
 @login_required
 @settings.route('/profile', methods=['GET', 'POST'])
 def profile():
+    auth = github.get_session(token = session['token'])
     _repos = None
     if g.user is not None:
-        resp = github.get('/user/repos', data = {'type': 'public'})
-        if resp.status == 200:
-            _repos = resp.data
+        resp = auth.get('/user/repos', data = {'type': 'public'})
+        if resp.status_code == 200:
+            _repos = resp.json()
         else:
             flash(_('Unable to load repos list.'))
     return render_template('settings/repos.html', repos=_repos)
 
-HOOK_URL = 'http://requestb.in/185gvyw1'
+HOOK_URL = 'http://requestb.in/nrgo4inr'
 
 @login_required
 @settings.route('/addhook/<path:full_name>') #, methods=['GET'])
 def addhook(full_name):
-    #import ipdb; ipdb.set_trace()
-    old_hooks = github.get('/repos/%s/hooks' % full_name)
-    if old_hooks.status != 200:
+    import ipdb; ipdb.set_trace()
+    auth = github.get_session(token = session['token'])
+    old_hooks = auth.get('/repos/%s/hooks' % full_name)
+    if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
         flash(_('Github API access error, please try again later'))
         return redirect(url_for('settings.repos'))
 
     exist_id = False
-    if old_hooks.data:
-        for i in old_hooks.data:
+    if old_hooks.json():
+        for i in old_hooks.json():
             if i.has_key('name') and i['name'] == 'web':
                 if i.has_key('config') and i['config'].has_key('url') \
                     and i['config']['url'] == HOOK_URL:
                     exist_id = i['id']
 
-    import ipdb; ipdb.set_trace()
     if exist_id:
         logging.warn('Delete old webhook for user %s, repo %s and id %s' % (g.user.login, full_name, exist_id))
-        resp = github.delete('/repos/%(full_name)s/hooks/%(id)s' % {'full_name': full_name, 'id': exist_id})
-        if resp.status != 204:
+        resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' % {'full_name': full_name, 'id': exist_id})
+        if resp.status_code != 204:
             flash(_('Error deleting old webhook, delete if manually or retry'))
             return redirect(url_for('settings.repos'))
 
-    resp = github.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
-        data = {
+    resp = auth.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
+        data = json.dumps({
             'name':'web',
             'active': True,
             'events': ['push'],
@@ -98,20 +100,18 @@ def addhook(full_name):
                 'content_type': 'json',
                 'secret': '11' # TODO: sign from name and SECRET.
             }
-         },
-         format = 'json',
-         headers = {'Authorization': 'token %s' % (github.make_client(token=None).token.key)}
+         })
     )
-    if resp.status < 300: # no errors, in 2xx range
+    if resp.status_code < 300: # no errors, in 2xx range
         project = Project.query.filter_by(login = g.user.login, full_name = full_name).first()
         if not project:
             project = Project(
                 login = g.user.login, 
                 full_name = full_name,
             )
-        project_data = github.get('/repos/%s' % full_name)
-        if project_data.status == 200:
-            project.cache_update(data = project_data.data)
+        project_data = auth.get('/repos/%s' % full_name)
+        if project_data.status_code == 200:
+            project.cache_update(data = project_data.json())
         else:
             flash(_('Repository information update error'))
             return redirect(url_for('settings.repos'))
