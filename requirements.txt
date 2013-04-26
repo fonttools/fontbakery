@@ -10,6 +10,7 @@ gunicorn
 psycopg2
 pysqlite
 requests
+rauth
 
 # builder deps
 TTFQuery
