@@ -2,7 +2,6 @@
 {% set page_title = _("User repositories") %}
 
 {% block body %}
-
 <div class="span9">
     <h2>{{ _("Select repositories") }}</h2>
 
@@ -15,12 +14,14 @@
         <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
     </form>
 
+    <p>To register/unregister github repository press <a class="btn btn-mini"><i class="icon-star-empty"></i></a> in project row</p>
+
 <table class="table table-striped">
   <tbody>
     {% if cache %}
       {% for item in cache.data -%}
-        <tr>
-          <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star icon-white"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}"><i class="icon-star-empty"></i></a>{% endif %}</td>
+        <tr {% if item.full_name in projects%} class="success" {% endif %}>
+          <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}"><i class="icon-star-empty"></i></a>{% endif %}</td>
           <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
           <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
           <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-wrench"></i></a></td>
