@@ -22,7 +22,7 @@ setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bake
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 run: venv/bin/activate requirements.txt
-	. venv/bin/activate; gunicorn -w 2 -b 0.0.0.0:5001 entry:app
+	. venv/bin/activate; gunicorn -w 2 -b 0.0.0.0:5000 entry:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o messages.pot .
