@@ -18,7 +18,7 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	...
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
-	
+
 	$ sudo easy_install-2.7 -U pip
 	$ sudo easy_install-2.7 -U virtualenv
 
@@ -56,6 +56,19 @@ And run project:
 
 	$ make run
 
-Open http://localhost:5000/ in your browser
+Open [http://localhost:5000/](http://localhost:5000/) in your browser
 
-Sometimes it is possible that some cookies stay in browser from old run or even different application, localhost is common host for development process. If you try to login but fail then open this link http://localhost:5000/auth/logout and login again. 
+## Development notes
+
+### Login failing?
+
+Sometimes it is possible that some cookies stay in a browser from old runs, or even different applications, since localhost is commonly used in web development. If you try to login but fail, then visit http://localhost:5000/auth/logout and try to log in again.
+
+### Production Mode 
+
+Production mode has additional requirements:
+
+* PostgreSQL, a high performance database for production systems
+
+By default project will start in development mode, but it is possible to run in production making changes in `local.cfg`. More instructions will follow.
+
