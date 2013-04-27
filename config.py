@@ -23,10 +23,8 @@ MAIL_USERNAME = 'm@xen.ru'
 #MAIL_PASSWORD = 'topsecret'
 
 # github app data
-GITHUB_CLIENT_ID = '4a1a8295dacab483f1b5'
-# please make file 'gitsecret' in this folder and put secret code provided
-# by Github into 1st line
-GITHUB_SECRET = None
+GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
+GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 
 # flatpages
 FLATPAGES_EXTENSION = '.md'
