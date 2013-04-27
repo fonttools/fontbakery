@@ -18,6 +18,8 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	...
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
+	
+	$ sudo easy_install-2.7 -U pip
 	$ sudo easy_install-2.7 -U virtualenv
 
 Now your system should be ready.

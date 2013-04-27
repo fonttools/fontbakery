@@ -1,5 +1,5 @@
 import datetime
-from ..extensions import db, github
+from ..extensions import db
 
 class Project(db.Model):
     __tablename__ = 'project'

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 import logging
 from flask.ext.babel import gettext as _
 
