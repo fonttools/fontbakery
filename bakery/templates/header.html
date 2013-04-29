@@ -14,11 +14,13 @@
       <!-- Everything you want hidden at 940px or less, place within here -->
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li class="active"><a href="{{ url_for('frontend.splash') }}">{{ _("Home") }}</a></li>
-          <li><a href="{{ url_for('frontend.page', path='about') }}">{{ _("About") }}</a></li>
-          <li><a href="{{ url_for('frontend.page', path='docs') }}">{{ _("Docs") }}</a></li>
+          {%- for path, caption in [
+            (url_for('frontend.page', path='about'), _("About")),
+            (url_for('frontend.page', path='docs'), _("Docs")),
+          ] %}
+            <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
+          {%- endfor %}
         </ul>
-
         <ul class="nav pull-right">
           {% if g.user %}
           <li class="dropdown">
