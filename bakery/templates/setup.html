@@ -1,0 +1,57 @@
+{# Dashboard for logged in user #}
+{% extends 'base.html' %}
+{% set page_title = _('Repository setup') %}
+
+{% block body %}
+
+<div class="span9">
+    <h2>{{ _("Setup for:") }} {{ project.clone }}</h2>
+    <p>List of available repositories.</p>
+
+    <form class="form-horizontal" action="{{ url_for('frontend.setup', project_id = project.id)}}" method="POST">
+      <div class="control-group">
+        <label class="control-label" for="license_file">License file</label>
+        <div class="controls">
+        <select for="license_file" name="license_file" class="input-xxlarge">
+          <option>Select file</option>
+          {% for i in state['txt_files'] %}
+          <option {% if state['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
+          {% endfor %}
+        </select>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="license_file">Ufo folders</label>
+        <div class="controls">
+        <select for="license_file" multiple="multiple" name="ufo_dirs" class="input-xxlarge">
+          {% for i in state['ufo_dirs'] %}
+          <option {% if i in state['out_ufo'].keys() %}selected="selected"{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="controls">
+        <label class="radio">
+          <input type="radio" name="rename" id="optionsRadios1" value="no" {% if not state['rename'] %}checked{% endif %}>
+          Use the same font names?
+        </label>
+        <label class="radio">
+          <input type="radio" name="rename" id="optionsRadios2" value="yes" {% if state['rename'] %}checked{% endif %}>
+          I want to define new names?
+        </label>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <input type="hidden" name="step" value="2"> 
+          <button type="submit" class="btn">Submit</button>
+        </div>
+      </div>
+    </form>
+
+</div>
+
+{% endblock %}

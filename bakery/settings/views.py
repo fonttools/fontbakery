@@ -13,6 +13,7 @@ from ..extensions import github, db
 from ..decorators import login_required
 from .models import ProjectCache
 from ..project.models import Project
+from ..tasks import git_clone, git_clean
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -21,13 +22,19 @@ settings = Blueprint('settings', __name__, url_prefix='/settings')
 def repos():
     _repos = None
     cache = ProjectCache.query.filter_by(login=g.user.login).first()
-    myprojects = Project.query.filter_by(login=g.user.login).all()
+    myprojects = Project.query.filter_by(login=g.user.login, is_github=True).all()
+    mygit = Project.query.filter_by(login=g.user.login, is_github=False).all()
+
     p = {}
     if myprojects:
         for i in myprojects:
             p[i.full_name] = i
     #import ipdb; ipdb.set_trace()
-    return render_template('settings/repos.html', cache=cache, projects=p)
+    return render_template('settings/repos.html',
+        cache = cache,
+        projects = p,
+        gitprojects = mygit
+    )
 
 @login_required
 @settings.route('/update', methods=['POST'])
@@ -50,7 +57,7 @@ def update():
             flash(_('Repositories refreshed.'))
         else:
             flash(_('Unable to load repos list.'))
-    return redirect(url_for('settings.repos'))
+    return redirect(url_for('settings.repos')+"#tab_github")
 
 @login_required
 @settings.route('/profile', methods=['GET', 'POST'])
@@ -108,8 +115,10 @@ def addhook(full_name):
         project = Project.query.filter_by(login = g.user.login, full_name = full_name).first()
         if not project:
             project = Project(
-                login = g.user.login, 
+                login = g.user.login,
                 full_name = full_name,
+                clone = 'git://github.com/%s.git' % full_name,
+                is_github = True
             )
         project_data = auth.get('/repos/%s' % full_name)
         if project_data.status_code == 200:
@@ -117,6 +126,7 @@ def addhook(full_name):
         else:
             flash(_('Repository information update error'))
             return redirect(url_for('settings.repos'))
+        project.is_github = True
         db.session.add(project)
         db.session.commit()
     else:
@@ -125,7 +135,8 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    return redirect(url_for('settings.repos'))
+    git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+    return redirect(url_for('settings.repos')+"#tab_github")
 
 @login_required
 @settings.route('/delhook/<path:full_name>', methods=['GET'])
@@ -133,11 +144,10 @@ def delhook(full_name):
     auth = github.get_session(token = session['token'])
 
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
-    print(old_hooks.content)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
         flash(_('Github API access error, please try again later'))
-        return redirect(url_for('settings.repos'))
+        return redirect(url_for('settings.repos')+"#tab_github")
 
     exist_id = False
     if old_hooks.json():
@@ -160,4 +170,42 @@ def delhook(full_name):
         db.session.delete(project)
         db.session.commit()
 
-    return redirect(url_for('settings.repos'))
+    git_clean(login = g.user.login, project_id = project.id)
+    return redirect(url_for('settings.repos')+"#tab_github")
+
+@login_required
+@settings.route('/addclone', methods=['POST'])
+def addclone():
+    clone = request.form.get('clone')
+    dup = Project.query.filter_by(login = g.user.login, is_github=False, clone = clone).first()
+    if dup:
+        flash(_("Repository with same clone string already exists under your account"))
+        return redirect(url_for('settings.repos')+"#tab_owngit")
+
+    project = Project(
+        login = g.user.login,
+        clone = clone,
+        is_github = False)
+
+    if project:
+        db.session.add(project)
+        db.session.commit()
+
+    flash(_("Repository successfully added to the list"))
+    git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+    return redirect(url_for('settings.repos')+"#tab_owngit")
+
+@login_required
+@settings.route('/delclone/', methods=['GET'])
+def delclone():
+    project_id = request.args.get('project_id')
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    if not project:
+        flash(_("Cann't find clone sting"))
+        return redirect(url_for('settings.repos')+"#tab_owngit")
+
+    db.session.delete(project)
+    db.session.commit()
+    flash(_("Repository succesfuly deleted"))
+    git_clean(login = g.user.login, project_id = project.id)
+    return redirect(url_for('settings.repos')+"#tab_owngit")

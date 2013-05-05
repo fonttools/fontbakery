@@ -79,8 +79,9 @@
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     {% endblock %}
 
-    {% block ga %}
-    {% include "macros/counters.html" %}
+    {% block extrajs %}
     {% endblock %}
+
+    {% block ga %}{% include "macros/counters.html" %}{% endblock %}
 </body>
 </html>

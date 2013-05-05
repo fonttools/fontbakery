@@ -3,7 +3,7 @@ SECRET_KEY = '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xc
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///data.sqlite'
 CELERY_BROKER_URL = 'sqla+sqlite:///celerydb.sqlite'
-CELERY_RESULT_DBURI = "sqlite:///celerydb.sqlite"
+CELERY_RESULT_DBURI = "sqla+sqlite:///celerydb.sqlite"
 CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
 # echo enables verbose logging from SQLAlchemy.
 CELERY_RESULT_ENGINE_OPTIONS = {"echo": True}
@@ -30,4 +30,5 @@ GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 FLATPAGES_EXTENSION = '.md'
 import os
 FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'docs')
+
 del os

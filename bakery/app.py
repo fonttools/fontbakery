@@ -3,11 +3,14 @@
 from flask import Flask, request, render_template, g, session
 from flaskext.babel import Babel
 
-from .extensions import db, mail, celery, pages, github
+from .extensions import db, mail, celery, pages
+
+# blueprints
 from .gitauth import gitauth
 from .frontend import frontend
-from .project import project
+from .api import api
 from .settings import settings
+from .project import project
 
 # For import *
 __all__ = ['create_app']
@@ -18,7 +21,7 @@ def create_app(app_name=__name__):
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
     app.register_blueprint(settings)
-
+    app.register_blueprint(api)
     # keep it last
     app.register_blueprint(project)
 

@@ -39,7 +39,7 @@ updlang: venv/bin/activate
 	. venv/bin/activate; pybabel update -i messages.pot -d translations
 
 celery: venv/bin/activate
-	. venv/bin/activate; celery -A entry-celery worker --loglevel=info
+	. venv/bin/activate; celery -A entry-celery worker --loglevel=info -E
 
 freeze: venv/bin/activate
 	. venv/bin/activate; pip freeze -r requirements.dev.txt > requirements.txt

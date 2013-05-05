@@ -1,21 +1,12 @@
 # coding: utf-8
 
-from flask import Blueprint, render_template, request, flash, g, session, redirect, url_for
+from flask import Blueprint, request, flash, g, session, redirect, url_for
 
 from .models import User
 from ..extensions import db, github
 from flask.ext.babel import gettext as _
 
-from ..tasks import add_together
-
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
-
-# @gitauth.before_request
-# def before_request():
-#     print(session)
-#     g.user = None
-#     if 'user_id' in session:
-#         g.user = User.query.get(session['user_id'])
 
 @gitauth.after_request
 def after_request(response):
@@ -25,8 +16,8 @@ def after_request(response):
 def login():
     # import ipdb; ipdb.set_trace()
     if session.get('user_id', None) is None:
-        redirect_uri = url_for('.authorized', 
-            next=request.args.get('next') or request.referrer or None, 
+        redirect_uri = url_for('.authorized',
+            next=request.args.get('next') or request.referrer or None,
             _external=True)
         params = {'redirect_uri': redirect_uri, 'scope': 'user:email,public_repo'}
         return redirect(github.get_authorize_url(**params))

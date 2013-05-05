@@ -1,0 +1,9 @@
+{
+    "Python": {
+        "python": '~/Dev/font/bakery/venv/bin/python',
+        "pythonExtraPaths": [
+          '~/Dev/font/bakery/venv/lib/python2.7/site-packages',
+          '~/Dev/font/bakery/venv/bakery',
+        ]
+    }
+}

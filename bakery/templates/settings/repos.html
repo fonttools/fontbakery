@@ -5,37 +5,113 @@
 <div class="span9">
     <h2>{{ _("Select repositories") }}</h2>
 
-    <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#github" data-toggle="tab">{{ _("Github repositories") }}</a></li>
+    <li><a href="#owngit" data-toggle="tab">{{ _("Own git repositories") }}</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="github" class="tab-pane active">
+      <h4>Github repositories</h4>
+      <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
-            Last update was {{ cache.updated | pretty_date}}
-            {% else %}
-            Never updated
+          Last update was {{ cache.updated | pretty_date}}
+          {% else %}
+          Never updated
         {% endif %}
         <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
+      </form>
+
+      <p>To register/unregister github repository press <a class="btn btn-mini"><i class="icon-star-empty"></i></a> in project row</p>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th><i class="icon-star-empty"></i></th>
+            <th>Repository</th>
+            <th>Description</th>
+            <th>Settings</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% if cache %}
+            {% for item in cache.data -%}
+              <tr {% if item.full_name in projects%} class="success" {% endif %}>
+                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
+                <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+                <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
+                <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-wrench"></i></a></td>
+              </tr>
+            {%- endfor %}
+          {% else %}
+          <tr>
+              <td colspan="4">
+                  <p class="muted">List of github repositories is empty. Press 'Refresh' button to update list.</p>
+              </td>
+          </tr> 
+          {% endif %}
+        </tbody>
+      </table>
+
+    </div>
+
+    <div id="owngit" class="tab-pane">
+    <h4>Own hosted git repositories</h4>
+
+    <p> Add git clone string in allowed format, make sure that this repository is available anonymously (or user/password is provided in clone string). For more information about <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">git-clone url format</a> reference to official documentation</p>
+
+    <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST"  data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?">
+      <label><code>$ git clone</code></label>
+      <input type="text" class="input-xxlarge" name="clone" placeholder="git://host.xz[:port]/path/to/repo.git/">
+      <button type="submit" class="btn btn-info btn-small">Add</button>
     </form>
 
-    <p>To register/unregister github repository press <a class="btn btn-mini"><i class="icon-star-empty"></i></a> in project row</p>
-
-<table class="table table-striped">
-  <tbody>
-    {% if cache %}
-      {% for item in cache.data -%}
-        <tr {% if item.full_name in projects%} class="success" {% endif %}>
-          <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}"><i class="icon-star-empty"></i></a>{% endif %}</td>
-          <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
-          <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
-          <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-wrench"></i></a></td>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Clone string</th>
+          <th>Delete</th>
         </tr>
-      {%- endfor %}
-    {% else %}
-    <tr>
-        <td colspan="4">
-            <p class="muted">Refresh repositories list</p>
-        </td>
-    </tr> 
-    {% endif %}
-  </tbody>
-</table>
+      </thead>
+      <tbody>
+        {% if gitprojects %}
+          {% for item in gitprojects -%}
+            <tr>
+              <td><code>{{ item.clone }}</code></td>
+              <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"  data-confirm="Are you sure that you want to delete this github repository?">Delete</a></td>
+            </tr>
+          {%- endfor %}
+        {% else %}
+        <tr>
+            <td colspan="2">
+                <p class="muted">You don't have added any git repositories yet. Please add.</p>
+            </td>
+        </tr> 
+        {% endif %}
+      </tbody>
+    </table>
+    </div>
+
+  </div><!-- /.tab-content -->
+</div><!-- /.tabbable -->
+
 
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+// Javascript to enable link to tab
+var hash = document.location.hash;
+var prefix = "tab_";
+if (hash) {
+    $('.nav-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
+} 
+// Change hash for page-reload
+$('.nav-tabs a').on('shown', function (e) {
+    window.location.hash = e.target.hash.replace("#", "#" + prefix);
+});
+</script>
+
 {% endblock %}
