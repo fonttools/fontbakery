@@ -21,7 +21,7 @@
     {% if repos %}
       {% for item in repos -%}
         <tr>
-          <td>{{item.clone}}</td>
+          <td><a href="{{ url_for('frontend.project', project_id = item.id )}}">{{item.clone}}</a></td>
           <td>
           {% if item.yaml %}
             <code>bakery.yaml</code> is found you can process

@@ -3,13 +3,14 @@ import subprocess
 import yaml
 from .extensions import celery
 import plistlib
+from .decorators import cached
 
 WORK_DATA_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data'))
 
 CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/"""
 CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
-rm -rf %(login)s/%(project_id)s.out/"""
+rm -rf %(login)s/%(project_id)s.out/ && rm %(login)s/%(project_id)s.yml"""
 
 @celery.task()
 def git_clone(login, project_id, clone):
@@ -40,6 +41,7 @@ def check_yaml_out(login, project_id):
     if os.path.exists(yml_in) and not os.path.exists(yml_out):
         subprocess.call('cp', yml_in, yml_out)
 
+@cached
 def project_state_get(login, project_id, full=False):
     yml = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
     yml_in = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -101,9 +103,8 @@ def process_project(login, project_id):
     if os.path.exists(yml):
         # copy .bakery.yml
         subprocess.call(['cp', yml, "'"+os.path.join(yml_out, '.bakery.yml')+"'"])
-    import ipdb; ipdb.set_trace()
     for ufo, name in state['out_ufo'].items():
-        ufo_folder = ufo.split('/')[-1]
+        ufo_folder = name+'.ufo'
         subprocess.call(['cp', '-R', os.path.join(yml_in, ufo), os.path.join(yml_out, ufo_folder)])
         if state['rename']:
             finame = os.path.join(yml_out, ufo_folder, 'fontinfo.plist')
@@ -115,3 +116,12 @@ def status(login, project_id):
     if not check_yaml(login, project_id):
         return 0
     check_yaml_out(login, project_id)
+
+def read_license(login, project_id):
+    state = project_state_get(login, project_id, full=True)
+    licensef = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), state['license_file'])
+    if os.path.exists(licensef):
+        return open(licensef, 'r').read()
+    else:
+        return None
+

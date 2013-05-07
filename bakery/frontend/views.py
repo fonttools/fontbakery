@@ -6,8 +6,9 @@ except ImportError:
 
 from flask import Blueprint, render_template, Response, g, flash, request, url_for, redirect
 
-from ..extensions import db, mail, pages
-from ..tasks import check_yaml, project_state_get, git_clone, project_state_save, process_project
+from ..decorators import login_required
+from ..extensions import pages
+from ..tasks import check_yaml, project_state_get, git_clone, project_state_save, process_project, read_license
 from ..project.models import Project
 from flask.ext.babel import gettext as _
 
@@ -30,6 +31,7 @@ def splash():
 
         return render_template('dashboard.html', repos = repos)
 
+@login_required
 @frontend.route('/bump', methods=['GET'])
 def bump():
     project_id = request.args.get('project_id')
@@ -38,10 +40,10 @@ def bump():
     flash(_("Git %s was updated" % project.clone))
     return redirect(url_for('frontend.splash'))
 
+@login_required
 @frontend.route('/setup/<int:project_id>/', methods=['GET', 'POST'])
 def setup(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
-    print(state)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
@@ -96,6 +98,20 @@ def setup(project_id):
         else:
             flash(_("Strange behaviour detected"))
             return redirect(url_for('frontend.splash'))
+
+# @frontend.route('/project/<int:project_id>', methods=['GET'])
+@frontend.route('/project/<int:project_id>/', methods=['GET'])
+def project(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    return render_template('project/project.html', project = project, state = state)
+
+@frontend.route('/project/<int:project_id>/license', methods=['GET'])
+def plicense(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    license = read_license(login = g.user.login, project_id = project_id)
+    return render_template('project/license.html', project = project, state = state, license = license)
 
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):

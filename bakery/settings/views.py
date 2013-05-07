@@ -209,3 +209,35 @@ def delclone():
     flash(_("Repository succesfuly deleted"))
     git_clean(login = g.user.login, project_id = project.id)
     return redirect(url_for('settings.repos')+"#tab_owngit")
+
+@login_required
+@settings.route('/massgit/', methods=['POST'])
+def massgit():
+    git_ids = request.form.getlist('git')
+    projects = Project.query.filter_by(login = g.user.login, is_github=True).all()
+
+    pfn = {}
+    for p in projects:
+        if p.full_name not in git_ids:
+            git_clean(login = g.user.login, project_id = p.id)
+            db.session.delete(p)
+            flash(_("Repository %s successfully deleted" % p.full_name))
+        pfn[p.full_name] = p
+
+    db.session.commit()
+    for gid in git_ids:
+        if not pfn.get(gid):
+            project = Project(
+                login = g.user.login,
+                full_name = gid,
+                clone = 'git://github.com/%s.git' % gid,
+                is_github = True
+            )
+            db.session.add(project)
+            db.session.commit()
+            flash(_("Repository %s successfully added to the list" % project.full_name))
+            git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+
+    db.session.commit()
+    return redirect(url_for('settings.repos')+"#tab_massgithub")
+
