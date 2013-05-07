@@ -1,0 +1,20 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Project License") %}
+
+{% block body %}
+<div class="span9">
+    <h2>{{ _("License for ") }} {{ project.clone }}</h2>
+
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="{{ url_for('frontend.project', project_id=project.id)}}">Fonts</a></li>
+      <li><a href="{{ url_for('frontend.plicense', project_id=project.id )}}" >License</a></li>
+    </ul>
+
+    <p>Fonts in project</p>
+    <ul>
+    {% for folder, name in state['out_ufo'].items() %}
+    <li>{{ name }} (<code>{{folder}}</code>)</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -105,7 +105,7 @@ def setup(project_id):
 def project(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    return render_template('project/license.html', project = project, state = state)
+    return render_template('project/project.html', project = project, state = state)
 
 @frontend.route('/project/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):
@@ -113,12 +113,6 @@ def plicense(project_id):
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     license = read_license(login = g.user.login, project_id = project_id)
     return render_template('project/license.html', project = project, state = state, license = license)
-
-@frontend.route('/project/<int:project_id>/files', methods=['GET'])
-def files(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
-    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    return render_template('project.html', project = project, state = state)
 
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):
