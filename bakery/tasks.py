@@ -10,7 +10,7 @@ WORK_DATA_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(_
 CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/"""
 CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
-rm -rf %(login)s/%(project_id)s.out/"""
+rm -rf %(login)s/%(project_id)s.out/ && rm %(login)s/%(project_id)s.yml"""
 
 @celery.task()
 def git_clone(login, project_id, clone):
