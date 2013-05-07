@@ -104,7 +104,7 @@ def process_project(login, project_id):
         # copy .bakery.yml
         subprocess.call(['cp', yml, "'"+os.path.join(yml_out, '.bakery.yml')+"'"])
     for ufo, name in state['out_ufo'].items():
-        ufo_folder = ufo.split('/')[-1]
+        ufo_folder = name+'.ufo'
         subprocess.call(['cp', '-R', os.path.join(yml_in, ufo), os.path.join(yml_out, ufo_folder)])
         if state['rename']:
             finame = os.path.join(yml_out, ufo_folder, 'fontinfo.plist')

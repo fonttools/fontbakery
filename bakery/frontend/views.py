@@ -44,7 +44,6 @@ def bump():
 @frontend.route('/setup/<int:project_id>/', methods=['GET', 'POST'])
 def setup(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
-    print(state)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
