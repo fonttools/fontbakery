@@ -18,9 +18,14 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	...
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
+	$
 
-	$ sudo easy_install-2.7 -U pip
-	$ sudo easy_install-2.7 -U virtualenv
+	$ sudo easy_install-2.7 -U pip;
+	$ sudo easy_install-2.7 -U virtualenv;
+
+	$ echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+	$ mkdir ~/.pip_download_cache;
+
 
 Now your system should be ready.
 
@@ -35,7 +40,7 @@ Clone code from github into new folder:
 Then run setup:
 
 	$ cd bakery
-	$ make setup
+	$ sudo make setup
 
 Wait some time. 
 
