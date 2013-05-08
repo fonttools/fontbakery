@@ -10,7 +10,7 @@ WORK_DATA_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(_
 CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/"""
 CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
-rm -rf %(login)s/%(project_id)s.out/ && rm %(login)s/%(project_id)s.yml"""
+rm -rf %(login)s/%(project_id)s.out/"""
 
 @celery.task()
 def git_clone(login, project_id, clone):
@@ -41,7 +41,7 @@ def check_yaml_out(login, project_id):
     if os.path.exists(yml_in) and not os.path.exists(yml_out):
         subprocess.call('cp', yml_in, yml_out)
 
-@cached
+# @cached
 def project_state_get(login, project_id, full=False):
     yml = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
     yml_in = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -103,6 +103,7 @@ def process_project(login, project_id):
     if os.path.exists(yml):
         # copy .bakery.yml
         subprocess.call(['cp', yml, "'"+os.path.join(yml_out, '.bakery.yml')+"'"])
+    import ipdb; ipdb.set_trace()
     for ufo, name in state['out_ufo'].items():
         ufo_folder = name+'.ufo'
         subprocess.call(['cp', '-R', os.path.join(yml_in, ufo), os.path.join(yml_out, ufo_folder)])
@@ -111,6 +112,7 @@ def process_project(login, project_id):
             finfo = plistlib.readPlist(finame)
             finfo['familyName'] = name
             plistlib.writePlist(finfo, finame)
+    generate_fonts(login, project_id)
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
@@ -124,4 +126,29 @@ def read_license(login, project_id):
         return open(licensef, 'r').read()
     else:
         return None
+
+def generate_fonts(login, project_id):
+    state = project_state_get(login, project_id)
+    yml_in = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    yml_out = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+
+    child = subprocess.Popen('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=yml_in)
+    hashno = child.stdout.readline().strip()
+
+    bin_folder = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'bin'))
+
+    for name in state['out_ufo'].values():
+        cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf'" % {
+            'in':os.path.join(yml_out, name+'.ufo'),
+            'out': os.path.join(yml_out, name),
+            'hashno': hashno
+        }
+        cmd_short = "python ufo2ttf.py '%(in)s' '%(out)s.ttf'" % {
+            'in':os.path.join(yml_out, name+'.ufo'),
+            'out': os.path.join(yml_out, name),
+        }
+        subprocess.call(cmd.split(), cwd = bin_folder)
+        subprocess.call(cmd_short.split(), cwd = bin_folder)
+
+
 
