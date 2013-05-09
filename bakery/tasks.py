@@ -103,9 +103,12 @@ def process_project(login, project_id):
     if os.path.exists(yml):
         # copy .bakery.yml
         subprocess.call(['cp', yml, "'"+os.path.join(yml_out, '.bakery.yml')+"'"])
-    import ipdb; ipdb.set_trace()
     for ufo, name in state['out_ufo'].items():
-        ufo_folder = name+'.ufo'
+        if state['rename']:
+            ufo_folder = name+'.ufo'
+        else:
+            ufo_folder = ufo.split('/')[-1]
+
         subprocess.call(['cp', '-R', os.path.join(yml_in, ufo), os.path.join(yml_out, ufo_folder)])
         if state['rename']:
             finame = os.path.join(yml_out, ufo_folder, 'fontinfo.plist')
@@ -138,17 +141,17 @@ def generate_fonts(login, project_id):
     bin_folder = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'bin'))
 
     for name in state['out_ufo'].values():
-        cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf'" % {
+        cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf' '%(out)s.%(hashno)s.otf'" % {
             'in':os.path.join(yml_out, name+'.ufo'),
             'out': os.path.join(yml_out, name),
             'hashno': hashno
         }
-        cmd_short = "python ufo2ttf.py '%(in)s' '%(out)s.ttf'" % {
+        cmd_short = "python ufo2ttf.py '%(in)s' '%(out)s.ttf' '%(out)s.otf'" % {
             'in':os.path.join(yml_out, name+'.ufo'),
             'out': os.path.join(yml_out, name),
         }
-        subprocess.call(cmd.split(), cwd = bin_folder)
-        subprocess.call(cmd_short.split(), cwd = bin_folder)
+        subprocess.call(cmd, shell=True, cwd = bin_folder)
+        subprocess.call(cmd_short, shell=True, cwd = bin_folder)
 
 
 

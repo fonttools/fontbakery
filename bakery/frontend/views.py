@@ -37,6 +37,7 @@ def bump():
     project_id = request.args.get('project_id')
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     git_clone(login = g.user.login, project_id = project.id, clone=project.clone)
+    process_project(login = g.user.login, project_id = project_id)
     flash(_("Git %s was updated" % project.clone))
     return redirect(url_for('frontend.splash'))
 
@@ -62,7 +63,8 @@ def setup(project_id):
                     flash(_("Wrong ufo_dir value, must be an error"))
                     return render_template('setup.html', project = project, state = state)
                 if not state['out_ufo'].get(i):
-                    state['out_ufo'][i] = {}
+                    # define font name based on ufo folder name.
+                    state['out_ufo'][i] = i.split('/')[-1][:-4]
             for i in state['out_ufo'].keys():
                 # don't want to delete other properties
                 if i not in ufo_dirs:
