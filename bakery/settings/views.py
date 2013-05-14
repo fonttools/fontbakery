@@ -57,7 +57,7 @@ def update():
             flash(_('Repositories refreshed.'))
         else:
             flash(_('Unable to load repos list.'))
-    return redirect(url_for('settings.repos')+"#tab_github")
+    return redirect(url_for('settings.repos')+"#tab_massgithub")
 
 @login_required
 @settings.route('/profile', methods=['GET', 'POST'])

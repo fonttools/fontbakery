@@ -14,6 +14,11 @@ from flask.ext.babel import gettext as _
 
 frontend = Blueprint('frontend', __name__)
 
+@frontend.before_request
+def before_request():
+    if g.user:
+        g.projects = Project.query.filter_by(login=g.user.login).all()
+
 @frontend.route('/')
 def splash():
     if g.user is None:

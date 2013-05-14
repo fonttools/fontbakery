@@ -7,12 +7,41 @@
 
 <div class="tabbable">
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#github" data-toggle="tab">{{ _("Github repositories") }}</a></li>
-    <li><a href="#massgithub" data-toggle="tab">{{ _("Mass github add repositories") }}</a></li>
+    <li class="active"><a href="#massgithub" data-toggle="tab">{{ _("Mass github add repositories") }}</a></li>
+    <li><a href="#github" data-toggle="tab">{{ _("Github repositories") }}</a></li>
     <li><a href="#owngit" data-toggle="tab">{{ _("Own git repositories") }}</a></li>
   </ul>
   <div class="tab-content">
-    <div id="github" class="tab-pane active">
+
+    <div id="massgithub" class="tab-pane active">
+      <h4>Github repositories</h4>
+      <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
+        {% if cache %}
+          Last update was {{ cache.updated | pretty_date}}
+          {% else %}
+          Never updated
+        {% endif %}
+        <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
+      </form>
+
+      <p>This tab allow to make mass adding github repositories to index, but doesn't register webhooks.</p>
+
+        <form action="{{ url_for('settings.massgit') }}" method="POST">
+          {% if cache %}
+            {% for item in cache.data -%}
+            <label class="checkbox" for="{{ item.full_name }}"><input id="{{ item.full_name }}" type="checkbox" {% if item.full_name in projects%}checked="checked"{%endif%} value="{{ item.full_name }}" name="git"> {{ item.full_name }}</label>
+            {%- endfor %}
+          {% else %}
+            <p class="muted">List of github repositories is empty. Press 'Refresh' button to update list.</p>
+          {% endif %}
+          <p> Pressing this button you accept some terms </p>
+          <p>Repositories will be actually cloned, so it can takes a lot of time and your browser can show timeout. If this happends then just come back to dashboard after and check results.</p>
+          <button type="submit" class="btn">Submit</button>
+        </form>
+
+    </div>
+
+    <div id="github" class="tab-pane">
       <h4>Github repositories</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
@@ -57,33 +86,6 @@
 
     </div>
 
-    <div id="massgithub" class="tab-pane">
-      <h4>Github repositories</h4>
-      <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
-        {% if cache %}
-          Last update was {{ cache.updated | pretty_date}}
-          {% else %}
-          Never updated
-        {% endif %}
-        <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
-      </form>
-
-      <p>This tab allow to make mass adding github repositories to index, but doesn't register webhooks.</p>
-
-        <form action="{{ url_for('settings.massgit') }}" method="POST">
-          {% if cache %}
-            {% for item in cache.data -%}
-            <label class="checkbox" for="{{ item.full_name }}"><input id="{{ item.full_name }}" type="checkbox" {% if item.full_name in projects%}checked="checked"{%endif%} value="{{ item.full_name }}" name="git"> {{ item.full_name }}</label>
-            {%- endfor %}
-          {% else %}
-            <p class="muted">List of github repositories is empty. Press 'Refresh' button to update list.</p>
-          {% endif %}
-          <p> Pressing this button you accept some terms </p>
-          <p>Repositories will be actually cloned, so it can takes a lot of time and your browser can show timeout. If this happends then just come back to dashboard after and check results.</p>
-          <button type="submit" class="btn">Submit</button>
-        </form>
-
-    </div>
 
     <div id="owngit" class="tab-pane">
     <h4>Own hosted git repositories</h4>
