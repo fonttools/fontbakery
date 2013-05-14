@@ -11,7 +11,18 @@
     </div><!--/.well -->
  #}
 
+{% if g.projects %}
+<div class="sidebar-nav">
+    <ul class="nav nav-list">
+      <li class="nav-header">Your repos</li>
+    {% for item in g.projects %}
+      <li><a href="{{ url_for('frontend.project', project_id = item.id )}}">{{item.clone|truncate(30, True)}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
+{#
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs">
     <li class="active"><a href="#tab1" data-toggle="tab">Recent</a></li>
@@ -46,7 +57,7 @@
     </div>
   </div>
 </div>
-
+#}
 
 </div><!--/span-->
 
