@@ -92,7 +92,7 @@ def project_state_get(login, project_id, full=False):
 def project_state_save(login, project_id, state):
     yml = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
     f = open(yml, 'w')
-    f.write(yaml.dump(state))
+    f.write(yaml.safe_dump(state))
     f.close()
 
 def process_project(login, project_id):
