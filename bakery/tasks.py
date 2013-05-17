@@ -126,7 +126,7 @@ def read_license(login, project_id):
     state = project_state_get(login, project_id, full=True)
     licensef = os.path.join(WORK_DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), state['license_file'])
     if os.path.exists(licensef):
-        return open(licensef, 'r').read()
+        return unicode(open(licensef, 'r').read(), "utf8")
     else:
         return None
 
