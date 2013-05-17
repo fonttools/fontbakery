@@ -120,6 +120,7 @@ def plicense(project_id):
     license = read_license(login = g.user.login, project_id = project_id)
     return render_template('project/license.html', project = project, state = state, license = license)
 
+@frontend.route('/docs/', defaults={'path': 'about'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):
     _page = pages.get_or_404(path)
