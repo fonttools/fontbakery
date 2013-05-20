@@ -49,3 +49,8 @@ mail: setup
 
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
+
+clean:
+	rm -rf data/*; . venv/bin/activate; python init.py
+
+
