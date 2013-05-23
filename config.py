@@ -30,5 +30,7 @@ GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 FLATPAGES_EXTENSION = '.md'
 import os
 FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'docs')
+WORK_DATA_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 
 del os
+
