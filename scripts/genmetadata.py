@@ -471,7 +471,7 @@ def writeDescHtml(familydir):
     if isinstance(fontDesc, (str,unicode)):
       descHtml = "<p>" + fontDesc + "</p>"
     else:
-      descHtml = unicode(raw_input("Description HTML?\n"))
+      descHtml = "" #unicode(raw_input("Description HTML?\n"))
     if descHtml == "":
       string = "REMEMBER! Create a " + filename
       color = "red"
