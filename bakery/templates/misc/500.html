@@ -1,13 +1,15 @@
-{% extends "pages/base.html" %}
-{% set page_title = _('Forbidden page') %}
+{% extends "misc/base.html" %}
+{% set page_title = _('Server error') %}
 {% block body %}
-<header class="jumbotron masthead">
-  <div class="inner">
-    <h1>500</h1>
-  </div>
-<p class="download-info">
-  Unexpected server side error. Try again later.
-</p>
-
-</header>
+    <div id="wrap">
+      <div class="container">
+        <div class="page-header">
+          <h1>Error 500</h1>
+        </div>
+        <p class="lead">Error generating page <code>{{ request.url }}</code>. Please fill report on <a href="https://github.com/xen/bakery/issues?state=open">project issue tracker</a>.</p>
+        <p><a href="/">&larr; Back to front page</a></p>
+      </div>
+      <div id="push"></div>
+    </div>
+    {% include 'footer.html' without context %}
 {% endblock %}
