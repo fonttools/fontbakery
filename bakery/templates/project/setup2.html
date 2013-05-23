@@ -6,7 +6,7 @@
     <h2>{{ _("Setup for:") }} {{ project.clone }}</h2>
 
     <ul class="nav nav-tabs">
-      <li><a href="{{ url_for('project.project', project_id=project.id)}}">Fonts</a></li>
+      <li><a href="{{ url_for('project.fonts', project_id=project.id)}}">Fonts</a></li>
       <li><a href="{{ url_for('project.plicense', project_id=project.id )}}" >License</a></li>
       <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
       <li class="active" class="pull-right"><a href="{{ url_for('project.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
