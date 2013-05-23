@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Project License") %}
+{% set page_title = _("Project info for ") + project.clone %}
 
 {% block body %}
 <div class="span9">
@@ -8,6 +8,9 @@
     <ul class="nav nav-tabs">
       <li class="active"><a href="{{ url_for('frontend.project', project_id=project.id)}}">Fonts</a></li>
       <li><a href="{{ url_for('frontend.plicense', project_id=project.id )}}" >License</a></li>
+      <li class="pull-right"><a href="{{ url_for('frontend.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
+      <li class="pull-right"><a href="{{ url_for('frontend.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
+
     </ul>
 
     <p>Fonts in project</p>

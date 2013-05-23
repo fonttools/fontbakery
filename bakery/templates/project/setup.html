@@ -1,10 +1,18 @@
-{# Dashboard for logged in user #}
-{% extends 'base.html' %}
-{% set page_title = _('Repository setup') %}
+{% extends "project/base.html" %}
+{% set page_title = _("Project setup") %}
 
 {% block body %}
-
 <div class="span9">
+    <h2>{{ _("Fonts for ") }} {{ project.clone }}</h2>
+
+    <ul class="nav nav-tabs">
+      <li><a href="{{ url_for('frontend.project', project_id=project.id)}}">Fonts</a></li>
+      <li><a href="{{ url_for('frontend.plicense', project_id=project.id )}}" >License</a></li>
+      <li class="pull-right"><a href="{{ url_for('frontend.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
+      <li class="pull-right active"><a href="{{ url_for('frontend.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
+
+    </ul>
+
     <h2>{{ _("Setup for:") }} {{ project.clone }}</h2>
     <p>List of available repositories.</p>
 
@@ -44,6 +52,15 @@
         </label>
         </div>
       </div>
+
+      <div class="control-group">
+        <label class="control-label" for="ttfautohint"><code>ttfautohint</code> params</label>
+        <div class="controls">
+        <input type="text" placeholder="Type new params…" name="ttfautohint" {% if state.has_key('ttfautohint') %}value="{{ state['ttfautohint'] }}"{% endif %} class="input-xxlarge">
+        </div>
+      </div>
+
+
       <div class="control-group">
         <div class="controls">
           <input type="hidden" name="step" value="2"> 
@@ -53,5 +70,4 @@
     </form>
 
 </div>
-
 {% endblock %}

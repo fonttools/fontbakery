@@ -53,7 +53,7 @@ def setup(project_id):
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
-        return render_template('setup.html', project = project, state = state)
+        return render_template('project/setup.html', project = project, state = state)
     else:
         if request.form.get('step') == '2':
             # 1st step
@@ -80,10 +80,13 @@ def setup(project_id):
             else:
                 state['rename'] = False
 
+            if request.form.get('ttfautohint'):
+                state['ttfautohint'] = request.form.get('ttfautohint')
+
             project_state_save(login = g.user.login, project_id = project_id, state = state)
 
             if request.form.get('rename') == 'yes':
-                return render_template('setup2.html', project = project, state = state)
+                return render_template('project/setup2.html', project = project, state = state)
             else:
                 flash(_("Repository %s has been updated" % project.clone))
                 process_project(login = g.user.login, project_id = project_id)
