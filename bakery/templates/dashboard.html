@@ -21,7 +21,7 @@
     {% if repos %}
       {% for item in repos -%}
         <tr>
-          <td><a href="{{ url_for('frontend.project', project_id = item.id )}}">{{item.clone}}</a></td>
+          <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a></td>
           <td>
           {% if item.yaml %}
             <code>bakery.yaml</code> is found you can process
@@ -29,7 +29,7 @@
             Error! <code>bakery.yaml</code> is not found
           {% endif %}
           </td>
-          <!-- <td><a href="{{ url_for('frontend.bump', project_id = item.id )}}" data-confirm="Update from git repository?">Update</a>, <a href="{{ url_for('frontend.setup', project_id = item.id )}}">Setup</a></td> -->
+          <!-- <td><a href="{{ url_for('project.bump', project_id = item.id )}}" data-confirm="Update from git repository?">Update</a>, <a href="{{ url_for('project.setup', project_id = item.id )}}">Setup</a></td> -->
         </tr>
       {%- endfor %}
     {% else %}
