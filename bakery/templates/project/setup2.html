@@ -3,7 +3,7 @@
 
 {% block body %}
 <div class="span9">
-    <h2>{{ _("Fonts for ") }} {{ project.clone }}</h2>
+    <h2>{{ _("Setup for:") }} {{ project.clone }}</h2>
 
     <ul class="nav nav-tabs">
       <li><a href="{{ url_for('project.project', project_id=project.id)}}">Fonts</a></li>
@@ -13,7 +13,6 @@
 
     </ul>
 
-    <h2>{{ _("Setup for:") }} {{ project.clone }}</h2>
     <form action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
       {% for ufo, name in state['out_ufo'].items() %}
       <div class="control-group">

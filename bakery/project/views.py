@@ -27,7 +27,7 @@ def bump():
     git_clone(login = g.user.login, project_id = project.id, clone=project.clone)
     process_project(login = g.user.login, project_id = project_id)
     flash(_("Git %s was updated" % project.clone))
-    return redirect(url_for('project.splash'))
+    return redirect(url_for('project.fonts', project_id = project_id))
 
 @login_required
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
@@ -73,7 +73,7 @@ def setup(project_id):
             else:
                 flash(_("Repository %s has been updated" % project.clone))
                 process_project(login = g.user.login, project_id = project_id)
-                return redirect(url_for('frontend.splash'))
+                return redirect(url_for('project.fonts'))
         elif request.form.get('step')=='3':
             out_ufo = {}
             for param, value in request.form.items():
@@ -87,17 +87,17 @@ def setup(project_id):
             state['out_ufo'] = out_ufo
             project_state_save(login = g.user.login, project_id = project_id, state = state)
             process_project(login = g.user.login, project_id = project_id)
-            return redirect(url_for('frontend.splash'))
+            return redirect(url_for('project.fonts', project_id=project_id))
         else:
             flash(_("Strange behaviour detected"))
-            return redirect(url_for('frontend.splash'))
+            return redirect(url_for('project.fonts', project_id=project_id))
 
 # @project.route('/<int:project_id>', methods=['GET'])
 @project.route('/<int:project_id>/', methods=['GET'])
 def fonts(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    return render_template('project/project.html', project = project, state = state)
+    return render_template('project/fonts.html', project = project, state = state)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):
@@ -106,25 +106,4 @@ def plicense(project_id):
     license = read_license(login = g.user.login, project_id = project_id)
     return render_template('project/license.html', project = project, state = state, license = license)
 
-# @app.route('/user/<username>')
-# def show_user(username):
-#     user = User.query.filter_by(username=username).first_or_404()
-#     return render_template('show_user.html', user=user)
-
-
-# @project.route('/<username>/')
-# def user(username):
-#     return render_template('project/user.html')
-
-# @project.route('/<username>/<repo>/')
-# def repo(username, repo):
-#     return render_template('project/build.html')
-
-# @project.route('/<username>/<repo>/history')
-# def history(username, repo):
-#     return render_template('project/history.html')
-
-# @project.route('/<username>/<repo>/<int:build_id>')
-# def build(username, repo, build_id):
-#     return render_template('project/build.html')
 
