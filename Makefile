@@ -1,5 +1,6 @@
 VENV=venv
 
+# target: all — Default target. Bootstraps environment
 all: setup
 
 # ifdef DEV
@@ -21,6 +22,7 @@ bakery/static/jquery-2.0.0.min.js:
 setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css
 	. venv/bin/activate; pip install -Ur requirements.txt
 
+# target: run — run project
 run: venv/bin/activate requirements.txt
 	. venv/bin/activate; gunicorn -w 2 -b 0.0.0.0:5000 entry:app
 
@@ -44,13 +46,18 @@ celery: venv/bin/activate
 freeze: venv/bin/activate
 	. venv/bin/activate; pip freeze -r requirements.dev.txt > requirements.txt
 
+# target: mail — run mailserver
 mail: setup
 	python -m smtpd -n -c DebuggingServer localhost:20025
 
+# target: init — initial data setup
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
 
+# target: clean — remove working files and reinit initial data
 clean:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
-
+# target: help — this help
+help:
+	@egrep "^# target:" [Mm]akefile
