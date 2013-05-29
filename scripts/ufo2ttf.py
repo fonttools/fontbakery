@@ -8,7 +8,15 @@ print(sys.argv[1], sys.argv[2])
 import fontforge
 
 font = fontforge.open(sys.argv[1])
+
+font.layers["Fore"].is_quadratic = True
+font.selection.all()
+#   Add Extrema
+font.addExtrema()
+#   Simplify
+font.simplify(1,('setstarttoextremum','removesingletonpoints'))
+#   Correct Directions
+font.correctDirection()
+
 ttf = font.generate(sys.argv[2])
-ttf.save()
 otf = font.generate(sys.argv[3])
-otf.save()

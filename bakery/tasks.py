@@ -134,7 +134,10 @@ def read_license(login, project_id):
     state = project_state_get(login, project_id, full=True)
     licensef = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), state['license_file'])
     if os.path.exists(licensef):
-        return unicode(open(licensef, 'r').read(), "utf8")
+        try:
+            return unicode(open(licensef, 'r').read(), "utf8")
+        except IOError:
+            return "Error reading license file"
     else:
         return None
 
