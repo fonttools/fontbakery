@@ -11,10 +11,12 @@ You need to have installed:
 - make 
 - C-code compiler
 - libevent
+- fontforge (including its python module)
+- ttfautohint
 
 If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/homebrew/) project. Follow brew installation instructions and after:
 
-	$ brew install python sqlite libevent 
+	$ brew install python sqlite libevent fontforge ttfautohint
 	...
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
@@ -33,9 +35,18 @@ Now your system should be ready.
 
 Install your local environment is very easy. Project require some system programms installed, but do not install its own dependencies into system. All packages installs into folder `venv`.
 
+Clone Google Font Directory Mercurial Repository from Google Code into new folder:
+
+    $ mkdir src; cd src;
+    $ hg clone https://code.google.com/p/googlefontdirectory/ 
+
 Clone code from github into new folder:
 
 	$ git clone https://github.com/xen/bakery.git bakery
+
+Copy the Google Font Directory lint.jar tool into the bakery/scripts directory:
+
+    $ cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar scripts/
 
 Then run setup:
 
