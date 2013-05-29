@@ -37,7 +37,6 @@ Install your local environment is very easy. Project require some system program
 
 Clone Google Font Directory Mercurial Repository from Google Code into new folder:
 
-    $ mkdir src; cd src;
     $ hg clone https://code.google.com/p/googlefontdirectory/ 
 
 Clone code from github into new folder:
