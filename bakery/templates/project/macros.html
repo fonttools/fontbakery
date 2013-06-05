@@ -1,0 +1,11 @@
+{% macro nav(active) -%}
+
+    <ul class="nav nav-tabs">
+      <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Fonts</a></li>
+      <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
+      <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
+      <li class="pull-right {% if active == 'setup' %}active{% endif %}"><a href="{{ url_for('project.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
+
+    </ul>
+
+{%- endmacro %}
