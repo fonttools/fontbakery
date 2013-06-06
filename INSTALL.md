@@ -28,7 +28,6 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	$ echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
 	$ mkdir ~/.pip_download_cache;
 
-
 Now your system should be ready.
 
 ## Installation
@@ -50,9 +49,12 @@ Copy the Google Font Directory lint.jar tool into the bakery/scripts directory:
 Then run setup:
 
 	$ cd bakery
-	$ sudo make setup
+	$ make setup
 
-Wait some time. 
+Wait some time.
+
+NB: As `fontforge` cann't be installed using pip and is installed into your system python's site packaged make sure that 
+default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
 
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. Or use this as example:
 

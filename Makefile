@@ -11,7 +11,7 @@ all: setup
 # endif
 
 venv/bin/activate:
-	virtualenv --distribute venv
+	virtualenv --system-site-packages --distribute venv
 
 bakery/static/bootstrap/css/bootstrap.css:
 	cd bakery/static && curl -O http://twitter.github.io/bootstrap/assets/bootstrap.zip && unzip bootstrap.zip

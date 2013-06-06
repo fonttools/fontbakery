@@ -5,9 +5,7 @@ Flask-Babel
 Flask-FlatPages
 Flask-Mail
 Flask-SQLAlchemy
-celery
 gunicorn
-psycopg2
 pysqlite
 requests
 rauth

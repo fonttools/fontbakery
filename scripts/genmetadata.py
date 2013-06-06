@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # taken from https://code.google.com/p/googlefontdirectory/source/browse/tools/genmetadata/genmetadata.py
-
-import sys
-sys.path.append('/usr/local/lib/python2.7/site-packages/')
-
 #
 # Copyright 2012, Google Inc.
 # Author: Jeremie Lenfant-Engelmann (jeremiele a google com)
