@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template, g, session
 from flaskext.babel import Babel
 
-from .extensions import db, mail, celery, pages
+from .extensions import db, mail, pages #, celery
 
 # blueprints
 from .gitauth import gitauth
@@ -44,7 +44,7 @@ def extensions_fabrics(app):
         accept_languages = app.config.get('ACCEPT_LANGUAGES')
         return request.accept_languages.best_match(accept_languages)
 
-    celery.config_from_object(app.config)
+    # celery.config_from_object(app.config)
 
 def error_pages(app):
     # define error pages

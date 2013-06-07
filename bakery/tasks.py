@@ -2,7 +2,7 @@ import logging
 import os
 import subprocess
 import yaml
-from .extensions import celery
+# from .extensions import celery
 import plistlib
 from .decorators import cached
 
@@ -14,7 +14,7 @@ CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
 rm -rf %(login)s/%(project_id)s.out/"""
 
-@celery.task()
+# @celery.task()
 def git_clone(login, project_id, clone):
     git_clean(login, project_id)
     params = {'login': login,
@@ -25,7 +25,7 @@ def git_clone(login, project_id, clone):
     subprocess.call(str(CLONE_SH % {'clone': clone}).split(), shell=False,
         cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
 
-@celery.task()
+# @celery.task()
 def git_clean(login, project_id):
     params = locals()
     params['root'] = DATA_ROOT

@@ -7,8 +7,8 @@ db = SQLAlchemy()
 from flask.ext.mail import Mail
 mail = Mail()
 
-from celery import Celery
-celery = Celery()
+# from celery import Celery
+# celery = Celery()
 
 # from flask.ext.rauth import RauthOAuth2
 
