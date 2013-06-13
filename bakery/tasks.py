@@ -2,6 +2,7 @@ import logging
 import os
 import subprocess
 import yaml
+from flask import json # require Flask > 0.10
 # from .extensions import celery
 import plistlib
 from .decorators import cached
@@ -145,6 +146,36 @@ def read_license(login, project_id):
             return "Error reading license file"
     else:
         return None
+
+def read_metadata(login, project_id):
+    state = project_state_get(login, project_id, full=True)
+    metadata = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
+    metadata_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.new.json')
+
+    if os.path.exists(metadata):
+        metadata_file = unicode(open(metadata, 'r').read(), "utf8")
+    else:
+        metadata_file = ''
+
+    if os.path.exists(metadata_new):
+        metadata_new_file = unicode(open(metadata_new, 'r').read(), "utf8")
+    else:
+        metadata_new_file = ''
+
+    return (metadata_file, metadata_new_file)
+
+def save_metadata(login, project_id, metadata, del_new=True):
+    state = project_state_get(login, project_id, full=True)
+    mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
+    mf_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.new.json')
+
+    f = open(mf, 'w')
+    json.dump(f, json.load(metadata))
+    f.close()
+
+    if del_new:
+        if os.path.exists(mf_new):
+            os.remove(mf_new)
 
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
