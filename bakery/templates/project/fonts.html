@@ -14,5 +14,67 @@
     <li>{{ name }} (<code>{{folder}}</code>)</li>
     {% endfor %}
     </ul>
+
+    <h3>Files tree</h3>
+
+<!--     <div class="tree">
+        <ul>
+            <li>
+                <a href="#"><i class="icon-folder-open"></i><b>Parent</b></a>
+                <ul>
+                    <li>
+                        <a href="#">Child</a>
+                        <ul>
+                            <li>
+                                <a href="#">Grand Child</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Child</a>
+                        <ul>
+                            <li><a href="#">Grand Child</a></li>
+                            <li>
+                                <a href="#">Grand Child</a>
+                                <ul>
+                                    <li>
+                                        <a href="#">Great Grand Child</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Great Grand Child</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Great Grand Child</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Grand Child</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+ -->
+<div class="tree">
+<ul>
+<li><a href="#"><i class="icon-folder-open"></i>Root</a></li>
+<ul>
+{%- for key, value in tree.items() recursive %}
+<li><a href="#">{% if key == '' %}Root{% else %}
+{% if key.lower().endswith('.ufo') and value %}<i class="icon-file"></i>
+{% elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>
+{% elif key.lower().split('.')[-1] in ['otf', 'ttf', 'mdown', 'markdown'] %}<i class="icon-font"></i>
+
+{%endif%}
+{{ key }}
+{% endif %}</a>
+{%- if value %}<ul>{{ loop(value.items())}}</ul>{%- endif %}
+</li>
+{%- endfor %}
+</ul>
+</ul>
+</div>
+
 </div>
 {% endblock %}

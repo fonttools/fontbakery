@@ -43,6 +43,18 @@ def check_yaml_out(login, project_id):
     if os.path.exists(yml_in) and not os.path.exists(yml_out):
         subprocess.call('cp', yml_in, yml_out)
 
+def rwalk(path):
+    h = {}
+    cd = os.path.abspath(path)
+    fs = os.listdir(path)
+    for f in fs:
+        cf = os.path.join(cd, f)
+        if os.path.isfile(cf):
+            h[f] = {}
+        elif os.path.isdir(cf) and not cf.endswith('.git'):
+            h[f] = rwalk(cf)
+    return h
+
 # @cached
 def project_state_get(login, project_id, full=False):
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
@@ -79,13 +91,6 @@ def project_state_get(login, project_id, full=False):
 
     state['txt_files'] = txt_files
     state['ufo_dirs'] = ufo_dirs
-
-    # import ipdb; ipdb.set_trace()
-    # for ufo in state['out_ufo'].keys():
-    #     if os.path.exists(os.path.join(yml_in, ufo)):
-    #         state['out_ufo'][ufo]['found'] = True
-    #     else:
-    #         state['out_ufo'][ufo]['found'] = False
 
     if os.path.exists(state['license_file']):
         state['license_file_found'] = True
@@ -140,6 +145,9 @@ def read_license(login, project_id):
             return "Error reading license file"
     else:
         return None
+
+def read_tree(login, project_id):
+    return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
 
 def generate_fonts(login, project_id):
     state = project_state_get(login, project_id)
