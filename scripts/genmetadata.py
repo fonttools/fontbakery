@@ -464,10 +464,13 @@ def writeDescHtml(familydir):
         string = "No Regular found, only " + f
         color = "red"
         ansiprint(string, color)
-    if isinstance(fontDesc, (str,unicode)):
-      descHtml = "<p>" + fontDesc + "</p>"
-    else:
-      descHtml = "" #unicode(raw_input("Description HTML?\n"))
+    try:
+      if isinstance(fontDesc, (str,unicode)):
+        descHtml = "<p>" + fontDesc + "</p>"
+      else:
+        descHtml = "" #unicode(raw_input("Description HTML?\n"))
+    except:
+        descHtml = ""
     if descHtml == "":
       string = "REMEMBER! Create a " + filename
       color = "red"
