@@ -2,6 +2,7 @@ from ..extensions import db
 
 class Project(db.Model):
     __tablename__ = 'project'
+    __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(60), index=True)
     name = db.Column(db.String(60), index=True)

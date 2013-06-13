@@ -51,7 +51,7 @@ def setup(project_id):
             for i in ufo_dirs:
                 if i not in state['ufo_dirs']:
                     flash(_("Wrong ufo_dir value, must be an error"))
-                    return render_template('setup.html', project = project, state = state)
+                    return render_template('project/setup.html', project = project, state = state)
                 if not state['out_ufo'].get(i):
                     # define font name based on ufo folder name.
                     state['out_ufo'][i] = i.split('/')[-1][:-4]
@@ -75,7 +75,7 @@ def setup(project_id):
             else:
                 flash(_("Repository %s has been updated" % project.clone))
                 process_project(login = g.user.login, project_id = project_id)
-                return redirect(url_for('project.fonts'))
+                return redirect(url_for('project.fonts', project_id=project_id))
         elif request.form.get('step')=='3':
             out_ufo = {}
             for param, value in request.form.items():
@@ -121,8 +121,7 @@ def ace(project_id):
 def ace_save(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    metadata, metadata_new = read_metadata(login = g.user.login, project_id = project_id)
     save_metadata(login = g.user.login, id = project_id,
         metadata = request.form.get('metadata'),
         del_new = request.form.get('delete', None))
-    return render_template('project/ace.html', project = project, state = state, metadata = metadata)
+    return redirect(url_for('project.ace', project_id=project_id))
