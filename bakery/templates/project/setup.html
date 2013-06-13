@@ -24,7 +24,7 @@
       <div class="control-group">
         <label class="control-label" for="license_file">Ufo folders</label>
         <div class="controls">
-        <select for="license_file" multiple="multiple" name="ufo_dirs" class="input-xxlarge">
+        <select for="license_file" multiple="multiple" name="ufo_dirs" class="input-xxlarge" size="{{ state['ufo_dirs']|length }}">
           {% for i in state['ufo_dirs'] %}
           <option {% if i in state['out_ufo'].keys() %}selected="selected"{% endif %}>{{ i }}</option>
           {% endfor %}
