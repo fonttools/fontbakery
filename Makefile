@@ -58,7 +58,7 @@ init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
 
 # target: clean — remove working files and reinit initial data
-clean:
+clear:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
 # target: help — this help
