@@ -4,12 +4,14 @@ try:
 except ImportError:
     import json
 
-from flask import Blueprint, render_template, Response, g, flash, request, url_for, redirect
+from flask import (Blueprint, render_template, Response, g, flash, request,
+    url_for, redirect)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 from ..extensions import db
-from ..tasks import check_yaml, project_state_get, git_clone, project_state_save, process_project, read_license
+from ..tasks import (check_yaml, project_state_get, git_clone, project_state_save,
+    process_project, read_license, read_tree, read_metadata, save_metadata)
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -97,7 +99,8 @@ def setup(project_id):
 def fonts(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    return render_template('project/fonts.html', project = project, state = state)
+    tree = read_tree(login = g.user.login, project_id = project_id)
+    return render_template('project/fonts.html', project = project, state = state, tree = tree)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):
@@ -106,4 +109,20 @@ def plicense(project_id):
     license = read_license(login = g.user.login, project_id = project_id)
     return render_template('project/license.html', project = project, state = state, license = license)
 
+@project.route('/<int:project_id>/ace', methods=['GET'])
+def ace(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    metadata, metadata_new = read_metadata(login = g.user.login, project_id = project_id)
+    return render_template('project/ace.html', project = project,
+        state = state, metadata = metadata, metadata_new = metadata_new)
 
+@project.route('/<int:project_id>/ace', methods=['POST'])
+def ace_save(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    metadata, metadata_new = read_metadata(login = g.user.login, project_id = project_id)
+    save_metadata(login = g.user.login, id = project_id,
+        metadata = request.form.get('metadata'),
+        del_new = request.form.get('delete', None))
+    return render_template('project/ace.html', project = project, state = state, metadata = metadata)

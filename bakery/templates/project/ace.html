@@ -1,0 +1,54 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Edit METADATA.json") %}
+
+{% block body %}
+<div class="span9">
+    <h2>{{ _("Edit METADATA.json") }} {{ project.clone }}</h2>
+
+    {% from 'project/macros.html' import nav with context%}
+    {{ nav('ace') }}
+
+    <form class="form-horizontal" action="{{ url_for('project.ace_save', project_id = project.id)}}" method="POST">
+
+    <div id="editor"></div>
+    <textarea name="metadata">{{ metadata }}</textarea>
+
+    {% if metadata_new %}
+    <div class="control-group">
+        <div class="controls">
+        <label class="radio">
+          <input type="checkbox" name="delete" id="delete" value="1" checked>
+          Delete 'METADATA.new.json'
+        </label>
+        </div>
+    </div>
+    {% endif %}
+
+    <div>
+      <button type="submit" class="btn">Submit</button>
+    </div>
+    </form>
+
+{% endblock %}
+
+
+{% block extrajs %}
+
+    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/solarized_light");
+        editor.getSession().setMode("ace/mode/json");
+
+        // var textarea = $('textarea[name="metadata"]');
+        var textarea = $('textarea[name="metadata"]').hide();
+        editor.getSession().setValue(textarea.val());
+        editor.getSession().on('change', function(){
+          textarea.val(editor.getSession().getValue());
+        });
+
+    </script>
+
+
+</div>
+{% endblock %}

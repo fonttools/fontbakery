@@ -19,7 +19,10 @@ bakery/static/bootstrap/css/bootstrap.css:
 bakery/static/jquery-2.0.0.min.js:
 	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
 
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css
+bakery/static/ace/master.zip:
+	cd bakery/static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
+
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master.zip
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
