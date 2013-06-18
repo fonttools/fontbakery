@@ -113,8 +113,11 @@ def setup(project_id):
 def fonts(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    tree = read_tree(login = g.user.login, project_id = project_id)
-    return render_template('project/fonts.html', project = project, state = state, tree = tree)
+    if state.get('autoprocess'):
+        tree = read_tree(login = g.user.login, project_id = project_id)
+        return render_template('project/fonts.html', project = project, state = state, tree = tree)
+    else:
+        return redirect(url_for('project.setup', project_id = project_id))
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):

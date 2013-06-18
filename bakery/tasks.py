@@ -87,7 +87,7 @@ def project_state_get(login, project_id, full=False):
             'out_ufo': {},
             'rename': False,
             'ttfautohint': '-l 7 -r 28 -G 0 -x 13 -w "" -W -c',
-            'autoprocess': True,
+            'autoprocess': False,
             # Possible values
             # latin latin-ext+latin cyrillic+latin cyrillic-ext+latin greek+latin greek-ext+latin vietnamese+latin
             'subset': [],
