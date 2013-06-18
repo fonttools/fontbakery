@@ -15,6 +15,18 @@ CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
 rm -rf %(login)s/%(project_id)s.out/"""
 
+def run(*args, **kw):
+    logging.info("%s %s" % (str(args), str(kw)))
+    subprocess.call(*args, **kw)
+
+def prun(*args, **kw):
+    logging.info("%s %s" % (str(args), str(kw)))
+    return subprocess.Popen(*args, **kw)
+
+def corun(*args, **kw):
+    logging.info("%s %s" % (str(args), str(kw)))
+    return subprocess.check_output(*args, **kw)
+
 # @celery.task()
 def git_clone(login, project_id, clone):
     git_clean(login, project_id)
@@ -25,12 +37,20 @@ def git_clone(login, project_id, clone):
     # clone variable considered unsafe
     subprocess.call(str(CLONE_SH % {'clone': clone}).split(), shell=False,
         cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
+    project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % params)
+    if os.path.exists(project_dir):
+        run('git pull origin master', cwd=project_dir)
+    else:
+        run(CLONE_PREPARE_SH % params, shell=True, cwd=DATA_ROOT)
+        # clone variable considered unsafe
+        run(str(CLONE_SH % {'clone': clone}).split(), shell=False,
+            cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
 
 # @celery.task()
 def git_clean(login, project_id):
     params = locals()
     params['root'] = DATA_ROOT
-    subprocess.call(CLEAN_SH % params, shell=True)
+    run(CLEAN_SH % params, shell=True)
 
 def check_yaml(login, project_id):
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), '.bakery.yml')
@@ -42,7 +62,7 @@ def check_yaml_out(login, project_id):
     yml_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), '.bakery.yml')
     yml_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), '.bakery.yml')
     if os.path.exists(yml_in) and not os.path.exists(yml_out):
-        subprocess.call('cp', yml_in, yml_out)
+        run('cp', yml_in, yml_out)
 
 def rwalk(path):
     h = {}
@@ -111,14 +131,14 @@ def process_project(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     if os.path.exists(yml):
         # copy .bakery.yml
-        subprocess.call(['cp', yml, "'"+os.path.join(_out, '.bakery.yml')+"'"])
+        run(['cp', yml, "'"+os.path.join(_out, '.bakery.yml')+"'"])
     for ufo, name in state['out_ufo'].items():
         if state['rename']:
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
 
-        subprocess.call(['cp', '-R', os.path.join(_in, ufo), os.path.join(_out, ufo_folder)])
+        run(['cp', '-R', os.path.join(_in, ufo), os.path.join(_out, ufo_folder)])
         if state['rename']:
             finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
@@ -150,7 +170,7 @@ def read_license(login, project_id):
 def read_metadata(login, project_id):
     state = project_state_get(login, project_id, full=True)
     metadata = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
-    metadata_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.new.json')
+    metadata_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
 
     if os.path.exists(metadata):
         metadata_file = unicode(open(metadata, 'r').read(), "utf8")
@@ -167,10 +187,10 @@ def read_metadata(login, project_id):
 def save_metadata(login, project_id, metadata, del_new=True):
     state = project_state_get(login, project_id, full=True)
     mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
-    mf_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.new.json')
+    mf_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
 
     f = open(mf, 'w')
-    json.dump(f, json.load(metadata))
+    json.dump(json.loads(metadata), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
     f.close()
 
     if del_new:
@@ -185,7 +205,7 @@ def generate_fonts(login, project_id):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
 
-    child = subprocess.Popen('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=_in)
+    child = prun('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=_in)
     hashno = child.stdout.readline().strip()
 
     scripts_folder = os.path.join(ROOT, 'scripts')
@@ -201,8 +221,8 @@ def generate_fonts(login, project_id):
             'in':os.path.join(_out, name+'.ufo'),
             'out': os.path.join(_out, name),
         }
-        # subprocess.call(cmd, shell=True, cwd = scripts_folder)
-        subprocess.call(cmd_short, shell=True, cwd = scripts_folder)
+        # run(cmd, shell=True, cwd = scripts_folder)
+        run(cmd_short, shell=True, cwd = scripts_folder)
 
 
 def generate_metadata(login, project_id):
@@ -210,7 +230,7 @@ def generate_metadata(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     print(cmd % {'wd': ROOT, 'out': _out})
-    out = subprocess.call(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+    out = run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
     logging.info(out)
 
 def lint_process(login, project_id):
@@ -218,7 +238,7 @@ def lint_process(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s' '%(out)s/'"
-    out = subprocess.check_output(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+    out = corun(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
     logging.info(out)
 
 def ttfautohint_process(login, project_id):
