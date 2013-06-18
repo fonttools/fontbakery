@@ -1,10 +1,7 @@
 # coding: utf-8
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import logging
 
-from flask import (Blueprint, render_template, Response, g, flash, request,
+from flask import (json, Blueprint, render_template, Response, g, flash, request,
     url_for, redirect)
 from flask.ext.babel import gettext as _
 
