@@ -69,10 +69,11 @@ def gvars(app):
         g.user = None
         if 'user_id' in session:
             if session['user_id']:
-                g.user = User.query.get(session['user_id'])
-            else:
-                # this session is broken
-                del session['user_id']
+                user = User.query.get(session['user_id'])
+                if user:
+                    g.user = user
+                else:
+                    del session['user_id']
 
 def register_filters(app):
     from utils import pretty_date
