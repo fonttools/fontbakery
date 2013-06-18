@@ -13,6 +13,9 @@ from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
 
+DEFAULT_SUBSET_LIST = ['latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
+    'greek+latin', 'greek-ext+latin', 'vietnamese+latin']
+
 @project.before_request
 def before_request():
     if g.user:
@@ -23,6 +26,7 @@ def before_request():
 def bump():
     project_id = request.args.get('project_id')
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    logging.info('Update for project %s by %s' % (project_id, g.user.login))
     git_clone(login = g.user.login, project_id = project.id, clone=project.clone)
     process_project(login = g.user.login, project_id = project_id)
     flash(_("Git %s was updated" % project.clone))
@@ -57,6 +61,16 @@ def setup(project_id):
                 if i not in ufo_dirs:
                     del state['out_ufo'][i]
 
+            subset_list = request.form.getlist('subset')
+            for i in subset_list:
+                try:
+                    assert i in DEFAULT_SUBSET_LIST
+                except AssertionError:
+                    flash('Subset value is wrong')
+                    return render_template('project/setup.html', project = project, state = state)
+
+            state['subset'] = subset_list
+
             if request.form.get('rename') == 'yes':
                 state['rename'] = True
             else:
@@ -64,6 +78,9 @@ def setup(project_id):
 
             if request.form.get('ttfautohint'):
                 state['ttfautohint'] = request.form.get('ttfautohint')
+
+            # setup is done, now you can process files
+            state['autoprocess'] = True
 
             project_state_save(login = g.user.login, project_id = project_id, state = state)
 
@@ -118,7 +135,7 @@ def ace(project_id):
 def ace_save(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    save_metadata(login = g.user.login, id = project_id,
+    save_metadata(login = g.user.login, project_id = project_id,
         metadata = request.form.get('metadata'),
         del_new = request.form.get('delete', None))
     return redirect(url_for('project.ace', project_id=project_id))

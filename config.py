@@ -33,4 +33,3 @@ FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'docs
 WORK_DATA_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 
 del os
-

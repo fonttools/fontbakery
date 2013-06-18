@@ -33,10 +33,6 @@ def git_clone(login, project_id, clone):
     params = {'login': login,
         'project_id': project_id,
         }
-    subprocess.call(CLONE_PREPARE_SH % params, shell=True, cwd=DATA_ROOT)
-    # clone variable considered unsafe
-    subprocess.call(str(CLONE_SH % {'clone': clone}).split(), shell=False,
-        cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % params)
     if os.path.exists(project_dir):
         run('git pull origin master', cwd=project_dir)
@@ -90,7 +86,11 @@ def project_state_get(login, project_id, full=False):
             'license_file_found': False,
             'out_ufo': {},
             'rename': False,
-            'ttfautohint': '-l 7 -r 28 -G 0 -x 13 -w "" -W -c'
+            'ttfautohint': '-l 7 -r 28 -G 0 -x 13 -w "" -W -c',
+            'autoprocess': True,
+            # Possible values
+            # latin latin-ext+latin cyrillic+latin cyrillic-ext+latin greek+latin greek-ext+latin vietnamese+latin
+            'subset': [],
         }
 
     if not full:
@@ -146,10 +146,14 @@ def process_project(login, project_id):
             plistlib.writePlist(finfo, finame)
 
     # set of other commands
-    generate_fonts(login, project_id)
-    generate_metadata(login, project_id)
-    lint_process(login, project_id)
-    ttfautohint_process(login, project_id)
+    if state['autoprocess']:
+        # project should be processes only when setup is done
+        generate_fonts(login, project_id)
+        ttfautohint_process(login, project_id)
+        # subset
+        subset_process(login, project_id)
+        generate_metadata(login, project_id)
+        lint_process(login, project_id)
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
@@ -250,6 +254,26 @@ def ttfautohint_process(login, project_id):
             'in':os.path.join(_out, name+'.ufo'),
             'out': os.path.join(_out, name),
         }
-        out = subprocess.check_output(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
-        logging.info(out)
-        out = subprocess.check_output(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+        out = corun(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+
+def subset_process(login, project_id):
+    state = project_state_get(login, project_id)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    import ipdb; ipdb.set_trace()
+    for subset in state['subset']:
+        for name in state['out_ufo'].values():
+            # python ~/googlefontdirectory/tools/subset/subset.py \
+            #   --null --nmr --roundtrip --script --subset=$subset \
+            #   $font.ttf $font.$subset >> $font.$subset.log \
+            # 2>> $font.$subset.log; \
+
+            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py --null " + \
+                  "--nmr --roundtrip --script --subset=%(subset)s '%(out)s.ttf'" + \
+                  " %(out)s.%(subset)s.ttf") % {
+                'subset':subset,
+                'out': os.path.join(_out, name),
+                'name': name,
+                'wd': ROOT
+            }
+            out = corun(cmd, shell=True, cwd=_out)
+

@@ -22,11 +22,24 @@
       </div>
 
       <div class="control-group">
-        <label class="control-label" for="license_file">Ufo folders</label>
+        <label class="control-label" for="ufo_folders">Ufo folders</label>
         <div class="controls">
-        <select for="license_file" multiple="multiple" name="ufo_dirs" class="input-xxlarge" size="{{ state['ufo_dirs']|length }}">
+        <select for="ufo_folders" multiple="multiple" name="ufo_dirs" class="input-xxlarge" size="{{ state['ufo_dirs']|length }}">
           {% for i in state['ufo_dirs'] %}
           <option {% if i in state['out_ufo'].keys() %}selected="selected"{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="subset">Subset checks</label>
+        <div class="controls">
+        {% set subsetvals = ['latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin', 'greek+latin', 'greek-ext+latin', 'vietnamese+latin'] -%}
+
+        <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" size="{{ subsetvals|length }}">
+          {% for i in subsetvals %}
+          <option {% if i in state['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
           {% endfor %}
         </select>
         </div>
