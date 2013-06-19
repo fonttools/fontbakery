@@ -39,7 +39,8 @@ def setup(project_id):
 
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
-        return render_template('project/setup.html', project = project, state = state)
+        return render_template('project/setup.html', project = project, state = state,
+            subsetvals = DEFAULT_SUBSET_LIST)
     else:
         if request.form.get('step') == '2':
             # 1st step
