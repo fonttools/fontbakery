@@ -10,10 +10,9 @@ from .decorators import cached
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
-CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/"""
+CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/src/"""
 CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
-CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
-rm -rf %(login)s/%(project_id)s.out/"""
+CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
 
 logger = logging.getLogger('bakery.tasks')
 logger.setLevel(logging.INFO)
@@ -59,16 +58,10 @@ def git_clean(login, project_id):
     run(CLEAN_SH % params, shell=True)
 
 def check_yaml(login, project_id):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), '.bakery.yml')
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), 'bakery.yaml')
     if not os.path.exists(yml):
         return 0
     return 1
-
-def check_yaml_out(login, project_id):
-    yml_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), '.bakery.yml')
-    yml_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), '.bakery.yml')
-    if os.path.exists(yml_in) and not os.path.exists(yml_out):
-        run('cp', yml_in, yml_out)
 
 def rwalk(path):
     h = {}
@@ -84,8 +77,8 @@ def rwalk(path):
 
 # @cached
 def project_state_get(login, project_id, full=False):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
-    yml_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    dir_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if os.path.exists(yml):
         state = yaml.load(open(yml, 'r').read())
     else:
@@ -109,8 +102,8 @@ def project_state_get(login, project_id, full=False):
 
     txt_files = []
     ufo_dirs = []
-    l = len(yml_in)
-    for root, dirs, files in os.walk(yml_in):
+    l = len(dir_in)
+    for root, dirs, files in os.walk(dir_in):
         for f in files:
             fullpath = os.path.join(root, f)
             if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
@@ -129,19 +122,19 @@ def project_state_get(login, project_id, full=False):
     return state
 
 def project_state_save(login, project_id, state):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.yml' % locals())
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
     f = open(yml, 'w')
     f.write(yaml.safe_dump(state))
     f.close()
 
 def process_project(login, project_id):
     state = project_state_get(login, project_id)
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), '.bakery.yml')
+    # yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
-    if os.path.exists(yml):
-        # copy .bakery.yml
-        run(['cp', yml, "'"+os.path.join(_out, '.bakery.yml')+"'"])
+    # if os.path.exists(yml):
+    #     # copy .bakery.yml
+    #     run(['cp', yml, os.path.join(_out, 'bakery.yaml')])
     for ufo, name in state['out_ufo'].items():
         if state['rename']:
             ufo_folder = name+'.ufo'
@@ -168,7 +161,6 @@ def process_project(login, project_id):
 def status(login, project_id):
     if not check_yaml(login, project_id):
         return 0
-    check_yaml_out(login, project_id)
 
 def read_license(login, project_id):
     state = project_state_get(login, project_id, full=True)
@@ -276,7 +268,7 @@ def generate_metadata(login, project_id):
 def lint_process(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     # java -jar dist/lint.jar "$(dirname $metadata)"
-    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s' '%(out)s/'"
+    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
 
 def ttfautohint_process(login, project_id):
