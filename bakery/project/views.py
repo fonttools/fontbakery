@@ -13,7 +13,7 @@ from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
 
-DEFAULT_SUBSET_LIST = ['latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
+DEFAULT_SUBSET_LIST = ['menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
     'greek+latin', 'greek-ext+latin', 'vietnamese+latin']
 
 @project.before_request
