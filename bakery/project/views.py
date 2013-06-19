@@ -47,7 +47,7 @@ def setup(project_id):
                 state['license_file'] = request.form.get('license_file')
             else:
                 flash(_("Wrong license_file value, must be an error"))
-                return render_template('setup.html', project = project, state = state)
+                return render_template('project/setup.html', project = project, state = state)
             ufo_dirs = request.form.getlist('ufo_dirs')
             for i in ufo_dirs:
                 if i not in state['ufo_dirs']:
