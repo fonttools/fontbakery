@@ -47,12 +47,14 @@ def setup(project_id):
                 state['license_file'] = request.form.get('license_file')
             else:
                 flash(_("Wrong license_file value, must be an error"))
-                return render_template('project/setup.html', project = project, state = state)
+                return render_template('project/setup.html', project = project, state = state,
+                    subsetvals = DEFAULT_SUBSET_LIST)
             ufo_dirs = request.form.getlist('ufo_dirs')
             for i in ufo_dirs:
                 if i not in state['ufo_dirs']:
                     flash(_("Wrong ufo_dir value, must be an error"))
-                    return render_template('project/setup.html', project = project, state = state)
+                    return render_template('project/setup.html', project = project, state = state,
+                        subsetvals = DEFAULT_SUBSET_LIST)
                 if not state['out_ufo'].get(i):
                     # define font name based on ufo folder name.
                     state['out_ufo'][i] = i.split('/')[-1][:-4]
@@ -67,7 +69,8 @@ def setup(project_id):
                     assert i in DEFAULT_SUBSET_LIST
                 except AssertionError:
                     flash('Subset value is wrong')
-                    return render_template('project/setup.html', project = project, state = state)
+                    return render_template('project/setup.html', project = project, state = state,
+                        subsetvals = DEFAULT_SUBSET_LIST)
 
             state['subset'] = subset_list
 

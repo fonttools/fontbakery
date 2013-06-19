@@ -35,8 +35,6 @@
       <div class="control-group">
         <label class="control-label" for="subset">Subset checks</label>
         <div class="controls">
-        {% set subsetvals = ['latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin', 'greek+latin', 'greek-ext+latin', 'vietnamese+latin'] -%}
-
         <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" size="{{ subsetvals|length }}">
           {% for i in subsetvals %}
           <option {% if i in state['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
