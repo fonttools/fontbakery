@@ -7,6 +7,8 @@
           <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
           <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >Metadata edit</a></li>
           <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >Description edit</a></li>
+          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
+
 
           <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
       {% endif %}

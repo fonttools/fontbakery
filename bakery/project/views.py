@@ -1,14 +1,13 @@
 # coding: utf-8
 import logging
 
-from flask import (json, Blueprint, render_template, Response, g, flash, request,
+from flask import (Blueprint, render_template, g, flash, request,
     url_for, redirect)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..extensions import db
-from ..tasks import (check_yaml, project_state_get, git_clone, project_state_save,
-    process_project, read_license, read_tree, read_metadata, save_metadata)
+# from ..extensions import db
+from ..tasks import *
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -37,6 +36,7 @@ def bump():
 def setup(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
         return render_template('project/setup.html', project = project, state = state)
@@ -88,7 +88,9 @@ def setup(project_id):
                 return render_template('project/setup2.html', project = project, state = state)
             else:
                 flash(_("Repository %s has been updated" % project.clone))
+                fh = add_logger(login = g.user.login, project_id = project_id)
                 process_project(login = g.user.login, project_id = project_id)
+                remove_logger(fh)
                 return redirect(url_for('project.fonts', project_id=project_id))
         elif request.form.get('step')=='3':
             out_ufo = {}
@@ -151,6 +153,7 @@ def description_edit(project_id):
     description = read_description(login = g.user.login, project_id = project_id)
     return render_template('project/description.html', project = project,
         state = state, description = description)
+
 @project.route('/<int:project_id>/description_save', methods=['POST'])
 def description_save(project_id):
     state = project_state_get(login = g.user.login, project_id = project_id, full=True)
@@ -159,3 +162,11 @@ def description_save(project_id):
         description = request.form.get('description'))
     flash('Description saved')
     return redirect(url_for('project.description_edit', project_id=project_id))
+
+@project.route('/<int:project_id>/log', methods=['GET'])
+def buildlog(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    log = read_log(login = g.user.login, project_id = project_id)
+    return render_template('project/log.html', project = project,
+        state = state, log = log)

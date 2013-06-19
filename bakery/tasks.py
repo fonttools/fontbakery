@@ -15,17 +15,27 @@ CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
 CLEAN_SH = """cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && \
 rm -rf %(login)s/%(project_id)s.out/"""
 
+logger = logging.getLogger('bakery.tasks')
+logger.setLevel(logging.INFO)
+
 def run(*args, **kw):
-    logging.info("%s %s" % (str(args), str(kw)))
-    subprocess.call(*args, **kw)
+    logger.info("%s %s" % (str(args), str(kw)))
+    out = subprocess.check_output(*args, **kw)
+    logger.info(out)
 
 def prun(*args, **kw):
-    logging.info("%s %s" % (str(args), str(kw)))
+    logger.info("%s %s" % (str(args), str(kw)))
     return subprocess.Popen(*args, **kw)
 
-def corun(*args, **kw):
-    logging.info("%s %s" % (str(args), str(kw)))
-    return subprocess.check_output(*args, **kw)
+def add_logger(login, project_id):
+    fh = logging.FileHandler(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()))
+    fh.setLevel(logging.INFO)
+    logger.addHandler(fh)
+    logger.info('='*80)
+    return(fh)
+
+def remove_logger(fh):
+    logger.removeHandler(fh)
 
 # @celery.task()
 def git_clone(login, project_id, clone):
@@ -172,7 +182,6 @@ def read_license(login, project_id):
         return None
 
 def read_metadata(login, project_id):
-    state = project_state_get(login, project_id, full=True)
     metadata = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
     metadata_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
 
@@ -189,7 +198,6 @@ def read_metadata(login, project_id):
     return (metadata_file, metadata_new_file)
 
 def save_metadata(login, project_id, metadata, del_new=True):
-    state = project_state_get(login, project_id, full=True)
     mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
     mf_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
 
@@ -208,6 +216,7 @@ def read_description(login, project_id):
         description = unicode(open(description_file, 'r').read(), "utf8")
     else:
         description = ''
+
     return description
 
 
@@ -217,6 +226,18 @@ def save_description(login, project_id, description):
     f = open(mf, 'w')
     f.write(description)
     f.close()
+
+def read_log(login, project_id):
+    log_file = os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals())
+
+    print(log_file)
+    if os.path.exists(log_file):
+        log = unicode(open(log_file, 'r').read(), "utf8")
+    else:
+        log = ''
+
+    return log
+
 
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
@@ -247,20 +268,16 @@ def generate_fonts(login, project_id):
 
 
 def generate_metadata(login, project_id):
-    state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     print(cmd % {'wd': ROOT, 'out': _out})
-    out = run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
-    logging.info(out)
+    run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
 
 def lint_process(login, project_id):
-    state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s' '%(out)s/'"
-    out = corun(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
-    logging.info(out)
+    run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
 
 def ttfautohint_process(login, project_id):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
@@ -268,15 +285,13 @@ def ttfautohint_process(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     for name in state['out_ufo'].values():
         cmd = "ttfautohint '%(out)s.ttf' '%(out)s.new.ttf'; rm '%(out)s.ttf'; mv '%(out)s.new.ttf' '%(out)s.ttf'" % {
-            'in':os.path.join(_out, name+'.ufo'),
             'out': os.path.join(_out, name),
         }
-        out = corun(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+        run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
 
 def subset_process(login, project_id):
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
-    import ipdb; ipdb.set_trace()
     for subset in state['subset']:
         for name in state['out_ufo'].values():
             # python ~/googlefontdirectory/tools/subset/subset.py \
@@ -286,11 +301,11 @@ def subset_process(login, project_id):
 
             cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py --null " + \
                   "--nmr --roundtrip --script --subset=%(subset)s '%(out)s.ttf'" + \
-                  " %(out)s.%(subset)s.ttf") % {
+                  " %(out)s.%(subset)s") % {
                 'subset':subset,
                 'out': os.path.join(_out, name),
                 'name': name,
                 'wd': ROOT
             }
-            out = corun(cmd, shell=True, cwd=_out)
+            run(cmd, shell=True, cwd=_out)
 

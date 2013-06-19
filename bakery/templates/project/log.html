@@ -1,0 +1,33 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Build log") %}
+
+{% block body %}
+<div class="span9">
+    <h2>{{ _("Build log") }} {{ project.clone }}</h2>
+
+    {% from 'project/macros.html' import nav with context%}
+    {{ nav('log') }}
+
+    <div id="editor"></div>
+    <textarea name="log">{{ log }}</textarea>
+
+{% endblock %}
+
+
+{% block extrajs %}
+
+    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/solarized_light");
+        editor.getSession().setMode("ace/mode/plaintext");
+
+        var textarea = $('textarea[name="log"]').hide();
+        editor.getSession().setUseWrapMode(true);
+        editor.getSession().setValue(textarea.val());
+        editor.getSession().setReadOnly();
+    </script>
+
+
+</div>
+{% endblock %}
