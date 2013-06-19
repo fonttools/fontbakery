@@ -89,6 +89,7 @@ def project_state_get(login, project_id, full=False):
             'license_file_found': False,
             'out_ufo': {},
             'rename': False,
+            'ttfautohintuse': False,
             'ttfautohint': '-l 7 -r 28 -G 0 -x 13 -w "" -W -c',
             'autoprocess': False,
             # Possible values
@@ -274,12 +275,13 @@ def lint_process(login, project_id):
 def ttfautohint_process(login, project_id):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     state = project_state_get(login, project_id)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
-    for name in state['out_ufo'].values():
-        cmd = "ttfautohint '%(out)s.ttf' '%(out)s.new.ttf'; rm '%(out)s.ttf'; mv '%(out)s.new.ttf' '%(out)s.ttf'" % {
-            'out': os.path.join(_out, name),
-        }
-        run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+    if state['ttfautohintuse']:
+        _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+        for name in state['out_ufo'].values():
+            cmd = "ttfautohint '%(out)s.ttf' '%(out)s.new.ttf'; rm '%(out)s.ttf'; mv '%(out)s.new.ttf' '%(out)s.ttf'" % {
+                'out': os.path.join(_out, name),
+            }
+            run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
 
 def subset_process(login, project_id):
     state = project_state_get(login, project_id)

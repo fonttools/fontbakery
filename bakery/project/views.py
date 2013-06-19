@@ -80,6 +80,11 @@ def setup(project_id):
             else:
                 state['rename'] = False
 
+            if request.form.get('ttfautohintuse'):
+                state['ttfautohintuse'] = True
+            else:
+                state['ttfautohintuse'] = False
+
             if request.form.get('ttfautohint'):
                 state['ttfautohint'] = request.form.get('ttfautohint')
 
