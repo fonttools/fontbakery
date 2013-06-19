@@ -201,6 +201,23 @@ def save_metadata(login, project_id, metadata, del_new=True):
         if os.path.exists(mf_new):
             os.remove(mf_new)
 
+def read_description(login, project_id):
+    description_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'DESCRIPTION.en_us.html')
+
+    if os.path.exists(description_file):
+        description = unicode(open(description_file, 'r').read(), "utf8")
+    else:
+        description = ''
+    return description
+
+
+def save_description(login, project_id, description):
+    mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'DESCRIPTION.en_us.html')
+
+    f = open(mf, 'w')
+    f.write(description)
+    f.close()
+
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
 

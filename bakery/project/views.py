@@ -136,9 +136,26 @@ def ace(project_id):
 
 @project.route('/<int:project_id>/ace', methods=['POST'])
 def ace_save(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     save_metadata(login = g.user.login, project_id = project_id,
         metadata = request.form.get('metadata'),
         del_new = request.form.get('delete', None))
+    flash('METADATA.json saved')
     return redirect(url_for('project.ace', project_id=project_id))
+
+
+@project.route('/<int:project_id>/description_edit', methods=['GET'])
+def description_edit(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    description = read_description(login = g.user.login, project_id = project_id)
+    return render_template('project/description.html', project = project,
+        state = state, description = description)
+@project.route('/<int:project_id>/description_save', methods=['POST'])
+def description_save(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    save_description(login = g.user.login, project_id = project_id,
+        description = request.form.get('description'))
+    flash('Description saved')
+    return redirect(url_for('project.description_edit', project_id=project_id))

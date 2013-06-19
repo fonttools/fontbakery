@@ -1,0 +1,44 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Edit METADATA.json") %}
+
+{% block body %}
+<div class="span9">
+    <h2>{{ _("Edit DESCRIPTION.en_us.html") }} {{ project.clone }}</h2>
+
+    {% from 'project/macros.html' import nav with context%}
+    {{ nav('description') }}
+
+    <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
+
+    <div id="editor"></div>
+    <textarea name="description">{{ description }}</textarea>
+
+    <div>
+      <button type="submit" class="btn">Submit</button>
+    </div>
+    </form>
+
+{% endblock %}
+
+
+{% block extrajs %}
+
+    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/solarized_light");
+        editor.getSession().setMode("ace/mode/html");
+
+        // var textarea = $('textarea[name="metadata"]');
+        var textarea = $('textarea[name="description"]').hide();
+        editor.getSession().setUseWrapMode(true);
+        editor.getSession().setValue(textarea.val());
+        editor.getSession().on('change', function(){
+          textarea.val(editor.getSession().getValue());
+        });
+
+    </script>
+
+
+</div>
+{% endblock %}
