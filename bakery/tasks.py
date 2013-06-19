@@ -132,7 +132,7 @@ def process_project(login, project_id):
     state = project_state_get(login, project_id)
     # yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
     # if os.path.exists(yml):
     #     # copy .bakery.yml
     #     run(['cp', yml, os.path.join(_out, 'bakery.yaml')])
@@ -141,7 +141,6 @@ def process_project(login, project_id):
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
-
         run(['cp', '-R', os.path.join(_in, ufo), os.path.join(_out, ufo_folder)])
         if state['rename']:
             finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
@@ -238,27 +237,26 @@ def read_tree(login, project_id):
 def generate_fonts(login, project_id):
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
 
-    child = prun('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=_in)
-    hashno = child.stdout.readline().strip()
+    # child = prun('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=_in)
+    # hashno = child.stdout.readline().strip()
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
     for name in state['out_ufo'].values():
         # this command generate file with commit hash in file name
-        cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf' '%(out)s.%(hashno)s.otf'" % {
-            'in':os.path.join(_out, name+'.ufo'),
-            'out': os.path.join(_out, name),
-            'hashno': hashno
-        }
-        cmd_short = "python ufo2ttf.py '%(in)s' '%(out)s.ttf' '%(out)s.otf'" % {
-            'in':os.path.join(_out, name+'.ufo'),
+        # cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf' '%(out)s.%(hashno)s.otf'" % {
+        #     'in':os.path.join(_out, name+'.ufo'),
+        #     'out': os.path.join(_out, name),
+        #     'hashno': hashno
+        # }
+        cmd_short = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
+            'in':os.path.join(_in, name+'.ufo'),
             'out': os.path.join(_out, name),
         }
         # run(cmd, shell=True, cwd = scripts_folder)
         run(cmd_short, shell=True, cwd = scripts_folder)
-
 
 def generate_metadata(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
@@ -275,13 +273,16 @@ def lint_process(login, project_id):
 def ttfautohint_process(login, project_id):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     state = project_state_get(login, project_id)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     if state['ttfautohintuse']:
-        _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
         for name in state['out_ufo'].values():
-            cmd = "ttfautohint '%(out)s.ttf' '%(out)s.new.ttf'; rm '%(out)s.ttf'; mv '%(out)s.new.ttf' '%(out)s.ttf'" % {
+            cmd = "ttfautohint '%(src)s.ttf' '%(out)s.ttf'" % {
                 'out': os.path.join(_out, name),
+                'src': os.path.join(_out, 'src', name),
             }
-            run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+            run(cmd % {'wd': ROOT, 'out': _out}, shell=True, cwd=_out)
+    else:
+        run("cp src/*.ttf .", shell=True, cwd=_out)
 
 def subset_process(login, project_id):
     state = project_state_get(login, project_id)
