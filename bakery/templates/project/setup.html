@@ -8,7 +8,7 @@
     {% from 'project/macros.html' import nav with context%}
     {{ nav('setup') }}
 
-    <form class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
+    <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
       <div class="control-group">
         <label class="control-label" for="license_file">License file</label>
         <div class="controls">
@@ -81,10 +81,37 @@
       <div class="control-group">
         <div class="controls">
           <input type="hidden" name="step" value="2"> 
-          <button type="submit" class="btn">Submit</button>
+          <button type="submit" class="btn" {% if state['autoprocess'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?" {% endif %}>Submit</button>
         </div>
       </div>
     </form>
 
 </div>
 {% endblock %}
+
+
+{% block extrajs %}
+
+<script>
+$(document).ready(function() {
+    $('button[data-confirm]').click(function(ev) {
+
+        var form = $(this).closest('form');
+
+        if (!$('#dataConfirmModal').length) {
+            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+        } 
+        $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+        $('#dataConfirmOK').click(function(ev){
+            form.submit();
+        });
+        $('#dataConfirmModal').modal({show:true});
+        return false;
+    });
+});
+</script>
+
+
+</div>
+{% endblock %}
+
