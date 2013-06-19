@@ -16,7 +16,7 @@ ACCEPT_LANGUAGES = ['en']
 # make sure that you have started debug mail server using command
 # $ make mail
 
-MAIL_SERVER = 'locahost'
+MAIL_SERVER = 'localhost'
 MAIL_PORT = 20025
 MAIL_USE_SSL = False
 MAIL_USERNAME = 'm@xen.ru'
