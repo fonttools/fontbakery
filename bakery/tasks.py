@@ -115,6 +115,13 @@ def project_state_save(login, project_id, state):
     f.write(yaml.safe_dump(state))
     f.close()
 
+def project_state_push(login, project_id, state):
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    f = open(yml, 'w')
+    f.write(yaml.safe_dump(state))
+    f.close()
+
+
 def process_project(login, project_id):
     state = project_state_get(login, project_id)
     # yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
@@ -209,14 +216,18 @@ def save_description(login, project_id, description):
 def read_log(login, project_id):
     log_file = os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals())
 
-    print(log_file)
     if os.path.exists(log_file):
-        log = unicode(open(log_file, 'r').read(), "utf8")
+        return unicode(open(log_file, 'r').read(), "utf8")
     else:
-        log = ''
+        return ''
 
-    return log
+def read_yaml(login, project_id):
+    yaml_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
 
+    if os.path.exists(yaml_file):
+        return unicode(open(yaml_file, 'r').read(), "utf8")
+    else:
+        return ''
 
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))

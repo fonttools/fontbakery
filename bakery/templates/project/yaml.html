@@ -1,0 +1,35 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Build log") %}
+
+{% block body %}
+<div class="span9">
+    <h2>{{ _("bakery.yaml") }} {{ project.clone }}</h2>
+
+    <p>Copy and paste this file in root folder of your repository</p>
+
+    {% from 'project/macros.html' import nav with context%}
+    {{ nav('yaml') }}
+
+    <div id="editor"></div>
+    <textarea name="yaml">{{ yaml }}</textarea>
+
+{% endblock %}
+
+
+{% block extrajs %}
+
+    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/solarized_light");
+        editor.getSession().setMode("ace/mode/yaml");
+
+        var textarea = $('textarea[name="yaml"]').hide();
+        editor.getSession().setUseWrapMode(true);
+        editor.getSession().setValue(textarea.val());
+        editor.getSession().setReadOnly();
+    </script>
+
+
+</div>
+{% endblock %}
