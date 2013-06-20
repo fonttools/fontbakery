@@ -303,5 +303,5 @@ def subset_process(login, project_id):
                 'wd': ROOT
             }
             run(cmd, shell=True, cwd=_out)
-    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", shell=True, cmd=_out)
+    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", shell=True, cwd=_out)
 
