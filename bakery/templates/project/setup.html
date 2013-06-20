@@ -77,11 +77,10 @@
         </div>
       </div>
 
-
       <div class="control-group">
         <div class="controls">
           <input type="hidden" name="step" value="2"> 
-          <button type="submit" class="btn" {% if state['autoprocess'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?" {% endif %}>Submit</button>
+          <button type="submit" class="btn" {% if not state.get('autoprocess') %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?" {% endif %}>Submit</button>
         </div>
       </div>
     </form>
