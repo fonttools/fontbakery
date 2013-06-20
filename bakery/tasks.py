@@ -82,7 +82,7 @@ def project_state_get(login, project_id, full=False):
     if os.path.exists(yml):
         state = yaml.load(open(yml, 'r').read())
     else:
-        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'default.bakery.yaml'), 'r').read()) # the same dir
+        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml'), 'r').read()) # the same dir
 
     if not full:
         # don't need to walk over all usef folders
