@@ -18,17 +18,17 @@
 
 {% block extrajs %}
 
-    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
-    <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/solarized_light");
-        editor.getSession().setMode("ace/mode/yaml");
+<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script>
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/solarized_light");
+editor.getSession().setMode("ace/mode/yaml");
 
-        var textarea = $('textarea[name="yaml"]').hide();
-        editor.getSession().setUseWrapMode(true);
-        editor.getSession().setValue(textarea.val());
-        editor.getSession().setReadOnly();
-    </script>
+var textarea = $('textarea[name="yaml"]').hide();
+editor.getSession().setUseWrapMode(true);
+editor.getSession().setValue(textarea.val());
+editor.setReadOnly(true);
+</script>
 
 
 </div>
