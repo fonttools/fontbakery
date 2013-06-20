@@ -1,0 +1,31 @@
+# Default bakery.yaml file
+autoprocess: false # setup is done, for internal use
+license_file: '' # name of license file
+license_file_found: false # flag to indicate is license file available, internal
+out_ufo: {} # list of ufo folders
+rename: false # rename fonts 
+subset: [] # subset list
+# Possible values
+# latin latin-ext+latin cyrillic+latin cyrillic-ext+latin greek+latin greek-ext+latin vietnamese+latin
+ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c # default ttfautohint command line params
+ttfautohintuse: false # use ttfautohint
+txt_files: [] # list of txt files, internal
+ufo_dirs: [] # list of found ufo dirs, internal
+
+# Real world example
+# autoprocess: true
+# license_file: OFL.txt
+# license_file_found: false
+# out_ufo: {sources/otf/Merritest-Bold.ufo: Merritest-Bold, sources/otf/Merritest-BoldItalic.ufo: Merritest-BoldItalic,
+#   sources/otf/Merritest-Heavy.ufo: Merritest-Heavy, sources/otf/Merritest-HeavyItalic.ufo: Merritest-HeavyItalic,
+#   sources/otf/Merritest-Italic.ufo: Merritest-Italic, sources/otf/Merritest-Light.ufo: Merritest-Light,
+#   sources/otf/Merritest-LightItalic.ufo: Merritest-LightItalic, sources/otf/Merritest-Regular.ufo: Merritest-Regular}
+# rename: false
+# subset: [latin, latin-ext+latin]
+# ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c
+# ttfautohintuse: true
+# txt_files: [FONTLOG.txt, OFL.txt, README.md]
+# ufo_dirs: [sources/otf/Merritest-Bold.ufo, sources/otf/Merritest-BoldItalic.ufo, sources/otf/Merritest-Heavy.ufo,
+#   sources/otf/Merritest-HeavyItalic.ufo, sources/otf/Merritest-Italic.ufo, sources/otf/Merritest-Light.ufo,
+#   sources/otf/Merritest-LightItalic.ufo, sources/otf/Merritest-Regular.ufo]
+

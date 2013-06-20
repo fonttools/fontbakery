@@ -82,20 +82,7 @@ def project_state_get(login, project_id, full=False):
     if os.path.exists(yml):
         state = yaml.load(open(yml, 'r').read())
     else:
-        state = {
-            'ufo_dirs': [],
-            'txt_files': [],
-            'license_file': '',
-            'license_file_found': False,
-            'out_ufo': {},
-            'rename': False,
-            'ttfautohintuse': False,
-            'ttfautohint': '-l 7 -r 28 -G 0 -x 13 -w "" -W -c',
-            'autoprocess': False,
-            # Possible values
-            # latin latin-ext+latin cyrillic+latin cyrillic-ext+latin greek+latin greek-ext+latin vietnamese+latin
-            'subset': [],
-        }
+        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'default.bakery.yaml'), 'r').read()) # the same dir
 
     if not full:
         # don't need to walk over all usef folders
