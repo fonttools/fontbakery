@@ -5,10 +5,10 @@
 <div class="span9">
     <h2>{{ _("bakery.yaml") }} {{ project.clone }}</h2>
 
-    <p>Copy and paste this file in root folder of your repository</p>
-
     {% from 'project/macros.html' import nav with context%}
     {{ nav('yaml') }}
+
+    <p>Copy and paste this file in root folder of your repository</p>
 
     <div id="editor"></div>
     <textarea name="yaml">{{ yaml }}</textarea>
