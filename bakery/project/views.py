@@ -98,6 +98,12 @@ def setup(project_id):
             else:
                 flash(_("Repository %s has been updated" % project.clone))
                 fh = add_logger(login = g.user.login, project_id = project_id)
+
+                # push check before project process
+                if project_state_push(login = g.user.login, project_id = project_id):
+                    flash('Project state pushed back to repository. You should be Dave ;)')
+                else:
+                    flash('Bakery cann\'t push data back')
                 process_project(login = g.user.login, project_id = project_id)
                 remove_logger(fh)
                 return redirect(url_for('project.fonts', project_id=project_id))
@@ -113,6 +119,12 @@ def setup(project_id):
                     flash(_("Wrong parameter provided for ufo folder name"))
             state['out_ufo'] = out_ufo
             project_state_save(login = g.user.login, project_id = project_id, state = state)
+
+            # push check before project process
+            if project_state_push(login = g.user.login, project_id = project_id):
+                flash('Project state pushed back to repository. You should be Dave ;)')
+            else:
+                flash('Bakery cann\'t push data back')
             process_project(login = g.user.login, project_id = project_id)
             return redirect(url_for('project.fonts', project_id=project_id))
         else:

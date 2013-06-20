@@ -115,12 +115,14 @@ def project_state_save(login, project_id, state):
     f.write(yaml.safe_dump(state))
     f.close()
 
-def project_state_push(login, project_id, state):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
-    f = open(yml, 'w')
-    f.write(yaml.safe_dump(state))
-    f.close()
-
+def project_state_push(login, project_id):
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    try:
+        run("git add bakery.yaml; git commit -m 'bakery.yaml robot update'", shell=True, cwd=_in)
+        run("git push origin master", shell=True, cwd=_in)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
 def process_project(login, project_id):
     state = project_state_get(login, project_id)
