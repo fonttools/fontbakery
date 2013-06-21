@@ -2,16 +2,15 @@
 {% set page_title = _("Build log") %}
 
 {% block body %}
-<div class="span9">
-    <h2>{{ _("bakery.yaml") }} {{ project.clone }}</h2>
+<h2>{{ _("bakery.yaml") }} {{ project.clone }}</h2>
 
-    {% from 'project/macros.html' import nav with context%}
-    {{ nav('yaml') }}
+{% from 'project/macros.html' import nav with context%}
+{{ nav('yaml') }}
 
-    <p>Copy and paste this file in root folder of your repository</p>
+<p>Copy and paste this file in root folder of your repository</p>
 
-    <div id="editor"></div>
-    <textarea name="yaml">{{ yaml }}</textarea>
+<div id="editor"></div>
+<textarea name="yaml">{{ yaml }}</textarea>
 
 {% endblock %}
 
@@ -29,7 +28,4 @@ editor.getSession().setUseWrapMode(true);
 editor.getSession().setValue(textarea.val());
 editor.setReadOnly(true);
 </script>
-
-
-</div>
 {% endblock %}

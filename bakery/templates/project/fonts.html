@@ -2,7 +2,6 @@
 {% set page_title = _("Project info for ") + project.clone %}
 
 {% block body %}
-<div class="span9">
     <h2>{{ _("Fonts for ") }} {{ project.clone }}</h2>
 
     {% from 'project/macros.html' import nav with context%}
@@ -74,7 +73,5 @@
 {%- endfor %}
 </ul>
 </ul>
-</div>
-
 </div>
 {% endblock %}

@@ -2,15 +2,13 @@
 {% set page_title = _("Build log") %}
 
 {% block body %}
-<div class="span9">
-    <h2>{{ _("Build log") }} {{ project.clone }}</h2>
+<h2>{{ _("Build log") }} {{ project.clone }}</h2>
 
-    {% from 'project/macros.html' import nav with context%}
-    {{ nav('log') }}
+{% from 'project/macros.html' import nav with context%}
+{{ nav('log') }}
 
-    <div id="editor"></div>
-    <textarea name="log">{{ log }}</textarea>
-
+<div id="editor"></div>
+<textarea name="log">{{ log }}</textarea>
 {% endblock %}
 
 
@@ -28,6 +26,4 @@ editor.getSession().setValue(textarea.val());
 editor.setReadOnly(true);
 </script>
 
-
-</div>
 {% endblock %}

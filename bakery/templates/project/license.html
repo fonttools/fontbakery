@@ -2,13 +2,10 @@
 {% set page_title = _("Project License") %}
 
 {% block body %}
-<div class="span9">
-    <h2>{{ _("License for ") }} {{ project.clone }}</h2>
+<h2>{{ _("License for ") }} {{ project.clone }}</h2>
 
-    {% from 'project/macros.html' import nav with context%}
-    {{ nav('license') }}
+{% from 'project/macros.html' import nav with context%}
+{{ nav('license') }}
 
-    <pre>{{ license }}</pre>
-
-</div>
+<pre>{{ license }}</pre>
 {% endblock %}

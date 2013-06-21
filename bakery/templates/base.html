@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     {% endblock %}
 
     {% block css_style %}
@@ -26,62 +27,63 @@
   </head>
 </head>
 <body>
+<div class="container">
+{% block topbar %}
+    {% include "header.html" %}
 
-    {% block topbar %}
-        {% include "header.html" %}
+{% endblock %}
 
-    {% endblock %}
+{% from 'macros/misc.html' import render_flash_message %}
+{{ render_flash_message() }}
 
-    {% from 'macros/misc.html' import render_flash_message %}
-    {{ render_flash_message() }}
+{% block container %}
+<div class="container-fluid">
+  <div class="row-fluid">
 
-    {% block container %}
-    <div class="container-fluid">
-      <div class="row-fluid">
+{#        {% block sidebar %}
+        {% include "sidebar.html" %}
+    {% endblock sidebar %}
+#}
 
-        {% block sidebar %}
-            {% include "sidebar.html" %}
-        {% endblock sidebar %}
+    {% block body %}
+        {% block top %}
+            <ul class="nav nav-pills">
+                {% for tab, link in tabs %}
+                <li class="{% if active == tab %}active{% endif %}">
+                    <a href="{{ link }}">{{ tab|capitalize }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+        <div class="span9">
+          <div class="hero-unit">
+            <h1>Hello, world!</h1>
+            <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+          </div>
+        </div>
+    {% endblock body %}
 
-        {% block body %}
-            {% block top %}
-                <ul class="nav nav-pills">
-                    {% for tab, link in tabs %}
-                    <li class="{% if active == tab %}active{% endif %}">
-                        <a href="{{ link }}">{{ tab|capitalize }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% endblock %}
-            <div class="span9">
-              <div class="hero-unit">
-                <h1>Hello, world!</h1>
-                <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-                <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-              </div>
-            </div>
-        {% endblock body %}
+  </div>
 
-      </div>
+</div>
 
-    </div>
+{% endblock %}
 
-    {% endblock %}
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}
+</div>
+{% block js_btm %}
 
-    {% block footer %}
-    {% include "footer.html" %}
-    {% endblock %}
+<script src="{{ url_for('static', filename='jquery-2.0.0.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+{% endblock %}
 
-    {% block js_btm %}
+{% block extrajs %}
+{% endblock %}
 
-    <script src="{{ url_for('static', filename='jquery-2.0.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
-    {% endblock %}
-
-    {% block extrajs %}
-    {% endblock %}
-
-    {% block ga %}{% include "macros/counters.html" %}{% endblock %}
+{% block ga %}{% include "macros/counters.html" %}{% endblock %}
 </body>
 </html>

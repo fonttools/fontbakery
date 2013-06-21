@@ -11,21 +11,6 @@
     </div><!--/.well -->
  #}
 
-{% if g.projects %}
-<div class="sidebar-nav">
-    <ul class="nav nav-list">
-      <li class="nav-header">Your repos</li>
-    {% for item in g.projects %}
-      <li {% if (request.script_root + request.path).startswith(url_for('project.fonts', project_id = item.id )) %}
-        class="active"
-      {% endif %}><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone|truncate(40, True)}}</a></li>
-    {% endfor %}
-      <li class="nav-header">Add more</li>
-      <li><a href="{{ url_for('settings.repos') }}">Settings</a></li>
-    </ul>
-</div>
-{% endif %}
-
 {#
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs">

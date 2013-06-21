@@ -1,44 +1,41 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
- 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
- 
-      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font backery") }}</a>
- 
-      <!-- Everything you want hidden at 940px or less, place within here -->
-      <div class="nav-collapse collapse">
+      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Backery") }}</a>
+      <div class="nav-collapse collapse navbar-responsive-collapse">
         <ul class="nav">
+          <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
           {% if g.user %}
-            <li><a href="{{ url_for('settings.repos') }}">Settings</a></li>
+            <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i><!-- Settings --></a></li>
           {% endif %}
-
           {%- for path, caption in [
             (url_for('frontend.page', path='about'), _("About")),
             (url_for('frontend.page', path='docs'), _("Docs")),
           ] %}
             <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
           {%- endfor %}
+
+          {% block navbar %}
+          {% endblock %}
         </ul>
         <ul class="nav pull-right">
           {% if g.user %}
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ g.user.getAvatar() }}"/> {{ g.user.name }} <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ g.user.getAvatar(size=14) }}"/> {{ g.user.name }} <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <!-- <li><a href="{{ url_for('settings.repos') }}">Settings</a></li> -->
               <li><a href="{{ url_for('gitauth.logout') }}">Log out</a></li>
             </ul>
           </li>
-          {% else %}
-          <li><a class="btn btn-inverse" href="{{ url_for('gitauth.login') }}"><i class="icon-user icon-white"></i> <strong>Login</strong></a></li>
           {% endif %}
+
         </ul>
-      </div>
+      </div><!-- /.nav-collapse -->
     </div>
-  </div>
+  </div><!-- /navbar-inner -->
 </div>

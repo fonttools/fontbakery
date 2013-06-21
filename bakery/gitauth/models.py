@@ -19,7 +19,7 @@ class User(db.Model):
     def getGithub(self):
         return "https://github.com/%s" % self.login
 
-    @staticmethod    
+    @staticmethod
     def get_or_init(login):
         user = User.query.filter_by(login=login).first()
         if user is None:
