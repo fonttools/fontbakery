@@ -45,11 +45,11 @@
   <div class="control-group">
     <div class="controls">
     <label class="radio">
-      <input type="radio" name="rename" id="optionsRadios1" value="no" {% if not state['rename'] %}checked{% endif %}>
+      <input type="radio" name="rename" id="rename1" value="no" {% if not state['rename'] %}checked{% endif %}>
       Use the same font names?
     </label>
     <label class="radio">
-      <input type="radio" name="rename" id="optionsRadios2" value="yes" {% if state['rename'] %}checked{% endif %}>
+      <input type="radio" name="rename" id="reanme2" value="yes" {% if state['rename'] %}checked{% endif %}>
       I want to define new names?
     </label>
     </div>
@@ -58,11 +58,11 @@
   <div class="control-group">
     <div class="controls">
     <label class="radio">
-      <input type="radio" name="ttfautohintuse" id="optionsRadios1" value="no" {% if not state['ttfautohintuse'] %}checked{% endif %}>
+      <input type="radio" name="ttfautohintuse" id="ttf1" value="no" {% if not state['ttfautohintuse'] %}checked{% endif %}>
       Don't use <code>ttfautohint</code> processing
     </label>
     <label class="radio">
-      <input type="radio" name="ttfautohintuse" id="optionsRadios2" value="yes" {% if state['ttfautohintuse'] %}checked{% endif %}>
+      <input type="radio" name="ttfautohintuse" id="ttf2" value="yes" {% if state['ttfautohintuse'] %}checked{% endif %}>
       I need <code>ttfautohint</code> 
     </label>
     </div>
@@ -96,11 +96,15 @@ $(document).ready(function() {
         var form = $(this).closest('form');
 
         if (!$('#dataConfirmModal').length) {
-            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmYes">Yes</a><a class="btn btn-primary" id="dataConfirmNo">No</a></div></div>');
         } 
         $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
-        $('#dataConfirmOK').click(function(ev){
+        $('#dataConfirmYes').click(function(ev){
             form.submit();
+        });
+        $('#dataConfirmNo').click(function(ev){
+          $('#reanme2').prop('checked',true);
+          form.submit();
         });
         $('#dataConfirmModal').modal({show:true});
         return false;
