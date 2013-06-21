@@ -11,8 +11,8 @@
   <thead>
     <tr>
       <th>Clone string</th>
-      <th>Status</th>
-      <!-- <th>Actions</th> -->
+      <th><i class="icon-circle muted"></i></th>
+      <th>Actions</th>
     </tr>
   </thead>
 
@@ -21,14 +21,14 @@
       {% for item in repos -%}
         <tr>
           <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a></td>
+          <td>{% if not item.state.get('autoprocess') %}<i class="icon-circle text-error"></i>{% else %} <i class="icon-circle text-success">{% endif %}</td>
           <td>
           {% if item.yaml %}
-            <code>bakery.yaml</code> is found you can process
+            <span class="muted">Ok</span>
             {% else %}
             Error! <code>bakery.yaml</code> is not found
           {% endif %}
           </td>
-          <!-- <td><a href="{{ url_for('project.bump', project_id = item.id )}}" data-confirm="Update from git repository?">Update</a>, <a href="{{ url_for('project.setup', project_id = item.id )}}">Setup</a></td> -->
         </tr>
       {%- endfor %}
     {% else %}
