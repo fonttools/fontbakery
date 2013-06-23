@@ -1,19 +1,20 @@
 {% extends "base.html" %}
-{% set page_title = _("User repositories") %}
+{% set page_title = _("Add repositories") %}
 
 {% block body %}
-    <h2>{{ _("Select repositories") }}</h2>
+    <h2>{{ _("Add repositories") }}</h2>
 
 <div class="tabbable">
   <ul class="nav nav-tabs">
-    <li><a href="#owngit" data-toggle="tab">{{ _("Own git repositories") }}</a></li>
-    <li class="active"><a href="#massgithub" data-toggle="tab">{{ _("Mass github add repositories") }}</a></li>
-    <li><a href="#github" data-toggle="tab">{{ _("Github repositories") }}</a></li>
+    <li class="active"><a href="#owngit" data-toggle="tab">{{ _("URL") }}</a></li>
+    <li><a href="#github" data-toggle="tab">{{ _("Github Subscription") }}</a></li>
+    <li><a href="#massgithub" data-toggle="tab">{{ _("Github One Time") }}</a></li>
+
   </ul>
   <div class="tab-content">
 
     <div id="massgithub" class="tab-pane active">
-      <h4>Github repositories</h4>
+      <h4>Github One Time</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
           Last update was {{ cache.updated | pretty_date}}
@@ -23,7 +24,7 @@
         <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
       </form>
 
-      <p>This tab allow to make mass adding github repositories to index, but doesn't register webhooks.</p>
+      <p>Add repositories from GitHub, but don't register webhooks to get updates when the repo is pushed to.</p>
 
         <form action="{{ url_for('settings.massgit') }}" method="POST">
           {% if cache %}
@@ -31,17 +32,17 @@
             <label class="checkbox" for="{{ item.full_name }}"><input id="{{ item.full_name }}" type="checkbox" {% if item.full_name in projects%}checked="checked"{%endif%} value="{{ item.full_name }}" name="git"> {{ item.full_name }}</label>
             {%- endfor %}
           {% else %}
-            <p class="muted">List of github repositories is empty. Press 'Refresh' button to update list.</p>
+            <p class="muted">Press 'Refresh' to update this list.</p>
           {% endif %}
-          <p> Pressing this button you accept some terms </p>
-          <p>Repositories will be actually cloned, so it can takes a lot of time and your browser can show timeout. If this happends then just come back to dashboard after and check results.</p>
+          <p>TODO Pop up a dialog to confirm the repo has a libre license allowing you to copy it</p>
+          <p>Repositories are cloned, which can take a while and your browser may show a timeout. If this happens, check the dashboard to confirm the repo has been cloned.</p>
           <button type="submit" class="btn">Submit</button>
         </form>
 
     </div>
 
     <div id="github" class="tab-pane">
-      <h4>Github repositories</h4>
+      <h4>Github Subscription</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
           Last update was {{ cache.updated | pretty_date}}
@@ -76,7 +77,7 @@
           {% else %}
           <tr>
               <td colspan="4">
-                  <p class="muted">List of github repositories is empty. Press 'Refresh' button to update list.</p>
+                  <p class="muted">Press 'Refresh' to update this list.</p>
               </td>
           </tr> 
           {% endif %}
@@ -87,20 +88,20 @@
 
 
     <div id="owngit" class="tab-pane">
-    <h4>Own hosted git repositories</h4>
+    <h4>Add Git Repository From URL</h4>
 
-    <p> Add git clone string in allowed format, make sure that this repository is available anonymously (or user/password is provided in clone string). For more information about <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">git-clone url format</a> reference to official documentation</p>
+    <p>Enter a git clone string in the allowed format. If the repo requires a login, provide the username and password in the clone string. <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">Learn more...</a></p>
 
-    <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST"  data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?">
+    <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST"  data-confirm="Are you sure that this git repository contains fonts available under a libre license?">
       <label><code>$ git clone</code></label>
-      <input type="text" class="input-xxlarge" name="clone" placeholder="git://host.xz[:port]/path/to/repo.git/">
+      <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
       <button type="submit" class="btn btn-info btn-small">Add</button>
     </form>
 
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Clone string</th>
+          <th>Repository URL</th>
           <th>Delete</th>
         </tr>
       </thead>
@@ -115,7 +116,7 @@
         {% else %}
         <tr>
             <td colspan="2">
-                <p class="muted">You don't have added any git repositories yet. Please add.</p>
+                <p class="muted">No git repositories added by URL yet</p>
             </td>
         </tr> 
         {% endif %}
