@@ -57,7 +57,7 @@ mail: setup
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
 
-# target: clean — remove working files and reinit initial data
+# target: clear — remove working files and reinit initial data
 clear:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
