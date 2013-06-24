@@ -114,7 +114,7 @@
         {% if gitprojects %}
           {% for item in gitprojects -%}
             <tr>
-              <td><code>{{ item.clone }}</code></td>
+              <td><a href="http://TODO">{{ item.clone }}</a></td>
 			  <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-danger btn-block" type="button" data-confirm="Delete this repo?">Delete</button></a></td>
             </tr>
           {%- endfor %}
