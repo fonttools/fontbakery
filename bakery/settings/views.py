@@ -179,7 +179,7 @@ def addclone():
     clone = request.form.get('clone')
     dup = Project.query.filter_by(login = g.user.login, is_github=False, clone = clone).first()
     if dup:
-        flash(_("Repository with same clone string already exists under your account"))
+        flash(_("Repository already added"))
         return redirect(url_for('settings.repos')+"#tab_owngit")
 
     project = Project(
