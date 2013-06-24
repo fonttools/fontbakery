@@ -1,3 +1,5 @@
-title: About
+title: About the Bakery project
 
-Project in developement mode, for more information please go to [project page](https://github.com/xen/bakery)
+This project is under active development. 
+
+For more information please refer to the [project page on GitHub](https://github.com/xen/bakery)

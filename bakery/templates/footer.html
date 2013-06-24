@@ -1,15 +1,12 @@
 <footer class="footer">
     <div class="container">
-        <p>Code licensed under Apache license.</p>
         <ul class="footer-links">
-            <li>© 2013</li>
-            <li><a href='https://github.com/xen/bakery/'>Github</a></li>
+            <li>Copyright &copy; 2013, Mikhail Kashkin, Dave Crossland</li>
             <li class="muted">&middot;</li>
-            <li><a href='http://fontforge.org/'>Fontforge.org</a></li>
+            <li><a href='{{ url_for('frontend.page', path='docs') }}'>Documentation</a></li>
             <li class="muted">&middot;</li>
-            <li><a href='{{ url_for('frontend.page', path='about') }}'>About</a></li>
-            <li class="muted">&middot;</li>
-            <li><a href='{{ url_for('frontend.page', path='contact') }}'>Contact</a></li>
+            <li><a href='https://github.com/xen/bakery/'>GitHub</a></li>
         </ul>
+	        <p><a href='{{ url_for('frontend.page', path='about') }}'>The Bakery project</a> is free software, available under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 license</a></p>
     </div>
 </footer>

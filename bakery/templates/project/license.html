@@ -1,11 +1,11 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Project License") %}
+{% set page_title = _("Repo License") %}
 
 {% block body %}
 <h2>{{ _("License for ") }} {{ project.clone }}</h2>
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('license') }}
-
+<div class="alert alert-info">The license file should only be edited by the copyright holders.</div>
 <pre>{{ license }}</pre>
 {% endblock %}

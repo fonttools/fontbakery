@@ -6,7 +6,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Backery") }}</a>
+      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Bakery") }}</a>
       <div class="nav-collapse collapse navbar-responsive-collapse">
         <ul class="nav">
           <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
@@ -15,7 +15,6 @@
           {% endif %}
           {%- for path, caption in [
             (url_for('frontend.page', path='about'), _("About")),
-            (url_for('frontend.page', path='docs'), _("Docs")),
           ] %}
             <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
           {%- endfor %}

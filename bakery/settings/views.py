@@ -81,7 +81,7 @@ def addhook(full_name):
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('Github API access error, please try again later'))
+        flash(_('GitHub API access error, please try again later'))
         return redirect(url_for('settings.repos'))
 
     exist_id = False
@@ -146,7 +146,7 @@ def delhook(full_name):
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('Github API access error, please try again later'))
+        flash(_('GitHub API access error, please try again later'))
         return redirect(url_for('settings.repos')+"#tab_github")
 
     exist_id = False
@@ -179,7 +179,7 @@ def addclone():
     clone = request.form.get('clone')
     dup = Project.query.filter_by(login = g.user.login, is_github=False, clone = clone).first()
     if dup:
-        flash(_("Repository with same clone string already exists under your account"))
+        flash(_("Repository already added"))
         return redirect(url_for('settings.repos')+"#tab_owngit")
 
     project = Project(
