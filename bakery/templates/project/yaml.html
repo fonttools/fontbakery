@@ -7,5 +7,20 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
 <div class="alert alert-info">You must edit the bakery.yaml file in the repository directly.</div>
-<pre>{{ yaml }}</pre>
+<div id="editor"></div>
+<textarea name="yaml">{{ yaml }}</textarea>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script>
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/solarized_light");
+editor.getSession().setMode("ace/mode/yaml");
+
+var textarea = $('textarea[name="yaml"]').hide();
+editor.getSession().setUseWrapMode(true);
+editor.getSession().setValue(textarea.val());
+editor.setReadOnly(true);
+</script>
 {% endblock %}
