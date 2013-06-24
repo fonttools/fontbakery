@@ -1,31 +1,11 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Build log") %}
+{% set page_title = _("bakery.yaml") %}
 
 {% block body %}
 <h2>{{ _("bakery.yaml") }} {{ project.clone }}</h2>
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
-
-<p>Copy and paste this content into <code>bakery.yaml</code> file in root folder of your repository</p>
-
-<div id="editor"></div>
-<textarea name="yaml">{{ yaml }}</textarea>
-
-{% endblock %}
-
-
-{% block extrajs %}
-
-<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
-<script>
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/solarized_light");
-editor.getSession().setMode("ace/mode/yaml");
-
-var textarea = $('textarea[name="yaml"]').hide();
-editor.getSession().setUseWrapMode(true);
-editor.getSession().setValue(textarea.val());
-editor.setReadOnly(true);
-</script>
+<div class="alert alert-info">You must edit the bakery.yaml file in the repository directly.</div>
+<pre>{{ yaml }}</pre>
 {% endblock %}
