@@ -5,26 +5,27 @@
     <h2>{{ _("Add repositories") }}</h2>
 
 <div class="tabbable">
+
   <ul class="nav nav-tabs">
     <li class="active"><a href="#owngit" data-toggle="tab">{{ _("URL") }}</a></li>
-    <li><a href="#github" data-toggle="tab">{{ _("Github Subscription") }}</a></li>
-    <li><a href="#massgithub" data-toggle="tab">{{ _("Github One Time") }}</a></li>
-
+    <li><a href="#massgithub" data-toggle="tab">{{ _("GitHub: One Time") }}</a></li>
+    <li><a href="#github" data-toggle="tab">{{ _("GitHub: Subscription") }}</a></li>
   </ul>
+
   <div class="tab-content">
 
     <div id="massgithub" class="tab-pane">
-      <h4>From Github</h4>
+      <h4>From GitHub</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
-          Last update was {{ cache.updated | pretty_date}}
+          List of GitHub repositories last updated {{ cache.updated | pretty_date}}
           <button type="submit" class="btn btn btn-small pull-right">Refresh</button>
           {% else %}
           <button type="submit" class="btn btn-primary btn-small pull-right">Refresh</button>
         {% endif %}
       </form>
 
-      <p>Add repositories from GitHub, with no webhook to get updates when the repo is pushed to.</p>
+      <p>Select repositories to add from your GitHub account:</p>
 
         <form action="{{ url_for('settings.massgit') }}" method="POST">
           {% if cache %}
@@ -34,27 +35,29 @@
           {% else %}
             <p class="muted">Click 'Refresh' to update this list.</p>
           {% endif %}
+
+          <button type="submit" class="btn" data-confirm="Are you sure that each git repository contains fonts available under a libre license?">Add repos</button>
+
           <div class="alert alert-info">
 	          Repositories are cloned, which can take a while and your browser may show a timeout. If this happens, check the dashboard to confirm the repo has been cloned.
           </div>
-          <button type="submit" class="btn" data-confirm="Are you sure that each git repository contains fonts available under a libre license?">Submit</button>
           <p>TODO Pop up a dialog to confirm the repo has a libre license allowing you to copy it</p>
         </form>
 
     </div>
 
     <div id="github" class="tab-pane">
-      <h4>From Github with Subscription</h4>
+      <h4>From GitHub with Subscriptions</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
-          Last update was {{ cache.updated | pretty_date}}
+          List of GitHub repositories last updated {{ cache.updated | pretty_date}}
+          <button type="submit" class="btn btn btn-small pull-right">Refresh</button>
           {% else %}
-          Never updated
+          <button type="submit" class="btn btn btn-primary pull-right">Refresh</button>
         {% endif %}
-        <button type="submit" class="btn btn-info btn-small pull-right">Refresh</button>
       </form>
 
-      <p>To register/unregister github repository press <a class="btn btn-mini"><i class="icon-star-empty"></i></a> in project row</p>
+      <p>To add repositories from GitHub with webhooks to get updates when a repo is updated, click a <a class="btn btn-mini"><i class="icon-star-empty"></i></a></p>
 
       <table class="table table-striped">
         <thead>
