@@ -45,7 +45,7 @@ def git_clone(login, project_id, clone):
         }
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % params)
     if os.path.exists(project_dir):
-        run('git pull origin master', cwd=project_dir)
+        run('git pull origin master', shell= True, cwd=project_dir)
     else:
         run(CLONE_PREPARE_SH % params, shell=True, cwd=DATA_ROOT)
         # clone variable considered unsafe
