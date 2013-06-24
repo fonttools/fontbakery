@@ -1,17 +1,29 @@
 {% macro nav(active) -%}
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-pills">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
       {% if state.get('autoprocess') %}
-          <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Fonts</a></li>
-          <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
-          <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >Metadata edit</a></li>
-          <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >Description edit</a></li>
+          <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Files</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle"
+               data-toggle="dropdown"
+               href="#">
+                 Texts
+                 <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="nav-header">Editable</li>
+                <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >METADATA.json</a></li>
+                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
+                <li class="nav-header">Read Only</li>
+                <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
+                <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
+            </ul>
+          </li>
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
-          <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >Bakery.yaml</a></li>
-          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
+          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Test Log</a></li>
 
-          <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Update from git repository?"><i class="icon-chevron-up"></i> Update</a></li>
+          <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-primary" type="button"><i class="icon-chevron-up"></i> Pull from upstream</button></a></li>
       {% endif %}
     </ul>
 
