@@ -81,7 +81,7 @@ def addhook(full_name):
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('Github API access error, please try again later'))
+        flash(_('GitHub API access error, please try again later'))
         return redirect(url_for('settings.repos'))
 
     exist_id = False
@@ -146,7 +146,7 @@ def delhook(full_name):
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('Github API access error, please try again later'))
+        flash(_('GitHub API access error, please try again later'))
         return redirect(url_for('settings.repos')+"#tab_github")
 
     exist_id = False
