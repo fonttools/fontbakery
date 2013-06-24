@@ -1,0 +1,23 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Tests results") %}
+
+{% block body %}
+<h2>{{ _("Tests results") }} {{ project.clone }}</h2>
+
+{% from 'project/macros.html' import nav with context%}
+{{ nav('tests') }}
+
+
+{% for name in tests.keys() %}
+<h3> {{ name }}.ufo</h3>
+<pre>{{ tests[name] }}</pre>
+{% endfor %}
+
+<!-- <h3> Font.ufo </h3>
+<ul>
+    <li><i class="icon-circle text-error"></i> test_name, error code</li>
+    <li><i class="icon-circle text-success"></i> test_name</li>
+</ul>
+ -->
+
+{% endblock %}

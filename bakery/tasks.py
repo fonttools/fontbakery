@@ -6,6 +6,7 @@ from flask import json # require Flask > 0.10
 # from .extensions import celery
 import plistlib
 from .decorators import cached
+import checker.runner
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -304,4 +305,12 @@ def subset_process(login, project_id):
             }
             run(cmd, shell=True, cwd=_out)
     run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", shell=True, cwd=_out)
+
+def project_tests(login, project_id):
+    state = project_state_get(login, project_id)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+    result = {}
+    for name in state['out_ufo'].values():
+        result[name] = checker.runner.run_set(os.path.join(_out, name+'.ufo'))
+    return result
 

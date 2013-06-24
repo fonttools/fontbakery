@@ -199,3 +199,12 @@ def bakeryyaml(project_id):
     yaml = read_yaml(login = g.user.login, project_id = project_id)
     return render_template('project/yaml.html', project = project,
         state = state, yaml = yaml)
+
+@project.route('/<int:project_id>/tests', methods=['GET'])
+def tests(project_id):
+    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
+    project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    tests = project_tests(login = g.user.login, project_id = project_id)
+    return render_template('project/tests.html', project = project,
+        state = state, tests = tests)
+
