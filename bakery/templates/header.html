@@ -15,7 +15,6 @@
           {% endif %}
           {%- for path, caption in [
             (url_for('frontend.page', path='about'), _("About")),
-            (url_for('frontend.page', path='docs'), _("Docs")),
           ] %}
             <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
           {%- endfor %}
