@@ -13,7 +13,7 @@
   </ul>
   <div class="tab-content">
 
-    <div id="massgithub" class="tab-pane active">
+    <div id="massgithub" class="tab-pane">
       <h4>Github One Time</h4>
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
@@ -87,7 +87,7 @@
     </div>
 
 
-    <div id="owngit" class="tab-pane">
+    <div id="owngit" class="tab-pane active">
     <h4>Add Git Repository From URL</h4>
 
     <p>Enter a git clone string in the allowed format. If the repo requires a login, provide the username and password in the clone string. <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">Learn more...</a></p>
