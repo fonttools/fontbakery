@@ -10,6 +10,7 @@ pysqlite
 requests
 rauth
 robofab
+fonttools2
 
 # builder deps
 TTFQuery
