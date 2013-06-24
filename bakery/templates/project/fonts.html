@@ -7,14 +7,14 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
 
-<p>Fonts in project:</p>
+<h4>UFOs detected</h4>
 <ul>
 {% for folder, name in state['out_ufo'].items() %}
 <li>{{ name }} (<code>{{folder}}</code>)</li>
 {% endfor %}
 </ul>
 
-<h3>Files tree</h3>
+<h4>Repository tree</h4>
 
 <div class="tree">
 <ul>
