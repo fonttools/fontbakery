@@ -13,7 +13,7 @@ class UfoOpenTest(unittest.TestCase):
         # print(self.path)
 
     def test_if_itis_exsist(self):
-        """ This test check if file exists"""
+        """ This test check if file exists """
         self.assertEqual(os.path.exists(self.path), True)
 
     def test_is_ended_ufo(self):

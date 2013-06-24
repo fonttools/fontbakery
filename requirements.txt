@@ -9,6 +9,7 @@ gunicorn
 pysqlite
 requests
 rauth
+robofab
 
 # builder deps
 TTFQuery
