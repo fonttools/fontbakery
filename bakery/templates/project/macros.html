@@ -22,8 +22,6 @@
           </li>
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Test Log</a></li>
-
-          <li class="pull-right"><a href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-primary" type="button"><i class="icon-chevron-up"></i> Pull from upstream</button></a></li>
       {% endif %}
     </ul>
 
