@@ -33,9 +33,9 @@
       {%- endfor %}
     {% else %}
     <tr>
-        <td colspan="3">
-            <p class="muted">{{ _("List of available repositries is empty") }}</p>
-        </td>
+	    <td></td>
+        <td><p class="muted">{{ _("List of available repositories is empty") }}</td>
+	    <td><p><a href='/settings'><button class="btn btn-primary">Add some now</button></a>{# TODO make this link less brittle #}</p></td>
     </tr> 
     {% endif %}
   </tbody>
