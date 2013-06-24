@@ -19,10 +19,10 @@ bakery/static/bootstrap/css/bootstrap.css:
 bakery/static/jquery-2.0.0.min.js:
 	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
 
-bakery/static/ace/master.zip:
+bakery/static/ace/master:
 	cd bakery/static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
 
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master.zip
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
@@ -57,8 +57,8 @@ mail: setup
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
 
-# target: clear — remove working files and reinit initial data
-clear:
+# target: clean — remove working files and reinit initial data
+clean:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
 # target: help — this help
