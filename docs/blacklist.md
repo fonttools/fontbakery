@@ -1,4 +1,8 @@
-This is a list of vendor codes from Ethan of FontSquirrel
+title: TrueType and OpenType Font Vendor ID Lists
+
+Proprietary fonts should not be modified. This page lists [vendor code IDs found in SFNT files](http://www.microsoft.com/typography/otspec/os2.htm#vendid) that do not wish their fonts to be used in web services that modify fonts. The list started from one provided by EthanD Dunham at [FontSquirrel](http://www.fontsquirrel.com) on June 25 2013.
+
+Microsoft also maintains a [public list of vendor codes](http://www.microsoft.com/typography/links/vendorlist.aspx) to supplement this list.
 
 H&FJ=Hoefler & Frere-Jones
 EMGR=Emigre
