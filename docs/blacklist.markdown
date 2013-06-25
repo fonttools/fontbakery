@@ -4,6 +4,7 @@ Proprietary fonts should not be modified. This page lists [vendor code IDs found
 
 Microsoft also maintains a [public list of vendor codes](http://www.microsoft.com/typography/links/vendorlist.aspx) to supplement this list.
 
+```
 H&FJ=Hoefler & Frere-Jones
 EMGR=Emigre
 FSI=FontShop
@@ -60,3 +61,4 @@ OURT= Our Type
 FAT=Fatype
 EMT=Emtype
 SCTO=Schick Toikka
+```
