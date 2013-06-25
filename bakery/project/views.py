@@ -50,6 +50,12 @@ def setup(project_id):
                 flash(_("Wrong license_file value, must be an error"))
                 return render_template('project/setup.html', project = project, state = state,
                     subsetvals = DEFAULT_SUBSET_LIST)
+
+            if request.form.get('rename') == 'yes':
+                state['rename'] = True
+            else:
+                state['rename'] = False
+
             ufo_dirs = request.form.getlist('ufo_dirs')
             for i in ufo_dirs:
                 if i not in state['ufo_dirs']:
@@ -59,6 +65,9 @@ def setup(project_id):
                 if not state['out_ufo'].get(i):
                     # define font name based on ufo folder name.
                     state['out_ufo'][i] = i.split('/')[-1][:-4]
+                else:
+                    if state['rename'] == False:
+                        state['out_ufo'][i] = i.split('/')[-1][:-4]
             for i in state['out_ufo'].keys():
                 # don't want to delete other properties
                 if i not in ufo_dirs:
@@ -74,11 +83,6 @@ def setup(project_id):
                         subsetvals = DEFAULT_SUBSET_LIST)
 
             state['subset'] = subset_list
-
-            if request.form.get('rename') == 'yes':
-                state['rename'] = True
-            else:
-                state['rename'] = False
 
             if request.form.get('ttfautohintuse'):
                 state['ttfautohintuse'] = True
