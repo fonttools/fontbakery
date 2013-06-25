@@ -1,4 +1,4 @@
-from bakery import create_app
+from bakery import create_app, init_app
 from bakery.app import db
 
 app = create_app(app_name='bakery')
