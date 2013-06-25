@@ -117,6 +117,8 @@ def project_state_save(login, project_id, state):
     f.close()
 
 def project_state_push(login, project_id):
+    # TODO fix this
+    return False
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     try:
         run("git add bakery.yaml; git commit -m 'bakery.yaml robot update'", shell=True, cwd=_in)

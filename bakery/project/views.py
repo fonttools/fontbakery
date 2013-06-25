@@ -105,9 +105,9 @@ def setup(project_id):
 
                 # push check before project process
                 if project_state_push(login = g.user.login, project_id = project_id):
-                    flash('Project state pushed back to repository. You should be Dave ;)')
+                    flash('Project state in bakery.yaml pushed back to repository. You should be Dave ;)')
                 else:
-                    flash('Bakery cann\'t push data back')
+                    flash('Bakery can\'t push bakery.yaml back to repository. You should be Dave ;) TODO: THIS DOESNT WORK YET, see line 120 of bakery/tasks.py')
                 process_project(login = g.user.login, project_id = project_id)
                 remove_logger(fh)
                 return redirect(url_for('project.fonts', project_id=project_id))
