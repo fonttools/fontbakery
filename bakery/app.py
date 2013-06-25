@@ -18,6 +18,9 @@ __all__ = ['create_app']
 def create_app(app_name=__name__):
 
     app = Flask(app_name)
+    return app
+
+def init_app(app):
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
     app.register_blueprint(settings)
@@ -29,8 +32,6 @@ def create_app(app_name=__name__):
     error_pages(app)
     gvars(app)
     register_filters(app)
-
-    return app
 
 def extensions_fabrics(app):
     db.init_app(app)
