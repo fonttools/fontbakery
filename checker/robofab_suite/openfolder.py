@@ -34,7 +34,7 @@ class UfoOpenTest(unittest.TestCase):
             a = self.font['A']
         else:
             a = None
-        self.assertTrue(isinstance(a, robofab.objects.objectsRF.RGlyph))
+        self.assertIsInstance(a, robofab.objects.objectsRF.RGlyph)
 
     def test_is_fsType_eq_1(self):
         pass
