@@ -191,7 +191,7 @@ def addclone():
         db.session.add(project)
         db.session.commit()
 
-    flash(_("Repository successfully added to the list"))
+    flash(_("Repository successfully added to <a href='/'>the list</a>"))
     git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
@@ -235,7 +235,7 @@ def massgit():
             )
             db.session.add(project)
             db.session.commit()
-            flash(_("Repository %s successfully added to the list" % project.full_name))
+            flash(_("Repository %s successfully added to <a href='/'>the list</a>" % project.full_name))
             git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
 
     db.session.commit()
