@@ -19,10 +19,13 @@ bakery/static/bootstrap/css/bootstrap.css:
 bakery/static/jquery-2.0.0.min.js:
 	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
 
+bakery/static/font-awesome.zip:
+	cd bakery/static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
+
 bakery/static/ace/master:
 	cd bakery/static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
 
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
