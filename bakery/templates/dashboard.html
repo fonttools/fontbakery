@@ -17,32 +17,27 @@
   </thead>
 
   <tbody>
-    {% if repos %}
-      {% for item in repos -%}
-        <tr>
-          <td>{% if not item.state.get('autoprocess') %}<i class="icon-circle text-error"></i>{% else %} <i class="icon-circle text-success">{% endif %}</td>
-          <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a></td>
-          <td>
-          {% if item.yaml %}
-            <span class="muted">OK</span>
-            {% else %}
-            Setup this repo <a href="{{ url_for('project.fonts', project_id = item.id )}}">now</a>  
-          {% endif %}
-          </td>
-        </tr>
-      {%- endfor %}
-	    <tr>
-		    <td></td>
-	        <td></td>
-		    <td><p><a href='/settings'><button class="btn btn-primary">Add some more</button></a>{# TODO make this link less brittle #}</p></td>
-	    </tr> 
+    {% for item in repos -%}
+      <tr>
+        <td>{% if not item.state.get('autoprocess') %}<i class="icon-circle text-error"></i>{% else %} <i class="icon-circle text-success">{% endif %}</td>
+        <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+        <td>
+        {% if item.yaml %}
+          <span class="muted">OK</span>
+          {% else %}
+          Setup this repo <a href="{{ url_for('project.fonts', project_id = item.id )}}">now</a>  
+        {% endif %}
+        </td>
+      </tr>
     {% else %}
-    <tr>
-	    <td></td>
-        <td><p class="muted">{{ _("List of available repositories is empty") }}</td>
-	    <td><p><a href='/settings'><button class="btn btn-primary">Add some now</button></a>{# TODO make this link less brittle #}</p></td>
-    </tr> 
-    {% endif %}
+      <tr>
+        <td colspan="3">
+            <p class="muted lead" style="text-align: center; padding-top: 10px;">
+              {{ _("List of available repositories is empty") }}. Start by <a href='{{ url_for('settings.repos') }}'>adding</a> some.
+            </p>
+        </td>
+      </tr> 
+    {%- endfor %}
   </tbody>
 </table>
 
