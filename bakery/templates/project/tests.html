@@ -10,14 +10,33 @@
 
 {% for name in tests.keys() %}
 <h3> {{ name }}.ufo</h3>
-<pre>{{ tests[name] }}</pre>
-{% endfor %}
+{% set t =  tests[name]['sum'] %}
+{% set sl = tests[name]['success']|length|int %} 
+{% set el = tests[name]['error']|length|int %}
+{% set fl = tests[name]['failure']|length|int %}
 
-<!-- <h3> Font.ufo </h3>
+<div class="progress">
+  <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
+  <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+  <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
+</div>
+
 <ul>
-    <li><i class="icon-circle text-error"></i> test_name, error code</li>
-    <li><i class="icon-circle text-success"></i> test_name</li>
+
+  {% for item in tests[name]['failure'] %}
+    <li><i class="icon-circle text-warning"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
+  {% endfor %}
+
+  {% for item in tests[name]['error'] %}
+    <li><i class="icon-circle text-error"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
+  {% endfor %}
+
+  {% for item in tests[name]['success'] %}
+    <li class="muted"><i class="icon-circle text-success"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
+  {% endfor %}
+
 </ul>
- -->
+
+{% endfor %}
 
 {% endblock %}

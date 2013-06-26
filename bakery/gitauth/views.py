@@ -59,7 +59,6 @@ def authorized(next = None):
     session['user_id'] = user.id
     session['token'] = token
     g.user = user
-    print(user.id)
     flash('You were signed in')
 
     return redirect(next_url)

@@ -28,6 +28,15 @@ class UfoOpenTest(unittest.TestCase):
         """ Do font have glyph named 'A' """
         self.assertTrue(self.font.has_key('A'))
 
+    def test_failure(self):
+        """ This test failed """
+        self.assertTrue(False)
+
+    def test_error(self):
+        """ Unexpected error """
+        1/0
+        self.assertTrue(False)
+
     def test_a_is_glyph_instanse(self):
         """ Do font property A is proper type object """
         if self.font.has_key('A'):
