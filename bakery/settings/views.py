@@ -7,7 +7,7 @@ except ImportError:
 import logging
 from flask.ext.babel import gettext as _
 
-from flask import Blueprint, render_template, request, flash, g, redirect, url_for, session
+from flask import Blueprint, render_template, request, flash, g, redirect, url_for, session, Markup
 
 from ..extensions import github, db
 from ..decorators import login_required
@@ -191,7 +191,7 @@ def addclone():
         db.session.add(project)
         db.session.commit()
 
-    flash(_("Repository successfully added to <a href='/'>the list</a>"))
+    flash(Markup(_("Repository successfully added to <a href='/'>the list</a>")))
     git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
@@ -235,7 +235,7 @@ def massgit():
             )
             db.session.add(project)
             db.session.commit()
-            flash(_("Repository %s successfully added to <a href='/'>the list</a>" % project.full_name))
+            flash(Markup(_("Repository %s successfully added to <a href='/'>the list</a>" % project.full_name)))
             git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
 
     db.session.commit()

@@ -4,10 +4,9 @@ try:
 except ImportError:
     import json
 
-from flask import Blueprint, render_template, Response, g, flash, request, url_for, redirect
+from flask import Blueprint, render_template, Response, g
 from flask.ext.babel import gettext as _
 
-from ..decorators import login_required
 from ..extensions import pages
 from ..project.models import Project
 from ..tasks import check_yaml, project_state_get
