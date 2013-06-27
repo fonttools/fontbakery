@@ -1,9 +1,14 @@
 import os
-import unittest
 import robofab.world
 import robofab.objects
 
-class UfoOpenTest(unittest.TestCase):
+try:
+    from checker.base import BakeryTestCase as TestCase
+except ImportError:
+    from unittest import TestCase
+
+
+class UfoOpenTest(TestCase):
 
     path = '.'
 

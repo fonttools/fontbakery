@@ -1,7 +1,12 @@
-import unittest
 import fontforge
 
-class SimpleTest(unittest.TestCase):
+try:
+    from checker.base import BakeryTestCase as TestCase
+except ImportError:
+    from unittest import TestCase
+
+
+class SimpleTest(TestCase):
 
     path = '.'
 
