@@ -8,24 +8,20 @@ This project is under active development by Mikhail Kashkin and Dave Crossland.
 
 ## License
 
-This code distributed under the Apache License, Version 2.0.
-
-See [LICENSE.txt](LICENSE.txt) for full details.
+This software is distributed under the [Apache License, Version 2.0](LICENSE.txt), and has many dependencies under compatible licenses.
 
 ## Installation
 
-Install should be easy, and work on Mac OS X if you have XCode's Command Line Tools installed.
+The installation process is easy, and full instructions are maintained in the [INSTALL](./INSTALL.md) file.
 
-Full instructions in [INSTALL.md](./INSTALL.md) file.
+## Instructions
 
-### Instructions
-
-When you have installed environment run local webserver:
+After installation, this command will start the service on a localhost web server:
 
     $ make run
 
-Open http://localhost:5000/ in your browser
+Then open http://localhost:5000 in your browser
 
-During development process you probably need to be running a fake mail server,
+During the development process you will need to be running a fake mail server,
 
     make mail
