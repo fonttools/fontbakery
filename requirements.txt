@@ -1,7 +1,7 @@
 ## The following requirements were added by pip --freeze:
-Babel
 Flask
 Flask-Babel
+Babel
 Flask-FlatPages
 Flask-Mail
 Flask-SQLAlchemy
@@ -9,8 +9,9 @@ gunicorn
 pysqlite
 requests
 rauth
-robofab
 
-# builder deps
+# builder and checker
 TTFQuery
 fonttools2
+fontaine
+robofab
