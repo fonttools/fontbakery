@@ -6,6 +6,10 @@
 
 <div class="tabbable">
 
+    <div class="alert alert-info">
+        {{ _("When you click 'App Repo,' Bakery will download the repo which can take a while. Your browser may show a timeout. If this happens, check the dashboard to confirm the repo has been cloned.") }}
+    </div>
+
   <ul class="nav nav-tabs">
     <li class="active"><a href="#owngit" data-toggle="tab">{{ _("URL") }}</a></li>
     <li><a href="#massgithub" data-toggle="tab">{{ _("GitHub: One Time") }}</a></li>
@@ -36,12 +40,8 @@
             <p class="muted">{{ _("Click 'Refresh' to update this list.") }}</p>
           {% endif %}
 
-          <button type="submit" class="btn" data-confirm="{{ _('Are you sure that each git repository contains fonts available under a libre license?') }}">{{ _("Add repos") }}</button>
-
-          <div class="alert alert-info">
-	          {{ _("Repositories are cloned, which can take a while and your browser may show a timeout. If this happens, check the dashboard to confirm the repo has been cloned.") }}
-          </div>
-          <p>TODO Pop up a dialog to confirm the repo has a libre license allowing you to copy it</p>
+          <button type="submit" class="btn btn-primary" data-confirm="{{ _('Are you sure that each git repository contains fonts available under a libre license?') }}">{{ _("Add repos") }}</button>
+          <p>TODO Change the above button so that it pops up a dialog to confirm the repo has a libre license</p>
         </form>
 
     </div>
@@ -76,7 +76,7 @@
                 <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
                 <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
                 <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
-                <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-wrench"></i></a></td>
+                <td><a href="{{ item.html_url }}/settings/hooks" class="btn"><i class="icon-wrench"></i> </a></td>
               </tr>
             {%- endfor %}
           {% else %}
@@ -115,7 +115,7 @@
           {% for item in gitprojects -%}
             <tr>
               <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.clone }}</a></td>
-			  <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-danger btn-block" type="button" data-confirm="Delete this repo?">Delete</button></a></td>
+			  <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-block" type="button" data-confirm="Delete this repo?"><i class="icon-trash"></i> </button></a></td>
             </tr>
           {%- endfor %}
         {% else %}
