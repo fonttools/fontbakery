@@ -42,9 +42,9 @@ def authorized(next = None):
 
     user = User.get_or_init(me['login'])
 
-    if user.id is None:
-        # new record isn't saved yet
-        flash(_('Welcome to font bakery.'))
+    # if user.id is None:
+    #     new record isn't saved yet
+    #     flash(_('Welcome to Bakery.'))
 
     # update user data
     user.name = me['name']
