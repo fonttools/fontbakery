@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import robofab.world
 import robofab.objects
@@ -53,3 +54,15 @@ class UfoOpenTest(TestCase):
     def test_is_fsType_eq_1(self):
         pass
 
+    def has_character(self, unicodeString):
+        """Does this font include a glyph for the given unicode character?"""
+        # TODO check the glyph has at least 1 contour
+        character = unicodeString[0]
+        glyph = None
+        if self.font.has_key(character):
+            glyph = self.font[character]
+        self.assertIsInstance(glyph, robofab.objects.objectsRF.RGlyph)
+
+    def test_has_rupee(self):
+        u"""Does this font include a glyph for ₹, the Indian Rupee Sign codepoint?"""
+        has_character(self, u'₹')
