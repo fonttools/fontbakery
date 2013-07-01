@@ -5,13 +5,13 @@
 {% block body %}
 
 <h2>{{ _("Dashboard") }}</h2>
-<p>{{ _("List of available repositories.") }}</p>
+<p>{{ _("List of available repositories.") }} <a href='{{ url_for('settings.repos') }}'><button class="btn btn-small">{{ _("Add some more!") }}</button></a></p></p>
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th><i class="icon-circle muted"></i></th>
-      <th>Clone string</th>
+      <th>Clone String</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -25,7 +25,7 @@
         {% if item.yaml %}
           <span class="muted">OK</span>
           {% else %}
-          Setup this repo <a href="{{ url_for('project.fonts', project_id = item.id )}}">now</a>  
+          <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
         {% endif %}
         </td>
       </tr>
@@ -33,7 +33,7 @@
       <tr>
         <td colspan="3">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
-              {{ _("List of available repositories is empty") }}. <br />
+              {{ _("List of available repositories is empty") }}. <br /><br />
               <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary">Add some now</button></a>
             </p>
         </td>
