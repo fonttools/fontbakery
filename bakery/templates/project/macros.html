@@ -21,7 +21,7 @@
             </ul>
           </li>
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
-          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Test Log</a></li>
+          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests Log</a></li>
       {% endif %}
     </ul>
 
