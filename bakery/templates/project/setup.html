@@ -80,7 +80,7 @@
   <div class="control-group">
     <div class="controls">
       <input type="hidden" name="step" value="2"> 
-      <button type="submit" class="btn" {% if not state.get('autoprocess') %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?" {% endif %}>Submit</button>
+      <button type="submit" class="btn btn-primary" {% if not state.get('autoprocess') %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
     </div>
   </div>
 </form>
@@ -97,7 +97,7 @@ $(document).ready(function() {
         var form = $(this).closest('form');
 
         if (!$('#dataConfirmModal').length) {
-            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmYes">Yes</a><a class="btn btn-primary" id="dataConfirmNo">No</a></div></div>');
+            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">RFN Permission</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" id="dataConfirmNo">No</a></div></div>');
         } 
         $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
         $('#dataConfirmYes').click(function(ev){
