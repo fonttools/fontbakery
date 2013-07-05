@@ -11,7 +11,7 @@ all: setup
 # endif
 
 venv/bin/activate:
-	virtualenv --system-site-packages --distribute venv
+	virtualenv-2.7 --system-site-packages venv
 
 bakery/static/bootstrap/css/bootstrap.css:
 	cd bakery/static && curl -O http://twitter.github.io/bootstrap/assets/bootstrap.zip && unzip bootstrap.zip
@@ -25,12 +25,16 @@ bakery/static/font-awesome.zip:
 bakery/static/ace/master:
 	cd bakery/static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
 
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip
+bakery/static/socket.io.min.js:
+	cd bakery/static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js 
+
+# target: setup — bootstrap environment
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip bakery/static/socket.io.min.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
 run: venv/bin/activate requirements.txt
-	. venv/bin/activate; gunicorn -w 2 -b 0.0.0.0:5000 entry:app
+	. venv/bin/activate; gunicorn --config gunicorn_config.py entry:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o messages.pot .
@@ -48,9 +52,6 @@ updlang: venv/bin/activate
 
 celery: venv/bin/activate
 	. venv/bin/activate; celery -A entry-celery worker --loglevel=info -E
-
-freeze: venv/bin/activate
-	. venv/bin/activate; pip freeze -r requirements.dev.txt > requirements.txt
 
 # target: mail — run mailserver
 mail: setup

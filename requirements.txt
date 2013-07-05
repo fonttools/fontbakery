@@ -5,13 +5,21 @@ Babel
 Flask-FlatPages
 Flask-Mail
 Flask-SQLAlchemy
-gunicorn
 pysqlite
 requests
 rauth
+# celery
+# yota
+# alembic
 
 # builder and checker
 TTFQuery
 fonttools2
 fontaine
 robofab
+
+# async libs
+gunicorn==0.16.1
+gevent
+gevent-socketio
+gevent-subprocess

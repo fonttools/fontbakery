@@ -49,5 +49,5 @@ scripts/*.sfd
 # lint.jar from googlefontdirectory/tools/lint/
 scripts/lint.jar
 bakery/static/font-awesome/
-
+bakery/static/socket.io.min.js
 tmp/*
