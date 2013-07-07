@@ -25,4 +25,4 @@ if __name__ == '__main__':
         })
     from socketio.server import SocketIOServer
     SocketIOServer(('0.0.0.0', 5000), app,
-        namespace="socket.io", policy_server=False).serve_forever()
+        resource="socket.io", policy_server=False).serve_forever()
