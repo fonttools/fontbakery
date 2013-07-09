@@ -2,8 +2,6 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 
-from socketio import socketio_manage
-
 from bakery import create_app, init_app
 
 app = create_app(app_name='bakery')
