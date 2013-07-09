@@ -7,7 +7,10 @@ from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 # from ..extensions import db
-from ..tasks import *
+from ..tasks import (add_logger, git_clone, process_project, project_state_get,
+    project_state_save, project_state_push, remove_logger, read_tree, read_license,
+    read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
+    project_tests)
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -186,7 +189,7 @@ def description_save(project_id):
     save_description(login = g.user.login, project_id = project_id,
         description = request.form.get('description'))
     flash('Description saved')
-    return redirect(url_for('project.description_edit', project_id=project_id))
+    return redirect(url_for('project.description_edit', project_id=project_id, state=state))
 
 @project.route('/<int:project_id>/log', methods=['GET'])
 def buildlog(project_id):
