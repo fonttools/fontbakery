@@ -1,9 +1,10 @@
+from ..decorators import lazy_property
 from ..extensions import db
 
-# from ..tasks import (add_logger, git_clone, process_project, project_state_get,
-#     project_state_save, project_state_push, remove_logger, read_tree, read_license,
-#     read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
-#     project_tests)
+from ..tasks import (add_logger, git_clone, process_project, project_state_get,
+    project_state_save, project_state_push, remove_logger, read_tree, read_license,
+    read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
+    project_tests)
 
 class Project(db.Model):
     __tablename__ = 'project'
@@ -19,18 +20,22 @@ class Project(db.Model):
 
     builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
-    state = None
-
-
+    _state = None
 
     def cache_update(self, data):
         self.html_url = data['html_url']
         self.name = data['name']
         self.data = data
 
-    # def get_state(self, full = False):
-    #     if not self.state:
-    #         self.state = project_state_get(login = self.login, project_id = self.id, full = full)
+    @lazy_property
+    def state(self):
+        if not self._state:
+            self._state = project_state_get(login = self.login, project_id = self.id, full = True)
+        return self._state
+
+    def save_state(self):
+        assert(self._state)
+        project_state_save(login = self.login, project_id = self.id, state = self._state)
 
 
 class ProjectBuild(db.Model):

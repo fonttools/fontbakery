@@ -9,7 +9,7 @@
 {{ nav('setup') }}
 
 <form action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
-  {% for ufo, name in state['out_ufo'].items() %}
+  {% for ufo, name in project.state['out_ufo'].items() %}
   <div class="control-group">
     <label class="control-label" for="ufo-{{ ufo }}">New font name for font in <code>{{ ufo }}</code> folder</label>
     <div class="controls">

@@ -10,7 +10,7 @@
 
 <h4>UFOs detected</h4>
 <ul>
-{% for folder, name in state['out_ufo'].items() %}
+{% for folder, name in project.state['out_ufo'].items() %}
 <li>{{ name }} (<code>{{folder}}</code>)</li>
 {% endfor %}
 </ul>

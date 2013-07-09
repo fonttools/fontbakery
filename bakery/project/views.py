@@ -37,8 +37,8 @@ def bump():
 @login_required
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 def setup(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    state = project.state
 
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
@@ -98,7 +98,7 @@ def setup(project_id):
             # setup is done, now you can process files
             state['autoprocess'] = True
 
-            project_state_save(login = g.user.login, project_id = project_id, state = state)
+            project.save_state()
 
             if request.form.get('rename') == 'yes':
                 return render_template('project/setup2.html', project = project, state = state)
@@ -125,7 +125,7 @@ def setup(project_id):
                 else:
                     flash(_("Wrong parameter provided for ufo folder name"))
             state['out_ufo'] = out_ufo
-            project_state_save(login = g.user.login, project_id = project_id, state = state)
+            project.save_state()
 
             # push check before project process
             if project_state_push(login = g.user.login, project_id = project_id):
@@ -141,28 +141,25 @@ def setup(project_id):
 # @project.route('/<int:project_id>', methods=['GET'])
 @project.route('/<int:project_id>/', methods=['GET'])
 def fonts(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    if state.get('autoprocess'):
+    if project.state.get('autoprocess'):
         tree = read_tree(login = g.user.login, project_id = project_id)
-        return render_template('project/fonts.html', project = project, state = state, tree = tree)
+        return render_template('project/fonts.html', project = project, tree = tree)
     else:
         return redirect(url_for('project.setup', project_id = project_id))
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     license = read_license(login = g.user.login, project_id = project_id)
-    return render_template('project/license.html', project = project, state = state, license = license)
+    return render_template('project/license.html', project = project, license = license)
 
 @project.route('/<int:project_id>/ace', methods=['GET'])
 def ace(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     metadata, metadata_new = read_metadata(login = g.user.login, project_id = project_id)
     return render_template('project/ace.html', project = project,
-        state = state, metadata = metadata, metadata_new = metadata_new)
+        metadata = metadata, metadata_new = metadata_new)
 
 @project.route('/<int:project_id>/ace', methods=['POST'])
 def ace_save(project_id):
@@ -176,15 +173,13 @@ def ace_save(project_id):
 
 @project.route('/<int:project_id>/description_edit', methods=['GET'])
 def description_edit(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     description = read_description(login = g.user.login, project_id = project_id)
     return render_template('project/description.html', project = project,
-        state = state, description = description)
+        description = description)
 
 @project.route('/<int:project_id>/description_save', methods=['POST'])
 def description_save(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     save_description(login = g.user.login, project_id = project_id,
         description = request.form.get('description'))
@@ -193,25 +188,22 @@ def description_save(project_id):
 
 @project.route('/<int:project_id>/log', methods=['GET'])
 def buildlog(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     log = read_log(login = g.user.login, project_id = project_id)
     return render_template('project/log.html', project = project,
-        state = state, log = log)
+        log = log)
 
 @project.route('/<int:project_id>/yaml', methods=['GET'])
 def bakeryyaml(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     yaml = read_yaml(login = g.user.login, project_id = project_id)
     return render_template('project/yaml.html', project = project,
-        state = state, yaml = yaml)
+        yaml = yaml)
 
 @project.route('/<int:project_id>/tests', methods=['GET'])
 def tests(project_id):
-    state = project_state_get(login = g.user.login, project_id = project_id, full=True)
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     tests = project_tests(login = g.user.login, project_id = project_id)
     return render_template('project/tests.html', project = project,
-        state = state, tests = tests)
+        tests = tests)
 

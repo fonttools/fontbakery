@@ -2,7 +2,7 @@
 
     <ul class="nav nav-pills">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}"><i class="icon-cog"></i> Setup</a></li>
-      {% if state.get('autoprocess') %}
+      {% if project.state.get('autoprocess') %}
           <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Files</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle"
