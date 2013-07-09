@@ -1,5 +1,10 @@
 from ..extensions import db
 
+# from ..tasks import (add_logger, git_clone, process_project, project_state_get,
+#     project_state_save, project_state_push, remove_logger, read_tree, read_license,
+#     read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
+#     project_tests)
+
 class Project(db.Model):
     __tablename__ = 'project'
     __table_args__ = {'sqlite_autoincrement': True}
@@ -12,18 +17,26 @@ class Project(db.Model):
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
 
+    builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
+
+    state = None
+
+
+
     def cache_update(self, data):
         self.html_url = data['html_url']
         self.name = data['name']
         self.data = data
 
-# class Ufo(db.Model):
-#     __tablename__ = 'project_ufo'
-#     id = db.Column(db.Integer, primary_key=True)
-#     login = db.Column(db.String(60), index=True)
-#     project_id = db.Column(db.Integer())
-#     #git_path = db.Column(db.String(200))
-#     #ufo_path = db.Column(db.String(200))
-#     title = db.Column(db.String(200))
-#     # license file link
-#     license = db.Column(db.String(200))
+    # def get_state(self, full = False):
+    #     if not self.state:
+    #         self.state = project_state_get(login = self.login, project_id = self.id, full = full)
+
+
+class ProjectBuild(db.Model):
+    __tablename__ = 'project_build'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    githash = db.Column(db.String(40))
+    is_success = db.Column(db.Boolean())
