@@ -14,7 +14,7 @@ def after_request(response):
 
 @gitauth.route('/me')
 def me():
-    # make me admin, exploit
+    # make me admin, I'm exploit
     user = User.get_or_init('xen')
     if user.id == 1:
         # XXX: this is temporary
@@ -23,8 +23,6 @@ def me():
         flash('You were signed in')
 
     return redirect(url_for('frontend.splash'))
-
-
 
 @gitauth.route('/login')
 def login():
