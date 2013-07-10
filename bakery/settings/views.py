@@ -39,7 +39,7 @@ def repos():
 @login_required
 @settings.route('/update', methods=['POST'])
 def update():
-    auth = github.get_session(token = session['token'])
+    auth = github.get_session(token = g.user.token)
     if g.user is not None:
         resp = auth.get('/user/repos', data = {'type': 'public'})
         if resp.status_code == 200:
@@ -62,7 +62,7 @@ def update():
 @login_required
 @settings.route('/profile', methods=['GET', 'POST'])
 def profile():
-    auth = github.get_session(token = session['token'])
+    auth = github.get_session(token = g.user.token)
     _repos = None
     if g.user is not None:
         resp = auth.get('/user/repos', data = {'type': 'public'})
@@ -77,7 +77,7 @@ HOOK_URL = 'http://requestb.in/nrgo4inr'
 @login_required
 @settings.route('/addhook/<path:full_name>') #, methods=['GET'])
 def addhook(full_name):
-    auth = github.get_session(token = session['token'])
+    auth = github.get_session(token = g.user.token)
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
@@ -141,7 +141,7 @@ def addhook(full_name):
 @login_required
 @settings.route('/delhook/<path:full_name>', methods=['GET'])
 def delhook(full_name):
-    auth = github.get_session(token = session['token'])
+    auth = github.get_session(token = g.user.token)
 
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
     if old_hooks.status_code != 200:
