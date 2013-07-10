@@ -9,7 +9,6 @@ pysqlite
 requests
 rauth
 celery
-# yota
 # alembic
 
 # builder and checker
