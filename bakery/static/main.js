@@ -48,6 +48,8 @@ socket.on("disconnect", function(e) {
 
 socket.on('ping', function (data) {
     $('#notify').addClass('text-success');
+    $('#notify').addClass('icon-spin');
+    
     $('#notify').removeClass('muted');
     console.log(data);
     console.log(arguments);
