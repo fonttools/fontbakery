@@ -31,29 +31,41 @@ $(document).ready(function() {
 
 $(document).ready(function () {
 
-    var $notify = $('#notify');
-    io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
-    var socket = io.connect("/build");
-    socket.on('connect', function () {
-        console.log('Connected');
-    });
+var $notify = $('#notify');
+io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
+var socket = io.connect("/build");
+window.buildsocket = socket;
 
-    socket.on('disconnect', function () {
-        console.log('Goodbye!');
-    });
+socket.emit('hello', 'Browser'); 
 
-    socket.on('start', function (data) {
-        $('#notify').addClass('success');
-        $('#notify').removeClass('muted');
-        console.log(data);
-        console.log(arguments);
-    });
+socket.on("connect", function(e) {
+    console.log("Connected", arguments);
+});
 
-    socket.on('stop', function (data) {
-        $('#notify').removeClass('success');
-        $('#notify').addClass('muted');
-        console.log(data);
-        console.log(arguments);
-    });
+socket.on("disconnect", function(e) {
+    console.log("Disconnected", arguments);
+});
+
+socket.on('ping', function (data) {
+    $('#notify').addClass('text-success');
+    $('#notify').removeClass('muted');
+    console.log(data);
+    console.log(arguments);
+});
+
+
+socket.on('start', function (data) {
+    $('#notify').addClass('text-success');
+    $('#notify').removeClass('muted');
+    console.log(data);
+    console.log(arguments);
+});
+
+socket.on('stop', function (data) {
+    $('#notify').removeClass('text-success');
+    $('#notify').addClass('muted');
+    console.log(data);
+    console.log(arguments);
+});
 
 });

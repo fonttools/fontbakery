@@ -8,10 +8,10 @@ from .extensions import db, mail, pages #, celery
 # blueprints
 from .gitauth import gitauth
 from .frontend import frontend
+from .realtime import realtime
 from .api import api
 from .settings import settings
 from .project import project
-
 # For import *
 __all__ = ['create_app']
 
@@ -23,6 +23,7 @@ def create_app(app_name=__name__):
 def init_app(app):
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
+    app.register_blueprint(realtime)
     app.register_blueprint(settings)
     app.register_blueprint(api)
     # keep it last
