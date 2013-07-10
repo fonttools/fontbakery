@@ -1,20 +1,20 @@
-$(document).ready(function() {
-    $("#searchfield").typeahead({
-        minLength: 2,
-        source: function(query, process) {
-            $.post('/quicksearch', { q: query, limit: 8 }, function(data) {
-                process(JSON.parse(data));
-            });
-        },
-        updater: function (item) {
-            document.location = "/" +item;
-            return item;
-        },
-        matcher: function (item) {
-            return true;
-        }
-    });
-});
+// $(document).ready(function() {
+//     $("#searchfield").typeahead({
+//         minLength: 2,
+//         source: function(query, process) {
+//             $.post('/quicksearch', { q: query, limit: 8 }, function(data) {
+//                 process(JSON.parse(data));
+//             });
+//         },
+//         updater: function (item) {
+//             document.location = "/" +item;
+//             return item;
+//         },
+//         matcher: function (item) {
+//             return true;
+//         }
+//     });
+// });
 
 $(document).ready(function() {
     $('a[data-confirm]').click(function(ev) {
@@ -27,4 +27,33 @@ $(document).ready(function() {
         $('#dataConfirmModal').modal({show:true});
         return false;
     });
+});
+
+$(document).ready(function () {
+
+    var $notify = $('#notify');
+    io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
+    var socket = io.connect("/build");
+    socket.on('connect', function () {
+        console.log('Connected');
+    });
+
+    socket.on('disconnect', function () {
+        console.log('Goodbye!');
+    });
+
+    socket.on('start', function (data) {
+        $('#notify').addClass('success');
+        $('#notify').removeClass('muted');
+        console.log(data);
+        console.log(arguments);
+    });
+
+    socket.on('stop', function (data) {
+        $('#notify').removeClass('success');
+        $('#notify').addClass('muted');
+        console.log(data);
+        console.log(arguments);
+    });
+
 });
