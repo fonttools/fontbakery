@@ -39,33 +39,40 @@ window.buildsocket = socket;
 socket.emit('hello', 'Browser'); 
 
 socket.on("connect", function(e) {
+    $('#notify').addClass('text-success');
+    $('#notify').removeClass('muted');
     console.log("Connected", arguments);
 });
 
 socket.on("disconnect", function(e) {
+    $('#notify').addClass('muted');
+    $('#notify').removeClass('text-success');
     console.log("Disconnected", arguments);
 });
 
 socket.on('ping', function (data) {
-    $('#notify').addClass('text-success');
-    $('#notify').addClass('icon-spin');
-    
-    $('#notify').removeClass('muted');
+    // $('#notify').addClass('text-success');
+    // $('#notify').addClass('icon-spin');
+    // $('#notify').removeClass('muted');
     console.log(data);
     console.log(arguments);
 });
 
 
 socket.on('start', function (data) {
-    $('#notify').addClass('text-success');
-    $('#notify').removeClass('muted');
+    $('#notify')
+        .removeClass('icon-circle')
+        .addClass('icon-spin')
+        .addClass('icon-refresh');
     console.log(data);
     console.log(arguments);
 });
 
 socket.on('stop', function (data) {
-    $('#notify').removeClass('text-success');
-    $('#notify').addClass('muted');
+    $('#notify')
+        .addClass('icon-circle')
+        .removeClass('icon-spin')
+        .removeClass('icon-refresh');
     console.log(data);
     console.log(arguments);
 });
