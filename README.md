@@ -24,4 +24,4 @@ Then open http://localhost:5000 in your browser
 
 During the development process you will need to be running a fake mail server,
 
-    make mail
+    $ make mail
