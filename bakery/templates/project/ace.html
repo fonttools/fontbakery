@@ -10,26 +10,38 @@
 
 <form class="form-horizontal" action="{{ url_for('project.ace_save', project_id = project.id)}}" method="POST">
 
+{% if metadata_new %}
+<div style="width: 48%; float:left">
+<h4>METADATA.json imported from upstream repo</h4>
+<div id="editor"></div>
+<textarea name="metadata">{{ metadata }}</textarea>
+</div>
+
+<div style="width: 48%; float: right">
+<h4>METADATA.json.new generated from files</h4>
+<div id="editor_new"></div>
+<pre id="metadata_new">{{ metadata_new }}</pre> <!-- TODO: stop this from wrapping internally with CSS -->
+</div>
+
+<div style="width: 100%; clear:both">
+
+<div class="pull-right">
+    <label class="radio">
+      Delete <tt>METADATA.json.new</tt>?
+      <input type="checkbox" name="delete" id="delete" value="1" checked>
+    </label>
+</div>
+
+</div>
+{% else %}
+
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
 
-{% if metadata_new %}
-
-<pre id="metadata_new">{{ metadata_new }}</pre>
-
-<div class="control-group">
-    <div class="controls">
-    <label class="radio">
-      <input type="checkbox" name="delete" id="delete" value="1" checked>
-      Delete 'METADATA.new.json'
-    </label>
-    </div>
-</div>
 {% endif %}
 
-<div>
-  <button type="submit" class="btn">Submit</button>
-</div>
+<p style="margin-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
+
 </form>
 
 {% endblock %}
@@ -49,6 +61,18 @@ editor.getSession().setValue(textarea.val());
 editor.getSession().on('change', function(){
   textarea.val(editor.getSession().getValue());
 });
+
+var editorNew = ace.edit("editor_new");
+editorNew.setTheme("ace/theme/solarized_light");
+editorNew.getSession().setMode("ace/mode/json");
+
+// var textarea = $('textarea[name="metadata"]');
+var textareaNew = $('textarea[name="metadata_new"]').hide();
+editorNew.getSession().setValue(textareaNew.val());
+editorNew.getSession().on('change', function(){
+  textareaNew.val(editorNew.getSession().getValue());
+});
+
 
 </script>
 
