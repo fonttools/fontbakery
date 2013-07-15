@@ -1,50 +1,57 @@
 import logging
 
-from flask import Response
+import gevent
+from flask import Response, current_app
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
+from socketio.mixins import BroadcastMixin
+from flask.ext.rq import get_connection
+from rq import Worker
 
 from flask import (Blueprint, request)
 
 realtime = Blueprint('realtime', __name__)
 
-# The socket.io namespace
-class HelloNamespace(BaseNamespace):
 
-    def on_hello(self, data):
-        print "hello", data
-        self.emit('greetings', {'from': 'sockets'})
+class BuildNamespace(BaseNamespace, BroadcastMixin):
 
-class BuildNamespace(BaseNamespace):
+    def __init__(self, *args, **kwargs):
+        r = kwargs.get('request', None)
+        if hasattr(r, '_conn'):
+            self._conn = r._conn
+        super(BuildNamespace, self).__init__(*args, **kwargs)
 
-    def initialize(self):
-        print("Socketio session started")
+    # def initialize(self):
+    #     print("Socketio session started")
 
-    # def logreader(self, project_id):
+    # def on_start(self):
+    #     self.emit('start', {})
 
-    #     pass
+    # def on_stop(self):
+    #     self.emit('stop', {})
 
-    # def on_subscribe(self, project_id):
-    #     self.spawn(self.logreader, project_id)
+    # def on_hello(self, message):
+    #     print(message)
+    #     self.emit('ping', {})
 
-    def on_start(self):
-        self.emit('start', {})
+    # def recv_message(self, message):
+    #     print ("PING!!!", message)
 
-    def on_stop(self):
-        self.emit('stop', {})
-
-    def on_hello(self, message):
-        print(message)
-        self.emit('ping', {})
-
-    def recv_message(self, message):
-        print ("PING!!!", message)
-
+    def recv_connect(self):
+        def check_queue():
+            while True:
+                if any([w.state != 'idle' for w in Worker.all(self._conn)]):
+                    self.emit('start', {})
+                else:
+                    self.emit('stop', {})
+                gevent.sleep(0.3)
+        self.spawn(check_queue)
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):
+    real_request = request._get_current_object()
+    real_request._conn = get_connection()
     socketio_manage(request.environ, {
-        '/chat': HelloNamespace,
         '/build': BuildNamespace,
-        }, request)
+        }, request=real_request)
     return Response()
