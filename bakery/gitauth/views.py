@@ -14,7 +14,9 @@ def after_request(response):
 
 @gitauth.route('/me')
 def me():
-    # make me admin, I'm exploit
+    # Visit this URL and log the user in as Mikhail's 'xen' username
+    # This enables developers to work offline when they have no access to github authentication
+    # FOR MULTI USER INSTALLATIONS THIS IS AN EXPLOIT :)
     user = User.get_or_init('xen')
     if user.id == 1:
         # XXX: this is temporary
