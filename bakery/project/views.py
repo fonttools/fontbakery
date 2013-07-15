@@ -38,7 +38,7 @@ def bump():
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 def setup(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    state = project.state
+    state = p.state
 
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
@@ -104,16 +104,16 @@ def setup(project_id):
                 return render_template('project/setup2.html', project = p, state = state)
             else:
                 flash(_("Repository %s has been updated" % p.clone))
-                fh = add_logger(login = g.user.login, project_id = project_id)
+                fh = add_logger(login = g.user.login, project_id = p.id)
 
                 # push check before project process
-                if project_state_push(login = g.user.login, project_id = project_id):
+                if project_state_push(login = g.user.login, project_id = p.id):
                     flash('Project state in bakery.yaml pushed back to repository. You should be Dave ;)')
                 else:
                     flash('Bakery can\'t push bakery.yaml back to repository. You should be Dave ;) TODO: THIS DOESNT WORK YET, see line 120 of bakery/tasks.py')
-                process_project(login = g.user.login, project_id = project_id)
+                process_project(login = g.user.login, project_id = p.id)
                 remove_logger(fh)
-                return redirect(url_for('project.fonts', project_id=project_id))
+                return redirect(url_for('project.fonts', project_id=p.id))
         elif request.form.get('step')=='3':
             out_ufo = {}
             for param, value in request.form.items():
@@ -128,25 +128,25 @@ def setup(project_id):
             p.save_state()
 
             # push check before project process
-            if project_state_push(login = g.user.login, project_id = project_id):
+            if project_state_push(login = g.user.login, project_id = p.id):
                 flash('Project state pushed back to repository. You should be Dave ;)')
             else:
                 flash('Bakery cann\'t push data back')
-            process_project(login = g.user.login, project_id = project_id)
-            return redirect(url_for('project.fonts', project_id=project_id))
+            process_project(login = g.user.login, project_id = p.id)
+            return redirect(url_for('project.fonts', project_id=p.id))
         else:
             flash(_("Strange behaviour detected"))
-            return redirect(url_for('project.fonts', project_id=project_id))
+            return redirect(url_for('project.fonts', project_id=p.id))
 
 # @project.route('/<int:project_id>', methods=['GET'])
 @project.route('/<int:project_id>/', methods=['GET'])
 def fonts(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first()
     if p.state.get('autoprocess'):
-        tree = read_tree(login = g.user.login, project_id = project_id)
+        tree = read_tree(login = g.user.login, project_id = p.id)
         return render_template('project/fonts.html', project = p, tree = tree)
     else:
-        return redirect(url_for('project.setup', project_id = project_id))
+        return redirect(url_for('project.setup', project_id = p.id))
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):

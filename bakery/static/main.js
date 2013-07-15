@@ -36,8 +36,6 @@ io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
 var socket = io.connect("/build");
 window.buildsocket = socket;
 
-socket.emit('hello', 'Browser'); 
-
 socket.on("connect", function(e) {
     $('#notify').addClass('text-success');
     $('#notify').removeClass('muted');
@@ -50,13 +48,13 @@ socket.on("disconnect", function(e) {
     console.log("Disconnected", arguments);
 });
 
-socket.on('ping', function (data) {
-    // $('#notify').addClass('text-success');
-    // $('#notify').addClass('icon-spin');
-    // $('#notify').removeClass('muted');
-    console.log(data);
-    console.log(arguments);
-});
+// socket.on('ping', function (data) {
+//     // $('#notify').addClass('text-success');
+//     // $('#notify').addClass('icon-spin');
+//     // $('#notify').removeClass('muted');
+//     console.log(data);
+//     console.log(arguments);
+// });
 
 
 socket.on('start', function (data) {

@@ -37,11 +37,17 @@ def add_logger(login, project_id):
 def remove_logger(fh):
     logger.removeHandler(fh)
 
-
 @job
 def clone_and_process(p):
     git_clone(login = p.login, project_id = p.id, clone = p.clone)
     process_project(login = p.login, project_id = p.id)
+
+
+@job
+def logged_process():
+    pass
+
+
 
 @job
 def git_clone(login, project_id, clone):
