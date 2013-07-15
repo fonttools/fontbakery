@@ -10,7 +10,7 @@ from ..decorators import login_required
 from ..tasks import (add_logger, git_clone, process_project, project_state_get,
     project_state_save, project_state_push, remove_logger, read_tree, read_license,
     read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
-    project_tests)
+    project_tests, clone_and_process)
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -29,8 +29,7 @@ def bump():
     project_id = request.args.get('project_id')
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
     logging.info('Update for project %s by %s' % (project_id, g.user.login))
-    git_clone(login = g.user.login, project_id = project.id, clone=project.clone)
-    process_project(login = g.user.login, project_id = project_id)
+    clone_and_process.delay(project)
     flash(_("Git %s was updated" % project.clone))
     return redirect(url_for('project.fonts', project_id = project_id))
 

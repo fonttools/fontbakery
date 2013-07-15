@@ -7,9 +7,6 @@ db = SQLAlchemy()
 from flask.ext.mail import Mail
 mail = Mail()
 
-from celery import Celery
-celery = Celery()
-
 from rauth.service import OAuth2Service
 
 GITHUB_CLIENT_ID = '4a1a8295dacab483f1b5'
@@ -26,3 +23,7 @@ github = OAuth2Service(
 
 from flask_flatpages import FlatPages
 pages = FlatPages()
+
+
+from flask.ext.rq import RQ
+rq = RQ()

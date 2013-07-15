@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template, g, session
 from flaskext.babel import Babel
 
-from .extensions import db, mail, pages #, celery
+from .extensions import db, mail, pages, rq #, celery
 
 # blueprints
 from .gitauth import gitauth
@@ -39,14 +39,13 @@ def extensions_fabrics(app):
     mail.init_app(app)
     babel = Babel(app)
     pages.init_app(app)
+    rq.init_app(app)
     # github.init_app(app)
 
     @babel.localeselector
     def get_locale():
         accept_languages = app.config.get('ACCEPT_LANGUAGES')
         return request.accept_languages.best_match(accept_languages)
-
-    # celery.config_from_object(app.config)
 
 def error_pages(app):
     # define error pages

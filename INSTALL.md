@@ -13,6 +13,7 @@ You need to have installed:
 - libevent
 - fontforge (including its python module)
 - ttfautohint
+- Redis 
 
 If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/homebrew/) project. Follow brew installation instructions and after:
 
@@ -20,7 +21,8 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	...
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
-	$
+	$ brew install redis
+	# follow instructions to run redis with default configuration
 
 	$ sudo easy_install-2.7 -U pip;
 	$ sudo easy_install-2.7 -U virtualenv;
@@ -72,6 +74,10 @@ Init database tables:
 And run project:
 
 	$ make run
+
+Run tasks daemon worker in different console
+
+	$ make worker
 
 Open [http://localhost:5000/](http://localhost:5000/) in your browser
 
