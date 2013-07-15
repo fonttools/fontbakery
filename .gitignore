@@ -50,4 +50,5 @@ scripts/*.sfd
 scripts/lint.jar
 bakery/static/font-awesome/
 bakery/static/socket.io.min.js
+bakery/static/jquery.pjax.js
 tmp/*

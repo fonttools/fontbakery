@@ -8,7 +8,6 @@ Flask-SQLAlchemy
 pysqlite
 requests
 rauth
-celery
 # alembic
 
 # builder and checker
@@ -19,6 +18,12 @@ robofab
 
 # async libs
 gunicorn==0.16.1
+# cython
+#-e git://github.com/surfly/gevent.git@1.0rc2#egg=gevent
 gevent
 gevent-socketio
 gevent-subprocess
+
+# tasks processings
+Flask-RQ
+redis

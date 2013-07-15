@@ -4,11 +4,14 @@ SECRET_KEY = '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xc
 from os.path import dirname, abspath
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:////%s/data.sqlite' % dirname(abspath(__file__))
-CELERY_BROKER_URL = 'sqla+sqlite:////%s/celerydb.sqlite' % dirname(abspath(__file__))
-CELERY_RESULT_DBURI = "sqla+sqlite:////%s/celerydb.sqlite" % dirname(abspath(__file__))
-CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
-# echo enables verbose logging from SQLAlchemy.
-CELERY_RESULT_ENGINE_OPTIONS = {"echo": True}
+# CELERY_BROKER_URL = 'redis://localhost:6379',
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# # CELERY_BROKER_URL = 'sqla+sqlite:////%s/celerydb.sqlite' % dirname(abspath(__file__))
+# # CELERY_RESULT_DBURI = "sqla+sqlite:////%s/celerydb.sqlite" % dirname(abspath(__file__))
+# CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
+# # echo enables verbose logging from SQLAlchemy.
+# CELERY_RESULT_ENGINE_OPTIONS = {"echo": True}
 
 # default babel values
 BABEL_DEFAULT_LOCALE = 'en'

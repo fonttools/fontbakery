@@ -3,7 +3,7 @@ import os
 import subprocess
 import yaml
 from flask import json # require Flask > 0.10
-# from .extensions import celery
+from flask.ext.rq import job
 import plistlib
 from .decorators import cached
 import checker.runner
@@ -37,7 +37,13 @@ def add_logger(login, project_id):
 def remove_logger(fh):
     logger.removeHandler(fh)
 
-# @celery.task()
+
+@job
+def clone_and_process(p):
+    git_clone(login = p.login, project_id = p.id, clone = p.clone)
+    process_project(login = p.login, project_id = p.id)
+
+@job
 def git_clone(login, project_id, clone):
     git_clean(login, project_id)
     params = {'login': login,
@@ -52,7 +58,6 @@ def git_clone(login, project_id, clone):
         run(str(CLONE_SH % {'clone': clone}).split(), shell=False,
             cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
 
-# @celery.task()
 def git_clean(login, project_id):
     params = locals()
     params['root'] = DATA_ROOT
@@ -116,6 +121,7 @@ def project_state_save(login, project_id, state):
     f.write(yaml.safe_dump(state))
     f.close()
 
+@job
 def project_state_push(login, project_id):
     # TODO fix this
     return False
@@ -127,6 +133,7 @@ def project_state_push(login, project_id):
     except subprocess.CalledProcessError:
         return False
 
+@job
 def process_project(login, project_id):
     state = project_state_get(login, project_id)
     # yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())

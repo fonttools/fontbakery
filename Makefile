@@ -28,8 +28,11 @@ bakery/static/ace/master:
 bakery/static/socket.io.min.js:
 	cd bakery/static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js 
 
+bakery/static/jquery.pjax.js:
+	cd bakery/static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
+
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip bakery/static/socket.io.min.js
+setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip bakery/static/socket.io.min.js bakery/static/jquery.pjax.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
@@ -50,8 +53,9 @@ addlang: venv/bin/activate
 updlang: venv/bin/activate
 	. venv/bin/activate; pybabel update -i messages.pot -d translations
 
-celery: venv/bin/activate
-	. venv/bin/activate; celery -A entry-celery worker --loglevel=info -E
+# target: worker — background tasks worker
+worker: venv/bin/activate
+	. venv/bin/activate; rqworker
 
 # target: mail — run mailserver
 mail: setup
