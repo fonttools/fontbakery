@@ -135,7 +135,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+    git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
     return redirect(url_for('settings.repos')+"#tab_github")
 
 @login_required
@@ -170,7 +170,7 @@ def delhook(full_name):
         db.session.delete(project)
         db.session.commit()
 
-    git_clean(login = g.user.login, project_id = project.id)
+    git_clean.delay(login = g.user.login, project_id = project.id)
     return redirect(url_for('settings.repos')+"#tab_github")
 
 @login_required
@@ -192,7 +192,7 @@ def addclone():
         db.session.commit()
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-    git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+    git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
 @login_required
@@ -207,7 +207,7 @@ def delclone():
     db.session.delete(project)
     db.session.commit()
     flash(_("Repository succesfuly deleted"))
-    git_clean(login = g.user.login, project_id = project.id)
+    git_clean.delay(login = g.user.login, project_id = project.id)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
 @login_required
@@ -219,7 +219,7 @@ def massgit():
     pfn = {}
     for p in projects:
         if p.full_name not in git_ids:
-            git_clean(login = g.user.login, project_id = p.id)
+            git_clean.delay(login = g.user.login, project_id = p.id)
             db.session.delete(p)
             flash(_("Repository %s successfully deleted" % p.full_name))
         pfn[p.full_name] = p
@@ -236,7 +236,7 @@ def massgit():
             db.session.add(project)
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-            git_clone(login = g.user.login, project_id = project.id, clone = project.clone)
+            git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
 
     db.session.commit()
     return redirect(url_for('settings.repos')+"#tab_massgithub")

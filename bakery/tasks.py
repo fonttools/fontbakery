@@ -42,7 +42,6 @@ def clone_and_process(project):
     git_clone(login = project.login, project_id = project.id, clone = project.clone)
     process_project(login = project.login, project_id = project.id)
 
-
 @job
 def logged_process(project):
     # fh = add_logger(login = project.login, project_id = project.id)
