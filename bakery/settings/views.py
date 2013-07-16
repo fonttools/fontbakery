@@ -7,7 +7,7 @@ except ImportError:
 import logging
 from flask.ext.babel import gettext as _
 
-from flask import Blueprint, render_template, request, flash, g, redirect, url_for, session, Markup
+from flask import Blueprint, render_template, request, flash, g, redirect, url_for, Markup
 
 from ..extensions import github, db
 from ..decorators import login_required
