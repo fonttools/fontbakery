@@ -94,7 +94,8 @@ def project_state_get(login, project_id, full=False):
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
     dir_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if os.path.exists(yml):
-        state = yaml.load(open(yml, 'r').read())
+        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml'), 'r').read()) # the same dir
+        state.update(yaml.load(open(yml, 'r').read()))
     else:
         state = yaml.load(open(os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml'), 'r').read()) # the same dir
 
