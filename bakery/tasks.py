@@ -38,16 +38,18 @@ def remove_logger(fh):
     logger.removeHandler(fh)
 
 @job
-def clone_and_process(p):
-    git_clone(login = p.login, project_id = p.id, clone = p.clone)
-    process_project(login = p.login, project_id = p.id)
+def clone_and_process(project):
+    git_clone(login = project.login, project_id = project.id, clone = project.clone)
+    process_project(login = project.login, project_id = project.id)
 
 
 @job
-def logged_process():
-    pass
-
-
+def logged_process(project):
+    # fh = add_logger(login = project.login, project_id = project.id)
+    # # push check before project process
+    project_state_push(login = project.login, project_id = project.id)
+    process_project(login = project.login, project_id = project.id)
+    # remove_logger(fh)
 
 @job
 def git_clone(login, project_id, clone):
@@ -130,12 +132,15 @@ def project_state_save(login, project_id, state):
 @job
 def project_state_push(login, project_id):
     # TODO fix this
-    return False
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     try:
-        run("git add bakery.yaml; git commit -m 'bakery.yaml robot update'", shell=True, cwd=_in)
-        run("git push origin master", shell=True, cwd=_in)
-        return True
+        if prun("git rev-list HEAD...origin/master --count") != '0':
+            # pull needed, remote is updated
+            return False
+        else:
+            run("git add bakery.yaml; git commit -m 'bakery.yaml robot update'", shell=True, cwd=_in)
+            run("git push origin master", shell=True, cwd=_in)
+            return True
     except subprocess.CalledProcessError:
         return False
 

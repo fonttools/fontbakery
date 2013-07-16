@@ -8,9 +8,8 @@ from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 # from ..extensions import db
-from ..tasks import (add_logger, process_project, project_state_push, remove_logger, read_tree, read_license,
-    read_metadata, save_metadata, read_description, save_description, read_log, read_yaml,
-    project_tests, clone_and_process)
+from ..tasks import (read_tree, read_license, read_metadata, save_metadata, read_description,
+    save_description, read_log, read_yaml, project_tests, clone_and_process, logged_process)
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -104,15 +103,7 @@ def setup(project_id):
                 return render_template('project/setup2.html', project = p, state = state)
             else:
                 flash(_("Repository %s has been updated" % p.clone))
-                fh = add_logger(login = g.user.login, project_id = p.id)
-
-                # push check before project process
-                if project_state_push(login = g.user.login, project_id = p.id):
-                    flash('Project state in bakery.yaml pushed back to repository. You should be Dave ;)')
-                else:
-                    flash('Bakery can\'t push bakery.yaml back to repository. You should be Dave ;) TODO: THIS DOESNT WORK YET, see line 120 of bakery/tasks.py')
-                process_project(login = g.user.login, project_id = p.id)
-                remove_logger(fh)
+                logged_process.delay(p)
                 return redirect(url_for('project.fonts', project_id=p.id))
         elif request.form.get('step')=='3':
             out_ufo = {}
@@ -128,11 +119,7 @@ def setup(project_id):
             p.save_state()
 
             # push check before project process
-            if project_state_push(login = g.user.login, project_id = p.id):
-                flash('Project state pushed back to repository. You should be Dave ;)')
-            else:
-                flash('Bakery cann\'t push data back')
-            process_project(login = g.user.login, project_id = p.id)
+            logged_process.delay(p)
             return redirect(url_for('project.fonts', project_id=p.id))
         else:
             flash(_("Strange behaviour detected"))
