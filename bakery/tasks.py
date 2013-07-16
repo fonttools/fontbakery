@@ -119,8 +119,16 @@ def project_state_get(login, project_id, full=False):
     state['txt_files'] = txt_files
     state['ufo_dirs'] = ufo_dirs
 
+    # if lincense_file not defined then choose OFL.txt or LICENSE.txt from the root of repo
+    if not state['license_file']:
+        for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
+            if os.path.exists(os.path.join(dir_in, fn)):
+                state['license_file'] = fn
+                break
+
     if os.path.exists(state['license_file']):
         state['license_file_found'] = True
+
 
     return state
 
