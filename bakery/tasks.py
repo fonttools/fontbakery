@@ -112,32 +112,37 @@ def project_state_save(login, project_id, state):
 
 @job
 def project_git_sync(login, project_id, clone):
+    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
+
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
-        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir)
+        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
     if prun('git status -s --ignore-submodules=all -uno 2> /dev/null | tail -n1', cwd = project_dir):
         # check if any files are changed locally
-        run('git commit -a -m "Bakery automatic update"', cwd=project_dir)
+        run('git commit -a -m "Bakery automatic update"', cwd=project_dir, log=log)
     # fetch remote branch
     run('git fetch origin master', cwd = project_dir)
     # check in memory is it possible to merge
     if not prun("git merge-tree `git merge-base FETCH_HEAD master` FETCH_HEAD master | grep -w '+<<<\\|+>>>'", cwd = project_dir):
-        run('git pull', cwd = project_dir)
+        run('git pull', cwd = project_dir, log=log)
     else:
-        run("echo ERROR: Local conflict in repository. Needed to be fixed manually.", cwd = project_dir)
+        run("echo ERROR: Local conflict in repository. Needed to be fixed manually.", cwd = project_dir, log=log)
 
     # check if any difference between local and remote branch
     if prun("git rev-list HEAD...origin/master --count", cwd=project_dir) != '0':
-        run('git push origin master', cwd = project_dir)
+        run('git push origin master', cwd = project_dir, log=log)
 
-    run('git push origin master', cwd = project_dir)
+    run('git push origin master', cwd = project_dir, log=log)
 
     # child = prun('git rev-parse --short HEAD', cwd=project_dir)
     # hashno = child.stdout.readline().strip()
     # make current out folder
+
+    log.close()
+
 
 @job
 def process_project(login, project_id):
