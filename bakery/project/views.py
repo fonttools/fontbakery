@@ -144,7 +144,7 @@ def setup(project_id):
 @project.route('/<int:project_id>/', methods=['GET'])
 @login_required
 def fonts(project_id):
-    # this page can be visible by others
+    # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
     if p.state.get('autoprocess'):
         tree = read_tree(login = g.user.login, project_id = p.id)
