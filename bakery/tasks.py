@@ -30,16 +30,6 @@ def prun(command, cwd, log=None):
         log.write('\n@@Output: %s' % stdout)
     return stdout
 
-def add_logger(login, project_id):
-    fh = logging.FileHandler(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()))
-    fh.setLevel(logging.INFO)
-    logger.addHandler(fh)
-    logger.info('='*80)
-    return(fh)
-
-def remove_logger(fh):
-    logger.removeHandler(fh)
-
 @job
 def sync_and_process(project):
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone)
@@ -47,10 +37,11 @@ def sync_and_process(project):
 
 @job
 def git_clean(login, project_id):
-    CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
-    params = locals()
-    params['root'] = DATA_ROOT
-    run(CLEAN_SH % params)
+    return
+    # CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
+    # params = locals()
+    # params['root'] = DATA_ROOT
+    # run(CLEAN_SH % params)
 
 def check_yaml(login, project_id):
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), 'bakery.yaml')
@@ -150,19 +141,17 @@ def project_git_sync(login, project_id, clone):
 
 @job
 def process_project(login, project_id):
+    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
+
     state = project_state_get(login, project_id)
-    # yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
-    # if os.path.exists(yml):
-    #     # copy .bakery.yml
-    #     run(['cp', yml, os.path.join(_out, 'bakery.yaml')])
     for ufo, name in state['out_ufo'].items():
         if state['rename']:
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
-        run('cp -R %s %s' % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)))
+        run('cp -R %s %s' % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
         if state['rename']:
             finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
@@ -172,12 +161,14 @@ def process_project(login, project_id):
     # set of other commands
     if state['autoprocess']:
         # project should be processes only when setup is done
-        generate_fonts(login, project_id)
-        ttfautohint_process(login, project_id)
+        generate_fonts(login, project_id, log)
+        ttfautohint_process(login, project_id, log)
         # subset
-        subset_process(login, project_id)
-        generate_metadata(login, project_id)
-        lint_process(login, project_id)
+        subset_process(login, project_id, log)
+        generate_metadata(login, project_id, log)
+        lint_process(login, project_id, log)
+
+    log.close()
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
@@ -259,7 +250,7 @@ def read_yaml(login, project_id):
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
 
-def generate_fonts(login, project_id):
+def generate_fonts(login, project_id, log):
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
@@ -270,21 +261,20 @@ def generate_fonts(login, project_id):
         cmd_short = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
             'out': os.path.join(_out, name),
         }
-        run(cmd_short, cwd = scripts_folder)
+        run(cmd_short, cwd = scripts_folder, log=log)
 
-def generate_metadata(login, project_id):
+def generate_metadata(login, project_id, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    print(cmd % {'wd': ROOT, 'out': _out})
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
-def lint_process(login, project_id):
+def lint_process(login, project_id, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
-def ttfautohint_process(login, project_id):
+def ttfautohint_process(login, project_id, log):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
@@ -294,11 +284,11 @@ def ttfautohint_process(login, project_id):
                 'out': os.path.join(_out, name),
                 'src': os.path.join(_out, 'src', name),
             }
-            run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
+            run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
     else:
-        run("cp src/*.ttf .", cwd=_out)
+        run("cp src/*.ttf .", cwd=_out, log=log)
 
-def subset_process(login, project_id):
+def subset_process(login, project_id, log):
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     for subset in state['subset']:
@@ -316,8 +306,8 @@ def subset_process(login, project_id):
                 'name': name,
                 'wd': ROOT
             }
-            run(cmd, cwd=_out)
-    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", cwd=_out)
+            run(cmd, cwd=_out, log=log)
+    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", cwd=_out, log=log)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)

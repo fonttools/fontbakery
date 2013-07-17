@@ -29,7 +29,7 @@ def bump():
     #pylint:disable-msg=E1101
     p = Project.query.filter_by(login = g.user.login, id = project_id).first()
     logging.info('Update for project %s by %s' % (project_id, g.user.login))
-    sync_and_process(p)
+    sync_and_process.delay(p)
     flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.fonts', project_id = project_id))
 
