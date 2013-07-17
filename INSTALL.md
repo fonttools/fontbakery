@@ -15,23 +15,28 @@ You need to have installed:
 - ttfautohint
 - Redis 
 
-If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/homebrew/) project. Follow brew installation instructions and after:
+If you use Mac OS X, a convenient way to install such UNIX software is use [HomeBrew](http://mxcl.github.io/homebrew/). 
 
-	$ brew install python sqlite libevent fontforge ttfautohint
-	...
-	$ which easy_install-2.7 
-	/usr/local/share/python/easy_install-2.7
-	$ brew install redis
-	# To have launchd start redis at login:
-	$ ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
-	# Then to load redis now:
-	$ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+Install HomeBrew and then run these commands in the Terminal:
 
-	$ sudo easy_install-2.7 -U pip;
-	$ sudo easy_install-2.7 -U virtualenv;
+```sh
+    brew install python sqlite libevent fontforge ttfautohint redis
+    # To have launchd start redis at login:
+    ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+    # Then to load redis now:
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+```
 
-	$ echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
-	$ mkdir ~/.pip_download_cache;
+Then install the python dependencies for setting up the project's own python packages:
+
+```sh
+    which easy_install-2.7 
+    # /usr/local/share/python/easy_install-2.7
+    sudo easy_install-2.7 -U pip;
+    sudo easy_install-2.7 -U virtualenv;
+    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+    mkdir ~/.pip_download_cache;
+```
 
 Now your system should be ready.
 
@@ -41,20 +46,20 @@ Install your local environment is very easy. Project require some system program
 
 Clone Google Font Directory Mercurial Repository from Google Code into new folder:
 
-    $ hg clone https://code.google.com/p/googlefontdirectory/ 
+    hg clone https://code.google.com/p/googlefontdirectory/ 
 
 Clone code from github into new folder:
 
-	$ git clone https://github.com/xen/bakery.git bakery
+    git clone https://github.com/xen/fontbakery.git fontbakery
 
-Copy the Google Font Directory lint.jar tool into the bakery/scripts directory:
+Copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory:
 
-    $ cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar scripts/
+    cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar scripts/
 
 Then run setup:
 
-	$ cd bakery
-	$ make setup
+    cd fontbakery
+    make setup
 
 Wait some time.
 
@@ -63,24 +68,23 @@ default python interpreter (`which python`) is the same where you installed `fon
 
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. Or use this as example:
 
-	$ cat local.cfg
-	GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
-	GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
-	SQLALCHEMY_ECHO = True
+    GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
+    GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
+    SQLALCHEMY_ECHO = True
 
 Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
 
 Init database tables:
 
-	$ make init
+    make init
 
 And run project:
 
-	$ make run
+    make run
 
 Run tasks daemon worker in different console
 
-	$ make worker
+    make worker
 
 Open [http://localhost:5000/](http://localhost:5000/) in your browser
 
