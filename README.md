@@ -6,6 +6,10 @@ You give it a font project git repository, tell it which license the project is 
 
 This project is under active development by Mikhail Kashkin and Dave Crossland. 
 
+## Disclaimer
+
+This project was given financial support by Google Fonts team within Google, Inc. The copyright to contributions done with that financial support is owned by Google, Inc. but Bakery is not an official Google product.
+
 ## License
 
 This software is distributed under the [Apache License, Version 2.0](LICENSE.txt), and has many dependencies under compatible licenses.

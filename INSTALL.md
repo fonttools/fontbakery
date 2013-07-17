@@ -22,9 +22,9 @@ If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/hom
 	$ which easy_install-2.7 
 	/usr/local/share/python/easy_install-2.7
 	$ brew install redis
-	# follow instructions to run redis with default configuration
-	# probably it asks you to run this command:
-
+	# To have launchd start redis at login:
+	$ ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+	# Then to load redis now:
 	$ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
 
 	$ sudo easy_install-2.7 -U pip;

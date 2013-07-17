@@ -1,2 +1,2 @@
-Copyright (c) 2013 Mikhail Kashkin (mkashkin@gmail.com)
-Copyright (c) 2013 Dave Crossland (dave@understandinglimited.com)
+Mikhail Kashkin (mkashkin@gmail.com)
+Dave Crossland (dcrossland@google.com)
