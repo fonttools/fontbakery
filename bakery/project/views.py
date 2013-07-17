@@ -22,21 +22,21 @@ def before_request():
     if g.user:
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
-@login_required
 @project.route('/bump', methods=['GET'])
+@login_required
 def bump():
     project_id = request.args.get('project_id')
     #pylint:disable-msg=E1101
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     logging.info('Update for project %s by %s' % (project_id, g.user.login))
-    sync_and_process.delay(p)
+    sync_and_process(p)
     flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.fonts', project_id = project_id))
 
-@login_required
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
+@login_required
 def setup(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     state = p.state
 
     #import ipdb; ipdb.set_trace()
@@ -125,10 +125,9 @@ def setup(project_id):
             flash(_("Strange behaviour detected"))
             return redirect(url_for('project.fonts', project_id=p.id))
 
-# @project.route('/<int:project_id>', methods=['GET'])
 @project.route('/<int:project_id>/', methods=['GET'])
 def fonts(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     if p.state.get('autoprocess'):
         tree = read_tree(login = g.user.login, project_id = p.id)
         return render_template('project/fonts.html', project = p, tree = tree)
@@ -136,21 +135,24 @@ def fonts(project_id):
         return redirect(url_for('project.setup', project_id = p.id))
 
 @project.route('/<int:project_id>/license', methods=['GET'])
+@login_required
 def plicense(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     lic = read_license(login = g.user.login, project_id = p.id)
     return render_template('project/license.html', project = p, license = lic)
 
 @project.route('/<int:project_id>/ace', methods=['GET'])
+@login_required
 def ace(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     metadata, metadata_new = read_metadata(login = g.user.login, project_id = p.id)
     return render_template('project/ace.html', project = p,
         metadata = metadata, metadata_new = metadata_new)
 
 @project.route('/<int:project_id>/ace', methods=['POST'])
+@login_required
 def ace_save(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     save_metadata(login = g.user.login, project_id = p.id,
         metadata = request.form.get('metadata'),
         del_new = request.form.get('delete', None))
@@ -159,37 +161,42 @@ def ace_save(project_id):
 
 
 @project.route('/<int:project_id>/description_edit', methods=['GET'])
+@login_required
 def description_edit(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     description = read_description(login = g.user.login, project_id = p.id)
     return render_template('project/description.html', project = p,
         description = description)
 
 @project.route('/<int:project_id>/description_save', methods=['POST'])
+@login_required
 def description_save(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     save_description(login = g.user.login, project_id = p.id,
         description = request.form.get('description'))
     flash('Description saved')
     return redirect(url_for('project.description_edit', project_id=p.id))
 
 @project.route('/<int:project_id>/log', methods=['GET'])
+@login_required
 def buildlog(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     log = read_log(login = g.user.login, project_id = p.id)
     return render_template('project/log.html', project = p,
         log = log)
 
 @project.route('/<int:project_id>/yaml', methods=['GET'])
+@login_required
 def bakeryyaml(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     yaml = read_yaml(login = g.user.login, project_id = p.id)
     return render_template('project/yaml.html', project = p,
         yaml = yaml)
 
 @project.route('/<int:project_id>/tests', methods=['GET'])
+@login_required
 def tests(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first()
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     test_result = project_tests(login = g.user.login, project_id = p.id)
     return render_template('project/tests.html', project = p,
         tests = test_result)

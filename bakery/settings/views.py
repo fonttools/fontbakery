@@ -17,8 +17,8 @@ from ..tasks import sync_and_process, git_clean
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
-@login_required
 @settings.route('/', methods=['GET'])
+@login_required
 def repos():
     _repos = None
     cache = ProjectCache.query.filter_by(login=g.user.login).first()
@@ -36,8 +36,8 @@ def repos():
         gitprojects = mygit
     )
 
-@login_required
 @settings.route('/update', methods=['POST'])
+@login_required
 def update():
     auth = github.get_session(token = g.user.token)
     if g.user is not None:
@@ -59,8 +59,8 @@ def update():
             flash(_('Unable to load repos list.'))
     return redirect(url_for('settings.repos')+"#tab_massgithub")
 
-@login_required
 @settings.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
     auth = github.get_session(token = g.user.token)
     _repos = None
@@ -74,8 +74,8 @@ def profile():
 
 HOOK_URL = 'http://requestb.in/nrgo4inr'
 
-@login_required
 @settings.route('/addhook/<path:full_name>') #, methods=['GET'])
+@login_required
 def addhook(full_name):
     auth = github.get_session(token = g.user.token)
     old_hooks = auth.get('/repos/%s/hooks' % full_name)
@@ -138,8 +138,8 @@ def addhook(full_name):
     sync_and_process.delay(project)
     return redirect(url_for('settings.repos')+"#tab_github")
 
-@login_required
 @settings.route('/delhook/<path:full_name>', methods=['GET'])
+@login_required
 def delhook(full_name):
     auth = github.get_session(token = g.user.token)
 
@@ -173,8 +173,8 @@ def delhook(full_name):
     git_clean.delay(login = g.user.login, project_id = project.id)
     return redirect(url_for('settings.repos')+"#tab_github")
 
-@login_required
 @settings.route('/addclone', methods=['POST'])
+@login_required
 def addclone():
     clone = request.form.get('clone')
     dup = Project.query.filter_by(login = g.user.login, is_github=False, clone = clone).first()
@@ -195,8 +195,8 @@ def addclone():
     sync_and_process.delay(project)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
-@login_required
 @settings.route('/delclone/', methods=['GET'])
+@login_required
 def delclone():
     project_id = request.args.get('project_id')
     project = Project.query.filter_by(login = g.user.login, id = project_id).first()
@@ -210,8 +210,8 @@ def delclone():
     git_clean.delay(login = g.user.login, project_id = project.id)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
-@login_required
 @settings.route('/massgit/', methods=['POST'])
+@login_required
 def massgit():
     git_ids = request.form.getlist('git')
     projects = Project.query.filter_by(login = g.user.login, is_github=True).all()
