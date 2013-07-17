@@ -133,6 +133,9 @@ def project_state_get(login, project_id, full=False):
     return state
 
 def project_state_save(login, project_id, state):
+    # don't publish this property to user
+    if state.get('source', None):
+        del state['source']
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
     f = open(yml, 'w')
     f.write(yaml.safe_dump(state))
@@ -260,7 +263,7 @@ def read_log(login, project_id):
         return ''
 
 def read_yaml(login, project_id):
-    yaml_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    yaml_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
 
     if os.path.exists(yaml_file):
         return unicode(open(yaml_file, 'r').read(), "utf8")
