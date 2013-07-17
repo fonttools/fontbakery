@@ -142,8 +142,10 @@ def setup(project_id):
             return redirect(url_for('project.fonts', project_id=p.id))
 
 @project.route('/<int:project_id>/', methods=['GET'])
+@login_required
 def fonts(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    # this page can be visible by others
+    p = Project.query.get_or_404(project_id)
     if p.state.get('autoprocess'):
         tree = read_tree(login = g.user.login, project_id = p.id)
         return render_template('project/fonts.html', project = p, tree = tree)

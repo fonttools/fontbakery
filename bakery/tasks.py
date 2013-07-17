@@ -78,19 +78,31 @@ def rwalk(path):
             h[f] = rwalk(cf)
     return h
 
-# @cached
 def project_state_get(login, project_id, full=False):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
-    dir_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    if os.path.exists(yml):
-        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml'), 'r').read()) # the same dir
-        state.update(yaml.load(open(yml, 'r').read()))
+    local_yml = os.path.join(DATA_ROOT, '%(login)s/bakery.%(project_id)s.yaml' % locals())
+    project_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
+
+    # if project have its own bakery.yaml in git repo then use it
+    # if no, then use local bakery.$(project_id).yaml
+    # or fallback to default. This only can happends during development tests
+
+    if os.path.exists(project_yml):
+        state = yaml.load(open(default_yml, 'r').read())
+        state.update(yaml.load(open(project_yml, 'r').read()))
+        state['source'] = 'project'
+    elif os.path.exists(local_yml):
+        state = yaml.load(open(default_yml, 'r').read())
+        state.update(yaml.load(open(local_yml, 'r').read()))
+        state['source'] = 'local'
     else:
-        state = yaml.load(open(os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml'), 'r').read()) # the same dir
+        state = yaml.load(open(default_yml, 'r').read())
+        state['source'] = 'default'
 
     if not full:
-        # don't need to walk over all usef folders
         return state
+
+    dir_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
 
     txt_files = []
     ufo_dirs = []
@@ -118,11 +130,10 @@ def project_state_get(login, project_id, full=False):
     if os.path.exists(state['license_file']):
         state['license_file_found'] = True
 
-
     return state
 
 def project_state_save(login, project_id, state):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    yml = os.path.join(DATA_ROOT, '%(login)s/bakery.%(project_id)s.yaml' % locals())
     f = open(yml, 'w')
     f.write(yaml.safe_dump(state))
     f.close()
@@ -142,29 +153,12 @@ def project_git_sync(login, project_id, clone):
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
-    if prun('git status -s --ignore-submodules=all -uno 2> /dev/null | tail -n1', cwd = project_dir):
-        # check if any files are changed locally
-        run('git commit -a -m "Bakery automatic update"', cwd=project_dir, log=log)
-    # fetch remote branch
-    run('git fetch origin master', cwd = project_dir)
-    # check in memory is it possible to merge
-    if not prun("git merge-tree `git merge-base FETCH_HEAD master` FETCH_HEAD master | grep -w '+<<<\\|+>>>'", cwd = project_dir):
-        run('git pull', cwd = project_dir, log=log)
-    else:
-        run("echo ERROR: Local conflict in repository. Needed to be fixed manually.", cwd = project_dir, log=log)
-
-    # check if any difference between local and remote branch
-    if prun("git rev-list HEAD...origin/master --count", cwd=project_dir) != '0':
-        run('git push origin master', cwd = project_dir, log=log)
-
-    run('git push origin master', cwd = project_dir, log=log)
 
     # child = prun('git rev-parse --short HEAD', cwd=project_dir)
     # hashno = child.stdout.readline().strip()
     # make current out folder
 
     log.close()
-
 
 @job
 def process_project(login, project_id):
@@ -249,7 +243,6 @@ def read_description(login, project_id):
         description = ''
 
     return description
-
 
 def save_description(login, project_id, description):
     mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'DESCRIPTION.en_us.html')
