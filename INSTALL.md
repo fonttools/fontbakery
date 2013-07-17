@@ -15,7 +15,7 @@ You need to have installed:
 - ttfautohint
 - Redis 
 
-If you are OSX user then prefereable way is use [brew](http://mxcl.github.io/homebrew/) project. Follow brew installation instructions and after:
+If you are OSX user then preferable way is use [brew](http://mxcl.github.io/homebrew/) project. Follow brew installation instructions and after:
 
 	$ brew install python sqlite libevent fontforge ttfautohint
 	...
