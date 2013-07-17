@@ -127,7 +127,7 @@ def project_git_sync(login, project_id, clone):
     if not prun("git merge-tree `git merge-base FETCH_HEAD master` FETCH_HEAD master | grep -w '+<<<\\|+>>>'", cwd = project_dir):
         run('git pull', cwd = project_dir)
     else:
-        return "Local conflict in repository %s. Needed to be fixed manually " % project_dir
+        run("echo ERROR: Local conflict in repository. Needed to be fixed manually.", cwd = project_dir)
 
     # check if any difference between local and remote branch
     if prun("git rev-list HEAD...origin/master --count", cwd=project_dir) != '0':
