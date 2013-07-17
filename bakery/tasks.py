@@ -252,7 +252,7 @@ def save_description(login, project_id, description):
     f.close()
 
 def read_log(login, project_id):
-    log_file = os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals())
+    log_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals())
 
     if os.path.exists(log_file):
         return unicode(open(log_file, 'r').read(), "utf8")
