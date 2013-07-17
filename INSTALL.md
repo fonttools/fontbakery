@@ -50,7 +50,7 @@ Clone Google Font Directory Mercurial Repository from Google Code into new folde
 
 Clone code from github into new folder:
 
-    git clone https://github.com/xen/bakery.git bakery
+    git clone https://github.com/xen/fontbakery.git fontbakery
 
 Copy the Google Font Directory lint.jar tool into the bakery/scripts directory:
 
