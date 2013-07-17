@@ -52,13 +52,13 @@ Clone code from github into new folder:
 
     git clone https://github.com/xen/fontbakery.git fontbakery
 
-Copy the Google Font Directory lint.jar tool into the bakery/scripts directory:
+Copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory:
 
     cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar scripts/
 
 Then run setup:
 
-    cd bakery
+    cd fontbakery
     make setup
 
 Wait some time.
