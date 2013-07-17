@@ -79,8 +79,8 @@ def rwalk(path):
     return h
 
 def project_state_get(login, project_id, full=False):
-    local_yml = os.path.join(DATA_ROOT, '%(login)s/bakery.%(project_id)s.yaml' % locals())
     project_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
+    local_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
     default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
 
     # if project have its own bakery.yaml in git repo then use it
@@ -133,7 +133,7 @@ def project_state_get(login, project_id, full=False):
     return state
 
 def project_state_save(login, project_id, state):
-    yml = os.path.join(DATA_ROOT, '%(login)s/bakery.%(project_id)s.yaml' % locals())
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
     f = open(yml, 'w')
     f.write(yaml.safe_dump(state))
     f.close()
@@ -148,7 +148,7 @@ def project_git_sync(login, project_id, clone):
     if not os.path.exists(project_out):
         os.makedirs(project_out)
 
-    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
+    log = open(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()), 'a')
 
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
@@ -162,7 +162,7 @@ def project_git_sync(login, project_id, clone):
 
 @job
 def process_project(login, project_id):
-    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
+    log = open(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()), 'a')
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
