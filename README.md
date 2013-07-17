@@ -22,7 +22,7 @@ This software has many dependencies under other, compatible, licenses.
 
 The installation process is easy, and full instructions are maintained in the [INSTALL](./INSTALL.md) file.
 
-## Instructions
+## Usage
 
 After installation, this command will start the service on a localhost web server:
 
