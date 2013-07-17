@@ -17,17 +17,17 @@ def run(command, cwd = None, log = None):
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if log:
-        log.write('\n@@Command: %s' % command)
-        log.write('\n@@Output: %s' % stdout)
+        log.write('\nCommand: %s' % command)
+        log.write('\nOutput: %s' % stdout)
         if stderr:
-            log.write('\n@@Error: %s' % stderr)
+            log.write('\nError: %s' % stderr)
 
 def prun(command, cwd, log=None):
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = p.communicate()[0]
     if log:
-        log.write('\n@@Command: %s' % command)
-        log.write('\n@@Output: %s' % stdout)
+        log.write('\nCommand: %s' % command)
+        log.write('\nOutput: %s' % stdout)
     return stdout
 
 @job
