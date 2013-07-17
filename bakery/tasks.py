@@ -112,11 +112,12 @@ def project_state_save(login, project_id, state):
 
 @job
 def project_git_sync(login, project_id, clone):
-    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
-
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
+
+    log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
+
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
