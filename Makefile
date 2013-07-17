@@ -55,7 +55,7 @@ updlang: venv/bin/activate
 
 # target: worker — background tasks worker
 worker: venv/bin/activate
-	. venv/bin/activate; redis-server /usr/local/etc/redis.conf; rqworker
+	. venv/bin/activate; rqworker
 
 # target: mail — run mailserver
 mail: setup
