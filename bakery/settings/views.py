@@ -13,7 +13,7 @@ from ..extensions import github, db
 from ..decorators import login_required
 from .models import ProjectCache
 from ..project.models import Project
-from ..tasks import git_clone, git_clean
+from ..tasks import sync_and_process, git_clean
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -135,7 +135,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
+    sync_and_process.delay(project)
     return redirect(url_for('settings.repos')+"#tab_github")
 
 @login_required
@@ -192,7 +192,7 @@ def addclone():
         db.session.commit()
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-    git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
+    sync_and_process.delay(project)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
 @login_required
@@ -236,7 +236,7 @@ def massgit():
             db.session.add(project)
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-            git_clone.delay(login = g.user.login, project_id = project.id, clone = project.clone)
+            sync_and_process.delay(project)
 
     db.session.commit()
     return redirect(url_for('settings.repos')+"#tab_massgithub")

@@ -5,27 +5,30 @@ import yaml
 from flask import json # require Flask > 0.10
 from flask.ext.rq import job
 import plistlib
-from .decorators import cached
 import checker.runner
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
-CLONE_PREPARE_SH = """mkdir -p %(login)s/%(project_id)s.in/ && mkdir -p %(login)s/%(project_id)s.out/src/"""
-CLONE_SH = """git clone --depth=100 --quiet --branch=master %(clone)s ."""
-CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
-
 logger = logging.getLogger('bakery.tasks')
 logger.setLevel(logging.INFO)
 
-def run(*args, **kw):
-    logger.info("%s %s" % (str(args), str(kw)))
-    out = subprocess.check_output(*args, **kw)
-    logger.info(out)
+def run(command, cwd = None, log = None):
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if log:
+        log.write('\n@@Command: %s' % command)
+        log.write('\n@@Output: %s' % stdout)
+        if stderr:
+            log.write('\n@@Error: %s' % stderr)
 
-def prun(*args, **kw):
-    logger.info("%s %s" % (str(args), str(kw)))
-    return subprocess.Popen(*args, **kw)
+def prun(command, cwd, log=None):
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout = p.communicate()[0]
+    if log:
+        log.write('\n@@Command: %s' % command)
+        log.write('\n@@Output: %s' % stdout)
+    return stdout
 
 def add_logger(login, project_id):
     fh = logging.FileHandler(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()))
@@ -38,37 +41,16 @@ def remove_logger(fh):
     logger.removeHandler(fh)
 
 @job
-def clone_and_process(project):
-    git_clone(login = project.login, project_id = project.id, clone = project.clone)
+def sync_and_process(project):
+    project_git_sync(login = project.login, project_id = project.id, clone = project.clone)
     process_project(login = project.login, project_id = project.id)
 
 @job
-def logged_process(project):
-    # fh = add_logger(login = project.login, project_id = project.id)
-    # # push check before project process
-    project_state_push(login = project.login, project_id = project.id)
-    process_project(login = project.login, project_id = project.id)
-    # remove_logger(fh)
-
-@job
-def git_clone(login, project_id, clone):
-    git_clean(login, project_id)
-    params = {'login': login,
-        'project_id': project_id,
-        }
-    project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % params)
-    if os.path.exists(project_dir):
-        run('git pull origin master', shell= True, cwd=project_dir)
-    else:
-        run(CLONE_PREPARE_SH % params, shell=True, cwd=DATA_ROOT)
-        # clone variable considered unsafe
-        run(str(CLONE_SH % {'clone': clone}).split(), shell=False,
-            cwd=os.path.join(DATA_ROOT, login, str(project_id)+'.in/'))
-
 def git_clean(login, project_id):
+    CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
     params = locals()
     params['root'] = DATA_ROOT
-    run(CLEAN_SH % params, shell=True)
+    run(CLEAN_SH % params)
 
 def check_yaml(login, project_id):
     yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), 'bakery.yaml')
@@ -138,19 +120,34 @@ def project_state_save(login, project_id, state):
     f.close()
 
 @job
-def project_state_push(login, project_id):
-    # TODO fix this
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    try:
-        if prun("git rev-list HEAD...origin/master --count") != '0':
-            # pull needed, remote is updated
-            return False
-        else:
-            run("git add bakery.yaml; git commit -m 'bakery.yaml robot update'", shell=True, cwd=_in)
-            run("git push origin master", shell=True, cwd=_in)
-            return True
-    except subprocess.CalledProcessError:
-        return False
+def project_git_sync(login, project_id, clone):
+    import ipdb; ipdb.set_trace()
+    project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    if not os.path.exists(project_dir):
+        os.makedirs(project_dir)
+    if not os.path.exists(os.path.join(project_dir, '.git')):
+        # no .git folder in project folder
+        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir)
+    if prun('git status -s --ignore-submodules=all -uno 2> /dev/null | tail -n1', cwd = project_dir):
+        # check if any files are changed locally
+        run('git commit -a -m "Bakery automatic update"', cwd=project_dir)
+    # fetch remote branch
+    run('git fetch origin master', cwd = project_dir)
+    # check in memory is it possible to merge
+    if not prun("git merge-tree `git merge-base FETCH_HEAD master` FETCH_HEAD master | grep -w '+<<<\\|+>>>'", cwd = project_dir):
+        run('git pull', cwd = project_dir)
+    else:
+        return "Local conflict in repository %s. Needed to be fixed manually " % project_dir
+
+    # check if any difference between local and remote branch
+    if prun("git rev-list HEAD...origin/master --count", cwd=project_dir) != '0':
+        run('git push origin master', cwd = project_dir)
+
+    run('git push origin master', cwd = project_dir)
+
+    # child = prun('git rev-parse --short HEAD', cwd=project_dir)
+    # hashno = child.stdout.readline().strip()
+    # make current out folder
 
 @job
 def process_project(login, project_id):
@@ -166,7 +163,7 @@ def process_project(login, project_id):
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
-        run(['cp', '-R', os.path.join(_in, ufo), os.path.join(_out, ufo_folder)])
+        run('cp -R %s %s' % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)))
         if state['rename']:
             finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
@@ -268,36 +265,25 @@ def generate_fonts(login, project_id):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
 
-    # child = prun('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE, cwd=_in)
-    # hashno = child.stdout.readline().strip()
-
     scripts_folder = os.path.join(ROOT, 'scripts')
 
     for name in state['out_ufo'].values():
-        # this command generate file with commit hash in file name
-        # cmd = "python ufo2ttf.py '%(in)s' '%(out)s.%(hashno)s.ttf' '%(out)s.%(hashno)s.otf'" % {
-        #     'in':os.path.join(_out, name+'.ufo'),
-        #     'out': os.path.join(_out, name),
-        #     'hashno': hashno
-        # }
         cmd_short = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
-            'in':os.path.join(_in, name+'.ufo'),
             'out': os.path.join(_out, name),
         }
-        # run(cmd, shell=True, cwd = scripts_folder)
-        run(cmd_short, shell=True, cwd = scripts_folder)
+        run(cmd_short, cwd = scripts_folder)
 
 def generate_metadata(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     print(cmd % {'wd': ROOT, 'out': _out})
-    run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
 
 def lint_process(login, project_id):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out} , shell=True, cwd=_out)
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
 
 def ttfautohint_process(login, project_id):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
@@ -309,9 +295,9 @@ def ttfautohint_process(login, project_id):
                 'out': os.path.join(_out, name),
                 'src': os.path.join(_out, 'src', name),
             }
-            run(cmd % {'wd': ROOT, 'out': _out}, shell=True, cwd=_out)
+            run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out)
     else:
-        run("cp src/*.ttf .", shell=True, cwd=_out)
+        run("cp src/*.ttf .", cwd=_out)
 
 def subset_process(login, project_id):
     state = project_state_get(login, project_id)
@@ -331,8 +317,8 @@ def subset_process(login, project_id):
                 'name': name,
                 'wd': ROOT
             }
-            run(cmd, shell=True, cwd=_out)
-    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", shell=True, cwd=_out)
+            run(cmd, cwd=_out)
+    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", cwd=_out)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)

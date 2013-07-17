@@ -9,7 +9,7 @@ from flask.ext.babel import gettext as _
 from ..decorators import login_required
 # from ..extensions import db
 from ..tasks import (read_tree, read_license, read_metadata, save_metadata, read_description,
-    save_description, read_log, read_yaml, project_tests, clone_and_process, logged_process)
+    save_description, read_log, read_yaml, project_tests, sync_and_process)
 from .models import Project
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
@@ -29,7 +29,7 @@ def bump():
     #pylint:disable-msg=E1101
     p = Project.query.filter_by(login = g.user.login, id = project_id).first()
     logging.info('Update for project %s by %s' % (project_id, g.user.login))
-    clone_and_process.delay(p)
+    sync_and_process(p)
     flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.fonts', project_id = project_id))
 
@@ -103,7 +103,7 @@ def setup(project_id):
                 return render_template('project/setup2.html', project = p, state = state)
             else:
                 flash(_("Repository %s has been updated" % p.clone))
-                logged_process.delay(p)
+                sync_and_process.delay(p)
                 return redirect(url_for('project.fonts', project_id=p.id))
         elif request.form.get('step')=='3':
             out_ufo = {}
@@ -119,7 +119,7 @@ def setup(project_id):
             p.save_state()
 
             # push check before project process
-            logged_process.delay(p)
+            sync_and_process.delay(p)
             return redirect(url_for('project.fonts', project_id=p.id))
         else:
             flash(_("Strange behaviour detected"))
@@ -138,8 +138,8 @@ def fonts(project_id):
 @project.route('/<int:project_id>/license', methods=['GET'])
 def plicense(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first()
-    license = read_license(login = g.user.login, project_id = p.id)
-    return render_template('project/license.html', project = p, license = license)
+    lic = read_license(login = g.user.login, project_id = p.id)
+    return render_template('project/license.html', project = p, license = lic)
 
 @project.route('/<int:project_id>/ace', methods=['GET'])
 def ace(project_id):
