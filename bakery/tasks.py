@@ -113,8 +113,12 @@ def project_state_save(login, project_id, state):
 @job
 def project_git_sync(login, project_id, clone):
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    project_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
+
+    if not os.path.exists(project_out):
+        os.makedirs(project_out)
 
     log = open(os.path.join(DATA_ROOT, '%(login)s/process.%(project_id)s.log' % locals()), 'a')
 
