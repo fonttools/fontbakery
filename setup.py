@@ -20,7 +20,7 @@ from setuptools import setup
 setup(
     name="Font Bakery",
     version='0.1',
-    url='https://github.com/xen/bakery',
+    url='https://github.com/xen/fontbakery/',
     description='',
     author='Mikhail Kashkin',
     author_email='mkashkin@gmail.com',
