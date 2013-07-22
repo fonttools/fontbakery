@@ -50,7 +50,7 @@ def run(command, cwd = None, log = None):
         if stderr:
             log.write(stderr)
 
-        if not stdout and not stderr and not p.poll():
+        if not stdout and not stderr and p.poll() != None:
             break
 
 def prun(command, cwd, log=None):
