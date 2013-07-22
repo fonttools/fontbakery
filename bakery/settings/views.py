@@ -30,6 +30,7 @@ from ..decorators import login_required
 from .models import ProjectCache
 from ..project.models import Project
 from ..tasks import sync_and_process, git_clean
+from flask.ext.rq import config_value
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -151,7 +152,12 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    sync_and_process.delay(project)
+    connection = dict(
+        host=config_value('default', 'HOST'),
+        port=config_value('default', 'PORT'),
+        password=config_value('default', 'PASSWORD'),
+        db=config_value('default', 'DB'))
+    sync_and_process.delay(project, connection)
     return redirect(url_for('settings.repos')+"#tab_github")
 
 @settings.route('/delhook/<path:full_name>', methods=['GET'])
@@ -214,7 +220,12 @@ def addclone():
         db.session.commit()
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-    sync_and_process.delay(project)
+    connection = dict(
+        host=config_value('default', 'HOST'),
+        port=config_value('default', 'PORT'),
+        password=config_value('default', 'PASSWORD'),
+        db=config_value('default', 'DB'))
+    sync_and_process.delay(project, connection)
     return redirect(url_for('settings.repos')+"#tab_owngit")
 
 @settings.route('/delclone/', methods=['GET'])
@@ -258,7 +269,12 @@ def massgit():
             db.session.add(project)
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
-            sync_and_process.delay(project)
+            connection = dict(
+                host=config_value('default', 'HOST'),
+                port=config_value('default', 'PORT'),
+                password=config_value('default', 'PASSWORD'),
+                db=config_value('default', 'DB'))
+            sync_and_process.delay(project, connection)
 
     db.session.commit()
     return redirect(url_for('settings.repos')+"#tab_massgithub")

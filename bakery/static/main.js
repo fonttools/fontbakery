@@ -33,7 +33,7 @@ $(document).ready(function () {
 
 var $notify = $('#notify');
 io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
-var socket = io.connect("/status", 'force new connection': true);
+var socket = io.connect("/status", {'force new connection': true});
 window.buildsocket = socket;
 
 socket.on("connect", function(e) {

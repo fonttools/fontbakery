@@ -36,7 +36,7 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
         r = kwargs.get('request', None)
         if hasattr(r, '_conn'):
             self._conn = r._conn
-        super(BuildNamespace, self).__init__(*args, **kwargs)
+        super(StatusNamespace, self).__init__(*args, **kwargs)
 
     # def initialize(self):
     #     print("Socketio session started")
@@ -61,7 +61,7 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
                     self.emit('start', {})
                 else:
                     self.emit('stop', {})
-                gevent.sleep(0.3)
+                gevent.sleep(0.5) # number show how often server will ping client
         self.spawn(check_queue)
 
 class BuildNamespace(BaseNamespace, BroadcastMixin):

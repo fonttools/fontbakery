@@ -125,8 +125,13 @@ def setup(project_id):
                 return render_template('project/setup2.html', project = p, state = state)
             else:
                 flash(_("Repository %s has been updated" % p.clone))
-                sync_and_process.delay(p)
-                return redirect(url_for('project.fonts', project_id=p.id))
+                connection = dict(
+                    host=config_value('default', 'HOST'),
+                    port=config_value('default', 'PORT'),
+                    password=config_value('default', 'PASSWORD'),
+                    db=config_value('default', 'DB'))
+                sync_and_process.delay(p, connection)
+                return redirect(url_for('project.buildlogrt', project_id = p.id))
         elif request.form.get('step')=='3':
             out_ufo = {}
             for param, value in request.form.items():
@@ -141,8 +146,13 @@ def setup(project_id):
             p.save_state()
 
             # push check before project process
-            sync_and_process.delay(p)
-            return redirect(url_for('project.fonts', project_id=p.id))
+            connection = dict(
+                host=config_value('default', 'HOST'),
+                port=config_value('default', 'PORT'),
+                password=config_value('default', 'PASSWORD'),
+                db=config_value('default', 'DB'))
+            sync_and_process.delay(p, connection)
+            return redirect(url_for('project.buildlogrt', project_id = p.id))
         else:
             flash(_("Strange behaviour detected"))
             return redirect(url_for('project.fonts', project_id=p.id))
