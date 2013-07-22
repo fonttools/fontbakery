@@ -205,6 +205,7 @@ def process_project(login, project_id, conn):
             plistlib.writePlist(finfo, finame)
 
     # set of other commands
+    # XXX DC: This is a critical part of the functionality of the program
     if state['autoprocess']:
         # project should be processes only when setup is done
         generate_fonts(login, project_id, log)
@@ -296,6 +297,9 @@ def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
 
 def generate_fonts(login, project_id, log):
+	"""
+	Generate TTF files from UFO files using ufo2ttf.py
+	"""
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
