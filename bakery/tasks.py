@@ -39,7 +39,7 @@ def run(command, cwd = None, log = None):
     # log — file descriptor with .write() method
 
     if log:
-        log.write('Command: %s' % command)
+        log.write('\nCommand: %s\n' % command)
 
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -50,7 +50,7 @@ def run(command, cwd = None, log = None):
         if stderr:
             log.write(stderr)
 
-        if not stdout and not stderr and not p.poll():
+        if not stdout and not stderr and p.poll() != None:
             break
 
 def prun(command, cwd, log=None):
@@ -197,7 +197,7 @@ def process_project(login, project_id, conn):
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
-        run('cp -R %s %s' % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
         if state['rename']:
             finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
@@ -360,7 +360,7 @@ def subset_process(login, project_id, log):
     files = glob.glob('*+latin')
     for filename in files:
         newfilename = filename.replace('+latin', '')
-        run('mv %s %s' % (filename, newfilename), cwd=_out, log=log)
+        run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)
