@@ -16,7 +16,9 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import logging
+import redis
 import os
+import glob
 import subprocess
 import yaml
 from flask import json # require Flask > 0.10
@@ -60,9 +62,11 @@ def prun(command, cwd, log=None):
     return stdout
 
 @job
-def sync_and_process(project, connection):
-    import redis
-    conn = redis.Redis(**connection)
+def sync_and_process(project, connection = None):
+    if connection:
+        conn = redis.Redis(**connection)
+    else:
+        conn = None
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone)
     process_project(login = project.login, project_id = project.id, conn = conn)
 
@@ -348,7 +352,11 @@ def subset_process(login, project_id, log):
                 'wd': ROOT
             }
             run(cmd, cwd=_out, log=log)
-    run("for i in *+latin; do mv $i $(echo $i | sed 's/+latin//g'); done ", cwd=_out, log=log)
+    os.chdir(_out)
+    files = glob.glob('*+latin')
+    for filename in files:
+        newfilename = filename.replace('+latin', '')
+        run('mv %s %s' % (filename, newfilename), cwd=_out, log=log)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)
