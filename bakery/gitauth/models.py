@@ -30,6 +30,10 @@ class User(db.Model):
     def __init__(self, login):
         self.login = login
 
+    @property
+    def token(self):
+        return self.github_access_token
+
     def getAvatar(self, size=24):
         return "https://www.gravatar.com/avatar/%s?s=%d&d=mm" % (self.avatar, size)
 
