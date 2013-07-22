@@ -17,7 +17,6 @@
 $(document).ready(function () {
 
 var $log = $('#log');
-io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
 var buildsocket = io.connect("/build", {'force new connection': true});
 
 buildsocket.on("connect", function(e) {
