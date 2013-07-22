@@ -37,7 +37,7 @@ def me():
         # XXX: this is temporary
         session['user_id'] = user.id
         g.user = user
-        flash('You were signed in')
+        flash('Welcome!')
 
     return redirect(url_for('frontend.splash'))
 
@@ -87,7 +87,7 @@ def authorized(next = None):
 
     session['user_id'] = user.id
     g.user = user
-    flash('You were signed in')
+    flash('Welcome!')
 
     return redirect(next_url)
 
