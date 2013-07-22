@@ -1,0 +1,38 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Build Log") %}
+
+{% block body %}
+<h5>{{ project.clone }} <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull from upstream</button></a></h5>
+<h2>{{ page_title }}</h2>
+
+{% from 'project/macros.html' import nav with context%}
+{{ nav('log') }}
+
+<pre id="log"></pre>
+{% endblock %}
+
+
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function () {
+
+var $log = $('#log');
+io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
+var buildsocket = io.connect("/build", {'force new connection': true});
+
+buildsocket.on("connect", function(e) {
+  console.log("Connected", arguments);
+  buildsocket.emit('subscribe', 'build_{{ project.id }}');
+});
+
+buildsocket.on("disconnect", function(e) {
+  console.log("Disconnected", arguments);
+});
+
+buildsocket.on('message', function (data) {
+  $log.append(data.data);
+});
+
+});
+</script>
+{% endblock %}

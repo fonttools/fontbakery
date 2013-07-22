@@ -27,6 +27,7 @@ from ..decorators import login_required
 from ..tasks import (read_tree, read_license, read_metadata, save_metadata, read_description,
     save_description, read_log, read_yaml, project_tests, sync_and_process)
 from .models import Project
+from flask.ext.rq import config_value
 
 project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
 
@@ -45,9 +46,14 @@ def bump():
     #pylint:disable-msg=E1101
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     logging.info('Update for project %s by %s' % (project_id, g.user.login))
-    sync_and_process(p)
+    connection = dict(
+        host=config_value('default', 'HOST'),
+        port=config_value('default', 'PORT'),
+        password=config_value('default', 'PASSWORD'),
+        db=config_value('default', 'DB'))
+    sync_and_process.delay(p, connection)
     flash(_("Git %s was updated" % p.clone))
-    return redirect(url_for('project.fonts', project_id = project_id))
+    return redirect(url_for('project.buildlogrt', project_id = project_id))
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
@@ -202,6 +208,13 @@ def buildlog(project_id):
     log = read_log(login = g.user.login, project_id = p.id)
     return render_template('project/log.html', project = p,
         log = log)
+
+@project.route('/<int:project_id>/logrt', methods=['GET'])
+@login_required
+def buildlogrt(project_id):
+    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    return render_template('project/logrt.html', project = p)
+
 
 @project.route('/<int:project_id>/yaml', methods=['GET'])
 @login_required

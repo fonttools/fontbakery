@@ -23,6 +23,7 @@ from flask import json # require Flask > 0.10
 from flask.ext.rq import job
 import plistlib
 import checker.runner
+from utils import RedisFd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -31,26 +32,39 @@ logger = logging.getLogger('bakery.tasks')
 logger.setLevel(logging.INFO)
 
 def run(command, cwd = None, log = None):
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
+    # command — to run,
+    # cwd - current working dir
+    # log — file descriptor with .write() method
+
     if log:
-        log.write('\nCommand: %s' % command)
-        log.write('\nOutput: %s' % stdout)
+        log.write('Command: %s' % command)
+
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    while True:
+        stdout = p.stdout.readline()
+        stderr = p.stderr.readline()
+        log.write(stdout)
         if stderr:
-            log.write('\nError: %s' % stderr)
+            log.write(stderr)
+
+        if not stdout and not stderr and not p.poll():
+            break
 
 def prun(command, cwd, log=None):
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = p.communicate()[0]
     if log:
-        log.write('\nCommand: %s' % command)
-        log.write('\nOutput: %s' % stdout)
+        log.write('Command: %s' % command)
+        log.write(stdout)
     return stdout
 
 @job
-def sync_and_process(project):
+def sync_and_process(project, connection):
+    import redis
+    conn = redis.Redis(**connection)
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone)
-    process_project(login = project.login, project_id = project.id)
+    process_project(login = project.login, project_id = project.id, conn = conn)
 
 @job
 def git_clean(login, project_id):
@@ -164,8 +178,12 @@ def project_git_sync(login, project_id, clone):
     log.close()
 
 @job
-def process_project(login, project_id):
-    log = open(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()), 'a')
+def process_project(login, project_id, conn):
+    # login — user login
+    # project_id - database project_id
+    # conn - redis connection
+    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()),
+        'a', conn, "build_%s" % project_id)
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())

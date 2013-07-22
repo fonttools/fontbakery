@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 
 import logging
 
@@ -29,8 +30,7 @@ from flask import (Blueprint, request)
 
 realtime = Blueprint('realtime', __name__)
 
-
-class BuildNamespace(BaseNamespace, BroadcastMixin):
+class StatusNamespace(BaseNamespace, BroadcastMixin):
 
     def __init__(self, *args, **kwargs):
         r = kwargs.get('request', None)
@@ -64,11 +64,31 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 gevent.sleep(0.3)
         self.spawn(check_queue)
 
+class BuildNamespace(BaseNamespace, BroadcastMixin):
+
+    def __init__(self, *args, **kwargs):
+        r = kwargs.get('request', None)
+        if hasattr(r, '_conn'):
+            self._conn = r._conn
+        super(BuildNamespace, self).__init__(*args, **kwargs)
+
+    def build_stream(self, pubsub):
+        for message in pubsub.listen():
+            self.emit('message', message)
+
+    def on_subscribe(self, channel_id):
+        pubsub = self._conn.pubsub()
+        pubsub.subscribe(channel_id)
+        gevent.spawn(self.build_stream, pubsub)
+
+
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):
     real_request = request._get_current_object()
+    # add redis connection
     real_request._conn = get_connection()
     socketio_manage(request.environ, {
+        '/status': StatusNamespace,
         '/build': BuildNamespace,
         }, request=real_request)
     return Response()

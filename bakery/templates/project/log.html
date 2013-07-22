@@ -8,23 +8,10 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('log') }}
 
-<div id="editor"></div>
-<textarea name="log">{{ log }}</textarea>
+<pre name="log">{{ log }}</pre>
 {% endblock %}
 
 
 {% block extrajs %}
-
-<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
-<script>
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/solarized_light");
-editor.getSession().setMode("ace/mode/text");
-
-var textarea = $('textarea[name="log"]').hide();
-editor.getSession().setUseWrapMode(true);
-editor.getSession().setValue(textarea.val());
-editor.setReadOnly(true);
-</script>
 
 {% endblock %}

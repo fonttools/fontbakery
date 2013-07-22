@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 
 from datetime import datetime
 
@@ -54,3 +55,19 @@ def pretty_date(dt, default=None):
             return u'%d %s ago' % (period, plural)
 
     return default
+
+class RedisFd(object):
+    """Redis File Descriptor class, publish writen data to redis channel in parallel to file"""
+    def __init__(self, name, mode = 'a', conn = None, channel = None):
+        self.fd = open(name, mode)
+        self.conn = conn
+        self.channel = channel
+
+    def write(self, data):
+        if self.conn:
+            self.conn.publish(self.channel, data)
+        self.fd.write(data)
+
+    def close(self):
+        self.fd.close()
+
