@@ -75,6 +75,7 @@ def sync_and_process(project, connection = None):
         'w', conn, "build_%s" % project.id)
 
     log.write('@@Git')
+
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
     log.write('@@Process')
 
@@ -187,6 +188,9 @@ def project_git_sync(login, project_id, clone, log):
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
+    else:
+        run('git reset --hard', cwd = project_dir, log=log)
+        run('git pull origin master', cwd = project_dir, log=log)
 
     # child = prun('git rev-parse --short HEAD', cwd=project_dir)
     # hashno = child.stdout.readline().strip()
