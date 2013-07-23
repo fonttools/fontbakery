@@ -39,13 +39,14 @@ window.buildsocket = socket;
 socket.on("connect", function(e) {
     $('#notify').addClass('text-success');
     $('#notify').removeClass('muted');
-    console.log("Connected", arguments);
+    // console.log("Connected", arguments);
+    socket.emit('status', true);
 });
 
 socket.on("disconnect", function(e) {
     $('#notify').addClass('muted');
     $('#notify').removeClass('text-success');
-    console.log("Disconnected", arguments);
+    // console.log("Disconnected", arguments);
 });
 
 // socket.on('ping', function (data) {
@@ -62,8 +63,8 @@ socket.on('start', function (data) {
         .removeClass('icon-circle')
         .addClass('icon-spin')
         .addClass('icon-refresh');
-    console.log(data);
-    console.log(arguments);
+    // console.log(data);
+    // console.log(arguments);
 });
 
 socket.on('stop', function (data) {
@@ -71,8 +72,8 @@ socket.on('stop', function (data) {
         .addClass('icon-circle')
         .removeClass('icon-spin')
         .removeClass('icon-refresh');
-    console.log(data);
-    console.log(arguments);
+    // console.log(data);
+    // console.log(arguments);
 });
 
 });

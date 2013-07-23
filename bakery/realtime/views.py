@@ -34,35 +34,38 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
 
     def __init__(self, *args, **kwargs):
         r = kwargs.get('request', None)
+        self.status = False
         if hasattr(r, '_conn'):
             self._conn = r._conn
         super(StatusNamespace, self).__init__(*args, **kwargs)
 
-    # def initialize(self):
-    #     print("Socketio session started")
+    def initialize(self):
+        self.status = False
+        self.spawn(self.check_queue)
 
-    # def on_start(self):
-    #     self.emit('start', {})
+    def check_queue(self):
+        prev = self.status
+        while True:
+            if any([w.state != 'idle' for w in Worker.all(self._conn)]):
+                self.status = True
+            else:
+                self.status = False
 
-    # def on_stop(self):
-    #     self.emit('stop', {})
-
-    # def on_hello(self, message):
-    #     print(message)
-    #     self.emit('ping', {})
-
-    # def recv_message(self, message):
-    #     print ("PING!!!", message)
-
-    def recv_connect(self):
-        def check_queue():
-            while True:
-                if any([w.state != 'idle' for w in Worker.all(self._conn)]):
+            if prev != self.status:
+                if self.status:
                     self.emit('start', {})
                 else:
                     self.emit('stop', {})
-                gevent.sleep(0.5) # number show how often server will ping client
-        self.spawn(check_queue)
+
+            prev = self.status
+            gevent.sleep(0.5)
+
+    def on_status(self, msg):
+        if self.status:
+            self.emit('start', {})
+        else:
+            self.emit('stop', {})
+
 
 class BuildNamespace(BaseNamespace, BroadcastMixin):
 
