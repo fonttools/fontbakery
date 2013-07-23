@@ -219,7 +219,7 @@ def addclone():
         db.session.add(project)
         db.session.commit()
 
-    flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.full_name, url_for('project.fonts', project_id = project.id)))))
+    flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" % (project.clone, url_for('project.fonts', project_id = project.id)))))
     connection = dict(
         host=config_value('default', 'HOST'),
         port=config_value('default', 'PORT'),
