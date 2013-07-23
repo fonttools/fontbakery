@@ -24,11 +24,11 @@
 <ul>
 
   {% for item in tests[name]['failure'] %}
-    <li><i class="icon-circle text-warning"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
+    <li><i class="icon-circle text-error"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
   {% endfor %}
 
   {% for item in tests[name]['error'] %}
-    <li><i class="icon-circle text-error"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
+    <li><i class="icon-circle text-warning"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
   {% endfor %}
 
   {% for item in tests[name]['success'] %}
