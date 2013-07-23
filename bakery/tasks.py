@@ -161,6 +161,9 @@ def project_state_save(login, project_id, state):
 
 @job
 def project_git_sync(login, project_id, clone):
+    """
+    Download repo
+    """
     project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
