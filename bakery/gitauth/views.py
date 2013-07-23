@@ -76,7 +76,7 @@ def authorized(next = None):
     #     flash(_('Welcome to Bakery.'))
 
     # update user data
-    user.name = me['name']
+    user.name = me.get('name', me.get('login'))
     user.github_access_token = token
     user.avatar = me['gravatar_id']
     user.email = me['email']
