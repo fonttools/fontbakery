@@ -29,7 +29,7 @@ buildsocket.on("disconnect", function(e) {
 });
 
 buildsocket.on('message', function (data) {
-  $log.append(data.data);
+  if (data.data != '1') {$log.append(data.data);};  
 });
 
 });
