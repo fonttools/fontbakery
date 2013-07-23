@@ -67,8 +67,20 @@ def sync_and_process(project, connection = None):
         conn = redis.Redis(**connection)
     else:
         conn = None
-    project_git_sync(login = project.login, project_id = project.id, clone = project.clone)
-    process_project(login = project.login, project_id = project.id, conn = conn)
+
+    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % {
+            'project_id': project.id,
+            'login': project.login, }
+            ),
+        'w', conn, "build_%s" % project.id)
+
+    log.write('@@Git')
+    project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
+    log.write('@@Process')
+
+    process_project(login = project.login, project_id = project.id, conn = conn, log = log)
+
+    log.close()
 
 @job
 def git_clean(login, project_id):
@@ -160,7 +172,7 @@ def project_state_save(login, project_id, state):
     f.close()
 
 @job
-def project_git_sync(login, project_id, clone):
+def project_git_sync(login, project_id, clone, log):
     """
     Download repo
     """
@@ -172,8 +184,6 @@ def project_git_sync(login, project_id, clone):
     if not os.path.exists(project_out):
         os.makedirs(project_out)
 
-    log = open(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()), 'a')
-
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
@@ -182,15 +192,11 @@ def project_git_sync(login, project_id, clone):
     # hashno = child.stdout.readline().strip()
     # make current out folder
 
-    log.close()
-
 @job
-def process_project(login, project_id, conn):
+def process_project(login, project_id, conn, log):
     # login — user login
     # project_id - database project_id
     # conn - redis connection
-    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals()),
-        'a', conn, "build_%s" % project_id)
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -217,8 +223,6 @@ def process_project(login, project_id, conn):
         subset_process(login, project_id, log)
         generate_metadata(login, project_id, log)
         lint_process(login, project_id, log)
-
-    log.close()
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
