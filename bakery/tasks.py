@@ -53,6 +53,10 @@ def run(command, cwd = None, log = None):
         if not stdout and not stderr and p.poll() != None:
             break
 
+    if p.returncode:
+        log.write('Execution error, %s, return code is %s' % (command, p.returncode))
+        raise ValueError
+
 def prun(command, cwd, log=None):
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = p.communicate()[0]
