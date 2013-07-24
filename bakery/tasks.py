@@ -231,7 +231,7 @@ def process_project(login, project_id, conn, log):
     # autoprocess is set after setup is completed
     if state['autoprocess']:
         log.write('Convert UFOs to TTFs (ufo2ttf.py)', prefix = 'Header: ')
-        generate_fonts(login, project_id, log)
+        generate_fonts_process(login, project_id, log)
 
         log.write('Autohint TTFs (ttfautohint)', prefix = 'Header: ')
         ttfautohint_process(login, project_id, log)
@@ -243,7 +243,7 @@ def process_project(login, project_id, conn, log):
         subset_process(login, project_id, log)
 
         log.write('Generate METADATA.json (genmetadata.py)', prefix = 'Header: ')
-        generate_metadata(login, project_id, log)
+        generate_metadata_process(login, project_id, log)
 
         log.write('Lint (lint.jar)', prefix = 'Header: ')
         lint_process(login, project_id, log)
@@ -327,7 +327,7 @@ def read_yaml(login, project_id):
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
 
-def generate_fonts(login, project_id, log):
+def generate_fonts_process(login, project_id, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
     """
@@ -343,7 +343,7 @@ def generate_fonts(login, project_id, log):
         }
         run(cmd_short, cwd = scripts_folder, log=log)
 
-def generate_metadata(login, project_id, log):
+def generate_metadata_process(login, project_id, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
