@@ -396,7 +396,23 @@ def subset_process(login, project_id, log):
 def ttx_process(login, project_id, log):
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
-    run('echo ttx piu-piu', wd=_out, log=log)
+    for name in state['out_ufo'].values():
+        filename = os.path.join(_out, name)
+        # convert the ttf to a ttx file - this may fail
+        cmd = "ttx -i '%s.ttf'" % filename
+        run(cmd, cwd=_out, log=log)
+        # move the original ttf to the side
+        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
+        run(cmd, cwd=_out, log=log)
+        # convert the ttx back to a ttf file - this may fail
+        cmd = "ttx -i '%s.ttx'" % filename
+        run(cmd, cwd=_out, log=log)
+        # compare filesizes TODO print analysis of this :) 
+        cmd = "ls -l '%s.ttf'*" % filename
+        run(cmd, cwd=_out, log=log)
+        # remove the original (duplicate) ttf
+        cmd = "rm  '%s.ttf.orig'" % filename
+        run(cmd, cwd=_out, log=log)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)
