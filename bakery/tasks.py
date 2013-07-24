@@ -39,7 +39,7 @@ def run(command, cwd = None, log = None):
     # log — file descriptor with .write() method
 
     if log:
-        log.write('\nCommand: %s\n' % command)
+        log.write('Command: %s\n' % command)
 
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -48,13 +48,13 @@ def run(command, cwd = None, log = None):
         stderr = p.stderr.readline()
         log.write(stdout)
         if stderr:
-            log.write(stderr)
+            log.write(stderr, prefix = 'Error: ')
 
         if not stdout and not stderr and p.poll() != None:
             break
 
     if p.returncode:
-        log.write('Execution error, %s, return code is %s' % (command, p.returncode))
+        log.write('Fatal: Execution error, %s, return code is %s' % (command, p.returncode))
         raise ValueError
 
 def prun(command, cwd, log=None):
@@ -78,11 +78,9 @@ def sync_and_process(project, connection = None):
             ),
         'w', conn, "build_%s" % project.id)
 
-    log.write('@@Git')
+    log.write('Git', prefix = 'Header: ')
 
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
-    log.write('@@Process')
-
     process_project(login = project.login, project_id = project.id, conn = conn, log = log)
 
     log.close()
@@ -194,7 +192,9 @@ def project_git_sync(login, project_id, clone, log):
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
     else:
         run('git reset --hard', cwd = project_dir, log=log)
-        run('git pull origin master', cwd = project_dir, log=log)
+        from time import sleep
+        sleep(1)
+        #XXX: turn off run('git pull origin master', cwd = project_dir, log=log)
 
     # child = prun('git rev-parse --short HEAD', cwd=project_dir)
     # hashno = child.stdout.readline().strip()
@@ -205,6 +205,8 @@ def process_project(login, project_id, conn, log):
     # login — user login
     # project_id - database project_id
     # conn - redis connection
+
+    log.write('Process', prefix = 'Header: ')
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -225,12 +227,20 @@ def process_project(login, project_id, conn, log):
     # XXX DC: This is a critical part of the functionality of the program
     if state['autoprocess']:
         # project should be processes only when setup is done
+        log.write('Convert fonts', prefix = 'Header: ')
+
         generate_fonts(login, project_id, log)
+
         ttfautohint_process(login, project_id, log)
         # subset
+        log.write('Subset font files', prefix = 'Header: ')
         subset_process(login, project_id, log)
+        log.write('Metadata generate', prefix = 'Header: ')
         generate_metadata(login, project_id, log)
+        log.write('Font Lint', prefix = 'Header: ')
         lint_process(login, project_id, log)
+        log.write('Font ttx', prefix = 'Header: ')
+        ttx_process(login, project_id, log)
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
@@ -343,6 +353,7 @@ def ttfautohint_process(login, project_id, log):
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     if state['ttfautohintuse']:
+        log.write('ttfautohint process', prefix = 'Header: ')
         for name in state['out_ufo'].values():
             cmd = "ttfautohint '%(src)s.ttf' '%(out)s.ttf'" % {
                 'out': os.path.join(_out, name),
@@ -376,6 +387,11 @@ def subset_process(login, project_id, log):
     for filename in files:
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
+
+def ttx_process(login, project_id, log):
+    state = project_state_get(login, project_id)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    run('echo ttx piu-piu', wd=_out, log=log)
 
 def project_tests(login, project_id):
     state = project_state_get(login, project_id)

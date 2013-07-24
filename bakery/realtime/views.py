@@ -48,6 +48,7 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
         while True:
             gevent.sleep(0.5)
             workers = [w.state != 'idle' for w in Worker.all(self._conn)]
+
             if len(workers) == 0:
                 self.status = 'gone'
             elif any(workers):
@@ -56,7 +57,6 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
                 self.status = 'stop'
 
             if prev != self.status:
-                print("new status - %s" % self.status)
                 self.emit(self.status, {})
 
             prev = self.status
@@ -78,7 +78,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def build_stream(self, pubsub):
         for message in pubsub.listen():
-            self.emit('message', message)
+            self.emit('message', message.get('data'))
 
     def on_subscribe(self, channel_id):
         pubsub = self._conn.pubsub()

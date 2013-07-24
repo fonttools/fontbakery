@@ -63,9 +63,9 @@ class RedisFd(object):
         self.conn = conn
         self.channel = channel
 
-    def write(self, data):
+    def write(self, data, prefix = ''):
         if self.conn:
-            self.conn.publish(self.channel, data)
+            self.conn.publish(self.channel, "%s%s" % (prefix, data))
         self.fd.write(data)
 
     def close(self):
