@@ -210,7 +210,7 @@ def process_project(login, project_id, conn, log):
     # project_id - database project_id
     # conn - redis connection
 
-    log.write('Process', prefix = 'Header: ')
+    log.write('Copy [and Rename] UFOs', prefix = 'Header: ')
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -227,24 +227,26 @@ def process_project(login, project_id, conn, log):
             finfo['familyName'] = name
             plistlib.writePlist(finfo, finame)
 
-    # set of other commands
-    # XXX DC: This is a critical part of the functionality of the program
+    # XXX The Baking Commands - the central functionality of this software :)
+    # autoprocess is set after setup is completed
     if state['autoprocess']:
-        # project should be processes only when setup is done
-        log.write('Convert fonts', prefix = 'Header: ')
-
+        log.write('Convert UFOs to TTFs (ufo2ttf.py)', prefix = 'Header: ')
         generate_fonts(login, project_id, log)
 
+        log.write('Autohint TTFs (ttfautohint)', prefix = 'Header: ')
         ttfautohint_process(login, project_id, log)
-        # subset
-        log.write('Subset font files', prefix = 'Header: ')
-        subset_process(login, project_id, log)
-        log.write('Metadata generate', prefix = 'Header: ')
-        generate_metadata(login, project_id, log)
-        log.write('Font Lint', prefix = 'Header: ')
-        lint_process(login, project_id, log)
-        log.write('Font ttx', prefix = 'Header: ')
+
+        log.write('Compact TTFs with ttx', prefix = 'Header: ')
         ttx_process(login, project_id, log)
+
+        log.write('Subset TTFs (subset.py)', prefix = 'Header: ')
+        subset_process(login, project_id, log)
+
+        log.write('Generate METADATA.json (genmetadata.py)', prefix = 'Header: ')
+        generate_metadata(login, project_id, log)
+
+        log.write('Lint (lint.jar)', prefix = 'Header: ')
+        lint_process(login, project_id, log)
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
@@ -357,7 +359,6 @@ def ttfautohint_process(login, project_id, log):
     state = project_state_get(login, project_id)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
     if state['ttfautohintuse']:
-        log.write('ttfautohint process', prefix = 'Header: ')
         for name in state['out_ufo'].values():
             cmd = "ttfautohint '%(src)s.ttf' '%(out)s.ttf'" % {
                 'out': os.path.join(_out, name),
