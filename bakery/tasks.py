@@ -73,8 +73,8 @@ def sync_and_process(project, connection = None):
         conn = None
 
     # create user folder
-    if not os.path.exists(os.path.join(DATA_ROOT, login)):
-        os.makedirs(os.path.join(DATA_ROOT, login))
+    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
+        os.makedirs(os.path.join(DATA_ROOT, project.login))
 
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % {
             'project_id': project.id,
