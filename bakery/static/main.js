@@ -32,48 +32,36 @@ $(document).ready(function() {
 $(document).ready(function () {
 
 var $notify = $('#notify');
+
 io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
 var socket = io.connect("/status", {'force new connection': true});
 window.buildsocket = socket;
 
 socket.on("connect", function(e) {
-    $('#notify').addClass('text-success');
-    $('#notify').removeClass('muted');
-    // console.log("Connected", arguments);
+    $notify.removeClass();
+    $notify.addClass('icon-circle text-success');
     socket.emit('status', true);
 });
 
 socket.on("disconnect", function(e) {
-    $('#notify').addClass('muted');
-    $('#notify').removeClass('text-success');
-    // console.log("Disconnected", arguments);
+    $notify.removeClass();
+    $notify.addClass('icon-circle muted');
 });
 
-// socket.on('ping', function (data) {
-//     // $('#notify').addClass('text-success');
-//     // $('#notify').addClass('icon-spin');
-//     // $('#notify').removeClass('muted');
-//     console.log(data);
-//     console.log(arguments);
-// });
+socket.on('gone', function (data) {
+    $notify.removeClass();
+    $notify.addClass('icon-warning-sign text-error');
+});
 
 
 socket.on('start', function (data) {
-    $('#notify')
-        .removeClass('icon-circle')
-        .addClass('icon-spin')
-        .addClass('icon-refresh');
-    // console.log(data);
-    // console.log(arguments);
+    $notify.removeClass();
+    $notify.addClass('icon-refresh icon-spin text-success');
 });
 
 socket.on('stop', function (data) {
-    $('#notify')
-        .addClass('icon-circle')
-        .removeClass('icon-spin')
-        .removeClass('icon-refresh');
-    // console.log(data);
-    // console.log(arguments);
+    $notify.removeClass();
+    $notify.addClass('icon-circle text-success');
 });
 
 });

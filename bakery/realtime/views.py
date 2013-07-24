@@ -34,7 +34,7 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
 
     def __init__(self, *args, **kwargs):
         r = kwargs.get('request', None)
-        self.status = False
+        self.status = ''
         if hasattr(r, '_conn'):
             self._conn = r._conn
         super(StatusNamespace, self).__init__(*args, **kwargs)
@@ -46,19 +46,20 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
     def check_queue(self):
         prev = self.status
         while True:
-            if any([w.state != 'idle' for w in Worker.all(self._conn)]):
-                self.status = True
+            gevent.sleep(0.5)
+            workers = [w.state != 'idle' for w in Worker.all(self._conn)]
+            if len(workers) == 0:
+                self.status = 'gone'
+            elif any(workers):
+                self.status = 'start'
             else:
-                self.status = False
+                self.status = 'stop'
 
             if prev != self.status:
-                if self.status:
-                    self.emit('start', {})
-                else:
-                    self.emit('stop', {})
+                print("new status - %s" % self.status)
+                self.emit(self.status, {})
 
             prev = self.status
-            gevent.sleep(0.5)
 
     def on_status(self, msg):
         if self.status:
