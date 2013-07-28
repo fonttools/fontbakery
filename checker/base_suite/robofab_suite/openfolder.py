@@ -70,6 +70,7 @@ class UfoOpenTest(TestCase):
     def test_is_fsType_eq_1(self):
         pass
 
+# TODO check if this is a good form of test
     def has_character(self, unicodeString):
         """Does this font include a glyph for the given unicode character?"""
         # TODO check the glyph has at least 1 contour
@@ -82,3 +83,33 @@ class UfoOpenTest(TestCase):
     def test_has_rupee(self):
         u"""Does this font include a glyph for ₹, the Indian Rupee Sign codepoint?"""
         has_character(self, u'₹')
+
+    def areAllFamilyNamesTheSame(paths):
+      """
+      Test if all family names in the UFOs given to this method as paths are the same.
+      There is probably a MUCH more elegant way to do this :)
+      TODO: Make this test for families where the familyName differs but there are OT names that compensate (common with fonts made with compatibility with Windows GDI applications in mind)
+      """
+      fonts = []
+      allFamilyNamesAreTheSame = False
+      for path in paths:
+        font = OpenFont(path)
+        print font
+        fonts.append(font)
+      regularFamilyName = "unknown"
+      for path in paths:
+        if path.endswith('Regular.ufo'):
+          regularFamilyName = font.info.familyName
+      print 'regularFamilyName is', regularFamilyName
+      for font in fonts:
+        if font.info.familyName == regularFamilyName: # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
+          allFamilyNamesAreTheSame = True
+      if allFamilyNamesAreTheSame == True:
+        return True
+      else:
+        return False
+
+    def ifAllFamilyNamesAreTheSame(paths): # TODO should be test_ifallFamilyNamesAreTheSame
+      allFamilyNamesAreTheSame = areAllFamilyNamesTheSame(paths)
+      assert allFamilyNamesAreTheSame
+    # TODO: check the stems of the style name and full names match the familyNames
