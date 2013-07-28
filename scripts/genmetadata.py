@@ -319,16 +319,9 @@ def getDesigner(familydir):
             ansiprint(string, color)
             return desName
           else:
-            desName = unicode(raw_input("Designer?\n"))
-            if desName == "":
-              desName = "Multiple Designers"
-              ansiprint("No Designer Name known, using Multiple Designers for now...", "red")
-              return desName
-            else:
-              string = "Designer's name from input is " + desName
-              color = "green"
-              ansiprint(string, color)
-              return desName
+            desName = "Multiple Designers"
+            ansiprint("No Designer Name known, using Multiple Designers for now...", "red")
+            return desName
 
 def getSize(familydir):
     files = os.listdir(familydir)
