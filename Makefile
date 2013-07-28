@@ -14,7 +14,7 @@ venv/bin/activate:
 	virtualenv-2.7 --system-site-packages venv
 
 bakery/static/bootstrap/css/bootstrap.css:
-	cd bakery/static && curl -O http://twitter.github.io/bootstrap/assets/bootstrap.zip && unzip bootstrap.zip
+	cd bakery/static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
 
 bakery/static/jquery-2.0.0.min.js:
 	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
@@ -37,6 +37,10 @@ setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bake
 
 # target: run — run project
 run: venv/bin/activate requirements.txt
+	. venv/bin/activate; python entry.py
+
+# target: prun — production run project
+prun: venv/bin/activate requirements.txt
 	. venv/bin/activate; gunicorn --config gunicorn_config.py entry:app
 
 babel: venv/bin/activate
