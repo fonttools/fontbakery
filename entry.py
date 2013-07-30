@@ -26,11 +26,6 @@ app.config.from_object('config')
 app.config.from_pyfile('local.cfg', silent=True)
 init_app(app)
 
-import logging
-LOG_FILENAME = 'data/run.log'
-logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO)
-logging.info('Project start')
-
 if __name__ == '__main__':
     import os
     from werkzeug.wsgi import SharedDataMiddleware
