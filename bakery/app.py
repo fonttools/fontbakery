@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import Flask, request, render_template, g, session
-from flaskext.babel import Babel
+from flask.ext.babel import Babel
 
 from .extensions import db, mail, pages, rq #, celery
 
