@@ -54,7 +54,7 @@ def run(command, cwd = None, log = None):
             break
 
     if p.returncode:
-        log.write('Fatal: Execution error, %s, return code is %s' % (command, p.returncode))
+        log.write('Fatal: Execution error command "%s" returned %s code' % (command, p.returncode))
         raise ValueError
 
 def prun(command, cwd, log=None):
@@ -336,10 +336,10 @@ def generate_fonts_process(login, project_id, log):
     scripts_folder = os.path.join(ROOT, 'scripts')
 
     for name in state['out_ufo'].values():
-        cmd_short = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
+        cmd = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
             'out': os.path.join(_out, name),
         }
-        run(cmd_short, cwd = scripts_folder, log=log)
+        run(cmd, cwd = scripts_folder, log=log)
 
 def generate_metadata_process(login, project_id, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
