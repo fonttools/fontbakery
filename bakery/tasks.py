@@ -196,9 +196,7 @@ def project_git_sync(login, project_id, clone, log):
         run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
     else:
         run('git reset --hard', cwd = project_dir, log=log)
-        from time import sleep
-        sleep(1)
-        #XXX: turn off run('git pull origin master', cwd = project_dir, log=log)
+        run('git pull origin master', cwd = project_dir, log=log)
 
     # child = prun('git rev-parse --short HEAD', cwd=project_dir)
     # hashno = child.stdout.readline().strip()
@@ -407,7 +405,7 @@ def ttx_process(login, project_id, log):
         # convert the ttx back to a ttf file - this may fail
         cmd = "ttx -i '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
-        # compare filesizes TODO print analysis of this :) 
+        # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
         run(cmd, cwd=_out, log=log)
         # remove the original (duplicate) ttf
