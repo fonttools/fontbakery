@@ -15,15 +15,15 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import collections
-from functools import wraps, partial
-from flask import g, request, redirect, url_for
+from functools import wraps
+from flask import g, request, redirect, url_for, flash
 
 def login_required(f):
     """ Decorator allow to access route only logged in user """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if g.user is None:
+            flash('Login required')
             return redirect(url_for('gitauth.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
