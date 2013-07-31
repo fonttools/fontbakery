@@ -53,6 +53,8 @@ buildsocket.on('message', function (data) {
   } else {
     $log.append($('<span>').html(data));
   }
+  // scroll to the bottom of the page
+  $(document).scrollTop($(document).height());
 });
 
 });
