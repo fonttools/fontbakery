@@ -28,7 +28,7 @@ var buildsocket = io.connect("/build", {'force new connection': true});
 
 buildsocket.on("connect", function(e) {
   console.log("Connected", arguments);
-  buildsocket.emit('subscribe', 'build_{{ project.id }}');
+  buildsocket.emit('subscribe', '{{ project.id }}');
 });
 
 buildsocket.on("disconnect", function(e) {

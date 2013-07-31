@@ -82,7 +82,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def on_subscribe(self, channel_id):
         pubsub = self._conn.pubsub()
-        pubsub.subscribe(channel_id)
+        pubsub.subscribe("build_%d" % int(channel_id))
         gevent.spawn(self.build_stream, pubsub)
 
 
