@@ -2,8 +2,6 @@
 {% set page_title = _("Edit DESCRIPTION.en_us.html") %}
 
 {% block body %}
-<h5>{{ project.clone }} <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull from upstream</button></a></h5>
-<h2>{{ page_title }}</h2>
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('description') }}
