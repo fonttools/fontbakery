@@ -28,7 +28,7 @@ from .api import api
 from .settings import settings
 from .project import project
 # For import *
-__all__ = ['create_app']
+__all__ = ['create_app', 'init_app']
 
 def create_app(app_name=__name__):
 
