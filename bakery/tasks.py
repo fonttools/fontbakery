@@ -82,7 +82,7 @@ def sync_and_process(project, connection = None):
             ),
         'w', conn, "build_%s" % project.id)
 
-    log.write('Git', prefix = 'Header: ')
+    log.write('Git\n', prefix = 'Header: ')
 
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
     process_project(login = project.login, project_id = project.id, conn = conn, log = log)
@@ -208,7 +208,7 @@ def process_project(login, project_id, conn, log):
     # project_id - database project_id
     # conn - redis connection
 
-    log.write('Copy [and Rename] UFOs', prefix = 'Header: ')
+    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
     state = project_state_get(login, project_id)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
@@ -228,22 +228,22 @@ def process_project(login, project_id, conn, log):
     # XXX The Baking Commands - the central functionality of this software :)
     # autoprocess is set after setup is completed
     if state['autoprocess']:
-        log.write('Convert UFOs to TTFs (ufo2ttf.py)', prefix = 'Header: ')
+        log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
         generate_fonts_process(login, project_id, log)
 
-        log.write('Autohint TTFs (ttfautohint)', prefix = 'Header: ')
+        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
         ttfautohint_process(login, project_id, log)
 
-        log.write('Compact TTFs with ttx', prefix = 'Header: ')
+        log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
         ttx_process(login, project_id, log)
 
-        log.write('Subset TTFs (subset.py)', prefix = 'Header: ')
+        log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
         subset_process(login, project_id, log)
 
-        log.write('Generate METADATA.json (genmetadata.py)', prefix = 'Header: ')
+        log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
         generate_metadata_process(login, project_id, log)
 
-        log.write('Lint (lint.jar)', prefix = 'Header: ')
+        log.write('Lint (lint.jar)\n', prefix = 'Header: ')
         lint_process(login, project_id, log)
 
 def status(login, project_id):
