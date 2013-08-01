@@ -212,21 +212,7 @@ def process_project(login, project_id, conn, log):
     # conn - redis connection
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
-
-    state = project_state_get(login, project_id)
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
-    for ufo, name in state['out_ufo'].items():
-        if state['rename']:
-            ufo_folder = name+'.ufo'
-        else:
-            ufo_folder = ufo.split('/')[-1]
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
-        if state['rename']:
-            finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
-            finfo = plistlib.readPlist(finame)
-            finfo['familyName'] = name
-            plistlib.writePlist(finfo, finame)
+    copy_and_rename_ufos_process(login, project_id, log)
 
     # autoprocess is set after setup is completed
     if state['autoprocess']:
@@ -330,6 +316,25 @@ def read_yaml(login, project_id):
 
 def read_tree(login, project_id):
     return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
+
+def copy_and_rename_ufos_process(login, project_id, log):
+    """
+    Copy UFO files from git repo to out/src dir
+    """
+    state = project_state_get(login, project_id)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+    for ufo, name in state['out_ufo'].items():
+        if state['rename']:
+            ufo_folder = name+'.ufo'
+        else:
+            ufo_folder = ufo.split('/')[-1]
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
+        if state['rename']:
+            finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
+            finfo = plistlib.readPlist(finame)
+            finfo['familyName'] = name
+            plistlib.writePlist(finfo, finame)
 
 def generate_fonts_process(login, project_id, log):
     """
