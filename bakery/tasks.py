@@ -183,9 +183,6 @@ def project_git_sync(login, project_id, clone, log):
     """
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
-    project_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
-    if not os.path.exists(project_out):
-        os.makedirs(project_out)
     # Create the incoming repo dir if it doesn't exist
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if not os.path.exists(_in):
@@ -320,19 +317,27 @@ def read_tree(login, project_id):
 
 def copy_and_rename_ufos_process(login, project_id, log):
     """
-    Copy UFO files from git repo to out/src dir
+    Set up UFOs for building
     """
     state = project_state_get(login, project_id)
+    _user = os.path.join(DATA_ROOT, '%(login)s/' % locals())
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+
+    # Make the out directory if it doesn't exist
+    if not os.path.exists(_out_src):
+        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
+    # Copy UFO files from git repo to out/src/ dir
     for ufo, name in state['out_ufo'].items():
         if state['rename']:
             ufo_folder = name+'.ufo'
         else:
             ufo_folder = ufo.split('/')[-1]
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out, ufo_folder)), log=log)
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, ufo_folder)), log=log)
+        # TODO DC: In future this should follow GDI naming for big families
         if state['rename']:
-            finame = os.path.join(_out, ufo_folder, 'fontinfo.plist')
+            finame = os.path.join(_out_src, ufo_folder, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
             finfo['familyName'] = name
             plistlib.writePlist(finfo, finame)
