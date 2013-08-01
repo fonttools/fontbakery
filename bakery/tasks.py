@@ -181,23 +181,25 @@ def project_git_sync(login, project_id, clone, log):
     """
     Sync git repo, or download it if it doesn't yet exist
     """
-    if not os.path.exists(project_dir):
-        os.makedirs(project_dir)
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
     project_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
     if not os.path.exists(project_out):
         os.makedirs(project_out)
+    # Create the incoming repo dir if it doesn't exist
     _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    if not os.path.exists(_in):
+        run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
 
-    if not os.path.exists(os.path.join(project_dir, '.git')):
-        # no .git folder in project folder
-        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = project_dir, log=log)
+    # If no .git folder exists in project folder, download repo
+    if not os.path.exists(os.path.join(_in, '.git')):
+        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = _in, log=log)
+    # Else, reset the repo and pull down latest updates
     else:
-        run('git reset --hard', cwd = project_dir, log=log)
-        run('git pull origin master', cwd = project_dir, log=log)
+        run('git reset --hard', cwd = _in, log=log)
+        run('git pull origin master', cwd = _in, log=log)
 
-    # child = prun('git rev-parse --short HEAD', cwd=project_dir)
+    # child = prun('git rev-parse --short HEAD', cwd=_in)
     # hashno = child.stdout.readline().strip()
     # make current out folder
 
