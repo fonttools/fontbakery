@@ -139,12 +139,12 @@ def project_state_get(login, project_id, full=False):
     if not full:
         return state
 
-    dir_in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
 
     txt_files = []
     ufo_dirs = []
-    l = len(dir_in)
-    for root, dirs, files in os.walk(dir_in):
+    l = len(_in)
+    for root, dirs, files in os.walk(_in):
         for f in files:
             fullpath = os.path.join(root, f)
             if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
@@ -160,7 +160,7 @@ def project_state_get(login, project_id, full=False):
     # if lincense_file not defined then choose OFL.txt or LICENSE.txt from the root of repo
     if not state['license_file']:
         for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
-            if os.path.exists(os.path.join(dir_in, fn)):
+            if os.path.exists(os.path.join(_in, fn)):
                 state['license_file'] = fn
                 break
 
@@ -183,13 +183,13 @@ def project_git_sync(login, project_id, clone, log):
     """
     Download repo
     """
-    project_dir = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
 
     project_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
     if not os.path.exists(project_out):
         os.makedirs(project_out)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
 
     if not os.path.exists(os.path.join(project_dir, '.git')):
         # no .git folder in project folder
