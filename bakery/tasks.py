@@ -82,8 +82,6 @@ def sync_and_process(project, connection = None):
             ),
         'w', conn, "build_%s" % project.id)
 
-    log.write('Git\n', prefix = 'Header: ')
-
     project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
     process_project(login = project.login, project_id = project.id, conn = conn, log = log)
 
@@ -181,10 +179,11 @@ def project_state_save(login, project_id, state):
 @job
 def project_git_sync(login, project_id, clone, log):
     """
-    Download repo
+    Sync git repo, or download it if it doesn't yet exist
     """
     if not os.path.exists(project_dir):
         os.makedirs(project_dir)
+    log.write('Sync Git Repository\n', prefix = 'Header: ')
 
     project_out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
     if not os.path.exists(project_out):
