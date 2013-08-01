@@ -328,6 +328,16 @@ def copy_and_rename_ufos_process(login, project_id, log):
     # Make the out directory if it doesn't exist
     if not os.path.exists(_out_src):
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
+    # And rotate it out if it does
+    else:
+        i = 1
+        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out.' % locals()) + 'old-' + str(i)
+        while os.path.exists(_out_old):
+            i += 1
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out.' % locals()) + 'old-' + str(i)
+        run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
+        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
+
     # Copy UFO files from git repo to out/src/ dir
     for ufo, name in state['out_ufo'].items():
         if state['rename']:
