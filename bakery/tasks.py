@@ -204,6 +204,9 @@ def project_git_sync(login, project_id, clone, log):
 
 @job
 def process_project(login, project_id, conn, log):
+    """
+    The Baking Commands - the central functionality of this software :)
+    """
     # login — user login
     # project_id - database project_id
     # conn - redis connection
@@ -225,7 +228,6 @@ def process_project(login, project_id, conn, log):
             finfo['familyName'] = name
             plistlib.writePlist(finfo, finame)
 
-    # XXX The Baking Commands - the central functionality of this software :)
     # autoprocess is set after setup is completed
     if state['autoprocess']:
         log.write('Build Begins!\n', prefix = 'Header: ')
