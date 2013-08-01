@@ -228,6 +228,8 @@ def process_project(login, project_id, conn, log):
     # XXX The Baking Commands - the central functionality of this software :)
     # autoprocess is set after setup is completed
     if state['autoprocess']:
+        log.write('Build Begins!\n', prefix = 'Header: ')
+
         log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
         generate_fonts_process(login, project_id, log)
 
@@ -245,6 +247,8 @@ def process_project(login, project_id, conn, log):
 
         log.write('Lint (lint.jar)\n', prefix = 'Header: ')
         lint_process(login, project_id, log)
+
+        log.write('Build Succeeded!\n', prefix = 'Header: ')
 
 def status(login, project_id):
     if not check_yaml(login, project_id):
