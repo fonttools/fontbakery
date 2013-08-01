@@ -208,11 +208,12 @@ def process_project(login, project_id, conn, log):
     # login — user login
     # project_id - database project_id
     # conn - redis connection
+    state = project_state_get(login, project_id)
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
     copy_and_rename_ufos_process(login, project_id, log)
 
-    # autoprocess is set after setup is completed
+    # autoprocess is set after setup is completed once
     if state['autoprocess']:
         log.write('Build Begins!\n', prefix = 'Header: ')
 
