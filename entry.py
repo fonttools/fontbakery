@@ -34,4 +34,6 @@ if __name__ == '__main__':
         })
     from socketio.server import SocketIOServer
     SocketIOServer(('0.0.0.0', 5000), app,
-        resource="socket.io", policy_server=False, transports=['websocket', 'xhr-polling']).serve_forever()
+        resource="socket.io", policy_server=False,
+        transports=['websocket', 'xhr-polling'],
+        ).serve_forever()

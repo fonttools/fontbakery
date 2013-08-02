@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+import os
 from flask import Flask, request, render_template, g, session
 from flask.ext.babel import Babel
 
@@ -32,7 +33,7 @@ __all__ = ['create_app', 'init_app']
 
 def create_app(app_name=__name__):
 
-    app = Flask(app_name)
+    app = Flask(app_name, static_folder = os.path.join(os.path.dirname(__file__), '..', 'static') )
     return app
 
 def init_app(app):

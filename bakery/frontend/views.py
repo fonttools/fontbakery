@@ -20,7 +20,7 @@ try:
 except ImportError:
     import json
 
-from flask import Blueprint, render_template, Response, g
+from flask import Blueprint, render_template, Response, g, request, current_app, send_from_directory
 from flask.ext.babel import gettext as _
 
 from ..extensions import pages
@@ -60,3 +60,7 @@ def page(path):
 @frontend.route('/quicksearch', methods=['GET', 'POST'])
 def quicksearch():
     return Response(json.dumps(['xen/font', 'dave/font', 'xen/font2']))
+
+@frontend.route('/robots.txt')
+def static_from_root():
+    return send_from_directory(current_app.static_folder, request.path[1:])
