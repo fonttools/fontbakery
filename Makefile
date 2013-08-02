@@ -15,26 +15,26 @@ all: setup
 venv/bin/activate:
 	virtualenv-2.7 --system-site-packages venv
 
-bakery/static/bootstrap/css/bootstrap.css:
-	cd bakery/static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
+static/bootstrap/css/bootstrap.css:
+	cd static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
 
-bakery/static/jquery-2.0.0.min.js:
-	cd bakery/static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
+static/jquery-2.0.0.min.js:
+	cd static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
 
-bakery/static/font-awesome.zip:
-	cd bakery/static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
+static/font-awesome.zip:
+	cd static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
 
-bakery/static/ace/master:
-	cd bakery/static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
+static/ace/master:
+	cd static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
 
-bakery/static/socket.io.min.js:
-	cd bakery/static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js 
+static/socket.io.min.js:
+	cd static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js 
 
-bakery/static/jquery.pjax.js:
-	cd bakery/static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
+static/jquery.pjax.js:
+	cd static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
 
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt bakery/static/jquery-2.0.0.min.js bakery/static/bootstrap/css/bootstrap.css bakery/static/ace/master bakery/static/font-awesome.zip bakery/static/socket.io.min.js bakery/static/jquery.pjax.js
+setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
