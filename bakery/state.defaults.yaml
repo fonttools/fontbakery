@@ -1,0 +1,9 @@
+# Internal project state file
+autoprocess: false # setup is done, for internal use
+license_file_found: false # flag to indicate is license file available, internal
+out_ufo: {} # list of ufo folders
+rename: false # rename fonts 
+txt_files: [] # list of txt files, internal
+ufo_dirs: [] # list of found ufo dirs, internal
+tree: []
+
