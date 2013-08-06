@@ -23,7 +23,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if g.user is None:
-            flash('Login required')
+            flash(_('Login required'))
             return redirect(url_for('gitauth.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
@@ -43,13 +43,13 @@ class lazy_property(object):
     lazy descriptor.
     '''
 
-    def __init__(self,fget):
+    def __init__(self, fget):
         self.fget = fget
         self.func_name = fget.__name__
 
-    def __get__(self,obj,cls):
+    def __get__(self, obj, cls):
         if obj is None:
             return None
         value = self.fget(obj)
-        setattr(obj,self.func_name,value)
+        setattr(obj, self.func_name, value)
         return value
