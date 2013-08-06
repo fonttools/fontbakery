@@ -15,13 +15,10 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import logging
 import redis
 import os
 import glob
 import subprocess
-import yaml
-from flask import json # require Flask > 0.10
 from flask.ext.rq import job
 import plistlib
 import checker.runner
@@ -29,9 +26,6 @@ from utils import RedisFd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
-
-logger = logging.getLogger('bakery.tasks')
-logger.setLevel(logging.INFO)
 
 def run(command, cwd = None, log = None):
     # command — to run,
@@ -76,121 +70,41 @@ def sync_and_process(project, connection = None):
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
 
-    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % {
-            'project_id': project.id,
+    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
+            'id': project.id,
             'login': project.login, }
             ),
         'w', conn, "build_%s" % project.id)
 
-    project_git_sync(login = project.login, project_id = project.id, clone = project.clone, log = log)
-    process_project(login = project.login, project_id = project.id, conn = conn, log = log)
+    project_git_sync(project, log = log)
+    process_project(project, conn = conn, log = log)
 
     log.close()
 
 @job
-def git_clean(login, project_id):
+def git_clean(project):
     return
-    # CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(project_id)s.in/ && rm -rf %(login)s/%(project_id)s.out/"""
+    # CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(id)s.in/ && rm -rf %(login)s/%(id)s.out/"""
     # params = locals()
     # params['root'] = DATA_ROOT
     # run(CLEAN_SH % params)
 
-def check_yaml(login, project_id):
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), 'bakery.yaml')
-    if not os.path.exists(yml):
-        return 0
-    return 1
-
-def rwalk(path):
-    h = {}
-    cd = os.path.abspath(path)
-    fs = os.listdir(path)
-    for f in fs:
-        cf = os.path.join(cd, f)
-        if os.path.isfile(cf):
-            h[f] = {}
-        elif os.path.isdir(cf) and not cf.endswith('.git'):
-            h[f] = rwalk(cf)
-    return h
-
-def project_state_get(login, project_id, full=False):
-    project_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % locals())
-    local_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
-    default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
-
-    # if project have its own bakery.yaml in git repo then use it
-    # if no, then use local bakery.$(project_id).yaml
-    # or fallback to default. This only can happends during development tests
-
-    if os.path.exists(project_yml):
-        state = yaml.load(open(default_yml, 'r').read())
-        state.update(yaml.load(open(project_yml, 'r').read()))
-        state['source'] = 'project'
-    elif os.path.exists(local_yml):
-        state = yaml.load(open(default_yml, 'r').read())
-        state.update(yaml.load(open(local_yml, 'r').read()))
-        state['source'] = 'local'
-    else:
-        state = yaml.load(open(default_yml, 'r').read())
-        state['source'] = 'default'
-
-    if not full:
-        return state
-
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-
-    txt_files = []
-    ufo_dirs = []
-    l = len(_in)
-    for root, dirs, files in os.walk(_in):
-        for f in files:
-            fullpath = os.path.join(root, f)
-            if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
-                txt_files.append(fullpath[l:])
-        for d in dirs:
-            fullpath = os.path.join(root, d)
-            if os.path.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath[l:])
-
-    state['txt_files'] = txt_files
-    state['ufo_dirs'] = ufo_dirs
-
-    # if lincense_file not defined then choose OFL.txt or LICENSE.txt from the root of repo
-    if not state['license_file']:
-        for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
-            if os.path.exists(os.path.join(_in, fn)):
-                state['license_file'] = fn
-                break
-
-    if os.path.exists(state['license_file']):
-        state['license_file_found'] = True
-
-    return state
-
-def project_state_save(login, project_id, state):
-    # don't publish this property to user
-    if state.get('source', None):
-        del state['source']
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
-    f = open(yml, 'w')
-    f.write(yaml.safe_dump(state))
-    f.close()
 
 @job
-def project_git_sync(login, project_id, clone, log):
+def project_git_sync(project, log):
     """
     Sync git repo, or download it if it doesn't yet exist
     """
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
     # Create the incoming repo dir if it doesn't exist
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     if not os.path.exists(_in):
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
 
     # If no .git folder exists in project folder, download repo
     if not os.path.exists(os.path.join(_in, '.git')):
-        run('git clone --depth=100 --quiet --branch=master %s .' % clone, cwd = _in, log=log)
+        run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
     # Else, reset the repo and pull down latest updates
     else:
         run('git reset --hard', cwd = _in, log=log)
@@ -201,130 +115,50 @@ def project_git_sync(login, project_id, clone, log):
     # make current out folder
 
 @job
-def process_project(login, project_id, conn, log):
+def process_project(project, conn, log):
     """
     The Baking Commands - the central functionality of this software :)
     """
     # login — user login
     # project_id - database project_id
     # conn - redis connection
-    state = project_state_get(login, project_id)
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
-    copy_and_rename_ufos_process(login, project_id, log)
+    copy_and_rename_ufos_process(project, log)
 
     # autoprocess is set after setup is completed once
-    if state['autoprocess']:
+    if project.setup_complete():
         log.write('Build Begins!\n', prefix = 'Header: ')
 
         log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
-        generate_fonts_process(login, project_id, log)
+        generate_fonts_process(project, log)
 
         log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
-        ttfautohint_process(login, project_id, log)
+        ttfautohint_process(project, log)
 
         log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
-        ttx_process(login, project_id, log)
+        ttx_process(project, log)
 
         log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
-        subset_process(login, project_id, log)
+        subset_process(project, log)
 
         log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
-        generate_metadata_process(login, project_id, log)
+        generate_metadata_process(project, log)
 
         log.write('Lint (lint.jar)\n', prefix = 'Header: ')
-        lint_process(login, project_id, log)
+        lint_process(project, log)
 
         log.write('Build Succeeded!\n', prefix = 'Header: ')
 
-def status(login, project_id):
-    if not check_yaml(login, project_id):
-        return 0
-
-def read_license(login, project_id):
-    state = project_state_get(login, project_id, full=True)
-    licensef = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), state['license_file'])
-    if os.path.exists(licensef):
-        try:
-            return unicode(open(licensef, 'r').read(), "utf8")
-        except IOError:
-            return "Error reading license file"
-    else:
-        return None
-
-def read_metadata(login, project_id):
-    metadata = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
-    metadata_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
-
-    if os.path.exists(metadata):
-        metadata_file = unicode(open(metadata, 'r').read(), "utf8")
-    else:
-        metadata_file = ''
-
-    if os.path.exists(metadata_new):
-        metadata_new_file = unicode(open(metadata_new, 'r').read(), "utf8")
-    else:
-        metadata_new_file = ''
-
-    return (metadata_file, metadata_new_file)
-
-def save_metadata(login, project_id, metadata, del_new=True):
-    mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json')
-    mf_new = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'METADATA.json.new')
-
-    f = open(mf, 'w')
-    json.dump(json.loads(metadata), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
-    f.close()
-
-    if del_new:
-        if os.path.exists(mf_new):
-            os.remove(mf_new)
-
-def read_description(login, project_id):
-    description_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'DESCRIPTION.en_us.html')
-
-    if os.path.exists(description_file):
-        description = unicode(open(description_file, 'r').read(), "utf8")
-    else:
-        description = ''
-
-    return description
-
-def save_description(login, project_id, description):
-    mf = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals(), 'DESCRIPTION.en_us.html')
-
-    f = open(mf, 'w')
-    f.write(description)
-    f.close()
-
-def read_log(login, project_id):
-    log_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.process.log' % locals())
-
-    if os.path.exists(log_file):
-        return unicode(open(log_file, 'r').read(), "utf8")
-    else:
-        return ''
-
-def read_yaml(login, project_id):
-    yaml_file = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % locals())
-
-    if os.path.exists(yaml_file):
-        return unicode(open(yaml_file, 'r').read(), "utf8")
-    else:
-        return ''
-
-def read_tree(login, project_id):
-    return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
-
-def copy_and_rename_ufos_process(login, project_id, log):
+def copy_and_rename_ufos_process(project, log):
     """
     Set up UFOs for building
     """
-    state = project_state_get(login, project_id)
-    _user = os.path.join(DATA_ROOT, '%(login)s/' % locals())
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+    state = project.state
+    _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
     # Make the out directory if it doesn't exist
     if not os.path.exists(_out_src):
@@ -332,10 +166,10 @@ def copy_and_rename_ufos_process(login, project_id, log):
     # And rotate it out if it does
     else:
         i = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out.' % locals()) + 'old-' + str(i)
+        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
         while os.path.exists(_out_old):
             i += 1
-            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out.' % locals()) + 'old-' + str(i)
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
         run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
@@ -353,13 +187,14 @@ def copy_and_rename_ufos_process(login, project_id, log):
             finfo['familyName'] = name
             plistlib.writePlist(finfo, finame)
 
-def generate_fonts_process(login, project_id, log):
+
+def generate_fonts_process(project, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
     """
-    state = project_state_get(login, project_id)
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals())
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+    state = project.state
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
@@ -369,21 +204,24 @@ def generate_fonts_process(login, project_id, log):
         }
         run(cmd, cwd = scripts_folder, log=log)
 
-def generate_metadata_process(login, project_id, log):
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+
+def generate_metadata_process(project, log):
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
-def lint_process(login, project_id, log):
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+
+def lint_process(project, log):
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
-def ttfautohint_process(login, project_id, log):
+
+def ttfautohint_process(project, log):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
-    state = project_state_get(login, project_id)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+    state = project.state
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     if state['ttfautohintuse']:
         for name in state['out_ufo'].values():
             cmd = "ttfautohint '%(src)s.ttf' '%(out)s.ttf'" % {
@@ -394,9 +232,10 @@ def ttfautohint_process(login, project_id, log):
     else:
         run("cp src/*.ttf .", cwd=_out, log=log)
 
-def subset_process(login, project_id, log):
-    state = project_state_get(login, project_id)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+
+def subset_process(project, log):
+    state = project.state
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     for subset in state['subset']:
         for name in state['out_ufo'].values():
             # python ~/googlefontdirectory/tools/subset/subset.py \
@@ -419,9 +258,10 @@ def subset_process(login, project_id, log):
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
 
-def ttx_process(login, project_id, log):
-    state = project_state_get(login, project_id)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/' % locals())
+
+def ttx_process(project, log):
+    state = project.state
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     for name in state['out_ufo'].values():
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
@@ -440,9 +280,10 @@ def ttx_process(login, project_id, log):
         cmd = "rm  '%s.ttf.orig'" % filename
         run(cmd, cwd=_out, log=log)
 
-def project_tests(login, project_id):
-    state = project_state_get(login, project_id)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.out/src/' % locals())
+
+def project_tests(project):
+    state = project.state
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
     for name in state['out_ufo'].values():
         result[name] = checker.runner.run_set(os.path.join(_out, name+'.ufo'))
