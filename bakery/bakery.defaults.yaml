@@ -1,13 +1,18 @@
 # Default bakery.yaml file
-autoprocess: false # setup is done, for internal use
-license_file: '' # name of license file
-license_file_found: false # flag to indicate is license file available, internal
-out_ufo: {} # list of ufo folders
-rename: false # rename fonts 
-subset: [] # subset list
-# Possible values
-# latin latin-ext+latin cyrillic+latin cyrillic-ext+latin greek+latin greek-ext+latin vietnamese+latin
-ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c # default ttfautohint command line params
-ttfautohintuse: false # use ttfautohint
-txt_files: [] # list of txt files, internal
-ufo_dirs: [] # list of found ufo dirs, internal
+# name of license file, this file should actually exists
+license_file: ''
+
+# list of ufo folders 
+ufo: []
+
+# Subsets list  
+# Possible values:
+# latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, 
+# greek-ext+latin, vietnamese+latin
+subset: [] 
+
+# default ttfautohint command line params
+ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c 
+
+# new font family name
+newfamily: '' 
