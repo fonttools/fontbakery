@@ -15,6 +15,6 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from .gitauth import models
-from .project import models
-from .settings import models
+from .gitauth.models import User
+from .project.models import Project, ProjectBuild
+from .settings.models import ProjectCache
