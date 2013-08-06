@@ -102,7 +102,7 @@ def setup(project_id):
                 try:
                     assert i in DEFAULT_SUBSET_LIST
                 except AssertionError:
-                    flash('Subset value is wrong')
+                    flash(_('Subset value is wrong'))
                     return render_template('project/setup.html', project = p, state = state,
                         subsetvals = DEFAULT_SUBSET_LIST)
 
@@ -190,7 +190,7 @@ def ace_save(project_id):
     save_metadata(login = g.user.login, project_id = p.id,
         metadata = request.form.get('metadata'),
         del_new = request.form.get('delete', None))
-    flash('METADATA.json saved')
+    flash(_('METADATA.json saved'))
     return redirect(url_for('project.ace', project_id=p.id))
 
 
@@ -208,7 +208,7 @@ def description_save(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     save_description(login = g.user.login, project_id = p.id,
         description = request.form.get('description'))
-    flash('Description saved')
+    flash(_('Description saved'))
     return redirect(url_for('project.description_edit', project_id=p.id))
 
 @project.route('/<int:project_id>/log', methods=['GET'])

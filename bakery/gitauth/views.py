@@ -37,7 +37,7 @@ def me():
         # XXX: this is temporary
         session['user_id'] = user.id
         g.user = user
-        flash('Welcome!')
+        flash(_('Welcome!'))
 
     return redirect(url_for('frontend.splash'))
 
@@ -51,7 +51,7 @@ def login():
         params = {'redirect_uri': redirect_uri, 'scope': 'user:email,public_repo'}
         return redirect(github.get_authorize_url(**params))
     else:
-        flash('Already logged in')
+        flash(_('Already logged in'))
         return redirect(url_for('frontend.splash'))
 
 @gitauth.route('/callback')
@@ -59,7 +59,7 @@ def authorized(next = None):
     next_url = request.args.get('next') or url_for('frontend.splash')
 
     if not 'code' in request.args:
-        flash('You did not authorize the request')
+        flash(_('You did not authorize the request'))
         return redirect(next_url)
 
     redirect_uri = url_for('.authorized', _external=True)
@@ -87,7 +87,7 @@ def authorized(next = None):
 
     session['user_id'] = user.id
     g.user = user
-    flash('Welcome!')
+    flash(_('Welcome!'))
 
     return redirect(next_url)
 

@@ -202,7 +202,7 @@ def addclone():
     # near impossibru to validate url, so just check if its length is > 10 (let it be 10)
     clone = request.form.get('clone')
     if len(clone)<10:
-        flash('Url is too short')
+        flash(_('Url is too short'))
         return redirect(url_for('settings.repos')+"#tab_owngit")
 
     dup = Project.query.filter_by(login = g.user.login, is_github=False, clone = clone).first()
