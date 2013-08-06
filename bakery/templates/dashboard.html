@@ -10,8 +10,8 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Clone String</th>
-      <th>Actions</th>
+      <th>{{ _("Clone String") }}</th>
+      <th>{{ _("Actions") }}</th>
     </tr>
   </thead>
 
@@ -20,8 +20,8 @@
       <tr>
         <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
         <td>
-        {% if item.yaml %}
-          <span class="muted">OK</span>
+        {% if not item.setup_status() %}
+          <span class="muted">{{ _("OK") }}</span>
           {% else %}
           <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
         {% endif %}
@@ -32,7 +32,7 @@
         <td colspan="2">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
               {{ _("List of available repositories is empty") }}. <br /><br />
-              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary">Add some now</button></a>
+              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary">{{ _("Add some now") }}</button></a>
             </p>
         </td>
       </tr> 
