@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import os
-from flask import current_app
+from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
 
@@ -73,7 +73,7 @@ class Project(db.Model):
         elif name == 'metadata_new':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self, 'METADATA.json.new')
         elif name == 'license':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.state['license_file'])
+            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
         elif name == 'description':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self, 'DESCRIPTION.en_us.html')
         else:
@@ -97,7 +97,7 @@ class Project(db.Model):
             json.dump(json.loads(data), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
             f.close()
 
-            if kwarg.get('del_new'):
+            if kwarg.get('del_new') and kwarg['del_new']:
                 if os.path.exists(self.asset_by_name('metadata_new')):
                     os.remove(self.asset_by_name('metadata_new'))
 

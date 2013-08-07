@@ -7,6 +7,7 @@
 {{ nav('setup') }}
 
 {% set config = project.config %}
+
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
   <div class="control-group">
     <label class="control-label" for="license_file">License file</label>
@@ -43,7 +44,7 @@
     </div>
   </div>
 
-  <div class="control-group">
+<!--   <div class="control-group">
     <div class="controls">
     <label class="radio">
       <input type="radio" name="rename" id="rename1" value="no" {% if not config['state']['familyname'] %}checked{% endif %}>
@@ -55,8 +56,8 @@
     </label>
     </div>
   </div>
-
-  <div id="familyname" class="control-group hidden">
+ -->
+  <div id="familyname" class="control-group">
     <label class="control-label" for="familyname">Define new font family name</label>
     <div class="controls">
     <input type="text" placeholder="Type new params…" name="familyname" 
@@ -65,7 +66,7 @@
     </div>
   </div>
 
-  <div class="control-group">
+<!--   <div class="control-group">
     <div class="controls">
     <label class="radio">
       <input type="radio" name="ttfautohintuse" id="ttf1" value="no" {% if not config['state']['ttfautohintuse'] %}checked{% endif %}>
@@ -77,12 +78,12 @@
     </label>
     </div>
   </div>
-
+ -->
 
   <div class="control-group">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> params</label>
     <div class="controls">
-    <input type="text" placeholder="Type new params…" name="ttfautohint" {% if config['state']['ttfautohintuse'] %}value="{{ config['state']['ttfautohintuse'] }}"{% endif %} class="input-xxlarge">
+    <input type="text" placeholder="Type new params…" name="ttfautohint" {% if config['state']['ttfautohint'] %}value="{{ config['state']['ttfautohint'] }}"{% endif %} class="input-xxlarge">
     </div>
   </div>
 

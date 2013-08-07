@@ -119,7 +119,7 @@ def setup(project_id):
 def fonts(project_id):
     # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
-    if p.config['state'].get('setup', None):
+    if p.config['local'].get('setup', None):
         return render_template('project/fonts.html', project = p)
     else:
         return redirect(url_for('project.setup', project_id = p.id))
@@ -128,14 +128,15 @@ def fonts(project_id):
 @login_required
 def plicense(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    lic = read_license(login = g.user.login, project_id = p.id)
-    return render_template('project/license.html', project = p, license = lic)
+    data = p.read_asset('license')
+    return render_template('project/license.html', project = p, license = data)
 
 @project.route('/<int:project_id>/ace', methods=['GET'])
 @login_required
 def ace(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    metadata, metadata_new = read_metadata(login = g.user.login, project_id = p.id)
+    metadata = p.read_asset('metadata')
+    metadata_new = p.read_asset('metadata_new')
     return render_template('project/ace.html', project = p,
         metadata = metadata, metadata_new = metadata_new)
 
@@ -143,8 +144,7 @@ def ace(project_id):
 @login_required
 def ace_save(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    save_metadata(login = g.user.login, project_id = p.id,
-        metadata = request.form.get('metadata'),
+    p.save_asset('metadata', request.form.get('metadata'),
         del_new = request.form.get('delete', None))
     flash(_('METADATA.json saved'))
     return redirect(url_for('project.ace', project_id=p.id))
@@ -154,16 +154,14 @@ def ace_save(project_id):
 @login_required
 def description_edit(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    description = read_description(login = g.user.login, project_id = p.id)
-    return render_template('project/description.html', project = p,
-        description = description)
+    data = p.read_asset('description')
+    return render_template('project/description.html', project = p, description = data)
 
 @project.route('/<int:project_id>/description_save', methods=['POST'])
 @login_required
 def description_save(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    save_description(login = g.user.login, project_id = p.id,
-        description = request.form.get('description'))
+    p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
     return redirect(url_for('project.description_edit', project_id=p.id))
 
@@ -171,9 +169,9 @@ def description_save(project_id):
 @login_required
 def buildlog(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    log = read_log(login = g.user.login, project_id = p.id)
-    return render_template('project/log.html', project = p,
-        log = log)
+    data = p.read_asset('log')
+    return render_template('project/log.html', project = p, log = data)
+
 
 @project.route('/<int:project_id>/logrt', methods=['GET'])
 @login_required
@@ -181,20 +179,18 @@ def buildlogrt(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
     return render_template('project/logrt.html', project = p)
 
-
 @project.route('/<int:project_id>/yaml', methods=['GET'])
 @login_required
 def bakeryyaml(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    yaml = read_yaml(login = g.user.login, project_id = p.id)
-    return render_template('project/yaml.html', project = p,
-        yaml = yaml)
+    data = p.read_asset('yaml')
+    return render_template('project/yaml.html', project = p, yaml = data)
 
 @project.route('/<int:project_id>/tests', methods=['GET'])
 @login_required
 def tests(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    test_result = project_tests(login = g.user.login, project_id = p.id)
+    test_result = project_tests(project = p)
     return render_template('project/tests.html', project = p,
         tests = test_result)
 

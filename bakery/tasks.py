@@ -282,10 +282,10 @@ def ttx_process(project, log):
 
 
 def project_tests(project):
-    state = project.state
+    state = project.config['state']
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
-    for name in state['out_ufo'].values():
+    for name in state['ufo']:
         result[name] = checker.runner.run_set(os.path.join(_out, name+'.ufo'))
     return result
 

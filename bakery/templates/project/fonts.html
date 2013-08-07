@@ -8,8 +8,8 @@
 
 <h4>UFOs detected</h4>
 <ul>
-{% for folder, name in project.config['state']['ufo'].items() %}
-<li>{{ name }} (<code>{{folder}}</code>)</li>
+{% for name in project.config['state']['ufo'] %}
+<li>{{ name }}</li>
 {% endfor %}
 </ul>
 

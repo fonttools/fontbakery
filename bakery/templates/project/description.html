@@ -7,11 +7,9 @@
 {{ nav('description') }}
 
 <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
-<div class="span8">
 <div id="editor"></div>
 <textarea name="description">{{ description }}</textarea>
-<p style="margin-top:0.5em"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
-</div>
+<p style="margin-top:0.5em"><button type="submit" class="btn btn-primary">Save</button></p>
 </form>
 
 {% endblock %}
@@ -19,21 +17,21 @@
 
 {% block extrajs %}
 
-    <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
-    <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/solarized_light");
-        editor.getSession().setMode("ace/mode/html");
+<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script>
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/solarized_light");
+editor.getSession().setMode("ace/mode/html");
 
-        // var textarea = $('textarea[name="metadata"]');
-        var textarea = $('textarea[name="description"]').hide();
-        editor.getSession().setUseWrapMode(true);
-        editor.getSession().setValue(textarea.val());
-        editor.getSession().on('change', function(){
-          textarea.val(editor.getSession().getValue());
-        });
+// var textarea = $('textarea[name="metadata"]');
+var textarea = $('textarea[name="description"]').hide();
+editor.getSession().setUseWrapMode(true);
+editor.getSession().setValue(textarea.val());
+editor.getSession().on('change', function(){
+  textarea.val(editor.getSession().getValue());
+});
 
-    </script>
+</script>
 
 
 </div>

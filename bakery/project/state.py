@@ -115,10 +115,10 @@ def project_state_save(project, state = None, local = None):
 
     DATA_ROOT = current_app.config.get('DATA_ROOT')
 
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
+    state_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
     local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
 
-    f = open(yml, 'w')
+    f = open(state_yml, 'w')
     f.write(yaml.safe_dump(state))
     f.close()
 
