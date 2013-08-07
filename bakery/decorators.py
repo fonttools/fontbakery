@@ -17,6 +17,7 @@
 
 from functools import wraps
 from flask import g, request, redirect, url_for, flash
+from flask.ext.babel import gettext as _
 
 def login_required(f):
     """ Decorator allow to access route only logged in user """
