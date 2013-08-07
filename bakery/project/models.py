@@ -109,8 +109,9 @@ class Project(db.Model):
                 if os.path.exists(self.asset_by_name('metadata_new')):
                     os.remove(self.asset_by_name('metadata_new'))
 
-    # def __getitem__(self, key):
-    #     pass
+    def __getitem__(self, key):
+        # make magic mapping works
+        return self.__dict__.get(key)
 
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'
