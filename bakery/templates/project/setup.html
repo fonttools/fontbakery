@@ -45,12 +45,21 @@
     <div class="controls">
     <label class="radio">
       <input type="radio" name="rename" id="rename1" value="no" {% if not project.state['rename'] %}checked{% endif %}>
-      Use the same font names?
+      Use the same font family name?
     </label>
     <label class="radio">
       <input type="radio" name="rename" id="reanme2" value="yes" {% if project.state['rename'] %}checked{% endif %}>
-      I want to define new names?
+      I want to define new font family name?
     </label>
+    </div>
+  </div>
+
+  <div id="familyname" class="control-group hidden">
+    <label class="control-label" for="familyname">Define new font family name</label>
+    <div class="controls">
+    <input type="text" placeholder="Type new params…" name="familyname" 
+      {% if project.config['state'].get('familyname', None) %}value="{{ project.config['state']['familyname'] }}"{% endif %} 
+      class="input-xxlarge">
     </div>
   </div>
 
@@ -77,7 +86,6 @@
 
   <div class="control-group">
     <div class="controls">
-      <input type="hidden" name="step" value="2"> 
       <button type="submit" class="btn btn-primary" {% if not project.state.get('autoprocess') %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
     </div>
   </div>

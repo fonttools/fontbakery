@@ -102,7 +102,7 @@ def project_state_get(project, refresh = False):
 
     local['tree'] = rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project))
 
-
+    project_state_save(project, state, local)
 
     return state, local
 

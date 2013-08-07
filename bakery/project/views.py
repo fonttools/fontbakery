@@ -58,103 +58,60 @@ def bump():
 @login_required
 def setup(project_id):
     p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    state = p.state
+    config = p.config
 
     #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
-        return render_template('project/setup.html', project = p, state = state,
+        return render_template('project/setup.html', project = p,
             subsetvals = DEFAULT_SUBSET_LIST)
     else:
-        if request.form.get('step') == '2':
-            # 1st step
-            if request.form.get('license_file') in state['txt_files']:
-                state['license_file'] = request.form.get('license_file')
-            else:
-                flash(_("Wrong license_file value, must be an error"))
-                return render_template('project/setup.html', project = p, state = state,
-                    subsetvals = DEFAULT_SUBSET_LIST)
+        error = False
 
-            if request.form.get('rename') == 'yes':
-                state['rename'] = True
-            else:
-                state['rename'] = False
+        if not request.form.get('license_file') in config['local']['txt_files']:
+            error = True
+            flash(_("Wrong license_file value, must be an error"))
 
-            ufo_dirs = request.form.getlist('ufo_dirs')
-            for i in ufo_dirs:
-                if i not in state['ufo_dirs']:
-                    flash(_("Wrong ufo_dir value, must be an error"))
-                    return render_template('project/setup.html', project = p, state = state,
-                        subsetvals = DEFAULT_SUBSET_LIST)
-                if not state['out_ufo'].get(i):
-                    # define font name based on ufo folder name.
-                    state['out_ufo'][i] = i.split('/')[-1][:-4]
-                else:
-                    if state['rename'] == False:
-                        state['out_ufo'][i] = i.split('/')[-1][:-4]
-            for i in state['out_ufo'].keys():
-                # don't want to delete other properties
-                if i not in ufo_dirs:
-                    del state['out_ufo'][i]
+        config['state']['license_file'] = request.form.get('license_file')
 
-            subset_list = request.form.getlist('subset')
-            for i in subset_list:
-                try:
-                    assert i in DEFAULT_SUBSET_LIST
-                except AssertionError:
-                    flash(_('Subset value is wrong'))
-                    return render_template('project/setup.html', project = p, state = state,
-                        subsetvals = DEFAULT_SUBSET_LIST)
+        if request.form.get('familyname'):
+            if len(request.form.get('familyname'))> 0:
+                config['state']['familyname'] = request.form.get('familyname')
 
-            state['subset'] = subset_list
+        ufo_dirs = request.form.getlist('ufo')
+        for i in ufo_dirs:
+            if i not in config['local']['ufo_dirs']:
+                error = True
+                flash(_("Wrong ufo_dir value, must be an error"))
 
-            if request.form.get('ttfautohintuse'):
-                state['ttfautohintuse'] = True
-            else:
-                state['ttfautohintuse'] = False
+        config['state']['ufo'] = ufo_dirs
 
-            if request.form.get('ttfautohint'):
-                state['ttfautohint'] = request.form.get('ttfautohint')
+        subset_list = request.form.getlist('subset')
+        for i in subset_list:
+            if i not in DEFAULT_SUBSET_LIST:
+                error = True
+                flash(_('Subset value is wrong'))
 
-            # setup is done, now you can process files
-            state['autoprocess'] = True
+        config['state']['subset'] = subset_list
 
-            p.save_state()
+        if request.form.get('ttfautohint'):
+            if len(request.form.get('ttfautohint'))> 0:
+                config['state']['ttfautohint'] = request.form.get('ttfautohint')
 
-            if request.form.get('rename') == 'yes':
-                return render_template('project/setup2.html', project = p, state = state)
-            else:
-                flash(_("Repository %s has been updated" % p.clone))
-                connection = dict(
-                    host=config_value('default', 'HOST'),
-                    port=config_value('default', 'PORT'),
-                    password=config_value('default', 'PASSWORD'),
-                    db=config_value('default', 'DB'))
-                sync_and_process.delay(p, connection)
-                return redirect(url_for('project.buildlogrt', project_id = p.id))
-        elif request.form.get('step')=='3':
-            out_ufo = {}
-            for param, value in request.form.items():
-                if not param.startswith('ufo-'):
-                    continue
-                if param[4:] in state['out_ufo']:
-                    # XXX: there is no sanity check for value yet
-                    out_ufo[param[4:]] = value
-                else:
-                    flash(_("Wrong parameter provided for ufo folder name"))
-            state['out_ufo'] = out_ufo
-            p.save_state()
+        if error:
+            return render_template('project/setup.html', project = p,
+                subsetvals = DEFAULT_SUBSET_LIST)
 
-            # push check before project process
-            connection = dict(
-                host=config_value('default', 'HOST'),
-                port=config_value('default', 'PORT'),
-                password=config_value('default', 'PASSWORD'),
-                db=config_value('default', 'DB'))
-            sync_and_process.delay(p, connection)
-            return redirect(url_for('project.buildlogrt', project_id = p.id))
-        else:
-            flash(_("Strange behaviour detected"))
-            return redirect(url_for('project.fonts', project_id=p.id))
+
+        flash(_("Repository %s has been updated" % p.clone))
+        p.save_state()
+
+        connection = dict(
+            host=config_value('default', 'HOST'),
+            port=config_value('default', 'PORT'),
+            password=config_value('default', 'PASSWORD'),
+            db=config_value('default', 'DB'))
+        sync_and_process.delay(p, connection)
+        return redirect(url_for('project.buildlogrt', project_id = p.id))
 
 @project.route('/<int:project_id>/', methods=['GET'])
 @login_required
