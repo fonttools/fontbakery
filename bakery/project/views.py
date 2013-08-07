@@ -24,8 +24,7 @@ from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 # from ..extensions import db
-from ..tasks import (read_tree, read_license, read_metadata, save_metadata, read_description,
-    save_description, read_log, read_yaml, project_tests, sync_and_process)
+from ..tasks import (project_tests, sync_and_process)
 from .models import Project
 from flask.ext.rq import config_value
 
