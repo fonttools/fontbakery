@@ -53,7 +53,7 @@ FLATPAGES_EXTENSION = '.md'
 import os
 FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'docs')
 DATA_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+ROOT = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 
 del os
