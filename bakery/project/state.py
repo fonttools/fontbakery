@@ -19,14 +19,6 @@ import yaml
 import os
 from flask import current_app
 
-def check_yaml(login, project_id):
-    DATA_ROOT = current_app.config.get('DATA_ROOT')
-
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals(), 'bakery.yaml')
-    if not os.path.exists(yml):
-        return 0
-    return 1
-
 def rwalk(path):
     h = {}
     cd = os.path.abspath(path)
@@ -45,15 +37,15 @@ def load_yaml(default_yml, yml = None):
         data.update(yaml.load(open(yml, 'r').read()))
     return data
 
-def project_state_get(login, project, refresh=False):
+def project_state_get(project, refresh = False):
     ROOT = current_app.config.get('ROOT')
     DATA_ROOT = current_app.config.get('DATA_ROOT')
 
-    bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/bakery.yaml' % project)
-    bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % project)
+    bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
+    bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
     bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
 
-    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.state.yaml' % project)
+    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
     state_default_yml = os.path.join(ROOT, 'bakery', 'state.defaults.yaml')
 
     if os.path.exists(state_local_yml):
@@ -63,13 +55,13 @@ def project_state_get(login, project, refresh=False):
         refresh = True
 
     # if project have its own bakery.yaml in git repo then use it
-    # if no, then use local bakery.$(project_id).yaml
+    # if no, then use local bakery.$(id).yaml
     # or fallback to default. This only can happends during development tests
     # because I deleted it manually.
 
     if os.path.exists(bakery_project_yml):
         state = load_yaml(bakery_default_yml, bakery_project_yml)
-        local['status'] = 'repository'
+        local['status'] = 'repo'
     elif os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
@@ -77,7 +69,10 @@ def project_state_get(login, project, refresh=False):
         state = load_yaml(bakery_default_yml)
         local['status'] = 'default'
 
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % project)
+    if not refresh:
+        return state, local
+
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
 
     txt_files = []
     ufo_dirs = []
@@ -105,29 +100,28 @@ def project_state_get(login, project, refresh=False):
     if os.path.exists(state['license_file']):
         local['license_file_found'] = True
 
-    local['tree'] = rwalk(os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.in/' % locals()))
+    local['tree'] = rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project))
+
+
 
     return state, local
 
-def project_state_save(login, project, state, local):
+def project_state_save(project, state = None, local = None):
+    if not state:
+        state = project.config['state']
+    if not local:
+        local = project.config['local']
+
     DATA_ROOT = current_app.config.get('DATA_ROOT')
 
-    # don't publish this property to user
-    if state.get('source', None):
-        del state['source']
-    yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.bakery.yaml' % project)
-    local_yml = os.path.join(DATA_ROOT, '%(login)s/%(project_id)s.state.yaml' % project)
+    yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
+    local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
 
     f = open(yml, 'w')
-    f.write(yaml.safe_dump(project.state))
+    f.write(yaml.safe_dump(state))
     f.close()
 
     l = open(local_yml, 'w')
-    l.write(yaml.safe_dump(project.local))
+    l.write(yaml.safe_dump(local))
     l.close()
-
-
-def status(login, project_id):
-    if not check_yaml(login, project_id):
-        return 0
 
