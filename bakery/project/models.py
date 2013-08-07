@@ -37,9 +37,6 @@ class Project(db.Model):
 
     builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
-    state = None # bakery.yaml config file contents
-    local = None # local settings state.yaml file contents
-
     def cache_update(self, data):
         self.html_url = data['html_url']
         self.name = data['name']
@@ -47,28 +44,23 @@ class Project(db.Model):
 
     @lazy_property
     def config(self):
-        if not self.state:
-            self.state, self.local = project_state_get(login = self.login, project_id = self.id, full = True)
-        return self.state
+        # if it is not purely visible, but @lazy_property decorator cache state
+        # values in runtime, when this class property acessed for the 1st time
+        # it store state value. You can access it and modify, but at the end of
+        # the request all modifications dies if wasn't saved
+        #
+        _state, _local = project_state_get(project = self)
+        return {'state': _state, 'local': _local}
 
     def save_state(self):
-        assert(self.state)
-        assert(self.local)
-        project_state_save(login = self.login, project_id = self.id, state = self.state, local = self.local)
+        project_state_save(self)
 
-    @lazy_property
     def setup_status(self):
-        # Project can have statuses:
-        # 'setup' - need initial setup, no bakery.yaml file, and no setup is done
-        # 'update' - setup is done, but bakery.yaml is not inside project folder
-        # 'ready' - bakery.yaml is inside of repository
-        # 'process' — project isn't yet checked out, or processing
-        status = self.local.get('source', )
-        if self.local.get('source') == ''
-        return False
+        # Return project status.
+        return self.config['local'].get('source', None)
 
     def read_tree(self):
-        return self._local['tree']
+        return self.config['local']['tree']
 
     def asset_by_name(self, name):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
