@@ -9,10 +9,10 @@ ufo: []
 # Possible values:
 # latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, 
 # greek-ext+latin, vietnamese+latin
-subset: [] 
+#subset: [] 
 
 # default ttfautohint command line params
-ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c 
+#ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c 
 
 # new font family name
-newfamily: '' 
+#newfamily: '' 

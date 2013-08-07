@@ -4,7 +4,7 @@
 
     <ul class="nav nav-pills">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-      {% if project.state.get('autoprocess') %}
+      {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Files</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle"

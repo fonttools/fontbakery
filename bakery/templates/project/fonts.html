@@ -8,7 +8,7 @@
 
 <h4>UFOs detected</h4>
 <ul>
-{% for folder, name in project.state['out_ufo'].items() %}
+{% for folder, name in project.config['state']['ufo'].items() %}
 <li>{{ name }} (<code>{{folder}}</code>)</li>
 {% endfor %}
 </ul>
@@ -19,7 +19,7 @@
 <ul>
 <li><a><i class="icon-folder-open"></i>Root</a></li>
 <ul>
-{%- for key, value in tree.items() recursive %}
+{%- for key, value in project.config['local']['tree'].items() recursive %}
 <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} ><a>{% if key == '' %} Root{% else %}
 {% if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
 {% elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>

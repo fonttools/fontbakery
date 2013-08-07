@@ -6,14 +6,15 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('setup') }}
 
+{% set config = project.config %}
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
   <div class="control-group">
     <label class="control-label" for="license_file">License file</label>
     <div class="controls">
     <select for="license_file" name="license_file" class="input-xxlarge">
       <option>Select file</option>
-      {% for i in project.state['txt_files'] %}
-      <option {% if project.state['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
+      {% for i in config['local']['txt_files'] %}
+      <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
       {% endfor %}
     </select>
     </div>
@@ -22,9 +23,10 @@
   <div class="control-group">
     <label class="control-label" for="ufo_folders">Ufo folders</label>
     <div class="controls">
-    <select for="ufo_folders" multiple="multiple" name="ufo_dirs" class="input-xxlarge" size="{{ project.state['ufo_dirs']|length }}">
-      {% for i in project.state['ufo_dirs'] %}
-      <option {% if i in project.state['out_ufo'].keys() %}selected="selected"{% endif %}>{{ i }}</option>
+    <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
+        size="{{ config['local']['ufo_dirs']|length }}">
+      {% for i in config['local']['ufo_dirs'] %}
+      <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
     </select>
     </div>
@@ -35,7 +37,7 @@
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" size="{{ subsetvals|length }}">
       {% for i in subsetvals %}
-      <option {% if i in project.state['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
+      <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
     </select>
     </div>
@@ -44,11 +46,11 @@
   <div class="control-group">
     <div class="controls">
     <label class="radio">
-      <input type="radio" name="rename" id="rename1" value="no" {% if not project.state['rename'] %}checked{% endif %}>
+      <input type="radio" name="rename" id="rename1" value="no" {% if not config['state']['familyname'] %}checked{% endif %}>
       Use the same font family name?
     </label>
     <label class="radio">
-      <input type="radio" name="rename" id="reanme2" value="yes" {% if project.state['rename'] %}checked{% endif %}>
+      <input type="radio" name="rename" id="reanme2" value="yes" {% if config['state']['familyname'] %}checked{% endif %}>
       I want to define new font family name?
     </label>
     </div>
@@ -58,7 +60,7 @@
     <label class="control-label" for="familyname">Define new font family name</label>
     <div class="controls">
     <input type="text" placeholder="Type new params…" name="familyname" 
-      {% if project.config['state'].get('familyname', None) %}value="{{ project.config['state']['familyname'] }}"{% endif %} 
+      {% if config['state'].get('familyname', None) %}value="{{ config['state']['familyname'] }}"{% endif %} 
       class="input-xxlarge">
     </div>
   </div>
@@ -66,11 +68,11 @@
   <div class="control-group">
     <div class="controls">
     <label class="radio">
-      <input type="radio" name="ttfautohintuse" id="ttf1" value="no" {% if not project.state['ttfautohintuse'] %}checked{% endif %}>
+      <input type="radio" name="ttfautohintuse" id="ttf1" value="no" {% if not config['state']['ttfautohintuse'] %}checked{% endif %}>
       Don't use <code>ttfautohint</code> processing
     </label>
     <label class="radio">
-      <input type="radio" name="ttfautohintuse" id="ttf2" value="yes" {% if project.state['ttfautohintuse'] %}checked{% endif %}>
+      <input type="radio" name="ttfautohintuse" id="ttf2" value="yes" {% if config['state']['ttfautohintuse'] %}checked{% endif %}>
       I need <code>ttfautohint</code> 
     </label>
     </div>
@@ -80,13 +82,13 @@
   <div class="control-group">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> params</label>
     <div class="controls">
-    <input type="text" placeholder="Type new params…" name="ttfautohint" {% if project.state.has_key('ttfautohint') %}value="{{ project.state['ttfautohint'] }}"{% endif %} class="input-xxlarge">
+    <input type="text" placeholder="Type new params…" name="ttfautohint" {% if config['state']['ttfautohintuse'] %}value="{{ config['state']['ttfautohintuse'] }}"{% endif %} class="input-xxlarge">
     </div>
   </div>
 
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary" {% if not project.state.get('autoprocess') %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
+      <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
     </div>
   </div>
 </form>

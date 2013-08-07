@@ -102,6 +102,7 @@ def setup(project_id):
                 subsetvals = DEFAULT_SUBSET_LIST)
 
 
+        config['local']['setup'] = True
         flash(_("Repository %s has been updated" % p.clone))
         p.save_state()
 
@@ -118,9 +119,8 @@ def setup(project_id):
 def fonts(project_id):
     # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
-    if p.state.get('autoprocess'):
-        tree = read_tree(login = g.user.login, project_id = p.id)
-        return render_template('project/fonts.html', project = p, tree = tree)
+    if p.config['state'].get('setup', None):
+        return render_template('project/fonts.html', project = p)
     else:
         return redirect(url_for('project.setup', project_id = p.id))
 
