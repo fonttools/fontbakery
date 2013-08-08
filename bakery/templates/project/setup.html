@@ -13,9 +13,13 @@
   {% set dis = '' %}
 {% endif %}
 
+<div class="alert alert-info">
+	Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
+</div>
+
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
   <div class="control-group">
-    <label class="control-label" for="license_file">License file</label>
+    <label class="control-label" for="license_file">License File:</label>
     <div class="controls">
     <select for="license_file" name="license_file" class="input-xxlarge" {{dis}} required>
       <option>Select file</option>
@@ -27,7 +31,7 @@
   </div>
 
   <div class="control-group">
-    <label class="control-label" for="ufo_folders">Ufo folders</label>
+    <label class="control-label" for="ufo_folders">UFOs to Bake:</label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
         size="{{ config['local']['ufo_dirs']|length }}" {{dis}} required>
@@ -39,7 +43,7 @@
   </div>
 
   <div class="control-group">
-    <label class="control-label" for="subset">Subset checks</label>
+    <label class="control-label" for="subset">Subsets to Bake:</label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
       size="{{ subsetvals|length }}" {{dis}} required>
@@ -64,11 +68,12 @@
   </div>
  -->
   <div id="familyname" class="control-group">
-    <label class="control-label" for="familyname">Define new font family name</label>
+    <label class="control-label" for="familyname">New font family name?</label>
     <div class="controls">
-    <input type="text" placeholder="Type new params…" name="familyname" 
+    <input type="text" placeholder="" name="familyname" 
       value="{{ config['state'].get('familyname', '') }}" 
       class="input-xxlarge" {{dis}}>
+	<p class="muted">If you want to rename the family, type the new family name here.<br/>Else, leave it blank</p>
     </div>
   </div>
 
@@ -87,11 +92,12 @@
  -->
 
   <div class="control-group">
-    <label class="control-label" for="ttfautohint"><code>ttfautohint</code> params</label>
+    <label class="control-label" for="ttfautohint"><code>ttfautohint</code> options?</label>
     <div class="controls">
-    <input type="text" placeholder="Type new params…" name="ttfautohint" 
+    <input type="text" placeholder="" name="ttfautohint" 
       value="{{ config['state'].get('ttfautohint', '') }}" 
       class="input-xxlarge" {{dis}}>
+	<p class="muted">If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank</p>
     </div>
   </div>
 
@@ -103,7 +109,7 @@
   {% else %}
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
+      <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake Project</button>
     </div>
   </div>
 

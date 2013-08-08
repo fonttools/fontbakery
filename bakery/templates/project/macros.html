@@ -9,8 +9,8 @@
     <ul class="nav nav-tabs">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
-          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
-          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests Log</a></li>
+          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
+          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle"
                data-toggle="dropdown"
