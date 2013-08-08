@@ -9,25 +9,26 @@
     <ul class="nav nav-tabs">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
-          <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Files</a></li>
+          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
+          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests Log</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle"
                data-toggle="dropdown"
                href="#">
-                 Texts
+                 Files
                  <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li class="nav-header">Editable</li>
-                <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >METADATA.json</a></li>
-                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
-                <li class="nav-header">Read Only</li>
+                <li class="nav-header">Folders</li>
+          		<li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
+                <li class="nav-header">Read Only Files</li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
                 <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
+                <li class="nav-header">Editable Files</li>
+                <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >METADATA.json</a></li>
+                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
             </ul>
           </li>
-          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Build Log</a></li>
-          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests Log</a></li>
       {% endif %}
     </ul>
 
