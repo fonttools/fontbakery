@@ -8,23 +8,32 @@
       </a>
       <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font Bakery") }}</a>
       <div class="nav-collapse collapse navbar-responsive-collapse">
-        <ul class="nav">
+
+        <ul class="nav" style="width:50%">
           <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
           {% if g.user %}
-            <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i><!-- Settings --></a></li>
+			<li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i></a></li>
+			<li>
+				<a><i id="notify" class="muted icon-circle"></i></a>
+			</li>
+			
           {% endif %}
-          {%- for path, caption in [
-            (url_for('frontend.page', path='about'), _("About")),
-          ] %}
-            <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
-          {%- endfor %}
 
           {% block navbar %}
           {% endblock %}
+
         </ul>
+
         <ul class="nav pull-right">
-          {% if g.user %}
-          <li><a><i id="notify" class="muted icon-circle"></i></a></li>
+
+        {% if g.user %}
+
+        {%- for path, caption in [
+          (url_for('frontend.page', path='about'), _("About")),
+        ] %}
+          <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
+        {%- endfor %}
+
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ g.user.getAvatar(size=14) }}"/> {{ g.user.name }} <b class="caret"></b></a>
             <ul class="dropdown-menu">
@@ -32,7 +41,7 @@
               <li><a href="{{ url_for('gitauth.logout') }}">Log out</a></li>
             </ul>
           </li>
-          {% endif %}
+        {% endif %}
 
         </ul>
       </div><!-- /.nav-collapse -->
