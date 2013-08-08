@@ -128,7 +128,7 @@ def process_project(project, conn, log):
 
     # autoprocess is set after setup is completed once
     if project.config['local'].get('setup', None):
-        log.write('Build Begins!\n', prefix = 'Header: ')
+        log.write('Bake Begins!\n', prefix = 'Header: ')
 
         log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
         generate_fonts_process(project, log)
@@ -148,7 +148,7 @@ def process_project(project, conn, log):
         log.write('Lint (lint.jar)\n', prefix = 'Header: ')
         lint_process(project, log)
 
-        log.write('Build Succeeded!\n', prefix = 'Header: ')
+        log.write('Bake Succeeded!\n', prefix = 'Header: ')
 
 def copy_and_rename_ufos_process(project, log):
     """
