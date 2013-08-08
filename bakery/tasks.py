@@ -127,7 +127,7 @@ def process_project(project, conn, log):
     copy_and_rename_ufos_process(project, log)
 
     # autoprocess is set after setup is completed once
-    if project.setup_complete():
+    if project.config['local'].get('setup', None):
         log.write('Build Begins!\n', prefix = 'Header: ')
 
         log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
@@ -154,7 +154,7 @@ def copy_and_rename_ufos_process(project, log):
     """
     Set up UFOs for building
     """
-    state = project.state
+    config = project.config
     _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
@@ -173,18 +173,29 @@ def copy_and_rename_ufos_process(project, log):
         run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
+
+    if config['state'].get('familyname', None):
+        familyname = config['state']['familyname']
+    else:
+        familyname = ''
+
     # Copy UFO files from git repo to out/src/ dir
-    for ufo, name in state['out_ufo'].items():
-        if state['rename']:
-            ufo_folder = name+'.ufo'
+
+    for ufo in config['state']['ufo']:
+        _in_folder = os.path.join(_in, ufo)
+        if familyname:
+            ufo_plist = plistlib.readPlist(os.path.join(_in_folder, 'fontinfo.plist'))
+            styleName = ufo_plist['styleName']
+            _out_name = "%s %s.ufo" % (familyname, styleName)
         else:
-            ufo_folder = ufo.split('/')[-1]
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, ufo_folder)), log=log)
+            _out_name = ufo.split('/')[-1]
+
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), log=log)
         # TODO DC: In future this should follow GDI naming for big families
-        if state['rename']:
-            finame = os.path.join(_out_src, ufo_folder, 'fontinfo.plist')
+        if familyname:
+            finame = os.path.join(_out_src, _out_name, 'fontinfo.plist')
             finfo = plistlib.readPlist(finame)
-            finfo['familyName'] = name
+            finfo['familyName'] = familyname
             plistlib.writePlist(finfo, finame)
 
 
@@ -192,15 +203,18 @@ def generate_fonts_process(project, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
     """
-    state = project.state
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
-    for name in state['out_ufo'].values():
-        cmd = "python ufo2ttf.py '%(out)s.ufo' '%(out)s.ttf' '%(out)s.otf'" % {
-            'out': os.path.join(_out, name),
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
+        name = name[:-4] # cut .ufo
+        cmd = "python ufo2ttf.py '%(out_src)s%(name)s.ufo' '%(out_src)s%(name)s.ttf' '%(out_src)s%(name)s.otf'" % {
+            'out_src': _out_src,
+            'name': name,
         }
         run(cmd, cwd = scripts_folder, log=log)
 
@@ -222,25 +236,31 @@ def ttfautohint_process(project, log):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
     if config['state'].get('ttfautohint', None):
         params = config['state']['ttfautohint']
-        os.chdir(_out)
+        os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
+            name = name[:-4] # cut .ufo
             cmd = "ttfautohint %(params)s '%(src)s.ttf' '%(out)s.ttf'" % {
                 'params': params,
                 'out': os.path.join(_out, name),
-                'src': os.path.join(_out, 'src', name),
+                'src': os.path.join(_out_src, name),
             }
-            run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+            run(cmd, cwd=_out, log=log)
     else:
         run("cp src/*.ttf .", cwd=_out, log=log)
 
 
 def subset_process(project, log):
-    state = project.state
+    config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    for subset in state['subset']:
-        for name in state['out_ufo'].values():
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    for subset in config['state']['subset']:
+        os.chdir(_out_src)
+        for name in glob.glob("*.ufo"):
+            name = name[:-4] # cut .ufo
             # python ~/googlefontdirectory/tools/subset/subset.py \
             #   --null --nmr --roundtrip --script --subset=$subset \
             #   $font.ttf $font.$subset >> $font.$subset.log \
@@ -263,9 +283,11 @@ def subset_process(project, log):
 
 
 def ttx_process(project, log):
-    state = project.state
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    for name in state['out_ufo'].values():
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
+        name = name[:-4] # cut .ufo
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
         cmd = "ttx -i '%s.ttf'" % filename
@@ -285,10 +307,10 @@ def ttx_process(project, log):
 
 
 def project_tests(project):
-    state = project.config['state']
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
-    for name in state['ufo']:
-        result[name] = checker.runner.run_set(os.path.join(_out, name+'.ufo'))
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
+        result[name] = checker.runner.run_set(os.path.join(_out_src, name))
     return result
 

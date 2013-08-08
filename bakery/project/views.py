@@ -83,6 +83,8 @@ def setup(project_id):
                 error = True
                 flash(_("Wrong ufo_dir value, must be an error"))
 
+        # TODO: check that all ufo have same font familyname
+
         config['state']['ufo'] = ufo_dirs
 
         subset_list = request.form.getlist('subset')
@@ -111,6 +113,7 @@ def setup(project_id):
             port=config_value('default', 'PORT'),
             password=config_value('default', 'PASSWORD'),
             db=config_value('default', 'DB'))
+
         sync_and_process.delay(p, connection)
         return redirect(url_for('project.buildlogrt', project_id = p.id))
 
