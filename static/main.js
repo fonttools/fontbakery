@@ -51,6 +51,13 @@ socket.on("disconnect", function(e) {
 socket.on('gone', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-warning-sign text-error');
+    $("#notify").popover({
+    	title: "Worker is not running!",
+    	content: "Run 'make worker' to start it",
+    	trigger: 'click',
+    	placement: 'bottom'
+    });
+    $('#notify').popover('show')
 });
 
 
