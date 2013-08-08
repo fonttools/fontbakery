@@ -33,6 +33,13 @@ $(document).ready(function () {
 
 var $notify = $('#notify');
 
+$("#notify").popover({
+	title: "Worker is not running!",
+	content: "Run 'make worker' to start it",
+	trigger: 'click',
+	placement: 'bottom'
+});
+
 io.transports = ["websocket", "xhr-polling", "jsonp-polling"];
 var socket = io.connect("/status", {'force new connection': true});
 window.buildsocket = socket;
@@ -41,6 +48,7 @@ socket.on("connect", function(e) {
     $notify.removeClass();
     $notify.addClass('icon-circle text-success');
     socket.emit('status', true);
+    $('#notify').popover('hide')
 });
 
 socket.on("disconnect", function(e) {
@@ -51,12 +59,6 @@ socket.on("disconnect", function(e) {
 socket.on('gone', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-warning-sign text-error');
-    $("#notify").popover({
-    	title: "Worker is not running!",
-    	content: "Run 'make worker' to start it",
-    	trigger: 'click',
-    	placement: 'bottom'
-    });
     $('#notify').popover('show')
 });
 
@@ -64,11 +66,13 @@ socket.on('gone', function (data) {
 socket.on('start', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-refresh icon-spin text-success');
+    $('#notify').popover('hide')
 });
 
 socket.on('stop', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-circle text-success');
+    $('#notify').popover('hide')
 });
 
 });
