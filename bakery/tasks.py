@@ -152,7 +152,7 @@ def process_project(project, conn, log):
 
 def copy_and_rename_ufos_process(project, log):
     """
-    Set up UFOs for building
+    Setup UFOs for building
     """
     config = project.config
     _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
@@ -181,22 +181,35 @@ def copy_and_rename_ufos_process(project, log):
 
     # Copy UFO files from git repo to out/src/ dir
 
-    for ufo in config['state']['ufo']:
-        _in_folder = os.path.join(_in, ufo)
+    for ufo_in in config['state']['ufo']:
+        # If we rename, change the filename
         if familyname:
-            ufo_plist = plistlib.readPlist(os.path.join(_in_folder, 'fontinfo.plist'))
-            styleName = ufo_plist['styleName']
-            _out_name = "%s-%s.ufo" % (familyname, styleName)
+            fontInfoFile = os.path.join(_in, ufo_in, 'fontinfo.plist')
+            fontInfo = plistlib.readPlist(fontInfoFile)
+            styleName = fontInfo['styleName']
+            # we should always have a regular style
+            if styleName == 'Normal':
+                styleName = 'Regular'
+            ufo_out = "%s-%s.ufo" % (familyname, styleName)
         else:
-            _out_name = ufo.split('/')[-1]
-
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), log=log)
+            ufo_out = ufo_in.split('/')[-1]
+        # Copy the UFOs
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo_in), os.path.join(_out_src, ufo_out)), log=log)
+        # If we rename, change the font family name metadata
         # TODO DC: In future this should follow GDI naming for big families
         if familyname:
-            finame = os.path.join(_out_src, _out_name, 'fontinfo.plist')
-            finfo = plistlib.readPlist(finame)
-            finfo['familyName'] = familyname
-            plistlib.writePlist(finfo, finame)
+            fontInfoFile = os.path.join(_out_src, ufo_out, 'fontinfo.plist')
+            fontInfo = plistlib.readPlist(fontInfoFile)
+            # we should always have a regular style
+            if fontInfo['styleName'] == 'Normal':
+                fontInfo['styleName'] = 'Regular'
+            #
+            # XXX TODO: This code isn't tested
+            #
+            fontInfo['familyName'] = familyname
+            fontInfo['postscriptFontName'] = familyname + '-' + fontInfo['styleName']
+            fontInfo['postscriptFullName'] = familyname + ' ' + fontInfo['styleName']
+            plistlib.writePlist(fontInfo, fontInfoFile)
 
 
 def generate_fonts_process(project, log):
