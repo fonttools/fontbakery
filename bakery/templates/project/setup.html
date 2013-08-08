@@ -17,7 +17,7 @@
   <div class="control-group">
     <label class="control-label" for="license_file">License file</label>
     <div class="controls">
-    <select for="license_file" name="license_file" class="input-xxlarge" {{dis}}>
+    <select for="license_file" name="license_file" class="input-xxlarge" {{dis}} required>
       <option>Select file</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
@@ -30,7 +30,7 @@
     <label class="control-label" for="ufo_folders">Ufo folders</label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
-        size="{{ config['local']['ufo_dirs']|length }}" {{dis}}>
+        size="{{ config['local']['ufo_dirs']|length }}" {{dis}} required>
       {% for i in config['local']['ufo_dirs'] %}
       <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -42,7 +42,7 @@
     <label class="control-label" for="subset">Subset checks</label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
-      size="{{ subsetvals|length }}" {{dis}}>
+      size="{{ subsetvals|length }}" {{dis}} required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
