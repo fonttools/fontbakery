@@ -7,12 +7,17 @@
 {{ nav('setup') }}
 
 {% set config = project.config %}
+{% if config['local'].get('status', None) == 'repo' %}
+  {% set dis = 'disabled' %}
+{% else %}
+  {% set dis = '' %}
+{% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
   <div class="control-group">
     <label class="control-label" for="license_file">License file</label>
     <div class="controls">
-    <select for="license_file" name="license_file" class="input-xxlarge">
+    <select for="license_file" name="license_file" class="input-xxlarge" {{dis}}>
       <option>Select file</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
@@ -25,7 +30,7 @@
     <label class="control-label" for="ufo_folders">Ufo folders</label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
-        size="{{ config['local']['ufo_dirs']|length }}">
+        size="{{ config['local']['ufo_dirs']|length }}" {{dis}}>
       {% for i in config['local']['ufo_dirs'] %}
       <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -36,7 +41,8 @@
   <div class="control-group">
     <label class="control-label" for="subset">Subset checks</label>
     <div class="controls">
-    <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" size="{{ subsetvals|length }}">
+    <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
+      size="{{ subsetvals|length }}" {{dis}}>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -61,8 +67,8 @@
     <label class="control-label" for="familyname">Define new font family name</label>
     <div class="controls">
     <input type="text" placeholder="Type new params…" name="familyname" 
-      {% if config['state'].get('familyname', None) %}value="{{ config['state']['familyname'] }}"{% endif %} 
-      class="input-xxlarge">
+      value="{{ config['state'].get('familyname', '') }}" 
+      class="input-xxlarge" {{dis}}>
     </div>
   </div>
 
@@ -83,15 +89,26 @@
   <div class="control-group">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> params</label>
     <div class="controls">
-    <input type="text" placeholder="Type new params…" name="ttfautohint" {% if config['state']['ttfautohint'] %}value="{{ config['state']['ttfautohint'] }}"{% endif %} class="input-xxlarge">
+    <input type="text" placeholder="Type new params…" name="ttfautohint" 
+      value="{{ config['state'].get('ttfautohint', '') }}" 
+      class="input-xxlarge" {{dis}}>
     </div>
   </div>
 
+  {% if config['local'].get('status', None) == 'repo' %}
+    <p> 
+    Edit is diabled, update <code>bakery.yaml</code> in your repository.
+    </p>
+
+  {% else %}
   <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Build Font</button>
     </div>
   </div>
+
+  {% endif %}
+
 </form>
 
 {% endblock %}
