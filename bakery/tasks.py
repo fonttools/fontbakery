@@ -220,11 +220,14 @@ def lint_process(project, log):
 
 def ttfautohint_process(project, log):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
-    state = project.state
+    config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    if state['ttfautohintuse']:
-        for name in state['out_ufo'].values():
-            cmd = "ttfautohint '%(src)s.ttf' '%(out)s.ttf'" % {
+    if config['state'].get('ttfautohint', None):
+        params = config['state']['ttfautohint']
+        os.chdir(_out)
+        for name in glob.glob("*.ufo"):
+            cmd = "ttfautohint %(params)s '%(src)s.ttf' '%(out)s.ttf'" % {
+                'params': params,
                 'out': os.path.join(_out, name),
                 'src': os.path.join(_out, 'src', name),
             }
