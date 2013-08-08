@@ -268,7 +268,7 @@ def subset_process(project, log):
 
             cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py --null " + \
                   "--nmr --roundtrip --script --subset=%(subset)s '%(out)s.ttf'" + \
-                  " %(out)s.%(subset)s") % {
+                  " '%(out)s.%(subset)s'") % {
                 'subset':subset,
                 'out': os.path.join(_out, name),
                 'name': name,
