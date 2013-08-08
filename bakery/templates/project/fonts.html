@@ -6,16 +6,6 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
 
-<h4>UFOs detected</h4>
-<ul>
-{% for name in project.config['state']['ufo'] %}
-<li>{{ name }}</li>
-{% endfor %}
-</ul>
-
-<h4>Repository tree</h4>
-
-<div class="tree">
 <ul>
 <li><a><i class="icon-folder-open"></i>Root</a></li>
 <ul>
@@ -33,12 +23,25 @@
 {% endif %}</a>
 
 {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
-
-</li>
-{%- endfor %}
-</ul>
-</ul>
+<div class="span4">
+<h4>Incoming Repository</h4>
+	<div class="tree">
+				</li>
+			{%- endfor %}
+			</ul>
+		</ul>
+	</div>
 </div>
+
+<div class="span4">
+	<h4>Outgoing UFOs</h4>
+	<ul>
+	{% for name in project.config['state']['ufo'] %}
+	<li>{{ name }}</li>
+	{% endfor %}
+	</ul>
+</div>
+
 {% endblock %}
 
 {% block extrajs %}
@@ -48,7 +51,6 @@ $(document).ready(function() {
   $('.mother_of_glyphs').click(function() {
     $(this).find('ul').slideToggle();
   });
-
 });
 </script>
 
