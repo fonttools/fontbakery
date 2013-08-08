@@ -250,7 +250,7 @@ def ttfautohint_process(project, log):
             }
             run(cmd, cwd=_out, log=log)
     else:
-        run("cp src/*.ttf .", cwd=_out, log=log)
+        run("mv src/*.ttf .", cwd=_out, log=log)
 
 
 def subset_process(project, log):
