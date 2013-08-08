@@ -186,7 +186,7 @@ def copy_and_rename_ufos_process(project, log):
         if familyname:
             ufo_plist = plistlib.readPlist(os.path.join(_in_folder, 'fontinfo.plist'))
             styleName = ufo_plist['styleName']
-            _out_name = "%s %s.ufo" % (familyname, styleName)
+            _out_name = "%s-%s.ufo" % (familyname, styleName)
         else:
             _out_name = ufo.split('/')[-1]
 
