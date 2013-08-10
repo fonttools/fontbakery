@@ -62,6 +62,14 @@ class Project(db.Model):
     def read_tree(self):
         return self.config['local']['tree']
 
+    @property
+    def title(self):
+        # Can be changed when #142 is fixed
+        if self.config['state'].get('familyname', None):
+            return "%s (%s)" % (self.config['state']['familyname'], self.clone)
+        else:
+            return self.clone
+
     def asset_by_name(self, name):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'log':
