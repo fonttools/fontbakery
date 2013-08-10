@@ -11,12 +11,9 @@
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
-          <li class="dropdown">
-            <a class="dropdown-toggle"
-               data-toggle="dropdown"
-               href="#">
-                 Files
-                 <b class="caret"></b>
+          <li class="dropdown {% if active in ['fonts', 'yaml', 'license', 'ace', 'description'] %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                 Files <i class="caret"></i>
             </a>
             <ul class="dropdown-menu">
                 <li class="nav-header">Folders</li>
