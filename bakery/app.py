@@ -94,6 +94,14 @@ def gvars(app):
                 else:
                     del session['user_id']
 
+    @app.before_request
+    def gdebug():
+        if app.debug:
+            g.debug = True
+        else:
+            g.debug = False
+
+
 def register_filters(app):
     from utils import pretty_date, signify
 
