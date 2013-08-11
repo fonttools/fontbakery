@@ -116,7 +116,7 @@ def setup(project_id):
             db=config_value('default', 'DB'))
 
         sync_and_process.delay(p, connection)
-        return redirect(url_for('project.buildlogrt', project_id=p.id))
+        return redirect(url_for('project.buildlog', project_id=p.id))
 
 
 @project.route('/<int:project_id>/', methods=['GET'])

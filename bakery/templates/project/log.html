@@ -37,7 +37,6 @@ buildsocket.on("disconnect", function(e) {
 
 buildsocket.on('message', function (data) {
   var data = String(data);
-  console.log('+');
   if (data == '1') { }
   else if (data.startswith('Header: ')){
     var h2 = $(document.createElement("h2"));
@@ -46,6 +45,8 @@ buildsocket.on('message', function (data) {
     $log.append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
   } else if (data.startswith('Fatal: ')){
     $log.append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+  } else if (data.startswith('End: ')){
+    $log.append($('<span>').addClass('text-success').html('<span class="label label-success">End</span> ' + data.slice('End: '.length)));
   } else if (data.startswith('Command: ')){
     $log.append($('<span>').addClass('text-info').html("$ " + data.slice('Command: '.length)));
   } else {
