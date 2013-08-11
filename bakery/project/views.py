@@ -82,7 +82,11 @@ def setup(project_id):
         for i in ufo_dirs:
             if i not in config['local']['ufo_dirs']:
                 error = True
-                flash(_("Wrong ufo_dir value, must be an error"))
+                flash(_("Wrong value for UFO folder, must be an error"))
+
+        if len(ufo_dirs)<0:
+            error = True
+            flash(_("Select at least one UFO folder"))
 
         # TODO: check that all ufo have same font familyname
 
@@ -93,6 +97,10 @@ def setup(project_id):
             if i not in DEFAULT_SUBSET_LIST:
                 error = True
                 flash(_('Subset value is wrong'))
+
+        if len(subset_list)<0:
+            error = True
+            flash(_("Select at least one subset from list"))
 
         config['state']['subset'] = subset_list
 
