@@ -1,9 +1,9 @@
 {% macro nav(active) -%}
     <h5>{{ project.clone }} 
 <!--
-	<a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull &amp; rebuild</button></a>
+    <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull &amp; rebuild</button></a>
 -->
-	</h5>
+    </h5>
     <h2>{{ page_title }}</h2>
 
     <ul class="nav nav-tabs">
@@ -20,7 +20,7 @@
             </a>
             <ul class="dropdown-menu">
                 <li class="nav-header">Folders</li>
-          		<li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
+                  <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
                 <li class="nav-header">Read Only Files</li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
                 <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>

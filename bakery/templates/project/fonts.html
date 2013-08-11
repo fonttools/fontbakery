@@ -8,41 +8,41 @@
 
 <div class="span4">
 <h4>Incoming Repository</h4>
-	<div class="tree">
-		<ul>
-			<li><a><i class="icon-folder-open"></i>Root</a></li>
-			<ul>
-			{%- for key, value in project.config['local']['tree'].items() recursive %}
-				<li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
-					<a>{% if key == '' %}
-						Root
-					{% else %}
-						{%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
-						{% elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
-						{% elif key.lower().endswith('.ttf') %}<i class="icon-file"></i>
-						{% elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>
-						{% elif key.lower().split('.')[-1] in ['plist'] %}<i class="icon-list"></i>
-						{% elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="icon-folder-close"></i>
-						{% elif key == 'bakery.yaml' %}<i class="icon-rocket text-error"></i>
-						{% else %}<i class="icon-file-alt muted"></i>
-						{%endif%}
-						{{ key }}
-					{% endif %}</a>
-				{%- if value %}<ul {%if key == 'glyphs' %} class="glyphs" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
-				</li>
-			{%- endfor %}
-			</ul>
-		</ul>
-	</div>
+    <div class="tree">
+        <ul>
+            <li><a><i class="icon-folder-open"></i>Root</a></li>
+            <ul>
+            {%- for key, value in project.config['local']['tree'].items() recursive %}
+                <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
+                    <a>{% if key == '' %}
+                        Root
+                    {% else %}
+                        {%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
+                        {% elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
+                        {% elif key.lower().endswith('.ttf') %}<i class="icon-file"></i>
+                        {% elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>
+                        {% elif key.lower().split('.')[-1] in ['plist'] %}<i class="icon-list"></i>
+                        {% elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="icon-folder-close"></i>
+                        {% elif key == 'bakery.yaml' %}<i class="icon-rocket text-error"></i>
+                        {% else %}<i class="icon-file-alt muted"></i>
+                        {%endif%}
+                        {{ key }}
+                    {% endif %}</a>
+                {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
+                </li>
+            {%- endfor %}
+            </ul>
+        </ul>
+    </div>
 </div>
 
 <div class="span4">
-	<h4>Outgoing UFOs</h4>
-	<ul>
-	{% for name in project.config['state']['ufo'] %}
-	<li>{{ name }}</li>
-	{% endfor %}
-	</ul>
+    <h4>Outgoing UFOs</h4>
+    <ul>
+    {% for name in project.config['state']['ufo'] %}
+    <li>{{ name }}</li>
+    {% endfor %}
+    </ul>
 </div>
 
 {% endblock %}

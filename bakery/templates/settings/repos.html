@@ -115,7 +115,7 @@
           {% for item in gitprojects -%}
             <tr>
               <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.clone }}</a></td>
-			  <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-block" type="button" data-confirm="Delete this repo?"><i class="icon-trash"></i> </button></a></td>
+              <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-block" type="button" data-confirm="Delete this repo?"><i class="icon-trash"></i> </button></a></td>
             </tr>
           {%- endfor %}
         {% else %}
