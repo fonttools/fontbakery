@@ -12,11 +12,11 @@
         <ul class="nav" style="width:50%">
           {% if g.user %}
             <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
-			<li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i></a></li>
-			<li>
-				<a><i id="notify" class="muted icon-circle"></i></a>
-			</li>
-			
+            <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i></a></li>
+            <li>
+                <a><i id="notify" class="muted icon-circle"></i></a>
+            </li>
+            
           {% endif %}
 
           {% block navbar %}
