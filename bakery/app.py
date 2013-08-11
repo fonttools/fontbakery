@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+#pylint:disable-msg=W0612
 
 import os
 from flask import Flask, request, render_template, g, session
@@ -82,10 +83,11 @@ def gvars(app):
     from gitauth.models import User
 
     @app.before_request
-    def before_request():
+    def guser():
         g.user = None
         if 'user_id' in session:
             if session['user_id']:
+                #pylint:disable-msg=E1101
                 user = User.query.get(session['user_id'])
                 if user:
                     g.user = user
@@ -93,7 +95,8 @@ def gvars(app):
                     del session['user_id']
 
 def register_filters(app):
-    from utils import pretty_date
+    from utils import pretty_date, signify
 
     app.jinja_env.filters['pretty_date'] = pretty_date
+    app.jinja_env.filters['signify'] = signify
 

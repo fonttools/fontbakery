@@ -14,12 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-#pylint:disable-msg=E1101
-
-import logging
+# pylint:disable-msg=E1101
 
 from flask import (Blueprint, render_template, g, flash, request,
-    url_for, redirect)
+                   url_for, redirect)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
@@ -28,23 +26,25 @@ from ..tasks import (project_tests, sync_and_process)
 from .models import Project
 from flask.ext.rq import config_value
 
-project = Blueprint('project', __name__, static_folder='../../data/', url_prefix='/project')
+project = Blueprint('project', __name__, url_prefix='/project')
 
-DEFAULT_SUBSET_LIST = ['menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
+DEFAULT_SUBSET_LIST = [
+    'menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
     'greek+latin', 'greek-ext+latin', 'vietnamese+latin']
+
 
 @project.before_request
 def before_request():
     if g.user:
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
-@project.route('/bump', methods=['GET'])
+
+@project.route('/<int:project_id>/bump', methods=['GET'])
 @login_required
-def bump():
-    project_id = request.args.get('project_id')
-    #pylint:disable-msg=E1101
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    logging.info('Update for project %s by %s' % (project_id, g.user.login))
+def bump(project_id):
+    # pylint:disable-msg=E1101
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     connection = dict(
         host=config_value('default', 'HOST'),
         port=config_value('default', 'PORT'),
@@ -52,18 +52,19 @@ def bump():
         db=config_value('default', 'DB'))
     sync_and_process.delay(p, connection)
     flash(_("Git %s was updated" % p.clone))
-    return redirect(url_for('project.buildlogrt', project_id = project_id))
+    return redirect(url_for('project.buildlog', project_id=project_id))
+
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 def setup(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     config = p.config
 
-    #import ipdb; ipdb.set_trace()
     if request.method == 'GET':
-        return render_template('project/setup.html', project = p,
-            subsetvals = DEFAULT_SUBSET_LIST)
+        return render_template('project/setup.html', project=p,
+                               subsetvals=DEFAULT_SUBSET_LIST)
     else:
         error = False
 
@@ -74,7 +75,7 @@ def setup(project_id):
         config['state']['license_file'] = request.form.get('license_file')
 
         if request.form.get('familyname'):
-            if len(request.form.get('familyname'))> 0:
+            if len(request.form.get('familyname')) > 0:
                 config['state']['familyname'] = request.form.get('familyname')
 
         ufo_dirs = request.form.getlist('ufo')
@@ -96,13 +97,13 @@ def setup(project_id):
         config['state']['subset'] = subset_list
 
         if request.form.get('ttfautohint'):
-            if len(request.form.get('ttfautohint'))> 0:
-                config['state']['ttfautohint'] = request.form.get('ttfautohint')
+            if len(request.form.get('ttfautohint')) > 0:
+                config['state'][
+                    'ttfautohint'] = request.form.get('ttfautohint')
 
         if error:
-            return render_template('project/setup.html', project = p,
-                subsetvals = DEFAULT_SUBSET_LIST)
-
+            return render_template('project/setup.html', project=p,
+                                   subsetvals=DEFAULT_SUBSET_LIST)
 
         config['local']['setup'] = True
         flash(_("Repository %s has been updated" % p.clone))
@@ -115,7 +116,8 @@ def setup(project_id):
             db=config_value('default', 'DB'))
 
         sync_and_process.delay(p, connection)
-        return redirect(url_for('project.buildlogrt', project_id = p.id))
+        return redirect(url_for('project.buildlogrt', project_id=p.id))
+
 
 @project.route('/<int:project_id>/', methods=['GET'])
 @login_required
@@ -123,32 +125,38 @@ def fonts(project_id):
     # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
     if p.config['local'].get('setup', None):
-        return render_template('project/fonts.html', project = p)
+        return render_template('project/fonts.html', project=p)
     else:
-        return redirect(url_for('project.setup', project_id = p.id))
+        return redirect(url_for('project.setup', project_id=p.id))
+
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 @login_required
 def plicense(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     data = p.read_asset('license')
-    return render_template('project/license.html', project = p, license = data)
+    return render_template('project/license.html', project=p, license=data)
+
 
 @project.route('/<int:project_id>/ace', methods=['GET'])
 @login_required
 def ace(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     metadata = p.read_asset('metadata')
     metadata_new = p.read_asset('metadata_new')
-    return render_template('project/ace.html', project = p,
-        metadata = metadata, metadata_new = metadata_new)
+    return render_template('project/ace.html', project=p,
+                           metadata=metadata, metadata_new=metadata_new)
+
 
 @project.route('/<int:project_id>/ace', methods=['POST'])
 @login_required
 def ace_save(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     p.save_asset('metadata', request.form.get('metadata'),
-        del_new = request.form.get('delete', None))
+                 del_new=request.form.get('delete', None))
     flash(_('METADATA.json saved'))
     return redirect(url_for('project.ace', project_id=p.id))
 
@@ -156,44 +164,45 @@ def ace_save(project_id):
 @project.route('/<int:project_id>/description_edit', methods=['GET'])
 @login_required
 def description_edit(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     data = p.read_asset('description')
     return render_template('project/description.html', project = p, description = data)
+
 
 @project.route('/<int:project_id>/description_save', methods=['POST'])
 @login_required
 def description_save(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
     return redirect(url_for('project.description_edit', project_id=p.id))
 
+
 @project.route('/<int:project_id>/log', methods=['GET'])
 @login_required
 def buildlog(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     data = p.read_asset('log')
-    return render_template('project/log.html', project = p, log = data)
+    return render_template('project/log.html', project=p, log=data)
 
-
-@project.route('/<int:project_id>/logrt', methods=['GET'])
-@login_required
-def buildlogrt(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    return render_template('project/logrt.html', project = p)
 
 @project.route('/<int:project_id>/yaml', methods=['GET'])
 @login_required
 def bakeryyaml(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
     data = p.read_asset('yaml')
-    return render_template('project/yaml.html', project = p, yaml = data)
+    return render_template('project/yaml.html', project=p, yaml=data)
+
 
 @project.route('/<int:project_id>/tests', methods=['GET'])
 @login_required
 def tests(project_id):
-    p = Project.query.filter_by(login = g.user.login, id = project_id).first_or_404()
-    test_result = project_tests(project = p)
-    return render_template('project/tests.html', project = p,
-        tests = test_result)
-
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    test_result = project_tests(project=p)
+    return render_template('project/tests.html', project=p,
+                           tests=test_result)
