@@ -29,7 +29,6 @@ from fontTools import ttLib
 
 import codecs
 import json
-import logging
 import os
 import sys
 import gzip
@@ -50,11 +49,11 @@ class InsertOrderedDict(dict):
 
   def __delitem__(self, key):
     dict.__delitem__(self, key)
-    orderedKeys.remove(key)
+    self.orderedKeys.remove(key)
 
   def clear(self):
     dict.clear(self)
-    orderedKeys = []
+    self.orderedKeys = []
 
   def copy(self):
     dictCopy = InsertOrderedDict()
@@ -173,9 +172,9 @@ def inferFamilyName(familydir):
     return familyName
 
 def fontToolsOpenFont(filepath):
-  if isinstance(filepath, (str,unicode)):
-    file = open(filepath, 'rb')
-    return ttLib.TTFont(file)
+  if isinstance(filepath, (str, unicode)):
+    f = open(filepath, 'rb')
+    return ttLib.TTFont(f)
 
 
 # DC This should check both copyright strings match
@@ -188,7 +187,7 @@ def fontToolsGetCopyright(ftfont):
       if '\000' in record.string:
         copyright = unicode(record.string, 'utf-16-be').encode('utf-8')
       else:
-        copyright = record.string
+        copyright = unicode(record.string)
     if copyright:
       return copyright
     # DC What happens if there is no copyright set?
@@ -313,7 +312,7 @@ def getDesigner(familydir):
           filepath = os.path.join(familydir, f)
           ftfont = fontToolsOpenFont(filepath)
           desName = fontToolsGetDesignerName(ftfont)
-          if isinstance(desName, (str,unicode)):
+          if isinstance(desName, (str, unicode)):
             string = "Designer's name from font is: " + desName
             color = "green"
             ansiprint(string, color)
@@ -374,7 +373,8 @@ def getToday():
   return unicode(date.today().strftime("%Y-%m-%d"))
 
 def hasMetadata(familydir):
-  return os.path.exists(os.path.join(familydir, "METADATA.json"))
+  fn = os.path.join(familydir, "METADATA.json")
+  return os.path.exists(fn) and (os.path.getsize(fn) > 0)
 
 def loadMetadata(familydir):
   with codecs.open(os.path.join(familydir, "METADATA.json"), 'r', encoding="utf_8") as fp:
@@ -458,7 +458,7 @@ def writeDescHtml(familydir):
         color = "red"
         ansiprint(string, color)
     try:
-      if isinstance(fontDesc, (str,unicode)):
+      if isinstance(fontDesc, (str, unicode)):
         descHtml = "<p>" + fontDesc + "</p>"
       else:
         descHtml = "" #unicode(raw_input("Description HTML?\n"))
