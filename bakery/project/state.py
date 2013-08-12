@@ -17,7 +17,10 @@
 
 import yaml
 import os
-from flask import current_app
+# from flask import current_app
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
+DATA_ROOT = os.path.join(ROOT, 'data')
 
 def rwalk(path):
     h = {}
@@ -38,8 +41,6 @@ def load_yaml(default_yml, yml = None):
     return data
 
 def project_state_get(project, refresh = False):
-    ROOT = current_app.config.get('ROOT')
-    DATA_ROOT = current_app.config.get('DATA_ROOT')
 
     bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
     bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
@@ -112,8 +113,6 @@ def project_state_save(project, state = None, local = None):
         state = project.config['state']
     if not local:
         local = project.config['local']
-
-    DATA_ROOT = current_app.config.get('DATA_ROOT')
 
     state_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
     local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
