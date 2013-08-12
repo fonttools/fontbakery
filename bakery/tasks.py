@@ -15,7 +15,6 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import redis
 import os
 import glob
 import subprocess
@@ -60,12 +59,7 @@ def prun(command, cwd, log=None):
     return stdout
 
 @job
-def sync_and_process(project, connection = None):
-    if connection:
-        conn = redis.Redis(**connection)
-    else:
-        conn = None
-
+def sync_and_process(project):
     # create user folder
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
@@ -74,10 +68,10 @@ def sync_and_process(project, connection = None):
             'id': project.id,
             'login': project.login, }
             ),
-        'w', conn, "build_%s" % project.id)
+        'w')
 
     project_git_sync(project, log = log)
-    process_project(project, conn = conn, log = log)
+    process_project(project, log = log)
 
     log.close()
 
@@ -115,13 +109,12 @@ def project_git_sync(project, log):
     # make current out folder
 
 @job
-def process_project(project, conn, log):
+def process_project(project, log):
     """
     The Baking Commands - the central functionality of this software :)
     """
     # login — user login
     # project_id - database project_id
-    # conn - redis connection
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
     copy_and_rename_ufos_process(project, log)

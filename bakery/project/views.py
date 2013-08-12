@@ -24,7 +24,6 @@ from ..decorators import login_required
 # from ..extensions import db
 from ..tasks import (project_tests, sync_and_process)
 from .models import Project
-from flask.ext.rq import config_value
 
 project = Blueprint('project', __name__, url_prefix='/project')
 
@@ -42,16 +41,12 @@ def before_request():
 @project.route('/<int:project_id>/bump', methods=['GET'])
 @login_required
 def bump(project_id):
-    # pylint:disable-msg=E1101
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-    connection = dict(
-        host=config_value('default', 'HOST'),
-        port=config_value('default', 'PORT'),
-        password=config_value('default', 'PASSWORD'),
-        db=config_value('default', 'DB'))
-    sync_and_process.delay(p, connection)
-    flash(_("Git %s was updated" % p.clone))
+    if g.debug:
+        # pylint:disable-msg=E1101
+        p = Project.query.filter_by(
+            login=g.user.login, id=project_id).first_or_404()
+        sync_and_process.delay(p)
+        flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.buildlog', project_id=project_id))
 
 
@@ -117,13 +112,7 @@ def setup(project_id):
         flash(_("Repository %s has been updated" % p.clone))
         p.save_state()
 
-        connection = dict(
-            host=config_value('default', 'HOST'),
-            port=config_value('default', 'PORT'),
-            password=config_value('default', 'PASSWORD'),
-            db=config_value('default', 'DB'))
-
-        sync_and_process.delay(p, connection)
+        sync_and_process.delay(p)
         return redirect(url_for('project.buildlog', project_id=p.id))
 
 
