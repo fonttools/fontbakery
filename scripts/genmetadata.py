@@ -21,17 +21,29 @@
 #
 # Portions Copyright (c) 2003, Michael C. Fletcher, TTFQuery Project
 #
-# A script for generating METADATA.json files, using fontTools,
-# written in Python 2.6
+# A script for generating METADATA.json files, using fontTools.
+#
+# Ported to Python 3.x by Mikhail Kashkin
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from datetime import date
 from fontTools import ttLib
 
-import codecs
+import io
 import json
 import os
 import sys
 import gzip
+
+import sys
+if sys.version < '3':
+    import codecs
+    def u(x):
+        return codecs.unicode_escape_decode(x)[0]
+else:
+    def u(x):
+        return x
 
 # This is only here to have the JSON file data written in a predictable way
 # We only care about the the json object being able to iterate over the keys, so
@@ -70,14 +82,14 @@ class InsertOrderedDict(dict):
         return [(key, dict.get(self, key)) for key in self.orderedKeys]
 
     def iteritems(self):
-        return iter(self.items())
+        return iter(list(self.items()))
 
     def iterkeys(self):
         return iter(self.orderedKeys)
 
     # That's definitely a mess, but doing our best
     def update(self, dictionary=None, **kwargs):
-        for key in dictionary.iterkeys():
+        for key in dictionary.keys():
             if key not in self.orderedKeys:
                 self.orderedKeys.append(key)
         if len(kwargs):
@@ -133,7 +145,7 @@ SUPPORTED_SUBSETS = frozenset([
 
 
 def usage():
-    print >> sys.stderr, "genmetadata.py family_directory"
+    print("genmetadata.py family_directory", file=sys.stderr)
 
 # DC This should check the NAME table for correct values of the license
 # and licenseurl keys
@@ -170,9 +182,8 @@ def inferFamilyName(familydir):
             ftfont = fontToolsOpenFont(filepath)
             for record in ftfont['name'].names:
                 if record.nameID == NAMEID_FAMILYNAME:
-                    if '\000' in record.string:
-                        familyName = unicode(
-                            record.string, 'utf-16-be').encode('utf-8')
+                    if b'\000' in record.string:
+                        familyName = record.string.decode('utf-16-be').encode('utf-8')
                     else:
                         familyName = record.string
     if familyName == "":
@@ -185,8 +196,8 @@ def inferFamilyName(familydir):
 
 
 def fontToolsOpenFont(filepath):
-    if isinstance(filepath, (str, unicode)):
-        f = open(filepath, 'rb')
+    if isinstance(filepath, str):
+        f = io.open(filepath, 'rb')
         return ttLib.TTFont(f)
 
 
@@ -197,10 +208,11 @@ def fontToolsGetCopyright(ftfont):
     copyright = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_PSNAME and not copyright:
-            if '\000' in record.string:
-                copyright = unicode(record.string, 'utf-16-be').encode('utf-8')
+            if b'\000' in record.string:
+                import ipdb; ipdb.set_trace()
+                copyright = u(record.string.decode('utf-16-be'))
             else:
-                copyright = unicode(record.string)
+                copyright = str(record.string)
         if copyright:
             return copyright
         # DC What happens if there is no copyright set?
@@ -213,8 +225,8 @@ def fontToolsGetPSName(ftfont):
     psName = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_PSNAME and not psName:
-            if '\000' in record.string:
-                psName = unicode(record.string, 'utf-16-be').encode('utf-8')
+            if b'\000' in record.string:
+                psName = record.string.decode('utf-16-be').encode('utf-8')
             else:
                 psName = record.string
         if psName:
@@ -231,8 +243,8 @@ def fontToolsGetFullName(ftfont):
     fullName = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_FULLNAME and not fullName:
-            if '\000' in record.string:
-                fullName = unicode(record.string, 'utf-16-be').encode('utf-8')
+            if b'\000' in record.string:
+                fullName = record.string.decode('utf-16-be').encode('utf-8')
             else:
                 fullName = record.string
         if fullName:
@@ -247,8 +259,8 @@ def fontToolsGetDesignerName(ftfont):
     desName = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_DESIGNERNAME and not desName:
-            if '\000' in record.string:
-                desName = unicode(record.string, 'utf-16-be').encode('utf-8')
+            if b'\000' in record.string:
+                desName = record.string.decode('utf-16-be').encode('utf-8')
             else:
                 desName = record.string
         if desName:
@@ -262,8 +274,8 @@ def fontToolsGetDesc(ftfont):
     fontDesc = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_DESC and not fontDesc:
-            if '\000' in record.string:
-                fontDesc = unicode(record.string, 'utf-16-be').encode('utf-8')
+            if b'\000' in record.string:
+                fontDesc = record.string.decode('utf-16-be').encode('utf-8')
             else:
                 fontDesc = record.string
         if fontDesc:
@@ -299,19 +311,19 @@ def createFonts(familydir, familyname):
             fontmetadata = InsertOrderedDict()
             filepath = os.path.join(familydir, f)
             ftfont = fontToolsOpenFont(filepath)
-            fontmetadata["name"] = familyname
+            fontmetadata["name"] = u(familyname)
             ansiprint("Family Name: " + fontmetadata["name"], "green")
-            fontmetadata["postScriptName"] = fontToolsGetPSName(ftfont)
+            fontmetadata["postScriptName"] = u(fontToolsGetPSName(ftfont))
             ansiprint("PS Name: " + fontmetadata["postScriptName"], "green")
-            fontmetadata["fullName"] = fontToolsGetFullName(ftfont)
+            fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
             ansiprint("Full Name: " + fontmetadata["fullName"], "green")
-            fontmetadata["style"] = inferStyle(ftfont)
+            fontmetadata["style"] = u(inferStyle(ftfont))
             ansiprint("Style: " + fontmetadata["style"], "green")
             fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
             ansiprint("Weight: " + str(fontmetadata["weight"]), "green")
             fontmetadata["filename"] = f
             ansiprint("Filename: " + fontmetadata["filename"], "green")
-            fontmetadata["copyright"] = fontToolsGetCopyright(ftfont)
+            fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
             ansiprint("Copyright: " + fontmetadata["copyright"], "green")
             fonts.append(fontmetadata)
     return fonts
@@ -341,7 +353,7 @@ def getDesigner(familydir):
             filepath = os.path.join(familydir, f)
             ftfont = fontToolsOpenFont(filepath)
             desName = fontToolsGetDesignerName(ftfont)
-            if isinstance(desName, (str, unicode)):
+            if isinstance(desName, str):
                 string = "Designer's name from font is: " + desName
                 color = "green"
                 ansiprint(string, color)
@@ -368,7 +380,7 @@ def getSize(familydir):
         tmpgzip = "/tmp/tempfont.gz"
         string = "Original size: "
         string += str(os.path.getsize(filepath))
-        f_in = open(filepath, 'rb')
+        f_in = io.open(filepath, 'rb')
         f_out = gzip.open(tmpgzip, 'wb')
         f_out.writelines(f_in)
         f_out.close()
@@ -411,7 +423,7 @@ def genmetadata(familydir):
 
 
 def getToday():
-    return unicode(date.today().strftime("%Y-%m-%d"))
+    return str(date.today().strftime("%Y-%m-%d"))
 
 
 def hasMetadata(familydir):
@@ -420,7 +432,7 @@ def hasMetadata(familydir):
 
 
 def loadMetadata(familydir):
-    with codecs.open(os.path.join(familydir, "METADATA.json"), 'r', encoding="utf_8") as fp:
+    with io.open(os.path.join(familydir, "METADATA.json"), 'r', encoding="utf-8") as fp:
         return sortOldMetadata(json.load(fp))
 
 
@@ -465,9 +477,9 @@ def writeFile(familydir, metadata):
     filename = "METADATA.json"
     if hasMetadata(familydir):
         filename = "METADATA.json.new"
-    with codecs.open(os.path.join(familydir, filename), 'w', encoding="utf_8") as f:
+    with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
         f.write(striplines(json.dumps(metadata, indent=2, ensure_ascii=True)))
-    print json.dumps(metadata, indent=2, ensure_ascii=True)
+    print(json.dumps(metadata, indent=2, ensure_ascii=True))
 
 
 def ansiprint(string, color):
@@ -479,9 +491,9 @@ def ansiprint(string, color):
         else:
             attr.append('31')  # red
             attr.append('1')  # bold
-        print '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+        print('\x1b[%sm%s\x1b[0m' % (';'.join(attr), string))
     else:
-        print string
+        print(string)
 
 
 def writeDescHtml(familydir):
@@ -491,8 +503,8 @@ def writeDescHtml(familydir):
         string = filename + " exists - check it is okay: "
         color = "green"
         ansiprint(string, color)
-        f = open(fullPath)
-        print f.read()
+        f = io.open(fullPath)
+        print(f.read())
         return
     else:
         # DC sanitize this raw_input as real HTML
@@ -507,18 +519,18 @@ def writeDescHtml(familydir):
                 color = "red"
                 ansiprint(string, color)
         try:
-            if isinstance(fontDesc, (str, unicode)):
+            if isinstance(fontDesc, str):
                 descHtml = "<p>" + fontDesc + "</p>"
             else:
                 descHtml = ""  # unicode(raw_input("Description HTML?\n"))
-        except:
+        except: #XXX: here should be real exception
             descHtml = ""
         if descHtml == "":
             string = "REMEMBER! Create a " + filename
             color = "red"
             ansiprint(string, color)
             return
-        with codecs.open(os.path.join(familydir, filename), 'w', encoding="utf_8") as f:
+        with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
             f.write(descHtml)
         string = "Created " + filename + " with:"
         color = "green"
