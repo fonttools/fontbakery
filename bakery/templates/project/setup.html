@@ -120,7 +120,7 @@ $(document).ready(function() {
     $('#dataConfirmNo').click(function(ev){
       $('#dataConfirmModal').modal('hide');
           if (!$('#dataComplyModal').length) {
-        $('body').append('<div id="dataComplyModal" class="modal" role="dialog" aria-labelledby="ariaComplyLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataComplyLabel">RFN Permission</h3></div><div class="modal-body">You must get written permission from the copyright holder to use their name, or change the name.</div><div class="modal-footer"><a class="btn btn-success" id="dataComplyYes" data-dismiss="modal" aria-hidden="true">I understand</a></div></div>');
+        $('body').append('<div id="dataComplyModal" class="modal" role="dialog" aria-labelledby="ariaComplyLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataComplyLabel">RFN Permission</h3></div><div class="modal-body">You must get written permission from the copyright holder to use their name, or set a new family name on this page.</div><div class="modal-footer"><a class="btn btn-success" id="dataComplyYes" data-dismiss="modal" aria-hidden="true">I understand</a></div></div>');
       }
       $('#dataComplyModal').modal({show:true});
     });

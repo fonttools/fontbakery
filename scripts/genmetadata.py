@@ -209,7 +209,6 @@ def fontToolsGetCopyright(ftfont):
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_PSNAME and not copyright:
             if b'\000' in record.string:
-                import ipdb; ipdb.set_trace()
                 copyright = u(record.string.decode('utf-16-be'))
             else:
                 copyright = str(record.string)
@@ -507,36 +506,26 @@ def writeDescHtml(familydir):
         print(f.read())
         return
     else:
-        # DC sanitize this raw_input as real HTML
+        foundRegular = False
         files = os.listdir(familydir)
         for f in files:
             if f.endswith("Regular.ttf"):
+                foundRegular = True
                 filepath = os.path.join(familydir, f)
                 ftfont = fontToolsOpenFont(filepath)
                 fontDesc = fontToolsGetDesc(ftfont)
-            else:
-                string = "No Regular found, only " + f
-                color = "red"
-                ansiprint(string, color)
-        try:
-            if isinstance(fontDesc, str):
-                descHtml = "<p>" + fontDesc + "</p>"
-            else:
-                descHtml = ""  # unicode(raw_input("Description HTML?\n"))
-        except: #XXX: here should be real exception
-            descHtml = ""
-        if descHtml == "":
-            string = "REMEMBER! Create a " + filename
+        if not foundRegular:
+            string = "No Regular found! REMEMBER! Create a " + filename
             color = "red"
             ansiprint(string, color)
-            return
+            descHtml = "TODO"
+        descHtml = "<p>" + fontDesc + "</p>"
         with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
             f.write(descHtml)
         string = "Created " + filename + " with:"
         color = "green"
         ansiprint(string, color)
         ansiprint(descHtml, color)
-
 
 def run(familydir):
     writeDescHtml(familydir)
