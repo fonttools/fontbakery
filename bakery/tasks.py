@@ -48,6 +48,8 @@ def run(command, cwd = None, log = None):
 
     if p.returncode:
         log.write('Fatal: Execution error command "%s" returned %s code' % (command, p.returncode))
+        # close file before exit
+        log.close()
         raise ValueError
 
 def prun(command, cwd, log=None):
