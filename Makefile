@@ -64,7 +64,7 @@ worker: venv/bin/activate
 	. venv/bin/activate; rqworker
 
 # target: mail — run mailserver
-mail: setup
+mail: 
 	python -m smtpd -n -c DebuggingServer localhost:20025
 
 # target: init — initial data setup
