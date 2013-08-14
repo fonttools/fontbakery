@@ -90,10 +90,6 @@ Open [http://localhost:5000/](http://localhost:5000/) in your browser
 
 ## Development notes
 
-### Login failing?
-
-Sometimes it is possible that some cookies stay in a browser from old runs, or even different applications, since localhost is commonly used in web development. If you try to login but fail, then visit [http://localhost:5000/auth/logout](http://localhost:5000/auth/logout) and try to log in again.
-
 ### Production Mode 
 
 Production mode has additional requirements:
