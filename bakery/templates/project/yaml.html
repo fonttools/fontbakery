@@ -6,7 +6,12 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
 
-<div class="alert alert-info">To load these settings in all Font Bakery installations by default, you may add a file named <tt>bakery.yaml</tt> to the upstream repository that contains this information.</div>
+{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
+  <div class="alert alert-info">Your setup is saved in the upstream repository, in a <tt>bakery.yaml</tt> file, displayed below.</div>
+{% else %}
+  <div class="alert alert-block">Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <tt>bakery.yaml</tt> to the upstream repository that contains the following information.</div>
+{% endif %}
+
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
 {% endblock %}
