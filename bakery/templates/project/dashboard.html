@@ -4,7 +4,7 @@
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('setup') }}
+{{ nav('dashboard') }}
 
 {% set config = project.config %}
 {% if config['local'].get('status', None) == 'repo' %}

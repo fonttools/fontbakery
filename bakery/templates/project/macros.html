@@ -7,7 +7,7 @@
     <h2>{{ page_title }}</h2>
     <ul class="nav nav-tabs">
       <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-        <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Setup Dashboard</a></li>
+      <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Setup Dashboard</a></li>
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
