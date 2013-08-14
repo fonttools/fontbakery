@@ -101,8 +101,7 @@ def setup(project_id):
 
         if request.form.get('ttfautohint'):
             if len(request.form.get('ttfautohint')) > 0:
-                config['state'][
-                    'ttfautohint'] = request.form.get('ttfautohint')
+                config['state']['ttfautohint'] = request.form.get('ttfautohint')
 
         if error:
             return render_template('project/setup.html', project=p,
