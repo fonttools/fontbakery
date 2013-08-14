@@ -89,7 +89,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
             l = f.readline()
             if l:
                 self.emit('message', l)
-                gevent.sleep(0.3) #small delay to reduce browser hammering
+                gevent.sleep(0.1) #small delay to reduce browser hammering
                 if l.startswith('End:'):
                     break
             else:
