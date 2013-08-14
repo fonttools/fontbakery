@@ -1,21 +1,3 @@
-// $(document).ready(function() {
-//     $("#searchfield").typeahead({
-//         minLength: 2,
-//         source: function(query, process) {
-//             $.post('/quicksearch', { q: query, limit: 8 }, function(data) {
-//                 process(JSON.parse(data));
-//             });
-//         },
-//         updater: function (item) {
-//             document.location = "/" +item;
-//             return item;
-//         },
-//         matcher: function (item) {
-//             return true;
-//         }
-//     });
-// });
-
 $(document).ready(function() {
     $('a[data-confirm]').click(function(ev) {
         var href = $(this).attr('href');
