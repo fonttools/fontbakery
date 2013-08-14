@@ -5,24 +5,9 @@
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
-<div class="containder-fluid">
-	<div class="row-fluid">
-		<div class="span6">
-			<h4>{{ _("Incoming Repository") }}</h4>
-			{% from 'project/macros.html' import filestree with context %}
-			{{ filestree() }}
-		</div>
-
-		<div class="span6">
-			<h4>{{ _("Outgoing UFOs") }}</h4>
-			<ul>
-			{% for name in project.config['state']['ufo'] %}
-				<li>{{ name }}</li>
-			{% endfor %}
-			</ul>
-		</div>
-	</div>
-</div>
+<h4>{{ _("Incoming Repository") }}</h4>
+{% from 'project/macros.html' import filestree with context %}
+{{ filestree() }}
 {% endblock %}
 
 {% block extrajs %}
