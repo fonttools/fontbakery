@@ -34,3 +34,4 @@ quality_vendor: # int:_range(4)_displayed_as_a_star_rating
 quality_design: # int:_range(4)_isplayed_as_a_star_rating
 quality_hinting: # int:_range(4)_displayed_as_a_star_rating
 quality_prints: false # true
+stats_family_name: # string used to find family's stats on Google Fonts stats page
