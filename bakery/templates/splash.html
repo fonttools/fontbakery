@@ -6,7 +6,7 @@
   <h1 style="margin-bottom:0.25em">Font Bakery</h1>
   <p class="lead"><a class="btn btn-large btn-success" href="{{ url_for('gitauth.login') }}"><i class="icon-github"></i> Login</a></p>
   {% if g.debug %}
-    <p class="lead"><a href="{{ url_for('gitauth.me') }}">Offline Login</a></p>
+    <p class="lead"><a class="btn btn-small" href="{{ url_for('gitauth.me') }}"><i class="icon-plane"></i> Offline Login</a></p>
   {% endif %}
   <p class="lead">Updating fonts <br /> should be as simple as possible. <br /> That’s why we created Font Bakery. <br /> <a href="/docs">Learn More...</a></p>
 
