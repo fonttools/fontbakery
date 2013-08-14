@@ -15,7 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from flask import Blueprint, request, flash, g, session, redirect, url_for
+from flask import (Blueprint, request, flash, g, session, redirect,
+    url_for, current_app)
 
 from .models import User
 from ..extensions import db, github
@@ -29,15 +30,20 @@ def after_request(response):
 
 @gitauth.route('/me')
 def me():
-    # Visit this URL and log the user in as Mikhail's 'xen' username
-    # This enables developers to work offline when they have no access to github authentication
-    # FOR MULTI USER INSTALLATIONS THIS IS AN EXPLOIT :)
-    user = User.get_or_init('xen')
-    if user.id == 1:
-        # XXX: this is temporary
-        session['user_id'] = user.id
-        g.user = user
-        flash(_('Welcome!'))
+    # Visit this URL and log as 1st user in database. Usefull if you need to
+    # work offline. To change list of github users allowed to workin in single
+    # user mode change GITAUTH_LOGIN_LIST config property
+    # You need to login using GitHub once before able to use this functionality
+    # offline. To add record to database.
+    # Only working if server in debug mode.
+
+    if current_app.debug:
+        # pylint:disable-msg=E1101
+        user = User.query.get(1) # first user, assume this is administrator
+        if user and user.login in current_app.config['GITAUTH_LOGIN_LIST']:
+            session['user_id'] = user.id
+            g.user = user
+            flash(_('Welcome!'))
 
     return redirect(url_for('frontend.splash'))
 
