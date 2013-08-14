@@ -16,3 +16,21 @@ ufo: []
 
 # new font family name
 #newfamily: '' 
+
+licence_type: # ofl/apache/ufl
+copyright_notice: # string
+trademark_notice: false # true
+trademark_permission: false # true
+rfn_asserted: false # true
+rfn_permission: false # true
+source_drawing_filetype: # none/vfb/glyphs/ufo/sfd
+source_cff_filetype: # none/vfb/glyphs/ufo/sfd
+source_ttf_filetype: # none/vfb/glyphs/ufo/sfd
+price_design_usd: # int
+price_total_usd: # int
+hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting
+quality_vendor_category: # apprentice/journeyman/master
+quality_vendor: # int:_range(4)_displayed_as_a_star_rating
+quality_design: # int:_range(4)_isplayed_as_a_star_rating
+quality_hinting: # int:_range(4)_displayed_as_a_star_rating
+quality_prints: false # true
