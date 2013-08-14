@@ -6,7 +6,7 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
 
-<div class="alert alert-info">You must edit the bakery.yaml file in the repository directly.</div>
+<div class="alert alert-info">To load these settings in all Font Bakery installations by default, you may add a file named <tt>bakery.yaml</tt> to the upstream repository that contains this information.</div>
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
 {% endblock %}
