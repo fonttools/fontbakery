@@ -30,14 +30,19 @@
 
 {%- endmacro %}
 
-{% macro filestree(tree) %}
+{%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 
+ %}{% if name.lower() in highlight_files or name.lower().endswith('.ufo') 
+  %}class="highlight"{% endif 
+%}{%- endmacro %}
+
+{%- macro filestree(tree) %}
   <div class="tree">
     <ul>
       <li><a><i class="icon-folder-open"></i>Root</a></li>
       <ul>
       {%- for key, value in project.config['local']['tree'].items() recursive %}
         <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
-          <a>{% if key == '' %}
+          <a {{ highlight(key) }}>{% if key == '' %}
             Root
           {% else %}
             {%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
@@ -48,13 +53,12 @@
             {% elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="icon-folder-close"></i>
             {% elif key == 'bakery.yaml' %}<i class="icon-rocket text-error"></i>
             {% else %}<i class="icon-file-alt muted"></i>
-            {%endif%}
-            {{ key }}
+            {%endif%}{{ key }}
           {% endif %}</a>
-        {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
+        {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs warning" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
         </li>
       {%- endfor %}
       </ul>
     </ul>
   </div>  
-{% endmacro %}
+{%- endmacro %}

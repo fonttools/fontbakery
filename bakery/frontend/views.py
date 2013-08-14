@@ -47,10 +47,6 @@ def page(path):
     _page = pages.get_or_404(path)
     return render_template('page.html', page=_page)
 
-@frontend.route('/quicksearch', methods=['GET', 'POST'])
-def quicksearch():
-    return Response(json.dumps(['xen/font', 'dave/font', 'xen/font2']))
-
 @frontend.route('/robots.txt')
 def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
