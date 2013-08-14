@@ -17,18 +17,20 @@ ufo: []
 # new font family name
 #newfamily: '' 
 
-licence_type: # ofl/apache/ufl
-copyright_notice: # string
-trademark_notice: false # true
+
+### dashboard metadata - anything autodetectable may be found from _in files
+licence_type: # ofl/apache/ufl, can be autodiscovered
+copyright_notice: # string, extracted from Regular.ufo
+trademark_notice: false # true, can be autodiscovered
 trademark_permission: false # true
-rfn_asserted: false # true
+rfn_asserted: false # true, can be autodiscovered
 rfn_permission: false # true
-source_drawing_filetype: # none/vfb/glyphs/ufo/sfd
-source_cff_filetype: # none/vfb/glyphs/ufo/sfd
-source_ttf_filetype: # none/vfb/glyphs/ufo/sfd
+source_drawing_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+source_cff_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+source_ttf_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
 price_design_usd: # int
 price_total_usd: # int
-hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting
+hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting, can be autodiscovered
 quality_vendor_category: # apprentice/journeyman/master
 quality_vendor: # int:_range(4)_displayed_as_a_star_rating
 quality_design: # int:_range(4)_isplayed_as_a_star_rating
