@@ -89,11 +89,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
             l = f.readline()
             if l:
                 self.emit('message', l)
-<<<<<<< HEAD
                 # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
-=======
-                gevent.sleep(0.1) #small delay to reduce browser hammering
->>>>>>> 05ef33e01ef90330ff2cf958bc1f3638b308feaf
                 if l.startswith('End:'):
                     break
             else:
