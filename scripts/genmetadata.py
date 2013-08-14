@@ -209,7 +209,6 @@ def fontToolsGetCopyright(ftfont):
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_PSNAME and not copyright:
             if b'\000' in record.string:
-                import ipdb; ipdb.set_trace()
                 copyright = u(record.string.decode('utf-16-be'))
             else:
                 copyright = str(record.string)
