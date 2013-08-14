@@ -203,3 +203,22 @@ def tests(project_id):
     test_result = project_tests(project=p)
     return render_template('project/tests.html', project=p,
                            tests=test_result)
+
+@project.route('/<int:project_id>/dashboard', methods=['GET'])
+@login_required
+def dashboard(project_id):
+   p = Project.query.filter_by(
+       login=g.user.login, id=project_id).first_or_404()
+   return render_template('project/dashboard.html', project=p)
+
+@project.route('/<int:project_id>/dashboard_save', methods=['POST'])
+@login_required
+def dashboard_save(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    if request.form.get('source_drawing_filetype'):
+        if len(request.form.get('source_drawing_filetype')) > 0:
+            p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
+    p.save_state()
+    flash(_('source_drawing_filetype saved'))
+    return redirect(url_for('project.dashboard', project_id=p.id))
