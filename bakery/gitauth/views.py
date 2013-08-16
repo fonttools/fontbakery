@@ -39,8 +39,8 @@ def me():
 
     if current_app.debug:
         # pylint:disable-msg=E1101
-        user = User.query.get(1) # first user, assume this is administrator
-        if user and user.login in current_app.config['GITAUTH_LOGIN_LIST']:
+        user = User.get_or_init('offline')
+        if user.id and user.login in current_app.config['GITAUTH_LOGIN_LIST']:
             session['user_id'] = user.id
             g.user = user
             flash(_('Welcome!'))
