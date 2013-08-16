@@ -73,6 +73,10 @@ def project_state_get(project, refresh = False):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
 
+    if os.path.exists(bakery_project_yml) and os.path.exists(bakery_local_yml):
+        import filecmp
+        local['bakery_yaml_in_sync'] = filecmp.cmp(bakery_project_yml, bakery_local_yml, shallow=False)
+
     if not refresh:
         return state, local
 
