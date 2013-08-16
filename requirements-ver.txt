@@ -16,6 +16,7 @@ Markdown==2.3.1
 PyYAML==3.10
 SQLAlchemy==0.8.2
 Werkzeug==0.9.3
+beautifulsoup4==4.3.1
 
 # builder and checker
 TTFQuery
@@ -32,5 +33,5 @@ gunicorn==0.16.1
 
 # Tasks
 rq==0.3.8
--e git+git@github.com:xen/flask-rq.git#egg=Flask_RQ-master
+Flask-RQ
 redis==2.7.6
