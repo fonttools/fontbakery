@@ -68,7 +68,7 @@ def project_state_get(project, refresh = False):
     if os.path.exists(bakery_project_yml):
         state = load_yaml(bakery_default_yml, bakery_project_yml)
         local['status'] = 'repo'
-#        local['setup'] = True
+        # local['setup'] = True
     if os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'

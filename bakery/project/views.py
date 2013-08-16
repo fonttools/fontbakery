@@ -59,59 +59,59 @@ def setup(project_id):
     if request.method == 'GET':
         return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
-    else:
-        error = False
+    # else:
+    error = False
 
-        if not request.form.get('license_file') in config['local']['txt_files']:
+    if not request.form.get('license_file') in config['local']['txt_files']:
+        error = True
+        flash(_("Wrong license_file value, must be an error"))
+
+    config['state']['license_file'] = request.form.get('license_file')
+
+    if request.form.get('familyname'):
+        if len(request.form.get('familyname')) > 0:
+            config['state']['familyname'] = request.form.get('familyname')
+
+    ufo_dirs = request.form.getlist('ufo')
+    for i in ufo_dirs:
+        if i not in config['local']['ufo_dirs']:
             error = True
-            flash(_("Wrong license_file value, must be an error"))
+            flash(_("Wrong value for UFO folder, must be an error"))
 
-        config['state']['license_file'] = request.form.get('license_file')
+    if len(ufo_dirs)<0:
+        error = True
+        flash(_("Select at least one UFO folder"))
 
-        if request.form.get('familyname'):
-            if len(request.form.get('familyname')) > 0:
-                config['state']['familyname'] = request.form.get('familyname')
+    # TODO: check that all ufo have same font familyname
 
-        ufo_dirs = request.form.getlist('ufo')
-        for i in ufo_dirs:
-            if i not in config['local']['ufo_dirs']:
-                error = True
-                flash(_("Wrong value for UFO folder, must be an error"))
+    config['state']['ufo'] = ufo_dirs
 
-        if len(ufo_dirs)<0:
+    subset_list = request.form.getlist('subset')
+    for i in subset_list:
+        if i not in DEFAULT_SUBSET_LIST:
             error = True
-            flash(_("Select at least one UFO folder"))
+            flash(_('Subset value is wrong'))
 
-        # TODO: check that all ufo have same font familyname
+    if len(subset_list)<0:
+        error = True
+        flash(_("Select at least one subset from list"))
 
-        config['state']['ufo'] = ufo_dirs
+    config['state']['subset'] = subset_list
 
-        subset_list = request.form.getlist('subset')
-        for i in subset_list:
-            if i not in DEFAULT_SUBSET_LIST:
-                error = True
-                flash(_('Subset value is wrong'))
+    if request.form.get('ttfautohint'):
+        if len(request.form.get('ttfautohint')) > 0:
+            config['state']['ttfautohint'] = request.form.get('ttfautohint')
 
-        if len(subset_list)<0:
-            error = True
-            flash(_("Select at least one subset from list"))
+    if error:
+        return render_template('project/setup.html', project=p,
+                               subsetvals=DEFAULT_SUBSET_LIST)
 
-        config['state']['subset'] = subset_list
+    config['local']['setup'] = True
+    flash(_("Repository %s has been updated" % p.clone))
+    p.save_state()
 
-        if request.form.get('ttfautohint'):
-            if len(request.form.get('ttfautohint')) > 0:
-                config['state']['ttfautohint'] = request.form.get('ttfautohint')
-
-        if error:
-            return render_template('project/setup.html', project=p,
-                                   subsetvals=DEFAULT_SUBSET_LIST)
-
-        config['local']['setup'] = True
-        flash(_("Repository %s has been updated" % p.clone))
-        p.save_state()
-
-        sync_and_process.delay(p)
-        return redirect(url_for('project.buildlog', project_id=p.id))
+    sync_and_process.delay(p)
+    return redirect(url_for('project.buildlog', project_id=p.id))
 
 
 @project.route('/<int:project_id>/', methods=['GET'])
