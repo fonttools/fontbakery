@@ -20,7 +20,7 @@ from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
 
-from .state import (project_state_get, project_state_save)
+from .state import (project_state_get, project_state_save, rwalk)
 
 
 class Project(db.Model):
@@ -94,6 +94,11 @@ class Project(db.Model):
             return unicode(open(fn, 'r').read(), "utf8")
         else:
             return ''
+
+    def tree_in(self):
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
+
 
     def save_asset(self, name = None, data = None, **kwarg):
         if name == 'description':

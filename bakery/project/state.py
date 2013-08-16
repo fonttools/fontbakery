@@ -108,8 +108,6 @@ def project_state_get(project, refresh = False):
     if os.path.exists(state['license_file']):
         local['license_file_found'] = True
 
-    local['tree'] = rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project))
-
     project_state_save(project, state, local)
 
     return state, local

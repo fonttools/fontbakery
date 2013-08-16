@@ -41,7 +41,7 @@
     <ul>
       <li><a><i class="icon-folder-open"></i>Root</a></li>
       <ul>
-      {%- for key, value in project.config['local']['tree'].items() recursive %}
+      {%- for key, value in project.tree_in().items() recursive %}
         <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
           <a {{ highlight(key) }}>{% if key == '' %}
             Root
