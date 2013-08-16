@@ -114,6 +114,17 @@ class Project(db.Model):
                 if os.path.exists(self.asset_by_name('metadata_new')):
                     os.remove(self.asset_by_name('metadata_new'))
 
+    @property
+    def family_stat(self):
+        from ..models import FontStats
+
+        if self.config['state'].get('stats_family_name'):
+            return FontStats.by_family(self.config['state']['stats_family_name'])
+        elif self.config['state'].get('familyname'):
+            return FontStats.by_family(self.config['state']['familyname'])
+        else:
+            return None
+
     def __getitem__(self, key):
         # make magic mapping works
         return self.__dict__.get(key)

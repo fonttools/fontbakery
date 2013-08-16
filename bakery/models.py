@@ -17,4 +17,4 @@
 
 from .gitauth.models import User
 from .project.models import Project, ProjectBuild
-from .settings.models import ProjectCache
+from .settings.models import ProjectCache, FontStats

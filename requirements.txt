@@ -12,6 +12,7 @@ alembic
 # Aux
 requests
 pytz==2013b
+beautifulsoup4
 
 # builder and checker
 TTFQuery
