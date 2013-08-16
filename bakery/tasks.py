@@ -91,14 +91,6 @@ def sync_and_process(project):
 
     log.close()
 
-@job
-def git_clean(project):
-    return
-    # CLEAN_SH = '' #"""cd %(root)s && rm -rf %(login)s/%(id)s.in/ && rm -rf %(login)s/%(id)s.out/"""
-    # params = locals()
-    # params['root'] = DATA_ROOT
-    # run(CLEAN_SH % params)
-
 
 @job
 def project_git_sync(project, log):

@@ -29,7 +29,7 @@ from ..extensions import github, db
 from ..decorators import login_required
 from .models import ProjectCache
 from ..project.models import Project
-from ..tasks import sync_and_process, git_clean
+from ..tasks import sync_and_process
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -200,7 +200,6 @@ def delhook(full_name):
         db.session.delete(project)
         db.session.commit()
 
-    git_clean.delay(login=g.user.login, project_id=project.id)
     return redirect(url_for('settings.repos') + "#tab_github")
 
 
@@ -251,7 +250,6 @@ def delclone():
     db.session.delete(project)
     db.session.commit()
     flash(_("Repository succesfuly deleted"))
-    git_clean.delay(login=g.user.login, project_id=project.id)
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
@@ -266,7 +264,6 @@ def massgit():
     pfn = {}
     for p in projects:
         if p.full_name not in git_ids:
-            git_clean.delay(login=g.user.login, project_id=p.id)
             db.session.delete(p)
             flash(_("Repository %s successfully deleted" % p.full_name))
         pfn[p.full_name] = p
