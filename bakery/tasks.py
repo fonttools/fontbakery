@@ -27,9 +27,13 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),
 DATA_ROOT = os.path.join(ROOT, 'data')
 
 def run(command, cwd = None, log = None):
-    # command — to run,
-    # cwd - current working dir
-    # log — file descriptor with .write() method
+    """ Wrapper for subprocess.Popen with custom logging support.
+
+        :param command: shell command to run
+        :param cwd: - current working dir
+        :param log: - loggin object with .write() method
+
+    """
 
     if log:
         log.write('Command: %s\n' % command)
@@ -53,6 +57,13 @@ def run(command, cwd = None, log = None):
         raise ValueError
 
 def prun(command, cwd, log=None):
+    """ Wrapper for subprocess.Popen that capture output and return as result
+
+        :param command: shell command to run
+        :param cwd: current working dir
+        :param log: loggin object with .write() method
+
+    """
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = p.communicate()[0]
     if log:
@@ -62,6 +73,9 @@ def prun(command, cwd, log=None):
 
 @job
 def sync_and_process(project):
+    """ Mail processing function. Get :class:`~bakery.models.Project` instanse
+        as parameter.
+    """
     # create user folder
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
@@ -89,7 +103,11 @@ def git_clean(project):
 @job
 def project_git_sync(project, log):
     """
-    Sync git repo, or download it if it doesn't yet exist
+    Sync git repo, or download it if it doesn't yet exist. Get parameters:
+
+    :param project: :class:`~bakery.models.Project` instanse
+    :param log: :class:`~bakery.utils.RedisFd` as log
+
     """
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
