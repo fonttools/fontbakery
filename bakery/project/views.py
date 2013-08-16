@@ -71,6 +71,8 @@ def setup(project_id):
     if request.form.get('familyname'):
         if len(request.form.get('familyname')) > 0:
             config['state']['familyname'] = request.form.get('familyname')
+    else:
+        config['state'].pop('familyname')
 
     ufo_dirs = request.form.getlist('ufo')
     for i in ufo_dirs:
@@ -101,6 +103,8 @@ def setup(project_id):
     if request.form.get('ttfautohint'):
         if len(request.form.get('ttfautohint')) > 0:
             config['state']['ttfautohint'] = request.form.get('ttfautohint')
+    else:
+        config['state'].pop('ttfautohint')
 
     if error:
         return render_template('project/setup.html', project=p,
