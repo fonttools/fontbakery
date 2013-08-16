@@ -21,7 +21,6 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-# from ..extensions import db
 from ..tasks import (project_tests, sync_and_process)
 from .models import Project
 
