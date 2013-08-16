@@ -123,11 +123,7 @@ def setup(project_id):
 def fonts(project_id):
     # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
-    if p.config['local'].get('setup', None):
-        return render_template('project/fonts.html', project=p)
-    else:
-        return redirect(url_for('project.setup', project_id=p.id))
-
+    return render_template('project/fonts.html', project=p)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 @login_required
