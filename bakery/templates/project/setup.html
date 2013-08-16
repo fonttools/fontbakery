@@ -21,6 +21,7 @@
   <div class="control-group">
     <div class="controls">
       <p><strong>Bold</strong> fields are required.</p>
+      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %}
     </div>
   </div>
 

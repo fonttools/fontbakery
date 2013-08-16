@@ -29,6 +29,15 @@
         {% endif %}
         </td>
       </tr>
+      <tr>
+        <td colspan="2">
+            {% if item.config['state']['source_drawing_filetype']=='VFB' %}
+            <i class="icon-thumbs-down">VFB</i>
+            {% else %}
+            <i class="">No source</i>
+            {% endif %}          
+        </td>
+      </tr>
     {% else %}
       <tr>
         <td colspan="2">

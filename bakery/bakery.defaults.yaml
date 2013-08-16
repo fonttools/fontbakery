@@ -1,18 +1,46 @@
-# Default bakery.yaml file
-# name of license file, this file should actually exists
+## Default bakery.yaml file
+##
+## Mandatory keys should exist.
+## Optional keys are commented out. 
+##
+
+## License file filename
+##   This file must exist.
 license_file: ''
 
-# list of ufo folders 
+## List of ufo folders 
 ufo: []
 
-# Subsets list  
-# Possible values:
-# latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, 
-# greek-ext+latin, vietnamese+latin
-#subset: [] 
+## Subsets list  
+##   Possible values:
+##     latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, greek-ext+latin, vietnamese+latin
+# subset: [] 
 
-# default ttfautohint command line params
-#ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c 
+## ttfautohint default command line parameter
+##   If ttfautohint is not defined, it is not used.
+# ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c 
 
-# new font family name
-#newfamily: '' 
+## New font family name. 
+##   If newfamily is not defined, the fonts are not renamed. 
+# newfamily: '' 
+
+### Dashboard metadata - anything autodetectable may be detected from files in the _in directory
+
+# licence_type: # ofl/apache/ufl, can be autodiscovered
+# copyright_notice: # string, extracted from Regular.ufo
+# trademark_notice: false # true, can be autodiscovered
+# trademark_permission: false # true
+# rfn_asserted: false # true, can be autodiscovered
+# rfn_permission: false # true
+# source_drawing_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# source_cff_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# source_ttf_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# price_design_usd: # int
+# price_total_usd: # int
+# hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting, can be autodiscovered
+# quality_vendor_category: # apprentice/journeyman/master
+# quality_vendor: # int:_range(4)_displayed_as_a_star_rating
+# quality_design: # int:_range(4)_isplayed_as_a_star_rating
+# quality_hinting: # int:_range(4)_displayed_as_a_star_rating
+# quality_prints: false # true
+# stats_family_name: # string used to find family's stats on Google Fonts stats page

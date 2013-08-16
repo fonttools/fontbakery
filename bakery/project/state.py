@@ -35,6 +35,9 @@ def rwalk(path):
     return h
 
 def load_yaml(default_yml, yml = None):
+    """
+    Load a YAML file from a defaults file that defines the keys TODO
+    """
     data = yaml.load(open(default_yml, 'r').read())
     if yml:
         data.update(yaml.load(open(yml, 'r').read()))
@@ -60,16 +63,15 @@ def project_state_get(project, refresh = False):
     # or fallback to default. This only can happends during development tests
     # because I deleted it manually.
 
+    state = load_yaml(bakery_default_yml)
+    local['status'] = 'default'
     if os.path.exists(bakery_project_yml):
         state = load_yaml(bakery_default_yml, bakery_project_yml)
         local['status'] = 'repo'
-        local['setup'] = True
-    elif os.path.exists(bakery_local_yml):
+#        local['setup'] = True
+    if os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
-    else:
-        state = load_yaml(bakery_default_yml)
-        local['status'] = 'default'
 
     if not refresh:
         return state, local
