@@ -26,19 +26,18 @@ The installation process is easy, and full instructions are maintained in the [I
 
 After installation, this command will start the worker:
 
-    $ make worker
-
+    $ make worker;
 
 Then this command will start the web service on a localhost web server:
 
-    $ make run
+    $ make run;
 
 Then open http://localhost:5000 in your browser. You will be warned if the worker is not running. 
 
 You may with to clear out all user data:
 
-    $ make clean
+    $ make clean;
 
 During the development process you may wish to be run a fake mail server:
 
-    $ make mail
+    $ make mail;
