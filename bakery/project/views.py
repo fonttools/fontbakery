@@ -71,8 +71,8 @@ def setup(project_id):
     if request.form.get('familyname'):
         if len(request.form.get('familyname')) > 0:
             config['state']['familyname'] = request.form.get('familyname')
-    else:
-        config['state'].pop('familyname')
+    # else:
+    #    config['state'].pop('familyname')
 
     ufo_dirs = request.form.getlist('ufo')
     for i in ufo_dirs:
