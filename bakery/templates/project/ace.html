@@ -52,6 +52,7 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/json");
+editor.getSession().setUseSoftTabs(true);
 
 // var textarea = $('textarea[name="metadata"]');
 var textarea = $('textarea[name="metadata"]').hide();
