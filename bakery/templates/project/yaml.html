@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-{% set page_title = _("bakery.yaml") %}
+{% set page_title = _("View bakery.yaml") %}
 
 {% block body %}
 
@@ -23,10 +23,13 @@ var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/yaml");
 editor.getSession().setUseSoftTabs(true);
+editor.setHighlightActiveLine(false);
 
+// var textarea = $('textarea[name="yaml"]');
 var textarea = $('textarea[name="yaml"]').hide();
 editor.getSession().setUseWrapMode(true);
 editor.getSession().setValue(textarea.val());
 editor.setReadOnly(true);
+
 </script>
 {% endblock %}

@@ -23,8 +23,9 @@ var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/html");
 editor.getSession().setUseSoftTabs(true);
+editor.setHighlightActiveLine(false);
 
-// var textarea = $('textarea[name="metadata"]');
+// var textarea = $('textarea[name="description"]');
 var textarea = $('textarea[name="description"]').hide();
 editor.getSession().setUseWrapMode(true);
 editor.getSession().setValue(textarea.val());
@@ -33,7 +34,5 @@ editor.getSession().on('change', function(){
 });
 
 </script>
-
-
 </div>
 {% endblock %}
