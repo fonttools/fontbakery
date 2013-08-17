@@ -36,7 +36,14 @@ def rwalk(path):
 
 def load_yaml(default_yml, yml = None):
     """
-    Load a YAML file from a defaults file that defines the keys TODO
+    Load a YAML file.
+    
+    Args:
+        default_yml: a YAML file that may have all possible keys with default values
+        yml: a YAML file with new values that overwrite those from the default_yml file (optional)
+    
+    Returns:
+        data: the data from the YAML files    
     """
     data = yaml.load(open(default_yml, 'r').read())
     if yml:
