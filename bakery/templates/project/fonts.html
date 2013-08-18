@@ -14,8 +14,12 @@
 <script>
 $(document).ready(function() {
   $('.glyphs').hide();
+  $('.ufo-files').hide();
+  $('.mothership').click(function() {
+    $(this).children('ul').slideToggle();
+  });
   $('.mother_of_glyphs').click(function() {
-    $(this).find('ul').slideToggle();
+    $(this).children('ul').children('ul').slideToggle();
   });
 });
 </script>
