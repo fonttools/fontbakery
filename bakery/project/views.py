@@ -17,7 +17,7 @@
 # pylint:disable-msg=E1101
 
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect)
+                   url_for, redirect, json)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
@@ -151,10 +151,18 @@ def metadatajson(project_id):
 def metadatajson_save(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-    p.save_asset('metadata', request.form.get('metadata'),
-                 del_new=request.form.get('delete', None))
-    flash(_('METADATA.json saved'))
-    return redirect(url_for('project.metadatajson', project_id=p.id))
+    try:
+        # this line trying to parse json
+        json.loads(request.form.get('metadata'))
+        p.save_asset('metadata', request.form.get('metadata'),
+                     del_new=request.form.get('delete', None))
+        flash(_('METADATA.json saved'))
+        return redirect(url_for('project.metadatajson', project_id=p.id))
+    except ValueError:
+        flash(_('Wrong format for METADATA.json file'))
+        metadata_new = p.read_asset('metadata_new')
+        return render_template('project/metadatajson.html', project=p,
+                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
 
 
 @project.route('/<int:project_id>/description_edit', methods=['GET'])
