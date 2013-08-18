@@ -100,3 +100,29 @@ class BakeryTestRunner(unittest.TextTestRunner):
         self.results.append(result)
         return result
 
+
+
+def make_suite(path):
+    suite = unittest.TestSuite()
+
+    for t in TestRegistry.list():
+        t.path = path
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(t))
+
+    return suite
+
+def run_suite(suite):
+    result = {
+        'success': [],
+        'error': [],
+        'failure': []
+    }
+    runner = BakeryTestRunner(resultclass = BakeryTestResult,
+        success_list=result['success'], error_list=result['error'],
+        failure_list=result['failure'])
+    runner.run(suite)
+    result['sum'] = sum(map(len, [result[x] for x in result.keys() ]))
+
+    # on next step here will be runner object
+    return result
+
