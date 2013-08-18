@@ -160,14 +160,13 @@ def project_state_save(project, state = None, local = None):
     if not local:
         local = project.config['local']
 
-    state_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
-    local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
+    bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
+    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
 
-    f = open(state_yml, 'w')
+    f = open(bakery_local_yml, 'w')
     f.write(yaml.safe_dump(state))
     f.close()
 
-    l = open(local_yml, 'w')
+    l = open(state_local_yml, 'w')
     l.write(yaml.safe_dump(local))
     l.close()
-
