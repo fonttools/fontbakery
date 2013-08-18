@@ -20,7 +20,6 @@ import glob
 import subprocess
 from flask.ext.rq import job
 import plistlib
-import checker.runner
 from utils import RedisFd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
@@ -311,19 +310,23 @@ def ttx_process(project, log):
         run(cmd, cwd=_out, log=log)
 
 
-def project_result_tests(project):
+def project_upstream_tests(project):
+    import checker.upstream_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
-        result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
+        result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
     return result
 
-def project_upstream_tests(project):
+
+def project_result_tests(project):
+    import checker.result_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     result = {}
     os.chdir(_out_src)
     for name in glob.glob("*.ttf"):
-        result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
+        result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
     return result
+
 

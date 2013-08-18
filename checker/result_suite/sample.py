@@ -1,6 +1,7 @@
 from checker.base import BakeryTestCase as TestCase
 
 class SampleTest(TestCase):
+    target = 'result'
 
     path = '.'
 

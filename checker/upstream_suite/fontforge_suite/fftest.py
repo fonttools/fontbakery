@@ -21,6 +21,8 @@ from checker.base import BakeryTestCase as TestCase
 
 class SimpleTest(TestCase):
 
+    target = 'upstream'
+
     path = '.'
 
     def setUp(self):

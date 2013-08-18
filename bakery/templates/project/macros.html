@@ -14,12 +14,12 @@
           <ul class="dropdown-menu">
               <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse Files</a></li>
               <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
+              <li {% if active == 'ufonts' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream tests</a></li>
           </ul>
         </li>
         <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
-          <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
           <li class="dropdown {% if active in ['ace', 'description'] %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                  _out <i class="caret"></i>
@@ -29,6 +29,7 @@
                 <li class="nav-header">Folders</li>
                 <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
 -->
+                <li {% if active == 'rfonts' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Results tests</a></li>
                 <li class="nav-header">Read Only Files</li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
                 <li class="nav-header">Editable Files</li>

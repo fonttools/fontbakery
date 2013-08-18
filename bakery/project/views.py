@@ -21,7 +21,7 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import (project_tests, sync_and_process)
+from ..tasks import (sync_and_process, project_result_tests, project_upstream_tests)
 from .models import Project
 
 project = Blueprint('project', __name__, url_prefix='/project')
@@ -193,21 +193,35 @@ def bakeryyaml(project_id):
     return render_template('project/yaml.html', project=p, yaml=data)
 
 
-@project.route('/<int:project_id>/tests', methods=['GET'])
+@project.route('/<int:project_id>/utests', methods=['GET'])
 @login_required
-def tests(project_id):
+def utests(project_id):
+    """ Upstream tests view """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-    test_result = project_tests(project=p)
-    return render_template('project/tests.html', project=p,
+    test_result = project_upstream_tests(project=p)
+    return render_template('project/utests.html', project=p,
                            tests=test_result)
+
+
+@project.route('/<int:project_id>/rtests', methods=['GET'])
+@login_required
+def rtests(project_id):
+    """ Results of processing tests, for ttf files """
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    test_result = project_result_tests(project=p)
+    return render_template('project/rtests.html', project=p,
+                           tests=test_result)
+
 
 @project.route('/<int:project_id>/dashboard', methods=['GET'])
 @login_required
 def dashboard(project_id):
-   p = Project.query.filter_by(
-       login=g.user.login, id=project_id).first_or_404()
-   return render_template('project/dashboard.html', project=p)
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    return render_template('project/dashboard.html', project=p)
+
 
 @project.route('/<int:project_id>/dashboard_save', methods=['POST'])
 @login_required

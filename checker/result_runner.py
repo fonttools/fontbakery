@@ -23,7 +23,7 @@ from .base import make_suite, run_suite
 def run_set(path):
     """ Return tests results for .ttf font in parameter """
     assert os.path.exists(path)
-    return run_suite(make_suite(path))
+    return run_suite(make_suite(path, 'result'))
 
 
 if __name__ == '__main__':

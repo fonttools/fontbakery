@@ -23,6 +23,8 @@ from checker.base import BakeryTestCase as TestCase
 
 class UfoOpenTest(TestCase):
 
+    target = 'upstream'
+
     path = '.'
 
     def setUp(self):
@@ -66,7 +68,7 @@ class UfoOpenTest(TestCase):
     def test_is_fsType_eq_1(self):
         pass
 
-# TODO check if this is a good form of test
+    # TODO check if this is a good form of test
     def has_character(self, unicodeString):
         """Does this font include a glyph for the given unicode character?"""
         # TODO check the glyph has at least 1 contour
