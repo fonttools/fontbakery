@@ -135,26 +135,26 @@ def plicense(project_id):
     return render_template('project/license.html', project=p, license=data)
 
 
-@project.route('/<int:project_id>/ace', methods=['GET'])
+@project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
-def ace(project_id):
+def metadatajson(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
     metadata = p.read_asset('metadata')
     metadata_new = p.read_asset('metadata_new')
-    return render_template('project/ace.html', project=p,
+    return render_template('project/metadatajson.html', project=p,
                            metadata=metadata, metadata_new=metadata_new)
 
 
-@project.route('/<int:project_id>/ace', methods=['POST'])
+@project.route('/<int:project_id>/metadatajson', methods=['POST'])
 @login_required
-def ace_save(project_id):
+def metadatajson_save(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
     p.save_asset('metadata', request.form.get('metadata'),
                  del_new=request.form.get('delete', None))
     flash(_('METADATA.json saved'))
-    return redirect(url_for('project.ace', project_id=p.id))
+    return redirect(url_for('project.metadatajson', project_id=p.id))
 
 
 @project.route('/<int:project_id>/description_edit', methods=['GET'])

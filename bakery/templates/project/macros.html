@@ -33,7 +33,7 @@
                 <li class="nav-header">Read Only Files</li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
                 <li class="nav-header">Editable Files</li>
-                <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >METADATA.json</a></li>
+                <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id ) }}" >METADATA.json</a></li>
                 <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
             </ul>
           </li>
