@@ -19,11 +19,7 @@ import os
 import robofab.world
 import robofab.objects
 
-try:
-    from checker.base import BakeryTestCase as TestCase
-except ImportError:
-    from unittest import TestCase
-
+from checker.base import BakeryTestCase as TestCase
 
 class UfoOpenTest(TestCase):
 
@@ -56,7 +52,7 @@ class UfoOpenTest(TestCase):
 
     def test_error(self):
         """ Unexpected error """
-        1/0
+        1 / 0
         self.assertTrue(False)
 
     def test_a_is_glyph_instanse(self):
@@ -85,31 +81,32 @@ class UfoOpenTest(TestCase):
         has_character(self, u'₹')
 
     def areAllFamilyNamesTheSame(paths):
-      """
-      Test if all family names in the UFOs given to this method as paths are the same.
-      There is probably a MUCH more elegant way to do this :)
-      TODO: Make this test for families where the familyName differs but there are OT names that compensate (common with fonts made with compatibility with Windows GDI applications in mind)
-      """
-      fonts = []
-      allFamilyNamesAreTheSame = False
-      for path in paths:
-        font = OpenFont(path)
-        print font
-        fonts.append(font)
-      regularFamilyName = "unknown"
-      for path in paths:
-        if path.endswith('Regular.ufo'):
-          regularFamilyName = font.info.familyName
-      print 'regularFamilyName is', regularFamilyName
-      for font in fonts:
-        if font.info.familyName == regularFamilyName: # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
-          allFamilyNamesAreTheSame = True
-      if allFamilyNamesAreTheSame == True:
-        return True
-      else:
-        return False
+        """
+        Test if all family names in the UFOs given to this method as paths are the same.
+        There is probably a MUCH more elegant way to do this :)
+        TODO: Make this test for families where the familyName differs but there are OT names that compensate (common with fonts made with compatibility with Windows GDI applications in mind)
+        """
+        fonts = []
+        allFamilyNamesAreTheSame = False
+        for path in paths:
+            font = OpenFont(path)
+            print font
+            fonts.append(font)
+        regularFamilyName = "unknown"
+        for path in paths:
+            if path.endswith('Regular.ufo'):
+                regularFamilyName = font.info.familyName
+        print 'regularFamilyName is', regularFamilyName
+        for font in fonts:
+            if font.info.familyName == regularFamilyName: # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
+                allFamilyNamesAreTheSame = True
+        if allFamilyNamesAreTheSame == True:
+            return True
+        else:
+            return False
 
     def ifAllFamilyNamesAreTheSame(paths): # TODO should be test_ifallFamilyNamesAreTheSame
-      allFamilyNamesAreTheSame = areAllFamilyNamesTheSame(paths)
-      assert allFamilyNamesAreTheSame
-    # TODO: check the stems of the style name and full names match the familyNames
+        allFamilyNamesAreTheSame = areAllFamilyNamesTheSame(paths)
+        assert allFamilyNamesAreTheSame
+    # TODO: check the stems of the style name and full names match the
+    # familyNames
