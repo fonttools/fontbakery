@@ -7,7 +7,7 @@
 {{ nav('rtests') }}
 
 {% for name in tests.keys() %}
-<h3> {{ name }}.ufo</h3>
+<h3> {{ name }}</h3>
 {% set t =  tests[name]['sum'] %}
 {% set sl = tests[name]['success']|length|int %} 
 {% set el = tests[name]['error']|length|int %}
