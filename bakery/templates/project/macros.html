@@ -6,18 +6,17 @@
 	</h5>
     <h2>{{ page_title }}</h2>
     <ul class="nav nav-tabs">
-      <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-      <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Setup Dashboard</a></li>
+        <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
         <li class="dropdown {% if active in ['fonts', 'yaml', 'license'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-               _in <i class="caret"></i>
+               Upstream <i class="caret"></i>
           </a>
           <ul class="dropdown-menu">
-              <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse Tree</a></li>
-              <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
+              <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse Files</a></li>
               <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
           </ul>
         </li>
+        <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>

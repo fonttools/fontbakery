@@ -55,7 +55,7 @@ class UfoOpenTest(TestCase):
         1 / 0
         self.assertTrue(False)
 
-    def test_a_is_glyph_instanse(self):
+    def test_a_is_glyph_instance(self):
         """ Do font property A is proper type object """
         if self.font.has_key('A'):
             a = self.font['A']

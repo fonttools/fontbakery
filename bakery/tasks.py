@@ -73,7 +73,7 @@ def prun(command, cwd, log=None):
 
 @job
 def sync_and_process(project):
-    """ Mail processing function. Get :class:`~bakery.models.Project` instanse
+    """ Mail processing function. Get :class:`~bakery.models.Project` instance
         as parameter.
     """
     # create user folder
@@ -97,7 +97,7 @@ def project_git_sync(project, log):
     """
     Sync git repo, or download it if it doesn't yet exist. Get parameters:
 
-    :param project: :class:`~bakery.models.Project` instanse
+    :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
 
     """
