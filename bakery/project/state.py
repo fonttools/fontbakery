@@ -74,6 +74,7 @@ def project_state_get(project, refresh = False):
         local: the internal state of the project
         state: the external state of the project
     """
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
     bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
     bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
@@ -87,20 +88,20 @@ def project_state_get(project, refresh = False):
         local = load_yaml(state_default_yml)
         refresh = True
 
-    # if project have its own bakery.yaml in git repo then use it
-    # if no, then use local bakery.$(id).yaml
-    # or fallback to default. This only can happends during development tests
-    # because I deleted it manually.
-
-    state = load_yaml(bakery_default_yml)
-    local['status'] = 'default'
-    if os.path.exists(bakery_project_yml):
-        state = load_yaml(bakery_default_yml, bakery_project_yml)
-        local['status'] = 'repo'
-        # local['setup'] = True
+    # Create external state object, 'state'
+    # TODO? rename this throughout codebase to bakeryState
+    # try to load the local bakery.yml from any previous runs and note that it was loaded
     if os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
+    # if it doesn't exist, try to load a bakery.yml from _in repo and note that it was loaded
+    elif os.path.exists(bakery_project_yml):
+        state = load_yaml(bakery_default_yml, bakery_project_yml)
+        local['status'] = 'repo'
+    # if neither exist, just load bakery.defaults.yaml and note that it was loaded
+    else:
+        state = load_yaml(bakery_default_yml)
+        local['status'] = 'default'
 
     if os.path.exists(bakery_project_yml) and os.path.exists(bakery_local_yml):
         import filecmp
