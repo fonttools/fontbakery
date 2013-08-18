@@ -112,7 +112,9 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
         import filecmp
         local['bakery_yaml_in_sync'] = filecmp.cmp(bakery_project_yml, bakery_local_yml, shallow=False)
 
+    # If local is already set up, save both states to YAML files and return them
     if not refresh:
+        project_state_save(project, state, local)
         return state, local
     # otherwise, list txt and ufo files found in _in
     txt_files = []
