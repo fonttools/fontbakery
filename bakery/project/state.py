@@ -59,8 +59,7 @@ def load_yaml(default_yml, yml = None):
         data.update(yaml.load(open(yml, 'r').read()))
     return data
 
-def project_state_get(project, refresh = False):
-
+def project_state_get(project, refresh = False): # XXX rename refresh throughout codebase to refresh_bakeryStateInternal ?
     """
     Get internal and external state of project from default, repo and local YAML files,
     check external state matches that stored in the _in repo, and
@@ -75,13 +74,18 @@ def project_state_get(project, refresh = False):
         state: the external state of the project
     """
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    # Define bakery.yaml locations
+    bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
     bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
     bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
-    bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
-
-    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
+    # Define state.yaml locations
     state_default_yml = os.path.join(ROOT, 'bakery', 'state.defaults.yaml')
+    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
 
+    # Create internal state object, 'local'
+    # TODO? rename this throughout codebase to bakeryStateInternal
+    # if local is already set up, load it from file, otherwise load from defaults and set it up later
     if os.path.exists(state_local_yml):
         local = load_yaml(state_default_yml, state_local_yml)
     else:
@@ -103,15 +107,14 @@ def project_state_get(project, refresh = False):
         state = load_yaml(bakery_default_yml)
         local['status'] = 'default'
 
+    # note if both local and _in repo bakery.yaml files are in sync
     if os.path.exists(bakery_project_yml) and os.path.exists(bakery_local_yml):
         import filecmp
         local['bakery_yaml_in_sync'] = filecmp.cmp(bakery_project_yml, bakery_local_yml, shallow=False)
 
     if not refresh:
         return state, local
-
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-
+    # otherwise, list txt and ufo files found in _in
     txt_files = []
     ufo_dirs = []
     l = len(_in)
@@ -124,22 +127,21 @@ def project_state_get(project, refresh = False):
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
                 ufo_dirs.append(fullpath[l:])
-
     local['txt_files'] = txt_files
     local['ufo_dirs'] = ufo_dirs
 
-    # if lincense_file not defined then choose OFL.txt or LICENSE.txt from the root of repo
+    # If license_file not defined then choose OFL.txt or LICENSE.txt from the root of repo, if it exists
     if not state['license_file']:
         for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
             if os.path.exists(os.path.join(_in, fn)):
                 state['license_file'] = fn
                 break
-
+    # and note it exists
     if os.path.exists(state['license_file']):
         local['license_file_found'] = True
 
+    # Save both states to YAML files and return them
     project_state_save(project, state, local)
-
     return state, local
 
 def project_state_save(project, state = None, local = None):
