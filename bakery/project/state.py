@@ -23,6 +23,15 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),
 DATA_ROOT = os.path.join(ROOT, 'data')
 
 def rwalk(path):
+    """
+    Recursively walk a file system path, excluding .git folders
+    
+    Args:
+        path: path to walk down
+    
+    Returns:
+        h: Dictionary of file and directory paths
+    """
     h = {}
     cd = os.path.abspath(path)
     fs = os.listdir(path)
@@ -52,6 +61,19 @@ def load_yaml(default_yml, yml = None):
 
 def project_state_get(project, refresh = False):
 
+    """
+    Get internal and external state of project from default, repo and local YAML files,
+    check external state matches that stored in the _in repo, and
+    save these states to local YAML files.
+    
+    Args:
+        project: project object
+        refresh: Optional. Boolean. Force refreshing the internal state
+    
+    Returns:
+        local: the internal state of the project
+        state: the external state of the project
+    """
     bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
     bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
     bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
@@ -120,6 +142,14 @@ def project_state_get(project, refresh = False):
     return state, local
 
 def project_state_save(project, state = None, local = None):
+    """
+    Save project state in bakery.yaml and state.yaml files.
+    
+    Args:
+        project: project object
+        state: Optional, the external state of this project. If not given, will be loaded from project
+        local: Optional, the internal state of this project. If not given, will be loaded from project
+    """
     if not state:
         state = project.config['state']
     if not local:
