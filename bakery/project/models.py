@@ -34,6 +34,7 @@ class Project(db.Model):
     data = db.Column(db.PickleType())
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
+    is_ready = db.Column(db.Boolean(), index=True, default=False)
 
     builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
@@ -65,7 +66,7 @@ class Project(db.Model):
     @property
     def title(self):
         # Can be changed when #142 is fixed
-        if self.config['state'].get('familyname', None):
+        if self.is_ready and self.config['state'].get('familyname', None):
             return "%s (%s)" % (self.config['state']['familyname'], self.clone)
         else:
             return self.clone

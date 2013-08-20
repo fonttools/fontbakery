@@ -37,13 +37,13 @@ def rwalk(path):
 def load_yaml(default_yml, yml = None):
     """
     Load a YAML file.
-    
+
     Args:
         default_yml: a YAML file that may have all possible keys with default values
         yml: a YAML file with new values that overwrite those from the default_yml file (optional)
-    
+
     Returns:
-        data: the data from the YAML files    
+        data: the data from the YAML files
     """
     data = yaml.load(open(default_yml, 'r').read())
     if yml:
@@ -115,7 +115,8 @@ def project_state_get(project, refresh = False):
     if os.path.exists(state['license_file']):
         local['license_file_found'] = True
 
-    project_state_save(project, state, local)
+    if project.is_ready:
+        project_state_save(project, state, local)
 
     return state, local
 
