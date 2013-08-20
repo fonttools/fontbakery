@@ -17,39 +17,46 @@
 
   <tbody>
     {% for item in repos -%}
-      <tr>
-        <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
-        <td>
-        {% if item.config['local']['status']=='repo' %}
-          <span class="muted">{{ _("OK") }}</span>
-        {% elif item.config['local']['status']=='local' %}
-          <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Put bakery.yaml to repository") }}</a>
-        {% else %}
-          <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
-        {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-            {% if item.config['state']['source_drawing_filetype']=='VFB' %}
-            <i class="icon-thumbs-down">VFB</i>
+      {% if not item.is_ready %}
+        <tr>
+          <td class="muted"><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+          <td>Project isn't yet downloaded</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+          <td>
+            {% if item.config['local']['status']=='repo' %}
+              <span class="muted">{{ _("OK") }}</span>
+            {% elif item.config['local']['status']=='local' %}
+              <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Put bakery.yaml to repository") }}</a>
             {% else %}
-            <i class="">No source</i>
+              <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
             {% endif %}
-        </td>
-      </tr>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            {% if item.config['state']['source_drawing_filetype']=='VFB' %}
+              <i class="icon-thumbs-down">VFB</i>
+            {% else %}
+              <i class="">No source</i>
+            {% endif %}
+          </td>
+        </tr>
 
-      {% if item.family_stat %}
-      <tr>
-        <td colspan="2">
-        Total - {{ item.family_stat.total }} <br />
-        Month - {{ item.family_stat.month }} <br />
-        Week - {{ item.family_stat.week }} <br />
-        Yesterday - {{ item.family_stat.yesterday }} <br /> 
-        Rate - {{ item.family_stat.rate }} <br />
-        </td>
-      </tr>
-      {% endif %}
+        {% if item.family_stat %}
+          <tr>
+            <td colspan="2">
+            Total - {{ item.family_stat.total }} <br />
+            Month - {{ item.family_stat.month }} <br />
+            Week - {{ item.family_stat.week }} <br />
+            Yesterday - {{ item.family_stat.yesterday }} <br /> 
+            Rate - {{ item.family_stat.rate }} <br />
+            </td>
+          </tr>
+        {% endif %}
+      {% endif %} {# is_ready #}
 
 
     {% else %}
