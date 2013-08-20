@@ -44,6 +44,10 @@ def bump(project_id):
         # pylint:disable-msg=E1101
         p = Project.query.filter_by(
             login=g.user.login, id=project_id).first_or_404()
+
+        if not p.is_ready:
+            return render_template('project/is_not_ready.html')
+
         sync_and_process.delay(p)
         flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.buildlog', project_id=project_id))
@@ -54,6 +58,10 @@ def bump(project_id):
 def setup(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     config = p.config
 
     if request.method == 'GET':
@@ -125,6 +133,10 @@ def setup(project_id):
 def fonts(project_id):
     # this page can be visible by others, not only by owner
     p = Project.query.get_or_404(project_id)
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     return render_template('project/fonts.html', project=p)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
@@ -132,6 +144,10 @@ def fonts(project_id):
 def plicense(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     data = p.read_asset('license')
     return render_template('project/license.html', project=p, license=data)
 
@@ -141,6 +157,10 @@ def plicense(project_id):
 def metadatajson(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     metadata = p.read_asset('metadata')
     metadata_new = p.read_asset('metadata_new')
     return render_template('project/metadatajson.html', project=p,
@@ -152,6 +172,10 @@ def metadatajson(project_id):
 def metadatajson_save(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     try:
         # this line trying to parse json
         json.loads(request.form.get('metadata'))
@@ -171,6 +195,10 @@ def metadatajson_save(project_id):
 def description_edit(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     data = p.read_asset('description')
     return render_template('project/description.html', project = p, description = data)
 
@@ -180,6 +208,10 @@ def description_edit(project_id):
 def description_save(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
     return redirect(url_for('project.description_edit', project_id=p.id))
@@ -190,6 +222,10 @@ def description_save(project_id):
 def buildlog(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     data = p.read_asset('log')
     return render_template('project/log.html', project=p, log=data)
 
@@ -199,6 +235,10 @@ def buildlog(project_id):
 def bakeryyaml(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     data = p.read_asset('yaml')
     return render_template('project/yaml.html', project=p, yaml=data)
 
@@ -209,6 +249,10 @@ def utests(project_id):
     """ Upstream tests view """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     test_result = project_upstream_tests(project=p)
     return render_template('project/utests.html', project=p,
                            tests=test_result)
@@ -220,6 +264,10 @@ def rtests(project_id):
     """ Results of processing tests, for ttf files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     test_result = project_result_tests(project=p)
     return render_template('project/rtests.html', project=p,
                            tests=test_result)
@@ -230,6 +278,10 @@ def rtests(project_id):
 def dashboard(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     return render_template('project/dashboard.html', project=p)
 
 
@@ -238,9 +290,14 @@ def dashboard(project_id):
 def dashboard_save(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
+
     if request.form.get('source_drawing_filetype'):
         if len(request.form.get('source_drawing_filetype')) > 0:
             p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
     p.save_state()
     flash(_('source_drawing_filetype saved'))
     return redirect(url_for('project.dashboard', project_id=p.id))
+
