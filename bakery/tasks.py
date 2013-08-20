@@ -70,6 +70,15 @@ def prun(command, cwd, log=None):
         log.write(stdout)
     return stdout
 
+def set_ready(project):
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
 @job
 def sync_and_process(project):
     """ Mail processing function. Get :class:`~bakery.models.Project` instance
@@ -87,6 +96,8 @@ def sync_and_process(project):
 
     project_git_sync(project, log = log)
     process_project(project, log = log)
+    if not project.is_ready:
+        set_ready(project)
 
     log.close()
 
