@@ -73,13 +73,15 @@ def prun(command, cwd, log=None):
 
 @job
 def sync_and_process(project):
-    """ Mail processing function. Get :class:`~bakery.models.Project` instance
-        as parameter.
+    """
+    Sync and process (Bake) the project.
+    
+    :param project: :class:`~bakery.models.Project` instance
     """
     # create user folder
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
-
+    # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
             'id': project.id,
             'login': project.login, }
@@ -91,39 +93,38 @@ def sync_and_process(project):
 
     log.close()
 
-
 @job
 def project_git_sync(project, log):
     """
-    Sync git repo, or download it if it doesn't yet exist. Get parameters:
+    Sync _in git repo, or download it if it doesn't yet exist.
 
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
-
     """
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
     # Create the incoming repo dir if it doesn't exist
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     if not os.path.exists(_in):
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
-
-    # If no .git folder exists in project folder, download repo
+    # Either download the _in repo
     if not os.path.exists(os.path.join(_in, '.git')):
         run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
-    # Else, reset the repo and pull down latest updates
+    # Or reset _in and pull down latest updates
     else:
+        # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
+        # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
-
-    # child = prun('git rev-parse --short HEAD', cwd=_in)
-    # hashno = child.stdout.readline().strip()
-    # make current out folder
 
 @job
 def process_project(project, log):
     """
-    The Baking Commands - the central functionality of this software :)
+    Bake the project, building all fonts according to the project setup.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param log: :class:`~bakery.utils.RedisFd` as log
     """
     # login — user login
     # project_id - database project_id
