@@ -235,12 +235,18 @@ def generate_fonts_process(project, log):
 
 
 def generate_metadata_process(project, log):
+    """
+    Generate METADATA.json using genmetadata.py
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 
 def lint_process(project, log):
+    """
+    Run lint.jar on ttf files
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
@@ -248,6 +254,10 @@ def lint_process(project, log):
 
 
 def ttfautohint_process(project, log):
+    """
+    Run ttfautohint with project command line settings for each
+    ttf file in result folder
+    """
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)

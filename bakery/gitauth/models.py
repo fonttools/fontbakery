@@ -18,6 +18,9 @@
 from ..extensions import db
 
 class User(db.Model):
+    """
+    User model, related to GitHub account.
+    """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(60), index=True)
@@ -32,16 +35,19 @@ class User(db.Model):
 
     @property
     def token(self):
+        """ Return GitHub token. Used to sigh requests. """
         return self.github_access_token
 
     def getAvatar(self, size=24):
         return "https://www.gravatar.com/avatar/%s?s=%d&d=mm" % (self.avatar, size)
 
     def getGithub(self):
+        """ Return public link to GitHub user profile page """
         return "https://github.com/%s" % self.login
 
     @staticmethod
     def get_or_init(login):
+        """ Find user qith `login` in database if not then create new instance """
         user = User.query.filter_by(login=login).first()
         if user is None:
             user = User(login)
