@@ -208,9 +208,15 @@ def addclone():
     # According url schemes here http://git-scm.com/docs/git-push it is
     # near impossibru to validate url, so just check if its length is > 10
     # (let it be 10)
+    #
+    # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
+    # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
+    #
+    # TODO we could do very light validation that the form field is not 0 in JS
+    # TODO we could do very light validation of the URL in JS
     clone = request.form.get('clone')
-    if len(clone) < 10:
-        flash(_('Url is too short'))
+    if len(clone) == 0:
+        flash(_('Enter a URL.'))
         return redirect(url_for('settings.repos') + "#tab_owngit")
 
     # pylint:disable-msg=E1101
