@@ -96,7 +96,6 @@ def profile():
 
 HOOK_URL = 'http://requestb.in/nrgo4inr'
 
-
 @settings.route('/addhook/<path:full_name>')  # , methods=['GET'])
 @login_required
 def addhook(full_name):
@@ -244,7 +243,7 @@ def delclone():
     project = Project.query.filter_by(
         login=g.user.login, id=project_id).first()
     if not project:
-        flash(_("Cann't find clone sting"))
+        flash(_("Can't find clone string"))
         return redirect(url_for('settings.repos') + "#tab_owngit")
 
     db.session.delete(project)
@@ -265,7 +264,7 @@ def massgit():
     for p in projects:
         if p.full_name not in git_ids:
             db.session.delete(p)
-            flash(_("Repository %s successfully deleted" % p.full_name))
+            flash(_("Repository %s successfully removed" % p.full_name))
         pfn[p.full_name] = p
 
     db.session.commit()
