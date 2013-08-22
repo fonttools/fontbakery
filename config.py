@@ -48,7 +48,7 @@ MAIL_USERNAME = 'm@xen.ru'
 GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
 GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 
-GITAUTH_LOGIN_LIST = ['xen', 'davelab6', ]
+GITAUTH_LOGIN_LIST = ['offline', ]
 # flatpages
 FLATPAGES_EXTENSION = '.md'
 import os

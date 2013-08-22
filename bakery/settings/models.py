@@ -24,3 +24,17 @@ class ProjectCache(db.Model):
     login = db.Column(db.String(60), index=True)
     data = db.Column(db.PickleType())
     updated = db.Column(db.DateTime(timezone=False), default=datetime.datetime)
+
+class FontStats(db.Model):
+    __tablename__ = 'font_stats'
+    id = db.Column(db.Integer, primary_key=True)
+    family = db.Column(db.String(60), index=True)
+    total = db.Column(db.BigInteger())
+    month = db.Column(db.BigInteger())
+    week = db.Column(db.BigInteger())
+    yesterday = db.Column(db.BigInteger())
+    rate = db.Column(db.Float())
+
+    @staticmethod
+    def by_family(family):
+        return FontStats.query.filter_by(family=family.lower()).first()

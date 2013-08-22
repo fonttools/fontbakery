@@ -1,10 +1,10 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Setup Dashboard") %}
+{% set page_title = _("Project Dashboard Settings") %}
 
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('setup') }}
+{{ nav('dashboard') }}
 
 {% set config = project.config %}
 {% if config['local'].get('status', None) == 'repo' %}

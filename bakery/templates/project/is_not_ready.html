@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set page_title = _("Project Downloading") %}
+
+{% block body %}
+<div style="text-align: center">
+  <div class="page-header">
+      <h1>{{ page_title }}</h1>
+  </div>
+    <p class="lead">
+        Please wait until this project has downloaded.
+    </p>
+    <p>
+        <a class="btn" href="{{ url_for('frontend.splash') }}"><i class="icon-dashboard"></i> Dashboard</a>
+        <a class="btn btn-primary" href="javascript:location.reload()"><i class="icon-repeat"></i> Reload page</a>
+    </p>
+</div>
+{% endblock %}

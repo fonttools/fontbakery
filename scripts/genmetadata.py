@@ -508,6 +508,7 @@ def writeDescHtml(familydir):
     else:
         foundRegular = False
         files = os.listdir(familydir)
+        fontDesc = ''
         for f in files:
             if f.endswith("Regular.ttf"):
                 foundRegular = True
