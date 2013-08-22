@@ -1,10 +1,10 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
-{% set page_title = _('Dashboard') %}
+{% set page_title = _('Projects Dashboard') %}
 
 {% block body %}
 
-<h2>{{ _("Projects Dashboard") }}</h2>
+<h2>{{ page_title }}</h2>
 
 <a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
