@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set page_title = _("Repositories") %}
+{% set page_title = _("Add Repositories") %}
 
 {% block body %}
     <h2>{{ page_title }}</h2>
@@ -7,7 +7,7 @@
 <div class="tabbable">
 
     <div class="alert alert-info">
-        {{ _("When you click 'App Repo,' Font Bakery will download the entire repository in the background. <br /> Check the dot status icon in the navigation bar above for progress.") }}
+        {{ _("When you click 'Add Repository,' Font Bakery will download the entire repository in the background. <br /> Check the dot status icon in the navigation bar above for progress.") }}
     </div>
 
   <ul class="nav nav-tabs">
@@ -40,7 +40,7 @@
             <p class="muted">{{ _("Click 'Refresh' to update this list.") }}</p>
           {% endif %}
 
-          <button type="submit" class="btn btn-primary" data-confirm="{{ _('Are you sure that this repository only contains work available under Open Source licenses?') }}">{{ _("Add repos") }}</button>
+          <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works available under Open Source licenses?') }}">{{ _("Add repositories") }}</button>
         </form>
 
     </div>
@@ -72,7 +72,7 @@
           {% if cache %}
             {% for item in cache.data -%}
               <tr {% if item.full_name in projects%} class="success" {% endif %}>
-                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
+                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Does this repository contain only works available under Open Source licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
                 <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
                 <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
                 <td><a href="{{ item.html_url }}/settings/hooks" class="btn"><i class="icon-wrench"></i> </a></td>
@@ -99,14 +99,14 @@
     <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
       <label><code>$ git clone</code></label>
       <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-      <button type="submit" class="btn btn-primary btn-small" data-confirm="Are you sure that this git repository contains fonts available under a libre license?">Add Repo</button>
+      <button type="submit" class="btn btn-primary btn-small" data-confirm="Does this repository contain only works available under Open Source licenses?">Add Repository</button>
     </form>
 
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Repository URLs</th>
-          <th>Delete</th>
+          <th>Remove</th>
         </tr>
       </thead>
       <tbody>
