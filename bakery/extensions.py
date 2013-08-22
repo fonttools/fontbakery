@@ -25,6 +25,7 @@ mail = Mail()
 
 from rauth.service import OAuth2Service
 
+# Because of restrictions of OAuth2Service this lines can't be moved to config.py
 GITHUB_CLIENT_ID = '4a1a8295dacab483f1b5'
 GITHUB_CLIENT_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 

@@ -20,7 +20,14 @@ from flask import g, request, redirect, url_for, flash
 from flask.ext.babel import gettext as _
 
 def login_required(f):
-    """ Decorator allow to access route only logged in user """
+    """ Decorator allow to access route only logged in user. Usage:
+
+        @project.route('/test', methods=['GET'])
+        @login_required
+        def test():
+            return "You are logged in"
+
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if g.user is None:
@@ -40,9 +47,26 @@ def cached(obj):
     return memoizer
 
 class lazy_property(object):
-    '''
-    lazy descriptor.
-    '''
+    """
+    lazy descriptor. Compute value of the propery on the first call. Usage:
+
+    class Demo:
+
+        @lazy_property
+        def slow_method(self):
+            import time
+            time.sleep(5)
+            return "I can be fast"
+
+
+    c = Demo()
+    # on 1st call will wait 5 seconds
+    print(c.slow_method)
+    # this loop will be very fast
+    for i in range(1, 100):
+        len(c.slow_method)
+
+    """
 
     def __init__(self, fget):
         self.fget = fget

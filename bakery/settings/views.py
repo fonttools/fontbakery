@@ -96,7 +96,6 @@ def profile():
 
 HOOK_URL = 'http://requestb.in/nrgo4inr'
 
-
 @settings.route('/addhook/<path:full_name>')  # , methods=['GET'])
 @login_required
 def addhook(full_name):
@@ -161,7 +160,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    sync_and_process.delay(project)
+    sync_and_process.ctx_delay(project, process = True, sync = True)
     return redirect(url_for('settings.repos') + "#tab_github")
 
 
@@ -209,9 +208,15 @@ def addclone():
     # According url schemes here http://git-scm.com/docs/git-push it is
     # near impossibru to validate url, so just check if its length is > 10
     # (let it be 10)
+    #
+    # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
+    # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
+    #
+    # TODO we could do very light validation that the form field is not 0 in JS
+    # TODO we could do very light validation of the URL in JS
     clone = request.form.get('clone')
-    if len(clone) < 10:
-        flash(_('Url is too short'))
+    if len(clone) == 0:
+        flash(_('Enter a URL.'))
         return redirect(url_for('settings.repos') + "#tab_owngit")
 
     # pylint:disable-msg=E1101
@@ -232,7 +237,7 @@ def addclone():
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.fonts', project_id=project.id)))))
-    sync_and_process.delay(project)
+    sync_and_process.ctx_delay(project, process = True, sync = True)
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
@@ -244,12 +249,12 @@ def delclone():
     project = Project.query.filter_by(
         login=g.user.login, id=project_id).first()
     if not project:
-        flash(_("Cann't find clone sting"))
+        flash(_("Can't find clone string"))
         return redirect(url_for('settings.repos') + "#tab_owngit")
 
     db.session.delete(project)
     db.session.commit()
-    flash(_("Repository succesfuly deleted"))
+    flash(_("Repository succesfuly removed"))
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
@@ -265,7 +270,7 @@ def massgit():
     for p in projects:
         if p.full_name not in git_ids:
             db.session.delete(p)
-            flash(_("Repository %s successfully deleted" % p.full_name))
+            flash(_("Repository %s successfully removed" % p.full_name))
         pfn[p.full_name] = p
 
     db.session.commit()
@@ -281,7 +286,7 @@ def massgit():
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
                   (project.full_name, url_for('project.fonts', project_id=project.id)))))
-            sync_and_process.delay(project)
+            sync_and_process.ctx_delay(project, process = True, sync = True)
 
     db.session.commit()
     return redirect(url_for('settings.repos') + "#tab_massgithub")

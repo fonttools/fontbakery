@@ -24,7 +24,11 @@ The installation process is easy, and full instructions are maintained in the [I
 
 ## Usage
 
-After installation, this command will start the worker:
+After installation, this command will update the dashboard stats:
+
+    $ make stats;
+
+This command will start the worker:
 
     $ make worker;
 

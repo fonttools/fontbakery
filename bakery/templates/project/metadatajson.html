@@ -4,9 +4,9 @@
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('ace') }}
+{{ nav('metadatajson') }}
 
-<form class="form-horizontal" action="{{ url_for('project.ace_save', project_id = project.id)}}" method="POST">
+<form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 
 {% if metadata_new %}
 <div style="width: 48%; float:left">

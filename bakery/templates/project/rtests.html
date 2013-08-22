@@ -1,13 +1,13 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Tests Log") %}
+{% set page_title = _("Tests for result files") %}
 
 {% block body %}
 
 {% from 'project/macros.html' import nav with context %}
-{{ nav('tests') }}
+{{ nav('rtests') }}
 
 {% for name in tests.keys() %}
-<h3> {{ name }}.ufo</h3>
+<h3> {{ name }}</h3>
 {% set t =  tests[name]['sum'] %}
 {% set sl = tests[name]['success']|length|int %} 
 {% set el = tests[name]['error']|length|int %}

@@ -20,7 +20,6 @@ import glob
 import subprocess
 from flask.ext.rq import job
 import plistlib
-import checker.runner
 from utils import RedisFd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
@@ -71,59 +70,77 @@ def prun(command, cwd, log=None):
         log.write(stdout)
     return stdout
 
+def set_ready(project):
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
 @job
-def sync_and_process(project):
-    """ Mail processing function. Get :class:`~bakery.models.Project` instance
-        as parameter.
+def sync_and_process(project, process = True, sync = False):
+    """
+    Sync and process (Bake) the project.
+    
+    :param project: :class:`~bakery.models.Project` instance
+    :param sync: Boolean. Sync the project. Defaults to off. 
+    :param process: Boolean. Process (Bake) the project. Default to on.
     """
     # create user folder
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
-
+    # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
             'id': project.id,
             'login': project.login, }
             ),
         'w')
+    # Sync the project, if given sync parameter (default no)
+    if sync:
+        project_git_sync(project, log = log)
+    # Bake the project, if given the project parameter (default yes)
+    if process:
+        process_project(project, log = log)
 
-    project_git_sync(project, log = log)
-    process_project(project, log = log)
+    if not project.is_ready:
+        set_ready(project)
 
     log.close()
-
 
 @job
 def project_git_sync(project, log):
     """
-    Sync git repo, or download it if it doesn't yet exist. Get parameters:
+    Sync _in git repo, or download it if it doesn't yet exist.
 
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
-
     """
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+
     log.write('Sync Git Repository\n', prefix = 'Header: ')
 
     # Create the incoming repo dir if it doesn't exist
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     if not os.path.exists(_in):
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
-
-    # If no .git folder exists in project folder, download repo
+    # Either download the _in repo
     if not os.path.exists(os.path.join(_in, '.git')):
         run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
-    # Else, reset the repo and pull down latest updates
+    # Or reset _in and pull down latest updates
     else:
+        # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
+        # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
-
-    # child = prun('git rev-parse --short HEAD', cwd=_in)
-    # hashno = child.stdout.readline().strip()
-    # make current out folder
 
 @job
 def process_project(project, log):
     """
-    The Baking Commands - the central functionality of this software :)
+    Bake the project, building all fonts according to the project setup.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param log: :class:`~bakery.utils.RedisFd` as log
     """
     # login — user login
     # project_id - database project_id
@@ -225,19 +242,32 @@ def generate_fonts_process(project, log):
 
 
 def generate_metadata_process(project, log):
+    """
+    Generate METADATA.json using genmetadata.py
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 
 def lint_process(project, log):
+    """
+    Run lint.jar on ttf files
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # Mark this project as building successfully
+    # TODO: move this from here to the new checker lint process completing all required checks successfully
+    project.config['local']['status'] = 'built'
 
 
 def ttfautohint_process(project, log):
+    """
+    Run ttfautohint with project command line settings for each
+    ttf file in result folder
+    """
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
@@ -311,11 +341,23 @@ def ttx_process(project, log):
         run(cmd, cwd=_out, log=log)
 
 
-def project_tests(project):
+def project_upstream_tests(project):
+    import checker.upstream_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
-        result[name] = checker.runner.run_set(os.path.join(_out_src, name))
+        result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
     return result
+
+
+def project_result_tests(project):
+    import checker.result_runner
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    result = {}
+    os.chdir(_out_src)
+    for name in glob.glob("*.ttf"):
+        result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
+    return result
+
 
