@@ -160,7 +160,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos'))
 
     flash(_('Added webhook for %s.' % (full_name)))
-    sync_and_process.delay(project)
+    sync_and_process.delay(project, process = True, sync = True)
     return redirect(url_for('settings.repos') + "#tab_github")
 
 
@@ -237,7 +237,7 @@ def addclone():
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.fonts', project_id=project.id)))))
-    sync_and_process.delay(project)
+    sync_and_process.delay(project, process = True, sync = True)
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
@@ -286,7 +286,7 @@ def massgit():
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
                   (project.full_name, url_for('project.fonts', project_id=project.id)))))
-            sync_and_process.delay(project)
+            sync_and_process.delay(project, process = True, sync = True)
 
     db.session.commit()
     return redirect(url_for('settings.repos') + "#tab_massgithub")

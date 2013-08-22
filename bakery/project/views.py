@@ -44,7 +44,7 @@ def bump(project_id):
         # pylint:disable-msg=E1101
         p = Project.query.filter_by(
             login=g.user.login, id=project_id).first_or_404()
-        sync_and_process.delay(p)
+        sync_and_process.delay(p, process = False, sync = True)
         flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.buildlog', project_id=project_id))
 
@@ -114,7 +114,7 @@ def setup(project_id):
     flash(_("Repository %s has been updated" % p.clone))
     p.save_state()
 
-    sync_and_process.delay(p)
+    sync_and_process.delay(p, process = True, sync = False)
     return redirect(url_for('project.buildlog', project_id=p.id))
 
 

@@ -72,11 +72,13 @@ def prun(command, cwd, log=None):
     return stdout
 
 @job
-def sync_and_process(project):
+def sync_and_process(project, process = True, sync = False):
     """
     Sync and process (Bake) the project.
     
     :param project: :class:`~bakery.models.Project` instance
+    :param sync: Boolean. Sync the project. Defaults to off. 
+    :param process: Boolean. Process (Bake) the project. Default to on.
     """
     # create user folder
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
@@ -87,10 +89,12 @@ def sync_and_process(project):
             'login': project.login, }
             ),
         'w')
-
-    project_git_sync(project, log = log)
-    process_project(project, log = log)
-
+    # Sync the project, if given sync parameter (default no)
+    if sync:
+        project_git_sync(project, log = log)
+    # Bake the project, if given the project parameter (default yes)
+    if process:
+        process_project(project, log = log)
     log.close()
 
 @job
