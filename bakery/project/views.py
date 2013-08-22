@@ -47,7 +47,7 @@ def bump(project_id):
         if not p.is_ready:
             return render_template('project/is_not_ready.html')
 
-        sync_and_process.delay(p, process = False, sync = True)
+        sync_and_process.ctx_delay(p, process = False, sync = True)
         flash(_("Git %s was updated" % p.clone))
     return redirect(url_for('project.buildlog', project_id=project_id))
 
@@ -125,7 +125,7 @@ def setup(project_id):
 
     p.save_state()
 
-    sync_and_process.delay(p, process = True, sync = False)
+    sync_and_process.ctx_delay(p, process = True, sync = False)
     return redirect(url_for('project.buildlog', project_id=p.id))
 
 
