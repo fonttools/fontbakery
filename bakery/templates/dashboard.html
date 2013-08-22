@@ -4,8 +4,9 @@
 
 {% block body %}
 
-<h2>{{ _("Dashboard") }}</h2>
-<p>{{ _("List of available repositories.") }} <a href='{{ url_for('settings.repos') }}'><button class="btn btn-small">{{ _("Add some more!") }}</button></a></p></p>
+<h2>{{ _("Projects Dashboard") }}</h2>
+
+<a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
 <table class="table table-striped">
   <thead>
@@ -43,9 +44,9 @@
         {# build completed successfully #}
         {% elif item.config['local']['status']=='built' %}
             <a href="{{ url_for('project.buildlog', project_id = item.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
-        {# This should never be shown, but just in case... #}
+        {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
         {% else %}
-            <span class="muted">{{ _("OK") }}</span>
+            <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
         </td>
       </tr>
