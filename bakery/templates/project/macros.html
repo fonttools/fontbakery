@@ -7,7 +7,7 @@
     <h2>{{ page_title }}</h2>
     <ul class="nav nav-tabs">
         <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
-        <li class="dropdown {% if active in ['fonts', 'yaml', 'license'] %}active{% endif %}">
+        <li class="dropdown {% if active in ['fonts', 'license'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                Upstream <i class="caret"></i>
           </a>
@@ -20,7 +20,7 @@
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
-          <li class="dropdown {% if active in ['ace', 'description'] %}active{% endif %}">
+          <li class="dropdown {% if active in ['yaml', 'ace', 'description'] %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                  _out <i class="caret"></i>
             </a>
