@@ -254,7 +254,7 @@ def delclone():
 
     db.session.delete(project)
     db.session.commit()
-    flash(_("Repository succesfuly deleted"))
+    flash(_("Repository succesfuly removed"))
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
