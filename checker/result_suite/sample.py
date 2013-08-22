@@ -11,11 +11,11 @@ class SampleTest(TestCase):
         pass
 
     def test_ok(self):
-        """ This test failed """
+        """ This test succeeds """
         self.assertTrue(True)
 
     def test_failure(self):
-        """ This test failed """
+        """ This test fails """
         self.assertTrue(False)
 
     def test_error(self):
