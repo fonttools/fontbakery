@@ -20,7 +20,6 @@ import glob
 import subprocess
 from flask.ext.rq import job
 import plistlib
-import checker.runner
 from utils import RedisFd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
@@ -71,6 +70,15 @@ def prun(command, cwd, log=None):
         log.write(stdout)
     return stdout
 
+def set_ready(project):
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
 @job
 def sync_and_process(project, process = True, sync = False):
     """
@@ -95,6 +103,10 @@ def sync_and_process(project, process = True, sync = False):
     # Bake the project, if given the project parameter (default yes)
     if process:
         process_project(project, log = log)
+
+    if not project.is_ready:
+        set_ready(project)
+
     log.close()
 
 @job
@@ -230,19 +242,32 @@ def generate_fonts_process(project, log):
 
 
 def generate_metadata_process(project, log):
+    """
+    Generate METADATA.json using genmetadata.py
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 
 def lint_process(project, log):
+    """
+    Run lint.jar on ttf files
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # Mark this project as building successfully
+    # TODO: move this from here to the new checker lint process completing all required checks successfully
+    project.config['local']['status'] = 'built'
 
 
 def ttfautohint_process(project, log):
+    """
+    Run ttfautohint with project command line settings for each
+    ttf file in result folder
+    """
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
@@ -316,11 +341,23 @@ def ttx_process(project, log):
         run(cmd, cwd=_out, log=log)
 
 
-def project_tests(project):
+def project_upstream_tests(project):
+    import checker.upstream_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     result = {}
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
-        result[name] = checker.runner.run_set(os.path.join(_out_src, name))
+        result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
     return result
+
+
+def project_result_tests(project):
+    import checker.result_runner
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    result = {}
+    os.chdir(_out_src)
+    for name in glob.glob("*.ttf"):
+        result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
+    return result
+
 

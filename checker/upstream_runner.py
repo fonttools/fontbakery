@@ -15,6 +15,24 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from .gitauth.models import User
-from .project.models import Project, ProjectBuild
-from .settings.models import ProjectCache, FontStats
+import argparse, os
+import upstream_suite
+
+from .base import make_suite, run_suite
+
+def run_set(path):
+    """ Return tests results for .ufo font in parameter """
+    assert os.path.exists(path)
+    return run_suite(make_suite(path, 'upstream'))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ufo', default='')
+    # parser.add_argument('filename', default='')
+    parser.add_argument('unittest_args', nargs='*')
+
+    args = parser.parse_args()
+    # #@$%
+    s = make_suite(args.ufo)
+    run_suite(s)

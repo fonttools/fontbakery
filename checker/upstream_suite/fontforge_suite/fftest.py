@@ -17,13 +17,11 @@
 
 import fontforge
 
-try:
-    from checker.base import BakeryTestCase as TestCase
-except ImportError:
-    from unittest import TestCase
-
+from checker.base import BakeryTestCase as TestCase
 
 class SimpleTest(TestCase):
+
+    target = 'upstream'
 
     path = '.'
 

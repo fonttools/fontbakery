@@ -17,26 +17,46 @@
 
   <tbody>
     {% for item in repos -%}
+    {# show item.config for debugging #}
+      <tr>
+        <td class="muted" colspan="2"><pre>{{ item.config }}</pre></td>
+      </tr>
       <tr>
         <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
+      {% if not item.is_ready %}
+        <td>Project downloading</td>
+      </tr>
+      {% else %}
         <td>
-        {% if item.config['local']['status']=='repo' %}
-          <span class="muted">{{ _("OK") }}</span>
+        {# setup's values are loaded from defaults #}
+        {%   if item.config['local']['status']=='default' %}
+            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
+        {# setup's values are pre-loaded from the repo #}
+        {% elif item.config['local']['status']=='repo' %}
+            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Check repo setup now") }}</a>
+        {# setup's values here and in the repo don't match #}
+        {% elif item.config['local']['bakery_yaml_in_sync']=='False' %}
+            <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
+        {# setup's values here and in the repo match #}
         {% elif item.config['local']['status']=='local' %}
-          <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Put bakery.yaml to repository") }}</a>
+            <a href="{{ url_for('project.setup', project_id = item.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
+        {# build completed successfully #}
+        {% elif item.config['local']['status']=='built' %}
+            <a href="{{ url_for('project.buildlog', project_id = item.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
+        {# This should never be shown, but just in case... #}
         {% else %}
-          <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
+            <span class="muted">{{ _("OK") }}</span>
         {% endif %}
         </td>
       </tr>
       <tr>
         <td colspan="2">
             {% if item.config['state']['source_drawing_filetype']=='VFB' %}
-            <i class="icon-thumbs-down">VFB</i>
+              <i class="icon-thumbs-down">VFB</i>
             {% else %}
-            <i class="">No source</i>
+              <i class="">No source</i>
             {% endif %}
-        </td>
+          </td>
       </tr>
 
       {% if item.family_stat %}
@@ -50,6 +70,8 @@
         </td>
       </tr>
       {% endif %}
+
+      {% endif %} {# is_ready #}
 
 
     {% else %}

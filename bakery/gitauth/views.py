@@ -49,7 +49,6 @@ def me():
 
 @gitauth.route('/login')
 def login():
-    # import ipdb; ipdb.set_trace()
     if session.get('user_id', None) is None:
         redirect_uri = url_for('.authorized',
             next=request.args.get('next') or request.referrer or None,
