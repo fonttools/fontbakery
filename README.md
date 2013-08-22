@@ -37,7 +37,7 @@ Then open http://localhost:5000 in your browser. You will be warned if the worke
 
 You may with to clear out all user data:
 
-    $ make init
+    $ make clean
 
 During the development process you may wish to be run a fake mail server:
 
