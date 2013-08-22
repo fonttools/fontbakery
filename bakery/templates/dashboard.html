@@ -19,13 +19,22 @@
     {% for item in repos -%}
       <tr>
         <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
-        <td>
-        {% if item.config['local']['status']=='repo' %}
-          <span class="muted">{{ _("OK") }}</span>
+        <td>{{ item.config }}
+        {# 
+            
+            This set of ifs is duplicating the process_project() and sync_and_process() methods... perhaps there other parts of the overall build process that maybe aren't explicitly defined in code anywhere else, but, perhaps the item.config['local']['status'] key should be renamed item.config['local']['nextstep'] and the values should be descriptions of the next step required to build the repo, that can be used directly as the button text in this template? 
+
+        #}
+        {%   if item.config['local']['status']=='default' %}
+            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
+        {% elif item.config['local']['status']=='repo' %}
+            
+        {% elif item.config['local']['bakery_yaml_in_sync']=='False' %}
+            <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
         {% elif item.config['local']['status']=='local' %}
-          <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Put bakery.yaml to repository") }}</a>
-        {% else %}
-          <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>  
+            <a href="{{ url_for('project.setup', project_id = item.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
+        {% else %} {#  equal to, if item.config['local']['status']=='built' # TODO make this state actually exist :) #}
+            <span class="muted">{{ _("OK") }}</span>
         {% endif %}
         </td>
       </tr>

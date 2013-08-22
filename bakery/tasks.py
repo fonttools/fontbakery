@@ -240,6 +240,9 @@ def lint_process(project, log):
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    log.write("project.config['local']['status'] was: " + project.config['local']['status'], prefix = 'Header: ')
+    project.config['local']['status'] = 'Built'
+    log.write("project.config['local']['status'] now: " + project.config['local']['status'], prefix = 'Header: ')
 
 
 def ttfautohint_process(project, log):
