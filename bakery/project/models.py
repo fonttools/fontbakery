@@ -34,6 +34,7 @@ class Project(db.Model):
     data = db.Column(db.PickleType())
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
+    is_ready = db.Column(db.Boolean(), index=True, default=False)
 
     builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
@@ -59,18 +60,16 @@ class Project(db.Model):
         # Return project status.
         return self.config['local'].get('source', None)
 
-    def read_tree(self):
-        return self.config['local']['tree']
-
     @property
     def title(self):
-        # Can be changed when #142 is fixed
-        if self.config['state'].get('familyname', None):
+        # TODO Can be changed when #142 is fixed
+        if self.is_ready and self.config['state'].get('familyname', None):
             return "%s (%s)" % (self.config['state']['familyname'], self.clone)
         else:
             return self.clone
 
     def asset_by_name(self, name):
+        """ Resolve asset id into its real path. For internal use. """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'log':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % self)
@@ -96,11 +95,13 @@ class Project(db.Model):
             return ''
 
     def tree_in(self):
+        """ Read files tree in repository folder on request """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
 
 
     def save_asset(self, name = None, data = None, **kwarg):
+        """ Save static files into out folder """
         if name == 'description':
             f = open(self.asset_by_name(name), 'w')
             f.write(data)
@@ -126,6 +127,8 @@ class Project(db.Model):
             return None
 
     def __getitem__(self, key):
+        """ Magic method that allow to access ORM properties using
+        object-dot-propertyname """
         # make magic mapping works
         return self.__dict__.get(key)
 
