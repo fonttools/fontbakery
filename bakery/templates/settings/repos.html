@@ -114,7 +114,11 @@
           {% for item in gitprojects -%}
             <tr>
               <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.clone }}</a></td>
-			  <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-block" type="button" data-confirm="Delete this repo?"><i class="icon-trash"></i> </button></a></td>
+			  <td>
+			      <form class="form-inline" action="{{ url_for('settings.delclone', project_id = item.id )}}" method="GET">
+                    <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
+                  </form>
+			  </td>
             </tr>
           {%- endfor %}
         {% else %}
@@ -150,7 +154,7 @@ $(document).ready(function() {
     var form = $(this).closest('form');
 
     if (!$('#dataConfirmModal').length) {
-        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Open Source Repository?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>');
+        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>');
     } 
 
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
