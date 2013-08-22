@@ -55,17 +55,16 @@ def setup(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
     config = p.config
+    originalConfig = p.config
+    error = False
 
     if request.method == 'GET':
         return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
-    # else:
-    error = False
 
     if not request.form.get('license_file') in config['local']['txt_files']:
         error = True
         flash(_("Wrong license_file value, must be an error"))
-
     config['state']['license_file'] = request.form.get('license_file')
 
     if request.form.get('familyname'):
@@ -111,7 +110,10 @@ def setup(project_id):
                                subsetvals=DEFAULT_SUBSET_LIST)
 
     config['local']['setup'] = True
-    flash(_("Repository %s has been updated" % p.clone))
+
+    if originalConfig != config:
+        flash(_("Updated %s setup" % p.clone))
+
     p.save_state()
 
     sync_and_process.delay(p, process = True, sync = False)
