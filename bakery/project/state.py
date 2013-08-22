@@ -50,7 +50,7 @@ def load_yaml(default_yml, yml = None):
     :param yml: a YAML file with new values that overwrite those from the default_yml file (optional)
     
     Returns:
-        data: the data from the YAML files    
+        data: the data from the YAML files
     """
     data = yaml.load(open(default_yml, 'r').read())
     if yml:
@@ -140,7 +140,8 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
         local['license_file_found'] = True
 
     # Save both states to YAML files and return them
-    project_state_save(project, state, local)
+    if project.is_ready:
+        project_state_save(project, state, local)
     return state, local
 
 def project_state_save(project, state = None, local = None):

@@ -7,20 +7,21 @@
     <h2>{{ page_title }}</h2>
     <ul class="nav nav-tabs">
         <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
-        <li class="dropdown {% if active in ['fonts', 'license'] %}active{% endif %}">
+        <li class="dropdown {% if active in ['fonts', 'license', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                Upstream <i class="caret"></i>
           </a>
           <ul class="dropdown-menu">
               <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse Files</a></li>
               <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
+              <li {% if active == 'ufonts' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream tests</a></li>
           </ul>
         </li>
         <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
           <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
           <li {% if active == 'tests' %}class="active" {% endif %}><a href="{{ url_for('project.tests', project_id=project.id ) }}">Tests</a></li>
-          <li class="dropdown {% if active in ['yaml', 'ace', 'description'] %}active{% endif %}">
+          <li class="dropdown {% if active in ['yaml', 'metadatajson', 'description', 'rfonts'] %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                  _out <i class="caret"></i>
             </a>
@@ -29,10 +30,11 @@
                 <li class="nav-header">Folders</li>
                 <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
 -->
+                <li {% if active == 'rfonts' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Results tests</a></li>
                 <li class="nav-header">Read Only Files</li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></li>
                 <li class="nav-header">Editable Files</li>
-                <li {% if active == 'ace' %}class="active" {% endif %}><a href="{{ url_for('project.ace', project_id=project.id ) }}" >METADATA.json</a></li>
+                <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id ) }}" >METADATA.json</a></li>
                 <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
             </ul>
           </li>
