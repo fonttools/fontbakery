@@ -60,17 +60,18 @@
           </td>
       </tr>
 
-      {% if item.family_stat %}
-      <tr>
-        <td colspan="2">
-        Total - {{ item.family_stat.total }} <br />
-        Month - {{ item.family_stat.month }} <br />
-        Week - {{ item.family_stat.week }} <br />
-        Yesterday - {{ item.family_stat.yesterday }} <br /> 
-        Rate - {{ item.family_stat.rate }} <br />
-        </td>
-      </tr>
-      {% endif %}
+        {% if item.family_stat %}
+          <tr>
+            <td colspan="2">
+            Total - {{ item.family_stat.total }} <br />
+            Month - {{ item.family_stat.month }} <br />
+            Week - {{ item.family_stat.week }} <br />
+            Yesterday - {{ item.family_stat.yesterday }} <br /> 
+            Rate - {{ item.family_stat.rate }} <br />
+            </td>
+          </tr>
+        {% endif %}
+      {% endif %} {# is_ready #}
 
       {% endif %} {# is_ready #}
 

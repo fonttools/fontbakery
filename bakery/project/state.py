@@ -48,7 +48,7 @@ def load_yaml(default_yml, yml = None):
     
     :param default_yml: a YAML file that may have all possible keys with default values
     :param yml: a YAML file with new values that overwrite those from the default_yml file (optional)
-    
+
     Returns:
         data: the data from the YAML files
     """
