@@ -4,4 +4,4 @@ license_file_found: false # flag to indicate is license file available, internal
 txt_files: [] # list of txt files, internal
 ufo_dirs: [] # list of found ufo dirs, internal
 tree: {}
-
+bakery_yaml_in_sync: false # local and repo bakery.yaml files are the same

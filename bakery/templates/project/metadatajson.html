@@ -4,9 +4,9 @@
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('ace') }}
+{{ nav('metadatajson') }}
 
-<form class="form-horizontal" action="{{ url_for('project.ace_save', project_id = project.id)}}" method="POST">
+<form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 
 {% if metadata_new %}
 <div style="width: 48%; float:left">
@@ -52,6 +52,8 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/json");
+editor.getSession().setUseSoftTabs(true);
+editor.setHighlightActiveLine(false);
 
 // var textarea = $('textarea[name="metadata"]');
 var textarea = $('textarea[name="metadata"]').hide();
@@ -71,8 +73,6 @@ editorNew.getSession().on('change', function(){
   textareaNew.val(editorNew.getSession().getValue());
 });
 
-
 </script>
-
 </div>
 {% endblock %}

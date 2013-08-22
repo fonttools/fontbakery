@@ -15,6 +15,18 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from .gitauth.models import User
-from .project.models import Project, ProjectBuild
-from .settings.models import ProjectCache, FontStats
+import fontforge
+
+from checker.base import BakeryTestCase as TestCase
+
+class SimpleTest(TestCase):
+
+    target = 'upstream'
+
+    path = '.'
+
+    def setUp(self):
+        self.font = fontforge.open(self.path)
+
+    def test_is_fsType_eq_n1(self):
+        self.assertEqual(self.font.os2_fstype, -1)

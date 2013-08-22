@@ -56,18 +56,23 @@ def pretty_date(dt, default=None):
 
     return default
 
+from flask import current_app
+import itsdangerous
+
+def signify(text):
+    signer = itsdangerous.Signer(current_app.secret_key)
+    return signer.sign(text)
+
+
 class RedisFd(object):
     """Redis File Descriptor class, publish writen data to redis channel in parallel to file"""
-    def __init__(self, name, mode = 'a', conn = None, channel = None):
+    def __init__(self, name, mode = 'a'):
         self.fd = open(name, mode)
-        self.conn = conn
-        self.channel = channel
 
     def write(self, data, prefix = ''):
-        if self.conn:
-            self.conn.publish(self.channel, "%s%s" % (prefix, data))
         self.fd.write("%s%s" % (prefix, data))
 
     def close(self):
+        self.fd.write("End: end of log") #end of log
         self.fd.close()
 

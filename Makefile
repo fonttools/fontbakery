@@ -64,12 +64,20 @@ worker: venv/bin/activate
 	. venv/bin/activate; rqworker
 
 # target: mail — run mailserver
-mail: setup
+mail: 
 	python -m smtpd -n -c DebuggingServer localhost:20025
 
 # target: init — initial data setup
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
+
+# target: offline — add offline user
+offline: venv/bin/activate
+	. venv/bin/activate; python scripts/offline.py
+
+# target: stats — update stats in database
+stats: venv/bin/activate
+	. venv/bin/activate; python scripts/statupdate.py
 
 # target: clean — remove working files and reinit initial data
 clean:

@@ -1,3 +1,4 @@
+{% if g.user %}
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
@@ -6,18 +7,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font Bakery") }}</a>
-      <div class="nav-collapse collapse navbar-responsive-collapse">
 
+      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font Bakery") }}</a>
+
+      <div class="nav-collapse collapse navbar-responsive-collapse">
         <ul class="nav" style="width:50%">
-          {% if g.user %}
-            <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
-            <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i></a></li>
-            <li>
-                <a><i id="notify" class="muted icon-circle"></i></a>
-            </li>
-            
-          {% endif %}
+
+          <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="icon-dashboard"></i></a></li>
+
+          <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="icon-cog"></i></a></li>
+
+          <li><a><i id="notify" class="muted icon-circle"></i></a></li>
 
           {% block navbar %}
           {% endblock %}
@@ -26,25 +26,23 @@
 
         <ul class="nav pull-right">
 
-        {% if g.user %}
-
-        {%- for path, caption in [
-          (url_for('frontend.page', path='about'), _("About")),
-        ] %}
+          {%- for path, caption in [
+            (url_for('frontend.page', path='docs'), _("Documentation")),
+          ] %}
           <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
-        {%- endfor %}
+          {%- endfor %}
 
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ g.user.getAvatar(size=14) }}"/> {{ g.user.name }} <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <!-- <li><a href="{{ url_for('settings.repos') }}">Settings</a></li> -->
               <li><a href="{{ url_for('gitauth.logout') }}">Log out</a></li>
             </ul>
           </li>
-        {% endif %}
 
         </ul>
-      </div><!-- /.nav-collapse -->
+
+      </div>
     </div>
-  </div><!-- /navbar-inner -->
+  </div>
 </div>
+{% endif %}

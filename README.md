@@ -24,12 +24,24 @@ The installation process is easy, and full instructions are maintained in the [I
 
 ## Usage
 
-After installation, this command will start the service on a localhost web server:
+After installation, this command will update the dashboard stats:
 
-    $ make run
+    $ make stats;
 
-Then open http://localhost:5000 in your browser
+This command will start the worker:
 
-During the development process you will need to be running a fake mail server,
+    $ make worker;
 
-    $ make mail
+Then this command will start the web service on a localhost web server:
+
+    $ make run;
+
+Then open http://localhost:5000 in your browser. You will be warned if the worker is not running. 
+
+You may with to clear out all user data:
+
+    $ make clean;
+
+During the development process you may wish to be run a fake mail server:
+
+    $ make mail;

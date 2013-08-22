@@ -16,9 +16,9 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-import logging
-
+import os
 import gevent
+import itsdangerous
 from flask import Response, current_app
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
@@ -74,16 +74,28 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         r = kwargs.get('request', None)
         if hasattr(r, '_conn'):
             self._conn = r._conn
+            self._data_root = r._data_root
+            self._signer = r._signer
         super(BuildNamespace, self).__init__(*args, **kwargs)
 
-    def build_stream(self, pubsub):
-        for message in pubsub.listen():
-            self.emit('message', message.get('data'))
+    def on_subscribe(self, data):
+        login, pid = self._signer.unsign(data).split('/')
 
-    def on_subscribe(self, channel_id):
-        pubsub = self._conn.pubsub()
-        pubsub.subscribe("build_%d" % int(channel_id))
-        gevent.spawn(self.build_stream, pubsub)
+        gevent.spawn(self.emit_file, login, pid)
+
+    def emit_file(self, login, pid):
+        f = open(os.path.join(self._data_root, login, "%s.process.log" % pid), 'r')
+        while True:
+            l = f.readline()
+            if l:
+                self.emit('message', l)
+                # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
+                if l.startswith('End:'):
+                    break
+            else:
+                gevent.sleep(0.5)
+
+        f.close()
 
 
 @realtime.route('/socket.io/<path:remaining>')
@@ -91,6 +103,8 @@ def socketio(remaining):
     real_request = request._get_current_object()
     # add redis connection
     real_request._conn = get_connection()
+    real_request._data_root = current_app.config.get('DATA_ROOT')
+    real_request._signer = itsdangerous.Signer(current_app.secret_key)
     socketio_manage(request.environ, {
         '/status': StatusNamespace,
         '/build': BuildNamespace,

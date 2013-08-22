@@ -41,12 +41,26 @@ body {
 */}
 
 .footer {
+  color: #bbb;
   text-align: center;
-  padding: 30px 0;
+  font-size: smaller;
+  padding: 0 0;
   margin-top: 70px;
   border-top: 1px solid #e5e5e5;
-  background-color: #f5f5f5;
 }
+
+.footer:hover {
+  color: #444;
+}
+
+.footer a {
+  color: #add8e6;
+}
+
+.footer:hover a {
+  color: #0088cc;
+}
+
 .footer p {
   margin-bottom: 0;
   color: #777;
@@ -55,8 +69,8 @@ body {
   margin: 10px 0;
 }
 .footer-links li {
-  display: inline;
-  padding: 0 2px;
+  list-style: none;
+  line-height: 1.2em;
 }
 .footer-links li:first-child {
   padding-left: 0;
@@ -139,6 +153,11 @@ ol.linenums li {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
 */}
+
+.tree .highlight {
+  background-color: #fcf8e3;
+  border: 1px solid #fbeed5;
+}
 
 /*Remove connectors before root*/
 .tree > ul > li::before, .tree > ul > li::after{

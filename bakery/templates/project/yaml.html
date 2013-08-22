@@ -1,12 +1,17 @@
 {% extends "project/base.html" %}
-{% set page_title = _("bakery.yaml") %}
+{% set page_title = _("View bakery.yaml") %}
 
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
 
-<div class="alert alert-info">You must edit the bakery.yaml file in the repository directly.</div>
+{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
+  <div class="alert alert-info">Your setup is saved in the upstream repository, in a <tt>bakery.yaml</tt> file, displayed below.</div>
+{% else %}
+  <div class="alert alert-block">Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <tt>bakery.yaml</tt> to the upstream repository that contains the following information.</div>
+{% endif %}
+
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
 {% endblock %}
@@ -17,10 +22,14 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/yaml");
+editor.getSession().setUseSoftTabs(true);
+editor.setHighlightActiveLine(false);
 
+// var textarea = $('textarea[name="yaml"]');
 var textarea = $('textarea[name="yaml"]').hide();
 editor.getSession().setUseWrapMode(true);
 editor.getSession().setValue(textarea.val());
 editor.setReadOnly(true);
+
 </script>
 {% endblock %}

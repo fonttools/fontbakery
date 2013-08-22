@@ -15,20 +15,32 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import fontforge
+import sys, os
 
-try:
-    from checker.base import BakeryTestCase as TestCase
-except ImportError:
-    from unittest import TestCase
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
+from bakery import create_app, init_app
 
-class SimpleTest(TestCase):
+app = create_app(app_name='bakery')
+app.config['DEBUG'] = True
+app.config.from_object('config')
+app.config.from_pyfile('local.cfg', silent=True)
+init_app(app)
 
-    path = '.'
+ctx = app.test_request_context('/')
+ctx.push()
 
-    def setUp(self):
-        self.font = fontforge.open(self.path)
+from bakery.models import User
+from bakery.extensions import db
 
-    def test_is_fsType_eq_n1(self):
-        self.assertEqual(self.font.os2_fstype, -1)
+user = User.get_or_init(login='offline')
+user.name = 'Offline User'
+user.avatar = 'fc335d27aea73ec7e2b87df8b038d69a'
+user.email = 'fake@mail.tldr'
+user.github_access_token = 'fake'
+
+db.session.add(user)
+db.session.commit()
+
+ctx.pop()
+

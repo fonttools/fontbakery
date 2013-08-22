@@ -20,7 +20,8 @@ try:
 except ImportError:
     import json
 
-from flask import Blueprint, render_template, Response, g, request, current_app, send_from_directory
+from flask import (Blueprint, render_template, Response, g, request,
+    current_app, send_from_directory)
 
 from ..extensions import pages
 from ..project.models import Project
@@ -29,11 +30,13 @@ frontend = Blueprint('frontend', __name__)
 
 @frontend.before_request
 def before_request():
+    # Add to global vars list of the projects owned by current user
     if g.user:
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
 @frontend.route('/')
 def splash():
+    # Splash page, if user is logged in then show dashboard
     if g.user is None:
         return render_template('splash.html')
     else:
@@ -44,13 +47,11 @@ def splash():
 @frontend.route('/docs/', defaults={'path': 'about'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):
+    # Documentation views
     _page = pages.get_or_404(path)
     return render_template('page.html', page=_page)
 
-@frontend.route('/quicksearch', methods=['GET', 'POST'])
-def quicksearch():
-    return Response(json.dumps(['xen/font', 'dave/font', 'xen/font2']))
-
 @frontend.route('/robots.txt')
 def static_from_root():
+    # Static items
     return send_from_directory(current_app.static_folder, request.path[1:])
