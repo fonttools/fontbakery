@@ -15,8 +15,6 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from flask import config
-
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
