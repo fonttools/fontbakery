@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set page_title = _("Repositories") %}
+{% set page_title = _("Add Repositories") %}
 
 {% block body %}
     <h2>{{ page_title }}</h2>
@@ -7,7 +7,7 @@
 <div class="tabbable">
 
     <div class="alert alert-info">
-        {{ _("When you click 'App Repo,' Font Bakery will download the entire repository in the background. <br /> Check the dot status icon in the navigation bar above for progress.") }}
+        {{ _("When you click 'Add Repository,' Font Bakery will download the entire repository in the background. <br /> Check the dot status icon in the navigation bar above for progress.") }}
     </div>
 
   <ul class="nav nav-tabs">
@@ -40,7 +40,7 @@
             <p class="muted">{{ _("Click 'Refresh' to update this list.") }}</p>
           {% endif %}
 
-          <button type="submit" class="btn btn-primary" data-confirm="{{ _('Are you sure that this repository only contains work available under Open Source licenses?') }}">{{ _("Add repos") }}</button>
+          <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works available under Open Source licenses?') }}">{{ _("Add repositories") }}</button>
         </form>
 
     </div>
@@ -72,7 +72,7 @@
           {% if cache %}
             {% for item in cache.data -%}
               <tr {% if item.full_name in projects%} class="success" {% endif %}>
-                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Are you confirm that this git repository contains font available under Open Source or Creative Commons licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
+                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Does this repository contain only works available under Open Source licenses?"><i class="icon-star-empty"></i></a>{% endif %}</td>
                 <td>{{ item.full_name }} {% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
                 <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
                 <td><a href="{{ item.html_url }}/settings/hooks" class="btn"><i class="icon-wrench"></i> </a></td>
@@ -99,14 +99,14 @@
     <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
       <label><code>$ git clone</code></label>
       <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-      <button type="submit" class="btn btn-primary btn-small" data-confirm="Are you sure that this git repository contains fonts available under a libre license?">Add Repo</button>
+      <button type="submit" class="btn btn-primary btn-small" data-confirm="Does this repository contain only works available under Open Source licenses?">Add Repository</button>
     </form>
 
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Repository URLs</th>
-          <th>Delete</th>
+          <th>Remove</th>
         </tr>
       </thead>
       <tbody>
@@ -114,7 +114,11 @@
           {% for item in gitprojects -%}
             <tr>
               <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.clone }}</a></td>
-              <td><a href="{{ url_for('settings.delclone', project_id=item.id) }}"><button class="btn btn-mini btn-block" type="button" data-confirm="Delete this repo?"><i class="icon-trash"></i> </button></a></td>
+			  <td>
+			      <form class="form-inline" action="{{ url_for('settings.delclone', project_id = item.id )}}" method="GET">
+                    <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
+                  </form>
+			  </td>
             </tr>
           {%- endfor %}
         {% else %}
@@ -150,7 +154,7 @@ $(document).ready(function() {
     var form = $(this).closest('form');
 
     if (!$('#dataConfirmModal').length) {
-        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Open Source Repository?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>');
+        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>');
     } 
 
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));

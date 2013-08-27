@@ -56,7 +56,11 @@ def run(command, cwd = None, log = None):
         raise ValueError
 
 def prun(command, cwd, log=None):
-    """ Wrapper for subprocess.Popen that capture output and return as result
+    """
+    
+    THIS METHOD IS DEPRECATED
+    
+    Wrapper for subprocess.Popen that capture output and return as result
 
         :param command: shell command to run
         :param cwd: current working dir
@@ -279,7 +283,8 @@ def lint_process(project, log):
 def ttfautohint_process(project, log):
     """
     Run ttfautohint with project command line settings for each
-    ttf file in result folder
+    ttf file in result src folder, outputting them in the _out root,
+    or just copy the ttfs there.
     """
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
