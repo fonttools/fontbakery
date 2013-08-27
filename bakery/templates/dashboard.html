@@ -34,7 +34,7 @@
             <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
         {# setup's values are pre-loaded from the repo #}
         {% elif item.config['local']['status']=='repo' %}
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Check repo setup now") }}</a>
+            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
         {# setup's values here and in the repo don't match #}
         {% elif item.config['local']['bakery_yaml_in_sync']=='False' %}
             <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
@@ -73,15 +73,12 @@
         {% endif %}
       {% endif %} {# is_ready #}
 
-      {% endif %} {# is_ready #}
-
-
     {% else %}
       <tr>
         <td colspan="2">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
-              {{ _("List of available repositories is empty") }}. <br /><br />
-              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary">{{ _("Add some now") }}</button></a>
+              {{ _("List of available repositories is empty") }}<br /><br />
+              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>
             </p>
         </td>
       </tr> 
