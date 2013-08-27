@@ -241,10 +241,9 @@ def addclone():
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
-@settings.route('/delclone/', methods=['GET'])
+@settings.route('/delclone/<int:project_id>', methods=['GET'])
 @login_required
-def delclone():
-    project_id = request.args.get('project_id')
+def delclone(project_id):
     # pylint:disable-msg=E1101
     project = Project.query.filter_by(
         login=g.user.login, id=project_id).first()
@@ -254,7 +253,7 @@ def delclone():
 
     db.session.delete(project)
     db.session.commit()
-    flash(_("Repository succesfuly removed"))
+    flash(_("Repository %s succesfuly removed (but files remain on the server)" % project_id))
     return redirect(url_for('settings.repos') + "#tab_owngit")
 
 
@@ -270,7 +269,7 @@ def massgit():
     for p in projects:
         if p.full_name not in git_ids:
             db.session.delete(p)
-            flash(_("Repository %s successfully removed" % p.full_name))
+            flash(_("Repository %s successfully removed (but files remain on the server)" % p.full_name))
         pfn[p.full_name] = p
 
     db.session.commit()
