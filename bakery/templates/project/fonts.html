@@ -12,10 +12,13 @@
 
 {% block extrajs %}
 <script>
-$(document).ready(function() {
-  $('.glyphs').hide();
-  $('.mother_of_glyphs').click(function() {
-    $(this).find('ul').slideToggle();
+$(document).ready(function(){
+  $('.mothership').click(function(){
+    $(this).children('ul').slideToggle();
+  });
+  $('.mother_of_glyphs').click(function(){
+    event.stopPropagation();
+    $(this).children('ul').slideToggle();
   });
 });
 </script>

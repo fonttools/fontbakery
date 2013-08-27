@@ -181,6 +181,10 @@ ol.linenums li {
     /*border-color:  #94a0b4;*/
 }
 
+.tree .ufo-files, .tree .glyphs {
+    display:none;
+}
+
 /* Ace editor */
 
 #editor {

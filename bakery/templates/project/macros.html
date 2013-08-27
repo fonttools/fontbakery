@@ -50,12 +50,12 @@
 {%- macro filestree(tree) %}
   <div class="tree">
     <ul>
-      <li><a><i class="icon-folder-open"></i>Root</a></li>
+      <li><a><i class="icon-folder-open"></i></a></li>
       <ul>
       {%- for key, value in project.tree_in().items() recursive %}
-        <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
+        <li class="{% if key == 'glyphs' and value %}mother_of_glyphs{% elif key.lower().endswith('.ufo') %}mothership{% endif %}">
           <a {{ highlight(key) }}>{% if key == '' %}
-            Root
+            &nbsp;
           {% else %}
             {%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
             {% elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
@@ -67,7 +67,7 @@
             {% else %}<i class="icon-file-alt muted"></i>
             {%endif%}{{ key }}
           {% endif %}</a>
-        {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs warning" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
+        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items())}}</ul>{%- endif %}
         </li>
       {%- endfor %}
       </ul>
