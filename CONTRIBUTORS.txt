@@ -23,3 +23,4 @@
 
 Mikhail Kashkin <mkashkin@gmail.com>
 Dave Crossland <dcrossland@google.com>
+Brian Dickens <hostilefork@gmail.com>
