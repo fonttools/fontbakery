@@ -73,7 +73,7 @@ editorNew.getSession().on('change', function(){
   textareaNew.val(editorNew.getSession().getValue());
 });
 
-// From https://gist.github.com/hostilefork/6325151 and http://stackoverflow.com/questions/11584061/
+// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
 var heightUpdateFunction = function() {
     var newHeight =
               editor.getSession().getScreenLength()
@@ -88,7 +88,7 @@ var heightUpdateFunction = function() {
 heightUpdateFunction();
 // Whenever a change happens inside the ACE editor, update the size again
 editor.getSession().on('change', heightUpdateFunction);
-// End https://gist.github.com/hostilefork/6325151 and http://stackoverflow.com/questions/11584061/
+// End
 
 </script>
 </div>
