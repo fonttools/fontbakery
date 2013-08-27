@@ -12,14 +12,13 @@
 
 {% block extrajs %}
 <script>
-$(document).ready(function() {
-  $('.glyphs').hide();
-  $('.ufo-files').hide();
-  $('.mothership').click(function() {
+$(document).ready(function(){
+  $('.mothership').click(function(){
     $(this).children('ul').slideToggle();
   });
-  $('.mother_of_glyphs').click(function() {
-    $(this).children('ul').children('ul').slideToggle();
+  $('.mother_of_glyphs').click(function(){
+    event.stopPropagation();
+    $(this).children('ul').slideToggle();
   });
 });
 </script>
