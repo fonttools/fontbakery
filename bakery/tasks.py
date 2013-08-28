@@ -149,31 +149,17 @@ def process_project(project, log):
     # login — user login
     # project_id - database project_id
 
-    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
     copy_and_rename_ufos_process(project, log)
 
     # autoprocess is set after setup is completed once
     if project.config['local'].get('setup', None):
         log.write('Bake Begins!\n', prefix = 'Header: ')
-
-        log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
         generate_fonts_process(project, log)
-
-        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
         ttfautohint_process(project, log)
-
-        log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
         ttx_process(project, log)
-
-        log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
         subset_process(project, log)
-
-        log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
         generate_metadata_process(project, log)
-
-        log.write('Lint (lint.jar)\n', prefix = 'Header: ')
         lint_process(project, log)
-
         log.write('Bake Succeeded!\n', prefix = 'Header: ')
 
 def copy_and_rename_ufos_process(project, log):
@@ -185,6 +171,8 @@ def copy_and_rename_ufos_process(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
     # Make the out directory if it doesn't exist
     if not os.path.exists(_out_src):
@@ -232,8 +220,9 @@ def generate_fonts_process(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
-
     scripts_folder = os.path.join(ROOT, 'scripts')
+
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
@@ -251,6 +240,7 @@ def generate_metadata_process(project, log):
     """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
+    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 
@@ -259,6 +249,7 @@ def lint_process(project, log):
     Run lint.jar on ttf files
     """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('Lint (lint.jar)\n', prefix = 'Header: ')
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
@@ -277,6 +268,8 @@ def ttfautohint_process(project, log):
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
 
     if config['state'].get('ttfautohint', None):
         params = config['state']['ttfautohint']
@@ -297,6 +290,9 @@ def subset_process(project, log):
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
+
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
@@ -325,6 +321,9 @@ def subset_process(project, log):
 def ttx_process(project, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
+
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
         name = name[:-4] # cut .ufo
