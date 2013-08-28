@@ -50,7 +50,7 @@ def run(command, cwd = None, log = None):
             break
 
     if p.returncode:
-        log.write('Fatal: Execution error, command "%s" returned %s' % (command, p.returncode))
+        log.write('Fatal: Execution error, command "%s" returned %s \n' % (command, p.returncode))
         # close file before exit
         log.close()
         raise ValueError
