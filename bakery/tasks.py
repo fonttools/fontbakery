@@ -212,7 +212,6 @@ def copy_and_rename_ufos_process(project, log):
             finfo['familyName'] = familyname
             plistlib.writePlist(finfo, finame)
 
-
 def generate_fonts_process(project, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
@@ -232,31 +231,6 @@ def generate_fonts_process(project, log):
             'name': name,
         }
         run(cmd, cwd = scripts_folder, log=log)
-
-
-def generate_metadata_process(project, log):
-    """
-    Generate METADATA.json using genmetadata.py
-    """
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
-
-
-def lint_process(project, log):
-    """
-    Run lint.jar on ttf files
-    """
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    log.write('Lint (lint.jar)\n', prefix = 'Header: ')
-    # java -jar dist/lint.jar "$(dirname $metadata)"
-    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
-    # Mark this project as building successfully
-    # TODO: move this from here to the new checker lint process completing all required checks successfully
-    project.config['local']['status'] = 'built'
-
 
 def ttfautohint_process(project, log):
     """
@@ -345,6 +319,27 @@ def subset_process(project, log):
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
 
+def generate_metadata_process(project, log):
+    """
+    Generate METADATA.json using genmetadata.py
+    """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
+    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+
+def lint_process(project, log):
+    """
+    Run lint.jar on ttf files
+    """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('Lint (lint.jar)\n', prefix = 'Header: ')
+    # java -jar dist/lint.jar "$(dirname $metadata)"
+    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # Mark this project as building successfully
+    # TODO: move this from here to the new checker lint process completing all required checks successfully
+    project.config['local']['status'] = 'built'
 
 def project_upstream_tests(project):
     import checker.upstream_runner
@@ -355,7 +350,6 @@ def project_upstream_tests(project):
         result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
     return result
 
-
 def project_result_tests(project):
     import checker.result_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
@@ -364,5 +358,3 @@ def project_result_tests(project):
     for name in glob.glob("*.ttf"):
         result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
     return result
-
-
