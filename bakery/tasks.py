@@ -74,45 +74,6 @@ def prun(command, cwd, log=None):
         log.write(stdout)
     return stdout
 
-def set_ready(project):
-    from flask import current_app
-    assert current_app
-    from .extensions import db
-    db.init_app(current_app)
-    project.is_ready = True
-    db.session.add(project)
-    db.session.commit()
-
-@job
-def sync_and_process(project, process = True, sync = False):
-    """
-    Sync and process (Bake) the project.
-    
-    :param project: :class:`~bakery.models.Project` instance
-    :param sync: Boolean. Sync the project. Defaults to off. 
-    :param process: Boolean. Process (Bake) the project. Default to on.
-    """
-    # create user folder
-    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
-        os.makedirs(os.path.join(DATA_ROOT, project.login))
-    # create log file and open it with Redis
-    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
-            'id': project.id,
-            'login': project.login, }
-            ),
-        'w')
-    # Sync the project, if given sync parameter (default no)
-    if sync:
-        project_git_sync(project, log = log)
-    # Bake the project, if given the project parameter (default yes)
-    if process:
-        process_project(project, log = log)
-
-    if not project.is_ready:
-        set_ready(project)
-
-    log.close()
-
 @job
 def project_git_sync(project, log):
     """
@@ -137,30 +98,6 @@ def project_git_sync(project, log):
         run('git reset --hard', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
-
-@job
-def process_project(project, log):
-    """
-    Bake the project, building all fonts according to the project setup.
-
-    :param project: :class:`~bakery.models.Project` instance
-    :param log: :class:`~bakery.utils.RedisFd` as log
-    """
-    # login — user login
-    # project_id - database project_id
-
-    copy_and_rename_ufos_process(project, log)
-
-    # autoprocess is set after setup is completed once
-    if project.config['local'].get('setup', None):
-        log.write('Bake Begins!\n', prefix = 'Header: ')
-        generate_fonts_process(project, log)
-        ttfautohint_process(project, log)
-        ttx_process(project, log)
-        subset_process(project, log)
-        generate_metadata_process(project, log)
-        lint_process(project, log)
-        log.write('Bake Succeeded!\n', prefix = 'Header: ')
 
 def copy_and_rename_ufos_process(project, log):
     """
@@ -340,6 +277,69 @@ def lint_process(project, log):
     # Mark this project as building successfully
     # TODO: move this from here to the new checker lint process completing all required checks successfully
     project.config['local']['status'] = 'built'
+
+@job
+def process_project(project, log):
+    """
+    Bake the project, building all fonts according to the project setup.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param log: :class:`~bakery.utils.RedisFd` as log
+    """
+    # login — user login
+    # project_id - database project_id
+
+    copy_and_rename_ufos_process(project, log)
+
+    # autoprocess is set after setup is completed once
+    if project.config['local'].get('setup', None):
+        log.write('Bake Begins!\n', prefix = 'Header: ')
+        generate_fonts_process(project, log)
+        ttfautohint_process(project, log)
+        ttx_process(project, log)
+        subset_process(project, log)
+        generate_metadata_process(project, log)
+        lint_process(project, log)
+        log.write('Bake Succeeded!\n', prefix = 'Header: ')
+
+def set_ready(project):
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
+@job
+def sync_and_process(project, process = True, sync = False):
+    """
+    Sync and process (Bake) the project.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param sync: Boolean. Sync the project. Defaults to off. 
+    :param process: Boolean. Process (Bake) the project. Default to on.
+    """
+    # create user folder
+    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
+        os.makedirs(os.path.join(DATA_ROOT, project.login))
+    # create log file and open it with Redis
+    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
+            'id': project.id,
+            'login': project.login, }
+            ),
+        'w')
+    # Sync the project, if given sync parameter (default no)
+    if sync:
+        project_git_sync(project, log = log)
+    # Bake the project, if given the project parameter (default yes)
+    if process:
+        process_project(project, log = log)
+
+    if not project.is_ready:
+        set_ready(project)
+
+    log.close()
 
 def project_upstream_tests(project):
     import checker.upstream_runner
