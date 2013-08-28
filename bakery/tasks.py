@@ -285,6 +285,34 @@ def ttfautohint_process(project, log):
     else:
         run("cp src/*.ttf .", cwd=_out, log=log)
 
+def ttx_process(project, log):
+    """
+    Roundtrip TTF files through TTX to compact their filesize
+    """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
+
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
+        name = name[:-4] # cut .ufo
+        filename = os.path.join(_out, name)
+        # convert the ttf to a ttx file - this may fail
+        cmd = "ttx -i '%s.ttf'" % filename
+        run(cmd, cwd=_out, log=log)
+        # move the original ttf to the side
+        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
+        run(cmd, cwd=_out, log=log)
+        # convert the ttx back to a ttf file - this may fail
+        cmd = "ttx -i '%s.ttx'" % filename
+        run(cmd, cwd=_out, log=log)
+        # compare filesizes TODO print analysis of this :)
+        cmd = "ls -l '%s.ttf'*" % filename
+        run(cmd, cwd=_out, log=log)
+        # remove the original (duplicate) ttf
+        cmd = "rm  '%s.ttf.orig'" % filename
+        run(cmd, cwd=_out, log=log)
 
 def subset_process(project, log):
     config = project.config
@@ -316,33 +344,6 @@ def subset_process(project, log):
     for filename in files:
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
-
-
-def ttx_process(project, log):
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
-
-    log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
-
-    os.chdir(_out_src)
-    for name in glob.glob("*.ufo"):
-        name = name[:-4] # cut .ufo
-        filename = os.path.join(_out, name)
-        # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename
-        run(cmd, cwd=_out, log=log)
-        # move the original ttf to the side
-        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
-        run(cmd, cwd=_out, log=log)
-        # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename
-        run(cmd, cwd=_out, log=log)
-        # compare filesizes TODO print analysis of this :)
-        cmd = "ls -l '%s.ttf'*" % filename
-        run(cmd, cwd=_out, log=log)
-        # remove the original (duplicate) ttf
-        cmd = "rm  '%s.ttf.orig'" % filename
-        run(cmd, cwd=_out, log=log)
 
 
 def project_upstream_tests(project):
