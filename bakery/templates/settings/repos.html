@@ -105,7 +105,9 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Repository URLs</th>
+          <th>ID</th>
+          <th>Repository</th>
+          <th>URL</th>
           <th>Remove</th>
         </tr>
       </thead>
@@ -113,7 +115,9 @@
         {% if gitprojects %}
           {% for item in gitprojects -%}
             <tr>
-              <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.clone }}</a></td>
+              <td>{{ item.id }}</td>
+              <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.title }}</a></td>
+              <td><p><a href="{{ item.clone }}">{{ item.clone }} <i class="icon-signout"></i></a></td>
 			  <td>
 			      <form class="form-inline" action="{{ url_for('settings.delclone', project_id = item.id )}}" method="GET">
                     <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
