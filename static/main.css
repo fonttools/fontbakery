@@ -181,6 +181,10 @@ ol.linenums li {
     /*border-color:  #94a0b4;*/
 }
 
+.tree .ufo-files, .tree .glyphs {
+    display:none;
+}
+
 /* Ace editor */
 
 #editor {
@@ -188,10 +192,15 @@ ol.linenums li {
     border: 1px solid lightgray;
     margin: 0px;
     padding: 0px;
-    height: 800px;
+    height: 100px;
     width: 100%;
 }
 
 #log {
     font-size: 10px;
+}
+
+.table-every3 tbody tr:nth-child(3n+1) td,
+.table-every3 tbody tr:nth-child(3n+1) th {
+  background-color: #f9f9f9;
 }

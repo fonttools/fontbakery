@@ -44,7 +44,7 @@ def splash():
         projects = Project.query.filter_by(login=g.user.login).all()
         return render_template('dashboard.html', repos = projects)
 
-@frontend.route('/docs/', defaults={'path': 'about'})
+@frontend.route('/docs/', defaults={'path': 'index'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):
     # Documentation views

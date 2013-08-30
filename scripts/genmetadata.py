@@ -270,15 +270,17 @@ def fontToolsGetDesignerName(ftfont):
 
 def fontToolsGetDesc(ftfont):
     NAMEID_DESC = 10
-    fontDesc = ""
+    fontDesc = False
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_DESC and not fontDesc:
             if b'\000' in record.string:
                 fontDesc = record.string.decode('utf-16-be').encode('utf-8')
             else:
                 fontDesc = record.string
-        if fontDesc:
-            return fontDesc
+            break
+    if not fontDesc:
+        fontDesc = "TODO"
+    return fontDesc
 
 # DC NameIDs are as follows:
 #    0	Copyright notice.
@@ -498,28 +500,28 @@ def ansiprint(string, color):
 def writeDescHtml(familydir):
     filename = "DESCRIPTION.en_us.html"
     fullPath = os.path.join(familydir, filename)
-    if os.path.exists(fullPath):
+    try:
+        f = io.open(fullPath)
         string = filename + " exists - check it is okay: "
         color = "green"
         ansiprint(string, color)
-        f = io.open(fullPath)
         print(f.read())
         return
-    else:
+    except:
         foundRegular = False
         files = os.listdir(familydir)
-        fontDesc = ''
         for f in files:
             if f.endswith("Regular.ttf"):
                 foundRegular = True
                 filepath = os.path.join(familydir, f)
                 ftfont = fontToolsOpenFont(filepath)
                 fontDesc = fontToolsGetDesc(ftfont)
+                break
         if not foundRegular:
             string = "No Regular found! REMEMBER! Create a " + filename
             color = "red"
             ansiprint(string, color)
-            descHtml = "TODO"
+            fontDesc = "TODO"
         descHtml = "<p>" + fontDesc + "</p>"
         with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
             f.write(descHtml)

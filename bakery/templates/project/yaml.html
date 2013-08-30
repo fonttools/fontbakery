@@ -7,9 +7,9 @@
 {{ nav('yaml') }}
 
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
-  <div class="alert alert-info">Your setup is saved in the upstream repository, in a <tt>bakery.yaml</tt> file, displayed below.</div>
+  <div class="alert alert-info">Your setup is saved in the upstream repository, in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file, displayed below.</div>
 {% else %}
-  <div class="alert alert-block">Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <tt>bakery.yaml</tt> to the upstream repository that contains the following information.</div>
+  <div class="alert alert-block">Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information.</div>
 {% endif %}
 
 <div id="editor"></div>
@@ -30,6 +30,23 @@ var textarea = $('textarea[name="yaml"]').hide();
 editor.getSession().setUseWrapMode(true);
 editor.getSession().setValue(textarea.val());
 editor.setReadOnly(true);
+
+// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+var heightUpdateFunction = function() {
+    var newHeight =
+              editor.getSession().getScreenLength()
+              * editor.renderer.lineHeight
+              + editor.renderer.scrollBar.getWidth();
+    $('#editor').height(newHeight.toString() + "px");
+    $('#editor-section').height(newHeight.toString() + "px");
+    // This call is required for the editor to fix all of its inner structure for adapting to a change in size
+    editor.resize();
+};
+// Set initial size to match initial content
+heightUpdateFunction();
+// Whenever a change happens inside the ACE editor, update the size again
+editor.getSession().on('change', heightUpdateFunction);
+// End
 
 </script>
 {% endblock %}

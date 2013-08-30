@@ -51,7 +51,7 @@ def bump(project_id):
         sync_and_process.delay(p, process = False, sync = True)
 
         flash(_("Git %s was updated" % p.clone))
-    return redirect(url_for('project.buildlog', project_id=project_id))
+    return redirect(url_for('project.setup', project_id=project_id))
 
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
@@ -135,12 +135,14 @@ def setup(project_id):
 @login_required
 def fonts(project_id):
     # this page can be visible by others, not only by owner
+    # TODO consider all pages for that
     p = Project.query.get_or_404(project_id)
 
     if not p.is_ready:
         return render_template('project/is_not_ready.html')
 
-    return render_template('project/fonts.html', project=p)
+    data = p.read_asset('license')
+    return render_template('project/fonts.html', project=p, license=data)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 @login_required
@@ -275,19 +277,6 @@ def rtests(project_id):
     return render_template('project/rtests.html', project=p,
                            tests=test_result)
 
-
-@project.route('/<int:project_id>/dashboard', methods=['GET'])
-@login_required
-def dashboard(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
-    return render_template('project/dashboard.html', project=p)
-
-
 @project.route('/<int:project_id>/dashboard_save', methods=['POST'])
 @login_required
 def dashboard_save(project_id):
@@ -300,7 +289,11 @@ def dashboard_save(project_id):
     if request.form.get('source_drawing_filetype'):
         if len(request.form.get('source_drawing_filetype')) > 0:
             p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
+    else:
+        if 'source_drawing_filetype' in p.config['state']:
+            del p.config['state']['source_drawing_filetype']
+
     p.save_state()
     flash(_('source_drawing_filetype saved'))
-    return redirect(url_for('project.dashboard', project_id=p.id))
+    return redirect(url_for('project.setup', project_id=p.id))
 

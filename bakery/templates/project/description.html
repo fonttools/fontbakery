@@ -9,7 +9,7 @@
 <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
 <div id="editor"></div>
 <textarea name="description">{{ description }}</textarea>
-<p style="margin-top:0.5em"><button type="submit" class="btn btn-primary">Save</button></p>
+<p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
 </form>
 
 {% endblock %}
@@ -32,6 +32,25 @@ editor.getSession().setValue(textarea.val());
 editor.getSession().on('change', function(){
   textarea.val(editor.getSession().getValue());
 });
+
+
+
+// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+var heightUpdateFunction = function() {
+    var newHeight =
+              editor.getSession().getScreenLength()
+              * editor.renderer.lineHeight
+              + editor.renderer.scrollBar.getWidth();
+    $('#editor').height(newHeight.toString() + "px");
+    $('#editor-section').height(newHeight.toString() + "px");
+    // This call is required for the editor to fix all of its inner structure for adapting to a change in size
+    editor.resize();
+};
+// Set initial size to match initial content
+heightUpdateFunction();
+// Whenever a change happens inside the ACE editor, update the size again
+editor.getSession().on('change', heightUpdateFunction);
+// End 
 
 </script>
 </div>

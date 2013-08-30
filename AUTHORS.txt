@@ -8,3 +8,4 @@
 
 Google Inc.
 Mikhail Kashkin <mkashkin@gmail.com>
+Brian Dickens <hostilefork@gmail.com>

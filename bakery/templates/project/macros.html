@@ -1,12 +1,10 @@
 {% macro nav(active) -%}
-  <h5>{{ project.clone }} 
-  {% if g.debug %}
-    <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull &amp; rebuild</button></a>    
-  {% endif %}
-	</h5>
-    <h2>{{ page_title }}</h2>
-    <ul class="nav nav-tabs">
-        <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
+  <h2>{{ project.title }}</h2>
+  <p>
+     <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-signout"></i></a>
+  </p>
+  <h2>{{ page_title }}</h2>
+  <ul class="nav nav-tabs">
         <li class="dropdown {% if active in ['fonts', 'license', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                Upstream <i class="caret"></i>
@@ -38,8 +36,7 @@
             </ul>
           </li>
       {% endif %}
-    </ul>
-
+  </ul>
 {%- endmacro %}
 
 {%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 
@@ -50,12 +47,12 @@
 {%- macro filestree(tree) %}
   <div class="tree">
     <ul>
-      <li><a><i class="icon-folder-open"></i>Root</a></li>
+      <li><a><i class="icon-folder-open"></i></a></li>
       <ul>
       {%- for key, value in project.tree_in().items() recursive %}
-        <li {%if key == 'glyphs' and value %} class="mother_of_glyphs" {% endif %} >
+        <li class="{% if key == 'glyphs' and value %}mother_of_glyphs{% elif key.lower().endswith('.ufo') %}mothership{% endif %}">
           <a {{ highlight(key) }}>{% if key == '' %}
-            Root
+            &nbsp;
           {% else %}
             {%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
             {% elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
@@ -67,7 +64,7 @@
             {% else %}<i class="icon-file-alt muted"></i>
             {%endif%}{{ key }}
           {% endif %}</a>
-        {%- if value %}<ul {%if key == 'glyphs' %} class="glyphs warning" {% endif %}>{{ loop(value.items())}}</ul>{%- endif %}
+        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items())}}</ul>{%- endif %}
         </li>
       {%- endfor %}
       </ul>

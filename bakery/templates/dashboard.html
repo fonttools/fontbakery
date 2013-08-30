@@ -1,6 +1,7 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
 {% set page_title = _('Projects Dashboard') %}
+{% set list = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 
 {% block body %}
 
@@ -8,74 +9,94 @@
 
 <a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
-<table class="table table-striped">
+<table class="table table-condensed table-every3" id="dashboard">
   <thead>
     <tr>
-      <th>{{ _("Clone String") }}</th>
-      <th>{{ _("Actions") }}</th>
+      <th>{{ _("ID") }}</th>
+      <th>{{ _("Project") }}</th>
+      <th style="text-align: right">{{ _("Actions") }}</th>
     </tr>
   </thead>
 
   <tbody>
-    {% for item in repos -%}
-    {# show item.config for debugging #}
+    {# repos contains only repos that have is_ready set #}
+    {% for repo in repos -%}
+
       <tr>
-        <td class="muted" colspan="2"><pre>{{ item.config }}</pre></td>
-      </tr>
-      <tr>
-        <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
-      {% if not item.is_ready %}
-        <td>Project downloading</td>
-      </tr>
-      {% else %}
+        <td>{{repo.id}}</td>
         <td>
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{repo.clone}}">{{ repo.title }}</a>
+            {% if repo.homepage %}(<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>){% endif %}
+        </td>
+        <td style="text-align: right">
+      {% if not repo.is_ready %}
+      Project downloading
+      {% else %}
         {# setup's values are loaded from defaults #}
-        {%   if item.config['local']['status']=='default' %}
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
+        {%   if repo.config['local']['status']=='default' %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
         {# setup's values are pre-loaded from the repo #}
-        {% elif item.config['local']['status']=='repo' %}
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
+        {% elif repo.config['local']['status']=='repo' %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
         {# setup's values here and in the repo don't match #}
-        {% elif item.config['local']['bakery_yaml_in_sync']=='False' %}
-            <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
+        {% elif repo.config['local']['bakery_yaml_in_sync']=='False' %}
+            <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
         {# setup's values here and in the repo match #}
-        {% elif item.config['local']['status']=='local' %}
-            <a href="{{ url_for('project.setup', project_id = item.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
+        {% elif repo.config['local']['status']=='local' %}
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
         {# build completed successfully #}
-        {% elif item.config['local']['status']=='built' %}
-            <a href="{{ url_for('project.buildlog', project_id = item.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
+        {% elif repo.config['local']['status']=='built' %}
+            <a href="{{ url_for('project.buildlog', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
         {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
+        {# show repo.config for debugging #}
+        <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}"></i></button>
         </td>
       </tr>
+
       <tr>
-        <td colspan="2">
-            {% if item.config['state']['source_drawing_filetype']=='VFB' %}
-              <i class="icon-thumbs-down">VFB</i>
+        <td style="text-align: right">
+            State:
+        </td>
+        <td colspan="2" style="text-align: left">
+        {% for item in list %}
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}">
+            {% if repo.config['state'][item] %}
+              <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
             {% else %}
-              <i class="">No source</i>
+              <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
             {% endif %}
-          </td>
+            </a>
+        {% endfor %}
+        </td>
       </tr>
 
-        {% if item.family_stat %}
-          <tr>
-            <td colspan="2">
-            Total - {{ item.family_stat.total }} <br />
-            Month - {{ item.family_stat.month }} <br />
-            Week - {{ item.family_stat.week }} <br />
-            Yesterday - {{ item.family_stat.yesterday }} <br /> 
-            Rate - {{ item.family_stat.rate }} <br />
-            </td>
-          </tr>
-        {% endif %}
-      {% endif %} {# is_ready #}
-
-    {% else %}
       <tr>
+        <td style="text-align: right">
+            Stats:
+        </td>
+        {% if repo.family_stat %}
         <td colspan="2">
+            Total {{ repo.family_stat.total }},
+            {{ repo.family_stat.month }}/month,
+            {{ repo.family_stat.week }}/week,
+            {{ repo.family_stat.yesterday }}/day,
+            {{ repo.family_stat.rate }}/second
+        </td>
+        {% else %}
+        <td colspan="2">
+            No stats found
+        </td>
+        {% endif %}
+      </tr>
+
+      {% endif %}
+      
+    {% else %} {# ie, if not is_ready #}
+      <tr>
+        <td colspan="3">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
               {{ _("List of available repositories is empty") }}<br /><br />
               <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>

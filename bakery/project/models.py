@@ -66,7 +66,11 @@ class Project(db.Model):
         if self.is_ready and self.config['state'].get('familyname', None):
             return "%s (%s)" % (self.config['state']['familyname'], self.clone)
         else:
-            return self.clone
+            simpleTitle = self.clone.split('/')[-1]
+            if simpleTitle:
+                return simpleTitle
+            else:
+                return self.clone
 
     def asset_by_name(self, name):
         """ Resolve asset id into its real path. For internal use. """
