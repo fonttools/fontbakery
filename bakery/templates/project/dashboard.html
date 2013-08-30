@@ -16,7 +16,7 @@
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
   <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
 {% else %}
-  <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <tt>bakery.yaml</tt> to the upstream repository that contains the following information.</div>
+    <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information. <a class="btn btn-mini pull-right">Reload settings from repo{# this should only be shown if there is a bakery_yaml in upstream #}</a></div>
 {% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
@@ -27,7 +27,6 @@
 
 
 
-      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %} {# TODO make this work #}
     </div>
   </div>
 
