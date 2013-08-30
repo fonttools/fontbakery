@@ -73,7 +73,12 @@ class Project(db.Model):
                 return self.clone
 
     def asset_by_name(self, name):
-        """ Resolve asset id into its real path. For internal use. """
+        """
+        Resolve asset id into its real path. For internal use.
+        
+        :param name: handle for file conventionally found in repositories
+        
+        """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'log':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % self)
