@@ -11,24 +11,35 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>{{ _("Clone String") }}</th>
+      <th>{{ _("ID") }}</th>
+      <th>{{ _("Project") }}</th>
+      <th>{{ _("Source") }}</th>
       <th>{{ _("Actions") }}</th>
     </tr>
   </thead>
 
   <tbody>
     {% for item in repos -%}
-    {# show item.config for debugging #}
+      {# show item.config for debugging #}
       <tr>
-        <td class="muted" colspan="2"><pre>{{ item.config }}</pre></td>
-      </tr>
-      <tr>
-        <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.clone}}</a>{% if item.homepage %}<a href="{{ item.homepage}} "><i class="icon-share"></i></a>{% endif %}</td>
-      {% if not item.is_ready %}
-        <td>Project downloading</td>
-      </tr>
-      {% else %}
+        <td>{{item.id}}</td>
         <td>
+            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{item.clone}}">{{ item.title }}</a>
+            {% if item.homepage %}(<a href="{{ item.homepage}}"><i class="icon-share"></i></a>){% endif %}
+        </td>
+        <td>
+            {% if item.config['state']['source_drawing_filetype'] %}
+            <a href="{{ url_for('project.dashboard', project_id = item.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ item.config['state']['source_drawing_filetype'] }}"></i></a>
+            {% else %}
+            <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Upload source"></i>
+            {% endif %}
+            
+            </a>
+        </td>
+        <td>
+      {% if not item.is_ready %}
+      Project downloading
+      {% else %}
         {# setup's values are loaded from defaults #}
         {%   if item.config['local']['status']=='default' %}
             <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
@@ -48,21 +59,13 @@
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
+        <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ item.config }}"></i></button>
         </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-            {% if item.config['state']['source_drawing_filetype']=='VFB' %}
-              <i class="icon-thumbs-down">VFB</i>
-            {% else %}
-              <i class="">No source</i>
-            {% endif %}
-          </td>
       </tr>
 
         {% if item.family_stat %}
           <tr>
-            <td colspan="2">
+            <td colspan="4">
             Total - {{ item.family_stat.total }} <br />
             Month - {{ item.family_stat.month }} <br />
             Week - {{ item.family_stat.week }} <br />
@@ -86,4 +89,14 @@
   </tbody>
 </table>
 
+{% endblock %}
+
+{% block extrajs %}
+<script>
+$(document).ready(function () {
+    $('.apopover').each(function (index, item) {
+        $(item).popover();
+    });
+});
+</script>
 {% endblock %}
