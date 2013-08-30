@@ -19,16 +19,16 @@
   </thead>
 
   <tbody>
-    {% for item in repos -%}
+    {% for repo in repos -%}
       <tr>
-        <td>{{item.id}}</td>
+        <td>{{repo.id}}</td>
         <td>
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{item.clone}}">{{ item.title }}</a>
-            {% if item.homepage %}(<a href="{{ item.homepage}}"><i class="icon-share"></i></a>){% endif %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{repo.clone}}">{{ repo.title }}</a>
+            {% if repo.homepage %}(<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>){% endif %}
         </td>
         <td style="text-align: center">
-            {% if item.config['state']['source_drawing_filetype'] %}
-            <a href="{{ url_for('project.setup', project_id = item.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ item.config['state']['source_drawing_filetype'] }}"></i></a>
+            {% if repo.config['state']['source_drawing_filetype'] %}
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state']['source_drawing_filetype'] }}"></i></a>
             {% else %}
             <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Upload source"></i>
             {% endif %}
@@ -36,41 +36,41 @@
             </a>
         </td>
         <td style="text-align: right">
-      {% if not item.is_ready %}
+      {% if not repo.is_ready %}
       Project downloading
       {% else %}
         {# setup's values are loaded from defaults #}
-        {%   if item.config['local']['status']=='default' %}
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
+        {%   if repo.config['local']['status']=='default' %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
         {# setup's values are pre-loaded from the repo #}
-        {% elif item.config['local']['status']=='repo' %}
-            <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
+        {% elif repo.config['local']['status']=='repo' %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
         {# setup's values here and in the repo don't match #}
-        {% elif item.config['local']['bakery_yaml_in_sync']=='False' %}
-            <a href="{{ url_for('project.bakeryyaml', project_id = item.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
+        {% elif repo.config['local']['bakery_yaml_in_sync']=='False' %}
+            <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
         {# setup's values here and in the repo match #}
-        {% elif item.config['local']['status']=='local' %}
-            <a href="{{ url_for('project.setup', project_id = item.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
+        {% elif repo.config['local']['status']=='local' %}
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
         {# build completed successfully #}
-        {% elif item.config['local']['status']=='built' %}
-            <a href="{{ url_for('project.buildlog', project_id = item.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
+        {% elif repo.config['local']['status']=='built' %}
+            <a href="{{ url_for('project.buildlog', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
         {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
-        {# show item.config for debugging #}
-        <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ item.config }}"></i></button>
+        {# show repo.config for debugging #}
+        <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}"></i></button>
         </td>
       </tr>
 
-        {% if item.family_stat %}
+        {% if repo.family_stat %}
           <tr>
             <td colspan="4">
-            Total - {{ item.family_stat.total }} <br />
-            Month - {{ item.family_stat.month }} <br />
-            Week - {{ item.family_stat.week }} <br />
-            Yesterday - {{ item.family_stat.yesterday }} <br /> 
-            Rate - {{ item.family_stat.rate }} <br />
+            Total - {{ repo.family_stat.total }} <br />
+            Month - {{ repo.family_stat.month }} <br />
+            Week - {{ repo.family_stat.week }} <br />
+            Yesterday - {{ repo.family_stat.yesterday }} <br /> 
+            Rate - {{ repo.family_stat.rate }} <br />
             </td>
           </tr>
         {% endif %}
