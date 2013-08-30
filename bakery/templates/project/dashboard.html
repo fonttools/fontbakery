@@ -13,27 +13,38 @@
   {% set dis = '' %}
 {% endif %}
 
-<div class="alert alert-info">
-  Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
-</div>
+{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
+  <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
+{% else %}
+  <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <tt>bakery.yaml</tt> to the upstream repository that contains the following information.</div>
+{% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
   <div class="control-group">
     <div class="controls">
       <p><strong>Bold</strong> fields are required.</p>
-      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %}
+
+
+
+
+      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %} {# TODO make this work #}
     </div>
   </div>
 
-  <div id="familyname" class="control-group">
-    <label class="control-label" for="familyname">source_drawing_filetype?</label>
-    <div class="controls">
-    <input type="text" placeholder="" name="source_drawing_filetype" 
-      value="{{ config['state'].get('source_drawing_filetype', '') }}" 
-      class="input-xxlarge" {{dis}}>
-    <p class="muted">Set value here. Its a description.<br/>Else, leave it blank</p>
-    </div>
+{% set list = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+{% for item in list %}
+<div id="{{ item }}" class="control-group">
+  <label class="control-label" for="{{ item }}">{{ item }}:</label>
+  <div class="controls">
+  <input type="text" placeholder="" name="{{ item }}" 
+    value="{{ config['state'].get('item', '') }}" 
+    class="input-xxlarge" {{dis}}>
+  <p class="muted">Set string value here, or leave it blank</p>
   </div>
+</div>
+{% endfor %}
+
+
 
   <div class="control-group">
     <div class="controls">
