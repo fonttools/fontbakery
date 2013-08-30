@@ -57,7 +57,7 @@
       </tr>
 
       <tr>
-        <td>
+        <td style="text-align: right">
             State:
         </td>
         <td colspan="2" style="text-align: left">
@@ -74,19 +74,19 @@
       </tr>
 
       <tr>
-        <td>
+        <td style="text-align: right">
             Stats:
         </td>
         {% if repo.family_stat %}
-        <td colspan="3">
-            Total - {{ repo.family_stat.total }} <br />
-            Month - {{ repo.family_stat.month }} <br />
-            Week - {{ repo.family_stat.week }} <br />
-            Yesterday - {{ repo.family_stat.yesterday }} <br /> 
-            Rate - {{ repo.family_stat.rate }} <br />
+        <td colspan="2">
+            Total {{ repo.family_stat.total }},
+            {{ repo.family_stat.month }}/month,
+            {{ repo.family_stat.week }}/week,
+            {{ repo.family_stat.yesterday }}/day,
+            {{ repo.family_stat.rate }}/second
         </td>
         {% else %}
-        <td colspan="3">
+        <td colspan="2">
             No stats found
         </td>
         {% endif %}
