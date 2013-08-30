@@ -13,8 +13,8 @@
     <tr>
       <th>{{ _("ID") }}</th>
       <th>{{ _("Project") }}</th>
-      <th>{{ _("Source") }}</th>
-      <th>{{ _("Actions") }}</th>
+      <th style="text-align: center">{{ _("Source") }}</th>
+      <th style="text-align: right">{{ _("Actions") }}</th>
     </tr>
   </thead>
 
@@ -26,7 +26,7 @@
             <a href="{{ url_for('project.fonts', project_id = item.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{item.clone}}">{{ item.title }}</a>
             {% if item.homepage %}(<a href="{{ item.homepage}}"><i class="icon-share"></i></a>){% endif %}
         </td>
-        <td>
+        <td style="text-align: center">
             {% if item.config['state']['source_drawing_filetype'] %}
             <a href="{{ url_for('project.dashboard', project_id = item.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ item.config['state']['source_drawing_filetype'] }}"></i></a>
             {% else %}
@@ -35,7 +35,7 @@
             
             </a>
         </td>
-        <td>
+        <td style="text-align: right">
       {% if not item.is_ready %}
       Project downloading
       {% else %}
