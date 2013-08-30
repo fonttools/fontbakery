@@ -1,6 +1,7 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
 {% set page_title = _('Projects Dashboard') %}
+{% set list = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 
 {% block body %}
 
@@ -8,32 +9,24 @@
 
 <a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
-<table class="table table-striped">
+<table class="table table-condensed table-every3" id="dashboard">
   <thead>
     <tr>
       <th>{{ _("ID") }}</th>
       <th>{{ _("Project") }}</th>
-      <th style="text-align: center">{{ _("Source") }}</th>
       <th style="text-align: right">{{ _("Actions") }}</th>
     </tr>
   </thead>
 
   <tbody>
+    {# repos contains only repos that have is_ready set #}
     {% for repo in repos -%}
+
       <tr>
         <td>{{repo.id}}</td>
         <td>
             <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{repo.clone}}">{{ repo.title }}</a>
             {% if repo.homepage %}(<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>){% endif %}
-        </td>
-        <td style="text-align: center">
-            {% if repo.config['state']['source_drawing_filetype'] %}
-            <a href="{{ url_for('project.setup', project_id = repo.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state']['source_drawing_filetype'] }}"></i></a>
-            {% else %}
-            <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Upload source"></i>
-            {% endif %}
-            
-            </a>
         </td>
         <td style="text-align: right">
       {% if not repo.is_ready %}
@@ -63,22 +56,47 @@
         </td>
       </tr>
 
+      <tr>
+        <td>
+            State:
+        </td>
+        <td colspan="2" style="text-align: left">
+        {% for item in list %}
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}">
+            {% if repo.config['state'][item] %}
+              <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+            {% else %}
+              <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
+            {% endif %}
+            </a>
+        {% endfor %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+            Stats:
+        </td>
         {% if repo.family_stat %}
-          <tr>
-            <td colspan="4">
+        <td colspan="3">
             Total - {{ repo.family_stat.total }} <br />
             Month - {{ repo.family_stat.month }} <br />
             Week - {{ repo.family_stat.week }} <br />
             Yesterday - {{ repo.family_stat.yesterday }} <br /> 
             Rate - {{ repo.family_stat.rate }} <br />
-            </td>
-          </tr>
+        </td>
+        {% else %}
+        <td colspan="3">
+            No stats found
+        </td>
         {% endif %}
-      {% endif %} {# is_ready #}
+      </tr>
 
-    {% else %}
+      {% endif %}
+      
+    {% else %} {# ie, if not is_ready #}
       <tr>
-        <td colspan="4">
+        <td colspan="3">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
               {{ _("List of available repositories is empty") }}<br /><br />
               <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>

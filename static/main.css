@@ -199,3 +199,8 @@ ol.linenums li {
 #log {
     font-size: 10px;
 }
+
+.table-every3 tbody tr:nth-child(3n+1) td,
+.table-every3 tbody tr:nth-child(3n+1) th {
+  background-color: #f9f9f9;
+}
