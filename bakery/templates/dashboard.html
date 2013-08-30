@@ -31,7 +31,7 @@
         <td>
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td>
+        <td style="white-space: nowrap">
             <a href="{{ url_for('project.fonts', project_id = repo.id )}}">{{ repo.title }}</a> 
             <a href="{{ repo.clone }}"><i class="icon-signout"></i></a> 
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>{% endif %}
@@ -61,7 +61,7 @@
         <td class="stats" style="text-align: right">
             {{ repo.family_stat.rate|d('?') }}
         </td>
-        <td style="text-align: right">
+        <td style="text-align: right; white-space: nowrap">
         {% if not repo.is_ready %}
           Project downloading
         {% else %}
