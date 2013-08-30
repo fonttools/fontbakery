@@ -18,8 +18,8 @@ venv/bin/activate:
 static/bootstrap/css/bootstrap.css:
 	cd static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
 
-static/jquery-2.0.0.min.js:
-	cd static && curl -O http://code.jquery.com/jquery-2.0.0.min.js
+static/jquery-2.0.3.min.js:
+	cd static && curl -O http://code.jquery.com/jquery-2.0.3.min.js
 
 static/font-awesome.zip:
 	cd static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
@@ -40,7 +40,7 @@ static/jquery.number.min.js:
 	cd static && curl -O https://raw.github.com/teamdf/jquery-number/master/jquery.number.min.js
 
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/jquery.tablesorter static/jquery.number.min.js
+setup: venv/bin/activate requirements.txt static/jquery-2.0.3.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/jquery.tablesorter static/jquery.number.min.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
