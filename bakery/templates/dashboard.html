@@ -30,12 +30,13 @@
       <tr>
         <td>
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
-            {# show repo.config for debugging #}
         </td>
         <td>
-            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{repo.clone}}">{{ repo.title }}</a>
-            {% if repo.homepage %}(<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>){% endif %}
+            <a href="{{ url_for('project.fonts', project_id = repo.id )}}">{{ repo.title }}</a> 
+            <a href="{{ repo.clone }}"><i class="icon-signout"></i></a> 
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>{% endif %}
         </td>
+
         {% for item in stateList %}
         <td style="text-align: center"><a href="{{ url_for('project.setup', project_id = repo.id )}}">
         {% if repo.config['state'][item] %}
