@@ -20,7 +20,6 @@
 
   <tbody>
     {% for item in repos -%}
-      {# show item.config for debugging #}
       <tr>
         <td>{{item.id}}</td>
         <td>
@@ -59,6 +58,7 @@
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
+        {# show item.config for debugging #}
         <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ item.config }}"></i></button>
         </td>
       </tr>
@@ -78,7 +78,7 @@
 
     {% else %}
       <tr>
-        <td colspan="2">
+        <td colspan="4">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
               {{ _("List of available repositories is empty") }}<br /><br />
               <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>
@@ -89,14 +89,4 @@
   </tbody>
 </table>
 
-{% endblock %}
-
-{% block extrajs %}
-<script>
-$(document).ready(function () {
-    $('.apopover').each(function (index, item) {
-        $(item).popover();
-    });
-});
-</script>
 {% endblock %}

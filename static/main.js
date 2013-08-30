@@ -58,3 +58,9 @@ socket.on('stop', function (data) {
 });
 
 });
+
+$(document).ready(function () {
+    $('.apopover').each(function (index, item) {
+        $(item).popover();
+    });
+});
