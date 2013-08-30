@@ -19,20 +19,20 @@ http://github.com/xen/fontbakery/
 
 */
 $(document).ready(function() {
-    $('a[data-confirm]').click(function(ev) {
-        var href = $(this).attr('href');
-        if (!$('#dataConfirmModal').length) {
-            $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
-        } 
-        $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
-        $('#dataConfirmOK').attr('href', href);
-        $('#dataConfirmModal').modal({show:true});
-        return false;
-    });
+
+// Confirm Modal used to confirm license/name permissions
+$('a[data-confirm]').click(function(ev) {
+    var href = $(this).attr('href');
+    if (!$('#dataConfirmModal').length) {
+        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+    } 
+    $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+    $('#dataConfirmOK').attr('href', href);
+    $('#dataConfirmModal').modal({show:true});
+    return false;
 });
 
-$(document).ready(function () {
-
+// #notify is in navbar, showing worker state 
 var $notify = $('#notify');
 
 $("#notify").popover({
@@ -79,8 +79,18 @@ socket.on('stop', function (data) {
 
 });
 
-$(document).ready(function () {
-    $('.apopover').each(function (index, item) {
-        $(item).popover();
-    });
+// apopover class used on dashboard
+$('.apopover').each(function (index, item) {
+    $(item).popover();
+});
+
+// mother* classes used on filestree() trees
+$('.mothership').click(function(){
+  $(this).children('ul').slideToggle();
+});
+$('.mother_of_glyphs').click(function(){
+  event.stopPropagation();
+  $(this).children('ul').slideToggle();
+});
+
 });
