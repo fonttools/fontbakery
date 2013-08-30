@@ -19,7 +19,7 @@ static/bootstrap/css/bootstrap.css:
 	cd static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
 
 static/jquery-2.0.3.min.js:
-	cd static && curl -O http://code.jquery.com/jquery-2.0.3.min.js
+	cd static && curl -O http://code.jquery.com/jquery-2.0.3.min.js && curl -O http://code.jquery.com/jquery-2.0.3.min.map
 
 static/font-awesome.zip:
 	cd static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
