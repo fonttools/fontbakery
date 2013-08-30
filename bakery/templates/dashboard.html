@@ -62,9 +62,9 @@
             {{ repo.family_stat.rate|d('?') }}
         </td>
         <td style="text-align: right">
-      {% if not repo.is_ready %}
-      Project downloading
-      {% else %}
+        {% if not repo.is_ready %}
+          Project downloading
+        {% else %}
         {# setup's values are loaded from defaults #}
         {%   if repo.config['local']['status']=='default' %}
             <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
