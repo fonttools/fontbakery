@@ -302,6 +302,10 @@ def dashboard_save(project_id):
     if request.form.get('source_drawing_filetype'):
         if len(request.form.get('source_drawing_filetype')) > 0:
             p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
+    else:
+        if 'source_drawing_filetype' in p.config['state']:
+            del p.config['state']['source_drawing_filetype']
+
     p.save_state()
     flash(_('source_drawing_filetype saved'))
     return redirect(url_for('project.dashboard', project_id=p.id))
