@@ -25,32 +25,26 @@ from utils import RedisFd
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
-def run(command, cwd = None, log = None):
+def run(command, cwd, log):
     """ Wrapper for subprocess.Popen with custom logging support.
 
-        :param command: shell command to run
-        :param cwd: - current working dir
-        :param log: - loggin object with .write() method
+        :param command: shell command to run, required
+        :param cwd: - current working dir, required
+        :param log: - logging object with .write() method, required
 
     """
-
-    if log:
-        log.write('Command: %s\n' % command)
-
+    log.write('\nCommand: %s\n' % command)
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
     while True:
         stdout = p.stdout.readline()
         stderr = p.stderr.readline()
         log.write(stdout)
         if stderr:
             log.write(stderr, prefix = 'Error: ')
-
         if not stdout and not stderr and p.poll() != None:
             break
-
     if p.returncode:
-        log.write('Fatal: Execution error, command "%s" returned %s \n' % (command, p.returncode))
+        log.write('Fatal: Execution error!\nFatal: $ %s\nFatal: This command exited with exit status: %s \n' % (command, p.returncode))
         # close file before exit
         log.close()
         raise ValueError
