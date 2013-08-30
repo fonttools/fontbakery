@@ -27,7 +27,7 @@
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
           <input type="text" placeholder="" name="{{ item }}" 
-            value="{{ config['state'].get('item', '') }}" 
+            value="{{ config['state'][item] }}" 
             class="input-xxlarge" {{dis}}>
           <p class="muted">Set string value here, or leave it blank</p>
       </div>
