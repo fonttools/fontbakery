@@ -6,7 +6,7 @@ body {
 /* Custom container */
 .container {
   margin: 0 auto;
-  max-width: 1000px;
+  max-width: 2000px;
 }
 
 /* Main marketing message and sign up button */
@@ -200,7 +200,6 @@ ol.linenums li {
     font-size: 10px;
 }
 
-.table-every3 tbody tr:nth-child(3n+1) td,
-.table-every3 tbody tr:nth-child(3n+1) th {
-  background-color: #f9f9f9;
+.container-wide {
+ width: 1500px !important;
 }
