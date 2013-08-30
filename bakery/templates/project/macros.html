@@ -1,11 +1,13 @@
 {% macro nav(active) -%}
-  <h5>{{ project.clone }} 
-  {% if g.debug %}
-    <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-small" type="button"><i class="icon-chevron-up"></i> Pull &amp; rebuild</button></a>    
-  {% endif %}
-	</h5>
-    <h2>{{ page_title }}</h2>
-    <ul class="nav nav-tabs">
+  <h2>{{ project.title }}</h2>
+  <p>
+     <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-signout"></i></a>
+     {% if g.debug %}
+       <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-mini" type="button">Pull &amp; rebuild</button></a>    
+     {% endif %}
+  </p>
+  <h2>{{ page_title }}</h2>
+  <ul class="nav nav-tabs">
         <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
         <li class="dropdown {% if active in ['fonts', 'license', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -38,8 +40,7 @@
             </ul>
           </li>
       {% endif %}
-    </ul>
-
+  </ul>
 {%- endmacro %}
 
 {%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 
