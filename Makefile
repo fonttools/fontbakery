@@ -36,8 +36,11 @@ static/jquery.pjax.js:
 static/jquery.tablesorter:
 	cd static && curl -O http://tablesorter.com/__jquery.tablesorter.zip && unzip __jquery.tablesorter.zip -d tablesorter
 
+static/jquery.number.min.js:
+	cd static && curl -O https://raw.github.com/teamdf/jquery-number/master/jquery.number.min.js
+
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/jquery.tablesorter
+setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/jquery.tablesorter static/jquery.number.min.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project

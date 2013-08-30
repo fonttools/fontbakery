@@ -3,6 +3,7 @@
 {% set page_title = _('Projects Dashboard') %}
 {% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 {% set stateListLength = stateList.count(stateList) %}
+{% set stats = {'total':1, 'month':2, 'week':3, 'yesterday':4, 'rate':5} %}
 
 {% block body %}
 
@@ -10,21 +11,43 @@
 
 <a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
-<table class="table table-striped tablesorter" id="dashboard" style="">
+<table class="table table-striped table-bordered tablesorter" id="dashboard" style="">
   <thead>
     <tr>
       <th>{{ _("ID") }}</th>
       <th>{{ _("Project") }}</th>
+      <th><i class="icon-home" title="Project Homepage"></i></th>
+      <th><i class="icon-github" title="Repository URL"></i> </th>
       <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">State</th>
-      <th class="stats" style="text-align: center">{{ _("Total") }}</th>
-      <th class="stats" style="text-align: center">{{ _("Month") }}</th>
-      <th class="stats" style="text-align: center">{{ _("Week") }}</th>
-      <th class="stats" style="text-align: center">{{ _("Yesterday") }}</th> 
-      <th class="stats" style="text-align: center">{{ _("Rate") }}</th>
+      <th style="text-align: center">{{ _("Total") }}</th>
+      <th style="text-align: center">{{ _("Month") }}</th>
+      <th style="text-align: center">{{ _("Week") }}</th>
+      <th style="text-align: center">{{ _("Day") }}</th> 
+      <th style="text-align: center">{{ _("Second") }}</th>
       <th style="text-align: center">{{ _("Actions") }}</th>
     </tr>
   </thead>
 
+  <tfoot>
+    <tr>
+        <td colspan="22"></td>
+        <td class="stats stat-totals stat-total-total" style="text-align: right"></td>
+        <td class="stats stat-totals stat-month-total" style="text-align: right"></td>
+        <td class="stats stat-totals stat-week-total" style="text-align: right"></td>
+        <td class="stats stat-totals stat-yesterday-total" style="text-align: right"></td>
+        <td class="stats stat-totals stat-rate-total" style="text-align: right"></td>
+        <td colspan="1"></td>
+    </tr>
+    <tr>
+        <td colspan="22"></td>
+        <td style="text-align: center">{{ _("Total") }}</td>
+        <td style="text-align: center">{{ _("Month") }}</td>
+        <td style="text-align: center">{{ _("Week") }}</td>
+        <td style="text-align: center">{{ _("Day") }}</td> 
+        <td style="text-align: center">{{ _("Second") }}</td>
+        <td colspan="1"></td>
+    </tr>
+  </tfoot>
   <tbody>
     {% for repo in repos -%}
       <tr>
@@ -33,10 +56,13 @@
         </td>
         <td style="white-space: nowrap">
             <a href="{{ url_for('project.fonts', project_id = repo.id )}}">{{ repo.title }}</a> 
-            <a href="{{ repo.clone }}"><i class="icon-signout"></i></a> 
-            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>{% endif %}
         </td>
-
+        <td>
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-home"></i></a>{% endif %}
+        </td>
+        <td>
+            <a href="{{ repo.clone }}"><i class="icon-share"></i></a> 
+        </td>
         {% for item in stateList %}
         <td style="text-align: center"><a href="{{ url_for('project.setup', project_id = repo.id )}}">
         {% if repo.config['state'][item] %}
@@ -46,24 +72,24 @@
         {% endif %}
         </a></td>
         {% endfor %}
-        <td class="stats" style="text-align: right">
-            {{ repo.family_stat.total|d('?') }}
+        <td class="stats stat-total" style="text-align: right">
+            {{ repo.family_stat.total|d('0') }}
         </td>
-        <td class="stats" style="text-align: right">
-            {{ repo.family_stat.month|d('?') }}
+        <td class="stats stat-month" style="text-align: right">
+            {{ repo.family_stat.month|d('0') }}
         </td>
-        <td class="stats" style="text-align: right">
-            {{ repo.family_stat.week|d('?') }}
+        <td class="stats stat-week" style="text-align: right">
+            {{ repo.family_stat.week|d('0') }}
         </td>
-        <td class="stats" style="text-align: right">
-            {{ repo.family_stat.yesterday|d('?') }}
+        <td class="stats stat-yesterday" style="text-align: right">
+            {{ repo.family_stat.yesterday|d('0') }}
         </td>
-        <td class="stats" style="text-align: right">
-            {{ repo.family_stat.rate|d('?') }}
+        <td class="stats stat-rate" style="text-align: right">
+            {{ repo.family_stat.rate|d('0') }}
         </td>
-        <td style="text-align: right; white-space: nowrap">
+        <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
-          Project downloading
+            Project downloading
         {% else %}
         {# setup's values are loaded from defaults #}
         {%   if repo.config['local']['status']=='default' %}
@@ -84,31 +110,51 @@
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
+        {% endif %} {# is_ready #}
         </td>
       </tr>
-      {% endif %} {# is_ready #}
-
     {% else %}
       <tr>
-        <td colspan="4">
+          <td colspan="30">
             <p class="muted lead" style="text-align: center; padding-top: 10px;">
               {{ _("List of available repositories is empty") }}<br /><br />
-              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>
+              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add the first one") }}</button></a>
             </p>
-        </td>
+          </td>
       </tr> 
     {%- endfor %}
-  </tbody>
+</tbody>
 </table>
 
 {% endblock %}
 
 {% block extrajs %}
 <script type="text/javascript">
-$(document).ready(function() 
-    { 
-        $("#dashboard").tablesorter(); 
-    } 
-);
+
+var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
+
+$(document).ready(function() { 
+    // Make the dashboard table sortable
+    $("#dashboard").tablesorter(); 
+
+    $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).html() ); });
+    $(".stat-total-total").html(grandTotals.total);
+    
+    $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).html() ); });
+    $(".stat-month-total").html(grandTotals.month);
+
+    $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).html() ); });
+    $(".stat-week-total").html(grandTotals.week);
+
+    $(".stat-yesterday").each(function() { grandTotals.yesterday += parseInt( $(this).html() ); });
+    $(".stat-yesterday-total").html(grandTotals.yesterday);
+
+    $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).html() ); });
+    $(".stat-rate-total").html(grandTotals.rate);
+
+    // Make the stats numbers prettyprinted
+    $(".stats").number(true, 0, '.', ',');
+
+});
 </script>
 {% endblock %}
