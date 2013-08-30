@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Setup Repository") %}
+{% set page_title = _("Setup Project") %}
 
 {% block body %}
 
@@ -12,6 +12,8 @@
 {% else %}
   {% set dis = '' %}
 {% endif %}
+
+<h3>Bake Process Options</h3>
 
 <div class="alert alert-info">
   Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
@@ -96,6 +98,8 @@
   {% endif %}
 
 </form>
+
+<h3>Dashboard Status</h3>
 
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
     <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
