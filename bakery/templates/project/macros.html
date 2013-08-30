@@ -2,9 +2,6 @@
   <h2>{{ project.title }}</h2>
   <p>
      <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-signout"></i></a>
-     {% if g.debug %}
-       <a class="pull-right" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?"><button class="btn btn-mini" type="button">Pull &amp; rebuild</button></a>    
-     {% endif %}
   </p>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">

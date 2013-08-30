@@ -51,7 +51,7 @@ def bump(project_id):
         sync_and_process.delay(p, process = False, sync = True)
 
         flash(_("Git %s was updated" % p.clone))
-    return redirect(url_for('project.buildlog', project_id=project_id))
+    return redirect(url_for('project.setup', project_id=project_id))
 
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
@@ -135,12 +135,14 @@ def setup(project_id):
 @login_required
 def fonts(project_id):
     # this page can be visible by others, not only by owner
+    # TODO consider all pages for that
     p = Project.query.get_or_404(project_id)
 
     if not p.is_ready:
         return render_template('project/is_not_ready.html')
 
-    return render_template('project/fonts.html', project=p)
+    data = p.read_asset('license')
+    return render_template('project/fonts.html', project=p, license=data)
 
 @project.route('/<int:project_id>/license', methods=['GET'])
 @login_required
