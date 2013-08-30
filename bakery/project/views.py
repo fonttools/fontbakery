@@ -286,14 +286,16 @@ def dashboard_save(project_id):
     if not p.is_ready:
         return render_template('project/is_not_ready.html')
 
-    if request.form.get('source_drawing_filetype'):
-        if len(request.form.get('source_drawing_filetype')) > 0:
-            p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
-    else:
-        if 'source_drawing_filetype' in p.config['state']:
-            del p.config['state']['source_drawing_filetype']
+    for item in request.form:
+        if request.form.get(item):
+            if len(request.form.get(item)) > 0:
+                p.config['state'][item] = request.form.get(item)
+                flash(_('Set ' + item))
+        else:
+            if item in p.config['state']:
+                del p.config['state'][item]
+                flash(_('Unset ' + item))
 
     p.save_state()
-    flash(_('source_drawing_filetype saved'))
     return redirect(url_for('project.setup', project_id=p.id))
 
