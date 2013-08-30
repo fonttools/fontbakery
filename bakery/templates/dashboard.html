@@ -63,7 +63,7 @@
             <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build") }}</a>  
         {# build completed successfully #}
         {% elif repo.config['local']['status']=='built' %}
-            <a href="{{ url_for('project.buildlog', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  
+            <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  
         {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>

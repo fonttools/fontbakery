@@ -6,7 +6,7 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
 <h4>{{ _("Incoming Repository") }}</h4>
-<a class="pull-righta" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?">
+<a class="" href="{{ url_for('project.bump', project_id = project.id )}}">
   <button class="btn btn-large" type="button">Pull latest updates</button>
 </a>
 {% from 'project/macros.html' import filestree with context %}

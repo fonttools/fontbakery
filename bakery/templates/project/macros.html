@@ -17,7 +17,7 @@
         </li>
         <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
-          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.buildlog', project_id=project.id ) }}" >Bake Log</a></li>
+          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.log', project_id=project.id ) }}" >Log</a></li>
           <li class="dropdown {% if active in ['yaml', 'metadatajson', 'description', 'rfonts'] %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                  _out <i class="caret"></i>
