@@ -72,7 +72,7 @@
         {% elif repo.config['local']['status']=='repo' %}
             <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
         {# setup's values here and in the repo don't match #}
-        {% elif repo.config['local']['bakery_yaml_in_sync']=='False' %}
+        {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
             <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a>
         {# setup's values here and in the repo match #}
         {% elif repo.config['local']['status']=='local' %}
