@@ -4,9 +4,10 @@ body {
 }
 
 /* Custom container */
-.container {
-  margin: 0 auto;
-  max-width: 2000px;
+@media (min-width: 1200px){
+    .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+        width: 1500px;
+    }
 }
 
 /* Main marketing message and sign up button */
