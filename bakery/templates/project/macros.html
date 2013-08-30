@@ -5,7 +5,6 @@
   </p>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
-        <li {% if active == 'dashboard' %}class="active"{% endif %}><a href="{{ url_for('project.dashboard', project_id = project.id )}}">Project</a></li>
         <li class="dropdown {% if active in ['fonts', 'license', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                Upstream <i class="caret"></i>

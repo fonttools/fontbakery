@@ -28,7 +28,7 @@
         </td>
         <td style="text-align: center">
             {% if item.config['state']['source_drawing_filetype'] %}
-            <a href="{{ url_for('project.dashboard', project_id = item.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ item.config['state']['source_drawing_filetype'] }}"></i></a>
+            <a href="{{ url_for('project.setup', project_id = item.id )}}"><i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ item.config['state']['source_drawing_filetype'] }}"></i></a>
             {% else %}
             <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Upload source"></i>
             {% endif %}

@@ -277,19 +277,6 @@ def rtests(project_id):
     return render_template('project/rtests.html', project=p,
                            tests=test_result)
 
-
-@project.route('/<int:project_id>/dashboard', methods=['GET'])
-@login_required
-def dashboard(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
-    return render_template('project/dashboard.html', project=p)
-
-
 @project.route('/<int:project_id>/dashboard_save', methods=['POST'])
 @login_required
 def dashboard_save(project_id):
@@ -308,5 +295,5 @@ def dashboard_save(project_id):
 
     p.save_state()
     flash(_('source_drawing_filetype saved'))
-    return redirect(url_for('project.dashboard', project_id=p.id))
+    return redirect(url_for('project.setup', project_id=p.id))
 
