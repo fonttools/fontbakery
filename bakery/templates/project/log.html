@@ -39,12 +39,13 @@ buildsocket.on('message', function (data) {
   var data = String(data);
   if (data == '1') { }
   else if (data.startswith('Header: ')){
-    var h2 = $(document.createElement("h2"));
     $log.append($('<h4>').html(data.slice('Header: '.length)));
   } else if (data.startswith('Error: ')){
     $log.append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
   } else if (data.startswith('Fatal: ')){
     $log.append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+  } else if (data.startswith('Start: ')){
+    $log.append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
   } else if (data.startswith('End: ')){
     $log.append($('<span>').addClass('text-success').html('<span class="label label-success">End</span> ' + data.slice('End: '.length)));
   } else if (data.startswith('Command: ')){

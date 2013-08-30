@@ -68,11 +68,12 @@ class RedisFd(object):
     """Redis File Descriptor class, publish writen data to redis channel in parallel to file"""
     def __init__(self, name, mode = 'a'):
         self.fd = open(name, mode)
+        self.fd.write("Start: Bake Begins!") #end of log
 
     def write(self, data, prefix = ''):
         self.fd.write("%s%s" % (prefix, data))
 
     def close(self):
-        self.fd.write("End: end of log") #end of log
+        self.fd.write("End: End of log\n") #end of log
         self.fd.close()
 
