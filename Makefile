@@ -33,8 +33,11 @@ static/socket.io.min.js:
 static/jquery.pjax.js:
 	cd static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
 
+static/jquery.tablesorter:
+	cd static && curl -O http://tablesorter.com/__jquery.tablesorter.zip && unzip __jquery.tablesorter.zip -d tablesorter
+
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js
+setup: venv/bin/activate requirements.txt static/jquery-2.0.0.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/jquery.tablesorter
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project

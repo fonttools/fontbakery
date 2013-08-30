@@ -10,7 +10,7 @@
 
 <a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
 
-<table class="table table-striped" id="dashboard" style="">
+<table class="table table-striped tablesorter" id="dashboard" style="">
   <thead>
     <tr>
       <th>{{ _("ID") }}</th>
@@ -100,4 +100,13 @@
   </tbody>
 </table>
 
-{% endblock %}
+{% endblock %}{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function() 
+    { 
+        $("#dashboard").tablesorter(); 
+    } 
+);
+</script>
