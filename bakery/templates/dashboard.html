@@ -16,12 +16,12 @@
       <th>{{ _("ID") }}</th>
       <th>{{ _("Project") }}</th>
       <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">State</th>
+      <th class="stats" style="text-align: center">{{ _("Total") }}</th>
+      <th class="stats" style="text-align: center">{{ _("Month") }}</th>
+      <th class="stats" style="text-align: center">{{ _("Week") }}</th>
+      <th class="stats" style="text-align: center">{{ _("Yesterday") }}</th> 
+      <th class="stats" style="text-align: center">{{ _("Rate") }}</th>
       <th style="text-align: center">{{ _("Actions") }}</th>
-      <th style="text-align: center">{{ _("Total") }}</th>
-      <th style="text-align: center">{{ _("Month") }}</th>
-      <th style="text-align: center">{{ _("Week") }}</th>
-      <th style="text-align: center">{{ _("Yesterday") }}</th> 
-      <th style="text-align: center">{{ _("Rate") }}</th>
     </tr>
   </thead>
 
@@ -45,6 +45,21 @@
         {% endif %}
         </a></td>
         {% endfor %}
+        <td class="stats" style="text-align: right">
+            {{ repo.family_stat.total|d('?') }}
+        </td>
+        <td class="stats" style="text-align: right">
+            {{ repo.family_stat.month|d('?') }}
+        </td>
+        <td class="stats" style="text-align: right">
+            {{ repo.family_stat.week|d('?') }}
+        </td>
+        <td class="stats" style="text-align: right">
+            {{ repo.family_stat.yesterday|d('?') }}
+        </td>
+        <td class="stats" style="text-align: right">
+            {{ repo.family_stat.rate|d('?') }}
+        </td>
         <td style="text-align: right">
       {% if not repo.is_ready %}
       Project downloading
@@ -68,21 +83,6 @@
         {% else %}
             <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
         {% endif %}
-        </td>
-        <td style="text-align: right">
-            {{ repo.family_stat.total|d('?') }}
-        </td>
-        <td style="text-align: right">
-            {{ repo.family_stat.month|d('?') }}
-        </td>
-        <td style="text-align: right">
-            {{ repo.family_stat.week|d('?') }}
-        </td>
-        <td style="text-align: right">
-            {{ repo.family_stat.yesterday|d('?') }}
-        </td>
-        <td style="text-align: right">
-            {{ repo.family_stat.rate|d('?') }}
         </td>
       </tr>
       {% endif %} {# is_ready #}
