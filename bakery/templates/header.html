@@ -27,7 +27,7 @@
         <ul class="nav pull-right">
 
           {%- for path, caption in [
-            (url_for('frontend.page', path='docs'), _("Documentation")),
+            (url_for('frontend.page', path='.'), _("Documentation")),
           ] %}
           <li{% if path == request.path %} class="active"{% endif %}><a href="{{ path }}">{{ caption }}</a>
           {%- endfor %}
