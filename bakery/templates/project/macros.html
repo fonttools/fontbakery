@@ -6,14 +6,13 @@
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
         <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-        <li class="dropdown {% if active in ['fonts', 'license', 'ufonts'] %}active{% endif %}">
+        <li class="dropdown {% if active in ['fonts', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                Upstream <i class="caret"></i>
           </a>
           <ul class="dropdown-menu">
               <li {% if active == 'ufonts' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream tests</a></li>
               <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse Files</a></li>
-              <li {% if active == 'license' %}class="active" {% endif %}><a href="{{ url_for('project.plicense', project_id=project.id ) }}" >License</a></li>
           </ul>
         </li>
       {% if project.config['local'].get('setup', None) %}

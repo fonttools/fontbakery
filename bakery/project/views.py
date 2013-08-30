@@ -141,19 +141,6 @@ def fonts(project_id):
     data = p.read_asset('license')
     return render_template('project/fonts.html', project=p, license=data)
 
-@project.route('/<int:project_id>/license', methods=['GET'])
-@login_required
-def plicense(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
-    data = p.read_asset('license')
-    return render_template('project/license.html', project=p, license=data)
-
-
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
 def metadatajson(project_id):
