@@ -9,43 +9,36 @@
 
 <h2>{{ page_title }} DEBUG: stateListLength is {{ stateListLength }}</h2>
 
-<table class="table table-striped table-bordered tablesorter" id="dashboard" style="">
+<table class="table table-striped table-bordered table-condensed tablesorter" id="dashboard" style="">
   <thead>
     <tr>
-      <th>{{ _("ID") }}</th>
-      <th>{{ _("Project") }}</th>
-      <th><i class="icon-home" title="Project Homepage"></i></th>
-      <th><i class="icon-github" title="Repository URL"></i> </th>
-      <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">State</th>
+      <th colspan="22"></th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
       <th style="text-align: center">{{ _("Week") }}</th>
       <th style="text-align: center">{{ _("Day") }}</th> 
       <th style="text-align: center">{{ _("Second") }}</th>
-      <th style="text-align: center">{{ _("Actions") }}</th>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+        <th>{{ _("ID") }}</th>
+        <th>{{ _("Project") }}</th>
+        <th><i class="icon-home" title="Project Homepage"></i></th>
+        <th><i class="icon-github" title="Repository URL"></i> </th>
+        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">State</th>
+      <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
+      <th style="text-align: center">{{ _("Next Step") }}</th>
+      <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
   </thead>
 
   <tfoot>
-    <tr>
-        <td colspan="22"></td>
-        <td class="stats stat-totals stat-total-total" style="text-align: right"></td>
-        <td class="stats stat-totals stat-month-total" style="text-align: right"></td>
-        <td class="stats stat-totals stat-week-total" style="text-align: right"></td>
-        <td class="stats stat-totals stat-yesterday-total" style="text-align: right"></td>
-        <td class="stats stat-totals stat-rate-total" style="text-align: right"></td>
-        <td colspan="1"></td>
-    </tr>
-    <tr>
-        <td colspan="22"></td>
-        <td style="text-align: center">{{ _("Total") }}</td>
-        <td style="text-align: center">{{ _("Month") }}</td>
-        <td style="text-align: center">{{ _("Week") }}</td>
-        <td style="text-align: center">{{ _("Day") }}</td> 
-        <td style="text-align: center">{{ _("Second") }}</td>
-        <td colspan="1"></td>
-    </tr>
   </tfoot>
+
   <tbody>
     {% for repo in repos -%}
       <tr>
@@ -109,6 +102,11 @@
                 <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
             {% endif %}
         {% endif %} {# is_ready #}
+        </td>
+        <td>
+          <form class="form-inline" action="{{ url_for('settings.delclone', project_id = repo.id )}}" method="GET">
+            <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
+          </form>
         </td>
       </tr>
     {% else %}

@@ -20,16 +20,29 @@ http://github.com/xen/fontbakery/
 */
 $(document).ready(function() {
 
+var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>'
+
 // Confirm Modal used to confirm license/name permissions
 $('a[data-confirm]').click(function(ev) {
     var href = $(this).attr('href');
     if (!$('#dataConfirmModal').length) {
-        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div>');
+        $('body').append(dataConfirmModalHtml);
     } 
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
-    $('#dataConfirmOK').attr('href', href);
+    $('#dataConfirmYes').attr('href', href);
     $('#dataConfirmModal').modal({show:true});
     return false;
+});
+
+$('button[data-confirm]').click(function(ev) {
+  var form = $(this).closest('form');
+  if (!$('#dataConfirmModal').length) {
+        $('body').append(dataConfirmModalHtml);
+  } 
+  $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+  $('#dataConfirmYes').click(function(ev){form.submit();});
+  $('#dataConfirmModal').modal({show:true});
+  return false;
 });
 
 // #notify is in navbar, showing worker state 
