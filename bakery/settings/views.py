@@ -187,9 +187,9 @@ def delhook(full_name):
         resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' %
                            {'full_name': full_name, 'id': exist_id})
         if resp.status_code != 204:
-            flash(_('Error deleting old webhook, delete if manually or retry'))
+            flash(_('Error deleting old webhook: Delete it manually, or retry'))
     else:
-        flash(_("Webhook is not registered on github, probably it was deleted manually"))
+        flash(_("Webhook is not registered on Github, it was probably deleted manually"))
 
     # pylint:disable-msg=E1101
     project = Project.query.filter_by(
@@ -217,14 +217,14 @@ def addclone():
     clone = request.form.get('clone')
     if len(clone) == 0:
         flash(_('Enter a URL.'))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
+        return redirect(url_for('frontend.splash'))
 
     # pylint:disable-msg=E1101
     dup = Project.query.filter_by(
         login=g.user.login, is_github=False, clone=clone).first()
     if dup:
         flash(_("Repository already added"))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
+        return redirect(url_for('frontend.splash'))
 
     project = Project(
         login=g.user.login,
@@ -249,7 +249,7 @@ def delclone(project_id):
         login=g.user.login, id=project_id).first()
     if not project:
         flash(_("Project not found."))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
+        return redirect(url_for('frontend.splash'))
     db.session.delete(project)
     db.session.commit()
     flash(_("Repository %s succesfuly removed (but files remain on the server)" % project_id))
