@@ -118,8 +118,15 @@
     {%- endfor %}
 </tbody>
 </table>
-<p><a href='{{ url_for('settings.repos') }}' class="btn btn-mini pull-right"><i class="icon-cog"></i> {{ _("Add new projects") }}</a></p>
+<h4>{{ _("Add Git Repository From URL") }}</h4>
 
+<p>{{ _("Enter a git clone string in the allowed format. If a login is required, provide it in the clone string") }} <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">({{ _("Learn more...") }})</a></p>
+
+<form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
+  <label><code>$ git clone</code></label>
+  <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
+  <button type="submit" class="btn btn-primary btn-small" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}">{{ _("Add Repository") }}</button>
+</form>
 {% endif %}
 {% endblock %}
 
