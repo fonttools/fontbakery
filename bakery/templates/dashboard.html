@@ -7,7 +7,8 @@
 
 {% block body %}
 
-<h2>{{ page_title }} DEBUG: stateListLength is {{ stateListLength }}</h2>
+<h2>{{ page_title }}</h2>
+<p>DEBUG: stateListLength is {{ stateListLength }}</p>
 {% if not repos %}
 <p class="muted lead" style="text-align: center; padding-top: 10px;">
 {{ _("List of available repositories is empty") }}
@@ -31,7 +32,7 @@
         <th>{{ _("Project") }}</th>
         <th><i class="icon-home" title="Project Homepage"></i></th>
         <th><i class="icon-github" title="Repository URL"></i> </th>
-        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">State</th>
+        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
@@ -86,9 +87,9 @@
         </td>
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
-            Project downloading
+            {{ _("Project downloading") }}
         {% else %}
-        {# setup's values are loaded from defaults #}
+            {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
                 <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
             {# setup's values are pre-loaded from the repo #}
@@ -111,7 +112,7 @@
         </td>
         <td>
           <form class="form-inline" action="{{ url_for('settings.delclone', project_id = repo.id )}}" method="GET">
-            <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
+            <button type="submit" class="btn btn-mini btn-block" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-trash"></i> </button>
           </form>
         </td>
       </tr>
