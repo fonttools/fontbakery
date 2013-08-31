@@ -21,7 +21,7 @@ except ImportError:
     import json
 
 from flask import (Blueprint, render_template, Response, g, request,
-    current_app, send_from_directory)
+    current_app, send_from_directory, redirect, redirect, url_for)
 
 from ..extensions import pages
 from ..project.models import Project
@@ -40,9 +40,12 @@ def splash():
     if g.user is None:
         return render_template('splash.html')
     else:
-        # TODO: paginator
         projects = Project.query.filter_by(login=g.user.login).all()
-        return render_template('dashboard.html', repos = projects)
+        if len(projects) > 0:
+            return render_template('dashboard.html', repos = projects)
+        else:
+            return redirect(url_for('settings.repos'))
+
 
 @frontend.route('/docs/', defaults={'path': 'index'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
