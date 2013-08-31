@@ -104,7 +104,7 @@ def addhook(full_name):
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
         flash(_('GitHub API access error, please try again later'))
-        return redirect(url_for('settings.repos'))
+        return redirect(url_for('settings.repos') + "#tab_github")
 
     exist_id = False
     if old_hooks.json():
@@ -121,7 +121,7 @@ def addhook(full_name):
                            {'full_name': full_name, 'id': exist_id})
         if resp.status_code != 204:
             flash(_('Error deleting old webhook, delete if manually or retry'))
-            return redirect(url_for('settings.repos'))
+            return redirect(url_for('settings.repos') + "#tab_github")
 
     resp = auth.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
                      data=json.dumps({
@@ -150,14 +150,14 @@ def addhook(full_name):
             project.cache_update(data=project_data.json())
         else:
             flash(_('Repository information update error'))
-            return redirect(url_for('settings.repos'))
+            return redirect(url_for('settings.repos') + "#tab_github")
         project.is_github = True
         db.session.add(project)
         db.session.commit()
     else:
         logging.error('Web hook registration error for %s' % full_name)
         flash(_('Repository webhook update error'))
-        return redirect(url_for('settings.repos'))
+        return redirect(url_for('settings.repos') + "#tab_github")
 
     flash(_('Added webhook for %s.' % (full_name)))
     sync_and_process.ctx_delay(project, process = True, sync = True)
