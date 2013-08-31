@@ -1,4 +1,5 @@
 {% macro nav(active) -%}
+<div id="secondaryNav">
   <h2>{{ project.title }}</h2>
   <p>
      <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-signout"></i></a>
@@ -38,6 +39,7 @@
           </li>
       {% endif %}
   </ul>
+</div>
 {%- endmacro %}
 
 {%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 

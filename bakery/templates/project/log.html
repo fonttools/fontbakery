@@ -57,6 +57,12 @@ buildsocket.on('message', function (data) {
   $(document).scrollTop($(document).height());
 });
 
+  // but keep the nav() on top
+  $('#secondaryNav').css({
+       'position': 'fixed',
+       'background': 'white',
+       'width': '100%'
+      });
 });
 </script>
 {% endblock %}
