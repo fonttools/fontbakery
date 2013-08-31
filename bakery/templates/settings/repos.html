@@ -11,15 +11,13 @@
     </div>
 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#owngit" data-toggle="tab">{{ _("URL") }}</a></li>
-    <li><a href="#massgithub" data-toggle="tab">{{ _("GitHub: One Time") }}</a></li>
-    <li><a href="#github" data-toggle="tab">{{ _("GitHub: Subscription") }}</a></li>
+    <li class="active"><a href="#massgithub" data-toggle="tab">{{ _("One Time") }}</a></li>
+    <li><a href="#github" data-toggle="tab">{{ _("Subscribe") }}</a></li>
   </ul>
 
   <div class="tab-content">
 
-    <div id="massgithub" class="tab-pane">
-      <h4>{{ _("From GitHub") }}</h4>
+    <div id="massgithub" class="tab-pane active">
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
           {{ _("List of GitHub repositories last updated") }} {{ cache.updated | pretty_date}}
@@ -45,8 +43,7 @@
 
     </div>
 
-    <div id="github" class="tab-pane">
-      <h4>From GitHub with Subscriptions</h4>
+    <div id="github" class="tab-pane ">
       <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
         {% if cache %}
           List of GitHub repositories last updated {{ cache.updated | pretty_date}}
@@ -88,46 +85,6 @@
         </tbody>
       </table>
 
-    </div>
-
-
-    <div id="owngit" class="tab-pane active">
-    <h4>Add Git Repository From URL</h4>
-
-    <p>Enter a git clone string in the allowed format. If a login is required, provide it in the clone string <a href="https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS">(Learn more...)</a></p>
-
-    <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
-      <label><code>$ git clone</code></label>
-      <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-      <button type="submit" class="btn btn-primary btn-small" data-confirm="Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?">Add Repository</button>
-    </form>
-
-    {% if gitprojects %}
-    <table class="table table-striped table-condensed">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Repository</th>
-          <th>URL</th>
-          <th>Remove</th>
-        </tr>
-      </thead>
-      <tbody>
-          {% for item in gitprojects -%}
-            <tr>
-              <td>{{ item.id }}</td>
-              <td><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{ item.title }}</a></td>
-              <td><a href="{{ item.clone }}">{{ item.clone }} <i class="icon-signout"></i></a></td>
-			  <td>
-			      <form class="form-inline" action="{{ url_for('settings.delclone', project_id = item.id )}}" method="GET">
-                    <button type="submit" class="btn btn-mini btn-block" data-confirm="Do you really want to remove this repository?"><i class="icon-trash"></i> </button>
-                  </form>
-			  </td>
-            </tr>
-          {%- endfor %}
-      </tbody>
-    </table>
-    {% endif %}
     </div>
 
   </div><!-- /.tab-content -->

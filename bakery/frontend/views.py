@@ -41,10 +41,7 @@ def splash():
         return render_template('splash.html')
     else:
         projects = Project.query.filter_by(login=g.user.login).all()
-        if len(projects) > 0:
-            return render_template('dashboard.html', repos = projects)
-        else:
-            return redirect(url_for('settings.repos'))
+        return render_template('dashboard.html', repos = projects)
 
 
 @frontend.route('/docs/', defaults={'path': 'index'})

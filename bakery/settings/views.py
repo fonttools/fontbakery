@@ -238,7 +238,7 @@ def addclone():
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.fonts', project_id=project.id)))))
     sync_and_process.ctx_delay(project, process = True, sync = True)
-    return redirect(url_for('settings.repos') + "#tab_owngit")
+    return redirect(url_for('frontend.splash'))
 
 
 @settings.route('/delclone/<int:project_id>', methods=['GET'])
