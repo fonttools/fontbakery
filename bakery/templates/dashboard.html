@@ -1,6 +1,6 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
-{% set page_title = _('Projects Dashboard') %}
+{% set page_title = _('Dashboard') %}
 {% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 {% set stateListLength = stateList.count(stateList) %}
 {% set stats = {'total':1, 'month':2, 'week':3, 'yesterday':4, 'rate':5} %}
