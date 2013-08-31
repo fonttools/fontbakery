@@ -64,7 +64,6 @@ socket.on('gone', function (data) {
     $('#notify').popover('show')
 });
 
-
 socket.on('start', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-refresh icon-spin text-success');
@@ -75,8 +74,6 @@ socket.on('stop', function (data) {
     $notify.removeClass();
     $notify.addClass('icon-circle text-success');
     $('#notify').popover('hide')
-});
-
 });
 
 // apopover class used on dashboard
