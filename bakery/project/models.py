@@ -98,7 +98,7 @@ class Project(db.Model):
 
     def read_asset(self, name = None):
         fn = self.asset_by_name(name)
-        if os.path.exists(fn):
+        if os.path.exists(fn) and os.path.isfile(fn):
             return unicode(open(fn, 'r').read(), "utf8")
         else:
             return ''

@@ -29,16 +29,16 @@ def walkWithoutGit(path):
     :param path: path to walk down
     
     Returns:
-        dict: Dictionary of file and directory strings
+        dictionary: Dictionary of file and directory strings
     """
-    dict = {}
+    dictionary = {}
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:
-            h[name] = {}
+            dictionary[name] = {}
         for name in dirs:
             if not name == '.git':
-                h[name] = {}
-    return dict
+                dictionary[name] = {}
+    return dictionary
 
 def load_yaml(default_yml, yml = None):
     """
