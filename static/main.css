@@ -219,3 +219,7 @@ ol.linenums li {
 #log {
     font-size: 10px;
 }
+
+#flash_message_container {
+    padding-top: 2em;
+}
