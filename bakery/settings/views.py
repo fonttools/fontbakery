@@ -248,13 +248,12 @@ def delclone(project_id):
     project = Project.query.filter_by(
         login=g.user.login, id=project_id).first()
     if not project:
-        flash(_("Can't find clone string"))
+        flash(_("Project not found."))
         return redirect(url_for('settings.repos') + "#tab_owngit")
-
     db.session.delete(project)
     db.session.commit()
     flash(_("Repository %s succesfuly removed (but files remain on the server)" % project_id))
-    return redirect(url_for('settings.repos') + "#tab_owngit")
+    return redirect(url_for('frontend.splash'))
 
 
 @settings.route('/massgit/', methods=['POST'])
