@@ -33,8 +33,6 @@ $('a[data-confirm]').click(function(ev) {
 });
 
 // #notify is in navbar, showing worker state 
-var $notify = $('#notify');
-
 $("#notify").popover({
 	title: "Worker is not running!",
 	content: "Run 'make worker' to start it",
@@ -47,33 +45,34 @@ var socket = io.connect("/status", {'force new connection': true});
 window.buildsocket = socket;
 
 socket.on("connect", function(e) {
-    $notify.removeClass();
-    $notify.addClass('icon-circle text-success');
+    $('#notify').removeClass();
+    $('#notify').addClass('icon-circle text-success');
     socket.emit('status', true);
     $('#notify').popover('hide')
 });
 
 socket.on("disconnect", function(e) {
-    $notify.removeClass();
-    $notify.addClass('icon-circle muted');
+    $('#notify').removeClass();
+    $('#notify').addClass('icon-circle muted');
 });
 
 socket.on('gone', function (data) {
-    $notify.removeClass();
-    $notify.addClass('icon-warning-sign text-error');
-    $('#notify').popover('show')
+    $('#notify').removeClass();
+    $('#notify').addClass('icon-warning-sign text-error');
+    $('#notify').popover('show');
+    // TODO add a wait() here then hide it after a second
 });
 
 socket.on('start', function (data) {
-    $notify.removeClass();
-    $notify.addClass('icon-refresh icon-spin text-success');
-    $('#notify').popover('hide')
+    $('#notify').removeClass();
+    $('#notify').addClass('icon-refresh icon-spin text-success');
+    $('#notify').popover('hide');
 });
 
 socket.on('stop', function (data) {
-    $notify.removeClass();
-    $notify.addClass('icon-circle text-success');
-    $('#notify').popover('hide')
+    $('#notify').removeClass();
+    $('#notify').addClass('icon-circle text-success');
+    $('#notify').popover('hide');
 });
 
 // apopover class used on dashboard

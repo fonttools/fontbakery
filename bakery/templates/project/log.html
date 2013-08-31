@@ -26,21 +26,20 @@ if (typeof String.prototype.startswith != 'function') {
 $(document).ready(function () {
 
 var $log = $('#log');
-var buildsocket = io.connect("/build", {'force new connection': true});
+var socket = io.connect("/build", {'force new connection': true});
 
-buildsocket.on("connect", function(e) {
+socket.on("connect", function(e) {
   console.log("Connected", arguments);
-  buildsocket.emit('subscribe', '{{ [project.login, project.id]|join('/')|signify }}');
+  socket.emit('subscribe', '{{ [project.login, project.id]|join('/')|signify }}');
 });
 
-buildsocket.on("disconnect", function(e) {
+socket.on("disconnect", function(e) {
   console.log("Disconnected", arguments);
 });
 
-buildsocket.on('message', function (data) {
+socket.on('message', function (data) {
   var data = String(data);
-  if (data == '1') { }
-  else if (data.startswith('Header: ')){
+         if (data.startswith('Header: ')){
     $log.append($('<h4>').html(data.slice('Header: '.length)));
   } else if (data.startswith('Error: ')){
     $log.append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
