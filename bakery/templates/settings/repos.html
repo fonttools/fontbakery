@@ -102,6 +102,7 @@
       <button type="submit" class="btn btn-primary btn-small" data-confirm="Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?">Add Repository</button>
     </form>
 
+    {% if gitprojects %}
     <table class="table table-striped table-condensed">
       <thead>
         <tr>
@@ -112,7 +113,6 @@
         </tr>
       </thead>
       <tbody>
-        {% if gitprojects %}
           {% for item in gitprojects -%}
             <tr>
               <td>{{ item.id }}</td>
@@ -125,15 +125,9 @@
 			  </td>
             </tr>
           {%- endfor %}
-        {% else %}
-        <tr>
-            <td colspan="2">
-                <p class="muted">Add a git repository by URL</p>
-            </td>
-        </tr> 
-        {% endif %}
       </tbody>
     </table>
+    {% endif %}
     </div>
 
   </div><!-- /.tab-content -->
