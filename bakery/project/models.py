@@ -75,9 +75,9 @@ class Project(db.Model):
     def asset_by_name(self, name):
         """
         Resolve asset id into its real path. For internal use.
-        
+
         :param name: handle for file conventionally found in repositories
-        
+
         """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'log':
@@ -106,21 +106,21 @@ class Project(db.Model):
     def treeFromFilesystem(self, dir=None):
         """
         Read files tree in specied directory
-        
+
         :param dir: handle for tree, either 'in' or 'out'
-        
+
         Returns:
             dict: Dictionary of file and directory strings
         """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if dir == 'in':
             dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
-        if dir == 'out':
+        elif dir == 'out':
             dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self))
         else:
             dict = { 'Sorry, filesystem unavailable': '' }
         return dict
-        
+
 
 
     def save_asset(self, name = None, data = None, **kwarg):
