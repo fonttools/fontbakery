@@ -135,7 +135,7 @@ def copy_and_rename_ufos_process(project, log):
         else:
             _out_name = ufo.split('/')[-1]
 
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), log=log)
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), cwd=_user, log=log)
         # TODO DC: In future this should follow GDI naming for big families
         if familyname:
             finame = os.path.join(_out_src, _out_name, 'fontinfo.plist')

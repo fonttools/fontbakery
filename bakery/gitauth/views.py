@@ -30,21 +30,23 @@ def after_request(response):
 
 @gitauth.route('/me')
 def me():
-    # Visit this URL and log as 1st user in database. Usefull if you need to
-    # work offline. To change list of github users allowed to workin in single
-    # user mode change GITAUTH_LOGIN_LIST config property
-    # You need to login using GitHub once before able to use this functionality
-    # offline. To add record to database.
-    # Only working if server in debug mode.
-
+    """
+    Bypass Github authentication and login as 1st user in the database.
+    
+    Usage:
+        Visit /auth/me to log in as the 1st user in the database, to
+        work offline as that user. To allow a github username to work 
+        in this single user mode, change GITAUTH_LOGIN_LIST config property.
+        You need to login using GitHub at least once before this will work. 
+        This only works if server is in debug mode.
+    """
     if current_app.debug:
         # pylint:disable-msg=E1101
         user = User.get_or_init('offline')
         if user.id and user.login in current_app.config['GITAUTH_LOGIN_LIST']:
             session['user_id'] = user.id
             g.user = user
-            flash(_('Welcome!'))
-
+            flash(_('Welcome to single user mode!'))
     return redirect(url_for('frontend.splash'))
 
 @gitauth.route('/login')

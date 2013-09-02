@@ -104,7 +104,7 @@ def addhook(full_name):
     if old_hooks.status_code != 200:
         logging.error('Repos API reading error for user %s' % g.user.login)
         flash(_('GitHub API access error, please try again later'))
-        return redirect(url_for('settings.repos'))
+        return redirect(url_for('settings.repos') + "#tab_github")
 
     exist_id = False
     if old_hooks.json():
@@ -121,7 +121,7 @@ def addhook(full_name):
                            {'full_name': full_name, 'id': exist_id})
         if resp.status_code != 204:
             flash(_('Error deleting old webhook, delete if manually or retry'))
-            return redirect(url_for('settings.repos'))
+            return redirect(url_for('settings.repos') + "#tab_github")
 
     resp = auth.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
                      data=json.dumps({
@@ -150,14 +150,14 @@ def addhook(full_name):
             project.cache_update(data=project_data.json())
         else:
             flash(_('Repository information update error'))
-            return redirect(url_for('settings.repos'))
+            return redirect(url_for('settings.repos') + "#tab_github")
         project.is_github = True
         db.session.add(project)
         db.session.commit()
     else:
         logging.error('Web hook registration error for %s' % full_name)
         flash(_('Repository webhook update error'))
-        return redirect(url_for('settings.repos'))
+        return redirect(url_for('settings.repos') + "#tab_github")
 
     flash(_('Added webhook for %s.' % (full_name)))
     sync_and_process.ctx_delay(project, process = True, sync = True)
@@ -187,9 +187,9 @@ def delhook(full_name):
         resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' %
                            {'full_name': full_name, 'id': exist_id})
         if resp.status_code != 204:
-            flash(_('Error deleting old webhook, delete if manually or retry'))
+            flash(_('Error deleting old webhook: Delete it manually, or retry'))
     else:
-        flash(_("Webhook is not registered on github, probably it was deleted manually"))
+        flash(_("Webhook is not registered on Github, it was probably deleted manually"))
 
     # pylint:disable-msg=E1101
     project = Project.query.filter_by(
@@ -217,14 +217,14 @@ def addclone():
     clone = request.form.get('clone')
     if len(clone) == 0:
         flash(_('Enter a URL.'))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
+        return redirect(url_for('frontend.splash'))
 
     # pylint:disable-msg=E1101
     dup = Project.query.filter_by(
         login=g.user.login, is_github=False, clone=clone).first()
     if dup:
         flash(_("Repository already added"))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
+        return redirect(url_for('frontend.splash'))
 
     project = Project(
         login=g.user.login,
@@ -238,7 +238,7 @@ def addclone():
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.fonts', project_id=project.id)))))
     sync_and_process.ctx_delay(project, process = True, sync = True)
-    return redirect(url_for('settings.repos') + "#tab_owngit")
+    return redirect(url_for('frontend.splash'))
 
 
 @settings.route('/delclone/<int:project_id>', methods=['GET'])
@@ -248,13 +248,12 @@ def delclone(project_id):
     project = Project.query.filter_by(
         login=g.user.login, id=project_id).first()
     if not project:
-        flash(_("Can't find clone string"))
-        return redirect(url_for('settings.repos') + "#tab_owngit")
-
+        flash(_("Project not found."))
+        return redirect(url_for('frontend.splash'))
     db.session.delete(project)
     db.session.commit()
     flash(_("Repository %s succesfuly removed (but files remain on the server)" % project_id))
-    return redirect(url_for('settings.repos') + "#tab_owngit")
+    return redirect(url_for('frontend.splash'))
 
 
 @settings.route('/massgit/', methods=['POST'])

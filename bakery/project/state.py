@@ -22,25 +22,23 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
-def rwalk(path):
+def walkWithoutGit(path):
     """
     Recursively walk a file system path, excluding .git folders
     
     :param path: path to walk down
     
     Returns:
-        h: Dictionary of file and directory paths
+        dictionary: Dictionary of file and directory strings
     """
-    h = {}
-    cd = os.path.abspath(path)
-    fs = os.listdir(path)
-    for f in fs:
-        cf = os.path.join(cd, f)
-        if os.path.isfile(cf):
-            h[f] = {}
-        elif os.path.isdir(cf) and not cf.endswith('.git'):
-            h[f] = rwalk(cf)
-    return h
+    dictionary = {}
+    for root, dirs, files in os.walk(path, topdown=False):
+        for name in files:
+            dictionary[name] = {}
+        for name in dirs:
+            if not name == '.git':
+                dictionary[name] = {}
+    return dictionary
 
 def load_yaml(default_yml, yml = None):
     """

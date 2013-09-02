@@ -1,12 +1,34 @@
+/*
+Copyright 2013 The Font Bakery Authors. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
+http://github.com/xen/fontbakery/
+
+*/
 body {
-  padding-top: 60px;
+  padding-top: 43px;
   padding-bottom: 40px;
 }
 
 /* Custom container */
-.container {
-  margin: 0 auto;
-  max-width: 1000px;
+@media (min-width: 1200px){
+    .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+        width: auto;
+        padding: 0 11%;
+    }
 }
 
 /* Main marketing message and sign up button */
@@ -33,12 +55,10 @@ body {
 
 @media (max-width: 980px) {
   /* Enable use of floated navbar text */
-/*  .navbar-text.pull-right {
-    float: none;
-    padding-left: 5px;
-    padding-right: 5px;
+  .nav .popover {
+      display:none !important;
   }
-*/}
+}
 
 .footer {
   color: #bbb;
@@ -200,7 +220,6 @@ ol.linenums li {
     font-size: 10px;
 }
 
-.table-every3 tbody tr:nth-child(3n+1) td,
-.table-every3 tbody tr:nth-child(3n+1) th {
-  background-color: #f9f9f9;
+#flash_message_container {
+    padding-top: 2em;
 }
