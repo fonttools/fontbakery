@@ -88,10 +88,10 @@
         {% else %}
             {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
-                <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
             {# setup's values are pre-loaded from the repo #}
             {% elif repo.config['local']['status']=='repo' %}
-                <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
             {# setup's values here and in the repo don't match #}
             {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
                 <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a>
