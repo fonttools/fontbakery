@@ -84,7 +84,7 @@
         </td>
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
-            {{ _("Project downloading") }}
+            <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
         {% else %}
             {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
