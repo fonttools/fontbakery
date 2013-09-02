@@ -42,10 +42,10 @@
 </div>
 {%- endmacro %}
 
-{%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 
- %}{% if name.lower() in highlight_files or name.lower().endswith('.ufo') 
-  %}class="highlight"{% endif 
-%}{%- endmacro %}
+{%- macro highlight(name) %}
+{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] %}
+{% if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{% endif %}
+{%- endmacro %}
 
 {%- macro filestree(tree) %}
   <div class="tree">
