@@ -32,13 +32,16 @@ def walkWithoutGit(path):
         dictionary: Dictionary of file and directory strings
     """
     dictionary = {}
-    for root, dirs, files in os.walk(path, topdown=False):
-        for name in files:
-            dictionary[name] = {}
-        for name in dirs:
-            if not name == '.git':
-                dictionary[name] = {}
+    currentDirectory = os.path.abspath(path)
+    fileList = os.listdir(path)
+    for fileName in fileList:
+        currentFileName = os.path.join(currentDirectory, fileName)
+        if os.path.isfile(currentFileName):
+            dictionary[fileName] = {}
+        elif os.path.isdir(currentFileName) and not currentFileName.endswith('.git'):
+            dictionary[fileName] = walkWithoutGit(currentFileName)
     return dictionary
+
 
 def load_yaml(default_yml, yml = None):
     """

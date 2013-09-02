@@ -118,7 +118,7 @@ class Project(db.Model):
         if dir == 'out':
             dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self))
         else:
-            dict = { 'Sorry': 'Filesystem unavailable' }
+            dict = { 'Sorry, filesystem unavailable': '' }
         return dict
         
 

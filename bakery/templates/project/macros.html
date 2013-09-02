@@ -67,7 +67,7 @@
             {% else %}<i class="icon-file-alt muted"></i>
             {%endif%}{{ key }}
           {% endif %}</a>
-        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ value }}</ul>{%- endif %}
+        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items()) }}</ul>{%- endif %}
         </li>
       {%- endfor %}
       </ul>
