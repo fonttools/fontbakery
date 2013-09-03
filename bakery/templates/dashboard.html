@@ -3,8 +3,6 @@
 {% set page_title = _('Dashboard') %}
 {% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 {% set stateListLength = stateList.count(stateList) %}
-{% set stats = {'total':1, 'month':2, 'week':3, 'yesterday':4, 'rate':5} %}
-
 {% block body %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
@@ -15,10 +13,10 @@
 {% if repos %}
 <table class="table table-striped table-bordered table-condensed tablesorter" id="dashboard" style="">
   <thead>
-  {# This should replace the static stats cells below
+  {# TODO: replace the follow static stats th cells with a loop:
     <tr>
       <th colspan="22"></td>
-      {% for key in stats.iterkeys() %}
+      {% for key, value in repo.family_stat %}
       <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
       {% endfor %}
       <th colspan="2"></td>
@@ -78,19 +76,14 @@
         </td>
         {% endfor %}
 
-        {#
-            
-            The following block sucks, because it is writing the array by hand every time... should be able to iterate over repo.family_stat, but this first for line doesn't work: It just causes Font Bakery to hang.
-            I also tried iterating over a dict, but couldn't find out how to get the vals...
+        {# TODO: replace the following static stats td cells with a loop:
 
-        #}
-        {# for stat in repo.family_stat #}
-        {# for key, val in stats.iterkeys() 
+        {% for key, value in repo.family_stat %}
         <td class="stats stat-{{key}}" style="text-align: right">
-            {{ val }}
+            {{ value }}
         </td>
-        {# endfor #}
-
+        {% endfor %}
+        #}
         <td class="stats stat-total" style="text-align: right">
             {{ repo.family_stat.total|d('0') }}
         </td>
