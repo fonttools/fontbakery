@@ -118,15 +118,14 @@ def copy_and_rename_ufos_process(project, log):
         run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
-
+    # Find out if we set a new familyname
     if config['state'].get('familyname', None):
         familyname = config['state']['familyname']
     else:
-        familyname = ''
+        familyname = False
 
     # Copy UFO files from git repo to out/src/ dir
-
-    for ufo_in in config['state']['ufo']:
+    for _in_ufo in config['state']['ufo']:
         # If we rename, change the filename
         if familyname:
             fontInfoFile = os.path.join(_in, ufo_in, 'fontinfo.plist')
@@ -135,15 +134,15 @@ def copy_and_rename_ufos_process(project, log):
             # we should always have a regular style
             if styleName == 'Normal':
                 styleName = 'Regular'
-            ufo_out = "%s-%s.ufo" % (familyname, styleName)
+            _in_ufo = "%s-%s.ufo" % (familyname, styleName)
         else:
-            _out_name = ufo.split('/')[-1]
+            _out_ufo = _in_ufo.split('/')[-1]
         # Copy the UFOs
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), cwd=_user, log=log)
+        run("cp -R '%s' '%s'" % (os.path.join(_in, _in_ufo), os.path.join(_out_src, _out_ufo)), cwd=_user, log=log)
         # If we rename, change the font family name metadata
         # TODO DC: In future this should follow GDI naming for big families
         if familyname:
-            fontInfoFile = os.path.join(_out_src, ufo_out, 'fontinfo.plist')
+            fontInfoFile = os.path.join(_out_src, _out_ufo, 'fontinfo.plist')
             fontInfo = plistlib.readPlist(fontInfoFile)
             # we should always have a regular style
             if fontInfo['styleName'] == 'Normal':
