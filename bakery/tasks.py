@@ -155,7 +155,6 @@ def copy_and_rename_ufos_process(project, log):
         # Copy the UFOs
         run("cp -R '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
         # If we rename, change the font family name metadata inside the _out_ufo
-        # TODO DC: In future this should follow GDI naming for big families
         if familyName:
             # Read the _out_ufo fontinfo.plist
             _out_ufoPlist = os.path.join(_out_ufo_path, 'fontinfo.plist')
