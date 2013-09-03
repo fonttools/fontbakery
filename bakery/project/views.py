@@ -70,7 +70,7 @@ def setup(project_id):
 
     if not request.form.get('license_file') in config['local']['txt_files']:
         error = True
-        flash(_("Wrong license_file value, must be an error"))
+        flash(_("Please select the license file"))
     config['state']['license_file'] = request.form.get('license_file')
 
     if request.form.get('familyname'):
@@ -84,7 +84,7 @@ def setup(project_id):
     for i in ufo_dirs:
         if i not in config['local']['ufo_dirs']:
             error = True
-            flash(_("Wrong value for UFO folder, must be an error"))
+            flash(_("Please select at least one UFO"))
 
     if len(ufo_dirs)<0:
         error = True

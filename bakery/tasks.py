@@ -161,12 +161,26 @@ def copy_and_rename_ufos_process(project, log):
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
             # Set the familyName
             _out_ufoFontInfo['familyName'] = familyName
-            # Set PS Name
+            # Set PS Name 
+            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
             _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
             # Set Full Name
             _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + styleName
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+    # Copy licence file
+    # TODO: Infer license type from filename
+    # TODO: Copy file based on license type
+    if config['state'].get('license_file', None):
+        licenseFile = config['state']['license_file']
+        _in_license = os.path.join(_in, licenseFile)
+        _out_license = os.path.join(_out, licenseFile)
+        run('cp "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
+    else:
+        log.write('License file not copied\n', prefix = 'Error: ')
+
+
 
 def generate_fonts_process(project, log):
     """
