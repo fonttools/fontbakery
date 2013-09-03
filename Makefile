@@ -13,7 +13,7 @@ all: setup
 .PHONY: setup run prun worker init clean help
 
 venv/bin/activate:
-	virtualenv-2.7 --system-site-packages venv
+	virtualenv --system-site-packages venv
 
 static/bootstrap/css/bootstrap.css:
 	cd static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
