@@ -199,9 +199,8 @@ def ttfautohint_process(project, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
-    log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
-
     if config['state'].get('ttfautohint', None):
+        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
         params = config['state']['ttfautohint']
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
@@ -213,7 +212,8 @@ def ttfautohint_process(project, log):
             }
             run(cmd, cwd=_out, log=log)
     else:
-        run("cp src/*.ttf .", cwd=_out, log=log)
+        log.write('Autohint not used\n', prefix = 'Header: ')
+        run("mv src/*.ttf .", cwd=_out, log=log)
 
 def ttx_process(project, log):
     """
