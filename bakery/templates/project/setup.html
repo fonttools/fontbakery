@@ -18,7 +18,7 @@
 <h3>Bake Process Options</h3>
 
 <div class="alert alert-info">
-  Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
+Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
 </div>
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
