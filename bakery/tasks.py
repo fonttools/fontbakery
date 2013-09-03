@@ -162,9 +162,9 @@ def copy_and_rename_ufos_process(project, log):
             if _out_ufoFontInfo['styleName'] == 'Normal':
                 _out_ufoFontInfo['styleName'] = 'Regular'
             # Set PS Name
-            _out_ufoFontInfo['postscriptFontName'] = familyName + '-' + fontInfo['styleName']
+            _out_ufoFontInfo['postscriptFontName'] = familyName + '-' + _out_ufoFontInfo['styleName']
             # Set Full Name
-            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + fontInfo['styleName']
+            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + _out_ufoFontInfo['styleName']
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
