@@ -102,20 +102,26 @@ def copy_and_rename_ufos_process(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % project)
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
-    # Make the out directory if it doesn't exist
-    if not os.path.exists(_out_src):
-        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
-    # And rotate it out if it does
-    else:
-        i = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
+    # Rotate away the _out dir if it exists
+    if os.path.exists(_out):
+        project.revision = 1
+        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
         while os.path.exists(_out_old):
-            i += 1
-            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
-        run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
+            project.revision += 1
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+        # Move the directory
+        run('mv "%s" "%s"' % (_out, _out_old), cwd = _user, log=log)
+        # Remake the directory 
+        run('mkdir -p "%s"' % (_out_src), cwd = _user, log=log)
+        # Copy the log
+        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
+        run('cp "%s" "%s"' % (_out_log, _out_old_log), cwd = _user, log=log)
+    # Or make the _out dir
+    else:
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
     # Find out if we set a new familyname
