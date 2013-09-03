@@ -42,10 +42,10 @@
 </div>
 {%- endmacro %}
 
-{%- macro highlight(name) %}{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] 
- %}{% if name.lower() in highlight_files or name.lower().endswith('.ufo') 
-  %}class="highlight"{% endif 
-%}{%- endmacro %}
+{%- macro highlight(name) %}
+{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] %}
+{% if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{% endif %}
+{%- endmacro %}
 
 {%- macro filestree(tree) %}
   <div class="tree">
@@ -67,7 +67,7 @@
             {% else %}<i class="icon-file-alt muted"></i>
             {%endif%}{{ key }}
           {% endif %}</a>
-        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items())}}</ul>{%- endif %}
+        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items()) }}</ul>{%- endif %}
         </li>
       {%- endfor %}
       </ul>
