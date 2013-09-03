@@ -162,9 +162,6 @@ def copy_and_rename_ufos_process(project, log):
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
             # Set the familyName
             _out_ufoFontInfo['familyName'] = familyName
-            # Always have a regular style
-            if _out_ufoFontInfo['styleName'] == 'Normal':
-                _out_ufoFontInfo['styleName'] = 'Regular'
             # Set PS Name
             _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
             # Set Full Name
