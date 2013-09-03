@@ -20,7 +20,7 @@ from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
 
-from .state import (project_state_get, project_state_save, rwalk)
+from .state import (project_state_get, project_state_save, walkWithoutGit)
 
 
 class Project(db.Model):
@@ -73,7 +73,12 @@ class Project(db.Model):
                 return self.clone
 
     def asset_by_name(self, name):
-        """ Resolve asset id into its real path. For internal use. """
+        """
+        Resolve asset id into its real path. For internal use.
+
+        :param name: handle for file conventionally found in repositories
+
+        """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'log':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % self)
@@ -93,15 +98,29 @@ class Project(db.Model):
 
     def read_asset(self, name = None):
         fn = self.asset_by_name(name)
-        if os.path.exists(fn):
+        if os.path.exists(fn) and os.path.isfile(fn):
             return unicode(open(fn, 'r').read(), "utf8")
         else:
             return ''
 
-    def tree_in(self):
-        """ Read files tree in repository folder on request """
+    def treeFromFilesystem(self, dir=None):
+        """
+        Read files tree in specied directory
+
+        :param dir: handle for tree, either 'in' or 'out'
+
+        Returns:
+            dict: Dictionary of file and directory strings
+        """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        return rwalk(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
+        if dir == 'in':
+            dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
+        elif dir == 'out':
+            dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self))
+        else:
+            dict = { 'Sorry, filesystem unavailable': '' }
+        return dict
+
 
 
     def save_asset(self, name = None, data = None, **kwarg):

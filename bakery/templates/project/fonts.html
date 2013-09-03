@@ -1,35 +1,23 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Files") %}
+{% set page_title = _("Incoming Repository Files") %}
 
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
-<h4>{{ _("Incoming Repository") }}</h4>
-<a class="pull-righta" href="{{ url_for('project.bump', project_id = project.id )}}" data-confirm="Are you sure you want to pull from the upstream git repository?">
+
+<h4>{{ _("Update Repository") }}</h4>
+<a class="" href="{{ url_for('project.bump', project_id = project.id )}}">
   <button class="btn btn-large" type="button">Pull latest updates</button>
 </a>
+
+<h4>{{ _("Repository Files") }}</h4>
 {% from 'project/macros.html' import filestree with context %}
-{{ filestree() }}
+{{ filestree('in') }}
 
 {% if license %}
 <h4>{{ _("License File") }}</h4>
 <pre>{{ license }}</pre>
 {% endif %}
-
-{% endblock %}
-
-{% block extrajs %}
-<script>
-$(document).ready(function(){
-  $('.mothership').click(function(){
-    $(this).children('ul').slideToggle();
-  });
-  $('.mother_of_glyphs').click(function(){
-    event.stopPropagation();
-    $(this).children('ul').slideToggle();
-  });
-});
-</script>
 
 {% endblock %}

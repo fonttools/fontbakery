@@ -1,5 +1,7 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Setup Project") %}
+{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+
 
 {% block body %}
 
@@ -16,7 +18,7 @@
 <h3>Bake Process Options</h3>
 
 <div class="alert alert-info">
-  Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
+Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
 </div>
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
@@ -109,8 +111,7 @@
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
-    {% set list = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
-    {% for item in list %}
+    {% for item in stateList %}
     <div id="{{ item }}" class="control-group">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
@@ -135,7 +136,6 @@
 
 
 {% block extrajs %}
-
 <script>
 $(document).ready(function() {
   $('button[data-confirm]').click(function(ev) {
@@ -164,8 +164,4 @@ $(document).ready(function() {
   });
 });
 </script>
-
-
-</div>
 {% endblock %}
-

@@ -95,53 +95,71 @@ def project_git_sync(project, log):
 
 def copy_and_rename_ufos_process(project, log):
     """
-    Set up UFOs for building
+    Setup UFOs for building
     """
     config = project.config
     _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % project)
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
-    # Make the out directory if it doesn't exist
-    if not os.path.exists(_out_src):
-        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
-    # And rotate it out if it does
-    else:
-        i = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
+    # Rotate away the _out dir if it exists
+    if os.path.exists(_out):
+        project.revision = 1
+        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
         while os.path.exists(_out_old):
-            i += 1
-            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out' % project) + 'old-' + str(i)
-        run('mv %s %s' % (_out, _out_old), cwd = _user, log=log)
+            project.revision += 1
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+        # Move the directory
+        run('mv "%s" "%s"' % (_out, _out_old), cwd = _user, log=log)
+        # Remake the directory 
+        run('mkdir -p "%s"' % (_out_src), cwd = _user, log=log)
+        # Copy the log
+        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
+        run('cp "%s" "%s"' % (_out_log, _out_old_log), cwd = _user, log=log)
+    # Or make the _out dir
+    else:
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
-
+    # Find out if we set a new familyname
     if config['state'].get('familyname', None):
         familyname = config['state']['familyname']
     else:
-        familyname = ''
+        familyname = False
 
     # Copy UFO files from git repo to out/src/ dir
-
-    for ufo in config['state']['ufo']:
-        _in_folder = os.path.join(_in, ufo)
+    for _in_ufo in config['state']['ufo']:
+        # If we rename, change the filename
         if familyname:
-            ufo_plist = plistlib.readPlist(os.path.join(_in_folder, 'fontinfo.plist'))
-            styleName = ufo_plist['styleName']
-            _out_name = "%s-%s.ufo" % (familyname, styleName)
+            fontInfoFile = os.path.join(_in, ufo_in, 'fontinfo.plist')
+            fontInfo = plistlib.readPlist(fontInfoFile)
+            styleName = fontInfo['styleName']
+            # we should always have a regular style
+            if styleName == 'Normal':
+                styleName = 'Regular'
+            _in_ufo = "%s-%s.ufo" % (familyname, styleName)
         else:
-            _out_name = ufo.split('/')[-1]
-
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), log=log)
+            _out_ufo = _in_ufo.split('/')[-1]
+        # Copy the UFOs
+        run("cp -R '%s' '%s'" % (os.path.join(_in, _in_ufo), os.path.join(_out_src, _out_ufo)), cwd=_user, log=log)
+        # If we rename, change the font family name metadata
         # TODO DC: In future this should follow GDI naming for big families
         if familyname:
-            finame = os.path.join(_out_src, _out_name, 'fontinfo.plist')
-            finfo = plistlib.readPlist(finame)
-            finfo['familyName'] = familyname
-            plistlib.writePlist(finfo, finame)
+            fontInfoFile = os.path.join(_out_src, _out_ufo, 'fontinfo.plist')
+            fontInfo = plistlib.readPlist(fontInfoFile)
+            # we should always have a regular style
+            if fontInfo['styleName'] == 'Normal':
+                fontInfo['styleName'] = 'Regular'
+            #
+            # XXX TODO: This code isn't tested
+            #
+            fontInfo['familyName'] = familyname
+            fontInfo['postscriptFontName'] = familyname + '-' + fontInfo['styleName']
+            fontInfo['postscriptFullName'] = familyname + ' ' + fontInfo['styleName']
+            plistlib.writePlist(fontInfo, fontInfoFile)
 
 def generate_fonts_process(project, log):
     """

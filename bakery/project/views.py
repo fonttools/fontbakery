@@ -17,7 +17,7 @@
 # pylint:disable-msg=E1101
 
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect, json)
+                   url_for, redirect, json, Markup)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
@@ -40,18 +40,15 @@ def before_request():
 @project.route('/<int:project_id>/bump', methods=['GET'])
 @login_required
 def bump(project_id):
-    if g.debug:
-        # pylint:disable-msg=E1101
-        p = Project.query.filter_by(
-            login=g.user.login, id=project_id).first_or_404()
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
 
-        if not p.is_ready:
-            return render_template('project/is_not_ready.html')
+    if not p.is_ready:
+        return render_template('project/is_not_ready.html')
 
-        sync_and_process.delay(p, process = False, sync = True)
-
-        flash(_("Git %s was updated" % p.clone))
-    return redirect(url_for('project.setup', project_id=project_id))
+    sync_and_process.delay(p, process = False, sync = True)
+    flash(Markup(_("Updated repository (<a href='%s'>log</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.log', project_id=project_id), url_for('project.setup', project_id=project_id)))))
+    return redirect(url_for('project.fonts', project_id=project_id))
 
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
@@ -128,7 +125,7 @@ def setup(project_id):
     p.save_state()
 
     sync_and_process.ctx_delay(p, process = True, sync = False)
-    return redirect(url_for('project.buildlog', project_id=p.id))
+    return redirect(url_for('project.log', project_id=p.id))
 
 
 @project.route('/<int:project_id>/', methods=['GET'])
@@ -143,19 +140,6 @@ def fonts(project_id):
 
     data = p.read_asset('license')
     return render_template('project/fonts.html', project=p, license=data)
-
-@project.route('/<int:project_id>/license', methods=['GET'])
-@login_required
-def plicense(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
-    data = p.read_asset('license')
-    return render_template('project/license.html', project=p, license=data)
-
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
@@ -224,7 +208,7 @@ def description_save(project_id):
 
 @project.route('/<int:project_id>/log', methods=['GET'])
 @login_required
-def buildlog(project_id):
+def log(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
@@ -286,14 +270,16 @@ def dashboard_save(project_id):
     if not p.is_ready:
         return render_template('project/is_not_ready.html')
 
-    if request.form.get('source_drawing_filetype'):
-        if len(request.form.get('source_drawing_filetype')) > 0:
-            p.config['state']['source_drawing_filetype'] = request.form.get('source_drawing_filetype')
-    else:
-        if 'source_drawing_filetype' in p.config['state']:
-            del p.config['state']['source_drawing_filetype']
+    for item in request.form:
+        if request.form.get(item):
+            if len(request.form.get(item)) > 0:
+                p.config['state'][item] = request.form.get(item)
+                flash(_('Set ' + item))
+        else:
+            if item in p.config['state']:
+                del p.config['state'][item]
+                flash(_('Unset ' + item))
 
     p.save_state()
-    flash(_('source_drawing_filetype saved'))
     return redirect(url_for('project.setup', project_id=p.id))
 
