@@ -1,110 +1,182 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
-{% set page_title = _('Projects Dashboard') %}
-{% set list = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+{% set page_title = _('Dashboard') %}
+{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+{% set stateListLength = stateList.count(stateList) %}
+{% set stats = {'total':1, 'month':2, 'week':3, 'yesterday':4, 'rate':5} %}
 
 {% block body %}
 
-<h2>{{ page_title }}</h2>
+<form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
+  <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
+  <button type="submit" class="btn btn-primary apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-trigger="hover" data-placement="bottom" data-content="{{ _('Enter a git clone string in the allowed format. If a login is required, provide it in the clone string') }}">{{ _("Add Repository") }}</button>
+</form>
 
-<a href='{{ url_for('settings.repos') }}' class="btn btn-mini"><i class="icon-cog"></i> {{ _("Add new projects") }}</a>
-
-<table class="table table-condensed table-every3" id="dashboard">
+{% if repos %}
+<table class="table table-striped table-bordered table-condensed tablesorter" id="dashboard" style="">
   <thead>
+  {# This should replace the static stats cells below
     <tr>
-      <th>{{ _("ID") }}</th>
-      <th>{{ _("Project") }}</th>
-      <th style="text-align: right">{{ _("Actions") }}</th>
+      <th colspan="22"></td>
+      {% for key in stats.iterkeys() %}
+      <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+      {% endfor %}
+      <th colspan="2"></td>
+    </tr>
+  #}
+    <tr>
+      <th colspan="22"></th>
+      <th style="text-align: center">{{ _("Total") }}</th>
+      <th style="text-align: center">{{ _("Month") }}</th>
+      <th style="text-align: center">{{ _("Week") }}</th>
+      <th style="text-align: center">{{ _("Day") }}</th> 
+      <th style="text-align: center">{{ _("Second") }}</th>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+        <th>{{ _("ID") }}</th>
+        <th>{{ _("Project") }}</th>
+        <th><i class="icon-home" title="Project Homepage"></i></th>
+        <th><i class="icon-github" title="Repository URL"></i> </th>
+        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
+      <th style="text-align: center">{{ _("Next Step") }}</th>
+      <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
   </thead>
 
+  <tfoot>
+
+  </tfoot>
+
   <tbody>
-    {# repos contains only repos that have is_ready set #}
     {% for repo in repos -%}
-
       <tr>
-        <td>{{repo.id}}</td>
         <td>
-            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="apopover" data-placement="bottom" data-trigger="hover" data-content="{{repo.clone}}">{{ repo.title }}</a>
-            {% if repo.homepage %}(<a href="{{ repo.homepage}}"><i class="icon-share"></i></a>){% endif %}
+            <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td style="text-align: right">
-      {% if not repo.is_ready %}
-      Project downloading
-      {% else %}
-        {# setup's values are loaded from defaults #}
-        {%   if repo.config['local']['status']=='default' %}
-            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup this repo now") }}</a>
-        {# setup's values are pre-loaded from the repo #}
-        {% elif repo.config['local']['status']=='repo' %}
-            <a href="{{ url_for('project.fonts', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check setup and build") }}</a>
-        {# setup's values here and in the repo don't match #}
-        {% elif repo.config['local']['bakery_yaml_in_sync']=='False' %}
-            <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Add bakery.yaml to upstream repository") }}</a>
-        {# setup's values here and in the repo match #}
-        {% elif repo.config['local']['status']=='local' %}
-            <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build this repo now") }}</a>  
-        {# build completed successfully #}
-        {% elif repo.config['local']['status']=='built' %}
-            <a href="{{ url_for('project.buildlog', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check build log") }}</a>  
-        {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
+        <td style="white-space: nowrap">
+            <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
+        </td>
+        <td>
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-home"></i></a>{% endif %}
+        </td>
+        <td>
+            <a href="{{ repo.clone }}"><i class="icon-share-sign"></i></a> 
+        </td>
+        {% for item in stateList %}
+        <td style="text-align: center">
+        {% if repo.config['state'][item] %}
+            <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
         {% else %}
-            <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
+            <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
         {% endif %}
-        {# show repo.config for debugging #}
-        <button class='btn btn-mini'><i class="icon-bug apopover" data-trigger="click" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}"></i></button>
         </td>
-      </tr>
-
-      <tr>
-        <td style="text-align: right">
-            State:
-        </td>
-        <td colspan="2" style="text-align: left">
-        {% for item in list %}
-            <a href="{{ url_for('project.setup', project_id = repo.id )}}">
-            {% if repo.config['state'][item] %}
-              <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-            {% else %}
-              <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
-            {% endif %}
-            </a>
         {% endfor %}
-        </td>
-      </tr>
 
-      <tr>
-        <td style="text-align: right">
-            Stats:
+        {#
+            
+            The following block sucks, because it is writing the array by hand every time... should be able to iterate over repo.family_stat, but this first for line doesn't work: It just causes Font Bakery to hang.
+            I also tried iterating over a dict, but couldn't find out how to get the vals...
+
+        #}
+        {# for stat in repo.family_stat #}
+        {# for key, val in stats.iterkeys() 
+        <td class="stats stat-{{key}}" style="text-align: right">
+            {{ val }}
         </td>
-        {% if repo.family_stat %}
-        <td colspan="2">
-            Total {{ repo.family_stat.total }},
-            {{ repo.family_stat.month }}/month,
-            {{ repo.family_stat.week }}/week,
-            {{ repo.family_stat.yesterday }}/day,
-            {{ repo.family_stat.rate }}/second
+        {# endfor #}
+
+        <td class="stats stat-total" style="text-align: right">
+            {{ repo.family_stat.total|d('0') }}
         </td>
+        <td class="stats stat-month" style="text-align: right">
+            {{ repo.family_stat.month|d('0') }}
+        </td>
+        <td class="stats stat-week" style="text-align: right">
+            {{ repo.family_stat.week|d('0') }}
+        </td>
+        <td class="stats stat-yesterday" style="text-align: right">
+            {{ repo.family_stat.yesterday|d('0') }}
+        </td>
+        <td class="stats stat-rate" style="text-align: right">
+            {{ repo.family_stat.rate|d('0') }}
+        </td>
+        
+
+        <td style="text-align: center; white-space: nowrap">
+        {% if not repo.is_ready %}
+            <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
         {% else %}
-        <td colspan="2">
-            No stats found
+            {# setup's values are loaded from defaults #}
+            {%   if repo.config['local']['status']=='default' %}
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
+            {# setup's values are pre-loaded from the repo #}
+            {% elif repo.config['local']['status']=='repo' %}
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
+            {# setup's values here and in the repo don't match #}
+            {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
+                <a href="{{ url_for('project.bakeryyaml', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a>
+            {# setup's values here and in the repo match #}
+            {% elif repo.config['local']['status']=='local' %}
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build") }}</a>  
+            {# build completed successfully #}
+            {% elif repo.config['local']['status']=='built' %}
+                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  
+            {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
+            {% else %}
+                <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
+            {% endif %}
+        {% endif %} {# is_ready #}
         </td>
-        {% endif %}
+        <td>
+          <form class="form-inline" action="{{ url_for('settings.delclone', project_id = repo.id )}}" method="GET">
+            <button type="submit" class="btn btn-mini btn-block" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> </button>
+          </form>
+        </td>
       </tr>
-
-      {% endif %}
-      
-    {% else %} {# ie, if not is_ready #}
-      <tr>
-        <td colspan="3">
-            <p class="muted lead" style="text-align: center; padding-top: 10px;">
-              {{ _("List of available repositories is empty") }}<br /><br />
-              <a href='{{ url_for('settings.repos') }}'><button class="btn btn-primary"><i class="icon-cog"></i> {{ _("Add some now") }}</button></a>
-            </p>
-        </td>
-      </tr> 
     {%- endfor %}
-  </tbody>
+</tbody>
 </table>
+{% else %}
+<div class="jumbotron">
+{{ _('Enter a git clone string in the allowed format. If a login is required, provide it in the clone string') }} <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
+</div>
+{% endif %}
+<p>DEBUG: stateListLength is {{ stateListLength }}</p>
+{% endblock %}
 
+{% block extrajs %}
+<script type="text/javascript">
+
+var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
+
+$(document).ready(function() { 
+    // Make the dashboard table sortable
+    $("#dashboard").tablesorter(); 
+
+    $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).html() ); });
+    $(".stat-total-total").html(grandTotals.total);
+    
+    $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).html() ); });
+    $(".stat-month-total").html(grandTotals.month);
+
+    $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).html() ); });
+    $(".stat-week-total").html(grandTotals.week);
+
+    $(".stat-yesterday").each(function() { grandTotals.yesterday += parseInt( $(this).html() ); });
+    $(".stat-yesterday-total").html(grandTotals.yesterday);
+
+    $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).html() ); });
+    $(".stat-rate-total").html(grandTotals.rate);
+
+    // Make the stats numbers prettyprinted
+    $(".stats").number(true, 0, '.', ',');
+
+});
+</script>
 {% endblock %}

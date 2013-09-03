@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}{{ page_title|default(_('Project')) }}{% endblock %} - Font Bakery</title>
+    <title>{% block title %}{{ page_title|default(_('Project')) }}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
@@ -26,8 +26,9 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body>
-<div class="container">
 
+<div class="container">
+    
 {% block topbar %}
     {% include "header.html" %}
 {% endblock %}
@@ -65,10 +66,12 @@
 </div>
 
 {% block js_btm %}
-  <script src="{{ url_for('static', filename='jquery-2.0.0.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='jquery-2.0.3.min.js') }}"></script>
   <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
   <script src="{{ url_for('static', filename='jquery.pjax.js') }}"></script>
+  <script src="{{ url_for('static', filename='tablesorter/jquery.tablesorter.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='jquery.number.min.js') }}"></script>
   <script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}
 

@@ -35,7 +35,6 @@ from bakery.extensions import db
 
 user = User.get_or_init(login='offline')
 user.name = 'Offline User'
-user.avatar = 'fc335d27aea73ec7e2b87df8b038d69a'
 user.email = 'fake@mail.tldr'
 user.github_access_token = 'fake'
 
