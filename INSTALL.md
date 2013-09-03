@@ -56,8 +56,6 @@ TODO: package ttfautohint for Fedora
 
 ### Ubuntu
 
-TODO: package ttfautohint for Fedora
-
 ```sh
     # Use yum to install dependencies
     sudo apt-get install -y python-virtualenv python sqlite libevent-2.0-5 fontforge ttfautohint redis-server curl
