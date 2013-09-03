@@ -15,6 +15,15 @@
 {% if repos %}
 <table class="table table-striped table-bordered table-condensed tablesorter" id="dashboard" style="">
   <thead>
+  {# This should replace the static stats cells below
+    <tr>
+      <th colspan="22"></td>
+      {% for key in stats.iterkeys() %}
+      <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+      {% endfor %}
+      <th colspan="2"></td>
+    </tr>
+  #}
     <tr>
       <th colspan="22"></th>
       <th style="text-align: center">{{ _("Total") }}</th>
@@ -41,6 +50,7 @@
   </thead>
 
   <tfoot>
+
   </tfoot>
 
   <tbody>
@@ -67,6 +77,20 @@
         {% endif %}
         </td>
         {% endfor %}
+
+        {#
+            
+            The following block sucks, because it is writing the array by hand every time... should be able to iterate over repo.family_stat, but this first for line doesn't work: It just causes Font Bakery to hang.
+            I also tried iterating over a dict, but couldn't find out how to get the vals...
+
+        #}
+        {# for stat in repo.family_stat #}
+        {# for key, val in stats.iterkeys() 
+        <td class="stats stat-{{key}}" style="text-align: right">
+            {{ val }}
+        </td>
+        {# endfor #}
+
         <td class="stats stat-total" style="text-align: right">
             {{ repo.family_stat.total|d('0') }}
         </td>
@@ -82,6 +106,8 @@
         <td class="stats stat-rate" style="text-align: right">
             {{ repo.family_stat.rate|d('0') }}
         </td>
+        
+
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
