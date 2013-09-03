@@ -6,6 +6,7 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('yaml') }}
 
+<h4>{{ _("bakery.yaml File") }}</h4>
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
   <div class="alert alert-info">Your setup is saved in the upstream repository, in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file, displayed below.</div>
 {% else %}
@@ -14,6 +15,11 @@
 
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
+
+<h4>{{ _("Repository Files") }}</h4>
+{% from 'project/macros.html' import filestree with context %}
+{{ filestree('out') }}
+
 {% endblock %}
 
 {% block extrajs %}

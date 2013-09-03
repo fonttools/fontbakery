@@ -1,6 +1,6 @@
 # Installation instructions
 
-This documents is step by step instruction how to setup development and poduction environment. As long as project in development stage production part subject to change. 
+This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change. 
 
 ## Requirements
 
@@ -15,28 +15,59 @@ You need to have installed:
 - ttfautohint
 - Redis 
 
-If you use Mac OS X, a convenient way to install such UNIX software is use [HomeBrew](http://mxcl.github.io/homebrew/). 
+### Mac OS X 
+
+If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/). 
 
 Install HomeBrew and then run these commands in the Terminal:
 
 ```sh
+    # Use HomeBrew to install dependencies
     brew install python sqlite libevent fontforge ttfautohint redis
     # To have launchd start redis at login:
     ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
-    # Then to load redis now:
+    # Start redis now:
     launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
-```
-
-Then install the python dependencies for setting up the project's own python packages:
-
-```sh
+    # Confirm easy_install is available:
     which easy_install-2.7 
     # /usr/local/share/python/easy_install-2.7
+    # Use easy_install to install pip, a better Python package manager
     sudo easy_install-2.7 -U pip;
+    # Use easy_install to install virtualenv
     sudo easy_install-2.7 -U virtualenv;
+    # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
 ```
+
+### Fedora
+
+TODO: package ttfautohint for Fedora
+
+```sh
+    # Use yum to install dependencies
+    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis
+    # Start redis now:
+    sudo /etc/init.d/redis start
+    # Set up a pip download cache
+    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+    mkdir ~/.pip_download_cache;
+```
+
+### Ubuntu
+
+TODO: package ttfautohint for Fedora
+
+```sh
+    # Use yum to install dependencies
+    sudo apt-get install -y python-virtualenv python sqlite libevent-2.0-5 fontforge ttfautohint redis-server curl
+    # Start redis now:
+    sudo /etc/init.d/redis start
+    # Set up a pip download cache
+    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+    mkdir ~/.pip_download_cache;
+```
+
 
 Now your system should be ready.
 
