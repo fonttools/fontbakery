@@ -25,32 +25,26 @@ from utils import RedisFd
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
-def run(command, cwd = None, log = None):
+def run(command, cwd, log):
     """ Wrapper for subprocess.Popen with custom logging support.
 
-        :param command: shell command to run
-        :param cwd: - current working dir
-        :param log: - loggin object with .write() method
+        :param command: shell command to run, required
+        :param cwd: - current working dir, required
+        :param log: - logging object with .write() method, required
 
     """
-
-    if log:
-        log.write('Command: %s\n' % command)
-
+    log.write('\nCommand: %s\n' % command)
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
     while True:
         stdout = p.stdout.readline()
         stderr = p.stderr.readline()
         log.write(stdout)
         if stderr:
             log.write(stderr, prefix = 'Error: ')
-
         if not stdout and not stderr and p.poll() != None:
             break
-
     if p.returncode:
-        log.write('Fatal: Execution error command "%s" returned %s code' % (command, p.returncode))
+        log.write('Fatal: Execution error!\nFatal: $ %s\nFatal: This command exited with exit status: %s \n' % (command, p.returncode))
         # close file before exit
         log.close()
         raise ValueError
@@ -73,45 +67,6 @@ def prun(command, cwd, log=None):
         log.write('Command: %s' % command)
         log.write(stdout)
     return stdout
-
-def set_ready(project):
-    from flask import current_app
-    assert current_app
-    from .extensions import db
-    db.init_app(current_app)
-    project.is_ready = True
-    db.session.add(project)
-    db.session.commit()
-
-@job
-def sync_and_process(project, process = True, sync = False):
-    """
-    Sync and process (Bake) the project.
-    
-    :param project: :class:`~bakery.models.Project` instance
-    :param sync: Boolean. Sync the project. Defaults to off. 
-    :param process: Boolean. Process (Bake) the project. Default to on.
-    """
-    # create user folder
-    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
-        os.makedirs(os.path.join(DATA_ROOT, project.login))
-    # create log file and open it with Redis
-    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
-            'id': project.id,
-            'login': project.login, }
-            ),
-        'w')
-    # Sync the project, if given sync parameter (default no)
-    if sync:
-        project_git_sync(project, log = log)
-    # Bake the project, if given the project parameter (default yes)
-    if process:
-        process_project(project, log = log)
-
-    if not project.is_ready:
-        set_ready(project)
-
-    log.close()
 
 @job
 def project_git_sync(project, log):
@@ -138,44 +93,6 @@ def project_git_sync(project, log):
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
 
-@job
-def process_project(project, log):
-    """
-    Bake the project, building all fonts according to the project setup.
-
-    :param project: :class:`~bakery.models.Project` instance
-    :param log: :class:`~bakery.utils.RedisFd` as log
-    """
-    # login — user login
-    # project_id - database project_id
-
-    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
-    copy_and_rename_ufos_process(project, log)
-
-    # autoprocess is set after setup is completed once
-    if project.config['local'].get('setup', None):
-        log.write('Bake Begins!\n', prefix = 'Header: ')
-
-        log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
-        generate_fonts_process(project, log)
-
-        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
-        ttfautohint_process(project, log)
-
-        log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
-        ttx_process(project, log)
-
-        log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
-        subset_process(project, log)
-
-        log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
-        generate_metadata_process(project, log)
-
-        log.write('Lint (lint.jar)\n', prefix = 'Header: ')
-        lint_process(project, log)
-
-        log.write('Bake Succeeded!\n', prefix = 'Header: ')
-
 def copy_and_rename_ufos_process(project, log):
     """
     Setup UFOs for building
@@ -185,6 +102,8 @@ def copy_and_rename_ufos_process(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
     # Make the out directory if it doesn't exist
     if not os.path.exists(_out_src):
@@ -218,9 +137,9 @@ def copy_and_rename_ufos_process(project, log):
                 styleName = 'Regular'
             ufo_out = "%s-%s.ufo" % (familyname, styleName)
         else:
-            ufo_out = ufo_in.split('/')[-1]
+            _out_name = ufo.split('/')[-1]
         # Copy the UFOs
-        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo_in), os.path.join(_out_src, ufo_out)), log=log)
+        run("cp -R '%s' '%s'" % (os.path.join(_in, ufo), os.path.join(_out_src, _out_name)), cwd=_user, log=log)
         # If we rename, change the font family name metadata
         # TODO DC: In future this should follow GDI naming for big families
         if familyname:
@@ -237,7 +156,6 @@ def copy_and_rename_ufos_process(project, log):
             fontInfo['postscriptFullName'] = familyname + ' ' + fontInfo['styleName']
             plistlib.writePlist(fontInfo, fontInfoFile)
 
-
 def generate_fonts_process(project, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
@@ -245,8 +163,9 @@ def generate_fonts_process(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
-
     scripts_folder = os.path.join(ROOT, 'scripts')
+
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
@@ -256,29 +175,6 @@ def generate_fonts_process(project, log):
             'name': name,
         }
         run(cmd, cwd = scripts_folder, log=log)
-
-
-def generate_metadata_process(project, log):
-    """
-    Generate METADATA.json using genmetadata.py
-    """
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
-
-
-def lint_process(project, log):
-    """
-    Run lint.jar on ttf files
-    """
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    # java -jar dist/lint.jar "$(dirname $metadata)"
-    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
-    # Mark this project as building successfully
-    # TODO: move this from here to the new checker lint process completing all required checks successfully
-    project.config['local']['status'] = 'built'
-
 
 def ttfautohint_process(project, log):
     """
@@ -290,6 +186,8 @@ def ttfautohint_process(project, log):
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
 
     if config['state'].get('ttfautohint', None):
         params = config['state']['ttfautohint']
@@ -305,11 +203,42 @@ def ttfautohint_process(project, log):
     else:
         run("cp src/*.ttf .", cwd=_out, log=log)
 
+def ttx_process(project, log):
+    """
+    Roundtrip TTF files through TTX to compact their filesize
+    """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
+
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
+        name = name[:-4] # cut .ufo
+        filename = os.path.join(_out, name)
+        # convert the ttf to a ttx file - this may fail
+        cmd = "ttx -i '%s.ttf'" % filename
+        run(cmd, cwd=_out, log=log)
+        # move the original ttf to the side
+        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
+        run(cmd, cwd=_out, log=log)
+        # convert the ttx back to a ttf file - this may fail
+        cmd = "ttx -i '%s.ttx'" % filename
+        run(cmd, cwd=_out, log=log)
+        # compare filesizes TODO print analysis of this :)
+        cmd = "ls -l '%s.ttf'*" % filename
+        run(cmd, cwd=_out, log=log)
+        # remove the original (duplicate) ttf
+        cmd = "rm  '%s.ttf.orig'" % filename
+        run(cmd, cwd=_out, log=log)
 
 def subset_process(project, log):
     config = project.config
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+
+    log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
+
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
@@ -334,30 +263,90 @@ def subset_process(project, log):
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
 
-
-def ttx_process(project, log):
+def generate_metadata_process(project, log):
+    """
+    Generate METADATA.json using genmetadata.py
+    """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
-    os.chdir(_out_src)
-    for name in glob.glob("*.ufo"):
-        name = name[:-4] # cut .ufo
-        filename = os.path.join(_out, name)
-        # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename
-        run(cmd, cwd=_out, log=log)
-        # move the original ttf to the side
-        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
-        run(cmd, cwd=_out, log=log)
-        # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename
-        run(cmd, cwd=_out, log=log)
-        # compare filesizes TODO print analysis of this :)
-        cmd = "ls -l '%s.ttf'*" % filename
-        run(cmd, cwd=_out, log=log)
-        # remove the original (duplicate) ttf
-        cmd = "rm  '%s.ttf.orig'" % filename
-        run(cmd, cwd=_out, log=log)
+    cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
+    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
+def lint_process(project, log):
+    """
+    Run lint.jar on ttf files
+    """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('Lint (lint.jar)\n', prefix = 'Header: ')
+    # java -jar dist/lint.jar "$(dirname $metadata)"
+    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # Mark this project as building successfully
+    # TODO: move this from here to the new checker lint process completing all required checks successfully
+    project.config['local']['status'] = 'built'
+
+@job
+def process_project(project, log):
+    """
+    Bake the project, building all fonts according to the project setup.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param log: :class:`~bakery.utils.RedisFd` as log
+    """
+    # login — user login
+    # project_id - database project_id
+
+    copy_and_rename_ufos_process(project, log)
+
+    # autoprocess is set after setup is completed once
+    if project.config['local'].get('setup', None):
+        log.write('Bake Begins!\n', prefix = 'Header: ')
+        generate_fonts_process(project, log)
+        ttfautohint_process(project, log)
+        ttx_process(project, log)
+        subset_process(project, log)
+        generate_metadata_process(project, log)
+        lint_process(project, log)
+        log.write('Bake Succeeded!\n', prefix = 'Header: ')
+
+def set_ready(project):
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
+@job
+def sync_and_process(project, process = True, sync = False):
+    """
+    Sync and process (Bake) the project.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param sync: Boolean. Sync the project. Defaults to off. 
+    :param process: Boolean. Process (Bake) the project. Default to on.
+    """
+    # create user folder
+    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
+        os.makedirs(os.path.join(DATA_ROOT, project.login))
+    # create log file and open it with Redis
+    log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
+            'id': project.id,
+            'login': project.login, }
+            ),
+        'w')
+    # Sync the project, if given sync parameter (default no)
+    if sync:
+        project_git_sync(project, log = log)
+    # Bake the project, if given the project parameter (default yes)
+    if process:
+        process_project(project, log = log)
+
+    if not project.is_ready:
+        set_ready(project)
+
+    log.close()
 
 def project_upstream_tests(project):
     import checker.upstream_runner
@@ -368,7 +357,6 @@ def project_upstream_tests(project):
         result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
     return result
 
-
 def project_result_tests(project):
     import checker.result_runner
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
@@ -377,5 +365,3 @@ def project_result_tests(project):
     for name in glob.glob("*.ttf"):
         result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
     return result
-
-

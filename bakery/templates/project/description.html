@@ -9,7 +9,7 @@
 <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
 <div id="editor"></div>
 <textarea name="description">{{ description }}</textarea>
-<p style="margin-top:0.5em"><button type="submit" class="btn btn-primary">Save</button></p>
+<p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
 </form>
 
 {% endblock %}

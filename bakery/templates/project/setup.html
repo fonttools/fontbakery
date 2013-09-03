@@ -1,5 +1,7 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Setup Repository") %}
+{% set page_title = _("Setup Project") %}
+{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+
 
 {% block body %}
 
@@ -12,6 +14,8 @@
 {% else %}
   {% set dis = '' %}
 {% endif %}
+
+<h3>Bake Process Options</h3>
 
 <div class="alert alert-info">
 Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.
@@ -97,11 +101,41 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
 </form>
 
+<h3>Dashboard Status</h3>
+
+{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
+    <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
+{% else %}
+    <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information. <a class="btn btn-mini pull-right">Reload settings from repo{# this should only be shown if there is a bakery_yaml in upstream #}</a></div>
+{% endif %}
+
+<form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
+
+    {% for item in stateList %}
+    <div id="{{ item }}" class="control-group">
+      <label class="control-label" for="{{ item }}">{{ item }}:</label>
+      <div class="controls">
+          <input type="text" placeholder="" name="{{ item }}" 
+            value="{{ config['state'][item] }}" 
+            class="input-xxlarge" {{dis}}>
+          <p class="muted">Set string value here, or leave it blank</p>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </div>
+    </div>
+
+</form>
+
+
 {% endblock %}
 
 
 {% block extrajs %}
-
 <script>
 $(document).ready(function() {
   $('button[data-confirm]').click(function(ev) {
@@ -130,8 +164,4 @@ $(document).ready(function() {
   });
 });
 </script>
-
-
-</div>
 {% endblock %}
-

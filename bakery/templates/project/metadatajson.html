@@ -18,27 +18,30 @@
 <div style="width: 48%; float: right">
 <h4>METADATA.json.new generated from files</h4>
 <div id="editor_new"></div>
-<pre id="metadata_new">{{ metadata_new }}</pre> <!-- TODO: stop this from wrapping internally with CSS -->
+<textarea name="metadata_new">{{ metadata_new }}</textarea>
 </div>
 
 <div style="width: 100%; clear:both">
 
 <div class="pull-right">
     <label class="radio">
-      Delete <tt>METADATA.json.new</tt>?
+      Delete <code>METADATA.json.new</code>?
       <input type="checkbox" name="delete" id="delete" value="1" checked>
     </label>
 </div>
 
 </div>
+<p style="padding-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
 {% else %}
 
+<div style="width: 48%; float:left">
+<h4>METADATA.json generated from files</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
-
+</div>
+<p style="padding-top:1em;clear:both"><button type="submit" class="btn btn-primary">Save</button></p>
 {% endif %}
 
-<p style="margin-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
 
 </form>
 
@@ -49,31 +52,7 @@
 
 <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
 <script>
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/solarized_light");
-editor.getSession().setMode("ace/mode/json");
-editor.getSession().setUseSoftTabs(true);
-editor.setHighlightActiveLine(false);
-
-// var textarea = $('textarea[name="metadata"]');
-var textarea = $('textarea[name="metadata"]').hide();
-editor.getSession().setValue(textarea.val());
-editor.getSession().on('change', function(){
-  textarea.val(editor.getSession().getValue());
-});
-
-var editorNew = ace.edit("editor_new");
-editorNew.setTheme("ace/theme/solarized_light");
-editorNew.getSession().setMode("ace/mode/json");
-
-// var textarea = $('textarea[name="metadata"]');
-var textareaNew = $('textarea[name="metadata_new"]').hide();
-editorNew.getSession().setValue(textareaNew.val());
-editorNew.getSession().on('change', function(){
-  textareaNew.val(editorNew.getSession().getValue());
-});
-
-// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+/*/ From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
 var heightUpdateFunction = function() {
     var newHeight =
               editor.getSession().getScreenLength()
@@ -84,11 +63,41 @@ var heightUpdateFunction = function() {
     // This call is required for the editor to fix all of its inner structure for adapting to a change in size
     editor.resize();
 };
+*/
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/solarized_light");
+editor.getSession().setMode("ace/mode/json");
+editor.getSession().setUseSoftTabs(true);
+editor.setHighlightActiveLine(false);
+
+// var textarea = $('textarea[name="metadata"]');
+var textarea = $('textarea[name="metadata"]').hide();
+editor.getSession().setValue(textarea.val());
+editor.getSession().on('change', function(){
+  // Whenever a change happens inside the ACE editor, update the size again
+  heightUpdateFunction();
+  textarea.val(editor.getSession().getValue());
+});
+
+{% if metadata_new %}
+
+var editorNew = ace.edit("editor_new");
+editorNew.setTheme("ace/theme/solarized_light");
+editorNew.getSession().setMode("ace/mode/json");
+editorNew.getSession().setUseSoftTabs(true);
+editorNew.setHighlightActiveLine(false);
+
+// var textarea = $('textarea[name="metadata"]');
+var textareaNew = $('textarea[name="metadata_new"]').hide();
+editorNew.getSession().setValue(textareaNew.val());
+editorNew.getSession().on('change', function(){
+  textareaNew.val(editorNew.getSession().getValue());
+});
+
+{% endif %}
+
 // Set initial size to match initial content
 heightUpdateFunction();
-// Whenever a change happens inside the ACE editor, update the size again
-editor.getSession().on('change', heightUpdateFunction);
-// End
 
 </script>
 </div>
