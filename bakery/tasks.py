@@ -124,55 +124,48 @@ def copy_and_rename_ufos_process(project, log):
     else:
         run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
 
-    # Find out if we set a new familyname
+    # Set the familyName
     if config['state'].get('familyname', None):
-        familyname = config['state']['familyname']
+        familyName = config['state']['familyname']
     else:
-        familyname = False
+        familyName = False
 
     # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
     for _in_ufo in config['state']['ufo']:
-        # Decide the incoming filename, _in_ufo
+        # Decide the incoming filepath
         _in_ufo_path = os.path.join(_in, _in_ufo) 
-
-        # Decide the outgoing filename, _out_ufo
-        # If we rename, change the filename
-        if familyname:
-            # read the _in_ufo fontinfo.plist
-            _in_ufoPlist = os.path.join(_in_ufo_path, 'fontinfo.plist')
-            _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
-            # get the styleName
-            styleName = _in_ufoFontInfo['styleName']
-            # always have a regular style
-            if styleName == 'Normal':
-                styleName = 'Regular'
-            # use the familyname and stylename the _out_ufo filename
-            _out_ufo = "%s-%s.ufo" % (familyname, styleName)
-        # Else use same name in filename
-        # TODO: Read the familyname, styleName from the UFO and use that
-        else:
-            _out_ufo = _in_ufo.split('/')[-1]
-
-        # Copy the UFOs
+        # Read the _in_ufo fontinfo.plist
+        _in_ufoPlist = os.path.join(_in_ufo_path, 'fontinfo.plist')
+        _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
+        # Get the styleName
+        styleName = _in_ufoFontInfo['styleName']
+        # Always have a regular style
+        if styleName == 'Normal':
+            styleName = 'Regular'
+        # Get the familyName, if its not set
+        if not familyName:
+            familyName = _in_ufoFontInfo['familyName']
+        # Decide the outgoing filepath
+        _out_ufo = "%s-%s.ufo" % (familyName, styleName)
         _out_ufo_path = os.path.join(_out_src, _out_ufo)
+        # Copy the UFOs
         run("cp -R '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
-
         # If we rename, change the font family name metadata inside the _out_ufo
         # TODO DC: In future this should follow GDI naming for big families
-        if familyname:
-            # read the _out_ufo fontinfo.plist
+        if familyName:
+            # Read the _out_ufo fontinfo.plist
             _out_ufoPlist = os.path.join(_out_ufo_path, 'fontinfo.plist')
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-            # set the familyName
-            _out_ufoFontInfo['familyName'] = familyname
-            # always have a regular style
+            # Set the familyName
+            _out_ufoFontInfo['familyName'] = familyName
+            # Always have a regular style
             if _out_ufoFontInfo['styleName'] == 'Normal':
                 _out_ufoFontInfo['styleName'] = 'Regular'
-            # Set PS Name to 'familyname-stylename'
-            _out_ufoFontInfo['postscriptFontName'] = familyname + '-' + fontInfo['styleName']
-            # Set Full Name to 'familyname stylename'
-            _out_ufoFontInfo['postscriptFullName'] = familyname + ' ' + fontInfo['styleName']
-            # Write these values to the _out fontinfo.plist
+            # Set PS Name
+            _out_ufoFontInfo['postscriptFontName'] = familyName + '-' + fontInfo['styleName']
+            # Set Full Name
+            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + fontInfo['styleName']
+            # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
 def generate_fonts_process(project, log):
