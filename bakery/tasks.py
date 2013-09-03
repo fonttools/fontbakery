@@ -21,6 +21,7 @@ import subprocess
 from flask.ext.rq import job
 import plistlib
 from utils import RedisFd
+import re
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -145,8 +146,11 @@ def copy_and_rename_ufos_process(project, log):
         # Get the familyName, if its not set
         if not familyName:
             familyName = _in_ufoFontInfo['familyName']
+        # Remove whitespace from names
+        styleNameNoWhitespace = re.sub(r'\s', '', styleName)
+        familyNameNoWhitespace = re.sub(r'\s', '', familyName)
         # Decide the outgoing filepath
-        _out_ufo = "%s-%s.ufo" % (familyName, styleName)
+        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
         _out_ufo_path = os.path.join(_out_src, _out_ufo)
         # Copy the UFOs
         run("cp -R '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
@@ -162,9 +166,9 @@ def copy_and_rename_ufos_process(project, log):
             if _out_ufoFontInfo['styleName'] == 'Normal':
                 _out_ufoFontInfo['styleName'] = 'Regular'
             # Set PS Name
-            _out_ufoFontInfo['postscriptFontName'] = familyName + '-' + _out_ufoFontInfo['styleName']
+            _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
             # Set Full Name
-            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + _out_ufoFontInfo['styleName']
+            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + styleName
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
