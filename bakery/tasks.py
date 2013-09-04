@@ -173,9 +173,25 @@ def copy_and_rename_ufos_process(project, log):
     # TODO: Infer license type from filename
     # TODO: Copy file based on license type
     if config['state'].get('license_file', None):
-        licenseFile = config['state']['license_file']
+        # Set _in license file name
+        licenseFileIn = config['state']['license_file']
+        # List posible OFL and Apache filesnames
+        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt', 'OFL.md']
+        listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
+        # Canonicalize _out license file name
+        for fileName in listOfOflFilenames:
+            if licenseFileIn == fileName:
+                licenseFileOut = 'OFL.txt'
+            else:
+                licenseFileOut = licenseFileIn        
+        for fileName in listOfApacheFilenames:
+            if licenseFileIn == fileName:
+                licenseFileOut = 'LICENSE.txt'
+            else:
+                licenseFileOut = licenseFileIn
+        # Copy license file
         _in_license = os.path.join(_in, licenseFile)
-        _out_license = os.path.join(_out, licenseFile)
+        _out_license = os.path.join(_out, licenseFileOut)
         run('cp "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
     else:
         log.write('License file not copied\n', prefix = 'Error: ')
