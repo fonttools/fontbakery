@@ -46,7 +46,7 @@ def run(command, cwd, log):
         if not stdout and not stderr and p.poll() != None:
             break
     if p.returncode:
-        log.write('Fatal: Execution error!\nFatal: $ %s\nFatal: This command exited with exit status: %s \n' % (command, p.returncode))
+        log.write('Fatal: Execution error!\nFatal: This command exited with exit status %s \n' % p.returncode)
         # close file before exit
         log.close()
         raise ValueError
