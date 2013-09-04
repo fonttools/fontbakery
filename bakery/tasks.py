@@ -107,24 +107,6 @@ def copy_and_rename_ufos_process(project, log):
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
-    # Rotate away the _out dir if it exists
-    if os.path.exists(_out):
-        project.revision = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        while os.path.exists(_out_old):
-            project.revision += 1
-            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        # Move the directory
-        run('mv "%s" "%s"' % (_out, _out_old), cwd = _user, log=log)
-        # Remake the directory 
-        run('mkdir -p "%s"' % (_out_src), cwd = _user, log=log)
-        # Copy the log
-        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
-        run('cp "%s" "%s"' % (_out_log, _out_old_log), cwd = _user, log=log)
-    # Or make the _out dir
-    else:
-        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
-
     # Set the familyName
     if config['state'].get('familyname', None):
         familyName = config['state']['familyname']
@@ -376,9 +358,28 @@ def sync_and_process(project, process = True, sync = False):
     :param sync: Boolean. Sync the project. Defaults to off. 
     :param process: Boolean. Process (Bake) the project. Default to on.
     """
-    # create user folder
+    # Ensure user folder exists
     if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
         os.makedirs(os.path.join(DATA_ROOT, project.login))
+
+    # Rotate away the _out dir if it exists
+    if os.path.exists(_out):
+        project.revision = 1
+        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+        while os.path.exists(_out_old):
+            project.revision += 1
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+        # Move the directory
+        run('mv "%s" "%s"' % (_out, _out_old), cwd = _user, log=log)
+        # Remake the directory 
+        run('mkdir -p "%s"' % (_out_src), cwd = _user, log=log)
+        # Copy the log
+        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
+        run('cp "%s" "%s"' % (_out_log, _out_old_log), cwd = _user, log=log)
+    # Or make the _out dir
+    else:
+        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
+
     # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
             'id': project.id,
