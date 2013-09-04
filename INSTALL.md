@@ -54,11 +54,11 @@ TODO: package ttfautohint for Fedora
     mkdir ~/.pip_download_cache;
 ```
 
-### Ubuntu
+### Debian & Ubuntu
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y python-virtualenv python sqlite libevent-2.0-5 fontforge ttfautohint redis-server curl
+    sudo apt-get install -y python-virtualenv python sqlite libsqlite3-dev libevent-2.0-5 fontforge ttfautohint redis-server curl
     # Start redis now:
     sudo /etc/init.d/redis start
     # Set up a pip download cache
