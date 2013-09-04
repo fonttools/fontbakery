@@ -81,7 +81,10 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake Project</button>
+      <button id="bake" name="bake" value="value" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake</button>
+      <button id="save" name="save" value="value" type="submit" class="btn">Save</button>
+      {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
+      <button class="btn disabled" disabled>Reload from upstream</button>
     </div>
   </div>
 
@@ -92,7 +95,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
     <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
 {% else %}
-    <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information. <a class="btn btn-mini pull-right">Reload settings from repo{# this should only be shown if there is a bakery_yaml in upstream #}</a></div>
+    <div class="alert alert-block">These details are <strong>NOT</strong> yet saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information.</div>
 {% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">

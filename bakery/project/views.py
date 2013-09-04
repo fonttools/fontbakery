@@ -50,7 +50,6 @@ def bump(project_id):
     flash(Markup(_("Updated repository (<a href='%s'>log</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.log', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.fonts', project_id=project_id))
 
-
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 def setup(project_id):
@@ -120,12 +119,15 @@ def setup(project_id):
     config['local']['setup'] = True
 
     if originalConfig != config:
-        flash(_("Updated %s setup" % p.clone))
+        flash(_("Setup updated"))
 
     p.save_state()
-
-    sync_and_process.ctx_delay(p, process = True, sync = False)
-    return redirect(url_for('project.log', project_id=p.id))
+    if request.form.get('bake'):
+        sync_and_process.ctx_delay(p, process = True, sync = False)
+        return redirect(url_for('project.log', project_id=p.id))
+    else:
+        flash(_("Setup saved"))
+        return redirect(url_for('project.setup', project_id=p.id))
 
 
 @project.route('/<int:project_id>/', methods=['GET'])
