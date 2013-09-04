@@ -381,7 +381,7 @@ def sync_and_process(project, process = True, sync = False):
         os.makedirs(_out_src)
         # Copy the log
         _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
-         shutil.copyfile(_out_log, _out_old_log)
+        shutil.copyfile(_out_log, _out_old_log)
 
     # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
