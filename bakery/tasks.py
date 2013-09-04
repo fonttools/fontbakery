@@ -280,6 +280,10 @@ def ttx_process(project, log):
         # remove the original (duplicate) ttf
         cmd = "rm  '%s.ttf.orig'" % filename
         run(cmd, cwd=_out, log=log)
+        # move ttx files to src
+        cmd = "mv '%s.ttx' %s" % (filename, _out_src)
+        run(cmd, cwd=_out, log=log)
+
 
 def subset_process(project, log):
     config = project.config
