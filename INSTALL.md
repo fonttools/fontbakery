@@ -23,13 +23,13 @@ Install HomeBrew and then run these commands in the Terminal:
 
 ```sh
     # Use HomeBrew to install dependencies
-    brew install python sqlite libevent fontforge ttfautohint redis
+    brew install python sqlite libevent fontforge ttfautohint redis;
     # To have launchd start redis at login:
-    ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+    ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
     # Start redis now:
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist;
     # Confirm easy_install is available:
-    which easy_install-2.7 
+    which easy_install-2.7;
     # /usr/local/share/python/easy_install-2.7
     # Use easy_install to install pip, a better Python package manager
     sudo easy_install-2.7 -U pip;
@@ -46,9 +46,14 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis
+    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis;
+    # install ttfautohint from git
+    git clone git://repo.or.cz/ttfautohint.git;
+    cd ttfautohint;
+    ./configure --with-doc=no;
+    sudo make install;
     # Start redis now:
-    sudo /etc/init.d/redis start
+    sudo /etc/init.d/redis start;
     # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
@@ -58,44 +63,51 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y python-virtualenv python sqlite libsqlite3-dev libevent-2.0-5 fontforge ttfautohint redis-server curl
+    sudo apt-get install -y python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge ttfautohint redis-server curl;
     # Start redis now:
-    sudo /etc/init.d/redis start
+    sudo /etc/init.d/redis start;
     # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
 ```
 
-
 Now your system should be ready.
 
 ## Installation
 
-Install your local environment is very easy. Project require some system programms installed, but do not install its own dependencies into system. All packages installs into folder `venv`.
+Installing Font Bakery is easy. It requires some other programs, but does not install its own dependencies into your system. Most packages are installed into the `venv` directory.
 
-Clone Google Font Directory Mercurial Repository from Google Code into new folder:
+First make a new 'src' folder for source code in your home directory, if it doesn't yet exist:
 
-    hg clone https://code.google.com/p/googlefontdirectory/ 
+    mkdir ~/src;
+
+Clone Google Font Directory Mercurial Repository from Google Code into new folder in your home directory:
+
+    hg clone https://code.google.com/p/googlefontdirectory/ ~/src/googlefontdirectory;
 
 Clone code from github into new folder:
 
-    git clone https://github.com/xen/fontbakery.git fontbakery
+    git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 
-Copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory:
+Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have 
 
-    cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar scripts/
+    which javac;
+    # /usr/bin/javac
+    cd ~/src/googlefontdirectory/tools/lint/;
+    ant lint-jar;
+    cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar ~/src/fontbakery/scripts/;
 
 Then run setup:
 
-    cd fontbakery
-    make setup
+    cd ~/src/fontbakery;
+    make setup;
 
-Wait some time.
+Wait some time and watch everything being installed.
 
-NB: As `fontforge` cann't be installed using pip and is installed into your system python's site packaged make sure that 
+NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that 
 default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
 
-**Optional step**: Make your own `local.cfg` based on `local.example.cfg`. Or use this as example:
+**Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
     GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
@@ -105,17 +117,17 @@ Github application info is for demo use only. You can [make your own](https://gi
 
 Init database tables:
 
-    make init
+    make init;
 
 And run project:
 
-    make run
+    make run;
 
-Run tasks daemon worker in different console
+Then in different console, run the tasks worker:
 
-    make worker
+    make worker;
 
-Open [http://localhost:5000/](http://localhost:5000/) in your browser
+Now open [http://localhost:5000/](http://localhost:5000/) in your browser
 
 ## Development notes
 
@@ -125,5 +137,5 @@ Production mode has additional requirements:
 
 * PostgreSQL, a high performance database for production systems
 
-By default project will start in development mode, but it is possible to run in production making changes in `local.cfg`. More instructions will follow.
+By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`. TODO: Explains how
 
