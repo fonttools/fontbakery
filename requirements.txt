@@ -16,6 +16,7 @@ beautifulsoup4
 
 # builder and checker
 TTFQuery
+#-e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
 fonttools2
 fontaine
 robofab
@@ -27,5 +28,5 @@ gevent-socketio==0.3.5-rc2
 greenlet==0.4.1
 
 # tasks processings
--e git+http://github.com/xen/flask-rq.git#egg=Flask_RQ
+-e git+git://github.com:xen/flask-rq.git#egg=Flask_RQ
 redis
