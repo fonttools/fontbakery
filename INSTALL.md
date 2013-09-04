@@ -115,20 +115,6 @@ default python interpreter (`which python`) is the same where you installed `fon
 
 Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
 
-Init database tables:
-
-    make init;
-
-And run project:
-
-    make run;
-
-Then in different console, run the tasks worker:
-
-    make worker;
-
-Now open [http://localhost:5000/](http://localhost:5000/) in your browser
-
 ## Development notes
 
 ### Production Mode 
