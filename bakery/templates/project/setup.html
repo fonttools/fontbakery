@@ -1,5 +1,6 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Setup Project") %}
+{% set config = project.config %}
 {% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 
 
@@ -7,13 +8,6 @@
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('setup') }}
-
-{% set config = project.config %}
-{% if config['local'].get('status', None) == 'repo' %}
-  {% set dis = 'disabled' %}
-{% else %}
-  {% set dis = '' %}
-{% endif %}
 
 <h3>Bake Process Options</h3>
 
@@ -32,7 +26,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group">
     <label class="control-label" for="license_file"><strong>License File:</strong></label>
     <div class="controls">
-    <select for="license_file" name="license_file" class="input-xxlarge" {{dis}} required>
+    <select for="license_file" name="license_file" class="input-xxlarge" required>
       <option>Select file</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
@@ -45,7 +39,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <label class="control-label" for="ufo_folders"><strong>UFOs to Bake:</strong></label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
-        size="{{ config['local']['ufo_dirs']|length }}" {{dis}} required>
+        size="{{ config['local']['ufo_dirs']|length }}" required>
       {% for i in config['local']['ufo_dirs'] %}
       <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -57,7 +51,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <label class="control-label" for="subset"><strong>Subsets to Bake:</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
-      size="{{ subsetvals|length }}" {{dis}} required>
+      size="{{ subsetvals|length }}" required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -70,7 +64,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <div class="controls">
     <input type="text" placeholder="" name="familyname" 
       value="{{ config['state'].get('familyname', '') }}" 
-      class="input-xxlarge" {{dis}}>
+      class="input-xxlarge" >
     <p class="muted">If you want to rename the family, type the new family name here.<br/>Else, leave it blank</p>
     </div>
   </div>
@@ -80,24 +74,16 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <div class="controls">
     <input type="text" placeholder="" name="ttfautohint" 
       value="{{ config['state'].get('ttfautohint', '') }}" 
-      class="input-xxlarge" {{dis}}>
+      class="input-xxlarge" >
     <p class="muted">If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank</p>
     </div>
   </div>
 
-  {% if config['local'].get('status', None) == 'repo' %}
-    <p> 
-    Set these values from <code>bakery.yaml</code> in your repository. <a href="{{ url_for('frontend.page', path='docs') }}">More info in documentation</a>.
-    </p>
-
-  {% else %}
   <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake Project</button>
     </div>
   </div>
-
-  {% endif %}
 
 </form>
 
@@ -117,7 +103,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
       <div class="controls">
           <input type="text" placeholder="" name="{{ item }}" 
             value="{{ config['state'][item] }}" 
-            class="input-xxlarge" {{dis}}>
+            class="input-xxlarge" >
           <p class="muted">Set string value here, or leave it blank</p>
       </div>
     </div>
@@ -125,7 +111,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <button type="submit" name="save" value="value" class="btn btn-primary">Save</button>
       </div>
     </div>
 
