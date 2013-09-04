@@ -62,15 +62,12 @@ class Project(db.Model):
 
     @property
     def title(self):
-        # TODO Can be changed when #142 is fixed
+        title = self.clone.split('/')[-1]
+        if not title:
+            title = self.clone
         if self.is_ready and self.config['state'].get('familyname', None):
-            return "%s (%s)" % (self.config['state']['familyname'], self.clone)
-        else:
-            simpleTitle = self.clone.split('/')[-1]
-            if simpleTitle:
-                return simpleTitle
-            else:
-                return self.clone
+            title = "%s (%s)" % (self.config['state']['familyname'], title)
+        return title
 
     def asset_by_name(self, name):
         """
