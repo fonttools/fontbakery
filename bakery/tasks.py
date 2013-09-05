@@ -325,14 +325,10 @@ def process_project(project, log):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
-    # login — user login
-    # project_id - database project_id
-
-    copy_and_rename_ufos_process(project, log)
-
-    # autoprocess is set after setup is completed once
+    # setup is set after 'bake' button is first pressed
     if project.config['local'].get('setup', None):
         log.write('Bake Begins!\n', prefix = 'Header: ')
+        copy_and_rename_ufos_process(project, log)
         generate_fonts_process(project, log)
         ttfautohint_process(project, log)
         ttx_process(project, log)
