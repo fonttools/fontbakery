@@ -116,13 +116,13 @@ def setup(project_id):
         return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
-    config['local']['setup'] = True
-
     if originalConfig != config:
         flash(_("Setup updated"))
 
     p.save_state()
     if request.form.get('bake'):
+        # This marks that the setup is ready enough to bake the project
+        config['local']['setup'] = True
         sync_and_process.ctx_delay(p, process = True, sync = False)
         return redirect(url_for('project.log', project_id=p.id))
     else:
