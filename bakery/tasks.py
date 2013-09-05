@@ -365,24 +365,23 @@ def sync_and_process(project, process = True, sync = False):
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % project)
 
-    # Ensure the project folder exists
-    if not os.path.exists(_out):
-        os.makedirs(_out_src)
-    # Or rotate it away if it does
-    else:
-        # Recursively figure out the top out number
-        project.revision = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        while os.path.exists(_out_old):
-            project.revision += 1
+    # If about to bake the project, rotate the _out dir if it exists
+    # and copy the log. (We do this now before the log file is opened)
+    if process:
+        if os.path.exists(_out):
+            # Recursively figure out the top out number
+            project.revision = 1
             _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        # Move the directory
-        shutil.move(_out, _out_old)
-        # Remake the directory 
-        os.makedirs(_out_src)
-        # Copy the log
-        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
-        shutil.copyfile(_out_log, _out_old_log)
+            while os.path.exists(_out_old):
+                project.revision += 1
+                _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+            # Move the directory
+            shutil.move(_out, _out_old)
+            # Remake the directory 
+            os.makedirs(_out_src)
+            # Copy the log
+            _out_old_log = os.path.join(_out_old, 'process.log')
+            shutil.copyfile(_out_log, _out_old_log)
 
     # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
