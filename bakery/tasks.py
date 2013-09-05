@@ -392,12 +392,12 @@ def sync_and_process(project, process = True, sync = False):
     # Sync the project, if given sync parameter (default no)
     if sync:
         project_git_sync(project, log = log)
+        # This marks the project has downloaded
+        if not project.is_ready:
+            set_ready(project)
     # Bake the project, if given the project parameter (default yes)
     if process:
         process_project(project, log = log)
-
-    if not project.is_ready:
-        set_ready(project)
 
     log.close()
 
