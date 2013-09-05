@@ -69,8 +69,19 @@
         {% for item in stateList %}
         <td style="text-align: center">
         {% if repo.config['state'][item] %}
-            <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+            {% if item == 'licence_type' %}
+                {% if repo.config['state'][item] == 'ofl' %}
+                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">O</span>
+                {% elif repo.config['state'][item] == 'apache' %}
+                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">A</span>
+                {% elif repo.config['state'][item] == 'ufl' %}
+                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">U</span>
+                {% else %}
+                <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                {% endif %}
+            {% else %}
             <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+            {% endif %}
         {% else %}
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
         {% endif %}
