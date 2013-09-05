@@ -122,6 +122,7 @@ def setup(project_id):
     p.save_state()
     if request.form.get('bake'):
         # This marks that the setup is ready enough to bake the project
+        # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
         config['local']['setup'] = True
         sync_and_process.ctx_delay(p, process = True, sync = False)
         return redirect(url_for('project.log', project_id=p.id))
