@@ -101,6 +101,20 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
     {% for item in stateList %}
+    {% if item == 'licence_type' %}
+    <div id="{{ item }}" class="control-group">
+      <label class="control-label" for="{{ item }}">{{ item }}:</label>
+      <div class="controls">
+          <select name="{{ item }}">
+              <option value="">Select license</option>
+              <option value="ofl" {% if config['state'][item] == 'ofl' %}selected{% endif %}>Open Font License v1.1</option>
+              <option value="apache" {% if config['state'][item] == 'apache' %}selected{% endif %}>Apache v2.0</option>
+              <option value="ufl" {% if config['state'][item] == 'ufl' %}selected{% endif %}>Ubuntu Font License v1.0</option>
+          </select>
+          <p class="muted">Select the font license type</p> {# Autodetect this #}
+      </div>
+    </div>
+    {% else %}
     <div id="{{ item }}" class="control-group">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
@@ -110,6 +124,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
           <p class="muted">Set string value here, or leave it blank</p>
       </div>
     </div>
+    {% endif %}
     {% endfor %}
 
     <div class="control-group">
