@@ -325,8 +325,13 @@ def process_project(project, log):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     # setup is set after 'bake' button is first pressed
     if project.config['local'].get('setup', None):
+        # Ensure _out exists
+        if not os.path.exists(_out):
+            os.makedirs(_out_src)
         log.write('Bake Begins!\n', prefix = 'Header: ')
         copy_and_rename_ufos_process(project, log)
         generate_fonts_process(project, log)
