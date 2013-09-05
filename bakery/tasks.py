@@ -245,13 +245,13 @@ def ttx_process(project, log):
         name = name[:-4] # cut .ufo
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename
+        cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename
+        cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
