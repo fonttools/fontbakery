@@ -81,10 +81,10 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
   <div class="control-group">
     <div class="controls">
-      <button id="bake" name="bake" value="value" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake</button>
-      <button id="save" name="save" value="value" type="submit" class="btn">Save</button>
+      <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
+      <input id="save" name="save" value="Save" type="submit" class="btn" />
       {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
-      <button class="btn disabled" disabled>Reload from upstream</button>
+      <input class="btn" name="reset" value="Reload from upstream" disabled>
     </div>
   </div>
 
