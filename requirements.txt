@@ -17,8 +17,7 @@ setuptools
 
 # builder and checker
 TTFQuery
-#-e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
-fonttools2
+-e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
 fontaine
 robofab
 
