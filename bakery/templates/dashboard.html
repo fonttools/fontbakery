@@ -71,11 +71,11 @@
         {% if repo.config['state'][item] %}
             {% if item == 'licence_type' %}
                 {% if repo.config['state'][item] == 'ofl' %}
-                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">O</span>
+                <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
                 {% elif repo.config['state'][item] == 'apache' %}
-                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">A</span>
+                <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
                 {% elif repo.config['state'][item] == 'ufl' %}
-                <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">U</span>
+                <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
                 {% else %}
                 <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
                 {% endif %}
