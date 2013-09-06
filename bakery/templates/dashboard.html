@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% set page_title = _('Dashboard') %}
 {% set stateDict = {
-    'licence_type': {
+    'copyright_license': {
         'icon': 'file-alt',
         'ofl': '<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>', 
         'apache': '<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>', 
@@ -67,13 +67,13 @@
         '4': '4', 
         '5': '5',
         }, 
-    'quality_vendor_category': {
+    'vendor_category': {
         'icon': 'user',
         '1': '1', 
         '2': '2', 
         '3': '3', 
         }, 
-    'quality_vendor': {
+    'vendor_quality': {
         'icon': 'user',
         '1': '1', 
         '2': '2', 
@@ -81,7 +81,7 @@
         '4': '4', 
         '5': '5',
         }, 
-    'quality_design': {
+    'design_quality': {
         'icon': 'pencil',
         '1': '1', 
         '2': '2', 
@@ -89,7 +89,7 @@
         '4': '4', 
         '5': '5',
         }, 
-    'quality_hinting': {
+    'hinting_quality': {
         'icon': 'zoom-in',
         '1': '1', 
         '2': '2', 
@@ -97,7 +97,7 @@
         '4': '4', 
         '5': '5',
         }, 
-    'quality_prints': {
+    'prints_ok': {
         'icon': 'print',
         'True': 'Y',
         'False': 'N',

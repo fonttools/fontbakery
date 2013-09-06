@@ -2,7 +2,7 @@
 {% set page_title = _("Setup Project") %}
 {% set config = project.config %}
 {% set stateDict = {
-    'licence_type': [['O', 'OFL', 'Open Font License v1.1'], ['A', 'Ap2', 'Apache v2.0'], ['U', 'UFL', 'Ubuntu Font License v1.0']], 
+    'copyright_license': [['O', 'OFL', 'Open Font License v1.1'], ['A', 'Ap2', 'Apache v2.0'], ['U', 'UFL', 'Ubuntu Font License v1.0']], 
     'copyright_notice': [True, False], 
     'trademark_notice': [True, False], 
     'trademark_permission': [True, False], 
@@ -14,11 +14,11 @@
     'price_design_usd':[], 
     'price_total_usd':[], 
     'hinting_level': [1, 2, 3, 4, 5], 
-    'quality_vendor_category': [1, 2, 3], 
-    'quality_vendor': [1, 2, 3, 4, 5], 
-    'quality_design': [1, 2, 3, 4, 5], 
-    'quality_hinting': [1, 2, 3, 4, 5], 
-    'quality_prints': [True, False], 
+    'vendor_category': [1, 2, 3], 
+    'vendor_quality': [1, 2, 3, 4, 5], 
+    'design_quality': [1, 2, 3, 4, 5], 
+    'hinting_quality': [1, 2, 3, 4, 5], 
+    'prints_ok': [True, False], 
     'stats_family_name':[],
     } %}
 
@@ -123,7 +123,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <div id="{{ item }}" class="control-group row-fluid">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
-          {% if item == 'licence_type' %}
+          {% if item == 'copyright_license' %}
           <select name="{{ item }}">
               <option value="">Select license</option>
               <option value="ofl" {% if config['state'][item] == 'ofl' %}selected{% endif %}>Open Font License v1.1</option>
