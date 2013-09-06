@@ -2,24 +2,109 @@
 {% extends 'base.html' %}
 {% set page_title = _('Dashboard') %}
 {% set stateDict = {
-    'licence_type': [['O', 'OFL', 'Open Font License v1.1'], ['A', 'Ap2', 'Apache v2.0'], ['U', 'UFL', 'Ubuntu Font License v1.0']], 
-    'copyright_notice': [True, False], 
-    'trademark_notice': [True, False], 
-    'trademark_permission': [True, False], 
-    'rfn_asserted': [True, False], 
-    'rfn_permission': [True, False], 
-    'source_drawing_filetype': ['None', 'UFO', 'SFD', 'VFB', 'glyphs'], 
-    'source_cff_filetype': [True, False], 
-    'source_ttf_filetype': ['None', 'OTF', 'UFO', 'SFD', 'VFB', 'glyphs'], 
-    'price_design_usd':[], 
-    'price_total_usd':[], 
-    'hinting_level': [1, 2, 3, 4, 5], 
-    'quality_vendor_category': [1, 2, 3], 
-    'quality_vendor': [1, 2, 3, 4, 5], 
-    'quality_design': [1, 2, 3, 4, 5], 
-    'quality_hinting': [1, 2, 3, 4, 5], 
-    'quality_prints': [True, False], 
-    'stats_family_name':[],
+    'licence_type': {
+        'icon': 'file-alt',
+        'ofl': '<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>', 
+        'apache': '<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>', 
+        'ufl': '<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>',
+        }, 
+    'copyright_notice': {
+        'icon': 'file-alt',
+        },
+    'trademark_notice': {
+        'icon': 'tumblr',
+        'yes': '<i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> ',
+        'no': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> ',
+        }, 
+    'trademark_permission': {
+        'icon': 'tumblr',
+        'yes': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> ',
+        'no': '<i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> ',
+        },
+    'rfn_asserted': {
+        'icon': 'strikethrough',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'rfn_permission': {
+        'icon': 'strikethrough',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'source_cff_filetype': {
+        'icon': 'file',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'source_drawing_filetype': {
+        'icon': 'file',
+        'None': '-', 
+        'UFO': 'U',
+        'SFD': 'S', 
+        'VFB': 'V', 
+        'glyphs': 'G',
+        },
+    'source_ttf_filetype': {
+        'icon': 'file',
+        'None': '-', 
+        'OTF': 'O', 
+        'UFO': 'U',
+        'SFD': 'S', 
+        'VFB': 'V', 
+        'glyphs': 'G',
+        }, 
+    'price_design_usd':{
+        'icon': 'usd',
+        }, 
+    'price_total_usd':{
+        'icon': 'usd',
+        }, 
+    'hinting_level': { 
+        'icon': 'zoom-in', 
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'quality_vendor_category': {
+        'icon': 'user',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        }, 
+    'quality_vendor': {
+        'icon': 'user',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'quality_design': {
+        'icon': 'pencil',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'quality_hinting': {
+        'icon': 'zoom-in',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'quality_prints': {
+        'icon': 'print',
+        'True': 'Y',
+        'False': 'N',
+        }, 
+    'stats_family_name':{
+        'icon': 'sort-by-order-alt'
+        },
     } %}
 
 {% block body %}
@@ -56,8 +141,8 @@
       <th style="text-align: left">{{ _("Project") }}</th>
       <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
       <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
-      {% for item in stateDict.iterkeys() | sort %}
-      <th style="text-align: center"><i class="icon-sign-blank apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
+      {% for item, value in stateDict.iteritems() | sort %}
+      <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
       {% endfor %}
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
@@ -88,41 +173,19 @@
         <td style="text-align: center">
             <a href="{{ repo.clone }}"><i class="icon-code-fork apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
-        {% for item in stateDict.iterkeys() | sort %}
+        {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">
+            <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
-                {% if item == 'licence_type' %}
-                    {% if repo.config['state'][item] == 'ofl' %}
-                        <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
-                    {% elif repo.config['state'][item] == 'apache' %}
-                        <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
-                    {% elif repo.config['state'][item] == 'ufl' %}
-                        <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
-                {% elif item == 'trademark_notice' %}
-                    {% if repo.config['state'][item] == 'yes' %}
-                        <i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> 
-                    {% elif repo.config['state'][item] == 'no' %}
-                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> 
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
-                {% elif item == 'trademark_permission' %}
-                    {% if repo.config['state'][item] == 'yes' %}
-                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> 
-                    {% elif repo.config['state'][item] == 'no' %}
-                        <i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> 
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
+                {% if repo.config['state'][item] in value.iterkeys() %}
+                    {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
-                    <i class="icon-check apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {{ repo.config['state'][item] }}
                 {% endif %}
             {% else %}
-                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-check-empty"></i> </a>
+                <i class="icon-check-empty"></i> 
             {% endif %}
+            </a>
             </td>
         {% endfor %}
 
