@@ -110,10 +110,12 @@ class Project(db.Model):
             dict: Dictionary of file and directory strings
         """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        if dir == 'in':
-            dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self))
-        elif dir == 'out':
-            dict = walkWithoutGit(os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self))
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self)
+        if dir == 'in' and os.path.exists(_in):
+            dict = walkWithoutGit(_in)
+        elif dir == 'out' and os.path.exists(_out):
+            dict = walkWithoutGit(_out)
         else:
             dict = { 'Sorry, filesystem unavailable': '' }
         return dict
