@@ -236,3 +236,7 @@ a[name] {
   margin-top: -50px;
   display: inline-block; /* required for webkit browsers */
 }
+
+#dashboard a {
+     text-decoration: none;
+}
