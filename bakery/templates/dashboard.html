@@ -1,8 +1,27 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
 {% set page_title = _('Dashboard') %}
-{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
-{% set stateListLength = stateList.count(stateList) %}
+{% set stateDict = {
+    'licence_type': [['O', 'OFL', 'Open Font License v1.1'], ['A', 'Ap2', 'Apache v2.0'], ['U', 'UFL', 'Ubuntu Font License v1.0']], 
+    'copyright_notice': [True, False], 
+    'trademark_notice': [True, False], 
+    'trademark_permission': [True, False], 
+    'rfn_asserted': [True, False], 
+    'rfn_permission': [True, False], 
+    'source_drawing_filetype': ['None', 'UFO', 'SFD', 'VFB', 'glyphs'], 
+    'source_cff_filetype': [True, False], 
+    'source_ttf_filetype': ['None', 'OTF', 'UFO', 'SFD', 'VFB', 'glyphs'], 
+    'price_design_usd':[], 
+    'price_total_usd':[], 
+    'hinting_level': [1, 2, 3, 4, 5], 
+    'quality_vendor_category': [1, 2, 3], 
+    'quality_vendor': [1, 2, 3, 4, 5], 
+    'quality_design': [1, 2, 3, 4, 5], 
+    'quality_hinting': [1, 2, 3, 4, 5], 
+    'quality_prints': [True, False], 
+    'stats_family_name':[],
+    } %}
+
 {% block body %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
@@ -66,7 +85,7 @@
         <td>
             <a href="{{ repo.clone }}"><i class="icon-share-sign apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
-        {% for item in stateList %}
+        {% for item in stateDict.iterkeys() | sort %}
             <td style="text-align: center">
             {% if repo.config['state'][item] %}
                 {% if item == 'licence_type' %}
@@ -170,7 +189,7 @@
 <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
 </div>
 {% endif %}
-<p>DEBUG: stateListLength is {{ stateListLength }}</p>
+
 {% endblock %}
 
 {% block extrajs %}
