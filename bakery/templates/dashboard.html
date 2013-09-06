@@ -67,25 +67,41 @@
             <a href="{{ repo.clone }}"><i class="icon-share-sign apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
         {% for item in stateList %}
-        <td style="text-align: center">
-        {% if repo.config['state'][item] %}
-            {% if item == 'licence_type' %}
-                {% if repo.config['state'][item] == 'ofl' %}
-                <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
-                {% elif repo.config['state'][item] == 'apache' %}
-                <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
-                {% elif repo.config['state'][item] == 'ufl' %}
-                <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
+            <td style="text-align: center">
+            {% if repo.config['state'][item] %}
+                {% if item == 'licence_type' %}
+                    {% if repo.config['state'][item] == 'ofl' %}
+                        <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
+                    {% elif repo.config['state'][item] == 'apache' %}
+                        <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
+                    {% elif repo.config['state'][item] == 'ufl' %}
+                        <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
+                {% elif item == 'trademark_notice' %}
+                    {% if repo.config['state'][item] == 'yes' %}
+                        <i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> 
+                    {% elif repo.config['state'][item] == 'no' %}
+                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> 
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
+                {% elif item == 'trademark_permission' %}
+                    {% if repo.config['state'][item] == 'yes' %}
+                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> 
+                    {% elif repo.config['state'][item] == 'no' %}
+                        <i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> 
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
                 {% else %}
-                <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
                 {% endif %}
             {% else %}
-            <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
             {% endif %}
-        {% else %}
-            <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
-        {% endif %}
-        </td>
+            </td>
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:

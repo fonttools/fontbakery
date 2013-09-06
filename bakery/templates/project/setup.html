@@ -84,7 +84,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
       <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
       <input id="save" name="save" value="Save" type="submit" class="btn" />
       {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
-      <input class="btn" name="reset" value="Reload from upstream" disabled>
+      <input class="btn" name="reset" value="Reload from upstream" disabled="disabled">
     </div>
   </div>
 
@@ -101,30 +101,39 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
     {% for item in stateList %}
-    {% if item == 'licence_type' %}
-    <div id="{{ item }}" class="control-group">
+    <div id="{{ item }}" class="control-group row-fluid">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
+          {% if item == 'licence_type' %}
           <select name="{{ item }}">
               <option value="">Select license</option>
               <option value="ofl" {% if config['state'][item] == 'ofl' %}selected{% endif %}>Open Font License v1.1</option>
               <option value="apache" {% if config['state'][item] == 'apache' %}selected{% endif %}>Apache v2.0</option>
               <option value="ufl" {% if config['state'][item] == 'ufl' %}selected{% endif %}>Ubuntu Font License v1.0</option>
           </select>
-          <p class="muted">Select the font license type</p> {# Autodetect this #}
-      </div>
-    </div>
-    {% else %}
-    <div id="{{ item }}" class="control-group">
-      <label class="control-label" for="{{ item }}">{{ item }}:</label>
-      <div class="controls">
+          <p class="muted">What is the font license type?</p> {# Autodetect this #}
+          {% elif item == 'trademark_notice' %}
+          <select name="{{ item }}">
+              <option value="">Select trademark status</option>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
+          </select>
+          <p class="muted">Is a trademark asserted over this font name?</p>
+          {% elif item == 'trademark_permission' %}
+          <select name="{{ item }}">
+              <option value="">Select trademark permission status</option>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
+          </select>
+          <p class="muted">Do you have permission to use the trademark?</p>
+          {% else %}
           <input type="text" placeholder="" name="{{ item }}" 
             value="{{ config['state'][item] }}" 
             class="input-xxlarge" >
           <p class="muted">Set string value here, or leave it blank</p>
+          {% endif %}
       </div>
     </div>
-    {% endif %}
     {% endfor %}
 
     <div class="control-group">
