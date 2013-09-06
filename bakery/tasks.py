@@ -279,10 +279,24 @@ def subset_process(project, log):
             #   --null --nmr --roundtrip --script --subset=$subset \
             #   $font.ttf $font.$subset >> $font.$subset.log \
             # 2>> $font.$subset.log; \
-
-            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py --null " + \
-                  "--nmr --roundtrip --script --subset=%(subset)s '%(out)s.ttf'" + \
-                  " '%(out)s.%(subset)s'") % {
+            subsetOptions = "--null --nmr --roundtrip --script"
+            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py" + \
+                 "--subset=%(subset)s" + \
+                 options + \
+                 " '%(out)s.ttf'" + \
+                 " '%(out)s.%(subset)s'") % {
+                'subset':subset,
+                'out': os.path.join(_out, name),
+                'name': name,
+                'wd': ROOT
+            }
+            run(cmd, cwd=_out, log=log)
+            subsetOptions = "--null --nmr --roundtrip --script --opentype-features"
+            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py" + \
+                 "--subset=%(subset)s" + \
+                 options + \
+                 " '%(out)s.ttf'" + \
+                 " '%(out)s.%(subset)s-opentype'") % {
                 'subset':subset,
                 'out': os.path.join(_out, name),
                 'name': name,
@@ -290,7 +304,7 @@ def subset_process(project, log):
             }
             run(cmd, cwd=_out, log=log)
     os.chdir(_out)
-    files = glob.glob('*+latin')
+    files = glob.glob('*+latin*')
     for filename in files:
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
