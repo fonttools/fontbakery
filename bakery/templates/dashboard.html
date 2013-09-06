@@ -42,7 +42,8 @@
     </tr>
   #}
     <tr>
-      <th colspan="22"></th>
+      <th colspan="4"></th>
+      <th colspan="18" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
       <th style="text-align: center">{{ _("Week") }}</th>
@@ -51,11 +52,13 @@
       <th colspan="2"></th>
     </tr>
     <tr>
-        <th>{{ _("ID") }}</th>
-        <th>{{ _("Project") }}</th>
-        <th><i class="icon-home" title="Project Homepage"></i></th>
-        <th><i class="icon-github" title="Repository URL"></i> </th>
-        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th style="text-align: center">{{ _("ID") }}</th>
+      <th style="text-align: left">{{ _("Project") }}</th>
+      <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
+      <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
+      {% for item in stateDict.iterkeys() | sort %}
+      <th style="text-align: center"><i class="icon-sign-blank apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
+      {% endfor %}
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
@@ -73,17 +76,17 @@
   <tbody>
     {% for repo in repos -%}
       <tr>
-        <td>
+        <td style="text-align: right">
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td style="white-space: nowrap">
+        <td style="text-align: left; white-space: nowrap">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
         </td>
-        <td>
-            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-home"></i></a>{% endif %}
+        <td style="text-align: center">
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
-        <td>
-            <a href="{{ repo.clone }}"><i class="icon-share-sign apopover" data-trigger="hover" data-content="Repository URL"></i></a>
+        <td style="text-align: center">
+            <a href="{{ repo.clone }}"><i class="icon-code-fork apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
         {% for item in stateDict.iterkeys() | sort %}
             <td style="text-align: center">
@@ -115,10 +118,10 @@
                         <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
                     {% endif %}
                 {% else %}
-                    <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    <i class="icon-check apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
                 {% endif %}
             {% else %}
-                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
+                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-check-empty"></i> </a>
             {% endif %}
             </td>
         {% endfor %}
