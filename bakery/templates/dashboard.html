@@ -7,7 +7,7 @@
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-  <button type="submit" class="btn btn-primary apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-trigger="hover" data-placement="bottom" data-content="{{ _('Enter a git clone string in the allowed format. If a login is required, provide it in the clone string') }}">{{ _("Add Repository") }}</button>
+  <button type="submit" class="btn btn-primary apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}">{{ _("Add Repository") }}</button>
 </form>
 
 {% if repos %}
@@ -64,16 +64,44 @@
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-home"></i></a>{% endif %}
         </td>
         <td>
-            <a href="{{ repo.clone }}"><i class="icon-share-sign"></i></a> 
+            <a href="{{ repo.clone }}"><i class="icon-share-sign apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
         {% for item in stateList %}
-        <td style="text-align: center">
-        {% if repo.config['state'][item] %}
-            <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-        {% else %}
-            <i class="icon-upload-alt apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
-        {% endif %}
-        </td>
+            <td style="text-align: center">
+            {% if repo.config['state'][item] %}
+                {% if item == 'licence_type' %}
+                    {% if repo.config['state'][item] == 'ofl' %}
+                        <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
+                    {% elif repo.config['state'][item] == 'apache' %}
+                        <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
+                    {% elif repo.config['state'][item] == 'ufl' %}
+                        <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
+                {% elif item == 'trademark_notice' %}
+                    {% if repo.config['state'][item] == 'yes' %}
+                        <i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> 
+                    {% elif repo.config['state'][item] == 'no' %}
+                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> 
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
+                {% elif item == 'trademark_permission' %}
+                    {% if repo.config['state'][item] == 'yes' %}
+                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> 
+                    {% elif repo.config['state'][item] == 'no' %}
+                        <i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> 
+                    {% else %}
+                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {% endif %}
+                {% else %}
+                    <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
+            {% endif %}
+            </td>
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:
@@ -137,7 +165,9 @@
 </table>
 {% else %}
 <div class="jumbotron">
-{{ _('Enter a git clone string in the allowed format. If a login is required, provide it in the clone string') }} <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
+{{ _('Enter a git clone string in the allowed format.') }}
+{{ _('If a login is required, provide it in the clone string') }} 
+<a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
 </div>
 {% endif %}
 <p>DEBUG: stateListLength is {{ stateListLength }}</p>

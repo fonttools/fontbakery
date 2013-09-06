@@ -93,7 +93,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 if l.startswith('End:'):
                     break
             else:
-                gevent.sleep(0.5)
+                gevent.sleep(0.1)
 
         f.close()
 

@@ -21,6 +21,8 @@ import subprocess
 from flask.ext.rq import job
 import plistlib
 from utils import RedisFd
+import re
+import shutil
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -44,7 +46,7 @@ def run(command, cwd, log):
         if not stdout and not stderr and p.poll() != None:
             break
     if p.returncode:
-        log.write('Fatal: Execution error!\nFatal: $ %s\nFatal: This command exited with exit status: %s \n' % (command, p.returncode))
+        log.write('Fatal: Execution error!\nFatal: This command exited with exit status %s \n' % p.returncode)
         # close file before exit
         log.close()
         raise ValueError
@@ -106,60 +108,81 @@ def copy_and_rename_ufos_process(project, log):
 
     log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
 
-    # Rotate away the _out dir if it exists
-    if os.path.exists(_out):
-        project.revision = 1
-        _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        while os.path.exists(_out_old):
-            project.revision += 1
-            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
-        # Move the directory
-        run('mv "%s" "%s"' % (_out, _out_old), cwd = _user, log=log)
-        # Remake the directory 
-        run('mkdir -p "%s"' % (_out_src), cwd = _user, log=log)
-        # Copy the log
-        _out_old_log = os.path.join(_out_old, '%(id)s.process.log' % project)
-        run('cp "%s" "%s"' % (_out_log, _out_old_log), cwd = _user, log=log)
-    # Or make the _out dir
-    else:
-        run('mkdir -p %s' % (_out_src), cwd = _user, log=log)
-
-    # Find out if we set a new familyname
+    # Set the familyName
     if config['state'].get('familyname', None):
-        familyname = config['state']['familyname']
+        familyName = config['state']['familyname']
     else:
-        familyname = False
+        familyName = False
 
-    # Copy UFO files from git repo to out/src/ dir
+    # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
     for _in_ufo in config['state']['ufo']:
-        # If we rename, change the filename
-        if familyname:
-            fontInfoFile = os.path.join(_in, ufo_in, 'fontinfo.plist')
-            fontInfo = plistlib.readPlist(fontInfoFile)
-            styleName = fontInfo['styleName']
-            # we should always have a regular style
-            if styleName == 'Normal':
-                styleName = 'Regular'
-            _in_ufo = "%s-%s.ufo" % (familyname, styleName)
-        else:
-            _out_ufo = _in_ufo.split('/')[-1]
+        # Decide the incoming filepath
+        _in_ufo_path = os.path.join(_in, _in_ufo) 
+        # Read the _in_ufo fontinfo.plist
+        _in_ufoPlist = os.path.join(_in_ufo_path, 'fontinfo.plist')
+        _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
+        # Get the styleName
+        styleName = _in_ufoFontInfo['styleName']
+        # Always have a regular style
+        if styleName == 'Normal':
+            styleName = 'Regular'
+        # Get the familyName, if its not set
+        if not familyName:
+            familyName = _in_ufoFontInfo['familyName']
+        # Remove whitespace from names
+        styleNameNoWhitespace = re.sub(r'\s', '', styleName)
+        familyNameNoWhitespace = re.sub(r'\s', '', familyName)
+        # Decide the outgoing filepath
+        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
+        _out_ufo_path = os.path.join(_out_src, _out_ufo)
         # Copy the UFOs
-        run("cp -R '%s' '%s'" % (os.path.join(_in, _in_ufo), os.path.join(_out_src, _out_ufo)), cwd=_user, log=log)
-        # If we rename, change the font family name metadata
-        # TODO DC: In future this should follow GDI naming for big families
-        if familyname:
-            fontInfoFile = os.path.join(_out_src, _out_ufo, 'fontinfo.plist')
-            fontInfo = plistlib.readPlist(fontInfoFile)
-            # we should always have a regular style
-            if fontInfo['styleName'] == 'Normal':
-                fontInfo['styleName'] = 'Regular'
-            #
-            # XXX TODO: This code isn't tested
-            #
-            fontInfo['familyName'] = familyname
-            fontInfo['postscriptFontName'] = familyname + '-' + fontInfo['styleName']
-            fontInfo['postscriptFullName'] = familyname + ' ' + fontInfo['styleName']
-            plistlib.writePlist(fontInfo, fontInfoFile)
+        run("cp -R '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+        # If we rename, change the font family name metadata inside the _out_ufo
+        if familyName:
+            # Read the _out_ufo fontinfo.plist
+            _out_ufoPlist = os.path.join(_out_ufo_path, 'fontinfo.plist')
+            _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
+            # Set the familyName
+            _out_ufoFontInfo['familyName'] = familyName
+            # Set PS Name 
+            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
+            _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
+            # Set Full Name
+            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + styleName
+            # Write _out fontinfo.plist
+            plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+    # Copy licence file
+    # TODO: Infer license type from filename
+    # TODO: Copy file based on license type
+    if config['state'].get('license_file', None):
+        # Set _in license file name
+        licenseFileIn = config['state']['license_file']
+        # List posible OFL and Apache filesnames
+        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt', 'OFL.md']
+        listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
+        # Canonicalize _out license file name
+        if licenseFileIn in listOfOflFilenames:
+            licenseFileOut = 'OFL.txt'
+        elif licenseFileIn in listOfApacheFilenames:
+            licenseFileOut = 'LICENSE.txt'
+        else:
+            licenseFileOut = licenseFileIn
+        # Copy license file
+        _in_license = os.path.join(_in, licenseFileIn)
+        _out_license = os.path.join(_out, licenseFileOut)
+        run('cp "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
+    else:
+        log.write('License file not copied\n', prefix = 'Error: ')
+
+    # Copy FONTLOG file
+    _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
+    _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
+    if os.path.exists(_in_fontlog):
+        run('cp "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
+    else:
+        log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
+
 
 def generate_fonts_process(project, log):
     """
@@ -192,9 +215,8 @@ def ttfautohint_process(project, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
-    log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
-
     if config['state'].get('ttfautohint', None):
+        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
         params = config['state']['ttfautohint']
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
@@ -206,7 +228,8 @@ def ttfautohint_process(project, log):
             }
             run(cmd, cwd=_out, log=log)
     else:
-        run("cp src/*.ttf .", cwd=_out, log=log)
+        log.write('Autohint not used\n', prefix = 'Header: ')
+        run("mv src/*.ttf .", cwd=_out, log=log)
 
 def ttx_process(project, log):
     """
@@ -222,13 +245,13 @@ def ttx_process(project, log):
         name = name[:-4] # cut .ufo
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename
+        cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename
+        cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
@@ -236,6 +259,10 @@ def ttx_process(project, log):
         # remove the original (duplicate) ttf
         cmd = "rm  '%s.ttf.orig'" % filename
         run(cmd, cwd=_out, log=log)
+        # move ttx files to src
+        cmd = "mv '%s.ttx' %s" % (filename, _out_src)
+        run(cmd, cwd=_out, log=log)
+
 
 def subset_process(project, log):
     config = project.config
@@ -298,14 +325,15 @@ def process_project(project, log):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
-    # login — user login
-    # project_id - database project_id
-
-    copy_and_rename_ufos_process(project, log)
-
-    # autoprocess is set after setup is completed once
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    # setup is set after 'bake' button is first pressed
     if project.config['local'].get('setup', None):
+        # Ensure _out exists
+        if not os.path.exists(_out):
+            os.makedirs(_out_src)
         log.write('Bake Begins!\n', prefix = 'Header: ')
+        copy_and_rename_ufos_process(project, log)
         generate_fonts_process(project, log)
         ttfautohint_process(project, log)
         ttx_process(project, log)
@@ -332,9 +360,32 @@ def sync_and_process(project, process = True, sync = False):
     :param sync: Boolean. Sync the project. Defaults to off. 
     :param process: Boolean. Process (Bake) the project. Default to on.
     """
-    # create user folder
-    if not os.path.exists(os.path.join(DATA_ROOT, project.login)):
-        os.makedirs(os.path.join(DATA_ROOT, project.login))
+    _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % project)
+
+    # If about to bake the project, rotate the _out dir if it exists
+    # and copy the log. (We do this now before the log file is opened)
+    if process:
+        if os.path.exists(_out):
+            # Recursively figure out the top out number
+            project.revision = 1
+            _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+            while os.path.exists(_out_old):
+                project.revision += 1
+                _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
+            # Move the directory
+            shutil.move(_out, _out_old)
+            # Remake the directory 
+            os.makedirs(_out_src)
+            # Copy the log
+            _out_old_log = os.path.join(_out_old, 'process.log')
+            shutil.copyfile(_out_log, _out_old_log)
+
+    # Ensure _user exists
+    if not os.path.exists(_user):
+        os.makedirs(_user)
     # create log file and open it with Redis
     log = RedisFd(os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % {
             'id': project.id,
@@ -344,12 +395,12 @@ def sync_and_process(project, process = True, sync = False):
     # Sync the project, if given sync parameter (default no)
     if sync:
         project_git_sync(project, log = log)
+        # This marks the project has downloaded
+        if not project.is_ready:
+            set_ready(project)
     # Bake the project, if given the project parameter (default yes)
     if process:
         process_project(project, log = log)
-
-    if not project.is_ready:
-        set_ready(project)
 
     log.close()
 

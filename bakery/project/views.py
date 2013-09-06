@@ -50,7 +50,6 @@ def bump(project_id):
     flash(Markup(_("Updated repository (<a href='%s'>log</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.log', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.fonts', project_id=project_id))
 
-
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 def setup(project_id):
@@ -70,7 +69,7 @@ def setup(project_id):
 
     if not request.form.get('license_file') in config['local']['txt_files']:
         error = True
-        flash(_("Wrong license_file value, must be an error"))
+        flash(_("Please select the license file"))
     config['state']['license_file'] = request.form.get('license_file')
 
     if request.form.get('familyname'):
@@ -84,7 +83,7 @@ def setup(project_id):
     for i in ufo_dirs:
         if i not in config['local']['ufo_dirs']:
             error = True
-            flash(_("Wrong value for UFO folder, must be an error"))
+            flash(_("Please select at least one UFO"))
 
     if len(ufo_dirs)<0:
         error = True
@@ -117,15 +116,19 @@ def setup(project_id):
         return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
-    config['local']['setup'] = True
-
     if originalConfig != config:
-        flash(_("Updated %s setup" % p.clone))
+        flash(_("Setup updated"))
 
     p.save_state()
-
-    sync_and_process.ctx_delay(p, process = True, sync = False)
-    return redirect(url_for('project.log', project_id=p.id))
+    if request.form.get('bake'):
+        # This marks that the setup is ready enough to bake the project
+        # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
+        config['local']['setup'] = True
+        sync_and_process.ctx_delay(p, process = True, sync = False)
+        return redirect(url_for('project.log', project_id=p.id))
+    else:
+        flash(_("Setup saved"))
+        return redirect(url_for('project.setup', project_id=p.id))
 
 
 @project.route('/<int:project_id>/', methods=['GET'])

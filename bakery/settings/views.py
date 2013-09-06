@@ -236,7 +236,7 @@ def addclone():
         db.session.commit()
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
-          (project.clone, url_for('project.fonts', project_id=project.id)))))
+          (project.clone, url_for('project.setup', project_id=project.id)))))
     sync_and_process.ctx_delay(project, process = True, sync = True)
     return redirect(url_for('frontend.splash'))
 
@@ -283,7 +283,7 @@ def massgit():
             db.session.add(project)
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
-                  (project.full_name, url_for('project.fonts', project_id=project.id)))))
+                  (project.full_name, url_for('project.setup', project_id=project.id)))))
             sync_and_process.ctx_delay(project, process = True, sync = True)
 
     db.session.commit()

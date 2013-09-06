@@ -224,3 +224,15 @@ ol.linenums li {
 #flash_message_container {
     padding-top: 2em;
 }
+
+a[name] {
+    padding-top: 50px;
+    margin-top: -50px;
+    display: inline-block; /* required for webkit browsers */
+}
+
+.control-group {
+  padding-top: 50px;
+  margin-top: -50px;
+  display: inline-block; /* required for webkit browsers */
+}

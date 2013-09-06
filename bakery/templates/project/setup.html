@@ -1,5 +1,6 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Setup Project") %}
+{% set config = project.config %}
 {% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
 
 
@@ -7,13 +8,6 @@
 
 {% from 'project/macros.html' import nav with context%}
 {{ nav('setup') }}
-
-{% set config = project.config %}
-{% if config['local'].get('status', None) == 'repo' %}
-  {% set dis = 'disabled' %}
-{% else %}
-  {% set dis = '' %}
-{% endif %}
 
 <h3>Bake Process Options</h3>
 
@@ -32,7 +26,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group">
     <label class="control-label" for="license_file"><strong>License File:</strong></label>
     <div class="controls">
-    <select for="license_file" name="license_file" class="input-xxlarge" {{dis}} required>
+    <select for="license_file" name="license_file" class="input-xxlarge" required>
       <option>Select file</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
@@ -45,7 +39,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <label class="control-label" for="ufo_folders"><strong>UFOs to Bake:</strong></label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
-        size="{{ config['local']['ufo_dirs']|length }}" {{dis}} required>
+        size="{{ config['local']['ufo_dirs']|length }}" required>
       {% for i in config['local']['ufo_dirs'] %}
       <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -57,7 +51,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <label class="control-label" for="subset"><strong>Subsets to Bake:</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
-      size="{{ subsetvals|length }}" {{dis}} required>
+      size="{{ subsetvals|length }}" required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
       {% endfor %}
@@ -70,7 +64,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <div class="controls">
     <input type="text" placeholder="" name="familyname" 
       value="{{ config['state'].get('familyname', '') }}" 
-      class="input-xxlarge" {{dis}}>
+      class="input-xxlarge" >
     <p class="muted">If you want to rename the family, type the new family name here.<br/>Else, leave it blank</p>
     </div>
   </div>
@@ -80,24 +74,19 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     <div class="controls">
     <input type="text" placeholder="" name="ttfautohint" 
       value="{{ config['state'].get('ttfautohint', '') }}" 
-      class="input-xxlarge" {{dis}}>
+      class="input-xxlarge" >
     <p class="muted">If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank</p>
     </div>
   </div>
 
-  {% if config['local'].get('status', None) == 'repo' %}
-    <p> 
-    Set these values from <code>bakery.yaml</code> in your repository. <a href="{{ url_for('frontend.page', path='docs') }}">More info in documentation</a>.
-    </p>
-
-  {% else %}
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %}>Bake Project</button>
+      <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
+      <input id="save" name="save" value="Save" type="submit" class="btn" />
+      {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
+      <input class="btn" name="reset" value="Reload from upstream" disabled="disabled">
     </div>
   </div>
-
-  {% endif %}
 
 </form>
 
@@ -106,26 +95,50 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
     <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> file inside the git repository.</div>
 {% else %}
-    <div class="alert alert-block">These details are <strong>NOT</strong> saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information. <a class="btn btn-mini pull-right">Reload settings from repo{# this should only be shown if there is a bakery_yaml in upstream #}</a></div>
+    <div class="alert alert-block">These details are <strong>NOT</strong> yet saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >bakery.yaml</a></code> to the upstream repository that contains the following information.</div>
 {% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
     {% for item in stateList %}
-    <div id="{{ item }}" class="control-group">
+    <div id="{{ item }}" class="control-group row-fluid">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
+          {% if item == 'licence_type' %}
+          <select name="{{ item }}">
+              <option value="">Select license</option>
+              <option value="ofl" {% if config['state'][item] == 'ofl' %}selected{% endif %}>Open Font License v1.1</option>
+              <option value="apache" {% if config['state'][item] == 'apache' %}selected{% endif %}>Apache v2.0</option>
+              <option value="ufl" {% if config['state'][item] == 'ufl' %}selected{% endif %}>Ubuntu Font License v1.0</option>
+          </select>
+          <p class="muted">What is the font license type?</p> {# Autodetect this #}
+          {% elif item == 'trademark_notice' %}
+          <select name="{{ item }}">
+              <option value="">Select trademark status</option>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
+          </select>
+          <p class="muted">Is a trademark asserted over this font name?</p>
+          {% elif item == 'trademark_permission' %}
+          <select name="{{ item }}">
+              <option value="">Select trademark permission status</option>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
+          </select>
+          <p class="muted">Do you have permission to use the trademark?</p>
+          {% else %}
           <input type="text" placeholder="" name="{{ item }}" 
             value="{{ config['state'][item] }}" 
-            class="input-xxlarge" {{dis}}>
+            class="input-xxlarge" >
           <p class="muted">Set string value here, or leave it blank</p>
+          {% endif %}
       </div>
     </div>
     {% endfor %}
 
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <button type="submit" name="save" value="value" class="btn btn-primary">Save</button>
       </div>
     </div>
 
