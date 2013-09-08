@@ -119,16 +119,19 @@
   <thead>
   {# TODO: replace the follow static stats th cells with a loop:
     <tr>
-      <th colspan="22"></td>
-      {% for key, value in repo.family_stat %}
-      <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+      <th colspan="4"></th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      {% for repo in repos -%}
+          {% for key, value in repo.family_stat %}
+              <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+          {% endfor %}
       {% endfor %}
       <th colspan="2"></td>
     </tr>
   #}
     <tr>
       <th colspan="4"></th>
-      <th colspan="18" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
       <th style="text-align: center">{{ _("Week") }}</th>
@@ -190,28 +193,15 @@
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:
-
         {% for key, value in repo.family_stat %}
-        <td class="stats stat-{{key}}" style="text-align: right">
-            {{ value }}
-        </td>
+        <td class="stats stat-{{key}}" style="text-align: right">{{ value }}</td>
         {% endfor %}
         #}
-        <td class="stats stat-total" style="text-align: right">
-            {{ repo.family_stat.total|d('0') }}
-        </td>
-        <td class="stats stat-month" style="text-align: right">
-            {{ repo.family_stat.month|d('0') }}
-        </td>
-        <td class="stats stat-week" style="text-align: right">
-            {{ repo.family_stat.week|d('0') }}
-        </td>
-        <td class="stats stat-yesterday" style="text-align: right">
-            {{ repo.family_stat.yesterday|d('0') }}
-        </td>
-        <td class="stats stat-rate" style="text-align: right">
-            {{ repo.family_stat.rate|d('0') }}
-        </td>
+        <td class="stats stat-total" style="text-align: right">{{ repo.family_stat.total }}</td>
+        <td class="stats stat-month" style="text-align: right">{{ repo.family_stat.month }}</td>
+        <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
+        <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
+        <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
         
 
         <td style="text-align: center; white-space: nowrap">
