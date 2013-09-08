@@ -39,6 +39,7 @@ ufo: []
 # hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting, can be autodiscovered
 # vendor_category: # apprentice/journeyman/master
 # vendor_quality: # int:_range(4)_displayed_as_a_star_rating
+# design_category: # sans/serif/script/display
 # design_quality: # int:_range(4)_isplayed_as_a_star_rating
 # hinting_quality: # int:_range(4)_displayed_as_a_star_rating
 # prints_ok: false # true
