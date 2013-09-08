@@ -174,14 +174,14 @@
         <td style="text-align: right">
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td style="text-align: left; white-space: nowrap">
+        <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
         </td>
         <td style="text-align: center">
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
-            <a href="{{ repo.clone }}"><i class="icon-code-fork apopover" data-trigger="hover" data-content="Repository URL"></i></a>
+            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">
