@@ -47,8 +47,6 @@ def run(command, cwd, log):
             break
     if p.returncode:
         log.write('Fatal: Execution error!\nFatal: This command exited with exit status %s \n' % p.returncode)
-        # close file before exit
-        log.close()
         raise ValueError
 
 def prun(command, cwd, log=None):
@@ -401,7 +399,7 @@ def sync_and_process(project, process = True, sync = False):
     # Bake the project, if given the project parameter (default yes)
     if process:
         process_project(project, log = log)
-
+    # Close the log file
     log.close()
 
 def project_upstream_tests(project):
