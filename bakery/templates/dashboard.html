@@ -191,7 +191,9 @@
             <td style="text-align: center">
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
-                {% if repo.config['state'][item] in value.iterkeys() %}
+                {% if item == 'stats_family_name' %}
+                    <i class="icon-check"></i> 
+                {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
                     {{ repo.config['state'][item] }}
