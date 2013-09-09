@@ -92,21 +92,34 @@ def project_git_sync(project, log):
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-
-    log.write('Sync Git Repository\n', prefix = 'Header: ')
-
-    # Create the incoming repo dir if it doesn't exist
+    # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
-    # Either download the _in repo
-    if not os.path.exists(os.path.join(_in, '.git')):
-        run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
-    # Or reset _in and pull down latest updates
-    else:
+    # Update _in if it already exists with a .git directory
+    if os.path.exists(os.path.join(_in, '.git')):
+        log.write('Sync Git Repository\n', prefix = 'Header: ')
         # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
+    # Since it doesn't exist as a git repo, get the _in repo
+    else:
+        # clone the repository
+        log.write('Copying Git Repository\n', prefix = 'Header: ')
+        try:
+            # TODO: use the git check url command (in issue tracker) first
+            run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
+        # if the clone action didn't work, just copy it 
+        except:
+            # if this is a file URL, copy the files, and set up the _in directory as a git repo
+            if project.clone[:7] == "file://":
+                # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
+                run('cp -anv %(clone)s .' % project, cwd = _in, log=log)
+                # 
+                run('git init .', cwd = _in, log=log)
+                run('git add *', cwd = _in, log=log)
+                msg = "Initial commit made automatically by Font Bakery"
+                run('git commit -a -m "%s"' % msg, cwd = _in, log=log)
 
 def copy_and_rename_ufos_process(project, log):
     """
