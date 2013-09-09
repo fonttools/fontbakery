@@ -35,19 +35,34 @@ def run(command, cwd, log):
         :param log: - logging object with .write() method, required
 
     """
+    # print the command on the worker console
+    print command
+    # log the command
     log.write('\nCommand: %s\n' % command)
+    # Start the command
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     while True:
+        # Read output and errors
         stdout = p.stdout.readline()
         stderr = p.stderr.readline()
+        # Log output
         log.write(stdout)
+        # Log error
         if stderr:
+            # print the error on the worker console
+            print stderr,
+            # log error
             log.write(stderr, prefix = 'Error: ')
+        # If no output and process no longer running, stop
         if not stdout and not stderr and p.poll() != None:
             break
+    # if the command did not exit cleanly (with returncode 0)
     if p.returncode:
-        log.write('Fatal: Execution error!\nFatal: This command exited with exit status %s \n' % p.returncode)
-        raise ValueError
+        msg = 'Fatal: The command `%s` exited with exit status %s \n' % (command, p.returncode)
+        # Log the exit status
+        log.write(msg)
+        # Raise an error on the worker
+        raise StandardError(msg)
 
 def prun(command, cwd, log=None):
     """
