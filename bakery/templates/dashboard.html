@@ -141,9 +141,11 @@
       <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
+{#
       <th style="text-align: center">{{ _("Week") }}</th>
       <th style="text-align: center">{{ _("Day") }}</th> 
       <th style="text-align: center">{{ _("Second") }}</th>
+#}
       <th colspan="2"></th>
     </tr>
     <tr>
@@ -156,9 +158,11 @@
       {% endfor %}
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+{#
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
+#}
       <th style="text-align: center">{{ _("Next Step") }}</th>
       <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
@@ -206,11 +210,11 @@
         #}
         <td class="stats stat-total" style="text-align: right">{{ repo.family_stat.total }}</td>
         <td class="stats stat-month" style="text-align: right">{{ repo.family_stat.month }}</td>
+{#
         <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
         <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
         <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
-        
-
+#}
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
