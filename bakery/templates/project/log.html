@@ -8,7 +8,7 @@
 
 <pre id="log"></pre>
 
-<p><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
+<p id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
 {% endblock %}
 
 
@@ -58,14 +58,27 @@ socket.on('message', function (data) {
   $(document).scrollTop($(document).height());
 });
 
-  // but keep the nav() on top
-  $('#secondaryNav').css({
-       'position': 'fixed',
-       'left': '11%',
-       'right': '11%',
-       'background': 'white',
-       'width': 'auto'
-      });
+function userCanSeeItWithoutScrolling() {
+    var userCanSeeItWithoutScrolling = $("#toTop").offset().top < $(window).height();
+    if (userCanSeeItWithoutScrolling == true){
+        $('#toTop').hide();
+    } else {
+        $('#toTop').show();
+    };
+};
+
+// hide toTop if user can see it without scrolling
+userCanSeeItWithoutScrolling();
+
+// If the page resizes, show toTop if user now can't see it
+$(window).resize(function() {
+    userCanSeeItWithoutScrolling();
+});
+// If the page scrolls, show toTop if user now can't see it
+$(window).scroll(function() {
+    userCanSeeItWithoutScrolling();
+});
+
 });
 </script>
 {% endblock %}
