@@ -235,6 +235,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
             <p class="muted">Set string value here, or leave it blank to unset it</p>
           {% else %}
             <select name="{{ item }}">
+                <option value="">Select option</option>
               {% for option, description in value.iteritems() %}
                 <option value="{{ option }}"{% if config['state'][item] == option %} selected{% endif %}>{{ description }}</option>
               {% endfor %}
@@ -246,7 +247,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
     <div class="control-group row-fluid">
       <div class="controls">
-        <button type="submit" name="save" value="value" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </div>
 
