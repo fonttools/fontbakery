@@ -44,7 +44,7 @@ def bump(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     sync_and_process.delay(p, process = False, sync = True)
     flash(Markup(_("Updated repository (<a href='%s'>log</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.log', project_id=project_id), url_for('project.setup', project_id=project_id)))))
@@ -57,7 +57,7 @@ def setup(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     config = p.config
     originalConfig = p.config
@@ -139,7 +139,7 @@ def fonts(project_id):
     p = Project.query.get_or_404(project_id)
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('license')
     return render_template('project/fonts.html', project=p, license=data)
@@ -151,7 +151,7 @@ def metadatajson(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     metadata = p.read_asset('metadata')
     metadata_new = p.read_asset('metadata_new')
@@ -166,7 +166,7 @@ def metadatajson_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     try:
         # this line trying to parse json
@@ -189,7 +189,7 @@ def description_edit(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('description')
     return render_template('project/description.html', project = p, description = data)
@@ -202,7 +202,7 @@ def description_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
@@ -214,10 +214,6 @@ def description_save(project_id):
 def log(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
     data = p.read_asset('log')
     return render_template('project/log.html', project=p, log=data)
 
@@ -229,7 +225,7 @@ def bakeryyaml(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('yaml')
     return render_template('project/yaml.html', project=p, yaml=data)
@@ -243,7 +239,7 @@ def utests(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     test_result = project_upstream_tests(project=p)
     return render_template('project/utests.html', project=p,
@@ -258,7 +254,7 @@ def rtests(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     test_result = project_result_tests(project=p)
     return render_template('project/rtests.html', project=p,
@@ -271,7 +267,7 @@ def dashboard_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     for item in request.form:
         if request.form.get(item):
