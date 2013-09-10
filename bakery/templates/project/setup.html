@@ -1,7 +1,109 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Setup Project") %}
 {% set config = project.config %}
-{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
+{% set stateDict = {
+    'copyright_license': {
+        'ofl': 'Open Font License v1.1',
+        'apache': 'Apache v2.0', 
+        'ufl': 'Ubuntu Font License v1.0',
+        }, 
+    'copyright_notice': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'trademark_notice': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'trademark_permission': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'rfn_asserted': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'rfn_permission': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'prints_ok': {
+        '': 'Does it print ok?',
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'source_drawing_filetype': {
+        'None': 'No source file possible', 
+        'UFO': 'UFO',
+        'SFD': 'SFD (FontForge)', 
+        'VFB': 'VFB (FontLab)', 
+        'glyphs': 'Glyphs',
+        },
+    'source_cff_filetype': {
+        'None': 'No source file possible', 
+        'OTF': 'OTF', 
+        'UFO': 'UFO',
+        'SFD': 'SFD (FontForge)', 
+        'VFB': 'VFB (FontLab)', 
+        'glyphs': 'Glyphs',
+        },
+    'source_ttf_filetype': {
+        'None': 'No source file possible', 
+        'OTF': 'OTF', 
+        'UFO': 'UFO',
+        'SFD': 'SFD (FontForge)', 
+        'VFB': 'VFB (FontLab)', 
+        'glyphs': 'Glyphs',
+    },
+    'price_design_usd': {
+        'text': 'free',
+        }, 
+    'price_total_usd': {
+        'text': 'free',
+        }, 
+    'vendor_category': {
+        '1': '1', 
+        '2': '2', 
+        '3': '3',
+        },
+    'hinting_level': {
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'vendor_quality': {
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        },
+    'design_quality': {
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        },
+    'hinting_quality': {
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        },
+    'stats_family_name': {
+        'text': 'free',
+        },
+    'design_category': {
+        'sans': 'Sans',
+        'serif': 'Serif',
+        'script': 'Script',
+        'display': 'Display',
+        },
+    } %}
 
 
 {% block body %}
@@ -16,14 +118,14 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 </div>
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <div class="controls">
       <p><strong>Bold</strong> fields are required.</p>
       {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %}
     </div>
   </div>
 
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <label class="control-label" for="license_file"><strong>License File:</strong></label>
     <div class="controls">
     <select for="license_file" name="license_file" class="input-xxlarge" required>
@@ -35,7 +137,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <label class="control-label" for="ufo_folders"><strong>UFOs to Bake:</strong></label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
@@ -47,7 +149,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <label class="control-label" for="subset"><strong>Subsets to Bake:</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
@@ -59,7 +161,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div id="familyname" class="control-group">
+  <div id="familyname" class="control-group row-fluid">
     <label class="control-label" for="familyname">New font family name?</label>
     <div class="controls">
     <input type="text" placeholder="" name="familyname" 
@@ -69,7 +171,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> options?</label>
     <div class="controls">
     <input type="text" placeholder="" name="ttfautohint" 
@@ -79,7 +181,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group">
+  <div class="control-group row-fluid">
     <div class="controls">
       <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
       <input id="save" name="save" value="Save" type="submit" class="btn" />
@@ -100,45 +202,52 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
-    {% for item in stateList %}
+    {% for item, value in stateDict.iteritems() %}
     <div id="{{ item }}" class="control-group row-fluid">
       <label class="control-label" for="{{ item }}">{{ item }}:</label>
       <div class="controls">
-          {% if item == 'licence_type' %}
-          <select name="{{ item }}">
+          {% if item == 'copyright_license' %}
+            <select name="{{ item }}">
               <option value="">Select license</option>
-              <option value="ofl" {% if config['state'][item] == 'ofl' %}selected{% endif %}>Open Font License v1.1</option>
-              <option value="apache" {% if config['state'][item] == 'apache' %}selected{% endif %}>Apache v2.0</option>
-              <option value="ufl" {% if config['state'][item] == 'ufl' %}selected{% endif %}>Ubuntu Font License v1.0</option>
-          </select>
+              <option value="ofl" {% if config['state'][item] == 'ofl' %}selected="selected"{% endif %}>Open Font License v1.1</option>
+              <option value="apache" {% if config['state'][item] == 'apache' %}selected="selected"{% endif %}>Apache v2.0</option>
+              <option value="ufl" {% if config['state'][item] == 'ufl' %}selected="selected"{% endif %}>Ubuntu Font License v1.0</option>
+            </select>
           <p class="muted">What is the font license type?</p> {# Autodetect this #}
           {% elif item == 'trademark_notice' %}
-          <select name="{{ item }}">
+            <select name="{{ item }}">
               <option value="">Select trademark status</option>
-              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
-              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
-          </select>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected="selected"{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected="selected"{% endif %}>No</option>
+            </select>
           <p class="muted">Is a trademark asserted over this font name?</p>
           {% elif item == 'trademark_permission' %}
-          <select name="{{ item }}">
+            <select name="{{ item }}">
               <option value="">Select trademark permission status</option>
-              <option value="yes" {% if config['state'][item] == 'yes' %}selected{% endif %}>Yes</option>
-              <option value="no" {% if config['state'][item] == 'no' %}selected{% endif %}>No</option>
-          </select>
-          <p class="muted">Do you have permission to use the trademark?</p>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected="selected"{% endif %}>Yes</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected="selected"{% endif %}>No</option>
+            </select>
+            <p class="muted">Do you have permission to use the trademark?</p>
+          {% elif value['text'] == "free" %}
+            <input type="text" placeholder="" name="{{ item }}" 
+                value="{{ config['state'][item] }}" 
+                class="input-xxlarge" >
+            <p class="muted">Set string value here, or leave it blank to unset it</p>
           {% else %}
-          <input type="text" placeholder="" name="{{ item }}" 
-            value="{{ config['state'][item] }}" 
-            class="input-xxlarge" >
-          <p class="muted">Set string value here, or leave it blank</p>
+            <select name="{{ item }}">
+                <option value="">Select option</option>
+              {% for option, description in value.iteritems() %}
+                <option value="{{ option }}"{% if config['state'][item] == option %} selected{% endif %}>{{ description }}</option>
+              {% endfor %}
+            </select>
           {% endif %}
       </div>
     </div>
     {% endfor %}
 
-    <div class="control-group">
+    <div class="control-group row-fluid">
       <div class="controls">
-        <button type="submit" name="save" value="value" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </div>
 

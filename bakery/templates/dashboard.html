@@ -1,8 +1,119 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
 {% set page_title = _('Dashboard') %}
-{% set stateList = ['licence_type', 'copyright_notice', 'trademark_notice', 'trademark_permission', 'rfn_asserted', 'rfn_permission', 'source_drawing_filetype', 'source_cff_filetype', 'source_ttf_filetype', 'price_design_usd', 'price_total_usd', 'hinting_level', 'quality_vendor_category', 'quality_vendor', 'quality_design', 'quality_hinting', 'quality_prints', 'stats_family_name'] %}
-{% set stateListLength = stateList.count(stateList) %}
+{% set stateDict = {
+    'copyright_license': {
+        'icon': 'file-alt',
+        'ofl': '<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>', 
+        'apache': '<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>', 
+        'ufl': '<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>',
+        }, 
+    'copyright_notice': {
+        'icon': 'file-alt',
+        },
+    'trademark_notice': {
+        'icon': 'tumblr',
+        'yes': '<i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> ',
+        'no': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> ',
+        }, 
+    'trademark_permission': {
+        'icon': 'tumblr',
+        'yes': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> ',
+        'no': '<i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> ',
+        },
+    'rfn_asserted': {
+        'icon': 'strikethrough',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'rfn_permission': {
+        'icon': 'strikethrough',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'source_cff_filetype': {
+        'icon': 'file',
+        'True': 'Y',
+        'False': 'N',
+        },
+    'source_drawing_filetype': {
+        'icon': 'file',
+        'None': '-', 
+        'UFO': 'U',
+        'SFD': 'S', 
+        'VFB': 'V', 
+        'glyphs': 'G',
+        },
+    'source_ttf_filetype': {
+        'icon': 'file',
+        'None': '-', 
+        'OTF': 'O', 
+        'UFO': 'U',
+        'SFD': 'S', 
+        'VFB': 'V', 
+        'glyphs': 'G',
+        }, 
+    'price_design_usd':{
+        'icon': 'usd',
+        }, 
+    'price_total_usd':{
+        'icon': 'usd',
+        }, 
+    'hinting_level': { 
+        'icon': 'zoom-in', 
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'vendor_category': {
+        'icon': 'user',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        }, 
+    'vendor_quality': {
+        'icon': 'user',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'design_quality': {
+        'icon': 'pencil',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'hinting_quality': {
+        'icon': 'zoom-in',
+        '1': '1', 
+        '2': '2', 
+        '3': '3', 
+        '4': '4', 
+        '5': '5',
+        }, 
+    'prints_ok': {
+        'icon': 'print',
+        'True': 'Y',
+        'False': 'N',
+        }, 
+    'stats_family_name':{
+        'icon': 'sort-by-order-alt'
+        },
+    'design_category':{
+        'icon': 'pencil',
+        'sans': '&#120236;',
+        'serif': '&#65325;',
+        'script': '&#2133;',
+        'display': 'D',
+        },
+    } %}
+
 {% block body %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
@@ -15,33 +126,43 @@
   <thead>
   {# TODO: replace the follow static stats th cells with a loop:
     <tr>
-      <th colspan="22"></td>
-      {% for key, value in repo.family_stat %}
-      <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+      <th colspan="4"></th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      {% for repo in repos -%}
+          {% for key, value in repo.family_stat %}
+              <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+          {% endfor %}
       {% endfor %}
       <th colspan="2"></td>
     </tr>
   #}
     <tr>
-      <th colspan="22"></th>
+      <th colspan="4"></th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
+{#
       <th style="text-align: center">{{ _("Week") }}</th>
       <th style="text-align: center">{{ _("Day") }}</th> 
       <th style="text-align: center">{{ _("Second") }}</th>
+#}
       <th colspan="2"></th>
     </tr>
     <tr>
-        <th>{{ _("ID") }}</th>
-        <th>{{ _("Project") }}</th>
-        <th><i class="icon-home" title="Project Homepage"></i></th>
-        <th><i class="icon-github" title="Repository URL"></i> </th>
-        <th colspan="{{ len|d(18) }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th style="text-align: center">{{ _("ID") }}</th>
+      <th style="text-align: left">{{ _("Project") }}</th>
+      <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
+      <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
+      {% for item, value in stateDict.iteritems() | sort %}
+      <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
+      {% endfor %}
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+{#
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
+#}
       <th style="text-align: center">{{ _("Next Step") }}</th>
       <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
@@ -54,81 +175,48 @@
   <tbody>
     {% for repo in repos -%}
       <tr>
-        <td>
+        <td style="text-align: right">
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td style="white-space: nowrap">
+        <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
         </td>
-        <td>
-            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-home"></i></a>{% endif %}
+        <td style="text-align: center">
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
-        <td>
-            <a href="{{ repo.clone }}"><i class="icon-share-sign apopover" data-trigger="hover" data-content="Repository URL"></i></a>
+        <td style="text-align: center">
+            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
-        {% for item in stateList %}
+        {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">
+            <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
-                {% if item == 'licence_type' %}
-                    {% if repo.config['state'][item] == 'ofl' %}
-                        <span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>
-                    {% elif repo.config['state'][item] == 'apache' %}
-                        <span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>
-                    {% elif repo.config['state'][item] == 'ufl' %}
-                        <span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
-                {% elif item == 'trademark_notice' %}
-                    {% if repo.config['state'][item] == 'yes' %}
-                        <i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> 
-                    {% elif repo.config['state'][item] == 'no' %}
-                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> 
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
-                {% elif item == 'trademark_permission' %}
-                    {% if repo.config['state'][item] == 'yes' %}
-                        <i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> 
-                    {% elif repo.config['state'][item] == 'no' %}
-                        <i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> 
-                    {% else %}
-                        <i class="icon-question-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
-                    {% endif %}
+                {% if item == 'stats_family_name' %}
+                    <i class="icon-check"></i> 
+                {% elif repo.config['state'][item] in value.iterkeys() %}
+                    {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
-                    <i class="icon-check-sign apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}"></i>
+                    {{ repo.config['state'][item] }}
                 {% endif %}
             {% else %}
-                <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}"><i class="icon-sign-blank apopover" data-trigger="hover" data-content="Set {{ item }}"></i>
+                <i class="icon-check-empty"></i> 
             {% endif %}
+            </a>
             </td>
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:
-
         {% for key, value in repo.family_stat %}
-        <td class="stats stat-{{key}}" style="text-align: right">
-            {{ value }}
-        </td>
+        <td class="stats stat-{{key}}" style="text-align: right">{{ value }}</td>
         {% endfor %}
         #}
-        <td class="stats stat-total" style="text-align: right">
-            {{ repo.family_stat.total|d('0') }}
-        </td>
-        <td class="stats stat-month" style="text-align: right">
-            {{ repo.family_stat.month|d('0') }}
-        </td>
-        <td class="stats stat-week" style="text-align: right">
-            {{ repo.family_stat.week|d('0') }}
-        </td>
-        <td class="stats stat-yesterday" style="text-align: right">
-            {{ repo.family_stat.yesterday|d('0') }}
-        </td>
-        <td class="stats stat-rate" style="text-align: right">
-            {{ repo.family_stat.rate|d('0') }}
-        </td>
-        
-
+        <td class="stats stat-total" style="text-align: right">{{ repo.family_stat.total }}</td>
+        <td class="stats stat-month" style="text-align: right">{{ repo.family_stat.month }}</td>
+{#
+        <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
+        <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
+        <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
+#}
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
@@ -170,7 +258,7 @@
 <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
 </div>
 {% endif %}
-<p>DEBUG: stateListLength is {{ stateListLength }}</p>
+
 {% endblock %}
 
 {% block extrajs %}

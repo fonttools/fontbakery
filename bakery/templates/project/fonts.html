@@ -6,11 +6,6 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('fonts') }}
 
-<h4>{{ _("Update Repository") }}</h4>
-<a class="" href="{{ url_for('project.bump', project_id = project.id )}}">
-  <button class="btn btn-large" type="button">Pull latest updates</button>
-</a>
-
 <h4>{{ _("Repository Files") }}</h4>
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree('in') }}

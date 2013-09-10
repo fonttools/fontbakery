@@ -72,6 +72,7 @@ class RedisFd(object):
 
     def write(self, data, prefix = ''):
         self.fd.write("%s%s" % (prefix, data))
+        self.fd.flush()
 
     def close(self):
         self.fd.write("End: End of log\n") #end of log
