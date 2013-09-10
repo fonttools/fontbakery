@@ -9,6 +9,11 @@
 <pre id="log"></pre>
 
 <p id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
+
+<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
+    <input id="bake" name="bake" value="Bake Again" type="submit" class="btn btn-primary" />
+</form>
+
 {% endblock %}
 
 
@@ -44,10 +49,12 @@ socket.on('message', function (data) {
     $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
   } else if (data.startswith('Fatal: ')){
     $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+    $('#setup').show();
   } else if (data.startswith('Start: ')){
     $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
   } else if (data.startswith('End: ')){
     $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+    $('#setup').show();
   } else if (data.startswith('Command: ')){
     $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('Command: '.length)));
   } else {
@@ -56,6 +63,8 @@ socket.on('message', function (data) {
   // scroll to the bottom of the page
   $(document).scrollTop($(document).height());
 });
+
+$('#setup').hide();
 
 function userCanSeeItWithoutScrolling() {
     var userCanSeeItWithoutScrolling = $("#toTop").offset().top < $(window).height();
