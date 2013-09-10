@@ -119,7 +119,7 @@ def subset_font_raw(font_in, font_out, unicodes, opts):
     if pe:
         print('Generate("' + font_out + '")', file=pe)
         pe.close()
-        os.system("fontforge -script " + pe_fn)
+        os.system("fontforge --quiet -script " + pe_fn)
     else:
         font.generate(font_out, flags = flags)
     font.close()
