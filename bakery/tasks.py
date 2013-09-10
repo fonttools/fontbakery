@@ -121,6 +121,9 @@ def project_git_sync(project, log):
                 run('git add *', cwd = _in, log=log)
                 msg = "Initial commit made automatically by Font Bakery"
                 run('git commit -a -m "%s"' % msg, cwd = _in, log=log)
+        # Now we have it, create an initial project state
+        finally:
+            config = project.config
 
 def copy_and_rename_ufos_process(project, log):
     """
