@@ -240,3 +240,7 @@ a[name] {
 #dashboard a {
      text-decoration: none;
 }
+
+#log .label-end {
+    margin-top:1em;
+}
