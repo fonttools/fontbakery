@@ -62,11 +62,19 @@ class Project(db.Model):
 
     @property
     def title(self):
-        title = self.clone.split('/')[-1]
+        """
+        Return project title, resolved from repo clone if no rename family name given
+        """
+        # Split the git clone URL on /, take the last part, remove '.git' if it exists
+        # eg "https://github.com/davelab6/league-gothic.git" -> league-gothic.git -> league-gothic
+        title = self.clone.split('/')[-1].replace('.git', '')
+        # If URL terminates with a /, title will be None, so take the 2nd to last part
+        # eg "https://github.com/davelab6/league-gothic/" -> league-gothic
         if not title:
-            title = self.clone
+            title = self.clone.split('/')[-2].replace('.git', '')
+        # use the family rename input if it was given
         if self.is_ready and self.config['state'].get('familyname', None):
-            title = "%s (%s)" % (self.config['state']['familyname'], title)
+            title = self.config['state']['familyname']
         return title
 
     def asset_by_name(self, name):

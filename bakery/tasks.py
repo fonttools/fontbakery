@@ -35,21 +35,34 @@ def run(command, cwd, log):
         :param log: - logging object with .write() method, required
 
     """
+    # print the command on the worker console
+    print command
+    # log the command
     log.write('\nCommand: %s\n' % command)
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Start the command
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
     while True:
+        # Read output and errors
         stdout = p.stdout.readline()
         stderr = p.stderr.readline()
+        # Log output
         log.write(stdout)
+        # Log error
         if stderr:
+            # print the error on the worker console
+            print stderr,
+            # log error
             log.write(stderr, prefix = 'Error: ')
+        # If no output and process no longer running, stop
         if not stdout and not stderr and p.poll() != None:
             break
+    # if the command did not exit cleanly (with returncode 0)
     if p.returncode:
-        log.write('Fatal: Execution error!\nFatal: This command exited with exit status %s \n' % p.returncode)
-        # close file before exit
-        log.close()
-        raise ValueError
+        msg = 'Fatal: Exited with return code %s \n' % p.returncode
+        # Log the exit status
+        log.write(msg)
+        # Raise an error on the worker
+        raise StandardError(msg)
 
 def prun(command, cwd, log=None):
     """
@@ -63,7 +76,7 @@ def prun(command, cwd, log=None):
         :param log: loggin object with .write() method
 
     """
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
         log.write('Command: %s' % command)
@@ -79,21 +92,38 @@ def project_git_sync(project, log):
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-
-    log.write('Sync Git Repository\n', prefix = 'Header: ')
-
-    # Create the incoming repo dir if it doesn't exist
+    # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
+        log.write('Creating Incoming Directory\n', prefix = 'Header: ')
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
-    # Either download the _in repo
-    if not os.path.exists(os.path.join(_in, '.git')):
-        run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
-    # Or reset _in and pull down latest updates
-    else:
+    # Update _in if it already exists with a .git directory
+    if os.path.exists(os.path.join(_in, '.git')):
+        log.write('Sync Git Repository\n', prefix = 'Header: ')
         # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
+    # Since it doesn't exist as a git repo, get the _in repo
+    else:
+        # clone the repository
+        log.write('Copying Git Repository\n', prefix = 'Header: ')
+        try:
+            # TODO: use the git check url command (in issue tracker) first
+            run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
+        # if the clone action didn't work, just copy it 
+        except:
+            # if this is a file URL, copy the files, and set up the _in directory as a git repo
+            if project.clone[:7] == "file://":
+                # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
+                run('cp -anv %(clone)s .' % project, cwd = _in, log=log)
+                # 
+                run('git init .', cwd = _in, log=log)
+                run('git add *', cwd = _in, log=log)
+                msg = "Initial commit made automatically by Font Bakery"
+                run('git commit -a -m "%s"' % msg, cwd = _in, log=log)
+        # Now we have it, create an initial project state
+        finally:
+            config = project.config
 
 def copy_and_rename_ufos_process(project, log):
     """
@@ -136,7 +166,13 @@ def copy_and_rename_ufos_process(project, log):
         _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
         _out_ufo_path = os.path.join(_out_src, _out_ufo)
         # Copy the UFOs
-        run("cp -R '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+        run("cp -anv '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+
+        # Fix common lack of nbspace issue
+        log.write('Fix nbsp in UFOs\n', prefix = 'Header: ')
+        cmd = str("%s/venv/bin/python %s/scripts/fix-addnbsp.py '%s'") % (ROOT, ROOT, _out_ufo_path)
+        run(cmd, cwd=_out, log=log)
+
         # If we rename, change the font family name metadata inside the _out_ufo
         if familyName:
             # Read the _out_ufo fontinfo.plist
@@ -157,7 +193,8 @@ def copy_and_rename_ufos_process(project, log):
     # TODO: Copy file based on license type
     if config['state'].get('license_file', None):
         # Set _in license file name
-        licenseFileIn = config['state']['license_file']
+        licenseFileInFullPath = config['state']['license_file']
+        licenseFileIn = licenseFileInFullPath.split('/')[-1]
         # List posible OFL and Apache filesnames
         listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt', 'OFL.md']
         listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
@@ -169,9 +206,9 @@ def copy_and_rename_ufos_process(project, log):
         else:
             licenseFileOut = licenseFileIn
         # Copy license file
-        _in_license = os.path.join(_in, licenseFileIn)
+        _in_license = os.path.join(_in, licenseFileInFullPath)
         _out_license = os.path.join(_out, licenseFileOut)
-        run('cp "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
+        run('cp -anv "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
     else:
         log.write('License file not copied\n', prefix = 'Error: ')
 
@@ -179,7 +216,7 @@ def copy_and_rename_ufos_process(project, log):
     _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
     if os.path.exists(_in_fontlog):
-        run('cp "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
+        run('cp -anv "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
     else:
         log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
 
@@ -415,7 +452,7 @@ def sync_and_process(project, process = True, sync = False):
     # Bake the project, if given the project parameter (default yes)
     if process:
         process_project(project, log = log)
-
+    # Close the log file
     log.close()
 
 def project_upstream_tests(project):

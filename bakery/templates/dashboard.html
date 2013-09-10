@@ -105,6 +105,13 @@
     'stats_family_name':{
         'icon': 'sort-by-order-alt'
         },
+    'design_category':{
+        'icon': 'pencil',
+        'sans': '&#120236;',
+        'serif': '&#65325;',
+        'script': '&#2133;',
+        'display': 'D',
+        },
     } %}
 
 {% block body %}
@@ -119,21 +126,26 @@
   <thead>
   {# TODO: replace the follow static stats th cells with a loop:
     <tr>
-      <th colspan="22"></td>
-      {% for key, value in repo.family_stat %}
-      <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+      <th colspan="4"></th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      {% for repo in repos -%}
+          {% for key, value in repo.family_stat %}
+              <th style="text-align: right" class="stats stat-totals stat-{{ key }}-total"></td>
+          {% endfor %}
       {% endfor %}
       <th colspan="2"></td>
     </tr>
   #}
     <tr>
       <th colspan="4"></th>
-      <th colspan="18" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
+{#
       <th style="text-align: center">{{ _("Week") }}</th>
       <th style="text-align: center">{{ _("Day") }}</th> 
       <th style="text-align: center">{{ _("Second") }}</th>
+#}
       <th colspan="2"></th>
     </tr>
     <tr>
@@ -146,9 +158,11 @@
       {% endfor %}
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+{#
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
+#}
       <th style="text-align: center">{{ _("Next Step") }}</th>
       <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
@@ -164,20 +178,22 @@
         <td style="text-align: right">
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
         </td>
-        <td style="text-align: left; white-space: nowrap">
+        <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
         </td>
         <td style="text-align: center">
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
-            <a href="{{ repo.clone }}"><i class="icon-code-fork apopover" data-trigger="hover" data-content="Repository URL"></i></a>
+            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="Repository URL"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
-                {% if repo.config['state'][item] in value.iterkeys() %}
+                {% if item == 'stats_family_name' %}
+                    <i class="icon-check"></i> 
+                {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
                     {{ repo.config['state'][item] }}
@@ -190,30 +206,17 @@
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:
-
         {% for key, value in repo.family_stat %}
-        <td class="stats stat-{{key}}" style="text-align: right">
-            {{ value }}
-        </td>
+        <td class="stats stat-{{key}}" style="text-align: right">{{ value }}</td>
         {% endfor %}
         #}
-        <td class="stats stat-total" style="text-align: right">
-            {{ repo.family_stat.total|d('0') }}
-        </td>
-        <td class="stats stat-month" style="text-align: right">
-            {{ repo.family_stat.month|d('0') }}
-        </td>
-        <td class="stats stat-week" style="text-align: right">
-            {{ repo.family_stat.week|d('0') }}
-        </td>
-        <td class="stats stat-yesterday" style="text-align: right">
-            {{ repo.family_stat.yesterday|d('0') }}
-        </td>
-        <td class="stats stat-rate" style="text-align: right">
-            {{ repo.family_stat.rate|d('0') }}
-        </td>
-        
-
+        <td class="stats stat-total" style="text-align: right">{{ repo.family_stat.total }}</td>
+        <td class="stats stat-month" style="text-align: right">{{ repo.family_stat.month }}</td>
+{#
+        <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
+        <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
+        <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
+#}
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>

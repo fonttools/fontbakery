@@ -182,6 +182,7 @@ def getsubset(subset, font_in):
     if 'menu' in subset:
         font = fontforge.open(font_in)
         result = map(ord, font.familyname)
+        result += [0x0020]
 
     if 'latin' in subset:
         result += latin
