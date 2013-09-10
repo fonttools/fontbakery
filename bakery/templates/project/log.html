@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Bake Progress Log") %}
+{% set page_title = _("Processing ") + project.title %}
 
 {% block body %}
 
@@ -8,7 +8,12 @@
 
 <pre id="log"></pre>
 
-<p><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
+<p id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
+
+<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
+    <input id="bake" name="bake" value="Bake Again" type="submit" class="btn btn-primary" />
+</form>
+
 {% endblock %}
 
 
@@ -25,7 +30,6 @@ if (typeof String.prototype.startswith != 'function') {
 
 $(document).ready(function () {
 
-var $log = $('#log');
 var socket = io.connect("/build", {'force new connection': true});
 
 socket.on("connect", function(e) {
@@ -40,32 +44,49 @@ socket.on("disconnect", function(e) {
 socket.on('message', function (data) {
   var data = String(data);
          if (data.startswith('Header: ')){
-    $log.append($('<h4>').html(data.slice('Header: '.length)));
+    $('#log').append($('<h4>').addClass('text-header').html(data.slice('Header: '.length)));
   } else if (data.startswith('Error: ')){
-    $log.append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
+    $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
   } else if (data.startswith('Fatal: ')){
-    $log.append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+    $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+    $('#setup').show();
   } else if (data.startswith('Start: ')){
-    $log.append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
+    $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
   } else if (data.startswith('End: ')){
-    $log.append($('<span>').addClass('text-success').html('<span class="label label-success">End</span> ' + data.slice('End: '.length)));
+    $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+    $('#setup').show();
   } else if (data.startswith('Command: ')){
-    $log.append($('<span>').addClass('text-info').html("$ " + data.slice('Command: '.length)));
+    $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('Command: '.length)));
   } else {
-    $log.append($('<span>').html(data));
+    $('#log').append($('<span>').addClass('text-info').html(data));
   }
   // scroll to the bottom of the page
   $(document).scrollTop($(document).height());
 });
 
-  // but keep the nav() on top
-  $('#secondaryNav').css({
-       'position': 'fixed',
-       'left': '11%',
-       'right': '11%',
-       'background': 'white',
-       'width': 'auto'
-      });
+$('#setup').hide();
+
+function userCanSeeItWithoutScrolling() {
+    var userCanSeeItWithoutScrolling = $("#toTop").offset().top < $(window).height();
+    if (userCanSeeItWithoutScrolling == true){
+        $('#toTop').hide();
+    } else {
+        $('#toTop').show();
+    };
+};
+
+// hide toTop if user can see it without scrolling
+userCanSeeItWithoutScrolling();
+
+// If the page resizes, show toTop if user now can't see it
+$(window).resize(function() {
+    userCanSeeItWithoutScrolling();
+});
+// If the page scrolls, show toTop if user now can't see it
+$(window).scroll(function() {
+    userCanSeeItWithoutScrolling();
+});
+
 });
 </script>
 {% endblock %}

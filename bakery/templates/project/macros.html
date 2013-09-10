@@ -1,11 +1,22 @@
 {% macro nav(active) -%}
 <div id="secondaryNav">
+    <form class="form-inline" action="{{ url_for('settings.delclone', project_id = project.id )}}" method="GET">
+      <button type="submit" class="btn btn-danger btn-mini pull-right" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> Remove Project</button>
+    </form>
+    <a class="" href="{{ url_for('project.bump', project_id = project.id )}}">
+      <button class="btn btn-mini pull-right" style="clear:both; margin-top:1em" type="button">Pull latest updates</button>
+    </a>
   <h2>{{ project.title }}</h2>
-  <p>
-     <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-external-link"></i></a>
-  </p>
+
+  <div class="controls">
+    <div class="input-prepend input-append">
+      <span class="add-on"><i class="icon-code-fork"></i> </span>
+      <input class="input-xxlarge" id="contrib_lff" name="contrib_lff" type="text" value="{{ project.clone }}"></input>
+    </div>
+  </div>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
+        <li {% if active == 'log' %}class="active"{% endif %}><a href="{{ url_for('project.log', project_id = project.id )}}">Log</a></li>
         <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
         <li class="dropdown {% if active in ['fonts', 'ufonts'] %}active{% endif %}">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
