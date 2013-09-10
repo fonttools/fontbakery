@@ -1,5 +1,5 @@
 {% extends "project/base.html" %}
-{% set page_title = _("Bake Progress Log") %}
+{% set page_title = _("Processing ") + project.title %}
 
 {% block body %}
 
@@ -48,7 +48,7 @@ socket.on('message', function (data) {
   } else if (data.startswith('Start: ')){
     $log.append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
   } else if (data.startswith('End: ')){
-    $log.append($('<span>').addClass('text-success').html('<span class="label label-success">End</span> ' + data.slice('End: '.length)));
+    $log.append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
   } else if (data.startswith('Command: ')){
     $log.append($('<span>').addClass('text-info').html("$ " + data.slice('Command: '.length)));
   } else {

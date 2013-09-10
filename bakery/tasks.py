@@ -58,7 +58,7 @@ def run(command, cwd, log):
             break
     # if the command did not exit cleanly (with returncode 0)
     if p.returncode:
-        msg = 'Fatal: The command `%s` exited with exit status %s \n' % (command, p.returncode)
+        msg = 'Fatal: Exited with return code %s \n' % p.returncode
         # Log the exit status
         log.write(msg)
         # Raise an error on the worker
@@ -94,6 +94,7 @@ def project_git_sync(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
+        log.write('Creating Incoming Directory\n', prefix = 'Header: ')
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
     # Update _in if it already exists with a .git directory
     if os.path.exists(os.path.join(_in, '.git')):
