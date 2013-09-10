@@ -3,6 +3,9 @@
     <form class="form-inline" action="{{ url_for('settings.delclone', project_id = project.id )}}" method="GET">
       <button type="submit" class="btn btn-danger btn-mini pull-right" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> Remove Project</button>
     </form>
+    <a class="" href="{{ url_for('project.bump', project_id = project.id )}}">
+      <button class="btn btn-mini pull-right" style="clear:both; margin-top:1em" type="button">Pull latest updates</button>
+    </a>
   <h2>{{ project.title }}</h2>
 
   <div class="controls">
