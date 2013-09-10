@@ -40,7 +40,7 @@ def run(command, cwd, log):
     # log the command
     log.write('\nCommand: %s\n' % command)
     # Start the command
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
     while True:
         # Read output and errors
         stdout = p.stdout.readline()
@@ -76,7 +76,7 @@ def prun(command, cwd, log=None):
         :param log: loggin object with .write() method
 
     """
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
         log.write('Command: %s' % command)
