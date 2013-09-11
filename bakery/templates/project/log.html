@@ -8,11 +8,11 @@
 
 <pre id="log"></pre>
 
-<p id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
-
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
-    <input id="bake" name="bake" value="Bake Again" type="submit" class="btn btn-primary" />
+    <input id="bake" name="bake" value="Bake Again" type="submit" class="btn btn-primary pull-right" />
 </form>
+
+<p id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
 
 {% endblock %}
 
