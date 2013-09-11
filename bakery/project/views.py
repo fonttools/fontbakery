@@ -219,9 +219,9 @@ def log(project_id):
     return render_template('project/log.html', project=p, log=data)
 
 
-@project.route('/<int:project_id>/yaml', methods=['GET'])
+@project.route('/<int:project_id>/rfiles', methods=['GET'])
 @login_required
-def bakeryyaml(project_id):
+def rfiles(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
@@ -229,7 +229,7 @@ def bakeryyaml(project_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('yaml')
-    return render_template('project/yaml.html', project=p, yaml=data)
+    return render_template('project/rfiles.html', project=p, yaml=data)
 
 
 @project.route('/<int:project_id>/utests', methods=['GET'])

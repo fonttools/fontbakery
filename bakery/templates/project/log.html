@@ -13,7 +13,7 @@
 <input id="logEndButtonRebake" name="bake" value="Bake Again" type="submit" class="btn btn-primary pull-right" />
 <div id="logEndButtonSuccess" class="btn-group">
 <a href="{{ url_for('project.rtests', project_id=project.id) }}"            class="btn">Result Tests</a>
-<a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}"       class="btn">Result Files</a>
+<a href="{{ url_for('project.rfiles', project_id=project.id ) }}"       class="btn">Result Files</a>
 <a href="{{ url_for('project.metadatajson', project_id=project.id ) }}"     class="btn">Edit METADATA</a>
 <a href="{{ url_for('project.description', project_id=project.id ) }}" class="btn">Edit DESCRIPTION</a>
 </div>
