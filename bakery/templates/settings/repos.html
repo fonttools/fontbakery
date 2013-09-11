@@ -34,8 +34,8 @@
             <label class="checkbox" for="{{ item.full_name }}">
                 <input id="{{ item.full_name }}" type="checkbox" {% if item.full_name in projects%}checked="checked"{%endif%} value="{{ item.full_name }}" name="git">
                 {{ item.full_name }}
-                <a href="https://github.com/{{ item.full_name }}"><i class="icon-external-link"></i></a>
-                {% if item.homepage %}<a href="http://{{ item.homepage }}"><i class="icon-home"></i></a>{% endif %}
+                <a href="https://github.com/{{ item.full_name }}"><i class="icon-external-link"></i> </a>
+                {% if item.homepage %}<a href="http://{{ item.homepage }}"><i class="icon-home"></i> </a>{% endif %}
             </label>
             {%- endfor %}
           </div>

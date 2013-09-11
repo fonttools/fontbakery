@@ -3,7 +3,11 @@
     <form class="form-inline" action="{{ url_for('settings.delclone', project_id = project.id )}}" method="GET">
       <button type="submit" class="btn btn-danger btn-mini pull-right" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> Remove Project</button>
     </form>
-  <h2>{{ project.title }}</h2>
+  <h2>
+      {{ project.title }}
+      {# TODO this doesn't work... also broken in dashboard.html #}
+      {% if project.homepage %}<a href="{{ project.homepage}}"><i class="icon-external-link"></i> </a>{% endif %}
+  </h2>
 
   <div class="controls">
     <div class="input-prepend input-append">

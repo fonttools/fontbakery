@@ -185,6 +185,7 @@
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
         </td>
         <td style="text-align: center">
+            {# TODO this doesn't work... also broken in macros.html #}
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
