@@ -116,7 +116,7 @@ def project_git_sync(project, log):
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
             if project.clone[:7] == "file://":
                 # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
-                run('cp -anv %(clone)s .' % project, cwd = _in, log=log)
+                run('cp -a %(clone)s .' % project, cwd = _in, log=log)
                 # 
                 run('git init .', cwd = _in, log=log)
                 run('git add *', cwd = _in, log=log)
@@ -167,7 +167,7 @@ def copy_and_rename_ufos_process(project, log):
         _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
         _out_ufo_path = os.path.join(_out_src, _out_ufo)
         # Copy the UFOs
-        run("cp -anv '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
 
         # Fix common lack of nbspace issue
         log.write('Fix nbsp in UFOs\n', prefix = 'Header: ')
@@ -209,7 +209,7 @@ def copy_and_rename_ufos_process(project, log):
         # Copy license file
         _in_license = os.path.join(_in, licenseFileInFullPath)
         _out_license = os.path.join(_out, licenseFileOut)
-        run('cp -anv "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
     else:
         log.write('License file not copied\n', prefix = 'Error: ')
 
@@ -217,7 +217,7 @@ def copy_and_rename_ufos_process(project, log):
     _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
     if os.path.exists(_in_fontlog):
-        run('cp -anv "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
     else:
         log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
 
