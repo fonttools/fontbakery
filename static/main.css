@@ -174,9 +174,8 @@ ol.linenums li {
     -moz-border-radius: 5px;
 */}
 
-.tree .highlight {
+.highlight {
   background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
 }
 
 /*Remove connectors before root*/
@@ -225,12 +224,12 @@ ol.linenums li {
 }
 
 .control-group {
-  padding-top: 50px;
-  margin-top: -50px;
+    padding-top: 50px;
+    margin-top: -50px;
 }
 
 #dashboard a {
-     text-decoration: none;
+    text-decoration: none;
 }
 
 #log .label-end {
