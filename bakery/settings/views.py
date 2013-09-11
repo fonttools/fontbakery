@@ -233,11 +233,9 @@ def addclone():
         return redirect(url_for('frontend.splash'))
 
     # pylint:disable-msg=E1101
-    dup = Project.query.filter_by(
-        login=g.user.login, is_github=False, clone=clone).first()
+    dup = Project.query.filter_by(login=g.user.login, is_github=False, clone=clone).first()
     if dup:
-        flash(_("Repository already added"))
-        return redirect(url_for('frontend.splash'))
+        flash(_("This repository is a duplicate"))
 
     project = Project(
         login=g.user.login,
