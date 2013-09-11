@@ -181,14 +181,13 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group row-fluid">
-    <div class="controls">
-      <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
-      <input id="save" name="save" value="Save" type="submit" class="btn" />
-      {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
-      <input class="btn" name="reset" value="Reload from upstream" disabled="disabled">
-    </div>
+  <div class="form-actions">
+    <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
+    <input id="save" name="save" value="Save" type="submit" class="btn" />
+    {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
+    <input class="btn" name="reset" value="Reload from upstream" disabled="disabled">
   </div>
+
 
 </form>
 
@@ -245,10 +244,8 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
     {% endfor %}
 
-    <div class="control-group row-fluid">
-      <div class="controls">
+    <div class="form-actions">
         <button type="submit" class="btn btn-primary">Save</button>
-      </div>
     </div>
 
 </form>
