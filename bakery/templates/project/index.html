@@ -219,7 +219,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
           {% else %}
               {% for option, description in value.iteritems() %}
                 <label class="radio inline">
-                  <input type="radio" name="{{ value }}" value="{{ option }}" {% if config['state'][item] == option %}selected="selected"{% endif %} /> {{ description }}
+                  <input type="radio" name="{{ item }}" value="{{ option }}" {% if config['state'][item] == option %}selected="selected"{% endif %} /> {{ description }}
                 </label>
               {% endfor %}
           {% endif %}
