@@ -15,7 +15,7 @@
 <a href="{{ url_for('project.rtests', project_id=project.id) }}"            class="btn">Result Tests</a>
 <a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}"       class="btn">Result Files</a>
 <a href="{{ url_for('project.metadatajson', project_id=project.id ) }}"     class="btn">Edit METADATA</a>
-<a href="{{ url_for('project.description_edit', project_id=project.id ) }}" class="btn">Edit DESCRIPTION</a>
+<a href="{{ url_for('project.description', project_id=project.id ) }}" class="btn">Edit DESCRIPTION</a>
 </div>
 </form>
 {% endif %}

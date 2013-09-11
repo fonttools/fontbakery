@@ -183,9 +183,9 @@ def metadatajson_save(project_id):
                            metadata=request.form.get('metadata'), metadata_new=metadata_new)
 
 
-@project.route('/<int:project_id>/description_edit', methods=['GET'])
+@project.route('/<int:project_id>/description', methods=['GET'])
 @login_required
-def description_edit(project_id):
+def description(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
@@ -207,7 +207,7 @@ def description_save(project_id):
 
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
-    return redirect(url_for('project.description_edit', project_id=p.id))
+    return redirect(url_for('project.description', project_id=p.id))
 
 
 @project.route('/<int:project_id>/log', methods=['GET'])

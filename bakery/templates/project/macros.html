@@ -38,7 +38,7 @@
                 <li {% if active == 'rfonts' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Tests</a></li>
                 <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >Files</a></li>
                 <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id ) }}" >METADATA.json</a></li>
-                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
+                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
             </ul>
           </li>
       {% endif %}
