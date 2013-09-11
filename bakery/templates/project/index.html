@@ -137,7 +137,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid">
-    <label class="control-label" for="ufo_folders"><strong>UFOs to Bake:</strong></label>
+    <label class="control-label" for="ufo_folders"><strong>UFOs:</strong></label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
         size="{{ config['local']['ufo_dirs']|length }}" required>
@@ -149,12 +149,24 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid">
-    <label class="control-label" for="subset"><strong>Subsets to Bake:</strong></label>
+    <label class="control-label" for="subset"><strong>Subsets:</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
       size="{{ subsetvals|length }}" required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
+      {% endfor %}
+    </select>
+    </div>
+  </div>
+
+  <div class="control-group row-fluid">
+    <label class="control-label" for="txt_files">Text Files:</label>
+    <div class="controls">
+    <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge" 
+        size="{{ config['local']['txt_files']|length }}">
+      {% for i in config['local']['txt_files'] %}
+      <option {% if i in config['state']['txt_files_copied'] %}selected="selected"{% endif %} >{{ i }}</option>
       {% endfor %}
     </select>
     </div>

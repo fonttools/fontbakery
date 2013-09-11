@@ -221,6 +221,12 @@ def copy_and_rename_ufos_process(project, log):
     else:
         log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
 
+    # Copy any txt files selected by user
+    if config['state'].get('txt_files_copied', None):
+        for filename in config['state']['txt_files_copied']:
+            _in_file  = os.path.join(_in,  filename)
+            _out_file = os.path.join(_out, filename)
+            run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd = _user, log=log)
 
 def generate_fonts_process(project, log):
     """

@@ -84,25 +84,22 @@ def setup(project_id):
         if i not in config['local']['ufo_dirs']:
             error = True
             flash(_("Please select at least one UFO"))
-
-    if len(ufo_dirs)<0:
+    if len(ufo_dirs) < 0:
         error = True
-        flash(_("Select at least one UFO folder"))
-
-    # TODO: check that all ufo have same font familyname
-
+        flash(_("Select at least one UFO"))
     config['state']['ufo'] = ufo_dirs
+
+    txt_files_to_copy = request.form.getlist('txt_files')
+    config['state']['txt_files_copied'] = txt_files_to_copy
 
     subset_list = request.form.getlist('subset')
     for i in subset_list:
         if i not in DEFAULT_SUBSET_LIST:
             error = True
             flash(_('Subset value is wrong'))
-
     if len(subset_list)<0:
         error = True
         flash(_("Select at least one subset from list"))
-
     config['state']['subset'] = subset_list
 
     if request.form.get('ttfautohint'):
