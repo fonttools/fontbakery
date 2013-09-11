@@ -108,7 +108,8 @@ def project_git_sync(project, log):
         # clone the repository
         log.write('Copying Git Repository\n', prefix = 'Header: ')
         try:
-            # TODO: use the git check url command (in issue tracker) first
+            # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
+            # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
             run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
         # if the clone action didn't work, just copy it 
         except:
