@@ -49,7 +49,7 @@ def repos():
         for i in myprojects:
             p[i.full_name] = i
     # import ipdb; ipdb.set_trace()
-    return render_template('settings/repos.html',
+    return render_template('settings/index.html',
                            cache=cache,
                            projects=p,
                            gitprojects=mygit
@@ -105,7 +105,7 @@ def profile():
             _repos = resp.json()
         else:
             flash(_('Unable to load repos list.'))
-    return render_template('settings/repos.html', repos=_repos)
+    return render_template('settings/index.html', repos=_repos)
 
 HOOK_URL = 'http://requestb.in/nrgo4inr'
 
