@@ -456,11 +456,11 @@ def sync_and_process(project, process = True, sync = False):
 
 def project_upstream_tests(project):
     import checker.upstream_runner
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     result = {}
-    os.chdir(_out_src)
-    for name in glob.glob("*.ufo"):
-        result[name] = checker.upstream_runner.run_set(os.path.join(_out_src, name))
+    os.chdir(_in)
+    for font in project.config['local']['ufo_dirs']:
+        result[font] = checker.upstream_runner.run_set(os.path.join(_in, font))
     return result
 
 def project_result_tests(project):
@@ -468,6 +468,6 @@ def project_result_tests(project):
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     result = {}
     os.chdir(_out_src)
-    for name in glob.glob("*.ttf"):
-        result[name] = checker.result_runner.run_set(os.path.join(_out_src, name))
+    for font in glob.glob("*.ttf"):
+        result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
     return result
