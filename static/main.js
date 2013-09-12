@@ -18,7 +18,20 @@ See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 http://github.com/xen/fontbakery/
 
 */
+
+$(document).delegate('.toggle', 'click', function () {
+  event.stopPropagation();
+  $(this).next().slideToggle();
+  $(this).children().toggleClass("icon-collapse").toggleClass("icon-expand");
+});
+
 $(document).ready(function() {
+
+$('.toggle').children().addClass("icon-collapse");
+$('.toggleCollapseFirst').next().hide();
+$('.toggleCollapseFirst').children().addClass("icon-expand").removeClass("icon-collapse");;
+
+$(".tablesorter").tablesorter(); 
 
 var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>'
 
