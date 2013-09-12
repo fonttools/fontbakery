@@ -8,87 +8,75 @@
 
 {% for fontfile, fontaine in fontaineFonts.items() %}
 
-<h1>{{ fontfile }}</h1>
+    <h1>{{ fontfile }}</h1>
 
-{% for o in fontaine.orthographies %}
+    {% for charmap, support, missing, missingchars  in fontaine.orthographies %}
+            {% if missing != 0 %}
+                <h2>{{ charmap.common_name }}
+                    {% if charmap.native_name %}({{ charmap.native_name }}){% endif %}
+                    {% if charmap.key %}(&#{{ charmap.key }};){% endif %}
+                </h2>
+                <ul>
+                    <li>{% for g in charmap.glyphs %}
+                            {{ g }}
+                        {% endfor %}
+                    <li>Coverage: {{ missing }}% 
+                    {% if missingchars %}
+                    <li>Missing Characters: 
+                         {% for c in missingchars %}
+                            &#{{ c }};
+                         {% endfor %}
+                    {% endif %}
+                </ul>
+            {% endif %}
+    {% endfor %}
+    {{ fontaine.get_othography_info }}<br>
+    {{ fontaine.orthographies }}<br>
 
-{% if o[2] != 0 %}
-<h2>{{ o[0].common_name }}
-    {% if o[0].native_name %}({{ o[0].native_name }}){% endif %}
-    {% if o[0].key %}(&#{{ o[0].key }};){% endif %}
-</h2>
+    <h3>Languages</h3>
+    <p>Glyphs: {{ fontaine.glyph_num }}</p>
+    <p>Characters: {{ fontaine.character_count }}</p>
+    <p>Unicodes:</p>
+    <div class="row-fluid">
+    {% for c in fontaine._unicodeValues %}
+      <div class="" style="float:left; padding:1em;width:1em;height:1em;border:1px solid grey;">&#{{ c }};</div>
+    {% endfor %}
+    </div>
 
-<ul>
+    <h3>Metadata</h3>
+    {{ fontaine.common_name }}
+    {{ fontaine._full_name }}
+    {{ fontaine._postscript }}
+    {{ fontaine.sub_family }}
+    {{ fontaine.weight }}
 
-<li>{{ o[0].glyphs }}
+    {{ fontaine.version }}
+    {{ fontaine._unique_id }}
 
+    {{ fontaine.copyright }}
+    {{ fontaine.license }}
+    {{ fontaine.license_url }}
+    {{ fontaine.designer }}
+    {{ fontaine.designer_url }}
+    {{ fontaine.vendor }}
+    {{ fontaine.vendor_url }}
 
-<li>Coverage: {{ o[2] }}% 
+    {{ fontaine.has_fixed_sizes }}
+    {{ fontaine.is_fixed_width }}
+    {{ fontaine.style_flags }}
 
-{% if o[3] %}
-<li>Missing Characters: 
-     {% for c in o[3] %}
-       &#{{ c }};
-     {% endfor %}
-{% endif %}
+    Refresh: {{ fontaine.refresh_sfnt_properties }}
 
-{% if o[4] %}
-<li> {{ o[4] }}
-{% endif %}
-
-</ul>
-{% endif %}
-{% endfor %}
-{{ fontaine.get_othography_info }}<br>
-{{ fontaine.orthographies }}<br>
-
-<h3>Languages</h3>
-<p>Glyphs: {{ fontaine.glyph_num }}</p>
-<p>Characters: {{ fontaine.character_count }}</p>
-<p>Unicodes:</p>
-<div class="row-fluid">
-{% for c in fontaine._unicodeValues %}
-  <div class="" style="float:left; padding:1em;width:1em;height:1em;border:1px solid grey;">&#{{ c }};</div>
-{% endfor %}
-</div>
-
-
-
-
-<h3>Metadata</h3>
-{{ fontaine.common_name }}
-{{ fontaine._full_name }}
-{{ fontaine._postscript }}
-{{ fontaine.sub_family }}
-{{ fontaine.weight }}
-
-{{ fontaine.version }}
-{{ fontaine._unique_id }}
-
-{{ fontaine.copyright }}
-{{ fontaine.license }}
-{{ fontaine.license_url }}
-{{ fontaine.designer }}
-{{ fontaine.designer_url }}
-{{ fontaine.vendor }}
-{{ fontaine.vendor_url }}
-
-{{ fontaine.has_fixed_sizes }}
-{{ fontaine.is_fixed_width }}
-{{ fontaine.style_flags }}
-
-Refresh: {{ fontaine.refresh_sfnt_properties }}
-
-{#
-<ul class="sitemap">
-{%- for item in fontaine.keys() recursive %}
-    <li><a href="">{{ item }}</a>
-    {%- if item.children -%}
-        <ul class="submenu">{{ loop(item.children) }}</ul>
-    {%- endif %}</li>
-{%- endfor %}
-</ul>
-#}
+    {#
+    <ul class="sitemap">
+    {%- for item in fontaine.keys() recursive %}
+        <li><a href="">{{ item }}</a>
+        {%- if item.children -%}
+            <ul class="submenu">{{ loop(item.children) }}</ul>
+        {%- endif %}</li>
+    {%- endfor %}
+    </ul>
+    #}
 {% endfor %}
 
 
