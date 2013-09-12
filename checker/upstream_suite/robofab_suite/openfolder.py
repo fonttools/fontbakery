@@ -68,7 +68,9 @@ class UfoOpenTest(TestCase):
         self.assertIsInstance(a, robofab.objects.objectsRF.RGlyph)
 
     def test_is_fsType_eq_1(self):
-        pass
+        """Is the OS/2 table fsType set to 0?"""
+        desiredFsType = [0]
+        self.assertEqual(self.font.info.openTypeOS2Type, desiredFsType)
 
     # TODO check if this is a good form of test
     def has_character(self, unicodeString):
