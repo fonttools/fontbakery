@@ -15,14 +15,21 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+# HOW TO
+# 1. Copy to the $target_suit/$tool_suite/ dir
+# 2. Fill in the lines marked with XXX
+
 from checker.base import BakeryTestCase as TestCase
+import fontforge # import your testing package
 
 class SampleTest(TestCase):
-    targets = ['result']
-    path   = '.'
+    targets = ['upstream', 'result']    # XXX pick one or both
+    tool   = 'FontForge'                # XXX name the tool
+    name   = __name__                   # XXX leave this
+    path   = '.'                        # XXX leave this
 
     def setUp(self):
-        self.font = Font(self.path)
+        self.font = fontforge.open(self.path) # XXX how to open fonts with your testing package
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
