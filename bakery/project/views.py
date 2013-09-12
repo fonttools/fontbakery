@@ -47,7 +47,7 @@ def bump(project_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     sync_and_process.delay(p, process = False, sync = True)
-    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.files', project_id=project_id), url_for('project.setup', project_id=project_id)))))
+    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.log', project_id=project_id))
 
 @project.route('/<int:project_id>/', methods=['GET', 'POST'])
