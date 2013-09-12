@@ -15,17 +15,18 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+import werkzeug.serving
 import gevent.monkey
 gevent.monkey.patch_all()
 
 from bakery import create_app, init_app
 
-app = create_app(app_name='bakery')
-app.config.from_object('config')
-app.config.from_pyfile('local.cfg', silent=True)
-init_app(app)
-
-if __name__ == '__main__':
+@werkzeug.serving.run_with_reloader
+def runServer():
+    app = create_app(app_name='bakery')
+    app.config.from_object('config')
+    app.config.from_pyfile('local.cfg', silent=True)
+    init_app(app)
     import os
     from werkzeug.wsgi import SharedDataMiddleware
     app.config['DEBUG'] = True
@@ -37,3 +38,6 @@ if __name__ == '__main__':
         resource="socket.io", policy_server=False,
         transports=['websocket', 'xhr-polling'],
         ).serve_forever()
+
+if __name__ == '__main__':
+    runServer()
