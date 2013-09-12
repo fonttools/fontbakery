@@ -21,7 +21,8 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import (sync_and_process, project_result_tests, project_upstream_tests)
+from ..tasks import sync_and_process
+from ..utils import (project_result_tests, project_upstream_tests)
 from .models import Project
 
 project = Blueprint('project', __name__, url_prefix='/project')
@@ -44,27 +45,27 @@ def bump(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     sync_and_process.delay(p, process = False, sync = True)
-    flash(Markup(_("Updated repository (<a href='%s'>log</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.log', project_id=project_id), url_for('project.setup', project_id=project_id)))))
-    return redirect(url_for('project.fonts', project_id=project_id))
+    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
+    return redirect(url_for('project.log', project_id=project_id))
 
-@project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
+@project.route('/<int:project_id>/', methods=['GET', 'POST'])
 @login_required
 def setup(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     config = p.config
     originalConfig = p.config
     error = False
 
     if request.method == 'GET':
-        return render_template('project/setup.html', project=p,
+        return render_template('project/index.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
     if not request.form.get('license_file') in config['local']['txt_files']:
@@ -84,25 +85,22 @@ def setup(project_id):
         if i not in config['local']['ufo_dirs']:
             error = True
             flash(_("Please select at least one UFO"))
-
-    if len(ufo_dirs)<0:
+    if len(ufo_dirs) < 0:
         error = True
-        flash(_("Select at least one UFO folder"))
-
-    # TODO: check that all ufo have same font familyname
-
+        flash(_("Select at least one UFO"))
     config['state']['ufo'] = ufo_dirs
+
+    txt_files_to_copy = request.form.getlist('txt_files')
+    config['state']['txt_files_copied'] = txt_files_to_copy
 
     subset_list = request.form.getlist('subset')
     for i in subset_list:
         if i not in DEFAULT_SUBSET_LIST:
             error = True
             flash(_('Subset value is wrong'))
-
     if len(subset_list)<0:
         error = True
         flash(_("Select at least one subset from list"))
-
     config['state']['subset'] = subset_list
 
     if request.form.get('ttfautohint'):
@@ -113,7 +111,7 @@ def setup(project_id):
             config['state'].pop('ttfautohint')
 
     if error:
-        return render_template('project/setup.html', project=p,
+        return render_template('project/index.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
     if originalConfig != config:
@@ -124,6 +122,7 @@ def setup(project_id):
         # This marks that the setup is ready enough to bake the project
         # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
         config['local']['setup'] = True
+        p.save_state()
         sync_and_process.ctx_delay(p, process = True, sync = False)
         return redirect(url_for('project.log', project_id=p.id))
     else:
@@ -131,18 +130,18 @@ def setup(project_id):
         return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/', methods=['GET'])
+@project.route('/<int:project_id>/ufiles', methods=['GET'])
 @login_required
-def fonts(project_id):
+def ufiles(project_id):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     p = Project.query.get_or_404(project_id)
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('license')
-    return render_template('project/fonts.html', project=p, license=data)
+    return render_template('project/ufiles.html', project=p, license=data)
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
@@ -151,7 +150,7 @@ def metadatajson(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     metadata = p.read_asset('metadata')
     metadata_new = p.read_asset('metadata_new')
@@ -166,7 +165,7 @@ def metadatajson_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     try:
         # this line trying to parse json
@@ -182,14 +181,14 @@ def metadatajson_save(project_id):
                            metadata=request.form.get('metadata'), metadata_new=metadata_new)
 
 
-@project.route('/<int:project_id>/description_edit', methods=['GET'])
+@project.route('/<int:project_id>/description', methods=['GET'])
 @login_required
-def description_edit(project_id):
+def description(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('description')
     return render_template('project/description.html', project = p, description = data)
@@ -202,11 +201,11 @@ def description_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
-    return redirect(url_for('project.description_edit', project_id=p.id))
+    return redirect(url_for('project.description', project_id=p.id))
 
 
 @project.route('/<int:project_id>/log', methods=['GET'])
@@ -214,36 +213,32 @@ def description_save(project_id):
 def log(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return render_template('project/is_not_ready.html')
-
     data = p.read_asset('log')
     return render_template('project/log.html', project=p, log=data)
 
 
-@project.route('/<int:project_id>/yaml', methods=['GET'])
+@project.route('/<int:project_id>/rfiles', methods=['GET'])
 @login_required
-def bakeryyaml(project_id):
+def rfiles(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('yaml')
-    return render_template('project/yaml.html', project=p, yaml=data)
+    return render_template('project/rfiles.html', project=p, yaml=data)
 
 
 @project.route('/<int:project_id>/utests', methods=['GET'])
 @login_required
 def utests(project_id):
-    """ Upstream tests view """
+    """ Results of processing tests, for ufo files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     test_result = project_upstream_tests(project=p)
     return render_template('project/utests.html', project=p,
@@ -258,7 +253,7 @@ def rtests(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     test_result = project_result_tests(project=p)
     return render_template('project/rtests.html', project=p,
@@ -271,7 +266,7 @@ def dashboard_save(project_id):
         login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
-        return render_template('project/is_not_ready.html')
+        return redirect(url_for('project.log', project_id=p.id))
 
     for item in request.form:
         if request.form.get(item):

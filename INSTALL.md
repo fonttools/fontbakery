@@ -46,10 +46,11 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis;
+    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
+    ./bootstrap;
     ./configure --with-doc=no;
     sudo make install;
     # Start redis now:
@@ -63,7 +64,13 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge ttfautohint redis-server curl default-jdk;
+    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge redis-server curl default-jdk git mercurial;
+    # install ttfautohint from git
+    git clone git://repo.or.cz/ttfautohint.git;
+    cd ttfautohint;
+    ./bootstrap;
+    ./configure --with-doc=no;
+    sudo make install;
     # Start redis now:
     sudo /etc/init.d/redis-server start;
     # Set up a pip download cache

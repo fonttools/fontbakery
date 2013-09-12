@@ -15,50 +15,52 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import os
-import robofab.world
-import robofab.objects
-
 from checker.base import BakeryTestCase as TestCase
+import os, robofab.world, robofab.objects
 
 class UfoOpenTest(TestCase):
-
-    target = 'upstream'
-
-    path = '.'
+    targets = ['upstream']
+    tool   = 'Robofab'
+    name   = __name__
+    path   = '.'
 
     def setUp(self):
         self.font = robofab.world.OpenFont(self.path)
+        # You can use ipdb here to interactively develop tests!
+        # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
-        # print(self.path)
 
-    def test_if_itis_exsist(self):
-        """ This test check if file exists """
+    # def test_success(self):
+    #     """ This test succeeded """
+    #     self.assertTrue(True)
+    #
+    # def test_failure(self):
+    #     """ This test failed """
+    #     self.assertTrue(False)
+    #
+    # def test_error(self):
+    #     """ Unexpected error """
+    #     1 / 0
+    #     self.assertTrue(False)
+
+    def test_it_exists(self):
+        """ Does this font file exist? """
         self.assertEqual(os.path.exists(self.path), True)
 
     def test_is_ended_ufo(self):
-        """ This test check do file name ends with .ufo"""
+        """ Does this font file's name end with '.ufo'?"""
         self.assertEqual(self.path.lower().endswith('.ufo'), True)
 
-    def test_is_it_folder(self):
-        """ This test check if this is a folder"""
+    def test_is_folder(self):
+        """ Is this font file really a folder?"""
         self.assertEqual(os.path.isdir(self.path), True)
 
-    def test_have_a(self):
-        """ Do font have glyph named 'A' """
+    def test_is_A(self):
+        """ Does this font have a glyph named 'A'?"""
         self.assertTrue(self.font.has_key('A'))
 
-    def test_failure(self):
-        """ This test failed """
-        self.assertTrue(False)
-
-    def test_error(self):
-        """ Unexpected error """
-        1 / 0
-        self.assertTrue(False)
-
-    def test_a_is_glyph_instance(self):
-        """ Do font property A is proper type object """
+    def test_is_A_a_glyph_instance(self):
+        """ Is this font's property A an instance of an RGlyph object? """
         if self.font.has_key('A'):
             a = self.font['A']
         else:
@@ -66,7 +68,9 @@ class UfoOpenTest(TestCase):
         self.assertIsInstance(a, robofab.objects.objectsRF.RGlyph)
 
     def test_is_fsType_eq_1(self):
-        pass
+        """Is the OS/2 table fsType set to 0?"""
+        desiredFsType = [0]
+        self.assertEqual(self.font.info.openTypeOS2Type, desiredFsType)
 
     # TODO check if this is a good form of test
     def has_character(self, unicodeString):

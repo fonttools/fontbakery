@@ -102,13 +102,14 @@ class BakeryTestRunner(unittest.TextTestRunner):
 
 
 
-def make_suite(path, target):
+def make_suite(path, definedTarget):
     suite = unittest.TestSuite()
 
-    for t in TestRegistry.list():
-        t.path = path
-        if t.target == target:
-            suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(t))
+    for TestCase in TestRegistry.list():
+        TestCase.path = path
+        for target in TestCase.targets:
+          if target == definedTarget:
+            suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 
     return suite
 
@@ -118,9 +119,10 @@ def run_suite(suite):
         'error': [],
         'failure': []
     }
-    runner = BakeryTestRunner(resultclass = BakeryTestResult,
-        success_list=result['success'], error_list=result['error'],
-        failure_list=result['failure'])
+    runner = BakeryTestRunner(resultclass  = BakeryTestResult,
+                              success_list = result['success'], 
+                              error_list   = result['error'],
+                              failure_list = result['failure'])
     runner.run(suite)
     result['sum'] = sum(map(len, [result[x] for x in result.keys() ]))
 

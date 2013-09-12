@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% set page_title = _("Add Repositories from Github") %}
+
+{% block body %}
+
+{% macro getReposList() -%}
+    <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
+      {% if cache %}
+        <button type="submit" class="btn btn-small">{{ _("Refresh") }}</button>
+        <span class="muted">{{ _("List of GitHub repositories last updated") }} {{ cache.updated | pretty_date}}</span>
+        {% else %}
+        <button type="submit" class="btn btn-small btn-primary">{{ _("Fetch List") }}</button>
+      {% endif %}
+    </form>
+{%- endmacro %}
+
+<h2>{{ page_title }}</h2>
+
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#massgithub" data-toggle="tab">{{ _("One Time") }}</a></li>
+    <li><a href="#github" data-toggle="tab">{{ _("Subscribe") }}</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <div id="massgithub" class="tab-pane active">
+        {{ getReposList() }}
+        <form action="{{ url_for('settings.massgit') }}" method="POST">
+          {% if cache %}
+          <p>{{ _("Select repositories to add from your GitHub account") }}:</p>
+          <div class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
+            {% for item in cache.data -%}
+            <label class="checkbox" for="{{ item.full_name }}">
+                <input id="{{ item.full_name }}" type="checkbox" {% if item.full_name in projects%}checked="checked"{%endif%} value="{{ item.full_name }}" name="git">
+                {{ item.full_name }}
+                <a href="https://github.com/{{ item.full_name }}"><i class="icon-external-link"></i> </a>
+                {% if item.homepage %}<a href="http://{{ item.homepage }}"><i class="icon-home"></i> </a>{% endif %}
+            </label>
+            {%- endfor %}
+          </div>
+          <div class="jumbotron">
+            <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}">{{ _("Add repositories") }}</button>
+          </div>
+          {% endif %}
+        </form>
+    </div>
+
+    <div id="github" class="tab-pane ">
+      {{ getReposList() }}
+      {% if cache %}
+      <p>To add repositories from GitHub with webhooks to get updates when a repo is updated, click its <i class="icon-star-empty"></i> :</p>
+      <table class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <th><i class="icon-star-empty"></i></th>
+            <th>Repository</th>
+            <th>Description</th>
+            <th>Settings <i class="icon-external-link"></i> </th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in cache.data -%}
+              <tr {% if item.full_name in projects%} class="success" {% endif %}>
+                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?"><i class="icon-star-empty"></i></a>{% endif %}</td>
+                <td>{{ item.full_name }}
+                    <a href="https://github.com/{{ item.full_name }}"><i class="icon-external-link"></i></a>
+                    {% if item.homepage %}<a href="http://{{ item.homepage }}"><i class="icon-home"></i></a>{% endif %}
+                </td>
+                <td>{% if item.description %}{{ item.description | truncate(length=80)}}{% endif %}</td>
+                <td><a href="{{ item.html_url }}/settings/hooks"><i class="icon-wrench"></i> </a></td>
+              </tr>
+            {%- endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+
+  </div><!-- /.tab-content -->
+</div><!-- /.tabbable -->
+
+{# cache.data | pprint #}
+
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+// Javascript to enable link to tab
+var hash = document.location.hash;
+var prefix = "tab_";
+if (hash) {
+    $('.nav-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
+} 
+// Change hash for page-reload
+$('.nav-tabs a').on('shown', function (e) {
+    window.location.hash = e.target.hash.replace("#", "#" + prefix);
+});
+
+// TODO this isn't working because jquery.highlight-4.closure.js won't load, not sure why
+$(document).ready(function() {
+     $("#massgithub").highlight("font");
+});
+</script>
+{% endblock %}

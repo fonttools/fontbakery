@@ -17,6 +17,11 @@
 from __future__ import print_function
 
 from datetime import datetime
+import os
+import glob
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+DATA_ROOT = os.path.join(ROOT, 'data')
 
 def get_current_time():
     return datetime.utcnow()
@@ -72,8 +77,26 @@ class RedisFd(object):
 
     def write(self, data, prefix = ''):
         self.fd.write("%s%s" % (prefix, data))
+        self.fd.flush()
 
     def close(self):
         self.fd.write("End: End of log\n") #end of log
         self.fd.close()
 
+def project_upstream_tests(project):
+    import checker.upstream_runner
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    result = {}
+    os.chdir(_in)
+    for font in project.config['local']['ufo_dirs']:
+        result[font] = checker.upstream_runner.run_set(os.path.join(_in, font))
+    return result
+
+def project_result_tests(project):
+    import checker.result_runner
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    result = {}
+    os.chdir(_out_src)
+    for font in glob.glob("*.ttf"):
+        result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
+    return result

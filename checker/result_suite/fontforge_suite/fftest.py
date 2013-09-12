@@ -15,21 +15,17 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-# HOW TO
-# 1. Copy to the $target_suit/$tool_suite/ dir
-# 2. Fill in the lines marked with XXX
-
 from checker.base import BakeryTestCase as TestCase
-import fontforge # import your testing package
+import fontforge
 
-class SampleTest(TestCase):
-    targets = ['upstream', 'result']    # XXX pick one or both
-    tool   = 'FontForge'                # XXX name the tool
-    name   = __name__                   # XXX leave this
-    path   = '.'                        # XXX leave this
+class SimpleTest(TestCase):
+    targets = ['result']
+    tool   = 'FontForge'
+    name   = __name__
+    path   = '.'
 
     def setUp(self):
-        self.font = fontforge.open(self.path) # XXX how to open fonts with your testing package
+        self.font = fontforge.open(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
@@ -37,12 +33,16 @@ class SampleTest(TestCase):
     # def test_ok(self):
     #     """ This test succeeds """
     #     self.assertTrue(True)
-    # 
+    #
     # def test_failure(self):
     #     """ This test fails """
     #     self.assertTrue(False)
-    # 
+    #
     # def test_error(self):
     #     """ Unexpected error """
     #     1 / 0
     #     self.assertTrue(False)
+
+    def test_is_fsType_not_set(self):
+        """Is the OS/2 table fsType set to 0?"""
+        self.assertEqual(self.font.os2_fstype, 1)

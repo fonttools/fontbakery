@@ -174,9 +174,8 @@ ol.linenums li {
     -moz-border-radius: 5px;
 */}
 
-.tree .highlight {
+.highlight {
   background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
 }
 
 /*Remove connectors before root*/
@@ -218,21 +217,21 @@ ol.linenums li {
 
 #log {
     font-size: 10px;
-    margin-top: 16em;
 }
 
 #flash_message_container {
     padding-top: 2em;
 }
 
-a[name] {
+.control-group {
     padding-top: 50px;
     margin-top: -50px;
-    display: inline-block; /* required for webkit browsers */
 }
 
-.control-group {
-  padding-top: 50px;
-  margin-top: -50px;
-  display: inline-block; /* required for webkit browsers */
+#dashboard a {
+    text-decoration: none;
+}
+
+#log .label-end {
+    margin-top:1em;
 }

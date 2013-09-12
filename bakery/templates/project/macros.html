@@ -1,42 +1,32 @@
 {% macro nav(active) -%}
 <div id="secondaryNav">
-  <h2>{{ project.title }}</h2>
-  <p>
-     <a href="{{ project.clone }}">{{ project.clone }} <i class="icon-external-link"></i></a>
-  </p>
+    <form class="form-inline" action="{{ url_for('settings.delclone', project_id = project.id )}}" method="GET">
+      <button type="submit" class="btn btn-danger btn-mini pull-right" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> Remove Project</button>
+    </form>
+  <h2>
+      {{ project.title }}
+      {# TODO this doesn't work... also broken in dashboard.html #}
+      {% if project.homepage %}<a href="{{ project.homepage}}"><i class="icon-external-link"></i> </a>{% endif %}
+  </h2>
+
+  <div class="controls">
+    <div class="input-prepend input-append">
+      <span class="add-on"><i class="icon-code-fork"></i> </span>
+      <input class="input-xxlarge" id="contrib_lff" name="contrib_lff" type="text" value="{{ project.clone }}"></input>
+      <a class="btn" href="{{ url_for('project.bump', project_id = project.id )}}">Pull latest updates</a>
+    </div>
+  </div>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
-        <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-        <li class="dropdown {% if active in ['fonts', 'ufonts'] %}active{% endif %}">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-               Upstream <i class="caret"></i>
-          </a>
-          <ul class="dropdown-menu">
-              <li {% if active == 'ufonts' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Tests</a></li>
-              <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Files</a></li>
-          </ul>
-        </li>
+      <li {% if active == 'log' %}class="active"{% endif %}><a href="{{ url_for('project.log', project_id = project.id )}}">Log</a></li>
+      <li {% if active == 'ufiles' %}class="active" {% endif %}><a href="{{ url_for('project.ufiles', project_id=project.id) }}">Upstream Files</a></li>
+      <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li>
+      <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
-          <li {% if active == 'log' %}class="active" {% endif %}><a href="{{ url_for('project.log', project_id=project.id ) }}" >Log</a></li>
-          <li class="dropdown {% if active in ['yaml', 'metadatajson', 'description', 'rfonts'] %}active{% endif %}">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                 Results <i class="caret"></i>
-            </a>
-            <ul class="dropdown-menu">
-<!-- TODO: Add a files page for browsing the _out directory, reading directly from the file system
-                <li class="nav-header">Folders</li>
-                <li {% if active == 'fonts' %}class="active" {% endif %}><a href="{{ url_for('project.fonts', project_id=project.id) }}">Browse</a></li>
--->
-                <li {% if active == 'rfonts' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Tests</a></li>
-                <li class="nav-header">Read Only Files</li>
-                <li {% if active == 'yaml' %}class="active" {% endif %}><a href="{{ url_for('project.bakeryyaml', project_id=project.id ) }}" >Files</a></li>
-                <li class="nav-header">Editable Files</li>
-
-                <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id ) }}" >METADATA.json</a></li>
-
-                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description_edit', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
-            </ul>
-          </li>
+      <li {% if active == 'rfiles' %}class="active" {% endif %}><a href="{{ url_for('project.rfiles', project_id=project.id) }}">Results Files</a></li>
+      <li {% if active == 'rtests' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Results Tests</a></li>
+      <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
+      <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
       {% endif %}
   </ul>
 </div>
@@ -73,4 +63,76 @@
       </ul>
     </ul>
   </div>  
+{%- endmacro %}
+
+{%- macro showTests() %}
+ <div class="">
+    <ul class="inline muted">
+        <li><i class="icon-circle text-warning"></i> means the test didn't work: fix the test</li>
+        <li><i class="icon-circle text-error"></i> means the test failed: fix the font</li>
+        <li><i class="icon-circle text-success"></i> means the test passed: fix yourself some cake</li>
+    </ul>
+    <h3 id="allfonts" class="toggle"><i class="icon"></i> {{ _('All Fonts') }}</h3>
+    <table class="table table-striped table-bordered table-condensed tablesorter" id="testsByTest">
+    <thead style="text-align:left">
+        <th style="text-align:center">Result </th>
+        <th>Font</th>
+        <th>Test</th>
+        <th>Tool</th>
+        <th>File</th>
+        <th>Method</th>
+    </thead>
+
+    {%- for testType in ['error', 'failure', 'success'] %}
+      {%- for font in tests.keys() %}
+        {%- for item in tests[font][testType] %}
+          <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
+            <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i></td>
+            <td>{{ font }}</td>
+            <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+            <td>{{ item.tool }}</td>
+            <td>{{ item.name|replace('.','/') }}.py</td>
+            <td>{{ item._testMethodName }}()</td>
+          </tr>
+        {%- endfor %}
+      {%- endfor %}
+    {%- endfor %}
+    </table>
+
+    {%- for font in tests.keys() %}
+        <h3 id="{{font.split('/')[-1].lower()|replace(' ', '')}}" class="toggle toggleCollapseFirst"><i class="icon"></i> {{ font }}</h3>
+        <div>
+        <table class="table table-striped table-bordered table-condensed tablesorter testsByFont">
+        <thead style="text-align:left">
+            <th style="text-align:center">Result </th>
+            <th>Test</th>
+            <th>Tool</th>
+            <th>File</th>
+            <th>Method</th>
+        </thead>
+        {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success' } %}
+        {%- for testType, icon in testTypes.iteritems() | sort %}
+          {%- for item in tests[font][testType] %}
+            <tr>
+                <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i></td>
+                <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+                <td>{{ item.tool }}</td>
+                <td>{{ item.name|replace('.','/') }}.py</td>
+                <td>{{ item._testMethodName }}()</td>
+            </tr>
+          {%- endfor %}
+        {%- endfor %}
+        </table>
+        </div>
+        {% set  t = tests[font]['sum'] %}
+        {% set sl = tests[font]['success']|length|int %} 
+        {% set el = tests[font]['error']|length|int %}
+        {% set fl = tests[font]['failure']|length|int %}
+        <div class="progress">
+            <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
+            <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+            <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
+        </div>
+    {%- endfor %}
+  </div>
 {%- endmacro %}

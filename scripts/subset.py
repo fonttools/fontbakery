@@ -82,10 +82,13 @@ def subset_font_raw(font_in, font_out, unicodes, opts):
 
     flags = ()
 
+    if '--opentype-features' in opts:
+        flags += ('opentype',)
+
     if '--simplify' in opts:
         font.simplify()
         font.round()
-        flags = ('omit-instructions',)
+        flags += ('omit-instructions',)
 
     if '--strip_names' in opts:
         font.sfnt_names = ()
@@ -179,6 +182,7 @@ def getsubset(subset, font_in):
     if 'menu' in subset:
         font = fontforge.open(font_in)
         result = map(ord, font.familyname)
+        result += [0x0020]
 
     if 'latin' in subset:
         result += latin
@@ -317,7 +321,7 @@ def extract_vert_to_script(font_in, pe):
     set_os2_vert(pe, "HHeadDescent", hhea['Descender'])
 
 def main(argv):
-    optlist, args = getopt.gnu_getopt(argv, '', ['string=', 'strip_names',
+    optlist, args = getopt.gnu_getopt(argv, '', ['string=', 'strip_names', 'opentype-features',
                                                  'simplify', 'new', 'script',
                                                  'nmr', 'roundtrip', 'subset=',
                                                  'namelist', 'null'])
