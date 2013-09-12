@@ -20,6 +20,9 @@ from datetime import datetime
 import os
 import glob
 
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+DATA_ROOT = os.path.join(ROOT, 'data')
+
 def get_current_time():
     return datetime.utcnow()
 
