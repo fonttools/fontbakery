@@ -5,9 +5,9 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ project.title|truncate(40, True) }} <b class="caret"></b></a>
     <ul class="dropdown-menu">
     {% for item in g.projects %}
-        <li {% if (request.script_root + request.path).startswith(url_for('project.fonts', project_id = item.id )) %}
+        <li {% if (request.script_root + request.path).startswith(url_for('project.ufiles', project_id = item.id )) %}
     class="active"
-    {% endif %}><a href="{{ url_for('project.fonts', project_id = item.id )}}">{{item.title|truncate(40, True)}}</a></li>
+    {% endif %}><a href="{{ url_for('project.ufiles', project_id = item.id )}}">{{item.title|truncate(40, True)}}</a></li>
     {% endfor %}
 </ul>
 </li>

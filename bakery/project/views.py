@@ -129,9 +129,9 @@ def setup(project_id):
         return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/fonts', methods=['GET'])
+@project.route('/<int:project_id>/ufiles', methods=['GET'])
 @login_required
-def fonts(project_id):
+def ufiles(project_id):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     p = Project.query.get_or_404(project_id)
@@ -140,7 +140,7 @@ def fonts(project_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     data = p.read_asset('license')
-    return render_template('project/fonts.html', project=p, license=data)
+    return render_template('project/ufiles.html', project=p, license=data)
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
@@ -232,7 +232,7 @@ def rfiles(project_id):
 @project.route('/<int:project_id>/utests', methods=['GET'])
 @login_required
 def utests(project_id):
-    """ Upstream tests view """
+    """ Results of processing tests, for ufo files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
