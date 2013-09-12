@@ -459,21 +459,3 @@ def sync_and_process(project, process = True, sync = False):
         process_project(project, log = log)
     # Close the log file
     log.close()
-
-def project_upstream_tests(project):
-    import checker.upstream_runner
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    result = {}
-    os.chdir(_in)
-    for font in project.config['local']['ufo_dirs']:
-        result[font] = checker.upstream_runner.run_set(os.path.join(_in, font))
-    return result
-
-def project_result_tests(project):
-    import checker.result_runner
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    result = {}
-    os.chdir(_out_src)
-    for font in glob.glob("*.ttf"):
-        result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
-    return result

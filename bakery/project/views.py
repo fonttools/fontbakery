@@ -21,7 +21,8 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import (sync_and_process, project_result_tests, project_upstream_tests)
+from ..tasks import sync_and_process
+from ..utils import (project_result_tests, project_upstream_tests)
 from .models import Project
 
 project = Blueprint('project', __name__, url_prefix='/project')

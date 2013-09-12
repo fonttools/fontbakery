@@ -181,6 +181,7 @@
       <tr>
         <td style="text-align: right">
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
+            <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.tests" data-content="{{ repo.tests }}">H</span>
         </td>
         <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> 
