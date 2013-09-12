@@ -46,5 +46,6 @@ class SimpleTest(TestCase):
     #     1 / 0
     #     self.assertTrue(False)
 
-    def test_is_fsType_eq_n1(self):
-        self.assertEqual(self.font.os2_fstype, -1)
+    def test_is_fsType_not_set(self):
+        """Is the OS/2 table fsType set to 0?"""
+        self.assertEqual(self.font.os2_fstype, 1)
