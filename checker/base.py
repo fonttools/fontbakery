@@ -118,9 +118,10 @@ def run_suite(suite):
         'error': [],
         'failure': []
     }
-    runner = BakeryTestRunner(resultclass = BakeryTestResult,
-        success_list=result['success'], error_list=result['error'],
-        failure_list=result['failure'])
+    runner = BakeryTestRunner(resultclass  = BakeryTestResult,
+                              success_list = result['success'], 
+                              error_list   = result['error'],
+                              failure_list = result['failure'])
     runner.run(suite)
     result['sum'] = sum(map(len, [result[x] for x in result.keys() ]))
 
