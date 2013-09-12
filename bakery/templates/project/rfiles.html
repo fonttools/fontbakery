@@ -4,7 +4,7 @@
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('yaml') }}
+{{ nav('rfiles') }}
 
 <h4>{{ _("bakery.yaml File") }}</h4>
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
