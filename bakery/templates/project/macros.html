@@ -18,29 +18,15 @@
   </div>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
-        <li {% if active == 'log' %}class="active"{% endif %}><a href="{{ url_for('project.log', project_id = project.id )}}">Log</a></li>
-        <li {% if active == 'setup' %}class="active"{% endif %}><a href="{{ url_for('project.setup', project_id = project.id )}}">Setup</a></li>
-        <li class="dropdown {% if active in ['ufiles', 'utests'] %}active{% endif %}">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-               Upstream <i class="caret"></i>
-          </a>
-          <ul class="dropdown-menu">
-              <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Tests</a></li>
-              <li {% if active == 'ufiles' %}class="active" {% endif %}><a href="{{ url_for('project.ufiles', project_id=project.id) }}">Files</a></li>
-          </ul>
-        </li>
+      <li {% if active == 'log' %}class="active"{% endif %}><a href="{{ url_for('project.log', project_id = project.id )}}">Log</a></li>
+      <li {% if active == 'ufiles' %}class="active" {% endif %}><a href="{{ url_for('project.ufiles', project_id=project.id) }}">Upstream Files</a></li>
+      <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li>
+      <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
       {% if project.config['local'].get('setup', None) %}
-          <li class="dropdown {% if active in ['rfiles', 'rtests', 'metadatajson', 'description'] %}active{% endif %}">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                 Results <i class="caret"></i>
-            </a>
-            <ul class="dropdown-menu">
-                <li {% if active == 'rtests' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Tests</a></li>
-                <li {% if active == 'rfiles' %}class="active" {% endif %}><a href="{{ url_for('project.rfiles', project_id=project.id ) }}" >Files</a></li>
-                <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id ) }}" >METADATA.json</a></li>
-                <li {% if active == 'description' %}class="active" {% endif %}><a href="{{ url_for('project.description', project_id=project.id ) }}" >DESCRIPTION.en_us.html</a></li>
-            </ul>
-          </li>
+      <li {% if active == 'rfiles' %}class="active" {% endif %}><a href="{{ url_for('project.rfiles', project_id=project.id) }}">Results Files</a></li>
+      <li {% if active == 'rtests' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Results Tests</a></li>
+      <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
+      <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
       {% endif %}
   </ul>
 </div>
