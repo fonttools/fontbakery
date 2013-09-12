@@ -31,11 +31,24 @@ class UfoOpenTest(TestCase):
 
     def setUp(self):
         self.font = robofab.world.OpenFont(self.path)
+        # You can use ipdb here to interactively develop tests!
+        # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
-        # print(self.path)
 
     def test_if_itis_exsist(self):
         """ This test check if file exists """
+    # def test_success(self):
+    #     """ This test succeeded """
+    #     self.assertTrue(True)
+    #
+    # def test_failure(self):
+    #     """ This test failed """
+    #     self.assertTrue(False)
+    #
+    # def test_error(self):
+    #     """ Unexpected error """
+    #     1 / 0
+    #     self.assertTrue(False)
         self.assertEqual(os.path.exists(self.path), True)
 
     def test_is_ended_ufo(self):
