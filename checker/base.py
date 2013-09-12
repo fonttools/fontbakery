@@ -105,11 +105,11 @@ class BakeryTestRunner(unittest.TextTestRunner):
 def make_suite(path, definedTarget):
     suite = unittest.TestSuite()
 
-    for testClass in TestRegistry.list():
-        testClass.path = path
-        for target in testClass.targets:
+    for TestCase in TestRegistry.list():
+        TestCase.path = path
+        for target in TestCase.targets:
           if target == definedTarget:
-            suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(testClass))
+            suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 
     return suite
 
