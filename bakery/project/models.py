@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+import datetime
 import os
 from flask import current_app, json
 from ..decorators import lazy_property
@@ -119,7 +120,6 @@ class Project(db.Model):
         return dict
 
 
-
     def save_asset(self, name = None, data = None, **kwarg):
         """ Save static files into out folder """
         if name == 'description':
@@ -159,3 +159,16 @@ class ProjectBuild(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     githash = db.Column(db.String(40))
     is_success = db.Column(db.Boolean())
+    created = db.Column(db.DateTime, default=datetime.now)
+
+    @staticmethod
+    def make_build(project_id):
+        pass
+
+
+class ProjectTest(db.Model):
+    __tablename__ = 'project_test'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = db.Column(db.Integer, primary_key=True)
+    build_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+
