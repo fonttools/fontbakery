@@ -15,17 +15,14 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+from checker.base import BakeryTestCase as TestCase
 import fontforge
 
-from checker.base import BakeryTestCase as TestCase
-
 class SimpleTest(TestCase):
-
-
-    path = '.'
     targets = ['upstream']
     tool   = 'FontForge'
     name   = __name__
+    path   = '.'
 
     def setUp(self):
         self.font = fontforge.open(self.path)
