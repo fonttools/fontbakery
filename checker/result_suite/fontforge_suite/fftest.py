@@ -15,5 +15,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from .fontforge_suite import *
-from .sample import *
+from checker.base import BakeryTestCase as TestCase
+import fontforge
+
+class SimpleTest(TestCase):
+    target = 'result'
+    path   = '.'
+
+    def setUp(self):
+        self.font = fontforge.open(self.path)
+
+    def test_is_fsType_not_set(self):
+        """Is the OS/2 table fsType set?"""
+        self.assertEqual(self.font.os2_fstype, 0)
