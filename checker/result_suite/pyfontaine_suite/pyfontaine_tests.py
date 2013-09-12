@@ -31,9 +31,9 @@ class FontaineTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
         
-    def test_ok(self):
-         """ This test succeeds """
-         self.assertTrue(True)
+    # def test_ok(self):
+    #     """ This test succeeds """
+    #     self.assertTrue(True)
     # 
     # def test_failure(self):
     #     """ This test fails """
