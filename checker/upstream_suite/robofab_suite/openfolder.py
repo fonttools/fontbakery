@@ -23,9 +23,9 @@ from checker.base import BakeryTestCase as TestCase
 
 class UfoOpenTest(TestCase):
 
-    target = 'upstream'
 
     path = '.'
+    targets = ['upstream']
     tool   = 'Robofab'
     name   = __name__
 

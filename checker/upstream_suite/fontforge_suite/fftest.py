@@ -21,9 +21,9 @@ from checker.base import BakeryTestCase as TestCase
 
 class SimpleTest(TestCase):
 
-    target = 'upstream'
 
     path = '.'
+    targets = ['upstream']
     tool   = 'FontForge'
     name   = __name__
 

@@ -18,7 +18,7 @@
 from checker.base import BakeryTestCase as TestCase
 
 class SampleTest(TestCase):
-    target = 'result'
+    targets = ['result']
     path   = '.'
 
     def setUp(self):

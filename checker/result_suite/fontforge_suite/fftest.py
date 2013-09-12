@@ -19,7 +19,7 @@ from checker.base import BakeryTestCase as TestCase
 import fontforge
 
 class SimpleTest(TestCase):
-    target = 'result'
+    targets = ['result']
     tool   = 'FontForge'
     name   = __name__
     path   = '.'
