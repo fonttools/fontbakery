@@ -100,3 +100,19 @@ def project_result_tests(project):
     for font in glob.glob("*.ttf"):
         result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
     return result
+    
+def project_fontaine(project):
+    from fontaine.font import Font
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    fontaineFonts = {}
+    os.chdir(_out_src)
+    for font in glob.glob("*.ttf"):
+#        import ipdb; ipdb.set_trace()
+        fontaineFont = Font(os.path.join(_out_src, font))
+        fontaineFonts[font] = fontaineFont
+#        for fontfilename, aFontaineFont in fontaineFonts.iteritems():
+#           fontaineFonts[font][o[0].common_name] = o[0].glyphs
+#    for n, f in fontaineFonts.iteritems():
+#        for o in Font.get_orthographies(f):
+#            print(o)
+    return fontaineFonts
