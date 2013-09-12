@@ -24,6 +24,8 @@ class SimpleTest(TestCase):
     target = 'upstream'
 
     path = '.'
+    tool   = 'FontForge'
+    name   = __name__
 
     def setUp(self):
         self.font = fontforge.open(self.path)

@@ -20,6 +20,8 @@ import fontforge
 
 class SimpleTest(TestCase):
     target = 'result'
+    tool   = 'FontForge'
+    name   = __name__
     path   = '.'
 
     def setUp(self):

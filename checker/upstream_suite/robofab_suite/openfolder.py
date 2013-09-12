@@ -26,6 +26,8 @@ class UfoOpenTest(TestCase):
     target = 'upstream'
 
     path = '.'
+    tool   = 'Robofab'
+    name   = __name__
 
     def setUp(self):
         self.font = robofab.world.OpenFont(self.path)

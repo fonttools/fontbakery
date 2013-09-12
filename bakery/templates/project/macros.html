@@ -80,34 +80,44 @@
 {%- endmacro %}
 
 {%- macro showTests() %}
-{% for name in tests.keys() %}
-<h3> {{ name }}</h3>
-{% set t =  tests[name]['sum'] %}
-{% set sl = tests[name]['success']|length|int %} 
-{% set el = tests[name]['error']|length|int %}
-{% set fl = tests[name]['failure']|length|int %}
 
-<div class="progress">
-  <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
-  <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
-  <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
-</div>
-
-<ul>
-
-  {% for item in tests[name]['failure'] %}
-    <li><i class="icon-circle text-error"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
-  {% endfor %}
-
-  {% for item in tests[name]['error'] %}
-    <li><i class="icon-circle text-warning"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
-  {% endfor %}
-
-  {% for item in tests[name]['success'] %}
-    <li class="muted"><i class="icon-circle text-success"></i> <strong>{{item._testMethodName}}</strong> {{item._testMethodDoc}}</li>
-  {% endfor %}
-
+<ul class="inline muted">
+    <li><i class="icon-circle text-warning"></i> means the test didn't work: fix the test</li>
+    <li><i class="icon-circle text-error"></i> means the test failed: fix the font</li>
+    <li><i class="icon-circle text-success"></i> means the test passed: fix yourself some cake</li>
 </ul>
 
-{% endfor %}
+    {%- for font in tests.keys() %}
+        <h3 id="{{font.split('/')[-1].lower()|replace(' ', '')}}"> {{ font }}</h3>
+        {% set t =  tests[font]['sum'] %}
+        {% set sl = tests[font]['success']|length|int %} 
+        {% set el = tests[font]['error']|length|int %}
+        {% set fl = tests[font]['failure']|length|int %}
+        <div class="progress">
+            <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
+            <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+            <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
+        </div>
+        <table width="100%">
+        <thead style="text-align:left">
+            <th style="text-align:center">State </th>
+            <th>Test</th>
+            <th>Tool</th>
+            <th>File</th>
+            <th>Method</th>
+        </thead>
+        {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success' } %}
+        {% for testType, icon in testTypes.iteritems() | sort %}
+          {% for item in tests[font][testType] %}
+            <tr>
+                <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i></td>
+                <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+                <td>{{ item.tool }}</td>
+                <td>{{ item.name|replace('.','/') }}.py</td>
+                <td>{{ item._testMethodName }}()</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+        </table>
+    {%- endfor %}
 {%- endmacro %}
