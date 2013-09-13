@@ -84,19 +84,27 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         gevent.spawn(self.emit_file, login, pid)
 
     def emit_file(self, login, pid):
+        import ipdb; ipdb.set_trace()
         filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
         if os.path.exists(filename):
-            f = open(filename, 'r')
-            while True:
-                l = f.readline()
-                if l:
-                    self.emit('message', l)
-                    # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
-                    if l.startswith('End:'):
-                        break
-                else:
-                    gevent.sleep(0.1)
-            f.close()
+            logfile = open(filename, 'r')
+            for line in logfile:
+                if "End:" in line:
+                    done = True
+                    logfile2 = open(filename, 'r')
+                    self.emit('message', logfile2.read())
+                    break
+            if not done:            
+                while True:
+                    line = logfile.readline()
+                    if line:
+                        self.emit('message', line)
+                        # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
+                        if line.startswith('End:'):
+                            break
+                    else:
+                        gevent.sleep(0.1)
+            logfile.close()
         else:
             self.emit('message', 'Fatal: Log file not found')
 
