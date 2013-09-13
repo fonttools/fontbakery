@@ -84,18 +84,21 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         gevent.spawn(self.emit_file, login, pid)
 
     def emit_file(self, login, pid):
-        f = open(os.path.join(self._data_root, login, "%s.process.log" % pid), 'r')
-        while True:
-            l = f.readline()
-            if l:
-                self.emit('message', l)
-                # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
-                if l.startswith('End:'):
-                    break
-            else:
-                gevent.sleep(0.1)
-
-        f.close()
+        filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
+        if os.path.exists(filename):
+            f = open(filename, 'r')
+            while True:
+                l = f.readline()
+                if l:
+                    self.emit('message', l)
+                    # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
+                    if l.startswith('End:'):
+                        break
+                else:
+                    gevent.sleep(0.1)
+            f.close()
+        else:
+            self.emit('message', 'Fatal: Log file not found')
 
 
 @realtime.route('/socket.io/<path:remaining>')

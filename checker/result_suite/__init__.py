@@ -16,4 +16,5 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from .fontforge_suite import *
+from .pyfontaine_suite import *
 from .sample import *
