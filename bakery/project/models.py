@@ -108,26 +108,25 @@ class Project(db.Model):
         else:
             return ''
 
-    def treeFromFilesystem(self, dir=None):
+    def treeFromFilesystem(self, folder=None):
         """
         Read files tree in specied directory
 
-        :param dir: handle for tree, either 'in' or 'out'
+        :param folder: handle for tree, either 'in' or 'out'
 
         Returns:
-            dict: Dictionary of file and directory strings
+            folderContents: Dictionary of file and directory strings
         """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self)
-        if dir == 'in' and os.path.exists(_in):
-            dict = walkWithoutGit(_in)
-        elif dir == 'out' and os.path.exists(_out):
-            dict = walkWithoutGit(_out)
+        if folder == 'in' and os.path.exists(_in):
+            folderContents = walkWithoutGit(_in)
+        elif folder == 'out' and os.path.exists(_out):
+            folderContents = walkWithoutGit(_out)
         else:
-            dict = { 'Sorry, filesystem unavailable': '' }
-        return dict
-
+            folderContents = { 'Sorry, filesystem unavailable': '' }
+        return folderContents
 
 
     def save_asset(self, name = None, data = None, **kwarg):
