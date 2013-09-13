@@ -6,11 +6,41 @@
 {% from 'project/macros.html' import nav with context %}
 {{ nav('fontaine') }}
 
-{% for fontfile, fontaine in fontaineFonts.items() %}
+<div id="fontdump"></div>
 
-    <h1>{{ fontfile }}</h1>
+{{ fontaineFonts | safe }} 
+{#
+{% for fonts in fontaineFonts %}
+{% for fontaine in fonts %}
+    <h1>{{ fontaine }}</h1>
 
-    {% for charmap, support, missing, missingchars  in fontaine.orthographies %}
+    <h3>Metadata</h3>
+    {{ fontaine.common_name }}
+    {{ fontaine._full_name }}
+    {{ fontaine._postscript }}
+    {{ fontaine.sub_family }}
+    {{ fontaine.weight }}
+
+    {{ fontaine.version }}
+    {{ fontaine._unique_id }}
+
+    {{ fontaine.copyright }}
+    {{ fontaine.license }}
+    {{ fontaine.license_url }}
+    {{ fontaine.designer }}
+    {{ fontaine.designer_url }}
+    {{ fontaine.vendor }}
+    {{ fontaine.vendor_url }}
+
+    {{ fontaine.has_fixed_sizes }}
+    {{ fontaine.is_fixed_width }}
+    {{ fontaine.style_flags }}
+
+    Refresh: {{ fontaine.refresh_sfnt_properties }}
+
+
+{#
+    {% for charmap, support, missing, missingchars in fontaine.orthographies() %}
             {% if missing != 0 %}
                 <h2>{{ charmap.common_name }}
                     {% if charmap.native_name %}({{ charmap.native_name }}){% endif %}
@@ -43,31 +73,9 @@
     {% endfor %}
     </div>
 
-    <h3>Metadata</h3>
-    {{ fontaine.common_name }}
-    {{ fontaine._full_name }}
-    {{ fontaine._postscript }}
-    {{ fontaine.sub_family }}
-    {{ fontaine.weight }}
 
-    {{ fontaine.version }}
-    {{ fontaine._unique_id }}
 
-    {{ fontaine.copyright }}
-    {{ fontaine.license }}
-    {{ fontaine.license_url }}
-    {{ fontaine.designer }}
-    {{ fontaine.designer_url }}
-    {{ fontaine.vendor }}
-    {{ fontaine.vendor_url }}
-
-    {{ fontaine.has_fixed_sizes }}
-    {{ fontaine.is_fixed_width }}
-    {{ fontaine.style_flags }}
-
-    Refresh: {{ fontaine.refresh_sfnt_properties }}
-
-    {#
+{#
     <ul class="sitemap">
     {%- for item in fontaine.keys() recursive %}
         <li><a href="">{{ item }}</a>
@@ -76,10 +84,25 @@
         {%- endif %}</li>
     {%- endfor %}
     </ul>
-    #}
+
 {% endfor %}
 
+{% endfor %}
+#}
 
+{% endblock %}
 
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function () {
 
+    var transform = {'tag':'li','html':'${name} (${age})'};
+
+    var data = {{ fontaineFonts | safe }}
+
+    json2html.transform(data,transform);
+    $('#fontdump').json2html(source, transform)
+
+});
+</script>
 {% endblock %}

@@ -103,16 +103,21 @@ def project_result_tests(project):
     
 def project_fontaine(project):
     from fontaine.font import Font
+    from fontaine.builder import Builder, Director
+    try:
+        import simplejson as json
+    except ImportError:
+        import json
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    fontaineFonts = {}
     os.chdir(_out_src)
-    for font in glob.glob("*.ttf"):
-#        import ipdb; ipdb.set_trace()
-        fontaineFont = Font(os.path.join(_out_src, font))
-        fontaineFonts[font] = fontaineFont
-#        for fontfilename, aFontaineFont in fontaineFonts.iteritems():
-#           fontaineFonts[font][o[0].common_name] = o[0].glyphs
-#    for n, f in fontaineFonts.iteritems():
-#        for o in Font.get_orthographies(f):
-#            print(o)
-    return fontaineFonts
+    fonts = []
+    for filename in glob.glob("*.ttf"):
+        font = Font(filename)
+        fonts.append(font)
+    director = Director()
+    fontOrderedDict = director.construct_tree(fonts)
+# Sadly this has a unicode error
+#    txt = Builder.text_(fontOrderedDict).output()
+#    return txt
+    fontJson = json.dumps(fontOrderedDict)
+    return fontJson
