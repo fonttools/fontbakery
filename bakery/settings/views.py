@@ -82,7 +82,7 @@ def update():
                 cache.login = g.user.login
             # cache the repos
             cache.data = _repos
-            cache.orgs = _orgs
+            # cache.orgs = _orgs
             # note the time
             cache.updated = datetime.datetime.utcnow()
             # add the cache to the database
