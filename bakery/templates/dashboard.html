@@ -116,6 +116,24 @@
 
 {% block body %}
 
+{% if not repos %}
+<div class="jumbotron alert alert-info">
+    <button type="button" id="gotit" class="close btn btn-mini">&times;</button>
+    <h2>{{ _('To get started, add a Git repository containing fonts') }}</h2>
+    <div class="row-fluid" style='text-align:left'>
+        <div class="span6" style="padding:2em">
+            <h4>{{ _('To add git repositories from your GitHub account, click the GitHub button.') }}</h4>
+        </div>
+        <div class="span6" style="padding:2em">
+            <h4>{{ _('To add one directly, enter its git clone URL.') }}
+            {{ _('If a login is required, provide it in the clone string.') }} 
+            <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>{{ _('Learn more') }} <i class="icon-external-link"></i> </a></h4>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
 <a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
 <div class="input-prepend input-append pull-right">
@@ -257,23 +275,17 @@
     {%- endfor %}
 </tbody>
 </table>
-{% else %}
-<div class="jumbotron">
-{{ _('Enter a git clone string in the allowed format.') }}
-{{ _('If a login is required, provide it in the clone string') }} 
-<a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
-</div>
 {% endif %}
 
 {% endblock %}
 
 {% block extrajs %}
 <script type="text/javascript">
-
-var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
-
 $(document).ready(function() { 
     // Make the dashboard table sortable
+
+    var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
+
     $("#dashboard").tablesorter(); 
 
     $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).html() ); });
@@ -294,6 +306,10 @@ $(document).ready(function() {
     // Make the stats numbers prettyprinted
     $(".stats").number(true, 0, '.', ',');
 
+    $("#gotit").click(function ( event ) {
+          event.preventDefault();
+          $(this).parent().slideUp();
+        });
 /*
     guiders.createGuider({
         attachTo: "#dashboardGithubButton",
