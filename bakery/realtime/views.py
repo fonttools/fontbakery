@@ -98,7 +98,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                     gevent.sleep(0.1)
             f.close()
         else:
-            self.emit('message', 'Log file not found')
+            self.emit('message', 'Fatal: Log file not found')
 
 
 @realtime.route('/socket.io/<path:remaining>')
