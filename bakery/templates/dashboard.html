@@ -117,7 +117,7 @@
 {% block body %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
-<a class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
+<a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
 <div class="input-prepend input-append pull-right">
   <span class="add-on"><i class="icon-code-fork"></i> </span>
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
@@ -294,6 +294,18 @@ $(document).ready(function() {
     // Make the stats numbers prettyprinted
     $(".stats").number(true, 0, '.', ',');
 
+/*
+    guiders.createGuider({
+        attachTo: "#dashboardGithubButton",
+        buttons: [{name: "Close"}],
+        description: "To get started, click this",
+        id: "dashboardGithubButtonGuider",
+        // overlay: true,
+        position: 6,
+        title: "Getting Started",
+        width: 200
+    }).show();
+*/
 });
 </script>
 {% endblock %}
