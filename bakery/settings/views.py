@@ -160,6 +160,8 @@ def addhook(full_name):
             project = Project(
                 login=g.user.login,
                 full_name=full_name,
+                # TODO: Use actual github clone string used by Github
+                # clone='git@github.com:%s/%s.git' % (g.user.login, full_name),
                 clone='git://github.com/%s.git' % full_name,
                 is_github=True
             )
@@ -293,6 +295,8 @@ def massgit():
             project = Project(
                 login=g.user.login,
                 full_name=gid,
+                # TODO: Use actual github clone string used by Github
+                # clone='git@github.com:%s/%s.git' % (g.user.login, full_name),
                 clone='git://github.com/%s.git' % gid,
                 is_github=True
             )
