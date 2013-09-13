@@ -22,7 +22,7 @@ from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 from ..tasks import sync_and_process
-from ..utils import (project_result_tests, project_upstream_tests)
+from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
 
 project = Blueprint('project', __name__, url_prefix='/project')
@@ -281,3 +281,16 @@ def dashboard_save(project_id):
     p.save_state()
     return redirect(url_for('project.setup', project_id=p.id))
 
+@project.route('/<int:project_id>/fontaine', methods=['GET'])
+@login_required
+def fontaine(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    f = project_fontaine(project=p)
+
+    return render_template('project/fontaine.html', project=p,
+                            fontaineFonts=f)

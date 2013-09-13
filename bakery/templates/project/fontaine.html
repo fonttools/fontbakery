@@ -1,0 +1,108 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Fontaine of Result files") %}
+
+{% block body %}
+
+{% from 'project/macros.html' import nav with context %}
+{{ nav('fontaine') }}
+
+<div id="fontdump"></div>
+
+{{ fontaineFonts | safe }} 
+{#
+{% for fonts in fontaineFonts %}
+{% for fontaine in fonts %}
+    <h1>{{ fontaine }}</h1>
+
+    <h3>Metadata</h3>
+    {{ fontaine.common_name }}
+    {{ fontaine._full_name }}
+    {{ fontaine._postscript }}
+    {{ fontaine.sub_family }}
+    {{ fontaine.weight }}
+
+    {{ fontaine.version }}
+    {{ fontaine._unique_id }}
+
+    {{ fontaine.copyright }}
+    {{ fontaine.license }}
+    {{ fontaine.license_url }}
+    {{ fontaine.designer }}
+    {{ fontaine.designer_url }}
+    {{ fontaine.vendor }}
+    {{ fontaine.vendor_url }}
+
+    {{ fontaine.has_fixed_sizes }}
+    {{ fontaine.is_fixed_width }}
+    {{ fontaine.style_flags }}
+
+    Refresh: {{ fontaine.refresh_sfnt_properties }}
+
+
+{#
+    {% for charmap, support, missing, missingchars in fontaine.orthographies() %}
+            {% if missing != 0 %}
+                <h2>{{ charmap.common_name }}
+                    {% if charmap.native_name %}({{ charmap.native_name }}){% endif %}
+                    {% if charmap.key %}(&#{{ charmap.key }};){% endif %}
+                </h2>
+                <ul>
+                    <li>{% for g in charmap.glyphs %}
+                            {{ g }}
+                        {% endfor %}
+                    <li>Coverage: {{ missing }}% 
+                    {% if missingchars %}
+                    <li>Missing Characters: 
+                         {% for c in missingchars %}
+                            &#{{ c }};
+                         {% endfor %}
+                    {% endif %}
+                </ul>
+            {% endif %}
+    {% endfor %}
+    {{ fontaine.get_othography_info }}<br>
+    {{ fontaine.orthographies }}<br>
+
+    <h3>Languages</h3>
+    <p>Glyphs: {{ fontaine.glyph_num }}</p>
+    <p>Characters: {{ fontaine.character_count }}</p>
+    <p>Unicodes:</p>
+    <div class="row-fluid">
+    {% for c in fontaine._unicodeValues %}
+      <div class="" style="float:left; padding:1em;width:1em;height:1em;border:1px solid grey;">&#{{ c }};</div>
+    {% endfor %}
+    </div>
+
+
+
+{#
+    <ul class="sitemap">
+    {%- for item in fontaine.keys() recursive %}
+        <li><a href="">{{ item }}</a>
+        {%- if item.children -%}
+            <ul class="submenu">{{ loop(item.children) }}</ul>
+        {%- endif %}</li>
+    {%- endfor %}
+    </ul>
+
+{% endfor %}
+
+{% endfor %}
+#}
+
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function () {
+
+    var transform = {'tag':'li','html':'${name} (${age})'};
+
+    var data = {{ fontaineFonts | safe }}
+
+    json2html.transform(data,transform);
+    $('#fontdump').json2html(source, transform)
+
+});
+</script>
+{% endblock %}
