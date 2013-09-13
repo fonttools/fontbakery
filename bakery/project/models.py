@@ -128,6 +128,22 @@ class Project(db.Model):
             folderContents = { 'Sorry, filesystem unavailable': '' }
         return folderContents
 
+    def textFiles(self):
+        """
+        Read all the text files found in the _in repo
+        
+        Returns:
+            textFiles: Dictionary of file and directory strings
+        """
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        textFiles = {}
+        for textFile in self.config['local']['txt_files']:
+            fn = os.path.join(_in, textFile)
+            if os.path.exists(fn) and os.path.isfile(fn):
+                textFiles[textFile] = unicode(open(fn, 'r').read(), "utf8")
+        return textFiles
+        
 
     def save_asset(self, name = None, data = None, **kwarg):
         """ Save static files into out folder """
