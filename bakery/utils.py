@@ -120,5 +120,5 @@ def project_fontaine(project):
 # Sadly this has a unicode error
 #    txt = Builder.text_(fontOrderedDict).output()
 #    return txt
-    fontJson = json.dumps(fontOrderedDict)
+    fontJson = json.dumps(fontOrderedDict, sort_keys=True, indent=4, separators=(',', ': '))
     return fontJson
