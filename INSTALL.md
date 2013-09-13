@@ -122,6 +122,8 @@ default python interpreter (`which python`) is the same where you installed `fon
 
 Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
 
+Now see the running instructions in [INSTALL.md](https://github.com/xen/fontbakery/blob/master/INSTALL.md)
+
 ## Development notes
 
 ### Production Mode 
