@@ -110,6 +110,7 @@ def project_fontaine(project):
         import json
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     os.chdir(_out_src)
+    # import ipdb; ipdb.set_trace()
     fonts = []
     for filename in glob.glob("*.ttf"):
         font = Font(filename)
