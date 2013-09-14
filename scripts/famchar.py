@@ -66,6 +66,12 @@ for fontfilename, fontaine in fonts.iteritems():
         if len(family[charsetname]) == len(fonts.items()):
             family[charsetname] = sum(family[charsetname]) / len(fonts.items())
 
-# pprint as a dict for now, could be yaml/json/etc
-pp = pprint.PrettyPrinter(indent=4)
-pp.pprint(family)
+# # pprint as a dict for now, could be yaml/json/etc
+# pp = pprint.PrettyPrinter(indent=4)
+# pp.pprint(family)
+
+# Make a plain dictionary with just the bits we want on the dashboard
+totals = {} 
+totals['gwf'] = family[u'GWF latin']
+totals['al3'] = family[u'Adobe Latin 3']
+pp.pprint(totals)
