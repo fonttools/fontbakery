@@ -56,30 +56,37 @@ socket.on("disconnect", function(e) {
   console.log("Disconnected", arguments);
 });
 
-socket.on('message', function (data) {
-  var data = String(data);
-         if (data.startswith('Header: ')){
-    $('#log').append($('<h4>').addClass('text-header').html(data.slice('Header: '.length)));
-  } else if (data.startswith('Error: ')){
-    $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
-  } else if (data.startswith('Fatal: ')){
-    $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
-    $('#logEndButtonRebake').show();
-    $('#logEndButtons').slideDown();
-  } else if (data.startswith('Start: ')){
-    $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
-  } else if (data.startswith('End: ')){
-    $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
-    $('#logEndButtonSuccess').show();
-    $('#logEndButtons').slideDown();
-  } else if (data.startswith('Command: ')){
-    $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('Command: '.length)));
-  } else {
-    $('#log').append($('<span>').addClass('text-info').html(data));
-  }
-  // scroll to the bottom of the page
-  $(document).scrollTop($(document).height());
-});
+socket.on('message', function (logs) {
+    var logString = String(logs);
+//  console.log(logString);
+    var lines = logString.match(/^.*((\r\n|\n|\r)|$)/gm);
+//  console.log(lines);
+    lines.forEach( function(data) {
+//      console.log(data);
+    if (data.startswith('Header: ')) {
+        $('#log').append($('<h4>').addClass('text-header').html(data.slice('Header: '.length)));
+    } else if (data.startswith('Error: ')) {
+        $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
+    } else if (data.startswith('Fatal: ')) {
+        $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+        $('#logEndButtonRebake').show();
+        $('#logEndButtons').slideDown();
+    } else if (data.startswith('Start: ')){
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
+    } else if (data.startswith('End: ')){
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+        $('#logEndButtonSuccess').show();
+        $('#logEndButtons').slideDown();
+    }  else if (data.startswith('End: ')){
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+        $('#logEndButtonSuccess').show();
+        $('#logEndButtons').slideDown();
+    }  else if (data.startswith('Command: ')){
+        $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('Command: '.length)));
+    }  else {
+        $('#log').append($('<span>').addClass('text-info').html(data));
+    };
+  });
 
 function userCanSeeItWithoutScrolling() {
     var userCanSeeItWithoutScrolling = $("#toTop").offset().top < $(window).height();
