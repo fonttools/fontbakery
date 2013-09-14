@@ -7,9 +7,11 @@
 {{ nav('description') }}
 
 <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
-<div id="editor"></div>
-<textarea name="description">{{ description }}</textarea>
-<p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
+    <div class="span6">
+        <div id="editor"></div>
+        <textarea name="description" id="descriptionta">{{ description }}</textarea>
+        <p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
+    </div>
 </form>
 
 {% endblock %}
@@ -23,7 +25,8 @@ $(document).ready(function () {
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/html");
-editor.getSession().setUseSoftTabs(true);
+editor.getSession().setUseSoftTabs(false);
+editor.getSession().setUseWrapMode(true);
 editor.setHighlightActiveLine(false);
 
 // var textarea = $('textarea[name="description"]');
@@ -41,7 +44,8 @@ var heightUpdateFunction = function() {
     var newHeight =
               editor.getSession().getScreenLength()
               * editor.renderer.lineHeight
-              + editor.renderer.scrollBar.getWidth();
+              + editor.renderer.scrollBar.getWidth()
+              + 200;
     $('#editor').height(newHeight.toString() + "px");
     $('#editor-section').height(newHeight.toString() + "px");
     // This call is required for the editor to fix all of its inner structure for adapting to a change in size
