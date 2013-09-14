@@ -39,8 +39,14 @@ static/tablesorter/jquery.tablesorter.min.js:
 static/jquery.number.min.js:
 	cd static && curl -O https://raw.github.com/teamdf/jquery-number/master/jquery.number.min.js
 
+static/jquery.json2html.js:
+	cd static && curl -O https://raw.github.com/moappi/jquery.json2html/master/jquery.json2html.js && curl -O https://raw.github.com/moappi/jquery.json2html/master/json2html.js
+
+static/jquery.guiders.js:
+	cd static && curl -L -o jquery.guiders.js.zip https://github.com/davelab6/Guiders-JS/archive/master.zip && unzip -j -d jquery.guiders.js jquery.guiders.js.zip 
+
 # target: setup — bootstrap environment
-setup: venv/bin/activate requirements.txt static/jquery-2.0.3.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/tablesorter/jquery.tablesorter.min.js static/jquery.number.min.js
+    setup: venv/bin/activate requirements.txt static/jquery-2.0.3.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/tablesorter/jquery.tablesorter.min.js static/jquery.number.min.js static/jquery.json2html.js static/jquery.guiders.js
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project

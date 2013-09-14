@@ -58,11 +58,11 @@ socket.on("disconnect", function(e) {
 
 socket.on('message', function (logs) {
     var logString = String(logs);
-  console.log(logString);
+//  console.log(logString);
     var lines = logString.match(/^.*((\r\n|\n|\r)|$)/gm);
-  console.log(lines);
+//  console.log(lines);
     lines.forEach( function(data) {
-      console.log(data);
+//      console.log(data);
     if (data.startswith('Header: ')) {
         $('#log').append($('<h4>').addClass('text-header').html(data.slice('Header: '.length)));
     } else if (data.startswith('Error: ')) {

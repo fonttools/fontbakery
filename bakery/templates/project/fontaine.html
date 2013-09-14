@@ -1,0 +1,63 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Fontaine of Result files") %}
+
+{% block body %}
+
+{% from 'project/macros.html' import nav with context %}
+{{ nav('fontaine') }}
+
+{% for fontaine in fontaineFonts %}
+
+    <h2>{{ fontaine._full_name }}</h2>
+
+    <table>
+    {% for charmap, support, missing, missingchars in fontaine.get_orthographies() %}
+      <tr>
+        <td>{{ charmap.common_name }}
+        <td>{{ support }}
+        <td>{{ missing }}
+        <td>{% for item in missingchars %} &#{{item}}; {% endfor %}
+      </tr>
+    {% endfor %}
+    </table>
+
+    <h3>Metadata</h3>
+    <dl>
+        <dt>Common Name</dt>
+        <dd>{{ fontaine.common_name }}</dd>
+        <dt>Full Name</dt>
+        <dd>{{ fontaine._full_name }}</dd>
+        <dt>_postscript</dt>
+        <dd>{{ fontaine._postscript }}    </dd>
+        <dt>sub_family</dt>
+        <dd>{{ fontaine.sub_family }}     </dd>
+        <dt>weight</dt>
+        <dd>{{ fontaine.weight }}         </dd>
+        <dt>version</dt>
+        <dd>{{ fontaine.version }}        </dd>
+        <dt>_unique_id</dt>
+        <dd>{{ fontaine._unique_id }}     </dd>
+        <dt>copyright</dt>
+        <dd>{{ fontaine.copyright }}      </dd>
+        <dt>license</dt>
+        <dd>{{ fontaine.license }}        </dd>
+        <dt>license_url</dt>
+        <dd>{{ fontaine.license_url }}    </dd>
+        <dt>designer</dt>
+        <dd>{{ fontaine.designer }}       </dd>
+        <dt>designer_url</dt>
+        <dd>{{ fontaine.designer_url }}   </dd>
+        <dt>vendor</dt>
+        <dd>{{ fontaine.vendor }}         </dd>
+        <dt>vendor_url</dt>
+        <dd>{{ fontaine.vendor_url }}     </dd>
+        <dt>has_fixed_sizes</dt>
+        <dd>{{ fontaine.has_fixed_sizes }}</dd>
+        <dt>is_fixed_width</dt>
+        <dd>{{ fontaine.is_fixed_width }} </dd>
+        <dt>style_flags</dt>
+        <dd>{{ fontaine.style_flags }}    </dd>
+    </dl>
+{% endfor %}
+
+{% endblock %}

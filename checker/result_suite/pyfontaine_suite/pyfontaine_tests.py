@@ -15,21 +15,18 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-# HOW TO
-# 1. Copy to the $target_suit/$tool_suite/ dir
-# 2. Fill in the lines marked with XXX
-
 from checker.base import BakeryTestCase as TestCase
-import fontforge # import your testing package
+from fontaine.font import Font
+import re, string
 
-class SampleTest(TestCase):
-    targets = ['upstream', 'result']    # XXX pick one or both
-    tool   = 'FontForge'                # XXX name the tool
-    name   = __name__                   # XXX leave this
-    path   = '.'                        # XXX leave this
+class FontaineTest(TestCase):
+    targets = ['result']
+    tool   = 'pyfontaine'
+    name   = __name__
+    path   = '.'
 
     def setUp(self):
-        self.font = fontforge.open(self.path) # XXX how to open fonts with your testing package
+        self.font = Font(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
@@ -46,3 +43,17 @@ class SampleTest(TestCase):
     #     """ Unexpected error """
     #     1 / 0
     #     self.assertTrue(False)
+    
+    def test_charMaker(self):
+        import ipdb; ipdb.set_trace()
+        pattern = re.compile('[\W_]+')
+        functionTemplate = """def test_charset_%s(self, p): self.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"; self.assertTrue(p == 100)"""
+        for orthographyTuple in self.font.get_orthographies():
+            charmap = orthographyTuple[0]
+            percent = orthographyTuple[2]
+            shortname = pattern.sub('', charmap.common_name)
+            print "TODO: This doesn't work yet..."
+            print functionTemplate % (shortname, shortname, charmap.common_name)
+            print 'test_charset_%s(self, 100)' % shortname
+            exec functionTemplate % (shortname, shortname, charmap.common_name)
+            exec 'test_charset_%s(self, 100)' % shortname

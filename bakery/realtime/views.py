@@ -108,6 +108,8 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                     self.emit('message', 'blank \n')
                     gevent.sleep(0.1)
             logfile.close()
+        else:
+            self.emit('message', 'Fatal: Log file not found')
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):

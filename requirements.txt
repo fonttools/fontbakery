@@ -13,7 +13,7 @@ alembic
 requests
 pytz==2013b
 beautifulsoup4
-setuptools
+# setuptools
 
 # builder and checker
 TTFQuery
