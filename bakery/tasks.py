@@ -23,6 +23,7 @@ import plistlib
 from utils import RedisFd
 import re
 import shutil
+import utils
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -375,6 +376,25 @@ def lint_process(project, log):
     # TODO: move this from here to the new checker lint process completing all required checks successfully
     project.config['local']['status'] = 'built'
 
+def fontaine_process(project, log):
+    """
+    Run pyFontaine on ttf files
+    """
+    # Doesn't work here?
+    # import ipdb; ipdb.set_trace()
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('pyFontaine (fontaine/main.py)\n', prefix = 'Header: ')
+    os.chdir(_out)
+    files = glob.glob('*.ttf')
+    for filename in files:
+        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --json '%s' > 'src/fontaine-%s.json" % (ROOT, filename, filename)
+        run(cmd, cwd=_out, log=log)
+#    log.write('Running Fontaine on Results\n', prefix = 'Header: ')
+#    fonts = utils.project_fontaine(project)
+#    project.config['state']['fontaine'] = fonts
+#   project.save_state()
+
+
 @job
 def process_project(project, log):
     """
@@ -398,6 +418,7 @@ def process_project(project, log):
         subset_process(project, log)
         generate_metadata_process(project, log)
         lint_process(project, log)
+        fontaine_process(project, log)     
         log.write('Bake Succeeded!\n', prefix = 'Header: ')
 
 def set_ready(project):

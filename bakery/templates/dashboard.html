@@ -161,6 +161,7 @@
     <tr>
       <th colspan="4"></th>
       <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th colspan="2">Char Sets</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
 {#
@@ -178,6 +179,8 @@
       {% for item, value in stateDict.iteritems() | sort %}
       <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
       {% endfor %}
+      <th style="">{{ _("GWF-L")}}</th>
+      <th style="">{{ _("AL-3")}}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
 {#
@@ -227,6 +230,16 @@
             {% endif %}
             </a>
             </td>
+        {% endfor %}
+
+        {% for fontaine in fontaineFonts %}
+            {% for charmap, support, missing, missingchars in fontaine.get_orthographies() %}
+              
+                <td>{% if charmap.common_name == 'GWF latin' %} {{ missing }} {% endif %}
+                <td>{% if charmap.common_name == 'Adobe Latin 3' %} {{ missing }} {% endif %}
+
+              </tr>
+            {% endfor %}
         {% endfor %}
 
         {# TODO: replace the following static stats td cells with a loop:
