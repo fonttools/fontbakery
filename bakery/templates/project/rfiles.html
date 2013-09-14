@@ -8,8 +8,8 @@
 
 {% for fontaine in fontaineFonts %}
 
-    <h2>{{ fontaine._full_name }}</h2>
-
+    <h4 class="toggle"><i class="icon"></i> {{ fontaine._full_name }}</h4>
+    <div>
     <table class="table table-striped table-bordered table-condensed tablesorter" id="" style="">
     <thead>
       <tr>
@@ -29,7 +29,6 @@
     </tbody>
     </table>
 
-    <h3>Metadata</h3>
     <dl class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
         <dt>Common Name</dt>
         <dd>{{ fontaine.common_name }}</dd>
@@ -65,7 +64,7 @@
         <dt>style_flags</dt>
         <dd>{{ fontaine.style_flags }}    </dd>
     </dl>
-
+    </div>
 
 {% endfor %}
 
