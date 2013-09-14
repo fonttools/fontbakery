@@ -159,9 +159,9 @@
     </tr>
   #}
     <tr>
-      <th colspan="4"></th>
+      <th style="text-align: center" colspan="4">{{ _("Project") }}</th>
       <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
-      <th colspan="2">Char Sets</th>
+      <th colspan="2">{{ _("Char Sets") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
 {#
@@ -173,7 +173,7 @@
     </tr>
     <tr>
       <th style="text-align: center">{{ _("ID") }}</th>
-      <th style="text-align: left">{{ _("Project") }}</th>
+      <th style="text-align: left">{{ _("Name") }}</th>
       <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
       <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
       {% for item, value in stateDict.iteritems() | sort %}
