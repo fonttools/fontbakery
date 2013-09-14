@@ -228,8 +228,10 @@ def rfiles(project_id):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    data = p.read_asset('yaml')
-    return render_template('project/rfiles.html', project=p, yaml=data)
+    yaml = p.read_asset('yaml')
+    f = project_fontaine(project=p)
+    return render_template('project/rfiles.html', project=p, yaml=yaml,
+                            fontaineFonts=f)
 
 
 @project.route('/<int:project_id>/utests', methods=['GET'])
@@ -282,17 +284,3 @@ def dashboard_save(project_id):
 
     p.save_state()
     return redirect(url_for('project.setup', project_id=p.id))
-
-@project.route('/<int:project_id>/fontaine', methods=['GET'])
-@login_required
-def fontaine(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    f = project_fontaine(project=p)
-
-    return render_template('project/fontaine.html', project=p,
-                            fontaineFonts=f)
