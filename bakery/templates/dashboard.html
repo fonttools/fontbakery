@@ -231,8 +231,8 @@
             </a>
             </td>
         {% endfor %}
-        <td> {{ repo.config['state']['fontaine']['gwf'] }} </td>
-        <td> {{ repo.config['state']['fontaine']['al3'] }} </td>
+        <td>{% if repo.config['local'].get('fontaine') %}{{ repo.config['local']['charsets']['gwf'] }}{% endif %}</td>
+        <td>{% if repo.config['local'].get('fontaine') %}{{ repo.config['local']['charsets']['al3'] }}{% endif %}</td>
 
         {# TODO: replace the following static stats td cells with a loop:
         {% for key, value in repo.family_stat %}
