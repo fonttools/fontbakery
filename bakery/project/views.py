@@ -135,13 +135,15 @@ def setup(project_id):
 def ufiles(project_id):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
-    p = Project.query.get_or_404(project_id)
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
 
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    data = p.read_asset('license')
-    return render_template('project/ufiles.html', project=p, license=data)
+    license = p.read_asset('license')
+    textfiles = p.textFiles()
+    return render_template('project/ufiles.html', project=p, license=license, textfiles=textfiles)
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required

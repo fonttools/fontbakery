@@ -32,34 +32,37 @@
 </div>
 {%- endmacro %}
 
-{%- macro highlight(name) %}
-{%set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] %}
-{% if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{% endif %}
-{%- endmacro %}
+{%- macro highlight(name) -%}
+{% set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] %}
+{%- if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{%- endif %}
+{%- endmacro -%}
 
-{%- macro filestree(tree) %}
+{%- macro filestree(folder) %}
   <div class="tree">
     <ul>
       <li><a><i class="icon-folder-open"></i></a></li>
       <ul>
-      {%- for key, value in project.treeFromFilesystem(tree).items() recursive %}
-        <li class="{% if key == 'glyphs' and value %}mother_of_glyphs{% elif key.lower().endswith('.ufo') %}mothership{% endif %}">
-          <a {{ highlight(key) }}>{% if key == '' %}
+      {% for key, value in project.treeFromFilesystem(folder).items() recursive %}
+        <li {{ highlight(key) }} class="{%- if key == 'glyphs' and value -%}mother_of_glyphs{%- elif key.lower().endswith('.ufo') -%}mothership{%- endif -%}">
+          <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
+          {%- if key == '' %}
             &nbsp;
-          {% else %}
-            {%   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
-            {% elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
-            {% elif key.lower().endswith('.ttf') %}<i class="icon-file"></i>
-            {% elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>
-            {% elif key.lower().split('.')[-1] in ['plist'] %}<i class="icon-list"></i>
-            {% elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="icon-folder-close"></i>
-            {% elif key == 'bakery.yaml' %}<i class="icon-rocket text-error"></i>
-            {% else %}<i class="icon-file-alt muted"></i>
-            {%endif%}{{ key }}
-          {% endif %}</a>
+          {%- else %}
+            {%-   if key.lower().endswith('.ufo') and value %}<i class="icon-font text-info"></i>
+            {%- elif key.lower().endswith('.otf') %}<i class="icon-file"></i>
+            {%- elif key.lower().endswith('.ttf') %}<i class="icon-file"></i>
+            {%- elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="icon-book"></i>
+            {%- elif key.lower().split('.')[-1] in ['plist'] %}<i class="icon-list"></i>
+            {%- elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="icon-folder-close"></i>
+            {%- elif key == 'bakery.yaml' %}<i class="icon-rocket text-error"></i>
+            {%- else %}<i class="icon-file-alt muted"></i>
+            {%- endif %}
+             {{ key }}
+          {%- endif %}
+          </a>
         {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items()) }}</ul>{%- endif %}
         </li>
-      {%- endfor %}
+      {% endfor %}
       </ul>
     </ul>
   </div>  

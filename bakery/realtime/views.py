@@ -86,13 +86,14 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
     def emit_file(self, login, pid):
         import ipdb; ipdb.set_trace()
         filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
-        if os.path.exists(filename):
+        if os.path.exists(filename) and os.path.isfile(filename):
             logfile = open(filename, 'r')
             for line in logfile:
                 if "End:" in line:
                     done = True
                     logfile2 = open(filename, 'r')
                     self.emit('message', logfile2.read())
+                    logfile2.close()
                     break
             if not done:            
                 while True:
@@ -107,7 +108,6 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
             logfile.close()
         else:
             self.emit('message', 'Fatal: Log file not found')
-
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):
