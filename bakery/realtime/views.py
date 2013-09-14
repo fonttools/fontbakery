@@ -85,7 +85,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def emit_file(self, login, pid):
         filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
-        if os.path.exists(filename):
+        if os.path.exists(filename) and os.path.isfile(filename):
             f = open(filename, 'r')
             while True:
                 l = f.readline()
