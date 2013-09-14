@@ -407,13 +407,13 @@ def fontaine_process(project, log):
     log.write('pyFontaine (fontaine/main.py)\n', prefix = 'Header: ')
     os.chdir(_out)
     files = glob.glob('*.ttf')
-    for filename in files:
-        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --json '%s' > 'src/fontaine-%s.json'" % (ROOT, filename, filename)
-        run(cmd, cwd=_out, log=log)
-#    log.write('Running Fontaine on Results\n', prefix = 'Header: ')
-#    fonts = utils.project_fontaine(project)
-#    project.config['state']['fontaine'] = fonts
-#   project.save_state()
+    cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --text '%s' > 'src/fontaine.txt'" % (ROOT, files)
+    run(cmd, cwd=_out, log=log)
+    # TODO also save the totals for the dashboard....
+    #   log.write('Running Fontaine on Results\n', prefix = 'Header: ')
+    #   fonts = utils.project_fontaine(project)
+    #   project.config['state']['fontaine'] = fonts
+    #   project.save_state()
 
 
 @job
