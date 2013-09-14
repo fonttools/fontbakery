@@ -378,6 +378,11 @@ def generate_metadata_process(project, log):
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # TODO Fix the genmetadata.py script so that it always outputs in the same order;
+    # currently when you run it a 2nd time, it places dateAdded at the end, which is
+    # what most METADATA.json files have, so it should just happen. Workaround is
+    # to run it twice ;)
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 def lint_process(project, log):
     """
