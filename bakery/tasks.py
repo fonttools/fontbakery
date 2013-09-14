@@ -224,13 +224,21 @@ def copy_and_rename_ufos_process(project, log):
     else:
         log.write('FONTLOG.txt does not exist\n', prefix = 'Error: ')
 
-    # Copy FONTLOG file
+    # Copy DESCRIPTION.en_us.html file
     _in_desc  = os.path.join(_in,  'DESCRIPTION.en_us.html')
     _out_desc = os.path.join(_out, 'DESCRIPTION.en_us.html')
     if os.path.exists(_in_desc) and os.path.isfile(_in_desc):
         run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd = _user, log=log)
     else:
-        log.write('DESCRIPTION.en_us.html does not exist\n', prefix = 'Error: ')
+        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix = 'Error: ')
+
+    # Copy METADATA.json file
+    _in_meta  = os.path.join(_in,  'METADATA.json')
+    _out_meta = os.path.join(_out, 'METADATA.json')
+    if os.path.exists(_in_meta) and os.path.isfile(_in_meta):
+        run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd = _user, log=log)
+    else:
+        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix = 'Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
