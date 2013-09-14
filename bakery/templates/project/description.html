@@ -12,6 +12,9 @@
         <textarea name="description" id="descriptionta">{{ description }}</textarea>
         <p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
     </div>
+    <div class="span6" id="preview">
+        
+    </div>
 </form>
 
 {% endblock %}
@@ -38,6 +41,10 @@ editor.getSession().on('change', function(){
 });
 
 
+var updatePreview = function() {
+   var htmlStr = editor.getSession().getValue();
+    $('#preview').html(htmlStr);
+};
 
 // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
 var heightUpdateFunction = function() {
@@ -51,10 +58,12 @@ var heightUpdateFunction = function() {
     // This call is required for the editor to fix all of its inner structure for adapting to a change in size
     editor.resize();
 };
-// Set initial size to match initial content
+// Set initial size and preview to match initial content
+updatePreview();
 heightUpdateFunction();
-// Whenever a change happens inside the ACE editor, update the size again
+// Whenever a change happens inside the ACE editor, update the size and preview again
 editor.getSession().on('change', heightUpdateFunction);
+editor.getSession().on('change', updatePreview);
 // End 
 
 
