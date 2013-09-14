@@ -217,12 +217,20 @@ def copy_and_rename_ufos_process(project, log):
         log.write('License file not copied\n', prefix = 'Error: ')
 
     # Copy FONTLOG file
-    _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
+    _in_fontlog  = os.path.join(_in,  'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
     if os.path.exists(_in_fontlog) and os.path.isfile(_in_fontlog):
         run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
     else:
-        log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
+        log.write('FONTLOG.txt does not exist\n', prefix = 'Error: ')
+
+    # Copy FONTLOG file
+    _in_desc  = os.path.join(_in,  'DESCRIPTION.en_us.html')
+    _out_desc = os.path.join(_out, 'DESCRIPTION.en_us.html')
+    if os.path.exists(_in_desc) and os.path.isfile(_in_desc):
+        run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd = _user, log=log)
+    else:
+        log.write('DESCRIPTION.en_us.html does not exist\n', prefix = 'Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
