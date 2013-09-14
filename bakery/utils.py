@@ -100,3 +100,13 @@ def project_result_tests(project):
     for font in glob.glob("*.ttf"):
         result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
     return result
+    
+def project_fontaine(project):
+    from fontaine.font import Font
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    os.chdir(_out_src)
+    fonts = []
+    for filename in glob.glob("*.ttf"):
+        font = Font(filename)
+        fonts.append(font)
+    return fonts

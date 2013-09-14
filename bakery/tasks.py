@@ -216,7 +216,7 @@ def copy_and_rename_ufos_process(project, log):
     # Copy FONTLOG file
     _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
-    if os.path.exists(_in_fontlog):
+    if os.path.exists(_in_fontlog) and os.path.isfile(_in_fontlog):
         run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
     else:
         log.write('FONTLOG file does not exist\n', prefix = 'Error: ')

@@ -85,15 +85,17 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def emit_file(self, login, pid):
         filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
-        logfile = open(filename, 'r')
-        for line in logfile:
-            if "End:" in line:
-                done = True
-                logfile2 = open(filename, 'r')
-                self.emit('message', logfile2.read())
-                break
-        if not done:            
-            while True:
+        if os.path.exists(filename) and os.path.isfile(filename):
+            logfile = open(filename, 'r')
+            for line in logfile:
+                if "End:" in line:
+                    done = True
+                    logfile2 = open(filename, 'r')
+                    self.emit('message', logfile2.read())
+                    logfile2.close()
+                    break
+            if not done:
+              while True:
                 line = logfile.readline()
                 if line:
                     self.emit('message', line)
@@ -102,8 +104,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                         break
                 else:
                     gevent.sleep(0.1)
-        logfile.close()
-
+            logfile.close()
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):
