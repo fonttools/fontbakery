@@ -104,9 +104,28 @@ def project_result_tests(project):
 def project_fontaine(project):
     from fontaine.font import Font
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    os.chdir(_out_src)
+    if os.path.exists(_out_src):
+        os.chdir(_out_src)
+    else:
+        return
     fonts = []
+    gwfList = []
+    al3List = []
     for filename in glob.glob("*.ttf"):
         font = Font(filename)
         fonts.append(font)
+    for f in fonts:
+        for a, b, c, d in f.get_orthographies():
+            if a.common_name == 'GWF latin':
+                gwfList.append(c)
+            elif a.common_name == 'Adobe Latin 3':
+                al3List.append(c)
+    #import ipdb; ipdb.set_trace()
+    gwfavg = sum(gwfList) / len(gwfList)
+    al3avg = sum(al3List) / len(al3List)
+    totals = {}
+    totals['gwf'] = gwfavg
+    totals['al3'] = al3avg
+    project.config['state']['fontaine'] = totals
+    project.save_state()
     return fonts
