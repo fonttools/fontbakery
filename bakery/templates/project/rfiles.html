@@ -10,47 +10,54 @@
 
     <h2>{{ fontaine._full_name }}</h2>
 
-    <table>
-    {% for charmap, support, missing, missingchars in fontaine.get_orthographies() %}
+    <table class="table table-striped table-bordered table-condensed tablesorter" id="" style="">
+    <thead>
       <tr>
+        <th width='20%'>Character Set</th>
+        <th>Coverage</th>
+        <th>Missing Characters</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for charmap, support, missing, missingchars in fontaine.get_orthographies() %}
+      <tr class="{{ support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}">
         <td>{{ charmap.common_name }}
-        <td>{{ support }}
         <td>{{ missing }}
-        <td>{% for item in missingchars %} &#{{item}}; {% endfor %}
+        <td>{% for item in missingchars %}<span style="float:left; width:1em; height:1em"> &#{{item}}; </span>{% endfor %}
       </tr>
     {% endfor %}
+    </tbody>
     </table>
 
     <h3>Metadata</h3>
-    <dl>
+    <dl class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
         <dt>Common Name</dt>
         <dd>{{ fontaine.common_name }}</dd>
         <dt>Full Name</dt>
         <dd>{{ fontaine._full_name }}</dd>
-        <dt>_postscript</dt>
+        <dt>PostScript Name</dt>
         <dd>{{ fontaine._postscript }}    </dd>
-        <dt>sub_family</dt>
+        <dt>Subfamily</dt>
         <dd>{{ fontaine.sub_family }}     </dd>
-        <dt>weight</dt>
+        <dt>Weight</dt>
         <dd>{{ fontaine.weight }}         </dd>
-        <dt>version</dt>
+        <dt>Version</dt>
         <dd>{{ fontaine.version }}        </dd>
-        <dt>_unique_id</dt>
+        <dt>UniqueID</dt>
         <dd>{{ fontaine._unique_id }}     </dd>
-        <dt>copyright</dt>
+        <dt>Copyright</dt>
         <dd>{{ fontaine.copyright }}      </dd>
-        <dt>license</dt>
+        <dt>License</dt>
         <dd>{{ fontaine.license }}        </dd>
-        <dt>license_url</dt>
-        <dd>{{ fontaine.license_url }}    </dd>
-        <dt>designer</dt>
+        <dt>License URL</dt>
+        <dd><a href="{{ fontaine.license_url }}">{{ fontaine.license_url }}</a></dd>
+        <dt>Designer</dt>
         <dd>{{ fontaine.designer }}       </dd>
-        <dt>designer_url</dt>
-        <dd>{{ fontaine.designer_url }}   </dd>
-        <dt>vendor</dt>
+        <dt>Designer URL</dt>
+        <dd><a href="{{ fontaine.designer_url }}">{{ fontaine.designer_url }}</a></dd>
+        <dt>Vendor</dt>
         <dd>{{ fontaine.vendor }}         </dd>
-        <dt>vendor_url</dt>
-        <dd>{{ fontaine.vendor_url }}     </dd>
+        <dd><a href="{{ fontaine.vendor_url }}">{{ fontaine.vendor_url }}</a></dd>
         <dt>has_fixed_sizes</dt>
         <dd>{{ fontaine.has_fixed_sizes }}</dd>
         <dt>is_fixed_width</dt>
@@ -83,6 +90,7 @@
 {% block extrajs %}
 <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
 <script>
+$(document).ready(function() { 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/yaml");
@@ -112,5 +120,12 @@ heightUpdateFunction();
 editor.getSession().on('change', heightUpdateFunction);
 // End
 
+// call the tablesorter plugin 
+$(".tablesorter").tablesorter({ 
+    // sort on the 2nd column and order desc 
+    sortList: [[1,1]] 
+}); 
+
+});
 </script>
 {% endblock %}
