@@ -29,6 +29,12 @@
         <form action="{{ url_for('settings.massgit') }}" method="POST">
           {% if cache %}
           <p>{{ _("Select repositories to add from your GitHub account") }}:</p>
+          <input type="text" data-provide="typeahead" data-source="[
+           {# TODO DC This doesn't work, not sure why #}
+           {%- for item in cache.data %}
+              '{{ item.full_name }}', 
+           {%- endfor %}
+           ]">
           <div class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
             {% for item in cache.data -%}
             <label class="checkbox" for="{{ item.full_name }}">
@@ -96,7 +102,6 @@ $('.nav-tabs a').on('shown', function (e) {
     window.location.hash = e.target.hash.replace("#", "#" + prefix);
 });
 
-// TODO this isn't working because jquery.highlight-4.closure.js won't load, not sure why
 $(document).ready(function() {
      $("#massgithub").highlight("font");
 });

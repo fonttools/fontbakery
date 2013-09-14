@@ -41,6 +41,10 @@ if (typeof String.prototype.startswith != 'function') {
 
 $(document).ready(function () {
 
+$('#secondaryNav').affix({
+    offset: 0
+    });
+
 $('#logEndButtons').hide();
 $('#logEndButtonRebake').hide();
 $('#logEndButtonSuccess').hide();
