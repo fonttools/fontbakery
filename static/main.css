@@ -215,6 +215,15 @@ ol.linenums li {
     width: 100%;
 }
 
+#editor_new {
+    position: relative !important;
+    border: 1px solid lightgray;
+    margin: 0px;
+    padding: 0px;
+    height: 100px;
+    width: 100%;
+}
+
 #log {
     font-size: 10px;
 }

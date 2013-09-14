@@ -9,13 +9,13 @@
 <form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 
 {% if metadata_new %}
-<div style="width: 48%; float:left">
+<div class="span6">
 <h4>METADATA.json imported from upstream repo</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
 </div>
 
-<div style="width: 48%; float: right">
+<div class="span6"  >
 <h4>METADATA.json.new generated from files</h4>
 <div id="editor_new"></div>
 <textarea name="metadata_new">{{ metadata_new }}</textarea>
@@ -34,7 +34,7 @@
 <p style="padding-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
 {% else %}
 
-<div style="width: 48%; float:left">
+<div class="span12">
 <h4>METADATA.json generated from files</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
@@ -52,7 +52,7 @@
 
 <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
 <script>
-/*/ From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
 var heightUpdateFunction = function() {
     var newHeight =
               editor.getSession().getScreenLength()
@@ -60,17 +60,20 @@ var heightUpdateFunction = function() {
               + editor.renderer.scrollBar.getWidth();
     $('#editor').height(newHeight.toString() + "px");
     $('#editor-section').height(newHeight.toString() + "px");
+    $('#editor_new').height(newHeight.toString() + "px");
+    $('#editor_new-section').height(newHeight.toString() + "px");
     // This call is required for the editor to fix all of its inner structure for adapting to a change in size
     editor.resize();
 };
-*/
+// setup #editor
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/json");
-editor.getSession().setUseSoftTabs(true);
+editor.getSession().setUseSoftTabs(false);
+editor.getSession().setUseWrapMode(true);
+editor.setShowPrintMargin(false);
 editor.setHighlightActiveLine(false);
-
-// var textarea = $('textarea[name="metadata"]');
+// keep it synced
 var textarea = $('textarea[name="metadata"]').hide();
 editor.getSession().setValue(textarea.val());
 editor.getSession().on('change', function(){
@@ -80,17 +83,20 @@ editor.getSession().on('change', function(){
 });
 
 {% if metadata_new %}
-
+// setup #editor_new
 var editorNew = ace.edit("editor_new");
 editorNew.setTheme("ace/theme/solarized_light");
 editorNew.getSession().setMode("ace/mode/json");
-editorNew.getSession().setUseSoftTabs(true);
+editorNew.getSession().setUseSoftTabs(false);
+editorNew.getSession().setUseWrapMode(true);
+editorNew.setShowPrintMargin(false);
 editorNew.setHighlightActiveLine(false);
-
-// var textarea = $('textarea[name="metadata"]');
+// keep it synced
 var textareaNew = $('textarea[name="metadata_new"]').hide();
 editorNew.getSession().setValue(textareaNew.val());
 editorNew.getSession().on('change', function(){
+  // Whenever a change happens inside the ACE editor, update the size again
+  heightUpdateFunction();
   textareaNew.val(editorNew.getSession().getValue());
 });
 
