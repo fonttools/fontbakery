@@ -25,6 +25,7 @@ from flask import (Blueprint, render_template, Response, g, request,
 
 from ..extensions import pages
 from ..project.models import Project
+from ..settings.models import FontStats
 
 frontend = Blueprint('frontend', __name__)
 
@@ -43,7 +44,6 @@ def splash():
         projects = Project.query.filter_by(login=g.user.login).all()
         return render_template('dashboard.html', repos = projects)
 
-
 @frontend.route('/docs/', defaults={'path': 'index'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
 def page(path):
@@ -55,3 +55,12 @@ def page(path):
 def static_from_root():
     # Static items
     return send_from_directory(current_app.static_folder, request.path[1:])
+
+@frontend.route('/stats')
+def stats():
+    # ensure user logged in
+    if g.user is None:
+        return render_template('splash.html')
+    else:
+        stats = FontStats.query.all()
+        return render_template('stats.html', stats=stats)
