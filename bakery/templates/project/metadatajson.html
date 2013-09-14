@@ -50,8 +50,8 @@
 
 {% block extrajs %}
 
-<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
 <script>
+$(document).ready(function () {
 // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
 var heightUpdateFunction = function() {
     var newHeight =
@@ -105,6 +105,7 @@ editorNew.getSession().on('change', function(){
 // Set initial size to match initial content
 heightUpdateFunction();
 
+});
 </script>
 </div>
 {% endblock %}

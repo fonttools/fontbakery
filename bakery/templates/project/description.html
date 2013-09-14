@@ -17,8 +17,9 @@
 
 {% block extrajs %}
 
-<script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
 <script>
+$(document).ready(function () {
+    
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/html");
@@ -52,6 +53,8 @@ heightUpdateFunction();
 editor.getSession().on('change', heightUpdateFunction);
 // End 
 
+
+});
 </script>
 </div>
 {% endblock %}
