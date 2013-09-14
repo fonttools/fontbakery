@@ -23,6 +23,7 @@ import plistlib
 from utils import RedisFd
 import re
 import shutil
+import utils
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -101,6 +102,7 @@ def project_git_sync(project, log):
         log.write('Sync Git Repository\n', prefix = 'Header: ')
         # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
+        run('git clean --force', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
     # Since it doesn't exist as a git repo, get the _in repo
@@ -111,7 +113,7 @@ def project_git_sync(project, log):
             # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
             run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
-            run('ls -alFR', cwd = _in, log=log)
+            # run('ls -alFR', cwd = _in, log=log)
         # if the clone action didn't work, just copy it 
         except:
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
@@ -374,6 +376,25 @@ def lint_process(project, log):
     # TODO: move this from here to the new checker lint process completing all required checks successfully
     project.config['local']['status'] = 'built'
 
+def fontaine_process(project, log):
+    """
+    Run pyFontaine on ttf files
+    """
+    # Doesn't work here?
+    # import ipdb; ipdb.set_trace()
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('pyFontaine (fontaine/main.py)\n', prefix = 'Header: ')
+    os.chdir(_out)
+    files = glob.glob('*.ttf')
+    for filename in files:
+        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --json '%s' > 'src/fontaine-%s.json'" % (ROOT, filename, filename)
+        run(cmd, cwd=_out, log=log)
+#    log.write('Running Fontaine on Results\n', prefix = 'Header: ')
+#    fonts = utils.project_fontaine(project)
+#    project.config['state']['fontaine'] = fonts
+#   project.save_state()
+
+
 @job
 def process_project(project, log):
     """
@@ -397,6 +418,7 @@ def process_project(project, log):
         subset_process(project, log)
         generate_metadata_process(project, log)
         lint_process(project, log)
+        fontaine_process(project, log)     
         log.write('Bake Succeeded!\n', prefix = 'Header: ')
 
 def set_ready(project):

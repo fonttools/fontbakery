@@ -45,7 +45,7 @@ class FontaineTest(TestCase):
     #     self.assertTrue(False)
     
     def test_charMaker(self):
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         pattern = re.compile('[\W_]+')
         functionTemplate = """def test_charset_%s(self, p): self.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"; self.assertTrue(p == 100)"""
         for orthographyTuple in self.font.get_orthographies():

@@ -94,8 +94,6 @@ def authorized(next = None):
 
     session['user_id'] = user.id
     g.user = user
-    flash(_('Welcome!'))
-
     return redirect(next_url)
 
 @gitauth.route('/logout')

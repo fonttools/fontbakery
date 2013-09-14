@@ -75,33 +75,7 @@
         <li><i class="icon-circle text-error"></i> means the test failed: fix the font</li>
         <li><i class="icon-circle text-success"></i> means the test passed: fix yourself some cake</li>
     </ul>
-    <h3 id="allfonts" class="toggle"><i class="icon"></i> {{ _('All Fonts') }}</h3>
-    <table class="table table-striped table-bordered table-condensed tablesorter" id="testsByTest">
-    <thead style="text-align:left">
-        <th style="text-align:center">Result </th>
-        <th>Font</th>
-        <th>Test</th>
-        <th>Tool</th>
-        <th>File</th>
-        <th>Method</th>
-    </thead>
-
-    {%- for testType in ['error', 'failure', 'success'] %}
-      {%- for font in tests.keys() %}
-        {%- for item in tests[font][testType] %}
-          <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
-            <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i></td>
-            <td>{{ font }}</td>
-            <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
-            <td>{{ item.tool }}</td>
-            <td>{{ item.name|replace('.','/') }}.py</td>
-            <td>{{ item._testMethodName }}()</td>
-          </tr>
-        {%- endfor %}
-      {%- endfor %}
-    {%- endfor %}
-    </table>
-
+    {# Tests per font file #}
     {%- for font in tests.keys() %}
         <h3 id="{{font.split('/')[-1].lower()|replace(' ', '')}}" class="toggle toggleCollapseFirst"><i class="icon"></i> {{ font }}</h3>
         <div>
@@ -137,5 +111,34 @@
             <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
         </div>
     {%- endfor %}
+
+    {# Tests for all fonts in 1 table #}
+    <h3 id="allfonts" class="toggle"><i class="icon"></i> {{ _('All Fonts') }}</h3>
+    <table class="table table-striped table-bordered table-condensed tablesorter" id="testsByTest">
+    <thead style="text-align:left">
+        <th style="text-align:center">Result </th>
+        <th>Font</th>
+        <th>Test</th>
+        <th>Tool</th>
+        <th>File</th>
+        <th>Method</th>
+    </thead>
+
+    {%- for testType in ['error', 'failure', 'success'] %}
+      {%- for font in tests.keys() %}
+        {%- for item in tests[font][testType] %}
+          <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
+            <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i></td>
+            <td>{{ font }}</td>
+            <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+            <td>{{ item.tool }}</td>
+            <td>{{ item.name|replace('.','/') }}.py</td>
+            <td>{{ item._testMethodName }}()</td>
+          </tr>
+        {%- endfor %}
+      {%- endfor %}
+    {%- endfor %}
+    </table>
+
   </div>
 {%- endmacro %}

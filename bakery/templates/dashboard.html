@@ -161,6 +161,7 @@
     <tr>
       <th colspan="4"></th>
       <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th colspan="2">Char Sets</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
 {#
@@ -178,6 +179,8 @@
       {% for item, value in stateDict.iteritems() | sort %}
       <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
       {% endfor %}
+      <th style="">{{ _("GWF")}}</th>
+      <th style="">{{ _("AL3")}}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
 {#
@@ -228,6 +231,8 @@
             </a>
             </td>
         {% endfor %}
+        <td> {{ repo.config['state']['fontaine']['gwf'] }} </td>
+        <td> {{ repo.config['state']['fontaine']['al3'] }} </td>
 
         {# TODO: replace the following static stats td cells with a loop:
         {% for key, value in repo.family_stat %}
