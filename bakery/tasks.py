@@ -101,6 +101,7 @@ def project_git_sync(project, log):
         log.write('Sync Git Repository\n', prefix = 'Header: ')
         # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
+        run('git clean --force', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
     # Since it doesn't exist as a git repo, get the _in repo
