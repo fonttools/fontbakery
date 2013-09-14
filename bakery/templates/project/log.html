@@ -87,6 +87,7 @@ socket.on('message', function (logs) {
         $('#log').append($('<span>').addClass('text-info').html(data));
     };
   });
+});
 
 function userCanSeeItWithoutScrolling() {
     var userCanSeeItWithoutScrolling = $("#toTop").offset().top < $(window).height();
