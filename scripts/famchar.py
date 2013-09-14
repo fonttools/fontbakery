@@ -15,43 +15,57 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 """
-Script to find the character set coverage and misses for fonts in the given dir
+Script to find for TTF fonts in the given dir the character set coverage 
+by family average and per style, and list missing characters.
+
+Usage: $ ./famchar.py directory/
 """
+
 import sys, os, glob, pprint
 from fontaine.font import Font
 
-pp = pprint.PrettyPrinter(indent=4)
-
+# Need 1 arg 
 if len(sys.argv) < 2:
     print __doc__
     sys.exit()
-
+# Check the arg is a directory
 workingDir = sys.argv[1]
-
 if os.path.exists(workingDir):
+    # If it is a directory, change context to it
     os.chdir(workingDir)
 else:
     print __doc__
     sys.exit()
+
+# Run pyFontaine on all the TTF fonts
 fonts = {}
-result = {}
 for filename in glob.glob("*.ttf"):
     fontaine = Font(filename)
     fonts[filename] = fontaine
-for font in fonts.iteritems():
-    fontfilename = font[0]
-    result[fontfilename] = {}
-    for charset, coverage, percentcomplete, missingchars in font[1].get_orthographies():
+
+# Make a plain dictionary 
+family = {}
+for fontfilename, fontaine in fonts.iteritems():
+    # Use the font file name as a key to a dictionary of char sets
+    family[fontfilename] = {}
+    for charset, coverage, percentcomplete, missingchars in fontaine.get_orthographies():
+        # Use each char set name as a key to a dictionary of this font's coverage details
         charsetname = charset.common_name
-        result[fontfilename][charsetname] = {}
-        import ipdb; ipdb.set_trace()
-        if charset.common_name == 'GWF latin':
-            result[fontfilename][charsetname]['percentcomplete'] = percentcomplete
-            result[fontfilename][charsetname]['missingchars'] = missingchars
-        elif charset.common_name == 'Adobe Latin 3':
-            result[fontfilename][charsetname]['percentcomplete'] = percentcomplete
-            result[fontfilename][charsetname]['missingchars'] = missingchars
-        else:
-            del result[fontfilename][charsetname]
-pp.pprint(result)
+        family[fontfilename][charsetname] = {}
+        family[fontfilename][charsetname]['coverage'] = coverage # unsupport, fragmentary, partial, full
+        family[fontfilename][charsetname]['percentcomplete'] = percentcomplete # int
+        family[fontfilename][charsetname]['missingchars'] = missingchars # list of ord numbers
+        # Use the char set name as a key to a list of the family's average coverage
+        if not family.has_key(charsetname):
+            family[charsetname] = []
+        # Append the char set percentage of each font file to the list
+        family[charsetname].append(percentcomplete) # [10, 32, 40, 40] etc
+        # And finally, if the list now has all the font files, make it the mean average percentage
+        if len(family[charsetname]) == len(fonts.items()):
+            family[charsetname] = sum(family[charsetname]) / len(fonts.items())
+
+# pprint as a dict for now, could be yaml/json/etc
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(family)
