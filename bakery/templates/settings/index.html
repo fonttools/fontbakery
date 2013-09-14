@@ -30,6 +30,7 @@
           {% if cache %}
           <p>{{ _("Select repositories to add from your GitHub account") }}:</p>
           <input type="text" data-provide="typeahead" data-source="[
+           {# TODO DC This doesn't work, not sure why #}
            {%- for item in cache.data %}
               '{{ item.full_name }}', 
            {%- endfor %}
