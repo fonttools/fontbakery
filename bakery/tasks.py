@@ -387,7 +387,7 @@ def fontaine_process(project, log):
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for filename in files:
-        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --json '%s' > 'src/fontaine-%s.json" % (ROOT, filename, filename)
+        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --json '%s' > 'src/fontaine-%s.json'" % (ROOT, filename, filename)
         run(cmd, cwd=_out, log=log)
 #    log.write('Running Fontaine on Results\n', prefix = 'Header: ')
 #    fonts = utils.project_fontaine(project)
