@@ -6,9 +6,18 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('ufiles') }}
 
+<div class="jumbotron">
+    <a class="btn" href="{{ url_for('project.bump', project_id = project.id )}}">Pull latest updates</a>
+</div>
+
 <h4>{{ _("Repository Files") }}</h4>
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree('in') }}
+
+{% for textfilename, textfile in textfiles.iteritems() %}
+<h4 id="{{ textfilename }}" class="anchorUnderNavbar">{{ textfilename }} <a href="#tree-{{ textfilename }}"><i class="icon icon-level-up"></i> </a></h4>
+<pre>{{ textfile }}</pre>
+{% endfor %}
 
 {% if license %}
 <h4>{{ _("License File") }}</h4>
