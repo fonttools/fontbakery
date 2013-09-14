@@ -103,29 +103,47 @@ def project_result_tests(project):
     
 def project_fontaine(project):
     from fontaine.font import Font
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    if os.path.exists(_out_src):
-        os.chdir(_out_src)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    # Its very likely that _out exists, but just in case:
+    if os.path.exists(_out):
+        os.chdir(_out)
     else:
+        # This is very unlikely, but should it happen, just return
         return
-    fonts = []
-    gwfList = []
-    al3List = []
+
+    # Run pyFontaine on all the TTF fonts
+    fonts = {}
     for filename in glob.glob("*.ttf"):
-        font = Font(filename)
-        fonts.append(font)
-    for f in fonts:
-        for a, b, c, d in f.get_orthographies():
-            if a.common_name == 'GWF latin':
-                gwfList.append(c)
-            elif a.common_name == 'Adobe Latin 3':
-                al3List.append(c)
-    #import ipdb; ipdb.set_trace()
-    gwfavg = sum(gwfList) / len(gwfList)
-    al3avg = sum(al3List) / len(al3List)
-    totals = {}
-    totals['gwf'] = gwfavg
-    totals['al3'] = al3avg
-    project.config['state']['fontaine'] = totals
+        fontaine = Font(filename)
+        fonts[filename] = fontaine
+
+    # Make a plain dictionary, unlike the fancy data structures used by pyFontaine :)
+    family = {}
+    for fontfilename, fontaine in fonts.iteritems():
+        # Use the font file name as a key to a dictionary of char sets
+        family[fontfilename] = {}
+        for charset, coverage, percentcomplete, missingchars in fontaine.get_orthographies():
+            # Use each char set name as a key to a dictionary of this font's coverage details
+            charsetname = charset.common_name
+            family[fontfilename][charsetname] = {}
+            family[fontfilename][charsetname]['coverage'] = coverage # unsupport, fragmentary, partial, full
+            family[fontfilename][charsetname]['percentcomplete'] = percentcomplete # int
+            family[fontfilename][charsetname]['missingchars'] = missingchars # list of ord numbers
+            # Use the char set name as a key to a list of the family's average coverage
+            if not family.has_key(charsetname):
+                family[charsetname] = []
+            # Append the char set percentage of each font file to the list
+            family[charsetname].append(percentcomplete) # [10, 32, 40, 40] etc
+            # And finally, if the list now has all the font files, make it the mean average percentage
+            if len(family[charsetname]) == len(fonts.items()):
+                family[charsetname] = sum(family[charsetname]) / len(fonts.items())
+    # Make a plain dictionary with just the bits we want on the dashboard
+    totals = {} 
+    totals['gwf'] = family[u'GWF latin']
+    totals['al3'] = family[u'Adobe Latin 3']
+    # Store it in the $(id).state.yaml file
+    project.config['local']['charsets'] = totals
     project.save_state()
-    return fonts
+
+    # fonts.itervalues() emits <fontaine.font.Font instance at 0x106123c68> objects that we return for the rfiles.html template
+    return fonts.itervalues()
