@@ -235,3 +235,15 @@ ol.linenums li {
 #log .label-end {
     margin-top:1em;
 }
+
+#secondaryNav {
+    background:white;
+}
+
+.affix {
+    width: 75.5%;
+}
+
+.affix + #log {
+    margin-top:150px
+}
