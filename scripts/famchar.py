@@ -85,4 +85,4 @@ totals['cyr'] = family[u'Basic Cyrillic']
 for charset in sorted(totals.keys()):
     #import ipdb; ipdb.set_trace()
     #print charset, totals[charset], 
-    print totals[charset],
+    print str(totals[charset]) + ',',
