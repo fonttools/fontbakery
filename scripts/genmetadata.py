@@ -203,13 +203,16 @@ def fontToolsOpenFont(filepath):
 
 # DC This should check both copyright strings match
 def fontToolsGetCopyright(ftfont):
-#  return 'COPYRIGHT'
+    # return 'COPYRIGHT'
     NAMEID_PSNAME = 0
     copyright = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_PSNAME and not copyright:
             if b'\000' in record.string:
-                copyright = u(record.string.decode('utf-16-be'))
+                try:
+                    copyright = u(record.string.decode('utf-16-be'))
+                except:
+                    copyright = 'COPYRIGHT'
             else:
                 copyright = str(record.string)
         if copyright:
