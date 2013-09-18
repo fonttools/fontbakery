@@ -122,7 +122,21 @@ default python interpreter (`which python`) is the same where you installed `fon
 
 Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. If you run Font Bakery on another domain, you **[must make your own](https://github.com/settings/applications/new)**. Example:
 
-![Github Auth example](https://github.com/xen/fontbakery/blob/master/INSTALL-githubauth.png)
+![Github Auth example](https://raw.github.com/xen/fontbakery/master/INSTALL-githubauth.png)
+
+Then you will see this information:
+
+> **Client ID**
+>     f3076d470c4258e744a7
+> **Client Secret**
+>     03327cbda3271b709d0d665c6d19ee1b7a15a705
+
+You can then replace these values in the local.cfg:
+
+```
+    GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
+    GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
+```
 
 Finally, initialise the database:
 
