@@ -120,7 +120,9 @@ default python interpreter (`which python`) is the same where you installed `fon
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
     SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
+Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. If you run Font Bakery on another domain, you **[must make your own](https://github.com/settings/applications/new)**. Example:
+
+![Github Auth example](https://github.com/xen/fontbakery/blob/master/INSTALL-githubauth.png)
 
 Finally, initialise the database:
 
