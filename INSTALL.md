@@ -127,15 +127,18 @@ Github application info is for demo use only. Default values are for URL `http:/
 Then you will see this information:
 
 > **Client ID**
+>
 >     f3076d470c4258e744a7
+>
 > **Client Secret**
+>
 >     03327cbda3271b709d0d665c6d19ee1b7a15a705
 
 You can then replace these values in the local.cfg:
 
 ```
-    GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
-    GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
+    GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
+    GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
 ```
 
 Finally, initialise the database:
