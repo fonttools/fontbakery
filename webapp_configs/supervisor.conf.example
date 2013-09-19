@@ -1,0 +1,9 @@
+[program:rqworker]
+command=/var/www/www.site.com/src/fontbakery/venv/bin/rqworker
+stdout_logfile=/var/log/rqworker/rqworker.bake.log
+stderr_logfile=/var/log/rqworker/rqworker.bake.log
+directory=/var/www/www.site.com/src/fontbakery
+
+[program:gunicorn]
+command=/var/www/www.site.com/src/fontbakery/venv/bin/gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
+directory=/var/www/www.site.com/src/fontbakery

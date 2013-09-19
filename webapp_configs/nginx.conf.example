@@ -10,7 +10,7 @@ map $http_upgrade $connection_upgrade {
 server {
    listen 80;
 
-   server_name bake.librefonts.com;
+   server_name www.site.com;
 
    location / {
        proxy_set_header X-Real-IP $remote_addr;
