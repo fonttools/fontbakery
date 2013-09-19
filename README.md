@@ -40,17 +40,19 @@ During the development process you may wish to be run a fake mail server:
 
 ## Deployment
 
-Make symbolic link to nginx configuration
+Make symbolic link to nginx and supervisor configurations
 
     ln -s /path/to/project/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+    ln -s /path/to/project/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
 
 Start gunicorn in console:
 
     make prun
 
-Run worker process of RQ:
+Restart supervisor:
 
-    venv/bin/rqworker
+    service supervisor stop
+    service supervisor start
 
 ## Development
 
