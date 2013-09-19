@@ -55,7 +55,7 @@ run: venv/bin/activate requirements.txt
 
 # target: prun — production run project
 prun: venv/bin/activate requirements.txt
-	venv/bin/gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
+	. venv/bin/activate; gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o messages.pot .
