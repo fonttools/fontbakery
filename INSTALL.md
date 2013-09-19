@@ -145,8 +145,6 @@ Install nginx on Ubuntu
     sudo apt-get update
     sudo apt-get install nginx
 
-By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`.
-
 Make a copy of config example nginx and supervisor files in ``pwd``/webapp_configs and edit them with your server name and paths and then make symbolic link to nginx and supervisor configurations directories.
 
     ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf

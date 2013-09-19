@@ -33,6 +33,6 @@ server {
         access_log off;
         expires 30d;
         error_page 404 /raw404.html;
-        root /var/www/bake.librefonts.com/src/fontbakery;
+        root /var/www/www.site.com/src/fontbakery;
     }
 }
