@@ -23,4 +23,4 @@ debug = True
 loglevel = 'debug'
 errorlog = './tmp/gunicorn.log'
 resource = "socket.io"
-# daemon = True
+daemon = True

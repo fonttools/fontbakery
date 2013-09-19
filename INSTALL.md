@@ -147,10 +147,10 @@ Install nginx on Ubuntu
 
 By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`.
 
-Change configuration files in webapp_configs and make symbolic link to nginx and supervisor configurations directories.
+Make a copy of config example nginx and supervisor files in ``pwd``/webapp_configs and edit them with your server name and paths and then make symbolic link to nginx and supervisor configurations directories.
 
-    ln -s /path/to/project/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
-    ln -s /path/to/project/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+    ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+    ln -s ``pwd``/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
 
 Make supervisor autostarted on server booting and start it, if server will be rebooted it will be started automatically:
 
