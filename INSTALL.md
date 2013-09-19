@@ -145,10 +145,6 @@ Install nginx on Ubuntu
     sudo apt-get update
     sudo apt-get intall nginx
 
-Install gunicorn
-
-    /path/to/project/venv/bin/pip install gunicorn
-
 By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`.
 
 Edit configuration files in webapp_configs and make symbolic link to nginx and supervisor configurations directories.
@@ -156,12 +152,7 @@ Edit configuration files in webapp_configs and make symbolic link to nginx and s
     ln -s /path/to/project/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
     ln -s /path/to/project/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
 
-Start gunicorn in console:
+Make supervisor autostarted on server booting and start it, if server will be rebooted it will be started automatically:
 
-    make prun
-
-Restart supervisor:
-
-    service supervisor stop
     service supervisor start
 
