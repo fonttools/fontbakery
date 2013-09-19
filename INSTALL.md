@@ -143,7 +143,7 @@ Install nginx on Ubuntu
 
     sudo add-apt-repository ppa:nginx/stable
     sudo apt-get update
-    sudo apt-get intall nginx
+    sudo apt-get install nginx
 
 By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`.
 
