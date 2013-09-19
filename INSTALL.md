@@ -1,23 +1,23 @@
 # Installation instructions
 
-This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change. 
+This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change.
 
 ## Requirements
 
 You need to have installed:
 
-- python 2.7.x 
+- python 2.7.x
 - virtualenv http://www.virtualenv.org/en/latest/
-- make 
+- make
 - C-code compiler
 - libevent
 - fontforge (including its python module)
 - ttfautohint
-- Redis 
+- Redis
 
-### Mac OS X 
+### Mac OS X
 
-If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/). 
+If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/).
 
 Install HomeBrew and then run these commands in the Terminal:
 
@@ -96,7 +96,7 @@ Clone code from github into new folder:
 
     git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 
-Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have 
+Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have
 
     which javac;
     # /usr/bin/javac
@@ -111,8 +111,8 @@ Then run setup:
 
 Wait some time and watch everything being installed.
 
-NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that 
-default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
+NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
+default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies.
 
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
@@ -120,7 +120,7 @@ default python interpreter (`which python`) is the same where you installed `fon
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
     SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
+Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`.
 
 Finally, initialise the database:
 
@@ -130,11 +130,38 @@ Now see the running instructions in [README.md](https://github.com/xen/fontbaker
 
 ## Development notes
 
-### Production Mode 
+### Production Mode
 
 Production mode has additional requirements:
 
 * PostgreSQL, a high performance database for production systems
+* [Nginx](http://nginx.org/) >=1.4.1
+* [gunicorn](http://gunicorn.org/)
+* [supervisor](http://supervisord.org/)
 
-By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`. TODO: Explains how
+Install nginx on Ubuntu
+
+    sudo add-apt-repository ppa:nginx/stable
+    sudo apt-get update
+    sudo apt-get intall nginx
+
+Install gunicorn
+
+    /path/to/project/venv/bin/pip install gunicorn
+
+By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`.
+
+Edit configuration files in webapp_configs and make symbolic link to nginx and supervisor configurations directories.
+
+    ln -s /path/to/project/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+    ln -s /path/to/project/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+
+Start gunicorn in console:
+
+    make prun
+
+Restart supervisor:
+
+    service supervisor stop
+    service supervisor start
 

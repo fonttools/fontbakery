@@ -38,22 +38,6 @@ During the development process you may wish to be run a fake mail server:
 
     $ make mail;
 
-## Deployment
-
-Make symbolic link to nginx and supervisor configurations
-
-    ln -s /path/to/project/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
-    ln -s /path/to/project/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
-
-Start gunicorn in console:
-
-    make prun
-
-Restart supervisor:
-
-    service supervisor stop
-    service supervisor start
-
 ## Development
 
 A 1 hour video (recorded on 2013-09-02) explaining the basic functionality and overall codebase is here: https://www.youtube.com/watch?v=paKa_Kok2EA
