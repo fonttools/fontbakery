@@ -28,7 +28,7 @@ static/ace/master:
 	cd static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
 
 static/socket.io.min.js:
-	cd static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js 
+	cd static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js
 
 static/jquery.pjax.js:
 	cd static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
@@ -43,7 +43,7 @@ static/jquery.json2html.js:
 	cd static && curl -O https://raw.github.com/moappi/jquery.json2html/master/jquery.json2html.js && curl -O https://raw.github.com/moappi/jquery.json2html/master/json2html.js
 
 static/jquery.guiders.js:
-	cd static && curl -L -o jquery.guiders.js.zip https://github.com/davelab6/Guiders-JS/archive/master.zip && unzip -j -d jquery.guiders.js jquery.guiders.js.zip 
+	cd static && curl -L -o jquery.guiders.js.zip https://github.com/davelab6/Guiders-JS/archive/master.zip && unzip -j -d jquery.guiders.js jquery.guiders.js.zip
 
 # target: setup — bootstrap environment
     setup: venv/bin/activate requirements.txt static/jquery-2.0.3.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/tablesorter/jquery.tablesorter.min.js static/jquery.number.min.js static/jquery.json2html.js static/jquery.guiders.js
@@ -55,7 +55,7 @@ run: venv/bin/activate requirements.txt
 
 # target: prun — production run project
 prun: venv/bin/activate requirements.txt
-	. venv/bin/activate; gunicorn --config gunicorn_config.py entry:app
+	. venv/bin/activate; gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o messages.pot .
@@ -76,7 +76,7 @@ worker: venv/bin/activate
 	. venv/bin/activate; rqworker
 
 # target: mail — run mailserver
-mail: 
+mail:
 	python -m smtpd -n -c DebuggingServer localhost:20025
 
 # target: init — initial data setup

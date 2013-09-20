@@ -1,23 +1,23 @@
 # Installation instructions
 
-This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change. 
+This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change.
 
 ## Requirements
 
 You need to have installed:
 
-- python 2.7.x 
+- python 2.7.x
 - virtualenv http://www.virtualenv.org/en/latest/
-- make 
+- make
 - C-code compiler
 - libevent
 - fontforge (including its python module)
 - ttfautohint
-- Redis 
+- Redis
 
-### Mac OS X 
+### Mac OS X
 
-If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/). 
+If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/).
 
 Install HomeBrew and then run these commands in the Terminal:
 
@@ -96,7 +96,7 @@ Clone code from github into new folder:
 
     git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 
-Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have 
+Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have
 
     which javac;
     # /usr/bin/javac
@@ -111,8 +111,8 @@ Then run setup:
 
 Wait some time and watch everything being installed.
 
-NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that 
-default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
+NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
+default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies.
 
 ## Github Authorization
 
@@ -156,6 +156,22 @@ Usage instructions are found in [README.md](https://github.com/xen/fontbakery/bl
 Production mode has additional requirements:
 
 * PostgreSQL, a high performance database for production systems
+* [Nginx](http://nginx.org/) >=1.4.1
+* [gunicorn](http://gunicorn.org/)
+* [supervisor](http://supervisord.org/)
 
-By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`. TODO: Explains how
+Install nginx on Ubuntu
+
+    sudo add-apt-repository ppa:nginx/stable
+    sudo apt-get update
+    sudo apt-get install nginx
+
+Make a copy of config example nginx and supervisor files in ``pwd``/webapp_configs and edit them with your server name and paths and then make symbolic link to nginx and supervisor configurations directories.
+
+    ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+    ln -s ``pwd``/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+
+Make supervisor autostarted on server booting and start it, if server will be rebooted it will be started automatically:
+
+    service supervisor start
 
