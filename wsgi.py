@@ -23,6 +23,7 @@ from bakery import create_app, init_app
 
 app = create_app(app_name='bakery')
 app.config.from_object('config')
-app.config.from_pyfile(op.join(op.realpath(op.dirname(__name__)), 'local.cfg'))
-app.config['DEBUG'] = True
+app.config.from_pyfile(op.join(op.realpath(op.dirname(__name__)), 'local.cfg'),
+                       silent=True)
+app.config['DEBUG'] = False
 init_app(app)

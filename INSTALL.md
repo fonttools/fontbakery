@@ -64,7 +64,7 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge redis-server curl default-jdk git mercurial;
+    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge fontforge-python fonttools redis-server curl default-jdk git mercurial;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
@@ -114,23 +114,44 @@ Wait some time and watch everything being installed.
 NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
 default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies.
 
+## Github Authorization
+
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
     GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
     SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`.
+Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. If you run Font Bakery on another domain, you **[must make your own](https://github.com/settings/applications/new)**. Example:
+
+![Github Auth example](https://raw.github.com/xen/fontbakery/master/INSTALL-githubauth.png)
+
+Then you will see this information:
+
+> **Client ID**
+>
+>     f3076d470c4258e744a7
+>
+> **Client Secret**
+>
+>     03327cbda3271b709d0d665c6d19ee1b7a15a705
+
+You can then replace these values in the local.cfg:
+
+```
+    GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
+    GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
+```
 
 Finally, initialise the database:
 
     make init;
 
-Now see the running instructions in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
+## Usage
 
-## Development notes
+Usage instructions are found in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
 
-### Production Mode
+## Production Mode 
 
 Production mode has additional requirements:
 

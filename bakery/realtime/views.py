@@ -87,25 +87,26 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
         if os.path.exists(filename) and os.path.isfile(filename):
             logfile = open(filename, 'r')
-            for line in logfile:
-                self.emit('message', 'looking at line for end\n')
-                if "End:" in line:
-                    self.emit('message', 'found end\n')
-                    logfile2 = open(filename, 'r')
-                    self.emit('message', logfile2.read())
-                    logfile2.close()
-                    logfile.close()
-                    return
+# TODO: make this work so that the whole file is sent in one go if the process has ended.
+#            for line in logfile:
+#                self.emit('message', 'looking at line for end\n')
+#                if "End:" in line:
+#                    self.emit('message', 'found end\n')
+#                    logfile2 = open(filename, 'r')
+#                    self.emit('message', logfile2.read())
+#                    logfile2.close()
+#                    logfile.close()
+#                    return
             while True:
                 line = logfile.readline()
                 self.emit('message', 'read a line: ')
                 if line:
                     self.emit('message', line)
-                    # gevent.sleep(0.3) # There could be a small delay to reduce browser hammering, but this slows down the 'real time' log reading a lot
                     if line.startswith('End:'):
                         break
+                    gevent.sleep(0.1) # A small delay to reduce browser hammering. It slows down the 'real time' log feel, comment this out for that.
                 else:
-                    self.emit('message', 'blank \n')
+#                    self.emit('message', 'blank \n')
                     gevent.sleep(0.1)
             logfile.close()
         else:
