@@ -114,6 +114,8 @@ Wait some time and watch everything being installed.
 NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that 
 default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
 
+## Github Authorization
+
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
     GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
@@ -145,11 +147,11 @@ Finally, initialise the database:
 
     make init;
 
-Now see the running instructions in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
+## Usage
 
-## Development notes
+Usage instructions are found in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
 
-### Production Mode 
+## Production Mode 
 
 Production mode has additional requirements:
 
