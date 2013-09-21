@@ -99,7 +99,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 #                    return
             while True:
                 line = logfile.readline()
-                self.emit('message', 'read a line: ')
+#                self.emit('message', 'read a line: ')
                 if line:
                     self.emit('message', line)
                     if line.startswith('End:'):
