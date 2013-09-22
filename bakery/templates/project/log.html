@@ -67,8 +67,8 @@ socket.on('message', function (logs) {
 //  console.log(lines);
     lines.forEach( function(data) {
 //      console.log(data);
-    if (data.startswith('Header: ')) {
-        $('#log').append($('<h4>').addClass('text-header').html(data.slice('Header: '.length)));
+    if (data.startswith('### ')) {
+        $('#log').append($('<h4>').addClass('text-header').html(data.slice('### '.length)));
     } else if (data.startswith('Error: ')) {
         $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
     } else if (data.startswith('Fatal: ')) {
@@ -85,8 +85,8 @@ socket.on('message', function (logs) {
         $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
         $('#logEndButtonSuccess').show();
         $('#logEndButtons').slideDown();
-    }  else if (data.startswith('Command: ')){
-        $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('Command: '.length)));
+    }  else if (data.startswith('$ ')){
+        $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('$ '.length)));
     }  else {
         $('#log').append($('<span>').addClass('text-info').html(data));
     };
