@@ -173,9 +173,9 @@ def copy_and_rename_ufos_process(project, log):
         run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
 
         # Fix common lack of nbspace issue
+        log.write('Fix nbsp in UFOs\n', prefix = '### ')
         cmd = str("%s/venv/bin/python %s/scripts/fix-addnbsp.py '%s'") % (ROOT, ROOT, _out_ufo_path)
         run(cmd, cwd=_out, log=log)
-        log.write('Fix nbsp in UFOs\n', prefix = '### ')
 
         # If we rename, change the font family name metadata inside the _out_ufo
         if familyName:
