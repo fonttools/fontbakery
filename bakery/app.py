@@ -20,26 +20,25 @@ import os
 from flask import Flask, request, render_template, g, session
 from flask.ext.babel import Babel
 
-from .extensions import db, mail, pages, rq #, celery
 
-# blueprints
-from .gitauth import gitauth
-from .frontend import frontend
-from .realtime import realtime
-from .api import api
-from .settings import settings
-from .project import project
 # For import *
-__all__ = ['create_app', 'init_app']
+__all__ = ['create_app', 'init_app', 'app']
+
 
 def create_app(app_name=__name__):
     # Flask application constructor. Doesn't init extensions and blueprints
     # because caller can use its own configuration.
-
     app = Flask(app_name, static_folder = os.path.join(os.path.dirname(__file__), '..', 'static') )
     return app
 
 def init_app(app):
+    # blueprints
+    from .gitauth import gitauth
+    from .frontend import frontend
+    from .realtime import realtime
+    from .api import api
+    from .settings import settings
+    from .project import project
     # Register all blueprints and init extensions.
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
@@ -116,3 +115,11 @@ def register_filters(app):
     app.jinja_env.filters['pretty_date'] = pretty_date
     app.jinja_env.filters['signify'] = signify
 
+PROJECT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+
+app = create_app()
+app.config.from_pyfile(os.path.join(PROJECT_ROOT, 'config.py'))
+app.config.from_pyfile(os.path.join(PROJECT_ROOT, 'local.cfg'), silent=True)
+
+from .extensions import db, mail, pages, rq  #  , celery
+init_app(app)

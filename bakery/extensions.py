@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from flask import config
+from bakery.app import app as current_app
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
@@ -25,17 +25,14 @@ mail = Mail()
 
 from rauth.service import OAuth2Service
 
-# Because of restrictions of OAuth2Service this lines can't be moved to config.py
-GITHUB_CLIENT_ID = '4a1a8295dacab483f1b5'
-GITHUB_CLIENT_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 
 github = OAuth2Service(
     name='github',
     base_url='https://api.github.com/',
     access_token_url='https://github.com/login/oauth/access_token',
     authorize_url='https://github.com/login/oauth/authorize',
-    client_id= GITHUB_CLIENT_ID,
-    client_secret= GITHUB_CLIENT_SECRET,
+    client_id=current_app.config.get('GITHUB_CONSUMER_KEY', ''),
+    client_secret=current_app.config.get('GITHUB_CONSUMER_SECRET', ''),
 )
 
 from flask_flatpages import FlatPages
