@@ -408,7 +408,7 @@ def fontaine_process(project, log):
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
-        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --text '%s' > 'src/fontaine.txt'" % (ROOT, file)
+        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --text '%s' >> 'src/fontaine.txt'" % (ROOT, file)
     run(cmd, cwd=_out, log=log)
     # TODO also save the totals for the dashboard....
     #   log.write('Running Fontaine on Results\n', prefix = '### ')
