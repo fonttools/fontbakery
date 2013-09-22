@@ -249,10 +249,11 @@ ol.linenums li {
     background:white;
 }
 
-.affix {
-    width: 75.5%;
+#secondaryNav.affix {
+    width: 75.6%;
+    
 }
 
-.affix + #log {
+#secondaryNav.affix + #log {
     margin-top:150px
 }
