@@ -30,7 +30,11 @@ font.selection.all()
 #   Add Extrema
 font.addExtrema()
 #   Simplify
-font.simplify(1,('setstarttoextremum','removesingletonpoints'))
+try:
+    font.simplify(1,('setstarttoextremum','removesingletonpoints'))
+except:
+    print "Error: Could not simplify"
+    pass
 #   Correct Directions
 font.correctDirection()
 
