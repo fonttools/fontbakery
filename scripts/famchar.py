@@ -77,12 +77,13 @@ for fontfilename, fontaine in fonts.iteritems():
 #    if not k.endswith('.ttf'):
 #        print k + ',' + str(family[k])
 
+# import ipdb; ipdb.set_trace()
 # Make a plain dictionary with just the bits we want on the dashboard
 totals = {} 
-#totals['gwf'] = family[u'GWF latin']
+totals['gwf'] = family[u'GWF latin']
 totals['al3'] = family[u'Adobe Latin 3']
 totals['cyr'] = family[u'Basic Cyrillic']
 for charset in sorted(totals.keys()):
     #import ipdb; ipdb.set_trace()
     #print charset, totals[charset], 
-    print str(totals[charset]) + ',',
+    print charset + ",", str(totals[charset]) + ',',
