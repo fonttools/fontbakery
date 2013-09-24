@@ -41,7 +41,7 @@ else:
 
 # Run pyFontaine on all the TTF fonts
 fonts = {}
-for filename in glob.glob("*.ttf"):
+for filename in glob.glob("*.*tf"):
     fontaine = Font(filename)
     fonts[filename] = fontaine
 
