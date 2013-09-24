@@ -22,7 +22,8 @@ TTFQuery
 # but @behdad has forked it to speed up development
 # and @davelab6 has forked it to add a silent feature
 -e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
-fontaine
+# fontaine
+-e git+http://github.com/davelab6/pyfontaine.git#egg=fontaine
 freetype-py
 robofab
 
