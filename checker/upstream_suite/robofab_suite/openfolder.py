@@ -44,16 +44,16 @@ class UfoOpenTest(TestCase):
     #     self.assertTrue(False)
 
     def test_it_exists(self):
-        """ Does this font file exist? """
+        """ Does this UFO path exist? """
         self.assertEqual(os.path.exists(self.path), True)
+
+    def test_is_folder(self):
+        """ Is this UFO really a folder?"""
+        self.assertEqual(os.path.isdir(self.path), True)
 
     def test_is_ended_ufo(self):
         """ Does this font file's name end with '.ufo'?"""
         self.assertEqual(self.path.lower().endswith('.ufo'), True)
-
-    def test_is_folder(self):
-        """ Is this font file really a folder?"""
-        self.assertEqual(os.path.isdir(self.path), True)
 
     def test_is_A(self):
         """ Does this font have a glyph named 'A'?"""
