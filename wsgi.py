@@ -14,7 +14,16 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os.path as op
+import gevent.monkey
+gevent.monkey.patch_all()
 
-from .fontforge_suite import *
-from .pyfontaine_suite import *
-from .sample import *
+from bakery import create_app, init_app
+
+
+app = create_app(app_name='bakery')
+app.config.from_object('config')
+app.config.from_pyfile(op.join(op.realpath(op.dirname(__name__)), 'local.cfg'),
+                       silent=True)
+app.config['DEBUG'] = False
+init_app(app)

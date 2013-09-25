@@ -4,7 +4,7 @@ Font Bakery is a font build service. The vision is to bring the [Continuous Inte
 
 You give it a font project git repository, tell it which license the project is under, which font source files you wish to build into binaries, and set some build options. It then runs tests on the sources, and if they pass, builds the fonts and runs further tests on the binaries.
 
-This project is under active development by Mikhail Kashkin and Dave Crossland. 
+This project is under active development by Mikhail Kashkin and Dave Crossland.
 
 ## Disclaimer
 
@@ -28,7 +28,7 @@ Then this command will start the web service on a localhost web server:
 
     $ make run;
 
-Then open http://localhost:5000 in your browser. You will be warned if the worker is not running. 
+Then open http://localhost:5000 in your browser. You will be warned if the worker is not running.
 
 You may with to clear out all user data:
 

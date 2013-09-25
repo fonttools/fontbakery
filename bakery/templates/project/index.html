@@ -117,14 +117,14 @@ Setup the project's bake process. Options can be pre-selected by storing them in
 </div>
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <div class="controls">
       <p><strong>Bold</strong> fields are required.</p>
       {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %}
     </div>
   </div>
 
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="license_file"><strong>License File:</strong></label>
     <div class="controls">
     <select for="license_file" name="license_file" class="input-xxlarge" required>
@@ -136,7 +136,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="ufo_folders"><strong>UFOs:</strong></label>
     <div class="controls">
     <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
@@ -148,7 +148,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="subset"><strong>Subsets:</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
@@ -160,7 +160,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="txt_files">Text Files:</label>
     <div class="controls">
     <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge" 
@@ -182,7 +182,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     </div>
   </div>
 
-  <div class="control-group row-fluid">
+  <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> options?</label>
     <div class="controls">
     <input type="text" placeholder="" name="ttfautohint" 

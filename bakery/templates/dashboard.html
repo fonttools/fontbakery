@@ -116,8 +116,26 @@
 
 {% block body %}
 
+{% if not repos %}
+<div class="jumbotron alert alert-info">
+    <button type="button" id="gotit" class="close btn btn-mini">&times;</button>
+    <h2>{{ _('To get started, add a Git repository containing fonts') }}</h2>
+    <div class="row-fluid" style='text-align:left'>
+        <div class="span6" style="padding:2em">
+            <h4>{{ _('To add git repositories from your GitHub account, click the GitHub button.') }}</h4>
+        </div>
+        <div class="span6" style="padding:2em">
+            <h4>{{ _('To add one directly, enter its git clone URL.') }}
+            {{ _('If a login is required, provide it in the clone string.') }} 
+            <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>{{ _('Learn more') }} <i class="icon-external-link"></i> </a></h4>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
-<a class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
+<a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
 <div class="input-prepend input-append pull-right">
   <span class="add-on"><i class="icon-code-fork"></i> </span>
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
@@ -141,8 +159,9 @@
     </tr>
   #}
     <tr>
-      <th colspan="4"></th>
+      <th style="text-align: center" colspan="4">{{ _("Project") }}</th>
       <th colspan="{{ stateDict | length }}" style="text-align: center; font-size: small">{{ _("State") }}</th>
+      <th colspan="2">{{ _("Char Sets") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
 {#
@@ -154,12 +173,14 @@
     </tr>
     <tr>
       <th style="text-align: center">{{ _("ID") }}</th>
-      <th style="text-align: left">{{ _("Project") }}</th>
+      <th style="text-align: left">{{ _("Name") }}</th>
       <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
       <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
       {% for item, value in stateDict.iteritems() | sort %}
       <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
       {% endfor %}
+      <th style="">{{ _("GWF")}}</th>
+      <th style="">{{ _("AL3")}}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
 {#
@@ -210,6 +231,8 @@
             </a>
             </td>
         {% endfor %}
+        <td>{% if repo.config['local'].get('fontaine') %}{{ repo.config['local']['charsets']['gwf'] }}{% endif %}</td>
+        <td>{% if repo.config['local'].get('fontaine') %}{{ repo.config['local']['charsets']['al3'] }}{% endif %}</td>
 
         {# TODO: replace the following static stats td cells with a loop:
         {% for key, value in repo.family_stat %}
@@ -257,23 +280,17 @@
     {%- endfor %}
 </tbody>
 </table>
-{% else %}
-<div class="jumbotron">
-{{ _('Enter a git clone string in the allowed format.') }}
-{{ _('If a login is required, provide it in the clone string') }} 
-<a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>({{ _('Learn more') }} <i class="icon-external-link"></i> )</a>
-</div>
 {% endif %}
 
 {% endblock %}
 
 {% block extrajs %}
 <script type="text/javascript">
-
-var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
-
 $(document).ready(function() { 
     // Make the dashboard table sortable
+
+    var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
+
     $("#dashboard").tablesorter(); 
 
     $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).html() ); });
@@ -294,6 +311,22 @@ $(document).ready(function() {
     // Make the stats numbers prettyprinted
     $(".stats").number(true, 0, '.', ',');
 
+    $("#gotit").click(function ( event ) {
+          event.preventDefault();
+          $(this).parent().slideUp();
+        });
+/*
+    guiders.createGuider({
+        attachTo: "#dashboardGithubButton",
+        buttons: [{name: "Close"}],
+        description: "To get started, click this",
+        id: "dashboardGithubButtonGuider",
+        // overlay: true,
+        position: 6,
+        title: "Getting Started",
+        width: 200
+    }).show();
+*/
 });
 </script>
 {% endblock %}

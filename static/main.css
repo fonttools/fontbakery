@@ -215,6 +215,15 @@ ol.linenums li {
     width: 100%;
 }
 
+#editor_new {
+    position: relative !important;
+    border: 1px solid lightgray;
+    margin: 0px;
+    padding: 0px;
+    height: 100px;
+    width: 100%;
+}
+
 #log {
     font-size: 10px;
 }
@@ -223,7 +232,7 @@ ol.linenums li {
     padding-top: 2em;
 }
 
-.control-group {
+.anchorUnderNavbar {
     padding-top: 50px;
     margin-top: -50px;
 }
@@ -234,4 +243,17 @@ ol.linenums li {
 
 #log .label-end {
     margin-top:1em;
+}
+
+#secondaryNav {
+    background:white;
+}
+
+#secondaryNav.affix {
+    width: 75.6%;
+    
+}
+
+#secondaryNav.affix + #log {
+    margin-top:150px
 }

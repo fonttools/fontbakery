@@ -1,23 +1,23 @@
 # Installation instructions
 
-This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change. 
+This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change.
 
 ## Requirements
 
 You need to have installed:
 
-- python 2.7.x 
+- python 2.7.x
 - virtualenv http://www.virtualenv.org/en/latest/
-- make 
+- make
 - C-code compiler
 - libevent
 - fontforge (including its python module)
 - ttfautohint
-- Redis 
+- Redis
 
-### Mac OS X 
+### Mac OS X
 
-If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/). 
+If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/).
 
 Install HomeBrew and then run these commands in the Terminal:
 
@@ -64,7 +64,7 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge redis-server curl default-jdk git mercurial;
+    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge fontforge-python fonttools redis-server curl default-jdk git mercurial;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
@@ -96,7 +96,7 @@ Clone code from github into new folder:
 
     git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 
-Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have 
+Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have
 
     which javac;
     # /usr/bin/javac
@@ -111,8 +111,10 @@ Then run setup:
 
 Wait some time and watch everything being installed.
 
-NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that 
-default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies. 
+NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
+default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies.
+
+## Github Authorization
 
 **Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
@@ -120,15 +122,56 @@ default python interpreter (`which python`) is the same where you installed `fon
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
     SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. You can [make your own](https://github.com/settings/applications/new). Default values for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
+Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. If you run Font Bakery on another domain, you **[must make your own](https://github.com/settings/applications/new)**. Example:
 
-## Development notes
+![Github Auth example](https://raw.github.com/xen/fontbakery/master/INSTALL-githubauth.png)
 
-### Production Mode 
+Then you will see this information:
+
+> **Client ID**
+>
+>     f3076d470c4258e744a7
+>
+> **Client Secret**
+>
+>     03327cbda3271b709d0d665c6d19ee1b7a15a705
+
+You can then replace these values in the local.cfg:
+
+```
+    GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
+    GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
+```
+
+Finally, initialise the database:
+
+    make init;
+
+## Usage
+
+Usage instructions are found in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
+
+## Production Mode 
 
 Production mode has additional requirements:
 
 * PostgreSQL, a high performance database for production systems
+* [Nginx](http://nginx.org/) >=1.4.1
+* [gunicorn](http://gunicorn.org/)
+* [supervisor](http://supervisord.org/)
 
-By default project will start in development mode, but it is possible to run in production mode by changing `local.cfg`. TODO: Explains how
+Install nginx on Ubuntu
+
+    sudo add-apt-repository ppa:nginx/stable
+    sudo apt-get update
+    sudo apt-get install nginx
+
+Make a copy of config example nginx and supervisor files in ``pwd``/webapp_configs and edit them with your server name and paths and then make symbolic link to nginx and supervisor configurations directories.
+
+    ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+    ln -s ``pwd``/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+
+Make supervisor autostarted on server booting and start it, if server will be rebooted it will be started automatically:
+
+    service supervisor start
 

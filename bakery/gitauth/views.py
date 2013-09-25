@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, request, flash, g, session, redirect,
-    url_for, current_app)
+    url_for, current_app, Markup)
 
 from .models import User
 from ..extensions import db, github
@@ -66,7 +66,7 @@ def authorized(next = None):
     next_url = request.args.get('next') or url_for('frontend.splash')
 
     if not 'code' in request.args:
-        flash(_('You did not authorize the request'))
+        flash(Markup(_('You did not authorize this application with Github. Please see <a href="https://github.com/xen/fontbakery/blob/master/INSTALL.md#github-authorization">INSTALL</a> file for details.')))
         return redirect(next_url)
 
     redirect_uri = url_for('.authorized', _external=True)
@@ -94,8 +94,6 @@ def authorized(next = None):
 
     session['user_id'] = user.id
     g.user = user
-    flash(_('Welcome!'))
-
     return redirect(next_url)
 
 @gitauth.route('/logout')

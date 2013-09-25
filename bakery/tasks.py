@@ -23,6 +23,7 @@ import plistlib
 from utils import RedisFd
 import re
 import shutil
+import utils
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -38,7 +39,7 @@ def run(command, cwd, log):
     # print the command on the worker console
     print command
     # log the command
-    log.write('\nCommand: %s\n' % command)
+    log.write('\n$ %s\n' % command)
     # Start the command
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
     while True:
@@ -79,7 +80,7 @@ def prun(command, cwd, log=None):
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
-        log.write('Command: %s' % command)
+        log.write('$ %s' % command)
         log.write(stdout)
     return stdout
 
@@ -94,23 +95,25 @@ def project_git_sync(project, log):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
-        log.write('Creating Incoming Directory\n', prefix = 'Header: ')
+        log.write('Creating Incoming Directory\n', prefix = '### ')
         run('mkdir -p %s' % _in, cwd = DATA_ROOT, log=log)
     # Update _in if it already exists with a .git directory
     if os.path.exists(os.path.join(_in, '.git')):
-        log.write('Sync Git Repository\n', prefix = 'Header: ')
+        log.write('Sync Git Repository\n', prefix = '### ')
         # remove anything in the _in directory that isn't checked in
         run('git reset --hard', cwd = _in, log=log)
+        run('git clean --force', cwd = _in, log=log)
         # pull from origin master branch
         run('git pull origin master', cwd = _in, log=log)
     # Since it doesn't exist as a git repo, get the _in repo
     else:
         # clone the repository
-        log.write('Copying Git Repository\n', prefix = 'Header: ')
+        log.write('Copying Git Repository\n', prefix = '### ')
         try:
             # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
             run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
+            # run('ls -alFR', cwd = _in, log=log)
         # if the clone action didn't work, just copy it 
         except:
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
@@ -137,7 +140,7 @@ def copy_and_rename_ufos_process(project, log):
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % project)
 
-    log.write('Copy [and Rename] UFOs\n', prefix = 'Header: ')
+    log.write('Copy [and Rename] UFOs\n', prefix = '### ')
 
     # Set the familyName
     if config['state'].get('familyname', None):
@@ -170,7 +173,7 @@ def copy_and_rename_ufos_process(project, log):
         run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
 
         # Fix common lack of nbspace issue
-        log.write('Fix nbsp in UFOs\n', prefix = 'Header: ')
+        log.write('Fix nbsp in UFOs\n', prefix = '### ')
         cmd = str("%s/venv/bin/python %s/scripts/fix-addnbsp.py '%s'") % (ROOT, ROOT, _out_ufo_path)
         run(cmd, cwd=_out, log=log)
 
@@ -214,12 +217,28 @@ def copy_and_rename_ufos_process(project, log):
         log.write('License file not copied\n', prefix = 'Error: ')
 
     # Copy FONTLOG file
-    _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
+    _in_fontlog  = os.path.join(_in,  'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
-    if os.path.exists(_in_fontlog):
+    if os.path.exists(_in_fontlog) and os.path.isfile(_in_fontlog):
         run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
     else:
-        log.write('FONTLOG file does not exist\n', prefix = 'Error: ')
+        log.write('FONTLOG.txt does not exist\n', prefix = 'Error: ')
+
+    # Copy DESCRIPTION.en_us.html file
+    _in_desc  = os.path.join(_in,  'DESCRIPTION.en_us.html')
+    _out_desc = os.path.join(_out, 'DESCRIPTION.en_us.html')
+    if os.path.exists(_in_desc) and os.path.isfile(_in_desc):
+        run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd = _user, log=log)
+    else:
+        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix = 'Error: ')
+
+    # Copy METADATA.json file
+    _in_meta  = os.path.join(_in,  'METADATA.json')
+    _out_meta = os.path.join(_out, 'METADATA.json')
+    if os.path.exists(_in_meta) and os.path.isfile(_in_meta):
+        run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd = _user, log=log)
+    else:
+        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix = 'Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
@@ -237,7 +256,7 @@ def generate_fonts_process(project, log):
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
     scripts_folder = os.path.join(ROOT, 'scripts')
 
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = 'Header: ')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = '### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
@@ -260,7 +279,7 @@ def ttfautohint_process(project, log):
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
     if config['state'].get('ttfautohint', None):
-        log.write('Autohint TTFs (ttfautohint)\n', prefix = 'Header: ')
+        log.write('Autohint TTFs (ttfautohint)\n', prefix = '### ')
         params = config['state']['ttfautohint']
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
@@ -272,7 +291,7 @@ def ttfautohint_process(project, log):
             }
             run(cmd, cwd=_out, log=log)
     else:
-        log.write('Autohint not used\n', prefix = 'Header: ')
+        log.write('Autohint not used\n', prefix = '### ')
         run("mv src/*.ttf .", cwd=_out, log=log)
 
 def ttx_process(project, log):
@@ -282,7 +301,7 @@ def ttx_process(project, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
-    log.write('Compact TTFs with ttx\n', prefix = 'Header: ')
+    log.write('Compact TTFs with ttx\n', prefix = '### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
@@ -313,7 +332,7 @@ def subset_process(project, log):
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/src/' % project)
 
-    log.write('Subset TTFs (subset.py)\n', prefix = 'Header: ')
+    log.write('Subset TTFs (subset.py)\n', prefix = '### ')
 
     for subset in config['state']['subset']:
         os.chdir(_out_src)
@@ -357,7 +376,12 @@ def generate_metadata_process(project, log):
     """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = 'Header: ')
+    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = '### ')
+    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    # TODO Fix the genmetadata.py script so that it always outputs in the same order;
+    # currently when you run it a 2nd time, it places dateAdded at the end, which is
+    # what most METADATA.json files have, so it should just happen. Workaround is
+    # to run it twice ;)
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 def lint_process(project, log):
@@ -365,13 +389,33 @@ def lint_process(project, log):
     Run lint.jar on ttf files
     """
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    log.write('Lint (lint.jar)\n', prefix = 'Header: ')
+    log.write('Lint (lint.jar)\n', prefix = '### ')
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
     # Mark this project as building successfully
     # TODO: move this from here to the new checker lint process completing all required checks successfully
     project.config['local']['status'] = 'built'
+
+def fontaine_process(project, log):
+    """
+    Run pyFontaine on ttf files
+    """
+    # Doesn't work here?
+    # import ipdb; ipdb.set_trace()
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
+    log.write('pyFontaine (fontaine/main.py)\n', prefix = '### ')
+    os.chdir(_out)
+    files = glob.glob('*.ttf')
+    for file in files:
+        cmd = "python %s/venv/lib/python2.7/site-packages/fontaine/main.py --text '%s' >> 'src/fontaine.txt'" % (ROOT, file)
+    run(cmd, cwd=_out, log=log)
+    # TODO also save the totals for the dashboard....
+    #   log.write('Running Fontaine on Results\n', prefix = '### ')
+    #   fonts = utils.project_fontaine(project)
+    #   project.config['state']['fontaine'] = fonts
+    #   project.save_state()
+
 
 @job
 def process_project(project, log):
@@ -388,7 +432,7 @@ def process_project(project, log):
         # Ensure _out exists
         if not os.path.exists(_out):
             os.makedirs(_out_src)
-        log.write('Bake Begins!\n', prefix = 'Header: ')
+        log.write('Bake Begins!\n', prefix = '### ')
         copy_and_rename_ufos_process(project, log)
         generate_fonts_process(project, log)
         ttfautohint_process(project, log)
@@ -396,7 +440,8 @@ def process_project(project, log):
         subset_process(project, log)
         generate_metadata_process(project, log)
         lint_process(project, log)
-        log.write('Bake Succeeded!\n', prefix = 'Header: ')
+        fontaine_process(project, log)     
+        log.write('Bake Succeeded!\n', prefix = '### ')
 
 def set_ready(project):
     from flask import current_app

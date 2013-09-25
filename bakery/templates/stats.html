@@ -1,0 +1,50 @@
+{# Stats for logged in user #}
+{% extends 'base.html' %}
+{% set page_title = _('Stats') %}
+
+{% block body %}
+
+
+{% if stats %}
+<table class="table table-striped table-bordered table-condensed tablesorter" id="stats" style="">
+  <thead>
+    <tr>
+      <th>Family</th>
+      <th style="text-align: center">{{ _("Total") }}</th>
+      <th style="text-align: center">{{ _("Month") }}</th>
+      <th style="text-align: center">{{ _("Week") }}</th>
+      <th style="text-align: center">{{ _("Day") }}</th> 
+      <th style="text-align: center">{{ _("Second") }}</th>
+      <th style="">{{ _("GWF")}}</th>
+      <th style="">{{ _("AL3")}}</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for stat in stats -%}
+      <tr>
+        <td style="text-align: left">{{ stat.family }}</td>
+        <td style="text-align: right">{{ stat.total }}</td>
+        <td style="text-align: right">{{ stat.month }}</td>
+        <td style="text-align: right">{{ stat.week }}</td>
+        <td style="text-align: right">{{ stat.yesterday }}</td>
+        <td style="text-align: right">{{ stat.rate }}</td>
+        <td style="text-align: right">A</td>
+        <td style="text-align: right">B</td>
+      </tr>
+    {%- endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function() { 
+
+
+
+});
+</script>
+{% endblock %}

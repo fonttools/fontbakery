@@ -131,13 +131,15 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
     local['ufo_dirs'] = ufo_dirs
 
     # If license_file not defined then choose OFL.txt or LICENSE.txt from the root of repo, if it exists
-    if not state['license_file']:
+    lfn = state['license_file']
+    if not lfn:
         for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
-            if os.path.exists(os.path.join(_in, fn)):
+            ffn = os.path.join(_in, fn)
+            if os.path.exists(ffn) and os.path.isfile(ffn):
                 state['license_file'] = fn
                 break
     # and note it exists
-    if os.path.exists(state['license_file']):
+    if os.path.exists(lfn) and os.path.isfile(lfn):
         local['license_file_found'] = True
 
     # Save both states to YAML files and return them

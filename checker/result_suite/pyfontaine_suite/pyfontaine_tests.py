@@ -19,7 +19,7 @@ from checker.base import BakeryTestCase as TestCase
 from fontaine.font import Font
 import re, string
 
-class SampleTest(TestCase):
+class FontaineTest(TestCase):
     targets = ['result']
     tool   = 'pyfontaine'
     name   = __name__
@@ -55,6 +55,5 @@ class SampleTest(TestCase):
             print "TODO: This doesn't work yet..."
             print functionTemplate % (shortname, shortname, charmap.common_name)
             print 'test_charset_%s(self, 100)' % shortname
-            # exec functionTemplate % (shortname, shortname, charmap.common_name)
-            # exec 'test_charset_%s(self, 100)' % shortname
-        self.assertTrue(True)
+            exec functionTemplate % (shortname, shortname, charmap.common_name)
+            exec 'test_charset_%s(self, 100)' % shortname
