@@ -169,7 +169,8 @@
       <th style="text-align: center">{{ _("Day") }}</th> 
       <th style="text-align: center">{{ _("Second") }}</th>
 #}
-      <th colspan="2"></th>
+      <th style="text-align: center">{{ _("Per $") }}</th>
+      <th colspan="1"></th>
     </tr>
     <tr>
       <th style="text-align: center">{{ _("ID") }}</th>
@@ -183,11 +184,12 @@
       <th style="">{{ _("AL3")}}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
-{#
+{# 
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
 #}
+      <th class="stats-fvpd" style="text-align: right"></th>
       <th style="text-align: center">{{ _("Next Step") }}</th>
       <th style="text-align: center"><i class="icon-trash"></i></th>
     </tr>
@@ -246,6 +248,11 @@
         <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
         <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
 #}
+        <td class="stats-fvpd" style="text-align: right">
+        {% if repo.config['state'].get('price_total_usd') %}
+            {{ repo.family_stat.month / repo.config['state']['price_total_usd'] | int }}
+        {% endif %}
+        </td>
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
