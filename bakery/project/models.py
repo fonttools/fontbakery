@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import datetime
+from datetime import datetime
 import os
 from flask import current_app, json
 from ..decorators import lazy_property
