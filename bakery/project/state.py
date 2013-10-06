@@ -116,6 +116,7 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
         return state, local
     # otherwise, list txt and ufo files found in _in
     txt_files = []
+    bin_files = []
     ufo_dirs = []
     l = len(_in)
     for root, dirs, files in os.walk(_in):
@@ -123,11 +124,14 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
             fullpath = os.path.join(root, f)
             if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
                 txt_files.append(fullpath[l:])
+            if os.path.splitext(fullpath)[1].lower() in ['.ttf', '.otf']:
+                bin_files.append(fullpath[l:])
         for d in dirs:
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
                 ufo_dirs.append(fullpath[l:])
     local['txt_files'] = txt_files
+    local['bin_files'] = txt_files
     local['ufo_dirs'] = ufo_dirs
 
     # If license_file not defined then choose OFL.txt or LICENSE.txt from the root of repo, if it exists
