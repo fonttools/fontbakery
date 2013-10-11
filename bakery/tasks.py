@@ -67,9 +67,6 @@ def run(command, cwd, log):
 
 def prun(command, cwd, log=None):
     """
-    
-    THIS METHOD IS DEPRECATED
-    
     Wrapper for subprocess.Popen that capture output and return as result
 
         :param command: shell command to run
@@ -114,13 +111,13 @@ def project_git_sync(project, log):
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
             run('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in, log=log)
             # run('ls -alFR', cwd = _in, log=log)
-        # if the clone action didn't work, just copy it 
+        # if the clone action didn't work, just copy it
         except:
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
             if project.clone[:7] == "file://":
                 # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
                 run('cp -a %(clone)s .' % project, cwd = _in, log=log)
-                # 
+                #
                 run('git init .', cwd = _in, log=log)
                 run('git add *', cwd = _in, log=log)
                 msg = "Initial commit made automatically by Font Bakery"
@@ -151,7 +148,7 @@ def copy_and_rename_ufos_process(project, log):
     # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
     for _in_ufo in config['state']['ufo']:
         # Decide the incoming filepath
-        _in_ufo_path = os.path.join(_in, _in_ufo) 
+        _in_ufo_path = os.path.join(_in, _in_ufo)
         # Read the _in_ufo fontinfo.plist
         _in_ufoPlist = os.path.join(_in_ufo_path, 'fontinfo.plist')
         _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
@@ -184,7 +181,7 @@ def copy_and_rename_ufos_process(project, log):
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
             # Set the familyName
             _out_ufoFontInfo['familyName'] = familyName
-            # Set PS Name 
+            # Set PS Name
             # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
             _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
             # Set Full Name
@@ -440,7 +437,7 @@ def process_project(project, log):
         subset_process(project, log)
         generate_metadata_process(project, log)
         lint_process(project, log)
-        fontaine_process(project, log)     
+        fontaine_process(project, log)
         log.write('Bake Succeeded!\n', prefix = '### ')
 
 def set_ready(project):
@@ -458,7 +455,7 @@ def sync_and_process(project, process = True, sync = False):
     Sync and process (Bake) the project.
 
     :param project: :class:`~bakery.models.Project` instance
-    :param sync: Boolean. Sync the project. Defaults to off. 
+    :param sync: Boolean. Sync the project. Defaults to off.
     :param process: Boolean. Process (Bake) the project. Default to on.
     """
     _user = os.path.join(DATA_ROOT, '%(login)s/' % project)
@@ -478,7 +475,7 @@ def sync_and_process(project, process = True, sync = False):
                 _out_old = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out-%(revision)s' % project)
             # Move the directory
             shutil.move(_out, _out_old)
-            # Remake the directory 
+            # Remake the directory
             os.makedirs(_out_src)
             # Copy the log
             _out_old_log = os.path.join(_out_old, 'process.log')
@@ -504,3 +501,11 @@ def sync_and_process(project, process = True, sync = False):
         process_project(project, log = log)
     # Close the log file
     log.close()
+
+def project_gitlog(project):
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    log = prun("""git log -n200 --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}'""", cwd = _in)
+    import yaml
+    return yaml.load(log)
+
+

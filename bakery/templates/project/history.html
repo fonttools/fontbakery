@@ -1,0 +1,39 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Build history") %}
+
+{% block body %}
+
+{% from 'project/macros.html' import nav with context%}
+{{ nav('history') }}
+
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>{{ _("Hashtag") }}:{{ _("Build id") }}</th>
+      <th>{{ _("Message") }}</th>
+      <th>{{ _("Date") }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <a href="">c83bef8:1</a>
+      </td>
+      <td>
+        Updated some file
+      </td>
+      <td>
+      </td>
+      <td>
+        Sep 30 14:52:15 EEST 2013
+      </td>
+      <td>
+        In 10/0/20, Out 1/0/50
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+{% endblock %}
+

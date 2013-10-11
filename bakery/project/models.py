@@ -182,18 +182,12 @@ class ProjectBuild(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    # git rev-parse --short HEAD
     githash = db.Column(db.String(40))
+    log_msg = db.Column(db.String())
     is_success = db.Column(db.Boolean())
     created = db.Column(db.DateTime, default=datetime.now)
 
     @staticmethod
     def make_build(project_id):
         pass
-
-
-class ProjectTest(db.Model):
-    __tablename__ = 'project_test'
-    __table_args__ = {'sqlite_autoincrement': True}
-    id = db.Column(db.Integer, primary_key=True)
-    build_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-

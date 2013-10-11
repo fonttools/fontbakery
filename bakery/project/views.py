@@ -21,7 +21,7 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import sync_and_process
+from ..tasks import sync_and_process, project_gitlog
 from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
 
@@ -284,3 +284,25 @@ def dashboard_save(project_id):
 
     p.save_state()
     return redirect(url_for('project.setup', project_id=p.id))
+
+
+@project.route('/<int:project_id>/history', methods=['GET'])
+@login_required
+def history(project_id):
+    """ Results of processing tests, for ttf files """
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    return render_template('project/history.html', project=p)
+
+
+@project.route('/<int:project_id>/git', methods=['GET'])
+@login_required
+def gitlog(project_id):
+    """ Results of processing tests, for ttf files """
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    log = project_gitlog(p)
+
+    return render_template('project/gitlog.html', project=p, log=log)
+

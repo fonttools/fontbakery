@@ -39,6 +39,6 @@ github = OAuth2Service(
 from flask_flatpages import FlatPages
 pages = FlatPages()
 
-
 from flask.ext.rq import RQ
 rq = RQ()
+
