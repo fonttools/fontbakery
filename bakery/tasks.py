@@ -450,7 +450,7 @@ def set_ready(project):
     db.session.commit()
 
 @job
-def sync_and_process(project, process = True, sync = False):
+def sync_and_process(project, process = True, sync = False, revision = None):
     """
     Sync and process (Bake) the project.
 

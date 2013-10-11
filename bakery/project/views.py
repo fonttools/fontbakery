@@ -25,6 +25,8 @@ from ..tasks import sync_and_process, project_gitlog
 from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
 
+import itsdangerous
+
 project = Blueprint('project', __name__, url_prefix='/project')
 
 DEFAULT_SUBSET_LIST = [
@@ -47,7 +49,16 @@ def bump(project_id):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    sync_and_process.delay(p, process = False, sync = True)
+    if request.args.get('revision'):
+        signer = itsdangerous.Signer(current_app.secret_key)
+        revision = signer.unsign(request.args.get('revision'))
+
+        sync_and_process.delay(p, process = False, sync = True,
+            revision = revision)
+        print(revision)
+    else:
+        sync_and_process.delay(p, process = False, sync = True)
+
     flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.log', project_id=project_id))
 

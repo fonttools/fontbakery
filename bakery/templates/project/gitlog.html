@@ -4,7 +4,9 @@
 {% block body %}
 
 {% from 'project/macros.html' import nav with context%}
-{{ nav('gitloh') }}
+{{ nav('gitlog') }}
+
+<p>Select revision and press its hashtag to build. Only first 200 revisions</p>
 
 <table class="table table-bordered table-condensed">
   <thead>
@@ -19,7 +21,8 @@
   {% for item in log %}
     <tr>
       <td>
-        <a href="{{item['commit']}}" class="btn btn-mini">{{item['hash']}}</a>
+        {% set revision = item['commit'] | signify %}
+        <a href="{{ url_for('project.bump', project_id = project.id, revision = revision) }}" class="btn btn-mini">{{ item['hash'] }}</a>
       </td>
       <td>{{item['author']}}</td>
       <td>{{item['message']}}</td>
