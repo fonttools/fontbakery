@@ -17,7 +17,7 @@
 # pylint:disable-msg=E1101
 
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect, json, Markup)
+                   url_for, redirect, json, Markup, current_app)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
