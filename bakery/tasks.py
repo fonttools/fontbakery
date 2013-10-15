@@ -15,15 +15,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+from __future__ import print_function
 import os
 import glob
 import subprocess
 from flask.ext.rq import job
 import plistlib
-from utils import RedisFd
+from .utils import RedisFd
 import re
 import shutil
-import utils
+import yaml
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -37,7 +38,7 @@ def run(command, cwd, log):
 
     """
     # print the command on the worker console
-    print command
+    print(command)
     # log the command
     log.write('\n$ %s\n' % command)
     # Start the command
@@ -51,7 +52,7 @@ def run(command, cwd, log):
         # Log error
         if stderr:
             # print the error on the worker console
-            print stderr,
+            print(stderr, end = '')
             # log error
             log.write(stderr, prefix = 'Error: ')
         # If no output and process no longer running, stop
@@ -450,7 +451,7 @@ def set_ready(project):
     db.session.commit()
 
 @job
-def sync_and_process(project, process = True, sync = False, revision = None):
+def sync_and_process(project, build_id, revision, process = True, sync = False):
     """
     Sync and process (Bake) the project.
 
@@ -505,7 +506,6 @@ def sync_and_process(project, process = True, sync = False, revision = None):
 def project_gitlog(project):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     log = prun("""git log -n200 --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}'""", cwd = _in)
-    import yaml
     return yaml.load(log)
 
 

@@ -29,7 +29,6 @@ from ..extensions import github, db
 from ..decorators import login_required
 from .models import ProjectCache
 from ..project.models import Project
-from ..tasks import sync_and_process
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -180,7 +179,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos') + "#tab_github")
 
     flash(_('Added webhook for %s.' % (full_name)))
-    sync_and_process.ctx_delay(project, process = True, sync = True)
+    project.build()
     return redirect(url_for('settings.repos') + "#tab_github")
 
 
@@ -255,8 +254,7 @@ def addclone():
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.setup', project_id=project.id)))))
-    sync_and_process.ctx_delay(project, process = True, sync = True)
-#    return redirect(url_for('frontend.splash'))
+    project.build()
     return redirect(url_for('project.log', project_id=project.id))
 
 
@@ -305,7 +303,7 @@ def massgit():
             db.session.commit()
             flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
                   (project.full_name, url_for('project.setup', project_id=project.id)))))
-            sync_and_process.ctx_delay(project, process = True, sync = True)
+            project.build()
 
     db.session.commit()
     return redirect(url_for('settings.repos') + "#tab_massgithub")

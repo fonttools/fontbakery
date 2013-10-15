@@ -20,6 +20,7 @@ import os
 from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
+from ..tasks import sync_and_process
 
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
@@ -177,6 +178,15 @@ class Project(db.Model):
         # make magic mapping works
         return self.__dict__.get(key)
 
+
+    def current_revision(self):
+        pass
+
+    def build(self, revision=None):
+        if not revision:
+            revision = self.current_revision()
+        sync_and_process.ctx_delay(self, process = True, sync = True)
+
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'
     __table_args__ = {'sqlite_autoincrement': True}
@@ -188,6 +198,3 @@ class ProjectBuild(db.Model):
     is_success = db.Column(db.Boolean())
     created = db.Column(db.DateTime, default=datetime.now)
 
-    @staticmethod
-    def make_build(project_id):
-        pass

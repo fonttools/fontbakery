@@ -21,7 +21,7 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import sync_and_process, project_gitlog
+from ..tasks import project_gitlog
 from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
 
@@ -53,11 +53,9 @@ def bump(project_id):
         signer = itsdangerous.Signer(current_app.secret_key)
         revision = signer.unsign(request.args.get('revision'))
 
-        sync_and_process.delay(p, process = False, sync = True,
-            revision = revision)
-        print(revision)
+        p.build(revision = revision)
     else:
-        sync_and_process.delay(p, process = False, sync = True)
+        p.build()
 
     flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.log', project_id=project_id))
@@ -134,7 +132,7 @@ def setup(project_id):
         # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
         config['local']['setup'] = True
         p.save_state()
-        sync_and_process.ctx_delay(p, process = True, sync = False)
+        p.build()
         return redirect(url_for('project.log', project_id=p.id))
     else:
         flash(_("Setup saved"))
