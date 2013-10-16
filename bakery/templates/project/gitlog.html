@@ -6,11 +6,13 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('gitlog') }}
 
-<p>Select revision and press its hashtag to build. Only first 200 revisions</p>
+<p>Select revision and press its hashtag to build. Only latest 200 revisions</p>
 
+<form action="{{ url_for('project.diff', project_id=project.id) }}" method="GET">
 <table class="table table-bordered table-condensed">
   <thead>
     <tr>
+      <th><i class="icon-exchange"></i></th>
       <th>{{ _("Hashtag") }}</th>
       <th>{{ _("Author")}}</th>
       <th>{{ _("Message") }}</th>
@@ -20,6 +22,9 @@
   <tbody>
   {% for item in log %}
     <tr>
+      <td>
+        <input type="radio" name="left" value="{{ item['hash'] }}"{% if loop.first %} disabled="disabled"{% endif %}>&nbsp;<input type="radio" name="right" value="{{ item['hash'] }}"{% if loop.last %} disabled="disabled"{% endif %}>
+      </td>
       <td>
         {% set revision = item['commit'] | signify %}
         <a href="{{ url_for('project.bump', project_id = project.id, revision = revision) }}" class="btn btn-mini">{{ item['hash'] }}</a>
@@ -32,6 +37,9 @@
   </tbody>
 </table>
 
+<button type="submit" class="btn btn-small btn-primary">{{ _("Compare revisions") }}</button>
+
+</form>
 
 {% endblock %}
 
