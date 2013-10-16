@@ -21,7 +21,6 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import project_gitlog
 from ..tasks import project_gitlog, project_diff_git_files
 from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
@@ -61,7 +60,20 @@ def bump(project_id):
     flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.log', project_id=project_id))
 
-@project.route('/<int:project_id>/', methods=['GET', 'POST'])
+
+@project.route('/<int:project_id>/pull', methods=['GET'])
+@login_required
+def pull(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    p.pull()
+
+    flash(_("Changes will be pulled from upstream in a moment"))
+    return redirect(url_for('project.index', project_id=project_id))
+
+
+@project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 def setup(project_id):
     p = Project.query.filter_by(
@@ -75,7 +87,7 @@ def setup(project_id):
     error = False
 
     if request.method == 'GET':
-        return render_template('project/index.html', project=p,
+        return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
     if not request.form.get('license_file') in config['local']['txt_files']:
@@ -121,7 +133,7 @@ def setup(project_id):
             config['state'].pop('ttfautohint')
 
     if error:
-        return render_template('project/index.html', project=p,
+        return render_template('project/setup.html', project=p,
                                subsetvals=DEFAULT_SUBSET_LIST)
 
     if originalConfig != config:
@@ -154,6 +166,7 @@ def ufiles(project_id):
     license = p.read_asset('license')
     textfiles = p.textFiles()
     return render_template('project/ufiles.html', project=p, license=license, textfiles=textfiles)
+
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])
 @login_required
@@ -296,7 +309,7 @@ def dashboard_save(project_id):
     return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/history', methods=['GET'])
+@project.route('/<int:project_id>/', methods=['GET'])
 @login_required
 def history(project_id):
     """ Results of processing tests, for ttf files """
