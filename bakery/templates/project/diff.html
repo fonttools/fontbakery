@@ -1,0 +1,14 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Diff") %}
+
+{% block body %}
+
+{% from 'project/macros.html' import nav with context%}
+{{ nav('diff') }}
+
+<h3>Changes between {{left}} and {{right}}</h3>
+<p><strong>Files</strong></p>
+<pre>{{gitdiff}}</pre>
+
+{% endblock %}
+

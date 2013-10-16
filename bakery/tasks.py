@@ -503,9 +503,13 @@ def sync_and_process(project, build_id, revision, process = True, sync = False):
     # Close the log file
     log.close()
 
+
 def project_gitlog(project):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     log = prun("""git log -n200 --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}'""", cwd = _in)
     return yaml.load(log)
 
-
+def project_diff_git_files(project, left, right):
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    diffdata = prun(""" git diff --name-only %(left)s %(right)s""" % locals(), cwd = _in)
+    return diffdata

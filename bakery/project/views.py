@@ -22,6 +22,7 @@ from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
 from ..tasks import project_gitlog
+from ..tasks import project_gitlog, project_diff_git_files
 from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
 from .models import Project
 
@@ -307,11 +308,38 @@ def history(project_id):
 
 @project.route('/<int:project_id>/git', methods=['GET'])
 @login_required
-def gitlog(project_id):
+def git(project_id):
     """ Results of processing tests, for ttf files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-    log = project_gitlog(p)
+    gitlog = project_gitlog(p)
 
-    return render_template('project/gitlog.html', project=p, log=log)
+    return render_template('project/gitlog.html', project=p, log=gitlog)
 
+@project.route('/<int:project_id>/diff', methods=['GET'])
+@login_required
+def diff(project_id):
+    """ Show diff between different revisions, since we want to make this view
+    more user friendly we can't signify left and right revision. And this mean
+    that we should check input data"""
+
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+    if not all([request.args.get('left'), request.args.get('right')]):
+        flash(_("Left and right hash for comparsion should be provided"))
+
+    try:
+        left = request.args.get('left')
+        right = request.args.get('right')
+        # let python try to parse strings, if it fails then there can be
+        # something evil
+        int(left, 16)
+        int(right, 16)
+    except ValueError:
+        flash(_('Error in provided data'))
+        return redirect(url_for('project.git', project_id=p.id))
+
+    diffdata = project_diff_git_files(p, left, right)
+
+    return render_template('project/diff.html', project=p,
+        gitdiff=diffdata, left=left, right=right)
