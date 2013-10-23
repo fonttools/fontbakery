@@ -41,3 +41,6 @@ greenlet==0.4.1
 # https://github.com/mattupstate/flask-rq/pull/3
 -e git+http://github.com/xen/flask-rq.git#egg=Flask_RQ 
 redis
+
+# file browser
+python-magic

@@ -14,6 +14,7 @@ You need to have installed:
 - fontforge (including its python module)
 - ttfautohint
 - Redis
+- libmagic
 
 ### Mac OS X
 
@@ -23,7 +24,7 @@ Install HomeBrew and then run these commands in the Terminal:
 
 ```sh
     # Use HomeBrew to install dependencies
-    brew install python sqlite libevent fontforge ttfautohint redis;
+    brew install python sqlite libevent fontforge ttfautohint redis libmagic;
     # To have launchd start redis at login:
     ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
     # Start redis now:
