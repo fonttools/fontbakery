@@ -49,12 +49,12 @@
 {%- if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{%- endif %}
 {%- endmacro -%}
 
-{%- macro filestree(folder) %}
+{%- macro filestree(tree) %}
   <div class="tree">
     <ul>
       <li><a><i class="icon-folder-open"></i></a></li>
       <ul>
-      {% for key, value in project.treeFromFilesystem(folder).items() recursive %}
+      {% for key, value in tree.items() recursive %}
         <li {{ highlight(key) }} class="{%- if key == 'glyphs' and value -%}mother_of_glyphs{%- elif key.lower().endswith('.ufo') -%}mothership{%- endif -%}">
           <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
           {%- if key == '' %}
