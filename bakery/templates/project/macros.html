@@ -162,7 +162,15 @@
 {%- endmacro %}
 
 {%- macro revision_head(revision) %}
-<a href="{{ url_for('project.ufiles', project_id=project.id, revision=revision) }}">{{revision}}
-</a>
+
+<h4><a href="{{ url_for('project.ufiles', project_id = project.id, revision=revision) }}"><i class="icon-home"></i> </a> / 
+{% set lname = name.split('/') %}
+{% for i in range(lname|length) %}
+  {%- if loop.last %}{{lname[i]}}
+  {%- else %}
+    <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(lname[0:i+1])+'/') }}">{{lname[i]}}</a> /
+  {% endif %}  
+{% endfor %} <small>{{revision}}</small></h4> 
+
 <pre>{{ project.revision_info(revision) }}</pre>
 {%- endmacro %}

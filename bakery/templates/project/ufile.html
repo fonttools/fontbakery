@@ -9,7 +9,6 @@
 <h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import revision_head with context %}
 {{ revision_head(revision) }}
-
 {% if mime.startswith('text') %}
 <pre>{{ data }}</pre>
 {% elif mime.startswith('image') %}
@@ -19,7 +18,11 @@
 </div>
 {% else %}
 <pre>
-  This file is binary or unknown format. Use other tools to read its contents.
+
+
+  <center>This file is binary or unknown format. Use other tools to read its contents.</center>
+
+
 </pre>
 {% endif %}
 {% endblock %}
