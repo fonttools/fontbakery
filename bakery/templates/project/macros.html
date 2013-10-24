@@ -49,14 +49,19 @@
 {%- if name.lower() in highlight_files or name.lower().endswith('.ufo') %}class="highlight"{%- endif %}
 {%- endmacro -%}
 
-{%- macro filestree(tree) %}
+{%- macro filestree(tree, revision) %}
   <div class="tree">
     <ul>
       <li><a><i class="icon-folder-open"></i></a></li>
       <ul>
+      {% set path = [] %}
       {% for key, value in tree.items() recursive %}
         <li {{ highlight(key) }} class="{%- if key == 'glyphs' and value -%}mother_of_glyphs{%- elif key.lower().endswith('.ufo') -%}mothership{%- endif -%}">
+        {%- if revision %}
+          <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
+        {%- else %}
           <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
+        {%- endif %}
           {%- if key == '' %}
             &nbsp;
           {%- else %}
@@ -72,7 +77,8 @@
              {{ key }}
           {%- endif %}
           </a>
-        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{{ loop(value.items()) }}</ul>{%- endif %}
+        {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{%- do path.append(key) %}{{ loop(value.items()) }}{%- do path.pop() %}</ul>
+        {% endif %}
         </li>
       {% endfor %}
       </ul>
@@ -153,4 +159,10 @@
     </table>
 
   </div>
+{%- endmacro %}
+
+{%- macro revision_head(revision) %}
+<a href="{{ url_for('project.ufiles', project_id=project.id, revision=revision) }}">{{revision}}
+</a>
+<pre>{{ project.revision_info(revision) }}</pre>
 {%- endmacro %}

@@ -1,0 +1,23 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Incoming Repository Files") %}
+
+{% block body %}
+
+{% from 'project/macros.html' import nav with context%}
+{{ nav('ufiles') }}
+
+<h4>{{ _("Repository Files") }} </h4>
+{% from 'project/macros.html' import revision_head with context %}
+{{ revision_head(revision) }}
+
+{% if mime.startswith('text') %}
+<pre>{{ data }}</pre>
+{% elif mime.startswith('image') %}
+{% set sname=name|signify %}
+<img src="{{ url_for('project.ufileblob', project_id=project.id, revision=revision, name=sname)}}" />
+{% else %}
+<pre>
+  This file is binary or unknown format. Use other tools to read its contents.
+</pre>
+{% endif %}
+{% endblock %}

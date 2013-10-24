@@ -6,18 +6,7 @@
 {% from 'project/macros.html' import nav with context%}
 {{ nav('ufiles') }}
 
-<h4>{{ _("Repository Files") }}</h4>
+<h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import filestree with context %}
-{{ filestree(project.treeFromFilesystem('in')) }}
-
-{% for textfilename, textfile in textfiles.iteritems() %}
-<h4 id="{{ textfilename }}" class="anchorUnderNavbar">{{ textfilename }} <a href="#tree-{{ textfilename }}"><i class="icon icon-level-up"></i> </a></h4>
-<pre>{{ textfile }}</pre>
-{% endfor %}
-
-{% if license %}
-<h4>{{ _("License File") }}</h4>
-<pre>{{ license }}</pre>
-{% endif %}
-
+{{ filestree(project.revision_tree(revision), revision) }}
 {% endblock %}

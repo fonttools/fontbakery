@@ -21,6 +21,8 @@ from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
 from ..tasks import sync_and_process
+from ..tasks import sync_and_process, prun
+import magic
 
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
@@ -145,6 +147,59 @@ class Project(db.Model):
             if os.path.exists(fn) and os.path.isfile(fn):
                 textFiles[textFile] = unicode(open(fn, 'r').read(), "utf8")
         return textFiles
+
+
+    def revision_tree(self, revision):
+        """ Get specific revision files as tree in format supported by tree macros """
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        d = {}
+        for file in prun("git ls-tree --name-only -r %(revision)s" % locals(), cwd=_in).splitlines():
+            level = d
+            for part in file.split("/"):
+                    if part not in level:
+                            level[part] = {}
+                    level = level[part]
+
+        return d
+
+
+    def revision_file(self, revision, fn):
+        """ Read specific file from revision """
+        # XXX: [xen] need review here, not sure that it is 100% safe
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        fn=fn.replace('"', '')
+        # XXX: result can be tree
+        data = prun('git show "%(revision)s:%(fn)s"' % locals(), cwd=_in)
+        mime = magic.from_buffer(data, mime=True)
+        return mime, unicode(data, "utf8")
+
+
+    def revision_files(self, revision):
+        """
+        Read all files for selected git revision, but doesn't use file system
+        scan. This time it is git cli call.
+        """
+        #git ls-tree --name-only -r 3af454a
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        l = len(_in)
+        fl = prun("git ls-tree --name-only -r %(revision)s" % locals(), cwd=_in)
+        txt_files = []
+        for fn in fl.splitlines():
+            fullpath = os.path.join(DATA_ROOT, fn)
+            if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
+                txt_files.append(fn)
+        return txt_files, txt_content
+
+
+    def revision_info(self, revision):
+        """ Return revision info for selected git commit """
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        return prun("git show --quiet --format=medium %(revision)s" % locals(), cwd=_in)
+
 
     def save_asset(self, name = None, data = None, **kwarg):
         """ Save static files into out folder """

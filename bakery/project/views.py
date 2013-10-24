@@ -17,7 +17,7 @@
 # pylint:disable-msg=E1101
 
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect, json, Markup, current_app)
+                   url_for, redirect, json, Markup, current_app, abort, make_response)
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
@@ -33,6 +33,13 @@ DEFAULT_SUBSET_LIST = [
     'menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
     'greek+latin', 'greek-ext+latin', 'vietnamese+latin']
 
+
+def chkhash(hashstr):
+    try:
+        int(hashstr, 16)
+    except ValueError:
+        flash(_('Error in provided data'))
+        abort(500)
 
 @project.before_request
 def before_request():
@@ -152,20 +159,68 @@ def setup(project_id):
         return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/ufiles', methods=['GET'])
+@project.route('/<int:project_id>/files/', methods=['GET'])
+@project.route('/<int:project_id>/files/<revision>/', methods=['GET'])
 @login_required
-def ufiles(project_id):
+def ufiles(project_id, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
+    if revision and revision!='HEAD':
+        chkhash(revision)
+    else:
+        revision = 'HEAD'
+
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+    return render_template('project/ufiles.html', project=p,
+        revision=revision)
 
-    license = p.read_asset('license')
-    textfiles = p.textFiles()
-    return render_template('project/ufiles.html', project=p, license=license, textfiles=textfiles)
+
+@project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
+@login_required
+def ufile(project_id, revision=None, name=None):
+    # this page can be visible by others, not only by owner
+    # TODO consider all pages for that
+    if revision and revision!='HEAD':
+        chkhash(revision)
+    else:
+        revision = 'HEAD'
+
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    mime, data = p.revision_file(revision, name)
+
+    return render_template('project/ufile.html', project=p,
+        revision=revision, name=name, mime=mime, data=data)
+
+@project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
+@login_required
+def ufileblob(project_id, revision=None):
+    # this page can be visible by others, not only by owner
+    # TODO consider all pages for that
+    if revision and revision!='HEAD':
+        chkhash(revision)
+    else:
+        revision = 'HEAD'
+
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    signer = itsdangerous.Signer(current_app.secret_key)
+    name = signer.unsign(request.args.get('name'))
+
+
+    mime, data = p.revision_file(revision, name)
+
+    if mime.startswith('image'):
+        response = make_response(data)
+        response.headers['Content-Type'] = mime
+        response.headers['Content-Disposition'] = 'attachment; filename=%s' % name
+        return response
+    else:
+        abort(500)
 
 
 @project.route('/<int:project_id>/metadatajson', methods=['GET'])

@@ -23,15 +23,15 @@
   {% for item in log %}
     <tr>
       <td>
-        <input type="radio" name="left" value="{{ item['hash'] }}"{% if loop.first %} disabled="disabled"{% endif %}>&nbsp;<input type="radio" name="right" value="{{ item['hash'] }}"{% if loop.last %} disabled="disabled"{% endif %}>
+        <nobr><input type="radio" name="left" value="{{ item['hash'] }}"{% if loop.first %} disabled="disabled"{% endif %}>&nbsp;<input type="radio" name="right" value="{{ item['hash'] }}"{% if loop.last %} disabled="disabled"{% endif %}></nobr>
       </td>
       <td>
         {% set revision = item['commit'] | signify %}
         <a href="{{ url_for('project.bump', project_id = project.id, revision = revision) }}" class="btn btn-mini">{{ item['hash'] }}</a>
       </td>
       <td>{{item['author']}}</td>
-      <td>{{item['message']}}</td>
-      <td>{{item['date']}}</td>
+      <td><a href="{{ url_for('project.ufiles', project_id=project.id, revision=item['hash']) }}">{{item['message']}}</a></td>
+      <td><a href="{{ url_for('project.ufiles', project_id=project.id, revision=item['hash']) }}">{{item['date']}}</a></td>
     </tr>
   {% endfor %}
   </tbody>
