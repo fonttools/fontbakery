@@ -20,7 +20,6 @@ import os
 from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
-from ..tasks import sync_and_process
 from ..tasks import sync_and_process, prun
 import magic
 
@@ -242,6 +241,11 @@ class Project(db.Model):
             revision = self.current_revision()
         sync_and_process.ctx_delay(self, process = True, sync = True)
 
+
+    def pull(self):
+        project_git_sync.ctx_delay(self, )
+
+
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'
     __table_args__ = {'sqlite_autoincrement': True}
@@ -252,4 +256,5 @@ class ProjectBuild(db.Model):
     log_msg = db.Column(db.String())
     is_success = db.Column(db.Boolean())
     created = db.Column(db.DateTime, default=datetime.now)
+
 
