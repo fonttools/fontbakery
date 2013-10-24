@@ -172,7 +172,9 @@ class Project(db.Model):
         # XXX: result can be tree
         data = prun('git show "%(revision)s:%(fn)s"' % locals(), cwd=_in)
         mime = magic.from_buffer(data, mime=True)
-        return mime, unicode(data, "utf8")
+        if mime.startswith("text"):
+            data = unicode(data, "utf8")
+        return mime, data
 
 
     def revision_files(self, revision):
