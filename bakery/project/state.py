@@ -25,9 +25,9 @@ DATA_ROOT = os.path.join(ROOT, 'data')
 def walkWithoutGit(path):
     """
     Recursively walk a file system path, excluding .git folders
-    
+
     :param path: path to walk down
-    
+
     Returns:
         dictionary: Dictionary of file and directory strings
     """
@@ -46,7 +46,7 @@ def walkWithoutGit(path):
 def load_yaml(default_yml, yml = None):
     """
     Load a YAML file.
-    
+
     :param default_yml: a YAML file that may have all possible keys with default values
     :param yml: a YAML file with new values that overwrite those from the default_yml file (optional)
 
@@ -63,10 +63,10 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
     Get internal and external state of project from default, repo and local YAML files,
     check external state matches that stored in the _in repo, and
     save these states to local YAML files.
-    
+
     :param project: :class:`~bakery.models.Project` instance
     :param refresh: Optional. Boolean. Force refreshing the internal state
-    
+
     Returns:
         local: the internal state of the project
         state: the external state of the project
@@ -154,7 +154,7 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
 def project_state_save(project, state = None, local = None):
     """
     Save project state in bakery.yaml and state.yaml files.
-    
+
     :param project: :class:`~bakery.models.Project` instance
     :param state: Optional, the external state of this project. If not given, will be loaded from project
     :param local: Optional, the internal state of this project. If not given, will be loaded from project
