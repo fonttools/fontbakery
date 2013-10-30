@@ -198,8 +198,10 @@ def ufile(project_id, revision=None, name=None):
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
 @login_required
 def ufileblob(project_id, revision=None):
-    # this page can be visible by others, not only by owner
-    # TODO consider all pages for that
+    """ Mandatory parameter is `name` signed by cypher hash on server side.
+    This view is pretty much "heavy", each request spawn additional process and
+    read its output.
+    """
     if revision and revision!='HEAD':
         chkhash(revision)
     else:
@@ -210,7 +212,6 @@ def ufileblob(project_id, revision=None):
 
     signer = itsdangerous.Signer(current_app.secret_key)
     name = signer.unsign(request.args.get('name'))
-
 
     mime, data = p.revision_file(revision, name)
 
@@ -274,7 +275,7 @@ def description(project_id):
     return render_template('project/description.html', project = p, description = data)
 
 
-@project.route('/<int:project_id>/description_save', methods=['POST'])
+@project.route('/<int:project_id>/description', methods=['POST'])
 @login_required
 def description_save(project_id):
     p = Project.query.filter_by(
@@ -288,18 +289,18 @@ def description_save(project_id):
     return redirect(url_for('project.description', project_id=p.id))
 
 
-@project.route('/<int:project_id>/log', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/log', methods=['GET'])
 @login_required
-def log(project_id):
+def log(project_id, build_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
     data = p.read_asset('log')
     return render_template('project/log.html', project=p, log=data)
 
 
-@project.route('/<int:project_id>/rfiles', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/rfiles', methods=['GET'])
 @login_required
-def rfiles(project_id):
+def rfiles(project_id, build_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
@@ -327,9 +328,9 @@ def utests(project_id):
                            tests=test_result)
 
 
-@project.route('/<int:project_id>/rtests', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])
 @login_required
-def rtests(project_id):
+def rtests(project_id, build_id):
     """ Results of processing tests, for ttf files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
@@ -364,7 +365,7 @@ def dashboard_save(project_id):
     return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/', methods=['GET'])
+@project.route('/<int:project_id>/build', methods=['GET'])
 @login_required
 def history(project_id):
     """ Results of processing tests, for ttf files """
