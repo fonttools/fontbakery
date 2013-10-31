@@ -83,7 +83,15 @@ class RedisFd(object):
         self.fd.write("End: End of log\n") #end of log
         self.fd.close()
 
+
+def project_fontaine(project, build):
     from fontaine.font import Font
+
+    param = { 'login': project.login, 'id': project.id,
+        'revision': build.revision, 'build': build.id }
+
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
+
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # Its very likely that _out exists, but just in case:
     if os.path.exists(_out):
@@ -119,7 +127,7 @@ class RedisFd(object):
             if len(family[charsetname]) == len(fonts.items()):
                 family[charsetname] = sum(family[charsetname]) / len(fonts.items())
     # Make a plain dictionary with just the bits we want on the dashboard
-    totals = {} 
+    totals = {}
     totals['gwf'] = family[u'GWF latin']
     totals['al3'] = family[u'Adobe Latin 3']
     # Store it in the $(id).state.yaml file
