@@ -48,9 +48,11 @@ def before_request():
 
 
 # API methods
+
 @project.route('/api/<int:project_id>/build', methods=['GET'])
 @login_required
 def bump(project_id):
+    """ Revision id is dangerous parameter, because it added to command line to
     git call. That is why it always should be signed with hash.
     """
     p = Project.query.filter_by(
@@ -82,6 +84,8 @@ def pull(project_id):
     flash(_("Changes will be pulled from upstream in a moment"))
     return redirect(url_for('project.index', project_id=project_id))
 
+
+# Setup views
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
@@ -236,6 +240,7 @@ def metadatajson(project_id):
     metadata_new = p.read_asset('metadata_new')
     return render_template('project/metadatajson.html', project=p,
                            metadata=metadata, metadata_new=metadata_new)
+# Builds views
 
 
 @project.route('/<int:project_id>/metadatajson', methods=['POST'])
@@ -340,6 +345,9 @@ def rtests(project_id, build_id):
     test_result = project_result_tests(project=p)
     return render_template('project/rtests.html', project=p,
                            tests=test_result)
+
+
+# Base views
 
 @project.route('/<int:project_id>/dashboard_save', methods=['POST'])
 @login_required
