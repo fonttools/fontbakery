@@ -162,9 +162,8 @@
 {%- endmacro %}
 
 {%- macro revision_head(revision) %}
-
 <h4><a href="{{ url_for('project.ufiles', project_id = project.id, revision=revision) }}"><i class="icon-home"></i> </a> / 
-{% set lname = name.split('/') %}
+{% set lname = name.split('/') if name else [] %}
 {% for i in range(lname|length) %}
   {%- if loop.last %}{{lname[i]}}
   {%- else %}
