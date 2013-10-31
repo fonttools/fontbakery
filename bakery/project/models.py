@@ -177,9 +177,6 @@ class Project(db.Model):
         return mime, data
 
 
-        Read all files for selected git revision, but doesn't use file system
-        #git ls-tree --name-only -r 3af454a
-        l = len(_in)
     def revision_info(self, revision):
         """ Return revision info for selected git commit """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
@@ -219,6 +216,8 @@ class Project(db.Model):
         # make magic mapping works
         return self.__dict__.get(key)
 
+    def __len__(self):
+        return len(self.__dict__.keys())
 
     def current_revision(self):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
