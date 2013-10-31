@@ -10,31 +10,26 @@
   </h2>
 
   <div class="controls">
-    <div class="input-prepend">
+    <div class="input-prepend input-append">
       <span class="add-on"><i class="icon-code-fork"></i> </span>
       <input class="input-xxlarge" id="contrib_lff" name="contrib_lff" type="text" value="{{ project.clone }}"></input>
-    </div>
-    <div>
       <a class="btn" href="{{ url_for('project.pull', project_id = project.id )}}">Pull latest updates</a>
     </div>
   </div>
   <h2>{{ page_title }}</h2>
   <ul class="nav nav-tabs">
-    <li><a href="{{ url_for('project.history', project_id = project.id) }}">Build History</a></li>
-    <li><a href="{{ url_for('project.git', project_id = project.id ) }}">Git log</a></li>
+    <li {% if active == 'ufiles' %}class="active" {% endif %}><a href="{{ url_for('project.ufiles', project_id=project.id) }}">Upstream Files</a></li>
+    <li {% if active == 'gitlog' %}class="active" {% endif %}><a href="{{ url_for('project.git', project_id = project.id ) }}">Git history</a></li>
+    <li {% if active == 'history' %}class="active" {% endif %}><a href="{{ url_for('project.history', project_id = project.id) }}">Build History</a></li>
     <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          More <i class="caret"></i>
+          Settings <i class="caret"></i>
       </a>
       <ul class="dropdown-menu">
-        <li {% if active == 'log' %}class="active"{% endif %}><a href="{{ url_for('project.log', project_id = project.id )}}">Log</a></li>
-        <li {% if active == 'ufiles' %}class="active" {% endif %}><a href="{{ url_for('project.ufiles', project_id=project.id) }}">Upstream Files</a></li>
-        <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li>
+        {# <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li> #}
         <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
 
-        {% if project.config['local'].get('setup', None) %}
-        <li {% if active == 'rfiles' %}class="active" {% endif %}><a href="{{ url_for('project.rfiles', project_id=project.id) }}">Results Files</a></li>
-        <li {% if active == 'rtests' %}class="active" {% endif %}><a href="{{ url_for('project.rtests', project_id=project.id) }}">Results Tests</a></li>
+        {% if project.config['local'].get('setup') %}
         <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
         <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
         {% endif %}
