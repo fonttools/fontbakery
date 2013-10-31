@@ -21,9 +21,8 @@ from flask import (Blueprint, render_template, g, flash, request,
 from flask.ext.babel import gettext as _
 
 from ..decorators import login_required
-from ..tasks import project_gitlog, project_diff_git_files
-from ..utils import (project_result_tests, project_upstream_tests, project_fontaine)
-from .models import Project
+from ..utils import project_fontaine
+from .models import Project, ProjectBuild
 
 import itsdangerous
 
@@ -162,6 +161,96 @@ def setup(project_id):
         return redirect(url_for('project.setup', project_id=p.id))
 
 
+@project.route('/<int:project_id>/setup/metadatajson', methods=['GET'])
+@login_required
+def metadatajson(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    metadata = p.read_asset('metadata')
+    metadata_new = p.read_asset('metadata_new')
+    return render_template('project/metadatajson.html', project=p,
+                           metadata=metadata, metadata_new=metadata_new)
+
+
+@project.route('/<int:project_id>/setup/metadatajson', methods=['POST'])
+@login_required
+def metadatajson_save(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    try:
+        # this line trying to parse json
+        json.loads(request.form.get('metadata'))
+        p.save_asset('metadata', request.form.get('metadata'),
+                     del_new=request.form.get('delete', None))
+        flash(_('METADATA.json saved'))
+        return redirect(url_for('project.metadatajson', project_id=p.id))
+    except ValueError:
+        flash(_('Wrong format for METADATA.json file'))
+        metadata_new = p.read_asset('metadata_new')
+        return render_template('project/metadatajson.html', project=p,
+                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
+
+
+@project.route('/<int:project_id>/setup/description', methods=['GET'])
+@login_required
+def description(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    data = p.read_asset('description')
+    return render_template('project/description.html', project = p, description = data)
+
+
+@project.route('/<int:project_id>/setup/description', methods=['POST'])
+@login_required
+def description_save(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    p.save_asset('description', request.form.get('description'))
+    flash(_('Description saved'))
+    return redirect(url_for('project.description', project_id=p.id))
+
+
+@project.route('/<int:project_id>/setup/dashboard_save', methods=['POST'])
+@login_required
+def dashboard_save(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    for item in request.form:
+        if request.form.get(item):
+            if len(request.form.get(item)) > 0:
+                p.config['state'][item] = request.form.get(item)
+                flash(_('Set ' + item))
+        else:
+            if item in p.config['state']:
+                del p.config['state'][item]
+                flash(_('Unset ' + item))
+
+    p.save_state()
+    return redirect(url_for('project.setup', project_id=p.id))
+
+
+# File browser views
+
 @project.route('/<int:project_id>/files/', methods=['GET'])
 @project.route('/<int:project_id>/files/<revision>/', methods=['GET'])
 @login_required
@@ -227,70 +316,18 @@ def ufileblob(project_id, revision=None):
         abort(500)
 
 
-@project.route('/<int:project_id>/metadatajson', methods=['GET'])
-@login_required
-def metadatajson(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    metadata = p.read_asset('metadata')
-    metadata_new = p.read_asset('metadata_new')
-    return render_template('project/metadatajson.html', project=p,
-                           metadata=metadata, metadata_new=metadata_new)
 # Builds views
 
-
-@project.route('/<int:project_id>/metadatajson', methods=['POST'])
+@project.route('/<int:project_id>/build', methods=['GET'])
 @login_required
-def metadatajson_save(project_id):
+def history(project_id):
+    """ Results of processing tests, for ttf files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+    b = ProjectBuild.query.filter_by(project=p).all()
 
-    try:
-        # this line trying to parse json
-        json.loads(request.form.get('metadata'))
-        p.save_asset('metadata', request.form.get('metadata'),
-                     del_new=request.form.get('delete', None))
-        flash(_('METADATA.json saved'))
-        return redirect(url_for('project.metadatajson', project_id=p.id))
-    except ValueError:
-        flash(_('Wrong format for METADATA.json file'))
-        metadata_new = p.read_asset('metadata_new')
-        return render_template('project/metadatajson.html', project=p,
-                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
-
-
-@project.route('/<int:project_id>/description', methods=['GET'])
-@login_required
-def description(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    data = p.read_asset('description')
-    return render_template('project/description.html', project = p, description = data)
-
-
-@project.route('/<int:project_id>/description', methods=['POST'])
-@login_required
-def description_save(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    p.save_asset('description', request.form.get('description'))
-    flash(_('Description saved'))
-    return redirect(url_for('project.description', project_id=p.id))
+    return render_template('project/history.html', project=p, builds=b)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/log', methods=['GET'])
@@ -298,8 +335,11 @@ def description_save(project_id):
 def log(project_id, build_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
+
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
     data = p.read_asset('log')
-    return render_template('project/log.html', project=p, log=data)
+    return render_template('project/log.html', project=p, build=b, log=data)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/rfiles', methods=['GET'])
@@ -308,16 +348,37 @@ def rfiles(project_id, build_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
+    if not b.is_done:
+        return redirect(url_for('project.log', project_id=p.id, build_id=b.id))
+
+    yaml = p.read_asset('yaml')
+    f = project_fontaine(p, b)
+    return render_template('project/rfiles.html', project=p, yaml=yaml,
+                            fontaineFonts=f, build=b)
+
+
+@project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])
+@login_required
+def rtests(project_id, build_id):
+    """ Results of processing tests, for ttf files """
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    yaml = p.read_asset('yaml')
-    f = project_fontaine(project=p)
-    return render_template('project/rfiles.html', project=p, yaml=yaml,
-                            fontaineFonts=f)
+    test_result = project_result_tests(project=p)
+    return render_template('project/rtests.html', project=p,
+                           tests=test_result, build=b)
 
 
-@project.route('/<int:project_id>/utests', methods=['GET'])
+# Base views
+
+@project.route('/<int:project_id>/tests', methods=['GET'])
 @login_required
 def utests(project_id):
     """ Results of processing tests, for ufo files """
@@ -332,65 +393,17 @@ def utests(project_id):
                            tests=test_result)
 
 
-@project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])
-@login_required
-def rtests(project_id, build_id):
-    """ Results of processing tests, for ttf files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    test_result = project_result_tests(project=p)
-    return render_template('project/rtests.html', project=p,
-                           tests=test_result)
-
-
-# Base views
-
-@project.route('/<int:project_id>/dashboard_save', methods=['POST'])
-@login_required
-def dashboard_save(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    for item in request.form:
-        if request.form.get(item):
-            if len(request.form.get(item)) > 0:
-                p.config['state'][item] = request.form.get(item)
-                flash(_('Set ' + item))
-        else:
-            if item in p.config['state']:
-                del p.config['state'][item]
-                flash(_('Unset ' + item))
-
-    p.save_state()
-    return redirect(url_for('project.setup', project_id=p.id))
-
-
-@project.route('/<int:project_id>/build', methods=['GET'])
-@login_required
-def history(project_id):
-    """ Results of processing tests, for ttf files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    return render_template('project/history.html', project=p)
-
-
 @project.route('/<int:project_id>/git', methods=['GET'])
 @login_required
 def git(project_id):
     """ Results of processing tests, for ttf files """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-    gitlog = project_gitlog(p)
+
+    gitlog = p.gitlog()
 
     return render_template('project/gitlog.html', project=p, log=gitlog)
+
 
 @project.route('/<int:project_id>/diff', methods=['GET'])
 @login_required
@@ -415,7 +428,8 @@ def diff(project_id):
         flash(_('Error in provided data'))
         return redirect(url_for('project.git', project_id=p.id))
 
-    diffdata = project_diff_git_files(p, left, right)
+    diffdata = p.diff_files(left, right)
 
     return render_template('project/diff.html', project=p,
         gitdiff=diffdata, left=left, right=right)
+
