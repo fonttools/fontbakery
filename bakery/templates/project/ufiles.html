@@ -7,6 +7,8 @@
 {{ nav('ufiles') }}
 
 <h4>{{ _("Repository Files") }} </h4>
+{% from 'project/macros.html' import revision_head with context %}
+{{ revision_head(revision) }}
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree(project.revision_tree(revision), revision) }}
 {% endblock %}
