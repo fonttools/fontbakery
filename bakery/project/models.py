@@ -257,5 +257,5 @@ class ProjectBuild(db.Model):
     revision = db.Column(db.String(40))
     is_done = db.Column(db.Boolean(), default=False)
     created = db.Column(db.DateTime, default=datetime.now)
-
+    updated = db.Column(db.DateTime, default=datetime.now, onupdate=db.func.now())
 
