@@ -264,14 +264,14 @@
             {% elif repo.config['local']['status']=='repo' %}
                 <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
             {# setup's values here and in the repo don't match #}
-            {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
-                <a href="{{ url_for('project.rfiles', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a>
+            {# {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
+                <a href="{{ url_for('project.rfiles', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a> #}
             {# setup's values here and in the repo match #}
             {% elif repo.config['local']['status']=='local' %}
                 <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build") }}</a>  
             {# build completed successfully #}
-            {% elif repo.config['local']['status']=='built' %}
-                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  
+            {# {% elif repo.config['local']['status']=='built' %}
+                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  #}
             {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
             {% else %}
                 <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
