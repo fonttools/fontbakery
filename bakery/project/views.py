@@ -47,9 +47,12 @@ def before_request():
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
 
-@project.route('/<int:project_id>/bump', methods=['GET'])
+# API methods
+@project.route('/api/<int:project_id>/build', methods=['GET'])
 @login_required
 def bump(project_id):
+    git call. That is why it always should be signed with hash.
+    """
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
@@ -65,16 +68,16 @@ def bump(project_id):
         build = ProjectBuild.make_build(p, 'HEAD')
 
     flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
-    return redirect(url_for('project.log', project_id=project_id))
+    return redirect(url_for('project.log', project_id=project_id, build_id=build.id))
 
 
-@project.route('/<int:project_id>/pull', methods=['GET'])
+@project.route('/api/<int:project_id>/pull', methods=['GET'])
 @login_required
 def pull(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
-    p.pull()
+    p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
     return redirect(url_for('project.index', project_id=project_id))
