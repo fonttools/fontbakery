@@ -60,9 +60,9 @@ def bump(project_id):
         signer = itsdangerous.Signer(current_app.secret_key)
         revision = signer.unsign(request.args.get('revision'))
 
-        p.build(revision = revision)
+        build = ProjectBuild.make_build(p, revision)
     else:
-        p.build()
+        build = ProjectBuild.make_build(p, 'HEAD')
 
     flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
     return redirect(url_for('project.log', project_id=project_id))
@@ -85,9 +85,6 @@ def pull(project_id):
 def setup(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
 
     config = p.config
     originalConfig = p.config
@@ -152,8 +149,7 @@ def setup(project_id):
         # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
         config['local']['setup'] = True
         p.save_state()
-        p.build()
-        return redirect(url_for('project.log', project_id=p.id))
+        return redirect(url_for('project.setup', project_id=p.id))
     else:
         flash(_("Setup saved"))
         return redirect(url_for('project.setup', project_id=p.id))

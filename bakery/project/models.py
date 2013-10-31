@@ -259,3 +259,13 @@ class ProjectBuild(db.Model):
     created = db.Column(db.DateTime, default=datetime.now)
     updated = db.Column(db.DateTime, default=datetime.now, onupdate=db.func.now())
 
+    @staticmethod
+    def make_build(project, revision):
+        if revision == 'HEAD':
+            revision = project.current_revision()
+        build = ProjectBuild(project = project, revision=revision)
+        db.session.add(build)
+        db.session.commit()
+        process_project.ctx_delay(project, build, revision)
+        return build
+
