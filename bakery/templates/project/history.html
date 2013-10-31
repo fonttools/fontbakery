@@ -10,40 +10,30 @@
   <thead>
     <tr>
       <th>{{ _("Hashtag") }}:{{ _("Build id") }}</th>
-      <th>{{ _("Message") }}</th>
       <th>{{ _("Date") }}</th>
       <th>{{ _("Results") }}</th>
     </tr>
   </thead>
   <tbody>
+    {% for b in builds -%}
     <tr>
       <td>
-        <a href="">c83bef8:1</a>
+        <a href="{{ url_for('project.log', project_id=b.project.id, build_id=b.id)}}">{{b.revision}}:{{b.id}}</a>
       </td>
       <td>
-        Updated some file
-      </td>
-      <td>
-        Sep 30 14:52:15 EEST 2013
+        {{b.updated}} {% if b.is_done %} <i class="icon-check"></i>{% endif %}
       </td>
       <td>
         In 10/0/20, Out 1/0/50
       </td>
     </tr>
+    {% else %}
     <tr>
-      <td>
-        <a href="">c83bef8:1</a>
-      </td>
-      <td>
-        Updated some file
-      </td>
-      <td>
-        Sep 30 14:52:15 EEST 2013
-      </td>
-      <td>
-        In 10/0/20, Out 1/0/50
+      <td colspan="3">
+        No recent builds found, select hash from <a href="{{ url_for('project.git', project_id=project.id)}}">git log page</a>.
       </td>
     </tr>
+    {% endfor %}
   </tbody>
 </table>
 
