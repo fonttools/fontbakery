@@ -176,24 +176,9 @@ class Project(db.Model):
         return mime, data
 
 
-    def revision_files(self, revision):
-        """
         Read all files for selected git revision, but doesn't use file system
-        scan. This time it is git cli call.
-        """
         #git ls-tree --name-only -r 3af454a
-        DATA_ROOT = current_app.config.get('DATA_ROOT')
-        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         l = len(_in)
-        fl = prun("git ls-tree --name-only -r %(revision)s" % locals(), cwd=_in)
-        txt_files = []
-        for fn in fl.splitlines():
-            fullpath = os.path.join(DATA_ROOT, fn)
-            if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
-                txt_files.append(fn)
-        return txt_files, txt_content
-
-
     def revision_info(self, revision):
         """ Return revision info for selected git commit """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
@@ -245,6 +230,20 @@ class Project(db.Model):
 
     def pull(self):
         project_git_sync.ctx_delay(self, )
+    def gitlog(self, skip=0):
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        params = "git log -n101 --skip=%(skip)s" % {'skip': skip}
+        fmt = """ --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}' """
+        log = prun(params + fmt, cwd = _in)
+        return yaml.load(log)
+
+
+    def diff_files(self, left, right):
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        diffdata = prun(""" git diff --name-only %(left)s %(right)s""" % locals(), cwd = _in)
+        return diffdata
 
 
 class ProjectBuild(db.Model):
