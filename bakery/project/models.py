@@ -226,14 +226,11 @@ class Project(db.Model):
         return prun("git rev-parse --short HEAD", cwd=_in)
 
 
-    def build(self, revision=None):
-        if not revision:
-            revision = self.current_revision()
-        sync_and_process.ctx_delay(self, process = True, sync = True)
+    def sync(self):
+        """ Call in background git syncronization """
+        project_git_sync.ctx_delay(self)
 
 
-    def pull(self):
-        project_git_sync.ctx_delay(self, )
     def gitlog(self, skip=0):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
