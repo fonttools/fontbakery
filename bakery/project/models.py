@@ -38,8 +38,7 @@ class Project(db.Model):
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
     is_ready = db.Column(db.Boolean(), index=True, default=False)
-
-    builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
+    # builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
     def cache_update(self, data):
         self.html_url = data['html_url']
@@ -253,10 +252,10 @@ class ProjectBuild(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    project = db.relationship(Project)
     # git rev-parse --short HEAD
-    githash = db.Column(db.String(40))
-    log_msg = db.Column(db.String())
-    is_success = db.Column(db.Boolean())
+    revision = db.Column(db.String(40))
+    is_done = db.Column(db.Boolean(), default=False)
     created = db.Column(db.DateTime, default=datetime.now)
 
 
