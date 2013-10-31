@@ -83,25 +83,6 @@ class RedisFd(object):
         self.fd.write("End: End of log\n") #end of log
         self.fd.close()
 
-def project_upstream_tests(project):
-    import checker.upstream_runner
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    result = {}
-    os.chdir(_in)
-    for font in project.config['local']['ufo_dirs']:
-        result[font] = checker.upstream_runner.run_set(os.path.join(_in, font))
-    return result
-
-def project_result_tests(project):
-    import checker.result_runner
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
-    result = {}
-    os.chdir(_out_src)
-    for font in glob.glob("*.ttf"):
-        result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
-    return result
-    
-def project_fontaine(project):
     from fontaine.font import Font
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # Its very likely that _out exists, but just in case:
