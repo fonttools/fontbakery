@@ -167,7 +167,7 @@ class Project(db.Model):
         # XXX: [xen] need review here, not sure that it is 100% safe
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        fn=fn.replace('"', '')
+        fn = fn.replace('"', '')
         # XXX: result can be tree
         data = prun('git show "%(revision)s:%(fn)s"' % locals(), cwd=_in)
         mime = magic.from_buffer(data, mime=True)
