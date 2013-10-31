@@ -8,7 +8,7 @@
 
 <pre id="log"></pre>
 
-<form id="logEndButtons" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
+{#<form id="logEndButtons" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
 <input id="logEndButtonRebake" name="bake" value="Bake Again" type="submit" class="btn btn-primary pull-right" />
 <div id="logEndButtonSuccess" class="btn-group">
 <a href="{{ url_for('project.utests',       project_id=project.id) }}" class="btn">Upstream Tests</a>
@@ -21,7 +21,7 @@
 <a href="{{ url_for('project.description',  project_id=project.id) }}" class="btn">Edit DESCRIPTION</a>
 {% endif %}
 </div>
-</form>
+</form>#}
 
 <p class="jumbotron" id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
 
