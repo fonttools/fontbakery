@@ -17,10 +17,11 @@
 
 from datetime import datetime
 import os
+import yaml
 from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
-from ..tasks import sync_and_process, prun
+from ..tasks import process_project, prun, project_git_sync
 import magic
 
 from .state import (project_state_get, project_state_save, walkWithoutGit)
@@ -220,7 +221,10 @@ class Project(db.Model):
 
 
     def current_revision(self):
-        pass
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        return prun("git rev-parse --short HEAD", cwd=_in)
+
 
     def build(self, revision=None):
         if not revision:
