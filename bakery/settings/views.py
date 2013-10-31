@@ -255,7 +255,7 @@ def addclone():
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.setup', project_id=project.id)))))
     project.build()
-    return redirect(url_for('project.log', project_id=project.id))
+    return redirect(url_for('project.setup', project_id=project.id))
 
 
 @settings.route('/delclone/<int:project_id>', methods=['GET'])
