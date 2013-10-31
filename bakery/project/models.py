@@ -156,9 +156,9 @@ class Project(db.Model):
         for file in prun("git ls-tree --name-only -r %(revision)s" % locals(), cwd=_in).splitlines():
             level = d
             for part in file.split("/"):
-                    if part not in level:
-                            level[part] = {}
-                    level = level[part]
+                if part not in level:
+                    level[part] = {}
+                level = level[part]
 
         return d
 
