@@ -38,7 +38,7 @@ def run(command, cwd, log):
 
     """
     # print the command on the worker console
-    print(command)
+    print("[%s]:%s" % (cwd, command)
     # log the command
     log.write('\n$ %s\n' % command)
     # Start the command
@@ -75,6 +75,8 @@ def prun(command, cwd, log=None):
         :param log: loggin object with .write() method
 
     """
+    # print the command on the worker console
+    print("[%s]:%s" % (cwd, command)
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
