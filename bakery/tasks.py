@@ -75,7 +75,7 @@ def prun(command, cwd, log=None):
 
     """
     # print the command on the worker console
-    print("[%s]:%s" % (cwd, command)
+    print("[%s]:%s" % (cwd, command))
     p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
