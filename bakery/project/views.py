@@ -337,9 +337,9 @@ def log(project_id, build_id):
         login=g.user.login, id=project_id).first_or_404()
 
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+    log_file="%s/%s.out/process.%s.%s.log" % (p.login, p.id, b.revision, b.id)
 
-    data = p.read_asset('log')
-    return render_template('project/log.html', project=p, build=b, log=data)
+    return render_template('project/log.html', project=p, build=b, log_file=log_file)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/rfiles', methods=['GET'])

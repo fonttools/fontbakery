@@ -79,26 +79,19 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         super(BuildNamespace, self).__init__(*args, **kwargs)
 
     def on_subscribe(self, data):
-        login, pid = self._signer.unsign(data).split('/')
+        logfile = self._signer.unsign(data)
+        print(logfile)
 
-        gevent.spawn(self.emit_file, login, pid)
+        gevent.spawn(self.emit_file, logfile)
 
-    def emit_file(self, login, pid):
-        filename = os.path.join(self._data_root, login, "%s.process.log" % pid)
+    def emit_file(self, logfile):
+        filename = os.path.join(self._data_root, logfile)
+        print(filename)
         if os.path.exists(filename) and os.path.isfile(filename):
-            logfile = open(filename, 'r')
-# TODO: make this work so that the whole file is sent in one go if the process has ended.
-#            for line in logfile:
-#                self.emit('message', 'looking at line for end\n')
-#                if "End:" in line:
-#                    self.emit('message', 'found end\n')
-#                    logfile2 = open(filename, 'r')
-#                    self.emit('message', logfile2.read())
-#                    logfile2.close()
-#                    logfile.close()
-#                    return
+            f = open(filename, 'r')
+            # TODO: make this work so that the whole file is sent in one go if the process has ended.
             while True:
-                line = logfile.readline()
+                line = f.readline()
 #                self.emit('message', 'read a line: ')
                 if line:
                     self.emit('message', line)
@@ -108,7 +101,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 else:
 #                    self.emit('message', 'blank \n')
                     gevent.sleep(0.1)
-            logfile.close()
+            f.close()
         else:
             self.emit('message', 'Fatal: Log file not found')
 

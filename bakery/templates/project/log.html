@@ -53,7 +53,7 @@ var socket = io.connect("/build", {'force new connection': true});
 
 socket.on("connect", function(e) {
   console.log("Connected", arguments);
-  socket.emit('subscribe', '{{ [project.login, project.id]|join('/')|signify }}');
+  socket.emit('subscribe', '{{ log_file|signify }}');
 });
 
 socket.on("disconnect", function(e) {
