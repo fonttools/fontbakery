@@ -37,7 +37,7 @@ def run(command, cwd, log):
 
     """
     # print the command on the worker console
-    print("[%s]:%s" % (cwd, command)
+    print("[%s]:%s" % (cwd, command))
     # log the command
     log.write('\n$ %s\n' % command)
     # Start the command
