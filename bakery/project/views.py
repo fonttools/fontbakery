@@ -57,8 +57,8 @@ def bump(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+    # if not p.is_ready:
+    #     return redirect(url_for('project.log', project_id=p.id))
 
     if request.args.get('revision'):
         signer = itsdangerous.Signer(current_app.secret_key)
@@ -81,7 +81,7 @@ def pull(project_id):
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
-    return redirect(url_for('project.index', project_id=project_id))
+    return redirect(url_for('project.git', project_id=project_id))
 
 
 # Setup views
@@ -155,7 +155,7 @@ def setup(project_id):
         # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
         config['local']['setup'] = True
         p.save_state()
-        return redirect(url_for('project.setup', project_id=p.id))
+        return redirect(url_for('project.bump', project_id=p.id))
     else:
         flash(_("Setup saved"))
         return redirect(url_for('project.setup', project_id=p.id))
