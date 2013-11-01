@@ -265,6 +265,8 @@ class ProjectBuild(db.Model):
         build = ProjectBuild(project = project, revision=revision)
         db.session.add(build)
         db.session.commit()
-        process_project.ctx_delay(project, build, revision)
+        db.session.refresh(project)
+        db.session.refresh(build)
+        process_project.delay(project, build, revision)
         return build
 
