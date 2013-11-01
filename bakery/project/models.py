@@ -222,7 +222,7 @@ class Project(db.Model):
     def current_revision(self):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        return prun("git rev-parse --short HEAD", cwd=_in)
+        return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
 
     def sync(self):
