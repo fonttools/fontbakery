@@ -26,7 +26,7 @@
         <nobr><input type="radio" name="left" value="{{ item['hash'] }}"{% if loop.first %} disabled="disabled"{% endif %}>&nbsp;<input type="radio" name="right" value="{{ item['hash'] }}"{% if loop.last %} disabled="disabled"{% endif %}></nobr>
       </td>
       <td>
-        {% set revision = item['commit'] | signify %}
+        {% set revision = item['hash'] | signify %}
         <a href="{{ url_for('project.bump', project_id = project.id, revision = revision) }}" class="btn btn-mini">{{ item['hash'] }}</a>
       </td>
       <td>{{item['author']}}</td>
