@@ -23,7 +23,6 @@ from flask.ext.rq import job
 import plistlib
 from .utils import RedisFd
 import re
-import shutil
 import yaml
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
@@ -96,7 +95,7 @@ def project_git_sync(project):
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
         # log.write('Creating Incoming Directory\n', prefix = '### ')
-        run('mkdir -p %s' % _in, cwd = DATA_ROOT)
+        prun('mkdir -p %s' % _in, cwd = DATA_ROOT)
     # Update _in if it already exists with a .git directory
     if os.path.exists(os.path.join(_in, '.git')):
         # log.write('Sync Git Repository\n', prefix = '### ')
@@ -176,7 +175,7 @@ def copy_and_rename_ufos_process(project, build, log):
 
         # Fix common lack of nbspace issue
         log.write('Fix nbsp in UFOs\n', prefix = '### ')
-        cmd = str("%s/venv/bin/python %s/scripts/fix-addnbsp.py '%s'") % (ROOT, ROOT, _out_ufo_path)
+        cmd = str("'%s/venv/bin/python' '%s/scripts/fix-addnbsp.py' '%s'") % (ROOT, ROOT, _out_ufo_path)
         run(cmd, cwd=_out, log=log)
 
         # If we rename, change the font family name metadata inside the _out_ufo
@@ -495,20 +494,20 @@ def process_project(project, build, revision):
 
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
     _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/process.%(revision)s.%(build)s.log' % param)
 
-    log = RedisFd(_out_log, 'w')
+    # Make logest path
+    os.makedirs(_out_src)
 
-    # Ensure longest path exists
-    if not os.path.exists(_out_src):
-        os.makedirs(_out_src)
+    log = RedisFd(_out_log, 'w')
 
     # setup is set after 'bake' button is first pressed
     if project.config['local'].get('setup', None):
         # this code change upstream repository
-        run("git co %s" % revision, cwd=_out, log=log)
+        run("git checkout %s" % revision, cwd=_in, log=log)
         log.write('Bake Begins!\n', prefix = '### ')
         copy_and_rename_ufos_process(project, build, log)
         generate_fonts_process(project, build, log)
