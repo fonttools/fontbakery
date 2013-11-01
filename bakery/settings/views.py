@@ -254,7 +254,7 @@ def addclone():
 
     flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
           (project.clone, url_for('project.setup', project_id=project.id)))))
-    project.build()
+    project.sync()
     return redirect(url_for('project.setup', project_id=project.id))
 
 
