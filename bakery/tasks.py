@@ -26,6 +26,8 @@ import re
 import yaml
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+import sys
+sys.path.append(ROOT)
 DATA_ROOT = os.path.join(ROOT, 'data')
 
 def run(command, cwd, log):
@@ -445,6 +447,19 @@ def fontaine_process(project, build, log):
     #   project.config['state']['fontaine'] = fonts
     #   project.save_state()
 
+
+# register yaml serializer
+from checker.base import BakeryTestCase
+def repr_testcase(dumper, data):
+    return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
+        'methodDoc': data._testMethodDoc,
+        'tool': data.tool,
+        'name': data.name,
+        'methodName': data._testMethodName,
+        'targets': data.targets,
+        })
+
+yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 def upstream_tests(project, build, log):
     import checker.upstream_runner
