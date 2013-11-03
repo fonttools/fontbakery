@@ -80,13 +80,11 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def on_subscribe(self, data):
         logfile = self._signer.unsign(data)
-        print(logfile)
 
         gevent.spawn(self.emit_file, logfile)
 
     def emit_file(self, logfile):
         filename = os.path.join(self._data_root, logfile)
-        print(filename)
         if os.path.exists(filename) and os.path.isfile(filename):
             f = open(filename, 'r')
             # TODO: make this work so that the whole file is sent in one go if the process has ended.
