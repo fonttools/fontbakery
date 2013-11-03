@@ -325,7 +325,7 @@ def history(project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
-    b = ProjectBuild.query.filter_by(project=p).all()
+    b = ProjectBuild.query.filter_by(project=p).order_by("id desc").all()
 
     return render_template('project/history.html', project=p, builds=b)
 
