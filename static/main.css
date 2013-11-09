@@ -257,3 +257,18 @@ ol.linenums li {
 #secondaryNav.affix + #log {
     margin-top:150px
 }
+
+/* table-bordered makes border looks jammed on small screens */
+
+.table-bx {
+    border: 1px solid #ddd;
+    border-left: 0;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.table-bx th, .table-bx td {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd
+}
