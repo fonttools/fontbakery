@@ -15,13 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
 import logging
-from flask import Blueprint, request
+from flask import Blueprint, request, json
 from ..extensions import db
 
 api = Blueprint('api', __name__)

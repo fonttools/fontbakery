@@ -15,13 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
-from flask import (Blueprint, render_template, Response, g, request,
-    current_app, send_from_directory, redirect, redirect, url_for)
+from flask import (Blueprint, render_template, g, request,
+    current_app, send_from_directory)
 
 from ..extensions import pages
 from ..project.models import Project
