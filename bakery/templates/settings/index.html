@@ -20,6 +20,7 @@
   <ul class="nav nav-tabs">
     <li class="active"><a href="#massgithub" data-toggle="tab">{{ _("One Time") }}</a></li>
     <li><a href="#github" data-toggle="tab">{{ _("Subscribe") }}</a></li>
+    <li><a href="#batch" data-toggle="tab">{{ _("Batch add") }}</a></li>
   </ul>
 
   <div class="tab-content">
@@ -52,7 +53,7 @@
         </form>
     </div>
 
-    <div id="github" class="tab-pane ">
+    <div id="github" class="tab-pane">
       {{ getReposList() }}
       {% if cache %}
       <p>To add repositories from GitHub with webhooks to get updates when a repo is updated, click its <i class="icon-star-empty"></i> :</p>
@@ -81,6 +82,23 @@
       </table>
       {% endif %}
     </div>
+
+
+    <div id="batch" class="tab-pane">
+    <form action="{{ url_for('settings.batch') }}" method="POST">
+
+      <p class="help-block">Enter git clone urls, one per line.</p>
+
+      <textarea rows="3" name="urls" class="input-xxlarge"></textarea>
+
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Process</button>
+      </div>          
+    </form>
+
+    </div>
+
 
   </div><!-- /.tab-content -->
 </div><!-- /.tabbable -->

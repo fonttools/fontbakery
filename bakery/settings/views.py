@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import datetime
+from giturlparse import parse
 import logging
 from flask.ext.babel import gettext as _
 
@@ -240,6 +241,10 @@ def addclone():
     if dup:
         flash(_("This repository is a duplicate"))
 
+    if not parse(clone).valid:
+        flash(_("Problem parsing git url"))
+        return redirect(url_for('settings.repos') + "#tab_massgithub")
+
     project = Project(
         login=g.user.login,
         clone=clone,
@@ -304,3 +309,39 @@ def massgit():
 
     db.session.commit()
     return redirect(url_for('settings.repos') + "#tab_massgithub")
+
+
+@settings.route('/batch', methods=['POST'])
+@login_required
+def batch():
+    # pylint:disable-msg=E1101
+    urls = request.form.get('urls', '')+"\n" # this makes m
+    n = 0
+    for l in urls.split("\n"):
+        l = l.strip()
+        if not l:
+            continue
+        if not parse(l).valid:
+            flash(_("Url %(url)s isn't accepted, parse error", url = l))
+        else:
+            dup = Project.query.filter_by(login=g.user.login,
+                is_github=False, clone=l).first()
+
+            if dup:
+                flash(_("Url %(url)s is duplicate", url = l))
+            else:
+                project = Project(login = g.user.login, clone = l, is_github = False)
+
+                if project:
+                    db.session.add(project)
+                    db.session.commit()
+                    db.session.refresh(project)
+
+                project.sync()
+
+                n = n + 1
+
+    flash(_("%(num)s repositories successfuly added", num = n))
+
+    return redirect(url_for('settings.repos'))
+

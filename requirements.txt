@@ -13,6 +13,8 @@ alembic
 requests
 pytz==2013b
 beautifulsoup4
+markupsafe
+giturlparse.py 
 # setuptools
 
 # builder and checker
@@ -44,3 +46,4 @@ redis
 
 # file browser
 python-magic
+
