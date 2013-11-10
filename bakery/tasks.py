@@ -189,9 +189,9 @@ def copy_and_rename_ufos_process(project, build, log):
             _out_ufoFontInfo['familyName'] = familyName
             # Set PS Name
             # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
-            _out_ufoFontInfo['postscriptFontName'] = familyNameNoWhitespace + '-' + styleNameNoWhitespace
+            _out_ufoFontInfo['postscriptFontName'] = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
             # Set Full Name
-            _out_ufoFontInfo['postscriptFullName'] = familyName + ' ' + styleName
+            _out_ufoFontInfo['postscriptFullName'] = "%s %s" % (familyName, styleName)
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
@@ -461,6 +461,7 @@ def repr_testcase(dumper, data):
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
+
 def upstream_tests(project, build, log):
     import checker.upstream_runner
 
@@ -478,6 +479,7 @@ def upstream_tests(project, build, log):
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
+
 
 def result_tests(project, build, log):
     import checker.result_runner
@@ -536,7 +538,6 @@ def process_project(project, build, revision):
         result_tests(project, build, log)
         log.write('Bake Succeeded!\n', prefix = '### ')
         set_done(build)
-
 
     log.close()
 
