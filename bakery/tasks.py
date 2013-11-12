@@ -450,7 +450,7 @@ def fontaine_process(project, build, log):
     #   project.save_state()
 
 
-# register yaml serializer
+# register yaml serializer for tests result objects.
 from checker.base import BakeryTestCase
 def repr_testcase(dumper, data):
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
