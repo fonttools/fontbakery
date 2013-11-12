@@ -14,18 +14,17 @@ requests
 pytz==2013b
 beautifulsoup4
 markupsafe
-giturlparse.py 
+giturlparse.py
 # setuptools
 
 # builder and checker
 TTFQuery
-# fonttools2 
+# fonttools2
 # This is the unofficial package on pypi,
 # but @behdad has forked it to speed up development
 # and @davelab6 has forked it to add a silent feature
 -e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
-# fontaine
--e git+http://github.com/davelab6/pyfontaine.git#egg=fontaine
+fontaine
 freetype-py
 robofab
 
@@ -38,10 +37,10 @@ greenlet==0.4.1
 # tasks processings
 #
 # flask-rq
-# This is the official pypi package, 
+# This is the official pypi package,
 # but we are waiting for @xen's pull request to be merged
 # https://github.com/mattupstate/flask-rq/pull/3
--e git+http://github.com/xen/flask-rq.git#egg=Flask_RQ 
+-e git+http://github.com/xen/flask-rq.git#egg=Flask_RQ
 redis
 
 # file browser
