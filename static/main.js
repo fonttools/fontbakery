@@ -31,7 +31,9 @@ $('.toggle').children().addClass("icon-collapse");
 $('.toggleCollapseFirst').next().hide();
 $('.toggleCollapseFirst').children().addClass("icon-expand").removeClass("icon-collapse");;
 
-$(".tablesorter").tablesorter(); 
+$(".tablesorter").tablesorter();
+
+$("[rel='tooltip']").tooltip();
 
 var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>'
 
@@ -40,7 +42,7 @@ $('a[data-confirm]').click(function(ev) {
     var href = $(this).attr('href');
     if (!$('#dataConfirmModal').length) {
         $('body').append(dataConfirmModalHtml);
-    } 
+    }
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
     $('#dataConfirmYes').attr('href', href);
     $('#dataConfirmModal').modal({show:true});
@@ -51,14 +53,14 @@ $('button[data-confirm]').click(function(ev) {
   var form = $(this).closest('form');
   if (!$('#dataConfirmModal').length) {
         $('body').append(dataConfirmModalHtml);
-  } 
+  }
   $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
   $('#dataConfirmYes').click(function(ev){form.submit();});
   $('#dataConfirmModal').modal({show:true});
   return false;
 });
 
-// #notify is in navbar, showing worker state 
+// #notify is in navbar, showing worker state
 $("#notify").popover({
 	title: "Worker is not running!",
 	content: "Run 'make worker' to start it",
@@ -116,3 +118,4 @@ $('.mother_of_glyphs').click(function(){
 });
 
 });
+
