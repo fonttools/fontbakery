@@ -1,10 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Edit METADATA.json") %}
 
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
 {{ nav('metadatajson') }}
+{% endblock %}
+
+{% block pbody %}
 
 <form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 

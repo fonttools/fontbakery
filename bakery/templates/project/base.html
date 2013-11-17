@@ -1,1 +1,18 @@
 {% extends "base.html" %}
+{% block body %}
+<div id="secondaryNav">
+  <h3>
+    <a href="{{ url_for('project.ufiles', project_id = project.id) }}">{{ project.title }}</a> / {{ page_title }}
+  </h3>
+</div>
+
+<div class="row-fluid">
+    <div class="span9">
+        {% block pbody %}{% endblock %}
+    </div>
+    <div class="span3">
+        {%  block pnav %}{% endblock %}
+    </div>
+</div>
+
+{% endblock %}

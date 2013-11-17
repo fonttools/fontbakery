@@ -4,9 +4,9 @@
 {% set stateDict = {
     'copyright_license': {
         'ofl': 'Open Font License v1.1',
-        'apache': 'Apache v2.0', 
+        'apache': 'Apache v2.0',
         'ufl': 'Ubuntu Font License v1.0',
-        }, 
+        },
     'copyright_notice': {
         'yes': 'Y',
         'no': 'N',
@@ -32,65 +32,65 @@
         'no': 'N',
         },
     'source_drawing_filetype': {
-        'None': 'No source file possible', 
+        'None': 'No source file possible',
         'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)', 
-        'VFB': 'VFB (FontLab)', 
+        'SFD': 'SFD (FontForge)',
+        'VFB': 'VFB (FontLab)',
         'glyphs': 'Glyphs',
         },
     'source_cff_filetype': {
-        'None': 'No source file possible', 
-        'OTF': 'OTF', 
+        'None': 'No source file possible',
+        'OTF': 'OTF',
         'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)', 
-        'VFB': 'VFB (FontLab)', 
+        'SFD': 'SFD (FontForge)',
+        'VFB': 'VFB (FontLab)',
         'glyphs': 'Glyphs',
         },
     'source_ttf_filetype': {
-        'None': 'No source file possible', 
-        'OTF': 'OTF', 
+        'None': 'No source file possible',
+        'OTF': 'OTF',
         'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)', 
-        'VFB': 'VFB (FontLab)', 
+        'SFD': 'SFD (FontForge)',
+        'VFB': 'VFB (FontLab)',
         'glyphs': 'Glyphs',
     },
     'price_design_usd': {
         'text': 'free',
-        }, 
+        },
     'price_total_usd': {
         'text': 'free',
-        }, 
+        },
     'vendor_category': {
-        '1': '1', 
-        '2': '2', 
+        '1': '1',
+        '2': '2',
         '3': '3',
         },
     'hinting_level': {
-        '1': '1', 
-        '2': '2', 
-        '3': '3', 
-        '4': '4', 
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
         '5': '5',
-        }, 
+        },
     'vendor_quality': {
-        '1': '1', 
-        '2': '2', 
-        '3': '3', 
-        '4': '4', 
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
         '5': '5',
         },
     'design_quality': {
-        '1': '1', 
-        '2': '2', 
-        '3': '3', 
-        '4': '4', 
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
         '5': '5',
         },
     'hinting_quality': {
-        '1': '1', 
-        '2': '2', 
-        '3': '3', 
-        '4': '4', 
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
         '5': '5',
         },
     'stats_family_name': {
@@ -104,11 +104,12 @@
         },
     } %}
 
-
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
 {{ nav('setup') }}
+{% endblock %}
+
+{% block pbody %}
 
 <h3>Bake Process Options</h3>
 
@@ -139,7 +140,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="ufo_folders"><strong>UFOs:</strong></label>
     <div class="controls">
-    <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge" 
+    <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge"
         size="{{ config['local']['ufo_dirs']|length }}" required>
       {% for i in config['local']['ufo_dirs'] %}
       <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
@@ -151,7 +152,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="subset"><strong>Subsets:</strong></label>
     <div class="controls">
-    <select for="subset" multiple="multiple" name="subset" class="input-xxlarge" 
+    <select for="subset" multiple="multiple" name="subset" class="input-xxlarge"
       size="{{ subsetvals|length }}" required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
@@ -163,7 +164,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="txt_files">Text Files:</label>
     <div class="controls">
-    <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge" 
+    <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge"
         size="{{ config['local']['txt_files']|length }}">
       {% for i in config['local']['txt_files'] %}
       <option {% if i in config['state']['txt_files_copied'] %}selected="selected"{% endif %} >{{ i }}</option>
@@ -175,8 +176,8 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div id="familyname" class="control-group row-fluid">
     <label class="control-label" for="familyname">New font family name?</label>
     <div class="controls">
-    <input type="text" placeholder="" name="familyname" 
-      value="{{ config['state'].get('familyname', '') }}" 
+    <input type="text" placeholder="" name="familyname"
+      value="{{ config['state'].get('familyname', '') }}"
       class="input-xxlarge" >
     <p class="muted">If you want to rename the family, type the new family name here.<br/>Else, leave it blank</p>
     </div>
@@ -185,8 +186,8 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   <div class="control-group row-fluid anchorUnderNavbar">
     <label class="control-label" for="ttfautohint"><code>ttfautohint</code> options?</label>
     <div class="controls">
-    <input type="text" placeholder="" name="ttfautohint" 
-      value="{{ config['state'].get('ttfautohint', '') }}" 
+    <input type="text" placeholder="" name="ttfautohint"
+      value="{{ config['state'].get('ttfautohint', '') }}"
       class="input-xxlarge" >
     <p class="muted">If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank</p>
     </div>
@@ -224,8 +225,8 @@ Setup the project's bake process. Options can be pre-selected by storing them in
             </select>
             <p class="muted">Do you have permission to use the trademark?</p>
           {% elif value['text'] == "free" %}
-            <input type="text" placeholder="" name="{{ item }}" 
-                value="{{ config['state'][item] }}" 
+            <input type="text" placeholder="" name="{{ item }}"
+                value="{{ config['state'][item] }}"
                 class="input-xxlarge" >
             <p class="muted">Set string value here, or leave it blank to unset it</p>
           {% else %}
@@ -257,7 +258,7 @@ $(document).ready(function() {
 
     if (!$('#dataConfirmModal').length) {
         $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">RFN Permission</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" id="dataConfirmNo">No</a></div></div>');
-    } 
+    }
 
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
     $('#dataConfirmModal').modal({show:true});

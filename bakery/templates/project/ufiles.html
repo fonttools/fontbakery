@@ -1,10 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Incoming Repository Files") %}
 
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('ufiles') }}
+{{ nav('ufiles', full=1) }}
+{% endblock %}
+
+{% block pbody %}
 
 <h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import revision_head with context %}

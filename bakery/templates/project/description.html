@@ -1,10 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Edit DESCRIPTION.en_us.html") %}
 
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
 {{ nav('description') }}
+{% endblock %}
+
+{% block pbody %}
 
 <form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
     <div class="span6">
@@ -13,7 +15,7 @@
         <p style="padding-top:1em"><button type="submit" class="btn btn-primary">Save</button></p>
     </div>
     <div class="span6" id="preview">
-        
+
     </div>
 </form>
 
@@ -24,7 +26,7 @@
 
 <script>
 $(document).ready(function () {
-    
+
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/solarized_light");
 editor.getSession().setMode("ace/mode/html");
@@ -64,7 +66,7 @@ heightUpdateFunction();
 // Whenever a change happens inside the ACE editor, update the size and preview again
 editor.getSession().on('change', heightUpdateFunction);
 editor.getSession().on('change', updatePreview);
-// End 
+// End
 
 
 });

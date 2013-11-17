@@ -1,10 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Diff") %}
 
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('diff') }}
+{{ nav('diff', full=1) }}
+{% endblock %}
+
+{% block pbody %}
 
 <h3>Changes between <a href="{{ url_for('project.ufiles', project_id = project.id, revision=left) }}">{{left}}</a> and <a href="{{ url_for('project.ufiles', project_id = project.id, revision=right) }}">{{right}}</a></h3>
 <p><strong>Files</strong></p>

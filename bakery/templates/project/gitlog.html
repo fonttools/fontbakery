@@ -1,10 +1,13 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Build specific git revision") %}
 
-{% block body %}
-
+{% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('gitlog') }}
+{{ nav('gitlog', full=1) }}
+{% endblock %}
+
+
+{% block pbody %}
 
 <p>Select revision and press its hashtag to build. Only latest 200 revisions</p>
 

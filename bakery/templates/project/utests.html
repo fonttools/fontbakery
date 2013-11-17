@@ -1,11 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Tests for upstream files") %}
 
-{% block body %}
-
-{% from 'project/macros.html' import nav with context %}
+{% block pnav %}
+{% from 'project/macros.html' import nav with context%}
 {{ nav('utests') }}
+{% endblock %}
 
+{% block pbody %}
 {% from 'project/macros.html' import showTests with context %}
 
 {{ showTests() }}

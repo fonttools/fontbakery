@@ -1,10 +1,12 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Tests for result files") %}
 
-{% block body %}
-
-{% from 'project/macros.html' import nav with context %}
+{% block pnav %}
+{% from 'project/macros.html' import nav with context%}
 {{ nav('rtests') }}
+{% endblock %}
+
+{% block body %}
 
 {% from 'project/macros.html' import showTests with context %}
 
