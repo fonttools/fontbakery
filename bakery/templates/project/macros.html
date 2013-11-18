@@ -1,22 +1,26 @@
-{%  macro link(url, icon, title, full=1) -%}
-<a href="{{ url }}" {% if not full %} data-toggle="tooltip" rel="tooltip" data-placement="left" data-original-title="{{ title }}"{% endif %} ><i class="{{ icon }}"></i> {% if full %}{{ title }}{% endif %} </a>
+{%  macro link(url, icon, title, full=1, badge='') -%}
+<a href="{{ url }}" {% if not full %} data-toggle="tooltip" rel="tooltip" data-placement="left" data-original-title="{{ title }}"{% endif %} ><i class="{{ icon }}"></i> {% if full %}{{ title }} <span class="badge badge-important">{{ badge }}</span>{% endif %} </a>
 {% endmacro -%}
+
 {% macro nav(active, full=0) -%}
 <div class="tabs-right pull-left">
   <ul class="nav nav-tabs">
     <li {% if active == 'upstream' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "icon-road", "Repository", full) }}</li>
     <li {% if active == 'history' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "icon-building", "Build History", full) }}</li>
-    <li class="dropdown {% if active == 'setup' %}active{% endif %} ">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog"></i> {% if full %}Settings{% endif %} <i class="caret"></i></a>
-      <ul class="dropdown-menu">
+    {% set badge = "" if project.config['local'].get('setup') else "!" %}
+    <li {% if active == 'setup' %}class="active" {% endif %}>{{ link(url_for('project.setup', project_id=project.id), "icon-cog", "Setup", full, badge=badge) }}</li>
+
+{#    <li class="dropdown {% if active == 'setup' %}active{% endif %} ">#}
+{#      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog"></i> {% if full %}Settings{% endif %} <i class="caret"></i></a>#}
+{#      <ul class="dropdown-menu">#}
         {# <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li> #}
-        <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
-        {% if project.config['local'].get('setup') %}
-        <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
-        <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
-        {% endif %}
-      </ul>
-    </li>
+{#        <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>#}
+{#        {% if project.config['local'].get('setup') %}#}
+{#        <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>#}
+{#        <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>#}
+{#        {% endif %}#}
+{#      </ul>#}
+{#    </li>#}
     {% if full %}
     <li class="form-actions">
       <p>
