@@ -2,7 +2,7 @@
 <a href="{{ url }}" {% if not full %} data-toggle="tooltip" rel="tooltip" data-placement="left" data-original-title="{{ title }}"{% endif %} ><i class="{{ icon }}"></i> {% if full %}{{ title }} <span class="badge badge-important">{{ badge }}</span>{% endif %} </a>
 {% endmacro -%}
 
-{% macro nav(active, full=0) -%}
+{% macro nav(active, full=1) -%}
 <div class="tabs-right pull-left">
   <ul class="nav nav-tabs">
     <li {% if active == 'upstream' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "icon-road", "Repository", full) }}</li>
