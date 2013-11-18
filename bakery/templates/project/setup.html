@@ -110,6 +110,8 @@
 {% endblock %}
 
 {% block pbody %}
+{% from 'project/macros.html' import subnav_setup with context%}
+{{ subnav_setup('setup') }}
 
 <h3>Bake Process Options</h3>
 

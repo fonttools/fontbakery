@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block pbody %}
+{% from 'project/macros.html' import subnav_setup with context%}
+{{ subnav_setup('metadatajson') }}
 
 <form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 

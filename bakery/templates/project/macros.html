@@ -50,6 +50,12 @@
   <li {% if active == 'gitlog' %}class="active" {% endif %}>{{ link(url_for('project.git', project_id=project.id), "", "Git History", true) }}</li>
   {% if revision and revision != 'HEAD' %}
   <li class="active">{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", revision, true) }}</li>
+{% macro subnav_setup(active) %}
+<ul class="nav nav-tabs">
+  <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
+  {% if project.config['local'].get('setup') %}
+  <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
+  <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
   {% endif %}
 </ul>
 {% endmacro %}
