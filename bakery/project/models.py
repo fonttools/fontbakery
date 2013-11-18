@@ -260,6 +260,12 @@ class ProjectBuild(db.Model):
 
     @staticmethod
     def make_build(project, revision):
+        """ Initiate project build process
+
+        :param project: `Project` instance
+        :param revision: git revision id
+        :return: `ProjectBuild` instance
+        """
         if revision == 'HEAD':
             revision = project.current_revision()
         build = ProjectBuild(project = project, revision=revision)
@@ -269,4 +275,32 @@ class ProjectBuild(db.Model):
         db.session.refresh(build)
         process_project.delay(project, build, revision)
         return build
+
+    def utests(self):
+        """ Return saved upstream test data """
+        if not self.is_done:
+            return {}
+
+        param = { 'login': self.project.login, 'id': self.project.id,
+            'revision': self.revision, 'build': self.id }
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.utests.yaml' % param)
+        if os.path.exists(_out_yaml):
+            return yaml.load(open(_out_yaml).read())
+        else:
+            return {}
+
+    def rtests(self):
+        """ Return saved result test data """
+        if not self.is_done:
+            return {}
+
+        param = { 'login': self.project.login, 'id': self.project.id,
+            'revision': self.revision, 'build': self.id }
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.rtests.yaml' % param)
+        if os.path.exists(_out_yaml):
+            return yaml.load(open(_out_yaml).read())
+        else:
+            return {}
 
