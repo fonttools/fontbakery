@@ -3,10 +3,12 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('diff', full=1) }}
+{{ nav('upstream', full=1) }}
 {% endblock %}
 
 {% block pbody %}
+{% from 'project/macros.html' import subnav_git with context%}
+{{ subnav_git('diff') }}
 
 <h3>Changes between <a href="{{ url_for('project.ufiles', project_id = project.id, revision=left) }}">{{left}}</a> and <a href="{{ url_for('project.ufiles', project_id = project.id, revision=right) }}">{{right}}</a></h3>
 <p><strong>Files</strong></p>

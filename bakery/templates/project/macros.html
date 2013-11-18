@@ -41,6 +41,9 @@
   {% if revision and revision != 'HEAD' %}
   <li class="active">{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", revision, true) }}</li>
   {% endif %}
+ {% if active == 'diff' %}
+  <li class="active"><a href="">Diff</a></li>
+ {%  endif %}
 </ul>
 {% endmacro %}
 
