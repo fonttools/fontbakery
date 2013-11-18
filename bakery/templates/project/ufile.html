@@ -3,11 +3,14 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('ufiles') }}
+{{ nav('upstream') }}
 {% endblock %}
 
 {% block pbody %}
-<h4>{{ _("Repository Files") }} </h4>
+{% from 'project/macros.html' import subnav_git with context%}
+{{ subnav_git('ufiles') }}
+
+  <h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import revision_head with context %}
 {{ revision_head(revision) }}
 {% if mime.startswith('text') %}

@@ -3,10 +3,13 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('ufiles', full=1) }}
+{{ nav('upstream', full=1) }}
 {% endblock %}
 
 {% block pbody %}
+
+{% from 'project/macros.html' import subnav_git with context%}
+{{ subnav_git('ufiles', revision=revision) }}
 
 <h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import revision_head with context %}

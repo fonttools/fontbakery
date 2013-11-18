@@ -3,10 +3,13 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('utests') }}
+{{ nav('upstream') }}
 {% endblock %}
 
 {% block pbody %}
+{% from 'project/macros.html' import subnav_git with context%}
+{{ subnav_git('utests', revision=revision) }}
+
 {% from 'project/macros.html' import showTests with context %}
 
 {{ showTests() }}
