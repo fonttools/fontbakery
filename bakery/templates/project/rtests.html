@@ -3,10 +3,16 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('rtests') }}
+{{ nav('history') }}
 {% endblock %}
 
 {% block body %}
+
+{% from 'project/macros.html' import subnav_build with context%}
+{{ subnav_build('rtests') }}
+
+
+
 
 {% from 'project/macros.html' import showTests with context %}
 

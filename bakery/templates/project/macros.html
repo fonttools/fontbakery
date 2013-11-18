@@ -2,11 +2,11 @@
 <a href="{{ url }}" {% if not full %} data-toggle="tooltip" rel="tooltip" data-placement="left" data-original-title="{{ title }}"{% endif %} ><i class="{{ icon }}"></i> {% if full %}{{ title }}{% endif %} </a>
 {% endmacro -%}
 {% macro nav(active, full=0) -%}
-<div class="tabs-right">
+<div class="tabs-right pull-left">
   <ul class="nav nav-tabs">
     <li {% if active == 'upstream' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "icon-road", "Repository", full) }}</li>
     <li {% if active == 'history' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "icon-building", "Build History", full) }}</li>
-    <li class="dropdown {% if active in ['setup', 'utests', 'metadatajson', 'description'] %}active{% endif %} ">
+    <li class="dropdown {% if active == 'setup' %}active{% endif %} ">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog"></i> {% if full %}Settings{% endif %} <i class="caret"></i></a>
       <ul class="dropdown-menu">
         {# <li {% if active == 'utests' %}class="active" {% endif %}><a href="{{ url_for('project.utests', project_id=project.id) }}">Upstream Tests</a></li> #}
@@ -46,10 +46,14 @@
 
 {% macro subnav_build(active, revision) %}
  <ul class="nav nav-tabs">
-  <li {% if active == 'ufiles' and revision == 'HEAD' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "", "Upstream Files", true) }}</li>
-  <li {% if active == 'gitlog' %}class="active" {% endif %}>{{ link(url_for('project.git', project_id=project.id), "", "Git History", true) }}</li>
-  {% if revision and revision != 'HEAD' %}
-  <li class="active">{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", revision, true) }}</li>
+  <li {% if active == 'history' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "", "Build History", true) }}</li>
+  <li {% if active == 'rfiles' %}class="active" {% endif %}>{{ link(url_for('project.rfiles', project_id=project.id, build_id=build.id), "", "Results Files", true) }}</li>
+  <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', project_id=project.id, build_id=build.id), "", "Results Tests", true) }}</li>
+  {#  <li {% if active == 'utests' %}class="active" {% endif %}>{{ link(url_for('project.utests', project_id=project.id, build_id=build.id), "", "Upstream Tests (rev %s)" % build.revision, true) }}</li> #}
+  <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', project_id=project.id, build_id=build.id), "", "Build Log", true) }}</li>
+ </ul>
+{% endmacro %}
+
 {% macro subnav_setup(active) %}
 <ul class="nav nav-tabs">
   <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
@@ -59,7 +63,6 @@
   {% endif %}
 </ul>
 {% endmacro %}
-
 
 {%- macro highlight(name) -%}
 {% set highlight_files = ['license.txt', 'ofl.txt', 'fontlog.txt', 'readme.txt', 'readme.md' ] %}

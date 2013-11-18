@@ -7,6 +7,10 @@
 {% endblock %}
 
 {% block pbody %}
+
+{% from 'project/macros.html' import subnav_build with context%}
+{{ subnav_build('rfiles') }}
+
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="icon"></i> {{ fontaine._full_name }}</h4>
     <div>
