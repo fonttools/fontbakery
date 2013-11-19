@@ -192,7 +192,7 @@
 #}
       <th class="stats-fvpd" style="text-align: right"></th>
       <th style="text-align: center">{{ _("Next Step") }}</th>
-      <th style="text-align: center"><i class="icon-trash"></i></th>
+      <th style="text-align: center">Actions</th>
     </tr>
   </thead>
 
@@ -279,10 +279,9 @@
             {% endif %}
         {% endif %} {# is_ready #}
         </td>
-        <td>
-          <form class="form-inline" action="{{ url_for('settings.delclone', project_id = repo.id )}}" method="GET">
-            <button type="submit" class="btn btn-mini btn-block" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-remove"></i> </button>
-          </form>
+        <td nowrap>
+          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}"><i class="icon-refresh"></i></a>
+          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-trash"></i></a>
         </td>
       </tr>
     {%- endfor %}
