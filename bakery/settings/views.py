@@ -254,10 +254,9 @@ def addclone():
         db.session.add(project)
         db.session.commit()
 
-    flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
-          (project.clone, url_for('project.setup', project_id=project.id)))))
+    flash(_("Repository successfully added. Wait for its download and complete setup"))
     project.sync()
-    return redirect(url_for('project.setup', project_id=project.id))
+    return redirect(url_for('frontend.splash'))
 
 
 @settings.route('/delclone/<int:project_id>', methods=['GET'])
@@ -303,9 +302,8 @@ def massgit():
             )
             db.session.add(project)
             db.session.commit()
-            flash(Markup(_("Repository %s successfully added. Next step: <a href='%s'>set it up</a>" %
-                  (project.full_name, url_for('project.setup', project_id=project.id)))))
-            project.build()
+            flash(_("Repository successfully added. Wait for its download and complete setup"))
+            project.sync()
 
     db.session.commit()
     return redirect(url_for('settings.repos') + "#tab_massgithub")
