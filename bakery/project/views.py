@@ -23,6 +23,7 @@ from flask.ext.babel import gettext as _
 from ..decorators import login_required
 from ..utils import project_fontaine
 from .models import Project, ProjectBuild
+from functools import wraps
 
 import itsdangerous
 
@@ -46,19 +47,54 @@ def before_request():
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
 
+# project resolve decorator
+
+def project_required(f):
+    """ Decorator reads project_id from arguments list and resolve it into project object.
+        In parallel it check if project object is ready Usage:
+
+        @project.route('/test', methods=['GET'])
+        @project_required
+        def test(p):
+            # p is Project model instance
+            return "Project is available"
+
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if kwargs.has_key('project_id'):
+            project_id = kwargs.pop('project_id')
+        else:
+            project_id = args.pop(0)
+
+        p = Project.query.filter_by(
+            login=g.user.login, id=project_id).first_or_404()
+
+        # Here can be located ownership access checks in the future.
+
+        if p.is_ready:
+            args.insert(0, p)
+            return f(*args, **kwargs)
+        else:
+            flash(_('Project is being syncronized, wait until it is done'))
+            return redirect(url_for('frontend.splash'))
+
+    return decorated_function
+
+
 # API methods
 
 @project.route('/api/<int:project_id>/build', methods=['GET'])
 @login_required
-def bump(project_id):
+@project_required
+def bump(p):
     """ Revision id is dangerous parameter, because it added to command line to
     git call. That is why it always should be signed with hash.
     """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
+    if not p.config['local'].get('setup'):
+        flash(_("Complete setup first"))
+        return redirect(url_for('project.setup', project_id=p.id))
 
-    # if not p.is_ready:
-    #     return redirect(url_for('project.log', project_id=p.id))
 
     if request.args.get('revision'):
         signer = itsdangerous.Signer(current_app.secret_key)
@@ -74,10 +110,8 @@ def bump(project_id):
 
 @project.route('/api/<int:project_id>/pull', methods=['GET'])
 @login_required
-def pull(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def pull(p):
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
@@ -88,10 +122,8 @@ def pull(project_id):
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
-def setup(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def setup(p):
     config = p.config
     originalConfig = p.config
     error = False
@@ -163,10 +195,8 @@ def setup(project_id):
 
 @project.route('/<int:project_id>/setup/metadatajson', methods=['GET'])
 @login_required
-def metadatajson(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def metadatajson(p):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
@@ -178,10 +208,8 @@ def metadatajson(project_id):
 
 @project.route('/<int:project_id>/setup/metadatajson', methods=['POST'])
 @login_required
-def metadatajson_save(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def metadatajson_save(p):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
@@ -201,26 +229,16 @@ def metadatajson_save(project_id):
 
 @project.route('/<int:project_id>/setup/description', methods=['GET'])
 @login_required
-def description(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
+@project_required
+def description(p):
     data = p.read_asset('description')
     return render_template('project/description.html', project = p, description = data)
 
 
 @project.route('/<int:project_id>/setup/description', methods=['POST'])
 @login_required
-def description_save(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
+@project_required
+def description_save(p):
     p.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
     return redirect(url_for('project.description', project_id=p.id))
@@ -228,10 +246,8 @@ def description_save(project_id):
 
 @project.route('/<int:project_id>/setup/dashboard_save', methods=['POST'])
 @login_required
-def dashboard_save(project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def dashboard_save(p):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
@@ -254,16 +270,14 @@ def dashboard_save(project_id):
 @project.route('/<int:project_id>/files/', methods=['GET'])
 @project.route('/<int:project_id>/files/<revision>/', methods=['GET'])
 @login_required
-def ufiles(project_id, revision=None, name=None):
+@project_required
+def ufiles(p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     if revision and revision!='HEAD':
         chkhash(revision)
     else:
         revision = 'HEAD'
-
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
 
     return render_template('project/ufiles.html', project=p,
         revision=revision)
@@ -271,16 +285,14 @@ def ufiles(project_id, revision=None, name=None):
 
 @project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
 @login_required
-def ufile(project_id, revision=None, name=None):
+@project_required
+def ufile(p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     if revision and revision!='HEAD':
         chkhash(revision)
     else:
         revision = 'HEAD'
-
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
 
     mime, data = p.revision_file(revision, name)
 
@@ -289,7 +301,8 @@ def ufile(project_id, revision=None, name=None):
 
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
 @login_required
-def ufileblob(project_id, revision=None):
+@project_required
+def ufileblob(p, revision=None):
     """ Mandatory parameter is `name` signed by cypher hash on server side.
     This view is pretty much "heavy", each request spawn additional process and
     read its output.
@@ -298,9 +311,6 @@ def ufileblob(project_id, revision=None):
         chkhash(revision)
     else:
         revision = 'HEAD'
-
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
 
     signer = itsdangerous.Signer(current_app.secret_key)
     name = signer.unsign(request.args.get('name'))
@@ -320,11 +330,9 @@ def ufileblob(project_id, revision=None):
 
 @project.route('/<int:project_id>/build', methods=['GET'])
 @login_required
-def history(project_id):
+@project_required
+def history(p):
     """ Results of processing tests, for ttf files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
     b = ProjectBuild.query.filter_by(project=p).order_by("id desc").all()
 
     return render_template('project/history.html', project=p, builds=b)
@@ -332,10 +340,8 @@ def history(project_id):
 
 @project.route('/<int:project_id>/build/<int:build_id>/log', methods=['GET'])
 @login_required
-def log(project_id, build_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def log(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
     log_file="%s/%s.out/process.%s.%s.log" % (p.login, p.id, b.revision, b.id)
 
@@ -344,10 +350,8 @@ def log(project_id, build_id):
 
 @project.route('/<int:project_id>/build/<int:build_id>/rfiles', methods=['GET'])
 @login_required
-def rfiles(project_id, build_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def rfiles(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not b.is_done:
@@ -361,11 +365,9 @@ def rfiles(project_id, build_id):
 
 @project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])
 @login_required
-def rtests(project_id, build_id):
+@project_required
+def rtests(p, build_id):
     """ Results of processing tests, for ttf files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not p.is_ready:
@@ -380,11 +382,9 @@ def rtests(project_id, build_id):
 
 @project.route('/<int:project_id>/tests', methods=['GET'])
 @login_required
-def utests(project_id):
+@project_required
+def utests(p):
     """ Results of processing tests, for ufo files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
@@ -395,11 +395,9 @@ def utests(project_id):
 
 @project.route('/<int:project_id>/git', methods=['GET'])
 @login_required
-def git(project_id):
+@project_required
+def git(p):
     """ Results of processing tests, for ttf files """
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
     gitlog = p.gitlog()
 
     return render_template('project/gitlog.html', project=p, log=gitlog)
@@ -407,13 +405,12 @@ def git(project_id):
 
 @project.route('/<int:project_id>/diff', methods=['GET'])
 @login_required
-def diff(project_id):
+@project_required
+def diff(p):
     """ Show diff between different revisions, since we want to make this view
     more user friendly we can't signify left and right revision. And this mean
     that we should check input data"""
 
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
     if not all([request.args.get('left'), request.args.get('right')]):
         flash(_("Left and right hash for comparsion should be provided"))
 
