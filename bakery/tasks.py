@@ -93,6 +93,16 @@ def project_git_sync(project):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    # set project state as unavailable during sync process
+    db.init_app(current_app)
+    project.is_ready = False
+    db.session.add(project)
+    db.session.commit()
+    db.session.refresh(project)
+
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
@@ -128,6 +138,12 @@ def project_git_sync(project):
         # Now we have it, create an initial project state
         finally:
             config = project.config
+
+    # set project state as ready after sync is done
+    project.is_ready = True
+    db.session.add(project)
+    db.session.commit()
+
 
 def copy_and_rename_ufos_process(project, build, log):
     """
@@ -539,7 +555,15 @@ def process_project(project, build, revision):
         upstream_tests(project, build, log)
         result_tests(project, build, log)
         log.write('Bake Succeeded!\n', prefix = '### ')
-        set_done(build)
+
+        # save that project is done
+        from flask import current_app
+        assert current_app
+        from .extensions import db
+        db.init_app(current_app)
+        build.is_done = True
+        db.session.add(build)
+        db.session.commit()
 
     log.close()
 
