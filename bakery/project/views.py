@@ -67,6 +67,8 @@ def project_required(f):
         else:
             project_id = args.pop(0)
 
+        args = list(args)
+
         p = Project.query.filter_by(
             login=g.user.login, id=project_id).first_or_404()
 
@@ -110,8 +112,11 @@ def bump(p):
 
 @project.route('/api/<int:project_id>/pull', methods=['GET'])
 @login_required
-@project_required
-def pull(p):
+# this is only exception where decorator @project_required is not needed
+def pull(project_id):
+    p = Project.query.filter_by(
+        login=g.user.login, id=project_id).first_or_404()
+
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
