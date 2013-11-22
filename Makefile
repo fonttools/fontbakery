@@ -82,6 +82,7 @@ mail:
 # target: init — initial data setup
 init: venv/bin/activate requirements.txt
 	. venv/bin/activate; python init.py
+	make stats
 
 # target: offline — add offline user
 offline: venv/bin/activate
