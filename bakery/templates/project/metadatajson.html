@@ -3,12 +3,12 @@
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
-{{ nav('setup') }}
+{{ nav('history') }}
 {% endblock %}
 
 {% block pbody %}
-{% from 'project/macros.html' import subnav_setup with context%}
-{{ subnav_setup('metadatajson') }}
+{% from 'project/macros.html' import subnav_build with context%}
+{{ subnav_build('metadatajson') }}
 
 <form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
 
