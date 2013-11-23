@@ -10,7 +10,7 @@
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('metadatajson') }}
 
-<form class="form-horizontal" action="{{ url_for('project.metadatajson_save', project_id = project.id)}}" method="POST">
+<form class="form-horizontal" action="{{ url_for('project.metadatajson', project_id = project.id, build_id = build.id)}}" method="POST">
 
 {% if metadata_new %}
 <div class="span6">

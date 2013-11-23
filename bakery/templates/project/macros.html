@@ -58,6 +58,10 @@
   <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', project_id=project.id, build_id=build.id), "", "Results Tests", true) }}</li>
   {#  <li {% if active == 'utests' %}class="active" {% endif %}>{{ link(url_for('project.utests', project_id=project.id, build_id=build.id), "", "Upstream Tests (rev %s)" % build.revision, true) }}</li> #}
   <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', project_id=project.id, build_id=build.id), "", "Build Log", true) }}</li>
+  {% set badge = "!" if build.modified else "" %}
+  <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id) }}" >METADATA.json</a></li>
+  <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id, build_id=build.id) }}" >DESCRIPTION.en_us.html</a></li>
+
  </ul>
 {% endmacro %}
 
@@ -65,8 +69,7 @@
 <ul class="nav nav-tabs">
   <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">Setup</a></li>
   {% if project.config['local'].get('setup') %}
-  <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id) }}" >METADATA.json</a></li>
-  <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id) }}" >DESCRIPTION.en_us.html</a></li>
+    {# Additional setup views here, only will be awailable if primary setup is done #}
   {% endif %}
 </ul>
 {% endmacro %}

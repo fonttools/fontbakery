@@ -10,7 +10,7 @@
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('description') }}
 
-<form class="form-horizontal" action="{{ url_for('project.description_save', project_id = project.id)}}" method="POST">
+<form class="form-horizontal" action="{{ url_for('project.description', project_id = project.id, build_id = build.id)}}" method="POST">
     <div class="span6">
         <div id="editor"></div>
         <textarea name="description" id="descriptionta">{{ description }}</textarea>

@@ -198,57 +198,6 @@ def setup(p):
         return redirect(url_for('project.setup', project_id=p.id))
 
 
-@project.route('/<int:project_id>/setup/metadatajson', methods=['GET'])
-@login_required
-@project_required
-def metadatajson(p):
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    metadata = p.read_asset('metadata')
-    metadata_new = p.read_asset('metadata_new')
-    return render_template('project/metadatajson.html', project=p,
-                           metadata=metadata, metadata_new=metadata_new)
-
-
-@project.route('/<int:project_id>/setup/metadatajson', methods=['POST'])
-@login_required
-@project_required
-def metadatajson_save(p):
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
-    try:
-        # this line trying to parse json
-        json.loads(request.form.get('metadata'))
-        p.save_asset('metadata', request.form.get('metadata'),
-                     del_new=request.form.get('delete', None))
-        flash(_('METADATA.json saved'))
-        return redirect(url_for('project.metadatajson', project_id=p.id))
-    except ValueError:
-        flash(_('Wrong format for METADATA.json file'))
-        metadata_new = p.read_asset('metadata_new')
-        return render_template('project/metadatajson.html', project=p,
-                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
-
-
-@project.route('/<int:project_id>/setup/description', methods=['GET'])
-@login_required
-@project_required
-def description(p):
-    data = p.read_asset('description')
-    return render_template('project/description.html', project = p, description = data)
-
-
-@project.route('/<int:project_id>/setup/description', methods=['POST'])
-@login_required
-@project_required
-def description_save(p):
-    p.save_asset('description', request.form.get('description'))
-    flash(_('Description saved'))
-    return redirect(url_for('project.description', project_id=p.id))
-
-
 @project.route('/<int:project_id>/setup/dashboard_save', methods=['POST'])
 @login_required
 @project_required
@@ -381,6 +330,54 @@ def rtests(p, build_id):
     test_result = project_result_tests(project=p)
     return render_template('project/rtests.html', project=p,
                            tests=test_result, build=b)
+
+
+@project.route('/<int:project_id>/build/<int:build_id>/description', methods=['GET', 'POST'])
+@login_required
+@project_required
+def description(p, build_id):
+    """ Description file management """
+
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
+    if request.method == 'GET':
+        data = p.read_asset('description')
+        return render_template('project/description.html', project = p, build=b, description = data)
+
+    # POST
+    p.save_asset('description', request.form.get('description'))
+    flash(_('Description saved'))
+    return redirect(url_for('project.description', build=b, project_id=p.id))
+
+
+@project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])
+@login_required
+@project_required
+def metadatajson(p, build_id):
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
+    if request.method == 'GET':
+        metadata = p.read_asset('metadata')
+        metadata_new = p.read_asset('metadata_new')
+        return render_template('project/metadatajson.html', project=p, build=b,
+                               metadata=metadata, metadata_new=metadata_new)
+
+    # POST
+    try:
+        # this line trying to parse json
+        json.loads(request.form.get('metadata'))
+        p.save_asset('metadata', request.form.get('metadata'),
+                     del_new=request.form.get('delete', None))
+        flash(_('METADATA.json saved'))
+        return redirect(url_for('project.metadatajson', project_id=p.id, build=b))
+    except ValueError:
+        flash(_('Wrong format for METADATA.json file'))
+        metadata_new = p.read_asset('metadata_new')
+        return render_template('project/metadatajson.html', project=p, build=b,
+                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
 
 
 # Base views
