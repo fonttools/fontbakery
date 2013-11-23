@@ -106,8 +106,9 @@ def bump(p):
     else:
         build = ProjectBuild.make_build(p, 'HEAD')
 
-    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" % (url_for('project.ufiles', project_id=project_id), url_for('project.setup', project_id=project_id)))))
-    return redirect(url_for('project.log', project_id=project_id, build_id=build.id))
+    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" %
+                   (url_for('project.ufiles', project_id=p.id), url_for('project.setup', project_id=p.id)))))
+    return redirect(url_for('project.log', project_id=p.id, build_id=build.id))
 
 
 @project.route('/api/<int:project_id>/pull', methods=['GET'])
@@ -120,7 +121,7 @@ def pull(project_id):
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
-    return redirect(url_for('project.git', project_id=project_id))
+    return redirect(url_for('project.git', project_id=p.id))
 
 
 # Setup views
