@@ -90,18 +90,21 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
             # TODO: make this work so that the whole file is sent in one go if the process has ended.
             while True:
                 line = f.readline()
-#                self.emit('message', 'read a line: ')
+                #self.emit('message', 'read a line: ')
                 if line:
                     self.emit('message', line)
                     if line.startswith('End:'):
                         break
-                    gevent.sleep(0.1) # A small delay to reduce browser hammering. It slows down the 'real time' log feel, comment this out for that.
+                    # A small delay to reduce browser hammering. It slows down the
+                    # 'real time' log feel, comment this out for that.
+                    gevent.sleep(0.1)
                 else:
-#                    self.emit('message', 'blank \n')
+                    #self.emit('message', 'blank \n')
                     gevent.sleep(0.1)
             f.close()
         else:
-            self.emit('message', 'Fatal: Log file not found')
+            # It is valid path and file name, because it is signed param.
+            self.emit('message', 'Wait: Log file is not available yet. Reload page later.')
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):

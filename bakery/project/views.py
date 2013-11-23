@@ -48,7 +48,6 @@ def before_request():
 
 
 # project resolve decorator
-
 def project_required(f):
     """ Decorator reads project_id from arguments list and resolve it into project object.
         In parallel it check if project object is ready Usage:

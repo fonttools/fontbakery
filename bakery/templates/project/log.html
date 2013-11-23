@@ -12,14 +12,6 @@
 
 <pre id="log"></pre>
 
-{% if build.is_done %}
-<div id="logEndButtonSuccess" class="btn-group">
-<a href="{{ url_for('project.utests', project_id=project.id) }}" class="btn">Upstream Tests</a>
-<a href="{{ url_for('project.rtests', project_id=project.id) }}" class="btn">Result Tests</a>
-<a href="{{ url_for('project.rfiles', project_id=project.id) }}" class="btn">Result Files</a>
-</div>
-{% endif %}
-
 <p class="jumbotron" id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
 
 {% endblock %}
@@ -40,7 +32,7 @@ $(document).ready(function () {
 
 $('#secondaryNav').affix({
     offset: 0
-    });
+});
 
 $('#logEndButtons').hide();
 $('#logEndButtonRebake').hide();
@@ -74,6 +66,8 @@ socket.on('message', function (logs) {
         $('#logEndButtons').slideDown();
     } else if (data.startswith('Start: ')){
         $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
+    } else if (data.startswith('Wait: ')){
+        $('#log').append($('<span>').addClass('text-info').html('<span class="label label-info">Wait</span> ' + data.slice('Wait: '.length)));
     } else if (data.startswith('End: ')){
         $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
         $('#logEndButtonSuccess').show();
