@@ -285,7 +285,7 @@ class ProjectBuild(db.Model):
         param = { 'login': self.project.login, 'id': self.project.id,
             'revision': self.revision, 'build': self.id }
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.utests.yaml' % param)
+        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param)
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
         else:
@@ -299,7 +299,7 @@ class ProjectBuild(db.Model):
         param = { 'login': self.project.login, 'id': self.project.id,
             'revision': self.revision, 'build': self.id }
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.rtests.yaml' % param)
+        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
         else:

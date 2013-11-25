@@ -90,7 +90,7 @@ def project_fontaine(project, build):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # Its very likely that _out exists, but just in case:

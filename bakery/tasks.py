@@ -156,8 +156,8 @@ def copy_and_rename_ufos_process(project, build, log):
 
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     log.write('Copy [and Rename] UFOs\n', prefix = '### ')
 
@@ -275,8 +275,8 @@ def generate_fonts_process(project, build, log):
         'revision': build.revision, 'build': build.id }
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
@@ -303,8 +303,8 @@ def ttfautohint_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix = '### ')
@@ -330,8 +330,8 @@ def ttx_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     log.write('Compact TTFs with ttx\n', prefix = '### ')
 
@@ -365,8 +365,8 @@ def subset_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     log.write('Subset TTFs (subset.py)\n', prefix = '### ')
 
@@ -414,7 +414,7 @@ def generate_metadata_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix = '### ')
@@ -432,7 +432,7 @@ def lint_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     log.write('Lint (lint.jar)\n', prefix = '### ')
     # java -jar dist/lint.jar "$(dirname $metadata)"
@@ -449,7 +449,7 @@ def fontaine_process(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     log.write('pyFontaine (fontaine/main.py)\n', prefix = '### ')
     os.chdir(_out)
@@ -487,7 +487,7 @@ def upstream_tests(project, build, log):
         'revision': build.revision, 'build': build.id }
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.utests.yaml' % param)
+    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param)
 
     result = {}
     os.chdir(_in)
@@ -505,8 +505,8 @@ def result_tests(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s.rtests.yaml' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     result = {}
     os.chdir(_out_src)
@@ -530,9 +530,9 @@ def process_project(project, build, revision):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(revision)s.%(build)s/src/' % param)
-    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/process.%(revision)s.%(build)s.log' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/process.%(build)s.%(revision)s.log' % param)
 
     # Make logest path
     os.makedirs(_out_src)
