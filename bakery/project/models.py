@@ -80,26 +80,16 @@ class Project(db.Model):
             title = self.config['state']['familyname']
         return title
 
-    def asset_by_name(self, name):
-        """
-        Resolve asset id into its real path. For internal use.
 
-        :param name: handle for file conventionally found in repositories
-
-        """
+    def read_asset(self, name = None):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        if name == 'log':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % self)
-        elif name == 'yaml':
+        if name == 'yaml':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % self)
         elif name == 'license':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
         else:
-            fn = None
-        return fn
+            return ''
 
-    def read_asset(self, name = None):
-        fn = self.asset_by_name(name)
         if os.path.exists(fn) and os.path.isfile(fn):
             return unicode(open(fn, 'r').read(), "utf8")
         else:
@@ -284,12 +274,11 @@ class ProjectBuild(db.Model):
         else:
             return {}
 
-
     asset_list = {
         'description': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/DESCRIPTION.en_us.html',
         'metadata': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json',
         'metadata_new': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json.new',
-    }
+        }
 
     def read_asset(self, name = None):
         param = { 'login': self.project.login, 'id': self.project.id,
