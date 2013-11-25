@@ -15,6 +15,7 @@
 <table class="table table-bordered table-condensed">
   <thead>
     <tr>
+      <th style="text-align: center"><i class="icon-circle muted"></i></th>
       <th>{{ _("Hashtag") }}:{{ _("Build id") }}</th>
       <th>{{ _("Date") }}</th>
       <th>{{ _("Results") }}</th>
@@ -23,6 +24,11 @@
   <tbody>
     {% for b in builds -%}
     <tr>
+      <td style="text-align: center">
+        {% if not b.is_done %}<i class="icon-spinner icon-spin text-success" data-toggle="tooltip" rel="tooltip" data-original-title="This build is not ready yet"></i>
+        {% elif b.modified %}<i class="icon-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="This build was manually modified"></i>
+        {% endif %}
+      </td>
       <td>
         <a href="{{ url_for('project.log', project_id=b.project.id, build_id=b.id)}}">{{b.revision}}:{{b.id}}</a>
       </td>

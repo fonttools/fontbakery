@@ -274,7 +274,7 @@ class ProjectBuild(db.Model):
         db.session.commit()
         db.session.refresh(project)
         db.session.refresh(build)
-        process_project.delay(project, build, revision)
+        process_project.ctx_delay(project, build, revision)
         return build
 
     def utests(self):

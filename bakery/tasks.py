@@ -540,30 +540,33 @@ def process_project(project, build, revision):
     log = RedisFd(_out_log, 'w')
 
     # setup is set after 'bake' button is first pressed
+
+    from flask import current_app
+    assert current_app
+    from .extensions import db
+    db.init_app(current_app)
+
     if project.config['local'].get('setup', None):
         # this code change upstream repository
-        run("git checkout %s" % revision, cwd=_in, log=log)
-        log.write('Bake Begins!\n', prefix = '### ')
-        copy_and_rename_ufos_process(project, build, log)
-        generate_fonts_process(project, build, log)
-        ttfautohint_process(project, build, log)
-        ttx_process(project, build, log)
-        subset_process(project, build, log)
-        generate_metadata_process(project, build, log)
-        lint_process(project, build, log)
-        fontaine_process(project, build, log)
-        upstream_tests(project, build, log)
-        result_tests(project, build, log)
-        log.write('Bake Succeeded!\n', prefix = '### ')
-
-        # save that project is done
-        from flask import current_app
-        assert current_app
-        from .extensions import db
-        db.init_app(current_app)
-        build.is_done = True
-        db.session.add(build)
-        db.session.commit()
+        try:
+            run("git checkout %s" % revision, cwd=_in, log=log)
+            log.write('Bake Begins!\n', prefix = '### ')
+            copy_and_rename_ufos_process(project, build, log)
+            generate_fonts_process(project, build, log)
+            ttfautohint_process(project, build, log)
+            ttx_process(project, build, log)
+            subset_process(project, build, log)
+            generate_metadata_process(project, build, log)
+            lint_process(project, build, log)
+            fontaine_process(project, build, log)
+            upstream_tests(project, build, log)
+            result_tests(project, build, log)
+            log.write('Bake Succeeded!\n', prefix = '### ')
+        finally:
+            # save that project is done
+            build.is_done = True
+            db.session.add(build)
+            db.session.commit()
 
     log.close()
 
