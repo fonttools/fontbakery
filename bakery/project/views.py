@@ -341,27 +341,24 @@ def description(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if request.method == 'GET':
-        data = p.read_asset('description')
+        data = b.read_asset('description')
         return render_template('project/description.html', project = p, build=b, description = data)
 
     # POST
-    p.save_asset('description', request.form.get('description'))
+    b.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
-    return redirect(url_for('project.description', build=b, project_id=p.id))
+    return redirect(url_for('project.description', build_id=b.id, project_id=p.id))
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])
 @login_required
 @project_required
 def metadatajson(p, build_id):
-    if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
-
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if request.method == 'GET':
-        metadata = p.read_asset('metadata')
-        metadata_new = p.read_asset('metadata_new')
+        metadata = b.read_asset('metadata')
+        metadata_new = b.read_asset('metadata_new')
         return render_template('project/metadatajson.html', project=p, build=b,
                                metadata=metadata, metadata_new=metadata_new)
 
@@ -369,13 +366,13 @@ def metadatajson(p, build_id):
     try:
         # this line trying to parse json
         json.loads(request.form.get('metadata'))
-        p.save_asset('metadata', request.form.get('metadata'),
+        b.save_asset('metadata', request.form.get('metadata'),
                      del_new=request.form.get('delete', None))
         flash(_('METADATA.json saved'))
-        return redirect(url_for('project.metadatajson', project_id=p.id, build=b))
+        return redirect(url_for('project.metadatajson', project_id=p.id, build_id=b.id))
     except ValueError:
         flash(_('Wrong format for METADATA.json file'))
-        metadata_new = p.read_asset('metadata_new')
+        metadata_new = b.read_asset('metadata_new')
         return render_template('project/metadatajson.html', project=p, build=b,
                            metadata=request.form.get('metadata'), metadata_new=metadata_new)
 

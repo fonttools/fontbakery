@@ -92,14 +92,8 @@ class Project(db.Model):
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.process.log' % self)
         elif name == 'yaml':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % self)
-        elif name == 'metadata':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self, 'METADATA.json')
-        elif name == 'metadata_new':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self, 'METADATA.json.new')
         elif name == 'license':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
-        elif name == 'description':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % self, 'DESCRIPTION.en_us.html')
         else:
             fn = None
         return fn
@@ -183,21 +177,6 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in)
 
-
-    def save_asset(self, name = None, data = None, **kwarg):
-        """ Save static files into out folder """
-        if name == 'description':
-            f = open(self.asset_by_name(name), 'w')
-            f.write(data)
-            f.close()
-        elif name == 'metadata':
-            f = open(self.asset_by_name(name), 'w')
-            json.dump(json.loads(data), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
-            f.close()
-
-            if kwarg.get('del_new') and kwarg['del_new']:
-                if os.path.exists(self.asset_by_name('metadata_new')):
-                    os.remove(self.asset_by_name('metadata_new'))
 
     @property
     def family_stat(self):
@@ -283,9 +262,9 @@ class ProjectBuild(db.Model):
             return {}
 
         param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id }
-        DATA_ROOT = current_app.config.get('DATA_ROOT')
-        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param)
+            'revision': self.revision, 'build': self.id,
+            'root': current_app.config.get('DATA_ROOT') }
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
         else:
@@ -297,11 +276,52 @@ class ProjectBuild(db.Model):
             return {}
 
         param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id }
-        DATA_ROOT = current_app.config.get('DATA_ROOT')
-        _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+            'revision': self.revision, 'build': self.id,
+            'root': current_app.config.get('DATA_ROOT') }
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
         else:
             return {}
 
+
+    asset_list = {
+        'description': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/DESCRIPTION.en_us.html',
+        'metadata': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json',
+        'metadata_new': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json.new',
+    }
+
+    def read_asset(self, name = None):
+        param = { 'login': self.project.login, 'id': self.project.id,
+            'revision': self.revision, 'build': self.id,
+            'root': current_app.config.get('DATA_ROOT') }
+
+        fn = self.asset_list[name] % param
+        if os.path.exists(fn) and os.path.isfile(fn):
+            return unicode(open(fn, 'r').read(), "utf8")
+        else:
+            return ''
+
+    def save_asset(self, name = None, data = None, **kwarg):
+        """ Save static files into out folder """
+        param = { 'login': self.project.login, 'id': self.project.id,
+            'revision': self.revision, 'build': self.id,
+            'root': current_app.config.get('DATA_ROOT')}
+
+        if name == 'description':
+            f = open(self.asset_list['description'] % param, 'w')
+            f.write(data)
+            f.close()
+        elif name == 'metadata':
+            f = open(self.asset_list['metadata'] % param, 'w')
+            json.dump(json.loads(data), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
+            f.close()
+
+            if kwarg.get('del_new') and kwarg['del_new']:
+                if os.path.exists(self.asset_list['metadata_new'] % param):
+                    os.remove(self.asset_list['metadata_new'] % param)
+
+        self.modified = True
+        db.session.add(self)
+        db.session.commit()
+        db.session.refresh(self)
