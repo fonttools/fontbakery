@@ -532,7 +532,7 @@ def process_project(project, build, revision):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
-    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/process.%(build)s.%(revision)s.log' % param)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
 
     # Make logest path
     os.makedirs(_out_src)

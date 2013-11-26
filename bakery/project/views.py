@@ -297,7 +297,8 @@ def history(p):
 @project_required
 def log(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
-    log_file="%s/%s.out/process.%s.%s.log" % (p.login, p.id, b.revision, b.id)
+    param = {'login': p.login, 'id': p.id, 'revision': b.revision, 'build': b.id}
+    log_file="%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log" % param
 
     return render_template('project/log.html', project=p, build=b, log_file=log_file)
 
