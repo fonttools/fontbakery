@@ -455,7 +455,6 @@ def fontaine_process(project, build, log):
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
-        run('python -c "import sys; print(sys.path)"', cwd=_out, log=log)
         cmd = "python %s/venv/bin/pyfontaine --text '%s' >> 'src/fontaine.txt'" % (
             ROOT, file)
         run(cmd, cwd=_out, log=log)
@@ -481,7 +480,7 @@ yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 
 def upstream_tests(project, build, log):
-    import checker.upstream_runner
+    from checker import upstream_set
 
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
@@ -492,7 +491,7 @@ def upstream_tests(project, build, log):
     result = {}
     os.chdir(_in)
     for font in project.config['local']['ufo_dirs']:
-        result[font] = checker.upstream_runner.run_set(os.path.join(_in, font))
+        result[font] = upstream_set(os.path.join(_in, font))
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
@@ -500,7 +499,7 @@ def upstream_tests(project, build, log):
 
 
 def result_tests(project, build, log):
-    import checker.result_runner
+    from checker import result_set
 
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
@@ -511,7 +510,7 @@ def result_tests(project, build, log):
     result = {}
     os.chdir(_out_src)
     for font in glob.glob("*.ttf"):
-        result[font] = checker.result_runner.run_set(os.path.join(_out_src, font))
+        result[font] = result_set(os.path.join(_out_src, font))
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
