@@ -92,7 +92,6 @@ def project_fontaine(project, build):
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # Its very likely that _out exists, but just in case:
     if os.path.exists(_out):
         os.chdir(_out)
@@ -128,8 +127,8 @@ def project_fontaine(project, build):
                 family[charsetname] = sum(family[charsetname]) / len(fonts.items())
     # Make a plain dictionary with just the bits we want on the dashboard
     totals = {}
-    totals['gwf'] = family[u'GWF latin']
-    totals['al3'] = family[u'Adobe Latin 3']
+    totals['gwf'] = family.get('GWF latin', None)
+    totals['al3'] = family.get('Adobe Latin 3', None)
     # Store it in the $(id).state.yaml file
     project.config['local']['charsets'] = totals
     project.save_state()

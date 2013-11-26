@@ -314,3 +314,13 @@ class ProjectBuild(db.Model):
         db.session.add(self)
         db.session.commit()
         db.session.refresh(self)
+
+
+    def files(self):
+        param = { 'login': self.project.login, 'id': self.project.id,
+            'revision': self.revision, 'build': self.id,
+            'root': current_app.config.get('DATA_ROOT') }
+
+        path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
+
+        return walkWithoutGit(path)

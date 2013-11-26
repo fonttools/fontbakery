@@ -314,8 +314,10 @@ def rfiles(p, build_id):
 
     yaml = p.read_asset('yaml')
     f = project_fontaine(p, b)
+    tree = b.files()
+
     return render_template('project/rfiles.html', project=p, yaml=yaml,
-                            fontaineFonts=f, build=b)
+                            fontaineFonts=f, build=b, tree = tree)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])

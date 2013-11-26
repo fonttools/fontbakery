@@ -84,7 +84,7 @@
 
 <h4>{{ _("Repository Files") }}</h4>
 {% from 'project/macros.html' import filestree with context %}
-{{ filestree(project.treeFromFilesystem('out')) }}
+{{ filestree(tree) }}
 
 {% endblock %}
 
