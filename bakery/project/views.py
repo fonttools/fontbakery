@@ -320,7 +320,7 @@ def rfiles(p, build_id):
                             fontaineFonts=f, build=b, tree = tree)
 
 
-@project.route('/<int:project_id>/build/<int:build_id>/rtests', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
 @login_required
 @project_required
 def rtests(p, build_id):
@@ -330,7 +330,7 @@ def rtests(p, build_id):
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    test_result = project_result_tests(project=p)
+    test_result = b.result_tests()
     return render_template('project/rtests.html', project=p,
                            tests=test_result, build=b)
 

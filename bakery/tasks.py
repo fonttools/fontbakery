@@ -519,7 +519,7 @@ def upstream_revision_tests(project, revision):
 
     return yaml.safe_load(open(_out_yaml, 'r'))
 
-def result_tests(project, build, log):
+def result_tests(project, build):
     from checker import result_set
 
     param = { 'login': project.login, 'id': project.id,
@@ -527,6 +527,9 @@ def result_tests(project, build, log):
 
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+
+    if os.path.exists(_out_yaml):
+        return yaml.safe_load(open(_out_yaml, 'r'))
 
     result = {}
     os.chdir(_out_src)
@@ -536,6 +539,8 @@ def result_tests(project, build, log):
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
+
+    return yaml.safe_load(open(_out_yaml, 'r'))
 
 
 @job
@@ -579,7 +584,9 @@ def process_project(project, build, revision):
             generate_metadata_process(project, build, log)
             lint_process(project, build, log)
             fontaine_process(project, build, log)
-            result_tests(project, build, log)
+            # result_tests doesn't needed here, but since it is anyway background task
+            # make cache file for future use
+            result_tests(project, build)
             log.write('Bake Succeeded!\n', prefix = '### ')
         finally:
             # save that project is done

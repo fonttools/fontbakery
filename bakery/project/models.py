@@ -21,7 +21,7 @@ import yaml
 from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
-from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests
+from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
 import magic
 
 from .state import (project_state_get, project_state_save, walkWithoutGit)
@@ -263,20 +263,6 @@ class ProjectBuild(db.Model):
         else:
             return {}
 
-    def rtests(self):
-        """ Return saved result test data """
-        if not self.is_done:
-            return {}
-
-        param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id,
-            'root': current_app.config.get('DATA_ROOT') }
-        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param
-        if os.path.exists(_out_yaml):
-            return yaml.load(open(_out_yaml).read())
-        else:
-            return {}
-
     asset_list = {
         'description': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/DESCRIPTION.en_us.html',
         'metadata': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json',
@@ -327,3 +313,6 @@ class ProjectBuild(db.Model):
         path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 
         return walkWithoutGit(path)
+
+    def result_tests(self):
+        return result_tests(self.project, self, )
