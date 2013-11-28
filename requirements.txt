@@ -7,7 +7,6 @@ Flask-Mail
 Flask-SQLAlchemy
 pysqlite
 rauth
-alembic
 
 # Aux
 requests
