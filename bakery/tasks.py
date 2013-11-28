@@ -504,7 +504,7 @@ def result_tests(project, build, log):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
 
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     result = {}
