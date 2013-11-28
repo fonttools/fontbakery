@@ -43,10 +43,11 @@
   <li {% if active == 'ufiles' and revision == 'HEAD' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "", "Upstream Files", true) }}</li>
   <li {% if active == 'gitlog' %}class="active" {% endif %}>{{ link(url_for('project.git', project_id=project.id), "", "Git History", true) }}</li>
   {% if revision and revision != 'HEAD' %}
-  <li class="active">{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", revision, true) }}</li>
+    <li {% if active == 'ufiles' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", "Files: %s" % revision, true) }}</li>
+    <li {% if active == 'utests' %}class="active" {% endif %}>{{ link(url_for('project.utests', project_id=project.id, revision=revision), "", "Tests", true) }}</li>
   {% endif %}
- {% if active == 'diff' %}
-  <li class="active"><a href="">Diff</a></li>
+  {% if active == 'diff' %}
+  <li class="active"><a href="{{ url_for('project.diff', project_id=project.id, left=left, right=right) }}">Diff</a></li>
  {%  endif %}
 </ul>
 {% endmacro %}
@@ -143,7 +144,7 @@
                 <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
                 <td>{{ item.tool }}</td>
                 <td>{{ item.name|replace('.','/') }}.py</td>
-                <td>{{ item._testMethodName }}()</td>
+                <td>{{ item.methodName }}()</td>
             </tr>
           {%- endfor %}
         {%- endfor %}
@@ -178,10 +179,10 @@
           <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
             <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i></td>
             <td>{{ font }}</td>
-            <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+            <td>{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %}</td>
             <td>{{ item.tool }}</td>
             <td>{{ item.name|replace('.','/') }}.py</td>
-            <td>{{ item._testMethodName }}()</td>
+            <td>{{ item.methodName }}()</td>
           </tr>
         {%- endfor %}
       {%- endfor %}

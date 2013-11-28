@@ -478,25 +478,46 @@ def repr_testcase(dumper, data):
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
+def upstream_revision_tests(project, revision):
+    """ This function run upstream tests set on project.config['local']['ufo_dirs'] set in selected git revision.
+    This mean that success (aka getting any result) should be occasional particular case. Because data and
+    set of folders are changing during font development process.
 
-def upstream_tests(project, build, log):
+    XXX: I think it is better to just find all `.ufo` folders in revision and run tests with them.
+    If project setup will change then test should be rerun again and before wipe all `utests` folder.
+
+    :param project: Project instance
+    :param revision: Git revision
+    :param force: force to make tests again
+    :return: dictionary with serialized tests results formatted by `repr_testcase`
+    """
     from checker import upstream_set
 
     param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+        'revision': revision}
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param)
+    _out_folder = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/utests/' % param)
+    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param)
+
+    if os.path.exists(_out_yaml):
+        return yaml.safe_load(open(_out_yaml, 'r'))
+
+    if not os.path.exists(_out_folder):
+        os.makedirs(_out_folder)
 
     result = {}
     os.chdir(_in)
+    prun("git checkout %s" % revision, cwd=_in)
     for font in project.config['local']['ufo_dirs']:
-        result[font] = upstream_set(os.path.join(_in, font))
+        if os.path.exists(os.path.join(_in, font)):
+            result[font] = upstream_set(os.path.join(_in, font))
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
 
+    return yaml.safe_load(open(_out_yaml, 'r'))
 
 def result_tests(project, build, log):
     from checker import result_set
@@ -558,7 +579,6 @@ def process_project(project, build, revision):
             generate_metadata_process(project, build, log)
             lint_process(project, build, log)
             fontaine_process(project, build, log)
-            upstream_tests(project, build, log)
             result_tests(project, build, log)
             log.write('Bake Succeeded!\n', prefix = '### ')
         finally:

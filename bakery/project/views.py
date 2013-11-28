@@ -382,16 +382,16 @@ def metadatajson(p, build_id):
 
 # Base views
 
-@project.route('/<int:project_id>/tests', methods=['GET'])
+@project.route('/<int:project_id>/tests/<revision>', methods=['GET'])
 @login_required
 @project_required
-def utests(p):
+def utests(p, revision):
     """ Results of processing tests, for ufo files """
     if not p.is_ready:
         return redirect(url_for('project.log', project_id=p.id))
 
-    test_result = project_upstream_tests(project=p)
-    return render_template('project/utests.html', project=p,
+    test_result = p.revision_tests(revision)
+    return render_template('project/utests.html', project=p, revision=revision,
                            tests=test_result)
 
 

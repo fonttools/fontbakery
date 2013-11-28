@@ -21,7 +21,7 @@ import yaml
 from flask import current_app, json
 from ..decorators import lazy_property
 from ..extensions import db
-from ..tasks import process_project, prun, project_git_sync
+from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests
 import magic
 
 from .state import (project_state_get, project_state_save, walkWithoutGit)
@@ -167,6 +167,9 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in)
 
+
+    def revision_tests(self, revision):
+        return upstream_revision_tests(self, revision)
 
     @property
     def family_stat(self):
