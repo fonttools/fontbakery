@@ -15,15 +15,19 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from datetime import datetime
 import os
 import yaml
+import magic
+import lxml.etree as etree
+import re
+from datetime import datetime
+import difflib
+
 from flask import current_app, json
+
 from ..decorators import lazy_property
 from ..extensions import db
 from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
-import magic
-
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
 
@@ -210,12 +214,100 @@ class Project(db.Model):
         log = prun(params + fmt, cwd = _in)
         return yaml.load(log)
 
-
     def diff_files(self, left, right):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        diffdata = prun(""" git diff --name-only %(left)s %(right)s""" % locals(), cwd = _in)
-        return diffdata
+        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd = _in)
+        file_diff = {}
+        t = []
+        current_file = None
+        for l in data.splitlines():
+            if l.startswith('diff --git'):
+                if current_file:
+                    file_diff[current_file] = "\n".join(t)
+                current_file = l[14+(len(l[11:])-1)/2:]
+                t = []
+                continue
+            elif l.startswith('index'):
+                continue
+            elif l.startswith('---'):
+                continue
+            elif l.startswith('+++'):
+                continue
+            elif l.startswith('new file'):
+                continue
+
+            l = l.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+            if l.startswith('Binary files'):
+                l = '<span class="text-center">Binary file not shown</span>'
+            elif l[0] == '+':
+                l = "<ins>%s</ins>" % l
+            elif l[0] == "-":
+                l = "<del>%s</del>" % l
+            elif l[0] == "^":
+                l = "<ins>%s</ins>" % l
+
+            t.append(l.rstrip(" \t\n\r"))
+
+        # after loop is done we still have some collected data
+        if current_file:
+            file_diff[current_file] = "\n".join(t)
+
+        return file_diff
+
+    def diff_files_slow(self, left, right):
+        DATA_ROOT = current_app.config.get('DATA_ROOT')
+        _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        names = prun("""git diff --name-only %(left)s %(right)s""" % locals(), cwd = _in)
+        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd = _in)
+        file_diff = {}
+        # list of known xml file extensions
+        xml_ext = ['.svg', '.ttx', '.plist', '.glif', '.xml']
+        for f in names.splitlines():
+            param = {'left': left, 'right': right, 'name': f}
+            #file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd = _in)
+            if os.path.splitext(f)[1] in xml_ext:
+                left_content = prun("""git show %(left)s:"%(name)s" """ % param, cwd = _in)
+                right_content = prun("""git show %(right)s:"%(name)s" """ % param, cwd = _in)
+
+                if left_content.startswith('fatal:'):
+                    left_content = ''
+                if right_content.startswith('fatal:'):
+                    right_content = ''
+                # left
+                try:
+                    left_xml = etree.tostring(etree.fromstring(left_content), pretty_print = True)
+                except etree.XMLSyntaxError:
+                    # if returned data is not real xml
+                    left_xml = left_content
+                # right
+                try:
+                    right_xml = etree.tostring(etree.fromstring(right_content), pretty_print = True)
+                except etree.XMLSyntaxError:
+                    # if returned data is not real xml
+                    right_xml = right_content
+
+                file_diff[f] = "".join([x for x in difflib.unified_diff(left_xml, right_xml, fromfile="a/"+f, tofile="b/"+f, lineterm='')])
+
+            else:
+                file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd = _in)
+
+        for f in file_diff.keys():
+            text = file_diff[f]
+            text = text.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+            t = []
+            for l in text.splitlines():
+                if l[0] == '+':
+                    l = "<ins>%s</ins>" % l
+                elif l[0] == "-":
+                    l = "<del>%s</del>" % l
+                elif l[0] == "^":
+                    l = "<ins>%s</ins>" % l
+                t.append(l.rstrip(" \t\n\r"))
+
+            file_diff[f] = "\n".join(t)
+
+        return file_diff
 
 
 class ProjectBuild(db.Model):

@@ -11,8 +11,10 @@
 {{ subnav_git('diff') }}
 
 <h3>Changes between <a href="{{ url_for('project.ufiles', project_id = project.id, revision=left) }}">{{left}}</a> and <a href="{{ url_for('project.ufiles', project_id = project.id, revision=right) }}">{{right}}</a></h3>
-<p><strong>Files</strong></p>
-<pre>{{gitdiff}}</pre>
+{% for f in diff.keys() %}
+<h3>{{ f }}</h3>
+<pre>{{ diff[f]|safe }}</pre>
+{% endfor %}
 
 {% endblock %}
 

@@ -44,4 +44,4 @@ redis
 
 # file browser
 python-magic
-
+lxml
