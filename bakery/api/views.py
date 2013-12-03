@@ -18,6 +18,7 @@
 import logging
 from flask import Blueprint, request, json
 from ..extensions import db
+from ..models import Project
 
 api = Blueprint('api', __name__)
 
@@ -39,3 +40,11 @@ def splash():
     db.session.commit()
     return "Ok"
 
+@api.route('/updateall')
+def updateall():
+
+    all = Project.query.all()
+    for p in all:
+        p.sync()
+
+    return "Ok"
