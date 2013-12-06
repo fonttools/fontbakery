@@ -42,7 +42,9 @@ During the development process you may wish to be run a fake mail server:
 
 ## Development
 
-A 1 hour video (recorded on 2013-09-02) explaining the basic functionality and overall codebase is here: https://www.youtube.com/watch?v=paKa_Kok2EA
+A series of videos explaining the project are posting on the [Font Bakery tumblr](http://fontbakery.tumblr.com). 
+
+The first covers basic functionality and overall codebase.
 
 #### License
 
