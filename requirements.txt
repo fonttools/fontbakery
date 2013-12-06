@@ -18,11 +18,7 @@ giturlparse.py
 
 # builder and checker
 TTFQuery
-# fonttools2
-# This is the unofficial package on pypi,
-# but @behdad has forked it to speed up development
-# and @davelab6 has forked it to add a silent feature
--e git+http://github.com/davelab6/fonttools.git#egg=fonttools2
+-e git+http://github.com/behdad/fonttools.git#egg=fonttools
 fontaine
 freetype-py
 robofab
