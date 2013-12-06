@@ -12,8 +12,9 @@
 
 <h3>Changes between <a href="{{ url_for('project.ufiles', project_id = project.id, revision=left) }}">{{left}}</a> and <a href="{{ url_for('project.ufiles', project_id = project.id, revision=right) }}">{{right}}</a></h3>
 {% for f in diff.keys() %}
-<h3>{{ f }}</h3>
-<pre>{{ diff[f]|safe }}</pre>
+<h4>{{ f }}</h4>
+<table class="diff">{{ diff[f]|safe }}</table>
+
 {% endfor %}
 
 {% endblock %}

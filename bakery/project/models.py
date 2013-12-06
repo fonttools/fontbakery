@@ -30,7 +30,6 @@ from ..extensions import db
 from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
-
 class Project(db.Model):
     __tablename__ = 'project'
     __table_args__ = {'sqlite_autoincrement': True}
@@ -221,7 +220,15 @@ class Project(db.Model):
         file_diff = {}
         t = []
         current_file = None
-        for l in data.splitlines():
+        source_start = target_start = 0
+        RE_HUNK_HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))?\ @@[ ]?(.*)")
+
+        def unpack(source_start, source_len, target_start, target_len, section_header):
+            return int(source_start), int(target_start)
+
+        data_lines = data.splitlines()
+        data_lines.append(' ')
+        for l in data_lines:
             if l.startswith('diff --git'):
                 if current_file:
                     file_diff[current_file] = "\n".join(t)
@@ -238,18 +245,30 @@ class Project(db.Model):
                 continue
 
             l = l.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+            first = l[0]
+            last = l[1:]
+            l = l.rstrip(" \t\n\r")
             if l.startswith('Binary files'):
-                l = '<span class="text-center">Binary file not shown</span>'
-            elif l[0] == '+':
-                l = "<ins>%s</ins>" % l
-            elif l[0] == "-":
-                l = "<del>%s</del>" % l
-            elif l[0] == "^":
-                l = "<ins>%s</ins>" % l
+                l = '<tr><td></td><td></td><td><span class="text-center">Binary file not shown</span></td></tr>'
+            elif first == '@':
+                re_hunk_header = RE_HUNK_HEADER.match(l)
+                if re_hunk_header:
+                    hunk_info = re_hunk_header.groups()
+                    source_start, target_start = unpack(*hunk_info)
+                l = "<tr class='hunk'><td></td><td></td><td><pre>%s<pre></td></tr>" % (l)
+            elif first == "+":
+                target_start = target_start + 1
+                l = "<tr class='ins'><td></td><td class='num'>%s</td><td><pre>%s</pre></td></tr>" % (target_start, last)
+            elif first == "-":
+                source_start = source_start + 1
+                l = "<tr class='del'><td class='num'>%s</td><td></td><td class='del'><pre>%s</pre></td></tr>" % (source_start, last)
+            else:
+                target_start = target_start + 1
+                source_start = source_start + 1
+                l = "<tr><td class='num'>%s</td><td class='num'>%s</td><td><pre>%s<pre></td></tr>" % (source_start, target_start, l)
 
-            t.append(l.rstrip(" \t\n\r"))
+            t.append(l)
 
-        # after loop is done we still have some collected data
         if current_file:
             file_diff[current_file] = "\n".join(t)
 
