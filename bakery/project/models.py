@@ -67,6 +67,18 @@ class Project(db.Model):
         return self.config['local'].get('source', None)
 
     @property
+    def source_files_type(self):
+        if self.config['state'].get('source_files_type'):
+            return self.config['state']['source_files_type']
+        else:
+            if self.config['local']['ufo_dirs']:
+                return 'ufo'
+            elif self.config['local']['ttx_files']:
+                return 'ttx'
+            else:
+                return None
+
+    @property
     def title(self):
         """
         Return project title, resolved from repo clone if no rename family name given
