@@ -145,10 +145,7 @@ def project_git_sync(project):
     db.session.commit()
 
 
-def copy_and_rename_ufos_process(project, build, log):
-    """
-    Setup UFOs for building
-    """
+def copy_ufo_files(project, build, log):
     config = project.config
 
     param = { 'login': project.login, 'id': project.id,
@@ -168,7 +165,7 @@ def copy_and_rename_ufos_process(project, build, log):
         familyName = False
 
     # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
-    for _in_ufo in config['state']['ufo']:
+    for _in_ufo in config['local']['ufo_dirs']:
         # Decide the incoming filepath
         _in_ufo_path = os.path.join(_in, _in_ufo)
         # Read the _in_ufo fontinfo.plist
@@ -210,6 +207,40 @@ def copy_and_rename_ufos_process(project, build, log):
             _out_ufoFontInfo['postscriptFullName'] = "%s %s" % (familyName, styleName)
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+
+def copy_ttx_files(project, build, log):
+    config = project.config
+
+    param = { 'login': project.login, 'id': project.id,
+        'revision': build.revision, 'build': build.id }
+
+    _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+
+    pass
+
+def copy_and_rename_ufos_process(project, build, log):
+    """
+    Setup UFOs for building
+    """
+    config = project.config
+
+    param = { 'login': project.login, 'id': project.id,
+        'revision': build.revision, 'build': build.id }
+
+    _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
+    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
+    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+
+    if project.source_files_type == 'ufo':
+        copy_ufo_files(project, build, log)
+    else:
+        copy_ttx_files(project, build, log)
+
 
     # Copy licence file
     # TODO: Infer license type from filename
@@ -491,7 +522,7 @@ def upstream_revision_tests(project, revision):
     :param force: force to make tests again
     :return: dictionary with serialized tests results formatted by `repr_testcase`
     """
-    from checker import upstream_set
+    from checker import upstream_set, ttx_set
 
     param = { 'login': project.login, 'id': project.id,
         'revision': revision}
@@ -509,9 +540,27 @@ def upstream_revision_tests(project, revision):
     result = {}
     os.chdir(_in)
     prun("git checkout %s" % revision, cwd=_in)
-    for font in project.config['local']['ufo_dirs']:
+
+    ufo_dirs = []
+    ttx_files = []
+    l = len(_in)
+    for root, dirs, files in os.walk(_in):
+        for f in files:
+            fullpath = os.path.join(root, f)
+            if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
+                ttx_files.append(fullpath[l:])
+        for d in dirs:
+            fullpath = os.path.join(root, d)
+            if os.path.splitext(fullpath)[1].lower() == '.ufo':
+                ufo_dirs.append(fullpath[l:])
+
+    for font in ufo_dirs:
         if os.path.exists(os.path.join(_in, font)):
             result[font] = upstream_set(os.path.join(_in, font))
+
+    for font in ttx_files:
+        if os.path.exists(os.path.join(_in, font)):
+            result[font] = ttx_set(os.path.join(_in, font))
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
