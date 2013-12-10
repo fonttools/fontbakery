@@ -8,8 +8,8 @@
 ###   This file must exist.
 license_file: ''
 
-### List of ufo folders 
-ufo: []
+### Source file type if there is more than one format is found in upstream repository
+#source_files_type: '' # ttx or ufo
 
 ### Subsets list  
 ###   Possible values: latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, greek-ext+latin, vietnamese+latin
