@@ -149,15 +149,15 @@ def setup(p):
         if config['state'].has_key('familyname'):
             config['state'].pop('familyname')
 
-    ufo_dirs = request.form.getlist('ufo')
-    for i in ufo_dirs:
-        if i not in config['local']['ufo_dirs']:
+    if config['local']['ufo_dirs'] and config['local']['ttx_files']:
+        if request.form.get('source_files_type'):
+            if request.form.get('source_files_type') in ['ttx', 'ufo']:
+                config['state']['source_files_type'] = request.form.get('source_files_type')
+            else:
+                config['state'].pop('source_files_type')
+        else:
             error = True
-            flash(_("Please select at least one UFO"))
-    if len(ufo_dirs) < 0:
-        error = True
-        flash(_("Select at least one UFO"))
-    config['state']['ufo'] = ufo_dirs
+            flash(_('Select UFO or TTX as primary source'))
 
     txt_files_to_copy = request.form.getlist('txt_files')
     config['state']['txt_files_copied'] = txt_files_to_copy
@@ -186,11 +186,9 @@ def setup(p):
     if originalConfig != config:
         flash(_("Setup updated"))
 
+    config['local']['setup'] = True
     p.save_state()
     if request.form.get('bake'):
-        # This marks that the setup is ready enough to bake the project
-        # When it is set, the user is not asked again, 'Do you have permission to use the fonts names as presented to the user in modified versions?'
-        config['local']['setup'] = True
         p.save_state()
         return redirect(url_for('project.bump', project_id=p.id))
     else:

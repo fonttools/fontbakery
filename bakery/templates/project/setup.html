@@ -140,14 +140,29 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="ufo_folders"><strong>UFOs:</strong></label>
+    <label class="control-label" for="source_files_type"><strong>Source files:</strong></label>
     <div class="controls">
-    <select for="ufo_folders" multiple="multiple" name="ufo" class="input-xxlarge"
-        size="{{ config['local']['ufo_dirs']|length }}" required>
-      {% for i in config['local']['ufo_dirs'] %}
-      <option {% if i in config['state']['ufo'] %}selected="selected"{% endif %}>{{ i }}</option>
+    {% if config['local']['ufo_dirs'] and config['local']['ttx_files'] %}
+      <div class="alert alert-info">UFO folders and TTX files are found in upstream repository. Select what files are primary source</div>
+      <label class="radio">
+        <input type="radio" name="source_files_type" id="source_files_type" value="ufo" 
+          {% if config['state']['source_files_type']=='ufo' %}checked{% endif %}>
+        UFO is primary source
+      </label>
+      <label class="radio">
+        <input type="radio" name="source_files_type" id="source_files_type" value="ttx"
+        {% if config['state']['source_files_type']=='ttx' %}checked{% endif %}>
+        TTX, please
+      </label>
+    {% else %}
+      <input type="hidden" name="source_files_type" value="off">
+    {% endif %}
+    <p class="muted">Found source files:</p>
+    <ul class="muted">
+      {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
+      <li>{{ i }}</li>
       {% endfor %}
-    </select>
+    </ul>
     </div>
   </div>
 
@@ -196,10 +211,10 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="form-actions">
-    <input id="bake" name="bake" value="Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
+    <input id="bake" name="bake" value="Save &amp; Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
     <input id="save" name="save" value="Save" type="submit" class="btn" />
-    {# TODO: This should only be shown if there is a bakery_yaml in upstream #}
-    <input class="btn" name="reset" value="Reload from upstream" disabled="disabled">
+    {# TODO: This should only be shown if there is a bakery_yaml in upstream 
+    <input class="btn" name="reset" value="Reload from upstream" disabled="disabled"> #}
   </div>
 
 
