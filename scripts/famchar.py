@@ -82,7 +82,7 @@ for fontfilename, fontaine in fonts.iteritems():
 
 # Print just the bits we want on the dashboard
 print "Family Averages:"
-charsets = [u'GWF latin', u'Adobe Latin 3', u'Basic Cyrillic']
+charsets = [u'GWF latin', u'Adobe Latin 3', u'Basic Cyrillic', u'GWF vietnamese', ]
 for charset in charsets:
     print charset + ":", str(family[charset])
 
