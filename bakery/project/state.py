@@ -134,7 +134,7 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
                 ufo_dirs.append(fullpath[l:])
     local['txt_files'] = txt_files
-    local['bin_files'] = txt_files
+    local['bin_files'] = bin_files
     local['ufo_dirs'] = ufo_dirs
     local['ttx_files'] = ttx_files
 
