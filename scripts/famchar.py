@@ -50,7 +50,7 @@ family = {}
 for fontfilename, fontaine in fonts.iteritems():
     # Use the font file name as a key to a dictionary of char sets
     family[fontfilename] = {}
-    print fontfilename
+    #print fontfilename
     for charset, coverage, percentcomplete, missingchars in fontaine.get_orthographies():
         # Use each char set name as a key to a dictionary of this font's coverage details
         charsetname = charset.common_name
@@ -66,8 +66,8 @@ for fontfilename, fontaine in fonts.iteritems():
         # And finally, if the list now has all the font files, make it the mean average percentage
         if len(family[charsetname]) == len(fonts.items()):
             family[charsetname] = sum(family[charsetname]) / len(fonts.items())
-        print charsetname + ":", percentcomplete, "  "
-    print '\n' 
+        #print charsetname + ":", percentcomplete, "  "
+    #print '\n' 
 
 
 # # pprint the full dict, could be yaml/json/etc
