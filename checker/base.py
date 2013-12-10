@@ -103,12 +103,13 @@ class BakeryTestRunner(unittest.TextTestRunner):
 
 
 def make_suite(path, definedTarget):
+    """ path - is full path to file,
+        definedTarget is filter to only select small subset of tests
+    """
     suite = unittest.TestSuite()
-
     for TestCase in TestRegistry.list():
-        TestCase.path = path
-        for target in TestCase.targets:
-          if target == definedTarget:
+        if definedTarget in TestCase.targets:
+            TestCase.path = path
             suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 
     return suite
