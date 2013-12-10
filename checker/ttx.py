@@ -15,7 +15,24 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from base import *
-from upstream import run_set as upstream_set
-from result import run_set as result_set
-from ttx import run_set as ttx_set
+import argparse, os
+import ttx_suite
+
+from .base import make_suite, run_suite
+
+def run_set(path):
+    """ Return tests results for .ttx font in parameter """
+    assert os.path.exists(path)
+    return run_suite(make_suite(path, 'ttx'))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ttx', default='')
+    # parser.add_argument('filename', default='')
+    parser.add_argument('unittest_args', nargs='*')
+
+    args = parser.parse_args()
+    # #@$%
+    s = make_suite(args.ufo)
+    run_suite(s)
