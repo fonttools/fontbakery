@@ -22,14 +22,14 @@ http://github.com/xen/fontbakery/
 $(document).delegate('.toggle', 'click', function () {
   event.stopPropagation();
   $(this).next().slideToggle();
-  $(this).children().toggleClass("icon-collapse").toggleClass("icon-expand");
+  $(this).children().toggleClass("icon-double-angle-right").toggleClass("icon-double-angle-down");
 });
 
 $(document).ready(function() {
 
-$('.toggle').children().addClass("icon-collapse");
+$('.toggle').children().addClass("icon-double-angle-right");
 $('.toggleCollapseFirst').next().hide();
-$('.toggleCollapseFirst').children().addClass("icon-expand").removeClass("icon-collapse");;
+$('.toggleCollapseFirst').children().addClass("icon-double-angle-down").removeClass("icon-double-angle-right");;
 
 $(".tablesorter").tablesorter();
 

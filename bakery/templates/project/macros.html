@@ -126,7 +126,7 @@
     </ul>
     {# Tests per font file #}
     {%- for font in tests.keys() %}
-        <h3 id="{{font.split('/')[-1].lower()|replace(' ', '')}}" class="toggle toggleCollapseFirst"><i class="icon"></i> {{ font }}</h3>
+        <h4 id="{{font.split('/')[-1].lower()|replace(' ', '')}}" class="toggle toggleCollapseFirst">{{ font }} <i class="icon"></i></h4>
         <div>
         <table class="table table-striped table-bordered table-condensed tablesorter testsByFont">
         <thead style="text-align:left">
@@ -162,7 +162,7 @@
     {%- endfor %}
 
     {# Tests for all fonts in 1 table #}
-    <h3 id="allfonts" class="toggle"><i class="icon"></i> {{ _('All Fonts') }}</h3>
+    <h3 id="allfonts">{{ _('All Fonts') }}</h3>
     <table class="table table-striped table-bordered table-condensed tablesorter" id="testsByTest">
     <thead style="text-align:left">
         <th style="text-align:center">Result </th>
