@@ -17,6 +17,7 @@
 
 from checker.base import BakeryTestCase as TestCase
 import fontforge
+import unicodedata
 
 class SimpleTest(TestCase):
     targets = ['result']
@@ -28,8 +29,7 @@ class SimpleTest(TestCase):
         self.font = fontforge.open(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
-        # import ipdb; ipdb.set_trace()
-        
+
     # def test_ok(self):
     #     """ This test succeeds """
     #     self.assertTrue(True)
@@ -46,3 +46,12 @@ class SimpleTest(TestCase):
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
+
+    def test_nbsp(self):
+        """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
+        self.assertIn(ord(unicodedata.lookup('NO-BREAK SPACE')), set([x.unicode for x in self.font.glyphs()]))
+
+    def test_euro(self):
+        """Check if 'EURO SIGN' exsist in font glyphs"""
+        self.assertIn(ord(unicodedata.lookup('EURO SIGN')), set([x.unicode for x in self.font.glyphs()]))
+
