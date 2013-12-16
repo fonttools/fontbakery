@@ -69,7 +69,8 @@ class MetadataJSONTest(TestCase):
 
     def test_metadata_wight_in_range(self):
         """ Font weight should be in range from 100 to 900 """
-        rcheck = lambda x: True if x > 100 and x < 900 else False
+
+        rcheck = lambda x: True if x in range(100, 1000, 100) else False
         self.assertTrue(all([rcheck(x) for x in self.metadata['fonts']]))
 
 
@@ -100,3 +101,22 @@ class MetadataJSONTest(TestCase):
         canonic_name = "%s-%s.ttf" % (self.font.familyname, self.font.weight)
         self.assertEqual(name, canonic_name)
 
+
+# 'Thin', 100
+# 'ThinItalic', 100
+# 'ExtraLight', 200
+# 'ExtraLightItalic', 200
+# 'Light', 300
+# 'LightItalic', 300
+# 'Regular', 400
+# 'Italic', 400
+# 'Medium', 500
+# 'MediumItalic', 500
+# 'SemiBold', 600
+# 'SemiBoldItalic', 600
+# 'Bold', 700
+# 'BoldItalic', 700
+# 'ExtraBold', 800
+# 'ExtraBoldItalic', 800
+# 'Black', 900
+# 'BlackItalic', 900
