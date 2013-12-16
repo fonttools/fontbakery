@@ -50,6 +50,7 @@ family = {}
 for fontfilename, fontaine in fonts.iteritems():
     # Use the font file name as a key to a dictionary of char sets
     family[fontfilename] = {}
+    #print fontfilename
     for charset, coverage, percentcomplete, missingchars in fontaine.get_orthographies():
         # Use each char set name as a key to a dictionary of this font's coverage details
         charsetname = charset.common_name
@@ -65,6 +66,8 @@ for fontfilename, fontaine in fonts.iteritems():
         # And finally, if the list now has all the font files, make it the mean average percentage
         if len(family[charsetname]) == len(fonts.items()):
             family[charsetname] = sum(family[charsetname]) / len(fonts.items())
+        #print charsetname + ":", percentcomplete, "  "
+    #print '\n' 
 
 
 # # pprint the full dict, could be yaml/json/etc
@@ -77,13 +80,17 @@ for fontfilename, fontaine in fonts.iteritems():
 #    if not k.endswith('.ttf'):
 #        print k + ',' + str(family[k])
 
-# import ipdb; ipdb.set_trace()
-# Make a plain dictionary with just the bits we want on the dashboard
-totals = {} 
-totals['gwf'] = family[u'GWF latin']
-totals['al3'] = family[u'Adobe Latin 3']
-totals['cyr'] = family[u'Basic Cyrillic']
-for charset in sorted(totals.keys()):
-    #import ipdb; ipdb.set_trace()
-    #print charset, totals[charset], 
-    print charset + ",", str(totals[charset]) + ',',
+# Print just the bits we want on the dashboard
+print "Family Averages:"
+charsets = [u'GWF latin', u'Adobe Latin 3', u'Basic Cyrillic', u'GWF vietnamese', ]
+for charset in charsets:
+    print charset + ":", str(family[charset])
+
+
+# # outputs AL3 and GWF CYR charset family percenetages:
+#
+# for fam in opensans oswald roboto droidsans lato opensanscondensed ptsans droidserif ptsansnarrow ubuntu sourcesanspro robotocondensed yanonekaffeesatz lora arvo nunito raleway lobster francoisone rokkitt oxygen ptserif arimo montserrat bitter merriweather shadowsintolight cabin dosis play cuprum craftygirls abel ubuntucondensed anton specialelite fjallaone mavenpro notosans comingsoon titilliumweb changaone signika vollkorn merriweathersans josefinsans asap questrial inconsolata armata archivonarrow dancingscript pacifico economica cabincondensed unkempt kreon muli comfortaa istokweb squadaone ptsanscaption exo philosopher cantarell nobile quicksand chewy josefinslab playfairdisplay ropasans denkone luckiestguy happymonkey indieflower telex newscycle pontanosans cantataone marvel breeserif fredokaone calligraffitti amaticsc permanentmarker cherrycreamsoda droidsansmono librebaskerville quattrocentosans rocksalt robotoslab gudea righteous oldstandardtt jockeyone playball noticiatext blackopsone karla monda alegreya; do echo -n "$fam,"; ~/src/bakery-xen/scripts/famchar.py */$fam; done
+
+# # outputs number of styles:
+#
+# for fam in opensans oswald roboto droidsans lato opensanscondensed ptsans droidserif ptsansnarrow ubuntu sourcesanspro robotocondensed yanonekaffeesatz lora arvo nunito raleway lobster francoisone rokkitt oxygen ptserif arimo montserrat bitter merriweather shadowsintolight cabin dosis play cuprum craftygirls abel ubuntucondensed anton specialelite fjallaone mavenpro notosans comingsoon titilliumweb changaone signika vollkorn merriweathersans josefinsans asap questrial inconsolata armata archivonarrow dancingscript pacifico economica cabincondensed unkempt kreon muli comfortaa istokweb squadaone ptsanscaption exo philosopher cantarell nobile quicksand chewy josefinslab playfairdisplay ropasans denkone luckiestguy happymonkey indieflower telex newscycle pontanosans cantataone marvel breeserif fredokaone calligraffitti amaticsc permanentmarker cherrycreamsoda droidsansmono librebaskerville quattrocentosans rocksalt robotoslab gudea righteous oldstandardtt jockeyone playball noticiatext blackopsone karla monda alegreya; do echo -n "$fam,"; echo -n `ls -1 */$fam/*ttf | wc -l`; echo ' '; done
