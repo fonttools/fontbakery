@@ -29,6 +29,7 @@ class SimpleTest(TestCase):
         self.font = fontforge.open(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
+        # import ipdb; ipdb.set_trace()
 
     # def test_ok(self):
     #     """ This test succeeds """
