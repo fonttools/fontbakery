@@ -69,7 +69,7 @@ class MetadataJSONTest(TestCase):
 
     def test_metadata_wight_in_range(self):
         """ Font weight should be in range from 100 to 900 """
-        rcheck = lambda x: True if x>100 and x<900 else False
+        rcheck = lambda x: True if x > 100 and x < 900 else False
         self.assertTrue(all([rcheck(x) for x in self.metadata['fonts']]))
 
 
@@ -97,9 +97,6 @@ class MetadataJSONTest(TestCase):
     def test_font_file_name_canonical(self):
         """ Font name is canonical """
         name = os.path.basename(self.path)
-
-
-        self.assertTrue(any([self.font.fontname.endswith(x) for x in self.styles]))
-
-
+        canonic_name = "%s-%s.ttf" % (self.font.familyname, self.font.weight)
+        self.assertEqual(name, canonic_name)
 
