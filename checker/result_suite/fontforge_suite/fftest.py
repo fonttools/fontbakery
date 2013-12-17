@@ -50,9 +50,10 @@ class SimpleTest(TestCase):
 
     def test_nbsp(self):
         """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
-        self.assertIn(ord(unicodedata.lookup('NO-BREAK SPACE')), set([x.unicode for x in self.font.glyphs()]))
+        self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
+
 
     def test_euro(self):
         """Check if 'EURO SIGN' exsist in font glyphs"""
-        self.assertIn(ord(unicodedata.lookup('EURO SIGN')), set([x.unicode for x in self.font.glyphs()]))
+        self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)
 
