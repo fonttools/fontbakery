@@ -52,6 +52,20 @@ class SimpleTest(TestCase):
         """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
 
+    def test_space(self):
+        """Check if 'SPACE' exsist in font glyphs"""
+        self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
+
+    def test_nbsp_and_space_glyphs_width(self):
+        """ Nbsp and space glyphs should have the same width"""
+        space = 0
+        nbsp = 0
+        for x in self.font.glyphs():
+            if x.unicode == 160:
+                nbsp = x.width
+            elif x.unicode == 32:
+                space = x.width
+        self.assertEqual(space, nbsp)
 
     def test_euro(self):
         """Check if 'EURO SIGN' exsist in font glyphs"""
