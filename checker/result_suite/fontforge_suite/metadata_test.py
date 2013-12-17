@@ -34,7 +34,7 @@ class MetadataJSONTest(TestCase):
 
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
-        self.assertEqual(self.font.fontname.split('-').pop(0), self.metadata.get('name', None))
+        self.assertEqual(self.font.familyname, self.metadata.get('name', None))
 
     def test_metadata_font_have_regular(self):
         """ According GWF standarts font should have Regular style. """
