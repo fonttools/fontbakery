@@ -66,26 +66,85 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(have)
 
-
     def test_metadata_wight_in_range(self):
         """ Font weight should be in range from 100 to 900 """
 
         rcheck = lambda x: True if x in range(100, 1000, 100) else False
         self.assertTrue(all([rcheck(x) for x in self.metadata['fonts']]))
 
-
     styles = ['Thin', 'ThinItalic', 'ExtraLight',
         'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
         'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
         'BoldItalic', 'ExtraBold', 'ExtraBoldItalic', 'Black', 'BlackItalic']
 
-    def test_metadata_styles_are_canonical(self):
-        """ List of alowed styles are: 'Thin', 'ThinItalic', 'ExtraLight',
-        'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
-        'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
-        'BoldItalic', 'ExtraBold', 'ExtraBoldItalic', 'Black', 'BlackItalic' """
+    # test each key for font item:
+    # {
+    #   "name": "Merritest", --- doesn't incule style name
+    #   "postScriptName": "Merritest-Bold", ---
+    #   "fullName": "Merritest Bold", ---
+    #   "style": "normal",
+    #   "weight": 700,
+    #   "filename": "Merritest-Bold.ttf", ---
+    #   "copyright": "Merriweather is a medium contrast semi condesed typeface designed to be readable at very small sizes. Merriweather is traditional in feeling despite a the modern shapes it has adopted for screens."
+    # },
 
-        self.assertTrue(all([any([x['postScriptName'].endswith(i) for i in self.styles]) for x in self.metadata['fonts']]))
+    def test_metadata_fonts_exists(self):
+        """ METADATA.json font propery should exists """
+        self.assertTrue(self.metadata.get('fonts', False))
+
+    def test_metadata_fonts_list(self):
+        """ METADATA.json font propery should be list """
+        self.assertEqual(type(self.metadata.get('fonts', False)), type([]))
+
+    def test_metadata_fonts_fields(self):
+        """ METADATA.json "fonts" property items should have "name", "postScriptName",
+        "fullName", "style", "weight", "filename", "copyright" keys """
+        keys = ["name", "postScriptName",  "fullName", "style", "weight",
+            "filename", "copyright"]
+        result = []
+        for x in self.metadata.get("fonts", None):
+            for j in keys:
+                self.assertTrue(j in x)
+
+    def test_metadata_font_name_canonical(self):
+        """ METADATA.json fonts 'name' property shoyld be same as font familyname """
+        self.assertTrue(all([ x['name'] == self.font.familyname for x in self.metadata.get('fonts', None)]))
+
+    def test_metadata_postscript_canonical(self):
+        """ METADATA.json fonts postScriptName should be [font familyname]-[style].
+        Alowed styles are: 'Thin', 'ThinItalic', 'ExtraLight', 'ExtraLightItalic',
+        'Light', 'LightItalic', 'Regular', 'Italic', 'Medium', 'MediumItalic',
+        'SemiBold', 'SemiBoldItalic', 'Bold', 'BoldItalic', 'ExtraBold',
+        'ExtraBoldItalic', 'Black', 'BlackItalic' """
+        results = []
+        # for x in self.metadata.get('fonts', None):
+
+        self.assertTrue(all(
+             [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata['fonts']]
+             ))
+
+    def test_metadata_font_filename_canonical(self):
+        """ METADATA.json fonts """
+        pass
+
+    def test_metadata_font_fullname_canonical(self):
+        """ """
+        pass
+
+
+    def test_metadata_fontstyles_are_canonical(self):
+        """ Each font style in METADATA.json can be italic or normal """
+        # test each key for font item:
+        # {
+        #   "name": "Merritest",
+        #   "postScriptName": "Merritest-Bold",
+        #   "fullName": "Merritest Bold",
+        #   "style": "normal", --- check this property, if "postScriptName" ends with Italic then italic
+        #   "weight": 700,
+        #   "filename": "Merritest-Bold.ttf",
+        #   "copyright": "Merriweather is a medium contrast semi condesed typeface designed to be readable at very small sizes. Merriweather is traditional in feeling despite a the modern shapes it has adopted for screens."
+        # },
+        pass
 
     def test_font_weight_is_canonical(self):
         """ Font wight property is from canonical styles list"""
@@ -100,6 +159,96 @@ class MetadataJSONTest(TestCase):
         name = os.path.basename(self.path)
         canonic_name = "%s-%s.ttf" % (self.font.familyname, self.font.weight)
         self.assertEqual(name, canonic_name)
+
+    def test_menu_file_exists(self):
+        """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists("%s.menu" % os.path.splitext(self.path)[0]))
+
+    def test_menu_file_is_canonical(self):
+        """ Menu file should be [font.familyname]-[font.weight].menu """
+        name = "%s.menu" % os.path.splitext(self.path)[0]
+        canonic_name = "%s-%s.menu" % (self.font.familyname, self.font.weight)
+        self.assertEqual(name, canonic_name)
+
+    def test_menu_file_readeable(self):
+        """ Menu file should be true ttf file """
+        name = "%s.menu" % os.path.splitext(self.path)[0]
+        try:
+            menu = fontforge.open(name)
+        except:
+            menu = False
+
+        self.assertTrue(menu)
+
+
+    def test_metadata_have_subset(self):
+        """ METADATA.json shoyld have 'subsets' property """
+        self.assertTrue(self.metadata.get('subsets', None))
+
+    subset_list = ['menu', 'latin', 'latin_ext', 'vietnamese', 'greek',
+        'cyrillic', 'cyrillic_ext', 'arabic']
+
+    def test_metadata_subsets_names_are_correct(self):
+        """ METADATA.json 'subset' property can have only allowed values from list:
+        ['menu', 'latin','latin_ext', 'vietnamese', 'greek', 'cyrillic',
+        'cyrillic_ext', 'arabic'] """
+        self.assertTrue(all([x in self.subset_list for x in self.metadata.get('subsets', None)]))
+
+    def test_subsets_file_are_readable(self):
+        """ Each subset file should be correct binary files """
+        result = []
+        for x in self.metadata.get('subsets', None):
+            name = "%s.%s" % (os.path.splitext(self.path)[0], x)
+            try:
+                menu = fontforge.open(name)
+                flag = True
+            except EnvironmentError:
+                flag = False
+            result.append(flag)
+        self.assertTrue(all(result))
+
+    # def test_menu_have_chars(self):
+    #     """ Test does .menu file have chars needed for METADATA family key """
+    #     from checker.tools import combine_subsets
+    #     result = []
+    #     for x in self.metadata.get('subsets', None):
+    #         name = "%s.%s" % (os.path.splitext(self.path)[0], x)
+
+    #         menu = fontforge.open(name)
+
+    #     self.assertTrue(all([ x in menu for x in result]))
+
+    def test_metadata_subsets_files(self):
+        """ Check that METADATA subsets values have corresponding subset files on disk """
+        name = "%s.menu" % os.path.splitext(self.path)[0]
+        self.assertTrue(
+            all(
+                [os.path.exists("%s.%s" % (name, x)) for x in self.metadata['subsets'] ]
+                )
+        )
+
+    # def test_metadata_family_match_filename(self):
+    #     """ Check that METADATA family value matches font filenames """
+
+    # def test_metadata_value_match_font_weight(self):
+    #     """Check that METADATA font.weight keys match font internal metadata"""
+    #     raise NotImplementedError
+
+    # def test_metadata_style_match_internal_metadata(self):
+    #     """Check that METADATA font.style keys match font internal metadata (including MacStyle)"""
+    #     raise NotImplementedError
+
+    # def test_metadata_(self):
+    #     """Check that subset files filesize is smaller than ttf original"""
+    #     raise NotImplementedError
+
+    # def test_metadata_(self):
+    #     """Check that the family name matches the font name"""
+    #     raise NotImplementedError
+
+    def test_em_is_1000(self):
+        """ Font em should be equal 1000 """
+        self.assertEqual(self.font.em, 1000)
 
 
 # 'Thin', 100
