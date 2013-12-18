@@ -514,15 +514,12 @@ def upstream_revision_tests(project, revision):
     This mean that success (aka getting any result) should be occasional particular case. Because data and
     set of folders are changing during font development process.
 
-    XXX: I think it is better to just find all `.ufo` folders in revision and run tests with them.
-    If project setup will change then test should be rerun again and before wipe all `utests` folder.
-
     :param project: Project instance
     :param revision: Git revision
     :param force: force to make tests again
     :return: dictionary with serialized tests results formatted by `repr_testcase`
     """
-    from checker import upstream_set, ttx_set
+    from checker import run_set
 
     param = { 'login': project.login, 'id': project.id,
         'revision': revision}
@@ -556,11 +553,11 @@ def upstream_revision_tests(project, revision):
 
     for font in ufo_dirs:
         if os.path.exists(os.path.join(_in, font)):
-            result[font] = upstream_set(os.path.join(_in, font))
+            result[font] = run_set(os.path.join(_in, font), 'upstream')
 
     for font in ttx_files:
         if os.path.exists(os.path.join(_in, font)):
-            result[font] = ttx_set(os.path.join(_in, font))
+            result[font] = run_set(os.path.join(_in, font), 'ttx')
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
@@ -569,7 +566,7 @@ def upstream_revision_tests(project, revision):
     return yaml.safe_load(open(_out_yaml, 'r'))
 
 def result_tests(project, build):
-    from checker import result_set
+    from checker import run_set
 
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
@@ -583,7 +580,7 @@ def result_tests(project, build):
     result = {}
     os.chdir(_out_src)
     for font in glob.glob("*.ttf"):
-        result[font] = result_set(os.path.join(_out_src, font))
+        result[font] = run_set(os.path.join(_out_src, font), 'result')
 
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
