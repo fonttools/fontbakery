@@ -139,9 +139,9 @@
         {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success' } %}
         {%- for testType, icon in testTypes.iteritems() | sort %}
           {%- for item in tests[font][testType] %}
-            <tr>
+            <tr class="{{ icon }}">
                 <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i></td>
-                <td>{% if item._testMethodDoc == None %}{{item._testMethodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item._testMethodDoc}}{% endif %}</td>
+                <td>{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %}</td>
                 <td>{{ item.tool }}</td>
                 <td>{{ item.name|replace('.','/') }}.py</td>
                 <td>{{ item.methodName }}()</td>

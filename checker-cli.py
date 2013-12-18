@@ -29,7 +29,7 @@ def run_set(path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('target', help="Target suite, possible values: 'result', 'upstream'")
+    parser.add_argument('target', help="Target suite, possible values: 'result', 'upstream', 'ttx'")
     parser.add_argument('file', help="Path to test file")
     # parser.add_argument('filename', default='')
     parser.add_argument('unittest_args', nargs='*')
