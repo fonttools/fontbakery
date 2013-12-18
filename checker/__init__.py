@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from base import *
-from upstream import run_set as upstream_set
-from result import run_set as result_set
-from ttx import run_set as ttx_set
+from .base import *
+from .upstream import run_set as upstream_set
+from .result import run_set as result_set
+from .ttx import run_set as ttx_set
