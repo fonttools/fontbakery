@@ -77,6 +77,10 @@ class MetadataJSONTest(TestCase):
         'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
         'BoldItalic', 'ExtraBold', 'ExtraBoldItalic', 'Black', 'BlackItalic']
 
+    italic_styles = ['ThinItalic', 'ExtraLightItalic', 'LightItalic', 'Italic',
+        'MediumItalic', 'SemiBoldItalic', 'BoldItalic', 'ExtraBoldItalic',  'BlackItalic']
+
+
     # test each key for font item:
     # {
     #   "name": "Merritest", --- doesn't incule style name
@@ -101,13 +105,12 @@ class MetadataJSONTest(TestCase):
         "fullName", "style", "weight", "filename", "copyright" keys """
         keys = ["name", "postScriptName",  "fullName", "style", "weight",
             "filename", "copyright"]
-        result = []
         for x in self.metadata.get("fonts", None):
             for j in keys:
                 self.assertTrue(j in x)
 
     def test_metadata_font_name_canonical(self):
-        """ METADATA.json fonts 'name' property shoyld be same as font familyname """
+        """ METADATA.json fonts 'name' property should be same as font familyname """
         self.assertTrue(all([ x['name'] == self.font.familyname for x in self.metadata.get('fonts', None)]))
 
     def test_metadata_postscript_canonical(self):
@@ -116,35 +119,100 @@ class MetadataJSONTest(TestCase):
         'Light', 'LightItalic', 'Regular', 'Italic', 'Medium', 'MediumItalic',
         'SemiBold', 'SemiBoldItalic', 'Bold', 'BoldItalic', 'ExtraBold',
         'ExtraBoldItalic', 'Black', 'BlackItalic' """
-        results = []
-        # for x in self.metadata.get('fonts', None):
-
         self.assertTrue(all(
-             [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata['fonts']]
+             [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
              ))
 
-    def test_metadata_font_filename_canonical(self):
-        """ METADATA.json fonts """
-        pass
-
     def test_metadata_font_fullname_canonical(self):
-        """ """
-        pass
+        """ METADATA.json fonts fullName property should be '[font.familyname] [font.style]' format (w/o quotes)"""
+        for x in self.metadata.get("fonts", None):
+            style = None
+            fn = x.get('fullName', None)
+            for i in self.styles:
+                if fn.endswith(i):
+                    style = i
+                    break
+            self.assertTrue(style)
+            self.assertEqual("%s %s" % (self.font.familyname, style), fn)
 
+    def test_metadata_font_filename_canonical(self):
+        """ METADATA.json fonts filename property should be [font.familyname]-[font.style].ttf format."""
+        for x in self.metadata.get("fonts", None):
+            style = None
+            fn = x.get('filename', None)
+            for i in self.styles:
+                if fn.endswith("-%s.ttf" % i):
+                    style = i
+                    break
+            self.assertTrue(style)
+            self.assertEqual("%s-%s.ttf" % (self.font.familyname, style), fn)
 
-    def test_metadata_fontstyles_are_canonical(self):
-        """ Each font style in METADATA.json can be italic or normal """
-        # test each key for font item:
-        # {
-        #   "name": "Merritest",
-        #   "postScriptName": "Merritest-Bold",
-        #   "fullName": "Merritest Bold",
-        #   "style": "normal", --- check this property, if "postScriptName" ends with Italic then italic
-        #   "weight": 700,
-        #   "filename": "Merritest-Bold.ttf",
-        #   "copyright": "Merriweather is a medium contrast semi condesed typeface designed to be readable at very small sizes. Merriweather is traditional in feeling despite a the modern shapes it has adopted for screens."
-        # },
-        pass
+    def test_metadata_fonts_no_dupes(self):
+        """ METADATA.json fonts propery only should have uniq values """
+        fonts = {}
+        for x in self.metadata.get('fonts', None):
+            self.assertFalse(x.get('fullName', '') in fonts)
+            fonts[x.get('fullName', '')] = x
+
+        self.assertEqual(len(set(fonts.keys())), len(self.metadata.get('fonts', None)))
+
+    def test_metadata_contains_current_font(self):
+        """ METADATA.json should contains testing font, under canonic name"""
+        font = None
+        current_font = "%s %s" % (self.font.familyname, self.font.weight)
+        for x in self.metadata.get('fonts', None):
+            if x.get('fullName', None) == current_font:
+                font = x
+                break
+
+        self.assertTrue(font)
+
+    # def extract_style(in, )
+    def test_metadata_font_style_same_all_fields(self):
+        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
+        "filename" should have the same style """
+        style = None
+        # for x in self.metadata.get('fonts', None):
+        #     name_style =
+        #
+
+    # import magic
+    # m = magic.open(magic.MAGIC_MIME)
+    # m.load()
+    # m.file("/tmp/document.pdf")
+
+    def test_metadata_font_style_italic_correct(self):
+        """ METADATA.json fonts style property should be italic if font is italic."""
+        self.assertTrue(all(
+             [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
+             ))
+
+        for x in self.metadata.get('fonts', None):
+            # for i in
+            self.assertTrue(x.get('style'))
+            if x.get('fullName', None) == current_font:
+                font = x
+                break
+        self.assertTrue(font)
+        if int(self.font.italicangle) == 0:
+            self.assertEqual(font.get('style', None), 'normal')
+        else:
+            self.assertEqual(font.get('style', None), 'italic')
+
+    def test_metadata_font_style_italic_follow_internal_data(self):
+        """ METADATA.json fonts style property should be italic if font is italic."""
+        font = None
+        current_font = "%s %s" % (self.font.familyname, self.font.weight)
+        for x in self.metadata.get('fonts', None):
+            if x.get('fullName', None) == current_font:
+                font = x
+                break
+        self.assertTrue(font)
+        if int(self.font.italicangle) == 0:
+            self.assertEqual(font.get('style', None), 'normal')
+        else:
+            self.assertEqual(font.get('style', None), 'italic')
+
 
     def test_font_weight_is_canonical(self):
         """ Font wight property is from canonical styles list"""
