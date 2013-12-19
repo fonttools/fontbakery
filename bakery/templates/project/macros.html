@@ -118,7 +118,7 @@
 {%- endmacro %}
 
 {%- macro showTests() %}
- <div class="">
+ <div style="max-width:900px" id="fonts-tests">
     <ul class="inline muted">
         <li><i class="icon-circle text-warning"></i> means the test didn't work: fix the test</li>
         <li><i class="icon-circle text-error"></i> means the test failed: fix the font</li>
@@ -126,64 +126,61 @@
     </ul>
     {# Tests per font file #}
     {%- for font in tests.keys() %}
-        <h4 id="{{font.split('/')[-1].lower()|replace(' ', '')}}" class="toggle toggleCollapseFirst">{{ font }} <i class="icon"></i></h4>
-        <div>
-        <table class="table table-striped table-bordered table-condensed tablesorter testsByFont">
+      <div class="row-fluid">
+        <div class="span9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }}</h4></div>
+        <div class="span3">
+        {% set  t = tests[font]['sum'] %}
+        {% set sl = tests[font]['success']|length|int %}
+        {% set el = tests[font]['error']|length|int %}
+        {% set fl = tests[font]['failure']|length|int %}
+        <!-- <i class="icon-circle text-warning"></i> {{fl}} <i class="icon-circle text-error"></i> {{el}} <i class="icon-circle text-success"></i> {{sl}} -->
+        <div class="progress" style="height:10px; margin-top:15px;">
+            <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
+            <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+            <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
+        </div>
+        </div>
+      </div>
+        <div id="fview{{loop.index}}" class="collapse">
+        <table class="table table-condensed tablesorter">
         <thead style="text-align:left">
             <th style="text-align:center">Result </th>
             <th>Test</th>
-            <th>Tool</th>
-            <th>File</th>
-            <th>Method</th>
         </thead>
         {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success' } %}
         {%- for testType, icon in testTypes.iteritems() | sort %}
           {%- for item in tests[font][testType] %}
-            <tr class="{{ icon }}">
-                <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i></td>
-                <td>{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %}</td>
-                <td>{{ item.tool }}</td>
-                <td>{{ item.name|replace('.','/') }}.py</td>
-                <td>{{ item.methodName }}()</td>
+            <tr>
+                <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i> <span class="hidden">{{icon}}</span></td>
+                <td class="{{ icon }}">{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+                <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
             </tr>
           {%- endfor %}
         {%- endfor %}
         </table>
         </div>
-        {% set  t = tests[font]['sum'] %}
-        {% set sl = tests[font]['success']|length|int %}
-        {% set el = tests[font]['error']|length|int %}
-        {% set fl = tests[font]['failure']|length|int %}
-        <div class="progress">
-            <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
-            <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
-            <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
-        </div>
     {%- endfor %}
 
+    <hr>
     {# Tests for all fonts in 1 table #}
     <h3 id="allfonts">{{ _('All Fonts') }}</h3>
-    <table class="table table-striped table-bordered table-condensed tablesorter" id="testsByTest">
+    <table class="table table-condensed tablesorter">
     <thead style="text-align:left">
         <th style="text-align:center">Result </th>
         <th>Font</th>
         <th>Test</th>
-        <th>Tool</th>
-        <th>File</th>
-        <th>Method</th>
     </thead>
 
     {%- for testType in ['error', 'failure', 'success'] %}
       {%- for font in tests.keys() %}
         {%- for item in tests[font][testType] %}
           <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
-            <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i></td>
-            <td>{{ font }}</td>
-            <td>{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %}</td>
-            <td>{{ item.tool }}</td>
-            <td>{{ item.name|replace('.','/') }}.py</td>
-            <td>{{ item.methodName }}()</td>
+              <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i> <span class="hidden">{{icon}}</span></td>
+              <td>{{ font }}</td>
+              <td class="{{ icon }}">{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+              <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
           </tr>
+
         {%- endfor %}
       {%- endfor %}
     {%- endfor %}
