@@ -27,10 +27,6 @@ $(document).delegate('.toggle', 'click', function () {
 
 $(document).ready(function() {
 
-$('.toggle').children().addClass("icon-double-angle-right");
-$('.toggleCollapseFirst').next().hide();
-$('.toggleCollapseFirst').children().addClass("icon-double-angle-down").removeClass("icon-double-angle-right");;
-
 $(".tablesorter").tablesorter();
 
 $("[rel='tooltip']").tooltip();
