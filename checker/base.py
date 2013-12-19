@@ -130,3 +130,12 @@ def run_suite(suite):
     # on next step here will be runner object
     return result
 
+
+def tests_report():
+    """ Small helper to make test report """
+    f = lambda x: True if x.startswith('test') else False
+    m = []
+    for x in TestRegistry.list():
+        m.extend([getattr(x, i) for i in filter(f, dir(x))])
+
+    for i in m: print("%s,\"%s\"" % (str(i).replace('<unbound method ','').replace('>',''), unicode(i.__doc__).replace("\n", '').replace('"',"'")))
