@@ -138,4 +138,4 @@ def tests_report():
     for x in TestRegistry.list():
         m.extend([getattr(x, i) for i in filter(f, dir(x))])
 
-    for i in m: print("%s,\"%s\"" % (str(i).replace('<unbound method ','').replace('>',''), unicode(i.__doc__).replace("\n", '').replace('"',"'")))
+    for i in m: print("%s,\"%s\"" % (str(i).replace('<unbound method ','').replace('>',''), " ".join(unicode(i.__doc__).replace("\n", '').replace('"',"'").split())) )

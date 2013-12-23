@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -19,7 +20,7 @@ import argparse, os
 import unittest
 import sys
 
-from checker.base import make_suite, run_suite
+from checker.base import make_suite, run_suite, tests_report
 
 def run_set(path):
     """ Return tests results for .ttf font in parameter """
@@ -35,7 +36,11 @@ if __name__ == '__main__':
     parser.add_argument('unittest_args', nargs='*')
 
     args = parser.parse_args()
-    print(args, args.target)
+    if args.target == 'list':
+        # special hidden target
+        tests_report()
+        sys.exit()
+
     sys.argv[2:] = args.unittest_args
     # #@$%
     s = make_suite(args.file, args.target)
