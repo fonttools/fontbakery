@@ -16,7 +16,7 @@ quotes = [
     0x203A, # guilsinglright
   ]
 
-empty_set = [ [0x0020], # space
+empty_set = [ 0x0020, # space
   ]
 
 latin = (range(0x20, 0x7f) + # Basic Latin (A-Z, a-z, numbers)
