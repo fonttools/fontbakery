@@ -373,7 +373,6 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get('subsets', None):
             self.assertEqual(type(x), type(""), msg="type(%s) is not dict" % x)
 
-
     def test_metadata_top_keys_types(self):
         """ METADATA.json should have proper top keys types """
         self.assertEqual(type(self.metadata.get("name", None)), type(""), msg="name key type invalid")
@@ -394,3 +393,20 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(type(self.metadata.get("weight", None)), type(0), msg="weight key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("filename", None)), type(""), msg="filename key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("copyright", None)), type(""), msg="copyright key type invalid for %s " % x)
+
+
+    def test_metadata_no_unknown_top_keys(self):
+        """ METADATA.json don't have unknown top keys """
+        top_keys = ["name", "designer", "license", "visibility", "category",
+        "size", "dateAdded", "fonts", "subsets"]
+
+        for x in self.metadata.keys():
+            self.assertIn(x, top_keys, msg="%s found unknown top key" % x)
+
+    def test_metadata_fonts_no_unknown_keys(self):
+        """ METADATA.json fonts don't have unknown top keys """
+        fonts_keys = ["name", "postScriptName",  "fullName", "style", "weight",
+            "filename", "copyright"]
+        for x in self.metadata.get("fonts", None):
+            for i in x.keys():
+                self.assertIn(i, fonts_keys, msg="%s found unknown top key in %s" % (i, x))
