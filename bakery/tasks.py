@@ -496,6 +496,7 @@ def fontaine_process(project, build, log):
     #   project.save_state()
 
 
+from checker import run_set
 # register yaml serializer for tests result objects.
 from checker.base import BakeryTestCase
 def repr_testcase(dumper, data):
@@ -505,6 +506,7 @@ def repr_testcase(dumper, data):
         'name': data.name,
         'methodName': data._testMethodName,
         'targets': data.targets,
+        'tags': getattr(data, data._testMethodName).tags,
         })
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
@@ -519,8 +521,6 @@ def upstream_revision_tests(project, revision):
     :param force: force to make tests again
     :return: dictionary with serialized tests results formatted by `repr_testcase`
     """
-    from checker import run_set
-
     param = { 'login': project.login, 'id': project.id,
         'revision': revision}
 
@@ -566,10 +566,8 @@ def upstream_revision_tests(project, revision):
     return yaml.safe_load(open(_out_yaml, 'r'))
 
 def result_tests(project, build):
-    from checker import run_set
-
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+        'revision': build.revision, 'build': build.id}
 
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)

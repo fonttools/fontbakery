@@ -34,7 +34,7 @@ class MetadataJSONTest(TestCase):
         self.metadata = yaml.load(open(medatata_path, 'r').read())
         self.fname = os.path.splitext(self.path)[0]
 
-    @tags('important')
+    @tags('important', 'metadata')
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
         self.assertEqual(self.font.familyname, self.metadata.get('name', None))

@@ -141,7 +141,7 @@
           {%- for item in tests[font][testType] %}
             <tr>
                 <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i> <span class="hidden">{{icon}}</span></td>
-                <td class="{{ icon }}">{% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+                <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
                 <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
             </tr>
           {%- endfor %}
