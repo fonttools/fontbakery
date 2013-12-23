@@ -323,7 +323,7 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get('fonts', None):
             fonts[x.get('fullName', '')] = x
 
-        self.assertEqual(self.weights.get(self.font.weight, 0), fonts.get(self.font.fullname, {'weight':''}['weight']))
+        self.assertEqual(self.weights.get(self.font.weight, 0), fonts.get(self.font.fullname, {'weight':''}).get('weight',0))
 
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
