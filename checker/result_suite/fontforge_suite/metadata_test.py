@@ -19,6 +19,7 @@ from checker.base import BakeryTestCase as TestCase
 import fontforge
 import yaml
 import os
+import magic
 
 class MetadataJSONTest(TestCase):
     targets = ['result']
@@ -31,6 +32,7 @@ class MetadataJSONTest(TestCase):
         #
         medatata_path = os.path.join(os.path.dirname(self.path), 'METADATA.json')
         self.metadata = yaml.load(open(medatata_path, 'r').read())
+        self.fname = os.path.splitext(self.path)[0]
 
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
@@ -48,29 +50,27 @@ class MetadataJSONTest(TestCase):
 
     def test_metadata_regular_is_400(self):
         """ Usually Regular should be 400 """
-        # XXX: Dave, check if this test is needed
         have = False
         for i in self.metadata['fonts']:
-            if i['fullName'].endswith('Regular') and int(i['weight']) == 400:
+            if i['fullName'].endswith('Regular') and int(i.get('weight', 0)) == 400:
                 have = True
 
         self.assertTrue(have)
 
     def test_metadata_regular_is_normal(self):
         """ Usually Regular should be normal style """
-        # XXX: Dave, check if this test is needed
         have = False
-        for i in self.metadata['fonts']:
-            if i['fullName'].endswith('Regular') and int(i['style']) == 'normal':
+        for x in self.metadata.get('fonts', None):
+            if x.get('fullName', '').endswith('Regular') and x.get('style', '') == 'normal':
                 have = True
 
         self.assertTrue(have)
 
     def test_metadata_wight_in_range(self):
-        """ Font weight should be in range from 100 to 900 """
+        """ Font weight should be in range from 100 to 900, step 100 """
 
         rcheck = lambda x: True if x in range(100, 1000, 100) else False
-        self.assertTrue(all([rcheck(x) for x in self.metadata['fonts']]))
+        self.assertTrue(all([rcheck(x) for x in self.metadata.get('fonts', None)]))
 
     styles = ['Thin', 'ThinItalic', 'ExtraLight',
         'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
@@ -167,37 +167,35 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(font)
 
-    # def extract_style(in, )
-    def test_metadata_font_style_same_all_fields(self):
-        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
-        "filename" should have the same style """
-        style = None
-        # for x in self.metadata.get('fonts', None):
-        #     name_style =
-        #
+    # def test_metadata_font_style_same_all_fields(self):
+    #     """ METADATA.json fonts properties "name" "postScriptName" "fullName"
+    #     "filename" should have the same style """
+    #     # TODO: finish
+    #     return None
+    #     # style = None
 
-    # import magic
-    # m = magic.open(magic.MAGIC_MIME)
-    # m.load()
-    # m.file("/tmp/document.pdf")
+    #     # for x in self.metadata.get('fonts', None):
+    #     #     postScriptName_style = x["postScriptName"].split('-').pop(-1)
 
-    def test_metadata_font_style_italic_correct(self):
-        """ METADATA.json fonts style property should be italic if font is italic."""
-        self.assertTrue(all(
-             [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
-             ))
+    # def test_metadata_font_style_italic_correct(self):
+    #     """ METADATA.json fonts style property should be italic if font is italic."""
+    #     # TODO: finish
+    #     return None
+    #     self.assertTrue(all(
+    #          [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
+    #          ))
 
-        for x in self.metadata.get('fonts', None):
-            # for i in
-            self.assertTrue(x.get('style'))
-            if x.get('fullName', None) == current_font:
-                font = x
-                break
-        self.assertTrue(font)
-        if int(self.font.italicangle) == 0:
-            self.assertEqual(font.get('style', None), 'normal')
-        else:
-            self.assertEqual(font.get('style', None), 'italic')
+    #     for x in self.metadata.get('fonts', None):
+    #         # for i in
+    #         self.assertTrue(x.get('style'))
+    #         if x.get('fullName', None) == current_font:
+    #             font = x
+    #             break
+    #     self.assertTrue(font)
+    #     if int(self.font.italicangle) == 0:
+    #         self.assertEqual(font.get('style', None), 'normal')
+    #     else:
+    #         self.assertEqual(font.get('style', None), 'italic')
 
     def test_metadata_font_style_italic_follow_internal_data(self):
         """ METADATA.json fonts style property should be italic if font is italic."""
@@ -212,7 +210,6 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(font.get('style', None), 'normal')
         else:
             self.assertEqual(font.get('style', None), 'italic')
-
 
     def test_font_weight_is_canonical(self):
         """ Font wight property is from canonical styles list"""
@@ -230,24 +227,17 @@ class MetadataJSONTest(TestCase):
 
     def test_menu_file_exists(self):
         """ Menu file have font-name-style.menu format """
-        self.assertTrue(os.path.exists("%s.menu" % os.path.splitext(self.path)[0]))
+        self.assertTrue(os.path.exists("%s.menu" % self.fname))
 
     def test_menu_file_is_canonical(self):
         """ Menu file should be [font.familyname]-[font.weight].menu """
-        name = "%s.menu" % os.path.splitext(self.path)[0]
+        name = "%s.menu" % self.fname
         canonic_name = "%s-%s.menu" % (self.font.familyname, self.font.weight)
         self.assertEqual(name, canonic_name)
 
-    def test_menu_file_readeable(self):
-        """ Menu file should be true ttf file """
-        name = "%s.menu" % os.path.splitext(self.path)[0]
-        try:
-            menu = fontforge.open(name)
-        except:
-            menu = False
-
-        self.assertTrue(menu)
-
+    def test_menu_file_is_font(self):
+        """ Menu file have font-name-style.menu format """
+        self.assertTrue(magic.from_file("%s.menu" % self.fname), 'TrueType font data')
 
     def test_metadata_have_subset(self):
         """ METADATA.json shoyld have 'subsets' property """
@@ -262,78 +252,80 @@ class MetadataJSONTest(TestCase):
         'cyrillic_ext', 'arabic'] """
         self.assertTrue(all([x in self.subset_list for x in self.metadata.get('subsets', None)]))
 
-    def test_subsets_file_are_readable(self):
+    def test_subsets_exists_font(self):
+        """ Each font file should have its own set of subsets defined in METADATA.json """
+        for x in self.metadata.get('fonts', None):
+            for i in self.metadata.get('subsets', None):
+                name = "%s.%s" % (self.fname, i)
+                self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
+
+    def test_subsets_exists_opentype(self):
+        """ Each font file should have its own set of opentype file format subsets defined in METADATA.json """
+        for x in self.metadata.get('fonts', None):
+            for i in self.metadata.get('subsets', None):
+                name = "%s.%s-opentype" % (self.fname, i)
+                self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
+
+    def test_subsets_files_mime_correct(self):
         """ Each subset file should be correct binary files """
-        result = []
+        for x in self.metadata.get('fonts', None):
+            for i in self.metadata.get('subsets', None):
+                name = "%s.%s" % (self.fname, i)
+                self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
+
+    def test_subsets_opentype_files_mime_correct(self):
+        """ Each subset file should be correct binary files """
+        for x in self.metadata.get('fonts', None):
+            for i in self.metadata.get('subsets', None):
+                name = "%s.%s-opentype" % (self.fname, i)
+                self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
+
+    def test_menu_have_chars(self):
+        """ Test does .menu file have chars needed for METADATA family key """
+        from checker.tools import combine_subsets
         for x in self.metadata.get('subsets', None):
-            name = "%s.%s" % (os.path.splitext(self.path)[0], x)
-            try:
-                menu = fontforge.open(name)
-                flag = True
-            except EnvironmentError:
-                flag = False
-            result.append(flag)
-        self.assertTrue(all(result))
+            name = "%s.%s" % (self.fname, x)
 
-    # def test_menu_have_chars(self):
-    #     """ Test does .menu file have chars needed for METADATA family key """
-    #     from checker.tools import combine_subsets
-    #     result = []
-    #     for x in self.metadata.get('subsets', None):
-    #         name = "%s.%s" % (os.path.splitext(self.path)[0], x)
+            menu = fontforge.open(name)
+            subset_chars = combine_subsets([x, ])
+            self.assertTrue(all([ i in menu for i in subset_chars]))
 
-    #         menu = fontforge.open(name)
+    def test_subset_file_smaller_font_file(self):
+        """ Subset files should be smaller than font file """
+        for x in self.metadata.get('subsets', None):
+            name = "%s.%s" % (self.fname, x)
+            self.assertLess(os.path.getsize(name), os.path.getsize(self.path))
 
-    #     self.assertTrue(all([ x in menu for x in result]))
+    weights = {
+        'Thin': 100,
+        'ThinItalic': 100,
+        'ExtraLight': 200,
+        'ExtraLightItalic': 200,
+        'Light': 300,
+        'LightItalic': 300,
+        'Regular': 400,
+        'Italic': 400,
+        'Medium': 500,
+        'MediumItalic': 500,
+        'SemiBold': 600,
+        'SemiBoldItalic': 600,
+        'Bold': 700,
+        'BoldItalic': 700,
+        'ExtraBold': 800,
+        'ExtraBoldItalic': 800,
+        'Black': 900,
+        'BlackItalic': 900,
+    }
 
-    def test_metadata_subsets_files(self):
-        """ Check that METADATA subsets values have corresponding subset files on disk """
-        name = "%s.menu" % os.path.splitext(self.path)[0]
-        self.assertTrue(
-            all(
-                [os.path.exists("%s.%s" % (name, x)) for x in self.metadata['subsets'] ]
-                )
-        )
+    def test_metadata_value_match_font_weight(self):
+        """Check that METADATA font.weight keys match font internal metadata"""
+        fonts = {}
+        for x in self.metadata.get('fonts', None):
+            fonts[x.get('fullName', '')] = x
 
-    # def test_metadata_family_match_filename(self):
-    #     """ Check that METADATA family value matches font filenames """
-
-    # def test_metadata_value_match_font_weight(self):
-    #     """Check that METADATA font.weight keys match font internal metadata"""
-    #     raise NotImplementedError
-
-    # def test_metadata_style_match_internal_metadata(self):
-    #     """Check that METADATA font.style keys match font internal metadata (including MacStyle)"""
-    #     raise NotImplementedError
-
-    # def test_metadata_(self):
-    #     """Check that subset files filesize is smaller than ttf original"""
-    #     raise NotImplementedError
-
-    # def test_metadata_(self):
-    #     """Check that the family name matches the font name"""
-    #     raise NotImplementedError
+        self.assertEqual(self.weights.get(self.font.weight, 0), fonts.get(self.font.fullname, {'weight':''}['weight']))
 
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.em, 1000)
 
-
-# 'Thin', 100
-# 'ThinItalic', 100
-# 'ExtraLight', 200
-# 'ExtraLightItalic', 200
-# 'Light', 300
-# 'LightItalic', 300
-# 'Regular', 400
-# 'Italic', 400
-# 'Medium', 500
-# 'MediumItalic', 500
-# 'SemiBold', 600
-# 'SemiBoldItalic', 600
-# 'Bold', 700
-# 'BoldItalic', 700
-# 'ExtraBold', 800
-# 'ExtraBoldItalic', 800
-# 'Black', 900
-# 'BlackItalic', 900
