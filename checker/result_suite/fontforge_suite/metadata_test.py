@@ -329,3 +329,19 @@ class MetadataJSONTest(TestCase):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.em, 1000)
 
+
+    def test_font_italicangle_is_zero_or_negative(self):
+        """ font.italicangle property can be zero or negative """
+        if self.font.italicangle==0:
+            self.assertEqual(self.font.italicangle, 0)
+        else:
+            self.assertLess(self.font.italicangle, 0)
+
+    def test_font_italicangle_limits(self):
+        """ font.italicangle maximum abs(value) can be between 0 an 45 degree """
+        self.assertTrue(abs(self.font.italicangle)>=0 and abs(self.font.italicangle)<=45)
+
+    def test_font_is_font(self):
+        """ File provided as parameter is TTF font file """
+        self.assertTrue(magic.from_file(self.path, mime=True), 'application/x-font-ttf')
+
