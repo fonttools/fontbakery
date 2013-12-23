@@ -167,7 +167,7 @@ def tests_report():
     for i in m:
         print("%s,\"%s\",\"%s\"" % (
             str(i).replace('<unbound method ','').replace('>',''),
-            ",".join(i.tags),
+            ", ".join(i.tags),
             " ".join(unicode(i.__doc__).replace("\n", '').replace('"',"'").split())
             )
         )
