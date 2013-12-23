@@ -394,7 +394,6 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(type(self.metadata.get("filename", None)), type(""), msg="filename key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("copyright", None)), type(""), msg="copyright key type invalid for %s " % x)
 
-
     def test_metadata_no_unknown_top_keys(self):
         """ METADATA.json don't have unknown top keys """
         top_keys = ["name", "designer", "license", "visibility", "category",
@@ -410,3 +409,11 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get("fonts", None):
             for i in x.keys():
                 self.assertIn(i, fonts_keys, msg="%s found unknown top key in %s" % (i, x))
+
+    def test_metadata_subsets_values(self):
+        """ METADATA.json subsets should have at least 'menu' and 'latin' """
+        self.assertIn('menu', self.metadata.get('subsets', []), msg="Subsets missing menu")
+        self.assertIn('latin', self.metadata.get('subsets', []), msg="Subsets missing latin")
+
+
+
