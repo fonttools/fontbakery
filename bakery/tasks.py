@@ -626,7 +626,7 @@ def process_project(project, build, revision):
             ttx_process(project, build, log)
             subset_process(project, build, log)
             generate_metadata_process(project, build, log)
-            lint_process(project, build, log)
+            # lint_process(project, build, log)
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway background task
             # make cache file for future use
