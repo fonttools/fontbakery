@@ -36,6 +36,10 @@ class MetaTest(type):
     """
     def __new__(mcs, name, bases, attrs):
         abstract = attrs.pop('__abstract__', None)
+        for x in attrs.keys():
+            if x.startswith('test_'):
+                if not hasattr(attrs[x], 'tags'):
+                    attrs[x].tags = []
         newbornclass = super(MetaTest, mcs).__new__(mcs, name, bases, attrs)
         if not abstract:
             TestRegistry.register(newbornclass)
@@ -100,7 +104,29 @@ class BakeryTestRunner(unittest.TextTestRunner):
         self.results.append(result)
         return result
 
+class tags(object):
+    """ Decorator that allow to add .tags property to function. Usefull
+    to tag tests. `MetaTest` already implement support for functions with names
+    starting with 'test_'. Tags can be used in UI or other ways.
 
+    Example:
+
+    class SimpleTest(BakeryTestCase):
+        @tags('important', 'latin-set')
+        def test_subset_latin_chars(self):
+            ''' Important test that check latin subset char set '''
+            self.assertTrue(True) # your test code here
+
+    """
+
+    def __init__(self, *args):
+        self.tags = args
+
+    def __call__(self, f):
+        f.tags = self.tags
+        def wrap(*args, **kwargs):
+            f(*args, **kwargs)
+        return f
 
 def make_suite(path, definedTarget):
     """ path - is full path to file,
@@ -138,4 +164,10 @@ def tests_report():
     for x in TestRegistry.list():
         m.extend([getattr(x, i) for i in filter(f, dir(x))])
 
-    for i in m: print("%s,\"%s\"" % (str(i).replace('<unbound method ','').replace('>',''), " ".join(unicode(i.__doc__).replace("\n", '').replace('"',"'").split())) )
+    for i in m:
+        print("%s,\"%s\",\"%s\"" % (
+            str(i).replace('<unbound method ','').replace('>',''),
+            ",".join(i.tags),
+            " ".join(unicode(i.__doc__).replace("\n", '').replace('"',"'").split())
+            )
+        )

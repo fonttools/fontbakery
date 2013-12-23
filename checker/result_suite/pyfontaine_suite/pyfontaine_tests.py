@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 from fontaine.font import Font
 import re, string
 
@@ -30,20 +30,20 @@ class FontaineTest(TestCase):
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
-        
+
     # def test_ok(self):
     #     """ This test succeeds """
     #     self.assertTrue(True)
-    # 
+    #
     # def test_failure(self):
     #     """ This test fails """
     #     self.assertTrue(False)
-    # 
+    #
     # def test_error(self):
     #     """ Unexpected error """
     #     1 / 0
     #     self.assertTrue(False)
-    
+
     def test_charMaker(self):
         # import ipdb; ipdb.set_trace()
         pattern = re.compile('[\W_]+')

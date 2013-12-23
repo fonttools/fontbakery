@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 from fontTools.ttLib import TTFont
 
 class SimpleTTXTest(TestCase):

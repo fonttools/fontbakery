@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 import fontforge
 
 class SimpleTest(TestCase):
@@ -29,7 +29,7 @@ class SimpleTest(TestCase):
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
-        
+
     # def test_ok(self):
     #     """ This test succeeds """
     #     self.assertTrue(True)
