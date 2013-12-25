@@ -17,9 +17,7 @@
 
 from checker.base import BakeryTestCase as TestCase, tags
 from fontTools import ttLib
-import yaml
 import os
-import magic
 
 class FontToolsTest(TestCase):
     targets = ['result']
@@ -29,12 +27,6 @@ class FontToolsTest(TestCase):
 
     def setUp(self):
         self.font = ttLib.TTFont(self.path)
-
-
-    def test_dev(self):
-        """ Test """
-        import ipdb; ipdb.set_trace()
-
 
     def test_tables(self):
         """ List of tables that shoud be in font file """
