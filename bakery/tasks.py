@@ -501,7 +501,7 @@ from checker import run_set
 from checker.base import BakeryTestCase
 def repr_testcase(dumper, data):
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
-        'methodDoc': data._testMethodDoc,
+        'methodDoc': " ".join(str(data._testMethodDoc).split()),
         'tool': data.tool,
         'name': data.name,
         'methodName': data._testMethodName,
