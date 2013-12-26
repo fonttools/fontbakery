@@ -188,11 +188,6 @@ def copy_ufo_files(project, build, log):
         # Copy the UFOs
         run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
 
-        # Fix common lack of nbspace issue
-        log.write('Fix nbsp in UFOs\n', prefix = '### ')
-        cmd = str("'%s/venv/bin/python' '%s/scripts/fix-addnbsp.py' '%s'") % (ROOT, ROOT, _out_ufo_path)
-        run(cmd, cwd=_out, log=log)
-
         # If we rename, change the font family name metadata inside the _out_ufo
         if familyName:
             # Read the _out_ufo fontinfo.plist
