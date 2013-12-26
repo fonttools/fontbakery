@@ -507,6 +507,7 @@ def repr_testcase(dumper, data):
         'methodName': data._testMethodName,
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
+        'err_msg': getattr(data, '_err_msg', '')
         })
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)

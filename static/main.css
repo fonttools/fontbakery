@@ -327,3 +327,9 @@ ol.linenums li {
 .hunk {
     background: rgba(65,131,196,0.3);
 }
+
+.alert-info {
+    background-color: #f0f0f0;
+    color: #333333;
+    border-color: #eee;
+}

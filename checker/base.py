@@ -70,11 +70,17 @@ class BakeryTestResult(unittest.TestResult):
 
     def addError(self, test, err):
         super(BakeryTestResult, self).addError(test, err)
+        _err_type, _err_exception, _err_tb = err
+        test._err = err
+        test._err_msg = _err_exception.message
         if hasattr(self.el, 'append'):
             self.el.append(test)
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
+        _err_type, _err_exception, _err_tb = err
+        test._err = err
+        test._err_msg = _err_exception.message
         if hasattr(self.fl, 'append'):
             self.fl.append(test)
 

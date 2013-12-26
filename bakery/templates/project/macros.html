@@ -142,6 +142,7 @@
             <tr>
                 <td style="text-align:center"><i class="icon-circle text-{{icon}}"></i> <span class="hidden">{{icon}}</span></td>
                 <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+                {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
                 <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
             </tr>
           {%- endfor %}
@@ -167,6 +168,7 @@
               <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i> <span class="hidden">{{icon}}</span></td>
               <td>{{ font }}</td>
               <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+              {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
               <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
           </tr>
 
