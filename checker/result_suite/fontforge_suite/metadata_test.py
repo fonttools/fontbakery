@@ -26,6 +26,7 @@ class MetadataJSONTest(TestCase):
     tool   = 'FontForge'
     name   = __name__
     path   = '.'
+    longMessage = True
 
     def setUp(self):
         self.font = fontforge.open(self.path)
@@ -90,7 +91,10 @@ class MetadataJSONTest(TestCase):
     #   "style": "normal",
     #   "weight": 700,
     #   "filename": "Merritest-Bold.ttf", ---
-    #   "copyright": "Merriweather is a medium contrast semi condesed typeface designed to be readable at very small sizes. Merriweather is traditional in feeling despite a the modern shapes it has adopted for screens."
+    #   "copyright": "Merriweather is a medium contrast semi condesed typeface
+    #         designed to be readable at very small sizes. Merriweather is
+    #         traditional in feeling despite a the modern shapes it has adopted
+    #         for screens."
     # },
 
     def test_metadata_fonts_exists(self):
@@ -168,35 +172,14 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(font)
 
-    # def test_metadata_font_style_same_all_fields(self):
-    #     """ METADATA.json fonts properties "name" "postScriptName" "fullName"
-    #     "filename" should have the same style """
-    #     # TODO: finish
-    #     return None
-    #     # style = None
-
-    #     # for x in self.metadata.get('fonts', None):
-    #     #     postScriptName_style = x["postScriptName"].split('-').pop(-1)
-
-    # def test_metadata_font_style_italic_correct(self):
-    #     """ METADATA.json fonts style property should be italic if font is italic."""
-    #     # TODO: finish
-    #     return None
-    #     self.assertTrue(all(
-    #          [any([x['postScriptName'].endswith("-"+i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
-    #          ))
-
-    #     for x in self.metadata.get('fonts', None):
-    #         # for i in
-    #         self.assertTrue(x.get('style'))
-    #         if x.get('fullName', None) == current_font:
-    #             font = x
-    #             break
-    #     self.assertTrue(font)
-    #     if int(self.font.italicangle) == 0:
-    #         self.assertEqual(font.get('style', None), 'normal')
-    #     else:
-    #         self.assertEqual(font.get('style', None), 'italic')
+    def test_metadata_fonts_fields_have_fontname(self):
+        """ METADATA.json fonts items fields "name", "postScriptName",
+        "fullName", "filename" contains font name right format """
+        for x in self.metadata.get('fonts', None):
+            self.assertIn(self.font.familyname, x.get('name', ''))
+            self.assertIn(self.font.familyname, x.get('fullName', ''))
+            self.assertIn("".join(str(self.font.familyname).split()), x.get('filename', ''))
+            self.assertIn("".join(str(self.font.familyname).split()), x.get('postScriptName', ''))
 
     def test_metadata_font_style_italic_follow_internal_data(self):
         """ METADATA.json fonts style property should be italic if font is italic."""
@@ -324,12 +307,77 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get('fonts', None):
             fonts[x.get('fullName', '')] = x
 
-        self.assertEqual(self.weights.get(self.font.weight, 0), fonts.get(self.font.fullname, {'weight':''}).get('weight',0))
+        self.assertEqual(self.weights.get(self.font.weight, 0),
+            fonts.get(self.font.fullname, {'weight':''}).get('weight',0))
+
+    def test_metadata_font_style_same_all_fields(self):
+        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
+        "filename" should have the same style """
+        weights_table = {
+            'Thin': 'Thin',
+            'ThinItalic': 'Thin Italic',
+            'ExtraLight': 'Extra Light',
+            'ExtraLightItalic': 'Extra Light Italic',
+            'Light': 'Light',
+            'LightItalic': 'Light Italic',
+            'Regular': 'Regular',
+            'Italic': 'Italic',
+            'Medium': 'Medium',
+            'MediumItalic': 'Medium Italic',
+            'SemiBold': 'Semi Bold',
+            'SemiBoldItalic': 'Semi Bold Italic',
+            'Bold': 'Bold',
+            'BoldItalic': 'Bold Italic',
+            'ExtraBold': 'Extra Bold',
+            'ExtraBoldItalic': 'Extra Bold Italic',
+            'Black': 'Black',
+            'BlackItalic': 'Black Italic',
+
+        }
+
+        for x in self.metadata.get('fonts', None):
+            if x.get('postScriptName', '') != self.font.familyname:
+                # this is not regular style
+                _style = x["postScriptName"].split('-').pop(-1)
+                self.assertIn(_style, weights_table.keys(), msg="Style name not from expected list")
+                self.assertEqual("%s %s" % (self.font.familyname,
+                    weights_table.keys[_style]), x.get("fullName", ''))
+            else:
+                _style = 'Regular'
+
+            self.assertEqual("%s-%s.ttf" % (self.font.familyname,
+                _style), x.get("filename", ''))
+
+
+    def test_metadata_font_style_italic_correct(self):
+        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
+        "filename" should have the same style """
+        italics_styles = {
+            'ThinItalic': 'Thin Italic',
+            'ExtraLight': 'Extra Light',
+            'ExtraLightItalic': 'Extra Light Italic',
+            'LightItalic': 'Light Italic',
+            'Italic': 'Italic',
+            'MediumItalic': 'Medium Italic',
+            'SemiBoldItalic': 'Semi Bold Italic',
+            'BoldItalic': 'Bold Italic',
+            'ExtraBoldItalic': 'Extra Bold Italic',
+            'BlackItalic': 'Black Italic',
+        }
+
+        for x in self.metadata.get('fonts', None):
+            if x.get('postScriptName', '') != self.font.familyname:
+                # this is not regular style
+                _style = x["postScriptName"].split('-').pop(-1)
+                if _style in italics_styles.keys():
+                    self.assertEqual(x.get('style', ''), 'italic')
+                else:
+                    self.assertEqual(x.get('style', ''), 'normal')
 
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
-        self.assertEqual(self.font.em, 1000)
-
+        self.assertEqual(self.font.em, 1000,
+            msg="Font em value is %s, required 1000" % self.font.em)
 
     def test_font_italicangle_is_zero_or_negative(self):
         """ font.italicangle property can be zero or negative """
@@ -417,4 +465,56 @@ class MetadataJSONTest(TestCase):
         self.assertIn('latin', self.metadata.get('subsets', []), msg="Subsets missing latin")
 
 
+    def test_metadata_copyright(self):
+        """ METDATA.json fonts copyright string is the same for all items """
+
+        copyright = None
+
+        for x in self.metadata.get('fonts', None):
+            copyright = x.get('copyright', None)
+            break
+
+        if copyright:
+            for x in self.metadata.get('fonts', None):
+                self.assertEqual(x.get('copyright', ''), copyright,
+                    msg="%s have different copyright string" % x.get('name', ''))
+
+
+    def test_metadata_license(self):
+        """ METADATA.json license is 'Apache2' or 'OFL' """
+        licenses = ['Apache2', 'OFL']
+        self.assertIn(self.metadata.get('license', ''), licenses)
+
+    def test_metadata_copyright(self):
+        """ Copyright string should contains 'Reserved Font Name' substring """
+        for x in self.metadata.get('fonts', None):
+            self.assertIn('Reserved Font Name', x.get('copyright', ''))
+
+    def test_metadata_copyright_size(self):
+        """ Copyright string should be less than 500 chars """
+        for x in self.metadata.get('fonts', None):
+            self.assertLessEqual(len(x.get('copyright', '')), 500)
+
+    def test_copyrighttxt_exists(self):
+        """ Font folder should contains COPYRIGHT.txt """
+        self.assertTrue(os.path.exists(os.path.join(
+            os.path.dirname(self.path), 'COPYRIGHT.txt')))
+
+    def test_description_exists(self):
+        """ Font folder should contains DESCRIPTION.en_us.html """
+        self.assertTrue(os.path.exists(os.path.join(
+            os.path.dirname(self.path), 'DESCRIPTION.en_us.html')))
+
+    def test_licensetxt_exists(self):
+        """ Font folder should contains LICENSE.txt """
+        self.assertTrue(os.path.exists(os.path.join(
+            os.path.dirname(self.path), 'LICENSE.txt')))
+
+    def test_fontlogtxt_exists(self):
+        """ Font folder should contains FONTLOG.txt """
+        self.assertTrue(os.path.exists(os.path.join(
+            os.path.dirname(self.path), 'FONTLOG.txt')))
+
+    # def test_copyright_file_filled(self):
+    #     """ COPYRIGHT.txt file """
 
