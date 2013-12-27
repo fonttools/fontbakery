@@ -149,7 +149,7 @@ class MetadataJSONTest(TestCase):
                 if fn.endswith("-%s.ttf" % i):
                     style = i
                     break
-            self.assertTrue(style)
+            self.assertTrue(style, msg="%s not in canonical format" % x.get('filename', None))
             self.assertEqual("%s-%s.ttf" % (self.font.familyname, style), fn)
 
     def test_metadata_fonts_no_dupes(self):
