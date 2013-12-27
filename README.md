@@ -50,14 +50,19 @@ The first covers basic functionality and overall codebase.
 
 Tests are in the `/checker` directory. 
 
-The test page shows tests that fail with the cause of failure. This message is auto generated, but also you can specify them, for example here is example code:
+The test page shows tests that fail with the cause of failure. This message is auto generated, but also you can specify them. For example, if this test fails then the message will contain the first and second `assertEqual` arguments:
+
 
 ```py
     def test_metadata_family(self):
 
         """ Font and METADATA.json have the same name """
         self.assertEqual(self.font.familyname, self.metadata.get('name', None))
+```
 
+If this test fails then an error messages will contain the string `msg`:
+
+```py
  
     def test_em_is_1000(self):
 
@@ -66,6 +71,8 @@ The test page shows tests that fail with the cause of failure. This message is a
 
             msg="Font em value is %s, required 1000" % self.font.em)
 ```
+
+This can help Font Bakery users understand what may be incorrect in their fonts, and tell them what actions they can take to correct their fonts.
 
 ### License
 
