@@ -46,7 +46,28 @@ A series of videos explaining the project are posting on the [Font Bakery tumblr
 
 The first covers basic functionality and overall codebase.
 
-#### License
+### Tests
+
+Tests are in the `/checker` directory. 
+
+The test page shows tests that fail with the cause of failure. This message is auto generated, but also you can specify them, for example here is example code:
+
+```py
+    def test_metadata_family(self):
+
+        """ Font and METADATA.json have the same name """
+        self.assertEqual(self.font.familyname, self.metadata.get('name', None))
+
+ 
+    def test_em_is_1000(self):
+
+        """ Font em should be equal 1000 """
+        self.assertEqual(self.font.em, 1000,
+
+            msg="Font em value is %s, required 1000" % self.font.em)
+```
+
+### License
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
