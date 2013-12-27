@@ -30,20 +30,24 @@ def run_set(path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('target', help="Target suite, possible values: 'result', 'upstream', 'ttx'")
-    parser.add_argument('file', help="Path to test file")
-    # parser.add_argument('filename', default='')
-    parser.add_argument('unittest_args', nargs='*')
+    parser.add_argument('action',
+        help="Action or target test suite",
+        choices=['list', 'result', 'upstream'],)
+    parser.add_argument('file', nargs="*", help="Test files, can be a list")
+    parser.add_argument('--verbose', '-v', action='count', help="Verbosity level", default=1)
 
     args = parser.parse_args()
-    if args.target == 'list':
-        # special hidden target
+    if args.action == 'list':
         tests_report()
         sys.exit()
 
-    sys.argv[2:] = args.unittest_args
-    # #@$%
-    s = make_suite(args.file, args.target)
-    runner = unittest.TextTestRunner()
-    # run_suite(s)
-    runner.run(s)
+    if not args.file:
+        print("Missing files to test")
+        sys.exit(1)
+
+    for x in args.file:
+        print(x)
+        s = make_suite(x, args.action)
+        runner = unittest.TextTestRunner(verbosity=args.verbose)
+        # run_suite(s)
+        runner.run(s)
