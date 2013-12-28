@@ -178,8 +178,10 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get('fonts', None):
             self.assertIn(self.font.familyname, x.get('name', ''))
             self.assertIn(self.font.familyname, x.get('fullName', ''))
-            self.assertIn("".join(str(self.font.familyname).split()), x.get('filename', ''))
-            self.assertIn("".join(str(self.font.familyname).split()), x.get('postScriptName', ''))
+            self.assertIn("".join(str(self.font.familyname).split()),
+                x.get('filename', ''))
+            self.assertIn("".join(str(self.font.familyname).split()),
+                x.get('postScriptName', ''))
 
     def test_metadata_font_style_italic_follow_internal_data(self):
         """ METADATA.json fonts style property should be italic if font is italic."""
@@ -237,14 +239,16 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(all([x in self.subset_list for x in self.metadata.get('subsets', None)]))
 
     def test_subsets_exists_font(self):
-        """ Each font file should have its own set of subsets defined in METADATA.json """
+        """ Each font file should have its own set of subsets
+        defined in METADATA.json """
         for x in self.metadata.get('fonts', None):
             for i in self.metadata.get('subsets', None):
                 name = "%s.%s" % (self.fname, i)
                 self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
 
     def test_subsets_exists_opentype(self):
-        """ Each font file should have its own set of opentype file format subsets defined in METADATA.json """
+        """ Each font file should have its own set of opentype file format
+        subsets defined in METADATA.json """
         for x in self.metadata.get('fonts', None):
             for i in self.metadata.get('subsets', None):
                 name = "%s.%s-opentype" % (self.fname, i)
@@ -339,7 +343,8 @@ class MetadataJSONTest(TestCase):
             if x.get('postScriptName', '') != self.font.familyname:
                 # this is not regular style
                 _style = x["postScriptName"].split('-').pop(-1)
-                self.assertIn(_style, weights_table.keys(), msg="Style name not from expected list")
+                self.assertIn(_style, weights_table.keys(),
+                    msg="Style name not from expected list")
                 self.assertEqual("%s %s" % (self.font.familyname,
                     weights_table.keys[_style]), x.get("fullName", ''))
             else:
@@ -392,7 +397,8 @@ class MetadataJSONTest(TestCase):
 
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
-        self.assertTrue(magic.from_file(self.path, mime=True), 'application/x-font-ttf')
+        self.assertTrue(magic.from_file(self.path, mime=True),
+            'application/x-font-ttf')
 
     def test_metadata_keys(self):
         """ METADATA.json should have top keys: ["name", "designer", "license", "visibility", "category",
@@ -424,24 +430,38 @@ class MetadataJSONTest(TestCase):
 
     def test_metadata_top_keys_types(self):
         """ METADATA.json should have proper top keys types """
-        self.assertEqual(type(self.metadata.get("name", None)), type(""), msg="name key type invalid")
-        self.assertEqual(type(self.metadata.get("designer", None)), type(""), msg="designer key type invalid")
-        self.assertEqual(type(self.metadata.get("license", None)), type(""), msg="license key type invalid")
-        self.assertEqual(type(self.metadata.get("visibility", None)), type(""), msg="visibility key type invalid")
-        self.assertEqual(type(self.metadata.get("category", None)), type(""), msg="category key type invalid")
-        self.assertEqual(type(self.metadata.get("size", None)), type(0), msg="size key type invalid")
-        self.assertEqual(type(self.metadata.get("dateAdded", None)), type(""), msg="dateAdded key type invalid")
+        self.assertEqual(type(self.metadata.get("name", None)),
+            type(""), msg="name key type invalid")
+        self.assertEqual(type(self.metadata.get("designer", None)),
+            type(""), msg="designer key type invalid")
+        self.assertEqual(type(self.metadata.get("license", None)),
+            type(""), msg="license key type invalid")
+        self.assertEqual(type(self.metadata.get("visibility", None)),
+            type(""), msg="visibility key type invalid")
+        self.assertEqual(type(self.metadata.get("category", None)),
+            type(""), msg="category key type invalid")
+        self.assertEqual(type(self.metadata.get("size", None)),
+            type(0), msg="size key type invalid")
+        self.assertEqual(type(self.metadata.get("dateAdded", None)),
+            type(""), msg="dateAdded key type invalid")
 
     def test_metadata_font_keys_types(self):
         """ METADATA.json fonts items dicts items should have proper types """
         for x in self.metadata.get("fonts", None):
-            self.assertEqual(type(self.metadata.get("name", None)), type(""), msg="name key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("postScriptName", None)), type(""), msg="postScriptName key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("fullName", None)), type(""), msg="fullName key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("style", None)), type(""), msg="style key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("weight", None)), type(0), msg="weight key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("filename", None)), type(""), msg="filename key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("copyright", None)), type(""), msg="copyright key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("name", None)),
+                type(""), msg="name key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("postScriptName", None)),
+                type(""), msg="postScriptName key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("fullName", None)),
+                type(""), msg="fullName key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("style", None)),
+                type(""), msg="style key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("weight", None)),
+                type(0), msg="weight key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("filename", None)),
+                type(""), msg="filename key type invalid for %s " % x)
+            self.assertEqual(type(self.metadata.get("copyright", None)),
+                type(""), msg="copyright key type invalid for %s " % x)
 
     def test_metadata_no_unknown_top_keys(self):
         """ METADATA.json don't have unknown top keys """
@@ -457,12 +477,15 @@ class MetadataJSONTest(TestCase):
             "filename", "copyright"]
         for x in self.metadata.get("fonts", None):
             for i in x.keys():
-                self.assertIn(i, fonts_keys, msg="%s found unknown top key in %s" % (i, x))
+                self.assertIn(i, fonts_keys,
+                    msg="%s found unknown top key in %s" % (i, x))
 
     def test_metadata_subsets_values(self):
         """ METADATA.json subsets should have at least 'menu' and 'latin' """
-        self.assertIn('menu', self.metadata.get('subsets', []), msg="Subsets missing menu")
-        self.assertIn('latin', self.metadata.get('subsets', []), msg="Subsets missing latin")
+        self.assertIn('menu', self.metadata.get('subsets', []),
+            msg="Subsets missing menu")
+        self.assertIn('latin', self.metadata.get('subsets', []),
+            msg="Subsets missing latin")
 
 
     def test_metadata_copyright(self):
