@@ -592,6 +592,7 @@ def result_tests(project, build):
 
 from fixer import fix_font
 def result_fixes(project, build):
+    param = {'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id}
 
     _out_src = os.path.join(DATA_ROOT,
@@ -648,6 +649,8 @@ def process_project(project, build, revision):
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
             result_tests(project, build)
+            # apply fixes
+            result_fixes(project, build)
             log.write('Bake Succeeded!\n', prefix = '### ')
         finally:
             # save that project is done
