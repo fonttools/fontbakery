@@ -631,7 +631,10 @@ def process_project(project, build, revision):
     from flask import current_app
     assert current_app
     from .extensions import db
-    db.init_app(current_app)
+    try:
+        db.init_app(current_app)
+    except:
+        pass
 
     if project.config['local'].get('setup', None):
         # this code change upstream repository
