@@ -24,6 +24,7 @@ from ..decorators import login_required
 from ..utils import project_fontaine
 from .models import Project, ProjectBuild
 from functools import wraps
+from itertools import chain
 
 import itsdangerous
 
@@ -329,8 +330,17 @@ def rtests(p, build_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     test_result = b.result_tests()
+    summary = {
+        'all_tests': sum([int(y['sum']) for x, y in test_result.items()]),
+        'fonts': test_result.keys(),
+        'all_error': sum( [len(x['error']) for x in test_result.values()]),
+        'all_failure': sum( [len(x['failure']) for x in test_result.values()]),
+        'all_fixed': sum( [len(x['fixed']) for x in test_result.values()]),
+        'all_success': sum( [len(x['success']) for x in test_result.values()]),
+        'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
+    }
     return render_template('project/rtests.html', project=p,
-                           tests=test_result, build=b)
+                           tests=test_result, build=b, summary=summary)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/description', methods=['GET', 'POST'])
