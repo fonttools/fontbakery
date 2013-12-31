@@ -60,35 +60,45 @@ def update():
     auth = github.get_session(token=g.user.token)
     if g.user is not None:
         if g.user.login != u'offline':
-            resps = []
-            # TODO DC: figure out how to use resp.links to get everything, this is nasty :)
-            # get the first 10 pages of git repos
-            for page in range(1, 10):
+            page = 0
+            _repos = []
+            while True:
                 resp = auth.get('/user/repos?per_page=100&page=%s' % page, data={'type': 'all'})
-                resps.append(resp)
-            # if the first page returned okay, process the results
-            if resps[0].status_code == 200:
-                # make a big list of all the repos in json form
-                _repos = []
-                for resp in resps:
-                    _repos += resp.json()
-                # pylint:disable-msg=E1101
-                # Set up a cache
+                if resp.status_code == 200:
+                    _repos.extend(resp.json())
+                    if len(resp.json()) == 100:
+                        page = page + 1
+                        continue
+                else:
+                    flash(_('Could not connect to Github to load repos list.'))
+                break
+            orgs = auth.get('/user/orgs')
+            if orgs.status_code == 200:
+                for x in orgs.json():
+                    opage = 0
+                    while True:
+                        oresp = auth.get('/orgs/%s/repos?per_page=100&page=%s' % (x['login'], opage), data={'type': 'all'})
+                        if oresp.status_code == 200:
+                            _repos.extend(oresp.json())
+                            if len(oresp.json()) == 100:
+                                opage = opage + 1
+                                continue
+                        else:
+                            flash(_('Error get repos for organization %s' % x['login']))
+                        break
+
+            if _repos:
                 cache = ProjectCache.query.filter_by(login=g.user.login).first()
                 if not cache:
                     cache = ProjectCache()
                     cache.login = g.user.login
-                # cache the repos
                 cache.data = _repos
-                # cache.orgs = _orgs
                 # note the time
                 cache.updated = datetime.datetime.utcnow()
                 # add the cache to the database
                 db.session.add(cache)
                 db.session.commit()
                 flash(_('Repositories refreshed.'))
-            else:
-                flash(_('Could not connect to Github to load repos list.'))
         else:
             flash(_('Offline user has no Github account.'))
     else:
