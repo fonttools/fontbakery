@@ -56,6 +56,7 @@ class SimpleTest(TestCase):
         """Check if 'SPACE' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
 
+    @tags('required',)
     def test_nbsp_and_space_glyphs_width(self):
         """ Nbsp and space glyphs should have the same width"""
         space = 0

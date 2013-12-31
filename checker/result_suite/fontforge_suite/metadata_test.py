@@ -35,7 +35,7 @@ class MetadataJSONTest(TestCase):
         self.metadata = yaml.load(open(medatata_path, 'r').read())
         self.fname = os.path.splitext(self.path)[0]
 
-    @tags('important', 'metadata')
+    @tags('required',)
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
         self.assertEqual(self.font.familyname, self.metadata.get('name', None))
@@ -50,6 +50,7 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(have)
 
+    @tags('required',)
     def test_metadata_regular_is_400(self):
         """ Usually Regular should be 400 """
         have = False
@@ -379,6 +380,7 @@ class MetadataJSONTest(TestCase):
                 else:
                     self.assertEqual(x.get('style', ''), 'normal')
 
+    @tags('required')
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.em, 1000,
