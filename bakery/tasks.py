@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 import os
+import sys
 import glob
 import subprocess
 from flask.ext.rq import job
@@ -25,8 +26,7 @@ from .utils import RedisFd
 import re
 import yaml
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-import sys
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT)
 DATA_ROOT = os.path.join(ROOT, 'data')
 
@@ -78,7 +78,8 @@ def prun(command, cwd, log=None):
     """
     # print the command on the worker console
     print("[%s]:%s" % (cwd, command))
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    p = subprocess.Popen(command, shell = True, cwd = cwd,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
         log.write('$ %s' % command)
@@ -508,8 +509,10 @@ def repr_testcase(dumper, data):
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 def upstream_revision_tests(project, revision):
-    """ This function run upstream tests set on project.config['local']['ufo_dirs'] set in selected git revision.
-    This mean that success (aka getting any result) should be occasional particular case. Because data and
+    """ This function run upstream tests set on
+    project.config['local']['ufo_dirs'] set in selected git revision.
+    This mean that success (aka getting any result) should be occasional
+    particular case. Because data and
     set of folders are changing during font development process.
 
     :param project: Project instance
@@ -565,8 +568,10 @@ def result_tests(project, build):
     param = {'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_yaml = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     if os.path.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -576,11 +581,14 @@ def result_tests(project, build):
     for font in glob.glob("*.ttf"):
         result[font] = run_set(os.path.join(_out_src, font), 'result')
 
+    # Comment during debug
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
 
-    return yaml.safe_load(open(_out_yaml, 'r'))
+    d = yaml.safe_load(open(_out_yaml, 'r'))
+    # os.remove(_out_yaml)
+    return d
 
 
 @job
@@ -595,9 +603,12 @@ def process_project(project, build, revision):
     param = { 'login': project.login, 'id': project.id,
         'revision': build.revision, 'build': build.id }
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
-    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
+    _out = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_log = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
 
     # Make logest path
     os.makedirs(_out_src)
@@ -624,8 +635,8 @@ def process_project(project, build, revision):
             generate_metadata_process(project, build, log)
             # lint_process(project, build, log)
             fontaine_process(project, build, log)
-            # result_tests doesn't needed here, but since it is anyway background task
-            # make cache file for future use
+            # result_tests doesn't needed here, but since it is anyway
+            # background task make cache file for future use
             result_tests(project, build)
             log.write('Bake Succeeded!\n', prefix = '### ')
         finally:
