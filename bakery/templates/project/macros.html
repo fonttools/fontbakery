@@ -111,8 +111,11 @@
     <ul class="inline muted">
         <li><i class="icon-circle text-warning"></i> means the test didn't work: fix the test</li>
         <li><i class="icon-circle text-error"></i> means the test failed: fix the font</li>
+        <li><i class="icon-circle text-info"></i> means the test was autofixed</li>
         <li><i class="icon-circle text-success"></i> means the test passed: fix yourself some cake</li>
     </ul>
+    <h3>{{ _('Test summary') }}</h3>
+
     {# Tests per font file #}
     {%- for font in tests.keys() %}
       <div class="row-fluid">
@@ -122,10 +125,13 @@
         {% set sl = tests[font]['success']|length|int %}
         {% set el = tests[font]['error']|length|int %}
         {% set fl = tests[font]['failure']|length|int %}
+        {% set ff = tests[font]['fixed']|length|int %}
+
         <!-- <i class="icon-circle text-warning"></i> {{fl}} <i class="icon-circle text-error"></i> {{el}} <i class="icon-circle text-success"></i> {{sl}} -->
         <div class="progress" style="height:10px; margin-top:15px;">
             <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
             <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+            <div class="bar" style="width: {{ 100*ff/t }}%;"></div>
             <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
         </div>
         </div>
@@ -136,7 +142,7 @@
             <th style="text-align:center">Result </th>
             <th>Test</th>
         </thead>
-        {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success' } %}
+        {% set testTypes = { 'error': 'warning', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
         {%- for testType, icon in testTypes.iteritems() | sort %}
           {%- for item in tests[font][testType] %}
             <tr>
@@ -150,32 +156,6 @@
         </table>
         </div>
     {%- endfor %}
-
-    <hr>
-    {# Tests for all fonts in 1 table #}
-    <h3 id="allfonts">{{ _('All Fonts') }}</h3>
-    <table class="table table-condensed tablesorter">
-    <thead style="text-align:left">
-        <th style="text-align:center">Result </th>
-        <th>Font</th>
-        <th>Test</th>
-    </thead>
-
-    {%- for testType in ['error', 'failure', 'success'] %}
-      {%- for font in tests.keys() %}
-        {%- for item in tests[font][testType] %}
-          <tr class="{{ testType | replace('error','warning') | replace('failure','error') }}">
-              <td style="text-align:center"><i class="icon-circle text-{{ testType | replace('error','warning') | replace('failure','error') }}"></i> <span class="hidden">{{icon}}</span></td>
-              <td>{{ font }}</td>
-              <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
-              {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
-              <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
-          </tr>
-
-        {%- endfor %}
-      {%- endfor %}
-    {%- endfor %}
-    </table>
 
   </div>
 {%- endmacro %}

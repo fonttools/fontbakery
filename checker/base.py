@@ -39,7 +39,7 @@ class MetaTest(type):
         for x in attrs.keys():
             if x.startswith('test_'):
                 if not hasattr(attrs[x], 'tags'):
-                    attrs[x].tags = []
+                    attrs[x].tags = ['note', ]
         newbornclass = super(MetaTest, mcs).__new__(mcs, name, bases, attrs)
         if not abstract:
             TestRegistry.register(newbornclass)

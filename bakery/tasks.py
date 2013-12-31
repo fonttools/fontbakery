@@ -590,6 +590,16 @@ def result_tests(project, build):
     # os.remove(_out_yaml)
     return d
 
+from fixer import fix_font
+def result_fixes(project, build):
+        'revision': build.revision, 'build': build.id}
+
+    _out_src = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_yaml = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+
+    fix_font(_out_yaml, _out_src)
 
 @job
 def process_project(project, build, revision):
