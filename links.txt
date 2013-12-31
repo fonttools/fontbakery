@@ -1,0 +1,7 @@
+Test repos list:
+
+git@github.com:xen/bakery-testfont-merriweather.git
+git@github.com:fontdirectory/ubuntu.git
+git@github.com:xen/league-gothic.git
+git@github.com:xen/AutonymFont.git
+git@github.com:xen/aclonica-ttx-test.git
