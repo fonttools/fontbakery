@@ -31,18 +31,18 @@ prun: venv/bin/activate requirements.txt
 	. venv/bin/activate; gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
 
 babel: venv/bin/activate
-	. venv/bin/activate; pybabel extract -F babel.cfg -o messages.pot .
+	. venv/bin/activate; pybabel extract -F babel.cfg -o bakery/translations/messages.pot bakery
 
 # lazy babel scan
 lazybabel: venv/bin/activate
-	. venv/bin/activate; pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
+	. venv/bin/activate; pybabel extract -F babel.cfg -k lazy_gettext -o bakery/translations/messages.pot bakery
 
 # $LANG=ru
 addlang: venv/bin/activate
-	. venv/bin/activate; pybabel init -i messages.pot -d translations -l $LANG
+	. venv/bin/activate; pybabel init -i messages.pot -d bakery/translations -l $(LANG)
 
 updlang: venv/bin/activate
-	. venv/bin/activate; pybabel update -i messages.pot -d translations
+	. venv/bin/activate; pybabel update -i messages.pot -d bakery/translations
 
 # target: worker — background tasks worker
 worker: venv/bin/activate
