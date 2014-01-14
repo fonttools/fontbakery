@@ -39,10 +39,10 @@ lazybabel: venv/bin/activate
 
 # $LANG=ru
 addlang: venv/bin/activate
-	. venv/bin/activate; pybabel init -i messages.pot -d bakery/translations -l $(LANG)
+	. venv/bin/activate; pybabel init -i bakery/translations/messages.pot -d bakery/translations -l $(LANG)
 
 updlang: venv/bin/activate
-	. venv/bin/activate; pybabel update -i messages.pot -d bakery/translations
+	. venv/bin/activate; pybabel update -i bakery/translations/messages.pot -d bakery/translations
 
 # target: worker — background tasks worker
 worker: venv/bin/activate
