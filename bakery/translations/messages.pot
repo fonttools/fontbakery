@@ -1,0 +1,987 @@
+# Translations template for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-01-14 06:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+
+#: bakery/decorators.py:34
+msgid "Login required"
+msgstr ""
+
+#: bakery/gitauth/views.py:49
+msgid "Welcome to single user mode!"
+msgstr ""
+
+#: bakery/gitauth/views.py:61
+msgid "Already logged in"
+msgstr ""
+
+#: bakery/gitauth/views.py:69
+msgid ""
+"You did not authorize this application with Github. Please see <a "
+"href=\"https://github.com/xen/fontbakery/blob/master/INSTALL.md#github-"
+"authorization\">INSTALL</a> file for details."
+msgstr ""
+
+#: bakery/project/views.py:42 bakery/project/views.py:435
+msgid "Error in provided data"
+msgstr ""
+
+#: bakery/project/views.py:81
+msgid "Project is being synchronized, wait until it is done"
+msgstr ""
+
+#: bakery/project/views.py:97
+msgid "Complete setup first"
+msgstr ""
+
+#: bakery/project/views.py:110
+#, python-format
+msgid ""
+"Updated repository (<a href='%(repo)s'>see files</a>) Next step: <a "
+"href='%(step)s'>set it up</a>"
+msgstr ""
+
+#: bakery/project/views.py:123
+msgid "Changes will be pulled from upstream in a moment"
+msgstr ""
+
+#: bakery/project/views.py:143
+msgid "Please select the license file"
+msgstr ""
+
+#: bakery/project/views.py:161
+msgid "Select UFO or TTX as primary source"
+msgstr ""
+
+#: bakery/project/views.py:170
+msgid "Subset value is wrong"
+msgstr ""
+
+#: bakery/project/views.py:173
+msgid "Select at least one subset from list"
+msgstr ""
+
+#: bakery/project/views.py:188
+msgid "Setup updated"
+msgstr ""
+
+#: bakery/project/views.py:196
+msgid "Setup saved"
+msgstr ""
+
+#: bakery/project/views.py:211
+#, python-format
+msgid "Set %(item)s"
+msgstr ""
+
+#: bakery/project/views.py:215
+#, python-format
+msgid "Unset %(item)s"
+msgstr ""
+
+#: bakery/project/views.py:360
+msgid "Description saved"
+msgstr ""
+
+#: bakery/project/views.py:382
+msgid "METADATA.json saved"
+msgstr ""
+
+#: bakery/project/views.py:385
+msgid "Wrong format for METADATA.json file"
+msgstr ""
+
+#: bakery/project/views.py:425
+msgid "Left and right hash for comparsion should be provided"
+msgstr ""
+
+#: bakery/settings/views.py:73
+msgid "Could not connect to Github to load repos list."
+msgstr ""
+
+#: bakery/settings/views.py:87
+#, python-format
+msgid "Error get repos for organization %(login)s"
+msgstr ""
+
+#: bakery/settings/views.py:101
+msgid "Repositories refreshed."
+msgstr ""
+
+#: bakery/settings/views.py:103
+msgid "Offline user has no Github account."
+msgstr ""
+
+#: bakery/settings/views.py:105
+msgid "No user found."
+msgstr ""
+
+#: bakery/settings/views.py:119
+msgid "Unable to load repos list."
+msgstr ""
+
+#: bakery/settings/views.py:131 bakery/settings/views.py:202
+msgid "GitHub API access error, please try again later"
+msgstr ""
+
+#: bakery/settings/views.py:148
+msgid "Error deleting old webhook, delete if manually or retry"
+msgstr ""
+
+#: bakery/settings/views.py:179
+msgid "Repository information update error"
+msgstr ""
+
+#: bakery/settings/views.py:186
+msgid "Repository webhook update error"
+msgstr ""
+
+#: bakery/settings/views.py:189
+#, python-format
+msgid "Added webhook for %(name)s."
+msgstr ""
+
+#: bakery/settings/views.py:217
+msgid "Error deleting old webhook: Delete it manually, or retry"
+msgstr ""
+
+#: bakery/settings/views.py:219
+msgid "Webhook is not registered on Github, it was probably deleted manually"
+msgstr ""
+
+#: bakery/settings/views.py:246
+msgid "Enter a URL."
+msgstr ""
+
+#: bakery/settings/views.py:252
+msgid "This repository is a duplicate"
+msgstr ""
+
+#: bakery/settings/views.py:255
+msgid "Problem parsing git url"
+msgstr ""
+
+#: bakery/settings/views.py:267 bakery/settings/views.py:315
+msgid "Repository successfully added. Wait for its download and complete setup"
+msgstr ""
+
+#: bakery/settings/views.py:279
+msgid "Project not found."
+msgstr ""
+
+#: bakery/settings/views.py:283
+#, python-format
+msgid "Repository %(pid)s succesfuly removed (but files remain on the server)"
+msgstr ""
+
+#: bakery/settings/views.py:299
+#, python-format
+msgid "Repository %(name)s successfully removed (but files remain on the server)"
+msgstr ""
+
+#: bakery/settings/views.py:333
+#, python-format
+msgid "Url %(url)s isn't accepted, parse error"
+msgstr ""
+
+#: bakery/settings/views.py:339
+#, python-format
+msgid "Url %(url)s is duplicate"
+msgstr ""
+
+#: bakery/settings/views.py:352
+#, python-format
+msgid "%(num)s repositories successfuly added"
+msgstr ""
+
+#: bakery/templates/base.html:5 bakery/templates/dashboard.html:164
+msgid "Project"
+msgstr ""
+
+#: bakery/templates/dashboard.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: bakery/templates/dashboard.html:7
+msgid ""
+"<span class=\"apopover\" data-trigger=\"hover\" data-content=\"Open Font "
+"Licence v1.1\">O</span>"
+msgstr ""
+
+#: bakery/templates/dashboard.html:8
+msgid ""
+"<span class=\"apopover\" data-trigger=\"hover\" data-content=\"Apache "
+"Licence v2.0\">A</span>"
+msgstr ""
+
+#: bakery/templates/dashboard.html:9
+msgid ""
+"<span class=\"apopover\" data-trigger=\"hover\" data-content=\"Ubuntu "
+"Font Licence v1.0\">U</span>"
+msgstr ""
+
+#: bakery/templates/dashboard.html:16
+msgid ""
+"<i class=\"icon-warning-sign apopover\" data-trigger=\"hover\" data-"
+"content=\"Trademark is asserted\"></i>"
+msgstr ""
+
+#: bakery/templates/dashboard.html:17
+msgid ""
+"<i class=\"icon-thumbs-up apopover\" data-trigger=\"hover\" data-"
+"content=\"Trademark not asserted\"></i>"
+msgstr ""
+
+#: bakery/templates/dashboard.html:21
+msgid ""
+"<i class=\"icon-thumbs-up apopover\" data-trigger=\"hover\" data-"
+"content=\"Trademark use is permitted\"></i> "
+msgstr ""
+
+#: bakery/templates/dashboard.html:22
+msgid ""
+"<i class=\"icon-thumbs-down apopover\" data-trigger=\"hover\" data-"
+"content=\"Trademark use not permitted\"></i> "
+msgstr ""
+
+#: bakery/templates/dashboard.html:26 bakery/templates/dashboard.html:31
+#: bakery/templates/dashboard.html:36 bakery/templates/dashboard.html:102
+msgid "Y"
+msgstr ""
+
+#: bakery/templates/dashboard.html:27 bakery/templates/dashboard.html:32
+#: bakery/templates/dashboard.html:37 bakery/templates/dashboard.html:65
+#: bakery/templates/dashboard.html:103
+msgid "N"
+msgstr ""
+
+#: bakery/templates/dashboard.html:42 bakery/templates/dashboard.html:51
+msgid "U"
+msgstr ""
+
+#: bakery/templates/dashboard.html:43 bakery/templates/dashboard.html:52
+msgid "S"
+msgstr ""
+
+#: bakery/templates/dashboard.html:44 bakery/templates/dashboard.html:53
+msgid "V"
+msgstr ""
+
+#: bakery/templates/dashboard.html:45 bakery/templates/dashboard.html:54
+#: bakery/templates/dashboard.html:73
+msgid "G"
+msgstr ""
+
+#: bakery/templates/dashboard.html:50
+msgid "O"
+msgstr ""
+
+#: bakery/templates/dashboard.html:66
+msgid "A"
+msgstr ""
+
+#: bakery/templates/dashboard.html:67
+msgid "T"
+msgstr ""
+
+#: bakery/templates/dashboard.html:68 bakery/templates/dashboard.html:72
+#: bakery/templates/dashboard.html:209
+msgid "H"
+msgstr ""
+
+#: bakery/templates/dashboard.html:74
+msgid "M"
+msgstr ""
+
+#: bakery/templates/dashboard.html:122
+msgid "To get started, add a Git repository containing fonts"
+msgstr ""
+
+#: bakery/templates/dashboard.html:125
+msgid "To add git repositories from your GitHub account, click the GitHub button."
+msgstr ""
+
+#: bakery/templates/dashboard.html:128
+msgid "To add one directly, enter its git clone URL."
+msgstr ""
+
+#: bakery/templates/dashboard.html:129
+msgid "If a login is required, provide it in the clone string."
+msgstr ""
+
+#: bakery/templates/dashboard.html:130
+msgid "Learn more"
+msgstr ""
+
+#: bakery/templates/dashboard.html:142 bakery/templates/settings/index.html:51
+#: bakery/templates/settings/index.html:73
+msgid ""
+"Does this repository contain only works you have permission to modify "
+"(because you are the owner or it is licensed with an Open Source "
+"license)?"
+msgstr ""
+
+#: bakery/templates/dashboard.html:142
+msgid "Add Repository"
+msgstr ""
+
+#: bakery/templates/dashboard.html:165
+msgid "State"
+msgstr ""
+
+#: bakery/templates/dashboard.html:166
+msgid "Char Sets"
+msgstr ""
+
+#: bakery/templates/dashboard.html:167 bakery/templates/stats.html:13
+msgid "Total"
+msgstr ""
+
+#: bakery/templates/dashboard.html:168 bakery/templates/stats.html:14
+msgid "Month"
+msgstr ""
+
+#: bakery/templates/dashboard.html:174
+msgid "Per $"
+msgstr ""
+
+#: bakery/templates/dashboard.html:178
+msgid "ID"
+msgstr ""
+
+#: bakery/templates/dashboard.html:179
+msgid "Name"
+msgstr ""
+
+#: bakery/templates/dashboard.html:185 bakery/templates/stats.html:18
+msgid "GWF"
+msgstr ""
+
+#: bakery/templates/dashboard.html:186 bakery/templates/stats.html:19
+msgid "AL3"
+msgstr ""
+
+#: bakery/templates/dashboard.html:195
+msgid "Next Step"
+msgstr ""
+
+#: bakery/templates/dashboard.html:196
+msgid "Actions"
+msgstr ""
+
+#: bakery/templates/dashboard.html:219
+msgid "Repository URL"
+msgstr ""
+
+#: bakery/templates/dashboard.html:260
+msgid "Project downloading"
+msgstr ""
+
+#: bakery/templates/dashboard.html:264
+msgid "Setup"
+msgstr ""
+
+#: bakery/templates/dashboard.html:267
+msgid "Check"
+msgstr ""
+
+#: bakery/templates/dashboard.html:273
+msgid "Build"
+msgstr ""
+
+#: bakery/templates/dashboard.html:279
+msgid "State Unknown"
+msgstr ""
+
+#: bakery/templates/dashboard.html:284
+msgid "Sync upstream data?"
+msgstr ""
+
+#: bakery/templates/dashboard.html:285
+msgid "Do you really want to remove this repository?"
+msgstr ""
+
+#: bakery/templates/footer.html:4
+msgid ""
+"Copyright &copy; 2013 <a "
+"href='https://github.com/xen/fontbakery/blob/master/AUTHORS.txt'>The Font"
+" Bakery Authors</a>. All Rights Reserved."
+msgstr ""
+
+#: bakery/templates/footer.html:5
+msgid ""
+"<a href='https://github.com/xen/fontbakery/'>The Font Bakery Project</a> "
+"is <a href='http://www.gnu.org/philosophy/free-sw.html'>free "
+"software</a>, available under the terms of the <a "
+"href='https://github.com/xen/fontbakery/blob/master/LICENSE.txt'>Apache "
+"2.0 license</a>."
+msgstr ""
+
+#: bakery/templates/footer.html:6
+msgid ""
+"Please <a href='https://github.com/xen/fontbakery/issues/new'>report "
+"bugs</a>, suggest features, and contribute on <a "
+"href='https://github.com/xen/fontbakery/'>GitHub <i class='icon-"
+"github'></i></a>"
+msgstr ""
+
+#: bakery/templates/header.html:11 bakery/templates/splash.html:2
+msgid "Font Bakery"
+msgstr ""
+
+#: bakery/templates/splash.html:6
+msgid "Login"
+msgstr ""
+
+#: bakery/templates/splash.html:7
+msgid ""
+"Building and updating fonts should be simple. <br /> That’s what Font "
+"Bakery is for. <br /> <a href='/docs'>Learn More...</a>"
+msgstr ""
+
+#: bakery/templates/splash.html:10
+msgid "Offline Login"
+msgstr ""
+
+#: bakery/templates/stats.html:3 bakery/templates/project/rtests.html:41
+msgid "Stats"
+msgstr ""
+
+#: bakery/templates/stats.html:15
+msgid "Week"
+msgstr ""
+
+#: bakery/templates/stats.html:16
+msgid "Day"
+msgstr ""
+
+#: bakery/templates/stats.html:17
+msgid "Second"
+msgstr ""
+
+#: bakery/templates/misc/403.html:2
+msgid "No access"
+msgstr ""
+
+#: bakery/templates/misc/403.html:9
+#, python-format
+msgid "You don't have access to page <code>%(url)s</code>."
+msgstr ""
+
+#: bakery/templates/misc/403.html:10 bakery/templates/misc/404.html:10
+msgid "&larr; Back to front page"
+msgstr ""
+
+#: bakery/templates/misc/404.html:2
+msgid "Page not found"
+msgstr ""
+
+#: bakery/templates/misc/404.html:7
+msgid "Error 404"
+msgstr ""
+
+#: bakery/templates/misc/404.html:9
+#, python-format
+msgid "The page <code>%(url)s</code> you are looking for is not found."
+msgstr ""
+
+#: bakery/templates/project/description.html:2
+msgid "Edit DESCRIPTION.en_us.html"
+msgstr ""
+
+#: bakery/templates/project/description.html:17
+#: bakery/templates/project/metadatajson.html:38
+#: bakery/templates/project/metadatajson.html:46
+#: bakery/templates/project/setup.html:259
+msgid "Save"
+msgstr ""
+
+#: bakery/templates/project/diff.html:2
+msgid "Diff"
+msgstr ""
+
+#: bakery/templates/project/diff.html:13
+#, python-format
+msgid ""
+"Changes between <a href='%(url_left)s'>%(left)s</a> and <a "
+"href='%(url_right)s'>%(right)s</a>"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:2
+msgid "Build specific git revision"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:13
+msgid "Select revision and press its hashtag to build. Only latest 200 revisions"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:20
+#: bakery/templates/project/history.html:19
+msgid "Hashtag"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:21
+msgid "Author"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:22
+msgid "Message"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:23
+#: bakery/templates/project/history.html:20
+msgid "Date"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:24
+#: bakery/templates/project/rtests.html:20
+msgid "Tests"
+msgstr ""
+
+#: bakery/templates/project/gitlog.html:47
+msgid "Compare revisions"
+msgstr ""
+
+#: bakery/templates/project/history.html:2
+msgid "Build history"
+msgstr ""
+
+#: bakery/templates/project/history.html:12
+#: bakery/templates/project/history.html:47
+msgid "Build 'HEAD'"
+msgstr ""
+
+#: bakery/templates/project/history.html:19
+msgid "Build id"
+msgstr ""
+
+#: bakery/templates/project/history.html:21
+msgid "Results"
+msgstr ""
+
+#: bakery/templates/project/history.html:28
+msgid "This build is not ready yet"
+msgstr ""
+
+#: bakery/templates/project/history.html:29
+msgid "This build was manually modified"
+msgstr ""
+
+#: bakery/templates/project/history.html:46
+#, python-format
+msgid ""
+"No recent builds found, select hash from <a href='%(url)s'>git log "
+"page</a> or build latest head build."
+msgstr ""
+
+#: bakery/templates/project/metadatajson.html:2
+msgid "Edit METADATA.json"
+msgstr ""
+
+#: bakery/templates/project/metadatajson.html:17
+msgid "METADATA.json imported from upstream repo"
+msgstr ""
+
+#: bakery/templates/project/metadatajson.html:23
+msgid "METADATA.json.new generated from files"
+msgstr ""
+
+#: bakery/templates/project/metadatajson.html:32
+msgid "Delete <code>METADATA.json.new</code>?"
+msgstr ""
+
+#: bakery/templates/project/metadatajson.html:42
+msgid "METADATA.json generated from files"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:2
+msgid "Result Files"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:20
+msgid "Character Set"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:21
+msgid "Coverage"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:22
+msgid "Missing Characters"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:37
+msgid "Common Name"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:39
+msgid "Full Name"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:41
+msgid "PostScript Name"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:43
+msgid "Subfamily"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:45
+msgid "Weight"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:47
+msgid "Version"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:49
+msgid "UniqueID"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:51
+msgid "Copyright"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:53
+msgid "License"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:55
+msgid "License URL"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:57
+msgid "Designer"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:59
+msgid "Designer URL"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:61
+msgid "Vendor"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:64
+msgid "has_fixed_sizes"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:66
+msgid "is_fixed_width"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:68
+msgid "style_flags"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:75
+msgid "bakery.yaml File"
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:77
+#, python-format
+msgid ""
+"Your setup is saved in the upstream repository, in a <code><a "
+"href='%(url)s'>bakery.yaml</a></code> file, displayed below."
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:79
+#, python-format
+msgid ""
+"Your setup is <strong>NOT</strong> saved in the upstream "
+"repository.<br><br>To save your setup for all Font Bakery installations "
+"to load, add a file named <code><a href='%(url)s'>bakery.yaml</a></code> "
+"to the upstream repository that contains the following information."
+msgstr ""
+
+#: bakery/templates/project/rfiles.html:85
+msgid "Baked Files"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:2
+msgid "Tests for result files"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:21
+msgid "Success"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:22
+msgid "Auto fixed"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:23
+msgid "Failed"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:24
+msgid "Error"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:36
+msgid "Summary"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:38
+msgid "Fonts:"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:44
+msgid "Blockers"
+msgstr ""
+
+#: bakery/templates/project/rtests.html:55
+msgid "Test results"
+msgstr ""
+
+#: bakery/templates/project/setup.html:2
+msgid "Setup Project"
+msgstr ""
+
+#: bakery/templates/project/setup.html:116
+msgid "Bake Process Options"
+msgstr ""
+
+#: bakery/templates/project/setup.html:119
+msgid ""
+"Setup the project's bake process. Options can be pre-selected by storing "
+"them in a <code>bakery.yaml</code> file inside the git repository."
+msgstr ""
+
+#: bakery/templates/project/setup.html:125
+msgid "<strong>Bold</strong> fields are required."
+msgstr ""
+
+#: bakery/templates/project/setup.html:126
+msgid "Reload settings from repo"
+msgstr ""
+
+#: bakery/templates/project/setup.html:131
+msgid "License File:"
+msgstr ""
+
+#: bakery/templates/project/setup.html:134
+msgid "Select file"
+msgstr ""
+
+#: bakery/templates/project/setup.html:143
+msgid "Source files:"
+msgstr ""
+
+#: bakery/templates/project/setup.html:146
+msgid ""
+"UFO folders and TTX files are found in upstream repository. Select what "
+"files are primary source"
+msgstr ""
+
+#: bakery/templates/project/setup.html:150
+msgid "UFO is primary source"
+msgstr ""
+
+#: bakery/templates/project/setup.html:155
+msgid "TTX, please"
+msgstr ""
+
+#: bakery/templates/project/setup.html:160
+msgid "Found source files:"
+msgstr ""
+
+#: bakery/templates/project/setup.html:170
+msgid "Subsets:"
+msgstr ""
+
+#: bakery/templates/project/setup.html:182
+msgid "Text Files:"
+msgstr ""
+
+#: bakery/templates/project/setup.html:194
+msgid "New font family name?"
+msgstr ""
+
+#: bakery/templates/project/setup.html:199
+msgid ""
+"If you want to rename the family, type the new family name "
+"here.<br/>Else, leave it blank"
+msgstr ""
+
+#: bakery/templates/project/setup.html:204
+msgid "<code>ttfautohint</code> options?"
+msgstr ""
+
+#: bakery/templates/project/setup.html:209
+msgid ""
+"If you wish to bake the TTFs with ttfautohint, type the command line "
+"options here.<br/>Else, leave it blank"
+msgstr ""
+
+#: bakery/templates/project/setup.html:214
+msgid "Save &amp; Bake"
+msgstr ""
+
+#: bakery/templates/project/setup.html:214
+msgid ""
+"Do you have permission to use the fonts names as presented to the user in"
+" modified versions?"
+msgstr ""
+
+#: bakery/templates/project/setup.html:221
+msgid "Dashboard Status"
+msgstr ""
+
+#: bakery/templates/project/setup.html:224
+msgid ""
+"Setup the project's dashboard metadata. Options can be pre-selected by "
+"storing them in a <code>bakery.yaml</code> file inside the git "
+"repository."
+msgstr ""
+
+#: bakery/templates/project/setup.html:226
+msgid ""
+"These details are <strong>NOT</strong> yet saved in the upstream "
+"repository. To save your setup for all Font Bakery installations to load,"
+" add a file named <code>bakery.yaml</code> to the upstream repository "
+"that contains the following information."
+msgstr ""
+
+#: bakery/templates/project/setup.html:237
+msgid "Select trademark permission status"
+msgstr ""
+
+#: bakery/templates/project/setup.html:238
+#: bakery/templates/project/setup.html:275
+msgid "Yes"
+msgstr ""
+
+#: bakery/templates/project/setup.html:239
+#: bakery/templates/project/setup.html:275
+msgid "No"
+msgstr ""
+
+#: bakery/templates/project/setup.html:241
+msgid "Do you have permission to use the trademark?"
+msgstr ""
+
+#: bakery/templates/project/setup.html:246
+msgid "Set string value here, or leave it blank to unset it"
+msgstr ""
+
+#: bakery/templates/project/setup.html:275
+#: bakery/templates/project/setup.html:288
+msgid "RFN Permission"
+msgstr ""
+
+#: bakery/templates/project/setup.html:275
+msgid "Cancel"
+msgstr ""
+
+#: bakery/templates/project/setup.html:288
+msgid ""
+"You must get written permission from the copyright holder to use their "
+"name, or set a new family name on this page."
+msgstr ""
+
+#: bakery/templates/project/setup.html:288
+msgid "I understand"
+msgstr ""
+
+#: bakery/templates/project/ufile.html:2 bakery/templates/project/ufiles.html:2
+msgid "Incoming Repository Files"
+msgstr ""
+
+#: bakery/templates/project/ufile.html:13
+#: bakery/templates/project/ufiles.html:14
+msgid "Repository Files"
+msgstr ""
+
+#: bakery/templates/project/ufile.html:27
+msgid ""
+"This file is binary or unknown format. Use other tools to read its "
+"contents."
+msgstr ""
+
+#: bakery/templates/project/utests.html:2
+msgid "Tests for upstream files"
+msgstr ""
+
+#: bakery/templates/settings/index.html:2
+msgid "Add Repositories from Github"
+msgstr ""
+
+#: bakery/templates/settings/index.html:8
+msgid ""
+"Font Bakery have access only to organisations where you public listed "
+"your membership."
+msgstr ""
+
+#: bakery/templates/settings/index.html:10
+msgid "Refresh"
+msgstr ""
+
+#: bakery/templates/settings/index.html:11
+msgid "List of GitHub repositories last updated"
+msgstr ""
+
+#: bakery/templates/settings/index.html:13
+msgid "Fetch List"
+msgstr ""
+
+#: bakery/templates/settings/index.html:22
+msgid "One Time"
+msgstr ""
+
+#: bakery/templates/settings/index.html:23
+msgid "Subscribe"
+msgstr ""
+
+#: bakery/templates/settings/index.html:24
+msgid "Batch add"
+msgstr ""
+
+#: bakery/templates/settings/index.html:33
+msgid "Select repositories to add from your GitHub account"
+msgstr ""
+
+#: bakery/templates/settings/index.html:51
+msgid "Add repositories"
+msgstr ""
+
+#: bakery/templates/settings/index.html:60
+msgid ""
+"To add repositories from GitHub with webhooks to get updates when a repo "
+"is updated, click its <i class='icon-star-empty'></i> "
+msgstr ""
+
+#: bakery/templates/settings/index.html:65
+msgid "Repository"
+msgstr ""
+
+#: bakery/templates/settings/index.html:66
+msgid "Description"
+msgstr ""
+
+#: bakery/templates/settings/index.html:67
+msgid "Settings <i class='icon-external-link'></i>"
+msgstr ""
+
+#: bakery/templates/settings/index.html:91
+msgid "Enter git clone urls, one per line."
+msgstr ""
+
+#: bakery/templates/settings/index.html:97
+msgid "Process"
+msgstr ""
+
