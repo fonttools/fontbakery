@@ -52,7 +52,7 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git nodejs;
+    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git npm;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
