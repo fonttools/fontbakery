@@ -124,4 +124,3 @@ def register_filters(app):
     app.jinja_env.filters['pretty_date'] = pretty_date
     app.jinja_env.filters['signify'] = signify
     app.jinja_env.add_extension('jinja2.ext.do')
-

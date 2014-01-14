@@ -106,7 +106,7 @@ def bump(p):
     else:
         build = ProjectBuild.make_build(p, 'HEAD')
 
-    flash(Markup(_("Updated repository (<a href='%(repo)s'>see files</a>) Next step: <a href='%(step)s'>set it up</a>" %
+    flash(Markup(_("Updated repository (<a href='%(repo)s'>see files</a>) Next step: <a href='%(step)s'>set it up</a>",
                    repo=url_for('project.ufiles', project_id=p.id), step=url_for('project.setup', project_id=p.id))))
     return redirect(url_for('project.log', project_id=p.id, build_id=build.id))
 
