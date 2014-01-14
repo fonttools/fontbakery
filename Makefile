@@ -15,38 +15,11 @@ all: setup
 venv/bin/activate:
 	virtualenv-2.7 --system-site-packages venv
 
-static/bootstrap/css/bootstrap.css:
-	cd static && curl -O  http://getbootstrap.com/2.3.2/assets/bootstrap.zip && unzip bootstrap.zip
-
-static/jquery-2.0.3.min.js:
-	cd static && curl -O http://code.jquery.com/jquery-2.0.3.min.js && curl -O http://code.jquery.com/jquery-2.0.3.min.map
-
-static/font-awesome.zip:
-	cd static && curl -O http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip && unzip font-awesome.zip
-
-static/ace/master:
-	cd static/ace && curl -O https://codeload.github.com/ajaxorg/ace-builds/zip/master && unzip master
-
-static/socket.io.min.js:
-	cd static && curl -O http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js
-
-static/jquery.pjax.js:
-	cd static && curl -O https://raw.github.com/defunkt/jquery-pjax/master/jquery.pjax.js
-
-static/tablesorter/jquery.tablesorter.min.js:
-	cd static && curl -O http://tablesorter.com/__jquery.tablesorter.zip && unzip __jquery.tablesorter.zip -d tablesorter
-
-static/jquery.number.min.js:
-	cd static && curl -O https://raw.github.com/teamdf/jquery-number/master/jquery.number.min.js
-
-static/jquery.json2html.js:
-	cd static && curl -O https://raw.github.com/moappi/jquery.json2html/master/jquery.json2html.js && curl -O https://raw.github.com/moappi/jquery.json2html/master/json2html.js
-
-static/jquery.guiders.js:
-	cd static && curl -L -o jquery.guiders.js.zip https://github.com/davelab6/Guiders-JS/archive/master.zip && unzip -j -d jquery.guiders.js jquery.guiders.js.zip
+static/bower.json:
+	cd static && bower install
 
 # target: setup — bootstrap environment
-    setup: venv/bin/activate requirements.txt static/jquery-2.0.3.min.js static/bootstrap/css/bootstrap.css static/ace/master static/font-awesome.zip static/socket.io.min.js static/jquery.pjax.js static/tablesorter/jquery.tablesorter.min.js static/jquery.number.min.js static/jquery.json2html.js static/jquery.guiders.js
+setup: venv/bin/activate requirements.txt static/bower.json
 	. venv/bin/activate; pip install -Ur requirements.txt
 
 # target: run — run project
