@@ -4,7 +4,7 @@
   "dependencies": {
     "bootstrap": "2.3.2",
     "jquery": "~2.0.3",
-    "font-awesome": "~4.0.3",
+    "font-awesome": "3.2.1",
     "ace-builds": "~1.1.1",
     "socket.io-client": "~0.9.16",
     "jquery.json2html": "moappi/jquery.json2html",

@@ -7,10 +7,10 @@
 
     <!-- Le styles -->
     {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='jquery.guiders.js/guiders-1.3.0.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/bootstrap/docs/assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/bootstrap/docs/assets/css/bootstrap-responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libs/font-awesome/css/font-awesome.min.css') }}">
+    {# <link rel="stylesheet" href="{{ url_for('static', filename='jquery.guiders.js/guiders-1.3.0.css') }}"> #}
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     {% endblock %}
 
@@ -20,7 +20,7 @@
     {% block js_top %}
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-        <script src="{{ url_for('static', filename='bootstrap/js/html5shiv.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/bootstrap/docs/assets/js/html5shiv.js') }}"></script>
     <![endif]-->
     {% endblock %}
 
@@ -67,17 +67,16 @@
 </div>
 
 {% block js_btm %}
-  <script src="{{ url_for('static', filename='jquery-2.0.3.min.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='socket.io.min.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='jquery.pjax.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='ace/ace-builds-master/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='tablesorter/jquery.tablesorter.min.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='jquery.number.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/jquery/jquery.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/bootstrap/docs/assets/js/bootstrap.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/socket.io-client/dist/socket.io.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/ace-builds/src-min-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/jquery.tablesorter/js/jquery.tablesorter.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/jquery-number/jquery.number.min.js') }}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url_for('static', filename='jquery.highlight.min.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='json2html.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='jquery.json2html.js') }}" type="text/javascript" charset="utf-8"></script>
-  <script src="{{ url_for('static', filename='jquery.guiders.js/guiders-1.3.0.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/jquery.json2html/json2html.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='libs/jquery.json2html/jquery.json2html.js') }}" type="text/javascript" charset="utf-8"></script>
+  {#<script src="{{ url_for('static', filename='libs/Guiders-JS/guiders-1.3.0.js') }}" type="text/javascript" charset="utf-8"></script> #}
   <script src="{{ url_for('static', filename='main.js') }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 
