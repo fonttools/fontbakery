@@ -15,6 +15,9 @@ You need to have installed:
 - ttfautohint
 - Redis
 - libmagic
+- [bower](http://bower.io/) (and node.js)
+
+If you need to [install Node.js manually](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager) 
 
 ### Mac OS X
 
@@ -24,7 +27,7 @@ Install HomeBrew and then run these commands in the Terminal:
 
 ```sh
     # Use HomeBrew to install dependencies
-    brew install python sqlite libevent fontforge ttfautohint redis libmagic;
+    brew install python sqlite libevent fontforge ttfautohint redis libmagic nodejs;
     # To have launchd start redis at login:
     ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
     # Start redis now:
@@ -39,6 +42,8 @@ Install HomeBrew and then run these commands in the Terminal:
     # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
+    # install bower
+    npm install -g bower
 ```
 
 ### Fedora
@@ -47,7 +52,7 @@ TODO: package ttfautohint for Fedora
 
 ```sh
     # Use yum to install dependencies
-    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git;
+    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git nodejs;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
@@ -59,13 +64,15 @@ TODO: package ttfautohint for Fedora
     # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
+    # install bower
+    npm install -g bower
 ```
 
 ### Debian & Ubuntu
 
 ```sh
     # Use yum to install dependencies
-    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl default-jdk git mercurial;
+    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl default-jdk git mercurial nodejs;
     # install ttfautohint from git
     git clone git://repo.or.cz/ttfautohint.git;
     cd ttfautohint;
@@ -77,6 +84,8 @@ TODO: package ttfautohint for Fedora
     # Set up a pip download cache
     echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
     mkdir ~/.pip_download_cache;
+    # install bower
+    npm install -g bower
 ```
 
 Now your system should be ready.
