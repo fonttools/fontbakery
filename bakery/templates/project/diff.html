@@ -10,7 +10,7 @@
 {% from 'project/macros.html' import subnav_git with context%}
 {{ subnav_git('diff') }}
 
-<h3>Changes between <a href="{{ url_for('project.ufiles', project_id = project.id, revision=left) }}">{{left}}</a> and <a href="{{ url_for('project.ufiles', project_id = project.id, revision=right) }}">{{right}}</a></h3>
+<h3>{{ _("Changes between <a href='%(url_left)s'>%(left)s</a> and <a href='%(url_right)s'>%(right)s</a>", url_left=url_for('project.ufiles', project_id = project.id, revision=left), left=left, url_right=url_for('project.ufiles', project_id = project.id, revision=right), right=right) }}</h3>
 {% for f in diff.keys() %}
 <h4>{{ f }}</h4>
 <table class="diff">{{ diff[f]|safe }}</table>

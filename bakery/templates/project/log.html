@@ -12,7 +12,7 @@
 
 <pre id="log"></pre>
 
-<p class="jumbotron" id="toTop"><a href="javascript:window.scrollTo(0,0);">Top of page</a></p>
+<p class="jumbotron" id="toTop"><a href="javascript:window.scrollTo(0,0);">{{ _("Top of page") }}</a></p>
 
 {% endblock %}
 
@@ -61,19 +61,19 @@ socket.on('message', function (logs) {
     } else if (data.startswith('Error: ')) {
         $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
     } else if (data.startswith('Fatal: ')) {
-        $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">Fatal</span> ' + data.slice('Fatal: '.length)));
+        $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">{{ _("Fatal") }}</span> ' + data.slice('Fatal: '.length)));
         $('#logEndButtonRebake').show();
         $('#logEndButtons').slideDown();
     } else if (data.startswith('Start: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">Start</span> ' + data.slice('Start: '.length)));
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">{{ _("Start") }}</span> ' + data.slice('Start: '.length)));
     } else if (data.startswith('Wait: ')){
-        $('#log').append($('<span>').addClass('text-info').html('<span class="label label-info">Wait</span> ' + data.slice('Wait: '.length)));
+        $('#log').append($('<span>').addClass('text-info').html('<span class="label label-info">{{ _("Wait") }}</span> ' + data.slice('Wait: '.length)));
     } else if (data.startswith('End: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End") }}</span> ' + data.slice('End: '.length)));
         $('#logEndButtonSuccess').show();
         $('#logEndButtons').slideDown();
     }  else if (data.startswith('End: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">End</span> ' + data.slice('End: '.length)));
+        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End" }}</span> ' + data.slice('End: '.length)));
         $('#logEndButtonSuccess').show();
         $('#logEndButtons').slideDown();
     }  else if (data.startswith('$ ')){

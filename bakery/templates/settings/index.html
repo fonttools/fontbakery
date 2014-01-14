@@ -57,20 +57,20 @@
     <div id="github" class="tab-pane">
       {{ getReposList() }}
       {% if cache %}
-      <p>To add repositories from GitHub with webhooks to get updates when a repo is updated, click its <i class="icon-star-empty"></i> :</p>
+      <p>{{ _("To add repositories from GitHub with webhooks to get updates when a repo is updated, click its <i class='icon-star-empty'></i> ") }}:</p>
       <table class="table table-striped table-condensed">
         <thead>
           <tr>
             <th><i class="icon-star-empty"></i></th>
-            <th>Repository</th>
-            <th>Description</th>
-            <th>Settings <i class="icon-external-link"></i> </th>
+            <th>{{ _("Repository") }}</th>
+            <th>{{ _("Description") }}</th>
+            <th>{{ _("Settings <i class='icon-external-link'></i>") }}</th>
           </tr>
         </thead>
         <tbody>
             {% for item in cache.data -%}
               <tr {% if item.full_name in projects%} class="success" {% endif %}>
-                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?"><i class="icon-star-empty"></i></a>{% endif %}</td>
+                <td>{% if item.full_name in projects %}<a href="{{ url_for('settings.delhook', full_name=item.full_name) }}"><i class="icon-star"></i></a>{% else %}<a href="{{ url_for('settings.addhook', full_name=item.full_name) }}" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}"><i class="icon-star-empty"></i></a>{% endif %}</td>
                 <td>{{ item.full_name }}
                     <a href="https://github.com/{{ item.full_name }}"><i class="icon-external-link"></i></a>
                     {% if item.homepage %}<a href="http://{{ item.homepage }}"><i class="icon-home"></i></a>{% endif %}
@@ -88,13 +88,13 @@
     <div id="batch" class="tab-pane">
     <form action="{{ url_for('settings.batch') }}" method="POST">
 
-      <p class="help-block">Enter git clone urls, one per line.</p>
+      <p class="help-block">{{ _("Enter git clone urls, one per line.") }}</p>
 
       <textarea rows="3" name="urls" class="input-xxlarge"></textarea>
 
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Process</button>
+        <button type="submit" class="btn btn-primary">{{ _("Process") }}</button>
       </div>          
     </form>
 

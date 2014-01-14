@@ -4,10 +4,10 @@
     <div id="wrap">
       <div class="container">
         <div class="page-header">
-          <h1>Error 403</h1>
+          <h1>{ _("Error 403") }</h1>
         </div>
-        <p class="lead">You don't have access to page <code>{{ request.url }}</code>.</p>
-        <p><a href="/">&larr; Back to front page</a></p>
+        <p class="lead">{{ _("You don't have access to page <code>%(url)s</code>.", url=request.url) }}</p>
+        <p><a href="/">{{ _("&larr; Back to front page") }}</a></p>
       </div>
       <div id="push"></div>
     </div>

@@ -4,10 +4,10 @@
     <div id="wrap">
       <div class="container">
         <div class="page-header">
-          <h1>Error 404</h1>
+          <h1>{{ _("Error 404") }}</h1>
         </div>
-        <p class="lead">The page <code>{{ request.url }}</code> you are looking for is not found.</p>
-        <p><a href="/">&larr; Back to front page</a></p>
+        <p class="lead">{{ _("The page <code>%(url)s</code> you are looking for is not found.", url=request.url) }}</p>
+        <p><a href="/">{{ _("&larr; Back to front page") }}</a></p>
       </div>
       <div id="push"></div>
     </div>

@@ -4,54 +4,54 @@
 {% set stateDict = {
     'copyright_license': {
         'icon': 'file-alt',
-        'ofl': '<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>',
-        'apache': '<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>',
-        'ufl': '<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>',
+        'ofl': _('<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>'),
+        'apache': _('<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>'),
+        'ufl': _('<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>'),
         },
     'copyright_notice': {
         'icon': 'file-alt',
         },
     'trademark_notice': {
         'icon': 'tumblr',
-        'yes': '<i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i> ',
-        'no': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i> ',
+        'yes': _('<i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i>'),
+        'no': _('<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i>'),
         },
     'trademark_permission': {
         'icon': 'tumblr',
-        'yes': '<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> ',
-        'no': '<i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> ',
+        'yes': _('<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> '),
+        'no': _('<i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> '),
         },
     'rfn_asserted': {
         'icon': 'strikethrough',
-        'True': 'Y',
-        'False': 'N',
+        'True': _('Y'),
+        'False': _('N'),
         },
     'rfn_permission': {
         'icon': 'strikethrough',
-        'True': 'Y',
-        'False': 'N',
+        'True': _('Y'),
+        'False': _('N'),
         },
     'source_cff_filetype': {
         'icon': 'file',
-        'True': 'Y',
-        'False': 'N',
+        'True': _('Y'),
+        'False': _('N'),
         },
     'source_drawing_filetype': {
         'icon': 'file',
         'None': '-',
-        'UFO': 'U',
-        'SFD': 'S',
-        'VFB': 'V',
-        'glyphs': 'G',
+        'UFO': _('U'),
+        'SFD': _('S'),
+        'VFB': _('V'),
+        'glyphs': _('G'),
         },
     'source_ttf_filetype': {
         'icon': 'file',
         'None': '-',
-        'OTF': 'O',
-        'UFO': 'U',
-        'SFD': 'S',
-        'VFB': 'V',
-        'glyphs': 'G',
+        'OTF': _('O'),
+        'UFO': _('U'),
+        'SFD': _('S'),
+        'VFB': _('V'),
+        'glyphs': _('G'),
         },
     'price_design_usd':{
         'icon': 'usd',
@@ -62,16 +62,16 @@
     'hinting_level': {
         'icon': 'zoom-in',
         '1': '-',
-        '2': 'N',
-        '3': 'A',
-        '4': 'T',
-        '5': 'H',
+        '2': _('N'),
+        '3': _('A'),
+        '4': _('T'),
+        '5': _('H'),
         },
     'vendor_category': {
         'icon': 'user',
-        '1': 'H',
-        '2': 'G',
-        '3': 'M',
+        '1': _('H'),
+        '2': _('G'),
+        '3': _('M'),
         },
     'vendor_quality': {
         'icon': 'user',
@@ -99,8 +99,8 @@
         },
     'prints_ok': {
         'icon': 'print',
-        'True': 'Y',
-        'False': 'N',
+        'True': _('Y'),
+        'False': _('N'),
         },
     'stats_family_name':{
         'icon': 'sort-by-order-alt'
@@ -193,7 +193,7 @@
 #}
       <th class="stats-fvpd" style="text-align: right"></th>
       <th style="text-align: center">{{ _("Next Step") }}</th>
-      <th style="text-align: center">Actions</th>
+      <th style="text-align: center">{{ _("Actions") }}</th>
     </tr>
   </thead>
 
@@ -206,7 +206,7 @@
       <tr>
         <td style="text-align: right"><nobr>
             <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.config" data-content="{{ repo.config }}">{{repo.id}}</span>
-            <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.tests" data-content="{{ repo.tests }}">H</span></nobr>
+            <span class="apopover" data-trigger="hover" data-placement="bottom" data-title="project.tests" data-content="{{ repo.tests }}">{{ _("H") }}</span></nobr>
         </td>
         <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a>
@@ -216,7 +216,7 @@
             {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
-            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="Repository URL"></i></a>
+            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">

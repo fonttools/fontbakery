@@ -14,13 +14,13 @@
 
 {% if metadata_new %}
 <div class="span6">
-<h4>METADATA.json imported from upstream repo</h4>
+<h4>{{ _("METADATA.json imported from upstream repo") }}</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
 </div>
 
-<div class="span6"  >
-<h4>METADATA.json.new generated from files</h4>
+<div class="span6">
+<h4>{{ _("METADATA.json.new generated from files") }}</h4>
 <div id="editor_new"></div>
 <textarea name="metadata_new">{{ metadata_new }}</textarea>
 </div>
@@ -29,21 +29,21 @@
 
 <div class="pull-right">
     <label class="radio">
-      Delete <code>METADATA.json.new</code>?
+      {{ _("Delete <code>METADATA.json.new</code>?") }}
       <input type="checkbox" name="delete" id="delete" value="1" checked>
     </label>
 </div>
 
 </div>
-<p style="padding-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">Save</button></p>
+<p style="padding-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">{{ _("Save") }}</button></p>
 {% else %}
 
 <div class="span12">
-<h4>METADATA.json generated from files</h4>
+<h4>{{ _("METADATA.json generated from files") }}</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
 </div>
-<p style="padding-top:1em;clear:both"><button type="submit" class="btn btn-primary">Save</button></p>
+<p style="padding-top:1em;clear:both"><button type="submit" class="btn btn-primary">{{ _("Save") }}</button></p>
 {% endif %}
 
 

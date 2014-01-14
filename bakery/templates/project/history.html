@@ -9,7 +9,7 @@
 {% block pbody %}
 
 <p>
-  <a href="{{ url_for('project.bump', project_id = project.id)}}" class="btn btn-primary">Build 'HEAD'</a>
+  <a href="{{ url_for('project.bump', project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a>
 </p>
 
 <table class="table table-bordered table-condensed">
@@ -25,8 +25,8 @@
     {% for b in builds -%}
     <tr>
       <td style="text-align: center">
-        {% if not b.is_done %}<i class="icon-spinner icon-spin text-success" data-toggle="tooltip" rel="tooltip" data-original-title="This build is not ready yet"></i>
-        {% elif b.modified %}<i class="icon-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="This build was manually modified"></i>
+        {% if not b.is_done %}<i class="icon-spinner icon-spin text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build is not ready yet') }}"></i>
+        {% elif b.modified %}<i class="icon-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build was manually modified') }}"></i>
         {% endif %}
       </td>
       <td>
@@ -43,8 +43,8 @@
     <tr>
       <td colspan="3">
         <div class="well">
-        <p>No recent builds found, select hash from <a href="{{ url_for('project.git', project_id=project.id)}}">git log page</a> or build latest head build.</p>
-        <p class="text-center"><a href="{{ url_for('project.bump', project_id = project.id)}}" class="btn btn-primary">Build 'HEAD'</a></p>
+        <p>{{ _("No recent builds found, select hash from <a href='%(url)s'>git log page</a> or build latest head build.", url=url_for('project.git', project_id=project.id)) }}</p>
+        <p class="text-center"><a href="{{ url_for('project.bump', project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a></p>
 
         </div>
       </td>

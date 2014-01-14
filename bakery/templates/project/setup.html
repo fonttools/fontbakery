@@ -113,25 +113,25 @@
 {% from 'project/macros.html' import subnav_setup with context%}
 {{ subnav_setup('setup') }}
 
-<h3>Bake Process Options</h3>
+<h3>{{ _("Bake Process Options") }}</h3>
 
 <div class="alert alert-info">
-Setup the project's bake process. Options can be pre-selected by storing them in a <code><a href="{# XXX: {{ url_for('project.rfiles', project_id=project.id ) }} #}" >bakery.yaml</a></code> file inside the git repository.
+{{ _("Setup the project's bake process. Options can be pre-selected by storing them in a <code>bakery.yaml</code> file inside the git repository.") }}
 </div>
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
   <div class="control-group row-fluid anchorUnderNavbar">
     <div class="controls">
-      <p><strong>Bold</strong> fields are required.</p>
-      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">Reload settings from repo</a></p>{% endif %}
+      <p>{{ _("<strong>Bold</strong> fields are required.") }}</p>
+      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-small">{{ _("Reload settings from repo") }}</a></p>{% endif %}
     </div>
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="license_file"><strong>License File:</strong></label>
+    <label class="control-label" for="license_file"><strong>{{ _("License File:") }}</strong></label>
     <div class="controls">
     <select for="license_file" name="license_file" class="input-xxlarge" required>
-      <option>Select file</option>
+      <option>{{ _("Select file") }}</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
       {% endfor %}
@@ -140,24 +140,24 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="source_files_type"><strong>Source files:</strong></label>
+    <label class="control-label" for="source_files_type"><strong>{{ _("Source files:") }}</strong></label>
     <div class="controls">
     {% if config['local']['ufo_dirs'] and config['local']['ttx_files'] %}
-      <div class="alert alert-info">UFO folders and TTX files are found in upstream repository. Select what files are primary source</div>
+      <div class="alert alert-info">{{ _("UFO folders and TTX files are found in upstream repository. Select what files are primary source") }}</div>
       <label class="radio">
         <input type="radio" name="source_files_type" id="source_files_type" value="ufo" 
           {% if config['state']['source_files_type']=='ufo' %}checked{% endif %}>
-        UFO is primary source
+        {{ _("UFO is primary source") }}
       </label>
       <label class="radio">
         <input type="radio" name="source_files_type" id="source_files_type" value="ttx"
         {% if config['state']['source_files_type']=='ttx' %}checked{% endif %}>
-        TTX, please
+        {{ _("TTX, please") }}
       </label>
     {% else %}
       <input type="hidden" name="source_files_type" value="off">
     {% endif %}
-    <p class="muted">Found source files:</p>
+    <p class="muted">{{ _("Found source files:") }}</p>
     <ul class="muted">
       {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
       <li>{{ i }}</li>
@@ -167,7 +167,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="subset"><strong>Subsets:</strong></label>
+    <label class="control-label" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
     <div class="controls">
     <select for="subset" multiple="multiple" name="subset" class="input-xxlarge"
       size="{{ subsetvals|length }}" required>
@@ -179,7 +179,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="txt_files">Text Files:</label>
+    <label class="control-label" for="txt_files">{{ _("Text Files:") }}</label>
     <div class="controls">
     <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge"
         size="{{ config['local']['txt_files']|length }}">
@@ -191,41 +191,39 @@ Setup the project's bake process. Options can be pre-selected by storing them in
   </div>
 
   <div id="familyname" class="control-group row-fluid">
-    <label class="control-label" for="familyname">New font family name?</label>
+    <label class="control-label" for="familyname">{{ _("New font family name?") }}</label>
     <div class="controls">
     <input type="text" placeholder="" name="familyname"
       value="{{ config['state'].get('familyname', '') }}"
       class="input-xxlarge" >
-    <p class="muted">If you want to rename the family, type the new family name here.<br/>Else, leave it blank</p>
+    <p class="muted">{{ _("If you want to rename the family, type the new family name here.<br/>Else, leave it blank") }}</p>
     </div>
   </div>
 
   <div class="control-group row-fluid anchorUnderNavbar">
-    <label class="control-label" for="ttfautohint"><code>ttfautohint</code> options?</label>
+    <label class="control-label" for="ttfautohint">{{ _("<code>ttfautohint</code> options?") }}</label>
     <div class="controls">
     <input type="text" placeholder="" name="ttfautohint"
       value="{{ config['state'].get('ttfautohint', '') }}"
       class="input-xxlarge" >
-    <p class="muted">If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank</p>
+    <p class="muted">{{ _("If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank") }}</p>
     </div>
   </div>
 
   <div class="form-actions">
-    <input id="bake" name="bake" value="Save &amp; Bake" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="Do you have permission to use the fonts names as presented to the user in modified versions?"{% endif %} />
+    <input id="bake" name="bake" value="{{ _('Save &amp; Bake') }}" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="{{ _('Do you have permission to use the fonts names as presented to the user in modified versions?') }}"{% endif %} />
     <input id="save" name="save" value="Save" type="submit" class="btn" />
-    {# TODO: This should only be shown if there is a bakery_yaml in upstream 
-    <input class="btn" name="reset" value="Reload from upstream" disabled="disabled"> #}
   </div>
 
 
 </form>
 
-<h3>Dashboard Status</h3>
+<h3>{{ _("Dashboard Status") }}</h3>
 
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
-    <div class="alert alert-info">Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code><a href="{# XXX: {{ url_for('project.rfiles', project_id=project.id ) }} #}" >bakery.yaml</a></code> file inside the git repository.</div>
+    <div class="alert alert-info">{{ _("Setup the project's dashboard metadata. Options can be pre-selected by storing them in a <code>bakery.yaml</code> file inside the git repository.") }}</div>
 {% else %}
-    <div class="alert alert-block">These details are <strong>NOT</strong> yet saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code><a href="{# XXX: {{ url_for('project.rfiles', project_id=project.id ) }} #}" >bakery.yaml</a></code> to the upstream repository that contains the following information.</div>
+    <div class="alert alert-block">{{ _("These details are <strong>NOT</strong> yet saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code>bakery.yaml</code> to the upstream repository that contains the following information.") }}</div>
 {% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
@@ -236,16 +234,16 @@ Setup the project's bake process. Options can be pre-selected by storing them in
       <div class="controls">
           {% if item == 'trademark_permission' %}
             <select name="{{ item }}">
-              <option value="">Select trademark permission status</option>
-              <option value="yes" {% if config['state'][item] == 'yes' %}selected="selected"{% endif %}>Yes</option>
-              <option value="no" {% if config['state'][item] == 'no' %}selected="selected"{% endif %}>No</option>
+              <option value="">{{ _("Select trademark permission status") }}</option>
+              <option value="yes" {% if config['state'][item] == 'yes' %}selected="selected"{% endif %}>{{ _("Yes") }}</option>
+              <option value="no" {% if config['state'][item] == 'no' %}selected="selected"{% endif %}>{{ _("No") }}</option>
             </select>
-            <p class="muted">Do you have permission to use the trademark?</p>
+            <p class="muted">{{ _("Do you have permission to use the trademark?") }}</p>
           {% elif value['text'] == "free" %}
             <input type="text" placeholder="" name="{{ item }}"
                 value="{{ config['state'][item] }}"
                 class="input-xxlarge" >
-            <p class="muted">Set string value here, or leave it blank to unset it</p>
+            <p class="muted">{{ _("Set string value here, or leave it blank to unset it") }}</p>
           {% else %}
               {% for option, description in value.iteritems() %}
                 <label class="radio inline">
@@ -258,7 +256,7 @@ Setup the project's bake process. Options can be pre-selected by storing them in
     {% endfor %}
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">{{ _("Save") }}</button>
     </div>
 
 </form>
@@ -274,7 +272,7 @@ $(document).ready(function() {
     var form = $(this).closest('form');
 
     if (!$('#dataConfirmModal').length) {
-        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">RFN Permission</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" id="dataConfirmNo">No</a></div></div>');
+        $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">{{ _("RFN Permission") }}</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">{{ _("Cancel") }}</button><a class="btn btn-success" id="dataConfirmYes">{{ _("Yes") }}</a><a class="btn btn-danger" id="dataConfirmNo">{{ _("No") }}</a></div></div>');
     }
 
     $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
@@ -287,7 +285,7 @@ $(document).ready(function() {
     $('#dataConfirmNo').click(function(ev){
       $('#dataConfirmModal').modal('hide');
           if (!$('#dataComplyModal').length) {
-        $('body').append('<div id="dataComplyModal" class="modal" role="dialog" aria-labelledby="ariaComplyLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataComplyLabel">RFN Permission</h3></div><div class="modal-body">You must get written permission from the copyright holder to use their name, or set a new family name on this page.</div><div class="modal-footer"><a class="btn btn-success" id="dataComplyYes" data-dismiss="modal" aria-hidden="true">I understand</a></div></div>');
+        $('body').append('<div id="dataComplyModal" class="modal" role="dialog" aria-labelledby="ariaComplyLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataComplyLabel">{{ _("RFN Permission") }}</h3></div><div class="modal-body">{{ _("You must get written permission from the copyright holder to use their name, or set a new family name on this page.") }}</div><div class="modal-footer"><a class="btn btn-success" id="dataComplyYes" data-dismiss="modal" aria-hidden="true">{{ _("I understand") }}</a></div></div>');
       }
       $('#dataComplyModal').modal({show:true});
     });
