@@ -42,3 +42,5 @@ pages = FlatPages()
 from flask.ext.rq import RQ
 rq = RQ()
 
+from flask.ext.babel import Babel
+babel = Babel()

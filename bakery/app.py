@@ -18,9 +18,8 @@
 
 import os
 from flask import Flask, request, render_template, g, session
-from flask.ext.babel import Babel
 
-from .extensions import db, mail, pages, rq #, celery
+from .extensions import db, mail, pages, rq, babel #, celery
 
 # blueprints
 from .gitauth import gitauth
@@ -32,12 +31,15 @@ from .project import project
 # For import *
 __all__ = ['create_app', 'init_app']
 
+
 def create_app(app_name=__name__):
     # Flask application constructor. Doesn't init extensions and blueprints
     # because caller can use its own configuration.
 
-    app = Flask(app_name, static_folder = os.path.join(os.path.dirname(__file__), '..', 'static') )
+    app = Flask(app_name, static_folder = os.path.join(
+        os.path.dirname(__file__), '..', 'static') )
     return app
+
 
 def init_app(app):
     # Register all blueprints and init extensions.
@@ -54,20 +56,17 @@ def init_app(app):
     gvars(app)
     register_filters(app)
 
+
 def extensions_fabrics(app):
     # All extensions should have .init_app method to allow divide instancing
     # and application object register.
     db.init_app(app)
     mail.init_app(app)
-    babel = Babel(app)
+    babel.init_app(app)
     pages.init_app(app)
     rq.init_app(app)
     # github.init_app(app)
 
-    @babel.localeselector
-    def get_locale():
-        accept_languages = app.config.get('ACCEPT_LANGUAGES')
-        return request.accept_languages.best_match(accept_languages)
 
 def error_pages(app):
     # HTTP error pages definitions
@@ -107,6 +106,15 @@ def gvars(app):
             g.debug = True
         else:
             g.debug = False
+
+    @babel.localeselector
+    def get_locale():
+        if g.user:
+            if hasattr(g.user, 'ui_lang'):
+                return g.user.ui_lang
+
+        accept_languages = app.config.get('ACCEPT_LANGUAGES')
+        return request.accept_languages.best_match(accept_languages)
 
 
 def register_filters(app):
