@@ -78,7 +78,7 @@ def project_required(f):
             args.insert(0, p)
             return f(*args, **kwargs)
         else:
-            flash(_('Project is being syncronized, wait until it is done'))
+            flash(_('Project is being synchronized, wait until it is done'))
             return redirect(url_for('frontend.splash'))
 
     return decorated_function
@@ -106,8 +106,8 @@ def bump(p):
     else:
         build = ProjectBuild.make_build(p, 'HEAD')
 
-    flash(Markup(_("Updated repository (<a href='%s'>see files</a>) Next step: <a href='%s'>set it up</a>" %
-                   (url_for('project.ufiles', project_id=p.id), url_for('project.setup', project_id=p.id)))))
+    flash(Markup(_("Updated repository (<a href='%(repo)s'>see files</a>) Next step: <a href='%(step)s'>set it up</a>" %
+                   repo=url_for('project.ufiles', project_id=p.id), step=url_for('project.setup', project_id=p.id))))
     return redirect(url_for('project.log', project_id=p.id, build_id=build.id))
 
 
@@ -208,11 +208,11 @@ def dashboard_save(p):
         if request.form.get(item):
             if len(request.form.get(item)) > 0:
                 p.config['state'][item] = request.form.get(item)
-                flash(_('Set ' + item))
+                flash(_('Set %(item)s', item=item))
         else:
             if item in p.config['state']:
                 del p.config['state'][item]
-                flash(_('Unset ' + item))
+                flash(_('Unset %(item)s', item=item))
 
     p.save_state()
     return redirect(url_for('project.setup', project_id=p.id))

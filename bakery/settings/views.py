@@ -84,7 +84,7 @@ def update():
                                 opage = opage + 1
                                 continue
                         else:
-                            flash(_('Error get repos for organization %s' % x['login']))
+                            flash(_('Error get repos for organization %(login)s', login=x['login']))
                         break
 
             if _repos:
@@ -186,7 +186,7 @@ def addhook(full_name):
         flash(_('Repository webhook update error'))
         return redirect(url_for('settings.repos') + "#tab_github")
 
-    flash(_('Added webhook for %s.' % (full_name)))
+    flash(_('Added webhook for %(name)s.', name=full_name))
     project.build()
     return redirect(url_for('settings.repos') + "#tab_github")
 
@@ -280,7 +280,7 @@ def delclone(project_id):
         return redirect(url_for('frontend.splash'))
     db.session.delete(project)
     db.session.commit()
-    flash(_("Repository %s succesfuly removed (but files remain on the server)" % project_id))
+    flash(_("Repository %(pid)s succesfuly removed (but files remain on the server)", pid=project_id))
     return redirect(url_for('frontend.splash'))
 
 
@@ -296,7 +296,7 @@ def massgit():
     for p in projects:
         if p.full_name not in git_ids:
             db.session.delete(p)
-            flash(_("Repository %s successfully removed (but files remain on the server)" % p.full_name))
+            flash(_("Repository %(name)s successfully removed (but files remain on the server)", name=p.full_name))
         pfn[p.full_name] = p
 
     db.session.commit()
@@ -330,15 +330,15 @@ def batch():
         if not l:
             continue
         if not parse(l).valid:
-            flash(_("Url %(url)s isn't accepted, parse error", url = l))
+            flash(_("Url %(url)s isn't accepted, parse error", url=l))
         else:
             dup = Project.query.filter_by(login=g.user.login,
                 is_github=False, clone=l).first()
 
             if dup:
-                flash(_("Url %(url)s is duplicate", url = l))
+                flash(_("Url %(url)s is duplicate", url=l))
             else:
-                project = Project(login = g.user.login, clone = l, is_github = False)
+                project = Project(login=g.user.login, clone=l, is_github=False)
 
                 if project:
                     db.session.add(project)
@@ -349,7 +349,7 @@ def batch():
 
                 n = n + 1
 
-    flash(_("%(num)s repositories successfuly added", num = n))
+    flash(_("%(num)s repositories successfuly added", num=n))
 
     return redirect(url_for('settings.repos'))
 
