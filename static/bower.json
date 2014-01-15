@@ -2,9 +2,9 @@
   "name": "fontbakerystatic",
   "private": true,
   "dependencies": {
-    "bootstrap": "2.3.2",
+    "bootstrap": "~3.0.3",
     "jquery": "~2.0.3",
-    "font-awesome": "3.2.1",
+    "font-awesome": "~4.0.3",
     "ace-builds": "~1.1.1",
     "socket.io-client": "~0.9.16",
     "jquery.json2html": "moappi/jquery.json2html",
