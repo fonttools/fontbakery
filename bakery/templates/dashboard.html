@@ -3,23 +3,23 @@
 {% set page_title = _('Dashboard') %}
 {% set stateDict = {
     'copyright_license': {
-        'icon': 'file-alt',
+        'icon': 'file-o',
         'ofl': _('<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>'),
         'apache': _('<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>'),
         'ufl': _('<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>'),
         },
     'copyright_notice': {
-        'icon': 'file-alt',
+        'icon': 'file-o',
         },
     'trademark_notice': {
         'icon': 'tumblr',
-        'yes': _('<i class="icon-warning-sign apopover" data-trigger="hover" data-content="Trademark is asserted"></i>'),
-        'no': _('<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i>'),
+        'yes': _('<i class="fa fa-exclamation-triangle apopover" data-trigger="hover" data-content="Trademark is asserted"></i>'),
+        'no': _('<i class="fa fa-thumbs-up apopover" data-trigger="hover" data-content="Trademark not asserted"></i>'),
         },
     'trademark_permission': {
         'icon': 'tumblr',
-        'yes': _('<i class="icon-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> '),
-        'no': _('<i class="icon-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> '),
+        'yes': _('<i class="fa fa-thumbs-up apopover" data-trigger="hover" data-content="Trademark use is permitted"></i> '),
+        'no': _('<i class="fa fa-thumbs-down apopover" data-trigger="hover" data-content="Trademark use not permitted"></i> '),
         },
     'rfn_asserted': {
         'icon': 'strikethrough',
@@ -60,7 +60,7 @@
         'icon': 'usd',
         },
     'hinting_level': {
-        'icon': 'zoom-in',
+        'icon': 'search-plus',
         '1': '-',
         '2': _('N'),
         '3': _('A'),
@@ -90,7 +90,7 @@
         '5': '5',
         },
     'hinting_quality': {
-        'icon': 'zoom-in',
+        'icon': 'search-plus',
         '1': '1',
         '2': '2',
         '3': '3',
@@ -103,7 +103,7 @@
         'False': _('N'),
         },
     'stats_family_name':{
-        'icon': 'sort-by-order-alt'
+        'icon': 'sort-numeric-desc'
         },
     'design_category':{
         'icon': 'pencil',
@@ -127,7 +127,7 @@
         <div class="span6" style="padding:2em">
             <h4>{{ _('To add one directly, enter its git clone URL.') }}
             {{ _('If a login is required, provide it in the clone string.') }}
-            <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>{{ _('Learn more') }} <i class="icon-external-link"></i> </a></h4>
+            <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>{{ _('Learn more') }} <i class="fa fa-external-link"></i> </a></h4>
         </div>
     </div>
 
@@ -135,9 +135,9 @@
 {% endif %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
-<a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="icon-github-alt"></i> </a>
+<a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="fa fa-github-alt"></i> </a>
 <div class="input-prepend input-append pull-right">
-  <span class="add-on"><i class="icon-code-fork"></i> </span>
+  <span class="add-on"><i class="fa fa-code-fork"></i> </span>
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
   <button type="submit" class="btn apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}">{{ _("Add Repository") }}</button>
 </div>
@@ -177,10 +177,10 @@
     <tr>
       <th style="text-align: center">{{ _("ID") }}</th>
       <th style="text-align: left">{{ _("Name") }}</th>
-      <th style="text-align: center"><i class="icon-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
-      <th style="text-align: center"><i class="icon-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
+      <th style="text-align: center"><i class="fa fa-home apopover" data-trigger="hover" data-placement="top" data-content="Project Homepage"></i> </th>
+      <th style="text-align: center"><i class="fa fa-code-fork apopover" data-trigger="hover" data-placement="top" data-content="Repository URL"></i> </th>
       {% for item, value in stateDict.iteritems() | sort %}
-      <th style="text-align: center"><i class="icon-{{ value['icon'] | d('sign-blank') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
+      <th style="text-align: center"><i class="fa fa-{{ value['icon'] | d('square') }} apopover" data-trigger="hover" data-placement="top" data-content="{{ item }}"></i> </th>
       {% endfor %}
       <th style="">{{ _("GWF")}}</th>
       <th style="">{{ _("AL3")}}</th>
@@ -213,24 +213,24 @@
         </td>
         <td style="text-align: center">
             {# TODO this doesn't work... also broken in macros.html #}
-            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="icon-external-link"></i></a>{% endif %}
+            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="fa fa-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
-            <a href="{{ repo.clone }}"><i class="icon-link apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>
+            <a href="{{ repo.clone }}"><i class="fa fa-link apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center">
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
                 {% if item == 'stats_family_name' %}
-                    <i class="icon-check"></i>
+                    <i class="fa fa-check-square-o"></i>
                 {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
                     {{ repo.config['state'][item] }}
                 {% endif %}
             {% else %}
-                <i class="icon-check-empty"></i>
+                <i class="fa fa-square-o"></i>
             {% endif %}
             </a>
             </td>
@@ -281,8 +281,8 @@
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}"><i class="icon-refresh"></i></a>
-          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="icon-trash"></i></a>
+          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="fa fa-trash-o"></i></a>
         </td>
       </tr>
     {%- endfor %}

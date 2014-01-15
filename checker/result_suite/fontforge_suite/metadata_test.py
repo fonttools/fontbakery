@@ -540,6 +540,7 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(os.path.exists(os.path.join(
             os.path.dirname(self.path), 'FONTLOG.txt')))
 
+
     # def test_copyright_file_filled(self):
     #     """ COPYRIGHT.txt file """
 

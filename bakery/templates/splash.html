@@ -3,10 +3,10 @@
 {% block container %}
 <div class="jumbotron">
   <h1 style="margin-bottom:0.25em">{{ page_title }}</h1>
-  <p class="lead"><a class="btn btn-large btn-success" href="{{ url_for('gitauth.login') }}"><i class="icon-github"></i> {{ _("Login") }}</a></p>
+  <p class="lead"><a class="btn btn-large btn-success" href="{{ url_for('gitauth.login') }}"><i class="fa fa-github"></i> {{ _("Login") }}</a></p>
   <p class="lead">{{ _("Building and updating fonts should be simple. <br /> That’s what Font Bakery is for. <br /> <a href='/docs'>Learn More...</a>") }}</p>
 </div>
 {% if g.debug %}
-  <p style="text-align:center"><a class="btn btn-mini" href="{{ url_for('gitauth.me') }}"><i class="icon-plane"></i> {{ _("Offline Login") }}</a></p>
+  <p style="text-align:center"><a class="btn btn-mini" href="{{ url_for('gitauth.me') }}"><i class="fa fa-plane"></i> {{ _("Offline Login") }}</a></p>
 {% endif %}
 {% endblock %}
