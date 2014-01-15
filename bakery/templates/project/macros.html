@@ -19,7 +19,7 @@
       <p><a class="btn btn-mini btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
     </li>
     <li style="padding: 9px;">
-      <small><a class="muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}">{{ _("Delete project") }}</a></small>
+      <small><a class="muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
     </li>
 
     {% endif %}

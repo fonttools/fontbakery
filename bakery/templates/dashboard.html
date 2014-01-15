@@ -139,7 +139,7 @@
 <div class="input-prepend input-append pull-right">
   <span class="add-on"><i class="fa fa-code-fork"></i> </span>
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-  <button type="submit" class="btn apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}">{{ _("Add Repository") }}</button>
+  <button type="submit" class="btn apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm') }}">{{ _("Add Repository") }}</button>
 </div>
 </form>
 <div class="clearfix"></div>
@@ -281,8 +281,8 @@
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}"><i class="fa fa-refresh"></i></a>
-          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}"><i class="fa fa-trash-o"></i></a>
+          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
         </td>
       </tr>
     {%- endfor %}

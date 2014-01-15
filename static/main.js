@@ -31,27 +31,30 @@ $(".tablesorter").tablesorter();
 
 $("[rel='tooltip']").tooltip();
 
-var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-header"><h3 id="dataConfirmLabel">Are you sure?</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn pull-left" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-success" id="dataConfirmYes">Yes</a><a class="btn btn-danger" data-dismiss="modal">No</a></div></div>'
+var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal fade"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4 class="modal-title">Are you sure?</h4> </div> <div class="modal-body"> </div> <div class="modal-footer"> <a class="btn btn-success" id="dataConfirmYes"><i class="fa fa-check"></i> Yes</a> <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> No</button> </div> </div> </div> </div>'
 
 // Confirm Modal used to confirm license/name permissions
 $('a[data-confirm]').click(function(ev) {
-    var href = $(this).attr('href');
-    if (!$('#dataConfirmModal').length) {
-        $('body').append(dataConfirmModalHtml);
-    }
-    $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
-    $('#dataConfirmYes').attr('href', href);
-    $('#dataConfirmModal').modal({show:true});
-    return false;
-});
-
 $('button[data-confirm]').click(function(ev) {
   var form = $(this).closest('form');
   if (!$('#dataConfirmModal').length) {
         $('body').append(dataConfirmModalHtml);
   }
+  $('#dataConfirmModal').find('.modal-title').text($(this).attr('data-title'));
   $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
   $('#dataConfirmYes').click(function(ev){form.submit();});
+  $('#dataConfirmModal').modal({show:true});
+  return false;
+});
+
+$('a[data-confirm]').click(function(ev) {
+  var href = $(this).attr('href');
+  if (!$('#dataConfirmModal').length) {
+        $('body').append(dataConfirmModalHtml);
+  }
+  $('#dataConfirmModal').find('.modal-title').text($(this).attr('data-title'));
+  $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+  $('#dataConfirmYes').attr('href', href);
   $('#dataConfirmModal').modal({show:true});
   return false;
 });
