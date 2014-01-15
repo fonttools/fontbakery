@@ -59,9 +59,9 @@ socket.on('message', function (logs) {
     if (data.startswith('### ')) {
         $('#log').append($('<h4>').addClass('text-header').html(data.slice('### '.length)));
     } else if (data.startswith('Error: ')) {
-        $('#log').append($('<span>').addClass('text-error').html(data.slice('Error: '.length)));
+        $('#log').append($('<span>').addClass('text-danger').html(data.slice('Error: '.length)));
     } else if (data.startswith('Fatal: ')) {
-        $('#log').append($('<span>').addClass('text-error').html('<span class="label label-important">{{ _("Fatal") }}</span> ' + data.slice('Fatal: '.length)));
+        $('#log').append($('<span>').addClass('text-danger').html('<span class="label label-important">{{ _("Fatal") }}</span> ' + data.slice('Fatal: '.length)));
         $('#logEndButtonRebake').show();
         $('#logEndButtons').slideDown();
     } else if (data.startswith('Start: ')){

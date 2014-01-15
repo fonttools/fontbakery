@@ -3,11 +3,11 @@
 <h3>
   <a href="{{ url_for('project.ufiles', project_id = project.id) }}">{{ project.title }}</a> / {{ page_title }}
 </h3>
-<div class="row-fluid">
-    <div class="span10">
+<div class="row">
+    <div class="col-md-10">
         {% block pbody %}{% endblock %}
     </div>
-    <div class="span2">
+    <div class="col-md-2">
         {%  block pnav %}{% endblock %}
     </div>
 </div>

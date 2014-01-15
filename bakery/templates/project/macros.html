@@ -14,12 +14,12 @@
     <li class="form-actions">
       <p>
         <small> {{ _("Clone string:") }} <br /></small>
-        <input class="input-small" class="clone_url" type="text" value="{{ project.clone }}" readonly="readonly" onclick="this.select()">
+        <input class="input-sm" class="clone_url" type="text" value="{{ project.clone }}" readonly="readonly" onclick="this.select()">
       </p>
-      <p><a class="btn btn-mini btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
+      <p><a class="btn btn-xs btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
     </li>
     <li style="padding: 9px;">
-      <small><a class="muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
+      <small><a class="text-muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
     </li>
 
     {% endif %}
@@ -90,8 +90,8 @@
             {%- elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="fa fa-book"></i>
             {%- elif key.lower().split('.')[-1] in ['plist'] %}<i class="fa fa-list"></i>
             {%- elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="fa fa-folder"></i>
-            {%- elif key == 'bakery.yaml' %}<i class="fa fa-rocket text-error"></i>
-            {%- else %}<i class="fa fa-file-o muted"></i>
+            {%- elif key == 'bakery.yaml' %}<i class="fa fa-rocket text-danger"></i>
+            {%- else %}<i class="fa fa-file-o text-muted"></i>
             {%- endif %}
              {{ key }}
           {%- endif %}
@@ -107,30 +107,30 @@
 
 {%- macro showTests() %}
  <div style="max-width:900px" id="fonts-tests">
-    <ul class="inline muted">
+    <ul class="inline text-muted">
         <li><i class="fa fa-circle text-warning"></i> {{ _("means the test didn't work: fix the test") }}</li>
-        <li><i class="fa fa-circle text-error"></i> {{ _("means the test failed: fix the font") }}</li>
+        <li><i class="fa fa-circle text-danger"></i> {{ _("means the test failed: fix the font") }}</li>
         <li><i class="fa fa-circle text-info"></i> {{ _("means the test was autofixed") }}</li>
         <li><i class="fa fa-circle text-success"></i> {{ _("means the test passed: fix yourself some cake") }}</li>
     </ul>
 
     {# Tests per font file #}
     {%- for font in tests.keys() %}
-      <div class="row-fluid">
-        <div class="span9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }}</h4></div>
-        <div class="span3">
+      <div class="row">
+        <div class="col-md-9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }}</h4></div>
+        <div class="col-md-3">
         {% set  t = tests[font]['sum'] %}
         {% set sl = tests[font]['success']|length|int %}
         {% set el = tests[font]['error']|length|int %}
         {% set fl = tests[font]['failure']|length|int %}
         {% set ff = tests[font]['fixed']|length|int %}
 
-        <!-- <i class="fa fa-circle text-warning"></i> {{fl}} <i class="fa fa-circle text-error"></i> {{el}} <i class="fa fa-circle text-success"></i> {{sl}} -->
+        <!-- <i class="fa fa-circle text-warning"></i> {{fl}} <i class="fa fa-circle text-danger"></i> {{el}} <i class="fa fa-circle text-success"></i> {{sl}} -->
         <div class="progress" style="height:10px; margin-top:15px;">
-            <div class="bar bar-warning" style="width: {{ 100*el/t }}%;"></div>
-            <div class="bar bar-danger" style="width: {{ 100*fl/t }}%;"></div>
-            <div class="bar" style="width: {{ 100*ff/t }}%;"></div>
-            <div class="bar bar-success" style="width: {{ 100*sl/t }}%;"></div>
+            <div class="progress-bar progress-bar-warning" style="width: {{ 100*el/t }}%;"></div>
+            <div class="progress-bar progress-bar-danger" style="width: {{ 100*fl/t }}%;"></div>
+            <div class="progress-bar " style="width: {{ 100*ff/t }}%;"></div>
+            <div class="progress-bar progress-bar-success" style="width: {{ 100*sl/t }}%;"></div>
         </div>
         </div>
       </div>
@@ -145,9 +145,9 @@
           {%- for item in tests[font][testType] %}
             <tr>
                 <td style="text-align:center"><i class="fa fa-circle text-{{icon}}"></i> <span class="hidden">{{icon}}</span></td>
-                <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
+                <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="text-muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc}}{% endif %} <br />
                 {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
-                <small class="muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
+                <small class="text-muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
             </tr>
           {%- endfor %}
         {%- endfor %}

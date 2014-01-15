@@ -7,10 +7,10 @@
     <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
       <p>{{ _("Font Bakery have access only to organisations where you public listed your membership.") }}</p>
       {% if cache %}
-        <button type="submit" class="btn btn-small">{{ _("Refresh") }}</button>
-        <span class="muted">{{ _("List of GitHub repositories last updated") }} {{ cache.updated | pretty_date}}</span>
+        <button type="submit" class="btn btn-sm">{{ _("Refresh") }}</button>
+        <span class="text-muted">{{ _("List of GitHub repositories last updated") }} {{ cache.updated | pretty_date}}</span>
         {% else %}
-        <button type="submit" class="btn btn-small btn-primary">{{ _("Fetch List") }}</button>
+        <button type="submit" class="btn btn-sm btn-primary">{{ _("Fetch List") }}</button>
       {% endif %}
     </form>
 {%- endmacro %}

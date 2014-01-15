@@ -118,13 +118,13 @@
 
 {% if not repos %}
 <div class="jumbotron alert alert-info">
-    <button type="button" id="gotit" class="close btn btn-mini">&times;</button>
+    <button type="button" id="gotit" class="close btn btn-xs">&times;</button>
     <h2>{{ _('To get started, add a Git repository containing fonts') }}</h2>
-    <div class="row-fluid" style='text-align:left'>
-        <div class="span6" style="padding:2em">
+    <div class="row" style='text-align:left'>
+        <div class="col-md-6" style="padding:2em">
             <h4>{{ _('To add git repositories from your GitHub account, click the GitHub button.') }}</h4>
         </div>
-        <div class="span6" style="padding:2em">
+        <div class="col-md-6" style="padding:2em">
             <h4>{{ _('To add one directly, enter its git clone URL.') }}
             {{ _('If a login is required, provide it in the clone string.') }}
             <a href='https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS'>{{ _('Learn more') }} <i class="fa fa-external-link"></i> </a></h4>
@@ -136,8 +136,8 @@
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
 <a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="fa fa-github-alt"></i> </a>
-<div class="input-prepend input-append pull-right">
-  <span class="add-on"><i class="fa fa-code-fork"></i> </span>
+<div class="input-group input-group pull-right">
+  <span class="input-group-addon"><i class="fa fa-code-fork"></i> </span>
   <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
   <button type="submit" class="btn apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm') }}">{{ _("Add Repository") }}</button>
 </div>
@@ -257,32 +257,32 @@
         </td>
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
-            <button class="btn btn-mini btn-disabled" disabled>{{ _("Project downloading") }}</button>
+            <button class="btn btn-xs btn-disabled" disabled>{{ _("Project downloading") }}</button>
         {% else %}
             {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
-                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Setup") }}</a>
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-xs">{{ _("Setup") }}</a>
             {# setup's values are pre-loaded from the repo #}
             {% elif repo.config['local']['status']=='repo' %}
-                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Check") }}</a>
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-xs">{{ _("Check") }}</a>
             {# setup's values here and in the repo don't match #}
             {# {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
-                <a href="{{ url_for('project.rfiles', project_id = repo.id )}}" class="btn btn-mini">{{ _("Push bakery.yaml") }}</a> #}
+                <a href="{{ url_for('project.rfiles', project_id = repo.id )}}" class="btn btn-xs">{{ _("Push bakery.yaml") }}</a> #}
             {# setup's values here and in the repo match #}
             {% elif repo.config['local']['status']=='local' %}
-                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-mini">{{ _("Build") }}</a>
+                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-xs">{{ _("Build") }}</a>
             {# build completed successfully #}
             {# {% elif repo.config['local']['status']=='built' %}
-                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-mini">{{ _("Review") }}</a>  #}
+                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-xs">{{ _("Review") }}</a>  #}
             {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
             {% else %}
-                <a class="btn btn-mini btn-danger">{{ _("State Unknown") }}</a>
+                <a class="btn btn-xs btn-danger">{{ _("State Unknown") }}</a>
             {% endif %}
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-mini btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
-          <a class="btn btn-mini btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
+          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-xs btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
         </td>
       </tr>
     {%- endfor %}

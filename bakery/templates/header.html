@@ -16,7 +16,7 @@
       <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="fa fa-tachometer"></i></a></li>
       {% block navbar %}
       {% endblock %}
-      <li><a style="width:14em"><i class="fa fa-circle-o muted" id="notify"></i></a></li>
+      <li><a style="width:14em"><i class="fa fa-circle-o text-muted" id="notify"></i></a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li {% if url_for('frontend.page') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.page') }}"><i class="fa fa-book"></i> </a></li>

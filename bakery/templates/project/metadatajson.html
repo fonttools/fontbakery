@@ -13,13 +13,13 @@
 <form class="form-horizontal" action="{{ url_for('project.metadatajson', project_id = project.id, build_id = build.id)}}" method="POST">
 
 {% if metadata_new %}
-<div class="span6">
+<div class="col-md-6">
 <h4>{{ _("METADATA.json imported from upstream repo") }}</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
 </div>
 
-<div class="span6">
+<div class="col-md-6">
 <h4>{{ _("METADATA.json.new generated from files") }}</h4>
 <div id="editor_new"></div>
 <textarea name="metadata_new">{{ metadata_new }}</textarea>
@@ -38,7 +38,7 @@
 <p style="padding-top:0.5em;clear:both"><button type="submit" class="btn btn-primary pull-right">{{ _("Save") }}</button></p>
 {% else %}
 
-<div class="span12">
+<div class="col-md-12">
 <h4>{{ _("METADATA.json generated from files") }}</h4>
 <div id="editor"></div>
 <textarea name="metadata">{{ metadata }}</textarea>
