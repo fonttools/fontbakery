@@ -22,7 +22,7 @@ http://github.com/xen/fontbakery/
 $(document).delegate('.toggle', 'click', function () {
   event.stopPropagation();
   $(this).next().slideToggle();
-  $(this).children().toggleClass("icon-double-angle-right").toggleClass("icon-double-angle-down");
+  $(this).children().toggleClass("fa-angle-double-right").toggleClass("fa-angle-double-down");
 });
 
 $(document).ready(function() {
@@ -34,7 +34,6 @@ $("[rel='tooltip']").tooltip();
 var dataConfirmModalHtml = '<div id="dataConfirmModal" class="modal fade"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4 class="modal-title">Are you sure?</h4> </div> <div class="modal-body"> </div> <div class="modal-footer"> <a class="btn btn-success" id="dataConfirmYes"><i class="fa fa-check"></i> Yes</a> <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> No</button> </div> </div> </div> </div>'
 
 // Confirm Modal used to confirm license/name permissions
-$('a[data-confirm]').click(function(ev) {
 $('button[data-confirm]').click(function(ev) {
   var form = $(this).closest('form');
   if (!$('#dataConfirmModal').length) {
@@ -73,32 +72,32 @@ window.buildsocket = socket;
 
 socket.on("connect", function(e) {
     $('#notify').removeClass();
-    $('#notify').addClass('icon-circle text-success');
+    $('#notify').addClass('fa-circle text-success');
     socket.emit('status', true);
     $('#notify').popover('hide')
 });
 
 socket.on("disconnect", function(e) {
     $('#notify').removeClass();
-    $('#notify').addClass('icon-circle muted');
+    $('#notify').addClass('fa fa-circle muted');
 });
 
 socket.on('gone', function (data) {
     $('#notify').removeClass();
-    $('#notify').addClass('icon-warning-sign text-error');
+    $('#notify').addClass('fa fa-warning-sign text-error');
     $('#notify').popover('show');
     // TODO add a wait() here then hide it after a second
 });
 
 socket.on('start', function (data) {
     $('#notify').removeClass();
-    $('#notify').addClass('icon-refresh icon-spin text-success');
+    $('#notify').addClass('fa fa-refresh fa-spin text-success');
     $('#notify').popover('hide');
 });
 
 socket.on('stop', function (data) {
     $('#notify').removeClass();
-    $('#notify').addClass('icon-circle text-success');
+    $('#notify').addClass('fa fa-circle text-success');
     $('#notify').popover('hide');
 });
 

@@ -1,32 +1,30 @@
 {% if g.user %}
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-
-      <a class='brand' href='{{ url_for('frontend.splash') }}'>{{ _("Font Bakery") }}</a>
-
-      <div class="nav-collapse collapse navbar-responsive-collapse">
-        <ul class="nav">
-          <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="fa fa-tachometer"></i></a></li>
-          {% block navbar %}
-          {% endblock %}
-          <li><a style="width:14em"><i class="fa fa-circle-o muted" id="notify"></i></a></li>
-        </ul>
-
-        <ul class="nav pull-right">
-          <li {% if url_for('frontend.page') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.page') }}"><i class="fa fa-book"></i> </a></li>
-          <li><a>{% if g.user.avatar %}<img src="https://www.gravatar.com/avatar/{{ g.user.avatar }}?s=14&amp;d=mm" data-trigger="hover" data-placement="bottom" data-content="{{ g.user.name }}" class="apopover" />{% else %}{{ g.user.name }}{% endif %}</a></li>
-          <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="fa fa-github-alt"></i> </a></li>
-          <li><a href="{{ url_for('gitauth.logout') }}"><i class="fa fa-sign-out"></i> </a></li>
-        </ul>
-
-      </div>
-    </div>
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+<div class="container">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="sr-only">{{ _("Toggle navigation") }}</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href='{{ url_for('frontend.splash') }}'>{{ _("Font Bakery") }}</a>
   </div>
+
+  <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+      <li {% if url_for('frontend.splash') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.splash') }}" ><i class="fa fa-tachometer"></i></a></li>
+      {% block navbar %}
+      {% endblock %}
+      <li><a style="width:14em"><i class="fa fa-circle-o muted" id="notify"></i></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li {% if url_for('frontend.page') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.page') }}"><i class="fa fa-book"></i> </a></li>
+      <li><a>{% if g.user.avatar %}<img src="https://www.gravatar.com/avatar/{{ g.user.avatar }}?s=14&amp;d=mm" data-trigger="hover" data-placement="bottom" data-content="{{ g.user.name }}" class="apopover" />{% else %}{{ g.user.name }}{% endif %}</a></li>
+      <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="fa fa-github-alt"></i> </a></li>
+      <li><a href="{{ url_for('gitauth.logout') }}"><i class="fa fa-sign-out"></i> </a></li>
+    </ul>
+  </div><!--/.nav-collapse -->
+</div>
 </div>
 {% endif %}

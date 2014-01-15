@@ -24,18 +24,18 @@
 </head>
 <body>
 
-<div class="container">
-    
 {% block topbar %}
     {% include "header.html" %}
 {% endblock %}
+
+<div class="container">
 
 {% from 'macros/misc.html' import render_flash_message %}
 {{ render_flash_message() }}
 
 {% block container %}
-    <div class="container-fluid">
-      <div class="row-fluid">
+    <div class="container">
+      <div class="row">
         {% block body %}
             {% block top %}
                 <ul class="nav nav-pills">
@@ -46,7 +46,7 @@
                     {% endfor %}
                 </ul>
             {% endblock %}
-            <div class="span9">
+            <div class="col-md-9">
               <div class="hero-unit">
                 <h1>Hello, world!</h1>
               </div>
