@@ -84,7 +84,7 @@ socket.on("disconnect", function(e) {
 
 socket.on('gone', function (data) {
     $('#notify').removeClass();
-    $('#notify').addClass('fa fa-warning-sign text-error');
+    $('#notify').addClass('fa fa-exclamation-triangle text-danger');
     $('#notify').popover('show');
     // TODO add a wait() here then hide it after a second
 });
