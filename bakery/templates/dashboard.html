@@ -117,10 +117,10 @@
 {% block body %}
 
 {% if not repos %}
-<div class="jumbotron alert alert-info">
-    <button type="button" id="gotit" class="close btn btn-xs">&times;</button>
+<div class="alert alert-info alert-dismissable">
+    <button type="button" class="close" aria-hidden="true">&times;</button>
     <h2>{{ _('To get started, add a Git repository containing fonts') }}</h2>
-    <div class="row" style='text-align:left'>
+    <div class="row">
         <div class="col-md-6" style="padding:2em">
             <h4>{{ _('To add git repositories from your GitHub account, click the GitHub button.') }}</h4>
         </div>
@@ -135,10 +135,10 @@
 {% endif %}
 
 <form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
-<div class="col-lg-6">
+<div class="col-md-6 col-xs-3">
   <a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="fa fa-github-alt"></i> </a>
 </div>
-<div class="col-lg-6">
+<div class="col-md-6 col-xs-9">
   <div class="input-group">
     <span class="input-group-addon"><i class="fa fa-code-fork"></i> </span>
     <input type="text" class="form-control" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
