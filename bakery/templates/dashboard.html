@@ -134,12 +134,18 @@
 </div>
 {% endif %}
 
-<form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST" style="padding-top:1.5em">
-<a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="fa fa-github-alt"></i> </a>
-<div class="input-group input-group pull-right">
-  <span class="input-group-addon"><i class="fa fa-code-fork"></i> </span>
-  <input type="text" class="input-xxlarge" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
-  <button type="submit" class="btn apopover" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm') }}">{{ _("Add Repository") }}</button>
+<form class="form-inline" action="{{ url_for('settings.addclone') }}" method="POST">
+<div class="col-lg-6">
+  <a id="dashboardGithubButton" class="btn btn-primary" href="{{ url_for('settings.repos') }}"><i class="fa fa-github-alt"></i> </a>
+</div>
+<div class="col-lg-6">
+  <div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-code-fork"></i> </span>
+    <input type="text" class="form-control" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="submit" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm') }}">{{ _("Add Repository") }}</button>
+    </span>
+  </div><!-- /input-group -->
 </div>
 </form>
 <div class="clearfix"></div>

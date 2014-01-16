@@ -210,11 +210,8 @@
     </div>
   </div>
 
-  <div class="form-actions">
     <input id="bake" name="bake" value="{{ _('Save &amp; Bake') }}" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="{{ _('Do you have permission to use the fonts names as presented to the user in modified versions?') }}" data-title="{{ _('Are you sure?') }}"{% endif %} />
     <input id="save" name="save" value="Save" type="submit" class="btn" />
-  </div>
-
 
 </form>
 
