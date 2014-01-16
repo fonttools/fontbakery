@@ -34,26 +34,26 @@
 {{ render_flash_message() }}
 
 {% block container %}
-    <div class="container">
-      <div class="row">
-        {% block body %}
-            {% block top %}
-                <ul class="nav nav-pills">
-                    {% for tab, link in tabs %}
-                    <li class="{% if active == tab %}active{% endif %}">
-                        <a href="{{ link }}">{{ tab|capitalize }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% endblock %}
-            <div class="col-md-9">
-              <div class="hero-unit">
-                <h1>Hello, world!</h1>
-              </div>
-            </div>
-        {% endblock body %}
-      </div>
+  <div class="container">
+    <div class="row">
+      {% block body %}
+        {% block top %}
+          <ul class="nav nav-pills">
+            {% for tab, link in tabs %}
+            <li class="{% if active == tab %}active{% endif %}">
+                <a href="{{ link }}">{{ tab|capitalize }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% endblock %}
+        <div class="col-md-9">
+          <div class="hero-unit">
+            <h1>Hello, world!</h1>
+          </div>
+        </div>
+      {% endblock body %}
     </div>
+  </div>
 {% endblock %}
 
 {% block footer %}
