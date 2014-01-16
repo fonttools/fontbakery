@@ -1,0 +1,8 @@
+{% macro font_card(repo) %}
+    <h4><a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> <i class="fa fa-shield text-success"></i></h4>
+
+<p>    <strong>Stats:</strong><br>
+    Total: {{ repo.family_stat.total }} <br>
+    Month: {{ repo.family_stat.month }} <br>
+    Week: {{ repo.family_stat.total }}<br></p>
+{% endmacro %}
