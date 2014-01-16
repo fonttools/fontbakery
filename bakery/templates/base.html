@@ -22,45 +22,31 @@
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body>
 
 {% block topbar %}
-    {% include "header.html" %}
+  {% include "header.html" %}
 {% endblock %}
-
-<div class="container">
 
 {% from 'macros/misc.html' import render_flash_message %}
 {{ render_flash_message() }}
 
-{% block container %}
-  <div class="container">
-    <div class="row">
-      {% block body %}
-        {% block top %}
-          <ul class="nav nav-pills">
-            {% for tab, link in tabs %}
-            <li class="{% if active == tab %}active{% endif %}">
-                <a href="{{ link }}">{{ tab|capitalize }}</a>
-            </li>
-            {% endfor %}
-          </ul>
-        {% endblock %}
-        <div class="col-md-9">
-          <div class="hero-unit">
-            <h1>Hello, world!</h1>
-          </div>
-        </div>
-      {% endblock body %}
+<div class="container">
+  <div class="row">
+    <div role="main">
+
+    {% block body %}
+    {% endblock body %}
+
     </div>
+
   </div>
-{% endblock %}
+</div>
 
 {% block footer %}
  {% include "footer.html" %}
 {% endblock %}
-
-</div>
 
 {% block js_btm %}
   <script src="{{ url_for('static', filename='libs/jquery/jquery.min.js') }}" type="text/javascript" charset="utf-8"></script>

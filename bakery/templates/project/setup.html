@@ -119,7 +119,7 @@
 {{ _("Setup the project's bake process. Options can be pre-selected by storing them in a <code>bakery.yaml</code> file inside the git repository.") }}
 </div>
 
-<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST">
+<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST" role="form">
   <div class="form-group row anchorUnderNavbar">
     <div class="controls">
       <p>{{ _("<strong>Bold</strong> fields are required.") }}</p>
