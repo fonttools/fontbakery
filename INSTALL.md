@@ -106,14 +106,6 @@ Clone code from github into new folder:
 
     git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 
-Build and copy the Google Font Directory lint.jar tool into the fontbakery/scripts directory. This assumed you have
-
-    which javac;
-    # /usr/bin/javac
-    cd ~/src/googlefontdirectory/tools/lint/;
-    ant lint-jar;
-    cp -pa ~/googlefontdirectory/tools/lint/dist/lint.jar ~/src/fontbakery/scripts/;
-
 Then run setup:
 
     cd ~/src/fontbakery;
