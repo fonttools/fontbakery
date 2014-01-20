@@ -119,18 +119,24 @@
 {{ _("Setup the project's bake process. Options can be pre-selected by storing them in a <code>bakery.yaml</code> file inside the git repository.") }}
 </div>
 
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 col-xs-12">
+
 <form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST" role="form">
-  <div class="form-group row anchorUnderNavbar">
-    <div class="controls">
-      <p>{{ _("<strong>Bold</strong> fields are required.") }}</p>
-      {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-sm">{{ _("Reload settings from repo") }}</a></p>{% endif %}
+  <div class="form-group  anchorUnderNavbar">
+    <div class="col-sm-offset-2 col-sm-8">
+      <div class="form-control-static">
+        <p>{{ _("<strong>Bold</strong> fields are required.") }}</p>
+        {% if bakery_yaml_in_sync == false %}<p><a class="btn btn-sm">{{ _("Reload settings from repo") }}</a></p>{% endif %}
+      </div>
     </div>
   </div>
 
-  <div class="form-group row anchorUnderNavbar">
-    <label class="control-label" for="license_file"><strong>{{ _("License File:") }}</strong></label>
-    <div class="controls">
-    <select for="license_file" name="license_file" class="input-xxlarge" required>
+  <div class="form-group  anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="license_file"><strong>{{ _("License File:") }}</strong></label>
+    <div class="col-sm-8">
+    <select for="license_file" name="license_file" class="form-control" required>
       <option>{{ _("Select file") }}</option>
       {% for i in config['local']['txt_files'] %}
       <option {% if config['state']['license_file']==i %}selected="selected"{% endif %} >{{ i }}</option>
@@ -139,37 +145,43 @@
     </div>
   </div>
 
-  <div class="form-group row anchorUnderNavbar">
-    <label class="control-label" for="source_files_type"><strong>{{ _("Source files:") }}</strong></label>
-    <div class="controls">
+  <div class="form-group  anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="source_files_type"><strong>{{ _("Source files:") }}</strong></label>
+    <div class="col-sm-8">
     {% if config['local']['ufo_dirs'] and config['local']['ttx_files'] %}
       <div class="alert alert-info">{{ _("UFO folders and TTX files are found in upstream repository. Select what files are primary source") }}</div>
-      <label class="radio">
+      <div class="radio">
+      <label>
         <input type="radio" name="source_files_type" id="source_files_type" value="ufo" 
           {% if config['state']['source_files_type']=='ufo' %}checked{% endif %}>
         {{ _("UFO is primary source") }}
       </label>
-      <label class="radio">
+      </div>
+      <div class="radio">
+      <label>
         <input type="radio" name="source_files_type" id="source_files_type" value="ttx"
         {% if config['state']['source_files_type']=='ttx' %}checked{% endif %}>
         {{ _("TTX, please") }}
       </label>
+      </div>
     {% else %}
       <input type="hidden" name="source_files_type" value="off">
     {% endif %}
-    <p class="text-muted">{{ _("Found source files:") }}</p>
-    <ul class="text-muted">
-      {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
-      <li>{{ i }}</li>
-      {% endfor %}
-    </ul>
+    <div class="form-control-static">
+      <p class="text-muted">{{ _("Found source files:") }}</p>
+      <ul class="text-muted">
+        {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
+        <li>{{ i }}</li>
+        {% endfor %}
+      </ul>
+    </div>
     </div>
   </div>
 
-  <div class="form-group row anchorUnderNavbar">
-    <label class="control-label" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
-    <div class="controls">
-    <select for="subset" multiple="multiple" name="subset" class="input-xxlarge"
+  <div class="form-group  anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
+    <div class="col-sm-8">
+    <select for="subset" multiple="multiple" name="subset" class="form-control"
       size="{{ subsetvals|length }}" required>
       {% for i in subsetvals %}
       <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
@@ -178,10 +190,10 @@
     </div>
   </div>
 
-  <div class="form-group row anchorUnderNavbar">
-    <label class="control-label" for="txt_files">{{ _("Text Files:") }}</label>
-    <div class="controls">
-    <select for="txt_files" multiple="multiple" name="txt_files" class="input-xxlarge"
+  <div class="form-group  anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="txt_files">{{ _("Text Files:") }}</label>
+    <div class="col-sm-8">
+    <select for="txt_files" multiple="multiple" name="txt_files" class="form-control"
         size="{{ config['local']['txt_files']|length }}">
       {% for i in config['local']['txt_files'] %}
       <option {% if i in config['state']['txt_files_copied'] %}selected="selected"{% endif %} >{{ i }}</option>
@@ -190,30 +202,38 @@
     </div>
   </div>
 
-  <div id="familyname" class="form-group row">
-    <label class="control-label" for="familyname">{{ _("New font family name?") }}</label>
-    <div class="controls">
+  <div id="familyname" class="form-group ">
+    <label class="control-label col-sm-2" for="familyname">{{ _("New font family name?") }}</label>
+    <div class="col-sm-8">
     <input type="text" placeholder="" name="familyname"
       value="{{ config['state'].get('familyname', '') }}"
-      class="input-xxlarge" >
+      class="form-control" >
     <p class="text-muted">{{ _("If you want to rename the family, type the new family name here.<br/>Else, leave it blank") }}</p>
     </div>
   </div>
 
-  <div class="form-group row anchorUnderNavbar">
-    <label class="control-label" for="ttfautohint">{{ _("<code>ttfautohint</code> options?") }}</label>
-    <div class="controls">
+  <div class="form-group anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="ttfautohint">{{ _("<code>ttfautohint</code> options?") }}</label>
+    <div class="col-sm-8">
     <input type="text" placeholder="" name="ttfautohint"
       value="{{ config['state'].get('ttfautohint', '') }}"
-      class="input-xxlarge" >
+      class="form-control" >
     <p class="text-muted">{{ _("If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank") }}</p>
     </div>
   </div>
 
-    <input id="bake" name="bake" value="{{ _('Save &amp; Bake') }}" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="{{ _('Do you have permission to use the fonts names as presented to the user in modified versions?') }}" data-title="{{ _('Are you sure?') }}"{% endif %} />
-    <input id="save" name="save" value="Save" type="submit" class="btn" />
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-8">
+      <input id="bake" name="bake" value="{{ _('Save &amp; Bake') }}" type="submit" class="btn btn-primary" {% if not config['local']['setup'] %} data-confirm="{{ _('Do you have permission to use the fonts names as presented to the user in modified versions?') }}" data-title="{{ _('Are you sure?') }}"{% endif %} />
+      <input id="save" name="save" value="Save" type="submit" class="btn" />
+    </div>
+  </div>
+
 
 </form>
+</div>
+</div>
+</div>
 
 <h3>{{ _("Dashboard Status") }}</h3>
 
@@ -226,11 +246,11 @@
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
 
     {% for item, value in stateDict.iteritems() | sort %}
-    <div id="{{ item }}" class="form-group row">
-      <label class="control-label" for="{{ item }}">{{ item }}:</label>
-      <div class="controls">
+    <div id="{{ item }}" class="form-group ">
+      <label class="control-label col-sm-3" for="{{ item }}">{{ item }}:</label>
+      <div class="col-sm-7">
           {% if item == 'trademark_permission' %}
-            <select name="{{ item }}">
+            <select name="{{ item }}" class="form-control">
               <option value="">{{ _("Select trademark permission status") }}</option>
               <option value="yes" {% if config['state'][item] == 'yes' %}selected="selected"{% endif %}>{{ _("Yes") }}</option>
               <option value="no" {% if config['state'][item] == 'no' %}selected="selected"{% endif %}>{{ _("No") }}</option>
@@ -239,11 +259,11 @@
           {% elif value['text'] == "free" %}
             <input type="text" placeholder="" name="{{ item }}"
                 value="{{ config['state'][item] }}"
-                class="input-xxlarge" >
+                class="form-control" >
             <p class="text-muted">{{ _("Set string value here, or leave it blank to unset it") }}</p>
           {% else %}
               {% for option, description in value.iteritems() %}
-                <label class="radio inline">
+                <label class="radio inline ">
                   <input type="radio" name="{{ item }}" value="{{ option }}" {% if config['state'][item] == option %}selected="selected"{% endif %} /> {{ description }}
                 </label>
               {% endfor %}
@@ -252,9 +272,11 @@
     </div>
     {% endfor %}
 
-    <div class="form-actions">
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-7">
         <button type="submit" class="btn btn-primary">{{ _("Save") }}</button>
     </div>
+  </div>
 
 </form>
 

@@ -9,17 +9,22 @@
 {% block pbody %}
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('description') }}
+<p></p>
+<div class="container">
+  <div class="row">
+      <form class="form-horizontal" action="{{ url_for('project.description', project_id = project.id, build_id = build.id)}}" method="POST">
+        <div class="col-md-6">
+            <div id="editor"></div>
+            <textarea name="description" id="descriptionta">{{ description }}</textarea>
+            <p style="padding-top:1em"><button type="submit" class="btn btn-primary">{{ _("Save") }}</button></p>
+        </div>
+        <div class="col-md-6" id="preview">
 
-<form class="form-horizontal" action="{{ url_for('project.description', project_id = project.id, build_id = build.id)}}" method="POST">
-    <div class="col-md-6">
-        <div id="editor"></div>
-        <textarea name="description" id="descriptionta">{{ description }}</textarea>
-        <p style="padding-top:1em"><button type="submit" class="btn btn-primary">{{ _("Save") }}</button></p>
-    </div>
-    <div class="col-md-6" id="preview">
+        </div>
+    </form>
+  </div>
+</div>
 
-    </div>
-</form>
 
 {% endblock %}
 

@@ -203,11 +203,11 @@ ol.linenums li {
     padding-top: 2em;
 }
 
-.anchorUnderNavbar {
+/*.anchorUnderNavbar {
     padding-top: 50px;
     margin-top: -50px;
 }
-
+*/
 #dashboard a {
     text-decoration: none;
 }
