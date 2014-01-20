@@ -30,6 +30,7 @@ from flask import (Blueprint, request)
 
 realtime = Blueprint('realtime', __name__)
 
+
 class StatusNamespace(BaseNamespace, BroadcastMixin):
 
     def __init__(self, *args, **kwargs):
@@ -105,6 +106,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
         else:
             # It is valid path and file name, because it is signed param.
             self.emit('message', 'Wait: Log file is not available yet. Reload page later.')
+
 
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):

@@ -21,7 +21,7 @@ import logging
 from flask.ext.babel import gettext as _
 
 from flask import (Blueprint, render_template, request, flash, g, redirect,
-    url_for, Markup, json)
+                    url_for, json)
 
 from ..extensions import github, db
 from ..decorators import login_required
@@ -34,7 +34,6 @@ settings = Blueprint('settings', __name__, url_prefix='/settings')
 @settings.route('/', methods=['GET'])
 @login_required
 def repos():
-    _repos = None
     # pylint:disable-msg=E1101
     cache = ProjectCache.query.filter_by(login=g.user.login).first()
     myprojects = Project.query.filter_by(
@@ -120,6 +119,7 @@ def profile():
     return render_template('settings/index.html', repos=_repos)
 
 HOOK_URL = 'http://requestb.in/nrgo4inr'
+
 
 @settings.route('/addhook/<path:full_name>')  # , methods=['GET'])
 @login_required
@@ -323,7 +323,7 @@ def massgit():
 @login_required
 def batch():
     # pylint:disable-msg=E1101
-    urls = request.form.get('urls', '')+"\n" # this makes m
+    urls = request.form.get('urls', '') + "\n"  # this makes m
     n = 0
     for l in urls.split("\n"):
         l = l.strip()
@@ -333,7 +333,7 @@ def batch():
             flash(_("Url %(url)s isn't accepted, parse error", url=l))
         else:
             dup = Project.query.filter_by(login=g.user.login,
-                is_github=False, clone=l).first()
+                                            is_github=False, clone=l).first()
 
             if dup:
                 flash(_("Url %(url)s is duplicate", url=l))
@@ -352,4 +352,3 @@ def batch():
     flash(_("%(num)s repositories successfuly added", num=n))
 
     return redirect(url_for('settings.repos'))
-
