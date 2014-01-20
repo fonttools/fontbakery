@@ -24,7 +24,6 @@ from ..decorators import login_required
 from ..utils import project_fontaine
 from .models import Project, ProjectBuild
 from functools import wraps
-from itertools import chain
 
 import itsdangerous
 
@@ -41,6 +40,7 @@ def chkhash(hashstr):
     except ValueError:
         flash(_('Error in provided data'))
         abort(500)
+
 
 @project.before_request
 def before_request():
@@ -96,7 +96,6 @@ def bump(p):
     if not p.config['local'].get('setup'):
         flash(_("Complete setup first"))
         return redirect(url_for('project.setup', project_id=p.id))
-
 
     if request.args.get('revision'):
         signer = itsdangerous.Signer(current_app.secret_key)
@@ -168,7 +167,7 @@ def setup(p):
         if i not in DEFAULT_SUBSET_LIST:
             error = True
             flash(_('Subset value is wrong'))
-    if len(subset_list)<0:
+    if len(subset_list) < 0:
         error = True
         flash(_("Select at least one subset from list"))
     config['state']['subset'] = subset_list
@@ -227,13 +226,13 @@ def dashboard_save(p):
 def ufiles(p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
-    if revision and revision!='HEAD':
+    if revision and revision != 'HEAD':
         chkhash(revision)
     else:
         revision = 'HEAD'
 
     return render_template('project/ufiles.html', project=p,
-        revision=revision)
+                            revision=revision)
 
 
 @project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
@@ -242,7 +241,7 @@ def ufiles(p, revision=None, name=None):
 def ufile(p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
-    if revision and revision!='HEAD':
+    if revision and revision != 'HEAD':
         chkhash(revision)
     else:
         revision = 'HEAD'
@@ -250,7 +249,8 @@ def ufile(p, revision=None, name=None):
     mime, data = p.revision_file(revision, name)
 
     return render_template('project/ufile.html', project=p,
-        revision=revision, name=name, mime=mime, data=data)
+                            revision=revision, name=name, mime=mime, data=data)
+
 
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
 @login_required
@@ -260,7 +260,7 @@ def ufileblob(p, revision=None):
     This view is pretty much "heavy", each request spawn additional process and
     read its output.
     """
-    if revision and revision!='HEAD':
+    if revision and revision != 'HEAD':
         chkhash(revision)
     else:
         revision = 'HEAD'
@@ -297,7 +297,7 @@ def history(p):
 def log(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
     param = {'login': p.login, 'id': p.id, 'revision': b.revision, 'build': b.id}
-    log_file="%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log" % param
+    log_file = "%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log" % param
 
     return render_template('project/log.html', project=p, build=b, log_file=log_file)
 
@@ -316,7 +316,7 @@ def rfiles(p, build_id):
     tree = b.files()
 
     return render_template('project/rfiles.html', project=p, yaml=yaml,
-                            fontaineFonts=f, build=b, tree = tree)
+                            fontaineFonts=f, build=b, tree=tree)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
@@ -333,10 +333,10 @@ def rtests(p, build_id):
     summary = {
         'all_tests': sum([int(y['sum']) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
-        'all_error': sum( [len(x['error']) for x in test_result.values()]),
-        'all_failure': sum( [len(x['failure']) for x in test_result.values()]),
-        'all_fixed': sum( [len(x['fixed']) for x in test_result.values()]),
-        'all_success': sum( [len(x['success']) for x in test_result.values()]),
+        'all_error': sum([len(x['error']) for x in test_result.values()]),
+        'all_failure': sum([len(x['failure']) for x in test_result.values()]),
+        'all_fixed': sum([len(x['fixed']) for x in test_result.values()]),
+        'all_success': sum([len(x['success']) for x in test_result.values()]),
         'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
     }
     return render_template('project/rtests.html', project=p,
@@ -353,7 +353,8 @@ def description(p, build_id):
 
     if request.method == 'GET':
         data = b.read_asset('description')
-        return render_template('project/description.html', project = p, build=b, description = data)
+        return render_template('project/description.html', project=p, build=b,
+                                description=data)
 
     # POST
     b.save_asset('description', request.form.get('description'))
@@ -385,7 +386,8 @@ def metadatajson(p, build_id):
         flash(_('Wrong format for METADATA.json file'))
         metadata_new = b.read_asset('metadata_new')
         return render_template('project/metadatajson.html', project=p, build=b,
-                           metadata=request.form.get('metadata'), metadata_new=metadata_new)
+                                metadata=request.form.get('metadata'),
+                                metadata_new=metadata_new)
 
 
 # Base views
@@ -438,5 +440,4 @@ def diff(p):
     diffdata = p.diff_files(left, right)
 
     return render_template('project/diff.html', project=p,
-        diff=diffdata, left=left, right=right)
-
+                            diff=diffdata, left=left, right=right)

@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, render_template, g, request,
-    current_app, send_from_directory)
+                    current_app, send_from_directory)
 
 from ..extensions import pages
 from ..project.models import Project
@@ -24,11 +24,13 @@ from ..settings.models import FontStats
 
 frontend = Blueprint('frontend', __name__)
 
+
 @frontend.before_request
 def before_request():
     # Add to global vars list of the projects owned by current user
     if g.user:
         g.projects = Project.query.filter_by(login=g.user.login).all()
+
 
 @frontend.route('/')
 def splash():
@@ -37,7 +39,8 @@ def splash():
         return render_template('splash.html')
     else:
         projects = Project.query.filter_by(login=g.user.login).all()
-        return render_template('dashboard.html', repos = projects)
+        return render_template('dashboard.html', repos=projects)
+
 
 @frontend.route('/docs/', defaults={'path': 'index'})
 @frontend.route('/docs/<path:path>/', endpoint='page')
@@ -46,10 +49,12 @@ def page(path):
     _page = pages.get_or_404(path)
     return render_template('page.html', page=_page)
 
+
 @frontend.route('/robots.txt')
 def static_from_root():
     # Static items
     return send_from_directory(current_app.static_folder, request.path[1:])
+
 
 @frontend.route('/stats')
 def stats():

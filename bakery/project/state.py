@@ -22,6 +22,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
+
 def walkWithoutGit(path):
     """
     Recursively walk a file system path, excluding .git folders
@@ -43,7 +44,7 @@ def walkWithoutGit(path):
     return dictionary
 
 
-def load_yaml(default_yml, yml = None):
+def load_yaml(default_yml, yml=None):
     """
     Load a YAML file.
 
@@ -58,7 +59,8 @@ def load_yaml(default_yml, yml = None):
         data.update(yaml.load(open(yml, 'r').read()))
     return data
 
-def project_state_get(project, refresh = False): # XXX rename refresh throughout codebase to refresh_bakeryStateInternal ?
+
+def project_state_get(project, refresh=False):  # XXX rename refresh throughout codebase to refresh_bakeryStateInternal ?
     """
     Get internal and external state of project from default, repo and local YAML files,
     check external state matches that stored in the _in repo, and
@@ -72,7 +74,6 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
         state: the external state of the project
     """
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/' % project)
     # Define bakery.yaml locations
     bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
     bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
@@ -141,7 +142,7 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
     # If license_file not defined then choose OFL.txt or LICENSE.txt from the root of repo, if it exists
     lfn = state['license_file']
     if not lfn:
-        for fn in ['OFL.txt', 'LICENSE.txt']: # order means priority
+        for fn in ['OFL.txt', 'LICENSE.txt']:  # order means priority
             ffn = os.path.join(_in, fn)
             if os.path.exists(ffn) and os.path.isfile(ffn):
                 state['license_file'] = fn
@@ -155,7 +156,8 @@ def project_state_get(project, refresh = False): # XXX rename refresh throughout
         project_state_save(project, state, local)
     return state, local
 
-def project_state_save(project, state = None, local = None):
+
+def project_state_save(project, state=None, local=None):
     """
     Save project state in bakery.yaml and state.yaml files.
 

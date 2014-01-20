@@ -17,6 +17,7 @@
 
 from ..extensions import db
 
+
 class User(db.Model):
     """
     User model, related to GitHub account.
@@ -28,7 +29,7 @@ class User(db.Model):
     avatar = db.Column(db.String(1000))
     email = db.Column(db.String(200))
     github_access_token = db.Column(db.String(200),
-        nullable = False, index=True)
+        nullable=False, index=True)
 
     def __init__(self, login):
         self.login = login

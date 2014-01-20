@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, request, flash, g, session, redirect,
-    url_for, current_app, Markup)
+                    url_for, current_app, Markup)
 
 from .models import User
 from ..extensions import db, github
@@ -24,20 +24,22 @@ from flask.ext.babel import gettext as _
 
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
 
+
 @gitauth.after_request
 def after_request(response):
     return response
+
 
 @gitauth.route('/me')
 def me():
     """
     Bypass Github authentication and login as 1st user in the database.
-    
+
     Usage:
         Visit /auth/me to log in as the 1st user in the database, to
-        work offline as that user. To allow a github username to work 
+        work offline as that user. To allow a github username to work
         in this single user mode, change GITAUTH_LOGIN_LIST config property.
-        You need to login using GitHub at least once before this will work. 
+        You need to login using GitHub at least once before this will work.
         This only works if server is in debug mode.
     """
     if current_app.debug:
@@ -49,20 +51,22 @@ def me():
             flash(_('Welcome to single user mode!'))
     return redirect(url_for('frontend.splash'))
 
+
 @gitauth.route('/login')
 def login():
     if session.get('user_id', None) is None:
         redirect_uri = url_for('.authorized',
-            next=request.args.get('next') or request.referrer or None,
-            _external=True)
+                                next=request.args.get('next') or request.referrer or None,
+                                _external=True)
         params = {'redirect_uri': redirect_uri, 'scope': 'user:email,public_repo'}
         return redirect(github.get_authorize_url(**params))
     else:
         flash(_('Already logged in'))
         return redirect(url_for('frontend.splash'))
 
+
 @gitauth.route('/callback')
-def authorized(next = None):
+def authorized(next=None):
     next_url = request.args.get('next') or url_for('frontend.splash')
 
     if not 'code' in request.args:
@@ -95,6 +99,7 @@ def authorized(next = None):
     session['user_id'] = user.id
     g.user = user
     return redirect(next_url)
+
 
 @gitauth.route('/logout')
 def logout():
