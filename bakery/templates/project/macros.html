@@ -39,6 +39,7 @@
   <li class="active"><a href="{{ url_for('project.diff', project_id=project.id, left=left, right=right) }}">{{ _("Diff") }}</a></li>
  {%  endif %}
 </ul>
+<p></p>
 {% endmacro %}
 
 {% macro subnav_build(active, revision) %}
