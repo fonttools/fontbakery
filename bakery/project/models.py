@@ -30,6 +30,7 @@ from ..extensions import db
 from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
+
 class Project(db.Model):
     __tablename__ = 'project'
     __table_args__ = {'sqlite_autoincrement': True}
@@ -56,7 +57,7 @@ class Project(db.Model):
         # it store state value. You can access it and modify, but at the end of
         # the request all modifications dies if wasn't saved
         #
-        _state, _local = project_state_get(project = self)
+        _state, _local = project_state_get(project=self)
         return {'state': _state, 'local': _local}
 
     def save_state(self):
@@ -95,8 +96,7 @@ class Project(db.Model):
             title = self.config['state']['familyname']
         return title
 
-
-    def read_asset(self, name = None):
+    def read_asset(self, name=None):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'yaml':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % self)
@@ -127,7 +127,7 @@ class Project(db.Model):
         elif folder == 'out' and os.path.exists(_out):
             folderContents = walkWithoutGit(_out)
         else:
-            folderContents = { 'Sorry, filesystem unavailable': '' }
+            folderContents = {'Sorry, filesystem unavailable': ''}
         return folderContents
 
     def textFiles(self):
@@ -146,7 +146,6 @@ class Project(db.Model):
                 textFiles[textFile] = unicode(open(fn, 'r').read(), "utf8")
         return textFiles
 
-
     def revision_tree(self, revision):
         """ Get specific revision files as tree in format supported by tree macros """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
@@ -161,7 +160,6 @@ class Project(db.Model):
 
         return d
 
-
     def revision_file(self, revision, fn):
         """ Read specific file from revision """
         # XXX: [xen] need review here, not sure that it is 100% safe
@@ -175,13 +173,11 @@ class Project(db.Model):
             data = unicode(data, "utf8")
         return mime, data
 
-
     def revision_info(self, revision):
         """ Return revision info for selected git commit """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in)
-
 
     def revision_tests(self, revision):
         return upstream_revision_tests(self, revision)
@@ -211,24 +207,22 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
-
     def sync(self):
         """ Call in background git syncronization """
         project_git_sync.ctx_delay(self)
-
 
     def gitlog(self, skip=0):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         params = "git log -n101 --skip=%(skip)s" % {'skip': skip}
         fmt = """ --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}' """
-        log = prun(params + fmt, cwd = _in)
+        log = prun(params + fmt, cwd=_in)
         return yaml.load(log)
 
     def diff_files(self, left, right):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd = _in)
+        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd=_in)
         file_diff = {}
         t = []
         current_file = None
@@ -244,7 +238,7 @@ class Project(db.Model):
             if l.startswith('diff --git'):
                 if current_file:
                     file_diff[current_file] = "\n".join(t)
-                current_file = l[14+(len(l[11:])-1)/2:]
+                current_file = l[14 + (len(l[11:]) - 1) / 2:]
                 t = []
                 continue
             elif l.startswith('index'):
@@ -256,7 +250,7 @@ class Project(db.Model):
             elif l.startswith('new file'):
                 continue
 
-            l = l.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+            l = l.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;")
             first = l[0]
             last = l[1:]
             l = l.rstrip(" \t\n\r")
@@ -289,17 +283,17 @@ class Project(db.Model):
     def diff_files_slow(self, left, right):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        names = prun("""git diff --name-only %(left)s %(right)s""" % locals(), cwd = _in)
-        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd = _in)
+        names = prun("""git diff --name-only %(left)s %(right)s""" % locals(), cwd=_in)
+        data = prun("""git diff %(left)s %(right)s""" % locals(), cwd=_in)
         file_diff = {}
         # list of known xml file extensions
         xml_ext = ['.svg', '.ttx', '.plist', '.glif', '.xml']
         for f in names.splitlines():
             param = {'left': left, 'right': right, 'name': f}
-            #file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd = _in)
+            #file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd=_in)
             if os.path.splitext(f)[1] in xml_ext:
-                left_content = prun("""git show %(left)s:"%(name)s" """ % param, cwd = _in)
-                right_content = prun("""git show %(right)s:"%(name)s" """ % param, cwd = _in)
+                left_content = prun("""git show %(left)s:"%(name)s" """ % param, cwd=_in)
+                right_content = prun("""git show %(right)s:"%(name)s" """ % param, cwd=_in)
 
                 if left_content.startswith('fatal:'):
                     left_content = ''
@@ -307,25 +301,25 @@ class Project(db.Model):
                     right_content = ''
                 # left
                 try:
-                    left_xml = etree.tostring(etree.fromstring(left_content), pretty_print = True)
+                    left_xml = etree.tostring(etree.fromstring(left_content), pretty_print=True)
                 except etree.XMLSyntaxError:
                     # if returned data is not real xml
                     left_xml = left_content
                 # right
                 try:
-                    right_xml = etree.tostring(etree.fromstring(right_content), pretty_print = True)
+                    right_xml = etree.tostring(etree.fromstring(right_content), pretty_print=True)
                 except etree.XMLSyntaxError:
                     # if returned data is not real xml
                     right_xml = right_content
 
-                file_diff[f] = "".join([x for x in difflib.unified_diff(left_xml, right_xml, fromfile="a/"+f, tofile="b/"+f, lineterm='')])
+                file_diff[f] = "".join([x for x in difflib.unified_diff(left_xml, right_xml, fromfile="a/" + f, tofile="b/" + f, lineterm='')])
 
             else:
-                file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd = _in)
+                file_diff[f] = prun("""git diff %(left)s %(right)s -- "%(name)s" """ % param, cwd=_in)
 
         for f in file_diff.keys():
             text = file_diff[f]
-            text = text.replace("&","&amp;").replace(">","&gt;").replace("<","&lt;")
+            text = text.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;")
             t = []
             for l in text.splitlines():
                 if l[0] == '+':
@@ -364,7 +358,7 @@ class ProjectBuild(db.Model):
         """
         if revision == 'HEAD':
             revision = project.current_revision()
-        build = ProjectBuild(project = project, revision=revision)
+        build = ProjectBuild(project=project, revision=revision)
         db.session.add(build)
         db.session.commit()
         db.session.refresh(project)
@@ -377,9 +371,9 @@ class ProjectBuild(db.Model):
         if not self.is_done:
             return {}
 
-        param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id,
-            'root': current_app.config.get('DATA_ROOT') }
+        param = {'login': self.project.login, 'id': self.project.id,
+                    'revision': self.revision, 'build': self.id,
+                    'root': current_app.config.get('DATA_ROOT')}
         _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
@@ -392,10 +386,10 @@ class ProjectBuild(db.Model):
         'metadata_new': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json.new',
         }
 
-    def read_asset(self, name = None):
-        param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id,
-            'root': current_app.config.get('DATA_ROOT') }
+    def read_asset(self, name=None):
+        param = {'login': self.project.login, 'id': self.project.id,
+                    'revision': self.revision, 'build': self.id,
+                    'root': current_app.config.get('DATA_ROOT')}
 
         fn = self.asset_list[name] % param
         if os.path.exists(fn) and os.path.isfile(fn):
@@ -403,11 +397,11 @@ class ProjectBuild(db.Model):
         else:
             return ''
 
-    def save_asset(self, name = None, data = None, **kwarg):
+    def save_asset(self, name=None, data=None, **kwarg):
         """ Save static files into out folder """
-        param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id,
-            'root': current_app.config.get('DATA_ROOT')}
+        param = {'login': self.project.login, 'id': self.project.id,
+                    'revision': self.revision, 'build': self.id,
+                    'root': current_app.config.get('DATA_ROOT')}
 
         if name == 'description':
             f = open(self.asset_list['description'] % param, 'w')
@@ -415,7 +409,7 @@ class ProjectBuild(db.Model):
             f.close()
         elif name == 'metadata':
             f = open(self.asset_list['metadata'] % param, 'w')
-            json.dump(json.loads(data), f, indent=2, ensure_ascii=True) # same params as in generatemetadata.py
+            json.dump(json.loads(data), f, indent=2, ensure_ascii=True)  # same params as in generatemetadata.py
             f.close()
 
             if kwarg.get('del_new') and kwarg['del_new']:
@@ -427,11 +421,10 @@ class ProjectBuild(db.Model):
         db.session.commit()
         db.session.refresh(self)
 
-
     def files(self):
-        param = { 'login': self.project.login, 'id': self.project.id,
-            'revision': self.revision, 'build': self.id,
-            'root': current_app.config.get('DATA_ROOT') }
+        param = {'login': self.project.login, 'id': self.project.id,
+                    'revision': self.revision, 'build': self.id,
+                    'root': current_app.config.get('DATA_ROOT')}
 
         path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 
