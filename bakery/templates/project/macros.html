@@ -11,7 +11,7 @@
     <li {% if active == 'setup' %}class="active" {% endif %}>{{ link(url_for('project.setup', project_id=project.id), "fa fa-cog", _("Setup"), full, badge=badge) }}</li>
 
     {% if full %}
-    <li class="form-actions">
+    <li>
       <p>
         <small> {{ _("Clone string:") }} <br /></small>
         <input class="input-sm" class="clone_url" type="text" value="{{ project.clone }}" readonly="readonly" onclick="this.select()">
@@ -19,7 +19,7 @@
       <p><a class="btn btn-xs btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
     </li>
     <li style="padding: 9px;">
-      <small><a class="text-muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
+      <small><a class="btn btn-link muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
     </li>
 
     {% endif %}
