@@ -19,11 +19,12 @@ from checker.base import BakeryTestCase as TestCase, tags
 import fontforge
 import unicodedata
 
+
 class SimpleTest(TestCase):
     targets = ['result']
-    tool   = 'FontForge'
-    name   = __name__
-    path   = '.'
+    tool = 'FontForge'
+    name = __name__
+    path = '.'
 
     def setUp(self):
         self.font = fontforge.open(self.path)
@@ -71,4 +72,3 @@ class SimpleTest(TestCase):
     def test_euro(self):
         """Check if 'EURO SIGN' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)
-
