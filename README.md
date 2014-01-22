@@ -74,6 +74,16 @@ If this test fails then an error messages will contain the string `msg`:
 
 This can help Font Bakery users understand what may be incorrect in their fonts, and tell them what actions they can take to correct their fonts.
 
+## Backing up Font Bakery
+
+Given a default installation, backup `data` directory and `data.sqlite` file, that’s it!
+
+## Restoring Font Bakery
+
+Reinstall Font Bakery, so that files like `local.cfg` are recreated with different Github keys. 
+
+Then copy the `data` directory and `data.sqlite` file into the fontbakery root.
+
 ### License
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
