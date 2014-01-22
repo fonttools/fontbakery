@@ -25,7 +25,6 @@ class UfoOpenTest(TestCase):
     path   = '.'
 
     def setUp(self):
-        # TODO: if self.path endsWith '.ufo':
         self.font = robofab.world.OpenFont(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
