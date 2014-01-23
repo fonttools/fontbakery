@@ -1,4 +1,4 @@
-<img src="/master/docs/image.png">
+<img src="/docs/image.png">
 
 # Font Bakery
 
