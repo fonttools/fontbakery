@@ -1,4 +1,4 @@
-<img src="https://raw.github.com/xen/fontbakery/master/docs/image.png">
+<img src="/master/docs/image.png">
 
 # Font Bakery
 
