@@ -111,6 +111,10 @@ Then run setup:
     cd ~/src/fontbakery;
     make setup;
 
+You may find that `make setup` fails (such as on some Debian systems) because the executable name for virtualenv is `virtualenv` instead of what the Makefile expects (`virtualenv-2.7`) - in this case you can run make set up like this:
+
+    VENVRUN=virtualenv make setup
+
 Wait some time and watch everything being installed.
 
 NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
