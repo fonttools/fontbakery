@@ -5,15 +5,21 @@ all: setup
 
 # ifdef DEV
 # 	REQ=requiremets.dev.txt
-# elseс
+# else
 # 	REQ=requirements.txt
 # 	@echo "Use `make DEV` for development environment"
 # endif
 
+ifdef VENVRUN
+else
+VENVRUN=virtualenv-2.7
+endif
+
+
 .PHONY: setup run prun worker init clean help
 
 venv/bin/activate:
-	virtualenv-2.7 --system-site-packages venv
+	$(VENVRUN) --system-site-packages venv
 
 static/bower.json:
 	cd static && bower install
