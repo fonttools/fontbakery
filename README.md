@@ -75,7 +75,7 @@ Given a default installation, backup `data` directory and `data.sqlite` file. Th
 
 To restore Font Bakery, reinstall it so that files like `local.cfg` are recreated with different Github keys, then copy the `data` directory and `data.sqlite` file into the root directory. That's it! 
 
-## Contribute
+## Contribution
 
 The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome!
 
