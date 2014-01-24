@@ -1,6 +1,4 @@
-<img src="https://raw.github.com/xen/fontbakery/master/docs/image.png">
-
-# Font Bakery
+<img src="/docs/image.png">
 
 Font Bakery is a font build service. The vision is to bring the [Continuous Integration](http://en.wikipedia.org/wiki/Continuous_integration) best practices of software development to [type design](http://en.wikipedia.org/wiki/Type_design).
 
