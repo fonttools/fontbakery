@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, render_template, g, request,
-                    current_app, send_from_directory)
+                    current_app, send_from_directory, redirect)
 
 from ..extensions import pages
 from ..project.models import Project
@@ -54,6 +54,12 @@ def page(path):
 def static_from_root():
     # Static items
     return send_from_directory(current_app.static_folder, request.path[1:])
+
+
+@frontend.route('/favicon.ico')
+def favicon():
+    # Static items
+    return redirect('/static/favicons/favicon.ico')
 
 
 @frontend.route('/stats')
