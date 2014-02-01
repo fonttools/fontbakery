@@ -86,16 +86,10 @@
 
 
     <div id="batch" class="tab-pane">
-    <form action="{{ url_for('settings.batch') }}" method="POST">
-
+    <form action="{{ url_for('settings.batch') }}" method="POST" role="form">
       <p class="help-block">{{ _("Enter git clone urls, one per line.") }}</p>
-
-      <textarea rows="3" name="urls" class="input-xxlarge"></textarea>
-
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary">{{ _("Process") }}</button>
-      </div>          
+      <textarea rows="3" name="urls" class="form-control"></textarea>
+      <button type="submit" class="btn btn-primary">{{ _("Process") }}</button>
     </form>
 
     </div>
