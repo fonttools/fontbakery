@@ -20,6 +20,7 @@ import os
 import sys
 import glob
 import subprocess
+import codecs
 from flask.ext.rq import job
 import plistlib
 from .utils import RedisFd
@@ -497,7 +498,7 @@ from checker import run_set
 from checker.base import BakeryTestCase
 def repr_testcase(dumper, data):
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
-        'methodDoc': " ".join(str(data._testMethodDoc).split()),
+        'methodDoc': " ".join(str(data._testMethodDoc.encode('ascii', 'xmlcharrefreplace')).split()),
         'tool': data.tool,
         'name': data.name,
         'methodName': data._testMethodName,
@@ -558,7 +559,7 @@ def upstream_revision_tests(project, revision):
         if os.path.exists(os.path.join(_in, font)):
             result[font] = run_set(os.path.join(_in, font), 'ttx')
 
-    l = open(_out_yaml, 'w')
+    l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
     l.write(yaml.safe_dump(result))
     l.close()
 
