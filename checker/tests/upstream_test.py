@@ -15,14 +15,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from checker.base import BakeryTestCase as TestCase, tags
+import os
 import fontforge
+from checker.base import BakeryTestCase as TestCase, tags
+
 
 class SimpleTest(TestCase):
     targets = ['upstream']
-    tool   = 'FontForge'
-    name   = __name__
-    path   = '.'
+    tool = 'FontForge'
+    name = __name__
+    path = '.'
 
     def setUp(self):
         self.font = fontforge.open(self.path)
@@ -43,6 +45,7 @@ class SimpleTest(TestCase):
     #     1 / 0
     #     self.assertTrue(False)
 
+    @tags('required',)
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
@@ -88,13 +91,14 @@ class UfoOpenTest(TestCase):
         """ Does this font file's name end with '.ufo'?"""
         self.assertEqual(self.path.lower().endswith('.ufo'), True)
 
+    @tags('required')
     def test_is_A(self):
         """ Does this font have a glyph named 'A'?"""
-        self.assertTrue(self.font.has_key('A'))
+        self.assertTrue('A' in self.font)
 
     def test_is_A_a_glyph_instance(self):
         """ Is this font's property A an instance of an RGlyph object? """
-        if self.font.has_key('A'):
+        if 'A' in self.font:
             a = self.font['A']
         else:
             a = None
@@ -111,13 +115,13 @@ class UfoOpenTest(TestCase):
         # TODO check the glyph has at least 1 contour
         character = unicodeString[0]
         glyph = None
-        if self.font.has_key(character):
+        if character in self.font:
             glyph = self.font[character]
         self.assertIsInstance(glyph, robofab.objects.objectsRF.RGlyph)
 
     def test_has_rupee(self):
         u"""Does this font include a glyph for ₹, the Indian Rupee Sign codepoint?"""
-        has_character(self, u'₹')
+        self.has_character(self, u'₹')
 
     def areAllFamilyNamesTheSame(paths):
         """
@@ -128,7 +132,7 @@ class UfoOpenTest(TestCase):
         fonts = []
         allFamilyNamesAreTheSame = False
         for path in paths:
-            font = OpenFont(path)
+            font = robofab.world.OpenFont(path)
             print font
             fonts.append(font)
         regularFamilyName = "unknown"
@@ -137,14 +141,14 @@ class UfoOpenTest(TestCase):
                 regularFamilyName = font.info.familyName
         print 'regularFamilyName is', regularFamilyName
         for font in fonts:
-            if font.info.familyName == regularFamilyName: # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
+            if font.info.familyName == regularFamilyName:  # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
                 allFamilyNamesAreTheSame = True
-        if allFamilyNamesAreTheSame == True:
+        if allFamilyNamesAreTheSame is True:
             return True
         else:
             return False
 
-    def ifAllFamilyNamesAreTheSame(paths): # TODO should be test_ifallFamilyNamesAreTheSame
+    def ifAllFamilyNamesAreTheSame(paths):  # TODO should be test_ifallFamilyNamesAreTheSame
         allFamilyNamesAreTheSame = areAllFamilyNamesTheSame(paths)
         assert allFamilyNamesAreTheSame
     # TODO: check the stems of the style name and full names match the
