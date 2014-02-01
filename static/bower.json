@@ -2,7 +2,7 @@
   "name": "fontbakerystatic",
   "private": true,
   "dependencies": {
-    "bootstrap": "~3.0.3",
+    "bootstrap": "~3.1.0",
     "jquery": "~2.0.3",
     "font-awesome": "~4.0.3",
     "ace-builds": "~1.1.1",
