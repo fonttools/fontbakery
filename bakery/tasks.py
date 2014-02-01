@@ -31,6 +31,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT)
 DATA_ROOT = os.path.join(ROOT, 'data')
 
+
 def run(command, cwd, log):
     """ Wrapper for subprocess.Popen with custom logging support.
 
@@ -44,7 +45,7 @@ def run(command, cwd, log):
     # log the command
     log.write('\n$ %s\n' % command)
     # Start the command
-    p = subprocess.Popen(command, shell = True, cwd = cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
+    p = subprocess.Popen(command, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
     while True:
         # Read output and errors
         stdout = p.stdout.readline()
@@ -54,11 +55,11 @@ def run(command, cwd, log):
         # Log error
         if stderr:
             # print the error on the worker console
-            print(stderr, end = '')
+            print(stderr, end='')
             # log error
-            log.write(stderr, prefix = 'Error: ')
+            log.write(stderr, prefix='Error: ')
         # If no output and process no longer running, stop
-        if not stdout and not stderr and p.poll() != None:
+        if not stdout and not stderr and p.poll()!=None:
             break
     # if the command did not exit cleanly (with returncode 0)
     if p.returncode:
@@ -67,6 +68,7 @@ def run(command, cwd, log):
         log.write(msg)
         # Raise an error on the worker
         raise StandardError(msg)
+
 
 def prun(command, cwd, log=None):
     """
@@ -79,13 +81,14 @@ def prun(command, cwd, log=None):
     """
     # print the command on the worker console
     print("[%s]:%s" % (cwd, command))
-    p = subprocess.Popen(command, shell = True, cwd = cwd,
+    p = subprocess.Popen(command, shell=True, cwd=cwd,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     stdout = p.communicate()[0]
     if log:
         log.write('$ %s' % command)
         log.write(stdout)
     return stdout
+
 
 @job
 def project_git_sync(project):
@@ -108,35 +111,35 @@ def project_git_sync(project):
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
-        # log.write('Creating Incoming Directory\n', prefix = '### ')
-        prun('mkdir -p %s' % _in, cwd = DATA_ROOT)
+        # log.write('Creating Incoming Directory\n', prefix='### ')
+        prun('mkdir -p %s' % _in, cwd=DATA_ROOT)
     # Update _in if it already exists with a .git directory
     if os.path.exists(os.path.join(_in, '.git')):
-        # log.write('Sync Git Repository\n', prefix = '### ')
+        # log.write('Sync Git Repository\n', prefix='### ')
         # remove anything in the _in directory that isn't checked in
-        prun('git reset --hard', cwd = _in)
-        prun('git clean --force', cwd = _in)
+        prun('git reset --hard', cwd=_in)
+        prun('git clean --force', cwd=_in)
         # pull from origin master branch
-        prun('git pull origin master', cwd = _in)
+        prun('git pull origin master', cwd=_in)
     # Since it doesn't exist as a git repo, get the _in repo
     else:
         # clone the repository
-        # log.write('Copying Git Repository\n', prefix = '### ')
+        # log.write('Copying Git Repository\n', prefix='### ')
         try:
             # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
-            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd = _in)
+            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd=_in)
         # if the clone action didn't work, just copy it
         except:
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
             if project.clone[:7] == "file://":
                 # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
-                prun('cp -a %(clone)s .' % project, cwd = _in)
+                prun('cp -a %(clone)s .' % project, cwd=_in)
                 #
-                prun('git init .', cwd = _in)
-                prun('git add *', cwd = _in)
+                prun('git init .', cwd=_in)
+                prun('git add *', cwd=_in)
                 msg = "Initial commit made automatically by Font Bakery"
-                prun('git commit -a -m "%s"' % msg, cwd = _in)
+                prun('git commit -a -m "%s"' % msg, cwd=_in)
         # Now we have it, create an initial project state
         finally:
             config = project.config
@@ -150,15 +153,15 @@ def project_git_sync(project):
 def copy_ufo_files(project, build, log):
     config = project.config
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                        'revision': build.revision, 'build': build.id}
 
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
-    log.write('Copy [and Rename] UFOs\n', prefix = '### ')
+    log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
     # Set the familyName
     if config['state'].get('familyname', None):
@@ -209,8 +212,8 @@ def copy_ufo_files(project, build, log):
 def copy_ttx_files(project, build, log):
     config = project.config
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
@@ -225,8 +228,8 @@ def copy_and_rename_ufos_process(project, build, log):
     """
     config = project.config
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
@@ -237,7 +240,6 @@ def copy_and_rename_ufos_process(project, build, log):
         copy_ufo_files(project, build, log)
     else:
         copy_ttx_files(project, build, log)
-
 
     # Copy licence file
     # TODO: Infer license type from filename
@@ -259,48 +261,49 @@ def copy_and_rename_ufos_process(project, build, log):
         # Copy license file
         _in_license = os.path.join(_in, licenseFileInFullPath)
         _out_license = os.path.join(_out, licenseFileOut)
-        run('cp -a "%s" "%s"' % (_in_license, _out_license), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_license, _out_license), cwd=_user, log=log)
     else:
-        log.write('License file not copied\n', prefix = 'Error: ')
+        log.write('License file not copied\n', prefix='Error: ')
 
     # Copy FONTLOG file
-    _in_fontlog  = os.path.join(_in,  'FONTLOG.txt')
+    _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
     _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
     if os.path.exists(_in_fontlog) and os.path.isfile(_in_fontlog):
-        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd=_user, log=log)
     else:
-        log.write('FONTLOG.txt does not exist\n', prefix = 'Error: ')
+        log.write('FONTLOG.txt does not exist\n', prefix='Error: ')
 
     # Copy DESCRIPTION.en_us.html file
-    _in_desc  = os.path.join(_in,  'DESCRIPTION.en_us.html')
+    _in_desc = os.path.join(_in, 'DESCRIPTION.en_us.html')
     _out_desc = os.path.join(_out, 'DESCRIPTION.en_us.html')
     if os.path.exists(_in_desc) and os.path.isfile(_in_desc):
-        run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd=_user, log=log)
     else:
-        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix = 'Error: ')
+        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix='Error: ')
 
     # Copy METADATA.json file
-    _in_meta  = os.path.join(_in,  'METADATA.json')
+    _in_meta = os.path.join(_in, 'METADATA.json')
     _out_meta = os.path.join(_out, 'METADATA.json')
     if os.path.exists(_in_meta) and os.path.isfile(_in_meta):
-        run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd = _user, log=log)
+        run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd=_user, log=log)
     else:
-        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix = 'Error: ')
+        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix='Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
         for filename in config['state']['txt_files_copied']:
-            _in_file  = os.path.join(_in,  filename)
+            _in_file = os.path.join(_in, filename)
             _out_file = os.path.join(_out, filename)
-            run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd = _user, log=log)
+            run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd=_user, log=log)
+
 
 def generate_fonts_process(project, build, log):
     """
     Generate TTF files from UFO files using ufo2ttf.py
     """
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
@@ -308,16 +311,17 @@ def generate_fonts_process(project, build, log):
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix = '### ')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
-        name = name[:-4] # cut .ufo
+        name = name[:-4]  # cut .ufo
         cmd = "python ufo2ttf.py '%(out_src)s%(name)s.ufo' '%(out_src)s%(name)s.ttf' '%(out_src)s%(name)s.otf'" % {
             'out_src': _out_src,
             'name': name,
         }
-        run(cmd, cwd = scripts_folder, log=log)
+        run(cmd, cwd=scripts_folder, log=log)
+
 
 def ttfautohint_process(project, build, log):
     """
@@ -328,18 +332,18 @@ def ttfautohint_process(project, build, log):
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
     if config['state'].get('ttfautohint', None):
-        log.write('Autohint TTFs (ttfautohint)\n', prefix = '### ')
+        log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
         params = config['state']['ttfautohint']
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
-            name = name[:-4] # cut .ufo
+            name = name[:-4]  # cut .ufo
             cmd = "ttfautohint %(params)s '%(src)s.ttf' '%(out)s.ttf'" % {
                 'params': params,
                 'out': os.path.join(_out, name),
@@ -347,25 +351,26 @@ def ttfautohint_process(project, build, log):
             }
             run(cmd, cwd=_out, log=log)
     else:
-        log.write('Autohint not used\n', prefix = '### ')
+        log.write('Autohint not used\n', prefix='### ')
         run("mv src/*.ttf .", cwd=_out, log=log)
+
 
 def ttx_process(project, build, log):
     """
     Roundtrip TTF files through TTX to compact their filesize
     """
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                        'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
-    log.write('Compact TTFs with ttx\n', prefix = '### ')
+    log.write('Compact TTFs with ttx\n', prefix='### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
-        name = name[:-4] # cut .ufo
+        name = name[:-4]  # cut .ufo
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
         cmd = "ttx -i -q '%s.ttf'" % filename
@@ -391,7 +396,7 @@ def subset_process(project, build, log):
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                 'revision': build.revision, 'build': build.id}
+                        'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
@@ -434,18 +439,19 @@ def subset_process(project, build, log):
         newfilename = filename.replace('+latin', '')
         run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
 
+
 def generate_metadata_process(project, build, log):
     """
     Generate METADATA.json using genmetadata.py
     """
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                    'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    log.write('Generate METADATA.json (genmetadata.py)\n', prefix = '### ')
+    log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
     # TODO Fix the genmetadata.py script so that it always outputs in the same order;
     # currently when you run it a 2nd time, it places dateAdded at the end, which is
@@ -453,16 +459,17 @@ def generate_metadata_process(project, build, log):
     # to run it twice ;)
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
+
 def lint_process(project, build, log):
     """
     Run lint.jar on ttf files
     """
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    log.write('Lint (lint.jar)\n', prefix = '### ')
+    log.write('Lint (lint.jar)\n', prefix='### ')
     # java -jar dist/lint.jar "$(dirname $metadata)"
     cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
@@ -470,16 +477,17 @@ def lint_process(project, build, log):
     # TODO: move this from here to the new checker lint process completing all required checks successfully
     project.config['local']['status'] = 'built'
 
+
 def fontaine_process(project, build, log):
     """
     Run pyFontaine on ttf files
     """
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    log.write('pyFontaine (fontaine/main.py)\n', prefix = '### ')
+    log.write('pyFontaine (fontaine/main.py)\n', prefix='### ')
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
@@ -487,7 +495,7 @@ def fontaine_process(project, build, log):
             ROOT, file)
         run(cmd, cwd=_out, log=log)
     # TODO also save the totals for the dashboard....
-    #   log.write('Running Fontaine on Results\n', prefix = '### ')
+    #   log.write('Running Fontaine on Results\n', prefix='### ')
     #   fonts = utils.project_fontaine(project)
     #   project.config['state']['fontaine'] = fonts
     #   project.save_state()
@@ -511,6 +519,7 @@ def repr_testcase(dumper, data):
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
+
 def upstream_revision_tests(project, revision):
     """ This function run upstream tests set on
     project.config['local']['ufo_dirs'] set in selected git revision.
@@ -523,8 +532,7 @@ def upstream_revision_tests(project, revision):
     :param force: force to make tests again
     :return: dictionary with serialized tests results formatted by `repr_testcase`
     """
-    param = { 'login': project.login, 'id': project.id,
-        'revision': revision}
+    param = {'login': project.login, 'id': project.id, 'revision': revision}
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
     _out_folder = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/utests/' % param)
@@ -567,14 +575,13 @@ def upstream_revision_tests(project, revision):
 
     return yaml.safe_load(open(_out_yaml, 'r'))
 
+
 def result_tests(project, build):
     param = {'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id}
+                'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     if os.path.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -594,9 +601,11 @@ def result_tests(project, build):
     return d
 
 from fixer import fix_font
+
+
 def result_fixes(project, build):
     param = {'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id}
+                'revision': build.revision, 'build': build.id}
 
     _out_src = os.path.join(DATA_ROOT,
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
@@ -604,6 +613,7 @@ def result_fixes(project, build):
         '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     fix_font(_out_yaml, _out_src)
+
 
 @job
 def process_project(project, build, revision):
@@ -614,8 +624,8 @@ def process_project(project, build, revision):
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT,
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
@@ -643,7 +653,7 @@ def process_project(project, build, revision):
         # this code change upstream repository
         try:
             run("git checkout %s" % revision, cwd=_in, log=log)
-            log.write('Bake Begins!\n', prefix = '### ')
+            log.write('Bake Begins!\n', prefix='### ')
             copy_and_rename_ufos_process(project, build, log)
             generate_fonts_process(project, build, log)
             ttfautohint_process(project, build, log)
@@ -657,7 +667,7 @@ def process_project(project, build, revision):
             result_tests(project, build)
             # apply fixes
             result_fixes(project, build)
-            log.write('Bake Succeeded!\n', prefix = '### ')
+            log.write('Bake Succeeded!\n', prefix='### ')
         finally:
             # save that project is done
             build.is_done = True
@@ -676,5 +686,3 @@ def set_done(build):
     build.is_done = True
     db.session.add(build)
     db.session.commit()
-
-
