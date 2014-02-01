@@ -390,18 +390,18 @@ def ttx_process(project, build, log):
 def subset_process(project, build, log):
     config = project.config
 
-    param = { 'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id }
+    param = {'login': project.login, 'id': project.id,
+                 'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
 
-    log.write('Subset TTFs (subset.py)\n', prefix = '### ')
+    log.write('Subset TTFs (subset.py)\n', prefix='### ')
 
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
-            name = name[:-4] # cut .ufo
+            name = name[:-4]  # cut .ufo
             # python ~/googlefontdirectory/tools/subset/subset.py \
             #   --null --nmr --roundtrip --script --subset=$subset \
             #   $font.ttf $font.$subset >> $font.$subset.log \
@@ -496,6 +496,8 @@ def fontaine_process(project, build, log):
 from checker import run_set
 # register yaml serializer for tests result objects.
 from checker.base import BakeryTestCase
+
+
 def repr_testcase(dumper, data):
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
         'methodDoc': " ".join(str(data._testMethodDoc.encode('ascii', 'xmlcharrefreplace')).split()),
@@ -557,7 +559,7 @@ def upstream_revision_tests(project, revision):
 
     for font in ttx_files:
         if os.path.exists(os.path.join(_in, font)):
-            result[font] = run_set(os.path.join(_in, font), 'ttx')
+            result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
 
     l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
     l.write(yaml.safe_dump(result))
