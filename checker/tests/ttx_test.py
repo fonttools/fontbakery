@@ -16,18 +16,20 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from checker.base import BakeryTestCase as TestCase, tags
-import fontforge
-import unicodedata
+from fontTools.ttLib import TTFont
 
-
-class SimpleTest(TestCase):
-    targets = ['result']
-    tool = 'FontForge'
-    name = __name__
-    path = '.'
+class SimpleTTXTest(TestCase):
+    targets = ['upstream-ttx']
+    tool   = 'fontTools'
+    name   = __name__
+    path   = '.'
 
     def setUp(self):
-        self.font = fontforge.open(self.path)
+        # TODO: Need somebody to check this options
+        font = TTFont(None, lazy=False, recalcBBoxes=True,
+            verbose=False, allowVID=False)
+        font.importXML(self.path, quiet=True)
+        self.font = font
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
@@ -45,30 +47,7 @@ class SimpleTest(TestCase):
     #     1 / 0
     #     self.assertTrue(False)
 
-    def test_is_fsType_not_set(self):
-        """Is the OS/2 table fsType set to 0?"""
-        self.assertEqual(self.font.os2_fstype, 1)
+    def test_os2_in_keys(self):
+        """ This very important test checking if OS/2 is in keys method """
+        self.assertIn('OS/2', self.font.keys())
 
-    def test_nbsp(self):
-        """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
-
-    def test_space(self):
-        """Check if 'SPACE' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
-
-    @tags('required',)
-    def test_nbsp_and_space_glyphs_width(self):
-        """ Nbsp and space glyphs should have the same width"""
-        space = 0
-        nbsp = 0
-        for x in self.font.glyphs():
-            if x.unicode == 160:
-                nbsp = x.width
-            elif x.unicode == 32:
-                space = x.width
-        self.assertEqual(space, nbsp)
-
-    def test_euro(self):
-        """Check if 'EURO SIGN' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)

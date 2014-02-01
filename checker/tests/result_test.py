@@ -17,9 +17,145 @@
 
 from checker.base import BakeryTestCase as TestCase, tags
 import fontforge
+import unicodedata
 import yaml
 import os
 import magic
+
+from fontTools import ttLib
+
+class FontToolsTest(TestCase):
+    targets = ['result']
+    tool = 'FontTools'
+    name = __name__
+    path = '.'
+
+    def setUp(self):
+        self.font = ttLib.TTFont(self.path)
+
+    def test_tables(self):
+        """ List of tables that shoud be in font file """
+        # xen: actually I take this list from most popular open font Open Sans,
+        # belive that it is most mature.
+        # This list should be reviewed
+        tables = ['GlyphOrder', 'head', 'hhea', 'maxp', 'OS/2', 'hmtx',
+            'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name', # 'kern',
+            'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
+
+        for x in self.font.keys():
+            self.assertIn(x, tables, msg="%s table not found in table list" % x)
+
+    def test_tables_no_kern(self):
+        """ Check that no KERN table exists """
+        self.assertNotIn('kern', self.font.keys())
+
+    def test_table_gasp_type(self):
+        """ Font table gasp should be 15 """
+        keys = self.font.keys()
+        self.assertIn('gasp', keys, msg="GASP table not found")
+        self.assertEqual(type({}), type(self.font['gasp'].gaspRange),
+            msg="GASP table: gaspRange method value have wrong type")
+        self.assertTrue(self.font['gasp'].gaspRange.has_key(65535))
+        # XXX: Needs review
+        self.assertEqual(self.font['gasp'].gaspRange[65535], 15)
+
+
+from fontaine.font import Font
+import re
+
+
+class FontaineTest(TestCase):
+    targets = ['result']
+    tool = 'pyfontaine'
+    name = __name__
+    path = '.'
+
+    def setUp(self):
+        self.font = Font(self.path)
+        # You can use ipdb here to interactively develop tests!
+        # Uncommand the next line, then at the iPython prompt: print(self.path)
+        # import ipdb; ipdb.set_trace()
+
+    # def test_ok(self):
+    #     """ This test succeeds """
+    #     self.assertTrue(True)
+    #
+    # def test_failure(self):
+    #     """ This test fails """
+    #     self.assertTrue(False)
+    #
+    # def test_error(self):
+    #     """ Unexpected error """
+    #     1 / 0
+    #     self.assertTrue(False)
+
+    def test_charMaker(self):
+        # import ipdb; ipdb.set_trace()
+        pattern = re.compile('[\W_]+')
+        functionTemplate = """def test_charset_%s(self, p): self.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"; self.assertTrue(p == 100)"""
+        for orthographyTuple in self.font.get_orthographies():
+            charmap = orthographyTuple[0]
+            percent = orthographyTuple[2]
+            shortname = pattern.sub('', charmap.common_name)
+            print "TODO: This doesn't work yet..."
+            print functionTemplate % (shortname, shortname, charmap.common_name)
+            print 'test_charset_%s(self, 100)' % shortname
+            exec functionTemplate % (shortname, shortname, charmap.common_name)
+            exec 'test_charset_%s(self, 100)' % shortname
+
+
+class FontForgeSimpleTest(TestCase):
+    targets = ['result']
+    tool = 'FontForge'
+    name = __name__
+    path = '.'
+
+    def setUp(self):
+        self.font = fontforge.open(self.path)
+        # You can use ipdb here to interactively develop tests!
+        # Uncommand the next line, then at the iPython prompt: print(self.path)
+        # import ipdb; ipdb.set_trace()
+
+    # def test_ok(self):
+    #     """ This test succeeds """
+    #     self.assertTrue(True)
+    #
+    # def test_failure(self):
+    #     """ This test fails """
+    #     self.assertTrue(False)
+    #
+    # def test_error(self):
+    #     """ Unexpected error """
+    #     1 / 0
+    #     self.assertTrue(False)
+
+    def test_is_fsType_not_set(self):
+        """Is the OS/2 table fsType set to 0?"""
+        self.assertEqual(self.font.os2_fstype, 1)
+
+    def test_nbsp(self):
+        """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
+        self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
+
+    def test_space(self):
+        """Check if 'SPACE' exsist in font glyphs"""
+        self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
+
+    @tags('required',)
+    def test_nbsp_and_space_glyphs_width(self):
+        """ Nbsp and space glyphs should have the same width"""
+        space = 0
+        nbsp = 0
+        for x in self.font.glyphs():
+            if x.unicode == 160:
+                nbsp = x.width
+            elif x.unicode == 32:
+                space = x.width
+        self.assertEqual(space, nbsp)
+
+    def test_euro(self):
+        """Check if 'EURO SIGN' exsist in font glyphs"""
+        self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)
 
 
 class MetadataJSONTest(TestCase):

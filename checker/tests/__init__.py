@@ -15,4 +15,6 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from fonttoolstests import *
+from .result_test import *
+from .ttx_test import *
+from .upstream_test import *

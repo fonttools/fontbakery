@@ -16,9 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from .base import *
-import result_suite
-import ttx_suite
-import upstream_suite
+import tests
 
 def run_set(path, target=None):
     """ Return tests results for font file, target """

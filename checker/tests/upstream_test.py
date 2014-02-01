@@ -16,13 +16,46 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from checker.base import BakeryTestCase as TestCase, tags
-import os, robofab.world, robofab.objects
+import fontforge
+
+class SimpleTest(TestCase):
+    targets = ['upstream']
+    tool   = 'FontForge'
+    name   = __name__
+    path   = '.'
+
+    def setUp(self):
+        self.font = fontforge.open(self.path)
+        # You can use ipdb here to interactively develop tests!
+        # Uncommand the next line, then at the iPython prompt: print(self.path)
+        # import ipdb; ipdb.set_trace()
+
+    # def test_ok(self):
+    #     """ This test succeeds """
+    #     self.assertTrue(True)
+    #
+    # def test_failure(self):
+    #     """ This test fails """
+    #     self.assertTrue(False)
+    #
+    # def test_error(self):
+    #     """ Unexpected error """
+    #     1 / 0
+    #     self.assertTrue(False)
+
+    def test_is_fsType_not_set(self):
+        """Is the OS/2 table fsType set to 0?"""
+        self.assertEqual(self.font.os2_fstype, 1)
+
+import robofab.world
+import robofab.objects
+
 
 class UfoOpenTest(TestCase):
     targets = ['upstream']
-    tool   = 'Robofab'
-    name   = __name__
-    path   = '.'
+    tool = 'Robofab'
+    name = __name__
+    path = '.'
 
     def setUp(self):
         self.font = robofab.world.OpenFont(self.path)
