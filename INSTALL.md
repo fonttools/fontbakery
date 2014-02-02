@@ -38,41 +38,41 @@ npm install -g bower;
 TODO: package ttfautohint for Fedora
 
 ```sh
-    # Use yum to install dependencies
-    sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git npm;
-    # install ttfautohint from git
-    git clone git://repo.or.cz/ttfautohint.git;
-    cd ttfautohint;
-    ./bootstrap;
-    ./configure --with-doc=no;
-    sudo make install;
-    # Start redis now:
-    sudo /etc/init.d/redis start;
-    # Set up a pip download cache
-    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
-    mkdir ~/.pip_download_cache;
-    # install bower
-    npm install -g bower
+# Use yum to install dependencies
+sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git npm;
+# install ttfautohint from git
+git clone git://repo.or.cz/ttfautohint.git;
+cd ttfautohint;
+./bootstrap;
+./configure --with-doc=no;
+sudo make install;
+# Start redis now:
+sudo /etc/init.d/redis start;
+# Set up a pip download cache
+echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+mkdir ~/.pip_download_cache;
+# install bower
+npm install -g bower
 ```
 
 ### Debian & Ubuntu
 
 ```sh
-    # Use yum to install dependencies
-    sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs;
-    # install ttfautohint from git
-    git clone git://repo.or.cz/ttfautohint.git;
-    cd ttfautohint;
-    ./bootstrap;
-    ./configure --with-doc=no;
-    sudo make install;
-    # Start redis now:
-    sudo /etc/init.d/redis-server start;
-    # Set up a pip download cache
-    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
-    mkdir ~/.pip_download_cache;
-    # install bower
-    npm install -g bower
+# Use yum to install dependencies
+sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs;
+# install ttfautohint from git
+git clone git://repo.or.cz/ttfautohint.git;
+cd ttfautohint;
+./bootstrap;
+./configure --with-doc=no;
+sudo make install;
+# Start redis now:
+sudo /etc/init.d/redis-server start;
+# Set up a pip download cache
+echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+mkdir ~/.pip_download_cache;
+# install bower
+npm install -g bower
 ```
 
 Now your system should be ready to install Font Bakery itself!
@@ -86,6 +86,8 @@ mkdir ~/src;
 git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
 cd ~/src/fontbakery;
 VENVRUN=virtualenv make setup;
+cp local.example.cfg local.cfg;
+open -e local.cfg;
 ```
 
 Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
@@ -96,11 +98,11 @@ Make your own `local.cfg` based on `local.example.cfg`. You can use this example
 
 Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
 
-If you run Font Bakery on a domain, you [must make your own](https://github.com/settings/applications/new):
+If you run Font Bakery on a domain, you must fill in [this form](https://github.com/settings/applications/new) to make your own keys, something like this:
 
 ![Github Auth example](https://raw.github.com/xen/fontbakery/master/INSTALL-githubauth.png)
 
-You will see this information:
+After registering your application, you will see this information:
 
 > **Client ID**
 >
@@ -117,9 +119,12 @@ GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
 GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
 ```
 
-Finally, initialise the database:
+Finally, initialise the database and run Font Bakery:
+
 ```
 make init;
+make run;
+open 'http://localhost:5000';
 ```
 
 ## Production Mode 
