@@ -146,7 +146,7 @@
   </div>
 
   <div class="form-group  anchorUnderNavbar">
-    <label class="control-label col-sm-2" for="source_files_type"><strong>{{ _("Source files:") }}</strong></label>
+    <label class="control-label col-sm-2" for="source_files_type"><strong>{{ _("Source files type:") }}</strong></label>
     <div class="col-sm-8">
     {% if config['local']['ufo_dirs'] and config['local']['ttx_files'] %}
       <div class="alert alert-info">{{ _("UFO folders and TTX files are found in upstream repository. Select what files are primary source") }}</div>
@@ -165,16 +165,27 @@
       </label>
       </div>
     {% else %}
+      <p class="form-control-static">{{ _("Only one type files found in reporitory, no action needed ")}}</p>
       <input type="hidden" name="source_files_type" value="off">
     {% endif %}
-    <div class="form-control-static">
-      <p class="text-muted">{{ _("Found source files:") }}</p>
-      <ul class="text-muted">
-        {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
-        <li>{{ i }}</li>
-        {% endfor %}
-      </ul>
     </div>
+  </div>
+
+  <div class="form-group  anchorUnderNavbar">
+    <div class="form-control-static">
+      <label class="control-label col-sm-2" for="process_files"><strong>{{ _("Process Files:") }}</strong></label>
+      <div class="col-sm-8">
+      <p class="form-control-static">{{ _("Found source files, please select files that should be processed. Data is actual for current revision '%(revision)s'", revision=project.current_revision()) }}</p>
+      <select multiple class="form-control" name="process_files" size={{ config['local']['ufo_dirs']|length + config['local']['ttx_files']|length}}>
+        {% with %}
+        {% set passed = project.passed_tests_files() %}
+        {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
+        <option {% if i not in passed %}disabled{% else %}selected{% endif %}>{{ i }} {% if i not in passed %}(not passed required tests){% endif %}</option>
+        {% endfor %}
+        {% endwith %}
+      </select>
+      </div>
+
     </div>
   </div>
 

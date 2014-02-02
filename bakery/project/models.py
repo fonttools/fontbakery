@@ -179,8 +179,20 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in)
 
-    def revision_tests(self, revision):
-        return upstream_revision_tests(self, revision)
+    def revision_tests(self, revision='HEAD'):
+        # XXX: check revision for safety
+        if revision == 'HEAD':
+            return upstream_revision_tests(self, self.current_revision())
+        else:
+            return upstream_revision_tests(self, revision)
+
+    def passed_tests_files(self, revision='HEAD'):
+        passed = []
+        for name, td in self.revision_tests(revision).items():
+            if td.get('passed', False):
+                passed.append(name)
+
+        return passed
 
     @property
     def family_stat(self):

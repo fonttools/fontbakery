@@ -162,6 +162,9 @@ def setup(p):
     txt_files_to_copy = request.form.getlist('txt_files')
     config['state']['txt_files_copied'] = txt_files_to_copy
 
+    process_files = request.form.getlist('process_files')
+    config['state']['process_files'] = process_files
+
     subset_list = request.form.getlist('subset')
     for i in subset_list:
         if i not in DEFAULT_SUBSET_LIST:
