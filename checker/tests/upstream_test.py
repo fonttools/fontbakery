@@ -45,7 +45,11 @@ class SimpleTest(TestCase):
     #     1 / 0
     #     self.assertTrue(False)
 
-    @tags('required',)
+    @tags('required')
+    def test_required_passed(self):
+        """ Developer test """
+        self.assertTrue(True)
+
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
@@ -91,7 +95,7 @@ class UfoOpenTest(TestCase):
         """ Does this font file's name end with '.ufo'?"""
         self.assertEqual(self.path.lower().endswith('.ufo'), True)
 
-    @tags('required')
+    # @tags('required')
     def test_is_A(self):
         """ Does this font have a glyph named 'A'?"""
         self.assertTrue('A' in self.font)

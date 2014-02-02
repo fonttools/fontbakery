@@ -16,6 +16,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import unittest
+from itertools import chain
+
 
 class TestRegistry(object):
     """ Singleton class to collect all available tests """
@@ -29,6 +31,7 @@ class TestRegistry(object):
     @classmethod
     def list(cls):
         return TestRegistry.tests
+
 
 class MetaTest(type):
     """
@@ -45,6 +48,7 @@ class MetaTest(type):
             TestRegistry.register(newbornclass)
         return newbornclass
 
+
 class BakeryTestCase(unittest.TestCase):
     __metaclass__ = MetaTest
     # because we don't want to register this base class as test case
@@ -54,7 +58,7 @@ class BakeryTestCase(unittest.TestCase):
 class BakeryTestResult(unittest.TestResult):
 
     def __init__(self, stream=None, descriptions=None, verbosity=None,
-            success_list=None, error_list=None, failure_list=None):
+                    success_list=None, error_list=None, failure_list=None):
         self.sl = success_list
         self.el = error_list
         self.fl = failure_list
@@ -84,9 +88,10 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(self.fl, 'append'):
             self.fl.append(test)
 
+
 class BakeryTestRunner(unittest.TextTestRunner):
     def __init__(self, descriptions=True, verbosity=1, resultclass=None,
-            success_list=None, error_list=None, failure_list=None):
+                    success_list=None, error_list=None, failure_list=None):
 
         self.sl = success_list
         self.el = error_list
@@ -101,7 +106,7 @@ class BakeryTestRunner(unittest.TextTestRunner):
 
     def _makeResult(self):
         return self.resultclass(self.stream, self.descriptions,
-            self.verbosity, self.sl, self.el, self.fl)
+                                 self.verbosity, self.sl, self.el, self.fl)
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -109,6 +114,7 @@ class BakeryTestRunner(unittest.TextTestRunner):
         test(result)
         self.results.append(result)
         return result
+
 
 class tags(object):
     """ Decorator that allow to add .tags property to function. Usefull
@@ -130,9 +136,11 @@ class tags(object):
 
     def __call__(self, f):
         f.tags = self.tags
+
         def wrap(*args, **kwargs):
             f(*args, **kwargs)
         return f
+
 
 def make_suite(path, definedTarget):
     """ path - is full path to file,
@@ -146,18 +154,26 @@ def make_suite(path, definedTarget):
 
     return suite
 
+
 def run_suite(suite):
     result = {
         'success': [],
         'error': [],
         'failure': []
     }
-    runner = BakeryTestRunner(resultclass  = BakeryTestResult,
-                              success_list = result['success'],
-                              error_list   = result['error'],
-                              failure_list = result['failure'])
+    runner = BakeryTestRunner(resultclass=BakeryTestResult,
+                               success_list=result['success'],
+                               error_list=result['error'],
+                               failure_list=result['failure'])
     runner.run(suite)
-    result['sum'] = sum(map(len, [result[x] for x in result.keys() ]))
+    result['sum'] = sum(map(len, [result[x] for x in result.keys()]))
+
+    check = lambda x: 'required' in getattr(x, x._testMethodName).tags
+    # assume that `error` test are important even if they are broken
+    if not any([check(i) for i in chain(result.get('failure', []), result.get('error', []))]):
+        result['passed'] = True
+    else:
+        result['passed'] = False
 
     # on next step here will be runner object
     return result
@@ -172,8 +188,6 @@ def tests_report():
 
     for i in m:
         print("%s,\"%s\",\"%s\"" % (
-            str(i).replace('<unbound method ','').replace('>',''),
+            str(i).replace('<unbound method ', '').replace('>', ''),
             ", ".join(i.tags),
-            " ".join(unicode(i.__doc__).replace("\n", '').replace('"',"'").split())
-            )
-        )
+            " ".join(unicode(i.__doc__).replace("\n", '').replace('"', "'").split())))
