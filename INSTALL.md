@@ -1,49 +1,36 @@
-# Installation instructions
+# How to Install Font Bakery
 
-This documents is step by step instruction how to setup development and production environment. As long as project in development stage production part subject to change.
+## Requirements 
 
-## Requirements
-
-You need to have installed:
-
-- python 2.7.x
-- virtualenv http://www.virtualenv.org/en/latest/
-- make
-- C-code compiler
-- libevent
-- fontforge (including its python module)
-- ttfautohint
-- Redis
-- libmagic
-- [bower](http://bower.io/) (and node.js)
-
-If you need to [install Node.js manually](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager) 
+First, install all the great libre software that Font Bakery ties together.
 
 ### Mac OS X
 
-If you use Mac OS X, a convenient way to install such UNIX software is with [HomeBrew](http://mxcl.github.io/homebrew/).
+Install XCode and the Command Line Tools.
 
-Install HomeBrew and then run these commands in the Terminal:
+Install [HomeBrew](http://mxcl.github.io/homebrew/)
+
 
 ```sh
-    # Use HomeBrew to install dependencies
-    brew install python sqlite libevent fontforge ttfautohint redis libmagic nodejs;
-    # To have launchd start redis at login:
-    ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
-    # Start redis now:
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist;
-    # Confirm easy_install is available:
-    which easy_install-2.7;
-    # /usr/local/share/python/easy_install-2.7
-    # Use easy_install to install pip, a better Python package manager
-    sudo easy_install-2.7 -U pip;
-    # Use easy_install to install virtualenv
-    sudo easy_install-2.7 -U virtualenv;
-    # Set up a pip download cache
-    echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
-    mkdir ~/.pip_download_cache;
-    # install bower
-    npm install -g bower
+# Use HomeBrew to install dependencies
+brew install python sqlite libevent ttfautohint redis libmagic nodejs;
+brew install fontforge --HEAD;
+# To have launchd start redis at login:
+ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
+# Start redis now:
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist;
+# Confirm easy_install is available:
+which easy_install-2.7;
+# /usr/local/share/python/easy_install-2.7
+# Use easy_install to install pip, a better Python package manager
+sudo easy_install-2.7 -U pip;
+# Use easy_install to install virtualenv
+sudo easy_install-2.7 -U virtualenv;
+# Set up a pip download cache
+echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
+mkdir ~/.pip_download_cache;
+# install bower
+npm install -g bower;
 ```
 
 ### Fedora
@@ -88,51 +75,32 @@ TODO: package ttfautohint for Fedora
     npm install -g bower
 ```
 
-Now your system should be ready.
+Now your system should be ready to install Font Bakery itself!
 
 ## Installation
 
-Installing Font Bakery is easy. It requires some other programs, but does not install its own dependencies into your system. Most packages are installed into the `venv` directory.
+Font Bakery has some Python requirements, but it does not install them into your system; thanks to `virtualenv` they are installed into the `venv` directory.
 
-First make a new 'src' folder for source code in your home directory, if it doesn't yet exist:
+```sh
+mkdir ~/src;
+git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
+cd ~/src/fontbakery;
+VENVRUN=virtualenv make setup;
+```
 
-    mkdir ~/src;
-
-Clone Google Font Directory Mercurial Repository from Google Code into new folder in your home directory:
-
-    hg clone https://code.google.com/p/googlefontdirectory/ ~/src/googlefontdirectory;
-
-Clone code from github into new folder:
-
-    git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
-
-Then run setup:
-
-    cd ~/src/fontbakery;
-    make setup;
-
-You may find that `make setup` fails (such as on some Debian systems) because the executable name for virtualenv is `virtualenv` instead of what the Makefile expects (`virtualenv-2.7`) - in this case you can run make set up like this:
-
-    VENVRUN=virtualenv make setup
-
-Wait some time and watch everything being installed.
-
-NB: As `fontforge` can't be installed using pip, and is installed into your system python's site packaged make sure that
-default python interpreter (`which python`) is the same where you installed `fontforge` and other dependencies.
-
-## Github Authorization
-
-**Optional step**: Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
+Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
 
     GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
     GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
     SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. If you run Font Bakery on another domain, you **[must make your own](https://github.com/settings/applications/new)**. Example:
+Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`. 
+
+If you run Font Bakery on a domain, you [must make your own](https://github.com/settings/applications/new):
 
 ![Github Auth example](https://raw.github.com/xen/fontbakery/master/INSTALL-githubauth.png)
 
-Then you will see this information:
+You will see this information:
 
 > **Client ID**
 >
@@ -142,20 +110,17 @@ Then you will see this information:
 >
 >     03327cbda3271b709d0d665c6d19ee1b7a15a705
 
-You can then replace these values in the local.cfg:
+Replace these values in the local.cfg:
 
 ```
-    GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
-    GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
+GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
+GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
 ```
 
 Finally, initialise the database:
-
-    make init;
-
-## Usage
-
-Usage instructions are found in [README.md](https://github.com/xen/fontbakery/blob/master/README.md)
+```
+make init;
+```
 
 ## Production Mode 
 
@@ -166,18 +131,24 @@ Production mode has additional requirements:
 * [gunicorn](http://gunicorn.org/)
 * [supervisor](http://supervisord.org/)
 
-Install nginx on Ubuntu
+### Ubuntu
 
-    sudo add-apt-repository ppa:nginx/stable
-    sudo apt-get update
-    sudo apt-get install nginx
+```
+sudo add-apt-repository ppa:nginx/stable
+sudo apt-get update
+sudo apt-get install nginx
+```
 
-Make a copy of config example nginx and supervisor files in ``pwd``/webapp_configs and edit them with your server name and paths and then make symbolic link to nginx and supervisor configurations directories.
+Make a copy of config example nginx and supervisor files in `/webapp_configs` and edit them with your server name and paths
 
-    ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
-    ln -s ``pwd``/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+Make symbolic link to nginx and supervisor configurations directories:
+
+```
+ln -s ``pwd``/webapp_configs/nginx.conf /etc/nginx/sites-enabled/fontbakery.conf
+ln -s ``pwd``/webapp_configs/supervisor.conf /etc/supervisor/conf.d/fontbakery.conf
+```
 
 Make supervisor autostarted on server booting and start it, if server will be rebooted it will be started automatically:
-
+```
     service supervisor start
-
+```
