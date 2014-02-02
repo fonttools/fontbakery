@@ -375,7 +375,10 @@ class ProjectBuild(db.Model):
         db.session.commit()
         db.session.refresh(project)
         db.session.refresh(build)
-        process_project.ctx_delay(project, build, revision)
+        if current_app.config.get('BACKGROUND'):
+            process_project.ctx_delay(project, build, revision)
+        else:
+            process_project(project, build, revision)
         return build
 
     def utests(self):
