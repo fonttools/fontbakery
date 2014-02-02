@@ -62,7 +62,7 @@ def project_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if kwargs.has_key('project_id'):
+        if 'project_id' in kwargs:
             project_id = kwargs.pop('project_id')
         else:
             project_id = args.pop(0)
@@ -146,7 +146,7 @@ def setup(p):
         if len(request.form.get('familyname')) > 0:
             config['state']['familyname'] = request.form.get('familyname')
     else:
-        if config['state'].has_key('familyname'):
+        if 'familyname' in config['state']:
             config['state'].pop('familyname')
 
     if config['local']['ufo_dirs'] and config['local']['ttx_files']:
@@ -176,7 +176,7 @@ def setup(p):
         if len(request.form.get('ttfautohint')) > 0:
             config['state']['ttfautohint'] = request.form.get('ttfautohint')
     else:
-        if config['state'].has_key('ttfautohint'):
+        if 'ttfautohint' in config['state']:
             config['state'].pop('ttfautohint')
 
     if error:
