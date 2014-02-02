@@ -507,8 +507,14 @@ from checker.base import BakeryTestCase
 
 
 def repr_testcase(dumper, data):
+    def method_doc(doc):
+        if type(doc) == type(None):
+            return 'None'
+        else:
+            return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
+
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
-        'methodDoc': " ".join(str(data._testMethodDoc).encode('ascii', 'xmlcharrefreplace').split()),
+        'methodDoc': method_doc(data._testMethodDoc),
         'tool': data.tool,
         'name': data.name,
         'methodName': data._testMethodName,
