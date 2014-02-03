@@ -923,8 +923,7 @@ msgstr ""
 
 #: bakery/templates/settings/index.html:8
 msgid ""
-"Font Bakery have access only to organisations where you public listed "
-"your membership."
+"Font Bakery only has access to the organisations where your membership is public."
 msgstr ""
 
 #: bakery/templates/settings/index.html:10
