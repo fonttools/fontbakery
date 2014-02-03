@@ -87,17 +87,23 @@
 
     <div id="batch" class="tab-pane">
     <form action="{{ url_for('settings.batch') }}" method="POST">
+     <div class="container-fluid">
 
-      <p class="help-block">{{ _("Enter git clone urls, one per line.") }}</p>
+      <div class="row">
+        <div class="">
+         <textarea rows="10" name="urls" class="form-control" placeholder="Enter git clone urls, one per line."></textarea>
+        </div>
+      </div>
 
-      <textarea rows="3" name="urls" class="input-xxlarge"></textarea>
-
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary">{{ _("Process") }}</button>
+      <div class="row">
+        <div class="form-actions jumbotron">
+              <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm?') }}">{{ _("Add repositories") }}</button>
+        </div>
       </div>          
-    </form>
 
+
+     </div>
+    </form>
     </div>
 
 
