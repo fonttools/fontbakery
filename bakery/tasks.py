@@ -215,6 +215,15 @@ def copy_ufo_files(project, build, log):
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
+    scripts_folder = os.path.join(ROOT, 'scripts')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
+
+    for name in ufo_dirs:
+        name = name[:-4]  # cut .ufo
+        cmd = "python ufo2ttf.py '{out_src}{name}.ufo' '{out}{name}.ttf' '{out_src}{name}.otf'".format(
+            out_src=_out_src, name=name, out=_out)
+        run(cmd, cwd=scripts_folder, log=log)
+
 
 def copy_ttx_files(project, build, log):
     config = project.config
@@ -246,7 +255,6 @@ def copy_ttx_files(project, build, log):
             _out_name = '{}.otf.ttx'.format(_ttx_name)
 
         run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-        import ipdb; ipdb.set_trace()
 
         run("ttx -i -q {}.ttx".format(_ttx_name), cwd=_out_src, log=log)
         run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name, out_name=_out_name), cwd=_out_src, log=log)
@@ -256,7 +264,7 @@ def copy_ttx_files(project, build, log):
                     out_src=_out_src, ttx_name=_ttx_name, out=_out)
             run(cmd, cwd=scripts_folder, log=log)
         else:
-            run("mv '{0}' '../{0}'".format(_out_name), _out_src, log=log)
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_ttx_name), _out_src, log=log)
 
 
 def copy_and_rename_process(project, build, log):
@@ -334,32 +342,6 @@ def copy_and_rename_process(project, build, log):
             run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd=_user, log=log)
 
 
-def generate_fonts_process(project, build, log):
-    """
-    Generate TTF files from UFO files using ufo2ttf.py
-    """
-
-    param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
-
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
-
-    scripts_folder = os.path.join(ROOT, 'scripts')
-
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
-
-    os.chdir(_out_src)
-    for name in glob.glob("*.ufo"):
-        name = name[:-4]  # cut .ufo
-        cmd = "python ufo2ttf.py '%(out_src)s%(name)s.ufo' '%(out_src)s%(name)s.ttf' '%(out_src)s%(name)s.otf'" % {
-            'out_src': _out_src,
-            'name': name,
-        }
-        run(cmd, cwd=scripts_folder, log=log)
-
-
 def ttfautohint_process(project, build, log):
     """
     Run ttfautohint with project command line settings for each
@@ -373,23 +355,16 @@ def ttfautohint_process(project, build, log):
                 'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
         params = config['state']['ttfautohint']
-        os.chdir(_out_src)
-        for name in glob.glob("*.ufo"):
-            name = name[:-4]  # cut .ufo
-            cmd = "ttfautohint %(params)s '%(src)s.ttf' '%(out)s.ttf'" % {
-                'params': params,
-                'out': os.path.join(_out, name),
-                'src': os.path.join(_out_src, name),
-            }
-            run(cmd, cwd=_out, log=log)
-    else:
-        log.write('Autohint not used\n', prefix='### ')
-        run("mv sources/*.ttf .", cwd=_out, log=log)
+        os.chdir(_out)
+        for name in glob.glob("*.ttf"):
+            name = name[:-4]  # cut .ttf
+            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
+            run("ttfautohint {params} '{name}.autohint.ttf' '{name}.ttf'".format(params=params, name=name), cwd=_out, log=log)
+            run("rm '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
 
 
 def ttx_process(project, build, log):
@@ -652,12 +627,8 @@ def process_project(project, build, revision):
     param = {'login': project.login, 'id': project.id,
                 'revision': build.revision, 'build': build.id}
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
-    _out_log = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
 
     # Make logest path
     os.makedirs(_out_src)
@@ -680,7 +651,6 @@ def process_project(project, build, revision):
             run("git checkout %s" % revision, cwd=_in, log=log)
             log.write('Bake Begins!\n', prefix='### ')
             copy_and_rename_process(project, build, log)
-            generate_fonts_process(project, build, log)
             ttfautohint_process(project, build, log)
             ttx_process(project, build, log)
             subset_process(project, build, log)
