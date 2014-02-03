@@ -19,10 +19,9 @@
       <li><a style="width:14em"><i class="fa fa-circle-o text-muted" id="notify"></i></a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li {% if url_for('frontend.page') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.page') }}"><i class="fa fa-book"></i> </a></li>
-      <li><a>{% if g.user.avatar %}<img src="https://www.gravatar.com/avatar/{{ g.user.avatar }}?s=14&amp;d=mm" data-trigger="hover" data-placement="bottom" data-content="{{ g.user.name }}" class="apopover" />{% else %}{{ g.user.name }}{% endif %}</a></li>
-      <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" ><i class="fa fa-github-alt"></i> </a></li>
+      <li {% if url_for('settings.repos') == request.path %}class="active"{% endif %}><a href="{{ url_for('settings.repos') }}" >{% if g.user.avatar %}<img src="https://www.gravatar.com/avatar/{{ g.user.avatar }}?s=14&amp;d=mm" data-trigger="hover" data-placement="bottom" data-content="{{ g.user.name }}" class="apopover" />{% else %} <i class="fa fa-github-alt"></i>{% endif %}</a></li>
       <li><a href="{{ url_for('gitauth.logout') }}"><i class="fa fa-sign-out"></i> </a></li>
+      <li {% if url_for('frontend.page') == request.path %}class="active"{% endif %}><a href="{{ url_for('frontend.page') }}"><i class="fa fa-question-circle" data-trigger="hover" data-placement="bottom" data-content="{{ _('Documentation') }}" class="apopover" ></i> </a></li>
     </ul>
   </div><!--/.nav-collapse -->
 </div>

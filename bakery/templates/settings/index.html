@@ -5,7 +5,7 @@
 
 {% macro getReposList() -%}
     <form class="well well-small" action="{{ url_for('settings.update') }}" method="POST">
-      <p>{{ _("Font Bakery have access only to organisations where you public listed your membership.") }}</p>
+      <p>{{ _("Font Bakery only has access to the organisations where your membership is public.") }}</p>
       {% if cache %}
         <button type="submit" class="btn btn-sm">{{ _("Refresh") }}</button>
         <span class="text-muted">{{ _("List of GitHub repositories last updated") }} {{ cache.updated | pretty_date}}</span>
@@ -86,12 +86,24 @@
 
 
     <div id="batch" class="tab-pane">
-    <form action="{{ url_for('settings.batch') }}" method="POST" role="form">
-      <p class="help-block">{{ _("Enter git clone urls, one per line.") }}</p>
-      <textarea rows="3" name="urls" class="form-control"></textarea>
-      <button type="submit" class="btn btn-primary">{{ _("Process") }}</button>
-    </form>
+    <form action="{{ url_for('settings.batch') }}" method="POST">
+     <div class="container-fluid">
 
+      <div class="row">
+        <div class="">
+         <textarea rows="10" name="urls" class="form-control" placeholder="Enter git clone urls, one per line."></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-actions jumbotron">
+              <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm?') }}">{{ _("Add repositories") }}</button>
+        </div>
+      </div>          
+
+
+     </div>
+    </form>
     </div>
 
 

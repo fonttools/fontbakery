@@ -183,9 +183,9 @@ msgid "Problem parsing git url"
 msgstr "Problem parsing git url"
 
 #: bakery/settings/views.py:267 bakery/settings/views.py:315
-msgid "Repository successfully added. Wait for its download and complete setup"
+msgid "Repository successfully added"
 msgstr ""
-"Repository successfully added. Wait for its download and complete setup"
+"Repository successfully added"
 
 #: bakery/settings/views.py:279
 msgid "Project not found."
@@ -988,11 +988,9 @@ msgstr "Add Repositories from Github"
 
 #: bakery/templates/settings/index.html:8
 msgid ""
-"Font Bakery have access only to organisations where you public listed your "
-"membership."
+"Font Bakery only has access to the organisations where your membership is public."
 msgstr ""
-"Font Bakery have access only to organisations where you public listed your "
-"membership."
+"Font Bakery only has access to the organisations where your membership is public."
 
 #: bakery/templates/settings/index.html:10
 msgid "Refresh"

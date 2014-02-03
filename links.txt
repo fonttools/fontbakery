@@ -5,3 +5,26 @@ git@github.com:fontdirectory/ubuntu.git
 git@github.com:xen/league-gothic.git
 git@github.com:xen/AutonymFont.git
 git@github.com:xen/aclonica-ttx-test.git
+
+http://ynakajima.github.io/ttf.js/demo/glyflist/index.html
+not tff.org ;)
+http://www.supernormal.co.uk/
+err
+http://ynakajima.github.io/ttf.js/demo/glyflist/index.html
+sorry i gotta go to a meeting
+http://code.google.com/p/googlefontdirectory/wiki/HowToGenerateWebNativeFonts
+http://ynakajima.github.io/ttf.js/demo/glyflist/index.html for seeing menu files
+http://code.google.com/p/googlefontdirectory/source/browse/tools/gasp/setgasp.py with ff
+fontforge
+http://code.google.com/p/googlefontdirectory/source/browse/tools/chars/showchars.py
+ok
+http://code.google.com/p/googlefontdirectory/source/browse/#hg%2Ftools%2Fnonhinting
+has fonttools
+codes
+
+sorry
+http://code.google.com/p/googlefontdirectory/source/browse/tools/nonhinting/setnonhinting-fonttools.py
+happy hacking! :D
+
+
+http://ynakajima.github.io/ttf.js/demo/glyflist/index.html
