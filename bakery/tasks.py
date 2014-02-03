@@ -61,7 +61,7 @@ def run(command, cwd, log):
             # log error
             log.write(stderr, prefix='Error: ')
         # If no output and process no longer running, stop
-        if not stdout and not stderr and p.poll()!=None:
+        if not stdout and not stderr and p.poll() is not None:
             break
     # if the command did not exit cleanly (with returncode 0)
     if p.returncode:
@@ -158,7 +158,6 @@ def copy_ufo_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
                         'revision': build.revision, 'build': build.id}
 
-    _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
@@ -279,7 +278,6 @@ def copy_and_rename_process(project, build, log):
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
