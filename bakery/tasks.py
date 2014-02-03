@@ -217,7 +217,8 @@ def copy_ufo_files(project, build, log):
     scripts_folder = os.path.join(ROOT, 'scripts')
     log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
 
-    for name in ufo_dirs:
+    os.chdir(_out_src)
+    for name in glob.glob("*.ufo"):
         name = name[:-4]  # cut .ufo
         cmd = "python ufo2ttf.py '{out_src}{name}.ufo' '{out}{name}.ttf' '{out_src}{name}.otf'".format(
             out_src=_out_src, name=name, out=_out)
