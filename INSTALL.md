@@ -12,8 +12,12 @@ Install [HomeBrew](http://mxcl.github.io/homebrew/)
 
 
 ```sh
-# Use HomeBrew to install dependencies
-brew install python sqlite libevent ttfautohint redis libmagic nodejs;
+# Use Homebrew to install dependencies
+brew install python;
+# Use Homebrew's Python
+echo 'export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH' >> ~/.bash_profile;
+source ~/.bash_profile;
+brew install sqlite libevent ttfautohint redis libmagic nodejs;
 brew install fontforge --HEAD;
 # To have launchd start redis at login:
 ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
