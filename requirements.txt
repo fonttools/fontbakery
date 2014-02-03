@@ -14,6 +14,7 @@ pytz==2013b
 beautifulsoup4
 markupsafe
 giturlparse.py
+six
 # setuptools
 
 # builder and checker
