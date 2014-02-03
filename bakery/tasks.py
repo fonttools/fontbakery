@@ -172,7 +172,7 @@ def copy_ufo_files(project, build, log):
 
     # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
     ufo_dirs = []
-    for x in config['local'].get('process_files', []):
+    for x in config['state'].get('process_files', []):
         if x.endswith('.ufo'):
             ufo_dirs.append(x)
 
