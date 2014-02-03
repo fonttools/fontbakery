@@ -162,6 +162,7 @@ def setup(p):
     txt_files_to_copy = request.form.getlist('txt_files')
     config['state']['txt_files_copied'] = txt_files_to_copy
 
+    # XXX: unsure should it be local or state property
     process_files = request.form.getlist('process_files')
     config['state']['process_files'] = process_files
 
