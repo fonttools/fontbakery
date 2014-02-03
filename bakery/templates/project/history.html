@@ -41,7 +41,7 @@
     </tr>
     {% else %}
     <tr>
-      <td colspan="3">
+      <td colspan="4">
         <div class="well">
         <p>{{ _("No recent builds found, select hash from <a href='%(url)s'>git log page</a> or build latest head build.", url=url_for('project.git', project_id=project.id)) }}</p>
         <p class="text-center"><a href="{{ url_for('project.bump', project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a></p>
