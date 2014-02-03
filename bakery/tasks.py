@@ -489,24 +489,6 @@ def generate_metadata_process(project, build, log):
     run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
 
 
-def lint_process(project, build, log):
-    """
-    Run lint.jar on ttf files
-    """
-    param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
-
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    log.write('Lint (lint.jar)\n', prefix='### ')
-    # java -jar dist/lint.jar "$(dirname $metadata)"
-    cmd = "java -jar %(wd)s/scripts/lint.jar '%(out)s'"
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
-    # Mark this project as building successfully
-    # TODO: move this from here to the new checker lint process completing all required checks successfully
-    project.config['local']['status'] = 'built'
-
-
 def fontaine_process(project, build, log):
     """
     Run pyFontaine on ttf files
@@ -695,7 +677,6 @@ def process_project(project, build, revision):
             ttx_process(project, build, log)
             subset_process(project, build, log)
             generate_metadata_process(project, build, log)
-            # lint_process(project, build, log)
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
