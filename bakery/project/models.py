@@ -177,7 +177,7 @@ class Project(db.Model):
         """ Return revision info for selected git commit """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in)
+        return prun("git show --quiet --format=short %(revision)s" % locals(), cwd=_in).decode('utf-8')
 
     def revision_tests(self, revision='HEAD'):
         # XXX: check revision for safety
