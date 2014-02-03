@@ -26,6 +26,8 @@ import plistlib
 from .utils import RedisFd
 import re
 import yaml
+from fontTools import ttLib
+
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT)
@@ -170,7 +172,12 @@ def copy_ufo_files(project, build, log):
         familyName = False
 
     # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
-    for _in_ufo in config['local']['ufo_dirs']:
+    ufo_dirs = []
+    for x in config['local'].get('process_files', []):
+        if x.endswith('.ufo'):
+            ufo_dirs.append(x)
+
+    for _in_ufo in ufo_dirs:
         # Decide the incoming filepath
         _in_ufo_path = os.path.join(_in, _in_ufo)
         # Read the _in_ufo fontinfo.plist
@@ -215,10 +222,32 @@ def copy_ttx_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
                 'revision': build.revision, 'build': build.id}
 
-    _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+
+    ttx_files = []
+    for x in config['state'].get('process_files', []):
+        if x.endswith('.ttx'):
+            ttx_files.append(x)
+
+    for ttx_file in ttx_files:
+        _ttx_path = os.path.join(_in, ttx_file)
+        if not os.path.exists(_ttx_path):
+            run("echo file '{}' not found".format(_ttx_path), cwd=_out, log=log)
+            continue
+
+        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True, verbose=False, allowVID=False)
+        font.importXML(_ttx_path, quiet=True)
+        _ttx_name = os.path.splitext(_ttx_path)[0]
+        if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
+            _out_ttx = os.path.join(_out_src, '{}.ttf.ttx'.format(_ttx_name))
+        elif font.sfntVersion == 'OTTO':  # OTF
+            _out_ttx = os.path.join(_out_src, '{}.otf.ttx'.format(_ttx_name))
+
+        run("cp '{}' '{}'".format(_ttx_path, _out_ttx), cwd=_out, log=log)
+
+
 
     pass
 
