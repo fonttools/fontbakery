@@ -179,7 +179,7 @@ msgid "Problem parsing git url"
 msgstr ""
 
 #: bakery/settings/views.py:267 bakery/settings/views.py:315
-msgid "Repository successfully added. Wait for its download and complete setup"
+msgid "Repository successfully added"
 msgstr ""
 
 #: bakery/settings/views.py:279

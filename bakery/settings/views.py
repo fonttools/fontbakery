@@ -264,7 +264,7 @@ def addclone():
         db.session.add(project)
         db.session.commit()
 
-    flash(_("Repository successfully added. Wait for its download and complete setup"))
+    flash(_("Repository successfully added"))
     project.sync()
     return redirect(url_for('frontend.splash'))
 
@@ -312,7 +312,7 @@ def massgit():
             )
             db.session.add(project)
             db.session.commit()
-            flash(_("Repository successfully added. Wait for its download and complete setup"))
+            flash(_("Repository successfully added"))
             project.sync()
 
     db.session.commit()
