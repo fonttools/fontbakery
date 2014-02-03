@@ -21,11 +21,12 @@ gevent.monkey.patch_all()
 
 from bakery import create_app, init_app
 
+
 @werkzeug.serving.run_with_reloader
 def runServer():
     app = create_app(app_name='bakery')
     app.config.from_object('config')
-    app.config.from_pyfile('local.cfg', silent=True)
+    app.config.from_pyfile('../local.cfg', silent=True)
     init_app(app)
     import os
     from werkzeug.wsgi import SharedDataMiddleware
