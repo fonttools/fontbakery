@@ -229,7 +229,8 @@ class Project(db.Model):
         params = "git log -n101 --skip=%(skip)s" % {'skip': skip}
         fmt = """ --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}' """
         log = prun(params + fmt, cwd=_in)
-        return yaml.load(log)
+
+        return yaml.load(log.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
 
     def diff_files(self, left, right):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
