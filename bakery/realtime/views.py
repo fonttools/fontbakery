@@ -98,7 +98,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                         break
                     # A small delay to reduce browser hammering. It slows down the
                     # 'real time' log feel, comment this out for that.
-                    gevent.sleep(0.1)
+                    gevent.sleep()
                 else:
                     #self.emit('message', 'blank \n')
                     gevent.sleep(0.1)
