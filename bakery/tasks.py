@@ -251,7 +251,7 @@ def copy_ttx_files(project, build, log):
 
     pass
 
-def copy_and_rename_ufos_process(project, build, log):
+def copy_and_rename_process(project, build, log):
     """
     Setup UFOs for building
     """
@@ -689,7 +689,7 @@ def process_project(project, build, revision):
         try:
             run("git checkout %s" % revision, cwd=_in, log=log)
             log.write('Bake Begins!\n', prefix='### ')
-            copy_and_rename_ufos_process(project, build, log)
+            copy_and_rename_process(project, build, log)
             generate_fonts_process(project, build, log)
             ttfautohint_process(project, build, log)
             ttx_process(project, build, log)
