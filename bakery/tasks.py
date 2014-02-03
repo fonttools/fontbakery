@@ -161,7 +161,7 @@ def copy_ufo_files(project, build, log):
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
@@ -263,7 +263,7 @@ def copy_and_rename_process(project, build, log):
     _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
@@ -336,7 +336,7 @@ def generate_fonts_process(project, build, log):
 
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     scripts_folder = os.path.join(ROOT, 'scripts')
 
@@ -365,7 +365,7 @@ def ttfautohint_process(project, build, log):
                 'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
@@ -381,7 +381,7 @@ def ttfautohint_process(project, build, log):
             run(cmd, cwd=_out, log=log)
     else:
         log.write('Autohint not used\n', prefix='### ')
-        run("mv src/*.ttf .", cwd=_out, log=log)
+        run("mv sources/*.ttf .", cwd=_out, log=log)
 
 
 def ttx_process(project, build, log):
@@ -393,7 +393,7 @@ def ttx_process(project, build, log):
                         'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Compact TTFs with ttx\n', prefix='### ')
 
@@ -428,7 +428,7 @@ def subset_process(project, build, log):
                         'revision': build.revision, 'build': build.id}
 
     _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Subset TTFs (subset.py)\n', prefix='### ')
 
@@ -502,7 +502,7 @@ def fontaine_process(project, build, log):
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
-        cmd = "python %s/venv/bin/pyfontaine --text '%s' >> 'src/fontaine.txt'" % (
+        cmd = "python %s/venv/bin/pyfontaine --text '%s' >> 'sources/fontaine.txt'" % (
             ROOT, file)
         run(cmd, cwd=_out, log=log)
     # TODO also save the totals for the dashboard....
@@ -647,7 +647,7 @@ def process_project(project, build, revision):
     _out = os.path.join(DATA_ROOT,
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(DATA_ROOT,
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/src/' % param)
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
     _out_log = os.path.join(DATA_ROOT,
         '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
 
