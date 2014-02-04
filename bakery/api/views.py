@@ -16,27 +16,22 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import logging
-from flask import Blueprint, request, json
+import os
+from flask import Blueprint, request, json, current_app, g
 from ..extensions import db
-from ..models import Project
+from ..models import Project, ProjectBuild
 
 api = Blueprint('api', __name__)
 
-from .models import Task
 
-
-@api.route('/webhook')
-def splash():
-    try:
-        payload = json.loads(request.args.get('payload'))
-    except ValueError:
-        logging.warn('Error reciving webhook, cannt parse payload')
-
-    task = Task(full_name=payload['repository']['url'][19:],  # skip 'https://github.com/' part
-                payload=payload,
-                status=0)
-    db.session.add(task)
-    db.session.commit()
+@api.route('/webhook/<path:project_id>')
+def webhook(project_id):
+    # Make it more secure and check for in request header X-Hub-Signature
+    # It should have HMAC of payload body and secret key request.args.get('payload')
+    # secret key is project signify(full_path)
+    p = Project.query.filter_by(
+         login=g.user.login, id=project_id).first_or_404()
+    ProjectBuild.make_build(p, revision='HEAD', force_sync=True)
     return "Ok"
 
 
