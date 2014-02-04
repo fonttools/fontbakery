@@ -615,13 +615,15 @@ def result_fixes(project, build):
 
 
 @job
-def process_project(project, build, revision):
+def process_project(project, build, revision, force_sync=False):
     """
     Bake the project, building all fonts according to the project setup.
 
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
+    if force_sync:
+        project_git_sync(project)
 
     param = {'login': project.login, 'id': project.id,
                 'revision': build.revision, 'build': build.id}

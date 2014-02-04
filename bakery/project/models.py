@@ -362,7 +362,7 @@ class ProjectBuild(db.Model):
     updated = db.Column(db.DateTime, default=datetime.now, onupdate=db.func.now())
 
     @staticmethod
-    def make_build(project, revision):
+    def make_build(project, revision, force_sync=False):
         """ Initiate project build process
 
         :param project: `Project` instance
@@ -377,10 +377,18 @@ class ProjectBuild(db.Model):
         db.session.refresh(project)
         db.session.refresh(build)
         if current_app.config.get('BACKGROUND'):
-            process_project.ctx_delay(project, build, revision)
+            process_project.ctx_delay(project, build, revision, force_sync)
         else:
-            process_project(project, build, revision)
+            process_project(project, build, revision, force_sync)
         return build
+
+    @property
+    def path(self):
+        param = {'login': self.project.login, 'id': self.project.id,
+                    'revision': self.revision, 'build': self.id,
+                    'root': current_app.config.get('DATA_ROOT')}
+
+        return '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 
     def utests(self):
         """ Return saved upstream test data """
