@@ -249,22 +249,46 @@ def copy_ttx_files(project, build, log):
         font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True, verbose=False, allowVID=False)
         font.importXML(_ttx_path, quiet=True)
         _ttx_name = os.path.splitext(os.path.basename(_ttx_path))[0]
+
+        def nameTableRead(font, NameID, fallbackNameID=False):
+            for record in font['name'].names:
+                if record.nameID == NameID:
+                    if b'\000' in record.string:
+                        return record.string.decode('utf-16-be').encode('utf-8')
+                    else:
+                        return record.string
+            return nameTableRead(font, fallbackNameID)
+
+        styleName = nameTableRead(font, 17, 2)
+        # Always have a regular style
+        if styleName == 'Normal':
+            styleName = 'Regular'
+
+        # NameID=1 is required
+        familyName = nameTableRead(font, 16, 1)
+        # Remove whitespace from names
+        styleNameNoWhitespace = re.sub(r'\s', '', styleName)
+        familyNameNoWhitespace = re.sub(r'\s', '', familyName)
+
+        _out_ttx_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace, stylename=styleNameNoWhitespace)
+
         if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
-            _out_name = '{}.ttf.ttx'.format(_ttx_name)
+            _out_name = '{}.ttf.ttx'.format(_out_ttx_name)
         elif font.sfntVersion == 'OTTO':  # OTF
-            _out_name = '{}.otf.ttx'.format(_ttx_name)
+            _out_name = '{}.otf.ttx'.format(_out_ttx_name)
 
         run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-
-        run("ttx -i -q {}.ttx".format(_ttx_name), cwd=_out_src, log=log)
         run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name, out_name=_out_name), cwd=_out_src, log=log)
+        import ipdb; ipdb.set_trace()
+        run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
+        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name), cwd=_out_src, log=log)
         if font.sfntVersion == 'OTTO':  # OTF
             scripts_folder = os.path.join(ROOT, 'scripts')
             cmd = "python autoconvert.py '{out_src}{ttx_name}.otf' '{out}{ttx_name}.ttf'".format(
-                    out_src=_out_src, ttx_name=_ttx_name, out=_out)
+                    out_src=_out_src, ttx_name=_out_ttx_name, out=_out)
             run(cmd, cwd=scripts_folder, log=log)
         else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_ttx_name), _out_src, log=log)
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name), _out_src, log=log)
 
 
 def copy_and_rename_process(project, build, log):
