@@ -279,7 +279,6 @@ def copy_ttx_files(project, build, log):
 
         run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
         run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name, out_name=_out_name), cwd=_out_src, log=log)
-        import ipdb; ipdb.set_trace()
         run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
         run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name), cwd=_out_src, log=log)
         if font.sfntVersion == 'OTTO':  # OTF
