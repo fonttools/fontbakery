@@ -32,7 +32,7 @@
       </td>
       <td>
         {% set revision = item['hash'] | signify %}
-        <a href="{{ url_for('project.bump', project_id = project.id, revision = revision) }}" class="btn btn-xs">{{ item['hash'] }}</a>
+        <a href="{{ url_for('project.build', project_id = project.id, revision = revision) }}" class="btn btn-xs">{{ item['hash'] }}</a>
       </td>
       <td>{{item['author']}}</td>
       <td><a href="{{ url_for('project.ufiles', project_id=project.id, revision=item['hash']) }}">{{item['message']|safe}}</a></td>

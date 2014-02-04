@@ -89,7 +89,7 @@ def project_required(f):
 @project.route('/api/<int:project_id>/build', methods=['GET'])
 @login_required
 @project_required
-def bump(p):
+def build(p):
     """ Revision id is dangerous parameter, because it added to command line to
     git call. That is why it always should be signed with hash.
     """
@@ -194,7 +194,7 @@ def setup(p):
     p.save_state()
     if request.form.get('bake'):
         p.save_state()
-        return redirect(url_for('project.bump', project_id=p.id))
+        return redirect(url_for('project.build', project_id=p.id))
     else:
         flash(_("Setup saved"))
         return redirect(url_for('project.setup', project_id=p.id))
