@@ -347,6 +347,30 @@ def rtests(p, build_id):
                            tests=test_result, build=b, summary=summary)
 
 
+@project.route('/<int:project_id>/build/<int:build_id>/summary', methods=['GET'])
+@login_required
+@project_required
+def summary(p, build_id):
+    """ Results of processing tests, for ttf files """
+    b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
+    if not p.is_ready:
+        return redirect(url_for('project.log', project_id=p.id))
+
+    test_result = b.result_tests()
+    summary = {
+        'all_tests': sum([int(y['sum']) for x, y in test_result.items()]),
+        'fonts': test_result.keys(),
+        'all_error': sum([len(x['error']) for x in test_result.values()]),
+        'all_failure': sum([len(x['failure']) for x in test_result.values()]),
+        'all_fixed': sum([len(x['fixed']) for x in test_result.values()]),
+        'all_success': sum([len(x['success']) for x in test_result.values()]),
+        'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
+    }
+    return render_template('project/summary.html', project=p,
+                           tests=test_result, build=b, summary=summary)
+
+
 @project.route('/<int:project_id>/build/<int:build_id>/description', methods=['GET', 'POST'])
 @login_required
 @project_required

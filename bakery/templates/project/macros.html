@@ -42,7 +42,7 @@
 
 {% macro subnav_build(active, revision) %}
  <ul class="nav nav-tabs">
-  <li {% if active == 'history' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "", _("Build History"), true) }}</li>
+  <li {% if active == 'summary' %}class="active" {% endif %}>{{ link(url_for('project.summary', project_id=project.id, build_id=build.id), "", _("Summary"), true) }}</li>
   <li {% if active == 'rfiles' %}class="active" {% endif %}>{{ link(url_for('project.rfiles', project_id=project.id, build_id=build.id), "", _("Results Files"), true) }}</li>
   <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', project_id=project.id, build_id=build.id), "", _("Results Tests"), true) }}</li>
   <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', project_id=project.id, build_id=build.id), "", _("Build Log"), true) }}</li>

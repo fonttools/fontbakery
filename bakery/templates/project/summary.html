@@ -1,0 +1,54 @@
+{% extends "project/base.html" %}
+{% set page_title = _("Tests for result files") %}
+
+{% block pnav %}
+{% from 'project/macros.html' import nav with context%}
+{{ nav('build') }}
+{% endblock %}
+
+{% block pbody %}
+
+{% from 'project/macros.html' import subnav_build with context%}
+{{ subnav_build('summary') }}
+
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+    ['{{ _("Tests") }}', '#'],
+    ['{{ _("Success") }} {{ summary["all_success"]}}', {{ summary["all_success"]}}],
+    ['{{ _("Auto fixed") }} {{ summary["all_fixed"]}}', {{ summary["all_fixed"]}}],
+    ['{{ _("Failed") }} {{ summary["all_failure"]}}', {{ summary["all_failure"]}}],
+    ['{{ _("Error") }} {{ summary["all_error"]}}', {{ summary["all_error"]}}]
+    ]);
+
+    var options = {
+      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    chart.draw(data, options);
+  }
+</script>
+
+<h3>{{ _('Summary') }}</h3>
+<p>
+  <strong>{{ _('Fonts:') }}</strong> {{ summary['fonts']|join(', ') }} <br>
+</p>
+
+<h5>{{ _('Stats')}}</h5>
+<div id="piechart" style="width: 500px; height: 150px;"></div>
+
+<h5>{{ _('Blockers') }}</h5>
+<ul>
+  {% for item in summary['fix_asap'] %}
+  <li class="text-danger">
+    {{ item['font'] }} - {{item['methodName']}}: {{item['methodDoc']}}<br>
+    {{ item['err_msg']}}
+  </li>    
+  {% endfor %}
+</ul>
+
+{% endblock %}
