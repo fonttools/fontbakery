@@ -347,7 +347,7 @@ def rtests(p, build_id):
                            tests=test_result, build=b, summary=summary)
 
 
-@project.route('/<int:project_id>/build/<int:build_id>/summary', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/', methods=['GET'])
 @login_required
 @project_required
 def summary(p, build_id):
