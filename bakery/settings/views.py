@@ -21,12 +21,13 @@ import logging
 from flask.ext.babel import gettext as _
 
 from flask import (Blueprint, render_template, request, flash, g, redirect,
-                    url_for, json)
+                    url_for, json, current_app)
 
 from ..extensions import github, db
 from ..decorators import login_required
 from .models import ProjectCache
-from ..project.models import Project
+from ..models import Project
+from ..utils import signify
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -118,8 +119,6 @@ def profile():
             flash(_('Unable to load repos list.'))
     return render_template('settings/index.html', repos=_repos)
 
-HOOK_URL = 'http://requestb.in/nrgo4inr'
-
 
 @settings.route('/addhook/<path:full_name>')  # , methods=['GET'])
 @login_required
@@ -134,9 +133,9 @@ def addhook(full_name):
     exist_id = False
     if old_hooks.json():
         for i in old_hooks.json():
-            if i.has_key('name') and i['name'] == 'web':
-                if i.has_key('config') and i['config'].has_key('url') \
-                        and i['config']['url'] == HOOK_URL:
+            if 'name' in i and i['name'] == 'web':
+                if 'config' in i and 'url' in i['config'] \
+                        and i['config']['url'] == current_app.config.get('HOOK_URL').format(id=full_name):
                     exist_id = i['id']
 
     if exist_id:
@@ -154,9 +153,9 @@ def addhook(full_name):
                                      'active': True,
                                      'events': ['push'],
                                      'config': {
-                                     'url': HOOK_URL,
-                                     'content_type': 'json',
-                                     'secret': '11'  # TODO: sign from name and SECRET.
+                                         'url': current_app.config.get('HOOK_URL').format(id=full_name),
+                                         'content_type': 'json',
+                                         'secret': signify(full_name)  # TODO: sign from name and SECRET.
                                      }
                                      })
                      )
@@ -187,7 +186,7 @@ def addhook(full_name):
         return redirect(url_for('settings.repos') + "#tab_github")
 
     flash(_('Added webhook for %(name)s.', name=full_name))
-    project.build()
+    project.sync()
     return redirect(url_for('settings.repos') + "#tab_github")
 
 
@@ -207,7 +206,7 @@ def delhook(full_name):
         for i in old_hooks.json():
             if i.has_key('name') and i['name'] == 'web':
                 if i.has_key('config') and i['config'].has_key('url') \
-                        and i['config']['url'] == HOOK_URL:
+                        and i['config']['url'] == current_app.config.get('HOOK_URL').format(id=full_name):
                     exist_id = i['id']
 
     if exist_id:
