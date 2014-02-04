@@ -484,7 +484,7 @@ def writeFile(familydir, metadata):
     if hasMetadata(familydir):
         filename = "METADATA.json.new"
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
-        f.write(striplines(json.dumps(metadata, indent=2, ensure_ascii=True)))
+        f.write(striplines(json.dumps(sortOldMetadata(metadata), indent=2, ensure_ascii=True)))
     print(json.dumps(metadata, indent=2, ensure_ascii=True))
 
 
