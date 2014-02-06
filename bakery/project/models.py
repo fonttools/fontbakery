@@ -236,6 +236,7 @@ class Project(db.Model):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         data = prun("""git diff %(left)s %(right)s""" % locals(), cwd=_in)
+        data = data.decode('utf-8').encode('ascii', 'xmlcharrefreplace')
         file_diff = {}
         t = []
         current_file = None
