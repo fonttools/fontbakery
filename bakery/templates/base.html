@@ -29,12 +29,13 @@
   {% include "header.html" %}
 {% endblock %}
 
-{% from 'macros/misc.html' import render_flash_message %}
-{{ render_flash_message() }}
 
 <div class="container">
   <div class="row">
     <div role="main">
+
+    {% from 'macros/misc.html' import render_flash_message %}
+    {{ render_flash_message() }}
 
     {% block body %}
     {% endblock body %}
