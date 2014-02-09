@@ -123,6 +123,9 @@ GITHUB_CONSUMER_KEY = 'f3076d470c4258e744a7'
 GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
 ```
 
+Update other options listed in `local.cfg`. *If you want to use
+Font Bakery in production more these options are very important*.
+
 Finally, initialise the database and run Font Bakery:
 
 ```
