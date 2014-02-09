@@ -116,7 +116,7 @@
     {# Tests per font file #}
     {%- for font in tests.keys() %}
       <div class="row">
-        <div class="col-md-9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }}</h4></div>
+        <div class="col-md-9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }} <i class="fa fa-angle-double-down"></i></h4></div>
         <div class="col-md-3">
         {% set  t = tests[font]['sum'] %}
         {% set sl = tests[font]['success']|length|int %}
