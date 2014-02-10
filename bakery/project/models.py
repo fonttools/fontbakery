@@ -27,6 +27,7 @@ from flask import current_app, json
 
 from ..decorators import lazy_property
 from ..extensions import db
+from ..utils import saveMetadata
 from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
@@ -433,9 +434,7 @@ class ProjectBuild(db.Model):
             f.write(data)
             f.close()
         elif name == 'metadata':
-            f = open(self.asset_list['metadata'] % param, 'w')
-            json.dump(json.loads(data), f, indent=2, ensure_ascii=True)  # same params as in generatemetadata.py
-            f.close()
+            saveMetadata(data, self.asset_list['metadata'] % param)
 
             if kwarg.get('del_new') and kwarg['del_new']:
                 if os.path.exists(self.asset_list['metadata_new'] % param):
