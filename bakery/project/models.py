@@ -199,12 +199,11 @@ class Project(db.Model):
     def family_stat(self):
         from ..models import FontStats
 
-        if self.config['state'].get('stats_family_name'):
-            return FontStats.by_family(self.config['state']['stats_family_name'])
-        elif self.config['state'].get('familyname'):
-            return FontStats.by_family(self.config['state']['familyname'])
-        else:
-            return None
+        # stats_family_name have hihger priority
+        fn = self.config['state'].get('stats_family_name') or self.config['state'].get('familyname')
+
+        if fn:
+            return FontStats.by_family(fn)
 
     def __getitem__(self, key):
         """ Magic method that allow to access ORM properties using
