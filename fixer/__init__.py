@@ -33,8 +33,9 @@ from . import fixes
 
 # temporary list
 available_fixes = {
-    'checker.result_suite.fontforge_suite.fftest.test_nbsp_and_space_glyphs_width': fixes.nbsp_fix
+    'checker.result_suite.fontforge_suite.fftest.test_nbsp_and_space_glyphs_width': fixes.fix_nbsp
 }
+
 
 def fix_font(yaml_file, path):
     """ yaml — font bakery checker tests results yaml file. This file
@@ -63,6 +64,4 @@ def fix_font(yaml_file, path):
     l = open(yaml_file, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
-
-
 
