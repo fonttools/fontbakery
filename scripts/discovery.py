@@ -58,6 +58,7 @@ def run(folder, bakery_file):
     bakery['copyright_license'] = copyright_license
 
     # Family name
+    # 'familyname'
 
     ttx_regular = [fn for fn in os.listdir("{folder}/sources/".format(folder=folder))
                     if fn.endswith('-Regular.ttx') or fn.endswith('-Regular.ttf.ttx') or fn.endswith('-Regular.otf.ttx')]
