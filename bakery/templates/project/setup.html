@@ -1,108 +1,6 @@
 {% extends "project/base.html" %}
 {% set page_title = _("Setup Project") %}
 {% set config = project.config %}
-{% set stateDict = {
-    'copyright_license': {
-        'ofl': 'Open Font License v1.1',
-        'apache': 'Apache v2.0',
-        'ufl': 'Ubuntu Font License v1.0',
-        },
-    'copyright_notice': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'trademark_notice': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'trademark_permission': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'rfn_asserted': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'rfn_permission': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'prints_ok': {
-        'yes': 'Y',
-        'no': 'N',
-        },
-    'source_drawing_filetype': {
-        'None': 'No source file possible',
-        'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)',
-        'VFB': 'VFB (FontLab)',
-        'glyphs': 'Glyphs',
-        },
-    'source_cff_filetype': {
-        'None': 'No source file possible',
-        'OTF': 'OTF',
-        'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)',
-        'VFB': 'VFB (FontLab)',
-        'glyphs': 'Glyphs',
-        },
-    'source_ttf_filetype': {
-        'None': 'No source file possible',
-        'OTF': 'OTF',
-        'UFO': 'UFO',
-        'SFD': 'SFD (FontForge)',
-        'VFB': 'VFB (FontLab)',
-        'glyphs': 'Glyphs',
-    },
-    'price_design_usd': {
-        'text': 'free',
-        },
-    'price_total_usd': {
-        'text': 'free',
-        },
-    'vendor_category': {
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        },
-    'hinting_level': {
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        '4': '4',
-        '5': '5',
-        },
-    'vendor_quality': {
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        '4': '4',
-        '5': '5',
-        },
-    'design_quality': {
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        '4': '4',
-        '5': '5',
-        },
-    'hinting_quality': {
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        '4': '4',
-        '5': '5',
-        },
-    'stats_family_name': {
-        'text': 'free',
-        },
-    'design_category': {
-        'sans': 'Sans',
-        'serif': 'Serif',
-        'script': 'Script',
-        'display': 'Display',
-        },
-    } %}
 
 {% block pnav %}
 {% from 'project/macros.html' import nav with context%}
@@ -246,6 +144,80 @@
 </div>
 </div>
 
+{% set stateDict = {
+    'rfn_permission': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'prints_ok': {
+        'yes': 'Y',
+        'no': 'N',
+        },
+    'source_drawing_filetype': {
+        'None': 'No source file possible',
+        'UFO': 'UFO',
+        'SFD': 'SFD (FontForge)',
+        'VFB': 'VFB (FontLab)',
+        'glyphs': 'Glyphs',
+        },
+    'source_ttf_filetype': {
+        'None': 'No source file possible',
+        'OTF': 'OTF',
+        'UFO': 'UFO',
+        'SFD': 'SFD (FontForge)',
+        'VFB': 'VFB (FontLab)',
+        'glyphs': 'Glyphs',
+    },
+    'price_design_usd': {
+        'text': 'free',
+        },
+    'price_total_usd': {
+        'text': 'free',
+        },
+    'vendor_category': {
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        },
+    'hinting_level': {
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'vendor_quality': {
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'design_quality': {
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'hinting_quality': {
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'stats_family_name': {
+        'text': 'free',
+        },
+    'design_category': {
+        'sans': 'Sans',
+        'serif': 'Serif',
+        'script': 'Script',
+        'display': 'Display',
+        },
+    } %}
+
 <h3>{{ _("Dashboard Status") }}</h3>
 
 {% if project.config['local'].get('bakery_yaml_in_sync', None) %}
@@ -255,7 +227,6 @@
 {% endif %}
 
 <form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
-
     {% for item, value in stateDict.iteritems() | sort %}
     <div id="{{ item }}" class="form-group ">
       <label class="control-label col-sm-3" for="{{ item }}">{{ item }}:</label>
@@ -273,9 +244,9 @@
                 class="form-control" >
             <p class="text-muted">{{ _("Set string value here, or leave it blank to unset it") }}</p>
           {% else %}
-              {% for option, description in value.iteritems() %}
+              {% for option, description in value.iteritems() %} 
                 <label class="radio inline ">
-                  <input type="radio" name="{{ item }}" value="{{ option }}" {% if config['state'][item] == option %}selected="selected"{% endif %} /> {{ description }}
+                  <input type="radio" name="{{ item }}" value="{{ option }}" {% if config['state'][item] == option %}checked="checked"{% endif %} /> {{ description }}
                 </label>
               {% endfor %}
           {% endif %}
