@@ -6,6 +6,8 @@ Font Bakery is a font build service. The vision is to bring the [Continuous Inte
 
 You give it a font project git repository, tell it which license the project is under, which font source files you wish to build into binaries, and set some build options. It then runs tests on the sources, and if they pass, builds the fonts and runs further tests on the binaries.
 
+You can publish your git repository conveniently on Github. If you wish to host your own repository, [GitLab HQ](https://github.com/gitlabhq/gitlabhq) can be helpful.
+
 This project is under active development by Mikhail Kashkin and Dave Crossland.
 
 ### Disclaimer
