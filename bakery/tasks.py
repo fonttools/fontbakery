@@ -257,7 +257,9 @@ def copy_ttx_files(project, build, log):
                         return record.string.decode('utf-16-be').encode('utf-8')
                     else:
                         return record.string
-            return nameTableRead(font, fallbackNameID)
+
+            if fallbackNameID:
+                return nameTableRead(font, fallbackNameID)
 
         styleName = nameTableRead(font, 17, 2)
         # Always have a regular style
@@ -632,6 +634,21 @@ def result_fixes(project, build):
     fix_font(_out_yaml, _out_src)
 
 
+def discover_dashboard(project, build, log):
+    param = {'login': project.login, 'id': project.id,
+                'revision': build.revision, 'build': build.id}
+
+    _yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % param)
+
+    _out_src = os.path.join(DATA_ROOT,
+        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    cmd = "{wd}/venv/bin/python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
+        wd=ROOT, out=_out_src, yaml=_yaml)
+    log.write('Discovery Dashboard data\n', prefix='### ')
+    run(cmd, cwd=_out_src, log=log)
+
+
 @job
 def process_project(project, build, revision, force_sync=False):
     """
@@ -680,6 +697,7 @@ def process_project(project, build, revision, force_sync=False):
             result_tests(project, build)
             # apply fixes
             result_fixes(project, build)
+            discover_dashboard(project, build, log)
             log.write('Bake Succeeded!\n', prefix='### ')
         finally:
             # save that project is done
