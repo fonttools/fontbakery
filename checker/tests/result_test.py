@@ -39,7 +39,7 @@ class FontToolsTest(TestCase):
         # belive that it is most mature.
         # This list should be reviewed
         tables = ['GlyphOrder', 'head', 'hhea', 'maxp', 'OS/2', 'hmtx',
-            'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name', # 'kern',
+            'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name',  # 'kern',
             'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
 
         for x in self.font.keys():
@@ -55,9 +55,43 @@ class FontToolsTest(TestCase):
         self.assertIn('gasp', keys, msg="GASP table not found")
         self.assertEqual(type({}), type(self.font['gasp'].gaspRange),
             msg="GASP table: gaspRange method value have wrong type")
-        self.assertTrue(self.font['gasp'].gaspRange.has_key(65535))
+        self.assertTrue(65535 in self.font['gasp'].gaspRange)
         # XXX: Needs review
         self.assertEqual(self.font['gasp'].gaspRange[65535], 15)
+
+    def test_metrics_linegaps_are_zero(self):
+        """ All values for linegap in 'hhea' and 'OS/2' tables
+        should be equal zero """
+        self.assertEqual(self.font['hhea'].lineGap, 0)
+        self.assertEqual(self.font['OS/2'].sTypoLineGap, 0)
+
+    def test_metrics_ascents_equal_max_bbox(self):
+        """ Value for ascents in 'hhea' and 'OS/2' tables should be equal
+        to value of glygh with biggest yMax"""
+
+        ymax = 0
+        for g in self.font['glyf'].glyphs:
+            char = self.font['glyf'][g]
+            if hasattr(char, 'yMax') and ymax < char.yMax:
+                ymax = char.yMax
+
+        self.assertEqual(self.font['hhea'].ascent, ymax)
+        self.assertEqual(self.font['OS/2'].sTypoAscender, ymax)
+        self.assertEqual(self.font['OS/2'].usWinAscent, ymax)
+
+    def test_metrics_descents_equal_min_bbox(self):
+        """ Value for descents in 'hhea' and 'OS/2' tables should be equal
+        to value of glygh with smallest yMin"""
+
+        ymin = 0
+        for g in self.font['glyf'].glyphs:
+            char = self.font['glyf'][g]
+            if hasattr(char, 'yMin') and ymin > char.yMin:
+                ymin = char.yMin
+
+        self.assertEqual(self.font['hhea'].descent, ymin)
+        self.assertEqual(self.font['OS/2'].sTypoDescender, ymin)
+        self.assertEqual(self.font['OS/2'].usWinDescent, ymin)
 
 
 from fontaine.font import Font
