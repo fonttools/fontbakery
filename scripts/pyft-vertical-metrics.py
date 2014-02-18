@@ -20,11 +20,6 @@ import os
 from fontTools import ttLib
 
 
-def writeFont(font, filename):
-    font.save(filename)
-    print "Wrote font to", filename
-
-
 def set_metrics(filename, ascents, descents, linegaps):
     font = ttLib.TTFont(filename)
     font['hhea'].ascent = ascents
@@ -35,7 +30,7 @@ def set_metrics(filename, ascents, descents, linegaps):
     font['OS/2'].usWinDescent = abs(descents)
     font['hhea'].lineGap = linegaps
     font['OS/2'].sTypoLineGap = linegaps
-    writeFont(font, filename)
+    font.save(filename + '.fix')
 
 
 def fix_metrics(filename):
@@ -78,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--ascents', type=int, help="Set new ascents value in 'Horizontal Header' table ('hhea')")
     parser.add_argument('-d', '--descents', type=int, help="Set new descents value in 'Horizontal Header' table ('hhea')")
     parser.add_argument('-l', '--linegaps', type=int, help="Set new linegaps value in 'Horizontal Header' table ('hhea')")
-    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics, overite file")
+    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
     parser.add_argument('filename', help="Font file in TTF format")
 
     args = parser.parse_args()
