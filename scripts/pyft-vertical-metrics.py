@@ -40,9 +40,16 @@ def set_metrics(filename, ascents, descents, linegaps):
 
 def fix_metrics(filename):
     font = ttLib.TTFont(filename)
-    print("Autofix should be here")
-    # Fix here
-    writeFont(font, filename)
+    ymin = 0
+    ymax = 0
+    for g in font['glyf'].glyphs:
+        char = font['glyf'][g]
+        if hasattr(char, 'yMin') and ymin > char.yMin:
+            ymin = char.yMin
+        if hasattr(char, 'yMax') and ymax < char.yMax:
+            ymax = char.yMax
+
+    set_metrics(filename, ymax, ymin, 0)
 
 
 def show_metrics(filename):
@@ -63,7 +70,7 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--ascents', type=int, help="Set new ascents value in 'Horizontal Header' table ('hhea')")
     parser.add_argument('-d', '--descents', type=int, help="Set new descents value in 'Horizontal Header' table ('hhea')")
     parser.add_argument('-l', '--linegaps', type=int, help="Set new linegaps value in 'Horizontal Header' table ('hhea')")
-    parser.add_argument('--autofix', type=int, help="Autofix font metrics, overite file")
+    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics, overite file")
     parser.add_argument('filename', help="Font file in TTF format")
 
     args = parser.parse_args()
