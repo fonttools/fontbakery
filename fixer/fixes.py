@@ -29,7 +29,7 @@ def fix_nbsp(font_path):
 
 def fix_metrics(font_path):
     PYPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python'))
-    SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'pyft-vertical-metrics.py'))
+    SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'fix-ttf-vmet.py'))
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
     subprocess.Popen("mv {0}.fix {0}".format(font_path), shell=True).communicate()
