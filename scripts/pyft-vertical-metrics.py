@@ -28,8 +28,13 @@ def writeFont(font, filename):
 def set_metrics(filename, ascents, descents, linegaps):
     font = ttLib.TTFont(filename)
     font['hhea'].ascent = ascents
-    font['hhea'].ascent = descents
+    font['OS/2'].sTypoAscender = ascents
+    font['OS/2'].usWinAscent = ascents
+    font['hhea'].descent = descents
+    font['OS/2'].sTypoDescender = descents
+    font['OS/2'].usWinDescent = descents
     font['hhea'].lineGap = linegaps
+    font['OS/2'].sTypoLineGap = linegaps
     writeFont(font, filename)
 
 
@@ -42,8 +47,14 @@ def fix_metrics(filename):
 
 def show_metrics(filename):
     font = ttLib.TTFont(filename)
-    print(font['hhea'].ascent)
-    print(font['hhea'].descent)
+    print("hhea asc:" + font['hhea'].ascent)
+    print("OS/2 asc:" + font['OS/2'].sTypoAscender)
+    print("OS/2 asc:" + font['OS/2'].usWinAscent)
+    print("hhea des:" + font['hhea'].descent)
+    print("OS/2 des:" + font['OS/2'].sTypoDescender)
+    print("OS/2 des:" + font['OS/2'].usWinDescent)
+    print("hhea lng:" + font['hhea'].lineGap)
+    print("OS/2 lng:" + font['OS/2'].sTypoLineGap)
 
 
 if __name__ == '__main__':
