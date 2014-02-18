@@ -22,13 +22,14 @@ import os
 def fix_nbsp(font_path):
     PYPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python'))
     SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'fix-ttf-nbsp.py'))
-    NBSPPATH = "%s-nbsp" % font_path
     subprocess.Popen("{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
-    subprocess.Popen("mv {0} {1}".format(NBSPPATH, font_path), shell=True).communicate()
+    subprocess.Popen("mv {0}-nbsp {0}".format(font_path), shell=True).communicate()
 
 
 def fix_metrics(font_path):
     PYPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python'))
     SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'pyft-vertical-metrics.py'))
-    subprocess.Popen("{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
+    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
+    subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
+    subprocess.Popen("mv {0}.fix {0}".format(font_path), shell=True).communicate()

@@ -33,7 +33,10 @@ from . import fixes
 
 # temporary list
 available_fixes = {
-    'checker.result_suite.fontforge_suite.fftest.test_nbsp_and_space_glyphs_width': fixes.fix_nbsp
+    'test_nbsp_and_space_glyphs_width': fixes.fix_nbsp,
+    'test_metrics_linegaps_are_zero': fixes.fix_metrics,
+    'test_metrics_ascents_equal_max_bbox': fixes.fix_metrics,
+    'test_metrics_descents_equal_min_bbox': fixes.fix_metrics,
 }
 
 
@@ -48,15 +51,19 @@ def fix_font(yaml_file, path):
     for font in fonts:
         failure_list = []
         fixed_list = []
+        apply_fixes = set()
         for test in result[font]['failure']:
-            full_name = ".".join([test['name'], test['methodName']])
-            if full_name in available_fixes:
-                font_path = os.path.join(path, font)
-                print(font_path)
-                available_fixes[full_name](font_path)
+            if test['methodName'] in available_fixes:
+                apply_fixes.add(available_fixes[test['methodName']])
                 fixed_list.append(test)
             else:
                 failure_list.append(test)
+
+        if apply_fixes:
+            font_path = os.path.join(path, font)
+            for fun in apply_fixes:
+                fun(font_path)
+
         del result[font]['failure']
         result[font]['failure'] = failure_list
         result[font]['fixed'] = fixed_list

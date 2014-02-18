@@ -32,7 +32,7 @@ def set_metrics(filename, ascents, descents, linegaps):
     font['OS/2'].usWinAscent = ascents
     font['hhea'].descent = descents
     font['OS/2'].sTypoDescender = descents
-    font['OS/2'].usWinDescent = descents
+    font['OS/2'].usWinDescent = abs(descents)
     font['hhea'].lineGap = linegaps
     font['OS/2'].sTypoLineGap = linegaps
     writeFont(font, filename)
@@ -49,19 +49,27 @@ def fix_metrics(filename):
         if hasattr(char, 'yMax') and ymax < char.yMax:
             ymax = char.yMax
 
-    set_metrics(filename, ymax, ymin, 0)
+    font['hhea'].ascent = ymax
+    font['OS/2'].sTypoAscender = ymax
+    font['OS/2'].usWinAscent = ymax
+    font['hhea'].descent = ymin
+    font['OS/2'].sTypoDescender = ymin
+    font['OS/2'].usWinDescent = abs(ymin)
+    font['hhea'].lineGap = 0
+    font['OS/2'].sTypoLineGap = 0
+    font.save(filename + '.fix')
 
 
 def show_metrics(filename):
     font = ttLib.TTFont(filename)
-    print("hhea asc:" + font['hhea'].ascent)
-    print("OS/2 asc:" + font['OS/2'].sTypoAscender)
-    print("OS/2 asc:" + font['OS/2'].usWinAscent)
-    print("hhea des:" + font['hhea'].descent)
-    print("OS/2 des:" + font['OS/2'].sTypoDescender)
-    print("OS/2 des:" + font['OS/2'].usWinDescent)
-    print("hhea lng:" + font['hhea'].lineGap)
-    print("OS/2 lng:" + font['OS/2'].sTypoLineGap)
+    print("hhea asc: {}".format(font['hhea'].ascent))
+    print("OS/2 asc: {}".format(font['OS/2'].sTypoAscender))
+    print("OS/2 asc: {}".format(font['OS/2'].usWinAscent))
+    print("hhea des: {}".format(font['hhea'].descent))
+    print("OS/2 des: {}".format(font['OS/2'].sTypoDescender))
+    print("OS/2 des: {}".format(font['OS/2'].usWinDescent))
+    print("hhea lng: {}".format(font['hhea'].lineGap))
+    print("OS/2 lng: {}".format(font['OS/2'].sTypoLineGap))
 
 
 if __name__ == '__main__':
