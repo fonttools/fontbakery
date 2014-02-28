@@ -63,7 +63,7 @@ npm install -g bower
 
 ```sh
 # Use yum to install dependencies
-sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs;
+sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs libxslt1-dev libxml2-dev;
 # install ttfautohint from git
 git clone git://repo.or.cz/ttfautohint.git;
 cd ttfautohint;
