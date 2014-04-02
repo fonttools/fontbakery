@@ -582,6 +582,7 @@ def upstream_revision_tests(project, revision):
 
     for font in ufo_dirs:
         if os.path.exists(os.path.join(_in, font)):
+            print('UFO DIR: %s' % os.path.join(_in, font))
             result[font] = run_set(os.path.join(_in, font), 'upstream')
 
     for font in ttx_files:

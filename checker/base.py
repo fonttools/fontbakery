@@ -151,14 +151,9 @@ def make_suite(path, definedTarget):
         definedTarget is filter to only select small subset of tests
     """
     suite = unittest.TestSuite()
-    if is_UFO(path):
-        # currently fontforge does not support UFO files so just
-        # ignore that
-        return suite
 
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
-            print 'ADD TESTCASE: %s' % TestCase
             TestCase.path = path
             suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 
