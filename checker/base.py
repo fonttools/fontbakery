@@ -149,6 +149,7 @@ def make_suite(path, definedTarget):
     suite = unittest.TestSuite()
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
+            print 'ADD TESTCASE: %s' % TestCase
             TestCase.path = path
             suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 

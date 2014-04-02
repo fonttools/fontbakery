@@ -43,6 +43,12 @@ def create_app(app_name=__name__):
 
 def init_app(app):
     # Register all blueprints and init extensions.
+    import logging
+    from logging import StreamHandler
+    iohandler = StreamHandler()
+    iohandler.setLevel(logging.WARNING)
+    app.logger.addHandler(iohandler)
+
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
     app.register_blueprint(realtime)

@@ -27,7 +27,9 @@ class SimpleTest(TestCase):
     path = '.'
 
     def setUp(self):
+        print 'FONTFORGE OPEN: %s' % self.path
         self.font = fontforge.open(self.path)
+        print 'OPENED'
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
@@ -65,6 +67,7 @@ class UfoOpenTest(TestCase):
     path = '.'
 
     def setUp(self):
+        print 'FOBOFAB OPENFONT: %s' % self.path
         self.font = robofab.world.OpenFont(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
