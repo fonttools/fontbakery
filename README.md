@@ -8,7 +8,7 @@ You give it a font project git repository, tell it which license the project is 
 
 You can publish your git repository conveniently on Github. If you wish to host your own repository, [GitLab HQ](https://github.com/gitlabhq/gitlabhq) can be helpful.
 
-This project is under active development by Mikhail Kashkin and Dave Crossland.
+This project is under active development by Vitaly Volkhov and Dave Crossland. The first year of development, including the code architecture and design, was done by Mikhail Kashkin.
 
 ### Disclaimer
 
@@ -79,7 +79,9 @@ To restore Font Bakery, reinstall it so that files like `local.cfg` are recreate
 
 ## Contribution
 
-The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome!
+The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome in any way!
+
+Thanks to Robert Martinez (@mray) for [contributing](https://github.com/googlefonts/fontbakery/pull/255) the project logo!
 
 ### Contributor License Agreement
 
