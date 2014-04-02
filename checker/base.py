@@ -142,11 +142,20 @@ class tags(object):
         return f
 
 
+def is_UFO(path):
+    return bool(path.lower().endswith('.ufo'))
+
+
 def make_suite(path, definedTarget):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
     """
     suite = unittest.TestSuite()
+    if is_UFO(path):
+        # currently fontforge does not support UFO files so just
+        # ignore that
+        return suite
+
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             print 'ADD TESTCASE: %s' % TestCase
