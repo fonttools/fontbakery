@@ -8,7 +8,7 @@ You give it a font project git repository, tell it which license the project is 
 
 You can publish your git repository conveniently on Github. If you wish to host your own repository, [GitLab HQ](https://github.com/gitlabhq/gitlabhq) can be helpful.
 
-This project is under active development by Mikhail Kashkin and Dave Crossland.
+This project is under active development by Vitaly Volkhov and Dave Crossland. The first year of development, including the code architecture and design, was done by Mikhail Kashkin.
 
 ### Disclaimer
 
