@@ -126,10 +126,10 @@
 
         <!-- <i class="fa fa-circle text-warning"></i> {{fl}} <i class="fa fa-circle text-danger"></i> {{el}} <i class="fa fa-circle text-success"></i> {{sl}} -->
         <div class="progress" style="height:10px; margin-top:15px;">
-            <div class="progress-bar progress-bar-warning" style="width: {{ 100*el/t }}%;"></div>
-            <div class="progress-bar progress-bar-danger" style="width: {{ 100*fl/t }}%;"></div>
-            <div class="progress-bar " style="width: {{ 100*ff/t }}%;"></div>
-            <div class="progress-bar progress-bar-success" style="width: {{ 100*sl/t }}%;"></div>
+            <div class="progress-bar progress-bar-warning" style="width: {{ 100 * el/(t or 1) }}%;"></div>
+            <div class="progress-bar progress-bar-danger" style="width: {{ 100 * fl/(t or 1) }}%;"></div>
+            <div class="progress-bar " style="width: {{ 100 * ff/(t or 1) }}%;"></div>
+            <div class="progress-bar progress-bar-success" style="width: {{ 100 * sl/(t or 1) }}%;"></div>
         </div>
         </div>
       </div>
@@ -146,7 +146,7 @@
                 <td style="text-align:center"><i class="fa fa-circle text-{{icon}}"></i> <span class="hidden">{{icon}}</span></td>
                 <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="text-muted">({{ _("add docstring") }})</span>{% else %}{{item.methodDoc|safe}}{% endif %} <br />
                 {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
-                <small class="text-muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td> 
+                <small class="text-muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td>
             </tr>
           {%- endfor %}
         {%- endfor %}
