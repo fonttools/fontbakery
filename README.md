@@ -79,7 +79,9 @@ To restore Font Bakery, reinstall it so that files like `local.cfg` are recreate
 
 ## Contribution
 
-The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome!
+The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome in any way!
+
+Thanks to Robert Martinez (@mray) for [contributing](https://github.com/googlefonts/fontbakery/pull/255) the project logo!
 
 ### Contributor License Agreement
 
