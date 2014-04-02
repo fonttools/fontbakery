@@ -26,7 +26,7 @@ from bakery import create_app, init_app
 def runServer():
     app = create_app(app_name='bakery')
     app.config.from_object('config')
-    app.config.from_pyfile(op.join(op.dirname(__file__), 'local.cfg'))
+    app.config.from_pyfile(op.join(op.dirname(__file__), 'local.cfg'), silent=True)
     init_app(app)
     import os
     from werkzeug.wsgi import SharedDataMiddleware
