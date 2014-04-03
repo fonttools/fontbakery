@@ -181,9 +181,9 @@ def project_state_autodiscovery(project, state):
         licenses = filter(lambda fn: os.path.basename(fn) == 'LICENSE.txt', f)
         if filter(lambda fn: os.path.basename(fn) in ['Open Font License.markdown', 'OFL.txt', 'OFL.md'], f):
             state['copyright_license'] = 'ofl'
-        elif filter(lambda fn: os.path.basename(fn) == 'APACHE.txt', f):
+        elif filter(lambda fn: os.path.basename(fn) in ['APACHE.txt', 'APACHE.md'], f):
             state['copyright_license'] = 'apache'
-        elif filter(lambda fn: os.path.basename(fn) == 'UFL.txt', f):
+        elif filter(lambda fn: os.path.basename(fn) in ['UFL.txt', 'UFL.md'], f):
             state['copyright_license'] = 'ufl'
         elif licenses:
             # read license file and search for template for OFL, APACHE or UFL
