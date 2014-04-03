@@ -19,7 +19,7 @@ import yaml
 import os
 # from flask import current_app
 
-from bakery.project.discovery import discover_license
+from bakery.project.discovery import discover_license, discover_copyright_notice
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
@@ -189,6 +189,13 @@ def project_state_autodiscovery(project, state):
             # read license file and search for template for OFL, APACHE or UFL
             license_contents = open(licenses[0]).read()
             state['copyright_license'] = discover_license(license_contents)
+
+    ottffiles = filter(lambda fn: os.path.splitext(fn)[1].lower() in ['.ttf', '.otf'], f)
+    if ottffiles and not state.get('copyright_notice'):
+        if discover_copyright_notice(ottffiles[0]):
+            # Autodiscover copyright notice only for TTF and OTF files
+            state['copyright_notice'] = True
+    return state
 
 
 def project_state_save(project, state=None, local=None):

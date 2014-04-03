@@ -21,19 +21,7 @@ import yaml
 import os
 import glob
 from fontTools.ttLib import TTFont
-from bakery.project.discovery import discover_license
-
-
-def nameTableRead(font, NameID, fallbackNameID=False):
-    for record in font['name'].names:
-        if record.nameID == NameID:
-            if b'\000' in record.string:
-                return record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                return record.string
-
-    if fallbackNameID:
-        return nameTableRead(font, fallbackNameID)
+from bakery.project.discovery import discover_license, nameTableRead
 
 
 def run(folder, bakery_file):
