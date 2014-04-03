@@ -19,6 +19,8 @@ import yaml
 import os
 # from flask import current_app
 
+from bakery.project.discovery import discover_license
+
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
 DATA_ROOT = os.path.join(ROOT, 'data')
 
@@ -115,6 +117,7 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
     if not refresh:
         project_state_save(project, state, local)
         return state, local
+
     # otherwise, list txt and ufo files found in _in
     txt_files = []
     bin_files = []
@@ -134,6 +137,7 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
                 ufo_dirs.append(fullpath[l:])
+
     local['txt_files'] = txt_files
     local['bin_files'] = bin_files
     local['ufo_dirs'] = ufo_dirs
@@ -151,10 +155,40 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
     if os.path.exists(lfn) and os.path.isfile(lfn):
         local['license_file_found'] = True
 
+    project_state_autodiscovery(project, state)
+
     # Save both states to YAML files and return them
     if project.is_ready:
         project_state_save(project, state, local)
     return state, local
+
+
+def project_state_autodiscovery(project, state):
+    """
+    Tries to autodiscovery project properties and save it to bakery.yaml.
+
+    :param project: :class:`~bakery.models.Project` instance
+    :param state: The external state of this project.
+    """
+    f = []
+
+    projectdir = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in' % project)
+    for dirpath, dirnames, filenames in os.walk(projectdir):
+        f.extend(map(lambda fn: os.path.join(dirpath, fn), filenames))
+
+    if not state.get('copyright_license'):
+        # looking for license files OFL.txt, APACHE.txt, LICENSE.txt
+        licenses = filter(lambda fn: os.path.basename(fn) == 'LICENSE.txt', f)
+        if filter(lambda fn: os.path.basename(fn) in ['Open Font License.markdown', 'OFL.txt', 'OFL.md'], f):
+            state['copyright_license'] = 'ofl'
+        elif filter(lambda fn: os.path.basename(fn) == 'APACHE.txt', f):
+            state['copyright_license'] = 'apache'
+        elif filter(lambda fn: os.path.basename(fn) == 'UFL.txt', f):
+            state['copyright_license'] = 'ufl'
+        elif licenses:
+            # read license file and search for template for OFL, APACHE or UFL
+            license_contents = open(licenses[0]).read()
+            state['copyright_license'] = discover_license(license_contents)
 
 
 def project_state_save(project, state=None, local=None):

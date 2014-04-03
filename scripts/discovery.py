@@ -21,6 +21,7 @@ import yaml
 import os
 import glob
 from fontTools.ttLib import TTFont
+from bakery.project.discovery import discover_license
 
 
 def nameTableRead(font, NameID, fallbackNameID=False):
@@ -47,14 +48,7 @@ def run(folder, bakery_file):
     # },
 
     license_file = open(os.path.join(folder, bakery['license_file']), 'r').read()
-    copyright_license = 'undetected'
-    if license_file.find('OPEN FONT LICENSE Version 1.1'):
-        copyright_license = 'ofl'
-    elif license_file.find('Apache License, Version 2.0'):
-        copyright_license = 'apache'
-    elif license_file.find('UBUNTU FONT LICENCE Version 1.0'):
-        copyright_license = 'ufl'
-
+    copyright_license = discover_license(license_file) or 'undetected'
     bakery['copyright_license'] = copyright_license
 
     # Family name
