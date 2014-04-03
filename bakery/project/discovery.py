@@ -14,8 +14,40 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
 
 from fontTools.ttLib import TTFont
+
+
+class Discover:
+
+    def __init__(self, ottfile):
+        self.ttfont = TTFont(ottfile)
+
+    @staticmethod
+    def license(contents):
+        return discover_license(contents)
+
+    @staticmethod
+    def trademark_permission(filelist):
+        trademarks = filter(lambda fn: os.path.basename(fn) in ['TRADEMARKS.txt'], filelist)
+        if not trademarks:
+            return False
+
+        contents = open(trademarks[0], 'r').read()
+        return yesno(contents.find("Permission") >= 0)
+
+    def copyright_notice(self):
+        # NameID : 0 : Copyright License
+        return yesno(nameTableRead(self.ttfont, 0))
+
+    def trademark_notice(self):
+        # NameID : 7 : Trademark
+        return yesno(nameTableRead(self.ttfont, 7))
+
+
+def yesno(value):
+    return 'yes' if bool(value) else 'no'
 
 
 def discover_license(contents):
