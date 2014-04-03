@@ -45,6 +45,10 @@ class Discover:
         # NameID : 7 : Trademark
         return yesno(nameTableRead(self.ttfont, 7))
 
+    def rfn_asserted(self):
+        contents = self.copyright_license()
+        return yesno(contents.find("Reserved Font Name") >= 0)
+
 
 def yesno(value):
     return 'yes' if bool(value) else 'no'

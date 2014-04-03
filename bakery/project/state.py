@@ -199,6 +199,8 @@ def project_state_autodiscovery(project, state):
         if not state.get('trademark_notice'):
             # Autodiscover trademark notice only for TTF and OTF files
             state['trademark_notice'] = discover.trademark_notice()
+        if not state.get('rfn_asserted'):
+            state['rfn_asserted'] = discover.rfn_asserted()
 
     if not state.get('trademark_permission'):
         state['trademark_permission'] = Discover.trademark_permission(f)
