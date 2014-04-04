@@ -176,14 +176,21 @@ def project_state_autodiscovery(project, state):
     for dirpath, dirnames, filenames in os.walk(projectdir):
         f.extend(map(lambda fn: os.path.join(dirpath, fn), filenames))
 
+    def license_filter(licenses, files):
+        return filter(lambda fn: os.path.basename(fn) in licenses, files)
+
+    licenses = license_filter(['LICENSE.txt', 'LICENSE.md'], f)
+    ofl_licenses = license_filter(['Open Font License.markdown', 'OFL.txt', 'OFL.md'], f)
+    apache_licenses = license_filter(['APACHE.txt', 'APACHE.md'], f)
+    ufl_licenses = license_filter(['UFL.txt', 'UFL.md'], f)
+
     if not state.get('copyright_license'):
         # looking for license files OFL.txt, APACHE.txt, LICENSE.txt
-        licenses = filter(lambda fn: os.path.basename(fn) == 'LICENSE.txt', f)
-        if filter(lambda fn: os.path.basename(fn) in ['Open Font License.markdown', 'OFL.txt', 'OFL.md'], f):
+        if ofl_licenses:
             state['copyright_license'] = 'ofl'
-        elif filter(lambda fn: os.path.basename(fn) in ['APACHE.txt', 'APACHE.md'], f):
+        elif apache_licenses:
             state['copyright_license'] = 'apache'
-        elif filter(lambda fn: os.path.basename(fn) in ['UFL.txt', 'UFL.md'], f):
+        elif ufl_licenses:
             state['copyright_license'] = 'ufl'
         elif licenses:
             # read license file and search for template for OFL, APACHE or UFL
@@ -191,19 +198,78 @@ def project_state_autodiscovery(project, state):
             state['copyright_license'] = Discover.license(license_contents)
 
     ottffiles = filter(lambda fn: os.path.splitext(fn)[1].lower() in ['.ttf', '.otf'], f)
-    if ottffiles:
-        discover = Discover(ottffiles[0])
-        if not state.get('copyright_notice'):
-            # Autodiscover copyright notice only for TTF and OTF files
-            state['copyright_notice'] = discover.copyright_notice()
-        if not state.get('trademark_notice'):
-            # Autodiscover trademark notice only for TTF and OTF files
-            state['trademark_notice'] = discover.trademark_notice()
-        if not state.get('rfn_asserted'):
-            state['rfn_asserted'] = discover.rfn_asserted()
 
-    if not state.get('trademark_permission'):
-        state['trademark_permission'] = Discover.trademark_permission(f)
+    # Search copyright notice in project source
+    if not state.get('copyright_notice'):
+        copyright_notices = []
+        copyright_regex = Discover.COPYRIGHT_REGEX
+        for license in licenses + ofl_licenses + ufl_licenses + apache_licenses:
+            contents = open(license).read()
+            match = copyright_regex.search(contents)
+            if not match:
+                continue
+            copyright_notices.append(match.group(0).strip(',\r\n'))
+
+        for ottf in ottffiles:
+            notice = Discover(ottf).copyright_notice()
+            if not notice:
+                continue
+            copyright_notices.append(notice)
+
+        if copyright_notices:
+            state['copyright_notice'] = copyright_notices[0]
+
+    # Search for Reserved Font Name in project source
+    if not state.get('rnf_asserted'):
+        rfn_asserted = 'no'
+        for license in licenses + ofl_licenses + ufl_licenses + apache_licenses:
+            contents = open(license).read()
+            match = Discover.RFN_REGEX.search(contents)
+            if match:
+                rfn_asserted = 'yes'
+                break
+        for ottf in ottffiles:
+            rfn = Discover(ottf).rfn_asserted()
+            if rfn:
+                rfn_asserted = 'yes'
+                break
+        state['rfn_asserted'] = rfn_asserted
+
+    if not state.get('trademark_notice'):
+        # Autodiscover trademark notice only for TTF and OTF files
+        for ottf in ottffiles:
+            trademark = Discover(ottf).trademark_notice()
+            state['trademark_notice'] = trademark
+
+    if not state.get('source_cff_filetype'):
+        # a source file with filename ending in -OTF.* in the repo
+        cff_fyletypes = []
+        for filename in f:
+            fn, ext = os.path.splitext(filename)
+            if fn.lower().endswith('-otf'):
+                cff_fyletypes.append(ext.lower().strip('.'))
+        # in bakery.yaml store list of extensions separated by comma
+        state['source_cff_filetype'] = ', '.join(list(set(cff_fyletypes)))
+
+    if not state.get('source_drawing_filetype'):
+        # a source file with filename ending in -.* in the repo
+        drawing_fyletypes = []
+        for filename in f:
+            fn, ext = os.path.splitext(filename)
+            if fn.endswith('-'):
+                drawing_fyletypes.append(ext.lower().strip('.'))
+        # in bakery.yaml store list of extensions separated by comma
+        state['source_drawing_filetype'] = ', '.join(list(set(drawing_fyletypes)))
+
+    if not state.get('source_ttf_filetype'):
+        # a source file with filename ending in -.* in the repo
+        ttf_fyletypes = []
+        for filename in f:
+            fn, ext = os.path.splitext(filename)
+            if fn.lower().endswith('-ttf'):
+                ttf_fyletypes.append(ext.lower().strip('.'))
+        # in bakery.yaml store list of extensions separated by comma
+        state['source_drawing_filetype'] = ', '.join(list(set(ttf_fyletypes)))
 
     return state
 

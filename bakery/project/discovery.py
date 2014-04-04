@@ -15,13 +15,18 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os
+import re
 
 from fontTools.ttLib import TTFont
 
 
 class Discover:
 
+    COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
+    RFN_REGEX = re.compile(r'with Reserved Font Names.*', re.U | re.I)
+
     def __init__(self, ottfile):
+        self.fontpath = ottfile
         self.ttfont = TTFont(ottfile)
 
     @staticmethod
@@ -39,15 +44,26 @@ class Discover:
 
     def copyright_notice(self):
         # NameID : 0 : Copyright License
-        return yesno(nameTableRead(self.ttfont, 0))
+        contents = nameTableRead(self.ttfont, 0).strip()
+        if not contents:
+            return ''
+        match = Discover.COPYRIGHT_REGEX.search(contents)
+        if not match:
+            return ''
+        return match.group(0).strip(',\r\n')
 
     def trademark_notice(self):
         # NameID : 7 : Trademark
-        return yesno(nameTableRead(self.ttfont, 7))
+        return nameTableRead(self.ttfont, 7)
 
     def rfn_asserted(self):
-        contents = self.copyright_license()
-        return yesno(contents.find("Reserved Font Name") >= 0)
+        contents = nameTableRead(self.ttfont, 0).strip()
+        if not contents:
+            return ''
+        match = Discover.RFN_REGEX.search(contents)
+        if match:
+            return 'yes'
+        return ''
 
 
 def yesno(value):
