@@ -279,7 +279,7 @@ def project_state_autodiscovery(project, state):
                 hinting_level = Discover(ottf).hinting_level()
                 if hinting_level:
                     state['hinting_level'] = hinting_level
-                    break
+                    # break
 
     return state
 

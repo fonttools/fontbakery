@@ -31,17 +31,24 @@ class Discover:
         self.ttfont = TTFont(ottfile)
 
     def hinting_level(self):
+        # Searches for .ttfautohint glyph inside. If glyph exists
+        # then returns hinting_level to '3'
+        font = fontforge.open(self.fontpath)
+        if '.ttfautohint' in font:
+            font.close()
+            return '3'
+        font.close()
         try:
             if self.ttfont.getTableData("prep") is None:
-                return ''
-            prepAsm = self.ttfont.getTableData("prep")
-            prepText = fontforge.unParseTTInstrs(prepAsm)
-            prepMagic = "PUSHW_1\n 511\nSCANCTRL\nPUSHB_1\n 4\nSCANTYPE"
-            if prepText == prepMagic:
-                return 'no_hinting'
+                return '2'
         except KeyError:
-            return 'no_hinting'
-        return ''
+            return '2'
+        prepAsm = self.ttfont.getTableData("prep")
+        prepText = fontforge.unParseTTInstrs(prepAsm)
+        prepMagic = "PUSHW_1\n 511\nSCANCTRL\nPUSHB_1\n 4\nSCANTYPE"
+        if prepText.strip() == prepMagic:
+            return '2'
+        return '1'
 
     @staticmethod
     def license(contents):
@@ -86,11 +93,11 @@ def yesno(value):
 
 def discover_license(contents):
     copyright_license = 'undetected'
-    if contents.find('OPEN FONT LICENSE Version 1.1'):
+    if contents.lower().find('open font license version 1.1'):
         copyright_license = 'ofl'
-    elif contents.find('Apache License, Version 2.0'):
+    elif contents.lower().find('apache license, version 2.0'):
         copyright_license = 'apache'
-    elif contents.find('UBUNTU FONT LICENCE Version 1.0'):
+    elif contents.lower().find('ubuntu font licence version 1.0'):
         copyright_license = 'ufl'
     return copyright_license
 
@@ -109,3 +116,5 @@ def nameTableRead(font, NameID, fallbackNameID=False):
 
     if fallbackNameID:
         return nameTableRead(font, fallbackNameID)
+
+    return ''
