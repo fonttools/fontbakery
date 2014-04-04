@@ -5,6 +5,7 @@
     'copyright_license': {
         'icon': 'file-o',
         'ofl': _('<span class="apopover" data-trigger="hover" data-content="Open Font Licence v1.1">O</span>'),
+        'undetected': _('<span class="apopover" data-trigger="hover" data-content="License">L</span>'),
         'apache': _('<span class="apopover" data-trigger="hover" data-content="Apache Licence v2.0">A</span>'),
         'ufl': _('<span class="apopover" data-trigger="hover" data-content="Ubuntu Font Licence v1.0">U</span>'),
         },
@@ -230,6 +231,10 @@
             {% if repo.config['state'][item] %}
                 {% if item == 'stats_family_name' %}
                     <i class="fa fa-check-square-o"></i>
+                {% elif item == 'copyright_notice' %}
+                    <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">&copy;</span>
+                {% elif item == 'trademark_notice' %}
+                    <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">&trade;</span>
                 {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}

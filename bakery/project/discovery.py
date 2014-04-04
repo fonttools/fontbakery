@@ -78,7 +78,7 @@ def yesno(value):
 
 
 def discover_license(contents):
-    copyright_license = ''
+    copyright_license = 'undetected'
     if contents.find('OPEN FONT LICENSE Version 1.1'):
         copyright_license = 'ofl'
     elif contents.find('Apache License, Version 2.0'):

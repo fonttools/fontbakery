@@ -51,3 +51,7 @@ class SimpleTTXTest(TestCase):
         """ This very important test checking if OS/2 is in keys method """
         self.assertIn('OS/2', self.font.keys())
 
+    def test_epar_in_keys(self):
+        """ Check If font has EPAR table """
+        self.assertIn('EPAR', self.font.keys())
+
