@@ -36,7 +36,7 @@ class Discover:
         font = fontforge.open(self.fontpath)
         if '.ttfautohint' in font:
             font.close()
-            return '3'
+            return '4'
         font.close()
         try:
             if self.ttfont.getTableData("prep") is None:
