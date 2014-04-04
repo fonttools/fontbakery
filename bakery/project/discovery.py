@@ -18,6 +18,7 @@ import os
 import re
 
 from fontTools.ttLib import TTFont
+import fontforge
 
 
 class Discover:
@@ -31,7 +32,13 @@ class Discover:
 
     def hinting_level(self):
         try:
-            prep = self.ttfont['prep']
+            if self.ttfont.getTableData("prep") is None:
+                return ''
+            prepAsm = self.ttfont.getTableData("prep")
+            prepText = fontforge.unParseTTInstrs(prepAsm)
+            prepMagic = "PUSHW_1\n 511\nSCANCTRL\nPUSHB_1\n 4\nSCANTYPE"
+            if prepText == prepMagic:
+                return 'no_hinting'
         except KeyError:
             return 'no_hinting'
         return ''
