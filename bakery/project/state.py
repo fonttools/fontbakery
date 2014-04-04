@@ -271,6 +271,16 @@ def project_state_autodiscovery(project, state):
         # in bakery.yaml store list of extensions separated by comma
         state['source_drawing_filetype'] = ', '.join(list(set(ttf_fyletypes)))
 
+    if ottffiles and not state.get('hinting_level'):
+        if filter(lambda fn: os.path.basename(fn) == '.ttfautohint', f):
+            state['hinting_level'] = 'ttfautohint'
+        else:
+            for ottf in ottffiles:
+                hinting_level = Discover(ottf).hinting_level()
+                if hinting_level:
+                    state['hinting_level'] = hinting_level
+                    break
+
     return state
 
 

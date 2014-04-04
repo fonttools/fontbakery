@@ -29,6 +29,13 @@ class Discover:
         self.fontpath = ottfile
         self.ttfont = TTFont(ottfile)
 
+    def hinting_level(self):
+        try:
+            prep = self.ttfont['prep']
+        except KeyError:
+            return 'no_hinting'
+        return ''
+
     @staticmethod
     def license(contents):
         return discover_license(contents)
