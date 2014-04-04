@@ -217,7 +217,7 @@ def project_state_autodiscovery(project, state):
             copyright_notices.append(notice)
 
         if copyright_notices:
-            state['copyright_notice'] = copyright_notices[0]
+            state['copyright_notice'] = copyright_notices[0].strip(' \n\r,')
 
     # Search for Reserved Font Name in project source
     if not state.get('rnf_asserted'):
