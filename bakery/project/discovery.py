@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
 import re
 
 from fontTools.ttLib import TTFont
@@ -25,6 +24,8 @@ class Discover:
 
     COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
     RFN_REGEX = re.compile(r'with Reserved Font Names.*', re.U | re.I)
+    TRADEMARK_PERMREGEX = re.compile(r'Permission is granted to Google, Inc', re.I | re.U)
+    TRADEMARK_REGEX = re.compile(r'.* is a trademark .*', re.U | re.I)
 
     def __init__(self, ottfile):
         self.fontpath = ottfile
@@ -53,15 +54,6 @@ class Discover:
     @staticmethod
     def license(contents):
         return discover_license(contents)
-
-    @staticmethod
-    def trademark_permission(filelist):
-        trademarks = filter(lambda fn: os.path.basename(fn) in ['TRADEMARKS.txt'], filelist)
-        if not trademarks:
-            return False
-
-        contents = open(trademarks[0], 'r').read()
-        return yesno(contents.find("Permission") >= 0)
 
     def copyright_notice(self):
         # NameID : 0 : Copyright License

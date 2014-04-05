@@ -179,7 +179,7 @@ def project_state_autodiscovery(project, state):
     def license_filter(licenses, files):
         return filter(lambda fn: os.path.basename(fn) in licenses, files)
 
-    licenses = license_filter(['LICENSE.txt', 'LICENSE.md'], f)
+    licenses = license_filter(['LICENSE.txt', 'LICENSE.md', 'COPYRIGHT.txt'], f)
     ofl_licenses = license_filter(['Open Font License.markdown', 'OFL.txt', 'OFL.md'], f)
     apache_licenses = license_filter(['APACHE.txt', 'APACHE.md'], f)
     ufl_licenses = license_filter(['UFL.txt', 'UFL.md'], f)
@@ -235,11 +235,29 @@ def project_state_autodiscovery(project, state):
                 break
         state['rfn_asserted'] = rfn_asserted
 
+    trademarks = filter(lambda fn: os.path.basename(fn).lower() in ['trademarks.txt'], f)
     if not state.get('trademark_notice'):
         # Autodiscover trademark notice only for TTF and OTF files
+        for tm_path in trademarks:
+            match = Discover.TRADEMARK_REGEX.search(open(tm_path).read())
+            if not match:
+                continue
+            state['trademark_notice'] = match.group(0).strip(',\r\n')
+            break
         for ottf in ottffiles:
             trademark = Discover(ottf).trademark_notice()
             state['trademark_notice'] = trademark
+
+    if not state.get('trademark_permission'):
+        # Look for a file called TRADEMARKS.txt and search
+        # a string "The authors give permission to the following parties
+        # to use the trademark and reserved font name * Google, Inc *"
+        for filepath in trademarks:
+            match = Discover.TRADEMARK_PERMREGEX.search(open(filepath).read())
+            if not match:
+                continue
+            state['trademark_permission'] = 'yes'
+            break
 
     if not state.get('source_cff_filetype'):
         # a source file with filename ending in -OTF.* in the repo
