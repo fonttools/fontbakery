@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import json
+import re
 import requests
 
 from checker.base import BakeryTestCase as TestCase
@@ -45,8 +46,12 @@ class MetadataTest(TestCase):
         },
         'fontbureau.com': {
             'url': 'http://www.fontbureau.com/search/?q={}',
-            'checkText': '<h5>Font results</h5>\n<div class="rule"></div>\n'
+            'checkText': '<h5>Font results</h5> <div class="rule"></div> '
                          '<span class="note">(No results)</span>'
+        },
+        'houseind.com': {
+            'url': 'http://www.houseind.com/search/?search=Oswald',
+            'checkText': '<ul id="related-fonts"> <li class="first">No results.</li> </ul>'
         }
     }
 
@@ -73,6 +78,11 @@ class MetadataTest(TestCase):
         test_catalogue = self.rules['fontbureau.com']
         self.check(test_catalogue)
 
+    def test_does_not_familyName_exist_in_houseind_catalogue(self):
+        """ Font does not exist in catalogue HOUSEIND.com """
+        test_catalogue = self.rules['houseind.com']
+        self.check(test_catalogue)
+
     def check(self, test_catalogue):
         url = test_catalogue['url'].format(self.metadata['name'])
 
@@ -83,7 +93,8 @@ class MetadataTest(TestCase):
         else:
             response = requests.get(url, allow_redirects=False)
         if response.status_code == 200:
-            self.assertTrue(test_catalogue['checkText'] in response.text)
+            regex = re.compile('\s+')
+            self.assertTrue(test_catalogue['checkText'] in regex.sub(' ', response.text))
         elif response.status_code == 302:  # 302 Moved Temporarily
             self.assertTrue(True)
         else:
