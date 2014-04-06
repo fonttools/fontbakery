@@ -42,6 +42,11 @@ class MetadataTest(TestCase):
             'checkText': "Showing no search results for",
             'method': 'post',
             'keywordParam': 'search'
+        },
+        'fontbureau.com': {
+            'url': 'http://www.fontbureau.com/search/?q={}',
+            'checkText': '<h5>Font results</h5>\n<div class="rule"></div>\n'
+                         '<span class="note">(No results)</span>'
         }
     }
 
@@ -49,18 +54,23 @@ class MetadataTest(TestCase):
         self.metadata = json.load(open(self.path))
 
     def test_does_not_familyName_exist_in_myfonts_catalogue(self):
-        """ Does not this font exist in catalogue? MYFONTS.com """
+        """ Font does not exist in catalogue MYFONTS.com """
         test_catalogue = self.rules['myfonts.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_daltonmaag_catalogue(self):
-        """ Does not this font exist in catalogue? DALTONMAAG.com """
+        """ Font does not exist in catalogue DALTONMAAG.com """
         test_catalogue = self.rules['daltonmaag.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_fontsmith_catalogue(self):
-        """ Does not this font exist in catalogue? FONTSMITH.com """
+        """ Font does not exist in catalogue FONTSMITH.com """
         test_catalogue = self.rules['fontsmith.com']
+        self.check(test_catalogue)
+
+    def test_does_not_familyName_exist_in_fontbureau_catalogue(self):
+        """ Font does not exist in catalogue FONTBUREAU.com """
+        test_catalogue = self.rules['fontbureau.com']
         self.check(test_catalogue)
 
     def check(self, test_catalogue):
