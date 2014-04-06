@@ -36,6 +36,12 @@ class MetadataTest(TestCase):
         'daltonmaag.com': {
             'url': 'http://www.daltonmaag.com/search.html?term={}',
             'checkText': 'No product families matched your search term'
+        },
+        'fontsmith.com': {
+            'url': 'http://www.fontsmith.com/support/search-results.cfm',
+            'checkText': "Showing no search results for",
+            'method': 'post',
+            'keywordParam': 'search'
         }
     }
 
@@ -52,10 +58,20 @@ class MetadataTest(TestCase):
         test_catalogue = self.rules['daltonmaag.com']
         self.check(test_catalogue)
 
+    def test_does_not_familyName_exist_in_fontsmith_catalogue(self):
+        """ Does not this font exist in catalogue? FONTSMITH.com """
+        test_catalogue = self.rules['fontsmith.com']
+        self.check(test_catalogue)
+
     def check(self, test_catalogue):
         url = test_catalogue['url'].format(self.metadata['name'])
 
-        response = requests.get(url, allow_redirects=False)
+        if test_catalogue.get('method') == 'post':
+            data = {test_catalogue['keywordParam']: self.metadata['name']}
+            response = requests.post(url, allow_redirects=False,
+                                     data=data)
+        else:
+            response = requests.get(url, allow_redirects=False)
         if response.status_code == 200:
             self.assertTrue(test_catalogue['checkText'] in response.text)
         elif response.status_code == 302:  # 302 Moved Temporarily
