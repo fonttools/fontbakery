@@ -235,6 +235,9 @@
                     <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">&copy;</span>
                 {% elif item == 'trademark_notice' %}
                     <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">&trade;</span>
+                {% elif item == 'trademark_permission' %}
+                    <span class="apopover" data-trigger="hover" data-content="{{ repo.config['state'][item] }}">
+                        {% if repo.config['state'][item] %}{{ value['True'] }}{% else %}{{ value['False'] }}{% endif %}</span>
                 {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}

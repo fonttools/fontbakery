@@ -21,7 +21,7 @@ import yaml
 import os
 import glob
 from fontTools.ttLib import TTFont
-from bakery.project.discovery import discover_license, nameTableRead
+from bakery.project.state import StateAutodiscover, nameTableRead
 
 
 def run(folder, bakery_file):
@@ -36,8 +36,8 @@ def run(folder, bakery_file):
     # },
 
     license_file = open(os.path.join(folder, bakery['license_file']), 'r').read()
-    copyright_license = discover_license(license_file) or 'undetected'
-    bakery['copyright_license'] = copyright_license
+    # copyright_license = discover_license(license_file) or 'undetected'
+    # bakery['copyright_license'] = copyright_license
 
     # Family name
     # 'familyname'

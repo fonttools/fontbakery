@@ -662,7 +662,7 @@ def process_project(project, build, revision, force_sync=False):
         project_git_sync(project)
 
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
     _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
     _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
     _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
@@ -698,7 +698,7 @@ def process_project(project, build, revision, force_sync=False):
             result_tests(project, build)
             # apply fixes
             result_fixes(project, build)
-            discover_dashboard(project, build, log)
+            # discover_dashboard(project, build, log)
             log.write('Bake Succeeded!\n', prefix='### ')
         finally:
             # save that project is done
