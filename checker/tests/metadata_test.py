@@ -28,15 +28,36 @@ class MetadataTest(TestCase):
     path = '.'
     name = __name__
 
+    rules = {
+        'myfonts.com': {
+            'url': 'http://www.myfonts.com/search/name:{}/fonts/',
+            'checkText': 'I&rsquo;ve got nothing'
+        },
+        'daltonmaag.com': {
+            'url': 'http://www.daltonmaag.com/search.html?term={}',
+            'checkText': 'No product families matched your search term'
+        }
+    }
+
     def setUp(self):
         self.metadata = json.load(open(self.path))
 
-    def test_is_familyName_existed_in_myfonts_catalogue(self):
-        """ Does this font exist in myfonts catalogue? """
-        url = 'http://www.myfonts.com/search/name:{}/fonts/'.format(self.metadata['name'])
-        response = requests.post(url, allow_redirects=False)
+    def test_does_not_familyName_exist_in_myfonts_catalogue(self):
+        """ Does not this font exist in catalogue? MYFONTS.com """
+        test_catalogue = self.rules['myfonts.com']
+        self.check(test_catalogue)
+
+    def test_does_not_familyName_exist_in_daltonmaag_catalogue(self):
+        """ Does not this font exist in catalogue? DALTONMAAG.com """
+        test_catalogue = self.rules['daltonmaag.com']
+        self.check(test_catalogue)
+
+    def check(self, test_catalogue):
+        url = test_catalogue['url'].format(self.metadata['name'])
+
+        response = requests.get(url, allow_redirects=False)
         if response.status_code == 200:
-            self.assertTrue('got nothing' in response.text)
+            self.assertTrue(test_catalogue['checkText'] in response.text)
         elif response.status_code == 302:  # 302 Moved Temporarily
             self.assertTrue(True)
         else:
