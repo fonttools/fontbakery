@@ -569,12 +569,15 @@ def upstream_revision_tests(project, revision):
 
     ufo_dirs = []
     ttx_files = []
+    metadata_files = []
     l = len(_in)
     for root, dirs, files in os.walk(_in):
         for f in files:
             fullpath = os.path.join(root, f)
             if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
                 ttx_files.append(fullpath[l:])
+            if f.lower() == 'metadata.json':
+                metadata_files.append(fullpath)
         for d in dirs:
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
@@ -582,8 +585,11 @@ def upstream_revision_tests(project, revision):
 
     for font in ufo_dirs:
         if os.path.exists(os.path.join(_in, font)):
-            print('UFO DIR: %s' % os.path.join(_in, font))
             result[font] = run_set(os.path.join(_in, font), 'upstream')
+
+    for metadata_path in metadata_files:
+        print(metadata_path)
+        result[metadata_path] = run_set(metadata_path, 'metadata')
 
     for font in ttx_files:
         if os.path.exists(os.path.join(_in, font)):

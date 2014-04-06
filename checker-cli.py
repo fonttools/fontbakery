@@ -21,8 +21,9 @@ import unittest
 import sys
 
 from checker.base import make_suite, run_suite, tests_report
+from checker import run_set
 
-def run_set(path):
+def run_set1(path):
     """ Return tests results for .ttf font in parameter """
     assert os.path.exists(path)
     return run_suite(make_suite(path, 'result'))
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action',
         help="Action or target test suite",
-        choices=['list', 'result', 'upstream', 'upstream-ttx'],)
+        choices=['list', 'result', 'upstream', 'upstream-ttx', 'metadata'],)
     parser.add_argument('file', nargs="*", help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count', help="Verbosity level", default=1)
 
@@ -47,7 +48,8 @@ if __name__ == '__main__':
 
     for x in args.file:
         print(x)
-        s = make_suite(x, args.action)
-        runner = unittest.TextTestRunner(verbosity=args.verbose)
-        # run_suite(s)
-        runner.run(s)
+        run_set(x, 'metadata')
+        # s = make_suite(x, args.action)
+        # runner = unittest.TextTestRunner(verbosity=args.verbose)
+        # # run_suite(s)
+        # runner.run(s)

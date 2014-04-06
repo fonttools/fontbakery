@@ -18,3 +18,4 @@
 from .result_test import *
 from .ttx_test import *
 from .upstream_test import *
+from .metadata_test import *

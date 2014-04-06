@@ -142,10 +142,6 @@ class tags(object):
         return f
 
 
-def is_UFO(path):
-    return bool(path.lower().endswith('.ufo'))
-
-
 def make_suite(path, definedTarget):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
