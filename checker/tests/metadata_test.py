@@ -24,7 +24,7 @@ from checker.base import BakeryTestCase as TestCase
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-SCRAPE_DATAROOT = os.path.join(ROOT, 'scripts', 'scrapes', 'output')
+SCRAPE_DATAROOT = os.path.join(ROOT, 'scripts', 'scrapes', 'json')
 
 
 class MetadataTest(TestCase):

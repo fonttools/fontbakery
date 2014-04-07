@@ -75,6 +75,9 @@ stats: venv/bin/activate
 clean:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
+crawl: venv/bin/activate
+	. venv/bin/activate; cd scripts/scrapes/familynames && scrapy crawl terminaldesign -o ../json/terminaldesign.json -t json --nolog
+
 # target: help — this help
 help:
 	@egrep "^# target:" [Mm]akefile
