@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
+import html5lib
 import json
 import os
 import re
@@ -112,6 +113,20 @@ class MetadataTest(TestCase):
         response = requests.get(url)
         if response.status_code == 200:
             self.assertFalse(bool(response.json()['TotalCount']['type']))
+        else:
+            self.assertTrue(False)
+
+    def test_does_not_familyName_exist_in_fontscom_catalogue(self):
+        """ FONTS.com """
+        url = 'http://www.fonts.com/browse/font-lists?part={}'.format(self.metadata['name'][0])
+        response = requests.get(url)
+        if response.status_code == 200:
+            tree = html5lib.treebuilders.getTreeBuilder("lxml")
+            parser = html5lib.HTMLParser(tree=tree,
+                                         namespaceHTMLElements=False)
+            doc = parser.parse(response.text)
+            f = doc.xpath('//ul/li/a[@class="product productpopper"]/text()')
+            self.assertFalse(self.metadata['name'] in map(lambda x: unicode(x).lower(), list(f)))
         else:
             self.assertTrue(False)
 
