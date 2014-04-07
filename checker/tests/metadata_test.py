@@ -130,6 +130,16 @@ class MetadataTest(TestCase):
         else:
             self.assertTrue(False)
 
+    def test_does_not_familyName_exist_in_fontshop_catalogue(self):
+        """ FONTSHOP.com """
+        url = 'http://www.fontshop.com/service/familiesService.php?dataType=json&searchltr={}'.format(self.metadata['name'][0])
+        response = requests.get(url)
+        if response.status_code == 200:
+            jsondata = response.json()
+            self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['name'].lower(), jsondata))
+        else:
+            self.assertTrue(False)
+
     def check(self, test_catalogue):
         url = test_catalogue['url'].format(self.metadata['name'])
 
