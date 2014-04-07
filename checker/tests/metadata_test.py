@@ -106,6 +106,15 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
+    def test_does_not_familyName_exist_in_veer_catalogue(self):
+        """ VEER.com """
+        url = 'http://search.veer.com/json/?keyword={}&producttype=TYP&segment=DEF'.format(self.metadata['name'])
+        response = requests.get(url)
+        if response.status_code == 200:
+            self.assertFalse(bool(response.json()['TotalCount']['type']))
+        else:
+            self.assertTrue(False)
+
     def check(self, test_catalogue):
         url = test_catalogue['url'].format(self.metadata['name'])
 
