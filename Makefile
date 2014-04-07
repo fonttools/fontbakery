@@ -80,7 +80,8 @@ crawl: venv/bin/activate
 	cd scripts/scrapes/familynames && \
 	scrapy crawl terminaldesign -o ../json/terminaldesign.json -t json --nolog && \
 	scrapy crawl typography -o ../json/typography.json -t json --nolog && \
-	scrapy crawl europatype -o ../json/europatype.json -t json --nolog
+	scrapy crawl europatype -o ../json/europatype.json -t json --nolog && \
+	scrapy crawl boldmonday -o ../json/boldmonday.json -t json --nolog
 
 # target: help — this help
 help:

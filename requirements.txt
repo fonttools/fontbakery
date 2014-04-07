@@ -47,3 +47,4 @@ lxml
 
 # helper scripts
 scrapy
+html5lib
