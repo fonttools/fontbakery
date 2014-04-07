@@ -16,10 +16,15 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import json
+import os
 import re
 import requests
 
 from checker.base import BakeryTestCase as TestCase
+
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+SCRAPE_DATAROOT = os.path.join(ROOT, 'scripts', 'scrapes', 'output')
 
 
 class MetadataTest(TestCase):
@@ -82,6 +87,15 @@ class MetadataTest(TestCase):
         """ Font does not exist in catalogue HOUSEIND.com """
         test_catalogue = self.rules['houseind.com']
         self.check(test_catalogue)
+
+    def test_does_not_familyName_exist_in_terminaldesign_catalogue(self):
+        """ Font does not exist in catalogue TERMINALDESIGN.com """
+        try:
+            datafile = open(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json'))
+            catalogue = json.load(datafile)
+            self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
+        except (OSError, IOError):
+            assert False, 'Run `make crawl` to get latest data'
 
     def check(self, test_catalogue):
         url = test_catalogue['url'].format(self.metadata['name'])

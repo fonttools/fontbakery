@@ -44,3 +44,6 @@ redis
 # file browser
 python-magic
 lxml
+
+# helper scripts
+scrapy

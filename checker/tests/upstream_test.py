@@ -57,6 +57,7 @@ class SimpleTest(TestCase):
 import robofab.world
 import robofab.objects
 
+
 class UfoOpenTest(TestCase):
     targets = ['upstream']
     tool = 'Robofab'

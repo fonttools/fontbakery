@@ -147,10 +147,17 @@ def make_suite(path, definedTarget):
         definedTarget is filter to only select small subset of tests
     """
     suite = unittest.TestSuite()
-
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             TestCase.path = path
+            if getattr(TestCase, 'tool', '').lower() == 'fontforge':
+                if path.lower().endswith('.ufo'):
+                    # dev branch of fontforge python library has a bug
+                    # when opening ufo fonts, so we ignore all fontforge tests
+                    # for UFO
+                    import fontforge
+                    if int(fontforge.version()) > int('20140402'):
+                        continue
             suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
 
     return suite
