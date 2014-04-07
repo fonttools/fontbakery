@@ -10,12 +10,16 @@ class BoldMondaySpider(Spider):
     name = 'boldmonday'
     allowed_domains = ['boldmonday.com']
     start_urls = [
-        'http://www.boldmonday.com/en/retail_fonts/'
+        'http://www.boldmonday.com/en/retail_fonts/',
+        'http://www.boldmonday.com/en/custom_fonts/'
     ]
 
     def parse_font_page(self, response):
         sel = Selector(response)
-        item = sel.xpath('//h1/text()').extract()[0]
+        try:
+            item = sel.xpath('//h1/text()').extract()[0]
+        except IndexError:
+            return None
         ffi = FontFamilyItem()
         ffi['title'] = item
         return ffi
