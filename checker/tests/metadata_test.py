@@ -64,34 +64,43 @@ class MetadataTest(TestCase):
         self.metadata = json.load(open(self.path))
 
     def test_does_not_familyName_exist_in_myfonts_catalogue(self):
-        """ Font does not exist in catalogue MYFONTS.com """
+        """ MYFONTS.com """
         test_catalogue = self.rules['myfonts.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_daltonmaag_catalogue(self):
-        """ Font does not exist in catalogue DALTONMAAG.com """
+        """ DALTONMAAG.com """
         test_catalogue = self.rules['daltonmaag.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_fontsmith_catalogue(self):
-        """ Font does not exist in catalogue FONTSMITH.com """
+        """ FONTSMITH.com """
         test_catalogue = self.rules['fontsmith.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_fontbureau_catalogue(self):
-        """ Font does not exist in catalogue FONTBUREAU.com """
+        """ FONTBUREAU.com """
         test_catalogue = self.rules['fontbureau.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_houseind_catalogue(self):
-        """ Font does not exist in catalogue HOUSEIND.com """
+        """ HOUSEIND.com """
         test_catalogue = self.rules['houseind.com']
         self.check(test_catalogue)
 
     def test_does_not_familyName_exist_in_terminaldesign_catalogue(self):
-        """ Font does not exist in catalogue TERMINALDESIGN.com """
+        """ TERMINALDESIGN.com """
         try:
             datafile = open(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json'))
+            catalogue = json.load(datafile)
+            self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
+        except (OSError, IOError):
+            assert False, 'Run `make crawl` to get latest data'
+
+    def test_does_not_familyName_exist_in_typography_catalogue(self):
+        """ TYPOGRAPHY.com """
+        try:
+            datafile = open(os.path.join(SCRAPE_DATAROOT, 'typography.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):

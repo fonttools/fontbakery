@@ -1,7 +1,7 @@
 from scrapy.selector import Selector
 from scrapy.spider import Spider
 
-from familynames.items import TerminalDesignItem
+from familynames.items import FontFamilyItem
 
 
 class TerminalDesignSpider(Spider):
@@ -13,10 +13,10 @@ class TerminalDesignSpider(Spider):
 
     def parse(self, response):
         sel = Selector(response)
-        fonts = sel.xpath('//div["data-promo-name"]/@data-promo-name').extract()
+        fonts = sel.xpath('//div["data-promo-name"]/@data-promo-name')
         items = []
-        for fontname in fonts:
-            tdi = TerminalDesignItem()
+        for fontname in fonts.extract():
+            tdi = FontFamilyItem()
             tdi['title'] = fontname
             items.append(tdi)
         return items

@@ -6,5 +6,5 @@
 from scrapy.item import Item, Field
 
 
-class TerminalDesignItem(Item):
+class FontFamilyItem(Item):
     title = Field()
