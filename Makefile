@@ -85,7 +85,8 @@ crawl: venv/bin/activate
 	scrapy crawl boldmonday -o ../json/boldmonday.json -t json --nolog && \
 	scrapy crawl commercialtype -o ../json/commercialtype.json -t json --nolog && \
 	scrapy crawl swisstypefaces -o ../json/swisstypefaces.json -t json --nolog && \
-	scrapy crawl grillitype -o ../json/grillitype.json -t json --nolog
+	scrapy crawl grillitype -o ../json/grillitype.json -t json --nolog && \
+	scrapy crawl letterror -o ../json/letterror.json -t json --nolog
 
 # target: help — this help
 help:
