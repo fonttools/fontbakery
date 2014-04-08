@@ -179,6 +179,15 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
+    def test_does_not_familyName_exist_in_typedifferent_catalogue(self):
+        """ TYPEDIFFERENT.com """
+        try:
+            datafile = open(os.path.join(SCRAPE_DATAROOT, 'typedifferent.json'))
+            catalogue = json.load(datafile)
+            self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
+        except (OSError, IOError):
+            assert False, 'Run `make crawl` to get latest data'
+
     def test_does_not_familyName_exist_in_veer_catalogue(self):
         """ VEER.com """
         url = 'http://search.veer.com/json/?keyword={}&producttype=TYP&segment=DEF'.format(self.metadata['name'])
