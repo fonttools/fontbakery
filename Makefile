@@ -89,7 +89,8 @@ crawl: venv/bin/activate
 	scrapy crawl letterror -o ../json/letterror.json -t json --nolog && \
 	scrapy crawl teff -o ../json/teff.json -t json --nolog && \
 	scrapy crawl nouvellenoire -o ../json/nouvellenoire.json -t json --nolog && \
-	scrapy crawl typedifferent -o ../json/typedifferent.json -t json --nolog
+	scrapy crawl typedifferent -o ../json/typedifferent.json -t json --nolog && \
+	scrapy crawl optimo -o ../json/optimo.json -t json --nolog
 
 # target: help — this help
 help:
