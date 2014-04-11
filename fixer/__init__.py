@@ -37,6 +37,7 @@ available_fixes = {
     'test_metrics_linegaps_are_zero': fixes.fix_metrics,
     'test_metrics_ascents_equal_max_bbox': fixes.fix_metrics,
     'test_metrics_descents_equal_min_bbox': fixes.fix_metrics,
+    'test_non_ascii_chars_in_names': fixes.fix_name_ascii
 }
 
 
@@ -71,4 +72,3 @@ def fix_font(yaml_file, path):
     l = open(yaml_file, 'w')
     l.write(yaml.safe_dump(result))
     l.close()
-

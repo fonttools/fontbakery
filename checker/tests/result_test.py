@@ -24,6 +24,7 @@ import magic
 
 from fontTools import ttLib
 
+
 class FontToolsTest(TestCase):
     targets = ['result']
     tool = 'FontTools'
@@ -92,6 +93,19 @@ class FontToolsTest(TestCase):
         self.assertEqual(self.font['hhea'].descent, ymin)
         self.assertEqual(self.font['OS/2'].sTypoDescender, ymin)
         self.assertEqual(self.font['OS/2'].usWinDescent, ymin)
+
+    def test_non_ascii_chars_in_names(self):
+        """ NAME and CFF tables must not contain non-ascii characters """
+        for name_record in self.font['name'].names:
+            string = name_record.string
+            if b'\000' in string:
+                string = string.decode('utf-16-be').encode('utf-8')
+            else:
+                string = string
+            try:
+                string.encode('ascii')
+            except UnicodeEncodeError:
+                self.fail("%s contain non-ascii characters" % name_record.nameID)
 
 
 from fontaine.font import Font
