@@ -17,7 +17,9 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import os
+
 from fontTools import ttLib
+from unidecode import unidecode
 
 
 def fix_ascii(string):
@@ -25,11 +27,7 @@ def fix_ascii(string):
         string = string.decode('utf-16-be').encode('utf-8')
     else:
         string = string
-
-    string = string.replace(u'©', '(C)')
-    string = string.replace(u'™', '(TM)')
-    string = string.replace(u'®', '(R)')
-    return string.encode('utf-16-be')
+    return unidecode(string).encode('utf-16-be')
 
 
 def fix_name_table(fontfile):
@@ -46,7 +44,8 @@ def show_name_table(fontfile):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--autofix', action="store_true", help="Autofix font ascii name")
+    parser.add_argument('--autofix', action="store_true",
+                        help="Autofix font ascii name")
     parser.add_argument('filename', help="Font file in TTF format")
 
     args = parser.parse_args()
