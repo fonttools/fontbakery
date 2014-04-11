@@ -36,10 +36,11 @@ import os
 import sys
 import gzip
 
-import sys
 if sys.version < '3':
     import codecs
     def u(x):
+        if not x:
+            return ''
         return codecs.unicode_escape_decode(x)[0]
 else:
     def u(x):
