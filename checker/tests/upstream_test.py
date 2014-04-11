@@ -54,13 +54,29 @@ class SimpleBulkTest(TestCase):
                 break
             copyright = current_notice
 
+    def grep_copyright_notice(self, contents):
+        match = COPYRIGHT_REGEX.search(contents)
+        if match:
+            return match.group(0).strip(',\r\n')
+        return
+
     def lookup_copyright_notice(self, ufo_folder):
         current_path = ufo_folder
+        try:
+            contents = open(os.path.join(ufo_folder, 'fontinfo.plist')).read()
+            copyright = self.grep_copyright_notice(contents)
+            if copyright:
+                return copyright
+        except (IOError, OSError):
+            pass
+
         while os.path.realpath(self.path) != current_path:
             # look for all text files inside folder
             # read contents from them and compare with copyright notice
             # pattern
-            for filename in glob.glob(os.path.join(current_path, '*.txt')):
+            files = glob.glob(os.path.join(current_path, '*.txt'))
+            files += glob.glob(os.path.join(current_path, '*.ttx'))
+            for filename in files:
                 with open(os.path.join(current_path, filename)) as fp:
                     match = COPYRIGHT_REGEX.search(fp.read())
                     if not match:
