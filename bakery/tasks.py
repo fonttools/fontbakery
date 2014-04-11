@@ -577,7 +577,7 @@ def upstream_revision_tests(project, revision):
             if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
                 ttx_files.append(fullpath[l:])
             if f.lower() == 'metadata.json':
-                metadata_files.append(fullpath)
+                metadata_files.append(fullpath[l:])
         for d in dirs:
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
@@ -588,12 +588,13 @@ def upstream_revision_tests(project, revision):
             result[font] = run_set(os.path.join(_in, font), 'upstream')
 
     for metadata_path in metadata_files:
-        print(metadata_path)
         result[metadata_path] = run_set(metadata_path, 'metadata')
 
     for font in ttx_files:
         if os.path.exists(os.path.join(_in, font)):
             result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
+
+    result['Properties tests'] = run_set(_in, 'upstream-bulk')
 
     l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
     l.write(yaml.safe_dump(result))

@@ -15,9 +15,60 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import os
 import fontforge
+import glob
+import os
+import re
+
 from checker.base import BakeryTestCase as TestCase, tags
+
+
+COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
+
+
+class SimpleBulkTest(TestCase):
+
+    targets = ['upstream-bulk']
+    tool = 'Bulk'
+    name = __name__
+    path = '.'
+
+    def setUp(self):
+        self.ufo_dirs = []
+        self.l = len(self.path)
+        for root, dirs, files in os.walk(self.path):
+            for d in dirs:
+                fullpath = os.path.join(root, d)
+                if os.path.splitext(fullpath)[1].lower() == '.ufo':
+                    self.ufo_dirs.append(fullpath)
+
+    def test_copyright_notices_same_for_all_styles(self):
+        """ Are all copyright notices the same in all styles? """
+        copyright = None
+        for ufo_folder in self.ufo_dirs:
+            current_notice = self.lookup_copyright_notice(ufo_folder)
+            if current_notice is None:
+                continue
+            if copyright is not None and current_notice != copyright:
+                self.fail('"%s" != "%s"' % (current_notice, copyright))
+                break
+            copyright = current_notice
+
+    def lookup_copyright_notice(self, ufo_folder):
+        current_path = ufo_folder
+        while os.path.realpath(self.path) != current_path:
+            # look for all text files inside folder
+            # read contents from them and compare with copyright notice
+            # pattern
+            for filename in glob.glob(os.path.join(current_path, '*.txt')):
+                with open(os.path.join(current_path, filename)) as fp:
+                    match = COPYRIGHT_REGEX.search(fp.read())
+                    if not match:
+                        continue
+                    return match.group(0).strip(',\r\n')
+            current_path = os.path.join(current_path, '..')  # go up
+            current_path = os.path.realpath(current_path)
+        return
 
 
 class SimpleTest(TestCase):

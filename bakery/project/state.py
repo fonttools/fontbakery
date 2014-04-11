@@ -248,10 +248,9 @@ class StateAutodiscover:
         """
         if self.default_state and self.default_state.get('copyright_notice'):
             return self.default_state.get('copyright_notice')
-        copyright_regex = StateAutodiscover.COPYRIGHT_REGEX
         for license in self.all_licenses:
             contents = open(license).read()
-            match = copyright_regex.search(contents)
+            match = StateAutodiscover.COPYRIGHT_REGEX.search(contents)
             if not match:
                 continue
             return match.group(0).strip(',\r\n')
