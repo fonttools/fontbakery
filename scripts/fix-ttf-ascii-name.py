@@ -36,7 +36,7 @@ def fix_name_table(fontfile):
     font = ttLib.TTFont(fontfile)
     for name_record in font['name'].names:
         name_record.string = fix_ascii(name_record.string)
-    font.save('/home/hash/Desktop/%s' % os.path.basename(fontfile))
+    font.save(fontfile)
 
 
 def show_name_table(fontfile):
