@@ -75,6 +75,10 @@ stats: venv/bin/activate
 clean:
 	rm -rf data/*; . venv/bin/activate; python init.py
 
+shell: venv/bin/activate
+	. venv/bin/activate; python
+
+
 crawl: venv/bin/activate
 	. venv/bin/activate && \
 	cd scripts/scrapes/familynames && \
