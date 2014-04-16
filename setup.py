@@ -27,15 +27,12 @@ setup(
     packages=["bakery"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'Flask',
-        'Flask-SQLAlchemy',
-    ],
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-    ]
+    ],
+    test_suite="tests"
 )

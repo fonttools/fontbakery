@@ -78,7 +78,6 @@ clean:
 shell: venv/bin/activate
 	. venv/bin/activate; python
 
-
 crawl: venv/bin/activate
 	. venv/bin/activate && \
 	cd scripts/scrapes/familynames && \
