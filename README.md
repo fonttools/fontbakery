@@ -1,5 +1,7 @@
 <img src="https://raw.github.com/xen/fontbakery/master/docs/image.png">
 
+[![Coverage Status](https://coveralls.io/repos/hash3g/fontbakery/badge.png)](https://coveralls.io/r/hash3g/fontbakery)
+
 ## Introduction
 
 Font Bakery is a font build service. The vision is to bring the [Continuous Integration](http://en.wikipedia.org/wiki/Continuous_integration) best practices of software development to [type design](http://en.wikipedia.org/wiki/Type_design).
@@ -32,7 +34,7 @@ Then this command will start the web service on a localhost web server:
 
     $ make run;
 
-Then open [http://localhost:5000](http://localhost:5000) in your browser. 
+Then open [http://localhost:5000](http://localhost:5000) in your browser.
 
 Font Bakery gives a visual indication if the worker is not running.
 
@@ -46,7 +48,7 @@ During the development process you may wish to run a fake mail server:
 
 ### Font Tests
 
-Tests are in the `/checker` directory. 
+Tests are in the `/checker` directory.
 
 The test page shows tests that fail, with the cause of failure. This message is auto generated, but also you can specify them. For example, if this test fails then the message will contain the first and second `assertEqual` arguments:
 
@@ -75,7 +77,7 @@ This can help Font Bakery users understand what may be incorrect in their fonts,
 
 Given a default installation, backup `data` directory and `data.sqlite` file. That’s it!
 
-To restore Font Bakery, reinstall it so that files like `local.cfg` are recreated with different Github keys, then copy the `data` directory and `data.sqlite` file into the root directory. That's it! 
+To restore Font Bakery, reinstall it so that files like `local.cfg` are recreated with different Github keys, then copy the `data` directory and `data.sqlite` file into the root directory. That's it!
 
 ## Contribution
 
