@@ -17,7 +17,7 @@ brew install python;
 # Use Homebrew's Python
 echo 'export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH' >> ~/.bash_profile;
 source ~/.bash_profile;
-brew install sqlite libevent ttfautohint redis libmagic nodejs;
+brew install sqlite libevent ttfautohint redis libmagic nodejs npm;
 brew install fontforge --HEAD;
 # To have launchd start redis at login:
 ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents;
@@ -63,13 +63,7 @@ npm install -g bower
 
 ```sh
 # Use yum to install dependencies
-sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs libxslt1-dev libxml2-dev automake autoconf libtool libharfbuzz-dev libharfbuzz-dev qt5-default libffi-dev;
-# install ttfautohint from git
-git clone git://repo.or.cz/ttfautohint.git;
-cd ttfautohint;
-./bootstrap;
-./configure --with-doc=no;
-sudo make install;
+sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial nodejs libxslt1-dev libxml2-dev automake autoconf libtool libharfbuzz-dev libharfbuzz-dev qt5-default libffi-dev ttfautohint npm;
 # Start redis now:
 sudo /etc/init.d/redis-server start;
 # Set up a pip download cache
@@ -77,7 +71,6 @@ echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
 mkdir ~/.pip_download_cache;
 # install bower
 npm install -g bower
-cd static; bower install
 ```
 
 Now your system should be ready to install Font Bakery itself!
@@ -87,21 +80,25 @@ Now your system should be ready to install Font Bakery itself!
 Font Bakery has some Python requirements, but it does not install them into your system; thanks to `virtualenv` they are installed into the `venv` directory.
 
 ```sh
+# get source code
 mkdir ~/src;
-git clone https://github.com/xen/fontbakery.git ~/src/fontbakery;
+git clone https://github.com/googlefonts/fontbakery.git ~/src/fontbakery;
 cd ~/src/fontbakery;
+# install js components
+cd static; bower install; cd ..;
+# install py components
 VENVRUN=virtualenv make setup;
+# create a configuration file
 cp local.example.cfg local.cfg;
-open -e local.cfg;
 ```
 
-Make your own `local.cfg` based on `local.example.cfg`. You can use this example:
+Edit `local.cfg` with your own details. Here is an example:
 
-    GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
-    GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
-    SQLALCHEMY_ECHO = True
+> GITHUB_CONSUMER_KEY = '4a1a8295dacab483f1b5'
+> GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
+> SQLALCHEMY_ECHO = True
 
-Github application info is for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`.
+These Github application details are for demo use only. Default values are for URL `http://localhost:5000/`, callback URL `http://localhost:5000/auth/callback`.
 
 If you run Font Bakery on a domain, you must fill in [this form](https://github.com/settings/applications/new) to make your own keys, something like this:
 
@@ -125,14 +122,17 @@ GITHUB_CONSUMER_SECRET = '03327cbda3271b709d0d665c6d19ee1b7a15a705'
 ```
 
 Update other options listed in `local.cfg`. *If you want to use
-Font Bakery in production more these options are very important*.
+Font Bakery in production, these options are very important*.
 
 Finally, initialise the database and run Font Bakery:
 
 ```
 make init;
 make run;
-open 'http://localhost:5000';
+```
+
+Finally you can open <http://localhost:5000> in a modern web browser.
+
 ```
 
 ## Production Mode
