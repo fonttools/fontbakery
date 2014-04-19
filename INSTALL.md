@@ -39,19 +39,11 @@ npm install -g bower;
 
 ### Fedora
 
-TODO: package ttfautohint for Fedora
-
 ```sh
 # Use yum to install dependencies
-sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git npm;
-# install ttfautohint from git
-git clone git://repo.or.cz/ttfautohint.git;
-cd ttfautohint;
-./bootstrap;
-./configure --with-doc=no;
-sudo make install;
-# Start redis now:
-sudo /etc/init.d/redis start;
+sudo yum install -y python-virtualenv python sqlite sqlite-devel libevent libevent-devel fontforge redis mercurial git npm ttfautohint;
+# Start redis now # TODO: check this works
+service redis start;
 # Set up a pip download cache
 echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
 mkdir ~/.pip_download_cache;
