@@ -67,7 +67,7 @@ sudo /etc/init.d/redis-server start;
 echo export PIP_DOWNLOAD_CACHE=$HOME/.pip_download_cache >>~/.profile;
 mkdir ~/.pip_download_cache;
 # install bower
-npm install -g bower
+sudo npm install -g bower
 ```
 
 Now your system should be ready to install Font Bakery itself!
