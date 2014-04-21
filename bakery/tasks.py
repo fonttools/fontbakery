@@ -87,11 +87,6 @@ def prun(command, cwd, log=None):
 
 
 @job
-def printtt(i):
-    print('%.2f' % (i * 2) + ' -----------')
-
-
-@job
 def project_git_sync(project):
     """
     Sync _in git repo, or download it if it doesn't yet exist.
