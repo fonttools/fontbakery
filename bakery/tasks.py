@@ -17,7 +17,6 @@
 
 from __future__ import print_function
 import os
-import sys
 import glob
 import subprocess
 import codecs
@@ -27,11 +26,6 @@ from .utils import RedisFd
 import re
 import yaml
 from fontTools import ttLib
-
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(ROOT)
-DATA_ROOT = os.path.join(ROOT, 'data')
 
 
 def run(command, cwd, log):
@@ -93,6 +87,11 @@ def prun(command, cwd, log=None):
 
 
 @job
+def printtt(i):
+    print('%.2f' % (i * 2) + ' -----------')
+
+
+@job
 def project_git_sync(project):
     """
     Sync _in git repo, or download it if it doesn't yet exist.
@@ -100,21 +99,17 @@ def project_git_sync(project):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
-    from flask import current_app
-    assert current_app
-    from .extensions import db
-    # set project state as unavailable during sync process
-    db.init_app(current_app)
+    from .app import db, app
     project.is_ready = False
     db.session.add(project)
     db.session.commit()
     db.session.refresh(project)
 
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     # Create the incoming repo directory (_in) if it doesn't exist
     if not os.path.exists(_in):
         # log.write('Creating Incoming Directory\n', prefix='### ')
-        prun('mkdir -p %s' % _in, cwd=DATA_ROOT)
+        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'])
     # Update _in if it already exists with a .git directory
     if os.path.exists(os.path.join(_in, '.git')):
         # log.write('Sync Git Repository\n', prefix='### ')
@@ -153,14 +148,15 @@ def project_git_sync(project):
 
 
 def copy_ufo_files(project, build, log):
+    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                        'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
@@ -214,7 +210,7 @@ def copy_ufo_files(project, build, log):
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
-    scripts_folder = os.path.join(ROOT, 'scripts')
+    scripts_folder = os.path.join(app.config['ROOT'], 'scripts')
     log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
 
     os.chdir(_out_src)
@@ -226,14 +222,15 @@ def copy_ufo_files(project, build, log):
 
 
 def copy_ttx_files(project, build, log):
+    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     ttx_files = []
     for x in config['state'].get('process_files', []):
@@ -284,7 +281,7 @@ def copy_ttx_files(project, build, log):
         run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
         run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name), cwd=_out_src, log=log)
         if font.sfntVersion == 'OTTO':  # OTF
-            scripts_folder = os.path.join(ROOT, 'scripts')
+            scripts_folder = os.path.join(app.config['ROOT'], 'scripts')
             cmd = "python autoconvert.py '{out_src}{ttx_name}.otf' '{out}{ttx_name}.ttf'".format(
                     out_src=_out_src, ttx_name=_out_ttx_name, out=_out)
             run(cmd, cwd=scripts_folder, log=log)
@@ -296,14 +293,15 @@ def copy_and_rename_process(project, build, log):
     """
     Setup UFOs for building
     """
+    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
                 'revision': build.revision, 'build': build.id}
 
-    _user = os.path.join(DATA_ROOT, '%(login)s/' % param)
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _user = os.path.join(app.config['DATA_ROOT'], '%(login)s/' % param)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
@@ -372,13 +370,14 @@ def ttfautohint_process(project, build, log):
     ttf file in result src folder, outputting them in the _out root,
     or just copy the ttfs there.
     """
+    from .app import app
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
@@ -395,12 +394,12 @@ def ttx_process(project, build, log):
     """
     Roundtrip TTF files through TTX to compact their filesize
     """
-
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                        'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Compact TTFs with ttx\n', prefix='### ')
 
@@ -429,13 +428,14 @@ def ttx_process(project, build, log):
 
 
 def subset_process(project, build, log):
+    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                        'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
     log.write('Subset TTFs (subset.py)\n', prefix='### ')
 
@@ -455,7 +455,7 @@ def subset_process(project, build, log):
                     'subset':subset,
                     'out': os.path.join(_out, name),
                     'name': name,
-                    'wd': ROOT
+                    'wd': app.config['ROOT']
                     }
             run(cmd, cwd=_out, log=log)
             cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py" + \
@@ -466,7 +466,7 @@ def subset_process(project, build, log):
                     'subset':subset,
                     'out': os.path.join(_out, name),
                     'name': name,
-                    'wd': ROOT
+                    'wd': app.config['ROOT']
                     }
             run(cmd, cwd=_out, log=log)
     os.chdir(_out)
@@ -480,32 +480,33 @@ def generate_metadata_process(project, build, log):
     """
     Generate METADATA.json using genmetadata.py
     """
-
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                    'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
-    run(cmd % {'wd': ROOT, 'out': _out}, cwd=_out, log=log)
+    run(cmd % {'wd': app.config['ROOT'], 'out': _out}, cwd=_out, log=log)
 
 
 def fontaine_process(project, build, log):
     """
     Run pyFontaine on ttf files
     """
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     log.write('pyFontaine (fontaine/main.py)\n', prefix='### ')
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
         cmd = "python %s/venv/bin/pyfontaine --text '%s' >> 'sources/fontaine.txt'" % (
-            ROOT, file)
+            app.config['ROOT'], file)
         run(cmd, cwd=_out, log=log)
     # TODO also save the totals for the dashboard....
     #   log.write('Running Fontaine on Results\n', prefix='### ')
@@ -551,11 +552,12 @@ def upstream_revision_tests(project, revision):
     :param force: force to make tests again
     :return: dictionary with serialized tests results formatted by `repr_testcase`
     """
+    from .app import app
     param = {'login': project.login, 'id': project.id, 'revision': revision}
 
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
-    _out_folder = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/utests/' % param)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
+    _out_folder = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/' % param)
+    _out_yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param)
 
     if os.path.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -604,11 +606,12 @@ def upstream_revision_tests(project, revision):
 
 
 def result_tests(project, build):
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     if os.path.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -631,28 +634,30 @@ from fixer import fix_font
 
 
 def result_fixes(project, build):
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(DATA_ROOT,
+    _out_src = os.path.join(app.config['DATA_ROOT'],
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(DATA_ROOT,
+    _out_yaml = os.path.join(app.config['DATA_ROOT'],
         '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
 
     fix_font(_out_yaml, _out_src)
 
 
 def discover_dashboard(project, build, log):
+    from .app import app
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _yaml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % param)
+    _yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % param)
 
-    _out_src = os.path.join(DATA_ROOT,
+    _out_src = os.path.join(app.config['DATA_ROOT'],
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "{wd}/venv/bin/python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
-        wd=ROOT, out=_out_src, yaml=_yaml)
+        wd=app.config['ROOT'], out=_out_src, yaml=_yaml)
     log.write('Discovery Dashboard data\n', prefix='### ')
     run(cmd, cwd=_out_src, log=log)
 
@@ -665,14 +670,15 @@ def process_project(project, build, revision, force_sync=False):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
+    from .app import app, db
     if force_sync:
         project_git_sync(project)
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % param)
-    _out_src = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
-    _out_log = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
+    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out_log = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
 
     # Make logest path
     os.makedirs(_out_src)
@@ -680,14 +686,6 @@ def process_project(project, build, revision, force_sync=False):
     log = RedisFd(_out_log, 'w')
 
     # setup is set after 'bake' button is first pressed
-
-    from flask import current_app
-    assert current_app
-    from .extensions import db
-    try:
-        db.init_app(current_app)
-    except:
-        pass
 
     if project.config['local'].get('setup', None):
         # this code change upstream repository
@@ -718,10 +716,7 @@ def process_project(project, build, revision, force_sync=False):
 
 def set_done(build):
     """ Set done flag for build """
-    from flask import current_app
-    assert current_app
-    from .extensions import db
-    db.init_app(current_app)
+    from .app import db
     build.is_done = True
     db.session.add(build)
     db.session.commit()

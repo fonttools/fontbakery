@@ -24,8 +24,6 @@ from flask import current_app
 import itsdangerous
 from collections import OrderedDict
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-DATA_ROOT = os.path.join(ROOT, 'data')
 
 import sys
 if sys.version < '3':
@@ -102,9 +100,9 @@ def project_fontaine(project, build):
     from fontaine.font import Font
 
     param = {'login': project.login, 'id': project.id,
-        'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(DATA_ROOT, '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = os.path.join(current_app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     # Its very likely that _out exists, but just in case:
     if os.path.exists(_out):

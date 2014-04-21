@@ -5,6 +5,7 @@ Flask-Babel
 Flask-FlatPages
 Flask-Mail
 Flask-SQLAlchemy
+six>=1.4.1
 pysqlite
 rauth
 
@@ -14,7 +15,6 @@ pytz==2013b
 beautifulsoup4
 markupsafe
 giturlparse.py
-six
 # setuptools
 
 # builder and checker
@@ -33,12 +33,7 @@ gevent-socketio==0.3.5-rc2
 greenlet==0.4.1
 
 # tasks processings
-#
-# flask-rq
-# This is the official pypi package,
-# but we are waiting for @xen's pull request to be merged
-# https://github.com/mattupstate/flask-rq/pull/3
--e git+http://github.com/xen/flask-rq.git#egg=Flask_RQ
+flask-rq
 redis
 
 # file browser

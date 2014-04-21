@@ -236,7 +236,7 @@ def ufiles(p, revision=None, name=None):
         revision = 'HEAD'
 
     return render_template('project/ufiles.html', project=p,
-                            revision=revision)
+                           revision=revision)
 
 
 @project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
@@ -253,7 +253,7 @@ def ufile(p, revision=None, name=None):
     mime, data = p.revision_file(revision, name)
 
     return render_template('project/ufile.html', project=p,
-                            revision=revision, name=name, mime=mime, data=data)
+                           revision=revision, name=name, mime=mime, data=data)
 
 
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])

@@ -16,10 +16,10 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, request, flash, g, session, redirect,
-                    url_for, current_app, Markup)
+                   url_for, current_app, Markup)
 
 from .models import User
-from ..extensions import db, github
+from bakery.app import db, github
 from flask.ext.babel import gettext as _
 
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')

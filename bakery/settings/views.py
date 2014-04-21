@@ -21,9 +21,9 @@ import logging
 from flask.ext.babel import gettext as _
 
 from flask import (Blueprint, render_template, request, flash, g, redirect,
-                    url_for, json, current_app)
+                   url_for, json, current_app)
 
-from ..extensions import github, db
+from bakery.app import github, db
 from ..decorators import login_required
 from .models import ProjectCache
 from ..models import Project
