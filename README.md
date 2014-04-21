@@ -81,6 +81,9 @@ To restore Font Bakery, reinstall it so that files like `local.cfg` are recreate
 
 ## Contribution
 
+[![Drone.io Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
+[![Coveralls.io Test Coverage Status](https://coveralls.io/repos/googlefonts/fontbakery/badge.png?branch=master)](https://coveralls.io/repos/googlefonts/fontbakery)
+
 The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome in any way!
 
 Thanks to Robert Martinez (@mray) for [contributing](https://github.com/googlefonts/fontbakery/pull/255) the project logo!
