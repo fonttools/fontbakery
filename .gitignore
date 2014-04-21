@@ -35,7 +35,7 @@ nosetests.xml
 venv
 celerydb.sqlite
 data.sqlite
-local.py
+local.cfg
 
 # static
 static/libs/*

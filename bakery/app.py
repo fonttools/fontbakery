@@ -17,6 +17,7 @@
 #pylint:disable-msg=W0612
 import logging
 import os
+import os.path as op
 
 from flask import Flask, request, render_template, g, session
 from logging import StreamHandler
@@ -24,7 +25,7 @@ from logging import StreamHandler
 app = Flask(__name__, static_folder=os.path.join(
     os.path.dirname(__file__), '..', 'static'))
 app.config.from_object('config')
-app.config.from_object('local')
+app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__), 'local.cfg')))
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
