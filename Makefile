@@ -34,7 +34,7 @@ run: venv/bin/activate requirements.txt
 
 # target: prun — production run project
 prun: venv/bin/activate requirements.txt
-	. venv/bin/activate; gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
+	. venv/bin/activate; gunicorn --log-file bakery-error.log -p bakery.pid -D -w 4 --worker-class socketio.sgunicorn.GeventSocketIOWorker -b 0.0.0.0:5000 wsgi:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o bakery/translations/messages.pot bakery
