@@ -17,7 +17,7 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 
-from bakery import app, register_blueprints
+from bakery.app import app, register_blueprints
 
 
 register_blueprints(app)
