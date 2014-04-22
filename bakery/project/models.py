@@ -379,7 +379,7 @@ class ProjectBuild(db.Model):
         db.session.refresh(project)
         db.session.refresh(build)
         if current_app.config.get('BACKGROUND'):
-            process_project.ctx_delay(project, build, revision, force_sync)
+            process_project.delay(project, build, revision, force_sync)
         else:
             process_project(project, build, revision, force_sync)
         return build
