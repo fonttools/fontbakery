@@ -20,7 +20,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
 
-from bakery.app import db, app
+from bakery.app import db, app, register_blueprints
+register_blueprints(app)
 
 ctx = app.test_request_context('/')
 ctx.push()
