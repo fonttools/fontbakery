@@ -508,7 +508,12 @@ def fontaine_process(project, build, log):
     files = glob.glob('*.ttf')
     for file in files:
         cmd = "pyfontaine --text '%s' >> 'sources/fontaine.txt'" % file
-        run(cmd, cwd=_out, log=log)
+        try:
+            run(cmd, cwd=_out, log=log)
+        except StandardError:
+            log.write('PyFontaine raised exception. Check latest version.')
+            # Ignore pyfontaine if it raises error
+            pass
     # TODO also save the totals for the dashboard....
     #   log.write('Running Fontaine on Results\n', prefix='### ')
     #   fonts = utils.project_fontaine(project)

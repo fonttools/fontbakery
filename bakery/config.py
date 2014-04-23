@@ -60,6 +60,6 @@ ROOT = os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 HOOK_URL = 'http://bakery.fontforge.org/api/webhook/{id}'
 
 # Path to binary ot-sanitizer
-OTS_BINARY_PATH = os.path.join(ROOT, 'out/Default/ot-sanitise')
+OTS_BINARY_PATH = os.path.join(ROOT, 'ots/out/Default/ot-sanitise')
 
 del os

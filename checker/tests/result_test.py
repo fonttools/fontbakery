@@ -20,9 +20,46 @@ import fontforge
 import unicodedata
 import yaml
 import os
+import subprocess
+import sys
 import magic
 
 from fontTools import ttLib
+from bakery.app import app
+
+
+def prun(command, cwd, log=None):
+    """
+    Wrapper for subprocess.Popen that capture output and return as result
+
+        :param command: shell command to run
+        :param cwd: current working dir
+        :param log: loggin object with .write() method
+
+    """
+    env = os.environ.copy()
+    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
+    p = subprocess.Popen(command, shell=True, cwd=cwd,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         close_fds=True, env=env)
+    stdout = p.communicate()[0]
+    if log:
+        log.write('$ %s' % command)
+        log.write(stdout)
+    return stdout
+
+
+class OTSTest(TestCase):
+
+    targets = ['result']
+    tool = 'ot-sanitizer'
+    name = __name__
+    path = '.'
+
+    def test_ots(self):
+        stdout = prun('{0} {1}'.format(app.config['OTS_BINARY_PATH'], self.path),
+                      app.config['ROOT'])
+        self.assertEqual('asdasd', stdout)
 
 
 class FontToolsTest(TestCase):
