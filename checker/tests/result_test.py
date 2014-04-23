@@ -56,6 +56,7 @@ class OTSTest(TestCase):
     name = __name__
     path = '.'
 
+    @tags('required',)
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome """
         stdout = prun('{0} {1}'.format(app.config['OTS_BINARY_PATH'], self.path),
