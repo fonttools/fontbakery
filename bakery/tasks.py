@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 import os
+import sys
 import glob
 import subprocess
 import codecs
@@ -41,7 +42,10 @@ def run(command, cwd, log):
     # log the command
     log.write('\n$ %s\n' % command)
     # Start the command
-    p = subprocess.Popen(command, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
+    env = os.environ.copy()
+    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
+    p = subprocess.Popen(command, shell=True, cwd=cwd, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, close_fds=True, env=env)
     while True:
         # Read output and errors
         stdout = p.stdout.readline()
@@ -77,8 +81,11 @@ def prun(command, cwd, log=None):
     """
     # print the command on the worker console
     print("[%s]:%s" % (cwd, command))
+    env = os.environ.copy()
+    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
     p = subprocess.Popen(command, shell=True, cwd=cwd,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         close_fds=True, env=env)
     stdout = p.communicate()[0]
     if log:
         log.write('$ %s' % command)
@@ -442,7 +449,7 @@ def subset_process(project, build, log):
             #   --null --nmr --roundtrip --script --subset=$subset \
             #   $font.ttf $font.$subset >> $font.$subset.log \
             # 2>> $font.$subset.log; \
-            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py" + \
+            cmd = str("python %(wd)s/scripts/subset.py" + \
                  " --subset=%(subset)s" + \
                  " --null --nmr --roundtrip --script" + \
                  " '%(out)s.ttf'" + \
@@ -453,7 +460,7 @@ def subset_process(project, build, log):
                     'wd': app.config['ROOT']
                     }
             run(cmd, cwd=_out, log=log)
-            cmd = str("%(wd)s/venv/bin/python %(wd)s/scripts/subset.py" + \
+            cmd = str("python %(wd)s/scripts/subset.py" + \
                  " --subset=%(subset)s" + \
                  " --null --nmr --roundtrip --script --opentype-features" + \
                  " '%(out)s.ttf'" + \
@@ -481,7 +488,7 @@ def generate_metadata_process(project, build, log):
 
     _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    cmd = "%(wd)s/venv/bin/python %(wd)s/scripts/genmetadata.py '%(out)s'"
+    cmd = "python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
     run(cmd % {'wd': app.config['ROOT'], 'out': _out}, cwd=_out, log=log)
 
@@ -500,8 +507,7 @@ def fontaine_process(project, build, log):
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
-        cmd = "python %s/venv/bin/pyfontaine --text '%s' >> 'sources/fontaine.txt'" % (
-            app.config['ROOT'], file)
+        cmd = "python pyfontaine --text '%s' >> 'sources/fontaine.txt'" % file
         run(cmd, cwd=_out, log=log)
     # TODO also save the totals for the dashboard....
     #   log.write('Running Fontaine on Results\n', prefix='### ')
@@ -651,7 +657,7 @@ def discover_dashboard(project, build, log):
     _out_src = os.path.join(app.config['DATA_ROOT'],
         '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    cmd = "{wd}/venv/bin/python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
+    cmd = "python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
         wd=app.config['ROOT'], out=_out_src, yaml=_yaml)
     log.write('Discovery Dashboard data\n', prefix='### ')
     run(cmd, cwd=_out_src, log=log)
