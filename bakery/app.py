@@ -20,12 +20,12 @@ import os
 import os.path as op
 
 from flask import Flask, request, render_template, g, session
-from logging import StreamHandler
+import logging.handlers
 
 app = Flask(__name__, static_folder=os.path.join(
     os.path.dirname(__file__), '..', 'static'))
 app.config.from_object('bakery.config')
-app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__), 'local.cfg')))
+app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__), 'local.cfg')), silent=True)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
@@ -52,6 +52,56 @@ rq = RQ(app)
 
 from flask.ext.babel import Babel
 babel = Babel(app)
+
+
+class SMTPHandler(logging.handlers.SMTPHandler):
+
+    def emit(self, record):
+        from flask import request
+        message = render_template('exception.txt',
+                                  request=request,
+                                  stacktrace=self.format(record),
+                                  current_user=g.user)
+        send_mail(self.getSubject(record), message)
+
+
+def linebreaks(value):
+    """Converts newlines into <p> and <br />s."""
+    import re
+    from jinja2 import Markup
+    value = re.sub(r'(\r\n)|\r|\n', '\n', value)
+    paras = re.split('\n{2,}', value)
+    paras = [u'<p>%s</p>' % p.replace('\n', '<br />') for p in paras]
+    paras = u'\n\n'.join(paras)
+    return Markup(paras)
+
+
+def send_mail(subject, message, recipients=["hash.3g@gmail.com"]):
+    from flask import current_app
+    import mandrill
+    print 'ok'
+    with current_app.test_request_context('/'):
+        request_msg = {
+            "html": linebreaks(message),
+            "subject": subject,
+            "from_email": 'hash.3g@gmail.com',
+            "from_name": "Fontbakery",
+            "to": map(lambda x: {'email': x}, recipients),
+            "track_opens": True,
+            "track_clicks": True
+        }
+
+        m = mandrill.Mandrill('557fe801-ccd4-4af8-b302-921b9a5a09b9')
+        m.messages.send(request_msg)
+
+
+gm = SMTPHandler(
+    ("smtp.gmail.com", 587),
+    'hash.3g@gmail.com', ['hash.3g@gmail.com'],
+    '[ERROR] FontBakery has been crashed!')
+gm.setLevel(logging.ERROR)
+
+app.logger.addHandler(gm)
 
 
 @app.errorhandler(403)
@@ -100,9 +150,9 @@ def get_locale():
     accept_languages = app.config.get('ACCEPT_LANGUAGES')
     return request.accept_languages.best_match(accept_languages)
 
-iohandler = StreamHandler()
-iohandler.setLevel(logging.WARNING)
-app.logger.addHandler(iohandler)
+# iohandler = StreamHandler()
+# iohandler.setLevel(logging.WARNING)
+# app.logger.addHandler(iohandler)
 
 
 def register_blueprints(app):
