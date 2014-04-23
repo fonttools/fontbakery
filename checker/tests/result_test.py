@@ -52,14 +52,15 @@ def prun(command, cwd, log=None):
 class OTSTest(TestCase):
 
     targets = ['result']
-    tool = 'ot-sanitizer'
+    tool = 'OTS'
     name = __name__
     path = '.'
 
     def test_ots(self):
+        """ Is TTF file correctly sanitized for Firefox and Chrome """
         stdout = prun('{0} {1}'.format(app.config['OTS_BINARY_PATH'], self.path),
                       app.config['ROOT'])
-        self.assertEqual('asdasd', stdout)
+        self.assertEqual('', stdout.replace('\n', '. '))
 
 
 class FontToolsTest(TestCase):

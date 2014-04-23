@@ -511,7 +511,7 @@ def fontaine_process(project, build, log):
         try:
             run(cmd, cwd=_out, log=log)
         except StandardError:
-            log.write('PyFontaine raised exception. Check latest version.')
+            log.write('PyFontaine raised exception. Check latest version.\n')
             # Ignore pyfontaine if it raises error
             pass
     # TODO also save the totals for the dashboard....
