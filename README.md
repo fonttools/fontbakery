@@ -1,5 +1,6 @@
 <img src="https://raw.github.com/xen/fontbakery/master/docs/image.png">
 
+[![Build Status](https://travis-ci.org/hash3g/fontbakery.svg?branch=master)](https://travis-ci.org/hash3g/fontbakery)
 [![Coverage Status](https://coveralls.io/repos/hash3g/fontbakery/badge.png)](https://coveralls.io/r/hash3g/fontbakery)
 
 ## Introduction
