@@ -44,3 +44,6 @@ lxml
 scrapy
 html5lib
 unidecode
+
+# library to send emails
+mandrill

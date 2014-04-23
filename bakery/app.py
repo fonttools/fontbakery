@@ -57,6 +57,8 @@ babel = Babel(app)
 class SMTPHandler(logging.handlers.SMTPHandler):
 
     def emit(self, record):
+        if not app.config.get('MANDRILL_KEY'):
+            return
         from flask import request
         message = render_template('exception.txt',
                                   request=request,
@@ -79,7 +81,6 @@ def linebreaks(value):
 def send_mail(subject, message, recipients=["hash.3g@gmail.com"]):
     from flask import current_app
     import mandrill
-    print 'ok'
     with current_app.test_request_context('/'):
         request_msg = {
             "html": linebreaks(message),
@@ -91,7 +92,7 @@ def send_mail(subject, message, recipients=["hash.3g@gmail.com"]):
             "track_clicks": True
         }
 
-        m = mandrill.Mandrill('557fe801-ccd4-4af8-b302-921b9a5a09b9')
+        m = mandrill.Mandrill(app.config['MANDRILL_KEY'])
         m.messages.send(request_msg)
 
 
