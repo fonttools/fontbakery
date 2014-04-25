@@ -17,15 +17,21 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import sys
+# TODO DC can the following 2 lines be removed?
 # hardcoded for OSX
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
-print(sys.argv[1], sys.argv[2])
+print "Input: %s, Output: %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
 
 import fontforge
 
 font = fontforge.open(sys.argv[1])
 
+if sys.argv[3]:
+    otf = font.generate(sys.argv[3])
+
+# Convert curves to quadratic
 font.layers["Fore"].is_quadratic = True
+# Select all glyphs
 font.selection.all()
 #   Add Extrema
 font.addExtrema()
@@ -39,4 +45,3 @@ except:
 font.correctDirection()
 
 ttf = font.generate(sys.argv[2])
-otf = font.generate(sys.argv[3])
