@@ -1,4 +1,7 @@
-<img src="https://raw.github.com/xen/fontbakery/master/docs/image.png">
+<img src="https://raw.github.com/googlefonts/fontbakery/master/docs/image.png">
+
+[![Build Status](https://travis-ci.org/hash3g/fontbakery.svg?branch=master)](https://travis-ci.org/hash3g/fontbakery)
+[![Coverage Status](https://coveralls.io/repos/hash3g/fontbakery/badge.png)](https://coveralls.io/r/hash3g/fontbakery)
 
 ## Introduction
 
@@ -32,7 +35,7 @@ Then this command will start the web service on a localhost web server:
 
     $ make run;
 
-Then open [http://localhost:5000](http://localhost:5000) in your browser. 
+Then open [http://localhost:5000](http://localhost:5000) in your browser.
 
 Font Bakery gives a visual indication if the worker is not running.
 
@@ -46,7 +49,7 @@ During the development process you may wish to run a fake mail server:
 
 ### Font Tests
 
-Tests are in the `/checker` directory. 
+Tests are in the `/checker` directory.
 
 The test page shows tests that fail, with the cause of failure. This message is auto generated, but also you can specify them. For example, if this test fails then the message will contain the first and second `assertEqual` arguments:
 
@@ -75,9 +78,12 @@ This can help Font Bakery users understand what may be incorrect in their fonts,
 
 Given a default installation, backup `data` directory and `data.sqlite` file. That’s it!
 
-To restore Font Bakery, reinstall it so that files like `local.cfg` are recreated with different Github keys, then copy the `data` directory and `data.sqlite` file into the root directory. That's it! 
+To restore Font Bakery, reinstall it so that files like `local.cfg` are recreated with different Github keys, then copy the `data` directory and `data.sqlite` file into the root directory. That's it!
 
 ## Contribution
+
+[![Drone.io Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
+[![Coveralls.io Test Coverage Status](https://coveralls.io/repos/googlefonts/fontbakery/badge.png?branch=master)](https://coveralls.io/repos/googlefonts/fontbakery)
 
 The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome in any way!
 

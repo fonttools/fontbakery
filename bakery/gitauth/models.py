@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from ..extensions import db
+from bakery.app import db
 
 
 class User(db.Model):
@@ -28,8 +28,7 @@ class User(db.Model):
     name = db.Column(db.String(200))
     avatar = db.Column(db.String(1000))
     email = db.Column(db.String(200))
-    github_access_token = db.Column(db.String(200),
-        nullable=False, index=True)
+    github_access_token = db.Column(db.String(200), nullable=False, index=True)
 
     def __init__(self, login):
         self.login = login

@@ -48,3 +48,4 @@ scripts/lint.jar
 tmp/*
 
 .DS_Store
+/ots

@@ -1,0 +1,21 @@
+=== request.path ===
+{{ request.path }}
+=== request.method ===
+{{ request.method }}
+=== request.is_xhr ===
+{{ request.is_xhr }}
+=== request.args ===
+{{ request.args|tojson }}
+
+
+Request Headers: {{ request.headers }}
+Cookies: {{ request.cookies }}
+
+
+=== Stacktrace ===
+<pre>
+{{ stacktrace|safe}}
+</pre>
+
+
+Current User: {{ current_user }}{% if current_user.email %} - {{ current_user.email }}{% endif %}

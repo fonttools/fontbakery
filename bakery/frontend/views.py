@@ -16,9 +16,9 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from flask import (Blueprint, render_template, g, request,
-                    current_app, send_from_directory, redirect)
+                   current_app, send_from_directory, redirect)
 
-from ..extensions import pages
+from bakery.app import pages
 from ..project.models import Project
 from ..settings.models import FontStats
 

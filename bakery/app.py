@@ -15,112 +15,160 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 #pylint:disable-msg=W0612
-
+import logging
 import os
+import os.path as op
+
 from flask import Flask, request, render_template, g, session
+import logging.handlers
 
-from .extensions import db, mail, pages, rq, babel #, celery
+app = Flask(__name__, static_folder=os.path.join(
+    os.path.dirname(__file__), '..', 'static'))
+app.config.from_object('bakery.config')
+app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__), 'local.cfg')), silent=True)
 
-# blueprints
-from .gitauth import gitauth
-from .frontend import frontend
-from .realtime import realtime
-from .api import api
-from .settings import settings
-from .project import project
-# For import *
-__all__ = ['create_app', 'init_app']
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy(app)
+
+from flask.ext.mail import Mail
+mail = Mail(app)
+
+from rauth.service import OAuth2Service
+
+github = OAuth2Service(
+    name='github',
+    base_url='https://api.github.com/',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize',
+    client_id=app.config['GITHUB_CONSUMER_KEY'],
+    client_secret=app.config['GITHUB_CONSUMER_SECRET']
+)
+
+from flask_flatpages import FlatPages
+pages = FlatPages(app)
+
+from flask.ext.rq import RQ
+rq = RQ(app)
+
+from flask.ext.babel import Babel
+babel = Babel(app)
 
 
-def create_app(app_name=__name__):
-    # Flask application constructor. Doesn't init extensions and blueprints
-    # because caller can use its own configuration.
+class SMTPHandler(logging.handlers.SMTPHandler):
 
-    app = Flask(app_name, static_folder = os.path.join(
-        os.path.dirname(__file__), '..', 'static') )
-    return app
+    def emit(self, record):
+        if not app.config.get('MANDRILL_KEY'):
+            return
+        from flask import request
+        message = render_template('exception.txt',
+                                  request=request,
+                                  stacktrace=self.format(record),
+                                  current_user=g.user)
+        send_mail(self.getSubject(record), message)
 
 
-def init_app(app):
-    # Register all blueprints and init extensions.
-    import logging
-    from logging import StreamHandler
-    iohandler = StreamHandler()
-    iohandler.setLevel(logging.WARNING)
-    app.logger.addHandler(iohandler)
+def linebreaks(value):
+    """Converts newlines into <p> and <br />s."""
+    import re
+    from jinja2 import Markup
+    value = re.sub(r'(\r\n)|\r|\n', '\n', value)
+    paras = re.split('\n{2,}', value)
+    paras = [u'<p>%s</p>' % p.replace('\n', '<br />') for p in paras]
+    paras = u'\n\n'.join(paras)
+    return Markup(paras)
 
+
+def send_mail(subject, message, recipients=["hash.3g@gmail.com"]):
+    from flask import current_app
+    import mandrill
+    with current_app.test_request_context('/'):
+        request_msg = {
+            "html": linebreaks(message),
+            "subject": subject,
+            "from_email": 'hash.3g@gmail.com',
+            "from_name": "Fontbakery",
+            "to": map(lambda x: {'email': x}, recipients),
+            "track_opens": True,
+            "track_clicks": True
+        }
+
+        m = mandrill.Mandrill(app.config['MANDRILL_KEY'])
+        m.messages.send(request_msg)
+
+
+gm = SMTPHandler(
+    ("smtp.gmail.com", 587),
+    'hash.3g@gmail.com', ['hash.3g@gmail.com'],
+    '[ERROR] FontBakery has been crashed!')
+gm.setLevel(logging.ERROR)
+
+app.logger.addHandler(gm)
+
+
+@app.errorhandler(403)
+def forbidden_page(error):
+    return render_template("misc/403.html"), 403
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("misc/404.html"), 404
+
+
+@app.errorhandler(500)
+def server_error_page(error):
+    return render_template("misc/500.html"), 500
+
+
+@app.before_request
+def guser():
+    g.user = None
+    if 'user_id' in session:
+        if session['user_id']:
+            #pylint:disable-msg=E1101
+            from gitauth.models import User
+            user = User.query.get(session['user_id'])
+            if user:
+                g.user = user
+            else:
+                del session['user_id']
+
+
+@app.before_request
+def gdebug():
+    if app.debug:
+        g.debug = True
+    else:
+        g.debug = False
+
+
+@babel.localeselector
+def get_locale():
+    if g.user:
+        if hasattr(g.user, 'ui_lang'):
+            return g.user.ui_lang
+
+    accept_languages = app.config.get('ACCEPT_LANGUAGES')
+    return request.accept_languages.best_match(accept_languages)
+
+# iohandler = StreamHandler()
+# iohandler.setLevel(logging.WARNING)
+# app.logger.addHandler(iohandler)
+
+
+def register_blueprints(app):
+    from .gitauth import gitauth
+    from .frontend import frontend
+    from .realtime import realtime
+    from .api import api
+    from .settings import settings
+    from .project import project
     app.register_blueprint(gitauth)
     app.register_blueprint(frontend)
     app.register_blueprint(realtime)
     app.register_blueprint(settings)
     app.register_blueprint(api)
-    # keep it last
     app.register_blueprint(project)
-
-    extensions_fabrics(app)
-    error_pages(app)
-    gvars(app)
-    register_filters(app)
-
-
-def extensions_fabrics(app):
-    # All extensions should have .init_app method to allow divide instancing
-    # and application object register.
-    db.init_app(app)
-    mail.init_app(app)
-    babel.init_app(app)
-    pages.init_app(app)
-    rq.init_app(app)
-    # github.init_app(app)
-
-
-def error_pages(app):
-    # HTTP error pages definitions
-
-    @app.errorhandler(403)
-    def forbidden_page(error):
-        return render_template("misc/403.html"), 403
-
-    @app.errorhandler(404)
-    def page_not_found(error):
-        return render_template("misc/404.html"), 404
-
-    @app.errorhandler(500)
-    def server_error_page(error):
-        return render_template("misc/500.html"), 500
-
-
-def gvars(app):
-    # Place to register project-wide global variables.
-    from gitauth.models import User
-
-    @app.before_request
-    def guser():
-        g.user = None
-        if 'user_id' in session:
-            if session['user_id']:
-                #pylint:disable-msg=E1101
-                user = User.query.get(session['user_id'])
-                if user:
-                    g.user = user
-                else:
-                    del session['user_id']
-
-    @app.before_request
-    def gdebug():
-        if app.debug:
-            g.debug = True
-        else:
-            g.debug = False
-
-    @babel.localeselector
-    def get_locale():
-        if g.user:
-            if hasattr(g.user, 'ui_lang'):
-                return g.user.ui_lang
-
-        accept_languages = app.config.get('ACCEPT_LANGUAGES')
-        return request.accept_languages.best_match(accept_languages)
 
 
 def register_filters(app):
@@ -130,3 +178,5 @@ def register_filters(app):
     app.jinja_env.filters['pretty_date'] = pretty_date
     app.jinja_env.filters['signify'] = signify
     app.jinja_env.add_extension('jinja2.ext.do')
+
+register_filters(app)

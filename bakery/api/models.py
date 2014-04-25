@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from datetime import datetime
-from ..extensions import db
+from bakery.app import db
 
 
 class Task(db.Model):

@@ -14,15 +14,14 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
+import sys
 
-from bakery import create_app, init_app
-from bakery.app import db
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-app = create_app(app_name='bakery')
-app.config['DEBUG'] = True
-app.config.from_object('config')
-app.config.from_pyfile('local.cfg', silent=True)
-init_app(app)
+
+from bakery.app import db, app, register_blueprints
+register_blueprints(app)
 
 ctx = app.test_request_context('/')
 ctx.push()

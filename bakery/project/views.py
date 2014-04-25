@@ -24,6 +24,7 @@ from ..decorators import login_required
 from ..utils import project_fontaine
 from .models import Project, ProjectBuild
 from functools import wraps
+from fontaine.ext.subsets import Extension as SubsetExtension
 
 import itsdangerous
 
@@ -133,9 +134,10 @@ def setup(p):
     originalConfig = p.config
     error = False
 
+    subsetvals = sorted(list(SubsetExtension.get_subsets()))
     if request.method == 'GET':
         return render_template('project/setup.html', project=p,
-                               subsetvals=DEFAULT_SUBSET_LIST)
+                               subsetvals=subsetvals)
 
     if not request.form.get('license_file') in config['local']['txt_files']:
         error = True
@@ -168,7 +170,7 @@ def setup(p):
 
     subset_list = request.form.getlist('subset')
     for i in subset_list:
-        if i not in DEFAULT_SUBSET_LIST:
+        if i not in subsetvals:
             error = True
             flash(_('Subset value is wrong'))
     if len(subset_list) < 0:
@@ -185,7 +187,7 @@ def setup(p):
 
     if error:
         return render_template('project/setup.html', project=p,
-                               subsetvals=DEFAULT_SUBSET_LIST)
+                               subsetvals=subsetvals)
 
     if originalConfig != config:
         flash(_("Setup updated"))
@@ -236,7 +238,7 @@ def ufiles(p, revision=None, name=None):
         revision = 'HEAD'
 
     return render_template('project/ufiles.html', project=p,
-                            revision=revision)
+                           revision=revision)
 
 
 @project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
@@ -253,7 +255,7 @@ def ufile(p, revision=None, name=None):
     mime, data = p.revision_file(revision, name)
 
     return render_template('project/ufile.html', project=p,
-                            revision=revision, name=name, mime=mime, data=data)
+                           revision=revision, name=name, mime=mime, data=data)
 
 
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
@@ -335,12 +337,12 @@ def rtests(p, build_id):
 
     test_result = b.result_tests()
     summary = {
-        'all_tests': sum([int(y['sum']) for x, y in test_result.items()]),
+        'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
-        'all_error': sum([len(x['error']) for x in test_result.values()]),
-        'all_failure': sum([len(x['failure']) for x in test_result.values()]),
-        'all_fixed': sum([len(x['fixed']) for x in test_result.values()]),
-        'all_success': sum([len(x['success']) for x in test_result.values()]),
+        'all_error': sum([len(x.get('error', [])) for x in test_result.values()]),
+        'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
+        'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
+        'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
         'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
     }
     return render_template('project/rtests.html', project=p,

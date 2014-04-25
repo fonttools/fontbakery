@@ -48,7 +48,7 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
         prev = self.status
         while True:
             gevent.sleep(0.5)
-            workers = [w.state != 'idle' for w in Worker.all(self._conn)]
+            workers = [w.get_state() != 'idle' for w in Worker.all(self._conn)]
 
             if len(workers) == 0:
                 self.status = 'gone'

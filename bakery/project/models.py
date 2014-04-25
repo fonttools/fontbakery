@@ -23,12 +23,13 @@ import re
 from datetime import datetime
 import difflib
 
-from flask import current_app, json
+from flask import current_app
 
+from ..app import db
 from ..decorators import lazy_property
-from ..extensions import db
 from ..utils import saveMetadata
-from ..tasks import process_project, prun, project_git_sync, upstream_revision_tests, result_tests
+from ..tasks import process_project, prun, project_git_sync, \
+    upstream_revision_tests, result_tests
 from .state import (project_state_get, project_state_save, walkWithoutGit)
 
 
@@ -221,7 +222,7 @@ class Project(db.Model):
 
     def sync(self):
         """ Call in background git syncronization """
-        project_git_sync.ctx_delay(self)
+        project_git_sync.delay(self)
 
     def gitlog(self, skip=0):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
@@ -378,7 +379,7 @@ class ProjectBuild(db.Model):
         db.session.refresh(project)
         db.session.refresh(build)
         if current_app.config.get('BACKGROUND'):
-            process_project.ctx_delay(project, build, revision, force_sync)
+            process_project.delay(project, build, revision, force_sync)
         else:
             process_project(project, build, revision, force_sync)
         return build

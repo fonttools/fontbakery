@@ -17,21 +17,15 @@
 
 from __future__ import print_function
 
-import sys, os
+import os
+import sys
 import requests
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from bakery import create_app, init_app
+from bakery.app import db, app
 from bakery.models import FontStats
-from bakery.extensions import db
-
-app = create_app(app_name='bakery')
-app.config['DEBUG'] = True
-app.config.from_object('config')
-app.config.from_pyfile('local.cfg', silent=True)
-init_app(app)
 
 ctx = app.test_request_context('/')
 ctx.push()
@@ -54,10 +48,10 @@ for i in c.find_all('div', 'row')[1:]:
         s = FontStats()
 
     s.family = str(family).lower()
-    s.total = int(total.replace(',',''))
-    s.month = int(month.replace(',',''))
-    s.week = int(week.replace(',',''))
-    s.yesterday = int(yesterday.replace(',',''))
+    s.total = int(total.replace(',', ''))
+    s.month = int(month.replace(',', ''))
+    s.week = int(week.replace(',', ''))
+    s.yesterday = int(yesterday.replace(',', ''))
     s.rate = float(rate)
 
     db.session.add(s)

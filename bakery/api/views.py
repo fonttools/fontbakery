@@ -14,11 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from flask import Blueprint, g
 
-import logging
-import os
-from flask import Blueprint, request, json, current_app, g
-from ..extensions import db
 from ..models import Project, ProjectBuild
 
 api = Blueprint('api', __name__)
@@ -27,10 +24,11 @@ api = Blueprint('api', __name__)
 @api.route('/webhook/<path:project_id>')
 def webhook(project_id):
     # Make it more secure and check for in request header X-Hub-Signature
-    # It should have HMAC of payload body and secret key request.args.get('payload')
+    # It should have HMAC of payload body and secret key
+    # request.args.get('payload')
     # secret key is project signify(full_path)
-    p = Project.query.filter_by(
-         login=g.user.login, id=project_id).first_or_404()
+    p = Project.query.filter_by(login=g.user.login, id=project_id)
+    p = p.first_or_404()
     ProjectBuild.make_build(p, revision='HEAD', force_sync=True)
     return "Ok"
 

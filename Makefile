@@ -27,6 +27,8 @@ static/bower.json:
 # target: setup — bootstrap environment
 setup: venv/bin/activate requirements.txt static/bower.json
 	. venv/bin/activate; pip install -Ur requirements.txt
+	rm -rf ots ; git clone https://github.com/khaledhosny/ots.git
+	cd ots ; python gyp_ots ; make
 
 # target: run — run project
 run: venv/bin/activate requirements.txt
@@ -34,7 +36,7 @@ run: venv/bin/activate requirements.txt
 
 # target: prun — production run project
 prun: venv/bin/activate requirements.txt
-	. venv/bin/activate; gunicorn -c gunicorn_config.py --worker-class socketio.sgunicorn.GeventSocketIOWorker wsgi:app
+	. venv/bin/activate; gunicorn --log-file bakery-error.log -p bakery.pid -D -w 4 --worker-class socketio.sgunicorn.GeventSocketIOWorker -b 0.0.0.0:5000 wsgi:app
 
 babel: venv/bin/activate
 	. venv/bin/activate; pybabel extract -F babel.cfg -o bakery/translations/messages.pot bakery

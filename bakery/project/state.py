@@ -21,9 +21,7 @@ import re
 import yaml
 # from flask import current_app
 from fontTools.ttLib import TTFont
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..'))
-DATA_ROOT = os.path.join(ROOT, 'data')
+from bakery.app import app
 
 
 def walkWithoutGit(path):
@@ -76,14 +74,14 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
         local: the internal state of the project
         state: the external state of the project
     """
-    _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % project)
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     # Define bakery.yaml locations
-    bakery_default_yml = os.path.join(ROOT, 'bakery', 'bakery.defaults.yaml')
-    bakery_project_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/bakery.yaml' % project)
-    bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
+    bakery_default_yml = os.path.join(app.config['ROOT'], 'bakery', 'bakery.defaults.yaml')
+    bakery_project_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/bakery.yaml' % project)
+    bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % project)
     # Define state.yaml locations
-    state_default_yml = os.path.join(ROOT, 'bakery', 'state.defaults.yaml')
-    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
+    state_default_yml = os.path.join(app.config['ROOT'], 'bakery', 'state.defaults.yaml')
+    state_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.state.yaml' % project)
 
     # Create internal state object, 'local'
     # TODO? rename this throughout codebase to bakeryStateInternal
@@ -392,7 +390,7 @@ def project_state_autodiscovery(project, state):
     :param project: :class:`~bakery.models.Project` instance
     :param state: The external state of this project.
     """
-    projectdir = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in' % project)
+    projectdir = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in' % project)
 
     autodiscover = StateAutodiscover(projectdir, default_state=state)
     state['copyright_license'] = autodiscover.copyright_license()
@@ -421,8 +419,8 @@ def project_state_save(project, state=None, local=None):
     if not local:
         local = project.config['local']
 
-    bakery_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % project)
-    state_local_yml = os.path.join(DATA_ROOT, '%(login)s/%(id)s.state.yaml' % project)
+    bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % project)
+    state_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.state.yaml' % project)
 
     f = open(bakery_local_yml, 'w')
     f.write(yaml.safe_dump(state))
