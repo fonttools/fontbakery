@@ -56,7 +56,7 @@ npm install -g bower
 ```sh
 # Use yum to install dependencies
 sudo apt-get update;
-sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial libxslt1-dev libxml2-dev automake autoconf libtool libharfbuzz-dev libharfbuzz-dev qt5-default libffi-dev ttfautohint python-software-properties g++ make libssl-dev python-dev;
+sudo apt-get install -y build-essential python python-virtualenv python-pip sqlite libsqlite3-dev libevent-2.0-5 libevent-dev fontforge python-fontforge fonttools redis-server curl git mercurial libxslt1-dev libxml2-dev automake autoconf libtool libharfbuzz-dev libharfbuzz-dev qt5-default libffi-dev ttfautohint python-software-properties g++ make libssl-dev python-dev subversion;
 # for Ubuntu 12.04 you need to install nodejs via PPA since the main repo is outdated
 sudo add-apt-repository ppa:chris-lea/node.js;
 sudo apt-get update;
