@@ -27,7 +27,7 @@ static/bower.json:
 # target: setup — bootstrap environment
 setup: venv/bin/activate requirements.txt static/bower.json
 	. venv/bin/activate; pip install -Ur requirements.txt
-	git clone https://github.com/khaledhosny/ots.git
+	rm -rf ots ; git clone https://github.com/khaledhosny/ots.git
 	cd ots ; python gyp_ots ; make
 
 # target: run — run project

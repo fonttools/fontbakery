@@ -27,6 +27,7 @@ from .utils import RedisFd
 import re
 import yaml
 from fontTools import ttLib
+from fontaine.ext.subsets import Extension as SubsetExtension
 
 
 def run(command, cwd, log):
@@ -410,13 +411,13 @@ def ttx_process(project, build, log):
         name = name[:-4]  # cut .ufo
         filename = os.path.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i -q '%s.ttf'" % filename
+        cmd = "ttx -i '%s.ttf'" % filename  # -q
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i -q '%s.ttx'" % filename
+        cmd = "ttx -i '%s.ttx'" % filename  # -q
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
@@ -439,38 +440,34 @@ def subset_process(project, build, log):
     _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
 
-    log.write('Subset TTFs (subset.py)\n', prefix='### ')
+    log.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in glob.glob("*.ufo"):
             name = name[:-4]  # cut .ufo
-            # python ~/googlefontdirectory/tools/subset/subset.py \
-            #   --null --nmr --roundtrip --script --subset=$subset \
-            #   $font.ttf $font.$subset >> $font.$subset.log \
-            # 2>> $font.$subset.log; \
-            cmd = str("python %(wd)s/scripts/subset.py" + \
-                 " --subset=%(subset)s" + \
-                 " --null --nmr --roundtrip --script" + \
-                 " '%(out)s.ttf'" + \
-                 " '%(out)s.%(subset)s'") % {
-                    'subset':subset,
-                    'out': os.path.join(_out, name),
-                    'name': name,
-                    'wd': app.config['ROOT']
-                    }
+            glyphs = open(SubsetExtension.get_subset_path(subset)).read()
+            cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
+                   " --layout-features='' --glyph-names --symbol-cmap"
+                   " --notdef-glyph --notdef-outline --recommended-glyphs"
+                   " --name-IDs='*' --name-legacy --name-languages='*'"
+                   " --hinting")
+            cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
+                         'out': os.path.join(_out, name)}
             run(cmd, cwd=_out, log=log)
-            cmd = str("python %(wd)s/scripts/subset.py" + \
-                 " --subset=%(subset)s" + \
-                 " --null --nmr --roundtrip --script --opentype-features" + \
-                 " '%(out)s.ttf'" + \
-                 " '%(out)s.%(subset)s-opentype'") % {
-                    'subset':subset,
-                    'out': os.path.join(_out, name),
-                    'name': name,
-                    'wd': app.config['ROOT']
-                    }
+            run('mv %(out)s.ttf.subset %(out)s.%(subset)s' % {'subset': subset,
+                'out': os.path.join(_out, name)}, cwd=_out, log=log)
+
+            cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
+                   " --layout-features='*' --glyph-names --symbol-cmap"
+                   " --notdef-glyph --notdef-outline --recommended-glyphs"
+                   " --name-IDs='*' --name-legacy --name-languages='*'"
+                   " --hinting")
+            cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
+                         'out': os.path.join(_out, name)}
             run(cmd, cwd=_out, log=log)
+            run('mv %(out)s.ttf.subset %(out)s.%(subset)s-opentype' % {'subset': subset,
+                'out': os.path.join(_out, name)}, cwd=_out, log=log)
     os.chdir(_out)
     files = glob.glob('*+latin*')
     for filename in files:
