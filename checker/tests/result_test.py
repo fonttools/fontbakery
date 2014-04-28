@@ -147,7 +147,7 @@ class FontToolsTest(TestCase):
                 self.fail("%s contain non-ascii characters" % name_record.nameID)
 
 
-from fontaine.font import Font
+from fontaine.font import FontFactory
 import re
 
 
@@ -158,7 +158,7 @@ class FontaineTest(TestCase):
     path = '.'
 
     def setUp(self):
-        self.font = Font(self.path)
+        self.font = FontFactory.openfont(self.path)
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()

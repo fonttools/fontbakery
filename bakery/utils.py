@@ -97,7 +97,7 @@ class RedisFd(object):
 
 
 def project_fontaine(project, build):
-    from fontaine.font import Font
+    from fontaine.font import FontFactory
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
@@ -114,7 +114,7 @@ def project_fontaine(project, build):
     # Run pyFontaine on all the TTF fonts
     fonts = {}
     for filename in glob.glob("*.ttf"):
-        fontaine = Font(filename)
+        fontaine = FontFactory.openfont(filename)
         fonts[filename] = fontaine
 
     # Make a plain dictionary, unlike the fancy data structures used by pyFontaine :)

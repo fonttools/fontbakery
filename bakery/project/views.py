@@ -361,13 +361,13 @@ def summary(p, build_id):
 
     test_result = b.result_tests()
     summary = {
-        'all_tests': sum([int(y['sum']) for x, y in test_result.items()]),
+        'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
-        'all_error': sum([len(x['error']) for x in test_result.values()]),
-        'all_failure': sum([len(x['failure']) for x in test_result.values()]),
-        'all_fixed': sum([len(x['fixed']) for x in test_result.values()]),
-        'all_success': sum([len(x['success']) for x in test_result.values()]),
-        'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
+        'all_error': sum([len(x.get('error', [])) for x in test_result.values()]),
+        'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
+        'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
+        'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
+        'fix_asap': [dict(font=y, **t) for t in x.get('failure', []) for y, x in test_result.items() if 'required' in t['tags']],
     }
     return render_template('project/summary.html', project=p,
                            tests=test_result, build=b, summary=summary)

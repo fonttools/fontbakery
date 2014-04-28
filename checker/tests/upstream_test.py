@@ -17,13 +17,50 @@
 
 import fontforge
 import glob
+import lxml.etree
 import os
 import re
 
 from checker.base import BakeryTestCase as TestCase, tags
+from fontaine.builder import Director, Builder
+from fontaine.cmap import library
 
 
 COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
+
+
+class PyFontaineSubsetTest(TestCase):
+
+    targets = ['upstream']
+    tool = 'PyFontaine'
+    name = __name__
+    path = '.'
+
+    def setUp(self):
+        # This test uses custom collections for pyFontaine call
+        # We should save previous state of collection and then
+        # restore it in tearDown
+        self.old_collections = library.collections
+
+    def tearDown(self):
+        library.collections = self.old_collections
+
+    @tags('required')
+    def test_font_coverage_subset_100(self):
+        """ Is font fully coveraged subsets """
+        library.collections = ['subsets']
+        tree = Director().construct_tree([self.path])
+        contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
+        docroot = lxml.etree.fromstring(contents)
+        for orth in docroot.xpath('//orthography'):
+            try:
+                value = int(orth.xpath('./percentCoverage/text()')[0])
+                if value != 100:
+                    self.fail('%s coveraged only %s' % (
+                        orth.xpath('./commonName/text()')[0], value))
+                    break
+            except (ValueError, IndexError):
+                pass
 
 
 class SimpleBulkTest(TestCase):

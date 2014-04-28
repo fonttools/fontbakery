@@ -17,16 +17,16 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 """
-Script to find for TTF fonts in the given dir the character set coverage 
+Script to find for TTF fonts in the given dir the character set coverage
 by family average and per style, and list missing characters.
 
 Usage: $ ./famchar.py directory/
 """
 
-import sys, os, glob, pprint
-from fontaine.font import Font
+import sys, os, glob
+from fontaine.font import FontFactory
 
-# Need 1 arg 
+# Need 1 arg
 if len(sys.argv) < 2:
     print __doc__
     sys.exit()
@@ -42,10 +42,10 @@ else:
 # Run pyFontaine on all the TTF fonts
 fonts = {}
 for filename in glob.glob("*.*tf"):
-    fontaine = Font(filename)
+    fontaine = FontFactory.openfont(filename)
     fonts[filename] = fontaine
 
-# Make a plain dictionary 
+# Make a plain dictionary
 family = {}
 for fontfilename, fontaine in fonts.iteritems():
     # Use the font file name as a key to a dictionary of char sets
@@ -67,7 +67,7 @@ for fontfilename, fontaine in fonts.iteritems():
         if len(family[charsetname]) == len(fonts.items()):
             family[charsetname] = sum(family[charsetname]) / len(fonts.items())
         #print charsetname + ":", percentcomplete, "  "
-    #print '\n' 
+    #print '\n'
 
 
 # # pprint the full dict, could be yaml/json/etc

@@ -24,3 +24,4 @@ def run_set(path, target=None):
     assert os.path.exists(path)
     assert target
     return run_suite(make_suite(path, target))
+
