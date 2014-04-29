@@ -457,6 +457,7 @@ def subset_process(project, build, log):
             run(cmd, cwd=_out, log=log)
             run('mv %(out)s.ttf.subset %(out)s.%(subset)s' % {'subset': subset,
                 'out': os.path.join(_out, name)}, cwd=_out, log=log)
+    # remove +latin from the subset name
     os.chdir(_out)
     files = glob.glob('*+latin*')
     for filename in files:
