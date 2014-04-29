@@ -448,17 +448,6 @@ def subset_process(project, build, log):
             name = name[:-4]  # cut .ufo
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
             cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-                   " --layout-features='' --glyph-names --symbol-cmap"
-                   " --notdef-glyph --notdef-outline --recommended-glyphs"
-                   " --name-IDs='*' --name-legacy --name-languages='*'"
-                   " --hinting")
-            cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
-                         'out': os.path.join(_out, name)}
-            run(cmd, cwd=_out, log=log)
-            run('mv %(out)s.ttf.subset %(out)s.%(subset)s' % {'subset': subset,
-                'out': os.path.join(_out, name)}, cwd=_out, log=log)
-
-            cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
                    " --layout-features='*' --glyph-names --symbol-cmap"
                    " --notdef-glyph --notdef-outline --recommended-glyphs"
                    " --name-IDs='*' --name-legacy --name-languages='*'"
@@ -466,7 +455,7 @@ def subset_process(project, build, log):
             cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
                          'out': os.path.join(_out, name)}
             run(cmd, cwd=_out, log=log)
-            run('mv %(out)s.ttf.subset %(out)s.%(subset)s-opentype' % {'subset': subset,
+            run('mv %(out)s.ttf.subset %(out)s.%(subset)s' % {'subset': subset,
                 'out': os.path.join(_out, name)}, cwd=_out, log=log)
     os.chdir(_out)
     files = glob.glob('*+latin*')
