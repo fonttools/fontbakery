@@ -147,48 +147,52 @@ class FontToolsTest(TestCase):
                 self.fail("%s contain non-ascii characters" % name_record.nameID)
 
 
-from fontaine.font import FontFactory
+from fontaine.builder import Director, Builder
+from fontaine.cmap import library
+
+import lxml.etree
 import re
 
 
+def get_test_subset_function(value):
+    def function(self):
+        self.assertEqual(value, 100)
+    function.tags = ['note']
+    return function
+
+
 class FontaineTest(TestCase):
+
     targets = ['result']
     tool = 'pyfontaine'
     name = __name__
     path = '.'
 
     def setUp(self):
-        self.font = FontFactory.openfont(self.path)
-        # You can use ipdb here to interactively develop tests!
-        # Uncommand the next line, then at the iPython prompt: print(self.path)
-        # import ipdb; ipdb.set_trace()
+        # This test uses custom collections for pyFontaine call
+        # We should save previous state of collection and then
+        # restore it in tearDown
+        self.old_collections = library.collections
 
-    # def test_ok(self):
-    #     """ This test succeeds """
-    #     self.assertTrue(True)
-    #
-    # def test_failure(self):
-    #     """ This test fails """
-    #     self.assertTrue(False)
-    #
-    # def test_error(self):
-    #     """ Unexpected error """
-    #     1 / 0
-    #     self.assertTrue(False)
+    def tearDown(self):
+        library.collections = self.old_collections
 
-    def test_charMaker(self):
+    @classmethod
+    def __generateTests__(cls):
         # import ipdb; ipdb.set_trace()
         pattern = re.compile('[\W_]+')
-        functionTemplate = """def test_charset_%s(self, p): self.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"; self.assertTrue(p == 100)"""
-        for orthographyTuple in self.font.get_orthographies():
-            charmap = orthographyTuple[0]
-            percent = orthographyTuple[2]
-            shortname = pattern.sub('', charmap.common_name)
-            print "TODO: This doesn't work yet..."
-            print functionTemplate % (shortname, shortname, charmap.common_name)
-            print 'test_charset_%s(self, 100)' % shortname
-            exec functionTemplate % (shortname, shortname, charmap.common_name)
-            exec 'test_charset_%s(self, 100)' % shortname
+
+        library.collections = ['subsets']
+        tree = Director().construct_tree([cls.path])
+        contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
+
+        docroot = lxml.etree.fromstring(contents)
+        for orth in docroot.xpath('//orthography'):
+            value = int(orth.xpath('./percentCoverage/text()')[0])
+            common_name = orth.xpath('./commonName/text()')[0]
+            shortname = pattern.sub('', common_name)
+            exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, value)
+            exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
 
 
 class FontForgeSimpleTest(TestCase):

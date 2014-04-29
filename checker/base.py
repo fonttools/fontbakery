@@ -150,6 +150,8 @@ def make_suite(path, definedTarget):
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             TestCase.path = path
+            if getattr(TestCase, '__generateTests__', None):
+                TestCase.__generateTests__()
             if getattr(TestCase, 'tool', '').lower() == 'fontforge':
                 if path.lower().endswith('.ufo'):
                     # dev branch of fontforge python library has a bug
