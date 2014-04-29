@@ -45,7 +45,6 @@ class PyFontaineSubsetTest(TestCase):
     def tearDown(self):
         library.collections = self.old_collections
 
-    @tags('required')
     def test_font_coverage_subset_100(self):
         """ Is font fully coveraged subsets """
         library.collections = ['subsets']
@@ -53,14 +52,10 @@ class PyFontaineSubsetTest(TestCase):
         contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
         docroot = lxml.etree.fromstring(contents)
         for orth in docroot.xpath('//orthography'):
-            try:
-                value = int(orth.xpath('./percentCoverage/text()')[0])
-                if value != 100:
-                    self.fail('%s coveraged only %s' % (
-                        orth.xpath('./commonName/text()')[0], value))
-                    break
-            except (ValueError, IndexError):
-                pass
+            value = int(orth.xpath('./percentCoverage/text()')[0])
+            if value != 100:
+                self.fail('%s coveraged only %s%%' % (
+                    orth.xpath('./commonName/text()')[0], value))
 
 
 class SimpleBulkTest(TestCase):
