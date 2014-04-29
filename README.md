@@ -7,15 +7,15 @@
 
 Font Bakery is a font build service. The vision is to bring the [Continuous Integration](http://en.wikipedia.org/wiki/Continuous_integration) best practices of software development to [type design](http://en.wikipedia.org/wiki/Type_design).
 
-You give it a font project git repository, tell it which license the project is under, which font source files you wish to build into binaries, and set some build options. It then runs tests on the sources, and if they pass, builds the fonts and runs further tests on the binaries.
+You give it a font project in a git repository, tell it which license the project is under, which font source files you wish to build into binaries, and set some build options. It then runs tests on the sources, and if they pass, builds the fonts and runs further tests on the binaries. Finally it prepares the fonts for distribution in the Google Fonts API.
 
-You can publish your git repository conveniently on Github. If you wish to host your own repository, [GitLab HQ](https://github.com/gitlabhq/gitlabhq) can be helpful.
+You can publish your git repository conveniently with [Github](http://github.com). If you wish to host your own repository, [GitLab HQ](https://github.com/gitlabhq/gitlabhq) is a good web interface that provides similar functionality to Github.
 
-This project is under active development by Vitaly Volkhov and Dave Crossland. The first year of development, including the code architecture and design, was done by Mikhail Kashkin.
+Throughout 2014 this project is under active development by [Vitaly Volkhov](http://github.com/hash3g). The first year of development over 2013, including the code architecture and design, was done by [Mikhail Kashkin](http://github.com/xen). The project is organised by [Dave Crossland](http://github.com/davelab6)
 
 ### Disclaimer
 
-This project was given financial support by Google Fonts team within Google, Inc. The copyright to contributions done with that financial support is owned by Google, Inc. but Font Bakery is not an official Google product.
+This project was given financial support by [Google Fonts](http://github.com/googlefonts). The copyright to contributions done with that financial support is owned by Google, Inc. but Font Bakery is not an official Google product.
 
 ## Installation
 
