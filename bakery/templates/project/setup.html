@@ -50,7 +50,7 @@
       <div class="alert alert-info">{{ _("UFO folders and TTX files are found in upstream repository. Select what files are primary source") }}</div>
       <div class="radio">
       <label>
-        <input type="radio" name="source_files_type" id="source_files_type" value="ufo" 
+        <input type="radio" name="source_files_type" id="source_files_type" value="ufo"
           {% if config['state']['source_files_type']=='ufo' %}checked{% endif %}>
         {{ _("UFO is primary source") }}
       </label>
@@ -90,12 +90,18 @@
   <div class="form-group  anchorUnderNavbar">
     <label class="control-label col-sm-2" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
     <div class="col-sm-8">
-    <select for="subset" multiple="multiple" name="subset" class="form-control"
-      size="{{ subsetvals|length }}" required>
-      {% for i in subsetvals %}
-      <option {% if i in config['state']['subset'] %}selected="selected"{% endif %}>{{ i }}</option>
-      {% endfor %}
-    </select>
+      {% set subsetvals = project.get_subsets() %}
+      <table class="table">
+        <tbody>
+          {% for subset_name, percentage in subsetvals %}
+          <tr>
+            <td>{{ subset_name }}</td>
+            <td>{{ percentage }}%</td>
+            <td><input type="checkbox" value="{{ subset_name }}" name="subset"{% if subset_name in config['state']['subset'] %} checked="checked"{% endif %}></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -244,7 +250,7 @@
                 class="form-control" >
             <p class="text-muted">{{ _("Set string value here, or leave it blank to unset it") }}</p>
           {% else %}
-              {% for option, description in value.iteritems() %} 
+              {% for option, description in value.iteritems() %}
                 <label class="radio inline ">
                   <input type="radio" name="{{ item }}" value="{{ option }}" {% if config['state'][item] == option %}checked="checked"{% endif %} /> {{ description }}
                 </label>

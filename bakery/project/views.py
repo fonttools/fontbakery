@@ -24,7 +24,6 @@ from ..decorators import login_required
 from ..utils import project_fontaine
 from .models import Project, ProjectBuild
 from functools import wraps
-from fontaine.ext.subsets import Extension as SubsetExtension
 
 import itsdangerous
 
@@ -134,10 +133,8 @@ def setup(p):
     originalConfig = p.config
     error = False
 
-    subsetvals = sorted(list(SubsetExtension.get_subsets()))
     if request.method == 'GET':
-        return render_template('project/setup.html', project=p,
-                               subsetvals=subsetvals)
+        return render_template('project/setup.html', project=p)
 
     if not request.form.get('license_file') in config['local']['txt_files']:
         error = True
@@ -170,7 +167,7 @@ def setup(p):
 
     subset_list = request.form.getlist('subset')
     for i in subset_list:
-        if i not in subsetvals:
+        if i not in dict(p.get_subsets()).keys():
             error = True
             flash(_('Subset value is wrong'))
     if len(subset_list) < 0:
@@ -186,8 +183,7 @@ def setup(p):
             config['state'].pop('ttfautohint')
 
     if error:
-        return render_template('project/setup.html', project=p,
-                               subsetvals=subsetvals)
+        return render_template('project/setup.html', project=p)
 
     if originalConfig != config:
         flash(_("Setup updated"))

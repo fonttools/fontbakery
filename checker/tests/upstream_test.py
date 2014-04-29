@@ -29,9 +29,16 @@ from fontaine.cmap import library
 COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
 
 
-class PyFontaineSubsetTest(TestCase):
+def get_test_subset_function(value):
+    def function(self):
+        self.assertEqual(value, 100)
+    function.tags = ['note']
+    return function
 
-    targets = ['upstream']
+
+class FontaineTest(TestCase):
+
+    targets = ['upstream', 'result']
     tool = 'PyFontaine'
     name = __name__
     path = '.'
@@ -45,17 +52,21 @@ class PyFontaineSubsetTest(TestCase):
     def tearDown(self):
         library.collections = self.old_collections
 
-    def test_font_coverage_subset_100(self):
-        """ Is font fully coveraged subsets """
+    @classmethod
+    def __generateTests__(cls):
+        pattern = re.compile('[\W_]+')
+
         library.collections = ['subsets']
-        tree = Director().construct_tree([self.path])
+        tree = Director().construct_tree([cls.path])
         contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
+
         docroot = lxml.etree.fromstring(contents)
         for orth in docroot.xpath('//orthography'):
             value = int(orth.xpath('./percentCoverage/text()')[0])
-            if value != 100:
-                self.fail('%s coveraged only %s%%' % (
-                    orth.xpath('./commonName/text()')[0], value))
+            common_name = orth.xpath('./commonName/text()')[0]
+            shortname = pattern.sub('', common_name)
+            exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, value)
+            exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
 
 
 class SimpleBulkTest(TestCase):

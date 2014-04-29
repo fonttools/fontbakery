@@ -147,54 +147,6 @@ class FontToolsTest(TestCase):
                 self.fail("%s contain non-ascii characters" % name_record.nameID)
 
 
-from fontaine.builder import Director, Builder
-from fontaine.cmap import library
-
-import lxml.etree
-import re
-
-
-def get_test_subset_function(value):
-    def function(self):
-        self.assertEqual(value, 100)
-    function.tags = ['note']
-    return function
-
-
-class FontaineTest(TestCase):
-
-    targets = ['result']
-    tool = 'pyfontaine'
-    name = __name__
-    path = '.'
-
-    def setUp(self):
-        # This test uses custom collections for pyFontaine call
-        # We should save previous state of collection and then
-        # restore it in tearDown
-        self.old_collections = library.collections
-
-    def tearDown(self):
-        library.collections = self.old_collections
-
-    @classmethod
-    def __generateTests__(cls):
-        # import ipdb; ipdb.set_trace()
-        pattern = re.compile('[\W_]+')
-
-        library.collections = ['subsets']
-        tree = Director().construct_tree([cls.path])
-        contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
-
-        docroot = lxml.etree.fromstring(contents)
-        for orth in docroot.xpath('//orthography'):
-            value = int(orth.xpath('./percentCoverage/text()')[0])
-            common_name = orth.xpath('./commonName/text()')[0]
-            shortname = pattern.sub('', common_name)
-            exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, value)
-            exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
-
-
 class FontForgeSimpleTest(TestCase):
     targets = ['result']
     tool = 'FontForge'

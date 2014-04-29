@@ -220,6 +220,36 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
+    def subset_coverage_utest_values(self, utest):
+        """ Returns name of subset and its coverage percentage.
+            If test is not Subset then result value will be None. """
+        if utest.get('tool', '').lower() != 'pyfontaine':
+            return
+        match_subset_name = re.match(r'Is\s+Subset\s+(.*?)\s+covered 100%\?',
+                                     utest.get('methodDoc', ''))
+        if match_subset_name:
+            if utest.get('err_msg'):
+                m = re.match(r'^(\d+)\s', utest.get('err_msg'))
+                value = int(m.group(1))
+            else:
+                value = 100
+            return tuple([match_subset_name.group(1), value])
+
+    def get_subsets(self):
+        subsets = []
+        for name, td in self.revision_tests().items():
+            for utest in td.get('failure', []):
+                subsetval = self.subset_coverage_utest_values(utest)
+                if not subsetval or subsetval[0] in dict(subsets).keys():
+                    continue
+                subsets.append(subsetval)
+            for utest in td.get('success', []):
+                subsetval = self.subset_coverage_utest_values(utest)
+                if not subsetval or subsetval[0] in dict(subsets).keys():
+                    continue
+                subsets.append(subsetval)
+        return sorted(subsets)
+
     def sync(self):
         """ Call in background git syncronization """
         project_git_sync.delay(self)
