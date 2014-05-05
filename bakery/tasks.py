@@ -188,7 +188,8 @@ def copy_ufo_files(project, build, log):
             styleName = 'Regular'
         # Get the familyName, if its not set
         if not familyName:
-            familyName = _in_ufoFontInfo.get('familyName', '')
+            familyName = _in_ufoFontInfo.get('familyName', '') \
+                or _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '')
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
@@ -462,7 +463,7 @@ def subset_process(project, build, log):
     files = glob.glob('*+latin*')
     for filename in files:
         newfilename = filename.replace('+latin', '')
-        run("mv '%s' '%s'" % (filename, newfilename), cwd=_out, log=log)
+        run("mv \"%s\" \"%s\"" % (filename, newfilename), cwd=_out, log=log)
 
 
 def generate_metadata_process(project, build, log):
