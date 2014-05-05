@@ -37,6 +37,9 @@ def fix_metrics(filename):
     font = ttLib.TTFont(filename)
     ymin = 0
     ymax = 0
+    # OTF does not contain `glyf` table but contain reader
+    if font.sfntVersion == 'OTTO':
+        return
     for g in font['glyf'].glyphs:
         char = font['glyf'][g]
         if hasattr(char, 'yMin') and ymin > char.yMin:
