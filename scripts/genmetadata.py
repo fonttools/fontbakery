@@ -331,7 +331,7 @@ def createFonts(familydir, familyname):
             fontmetadata["filename"] = f
             ansiprint("Filename: " + fontmetadata["filename"], "green")
             fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
-            ansiprint("Copyright: " + fontmetadata["copyright"], "green")
+            ansiprint(u"Copyright: %s" % fontmetadata["copyright"].encode('ascii', 'ignore'), "green")
             fonts.append(fontmetadata)
     return fonts
 

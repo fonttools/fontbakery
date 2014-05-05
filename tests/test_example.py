@@ -1,5 +1,7 @@
 import unittest
 
+from bakery.app import app
+
 
 class ExampleTest(unittest.TestCase):
 
@@ -7,5 +9,4 @@ class ExampleTest(unittest.TestCase):
         self.assertFalse(False)
 
     def test_simple_coverage(self):
-        from bakery.app import app
         self.assertEquals(app.config['DEBUG'], True)
