@@ -177,6 +177,20 @@ def register_filters(app):
 
     app.jinja_env.filters['pretty_date'] = pretty_date
     app.jinja_env.filters['signify'] = signify
+    app.jinja_env.globals['app_version'] = git_info
     app.jinja_env.add_extension('jinja2.ext.do')
+
+
+def git_info():
+    """ If application is under git then return commit's hash
+        and timestamp of the version running.
+
+        Return None if application is not under git."""
+    from .tasks import prun
+    import simplejson
+    params = "git log -n1"
+    fmt = """ --pretty=format:'{"hash":"%h", "commit":"%H","date":"%cd"}'"""
+    log = prun(params + fmt, cwd=app.config['ROOT'])
+    return simplejson.loads(log)
 
 register_filters(app)
