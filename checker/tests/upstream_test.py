@@ -26,7 +26,7 @@ from fontaine.builder import Director, Builder
 from fontaine.cmap import library
 
 
-COPYRIGHT_REGEX = re.compile(r'Copyright \(c\) \d{4}.*', re.U | re.I)
+COPYRIGHT_REGEX = re.compile(r'Copyright.*?\d{4}.*', re.U | re.I)
 
 
 def get_test_subset_function(value):
@@ -72,7 +72,7 @@ class FontaineTest(TestCase):
 class SimpleBulkTest(TestCase):
 
     targets = ['upstream-bulk']
-    tool = 'Bulk'
+    tool = 'Regex'
     name = __name__
     path = '.'
 
