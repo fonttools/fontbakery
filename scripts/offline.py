@@ -20,7 +20,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from bakery import app, db
+from bakery.app import app, db
 
 ctx = app.test_request_context('/')
 ctx.push()
