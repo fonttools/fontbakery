@@ -28,7 +28,7 @@ static/bower.json:
 setup: venv/bin/activate requirements.txt static/bower.json
 	. venv/bin/activate; pip install -Ur requirements.txt
 	rm -rf ots ; git clone https://github.com/khaledhosny/ots.git
-	cd ots ; python gyp_ots ; make
+	cd ots ; python gyp_ots -f make; make
 
 # target: run — run project
 run: venv/bin/activate requirements.txt
