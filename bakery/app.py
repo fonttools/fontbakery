@@ -191,6 +191,9 @@ def git_info():
     params = "git log -n1"
     fmt = """ --pretty=format:'{"hash":"%h", "commit":"%H","date":"%cd"}'"""
     log = prun(params + fmt, cwd=app.config['ROOT'])
-    return simplejson.loads(log)
+    try:
+        return simplejson.loads(log)
+    except simplejson.JSONDecodeError:
+        return None
 
 register_filters(app)
