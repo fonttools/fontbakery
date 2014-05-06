@@ -191,8 +191,8 @@ def copy_ufo_files(project, build, log):
             familyName = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '') \
                 or _in_ufoFontInfo.get('familyName', '')
             if not familyName:
-                log.write('Please set familyName or openTypeNamePreferredFamilyName to next process', prefix='### ')
-                raise Exception('Please set familyName or openTypeNamePreferredFamilyName to next process')
+                log.write('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo, prefix='### ')
+                raise Exception('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo)
 
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
