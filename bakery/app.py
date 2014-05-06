@@ -187,13 +187,13 @@ def git_info():
 
         Return None if application is not under git."""
     from .tasks import prun
-    import simplejson
+    import json
     params = "git log -n1"
     fmt = """ --pretty=format:'{"hash":"%h", "commit":"%H","date":"%cd"}'"""
     log = prun(params + fmt, cwd=app.config['ROOT'])
     try:
-        return simplejson.loads(log)
-    except simplejson.JSONDecodeError:
+        return json.loads(log)
+    except ValueError:
         return None
 
 register_filters(app)
