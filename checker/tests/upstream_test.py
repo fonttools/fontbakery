@@ -86,6 +86,7 @@ class ConsistencyTest(TestCase):
                     self.ufo_dirs.append(fullpath)
 
     def test_glyphs_are_consistent_across_family(self):
+        """ Are glyphs consistent across family? """
         # TODO: Apply this test to TTX files
         glyphs_count = []
         for ufo_folder in self.ufo_dirs:
