@@ -200,16 +200,22 @@ class MetadataTest(TestCase):
     def test_does_not_familyName_exist_in_veer_catalogue(self):
         """ VEER.com """
         url = 'http://search.veer.com/json/?keyword={}&producttype=TYP&segment=DEF'.format(self.metadata['name'])
-        response = requests.get(url)
-        if response.status_code == 200:
-            self.assertFalse(bool(response.json()['TotalCount']['type']))
-        else:
+        try:
+            response = requests.get(url, timeout=0.2)
+            if response.status_code == 200:
+                self.assertFalse(bool(response.json()['TotalCount']['type']))
+            else:
+                self.assertTrue(False)
+        except requests.exceptions.Timeout:
             self.assertTrue(False)
 
     def test_does_not_familyName_exist_in_fontscom_catalogue(self):
         """ FONTS.com """
         url = 'http://www.fonts.com/browse/font-lists?part={}'.format(self.metadata['name'][0])
-        response = requests.get(url)
+        try:
+            response = requests.get(url, timeout=0.2)
+        except requests.exceptions.Timeout:
+            self.assertTrue(False)
         if response.status_code == 200:
             tree = html5lib.treebuilders.getTreeBuilder("lxml")
             parser = html5lib.HTMLParser(tree=tree,
@@ -223,7 +229,10 @@ class MetadataTest(TestCase):
     def test_does_not_familyName_exist_in_fontshop_catalogue(self):
         """ FONTSHOP.com """
         url = 'http://www.fontshop.com/service/familiesService.php?dataType=json&searchltr={}'.format(self.metadata['name'][0])
-        response = requests.get(url)
+        try:
+            response = requests.get(url, timeout=0.2)
+        except requests.exceptions.Timeout:
+            self.assertTrue(False)
         if response.status_code == 200:
             jsondata = response.json()
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['name'].lower(), jsondata))
@@ -238,7 +247,10 @@ class MetadataTest(TestCase):
             response = requests.post(url, allow_redirects=False,
                                      data=data)
         else:
-            response = requests.get(url, allow_redirects=False)
+            try:
+                response = requests.get(url, allow_redirects=False, timeout=0.2)
+            except requests.exceptions.Timeout:
+                self.assertTrue(False)
         if response.status_code == 200:
             regex = re.compile('\s+')
             self.assertTrue(test_catalogue['checkText'] in regex.sub(' ', response.text))
