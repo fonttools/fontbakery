@@ -564,6 +564,7 @@ class MetadataJSONTest(TestCase):
         self.assertEqual(self.font.em, 1000,
                             msg="Font em value is %s, required 1000" % self.font.em)
 
+    @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):
         """ font.italicangle property can be zero or negative """
         if self.font.italicangle == 0:
@@ -571,15 +572,18 @@ class MetadataJSONTest(TestCase):
         else:
             self.assertLess(self.font.italicangle, 0)
 
+    @tags('required')
     def test_font_italicangle_limits(self):
-        """ font.italicangle maximum abs(value) can be between 0 an 45 degree """
-        self.assertTrue(abs(self.font.italicangle) >= 0 and abs(self.font.italicangle) <= 45)
+        """ font.italicangle maximum abs(value) can be between 0 an 20 degree """
+        self.assertTrue(abs(self.font.italicangle) >= 0 and abs(self.font.italicangle) <= 20)
 
+    @tags('required')
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
         self.assertTrue(magic.from_file(self.path, mime=True),
                         'application/x-font-ttf')
 
+    @tags('required')
     def test_metadata_keys(self):
         """ METADATA.json should have top keys: ["name", "designer", "license", "visibility", "category",
         "size", "dateAdded", "fonts", "subsets"] """
@@ -590,24 +594,29 @@ class MetadataJSONTest(TestCase):
         for x in top_keys:
             self.assertIn(x, self.metadata, msg="Missing %s key" % x)
 
+    @tags('required')
     def test_metadata_fonts_key_list(self):
         """ METADATA.json font key should be list """
         self.assertEqual(type(self.metadata.get('fonts', '')), type([]))
 
+    @tags('required')
     def test_metadata_subsets_key_list(self):
         """ METADATA.json subsets key should be list """
         self.assertEqual(type(self.metadata.get('subsets', '')), type([]))
 
+    @tags('required')
     def test_metadata_fonts_items_dicts(self):
         """ METADATA.json fonts key items are dicts """
         for x in self.metadata.get('fonts', None):
             self.assertEqual(type(x), type({}), msg="type(%s) is not dict" % x)
 
+    @tags('required')
     def test_metadata_subsets_items_string(self):
         """ METADATA.json subsets key items are strings """
         for x in self.metadata.get('subsets', None):
             self.assertEqual(type(x), type(""), msg="type(%s) is not dict" % x)
 
+    @tags('required')
     def test_metadata_top_keys_types(self):
         """ METADATA.json should have proper top keys types """
         self.assertEqual(type(self.metadata.get("name", None)),
@@ -625,6 +634,7 @@ class MetadataJSONTest(TestCase):
         self.assertEqual(type(self.metadata.get("dateAdded", None)),
                             type(""), msg="dateAdded key type invalid")
 
+    @tags('required')
     def test_metadata_font_keys_types(self):
         """ METADATA.json fonts items dicts items should have proper types """
         for x in self.metadata.get("fonts", None):
@@ -643,6 +653,7 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(type(self.metadata.get("copyright", None)),
                                 type(""), msg="copyright key type invalid for %s " % x)
 
+    @tags('required')
     def test_metadata_no_unknown_top_keys(self):
         """ METADATA.json don't have unknown top keys """
         top_keys = ["name", "designer", "license", "visibility", "category",
@@ -651,6 +662,7 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.keys():
             self.assertIn(x, top_keys, msg="%s found unknown top key" % x)
 
+    @tags('required')
     def test_metadata_fonts_no_unknown_keys(self):
         """ METADATA.json fonts don't have unknown top keys """
         fonts_keys = ["name", "postScriptName", "fullName", "style", "weight",
@@ -660,6 +672,7 @@ class MetadataJSONTest(TestCase):
                 self.assertIn(i, fonts_keys,
                                 msg="%s found unknown top key in %s" % (i, x))
 
+    @tags('required')
     def test_metadata_subsets_values(self):
         """ METADATA.json subsets should have at least 'menu' and 'latin' """
         self.assertIn('menu', self.metadata.get('subsets', []),
@@ -667,6 +680,7 @@ class MetadataJSONTest(TestCase):
         self.assertIn('latin', self.metadata.get('subsets', []),
                         msg="Subsets missing latin")
 
+    @tags('required')
     def test_metadata_copyright(self):
         """ METDATA.json fonts copyright string is the same for all items """
 
@@ -681,31 +695,39 @@ class MetadataJSONTest(TestCase):
                 self.assertEqual(x.get('copyright', ''), copyright,
                     msg="%s have different copyright string" % x.get('name', ''))
 
+    @tags('required')
     def test_metadata_license(self):
         """ METADATA.json license is 'Apache2' or 'OFL' """
         licenses = ['Apache2', 'OFL']
         self.assertIn(self.metadata.get('license', ''), licenses)
 
+# TODO: This should check RFN permission is in bakery.yaml
     def test_metadata_copyright_reserved(self):
         """ Copyright string should contains 'Reserved Font Name' substring """
         for x in self.metadata.get('fonts', None):
             self.assertIn('Reserved Font Name', x.get('copyright', ''))
 
+# TODO: Find where this check came from
+    @tags('required')
     def test_metadata_copyright_size(self):
         """ Copyright string should be less than 500 chars """
         for x in self.metadata.get('fonts', None):
             self.assertLessEqual(len(x.get('copyright', '')), 500)
 
+    @tags('required')
     def test_copyrighttxt_exists(self):
         """ Font folder should contains COPYRIGHT.txt """
         self.assertTrue(os.path.exists(os.path.join(
             os.path.dirname(self.path), 'COPYRIGHT.txt')))
 
+    @tags('required')
     def test_description_exists(self):
         """ Font folder should contains DESCRIPTION.en_us.html """
         self.assertTrue(os.path.exists(os.path.join(
             os.path.dirname(self.path), 'DESCRIPTION.en_us.html')))
 
+# TODO: This should be OFL.txt or LICENSE.txt
+    @tags('required')
     def test_licensetxt_exists(self):
         """ Font folder should contains LICENSE.txt """
         self.assertTrue(os.path.exists(os.path.join(
