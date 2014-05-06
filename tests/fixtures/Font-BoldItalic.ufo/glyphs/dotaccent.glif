@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dotaccent" format="1">
+  <advance width="489"/>
+  <unicode hex="02D9"/>
+  <outline>
+    <contour>
+      <point x="95" y="1251" type="line"/>
+      <point x="363" y="1251" type="line"/>
+      <point x="407" y="1505" type="line"/>
+      <point x="139" y="1505" type="line"/>
+    </contour>
+    <contour>
+      <point x="203" y="1074" type="move" name="_top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ebreve" format="1">
+  <advance width="1181"/>
+  <unicode hex="0115"/>
+  <outline>
+    <component base="breve" xOffset="351"/>
+    <component base="e"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

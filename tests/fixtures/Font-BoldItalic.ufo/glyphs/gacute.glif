@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="gacute" format="1">
+  <advance width="1243"/>
+  <unicode hex="01F5"/>
+  <outline>
+    <component base="acute" xOffset="411"/>
+    <component base="g"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

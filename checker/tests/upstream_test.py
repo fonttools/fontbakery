@@ -164,6 +164,20 @@ class SimpleTest(TestCase):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
 
+    def test_fontname_is_equal_to_macstyle(self):
+        """ Is internal fontname is equal to macstyle flags """
+        fontname = self.font.fontname
+        if fontname.endswith('-Italic'):
+            print 'Italic %s' % self.font.macstyle
+            self.assertTrue(self.font.macstyle & 0b10)
+        if fontname.endswith('-BoldItalic'):
+            print 'BoldItalic'
+            self.assertTrue(self.font.macstyle & 0b11)
+        if fontname.endswith('-Bold'):
+            print 'Bold'
+            self.assertTrue(self.font.macstyle & 0b01)
+        self.assertTrue(False)
+
 import robofab.world
 import robofab.objects
 

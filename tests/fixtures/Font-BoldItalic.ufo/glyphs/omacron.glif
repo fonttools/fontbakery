@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="omacron" format="1">
+  <advance width="1212"/>
+  <unicode hex="014D"/>
+  <outline>
+    <component base="macron" xOffset="351"/>
+    <component base="o"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="macron" format="1">
+  <advance width="511"/>
+  <unicode hex="00AF"/>
+  <outline>
+    <contour>
+      <point x="-61" y="1251" type="line"/>
+      <point x="543" y="1251" type="line"/>
+      <point x="571" y="1408" type="line"/>
+      <point x="-33" y="1408" type="line"/>
+    </contour>
+    <contour>
+      <point x="258" y="1329" type="move" name="_mid"/>
+    </contour>
+    <contour>
+      <point x="212" y="1074" type="move" name="_top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

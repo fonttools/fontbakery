@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Ocaron" format="1">
+  <advance width="1622"/>
+  <unicode hex="01D1"/>
+  <outline>
+    <component base="O"/>
+    <component base="caron" xOffset="736" yOffset="402"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

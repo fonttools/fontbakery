@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dcroat" format="1">
+  <advance width="1228"/>
+  <unicode hex="0111"/>
+  <outline>
+    <component base="d"/>
+    <component base="macron" xOffset="768" yOffset="-16"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

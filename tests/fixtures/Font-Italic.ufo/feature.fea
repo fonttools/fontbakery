@@ -1,0 +1,70 @@
+
+#Mark attachment classes (defined in GDEF, used in lookupflags)
+
+@GDEF_Simple = [\A \AE \AEacute \AEmacron \Aacute \Abreve \Acaron \Acircumflex 
+	\Adblgrave \Adieresis \Adotaccent \Agrave \Ainvertedbreve \Amacron \Aogonek 
+	\Aring \Aringacute \Atilde \B \Bdotaccent \C \CR \Cacute \Ccaron \Ccedilla 
+	\Ccircumflex \Cdotaccent \D \DZ \DZcaron \Dcaron \Dcroat \Ddotaccent \Delta \Dz 
+	\Dzcaron \E \Eacute \Ebreve \Ecaron \Ecircumflex \Edblgrave \Edieresis 
+	\Edotaccent \Egrave \Einvertedbreve \Emacron \Eng \Eogonek \Eth \Etilde \Euro \F 
+	\Fdotaccent \G \Gacute \Gbreve \Gcaron \Gcircumflex \Gcommaaccent \Gdotaccent \H 
+	\Hbar \Hcircumflex \I \IJ \Iacute \Ibreve \Icaron \Icircumflex \Idblgrave 
+	\Idieresis \Idotaccent \Igrave \Iinvertedbreve \Imacron \Iogonek \Itilde \J 
+	\Jcircumflex \K \Kcaron \Kcommaaccent \L \LJ \Lacute \Lcaron \Lcommaaccent \Ldot 
+	\Lj \Lslash \M \Mdotaccent \N \NJ \NULL \Nacute \Ncaron \Ncommaaccent \Nj \Ntilde \O 
+	\OE \Oacute \Obreve \Ocaron \Ocircumflex \Odblgrave \Odieresis \Ograve 
+	\Ohungarumlaut \Oinvertedbreve \Omacron \Omega \Oogonek \Oslash \Oslashacute 
+	\Otilde \P \Pdotaccent \Q \R \Racute \Rcaron \Rcommaaccent \Rdblgrave 
+	\Rinvertedbreve \S \Sacute \Scaron \Scedilla \Schwa \Scircumflex \Scommaaccent 
+	\Sdotaccent \Sigma \T \Tbar \Tcaron \Tcedilla \Tdotaccent \Thorn \U \Uacute 
+	\Ubreve \Ucaron \Ucircumflex \Udblgrave \Udieresis \Ugrave \Uhungarumlaut 
+	\Uinvertedbreve \Umacron \Uogonek \Uring \Utilde \V \W \Wacute \Wcircumflex 
+	\Wdieresis \Wgrave \X \Y \Yacute \Ycircumflex \Ydieresis \Ygrave \Ymacron \Ytilde 
+	\Z \Zacute \Zcaron \Zdotaccent \a \aacute \abreve \acaron \acircumflex \adblgrave 
+	\adieresis \adotaccent \ae \aeacute \aemacron \agrave \ainvertedbreve \amacron 
+	\ampersand \aogonek \approxequal \aring \aringacute \asciicircum \asciitilde 
+	\asterisk \at \atilde \b \backslash \bar \bdotaccent \braceleft \braceright 
+	\bracketleft \bracketright \brokenbar \bullet \bulletoperator \c \cacute 
+	\ccaron \ccedilla \ccircumflex \cdotaccent \cent \colon \comma \copyright 
+	\currency \d \dagger \daggerdbl \dcaron \dcroat \ddotaccent \degree \divide 
+	\divisionslash \dollar \dotlessi \dotlessj \dz \dzcaron \e \eacute \ebreve 
+	\ecaron \ecircumflex \edblgrave \edieresis \edotaccent \egrave \eight 
+	\einvertedbreve \ellipsis \emacron \emdash \emptyset \endash \eng \eogonek 
+	\equal \estimated \eth \etilde \exclam \exclamdown \f \f_f \f_f_i \f_f_l 
+	\fdotaccent \ffi \ffl \fi \five \fj \fl \florin \foundryicon \four \foursuperior 
+	\fraction \g \gacute \gbreve \gcaron \gcircumflex \gcommaaccent \gdotaccent 
+	\germandbls \greater \greaterequal \guillemotleft \guillemotright 
+	\guilsinglleft \guilsinglright \h \hbar \hcircumflex \i \i.loclTRK \iacute 
+	\ibreve \icaron \icircumflex \idblgrave \idieresis \igrave \iinvertedbreve \ij 
+	\imacron \infinity \integral \iogonek \itilde \j \jcaron \jcircumflex \k \kcaron 
+	\kcommaaccent \kgreenlandic \l \lacute \lcaron \lcommaaccent \ldot \less 
+	\lessequal \lj \logicalnot \lozenge \lslash \m \mdotaccent \middot \minus \mu 
+	\multiply \n \nacute \napostrophe \ncaron \ncommaaccent \nine \nj \notequal 
+	\ntilde \numbersign \o \oacute \obreve \ocaron \ocircumflex \odblgrave 
+	\odieresis \oe \ograve \ohungarumlaut \oinvertedbreve \omacron \one \onehalf 
+	\onequarter \onesuperior \oogonek \ordfeminine \ordmasculine \oslash 
+	\oslashacute \otilde \p \paragraph \parenleft \parenright \partialdiff 
+	\pdotaccent \percent \period \perthousand \pi \plus \plusminus \product \q 
+	\question \questiondown \quotedbl \quotedblbase \quotedblleft \quotedblright 
+	\quoteleft \quoteright \quotesinglbase \quotesingle \r \racute \radical \rcaron 
+	\rcommaaccent \rdblgrave \registered \rinvertedbreve \s \sacute \scaron 
+	\scedilla \schwa \scircumflex \scommaaccent \sdotaccent \section \semicolon 
+	\seven \six \slash \slashbar \space \sterling \summation \t \tbar \tcaron 
+	\tcedilla \tdotaccent \thorn \three \threequarters \threesuperior \trademark 
+	\two \twosuperior \u \uacute \ubreve \uc_main_stem \ucaron \ucircumflex 
+	\udblgrave \udieresis \ugrave \uhungarumlaut \uinvertedbreve \umacron 
+	\underscore \uni0002 \uni0009 \uni000A \uni00A0 \uni01F8 \uni01F9 \uni021A 
+	\uni021B \uni021E \uni021F \uni0228 \uni0229 \uni022E \uni022F \uni2113 \uogonek 
+	\uring \utilde \v \w \wacute \wcircumflex \wdieresis \wgrave \x \y \yacute 
+	\ycircumflex \ydieresis \yen \ygrave \ymacron \ytilde \z \zacute \zcaron 
+	\zdotaccent \zero ];
+@GDEF_Mark = [\acute \breve \caron \caron.alt \cedilla \circumflex \dieresis 
+	\dotaccent \firsttonechinese \grave \hungarumlaut \hyphen \macron \ogonek 
+	\periodcentered \ring \softhyphen \tilde \uni02BC \uni0307 \uni030F \uni0311 
+	\uni0312 \uni0326 \uni0358 ];
+
+table GDEF {
+  GlyphClassDef @GDEF_Simple, , @GDEF_Mark, ;
+
+} GDEF;
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="hcircumflex" format="1">
+  <advance width="1272"/>
+  <unicode hex="0125"/>
+  <outline>
+    <component base="circumflex" xOffset="552" yOffset="231"/>
+    <component base="h"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

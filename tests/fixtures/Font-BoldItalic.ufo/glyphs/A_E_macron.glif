@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="AEmacron" format="1">
+  <advance width="1834"/>
+  <unicode hex="01E2"/>
+  <outline>
+    <component base="AE"/>
+    <component base="macron" xOffset="1014" yOffset="402"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

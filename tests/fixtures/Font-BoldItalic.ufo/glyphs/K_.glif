@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="K" format="1">
+  <advance width="1470"/>
+  <unicode hex="004B"/>
+  <outline>
+    <contour>
+      <point x="82" y="0" type="line"/>
+      <point x="379" y="0" type="line"/>
+      <point x="474" y="541" type="line"/>
+      <point x="638" y="679" type="line"/>
+      <point x="983" y="0" type="line"/>
+      <point x="1318" y="0" type="line"/>
+      <point x="906" y="804" type="line"/>
+      <point x="1541" y="1476" type="line"/>
+      <point x="1213" y="1476" type="line"/>
+      <point x="513" y="760" type="line"/>
+      <point x="639" y="1476" type="line"/>
+      <point x="342" y="1476" type="line"/>
+    </contour>
+    <contour>
+      <point x="652" y="0" type="move" name="bot"/>
+    </contour>
+    <contour>
+      <point x="886" y="1476" type="move" name="top"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="uhungarumlaut" format="1">
+  <advance width="1222"/>
+  <unicode hex="0171"/>
+  <outline>
+    <component base="hungarumlaut" xOffset="370"/>
+    <component base="u"/>
+  </outline>
+  <lib>
+    <dict>
+    <key>org.robofab.postScriptHintData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

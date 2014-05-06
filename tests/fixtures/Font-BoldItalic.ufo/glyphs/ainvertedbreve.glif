@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ainvertedbreve" format="1">
+  <advance width="1174"/>
+  <unicode hex="0203"/>
+  <outline>
+    <component base="a"/>
+    <component base="uni0311" xOffset="436"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.layerData</key>
+      <dict/>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="ncaron" format="1">
+  <advance width="1224"/>
+  <unicode hex="0148"/>
+  <outline>
+    <component base="caron" xOffset="428"/>
+    <component base="n"/>
+  </outline>
+  <lib>
+    <dict>
+    <key>org.robofab.postScriptHintData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

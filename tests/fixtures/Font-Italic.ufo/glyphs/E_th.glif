@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="Eth" format="1">
+  <advance width="1522"/>
+  <unicode hex="00D0"/>
+  <outline>
+    <component base="D"/>
+    <component base="hyphen" xOffset="-143" yOffset="195"/>
+  </outline>
+  <lib>
+    <dict>
+    <key>org.robofab.postScriptHintData</key>
+      <dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>
