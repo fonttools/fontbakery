@@ -188,8 +188,12 @@ def copy_ufo_files(project, build, log):
             styleName = 'Regular'
         # Get the familyName, if its not set
         if not familyName:
-            familyName = _in_ufoFontInfo.get('familyName', '') \
-                or _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '')
+            familyName = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '') \
+                or _in_ufoFontInfo.get('familyName', '')
+            if not familyName:
+                log.write('Please set familyName or openTypeNamePreferredFamilyName to next process', prefix='### ')
+                raise Exception('Please set familyName or openTypeNamePreferredFamilyName to next process')
+
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
