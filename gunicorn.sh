@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 kill `cat /var/www/bakery.pid`
 gunicorn wsgi:app \
     --log-file bakery-error.log \
