@@ -43,6 +43,7 @@ lxml
 scrapy
 html5lib
 unidecode
+simplejson
 
 # library to send emails
 mandrill
