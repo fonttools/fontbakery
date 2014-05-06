@@ -4,5 +4,4 @@ gunicorn wsgi:app \
     -p /var/www/bakery.pid -D \
     -w 4 \
     --worker-class socketio.sgunicorn.GeventSocketIOWorker \
-    -b 0.0.0.0:5000 \
-    -k gevent
+    -b 0.0.0.0:5000
