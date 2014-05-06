@@ -594,7 +594,7 @@ def upstream_revision_tests(project, revision):
         if os.path.exists(os.path.join(_in, font)):
             result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
 
-    result['Properties tests'] = run_set(_in, 'upstream-bulk')
+    result['Consistency fonts'] = run_set(_in, 'consistency')
 
     l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
     l.write(yaml.safe_dump(result))

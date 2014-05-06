@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-	<key>familyName</key>
-	<string>Monda-Italic</string>
-	<key>styleName</key>
-	<string>Italic</string>
-	<key>copyright</key>
-	<string>Digitized data Copyright (c) 2011-2013, vernon adams.</string>
-	<key>trademark</key>
-	<string>Monda is a trademark of Vernon Adams and may be registered in certain jurisdictions.</string>
-	<key>unitsPerEm</key>
-	<integer>2048</integer>
-	<key>xHeight</key>
-	<integer>1060</integer>
-	<key>capHeight</key>
-	<integer>1446</integer>
+<dict>
 	<key>ascender</key>
 	<integer>2030</integer>
+	<key>capHeight</key>
+	<integer>1446</integer>
+	<key>copyright</key>
+	<string>Digitized data Copyright (c) 2011-2013, vernon adams.</string>
 	<key>descender</key>
 	<integer>-675</integer>
 	<key>italicAngle</key>
@@ -25,14 +15,12 @@
 	<key>note</key>
 	<string></string>
 	<key>openTypeHeadCreated</key>
-	<string>2014/05/06 13:21:02</string>
+	<string>2014/02/10 04:38:18</string>
+	<key>openTypeNameCompatibleFullName</key>
+	<string>Nunito-Light</string>
 	<key>openTypeNameDesigner</key>
 	<string>Vernon Adams</string>
 	<key>openTypeNameDesignerURL</key>
-	<string>newtypography.co.uk</string>
-	<key>openTypeNameManufacturer</key>
-	<string>newtypography</string>
-	<key>openTypeNameManufacturerURL</key>
 	<string>newtypography.co.uk</string>
 	<key>openTypeNameLicense</key>
 	<string>Copyright (c) 2013, vernon adams.
@@ -43,40 +31,50 @@ http://scripts.sil.org/OFL
 </string>
 	<key>openTypeNameLicenseURL</key>
 	<string>http://scripts.sil.org/OFL</string>
+	<key>openTypeNameManufacturer</key>
+	<string>newtypography</string>
+	<key>openTypeNameManufacturerURL</key>
+	<string>newtypography.co.uk</string>
+	<key>openTypeNamePreferredFamilyName</key>
+	<string>Monda</string>
+	<key>openTypeNamePreferredSubfamilyName</key>
+	<string>Italic</string>
 	<key>openTypeNameVersion</key>
 	<string>Version 2.0</string>
-	<key>openTypeNameCompatibleFullName</key>
-	<string>Nunito-Light</string>
-	<key>openTypeOS2WidthClass</key>
-	<integer>5</integer>
-	<key>openTypeOS2WeightClass</key>
-	<integer>400</integer>
-	<key>openTypeOS2VendorID</key>
-	<string>NeWT</string>
 	<key>openTypeOS2FamilyClass</key>
 	<array>
 		<integer>0</integer>
 		<integer>0</integer>
 	</array>
-	<key>openTypeOS2TypoAscender</key>
-	<integer>1638</integer>
-	<key>openTypeOS2TypoDescender</key>
-	<integer>410</integer>
-	<key>openTypeOS2TypoLineGap</key>
-	<integer>0</integer>
-	<key>openTypeOS2WinAscent</key>
-	<integer>2060</integer>
-	<key>openTypeOS2WinDescent</key>
-	<integer>-786</integer>
+	<key>openTypeOS2VendorID</key>
+	<string>NeWT</string>
+	<key>openTypeOS2WeightClass</key>
+	<integer>400</integer>
+	<key>openTypeOS2WidthClass</key>
+	<integer>5</integer>
+	<key>postscriptBlueValues</key>
+	<array>
+	</array>
 	<key>postscriptFontName</key>
 	<string>Monda-Italic</string>
 	<key>postscriptFullName</key>
 	<string>Monda Italic</string>
-	<key>postscriptWeightName</key>
+	<key>postscriptOtherBlues</key>
+	<array>
+	</array>
+	<key>styleMapStyleName</key>
+	<string>regular</string>
+	<key>styleName</key>
 	<string>Regular</string>
-	<key>postscriptUnderlineThickness</key>
+	<key>trademark</key>
+	<string>Monda is a trademark of Vernon Adams and may be registered in certain jurisdictions.</string>
+	<key>unitsPerEm</key>
+	<integer>2048</integer>
+	<key>versionMajor</key>
+	<integer>1</integer>
+	<key>versionMinor</key>
 	<integer>0</integer>
-	<key>postscriptUnderlinePosition</key>
-	<integer>0</integer>
-    </dict>
+	<key>xHeight</key>
+	<integer>1060</integer>
+</dict>
 </plist>

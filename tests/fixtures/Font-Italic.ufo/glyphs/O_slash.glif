@@ -3,22 +3,21 @@
   <advance width="1546"/>
   <unicode hex="00D8"/>
   <outline>
-    <component base="O"/>
-    <contour>
-      <point x="915" y="1446" type="move" name="top"/>
-    </contour>
     <contour>
       <point x="314" y="-195" type="line"/>
       <point x="1316" y="1638" type="line"/>
       <point x="1219" y="1676" type="line"/>
       <point x="218" y="-157" type="line"/>
     </contour>
+    <component base="O"/>
+    <contour>
+      <point x="915" y="1446" type="move" name="top"/>
+    </contour>
   </outline>
   <lib>
     <dict>
-    <key>org.robofab.postScriptHintData</key>
-      <dict>
-      </dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
     </dict>
   </lib>
 </glyph>

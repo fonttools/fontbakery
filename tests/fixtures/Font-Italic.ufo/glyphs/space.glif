@@ -2,11 +2,12 @@
 <glyph name="space" format="1">
   <advance width="512"/>
   <unicode hex="0020"/>
+  <outline>
+  </outline>
   <lib>
     <dict>
-    <key>org.robofab.postScriptHintData</key>
-      <dict>
-      </dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
     </dict>
   </lib>
 </glyph>

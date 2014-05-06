@@ -3,15 +3,14 @@
   <advance width="1884"/>
   <unicode hex="2026"/>
   <outline>
-    <component base="period" xOffset="1256"/>
-    <component base="period" xOffset="628"/>
     <component base="period"/>
+    <component base="period" xOffset="628"/>
+    <component base="period" xOffset="1256"/>
   </outline>
   <lib>
     <dict>
-    <key>org.robofab.postScriptHintData</key>
-      <dict>
-      </dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
     </dict>
   </lib>
 </glyph>

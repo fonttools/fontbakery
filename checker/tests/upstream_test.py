@@ -69,9 +69,9 @@ class FontaineTest(TestCase):
             exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
 
 
-class SimpleBulkTest(TestCase):
+class ConsistencyTest(TestCase):
 
-    targets = ['upstream-bulk']
+    targets = ['consistency']
     tool = 'Regex'
     name = __name__
     path = '.'
@@ -85,7 +85,19 @@ class SimpleBulkTest(TestCase):
                 if os.path.splitext(fullpath)[1].lower() == '.ufo':
                     self.ufo_dirs.append(fullpath)
 
-    def test_copyright_notices_same_for_all_styles(self):
+    def test_glyphs_are_consistent_across_family(self):
+        # TODO: Apply this test to TTX files
+        glyphs_count = []
+        for ufo_folder in self.ufo_dirs:
+            font = fontforge.open(ufo_folder)
+            gcount = len(list(font.glyphs()))
+            if gcount not in glyphs_count:
+                glyphs_count.append(gcount)
+            font.close()
+        self.assertTrue(len(glyphs_count) == 1,
+                        'Different count %s' % glyphs_count)
+
+    def test_copyright_notices_same_across_family(self):
         """ Are all copyright notices the same in all styles? """
         copyright = None
         for ufo_folder in self.ufo_dirs:
@@ -168,13 +180,10 @@ class SimpleTest(TestCase):
         """ Is internal fontname is equal to macstyle flags """
         fontname = self.font.fontname
         if fontname.endswith('-Italic'):
-            print 'Italic %s' % self.font.macstyle
             self.assertTrue(self.font.macstyle & 0b10)
         if fontname.endswith('-BoldItalic'):
-            print 'BoldItalic'
             self.assertTrue(self.font.macstyle & 0b11)
         if fontname.endswith('-Bold'):
-            print 'Bold'
             self.assertTrue(self.font.macstyle & 0b01)
         self.assertTrue(False)
 
