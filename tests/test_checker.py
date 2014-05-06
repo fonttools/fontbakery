@@ -5,7 +5,7 @@ from bakery.app import app
 from checker import run_set
 
 
-def is_in_testscases(testMethod, list):
+def check(testMethod, list):
     return testMethod in map(lambda x: x.id().split('.')[-1], list)
 
 
@@ -25,8 +25,8 @@ class CheckerTest(unittest.TestCase):
         tests = map(lambda x: (str(x._err[1]), x.id().split('.')[-1], 'failure'), r['failure'])
         tests += map(lambda x: (str(x._err[1]), x.id().split('.')[-1], 'error'), r['error'])
 
-        self.assertTrue(is_in_testscases('test_is_A', success_tests))
-        # self.assertTrue(is_in_testscases('test_fontname_is_equal_to_macstyle',
+        self.assertTrue(check('test_is_A', success_tests))
+        # self.assertTrue(check('test_fontname_is_equal_to_macstyle',
         #                                  success_tests), lookup('test_fontname_is_equal_to_macstyle', tests))
 
     def test_consistency_glyphs(self):
@@ -36,7 +36,7 @@ class CheckerTest(unittest.TestCase):
         tests = map(lambda x: (str(x), x.id().split('.')[-1], 'success'), r['success'])
         tests += map(lambda x: (str(x._err[1]), x.id().split('.')[-1], 'error'), r['error'])
 
-        self.assertTrue(is_in_testscases('test_glyphs_are_consistent_across_family', failure_tests),
+        self.assertTrue(check('test_glyphs_are_consistent_across_family', failure_tests),
                         lookup('test_glyphs_are_consistent_across_family', tests))
 
     def test_consistency_copyright_notice(self):
@@ -46,5 +46,5 @@ class CheckerTest(unittest.TestCase):
         success_tests = r['success']
         tests = map(lambda x: (str(x._err[1]), x.id().split('.')[-1], 'failure'), r['failure'])
         tests += map(lambda x: (str(x._err[1]), x.id().split('.')[-1], 'error'), r['error'])
-        self.assertTrue(is_in_testscases('test_copyright_notices_same_across_family', success_tests),
+        self.assertTrue(check('test_copyright_notices_same_across_family', success_tests),
                         lookup('test_copyright_notices_same_across_family', tests))

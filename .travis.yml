@@ -4,7 +4,8 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
+  - pip install nose
 script:
-  coverage run --source=bakery setup.py test
+  coverage run --source=bakery nosetests tests
 after_success:
   coveralls
