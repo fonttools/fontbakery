@@ -325,6 +325,14 @@ class MetadataJSONTest(TestCase):
             else:
                 self.assertEqual(style, 'normal')
 
+    @tags('required')
+    def test_metadata_filename_matches_postScriptName(self):
+        """ METADATA.json `filename` is matched to `postScriptName` property """
+        for x in self.metadata.get("fonts", None):
+            post_script_name = x.get('postScriptName', '')
+            filename = x.get('filename', '')
+            self.assertEqual(os.path.splitext(filename)[0], post_script_name)
+
     def test_metadata_font_fullname_canonical(self):
         """ METADATA.json fonts fullName property should be '[font.familyname] [font.style]' format (w/o quotes)"""
         for x in self.metadata.get("fonts", None):
