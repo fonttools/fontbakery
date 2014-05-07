@@ -307,8 +307,21 @@ class MetadataJSONTest(TestCase):
         'SemiBold', 'SemiBoldItalic', 'Bold', 'BoldItalic', 'ExtraBold',
         'ExtraBoldItalic', 'Black', 'BlackItalic' """
         self.assertTrue(all(
-             [any([x['postScriptName'].endswith("-" + i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
-             ))
+            [any([x['postScriptName'].endswith("-" + i) for i in self.styles]) for x in self.metadata.get('fonts', None)]
+        ))
+
+    def test_metadata_style_matches_postScriptName(self):
+        """ METADATA.json `style` is matched to `postScriptName` property """
+        sn_italic = ['ThinItalic', 'ExtraLightItalic', 'LightItalic',
+                     'Italic', 'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
+                     'ExtraBoldItalic', 'BlackItalic']
+        for x in self.metadata.get("fonts", None):
+            post_script_name = x.get('postScriptName', '')
+            style = x.get('style', '')
+            if style == 'italic':
+                self.assertTrue(any([post_script_name.endswith("-" + i) for i in sn_italic]))
+            else:
+                self.assertEqual(style, 'normal')
 
     def test_metadata_font_fullname_canonical(self):
         """ METADATA.json fonts fullName property should be '[font.familyname] [font.style]' format (w/o quotes)"""

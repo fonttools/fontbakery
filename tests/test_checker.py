@@ -119,6 +119,7 @@ class CheckerTest(unittest.TestCase):
                         lookup('test_metadata_family', tests))
 
     def test_result_METADATA_postScriptName_canonical_success(self):
+        # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         r = run_set(p, 'result')
         success_tests = r['success']
@@ -126,6 +127,16 @@ class CheckerTest(unittest.TestCase):
         result_test = check('test_metadata_postScriptName_canonical', success_tests)
         self.assertTrue(result_test,
                         lookup('test_metadata_postScriptName_canonical', tests))
+
+    def test_result_METADATA_style_matches_postScriptName_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['success']
+        tests = exclude_from_resultlist(r, 'success')
+        result_test = check('test_metadata_style_matches_postScriptName', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_metadata_style_matches_postScriptName', tests))
 
     def test_consistency_glyphs(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')

@@ -23,6 +23,15 @@
       "weight": 400,
       "filename": "Monda-Regular.ttf",
       "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Monda'"
+    },
+    {
+      "name": "Monda",
+      "postScriptName": "Monda-Italic",
+      "fullName": "Monda Italic",
+      "style": "italic",
+      "weight": 400,
+      "filename": "Monda-Italic.ttf",
+      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Monda'"
     }
   ],
   "subsets": [
