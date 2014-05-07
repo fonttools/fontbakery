@@ -15,27 +15,32 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import subprocess
 import os
+import subprocess
+import sys
+
+from bakery.app import app
 
 
-PYPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'venv', 'bin', 'python'))
+ENV = os.environ.copy()
+ENV.update({'PYTHONPATH': os.pathsep.join(sys.path)})
+PYPATH = 'python'
 
 
 def fix_nbsp(font_path):
-    SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'fix-ttf-nbsp.py'))
-    subprocess.Popen("{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-nbsp.py')
+    subprocess.Popen("{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
     subprocess.Popen("mv {0}-nbsp {0}".format(font_path), shell=True).communicate()
 
 
 def fix_metrics(font_path):
-    SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'fix-ttf-vmet.py'))
-    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-vmet.py')
+    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
     subprocess.Popen("mv {0}.fix {0}".format(font_path), shell=True).communicate()
 
 
 def fix_name_ascii(font_path):
-    SCRIPTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts', 'fix-ttf-ascii-name.py'))
-    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True).communicate()
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-ascii-name.py')
+    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()

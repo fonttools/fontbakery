@@ -176,10 +176,12 @@ class FontForgeSimpleTest(TestCase):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
 
+    @tags('required',)
     def test_nbsp(self):
         """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
 
+    @tags('required',)
     def test_space(self):
         """Check if 'SPACE' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
@@ -190,9 +192,9 @@ class FontForgeSimpleTest(TestCase):
         space = 0
         nbsp = 0
         for x in self.font.glyphs():
-            if x.unicode == 160:
+            if x.unicode == ord(unicodedata.lookup('NO-BREAK SPACE')):
                 nbsp = x.width
-            elif x.unicode == 32:
+            elif x.unicode == ord(unicodedata.lookup('SPACE')):
                 space = x.width
         self.assertEqual(space, nbsp)
 
@@ -399,7 +401,7 @@ class MetadataJSONTest(TestCase):
         """ Menu file should be [font.familyname]-[font.weight].menu """
         name = "%s.menu" % self.fname
         canonic_name = "%s-%s.menu" % (self.font.familyname, self.font.weight)
-        self.assertEqual(name, canonic_name)
+        self.assertEqual(os.path.basename(name), canonic_name)
 
     def test_menu_file_is_font(self):
         """ Menu file have font-name-style.menu format """
