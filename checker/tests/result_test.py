@@ -300,7 +300,7 @@ class MetadataJSONTest(TestCase):
         """ METADATA.json fonts 'name' property should be same as font familyname """
         self.assertTrue(all([x['name'] == self.font.familyname for x in self.metadata.get('fonts', None)]))
 
-    def test_metadata_postscript_canonical(self):
+    def test_metadata_postScriptName_canonical(self):
         """ METADATA.json fonts postScriptName should be [font familyname]-[style].
         Alowed styles are: 'Thin', 'ThinItalic', 'ExtraLight', 'ExtraLightItalic',
         'Light', 'LightItalic', 'Regular', 'Italic', 'Medium', 'MediumItalic',

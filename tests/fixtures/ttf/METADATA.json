@@ -26,9 +26,7 @@
     }
   ],
   "subsets": [
-    "latin",
-    "latin-ext",
-    "menu"
+    "latin"
   ],
   "dateAdded": "2012-11-30"
 }
