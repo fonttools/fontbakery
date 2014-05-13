@@ -36,235 +36,132 @@ def exclude_from_resultlist(resultlist, category):
 
 class CheckerTest(unittest.TestCase):
 
+    def assertInSuccess(self, testmethod, testresult):
+        success_tests = testresult['success']
+        tests = exclude_from_resultlist(testresult, 'success')
+        self.assertTrue(check(testmethod, success_tests),
+                        lookup(testmethod, tests))
+
+    def assertInFailure(self, testmethod, testresult):
+        success_tests = testresult['failure']
+        tests = exclude_from_resultlist(testresult, 'failure')
+        self.assertTrue(check(testmethod, success_tests),
+                        lookup(testmethod, tests))
+
     def test_upstream(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Italic.ufo')
         r = run_set(p, 'upstream')
+        self.assertInSuccess('test_is_A', r)
 
-        success_tests = r['success']
-
-        # tests = exclude_from_resultlist(r, 'success')
-        self.assertTrue(check('test_is_A', success_tests))
-        # self.assertTrue(check('test_fontname_is_equal_to_macstyle',
-        #                                  success_tests), lookup('test_fontname_is_equal_to_macstyle', tests))
+    # def test_results_fontname_is_equal_to_macstyle(self):
+    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+    #     self.assertInSuccess('test_fontname_is_equal_to_macstyle',
+    #                          run_set(p, 'result'))
 
     def test_results_nbsp_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-
-        self.assertTrue(check('test_nbsp', success_tests),
-                        lookup('test_nbsp', tests))
+        self.assertInSuccess('test_nbsp', run_set(p, 'result'))
 
     def test_results_nbsp_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
-        r = run_set(p, 'result')
-        failure_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-
-        self.assertTrue(check('test_nbsp', failure_tests),
-                        lookup('test_nbsp', tests))
+        self.assertInFailure('test_nbsp', run_set(p, 'result'))
 
     def test_result_space_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        self.assertTrue(check('test_space', success_tests),
-                        lookup('test_space', tests))
+        self.assertInSuccess('test_space', run_set(p, 'result'))
 
     def test_result_space_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light!.ttf')
-        r = run_set(p, 'result')
-        failure_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        self.assertTrue(check('test_space', failure_tests),
-                        lookup('test_space', tests))
+        self.assertInFailure('test_space', run_set(p, 'result'))
 
     def test_result_space_and_nbsp_has_same_advanced_width_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-
-        result_test = check('test_nbsp_and_space_glyphs_width', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_nbsp_and_space_glyphs_width', tests))
+        self.assertInSuccess('test_nbsp_and_space_glyphs_width', run_set(p, 'result'))
 
     def test_result_space_and_nbsp_has_same_advanced_width_failure(self):
-        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular!.ttf')
-        r = run_set(p, 'result')
-        failure_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        result_test = check('test_nbsp_and_space_glyphs_width', failure_tests)
-        self.assertTrue(result_test,
-                        lookup('test_nbsp_and_space_glyphs_width', tests))
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        self.assertInFailure('test_nbsp_and_space_glyphs_width', run_set(p, 'result'))
 
     def test_result_METADATA_family_equals_to_binfont_familyname_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_family', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_family', tests))
+        self.assertInSuccess('test_metadata_family', run_set(p, 'result'))
 
     def test_result_METADATA_family_equals_to_binfont_familyname_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
-        r = run_set(p, 'result')
-        failure_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        result_test = check('test_metadata_family', failure_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_family', tests))
+        self.assertInFailure('test_metadata_family', run_set(p, 'result'))
 
     def test_result_METADATA_postScriptName_canonical_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_postScriptName_canonical', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_postScriptName_canonical', tests))
+        self.assertInSuccess('test_metadata_postScriptName_canonical', run_set(p, 'result'))
 
     def test_result_METADATA_style_matches_postScriptName_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_style_matches_postScriptName', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_style_matches_postScriptName', tests))
+        self.assertInSuccess('test_metadata_style_matches_postScriptName', run_set(p, 'result'))
 
     def test_result_METADATA_filename_matches_postScriptName_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_filename_matches_postScriptName', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_filename_matches_postScriptName', tests))
+        self.assertInSuccess('test_metadata_filename_matches_postScriptName', run_set(p, 'result'))
 
     def test_result_METADATA_fullname_matches_postScriptName_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_fullname_matches_postScriptName', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_fullname_matches_postScriptName', tests))
+        self.assertInSuccess('test_metadata_fullname_matches_postScriptName', run_set(p, 'result'))
 
     def test_result_METADATA_postScriptName_matches_font_filename_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_postScriptName_matches_font_filename', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_postScriptName_matches_font_filename', tests))
+        self.assertInSuccess('test_metadata_postScriptName_matches_font_filename', run_set(p, 'result'))
 
     def test_result_METADATA_postScriptName_matches_internal_fontname_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_postScriptName_matches_internal_fontname', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_postScriptName_matches_internal_fontname', tests))
+        self.assertInSuccess('test_metadata_postScriptName_matches_internal_fontname', run_set(p, 'result'))
 
     def test_result_METADATA_style_value_matches_font_italicAngle_value_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_style_value_matches_font_italicAngle_value', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_style_value_matches_font_italicAngle_value', tests))
+        self.assertInSuccess('test_metadata_style_value_matches_font_italicAngle_value', run_set(p, 'result'))
 
     def test_result_font_italicangle_is_zero_or_negative_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_font_italicangle_is_zero_or_negative', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_font_italicangle_is_zero_or_negative', tests))
+        self.assertInSuccess('test_font_italicangle_is_zero_or_negative', run_set(p, 'result'))
 
     def test_result_font_italicangle_is_zero_or_negative_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        result_test = check('test_font_italicangle_is_zero_or_negative', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_font_italicangle_is_zero_or_negative', tests))
+        self.assertInFailure('test_font_italicangle_is_zero_or_negative', run_set(p, 'result'))
 
     def test_result_menu_file_exists_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_menu_file_exists', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_menu_file_exists', tests))
+        self.assertInSuccess('test_menu_file_exists', run_set(p, 'result'))
 
     def test_result_menu_file_exists_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        result_test = check('test_font_italicangle_is_zero_or_negative', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_font_italicangle_is_zero_or_negative', tests))
+        self.assertInFailure('test_menu_file_exists', run_set(p, 'result'))
 
     def test_result_font_is_font_success(self):
+        # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_font_is_font', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_font_is_font', tests))
+        self.assertInSuccess('test_font_is_font', run_set(p, 'result'))
 
     def test_result_subsets_files_mime_correct_success(self):
+        # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_subsets_files_mime_correct', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_subsets_files_mime_correct', tests))
+        self.assertInSuccess('test_subsets_files_mime_correct', run_set(p, 'result'))
 
-    def test_result_METADATA_font_filename_canonical(self):
+    def test_result_METADATA_font_filename_canonical_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        r = run_set(p, 'result')
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        result_test = check('test_metadata_font_filename_canonical', success_tests)
-        self.assertTrue(result_test,
-                        lookup('test_metadata_font_filename_canonical', tests))
+        self.assertInSuccess('test_metadata_font_filename_canonical', run_set(p, 'result'))
 
-    def test_consistency_glyphs(self):
+    def test_consistency_glyphs_failure(self):
+        # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
-        r = run_set(p, 'consistency')
-        failure_tests = r['failure']
-        tests = exclude_from_resultlist(r, 'failure')
-        self.assertTrue(check('test_glyphs_are_consistent_across_family', failure_tests),
-                        lookup('test_glyphs_are_consistent_across_family', tests))
+        self.assertInFailure('test_glyphs_are_consistent_across_family', run_set(p, 'consistency'))
 
-    def test_consistency_copyright_notice(self):
+    def test_consistency_copyright_notice_success(self):
+        # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
-        r = run_set(p, 'consistency')
-
-        success_tests = r['success']
-        tests = exclude_from_resultlist(r, 'success')
-        self.assertTrue(check('test_copyright_notices_same_across_family', success_tests),
-                        lookup('test_copyright_notices_same_across_family', tests))
+        self.assertInSuccess('test_copyright_notices_same_across_family', run_set(p, 'consistency'))
