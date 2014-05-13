@@ -304,6 +304,11 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(family)
         self.assertTrue(os.path.basename(self.path).startswith(family))
 
+    def test_metadata_family_values_are_all_the_same(self):
+        """ Check that METADATA family values are all the same """
+        families_names = set([x['name'] for x in self.metadata.get('fonts')])
+        self.assertEqual(len(set(families_names)), 1)
+
     @tags('required',)
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
