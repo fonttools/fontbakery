@@ -136,8 +136,7 @@ class FontToolsTest(TestCase):
         elif fontname.endswith('-Bold'):
             self.assertTrue(macStyle & 0b01)
 
-    def test_font_style_matches_internal_font_properties_values(self):
-        """ Check metadata.json font.style key matches font internal """
+    def get_metadata(self):
         medatata_path = os.path.join(os.path.dirname(self.path), 'METADATA.json')
         metadata = yaml.load(open(medatata_path, 'r').read())
         font_metadata = {}
@@ -146,16 +145,28 @@ class FontToolsTest(TestCase):
                 font_metadata = font
                 break
         self.assertTrue(font_metadata)
+        return font_metadata
+
+    def test_font_italic_style_matches_internal_font_properties_values(self):
+        """ Check metadata.json font.style key matches font internal """
+        font_metadata = self.get_metadata()
         psname = self.get_postscript_name()
         fullname = self.get_font_fullname()
-        if font_metadata['style'] == 'italic':
-            self.assertTrue(self.font['head'].macStyle & 0b10)
-            self.assertTrue(any([psname.endswith('-' + x) for x in italics_styles.keys()]))
-            self.assertTrue(any([fullname.endswith(' ' + x) for x in italics_styles.values()]))
-        elif font_metadata['style'] == 'normal':
-            self.assertTrue(any([psname.endswith('-' + x) for x in normal_styles.keys()]))
-            self.assertTrue(any([fullname.endswith(' ' + x) for x in normal_styles.values()]))
-            self.assertFalse(self.font['head'].macStyle & 0b10)
+        if font_metadata['style'] != 'italic':
+            return
+        self.assertTrue(self.font['head'].macStyle & 0b10)
+        self.assertTrue(any([psname.endswith('-' + x) for x in italics_styles.keys()]))
+        self.assertTrue(any([fullname.endswith(' ' + x) for x in italics_styles.values()]))
+
+    def test_font_normal_style_matches_internal_font_properties_values(self):
+        font_metadata = self.get_metadata()
+        psname = self.get_postscript_name()
+        fullname = self.get_font_fullname()
+        if font_metadata['style'] != 'normal':
+            return
+        self.assertTrue(any([psname.endswith('-' + x) for x in normal_styles.keys()]))
+        self.assertTrue(any([fullname.endswith(' ' + x) for x in normal_styles.values()]))
+        self.assertFalse(self.font['head'].macStyle & 0b10)
 
     def test_tables_no_kern(self):
         """ Check that no KERN table exists """

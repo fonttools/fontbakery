@@ -211,8 +211,8 @@ class CheckerTest(unittest.TestCase):
 
     def test_result_font_italic_style_matches_internal_font_properties_values_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        self.assertInSuccess('test_font_style_matches_internal_font_properties_values', run_set(p, 'result'))
+        self.assertInSuccess('test_font_italic_style_matches_internal_font_properties_values', run_set(p, 'result'))
 
     def test_result_font_normal_style_matches_internal_font_properties_values_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertInSuccess('test_font_style_matches_internal_font_properties_values', run_set(p, 'result'))
+        self.assertInSuccess('test_font_normal_style_matches_internal_font_properties_values', run_set(p, 'result'))
