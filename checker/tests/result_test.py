@@ -562,15 +562,17 @@ class MetadataJSONTest(TestCase):
                 name = "%s.%s-opentype" % (self.fname, i)
                 self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
 
-    def test_menu_have_chars(self):
+    def test_menu_have_chars_for_family_key(self):
         """ Test does .menu file have chars needed for METADATA family key """
-        from checker.tools import combine_subsets
-        for x in self.metadata.get('subsets', None):
-            name = "%s.%s" % (self.fname, x)
+        family = ''
+        for x in self.metadata.get('fonts', []):
+            if os.path.basename(self.path) == x['filename']:
+                family = x['name']
+                break
+        self.assertTrue(family)
 
-            menu = fontforge.open(name)
-            subset_chars = combine_subsets([x, ])
-            self.assertTrue(all([i in menu for i in subset_chars]))
+        font = fontforge.open("%s.menu" % self.fname)
+        self.assertTrue(all([i in font for i in set(map(ord, family))]))
 
     def test_subset_file_smaller_font_file(self):
         """ Subset files should be smaller than font file """

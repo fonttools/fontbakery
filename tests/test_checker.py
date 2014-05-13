@@ -167,6 +167,14 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
         self.assertInFailure('test_metadata_fullname_is_equal_to_internal_font_fullname', run_set(p, 'result'))
 
+    def test_result_menu_have_chars_for_family_key_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_menu_have_chars_for_family_key', run_set(p, 'result'))
+
+    def test_result_menu_have_chars_for_family_key_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_menu_have_chars_for_family_key', run_set(p, 'result'))
+
     def test_consistency_glyphs_failure(self):
         # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
