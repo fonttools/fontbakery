@@ -224,3 +224,8 @@ class CheckerTest(unittest.TestCase):
     def test_result_subset_file_smaller_font_file_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light!.ttf')
         self.assertInFailure('test_subset_file_smaller_font_file', run_set(p, 'result'))
+
+    def test_result_metadata_family_matches_fullname_psname_family_part_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_family_matches_fullname_psname_family_part', run_set(p, 'result'))

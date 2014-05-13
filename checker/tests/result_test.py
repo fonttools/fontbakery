@@ -169,6 +169,13 @@ class FontToolsTest(TestCase):
         self.assertTrue(any([fullname.endswith(' ' + x) for x in normal_styles.values()]))
         self.assertFalse(self.font['head'].macStyle & 0b10)
 
+    def test_metadata_family_matches_fullname_psname_family_part(self):
+        font_metadata = self.get_metadata()
+        psname = self.get_postscript_name()
+        fullname = self.get_font_fullname()
+        self.assertTrue(psname.startswith(font_metadata['name'] + '-'))
+        self.assertTrue(fullname.startswith(font_metadata['name'] + ' '))
+
     def test_tables_no_kern(self):
         """ Check that no KERN table exists """
         self.assertNotIn('kern', self.font.keys())
