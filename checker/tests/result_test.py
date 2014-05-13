@@ -125,6 +125,7 @@ class FontToolsTest(TestCase):
             return fontname.decode('utf-16-be').encode('utf-8')
         return fontname
 
+    @tags('required')
     def test_metadata_weight_in_range(self):
         """ Font weight should be in range from 100 to 900, step 100 """
         metadata = self.get_metadata()
