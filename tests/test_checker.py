@@ -216,3 +216,11 @@ class CheckerTest(unittest.TestCase):
     def test_result_font_normal_style_matches_internal_font_properties_values_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_font_normal_style_matches_internal_font_properties_values', run_set(p, 'result'))
+
+    def test_result_subset_file_smaller_font_file_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_subset_file_smaller_font_file', run_set(p, 'result'))
+
+    def test_result_subset_file_smaller_font_file_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light!.ttf')
+        self.assertInFailure('test_subset_file_smaller_font_file', run_set(p, 'result'))
