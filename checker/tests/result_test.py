@@ -159,18 +159,16 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
-    # def test_ok(self):
-    #     """ This test succeeds """
-    #     self.assertTrue(True)
-    #
-    # def test_failure(self):
-    #     """ This test fails """
-    #     self.assertTrue(False)
-    #
-    # def test_error(self):
-    #     """ Unexpected error """
-    #     1 / 0
-    #     self.assertTrue(False)
+    def test_fontname_is_equal_to_macstyle(self):
+        """ Is internal fontname is equal to macstyle flags """
+        fontname = self.font.fontname
+        if fontname.endswith('-Italic'):
+            self.assertTrue(self.font.macstyle & 0b10)
+        if fontname.endswith('-BoldItalic'):
+            self.assertTrue(self.font.macstyle & 0b11)
+        if fontname.endswith('-Bold'):
+            self.assertTrue(self.font.macstyle & 0b01)
+        self.assertTrue(False)
 
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
@@ -251,7 +249,7 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(have)
 
-    def test_metadata_wight_in_range(self):
+    def test_metadata_weight_in_range(self):
         """ Font weight should be in range from 100 to 900, step 100 """
 
         rcheck = lambda x: True if x in range(100, 1000, 100) else False
@@ -333,6 +331,14 @@ class MetadataJSONTest(TestCase):
             filename = x.get('filename', '')
             self.assertEqual(os.path.splitext(filename)[0], post_script_name)
 
+    @tags('required')
+    def test_metadata_fullname_matches_postScriptName(self):
+        """ METADATA.json `fullName` is matched to `postScriptName` property """
+        for x in self.metadata.get("fonts", None):
+            post_script_name = x.get('postScriptName', '').replace('-', ' ')
+            fullname = x.get('fullName', '')
+            self.assertEqual(fullname, post_script_name)
+
     def test_metadata_font_fullname_canonical(self):
         """ METADATA.json fonts fullName property should be '[font.familyname] [font.style]' format (w/o quotes)"""
         for x in self.metadata.get("fonts", None):
@@ -345,6 +351,7 @@ class MetadataJSONTest(TestCase):
             self.assertTrue(style)
             self.assertEqual("%s %s" % (self.font.familyname, style), fn)
 
+    @tags('required')
     def test_metadata_font_filename_canonical(self):
         """ METADATA.json fonts filename property should be [font.familyname]-[font.style].ttf format."""
         for x in self.metadata.get("fonts", None):
@@ -587,7 +594,7 @@ class MetadataJSONTest(TestCase):
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.em, 1000,
-                            msg="Font em value is %s, required 1000" % self.font.em)
+                         msg="Font em value is %s, required 1000" % self.font.em)
 
     @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):
@@ -691,22 +698,24 @@ class MetadataJSONTest(TestCase):
     def test_metadata_fonts_no_unknown_keys(self):
         """ METADATA.json fonts don't have unknown top keys """
         fonts_keys = ["name", "postScriptName", "fullName", "style", "weight",
-                        "filename", "copyright"]
+                      "filename", "copyright"]
         for x in self.metadata.get("fonts", None):
             for i in x.keys():
                 self.assertIn(i, fonts_keys,
-                                msg="%s found unknown top key in %s" % (i, x))
+                              msg="%s found unknown top key in %s" % (i, x))
 
     @tags('required')
-    def test_metadata_subsets_values(self):
+    def test_metadata_atleast_latin_menu_subsets_exist(self):
         """ METADATA.json subsets should have at least 'menu' and 'latin' """
         self.assertIn('menu', self.metadata.get('subsets', []),
-                        msg="Subsets missing menu")
+                      msg="Subsets missing menu")
+        self.assertTrue(os.path.exists("%s.menu" % self.fname))
         self.assertIn('latin', self.metadata.get('subsets', []),
-                        msg="Subsets missing latin")
+                      msg="Subsets missing latin")
+        self.assertTrue(os.path.exists("%s.latin" % self.fname))
 
     @tags('required')
-    def test_metadata_copyright(self):
+    def test_metadata_copyrights_are_equal_for_all_fonts(self):
         """ METDATA.json fonts copyright string is the same for all items """
 
         copyright = None

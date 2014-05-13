@@ -26,7 +26,7 @@ from fontaine.builder import Director, Builder
 from fontaine.cmap import library
 
 
-COPYRIGHT_REGEX = re.compile(r'Copyright.*?\d{4}.*', re.U | re.I)
+COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
 
 
 def get_test_subset_function(value):
@@ -176,17 +176,6 @@ class SimpleTest(TestCase):
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 1)
-
-    def test_fontname_is_equal_to_macstyle(self):
-        """ Is internal fontname is equal to macstyle flags """
-        fontname = self.font.fontname
-        if fontname.endswith('-Italic'):
-            self.assertTrue(self.font.macstyle & 0b10)
-        if fontname.endswith('-BoldItalic'):
-            self.assertTrue(self.font.macstyle & 0b11)
-        if fontname.endswith('-Bold'):
-            self.assertTrue(self.font.macstyle & 0b01)
-        self.assertTrue(False)
 
 import robofab.world
 import robofab.objects
