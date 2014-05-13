@@ -87,14 +87,18 @@ class FontToolsTest(TestCase):
 
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
-        fontname = os.path.splitext(os.path.basename(self.path))[0]
-
+        fontname = self.font['name'].names[6].string
+        if b'\000' in fontname:
+            fontname = fontname.decode('utf-16-be').encode('utf-8')
+        else:
+            fontname = fontname
+        macStyle = self.font['head'].macStyle
         if fontname.endswith('-Italic'):
-            self.assertTrue(self.font['head'].macStyle & 0b10)
+            self.assertTrue(macStyle & 0b10)
         elif fontname.endswith('-BoldItalic'):
-            self.assertTrue(self.font['head'].macStyle & 0b11)
+            self.assertTrue(macStyle & 0b11)
         elif fontname.endswith('-Bold'):
-            self.assertTrue(self.font['head'].macStyle & 0b01)
+            self.assertTrue(macStyle & 0b01)
 
     def test_tables_no_kern(self):
         """ Check that no KERN table exists """
