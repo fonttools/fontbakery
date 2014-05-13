@@ -335,12 +335,14 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(all([rcheck(x) for x in self.metadata.get('fonts', None)]))
 
     styles = ['Thin', 'ThinItalic', 'ExtraLight',
-        'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
-        'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
-        'BoldItalic', 'ExtraBold', 'ExtraBoldItalic', 'Black', 'BlackItalic']
+              'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
+              'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
+              'BoldItalic', 'ExtraBold', 'ExtraBoldItalic',
+              'Black', 'BlackItalic']
 
     italic_styles = ['ThinItalic', 'ExtraLightItalic', 'LightItalic', 'Italic',
-        'MediumItalic', 'SemiBoldItalic', 'BoldItalic', 'ExtraBoldItalic',  'BlackItalic']
+                     'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
+                     'ExtraBoldItalic', 'BlackItalic']
 
     # test each key for font item:
     # {
@@ -489,9 +491,9 @@ class MetadataJSONTest(TestCase):
             self.assertIn(self.font.familyname, x.get('name', ''))
             self.assertIn(self.font.familyname, x.get('fullName', ''))
             self.assertIn("".join(str(self.font.familyname).split()),
-                            x.get('filename', ''))
+                          x.get('filename', ''))
             self.assertIn("".join(str(self.font.familyname).split()),
-                            x.get('postScriptName', ''))
+                          x.get('postScriptName', ''))
 
     def test_metadata_style_value_matches_font_italicAngle_value(self):
         """ METADATA.json fonts style property should be italic if font is italic."""
@@ -511,8 +513,9 @@ class MetadataJSONTest(TestCase):
         """ METADATA.json shoyld have 'subsets' property """
         self.assertTrue(self.metadata.get('subsets', None))
 
+    # VV TODO: Subset list must be selected from pyFontaine
     subset_list = ['menu', 'latin', 'latin_ext', 'vietnamese', 'greek',
-                    'cyrillic', 'cyrillic_ext', 'arabic']
+                   'cyrillic', 'cyrillic_ext', 'arabic']
 
     def test_metadata_subsets_names_are_correct(self):
         """ METADATA.json 'subset' property can have only allowed values from list:

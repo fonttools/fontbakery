@@ -233,6 +233,15 @@ class CheckerTest(unittest.TestCase):
         self.assertTrue(result_test,
                         lookup('test_font_is_font', tests))
 
+    def test_result_subsets_files_mime_correct_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['success']
+        tests = exclude_from_resultlist(r, 'success')
+        result_test = check('test_subsets_files_mime_correct', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_subsets_files_mime_correct', tests))
+
     def test_result_METADATA_font_filename_canonical(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
