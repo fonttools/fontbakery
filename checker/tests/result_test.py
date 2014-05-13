@@ -608,9 +608,8 @@ class MetadataJSONTest(TestCase):
         fonts = {}
         for x in self.metadata.get('fonts', None):
             fonts[x.get('fullName', '')] = x
-
         self.assertEqual(self.weights.get(self.font.weight, 0),
-                            fonts.get(self.font.fullname, {'weight': ''}).get('weight', 0))
+                         fonts.get(self.font.fullname, {'weight': ''}).get('weight', 0))
 
     def test_metadata_font_style_same_all_fields(self):
         """ METADATA.json fonts properties "name" "postScriptName" "fullName"

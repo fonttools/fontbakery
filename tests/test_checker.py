@@ -186,6 +186,14 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
         self.assertInFailure('test_metadata_family_matches_font_filenames', run_set(p, 'result'))
 
+    def test_result_metadata_value_match_font_weight_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_value_match_font_weight', run_set(p, 'result'))
+
+    def test_result_metadata_value_match_font_weight_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInFailure('test_metadata_value_match_font_weight', run_set(p, 'result'))
+
     def test_result_metadata_family_values_are_all_the_same(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
