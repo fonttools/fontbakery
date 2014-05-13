@@ -158,6 +158,16 @@ class CheckerTest(unittest.TestCase):
         self.assertTrue(result_test,
                         lookup('test_metadata_fullname_matches_postScriptName', tests))
 
+    def test_result_METADATA_postScriptName_matches_font_filename_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['success']
+        tests = exclude_from_resultlist(r, 'success')
+        result_test = check('test_metadata_postScriptName_matches_font_filename', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_metadata_postScriptName_matches_font_filename', tests))
+
     def test_result_METADATA_postScriptName_matches_internal_fontname_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
