@@ -532,13 +532,13 @@ class MetadataJSONTest(TestCase):
         'cyrillic_ext', 'arabic'] """
         self.assertTrue(all([x in self.subset_list for x in self.metadata.get('subsets', None)]))
 
-    def test_subsets_exists_font(self):
+    def test_font_subsets_exists(self):
         """ Each font file should have its own set of subsets
-        defined in METADATA.json """
-        for x in self.metadata.get('fonts', None):
-            for i in self.metadata.get('subsets', None):
-                name = "%s.%s" % (self.fname, i)
-                self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
+            defined in METADATA.json """
+        for i in self.metadata.get('subsets', []):
+            name = "%s.%s" % (self.fname, i)
+            self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
+            self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
 
     def test_subsets_exists_opentype(self):
         """ Each font file should have its own set of opentype file format
@@ -547,19 +547,6 @@ class MetadataJSONTest(TestCase):
             for i in self.metadata.get('subsets', None):
                 name = "%s.%s-opentype" % (self.fname, i)
                 self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
-
-    def test_subsets_files_mime_correct(self):
-        """ Each subset file should be correct binary files """
-        for x in self.metadata.get('fonts', None):
-            for i in self.metadata.get('subsets', None):
-                name = "%s.%s" % (self.fname, i)
-                self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
-
-    def test_subsets_opentype_files_mime_correct(self):
-        """ Each subset file should be correct binary files """
-        for x in self.metadata.get('fonts', None):
-            for i in self.metadata.get('subsets', None):
-                name = "%s.%s-opentype" % (self.fname, i)
                 self.assertEqual(magic.from_file(name, mime=True), 'application/x-font-ttf')
 
     def test_menu_have_chars_for_family_key(self):

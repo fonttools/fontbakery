@@ -35,7 +35,8 @@
     }
   ],
   "subsets": [
-    "latin"
+    "latin",
+    "menu"
   ],
   "dateAdded": "2012-11-30"
 }

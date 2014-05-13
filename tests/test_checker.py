@@ -149,11 +149,6 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInSuccess('test_font_is_font', run_set(p, 'result'))
 
-    def test_result_subsets_files_mime_correct_success(self):
-        # TODO: create XXX_failure test
-        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        self.assertInSuccess('test_subsets_files_mime_correct', run_set(p, 'result'))
-
     def test_result_METADATA_font_filename_canonical_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
@@ -174,6 +169,14 @@ class CheckerTest(unittest.TestCase):
     def test_result_menu_have_chars_for_family_key_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_menu_have_chars_for_family_key', run_set(p, 'result'))
+
+    def test_result_font_subsets_exists_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_font_subsets_exists', run_set(p, 'result'))
+
+    def test_result_font_subsets_exists_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        self.assertInFailure('test_font_subsets_exists', run_set(p, 'result'))
 
     def test_consistency_glyphs_failure(self):
         # TODO: create XXX_success test
