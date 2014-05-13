@@ -1,5 +1,5 @@
 {
-  "name": "Monda",
+  "name": "Font",
   "designer": "Vernon Adams",
   "license": "OFL",
   "visibility": "Sandbox",
@@ -7,31 +7,31 @@
   "size": 24841,
   "fonts": [
     {
-      "name": "Monda",
-      "postScriptName": "Monda-Bold",
-      "fullName": "Monda Bold",
+      "name": "Font",
+      "postScriptName": "Font-Bold",
+      "fullName": "Font Bold",
       "style": "normal",
       "weight": 700,
-      "filename": "Monda-Bold.ttf",
-      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Monda'"
+      "filename": "Font-Bold.ttf",
+      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
     },
     {
-      "name": "Monda",
-      "postScriptName": "Monda-Regular",
-      "fullName": "Monda Regular",
+      "name": "Font",
+      "postScriptName": "Font-Regular",
+      "fullName": "Font Regular",
       "style": "normal",
       "weight": 400,
-      "filename": "Monda-Regular.ttf",
-      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Monda'"
+      "filename": "Font-Regular.ttf",
+      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
     },
     {
-      "name": "Monda",
-      "postScriptName": "Monda-Italic",
-      "fullName": "Monda Italic",
+      "name": "Font",
+      "postScriptName": "Font-Italic",
+      "fullName": "Font Italic",
       "style": "italic",
       "weight": 400,
-      "filename": "Monda-Italic.ttf",
-      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Monda'"
+      "filename": "Font-Italic.ttf",
+      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
     }
   ],
   "subsets": [

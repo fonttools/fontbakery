@@ -484,6 +484,15 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(font)
 
+    def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
+        """ METADATA.json 'fullname' value matches internal 'fullname' """
+        metadata_fullname = ''
+        for font in self.metadata.get('fonts', []):
+            if font['filename'] == os.path.basename(self.path):
+                metadata_fullname = font['fullName']
+                break
+        self.assertEqual(self.font.fullname, metadata_fullname)
+
     def test_metadata_fonts_fields_have_fontname(self):
         """ METADATA.json fonts items fields "name", "postScriptName",
         "fullName", "filename" contains font name right format """

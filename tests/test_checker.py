@@ -53,10 +53,13 @@ class CheckerTest(unittest.TestCase):
         r = run_set(p, 'upstream')
         self.assertInSuccess('test_is_A', r)
 
-    # def test_results_fontname_is_equal_to_macstyle(self):
+    # def test_results_fontname_is_equal_to_macstyle_success(self):
     #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-    #     self.assertInSuccess('test_fontname_is_equal_to_macstyle',
-    #                          run_set(p, 'result'))
+    #     self.assertInSuccess('test_fontname_is_equal_to_macstyle', run_set(p, 'result'))
+
+    # def test_results_fontname_is_equal_to_macstyle_failure(self):
+    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
+    #     self.assertInFailure('test_fontname_is_equal_to_macstyle', run_set(p, 'result'))
 
     def test_results_nbsp_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
@@ -155,6 +158,14 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_font_filename_canonical', run_set(p, 'result'))
+
+    def test_result_metadata_fullname_is_equal_to_internal_font_fullname_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_metadata_fullname_is_equal_to_internal_font_fullname', run_set(p, 'result'))
+
+    def test_result_metadata_fullname_is_equal_to_internal_font_fullname_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
+        self.assertInFailure('test_metadata_fullname_is_equal_to_internal_font_fullname', run_set(p, 'result'))
 
     def test_consistency_glyphs_failure(self):
         # TODO: create XXX_success test
