@@ -125,6 +125,11 @@ class FontToolsTest(TestCase):
             return fontname.decode('utf-16-be').encode('utf-8')
         return fontname
 
+    def test_metadata_weight_in_range(self):
+        """ Font weight should be in range from 100 to 900, step 100 """
+        metadata = self.get_metadata()
+        self.assertTrue(metadata.get('weight', 0) in range(100, 1000, 100))
+
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
         fontname = self.get_postscript_name()
@@ -423,21 +428,11 @@ class MetadataJSONTest(TestCase):
 
         self.assertTrue(have)
 
-    def test_metadata_weight_in_range(self):
-        """ Font weight should be in range from 100 to 900, step 100 """
-
-        rcheck = lambda x: True if x in range(100, 1000, 100) else False
-        self.assertTrue(all([rcheck(x) for x in self.metadata.get('fonts', None)]))
-
     styles = ['Thin', 'ThinItalic', 'ExtraLight',
               'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
               'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
               'BoldItalic', 'ExtraBold', 'ExtraBoldItalic',
               'Black', 'BlackItalic']
-
-    italic_styles = ['ThinItalic', 'ExtraLightItalic', 'LightItalic', 'Italic',
-                     'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
-                     'ExtraBoldItalic', 'BlackItalic']
 
     # test each key for font item:
     # {

@@ -229,3 +229,11 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_family_matches_fullname_psname_family_part', run_set(p, 'result'))
+
+    def test_metadata_weight_in_range_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_weight_in_range', run_set(p, 'result'))
+
+    def test_metadata_weight_in_range_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
+        self.assertInFailure('test_metadata_weight_in_range', run_set(p, 'result'))
