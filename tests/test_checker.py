@@ -186,7 +186,25 @@ class CheckerTest(unittest.TestCase):
         tests = exclude_from_resultlist(r, 'success')
         result_test = check('test_metadata_style_value_matches_font_italicAngle_value', success_tests)
         self.assertTrue(result_test,
-                        lookup('test_metadata_stye_value_matches_font_italicAngle_value', tests))
+                        lookup('test_metadata_style_value_matches_font_italicAngle_value', tests))
+
+    def test_result_font_italicangle_is_zero_or_negative_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Alegreya-Italic.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['success']
+        tests = exclude_from_resultlist(r, 'success')
+        result_test = check('test_font_italicangle_is_zero_or_negative', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_font_italicangle_is_zero_or_negative', tests))
+
+    def test_result_font_italicangle_is_zero_or_negative_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Alegreya-Italic!.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['failure']
+        tests = exclude_from_resultlist(r, 'failure')
+        result_test = check('test_font_italicangle_is_zero_or_negative', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_font_italicangle_is_zero_or_negative', tests))
 
     def test_result_METADATA_font_filename_canonical(self):
         # TODO: create XXX_failure test

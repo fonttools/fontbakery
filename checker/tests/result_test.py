@@ -159,6 +159,14 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
+    @tags('required')
+    def test_font_italicangle_is_zero_or_negative(self):
+        """ font.italicangle property can be zero or negative """
+        if self.font.italicangle == 0:
+            self.assertEqual(self.font.italicangle, 0)
+        else:
+            self.assertLess(self.font.italicangle, 0)
+
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
         fontname = self.font.fontname
@@ -614,14 +622,6 @@ class MetadataJSONTest(TestCase):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.em, 1000,
                          msg="Font em value is %s, required 1000" % self.font.em)
-
-    @tags('required')
-    def test_font_italicangle_is_zero_or_negative(self):
-        """ font.italicangle property can be zero or negative """
-        if self.font.italicangle == 0:
-            self.assertEqual(self.font.italicangle, 0)
-        else:
-            self.assertLess(self.font.italicangle, 0)
 
     @tags('required')
     def test_font_italicangle_limits(self):
