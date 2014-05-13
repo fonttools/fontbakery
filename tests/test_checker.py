@@ -53,9 +53,9 @@ class CheckerTest(unittest.TestCase):
         r = run_set(p, 'upstream')
         self.assertInSuccess('test_is_A', r)
 
-    # def test_results_fontname_is_equal_to_macstyle_success(self):
-    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-    #     self.assertInSuccess('test_fontname_is_equal_to_macstyle', run_set(p, 'result'))
+    def test_results_fontname_is_equal_to_macstyle_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_fontname_is_equal_to_macstyle', run_set(p, 'result'))
 
     # def test_results_fontname_is_equal_to_macstyle_failure(self):
     #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')

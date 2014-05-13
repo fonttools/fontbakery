@@ -79,11 +79,22 @@ class FontToolsTest(TestCase):
         # belive that it is most mature.
         # This list should be reviewed
         tables = ['GlyphOrder', 'head', 'hhea', 'maxp', 'OS/2', 'hmtx',
-            'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name',  # 'kern',
-            'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
+                  'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name',
+                  'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
 
         for x in self.font.keys():
             self.assertIn(x, tables, msg="%s table not found in table list" % x)
+
+    def test_fontname_is_equal_to_macstyle(self):
+        """ Is internal fontname is equal to macstyle flags """
+        fontname = os.path.splitext(os.path.basename(self.path))[0]
+
+        if fontname.endswith('-Italic'):
+            self.assertTrue(self.font['head'].macStyle & 0b10)
+        elif fontname.endswith('-BoldItalic'):
+            self.assertTrue(self.font['head'].macStyle & 0b11)
+        elif fontname.endswith('-Bold'):
+            self.assertTrue(self.font['head'].macStyle & 0b01)
 
     def test_tables_no_kern(self):
         """ Check that no KERN table exists """
@@ -167,17 +178,6 @@ class FontForgeSimpleTest(TestCase):
             self.assertEqual(self.font.italicangle, 0)
         else:
             self.assertLess(self.font.italicangle, 0)
-
-    def test_fontname_is_equal_to_macstyle(self):
-        """ Is internal fontname is equal to macstyle flags """
-        fontname = self.font.fontname
-        if fontname.endswith('-Italic'):
-            self.assertTrue(self.font.macstyle & 0b10)
-        if fontname.endswith('-BoldItalic'):
-            self.assertTrue(self.font.macstyle & 0b11)
-        if fontname.endswith('-Bold'):
-            self.assertTrue(self.font.macstyle & 0b01)
-        self.assertTrue(False)
 
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
