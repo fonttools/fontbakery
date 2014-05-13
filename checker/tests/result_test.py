@@ -299,6 +299,15 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(all([x['name'] == self.font.familyname for x in self.metadata.get('fonts', None)]))
 
     @tags('required')
+    def test_metadata_postScriptName_matches_internal_fontname(self):
+        """ Checks that METADATA.json 'postScriptName' value matches
+            font internal 'fontname' metadata """
+        for font in self.metadata.get('fonts', []):
+            if font['filename'] != os.path.basename(self.fname):
+                continue
+            self.assertEqual(font['postScriptName'], self.font.fontname)
+
+    @tags('required')
     def test_metadata_postScriptName_canonical(self):
         """ METADATA.json fonts postScriptName should be [font familyname]-[style].
         Alowed styles are: 'Thin', 'ThinItalic', 'ExtraLight', 'ExtraLightItalic',
