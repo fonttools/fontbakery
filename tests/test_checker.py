@@ -208,3 +208,11 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
         self.assertInSuccess('test_copyright_notices_same_across_family', run_set(p, 'consistency'))
+
+    def test_result_font_italic_style_matches_internal_font_properties_values_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_font_style_matches_internal_font_properties_values', run_set(p, 'result'))
+
+    def test_result_font_normal_style_matches_internal_font_properties_values_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_font_style_matches_internal_font_properties_values', run_set(p, 'result'))

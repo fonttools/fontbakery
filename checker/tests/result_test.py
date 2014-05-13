@@ -28,6 +28,34 @@ from fontTools import ttLib
 from bakery.app import app
 
 
+italics_styles = {
+    'ThinItalic': 'Thin Italic',
+    'ExtraLight': 'Extra Light',
+    'ExtraLightItalic': 'Extra Light Italic',
+    'LightItalic': 'Light Italic',
+    'Italic': 'Italic',
+    'MediumItalic': 'Medium Italic',
+    'SemiBoldItalic': 'Semi Bold Italic',
+    'BoldItalic': 'Bold Italic',
+    'ExtraBoldItalic': 'Extra Bold Italic',
+    'BlackItalic': 'Black Italic',
+}
+
+
+normal_styles = {
+    'Thin': 'Thin',
+    'ExtraLight': 'Extra Light',
+    'Light': 'Light',
+    'Regular': 'Regular',
+    'Italic': 'Italic',
+    'Medium': 'Medium',
+    'SemiBold': 'Semi Bold',
+    'Bold': 'Bold',
+    'ExtraBold': 'Extra Bold',
+    'Black': 'Black'
+}
+
+
 def prun(command, cwd, log=None):
     """
     Wrapper for subprocess.Popen that capture output and return as result
@@ -85,13 +113,21 @@ class FontToolsTest(TestCase):
         for x in self.font.keys():
             self.assertIn(x, tables, msg="%s table not found in table list" % x)
 
-    def test_fontname_is_equal_to_macstyle(self):
-        """ Is internal fontname is equal to macstyle flags """
+    def get_postscript_name(self):
         fontname = self.font['name'].names[6].string
         if b'\000' in fontname:
-            fontname = fontname.decode('utf-16-be').encode('utf-8')
-        else:
-            fontname = fontname
+            return fontname.decode('utf-16-be').encode('utf-8')
+        return fontname
+
+    def get_font_fullname(self):
+        fontname = self.font['name'].names[4].string
+        if b'\000' in fontname:
+            return fontname.decode('utf-16-be').encode('utf-8')
+        return fontname
+
+    def test_fontname_is_equal_to_macstyle(self):
+        """ Is internal fontname is equal to macstyle flags """
+        fontname = self.get_postscript_name()
         macStyle = self.font['head'].macStyle
         if fontname.endswith('-Italic'):
             self.assertTrue(macStyle & 0b10)
@@ -99,6 +135,27 @@ class FontToolsTest(TestCase):
             self.assertTrue(macStyle & 0b11)
         elif fontname.endswith('-Bold'):
             self.assertTrue(macStyle & 0b01)
+
+    def test_font_style_matches_internal_font_properties_values(self):
+        """ Check metadata.json font.style key matches font internal """
+        medatata_path = os.path.join(os.path.dirname(self.path), 'METADATA.json')
+        metadata = yaml.load(open(medatata_path, 'r').read())
+        font_metadata = {}
+        for font in metadata.get('fonts', []):
+            if os.path.basename(self.path) == font['filename']:
+                font_metadata = font
+                break
+        self.assertTrue(font_metadata)
+        psname = self.get_postscript_name()
+        fullname = self.get_font_fullname()
+        if font_metadata['style'] == 'italic':
+            self.assertTrue(self.font['head'].macStyle & 0b10)
+            self.assertTrue(any([psname.endswith('-' + x) for x in italics_styles.keys()]))
+            self.assertTrue(any([fullname.endswith(' ' + x) for x in italics_styles.values()]))
+        elif font_metadata['style'] == 'normal':
+            self.assertTrue(any([psname.endswith('-' + x) for x in normal_styles.keys()]))
+            self.assertTrue(any([fullname.endswith(' ' + x) for x in normal_styles.values()]))
+            self.assertFalse(self.font['head'].macStyle & 0b10)
 
     def test_tables_no_kern(self):
         """ Check that no KERN table exists """
@@ -637,7 +694,6 @@ class MetadataJSONTest(TestCase):
             'ExtraBoldItalic': 'Extra Bold Italic',
             'Black': 'Black',
             'BlackItalic': 'Black Italic',
-
         }
 
         for x in self.metadata.get('fonts', None):
@@ -657,19 +713,6 @@ class MetadataJSONTest(TestCase):
     def test_metadata_font_style_italic_correct(self):
         """ METADATA.json fonts properties "name" "postScriptName" "fullName"
         "filename" should have the same style """
-        italics_styles = {
-            'ThinItalic': 'Thin Italic',
-            'ExtraLight': 'Extra Light',
-            'ExtraLightItalic': 'Extra Light Italic',
-            'LightItalic': 'Light Italic',
-            'Italic': 'Italic',
-            'MediumItalic': 'Medium Italic',
-            'SemiBoldItalic': 'Semi Bold Italic',
-            'BoldItalic': 'Bold Italic',
-            'ExtraBoldItalic': 'Extra Bold Italic',
-            'BlackItalic': 'Black Italic',
-        }
-
         for x in self.metadata.get('fonts', None):
             if x.get('postScriptName', '') != self.font.familyname:
                 # this is not regular style
