@@ -414,7 +414,7 @@ class MetadataJSONTest(TestCase):
             self.assertIn("".join(str(self.font.familyname).split()),
                             x.get('postScriptName', ''))
 
-    def test_metadata_font_style_italic_follow_internal_data(self):
+    def test_metadata_style_value_matches_font_italicAngle_value(self):
         """ METADATA.json fonts style property should be italic if font is italic."""
         font = None
         current_font = "%s %s" % (self.font.familyname, self.font.weight)

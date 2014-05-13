@@ -178,6 +178,16 @@ class CheckerTest(unittest.TestCase):
         self.assertTrue(result_test,
                         lookup('test_metadata_postScriptName_matches_internal_fontname', tests))
 
+    def test_result_METADATA_style_value_matches_font_italicAngle_value_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        success_tests = r['success']
+        tests = exclude_from_resultlist(r, 'success')
+        result_test = check('test_metadata_style_value_matches_font_italicAngle_value', success_tests)
+        self.assertTrue(result_test,
+                        lookup('test_metadata_stye_value_matches_font_italicAngle_value', tests))
+
     def test_result_METADATA_font_filename_canonical(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
