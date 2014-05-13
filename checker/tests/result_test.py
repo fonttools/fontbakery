@@ -294,6 +294,16 @@ class MetadataJSONTest(TestCase):
         self.metadata = yaml.load(open(medatata_path, 'r').read())
         self.fname = os.path.splitext(self.path)[0]
 
+    def test_metadata_family_matches_font_filenames(self):
+        """ Check that METADATA family value matches font filenames """
+        family = ''
+        for x in self.metadata.get('fonts', []):
+            if os.path.basename(self.path) == x['filename']:
+                family = x['name']
+                break
+        self.assertTrue(family)
+        self.assertTrue(os.path.basename(self.path).startswith(family))
+
     @tags('required',)
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
@@ -760,7 +770,7 @@ class MetadataJSONTest(TestCase):
 
     @tags('required')
     def test_metadata_copyrights_are_equal_for_all_fonts(self):
-        """ METDATA.json fonts copyright string is the same for all items """
+        """ METADATA.json fonts copyright string is the same for all items """
 
         copyright = None
 

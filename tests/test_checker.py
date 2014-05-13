@@ -178,6 +178,14 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
         self.assertInFailure('test_font_subsets_exists', run_set(p, 'result'))
 
+    def test_result_metadata_family_matches_font_filenames_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_family_matches_font_filenames', run_set(p, 'result'))
+
+    def test_result_metadata_family_matches_font_filenames_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        self.assertInFailure('test_metadata_family_matches_font_filenames', run_set(p, 'result'))
+
     def test_consistency_glyphs_failure(self):
         # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
