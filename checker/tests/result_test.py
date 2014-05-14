@@ -20,6 +20,7 @@ import fontforge
 import unicodedata
 import yaml
 import os
+import re
 import subprocess
 import sys
 import magic
@@ -112,6 +113,20 @@ class FontToolsTest(TestCase):
 
         for x in self.font.keys():
             self.assertIn(x, tables, msg="%s table not found in table list" % x)
+
+    def test_license_url_is_included_and_correct(self):
+        licenseurl = self.font['name'].names[13].string
+        if b'\000' in licenseurl:
+            licenseurl = licenseurl.decode('utf-16-be').encode('utf-8')
+
+        regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+        self.assertTrue(regex.match(licenseurl))
 
     def get_postscript_name(self):
         fontname = self.font['name'].names[6].string

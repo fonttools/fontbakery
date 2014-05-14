@@ -245,3 +245,11 @@ class CheckerTest(unittest.TestCase):
     def test_result_font_has_dsig_table_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
         self.assertInFailure('test_font_has_dsig_table', run_set(p, 'result'))
+
+    def test_result_license_url_is_included_and_correct_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
+        self.assertInSuccess('test_license_url_is_included_and_correct', run_set(p, 'result'))
+
+    def test_result_license_url_is_included_and_correct_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        self.assertInFailure('test_license_url_is_included_and_correct', run_set(p, 'result'))
