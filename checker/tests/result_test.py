@@ -175,7 +175,14 @@ class FontToolsTest(TestCase):
         self.assertTrue(any([fullname.endswith(' ' + x) for x in normal_styles.values()]))
         self.assertFalse(self.font['head'].macStyle & 0b10)
 
+    @tags('required')
+    def test_font_has_dsig_table(self):
+        """ Check that font has DSIG table """
+        self.assertIn('DSIG', self.font.keys())
+
     def test_metadata_family_matches_fullname_psname_family_part(self):
+        """ Check that METADATA.json family matches fullName
+            and postScriptName family part"""
         font_metadata = self.get_metadata()
         psname = self.get_postscript_name()
         fullname = self.get_font_fullname()
