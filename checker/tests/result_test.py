@@ -114,6 +114,7 @@ class FontToolsTest(TestCase):
         for x in self.font.keys():
             self.assertIn(x, tables, msg="%s table not found in table list" % x)
 
+    @tags('required')
     def test_license_url_is_included_and_correct(self):
         licenseurl = self.font['name'].names[13].string
         if b'\000' in licenseurl:
