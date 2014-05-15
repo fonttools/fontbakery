@@ -327,9 +327,10 @@ class FontForgeSimpleTest(TestCase):
         else:
             self.assertLess(self.font.italicangle, 0)
 
+    @tags('required')
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
-        self.assertEqual(self.font.os2_fstype, 1)
+        self.assertEqual(self.font.os2_fstype, 0)
 
     @tags('required',)
     def test_nbsp(self):

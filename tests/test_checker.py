@@ -267,3 +267,8 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
         self.assertInSuccess('test_metadata_designer_exists_in_profiles_csv', run_set(p, 'result'))
+
+    def test_result_is_fsType_not_set_failure(self):
+        # TODO: create XXX_success test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light!.ttf')
+        self.assertInFailure('test_is_fsType_not_set', run_set(p, 'result'))
