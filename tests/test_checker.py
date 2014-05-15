@@ -381,3 +381,11 @@ class CheckerTest(unittest.TestCase):
     def test_result_metadata_regular_is_400_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_metadata_regular_is_400', run_set(p, 'result'))
+
+    def test_result_em_is_1000_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_em_is_1000', run_set(p, 'result'))
+
+    def test_result_em_is_1000_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_em_is_1000', run_set(p, 'result'))
