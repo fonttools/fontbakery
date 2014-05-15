@@ -373,3 +373,7 @@ class CheckerTest(unittest.TestCase):
     def test_result_camelcase_in_fontname_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_camelcase_in_fontname', run_set(p, 'result'))
+
+    def test_result_family_is_listed_in_gwf_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_family_is_listed_in_gwf', run_set(p, 'result'))

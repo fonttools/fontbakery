@@ -145,6 +145,13 @@ class FontToolsTest(TestCase):
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         self.assertEqual(self.font['prep'].program.getBytecode(), magiccode)
 
+    def test_family_is_listed_in_gwf(self):
+        import requests
+        metadata = self.get_metadata()
+        url = 'http://fonts.googleapis.com/css?family=%s' % metadata['name'].replace(' ', '+')
+        fp = requests.get(url)
+        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
+
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
         """ Font names are equal for Macintosh and Windows
