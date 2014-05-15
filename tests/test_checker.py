@@ -345,3 +345,11 @@ class CheckerTest(unittest.TestCase):
     def test_result_prep_magic_code_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInFailure('test_prep_magic_code', run_set(p, 'result'))
+
+    def test_result_table_gasp_type_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_table_gasp_type', run_set(p, 'result'))
+
+    def test_result_table_gasp_type_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInFailure('test_table_gasp_type', run_set(p, 'result'))
