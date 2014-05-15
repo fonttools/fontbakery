@@ -970,3 +970,13 @@ class MetadataJSONTest(TestCase):
         """ Copyright string should be less than 500 chars """
         for x in self.metadata.get('fonts', None):
             self.assertLessEqual(len(x.get('copyright', '')), 500)
+
+    @tags('required')
+    def test_metadata_has_unique_style_weight_pairs(self):
+        """ METADATA.json only contains unique style:weight pairs """
+        pairs = []
+        for fontdata in self.metadata.get('fonts', []):
+            styleweight = '%s:%s' % (fontdata['style'],
+                                     fontdata.get('weight', 0))
+            self.assertNotIn(styleweight, pairs)
+            pairs.append(styleweight)

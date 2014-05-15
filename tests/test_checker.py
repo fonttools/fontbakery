@@ -327,3 +327,8 @@ class CheckerTest(unittest.TestCase):
         self.assertInSuccess('test_subsets_files_is_font', r)
         self.assertInSuccess('test_file_is_font', r)
         self.assertInSuccess('test_menu_file_is_font', r)
+
+    def test_result_metadata_has_unique_style_weight_pairs_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_has_unique_style_weight_pairs', run_set(p, 'result'))
