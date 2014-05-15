@@ -253,3 +253,17 @@ class CheckerTest(unittest.TestCase):
     def test_result_license_url_is_included_and_correct_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
         self.assertInFailure('test_license_url_is_included_and_correct', run_set(p, 'result'))
+
+    # TODO: Do not comment until test gets ready
+    # def test_result_font_weight_matches_italic_style_success(self):
+    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+    #     self.assertInSuccess('test_font_weight_matches_italic_style', run_set(p, 'result'))
+
+    # def test_result_font_weight_matches_italic_style_failure(self):
+    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+    #     self.assertInFailure('test_font_weight_matches_italic_style', run_set(p, 'result'))
+
+    def test_result_metadata_designer_exists_in_profiles_csv_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
+        self.assertInSuccess('test_metadata_designer_exists_in_profiles_csv', run_set(p, 'result'))

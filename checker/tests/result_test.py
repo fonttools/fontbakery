@@ -29,6 +29,37 @@ from fontTools import ttLib
 from bakery.app import app
 
 
+weights = {
+    'Thin': 100,
+    'ThinItalic': 100,
+    'ExtraLight': 200,
+    'ExtraLightItalic': 200,
+    'Light': 300,
+    'LightItalic': 300,
+    'Regular': 400,
+    'Italic': 400,
+    'Medium': 500,
+    'MediumItalic': 500,
+    'SemiBold': 600,
+    'SemiBoldItalic': 600,
+    'Bold': 700,
+    'BoldItalic': 700,
+    'ExtraBold': 800,
+    'ExtraBoldItalic': 800,
+    'Black': 900,
+    'BlackItalic': 900,
+}
+
+
+weights_styles_map = {
+    'normal': ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold',
+               'Bold', 'ExtraBold', 'Black'],
+    'italic': ['ThinItalic', 'ExtraLightItalic', 'LightItalic', 'Italic',
+               'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
+               'ExtraBoldItalic', 'BlackItalic']
+}
+
+
 italics_styles = {
     'ThinItalic': 'Thin Italic',
     'ExtraLight': 'Extra Light',
@@ -146,6 +177,14 @@ class FontToolsTest(TestCase):
         """ Font weight should be in range from 100 to 900, step 100 """
         metadata = self.get_metadata()
         self.assertTrue(metadata.get('weight', 0) in range(100, 1000, 100))
+
+    # TODO: Ask Dave about "Check that font.weight keys match the style names"
+    # @tags('required')
+    # def test_font_weight_matches_italic_style(self):
+    #     font_metadata = self.get_metadata()
+    #     for k, weight in weights.items():
+    #         if weight == font_metadata.get('weight'):
+    #             self.assertIn(k, weights_styles_map[font_metadata['style']])
 
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
@@ -681,33 +720,12 @@ class MetadataJSONTest(TestCase):
             name = "%s.%s" % (self.fname, x)
             self.assertLess(os.path.getsize(name), os.path.getsize(self.path))
 
-    weights = {
-        'Thin': 100,
-        'ThinItalic': 100,
-        'ExtraLight': 200,
-        'ExtraLightItalic': 200,
-        'Light': 300,
-        'LightItalic': 300,
-        'Regular': 400,
-        'Italic': 400,
-        'Medium': 500,
-        'MediumItalic': 500,
-        'SemiBold': 600,
-        'SemiBoldItalic': 600,
-        'Bold': 700,
-        'BoldItalic': 700,
-        'ExtraBold': 800,
-        'ExtraBoldItalic': 800,
-        'Black': 900,
-        'BlackItalic': 900,
-    }
-
     def test_metadata_value_match_font_weight(self):
         """Check that METADATA font.weight keys match font internal metadata"""
         fonts = {}
         for x in self.metadata.get('fonts', None):
             fonts[x.get('fullName', '')] = x
-        self.assertEqual(self.weights.get(self.font.weight, 0),
+        self.assertEqual(weights.get(self.font.weight, 0),
                          fonts.get(self.font.fullname, {'weight': ''}).get('weight', 0))
 
     def test_metadata_font_style_same_all_fields(self):
@@ -770,6 +788,23 @@ class MetadataJSONTest(TestCase):
 
         for x in top_keys:
             self.assertIn(x, self.metadata, msg="Missing %s key" % x)
+
+    @tags('required')
+    def test_metadata_designer_exists_in_profiles_csv(self):
+        designer = self.metadata.get('designer', '')
+        self.assertTrue(designer)
+        import urllib
+        import csv
+        fp = urllib.urlopen('https://googlefontdirectory.googlecode.com/hg/designers/profiles.csv')
+        try:
+            designers = []
+            for row in csv.reader(fp):
+                if not row:
+                    continue
+                designers.append(row[0])
+            self.assertIn(designer, designers)
+        except Exception, ex:
+            self.fail(ex)
 
     @tags('required')
     def test_metadata_fonts_key_list(self):
