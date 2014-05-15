@@ -151,6 +151,7 @@ class FontToolsTest(TestCase):
         url = 'http://fonts.googleapis.com/css?family=%s' % metadata['name'].replace(' ', '+')
         fp = requests.get(url)
         self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
+        self.assertEqual(metadata.get('visibility'), 'External')
 
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
