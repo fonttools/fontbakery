@@ -272,3 +272,7 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light!.ttf')
         self.assertInFailure('test_is_fsType_not_set', run_set(p, 'result'))
+
+    def test_result_metadata_copyrights_are_equal_for_all_fonts_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_copyrights_are_equal_for_all_fonts', run_set(p, 'result'))

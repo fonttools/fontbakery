@@ -833,38 +833,38 @@ class MetadataJSONTest(TestCase):
     def test_metadata_top_keys_types(self):
         """ METADATA.json should have proper top keys types """
         self.assertEqual(type(self.metadata.get("name", None)),
-                            type(""), msg="name key type invalid")
+                         type(""), msg="name key type invalid")
         self.assertEqual(type(self.metadata.get("designer", None)),
-                            type(""), msg="designer key type invalid")
+                         type(""), msg="designer key type invalid")
         self.assertEqual(type(self.metadata.get("license", None)),
-                            type(""), msg="license key type invalid")
+                         type(""), msg="license key type invalid")
         self.assertEqual(type(self.metadata.get("visibility", None)),
-                            type(""), msg="visibility key type invalid")
+                         type(""), msg="visibility key type invalid")
         self.assertEqual(type(self.metadata.get("category", None)),
-                            type(""), msg="category key type invalid")
+                         type(""), msg="category key type invalid")
         self.assertEqual(type(self.metadata.get("size", None)),
-                            type(0), msg="size key type invalid")
+                         type(0), msg="size key type invalid")
         self.assertEqual(type(self.metadata.get("dateAdded", None)),
-                            type(""), msg="dateAdded key type invalid")
+                         type(""), msg="dateAdded key type invalid")
 
     @tags('required')
     def test_metadata_font_keys_types(self):
         """ METADATA.json fonts items dicts items should have proper types """
         for x in self.metadata.get("fonts", None):
             self.assertEqual(type(self.metadata.get("name", None)),
-                                type(""), msg="name key type invalid for %s " % x)
+                             type(""), msg="name key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("postScriptName", None)),
-                                type(""), msg="postScriptName key type invalid for %s " % x)
+                             type(""), msg="postScriptName key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("fullName", None)),
-                                type(""), msg="fullName key type invalid for %s " % x)
+                             type(""), msg="fullName key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("style", None)),
-                                type(""), msg="style key type invalid for %s " % x)
+                             type(""), msg="style key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("weight", None)),
-                                type(0), msg="weight key type invalid for %s " % x)
+                             type(0), msg="weight key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("filename", None)),
-                                type(""), msg="filename key type invalid for %s " % x)
+                             type(""), msg="filename key type invalid for %s " % x)
             self.assertEqual(type(self.metadata.get("copyright", None)),
-                                type(""), msg="copyright key type invalid for %s " % x)
+                             type(""), msg="copyright key type invalid for %s " % x)
 
     @tags('required')
     def test_metadata_no_unknown_top_keys(self):
