@@ -199,6 +199,17 @@ class FontToolsTest(TestCase):
     #         if weight == font_metadata.get('weight'):
     #             self.assertIn(k, weights_styles_map[font_metadata['style']])
 
+    @tags('required')
+    def test_metadata_fonts_fields(self):
+        """ METADATA.json "fonts" property items should have
+            "name", "postScriptName", "fullName", "style", "weight",
+            "filename", "copyright" keys """
+        keys = ["name", "postScriptName", "fullName", "style", "weight",
+                "filename", "copyright"]
+        metadata = self.get_metadata()
+        for j in keys:
+            self.assertTrue(j in metadata)
+
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
         fontname = self.get_postscript_name()
@@ -539,16 +550,6 @@ class MetadataJSONTest(TestCase):
     def test_metadata_fonts_list(self):
         """ METADATA.json font propery should be list """
         self.assertEqual(type(self.metadata.get('fonts', False)), type([]))
-
-    def test_metadata_fonts_fields(self):
-        """ METADATA.json "fonts" property items should have
-            "name", "postScriptName", "fullName", "style", "weight",
-            "filename", "copyright" keys """
-        keys = ["name", "postScriptName", "fullName", "style", "weight",
-                "filename", "copyright"]
-        for x in self.metadata.get("fonts", None):
-            for j in keys:
-                self.assertTrue(j in x)
 
     def test_metadata_font_name_canonical(self):
         """ METADATA.json fonts 'name' property should be

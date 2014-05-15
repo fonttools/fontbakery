@@ -287,3 +287,11 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_copyright_contains_rfn', run_set(p, 'result'))
+
+    def test_result_metadata_fonts_fields_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_fonts_fields', run_set(p, 'result'))
+
+    def test_result_metadata_fonts_fields_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
+        self.assertInFailure('test_metadata_fonts_fields', run_set(p, 'result'))
