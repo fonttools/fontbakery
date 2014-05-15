@@ -259,6 +259,27 @@ class FontToolsTest(TestCase):
         self.assertFalse(self.font['head'].macStyle & 0b10)
 
     @tags('required')
+    def test_metadata_font_keys_types(self):
+        """ METADATA.json fonts items dicts items should have proper types """
+        metadata = self.get_metadata()
+        self.assertEqual(type(metadata.get("name", None)), type(""))
+        self.assertEqual(type(metadata.get("postScriptName", None)), type(""))
+        self.assertEqual(type(metadata.get("fullName", None)), type(""))
+        self.assertEqual(type(metadata.get("style", None)), type(""))
+        self.assertEqual(type(metadata.get("weight", None)), type(0))
+        self.assertEqual(type(metadata.get("filename", None)), type(""))
+        self.assertEqual(type(metadata.get("copyright", None)), type(""))
+
+    @tags('required')
+    def test_metadata_fonts_no_unknown_keys(self):
+        """ METADATA.json fonts don't have unknown top keys """
+        fonts_keys = ["name", "postScriptName", "fullName", "style", "weight",
+                      "filename", "copyright"]
+        metadata = self.get_metadata()
+        for i in metadata.keys():
+            self.assertIn(i, fonts_keys)
+
+    @tags('required')
     def test_font_has_dsig_table(self):
         """ Check that font has DSIG table """
         self.assertIn('DSIG', self.font.keys())
@@ -889,42 +910,12 @@ class MetadataJSONTest(TestCase):
                          type(""), msg="dateAdded key type invalid")
 
     @tags('required')
-    def test_metadata_font_keys_types(self):
-        """ METADATA.json fonts items dicts items should have proper types """
-        for x in self.metadata.get("fonts", None):
-            self.assertEqual(type(self.metadata.get("name", None)),
-                             type(""), msg="name key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("postScriptName", None)),
-                             type(""), msg="postScriptName key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("fullName", None)),
-                             type(""), msg="fullName key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("style", None)),
-                             type(""), msg="style key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("weight", None)),
-                             type(0), msg="weight key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("filename", None)),
-                             type(""), msg="filename key type invalid for %s " % x)
-            self.assertEqual(type(self.metadata.get("copyright", None)),
-                             type(""), msg="copyright key type invalid for %s " % x)
-
-    @tags('required')
     def test_metadata_no_unknown_top_keys(self):
         """ METADATA.json don't have unknown top keys """
         top_keys = ["name", "designer", "license", "visibility", "category",
                     "size", "dateAdded", "fonts", "subsets"]
-
         for x in self.metadata.keys():
             self.assertIn(x, top_keys, msg="%s found unknown top key" % x)
-
-    @tags('required')
-    def test_metadata_fonts_no_unknown_keys(self):
-        """ METADATA.json fonts don't have unknown top keys """
-        fonts_keys = ["name", "postScriptName", "fullName", "style", "weight",
-                      "filename", "copyright"]
-        for x in self.metadata.get("fonts", None):
-            for i in x.keys():
-                self.assertIn(i, fonts_keys,
-                              msg="%s found unknown top key in %s" % (i, x))
 
     @tags('required')
     def test_metadata_atleast_latin_menu_subsets_exist(self):

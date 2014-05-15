@@ -290,8 +290,19 @@ class CheckerTest(unittest.TestCase):
 
     def test_result_metadata_fonts_fields_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertInSuccess('test_metadata_fonts_fields', run_set(p, 'result'))
+        r = run_set(p, 'result')
+        self.assertInSuccess('test_metadata_fonts_fields', r)
+        self.assertInSuccess('test_metadata_top_keys_types', r)
+        self.assertInSuccess('test_metadata_font_keys_types', r)
 
     def test_result_metadata_fonts_fields_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
-        self.assertInFailure('test_metadata_fonts_fields', run_set(p, 'result'))
+        r = run_set(p, 'result')
+        self.assertInFailure('test_metadata_fonts_fields', r)
+        self.assertInFailure('test_metadata_font_keys_types', r)
+
+    def test_result_metadata_no_unknown_top_keys_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        self.assertInSuccess('test_metadata_no_unknown_top_keys', r)
+        self.assertInSuccess('test_metadata_fonts_no_unknown_keys', r)
