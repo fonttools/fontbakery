@@ -550,6 +550,7 @@ class MetadataJSONTest(TestCase):
         self.fname = os.path.splitext(self.path)[0]
 
     def test_family_is_listed_in_gwf(self):
+        """ Fontfamily is listed in Google Font Directory """
         import requests
         url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
         fp = requests.get(url)
