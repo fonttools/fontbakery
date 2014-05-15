@@ -370,10 +370,14 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_font_gpos_table_has_kerning_info', run_set(p, 'result'))
 
-    def test_result_camelcase_in_fontname_success(self):
+    def test_result_camelcase_in_fontname_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_camelcase_in_fontname', run_set(p, 'result'))
 
-    def test_result_family_is_listed_in_gwf_success(self):
+    def test_result_family_is_listed_in_gwf_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_family_is_listed_in_gwf', run_set(p, 'result'))
+
+    def test_result_metadata_regular_is_400_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_metadata_regular_is_400', run_set(p, 'result'))
