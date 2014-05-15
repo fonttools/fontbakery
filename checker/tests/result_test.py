@@ -145,14 +145,6 @@ class FontToolsTest(TestCase):
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         self.assertEqual(self.font['prep'].program.getBytecode(), magiccode)
 
-    def test_family_is_listed_in_gwf(self):
-        import requests
-        metadata = self.get_metadata()
-        url = 'http://fonts.googleapis.com/css?family=%s' % metadata['name'].replace(' ', '+')
-        fp = requests.get(url)
-        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
-        self.assertEqual(metadata.get('visibility'), 'External')
-
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
         """ Font names are equal for Macintosh and Windows
@@ -556,6 +548,13 @@ class MetadataJSONTest(TestCase):
                                      'METADATA.json')
         self.metadata = yaml.load(open(medatata_path, 'r').read())
         self.fname = os.path.splitext(self.path)[0]
+
+    def test_family_is_listed_in_gwf(self):
+        import requests
+        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
+        fp = requests.get(url)
+        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
+        self.assertEqual(self.metadata.get('visibility'), 'External')
 
     def test_metadata_family_matches_font_filenames(self):
         """ Check that METADATA family value matches font filenames """
