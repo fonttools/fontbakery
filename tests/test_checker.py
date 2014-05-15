@@ -278,7 +278,12 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_copyrights_are_equal_for_all_fonts', run_set(p, 'result'))
 
-    def test_result_copyright_matches_pattern_success(self):
+    def test_result_metadata_copyright_matches_pattern_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertInSuccess('test_copyright_matches_pattern', run_set(p, 'result'))
+        self.assertInSuccess('test_metadata_copyright_matches_pattern', run_set(p, 'result'))
+
+    def test_result_metadata_copyright_contains_rfn_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_metadata_copyright_contains_rfn', run_set(p, 'result'))

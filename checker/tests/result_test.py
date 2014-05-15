@@ -172,8 +172,14 @@ class FontToolsTest(TestCase):
             return fontname.decode('utf-16-be').encode('utf-8')
         return fontname
 
+    @tags(['required', 'info'])
+    def test_metadata_copyright_contains_rfn(self):
+        """ Copyright string should contains 'Reserved Font Name' substring """
+        metadata = self.get_metadata()
+        self.assertIn('Reserved Font Name', metadata['copyright'])
+
     @tags('required')
-    def test_copyright_matches_pattern(self):
+    def test_metadata_copyright_matches_pattern(self):
         metadata = self.get_metadata()
         self.assertRegexpMatches(metadata['copyright'],
                                  r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
@@ -919,12 +925,6 @@ class MetadataJSONTest(TestCase):
         """ METADATA.json license is 'Apache2' or 'OFL' """
         licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.get('license', ''), licenses)
-
-# TODO: This should check RFN permission is in bakery.yaml
-    def test_metadata_copyright_reserved(self):
-        """ Copyright string should contains 'Reserved Font Name' substring """
-        for x in self.metadata.get('fonts', None):
-            self.assertIn('Reserved Font Name', x.get('copyright', ''))
 
 # TODO: Find where this check came from
     @tags('required')
