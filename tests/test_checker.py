@@ -306,3 +306,17 @@ class CheckerTest(unittest.TestCase):
         r = run_set(p, 'result')
         self.assertInSuccess('test_metadata_no_unknown_top_keys', r)
         self.assertInSuccess('test_metadata_fonts_no_unknown_keys', r)
+
+    def test_result_atleast_latin_menu_subsets_exist_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        self.assertInSuccess('test_latin_file_exists', r)
+        self.assertInSuccess('test_menu_file_exists', r)
+        self.assertInSuccess('test_metadata_atleast_latin_menu_subsets_exist', r)
+
+    def test_result_atleast_latin_menu_subsets_exist_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        r = run_set(p, 'result')
+        self.assertInFailure('test_latin_file_exists', r)
+        self.assertInFailure('test_menu_file_exists', r)
+        self.assertInSuccess('test_metadata_atleast_latin_menu_subsets_exist', r)

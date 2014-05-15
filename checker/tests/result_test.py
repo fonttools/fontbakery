@@ -422,9 +422,15 @@ class FontForgeSimpleTest(TestCase):
         canonic_name = "%s-%s.ttf" % (self.font.familyname, self.font.weight)
         self.assertEqual(name, canonic_name)
 
+    @tags('required')
     def test_menu_file_exists(self):
         """ Menu file have font-name-style.menu format """
         self.assertTrue(os.path.exists("%s.menu" % self.fname))
+
+    @tags('required')
+    def test_latin_file_exists(self):
+        """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists("%s.latin" % self.fname))
 
     def test_menu_file_is_canonical(self):
         """ Menu file should be [font.familyname]-[font.weight].menu """
