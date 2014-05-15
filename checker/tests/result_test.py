@@ -202,11 +202,10 @@ class FontToolsTest(TestCase):
         """ Is internal fontname is equal to macstyle flags """
         fontname = self.get_postscript_name()
         macStyle = self.font['head'].macStyle
-        if fontname.endswith('-Italic'):
+        weight_style = fontname.split('-')[1]
+        if 'Italic' in weight_style:
             self.assertTrue(macStyle & 0b10)
-        elif fontname.endswith('-BoldItalic'):
-            self.assertTrue(macStyle & 0b11)
-        elif fontname.endswith('-Bold'):
+        if 'Bold' in weight_style:
             self.assertTrue(macStyle & 0b01)
 
     def get_metadata(self):
