@@ -134,6 +134,10 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = ttLib.TTFont(self.path)
 
+    def test_prep_magic_code(self):
+        magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
+        self.assertEqual(self.font['prep'].program.getBytecode(), magiccode)
+
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
         """ Font names are equal for Macintosh and Windows

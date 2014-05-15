@@ -337,3 +337,11 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_macintosh_platform_names_matches_windows_platform', run_set(p, 'result'))
+
+    def test_result_prep_magic_code_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_prep_magic_code', run_set(p, 'result'))
+
+    def test_result_prep_magic_code_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInFailure('test_prep_magic_code', run_set(p, 'result'))
