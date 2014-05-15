@@ -320,3 +320,10 @@ class CheckerTest(unittest.TestCase):
         self.assertInFailure('test_latin_file_exists', r)
         self.assertInFailure('test_menu_file_exists', r)
         self.assertInSuccess('test_metadata_atleast_latin_menu_subsets_exist', r)
+
+    def test_result_each_ttf_subset_menu_truetype_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        r = run_set(p, 'result')
+        self.assertInSuccess('test_subsets_files_is_font', r)
+        self.assertInSuccess('test_file_is_font', r)
+        self.assertInSuccess('test_menu_file_is_font', r)

@@ -438,10 +438,16 @@ class FontForgeSimpleTest(TestCase):
         canonic_name = "%s-%s.menu" % (self.font.familyname, self.font.weight)
         self.assertEqual(os.path.basename(name), canonic_name)
 
+    @tags('required')
     def test_menu_file_is_font(self):
         """ Menu file have font-name-style.menu format """
         self.assertTrue(magic.from_file("%s.menu" % self.fname),
                         'TrueType font data')
+
+    @tags('required')
+    def test_file_is_font(self):
+        """ Menu file have font-name-style.menu format """
+        self.assertTrue(magic.from_file(self.path), 'TrueType font data')
 
     @tags('required')
     def test_em_is_1000(self):
@@ -886,6 +892,13 @@ class MetadataJSONTest(TestCase):
         self.assertEqual(type(self.metadata.get('subsets', '')), type([]))
 
     @tags('required')
+    def test_subsets_files_is_font(self):
+        """ Subset file is a TrueType format """
+        for subset in self.metadata.get('subsets', []):
+            self.assertTrue(magic.from_file(self.fname + '.' + subset),
+                            'TrueType font data')
+
+    @tags('required')
     def test_metadata_fonts_items_dicts(self):
         """ METADATA.json fonts key items are dicts """
         for x in self.metadata.get('fonts', None):
@@ -957,6 +970,3 @@ class MetadataJSONTest(TestCase):
         """ Copyright string should be less than 500 chars """
         for x in self.metadata.get('fonts', None):
             self.assertLessEqual(len(x.get('copyright', '')), 500)
-
-    # def test_copyright_file_filled(self):
-    #     """ COPYRIGHT.txt file """
