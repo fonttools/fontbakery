@@ -369,3 +369,8 @@ class CheckerTest(unittest.TestCase):
     def test_result_font_gpos_table_has_kerning_info_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_font_gpos_table_has_kerning_info', run_set(p, 'result'))
+
+    def test_result_camelcase_in_fontname_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_camelcase_in_fontname', run_set(p, 'result'))
+

@@ -134,7 +134,14 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = ttLib.TTFont(self.path)
 
+    def test_camelcase_in_fontname(self):
+        """ Font family is not CamelCase'd """
+        metadata = self.get_metadata()
+        self.assertTrue(bool(re.match(r'([A-Z][a-z]+){2,}', metadata['name'])),
+                        msg='May be you have to use space in family')
+
     def test_prep_magic_code(self):
+        """ Font contains in PREP table magic code """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         self.assertEqual(self.font['prep'].program.getBytecode(), magiccode)
 
@@ -171,6 +178,7 @@ class FontToolsTest(TestCase):
 
     @tags('required')
     def test_license_url_is_included_and_correct(self):
+        """ License URL is included and correct url """
         licenseurl = self.font['name'].names[13].string
         if b'\000' in licenseurl:
             licenseurl = licenseurl.decode('utf-16-be').encode('utf-8')
@@ -204,6 +212,7 @@ class FontToolsTest(TestCase):
 
     @tags('required')
     def test_metadata_copyright_matches_pattern(self):
+        """ Copyright string matches to Copyright * 20\d\d * (*@*.*) """
         metadata = self.get_metadata()
         self.assertRegexpMatches(metadata['copyright'],
                                  r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
