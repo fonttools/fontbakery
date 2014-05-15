@@ -353,3 +353,19 @@ class CheckerTest(unittest.TestCase):
     def test_result_table_gasp_type_failure(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInFailure('test_table_gasp_type', run_set(p, 'result'))
+
+    def test_result_no_kern_table_exists_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_no_kern_table_exists', run_set(p, 'result'))
+
+    def test_result_no_kern_table_exists_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold!.ttf')
+        self.assertInFailure('test_no_kern_table_exists', run_set(p, 'result'))
+
+    def test_result_font_gpos_table_has_kerning_info_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Light.ttf')
+        self.assertInSuccess('test_font_gpos_table_has_kerning_info', run_set(p, 'result'))
+
+    def test_result_font_gpos_table_has_kerning_info_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_font_gpos_table_has_kerning_info', run_set(p, 'result'))

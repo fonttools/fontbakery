@@ -307,6 +307,17 @@ class FontToolsTest(TestCase):
         """ Check that font has DSIG table """
         self.assertIn('DSIG', self.font.keys())
 
+    def test_font_gpos_table_has_kerning_info(self):
+        """ GPOS table has kerning information """
+        self.assertIn('GPOS', self.font.keys())
+        flaglookup = False
+        for lookup in self.font['GPOS'].table.LookupList.Lookup:
+            if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
+                flaglookup = lookup
+        self.assertTrue(flaglookup, msg='GPOS doesnt have kerning information')
+        self.assertGreater(flaglookup.SubTableCount, 0)
+        self.assertGreater(flaglookup.SubTable[0].PairSetCount, 0)
+
     def test_metadata_family_matches_fullname_psname_family_part(self):
         """ Check that METADATA.json family matches fullName
             and postScriptName family part"""
@@ -316,7 +327,7 @@ class FontToolsTest(TestCase):
         self.assertTrue(psname.startswith(font_metadata['name'] + '-'))
         self.assertTrue(fullname.startswith(font_metadata['name'] + ' '))
 
-    def test_tables_no_kern(self):
+    def test_no_kern_table_exists(self):
         """ Check that no KERN table exists """
         self.assertNotIn('kern', self.font.keys())
 
