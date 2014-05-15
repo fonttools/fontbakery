@@ -134,6 +134,7 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = ttLib.TTFont(self.path)
 
+    @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
         """ Font names are equal for Macintosh and Windows
             specific-platform """
