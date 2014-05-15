@@ -13,7 +13,7 @@
       "style": "normal",
       "weight": 700,
       "filename": "Font-Bold.ttf",
-      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
+      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Font'"
     },
     {
       "name": "Font",
@@ -21,7 +21,7 @@
       "fullName": "Font Regular",
       "style": "normal",
       "filename": "Font-Regular.ttf",
-      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
+      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Font'"
     },
     {
       "name": "Font",
@@ -30,7 +30,7 @@
       "style": "italic",
       "weight": 400,
       "filename": "Font-Italic.ttf",
-      "copyright": "Copyright (c) 2012, with Reserved Font Names 'Font'"
+      "copyright": "Copyright (c) 2012, vernon adams (vern@newtypography.co.uk), with Reserved Font Names 'Font'"
     }
   ],
   "subsets": [

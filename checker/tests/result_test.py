@@ -173,6 +173,12 @@ class FontToolsTest(TestCase):
         return fontname
 
     @tags('required')
+    def test_copyright_matches_pattern(self):
+        metadata = self.get_metadata()
+        self.assertRegexpMatches(metadata['copyright'],
+                                 r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
+
+    @tags('required')
     def test_metadata_weight_in_range(self):
         """ Font weight should be in range from 100 to 900, step 100 """
         metadata = self.get_metadata()
@@ -911,7 +917,7 @@ class MetadataJSONTest(TestCase):
     @tags('required')
     def test_metadata_license(self):
         """ METADATA.json license is 'Apache2' or 'OFL' """
-        licenses = ['Apache2', 'OFL']
+        licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.get('license', ''), licenses)
 
 # TODO: This should check RFN permission is in bakery.yaml
