@@ -332,3 +332,8 @@ class CheckerTest(unittest.TestCase):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_has_unique_style_weight_pairs', run_set(p, 'result'))
+
+    def test_result_macintosh_platform_names_matches_windows_platform_success(self):
+        # TODO: create XXX_failure test
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInSuccess('test_macintosh_platform_names_matches_windows_platform', run_set(p, 'result'))

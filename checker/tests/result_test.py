@@ -134,6 +134,24 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = ttLib.TTFont(self.path)
 
+    def test_macintosh_platform_names_matches_windows_platform(self):
+        """ Font names are equal for Macintosh and Windows
+            specific-platform """
+        result_string_dicts = {}
+        for name in self.font['name'].names:
+            if name.nameID not in result_string_dicts:
+                result_string_dicts[name.nameID] = {'mac': '', 'win': ''}
+            if name.platformID == 3:  # Windows platform-specific
+                result_string_dicts[name.nameID]['win'] = name.string
+                if b'\000' in name.string:
+                    result_string_dicts[name.nameID]['win'] = name.string.decode('utf-16-be').encode('utf-8')
+            if name.platformID == 1:  # Macintosh platform-specific
+                result_string_dicts[name.nameID]['mac'] = name.string
+                if b'\000' in name.string:
+                    result_string_dicts[name.nameID]['mac'] = name.string.decode('utf-16-be').encode('utf-8')
+        for row in result_string_dicts.values():
+            self.assertEqual(row['win'], row['mac'])
+
     def test_tables(self):
         """ List of tables that shoud be in font file """
         # xen: actually I take this list from most popular open font Open Sans,
