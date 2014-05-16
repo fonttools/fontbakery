@@ -174,7 +174,7 @@ class FontToolsTest(TestCase):
                   'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
 
         for x in self.font.keys():
-            self.assertIn(x, tables)
+            self.assertIn(x, tables, msg="%s does not exist in font" % x)
 
     @tags('required')
     def test_license_url_is_included_and_correct(self):
@@ -309,16 +309,18 @@ class FontToolsTest(TestCase):
                       "filename", "copyright"]
         metadata = self.get_metadata()
         for i in metadata.keys():
-            self.assertIn(i, fonts_keys)
+            self.assertIn(i, fonts_keys, msg="`%s` is unknown key in json" % i)
 
     @tags('required')
     def test_font_has_dsig_table(self):
         """ Check that font has DSIG table """
-        self.assertIn('DSIG', self.font.keys())
+        self.assertIn('DSIG', self.font.keys(),
+                      msg="`dsig` does not exist in font")
 
     def test_font_gpos_table_has_kerning_info(self):
         """ GPOS table has kerning information """
-        self.assertIn('GPOS', self.font.keys())
+        self.assertIn('GPOS', self.font.keys(),
+                      msg="`gpos` does not exist in font")
         flaglookup = False
         for lookup in self.font['GPOS'].table.LookupList.Lookup:
             if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
@@ -938,7 +940,7 @@ class MetadataJSONTest(TestCase):
                     continue
                 designers.append(row[0])
             self.assertIn(designer, designers,
-                          'Designer is not in profiles.csv')
+                          msg='Designer is not in profiles.csv')
         except Exception, ex:
             self.fail(ex)
 
@@ -1024,7 +1026,7 @@ class MetadataJSONTest(TestCase):
         """ METADATA.json license is 'Apache2', 'UFL' or 'OFL' """
         licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.get('license', ''), licenses,
-                      'License has invalid value')
+                      msg='License has invalid value')
 
 # TODO: Find where this check came from
     @tags('required')
