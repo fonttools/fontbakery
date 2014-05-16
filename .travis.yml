@@ -5,7 +5,6 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install nose
-script:
-  coverage run --source=bakery nosetests tests
+script: nosetests tests
 after_success:
   coveralls
