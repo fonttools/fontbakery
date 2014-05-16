@@ -411,6 +411,13 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
+    def test_pfm_family_style_is_correct(self):
+        """ PFM Family Style is valid. Valid value are: Serif, Sans-Serif,
+            Monospace, Decorative """
+        self.assertIn(self.font.os2_pfm_family,
+                      ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
+                      'PFM Family Style is not valid.')
+
     @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):
         """ font.italicangle property can be zero or negative """
@@ -451,8 +458,9 @@ class FontForgeSimpleTest(TestCase):
         self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)
 
     def test_font_weight_is_canonical(self):
-        """ Font wight property is from canonical styles list"""
-        self.assertIn(self.font.weight, self.styles)
+        """ Font weight property is from canonical styles list"""
+        self.assertIn(self.font.weight, self.styles,
+                      'Font weight does not match for any valid styles')
 
     def test_font_name_canonical(self):
         """ Font name is canonical """
@@ -928,7 +936,8 @@ class MetadataJSONTest(TestCase):
                 if not row:
                     continue
                 designers.append(row[0])
-            self.assertIn(designer, designers)
+            self.assertIn(designer, designers,
+                          'Designer is not in profiles.csv')
         except Exception, ex:
             self.fail(ex)
 
@@ -1011,9 +1020,10 @@ class MetadataJSONTest(TestCase):
 
     @tags('required')
     def test_metadata_license(self):
-        """ METADATA.json license is 'Apache2' or 'OFL' """
+        """ METADATA.json license is 'Apache2', 'UFL' or 'OFL' """
         licenses = ['Apache2', 'OFL', 'UFL']
-        self.assertIn(self.metadata.get('license', ''), licenses)
+        self.assertIn(self.metadata.get('license', ''), licenses,
+                      'License has invalid value')
 
 # TODO: Find where this check came from
     @tags('required')
