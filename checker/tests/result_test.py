@@ -411,12 +411,13 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
-    def test_pfm_family_style_is_correct(self):
-        """ PFM Family Style is valid. Valid value are: Serif, Sans-Serif,
-            Monospace, Decorative """
-        self.assertIn(self.font.os2_pfm_family,
-                      ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
-                      'PFM Family Style is not valid.')
+    # TODO: Ask Dave about this test
+    # def test_pfm_family_style_is_correct(self):
+    #     """ PFM Family Style is valid. Valid value are: Serif, Sans-Serif,
+    #         Monospace, Decorative """
+    #     self.assertIn(self.font.os2_pfm_family,
+    #                   ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
+    #                   'PFM Family Style is not valid.')
 
     @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):
