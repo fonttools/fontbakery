@@ -1,7 +1,14 @@
 language: python
 python:
   - 2.7
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq -y python-numpy python-lxml python-scrapy python-html5lib python-redis python-sqlite python-sqlalchemy python-unidecode python-flask
 install:
+  - pushd ..
+  - wget 'https://github.com/fontforge/fontforge/archive/2.0.20140101.tar.gz' -O - | tar -zxf -
+  - pushd fontforge-2.0.20140101 && ./autogen.sh && ./configure && make && sudo make install && popd
+  - popd
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install nose

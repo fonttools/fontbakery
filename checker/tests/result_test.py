@@ -145,7 +145,7 @@ class FontToolsTest(TestCase):
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         try:
             bytecode = self.font['prep'].program.getBytecode()
-        except:
+        except KeyError:
             bytecode = ''
         self.assertTrue(bytecode == magiccode,
                         msg='PREP does not contain magic code')
