@@ -143,7 +143,12 @@ class FontToolsTest(TestCase):
     def test_prep_magic_code(self):
         """ Font contains in PREP table magic code """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
-        self.assertEqual(self.font['prep'].program.getBytecode(), magiccode)
+        try:
+            bytecode = self.font['prep'].program.getBytecode()
+        except:
+            bytecode = ''
+        self.assertTrue(bytecode == magiccode,
+                        msg='PREP does not contain magic code')
 
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):

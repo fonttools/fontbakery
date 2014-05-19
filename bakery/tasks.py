@@ -520,11 +520,10 @@ from checker.base import BakeryTestCase
 
 def repr_testcase(dumper, data):
     def method_doc(doc):
-        if type(doc) == type(None):
+        if doc is None:
             return 'None'
         else:
             return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
-
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
         'methodDoc': method_doc(data._testMethodDoc),
         'tool': data.tool,
@@ -533,7 +532,7 @@ def repr_testcase(dumper, data):
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
         'err_msg': getattr(data, '_err_msg', '')
-        })
+    })
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
