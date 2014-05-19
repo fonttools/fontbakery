@@ -19,3 +19,6 @@ install:
 script: nosetests tests
 after_success:
   coveralls
+branches:
+  only:
+    - master
