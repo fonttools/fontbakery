@@ -1,12 +1,15 @@
-language: c
-compiler: gcc
+language: python
+python:
+  - "2.7"
+virtualenv:
+  system_site_packages: true
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install python2.7-dev python-numpy python-lxml python-html5lib python-redis python-sqlite python-sqlalchemy python-unidecode python-flask
 install:
   - pushd ..
   - wget 'https://github.com/fontforge/fontforge/archive/2.0.20140101.tar.gz' -O - | tar -zxf -
-  - pushd fontforge-2.0.20140101 && ./autogen.sh && ./configure && make && sudo make install && popd
+  - pushd fontforge-2.0.20140101 && ./autogen.sh && ./configure --disable-programs && make && sudo make install && popd
   - popd
   - pip install html5lib flask-sqlalchemy flask-babel Flask-FlatPages
   - pip install Flask-Mail rauth requests pytz==2013b beautifulsoup4 markupsafe
