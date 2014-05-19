@@ -3,13 +3,17 @@ python:
   - 2.7
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq -y python-numpy python-lxml python-scrapy python-html5lib python-redis python-sqlite python-sqlalchemy python-unidecode python-flask
+  - sudo apt-get install -qq -y python-numpy python-lxml python-html5lib python-redis python-sqlite python-sqlalchemy python-unidecode python-flask
 install:
   - pushd ..
   - wget 'https://github.com/fontforge/fontforge/archive/2.0.20140101.tar.gz' -O - | tar -zxf -
   - pushd fontforge-2.0.20140101 && ./autogen.sh && ./configure && make && sudo make install && popd
   - popd
-  - pip install -r requirements.txt
+  - pip install html5lib flask-sqlalchemy flask-babel Flask-FlatPages
+  - pip install Flask-Mail rauth requests pytz==2013b beautifulsoup4 markupsafe
+  - pip install giturlparse.py TTFQuery git+http://github.com/behdad/fonttools.git
+  - pip install git+https://github.com/davelab6/pyfontaine.git
+  - pip install freetype-py robofab flask-rq  'six>=1.4.1' python-magic scrapy
   - pip install coveralls
   - pip install nose
 script: nosetests tests
