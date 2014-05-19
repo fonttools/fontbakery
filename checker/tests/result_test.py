@@ -426,6 +426,16 @@ class FontForgeSimpleTest(TestCase):
     #                   ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
     #                   'PFM Family Style is not valid.')
 
+    def test_metrics_maximum_advanced_width_in_hhea(self):
+        """ Actual maximum advanced width is consistent to
+            hhea.advanceWidthMax """
+        maxwidth = 0
+        ttfont = ttLib.TTFont(self.path)
+        for g in self.font.glyphs():
+            if hasattr(g, 'width') and maxwidth < g.width:
+                maxwidth = g.width
+        self.assertEqual(ttfont['hhea'].advanceWidthMax, maxwidth)
+
     @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):
         """ font.italicangle property can be zero or negative """
@@ -933,6 +943,7 @@ class MetadataJSONTest(TestCase):
 
     @tags('required')
     def test_metadata_designer_exists_in_profiles_csv(self):
+        """ Designer exists in GWF profiles.csv """
         designer = self.metadata.get('designer', '')
         self.assertTrue(designer)
         import urllib
