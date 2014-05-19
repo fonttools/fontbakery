@@ -1,6 +1,8 @@
-language: python
-python:
-  - 2.7
+language: c
+virtualenv:
+  system_site_packages: true
+compiler:
+  - gcc
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install python-dev python-numpy python-lxml python-html5lib python-redis python-sqlite python-sqlalchemy python-unidecode python-flask
