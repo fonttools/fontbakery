@@ -209,6 +209,15 @@ class FontToolsTest(TestCase):
             return fontname.decode('utf-16-be').encode('utf-8')
         return fontname
 
+    def test_metadata_weight_matches_postscriptname(self):
+        """ Metadata weight matches postScriptName """
+        metadata = self.get_metadata()
+        pair = []
+        for k, weight in weights.items():
+            if weight == metadata['weight']:
+                pair.append(k)
+        self.assertTrue(metadata['postScriptName'].endswith('-%s' % pair[0]) or metadata['postScriptName'].endswith('-%s' % pair[1]))
+
     @tags(['required', 'info'])
     def test_metadata_copyright_contains_rfn(self):
         """ Copyright string should contains 'Reserved Font Name' substring """
@@ -265,6 +274,7 @@ class FontToolsTest(TestCase):
         for font in metadata.get('fonts', []):
             if os.path.basename(self.path) == font['filename']:
                 font_metadata = font
+                print font_metadata
                 break
         self.assertTrue(font_metadata)
         return font_metadata
