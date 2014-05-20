@@ -398,6 +398,14 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInSuccess('test_metadata_weight_matches_postscriptname', run_set(p, 'result'))
 
+    def test_ttx_doesnt_contain_duplicate_glyphs_failure(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold.ttx')
+        self.assertInFailure('test_ttx_doesnt_contain_duplicate_glyphs', run_set(p, 'upstream-ttx'))
+
+    def test_ttx_doesnt_contain_duplicate_glyphs_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold!.ttx')
+        self.assertInSuccess('test_ttx_doesnt_contain_duplicate_glyphs', run_set(p, 'upstream-ttx'))
+
     # TODO: create fixture to make test failure
     # def test_result_metrics_maximum_advanced_width_in_hhea_failure(self):
     #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')

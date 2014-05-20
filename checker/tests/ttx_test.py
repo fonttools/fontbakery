@@ -14,25 +14,50 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import re
 
-from checker.base import BakeryTestCase as TestCase, tags
 from fontTools.ttLib import TTFont
 
-class SimpleTTXTest(TestCase):
+from checker.base import BakeryTestCase as TestCase
+
+
+class SourceTTXTest(TestCase):
     targets = ['upstream-ttx']
-    tool   = 'fontTools'
-    name   = __name__
-    path   = '.'
+    tool = 'fontTools'
+    name = __name__
+    path = '.'
 
     def setUp(self):
         # TODO: Need somebody to check this options
         font = TTFont(None, lazy=False, recalcBBoxes=True,
-            verbose=False, allowVID=False)
+                      verbose=False, allowVID=False)
         font.importXML(self.path, quiet=True)
         self.font = font
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
+
+    def test_ttx_doesnt_contain_duplicate_glyphs(self):
+        """ Font doesnt contain duplicated glyphs.
+
+            When fontbakery has resulted files with GlyphID <glyphname>#<int>
+            generated, It can't be installed on some Mac OS X.
+
+            For details see https://github.com/girish-dalvi/Ek-Mukta/issues/1
+        """
+        glyphs = []
+        for g in self.font['glyf'].glyphs:
+            # Each glyph must not match pattern <glyphname>#<int>
+            # TODO: make sure that error occur even if in pattern
+            # any characters used after number sign (#)
+            self.assertFalse(re.search('#\w+$', g),
+                             msg="Font contains incorrectly named glyph %s" % g)
+            glyphID = re.sub('#\w+', '', g)
+
+            # Each GlyphID has to be unique in TTX
+            self.assertFalse(glyphID in glyphs,
+                             msg="GlyphID %s occurs twice in TTX" % g)
+            glyphs.append(glyphs)
 
     # def test_ok(self):
     #     """ This test succeeds """
