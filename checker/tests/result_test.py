@@ -965,8 +965,8 @@ class MetadataJSONTest(TestCase):
                 if not row:
                     continue
                 designers.append(row[0])
-            self.assertIn(designer, designers,
-                          msg='Designer is not in profiles.csv')
+            self.assertTrue(designer in designers,
+                            msg='Designer %s is not in profiles.csv' % designer)
         except Exception, ex:
             self.fail(ex)
 
