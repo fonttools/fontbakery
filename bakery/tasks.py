@@ -524,6 +524,7 @@ def repr_testcase(dumper, data):
             return 'None'
         else:
             return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
+    print(type(getattr(data, '_err_msg', '')))
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
         'methodDoc': method_doc(data._testMethodDoc),
         'tool': data.tool,
