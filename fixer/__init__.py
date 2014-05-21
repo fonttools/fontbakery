@@ -37,7 +37,8 @@ available_fixes = {
     'test_metrics_linegaps_are_zero': fixes.fix_metrics,
     'test_metrics_ascents_equal_max_bbox': fixes.fix_metrics,
     'test_metrics_descents_equal_min_bbox': fixes.fix_metrics,
-    'test_non_ascii_chars_in_names': fixes.fix_name_ascii
+    'test_non_ascii_chars_in_names': fixes.fix_name_ascii,
+    'test_is_fsType_not_set': fixes.fix_fstype_to_zero
 }
 
 
