@@ -190,7 +190,8 @@ class FontToolsTest(TestCase):
 
         regex = re.compile(
             r'^(?:http|ftp)s?://'  # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+'
+            r'(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
             r'localhost|'  # localhost...
             r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
             r'(?::\d+)?'  # optional port
@@ -436,6 +437,12 @@ class FontForgeSimpleTest(TestCase):
     #                   ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
     #                   'PFM Family Style is not valid.')
 
+    def get_metadata(self):
+        medatata_path = os.path.join(os.path.dirname(self.path),
+                                     'METADATA.json')
+        metadata = yaml.load(open(medatata_path, 'r').read())
+        return metadata
+
     def test_metrics_maximum_advanced_width_in_hhea(self):
         """ Actual maximum advanced width is consistent to
             hhea.advanceWidthMax """
@@ -445,6 +452,20 @@ class FontForgeSimpleTest(TestCase):
             if hasattr(g, 'width') and maxwidth < g.width:
                 maxwidth = g.width
         self.assertEqual(ttfont['hhea'].advanceWidthMax, maxwidth)
+
+    def test_metrics_advance_width_in_glyphs_same_if_monospace(self):
+        """ Monospace font has hhea.advanceWidthMax equal to each
+            glyph advanceWidth """
+        metadata = self.get_metadata()
+        if metadata.get('category') != 'Monospace':
+            return
+        ttfont = ttLib.TTFont(self.path)
+        advance_width = None
+        for g in self.font.glyphs():
+            if not advance_width:
+                advance_width = g.width
+            self.assertEqual(advance_width, g.width)
+        self.assertEqual(ttfont['hhea'].advanceWidthMax, advance_width)
 
     @tags('required')
     def test_font_italicangle_is_zero_or_negative(self):

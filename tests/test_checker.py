@@ -394,6 +394,10 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInSuccess('test_metrics_maximum_advanced_width_in_hhea', run_set(p, 'result'))
 
+    def test_result_metrics_advance_width_in_glyphs_same_if_monospace_success(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
+        self.assertInSuccess('test_metrics_advance_width_in_glyphs_same_if_monospace', run_set(p, 'result'))
+
     def test_result_metadata_weight_matches_postscriptname_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
         self.assertInSuccess('test_metadata_weight_matches_postscriptname', run_set(p, 'result'))
