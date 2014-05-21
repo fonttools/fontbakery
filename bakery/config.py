@@ -19,9 +19,10 @@ DEBUG = True
 BACKGROUND = True
 SECRET_KEY = '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xcfag'
 
+import os.path as op
 from os.path import dirname, abspath
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:////%s/data.sqlite' % dirname(abspath(__file__))
+SQLALCHEMY_DATABASE_URI = 'sqlite:////%s/data.sqlite' % op.join(dirname(abspath(__file__)), '..', '..')
 # CELERY_BROKER_URL = 'redis://localhost:6379',
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
