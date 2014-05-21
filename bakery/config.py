@@ -56,6 +56,7 @@ FLATPAGES_EXTENSION = '.md'
 import os
 FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'docs')
 DATA_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
+DATA_URL = '/data/'
 ROOT = os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), '..')
 
 HOOK_URL = 'http://bakery.fontforge.org/api/webhook/{id}'

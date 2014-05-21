@@ -19,6 +19,7 @@ from __future__ import print_function
 import os
 import gevent
 import itsdangerous
+import markdown
 from flask import Response, current_app
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
@@ -93,7 +94,10 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 line = f.readline()
                 #self.emit('message', 'read a line: ')
                 if line:
-                    self.emit('message', line)
+                    if line.startswith('### Link to archive '):
+                        self.emit('message', markdown.markdown(line))
+                    else:
+                        self.emit('message', line)
                     if line.startswith('End:'):
                         break
                     # A small delay to reduce browser hammering. It slows down the

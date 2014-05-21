@@ -8,6 +8,7 @@ Flask-SQLAlchemy
 six>=1.4.1
 pysqlite
 rauth
+markdown
 
 # Aux
 requests

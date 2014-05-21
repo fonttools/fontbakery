@@ -56,6 +56,11 @@ def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
+@frontend.route('/data/<path:path>')
+def data_from_root(path):
+    return send_from_directory(current_app.config['DATA_ROOT'], path)
+
+
 @frontend.route('/favicon.ico')
 def favicon():
     # Static items

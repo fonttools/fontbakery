@@ -471,9 +471,7 @@ def subset_process(project, build, log):
 
 
 def generate_metadata_process(project, build, log):
-    """
-    Generate METADATA.json using genmetadata.py
-    """
+    """ Generate METADATA.json using genmetadata.py """
     from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
@@ -590,6 +588,8 @@ def upstream_revision_tests(project, revision):
         result[metadata_path] = run_set(metadata_path, 'metadata')
 
     for font in ttx_files:
+        print(font)
+        print(os.path.join(_in, font))
         if os.path.exists(os.path.join(_in, font)):
             result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
 
@@ -702,6 +702,15 @@ def process_project(project, build, revision, force_sync=False):
             result_fixes(project, build)
             # discover_dashboard(project, build, log)
             log.write('Bake Succeeded!\n', prefix='### ')
+
+            # zip out folder with revision
+            param = {'login': project.login, 'id': project.id,
+                     'revision': build.revision, 'build': build.id}
+            _out_src = os.path.join(app.config['DATA_ROOT'],
+                                    '%(login)s/%(id)s.out/%(build)s.%(revision)s' % param)
+            _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
+            zipdir(_out_src, _out_url, log)
+
         finally:
             # save that project is done
             build.is_done = True
@@ -709,6 +718,20 @@ def process_project(project, build, revision, force_sync=False):
             db.session.commit()
 
     log.close()
+
+
+def zipdir(path, url, log):
+    import zipfile
+    basename = os.path.basename(path)
+    zipfile_path = os.path.join(path, '..', '%s.zip' % basename)
+    zipf = zipfile.ZipFile(zipfile_path, 'w')
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            arcpath = os.path.join(basename, root.replace(path, '').lstrip('/'), file)
+            zipf.write(os.path.join(root, file), arcpath)
+            log.write('add %s\n' % arcpath)
+    zipf.close()
+    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename, url, basename))
 
 
 def set_done(build):
