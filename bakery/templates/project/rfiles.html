@@ -11,6 +11,19 @@
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('rfiles') }}
 
+<h4>{{ _("Baked Files") }}</h4>
+{% from 'project/macros.html' import filestree with context %}
+{{ filestree(tree) }}
+
+<h4>{{ _("bakery.yaml File") }}</h4>
+{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
+  <div class="alert alert-info">{{ _("Your setup is saved in the upstream repository, in a <code><a href='%(url)s'>bakery.yaml</a></code> file, displayed below.", url=url_for('project.rfiles', project_id=project.id)) }}</div>
+{% else %}
+  <div class="alert alert-block">{{ _("Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <code><a href='%(url)s'>bakery.yaml</a></code> to the upstream repository that contains the following information.", url=url_for('project.rfiles', project_id=project.id, build_id=build.id )) }}</div>
+{% endif %}
+<div id="editor"></div>
+<textarea name="yaml">{{ yaml }}</textarea>
+
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="fa"></i> {{ fontaine._full_name }}</h4>
     <div>
@@ -71,20 +84,6 @@
     </div>
 
 {% endfor %}
-
-<h4>{{ _("bakery.yaml File") }}</h4>
-{% if project.config['local'].get('bakery_yaml_in_sync', None) %}
-  <div class="alert alert-info">{{ _("Your setup is saved in the upstream repository, in a <code><a href='%(url)s'>bakery.yaml</a></code> file, displayed below.", url=url_for('project.rfiles', project_id=project.id)) }}</div>
-{% else %}
-  <div class="alert alert-block">{{ _("Your setup is <strong>NOT</strong> saved in the upstream repository.<br><br>To save your setup for all Font Bakery installations to load, add a file named <code><a href='%(url)s'>bakery.yaml</a></code> to the upstream repository that contains the following information.", url=url_for('project.rfiles', project_id=project.id, build_id=build.id )) }}</div>
-{% endif %}
-
-<div id="editor"></div>
-<textarea name="yaml">{{ yaml }}</textarea>
-
-<h4>{{ _("Baked Files") }}</h4>
-{% from 'project/macros.html' import filestree with context %}
-{{ filestree(tree) }}
 
 {% endblock %}
 
