@@ -988,8 +988,8 @@ class MetadataJSONTest(TestCase):
                 designers.append(row[0])
             self.assertTrue(designer in designers,
                             msg='Designer %s is not in profiles.csv' % designer)
-        except Exception, ex:
-            self.fail(ex)
+        except Exception:
+            self.assertTrue(False)
 
     @tags('required')
     def test_metadata_fonts_key_list(self):
