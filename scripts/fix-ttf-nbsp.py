@@ -38,7 +38,10 @@ from fontTools import ttLib
 
 
 def openFont(filename):
-    return ttLib.TTFont(filename)
+    font = ttLib.TTFont(filename)
+    if font.sfntVersion == 'OTTO':
+        sys.exit("Error: Need TTF font, got CFF")
+    return font
 
 
 def getGlyph(font, uchar):
