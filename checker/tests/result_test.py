@@ -725,8 +725,8 @@ class MetadataJSONTest(TestCase):
         for resultdata in self.metadata.get('fonts', []):
             font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
             if not glyphs:
-                glyphs = map(lambda g: g.name, font.glyphs())
-            self.assertEqual(glyphs, map(lambda g: g.name, font.glyphs()))
+                glyphs = map(lambda g: g.glyphname, font.glyphs())
+            self.assertEqual(glyphs, map(lambda g: g.glyphname, font.glyphs()))
 
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
