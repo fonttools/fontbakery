@@ -719,15 +719,14 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(numbers_of_glyphs, len(list(font.glyphs())))
             font.close()
 
-    # def test_the_same_names_of_glyphs_across_family(self):
-    #     """ The same names of glyphs across family? """
-    #     glyphs = None
-    #     for resultdata in self.metadata.get('fonts', []):
-    #         font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
-    #         if not glyphs:
-    #             glyphs = list(font.glyphs())
-    #         self.assertEqual(glyphs, list(font.glyphs()))
-    #         font.close()
+    def test_the_same_names_of_glyphs_across_family(self):
+        """ The same names of glyphs across family? """
+        glyphs = None
+        for resultdata in self.metadata.get('fonts', []):
+            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
+            if not glyphs:
+                glyphs = map(lambda g: g.name, font.glyphs())
+            self.assertEqual(glyphs, map(lambda g: g.name, font.glyphs()))
 
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """

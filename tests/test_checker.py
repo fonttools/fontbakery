@@ -410,10 +410,6 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold!.ttx')
         self.assertInSuccess('test_ttx_doesnt_contain_duplicate_glyphs', run_set(p, 'upstream-ttx'))
 
-    def test_fontforge_validation_state_failure(self):
-        p = p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertInFailure('test_fontforge_validation_state', run_set(p, 'result'))
-
     # TODO: create fixture to make test failure
     # def test_result_metrics_maximum_advanced_width_in_hhea_failure(self):
     #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
