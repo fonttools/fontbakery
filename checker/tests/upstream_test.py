@@ -85,19 +85,6 @@ class ConsistencyTest(TestCase):
                 if os.path.splitext(fullpath)[1].lower() == '.ufo':
                     self.ufo_dirs.append(fullpath)
 
-    def test_glyphs_are_consistent_across_family(self):
-        """ Are glyphs consistent across family? """
-        # TODO: Apply this test to TTX files
-        glyphs_count = []
-        for ufo_folder in self.ufo_dirs:
-            font = fontforge.open(ufo_folder)
-            gcount = len(list(font.glyphs()))
-            if gcount not in glyphs_count:
-                glyphs_count.append(gcount)
-            font.close()
-        self.assertTrue(len(glyphs_count) == 1,
-                        'Different count %s' % glyphs_count)
-
     def test_copyright_notices_same_across_family(self):
         """ Are all copyright notices the same in all styles? """
         copyright = None

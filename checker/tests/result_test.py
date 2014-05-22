@@ -605,6 +605,27 @@ class MetadataJSONTest(TestCase):
                                      'METADATA.json')
         self.metadata = yaml.load(open(medatata_path, 'r').read())
         self.fname = os.path.splitext(self.path)[0]
+        self.root_dir = os.path.dirname(self.path)
+
+    def test_the_same_number_of_glyphs_across_family(self):
+        """ The same number of glyphs across family? """
+        numbers_of_glyphs = 0
+        for resultdata in self.metadata.get('fonts', []):
+            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
+            if not numbers_of_glyphs:
+                numbers_of_glyphs = len(list(font.glyphs()))
+            self.assertEqual(numbers_of_glyphs, len(list(font.glyphs())))
+            font.close()
+
+    def test_the_same_names_of_glyphs_across_family(self):
+        """ The same names of glyphs across family? """
+        glyphs = None
+        for resultdata in self.metadata.get('fonts', []):
+            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
+            if not glyphs:
+                glyphs = list(font.glyphs())
+            self.assertEqual(glyphs, list(font.glyphs()))
+            font.close()
 
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
