@@ -199,10 +199,10 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_family_values_are_all_the_same', run_set(p, 'result'))
 
-    def test_consistency_glyphs_failure(self):
+    def test_the_same_number_of_glyphs_across_family_failure(self):
         # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
-        self.assertInFailure('test_glyphs_are_consistent_across_family', run_set(p, 'consistency'))
+        self.assertInFailure('test_the_same_number_of_glyphs_across_family', run_set(p, 'result'))
 
     def test_consistency_copyright_notice_success(self):
         # TODO: create XXX_failure test
@@ -409,6 +409,10 @@ class CheckerTest(unittest.TestCase):
     def test_ttx_doesnt_contain_duplicate_glyphs_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold!.ttx')
         self.assertInSuccess('test_ttx_doesnt_contain_duplicate_glyphs', run_set(p, 'upstream-ttx'))
+
+    def test_fontforge_validation_state_failure(self):
+        p = p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertInFailure('test_fontforge_validation_state', run_set(p, 'result'))
 
     # TODO: create fixture to make test failure
     # def test_result_metrics_maximum_advanced_width_in_hhea_failure(self):
