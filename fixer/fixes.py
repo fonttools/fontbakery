@@ -44,3 +44,7 @@ def fix_metrics(font_path):
 def fix_name_ascii(font_path):
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-ascii-name.py')
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
+
+
+def fix_fstype_to_zero(font_path):
+    pass

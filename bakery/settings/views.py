@@ -245,6 +245,9 @@ def addclone():
         flash(_('Enter a URL.'))
         return redirect(url_for('frontend.splash'))
 
+    if not clone.lower().endswith('.git'):
+        clone += '.git'  # quick fix to validate clone git url
+
     # pylint:disable-msg=E1101
     dup = Project.query.filter_by(login=g.user.login, is_github=False, clone=clone).first()
     if dup:
