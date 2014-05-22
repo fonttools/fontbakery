@@ -728,6 +728,15 @@ class MetadataJSONTest(TestCase):
                 glyphs = map(lambda g: g.glyphname, font.glyphs())
             self.assertEqual(glyphs, map(lambda g: g.glyphname, font.glyphs()))
 
+    def test_the_same_encodings_of_glyphs_across_family(self):
+        """ The same unicode encodings of glyphs across family? """
+        glyphs = None
+        for resultdata in self.metadata.get('fonts', []):
+            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
+            if not glyphs:
+                glyphs = map(lambda g: g.encoding, font.glyphs())
+            self.assertEqual(glyphs, map(lambda g: g.encoding, font.glyphs()))
+
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
         import requests
