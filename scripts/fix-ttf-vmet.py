@@ -21,8 +21,8 @@ import argparse
 from fontTools import ttLib
 
 def get_bounds(font):
-    ymin = None
-    ymax = None
+    ymin = 0
+    ymax = 0
     # .OTF fonts do not contain a `glyf` table, 
     # but have a precomputed value in the `head` table
     if font.sfntVersion == 'OTTO':
@@ -35,9 +35,11 @@ def get_bounds(font):
             char = font['glyf'][g]
             if hasattr(char, 'yMin') and ymin > char.yMin:
                 ymin = char.yMin
+                # print 'ymin is now ' + str(ymin)
             if hasattr(char, 'yMax') and ymax < char.yMax:
                 ymax = char.yMax
-    if ymin and ymax:
+                # print 'ymax is now ' + str(ymax)
+    if ymin != 0 and ymax != 0:
         return(ymin, ymax)
     else:
         sys.exit("Unable to detect y values")
@@ -47,11 +49,11 @@ def show_metrics(font):
     print("ymax  is: {}".format(ymax))
     print("hhea asc: {}".format(font['hhea'].ascent))
     print("OS/2 asc: {}".format(font['OS/2'].sTypoAscender))
-    print("OS/2 asc: {}".format(font['OS/2'].usWinAscent))
+    print("Win  asc: {}".format(font['OS/2'].usWinAscent))
     print("ymin  is: {}".format(ymin))
     print("hhea des: {}".format(font['hhea'].descent))
     print("OS/2 des: {}".format(font['OS/2'].sTypoDescender))
-    print("OS/2 des: {}".format(font['OS/2'].usWinDescent))
+    print("Win  des: {}".format(font['OS/2'].usWinDescent))
     print("hhea lng: {}".format(font['hhea'].lineGap))
     print("OS/2 lng: {}".format(font['OS/2'].sTypoLineGap))
 
