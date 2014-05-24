@@ -15,14 +15,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
-
 from datetime import datetime
-import os
+
 import glob
 import io
-from flask import current_app
 import itsdangerous
+import os
+import os.path as op
+
 from collections import OrderedDict
+from flask import current_app
 
 
 import sys
@@ -82,7 +84,8 @@ def signify(text):
 
 
 class RedisFd(object):
-    """Redis File Descriptor class, publish writen data to redis channel in parallel to file"""
+    """ Redis File Descriptor class, publish writen data to redis channel
+        in parallel to file """
     def __init__(self, name, mode='a'):
         self.fd = open(name, mode)
         self.fd.write("Start: Start of log\n")  # end of log
@@ -102,10 +105,11 @@ def project_fontaine(project, build):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(current_app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = op.join(current_app.config['DATA_ROOT'],
+                   '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     # Its very likely that _out exists, but just in case:
-    if os.path.exists(_out):
+    if op.exists(_out):
         os.chdir(_out)
     else:
         # This is very unlikely, but should it happen, just return
@@ -117,26 +121,33 @@ def project_fontaine(project, build):
         fontaine = FontFactory.openfont(filename)
         fonts[filename] = fontaine
 
-    # Make a plain dictionary, unlike the fancy data structures used by pyFontaine :)
+    # Make a plain dictionary, unlike the fancy data structures
+    # used by pyFontaine :)
     family = {}
     for fontfilename, fontaine in fonts.iteritems():
         # Use the font file name as a key to a dictionary of char sets
         family[fontfilename] = {}
-        for charset, coverage, percentcomplete, missingchars in fontaine.get_orthographies():
-            # Use each char set name as a key to a dictionary of this font's coverage details
-            charsetname = charset.common_name
-            family[fontfilename][charsetname] = {}
-            family[fontfilename][charsetname]['coverage'] = coverage  # unsupport, fragmentary, partial, full
-            family[fontfilename][charsetname]['percentcomplete'] = percentcomplete  # int
-            family[fontfilename][charsetname]['missingchars'] = missingchars  # list of ord numbers
-            # Use the char set name as a key to a list of the family's average coverage
-            if not charsetname in family:
-                family[charsetname] = []
+        for orthography in fontaine.get_orthographies():
+            charset, coverage, percent_complete, missing_chars = orthography
+            # Use each charset name as a key to dictionary of font's
+            # coverage details
+            charset = charset.common_name
+            family[fontfilename][charset] = {}
+            # unsupport, fragmentary, partial, full
+            family[fontfilename][charset]['coverage'] = coverage
+            family[fontfilename][charset]['percentcomplete'] = percent_complete
+            # list of ord numbers
+            family[fontfilename][charset]['missingchars'] = missing_chars
+            # Use the char set name as a key to a list of the family's
+            # average coverage
+            if not charset in family:
+                family[charset] = []
             # Append the char set percentage of each font file to the list
-            family[charsetname].append(percentcomplete)  # [10, 32, 40, 40] etc
-            # And finally, if the list now has all the font files, make it the mean average percentage
-            if len(family[charsetname]) == len(fonts.items()):
-                family[charsetname] = sum(family[charsetname]) / len(fonts.items())
+            family[charset].append(percent_complete)  # [10, 32, 40, 40] etc
+            # And finally, if the list now has all the font files, make it
+            # the mean average percentage
+            if len(family[charset]) == len(fonts.items()):
+                family[charset] = sum(family[charset]) / len(fonts.items())
     # Make a plain dictionary with just the bits we want on the dashboard
     totals = {}
     totals['gwf'] = family.get('GWF latin', None)
@@ -145,7 +156,8 @@ def project_fontaine(project, build):
     project.config['local']['charsets'] = totals
     project.save_state()
 
-    # fonts.itervalues() emits <fontaine.font.Font instance at 0x106123c68> objects that we return for the rfiles.html template
+    # fonts.itervalues() emits fontaine.font.Font instances that are used
+    # for the rfiles.html template
     return fonts.itervalues()
 
 

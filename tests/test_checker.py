@@ -199,10 +199,10 @@ class CheckerTest(unittest.TestCase):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_metadata_family_values_are_all_the_same', run_set(p, 'result'))
 
-    def test_consistency_glyphs_failure(self):
+    def test_the_same_number_of_glyphs_across_family_failure(self):
         # TODO: create XXX_success test
         p = op.join(app.config['ROOT'], 'tests/fixtures/src')
-        self.assertInFailure('test_glyphs_are_consistent_across_family', run_set(p, 'consistency'))
+        self.assertInFailure('test_the_same_number_of_glyphs_across_family', run_set(p, 'result'))
 
     def test_consistency_copyright_notice_success(self):
         # TODO: create XXX_failure test

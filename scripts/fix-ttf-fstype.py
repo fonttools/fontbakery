@@ -15,42 +15,31 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
+import argparse
 import os
 
 from fontTools import ttLib
-from unidecode import unidecode
 
 
-def fix_ascii(string):
-    if b'\000' in string:
-        string = string.decode('utf-16-be').encode('utf-8')
-    else:
-        string = string
-    return unidecode(string).encode('utf-16-be')
+def set_fstype(fontpath):
+    font = ttLib.TTFont(fontpath)
+    font['OS/2'].fsType = 0
+    font.save(fontpath + '.fix')
 
 
-def fix_name_table(fontfile):
-    font = ttLib.TTFont(fontfile)
-    for name_record in font['name'].names:
-        name_record.string = fix_ascii(name_record.string)
-    font.save(fontfile)
-
-
-def show_name_table(fontfile):
-    pass
+def show_fstype(fontpath):
+    font = ttLib.TTFont(fontpath)
+    print(font['OS/2'].fsType)
 
 
 if __name__ == '__main__':
-    import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--autofix', action="store_true",
-                        help="Autofix font ascii name")
-    parser.add_argument('filename', help="Font file in TTF format")
+    parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
+    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
 
     args = parser.parse_args()
     assert os.path.exists(args.filename)
     if args.autofix:
-        fix_name_table(args.filename)
+        set_fstype(args.filename)
     else:
-        show_name_table(args.filename)
+        show_fstype(args.filename)
