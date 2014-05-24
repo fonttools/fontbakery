@@ -14,23 +14,17 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-DEBUG = True
-BACKGROUND = True
-SECRET_KEY = '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xcfag'
-
+import os
 import os.path as op
 from os.path import dirname, abspath
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:////%s/data.sqlite' % op.join(dirname(abspath(__file__)), '..', '..')
-# CELERY_BROKER_URL = 'redis://localhost:6379',
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+DEBUG = True
+BACKGROUND = True
+SECRET_KEY = \
+    '\xa8\xad%\x07kL\x8f\x04D\xf4\xbf"\xe0a\xb52\x1d\xb2\xf3\xe9\xf7\xcfag'
 
-# # CELERY_BROKER_URL = 'sqla+sqlite:////%s/celerydb.sqlite' % dirname(abspath(__file__))
-# # CELERY_RESULT_DBURI = "sqla+sqlite:////%s/celerydb.sqlite" % dirname(abspath(__file__))
-# CELERY_ANNOTATIONS = {"*": {"rate_limit": "10/s"}}
-# # echo enables verbose logging from SQLAlchemy.
-# CELERY_RESULT_ENGINE_OPTIONS = {"echo": True}
+SQLALCHEMY_DATABASE_URI = \
+    'sqlite:////%s/data.sqlite' % op.join(dirname(abspath(__file__)))
 
 # default babel values
 BABEL_DEFAULT_LOCALE = 'en'
@@ -53,11 +47,10 @@ GITHUB_CONSUMER_SECRET = 'ec494ff274b5a5c7b0cb7563870e4a32874d93a6'
 GITAUTH_LOGIN_LIST = ['offline', ]
 # flatpages
 FLATPAGES_EXTENSION = '.md'
-import os
-FLATPAGES_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'docs')
-DATA_ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
+FLATPAGES_ROOT = op.join(op.dirname(op.realpath(__file__)), '..', 'docs')
+DATA_ROOT = op.join(op.dirname(op.realpath(__file__)), '..', 'data')
 DATA_URL = '/data/'
-ROOT = os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), '..')
+ROOT = op.join(op.abspath(op.dirname(op.realpath(__file__))), '..')
 
 HOOK_URL = 'http://bakery.fontforge.org/api/webhook/{id}'
 

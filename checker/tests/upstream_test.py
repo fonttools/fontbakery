@@ -15,13 +15,12 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import fontforge
 import glob
 import lxml.etree
 import os
 import re
 
-from checker.base import BakeryTestCase as TestCase, tags
+from checker.base import BakeryTestCase as TestCase
 from fontaine.builder import Director, Builder
 from fontaine.cmap import library
 
@@ -129,41 +128,6 @@ class ConsistencyTest(TestCase):
             current_path = os.path.realpath(current_path)
         return
 
-
-class SimpleTest(TestCase):
-    targets = ['upstream']
-    tool = 'FontForge'
-    name = __name__
-    path = '.'
-
-    def setUp(self):
-        self.font = fontforge.open(self.path)
-        # You can use ipdb here to interactively develop tests!
-        # Uncommand the next line, then at the iPython prompt: print(self.path)
-        # import ipdb; ipdb.set_trace()
-
-    # def test_ok(self):
-    #     """ This test succeeds """
-    #     self.assertTrue(True)
-    #
-    # def test_failure(self):
-    #     """ This test fails """
-    #     self.assertTrue(False)
-    #
-    # def test_error(self):
-    #     """ Unexpected error """
-    #     1 / 0
-    #     self.assertTrue(False)
-
-    @tags('required')
-    def test_required_passed(self):
-        """ Developer test """
-        self.assertTrue(True)
-
-    def test_is_fsType_not_set(self):
-        """Is the OS/2 table fsType set to 0?"""
-        self.assertEqual(self.font.os2_fstype, 1)
-
 import robofab.world
 import robofab.objects
 
@@ -236,34 +200,3 @@ class UfoOpenTest(TestCase):
     def test_has_rupee(self):
         u"""Does this font include a glyph for ₹, the Indian Rupee Sign codepoint?"""
         self.has_character(self, u'₹')
-
-    def areAllFamilyNamesTheSame(paths):
-        """
-        Test if all family names in the UFOs given to this method as paths are the same.
-        There is probably a MUCH more elegant way to do this :)
-        TODO: Make this test for families where the familyName differs but there are OT names that compensate (common with fonts made with compatibility with Windows GDI applications in mind)
-        """
-        fonts = []
-        allFamilyNamesAreTheSame = False
-        for path in paths:
-            font = robofab.world.OpenFont(path)
-            print font
-            fonts.append(font)
-        regularFamilyName = "unknown"
-        for path in paths:
-            if path.endswith('Regular.ufo'):
-                regularFamilyName = font.info.familyName
-        print 'regularFamilyName is', regularFamilyName
-        for font in fonts:
-            if font.info.familyName == regularFamilyName:  # TODO or font.info.openTypeNamePreferredFamilyName == regularFamilyName:
-                allFamilyNamesAreTheSame = True
-        if allFamilyNamesAreTheSame is True:
-            return True
-        else:
-            return False
-
-    def ifAllFamilyNamesAreTheSame(paths):  # TODO should be test_ifallFamilyNamesAreTheSame
-        allFamilyNamesAreTheSame = areAllFamilyNamesTheSame(paths)
-        assert allFamilyNamesAreTheSame
-    # TODO: check the stems of the style name and full names match the
-    # familyNames

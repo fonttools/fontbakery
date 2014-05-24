@@ -51,3 +51,10 @@ def fix_fstype_to_zero(font_path):
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
     subprocess.Popen("mv {0}.fix {0}".format(font_path), shell=True).communicate()
+
+
+def fix_ttf_stylenames(font_path):
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-stylenames.py')
+    subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
+    subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
+    subprocess.Popen("mv {0}.fix {0}".format(font_path), shell=True).communicate()
