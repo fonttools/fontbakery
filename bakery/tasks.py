@@ -94,7 +94,10 @@ def prun(command, cwd, log=None):
     p = subprocess.Popen(command, shell=True, cwd=cwd,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                          close_fds=True, env=env)
-    stdout = p.communicate()[0]
+
+    stdout = ''
+    for ln in p.stdout:
+        stdout += ln
     if log:
         log.write('$ %s' % command)
         log.write(stdout)
