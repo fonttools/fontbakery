@@ -1027,6 +1027,7 @@ class MetadataJSONTest(TestCase):
                 break
         self.assertTrue(family)
 
+        self.assertTrue("%s.menu" % self.fname)
         font = fontforge.open("%s.menu" % self.fname)
         self.assertTrue(all([i in font for i in set(map(ord, family))]))
 
