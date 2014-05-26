@@ -201,12 +201,12 @@ class CheckerTest(unittest.TestCase):
 
     def test_the_same_number_of_glyphs_across_family_failure(self):
         # TODO: create XXX_success test
-        p = op.join(app.config['ROOT'], 'tests/fixtures/src')
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInFailure('test_the_same_number_of_glyphs_across_family', run_set(p, 'result', 'test_the_same_number_of_glyphs_across_family'))
 
     def test_consistency_copyright_notice_success(self):
         # TODO: create XXX_failure test
-        p = op.join(app.config['ROOT'], 'tests/fixtures/src')
+        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
         self.assertInSuccess('test_copyright_notices_same_across_family', run_set(p, 'consistency', 'test_copyright_notices_same_across_family'))
 
     def test_result_font_italic_style_matches_internal_font_properties_values_success(self):
