@@ -14,20 +14,26 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
 from __future__ import print_function
-import os
+
 import sys
-import glob
-import subprocess
+
 import codecs
-from flask.ext.rq import job
+import glob
+import os
 import plistlib
-from .utils import RedisFd
 import re
+import subprocess
 import yaml
+
+from checker import run_set
+from checker.base import BakeryTestCase
+from fixer import fix_font
+from flask.ext.rq import job
 from fontTools import ttLib
 from fontaine.ext.subsets import Extension as SubsetExtension
+
+from .utils import RedisFd
 
 
 def run(command, cwd, log):
@@ -511,9 +517,7 @@ def fontaine_process(project, build, log):
     #   project.save_state()
 
 
-from checker import run_set
 # register yaml serializer for tests result objects.
-from checker.base import BakeryTestCase
 
 
 def repr_testcase(dumper, data):
@@ -618,6 +622,9 @@ def result_tests(project, build):
     for font in glob.glob("*.ttf"):
         result[font] = run_set(os.path.join(_out_src, font), 'result')
 
+    if not result:
+        return
+
     # Comment during debug
     l = open(_out_yaml, 'w')
     l.write(yaml.safe_dump(result))
@@ -626,8 +633,6 @@ def result_tests(project, build):
     d = yaml.safe_load(open(_out_yaml, 'r'))
     # os.remove(_out_yaml)
     return d
-
-from fixer import fix_font
 
 
 def result_fixes(project, build):

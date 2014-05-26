@@ -318,7 +318,7 @@ def rfiles(p, build_id):
     tree = b.files()
 
     return render_template('project/rfiles.html', project=p, yaml=yaml,
-                            fontaineFonts=f, build=b, tree=tree)
+                           fontaineFonts=f, build=b, tree=tree)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
@@ -332,6 +332,15 @@ def rtests(p, build_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     test_result = b.result_tests()
+    if not test_result:
+        abort(404)
+
+    fix_asap_summary = []
+    for y, x in test_result.items():
+        for t in x['failure']:
+            if 'required' in t.get('tags', ''):
+                fix_asap_summary.append(dict(font=y, **t))
+
     summary = {
         'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
@@ -339,7 +348,7 @@ def rtests(p, build_id):
         'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
         'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
         'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
-        'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
+        'fix_asap': fix_asap_summary,
     }
     return render_template('project/rtests.html', project=p,
                            tests=test_result, build=b, summary=summary)
@@ -356,6 +365,16 @@ def summary(p, build_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     test_result = b.result_tests()
+
+    if not test_result:
+        abort(404)
+
+    fix_asap_summary = []
+    for y, x in test_result.items():
+        for t in x['failure']:
+            if 'required' in t.get('tags', ''):
+                fix_asap_summary.append(dict(font=y, **t))
+
     summary = {
         'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
@@ -363,7 +382,7 @@ def summary(p, build_id):
         'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
         'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
         'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
-        'fix_asap': [dict(font=y, **t) for t in x.get('failure', []) for y, x in test_result.items() if 'required' in t['tags']],
+        'fix_asap': fix_asap_summary
     }
     return render_template('project/summary.html', project=p,
                            tests=test_result, build=b, summary=summary)
@@ -380,7 +399,7 @@ def description(p, build_id):
     if request.method == 'GET':
         data = b.read_asset('description')
         return render_template('project/description.html', project=p, build=b,
-                                description=data)
+                               description=data)
 
     # POST
     b.save_asset('description', request.form.get('description'))
@@ -412,8 +431,8 @@ def metadatajson(p, build_id):
         flash(_('Wrong format for METADATA.json file'))
         metadata_new = b.read_asset('metadata_new')
         return render_template('project/metadatajson.html', project=p, build=b,
-                                metadata=request.form.get('metadata'),
-                                metadata_new=metadata_new)
+                               metadata=request.form.get('metadata'),
+                               metadata_new=metadata_new)
 
 
 # Base views
