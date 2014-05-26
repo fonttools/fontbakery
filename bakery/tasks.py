@@ -20,6 +20,7 @@ import sys
 
 import codecs
 import glob
+import lxml.etree
 import os
 import plistlib
 import re
@@ -100,6 +101,44 @@ def prun(command, cwd, log=None):
     return stdout
 
 
+def generate_subsets_coverage_list(project):
+    """ Return dictionary with subsets coverages """
+    from .app import app
+
+    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
+    ufo_dirs, ttx_files, _ = get_sources_lists(_in)
+
+    _out_yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(id)s.fontaine.yml' % project)
+    if os.path.exists(_out_yaml):
+        return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
+
+    if not os.path.exists(os.path.dirname(_out_yaml)):
+        os.makedirs(os.path.dirname(_out_yaml))
+
+    source_fonts_paths = ufo_dirs + ttx_files
+
+    prog = ' '.join(source_fonts_paths)
+    log = prun('pyfontaine --collections subsets --xml %s' % prog, cwd=_in)
+
+    docroot = lxml.etree.fromstring(log)
+    subsets = dict()
+    for orth in docroot.xpath('//orthography'):
+        try:
+            value = int(orth.xpath('./percentCoverage/text()')[0])
+            common_name = unicode(orth.xpath('./commonName/text()')[0])
+            subsets[common_name] = value
+        except IndexError:
+            continue
+
+    contents = yaml.safe_dump(subsets)
+
+    l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
+    l.write(contents)
+    l.close()
+
+    return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
+
+
 @job
 def project_git_sync(project):
     """
@@ -149,6 +188,8 @@ def project_git_sync(project):
         # Now we have it, create an initial project state
         finally:
             config = project.config
+
+    generate_subsets_coverage_list(project)
 
     # set project state as ready after sync is done
     project.is_ready = True
@@ -539,6 +580,26 @@ def repr_testcase(dumper, data):
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 
+def get_sources_lists(rootpath):
+    """ Return list of lists of UFO, TTX and METADATA.json """
+    ufo_dirs = []
+    ttx_files = []
+    metadata_files = []
+    l = len(rootpath)
+    for root, dirs, files in os.walk(rootpath):
+        for f in files:
+            fullpath = os.path.join(root, f)
+            if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
+                ttx_files.append(fullpath[l:])
+            if f.lower() == 'metadata.json':
+                metadata_files.append(fullpath[l:])
+        for d in dirs:
+            fullpath = os.path.join(root, d)
+            if os.path.splitext(fullpath)[1].lower() == '.ufo':
+                ufo_dirs.append(fullpath[l:])
+    return ufo_dirs, ttx_files, metadata_files
+
+
 def upstream_revision_tests(project, revision):
     """ This function run upstream tests set on
     project.config['local']['ufo_dirs'] set in selected git revision.
@@ -568,21 +629,7 @@ def upstream_revision_tests(project, revision):
     os.chdir(_in)
     prun("git checkout %s" % revision, cwd=_in)
 
-    ufo_dirs = []
-    ttx_files = []
-    metadata_files = []
-    l = len(_in)
-    for root, dirs, files in os.walk(_in):
-        for f in files:
-            fullpath = os.path.join(root, f)
-            if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
-                ttx_files.append(fullpath[l:])
-            if f.lower() == 'metadata.json':
-                metadata_files.append(fullpath[l:])
-        for d in dirs:
-            fullpath = os.path.join(root, d)
-            if os.path.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath[l:])
+    ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
 
     for font in ufo_dirs:
         if os.path.exists(os.path.join(_in, font)):
