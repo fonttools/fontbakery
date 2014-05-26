@@ -120,6 +120,7 @@ def generate_subsets_coverage_list(project):
     prog = ' '.join(source_fonts_paths)
     log = prun('pyfontaine --collections subsets --xml %s' % prog, cwd=_in)
 
+    print(log)
     docroot = lxml.etree.fromstring(log)
     subsets = dict()
     for orth in docroot.xpath('//orthography'):
