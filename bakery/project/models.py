@@ -27,7 +27,7 @@ from flask import current_app
 from blinker.base import lazy_property
 
 from ..app import db
-from ..utils import saveMetadata
+from ..utils import save_metadata
 from ..tasks import process_project, prun, project_git_sync, \
     upstream_revision_tests, result_tests
 from .state import (project_state_get, project_state_save, walkWithoutGit)
@@ -463,7 +463,7 @@ class ProjectBuild(db.Model):
             f.write(data)
             f.close()
         elif name == 'metadata':
-            saveMetadata(data, self.asset_list['metadata'] % param)
+            save_metadata(data, self.asset_list['metadata'] % param)
 
             if kwarg.get('del_new') and kwarg['del_new']:
                 if os.path.exists(self.asset_list['metadata_new'] % param):

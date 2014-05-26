@@ -23,8 +23,8 @@ import itsdangerous
 import os
 import os.path as op
 
-from collections import OrderedDict
 from flask import current_app
+from scripts.genmetadata import sortOldMetadata as sortMetadata
 
 
 import sys
@@ -86,16 +86,16 @@ class RedisFd(object):
     """ Redis File Descriptor class, publish writen data to redis channel
         in parallel to file """
     def __init__(self, name, mode='a'):
-        self.fd = open(name, mode)
-        self.fd.write("Start: Start of log\n")  # end of log
+        self.filed = open(name, mode)
+        self.filed.write("Start: Start of log\n")  # end of log
 
     def write(self, data, prefix=''):
-        self.fd.write("%s%s" % (prefix, data))
-        self.fd.flush()
+        self.filed.write("%s%s" % (prefix, data))
+        self.filed.flush()
 
     def close(self):
-        self.fd.write("End: End of log\n")  # end of log
-        self.fd.close()
+        self.filed.write("End: End of log\n")  # end of log
+        self.filed.close()
 
 
 def project_fontaine(project, build):
@@ -160,35 +160,6 @@ def project_fontaine(project, build):
     return fonts.itervalues()
 
 
-def sortFont(fonts):
-    sortedfonts = []
-    for font in fonts:
-        fontMetadata = OrderedDict()
-        fontMetadata["name"] = font["name"]
-        fontMetadata["style"] = font["style"]
-        fontMetadata["weight"] = font["weight"]
-        fontMetadata["filename"] = font["filename"]
-        fontMetadata["postScriptName"] = font["postScriptName"]
-        fontMetadata["fullName"] = font["fullName"]
-        fontMetadata["copyright"] = font["copyright"]
-        sortedfonts.append(fontMetadata)
-    return sortedfonts
-
-
-def sortMetadata(old):
-    ordered = OrderedDict()
-    ordered["name"] = old["name"]
-    ordered["designer"] = old["designer"]
-    ordered["license"] = old["license"]
-    ordered["visibility"] = old["visibility"]
-    ordered["category"] = old["category"]
-    ordered["size"] = old["size"]
-    ordered["fonts"] = sortFont(old["fonts"])
-    ordered["subsets"] = sorted(old["subsets"])
-    ordered["dateAdded"] = old["dateAdded"]
-    return ordered
-
-
 def striplines(jsontext):
     lines = jsontext.split("\n")
     newlines = []
@@ -197,12 +168,12 @@ def striplines(jsontext):
     return "".join(newlines)
 
 
-def saveMetadata(metadata, path):
+def save_metadata(metadata, path):
     # flask json serializer doesn't support OrderedDict
     import json
     data = json.loads(uniescape(metadata))
     ready_data = sortMetadata(data)
     dump = json.dumps(ready_data, indent=2, ensure_ascii=True)
     strip_dump = striplines(dump)
-    with io.open(path, 'w', encoding='utf-8') as f:
-        f.write(uniescape(strip_dump))
+    with io.open(path, 'w', encoding='utf-8') as filep:
+        filep.write(uniescape(strip_dump))
