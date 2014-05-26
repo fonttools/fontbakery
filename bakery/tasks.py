@@ -592,8 +592,6 @@ def upstream_revision_tests(project, revision):
         result[metadata_path] = run_set(metadata_path, 'metadata')
 
     for font in ttx_files:
-        print(font)
-        print(os.path.join(_in, font))
         if os.path.exists(os.path.join(_in, font)):
             result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
 

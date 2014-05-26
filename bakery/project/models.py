@@ -416,8 +416,8 @@ class ProjectBuild(db.Model):
     @property
     def path(self):
         param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
+                 'revision': self.revision, 'build': self.id,
+                 'root': current_app.config.get('DATA_ROOT')}
 
         return '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 

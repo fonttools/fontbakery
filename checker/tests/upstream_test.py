@@ -61,8 +61,11 @@ class FontaineTest(TestCase):
 
         docroot = lxml.etree.fromstring(contents)
         for orth in docroot.xpath('//orthography'):
-            value = int(orth.xpath('./percentCoverage/text()')[0])
-            common_name = orth.xpath('./commonName/text()')[0]
+            try:
+                value = int(orth.xpath('./percentCoverage/text()')[0])
+                common_name = orth.xpath('./commonName/text()')[0]
+            except IndexError:
+                continue
             shortname = pattern.sub('', common_name)
             exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, value)
             exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
