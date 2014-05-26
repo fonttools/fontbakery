@@ -1073,7 +1073,7 @@ class MetadataJSONTest(TestCase):
                 self.assertIn(_style, weights_table.keys(),
                               msg="Style name not from expected list")
                 self.assertEqual("%s %s" % (self.font.familyname,
-                                            weights_table.keys[_style]),
+                                            weights_table.get(_style)),
                                  x.get("fullName", ''))
             else:
                 _style = 'Regular'
