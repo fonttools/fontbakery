@@ -56,8 +56,12 @@ class FontaineTest(TestCase):
         pattern = re.compile('[\W_]+')
 
         library.collections = ['subsets']
-        tree = Director().construct_tree([cls.path])
-        contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
+
+        try:
+            tree = Director().construct_tree([cls.path])
+            contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
+        except:
+            return
 
         docroot = lxml.etree.fromstring(contents)
         for orth in docroot.xpath('//orthography'):
