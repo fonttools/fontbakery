@@ -76,7 +76,7 @@
       <p class="form-control-static">{{ _("Found source files, please select files that should be processed. Data is actual for current revision '%(revision)s'", revision=project.current_revision()) }}</p>
       <select multiple class="form-control" name="process_files" size={{ config['local']['ufo_dirs']|length + config['local']['ttx_files']|length}}>
         {% with %}
-        {% set passed = project.passed_tests_files() %}
+        {% set passed = True %} {# project.passed_tests_files() #}
         {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
         <option {% if i not in passed %}disabled{% else %}selected{% endif %}>{{ i }} {% if i not in passed %}(not passed required tests){% endif %}</option>
         {% endfor %}
