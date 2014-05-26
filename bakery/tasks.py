@@ -126,6 +126,7 @@ def generate_subsets_coverage_list(project):
         try:
             value = int(orth.xpath('./percentCoverage/text()')[0])
             common_name = unicode(orth.xpath('./commonName/text()')[0])
+            common_name = common_name.replace('Subset ', '')
             subsets[common_name] = value
         except IndexError:
             continue
