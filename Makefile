@@ -97,6 +97,9 @@ crawl: venv/bin/activate
 	scrapy crawl typedifferent -o ../json/typedifferent.json -t json --nolog && \
 	scrapy crawl optimo -o ../json/optimo.json -t json --nolog
 
+pylint: venv/bin/activate
+	. venv/bin/activate; pylint bakery > .pylint-output
+
 # target: help — this help
 help:
 	@egrep "^# target:" [Mm]akefile

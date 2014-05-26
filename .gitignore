@@ -49,3 +49,4 @@ tmp/*
 
 .DS_Store
 /ots
+.pylint-output

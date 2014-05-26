@@ -24,9 +24,9 @@ from datetime import datetime
 import difflib
 
 from flask import current_app
+from blinker.base import lazy_property
 
 from ..app import db
-from ..decorators import lazy_property
 from ..utils import saveMetadata
 from ..tasks import process_project, prun, project_git_sync, \
     upstream_revision_tests, result_tests
@@ -45,7 +45,6 @@ class Project(db.Model):
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
     is_ready = db.Column(db.Boolean(), index=True, default=False)
-    # builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
     def cache_update(self, data):
         self.html_url = data['html_url']

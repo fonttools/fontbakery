@@ -31,18 +31,18 @@ import sys
 if sys.version < '3':
     import codecs
 
-    def u(x):
-        return codecs.unicode_escape_decode(x)[0]
+    def uniescape(value):
+        return codecs.unicode_escape_decode(value)[0]
 else:
-    def u(x):
-        return x
+    def uniescape(value):
+        return value
 
 
 def get_current_time():
     return datetime.utcnow()
 
 
-def pretty_date(dt, default=None):
+def pretty_date(date, default=None):
     """
     Returns string representing "time since" e.g.
     3 days ago, 5 hours ago etc.
@@ -52,8 +52,7 @@ def pretty_date(dt, default=None):
     if default is None:
         default = 'just now'
 
-    now = datetime.utcnow()
-    diff = now - dt
+    diff = datetime.utcnow() - date
 
     periods = (
         (diff.days / 365, 'year', 'years'),
@@ -201,9 +200,9 @@ def striplines(jsontext):
 def saveMetadata(metadata, path):
     # flask json serializer doesn't support OrderedDict
     import json
-    data = json.loads(u(metadata))
+    data = json.loads(uniescape(metadata))
     ready_data = sortMetadata(data)
     dump = json.dumps(ready_data, indent=2, ensure_ascii=True)
     strip_dump = striplines(dump)
     with io.open(path, 'w', encoding='utf-8') as f:
-        f.write(u(strip_dump))
+        f.write(uniescape(strip_dump))

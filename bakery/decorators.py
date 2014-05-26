@@ -19,7 +19,8 @@ from functools import wraps
 from flask import g, request, redirect, url_for, flash
 from flask.ext.babel import gettext as _
 
-def login_required(f):
+
+def login_required(func):
     """ Decorator allow to access route only logged in user. Usage:
 
         @project.route('/test', methods=['GET'])
@@ -28,13 +29,14 @@ def login_required(f):
             return "You are logged in"
 
     """
-    @wraps(f)
+    @wraps(func)
     def decorated_function(*args, **kwargs):
         if g.user is None:
             flash(_('Login required'))
             return redirect(url_for('gitauth.login', next=request.url))
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
     return decorated_function
+
 
 def cached(obj):
     cache = obj.cache = {}
@@ -45,36 +47,3 @@ def cached(obj):
             cache[args] = obj(*args, **kwargs)
         return cache[args]
     return memoizer
-
-class lazy_property(object):
-    """
-    lazy descriptor. Compute value of the propery on the first call. Usage:
-
-    class Demo:
-
-        @lazy_property
-        def slow_method(self):
-            import time
-            time.sleep(5)
-            return "I can be fast"
-
-
-    c = Demo()
-    # on 1st call will wait 5 seconds
-    print(c.slow_method)
-    # this loop will be very fast
-    for i in range(1, 100):
-        len(c.slow_method)
-
-    """
-
-    def __init__(self, fget):
-        self.fget = fget
-        self.func_name = fget.__name__
-
-    def __get__(self, obj, cls):
-        if obj is None:
-            return None
-        value = self.fget(obj)
-        setattr(obj, self.func_name, value)
-        return value
