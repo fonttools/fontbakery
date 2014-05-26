@@ -96,8 +96,8 @@ def prun(command, cwd, log=None):
                          close_fds=True, env=env)
 
     stdout = ''
-    for ln in p.stdout:
-        stdout += ln
+    for line in iter(p.stdout.readline, ''):
+        stdout += line
     if log:
         log.write('$ %s' % command)
         log.write(stdout)
