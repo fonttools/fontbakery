@@ -543,12 +543,14 @@ class FontForgeSimpleTest(TestCase):
     @tags('required')
     def test_menu_file_is_font(self):
         """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists("%s.menu" % self.fname))
         self.assertTrue(magic.from_file("%s.menu" % self.fname),
                         'TrueType font data')
 
     @tags('required')
     def test_file_is_font(self):
         """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists(self.path))
         self.assertTrue(magic.from_file(self.path), 'TrueType font data')
 
     @tags('required')
