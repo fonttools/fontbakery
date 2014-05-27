@@ -139,7 +139,12 @@ def generate_subsets_coverage_list(project, log=None):
     if not op.exists(op.dirname(_out_yaml)):
         os.makedirs(op.dirname(_out_yaml))
 
-    source_fonts_paths = ufo_dirs + ttx_files
+    source_fonts_paths = []
+    # `get_sources_list` returns list of paths relative to root.
+    # To complete to absolute paths use python os.path.join method
+    # on root and path
+    for path in ufo_dirs + ttx_files:
+        source_fonts_paths.append(op.join(_in, path))
     subsets = get_subsets_coverage_data(source_fonts_paths)
 
     contents = yaml.safe_dump(subsets)
@@ -212,6 +217,9 @@ def project_git_sync(project):
             config = project.config
 
     generate_subsets_coverage_list(project, log=log)
+
+    revision = prun("git rev-parse --short HEAD", cwd=_in).strip()
+    upstream_revision_tests(project, revision)
 
     log.write('End: Repository is ready. Please Setup\n', prefix='### ')
     # set project state as ready after sync is done
@@ -616,14 +624,14 @@ def get_sources_lists(rootpath):
     for root, dirs, files in os.walk(rootpath):
         for f in files:
             fullpath = op.join(root, f)
-            if op.splitext(fullpath)[1].lower() in ['.ttx', ]:
-                ttx_files.append(fullpath)
+            if op.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
+                ttx_files.append(fullpath[l:])
             if f.lower() == 'metadata.json':
-                metadata_files.append(fullpath)
+                metadata_files.append(fullpath[:l])
         for d in dirs:
             fullpath = op.join(root, d)
             if op.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath)
+                ufo_dirs.append(fullpath[l:])
     return ufo_dirs, ttx_files, metadata_files
 
 

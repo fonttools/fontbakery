@@ -271,7 +271,7 @@
         </td>
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
-            <button class="btn btn-xs btn-disabled" disabled>{{ _("Project downloading") }}</button>
+            <button class="btn btn-xs btn-disabled" disabled>{{ _("Waiting for queue") }}</button>
         {% else %}
             {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
