@@ -1,6 +1,6 @@
 <img src="https://raw.github.com/googlefonts/fontbakery/master/docs/image.png">
 
-[![Build Status](https://travis-ci.org/hash3g/fontbakery.svg?branch=master)](https://travis-ci.org/hash3g/fontbakery)
+[![Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
 [![Coverage Status](https://coveralls.io/repos/hash3g/fontbakery/badge.png)](https://coveralls.io/r/hash3g/fontbakery)
 
 ## Introduction
