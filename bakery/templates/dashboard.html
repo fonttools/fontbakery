@@ -266,7 +266,7 @@
 #}
         <td class="stats-fvpd" style="text-align: right">
         {% if repo.config['state'].get('price_total_usd') %}
-            {{ repo.family_stat.month / repo.config['state']['price_total_usd'] | int }}
+            {{ (repo.family_stat and repo.family_stat.month or 0) / repo.config['state']['price_total_usd'] | int }}
         {% endif %}
         </td>
         <td style="text-align: center; white-space: nowrap">
