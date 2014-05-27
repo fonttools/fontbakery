@@ -330,7 +330,7 @@ def copy_ttx_files(project, build, log):
         if styleName == 'Normal':
             styleName = 'Regular'
 
-        # NameID=1 is required
+        #   NameID=1 is required
         familyName = nameTableRead(font, 16, 1)
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
@@ -357,9 +357,7 @@ def copy_ttx_files(project, build, log):
 
 
 def copy_and_rename_process(project, build, log):
-    """
-    Setup UFOs for building
-    """
+    """ Setup UFOs for building """
     from .app import app
     config = project.config
 
@@ -508,8 +506,13 @@ def subset_process(project, build, log):
 
     for subset in config['state']['subset']:
         os.chdir(_out_src)
-        for name in glob.glob("*.ufo"):
-            name = name[:-4]  # cut .ufo
+        for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
+            if name.endswith('.ttx'):
+                # after copy_ttx_files executed in source directory
+                # resulted truetype files does have double extension
+                # e.g. FontFamily-WeightStyle.ttf.ttx
+                name = name[:-4]
+            name = name[:-4]  # cut .ufo|.ttx
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
             cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
                    " --layout-features='*' --glyph-names --symbol-cmap"
