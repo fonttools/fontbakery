@@ -200,7 +200,7 @@ def project_git_sync(project):
             # TODO in the future, to validate the URL string use
             # http://schacon.github.io/git/git-ls-remote.html
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
-            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd=_in, log=log)
+            prun('git clone --depth=100 --branch=master %(clone)s .' % project, cwd=_in, log=log)
         except:
             # if the clone action didn't work, just copy it
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
