@@ -99,7 +99,7 @@ def prun(command, cwd, log=None):
     for line in iter(p.stdout.readline, ''):
         stdout += line
     if log:
-        log.write('$ %s' % command)
+        log.write('$ %s\n' % command)
         log.write(stdout)
     return stdout
 
@@ -118,19 +118,21 @@ def get_subsets_coverage_data(source_fonts_paths):
     return subsets
 
 
-def generate_subsets_coverage_list(project):
+def generate_subsets_coverage_list(project, log=None):
     """ Returns sorted subsets from prepared yaml file in
         tuple [(common_name, coverage),].
 
         If file does not exist method creates one and writes pyfontaine
         coverages data using its Font API. """
     from .app import app
+    if log:
+        log.write('PyFontaine subsets with coverage values\n')
 
     _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     ufo_dirs, ttx_files, _ = get_sources_lists(_in)
 
     _out_yaml = op.join(app.config['DATA_ROOT'],
-                        '%(login)s/%(id)s.out/%(id)s.fontaine.yml' % project)
+                        '%(login)s/%(id)s.out/fontaine.yml' % project)
     if op.exists(_out_yaml):
         return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
 
@@ -164,18 +166,27 @@ def project_git_sync(project):
     db.session.refresh(project)
 
     _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
+    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/' % project)
+    if not op.exists(_out):
+        os.makedirs(_out)
+
+    prun('rm {}'.format('fontaine.yml'), cwd=_out)
+    prun('rm {}'.format('upstream.log'), cwd=_out)
+
+    log = RedisFd(op.join(_out, 'upstream.log'))
+
     # Create the incoming repo directory (_in) if it doesn't exist
     if not op.exists(_in):
         # log.write('Creating Incoming Directory\n', prefix='### ')
-        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'])
+        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'], log=log)
     # Update _in if it already exists with a .git directory
     if op.exists(op.join(_in, '.git')):
         # log.write('Sync Git Repository\n', prefix='### ')
         # remove anything in the _in directory that isn't checked in
-        prun('git reset --hard', cwd=_in)
-        prun('git clean --force', cwd=_in)
+        prun('git reset --hard', cwd=_in, log=log)
+        prun('git clean --force', cwd=_in, log=log)
         # pull from origin master branch
-        prun('git pull origin master', cwd=_in)
+        prun('git pull origin master', cwd=_in, log=log)
     # Since it doesn't exist as a git repo, get the _in repo
     else:
         # clone the repository
@@ -184,24 +195,25 @@ def project_git_sync(project):
             # TODO in the future, to validate the URL string use
             # http://schacon.github.io/git/git-ls-remote.html
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
-            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd=_in)
+            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd=_in, log=log)
         except:
             # if the clone action didn't work, just copy it
             # if this is a file URL, copy the files, and set up the _in directory as a git repo
             if project.clone[:7] == "file://":
                 # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
-                prun('cp -a %(clone)s .' % project, cwd=_in)
+                prun('cp -a %(clone)s .' % project, cwd=_in, log=log)
                 #
-                prun('git init .', cwd=_in)
-                prun('git add *', cwd=_in)
+                prun('git init .', cwd=_in, log=log)
+                prun('git add *', cwd=_in, log=log)
                 msg = "Initial commit made automatically by Font Bakery"
-                prun('git commit -a -m "%s"' % msg, cwd=_in)
+                prun('git commit -a -m "%s"' % msg, cwd=_in, log=log)
         # Now we have it, create an initial project state
         finally:
             config = project.config
 
-    generate_subsets_coverage_list(project)
+    generate_subsets_coverage_list(project, log=log)
 
+    log.write('End: Repository is ready. Please Setup\n', prefix='### ')
     # set project state as ready after sync is done
     project.is_ready = True
     db.session.add(project)

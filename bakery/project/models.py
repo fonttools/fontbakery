@@ -45,6 +45,10 @@ class Project(db.Model):
     data = db.Column(db.PickleType())
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
+
+    # `is_ready` means that project is waiting until project is synced and
+    # upstream tests complete. it is very important to disable any user action
+    # on project until all tests finish
     is_ready = db.Column(db.Boolean(), index=True, default=False)
 
     def cache_update(self, data):

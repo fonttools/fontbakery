@@ -57,9 +57,12 @@
 
 {% macro subnav_setup(active) %}
 <ul class="nav nav-tabs">
+  {% if not project.is_ready %}
+  <li {% if active == 'queue'  %}class="active" {% endif %}><a href="{{ url_for('project.queue',  project_id=project.id) }}">{{ _("Waiting for queue") }}</a></li>
+  {% endif %}
   <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">{{ _("Setup") }}</a></li>
   {% if project.config['local'].get('setup') %}
-    {# Additional setup views here, only will be awailable if primary setup is done #}
+    {# Additional setup views here, only will be available if primary setup is done #}
   {% endif %}
 </ul>
 {% endmacro %}

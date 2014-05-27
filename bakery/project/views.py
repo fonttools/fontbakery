@@ -79,7 +79,7 @@ def project_required(f):
             return f(*args, **kwargs)
         else:
             flash(_('Project is being synchronized, wait until it is done'))
-            return redirect(url_for('frontend.splash'))
+            return redirect(url_for('project.queue', project_id=p.id))
 
     return decorated_function
 
@@ -120,15 +120,27 @@ def pull(project_id):
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
-    return redirect(url_for('project.git', project_id=p.id))
+    return redirect(url_for('project.queue', project_id=p.id))
 
 
 # Setup views
+
+
+@project.route('/<int:project_id>/queue')
+@login_required
+def queue(project_id):
+    p = Project.query.filter_by(login=g.user.login, id=project_id)
+    p = p.first_or_404()
+    param = {'login': p.login, 'id': p.id}
+    log_file = "%(login)s/%(id)s.out/upstream.log" % param
+    return render_template('project/queue.html', project=p, log_file=log_file)
+
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 @project_required
 def setup(p):
+
     config = p.config
     originalConfig = p.config
     error = False
