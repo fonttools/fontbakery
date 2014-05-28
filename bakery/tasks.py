@@ -272,8 +272,12 @@ def copy_ufo_files(project, build, log):
             familyName = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '') \
                 or _in_ufoFontInfo.get('familyName', '')
             if not familyName:
-                log.write('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo, prefix='### ')
-                raise Exception('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo)
+                log.write(('Please set openTypeNamePreferredFamilyName or '
+                           'familyName in %s fontinfo.plist and run another'
+                           ' bake process.') % _in_ufo, prefix='### ')
+                raise Exception(('Please set openTypeNamePreferredFamilyName '
+                                 'or familyName in %s fontinfo.plist and '
+                                 'run another bake process.') % _in_ufo)
 
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
@@ -433,7 +437,8 @@ def copy_and_rename_process(project, build, log):
     if op.exists(_in_desc) and op.isfile(_in_desc):
         run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd=_user, log=log)
     else:
-        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix='Error: ')
+        log.write(('DESCRIPTION.en_us.html does not exist upstream, '
+                   'will generate one later\n'), prefix='Error: ')
 
     # Copy METADATA.json file
     _in_meta = op.join(_in, 'METADATA.json')
@@ -441,7 +446,8 @@ def copy_and_rename_process(project, build, log):
     if op.exists(_in_meta) and op.isfile(_in_meta):
         run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd=_user, log=log)
     else:
-        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix='Error: ')
+        log.write(('METADATA.json does not exist upstream, '
+                   'will generate one later\n'), prefix='Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
@@ -458,7 +464,8 @@ def ttfautohint_process(project, build, log):
     or just copy the ttfs there.
     """
     from .app import app
-    # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
+    # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
+    #               -W -c original_font.ttf final_font.ttf
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
@@ -647,7 +654,8 @@ def upstream_revision_tests(project, revision):
     :param project: Project instance
     :param revision: Git revision
     :param force: force to make tests again
-    :return: dictionary with serialized tests results formatted by `repr_testcase`
+    :return: dictionary with serialized tests results formatted
+             by `repr_testcase`
     """
     from .app import app
     param = {'login': project.login, 'id': project.id, 'revision': revision}
@@ -723,9 +731,10 @@ def result_fixes(project, build):
              'revision': build.revision, 'build': build.id}
 
     _out_src = op.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+                       '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_yaml = op.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+                        ('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s.rtests.yaml') % param)
 
     fix_font(_out_yaml, _out_src)
 
@@ -735,10 +744,12 @@ def discover_dashboard(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _yaml = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % param)
+    _yaml = op.join(app.config['DATA_ROOT'],
+                    '%(login)s/%(id)s.bakery.yaml' % param)
 
     _out_src = op.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s/') % param)
 
     cmd = "python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
         wd=app.config['ROOT'], out=_out_src, yaml=_yaml)
@@ -761,8 +772,12 @@ def process_project(project, build, revision, force_sync=False):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
     _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
-    _out_log = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
+    _out_src = op.join(app.config['DATA_ROOT'],
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s/sources/') % param)
+    _out_log = op.join(app.config['DATA_ROOT'],
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s.process.log') % param)
 
     # Make logest path
     os.makedirs(_out_src)
@@ -794,7 +809,8 @@ def process_project(project, build, revision, force_sync=False):
             param = {'login': project.login, 'id': project.id,
                      'revision': build.revision, 'build': build.id}
             _out_src = op.join(app.config['DATA_ROOT'],
-                                    '%(login)s/%(id)s.out/%(build)s.%(revision)s' % param)
+                               ('%(login)s/%(id)s.out/'
+                                '%(build)s.%(revision)s') % param)
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
 
