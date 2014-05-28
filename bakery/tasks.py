@@ -115,7 +115,8 @@ def get_subsets_coverage_data(source_fonts_paths):
     subsets = {}
     for fontpath in source_fonts_paths:
         font = FontFactory.openfont(fontpath)
-        for charmap, _, coverage, _ in font.get_orthographies(_library=library):
+        for charmap, _, coverage, _ in \
+                font.get_orthographies(_library=library):
             subsets[charmap.common_name.replace('Subset ', '')] = coverage
     return subsets
 
@@ -130,7 +131,7 @@ def generate_subsets_coverage_list(project, log=None):
     if log:
         log.write('PyFontaine subsets with coverage values\n')
 
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
     ufo_dirs, ttx_files, _ = get_sources_lists(_in)
 
     _out_yaml = op.join(app.config['DATA_ROOT'],
@@ -172,8 +173,8 @@ def project_git_sync(project):
     db.session.commit()
     db.session.refresh(project)
 
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/' % project)
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
+    _out = joinroot('%(login)s/%(id)s.out/' % project)
     if not op.exists(_out):
         os.makedirs(_out)
 
@@ -202,12 +203,15 @@ def project_git_sync(project):
             # TODO in the future, to validate the URL string use
             # http://schacon.github.io/git/git-ls-remote.html
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
-            prun('git clone --progress --depth=100 --branch=master %(clone)s .' % project, cwd=_in, log=log)
+            prun(('git clone --progress --depth=100'
+                  ' --branch=master %(clone)s .') % project, cwd=_in, log=log)
         except:
             # if the clone action didn't work, just copy it
-            # if this is a file URL, copy the files, and set up the _in directory as a git repo
+            # if this is a file URL, copy the files, and set up
+            # the _in directory as a git repo
             if project.clone[:7] == "file://":
-                # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
+                # cp recursively, keeping all attributes, not following
+                # symlinks, not deleting existing files, verbosely
                 prun('cp -a %(clone)s .' % project, cwd=_in, log=log)
                 #
                 prun('git init .', cwd=_in, log=log)
@@ -230,6 +234,11 @@ def project_git_sync(project):
     db.session.commit()
 
 
+def joinroot(path):
+    from bakery.app import app
+    return joinroot(app.config['DATA_ROOT'], path)
+
+
 def copy_ufo_files(project, build, log):
     from .app import app
     config = project.config
@@ -237,9 +246,11 @@ def copy_ufo_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+    _out_src = joinroot(path)
 
     log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
@@ -269,8 +280,8 @@ def copy_ufo_files(project, build, log):
             styleName = 'Regular'
         # Get the familyName, if its not set
         if not familyName:
-            familyName = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '') \
-                or _in_ufoFontInfo.get('familyName', '')
+            pfn = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '')
+            familyName = pfn or _in_ufoFontInfo.get('familyName', '')
             if not familyName:
                 log.write(('Please set openTypeNamePreferredFamilyName or '
                            'familyName in %s fontinfo.plist and run another'
@@ -283,23 +294,31 @@ def copy_ufo_files(project, build, log):
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
         # Decide the outgoing filepath
-        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
+        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace,
+                                  styleNameNoWhitespace)
         _out_ufo_path = op.join(_out_src, _out_ufo)
         # Copy the UFOs
-        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path),
+            cwd=_out, log=log)
 
-        # If we rename, change the font family name metadata inside the _out_ufo
+        # If we rename, change the font family name metadata
+        # inside the _out_ufo
         if familyName:
             # Read the _out_ufo fontinfo.plist
             _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
             # Set the familyName
             _out_ufoFontInfo['familyName'] = familyName
+
             # Set PS Name
-            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
-            _out_ufoFontInfo['postscriptFontName'] = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
+            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+            # < Family Name > < Vendor ID > - < Weight > < Width >
+            # < Slant > < Character Set >
+            psfn = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
+            _out_ufoFontInfo['postscriptFontName'] = psfn
             # Set Full Name
-            _out_ufoFontInfo['postscriptFullName'] = "%s %s" % (familyName, styleName)
+            psfn = "%s %s" % (familyName, styleName)
+            _out_ufoFontInfo['postscriptFullName'] = psfn
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
@@ -309,8 +328,9 @@ def copy_ufo_files(project, build, log):
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
         name = name[:-4]  # cut .ufo
-        cmd = "python ufo2ttf.py '{out_src}{name}.ufo' '{out}{name}.ttf' '{out_src}{name}.otf'".format(
-            out_src=_out_src, name=name, out=_out)
+        cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+               "'{out}{name}.ttf' '{out_src}{name}.otf'")
+        cmd = cmd.format(out_src=_out_src, name=name, out=_out)
         run(cmd, cwd=scripts_folder, log=log)
 
 
@@ -321,9 +341,11 @@ def copy_ttx_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+    _out_src = joinroot(path)
 
     ttx_files = []
     for x in config['state'].get('process_files', []):
@@ -333,10 +355,12 @@ def copy_ttx_files(project, build, log):
     for ttx_file in ttx_files:
         _ttx_path = op.join(_in, ttx_file)
         if not op.exists(_ttx_path):
-            run("echo file '{}' not found".format(_ttx_path), cwd=_out, log=log)
+            run("echo file '{}' not found".format(_ttx_path),
+                cwd=_out, log=log)
             continue
 
-        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True, verbose=False, allowVID=False)
+        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
+                            verbose=False, allowVID=False)
         font.importXML(_ttx_path, quiet=True)
         _ttx_name = op.splitext(op.basename(_ttx_path))[0]
 
@@ -344,7 +368,8 @@ def copy_ttx_files(project, build, log):
             for record in font['name'].names:
                 if record.nameID == NameID:
                     if b'\000' in record.string:
-                        return record.string.decode('utf-16-be').encode('utf-8')
+                        string = record.string.decode('utf-16-be')
+                        return string.encode('utf-8')
                     else:
                         return record.string
 
@@ -362,7 +387,9 @@ def copy_ttx_files(project, build, log):
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
 
-        _out_ttx_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace, stylename=styleNameNoWhitespace)
+        _out_ttx_name = "{familyname}-{stylename}"
+        _out_ttx_name = _out_ttx_name.format(familyname=familyNameNoWhitespace,
+                                             stylename=styleNameNoWhitespace)
 
         if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
             _out_name = '{}.ttf.ttx'.format(_out_ttx_name)
@@ -370,29 +397,36 @@ def copy_ttx_files(project, build, log):
             _out_name = '{}.otf.ttx'.format(_out_ttx_name)
 
         run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name, out_name=_out_name), cwd=_out_src, log=log)
+        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name,
+                                                      out_name=_out_name),
+            cwd=_out_src, log=log)
         run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
-        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name), cwd=_out_src, log=log)
+        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
+            cwd=_out_src, log=log)
+
         if font.sfntVersion == 'OTTO':  # OTF
             scripts_folder = op.join(app.config['ROOT'], 'scripts')
-            cmd = "python autoconvert.py '{out_src}{ttx_name}.otf' '{out}{ttx_name}.ttf'".format(
-                    out_src=_out_src, ttx_name=_out_ttx_name, out=_out)
+            cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
+                   " '{out}{ttx_name}.ttf'")
+            cmd = cmd.format(out_src=_out_src,
+                             ttx_name=_out_ttx_name,
+                             out=_out)
             run(cmd, cwd=scripts_folder, log=log)
         else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name), _out_src, log=log)
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name),
+                _out_src, log=log)
 
 
 def copy_and_rename_process(project, build, log):
     """ Setup UFOs for building """
-    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _user = op.join(app.config['DATA_ROOT'], '%(login)s/' % param)
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _user = joinroot('%(login)s/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
@@ -407,7 +441,8 @@ def copy_and_rename_process(project, build, log):
         licenseFileInFullPath = config['state']['license_file']
         licenseFileIn = licenseFileInFullPath.split('/')[-1]
         # List posible OFL and Apache filesnames
-        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt', 'OFL.md']
+        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt',
+                              'OFL.md']
         listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
         # Canonicalize _out license file name
         if licenseFileIn in listOfOflFilenames:
@@ -419,7 +454,8 @@ def copy_and_rename_process(project, build, log):
         # Copy license file
         _in_license = op.join(_in, licenseFileInFullPath)
         _out_license = op.join(_out, licenseFileOut)
-        run('cp -a "%s" "%s"' % (_in_license, _out_license), cwd=_user, log=log)
+        run('cp -a "%s" "%s"' % (_in_license, _out_license),
+            cwd=_user, log=log)
     else:
         log.write('License file not copied\n', prefix='Error: ')
 
@@ -427,7 +463,8 @@ def copy_and_rename_process(project, build, log):
     _in_fontlog = op.join(_in, 'FONTLOG.txt')
     _out_fontlog = op.join(_out, 'FONTLOG.txt')
     if op.exists(_in_fontlog) and op.isfile(_in_fontlog):
-        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd=_user, log=log)
+        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog),
+            cwd=_user, log=log)
     else:
         log.write('FONTLOG.txt does not exist\n', prefix='Error: ')
 
@@ -463,7 +500,6 @@ def ttfautohint_process(project, build, log):
     ttf file in result src folder, outputting them in the _out root,
     or just copy the ttfs there.
     """
-    from .app import app
     # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
     #               -W -c original_font.ttf final_font.ttf
     config = project.config
@@ -471,7 +507,7 @@ def ttfautohint_process(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
@@ -479,21 +515,23 @@ def ttfautohint_process(project, build, log):
         os.chdir(_out)
         for name in glob.glob("*.ttf"):
             name = name[:-4]  # cut .ttf
-            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
-            run("ttfautohint {params} '{name}.autohint.ttf' '{name}.ttf'".format(params=params, name=name), cwd=_out, log=log)
-            run("rm '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
+            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name),
+                cwd=_out, log=log)
+            cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
+                   "'{name}.ttf'").format(params=params, name=name)
+            run(cmd, cwd=_out, log=log)
+            run("rm '{name}.autohint.ttf'".format(name=name),
+                cwd=_out, log=log)
 
 
 def ttx_process(project, build, log):
-    """
-    Roundtrip TTF files through TTX to compact their filesize
-    """
-    from .app import app
+    """ Roundtrip TTF files through TTX to compact their filesize """
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = joinroot(('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s/sources/') % param)
 
     log.write('Compact TTFs with ttx\n', prefix='### ')
 
@@ -522,14 +560,14 @@ def ttx_process(project, build, log):
 
 
 def subset_process(project, build, log):
-    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = joinroot(('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s/sources/') % param)
 
     log.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
@@ -567,7 +605,7 @@ def generate_metadata_process(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
@@ -575,14 +613,11 @@ def generate_metadata_process(project, build, log):
 
 
 def fontaine_process(project, build, log):
-    """
-    Run pyFontaine on ttf files
-    """
-    from .app import app
+    """ Run pyFontaine on ttf files """
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     log.write('pyFontaine (fontaine/main.py)\n', prefix='### ')
     os.chdir(_out)
@@ -657,12 +692,11 @@ def upstream_revision_tests(project, revision):
     :return: dictionary with serialized tests results formatted
              by `repr_testcase`
     """
-    from .app import app
     param = {'login': project.login, 'id': project.id, 'revision': revision}
 
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
-    _out_folder = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/' % param)
-    _out_yaml = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
+    _out_folder = joinroot('%(login)s/%(id)s.out/utests/' % param)
+    _out_yaml = op.join(_out_folder, '%(revision)s.yaml' % param)
 
     if op.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -697,12 +731,12 @@ def upstream_revision_tests(project, revision):
 
 
 def result_tests(project, build):
-    from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out_src = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param
+    _out_yaml = joinroot(path)
 
     if op.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
@@ -771,7 +805,7 @@ def process_project(project, build, revision, force_sync=False):
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _in = op.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
     _out_src = op.join(app.config['DATA_ROOT'],
                        ('%(login)s/%(id)s.out/'
                         '%(build)s.%(revision)s/sources/') % param)
@@ -829,12 +863,14 @@ def zipdir(path, url, log):
     zipfile_path = op.join(path, '..', '%s.zip' % basename)
     zipf = zipfile.ZipFile(zipfile_path, 'w')
     for root, dirs, files in os.walk(path):
+        root = root.replace(path, '').lstrip('/')
         for file in files:
-            arcpath = op.join(basename, root.replace(path, '').lstrip('/'), file)
+            arcpath = op.join(basename, root, file)
             zipf.write(op.join(root, file), arcpath)
             log.write('add %s\n' % arcpath)
     zipf.close()
-    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename, url, basename))
+    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
+                                                             url, basename))
 
 
 def set_done(build):
