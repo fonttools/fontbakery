@@ -33,9 +33,7 @@ class TestDescription404Links(TestCase):
         for link in doc.xpath('//a/@href'):
             try:
                 response = requests.head(link)
-                self.assertEqual(response.status_code, requests.codes.ok)
+                self.assertEqual(response.status_code, requests.codes.ok,
+                                 msg='%s is broken' % link)
             except requests.exceptions.RequestException, ex:
                 self.fail('%s raises exception [%r]' % (link, ex))
-
-    def test_failure(self):
-        self.assertEqual(1, 0)
