@@ -148,6 +148,8 @@ class UFO_FontFamilyNamingTest(TestCase):
     path = '.'
 
     def test_ufo_family_naming_recommendation(self):
+        """ The font corresponds the font family naming recommendation.
+        See http://forum.fontlab.com/index.php?topic=313.0 """
         if self.path.lower().endswith('.ttx'):
             # This test checks only UFO source font.
             # To see
@@ -221,6 +223,8 @@ class TTX_FontFamilyNamingTest(TestCase):
     tool = 'TTFont'
 
     def test_ttx_family_naming_recommendation(self):
+        """ The font corresponds the font family naming recommendation.
+        See http://forum.fontlab.com/index.php?topic=313.0 """
         if not self.path.lower().endswith('.ttx'):
             return
         font = TTFont(None)

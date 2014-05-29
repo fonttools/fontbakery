@@ -60,7 +60,7 @@ class CheckerTest(unittest.TestCase):
 
     def test_upstream_ttx_font_family_naming(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold.ttx')
-        r = run_set(p, 'upstream', 'test_ttx_family_naming_recommendation')
+        r = run_set(p, 'upstream-ttx', 'test_ttx_family_naming_recommendation')
         self.assertInSuccess('test_ttx_family_naming_recommendation', r)
 
     def test_results_fontname_is_equal_to_macstyle_success(self):
