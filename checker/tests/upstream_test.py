@@ -215,7 +215,7 @@ def get_name_record(records, nameid, platform, platencid, language):
 
 class TTX_FontFamilyNamingTest(TestCase):
 
-    targets = ['upstream']
+    targets = ['upstream-ttx']
     path = '.'
     name = __name__
     tool = 'TTFont'
