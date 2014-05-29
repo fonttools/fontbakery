@@ -52,12 +52,14 @@ def run(command, cwd, log):
     # Start the command
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    p = subprocess.Popen(command, shell=True, cwd=cwd, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, close_fds=True, env=env)
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               close_fds=True, env=env)
     while True:
         # Read output and errors
-        stdout = p.stdout.readline()
-        stderr = p.stderr.readline()
+        stdout = process.stdout.readline()
+        stderr = process.stderr.readline()
         # Log output
         log.write(stdout)
         # Log error
@@ -67,11 +69,11 @@ def run(command, cwd, log):
             # log error
             log.write(stderr, prefix='Error: ')
         # If no output and process no longer running, stop
-        if not stdout and not stderr and p.poll() is not None:
+        if not stdout and not stderr and process.poll() is not None:
             break
     # if the command did not exit cleanly (with returncode 0)
-    if p.returncode:
-        msg = 'Fatal: Exited with return code %s \n' % p.returncode
+    if process.returncode:
+        msg = 'Fatal: Exited with return code %s \n' % process.returncode
         # Log the exit status
         log.write(msg)
         # Raise an error on the worker
@@ -91,18 +93,19 @@ def prun(command, cwd, log=None):
     print("[%s]:%s" % (cwd, command))
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    p = subprocess.Popen(command, shell=True, cwd=cwd,
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                         close_fds=True, env=env)
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               close_fds=True, env=env)
     if log:
         log.write('$ %s\n' % command)
 
     stdout = ''
-    for line in iter(p.stdout.readline, ''):
+    for line in iter(process.stdout.readline, ''):
         if log:
             log.write(line)
         stdout += line
-        p.stdout.flush()
+        process.stdout.flush()
     return stdout
 
 
@@ -152,9 +155,9 @@ def generate_subsets_coverage_list(project, log=None):
 
     contents = yaml.safe_dump(subsets)
 
-    l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
-    l.write(contents)
-    l.close()
+    yamlf = codecs.open(_out_yaml, mode='w', encoding="utf-8")
+    yamlf.write(contents)
+    yamlf.close()
 
     return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
 
