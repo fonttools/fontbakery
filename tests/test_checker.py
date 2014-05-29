@@ -50,16 +50,24 @@ class CheckerTest(unittest.TestCase):
 
     def test_upstream(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Italic.ufo')
-        r = run_set(p, 'upstream')
+        r = run_set(p, 'upstream', 'test_is_A')
         self.assertInSuccess('test_is_A', r)
+
+    def test_upstream_ufo_font_family_naming(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Italic.ufo')
+        r = run_set(p, 'upstream', 'test_ufo_family_naming_recommendation')
+        self.assertInSuccess('test_ufo_family_naming_recommendation', r)
+
+    def test_upstream_ttx_font_family_naming(self):
+        p = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold.ttx')
+        r = run_set(p, 'upstream', 'test_ttx_family_naming_recommendation')
+        self.assertInSuccess('test_ttx_family_naming_recommendation', r)
 
     def test_results_fontname_is_equal_to_macstyle_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')
-        self.assertInSuccess('test_fontname_is_equal_to_macstyle', run_set(p, 'result', 'test_fontname_is_equal_to_macstyle'))
-
-    # def test_results_fontname_is_equal_to_macstyle_failure(self):
-    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic!.ttf')
-    #     self.assertInFailure('test_fontname_is_equal_to_macstyle', run_set(p, 'result'))
+        self.assertInSuccess('test_fontname_is_equal_to_macstyle',
+                             run_set(p, 'result',
+                                     'test_fontname_is_equal_to_macstyle'))
 
     def test_results_nbsp_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')

@@ -249,7 +249,7 @@ def ufiles(p, revision=None, name=None):
                            revision=revision)
 
 
-@project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
+@project.route('/<int:project_id>/files/<revision>/<path:name>')
 @login_required
 @project_required
 def ufile(p, revision=None, name=None):

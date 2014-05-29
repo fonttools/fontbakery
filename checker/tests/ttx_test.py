@@ -59,19 +59,6 @@ class SourceTTXTest(TestCase):
                              msg="GlyphID %s occurs twice in TTX" % g)
             glyphs.append(glyphs)
 
-    # def test_ok(self):
-    #     """ This test succeeds """
-    #     self.assertTrue(True)
-    #
-    # def test_failure(self):
-    #     """ This test fails """
-    #     self.assertTrue(False)
-    #
-    # def test_error(self):
-    #     """ Unexpected error """
-    #     1 / 0
-    #     self.assertTrue(False)
-
     def test_os2_in_keys(self):
         """ This very important test checking if OS/2 is in keys method """
         self.assertIn('OS/2', self.font.keys())
@@ -79,4 +66,3 @@ class SourceTTXTest(TestCase):
     def test_epar_in_keys(self):
         """ Check If font has EPAR table """
         self.assertIn('EPAR', self.font.keys())
-
