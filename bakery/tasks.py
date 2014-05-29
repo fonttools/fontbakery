@@ -236,7 +236,7 @@ def project_git_sync(project):
 
 def joinroot(path):
     from bakery.app import app
-    return joinroot(app.config['DATA_ROOT'], path)
+    return op.join(app.config['DATA_ROOT'], path)
 
 
 def copy_ufo_files(project, build, log):
