@@ -16,14 +16,17 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 # pylint:disable-msg=E1101
 
+from datetime import datetime, timedelta
 from flask import (Blueprint, render_template, g, flash, request,
                    url_for, redirect, json, Markup, current_app, abort, make_response)
 from flask.ext.babel import gettext as _
-
-from ..decorators import login_required
-from ..utils import project_fontaine
-from .models import Project, ProjectBuild
 from functools import wraps
+from yaml import YAMLError
+
+from bakery.decorators import login_required
+from bakery.project.models import Project, ProjectBuild
+from bakery.tasks import process_description_404
+from bakery.utils import project_fontaine
 
 import itsdangerous
 
@@ -409,14 +412,27 @@ def description(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if request.method == 'GET':
+        try:
+            test_data = b.read_links404_test_data()
+            if test_data['updated'] < datetime.now() - timedelta(days=1):
+                # rerun background to check description 404 links
+                process_description_404.delay(p, b)
+            parsed_results = test_data.get('failure', [])
+        except (IOError, YAMLError, KeyError):
+            # possibly file does not exist, start background task if that so
+            process_description_404.delay(p, b)
+            parsed_results = []
+
         data = b.read_asset('description')
         return render_template('project/description.html', project=p, build=b,
-                               description=data)
+                               description=data, failures=parsed_results)
 
     # POST
     b.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
-    return redirect(url_for('project.description', build_id=b.id, project_id=p.id))
+
+    return redirect(url_for('project.description', build_id=b.id,
+                            project_id=p.id))
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])

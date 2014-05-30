@@ -24,3 +24,16 @@ def run_set(path, target, test_method=None):
     import os
     assert os.path.exists(path)
     return run_suite(make_suite(path, target, test_method=test_method))
+
+
+def parse_test_results(result):
+    failures = map(lambda x: (x._testMethodName, x._err_msg),
+                   result.get('failure', []))
+    print failures
+    error = map(lambda x: (x._testMethodName, x._err_msg),
+                result.get('error', []))
+    print error
+    success = map(lambda x: (x._testMethodName, 'ok'),
+                  result.get('success', []))
+
+    return {'success': success, 'error': error, 'failure': failures}

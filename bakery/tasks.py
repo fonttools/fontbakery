@@ -19,6 +19,7 @@ from __future__ import print_function
 import sys
 
 import codecs
+import datetime
 import glob
 import os
 import os.path as op
@@ -27,7 +28,7 @@ import re
 import subprocess
 import yaml
 
-from checker import run_set
+from checker import run_set, parse_test_results
 from checker.base import BakeryTestCase
 from fixer import fix_font
 from flask.ext.rq import job
@@ -859,6 +860,34 @@ def process_project(project, build, revision, force_sync=False):
             db.session.commit()
 
     log.close()
+
+
+@job
+def process_description_404(project, build):
+    """ Background task to check links in DESCRIPTION.en_us.html file
+
+        This method generates yaml file `*.*.404links.yaml` inside
+        repo out directory. """
+    param = {'login': project.login, 'id': project.id,
+             'revision': build.revision, 'build': build.id}
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    path = op.join(_out, 'DESCRIPTION.en_us.html')
+
+    _out_yaml = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param)
+
+    result = {}
+    test_results = run_set(path, 'description')
+    result = parse_test_results(test_results)
+    result['updated'] = datetime.datetime.now()
+
+    # Comment during debug
+    l = open(_out_yaml, 'w')
+    l.write(yaml.safe_dump(result))
+    l.close()
+
+    d = yaml.safe_load(open(_out_yaml, 'r'))
+    # os.remove(_out_yaml)
+    return d
 
 
 def zipdir(path, url, log):
