@@ -543,13 +543,13 @@ def ttx_process(project, build, log):
         name = name[:-4]  # cut .ufo
         filename = op.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
@@ -577,7 +577,7 @@ def subset_process(project, build, log):
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
-            if name.endswith('.ttx'):
+            if name.endswith('.ttx') and project.source_files_type == 'ttx':
                 # after copy_ttx_files executed in source directory
                 # resulted truetype files does have double extension
                 # e.g. FontFamily-WeightStyle.ttf.ttx
