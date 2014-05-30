@@ -25,6 +25,26 @@ from fontaine.builder import Director, Builder
 from fontaine.cmap import library
 
 
+class ProjectUpstreamTestCase(TestCase):
+    """ Common tests for upstream repository.
+
+    .. note::
+
+    This test case is not related to font processing. It makes only common
+    checks like one - test that upstream repository contains bakery.yaml) """
+
+    targets = ['upstream-repo']
+    tool = 'FontBakery'
+    path = '.'
+    name = __name__
+
+    def test_bakery_yaml_exists(self):
+        """ Repository does contain bakery.yaml configuration file """
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'bakery.yaml')),
+                        msg=('File `bakery.yaml` does not exist in root '
+                             'of upstream repository'))
+
+
 COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
 
 
