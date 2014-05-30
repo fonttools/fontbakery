@@ -37,7 +37,9 @@
       </td>
       <td>
         {% set data = b.read_rtests_data() %}
-        Out <span class="label label-success">{{ data.success|length }}</span> / <span class="label label-warning">{{ data.failure|length }}</span> / <span class="label label-danger">{{ data.error|length }}</span>
+        {% set udata = b.read_upstream_tests_data() %}
+        <p>In <span class="label label-success">{{ udata.success|length }}</span> / <span class="label label-warning">{{ udata.failure|length }}</span> / <span class="label label-danger">{{ udata.error|length }}</span></p>
+        <p>Out <span class="label label-success">{{ data.success|length }}</span> / <span class="label label-warning">{{ data.failure|length }}</span> / <span class="label label-danger">{{ data.error|length }}</span></p>
       </td>
     </tr>
     {% else %}
