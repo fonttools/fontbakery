@@ -14,14 +14,24 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-from .base import *
 import tests
 
-def run_set(path, target=None):
+from .base import run_suite, make_suite
+
+
+def run_set(path, target, test_method=None):
     """ Return tests results for font file, target """
     import os
     assert os.path.exists(path)
-    assert target
-    return run_suite(make_suite(path, target))
+    return run_suite(make_suite(path, target, test_method=test_method))
 
+
+def parse_test_results(result):
+    failures = map(lambda x: (x._testMethodName, x._err_msg),
+                   result.get('failure', []))
+    error = map(lambda x: (x._testMethodName, x._err_msg),
+                result.get('error', []))
+    success = map(lambda x: (x._testMethodName, 'ok'),
+                  result.get('success', []))
+
+    return {'success': success, 'error': error, 'failure': failures}

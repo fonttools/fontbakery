@@ -14,20 +14,28 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
 from __future__ import print_function
-import os
+
 import sys
-import glob
-import subprocess
+
 import codecs
-from flask.ext.rq import job
+import datetime
+import glob
+import os
+import os.path as op
 import plistlib
-from .utils import RedisFd
 import re
+import subprocess
 import yaml
+
+from checker import run_set, parse_test_results
+from checker.base import BakeryTestCase
+from fixer import fix_font
+from flask.ext.rq import job
 from fontTools import ttLib
 from fontaine.ext.subsets import Extension as SubsetExtension
+
+from .utils import RedisFd
 
 
 def run(command, cwd, log):
@@ -45,12 +53,14 @@ def run(command, cwd, log):
     # Start the command
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    p = subprocess.Popen(command, shell=True, cwd=cwd, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, close_fds=True, env=env)
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               close_fds=True, env=env)
     while True:
         # Read output and errors
-        stdout = p.stdout.readline()
-        stderr = p.stderr.readline()
+        stdout = process.stdout.readline()
+        stderr = process.stderr.readline()
         # Log output
         log.write(stdout)
         # Log error
@@ -60,11 +70,11 @@ def run(command, cwd, log):
             # log error
             log.write(stderr, prefix='Error: ')
         # If no output and process no longer running, stop
-        if not stdout and not stderr and p.poll() is not None:
+        if not stdout and not stderr and process.poll() is not None:
             break
     # if the command did not exit cleanly (with returncode 0)
-    if p.returncode:
-        msg = 'Fatal: Exited with return code %s \n' % p.returncode
+    if process.returncode:
+        msg = 'Fatal: Exited with return code %s \n' % process.returncode
         # Log the exit status
         log.write(msg)
         # Raise an error on the worker
@@ -84,14 +94,73 @@ def prun(command, cwd, log=None):
     print("[%s]:%s" % (cwd, command))
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    p = subprocess.Popen(command, shell=True, cwd=cwd,
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                         close_fds=True, env=env)
-    stdout = p.communicate()[0]
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               close_fds=True, env=env)
     if log:
-        log.write('$ %s' % command)
-        log.write(stdout)
+        log.write('$ %s\n' % command)
+
+    stdout = ''
+    for line in iter(process.stdout.readline, ''):
+        if log:
+            log.write(line)
+        stdout += line
+        process.stdout.flush()
     return stdout
+
+
+def get_subsets_coverage_data(source_fonts_paths):
+    """ Return dictionary with subsets coverages as a value
+        and common name as a key """
+    from fontaine.font import FontFactory
+    from fontaine.cmap import Library
+    library = Library(collections=['subsets'])
+    subsets = {}
+    for fontpath in source_fonts_paths:
+        font = FontFactory.openfont(fontpath)
+        for charmap, _, coverage, _ in \
+                font.get_orthographies(_library=library):
+            subsets[charmap.common_name.replace('Subset ', '')] = coverage
+    return subsets
+
+
+def generate_subsets_coverage_list(project, log=None):
+    """ Returns sorted subsets from prepared yaml file in
+        tuple [(common_name, coverage),].
+
+        If file does not exist method creates one and writes pyfontaine
+        coverages data using its Font API. """
+    from .app import app
+    if log:
+        log.write('PyFontaine subsets with coverage values\n')
+
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
+    ufo_dirs, ttx_files, _ = get_sources_lists(_in)
+
+    _out_yaml = op.join(app.config['DATA_ROOT'],
+                        '%(login)s/%(id)s.out/fontaine.yml' % project)
+    if op.exists(_out_yaml):
+        return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
+
+    if not op.exists(op.dirname(_out_yaml)):
+        os.makedirs(op.dirname(_out_yaml))
+
+    source_fonts_paths = []
+    # `get_sources_list` returns list of paths relative to root.
+    # To complete to absolute paths use python os.path.join method
+    # on root and path
+    for path in ufo_dirs + ttx_files:
+        source_fonts_paths.append(op.join(_in, path))
+    subsets = get_subsets_coverage_data(source_fonts_paths)
+
+    contents = yaml.safe_dump(subsets)
+
+    yamlf = codecs.open(_out_yaml, mode='w', encoding="utf-8")
+    yamlf.write(contents)
+    yamlf.close()
+
+    return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
 
 
 @job
@@ -108,46 +177,70 @@ def project_git_sync(project):
     db.session.commit()
     db.session.refresh(project)
 
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
+    _out = joinroot('%(login)s/%(id)s.out/' % project)
+    if not op.exists(_out):
+        os.makedirs(_out)
+
+    prun('rm {}'.format('fontaine.yml'), cwd=_out)
+    prun('rm {}'.format('upstream.log'), cwd=_out)
+
+    log = RedisFd(op.join(_out, 'upstream.log'))
+
     # Create the incoming repo directory (_in) if it doesn't exist
-    if not os.path.exists(_in):
+    if not op.exists(_in):
         # log.write('Creating Incoming Directory\n', prefix='### ')
-        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'])
+        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'], log=log)
     # Update _in if it already exists with a .git directory
-    if os.path.exists(os.path.join(_in, '.git')):
+    if op.exists(op.join(_in, '.git')):
         # log.write('Sync Git Repository\n', prefix='### ')
         # remove anything in the _in directory that isn't checked in
-        prun('git reset --hard', cwd=_in)
-        prun('git clean --force', cwd=_in)
+        prun('git reset --hard', cwd=_in, log=log)
+        prun('git clean --force', cwd=_in, log=log)
         # pull from origin master branch
-        prun('git pull origin master', cwd=_in)
+        prun('git pull origin master', cwd=_in, log=log)
     # Since it doesn't exist as a git repo, get the _in repo
     else:
         # clone the repository
         # log.write('Copying Git Repository\n', prefix='### ')
         try:
-            # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
+            # TODO in the future, to validate the URL string use
+            # http://schacon.github.io/git/git-ls-remote.html
             # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
-            prun('git clone --depth=100 --quiet --branch=master %(clone)s .' % project, cwd=_in)
-        # if the clone action didn't work, just copy it
+            prun(('git clone --progress --depth=100'
+                  ' --branch=master %(clone)s .') % project, cwd=_in, log=log)
         except:
-            # if this is a file URL, copy the files, and set up the _in directory as a git repo
+            # if the clone action didn't work, just copy it
+            # if this is a file URL, copy the files, and set up
+            # the _in directory as a git repo
             if project.clone[:7] == "file://":
-                # cp recursively, keeping all attributes, not following symlinks, not deleting existing files, verbosely
-                prun('cp -a %(clone)s .' % project, cwd=_in)
+                # cp recursively, keeping all attributes, not following
+                # symlinks, not deleting existing files, verbosely
+                prun('cp -a %(clone)s .' % project, cwd=_in, log=log)
                 #
-                prun('git init .', cwd=_in)
-                prun('git add *', cwd=_in)
+                prun('git init .', cwd=_in, log=log)
+                prun('git add *', cwd=_in, log=log)
                 msg = "Initial commit made automatically by Font Bakery"
-                prun('git commit -a -m "%s"' % msg, cwd=_in)
+                prun('git commit -a -m "%s"' % msg, cwd=_in, log=log)
         # Now we have it, create an initial project state
         finally:
             config = project.config
 
+    generate_subsets_coverage_list(project, log=log)
+
+    revision = prun("git rev-parse --short HEAD", cwd=_in).strip()
+    upstream_revision_tests(project, revision)
+
+    log.write('End: Repository is ready. Please Setup\n', prefix='### ')
     # set project state as ready after sync is done
     project.is_ready = True
     db.session.add(project)
     db.session.commit()
+
+
+def joinroot(path):
+    from bakery.app import app
+    return op.join(app.config['DATA_ROOT'], path)
 
 
 def copy_ufo_files(project, build, log):
@@ -157,9 +250,11 @@ def copy_ufo_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+    _out_src = joinroot(path)
 
     log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
@@ -169,7 +264,8 @@ def copy_ufo_files(project, build, log):
     else:
         familyName = False
 
-    # Copy UFO files from git repo to _out_src [renaming their filename and metadata]
+    # Copy UFO files from git repo to _out_src [renaming their
+    # filename and metadata]
     ufo_dirs = []
     for x in config['state'].get('process_files', []):
         if x.endswith('.ufo'):
@@ -177,9 +273,9 @@ def copy_ufo_files(project, build, log):
 
     for _in_ufo in ufo_dirs:
         # Decide the incoming filepath
-        _in_ufo_path = os.path.join(_in, _in_ufo)
+        _in_ufo_path = op.join(_in, _in_ufo)
         # Read the _in_ufo fontinfo.plist
-        _in_ufoPlist = os.path.join(_in_ufo_path, 'fontinfo.plist')
+        _in_ufoPlist = op.join(_in_ufo_path, 'fontinfo.plist')
         _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
         # Get the styleName
         styleName = _in_ufoFontInfo['styleName']
@@ -188,44 +284,57 @@ def copy_ufo_files(project, build, log):
             styleName = 'Regular'
         # Get the familyName, if its not set
         if not familyName:
-            familyName = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '') \
-                or _in_ufoFontInfo.get('familyName', '')
+            pfn = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '')
+            familyName = pfn or _in_ufoFontInfo.get('familyName', '')
             if not familyName:
-                log.write('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo, prefix='### ')
-                raise Exception('Please set openTypeNamePreferredFamilyName or familyName in %s fontinfo.plist and run another bake process.' % _in_ufo)
+                log.write(('Please set openTypeNamePreferredFamilyName or '
+                           'familyName in %s fontinfo.plist and run another'
+                           ' bake process.') % _in_ufo, prefix='### ')
+                raise Exception(('Please set openTypeNamePreferredFamilyName '
+                                 'or familyName in %s fontinfo.plist and '
+                                 'run another bake process.') % _in_ufo)
 
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
         # Decide the outgoing filepath
-        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace, styleNameNoWhitespace)
-        _out_ufo_path = os.path.join(_out_src, _out_ufo)
+        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace,
+                                  styleNameNoWhitespace)
+        _out_ufo_path = op.join(_out_src, _out_ufo)
         # Copy the UFOs
-        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path), cwd=_out, log=log)
+        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path),
+            cwd=_out, log=log)
 
-        # If we rename, change the font family name metadata inside the _out_ufo
+        # If we rename, change the font family name metadata
+        # inside the _out_ufo
         if familyName:
             # Read the _out_ufo fontinfo.plist
-            _out_ufoPlist = os.path.join(_out_ufo_path, 'fontinfo.plist')
+            _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
             _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
             # Set the familyName
             _out_ufoFontInfo['familyName'] = familyName
+
             # Set PS Name
-            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎< Family Name > < Vendor ID > - < Weight > < Width > < Slant > < Character Set >
-            _out_ufoFontInfo['postscriptFontName'] = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
+            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+            # < Family Name > < Vendor ID > - < Weight > < Width >
+            # < Slant > < Character Set >
+            psfn = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
+            _out_ufoFontInfo['postscriptFontName'] = psfn
             # Set Full Name
-            _out_ufoFontInfo['postscriptFullName'] = "%s %s" % (familyName, styleName)
+            psfn = "%s %s" % (familyName, styleName)
+            _out_ufoFontInfo['postscriptFullName'] = psfn
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
-    scripts_folder = os.path.join(app.config['ROOT'], 'scripts')
+    scripts_folder = op.join(app.config['ROOT'], 'scripts')
     log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
         name = name[:-4]  # cut .ufo
-        cmd = "python ufo2ttf.py '{out_src}{name}.ufo' '{out}{name}.ttf' '{out_src}{name}.otf'".format(
-            out_src=_out_src, name=name, out=_out)
+        cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+               "'{out}{name}.ttf' '{out_src}{name}.otf'")
+        cmd = cmd.format(out_src=_out_src, name=name, out=_out)
         run(cmd, cwd=scripts_folder, log=log)
 
 
@@ -236,9 +345,11 @@ def copy_ttx_files(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+    _out_src = joinroot(path)
 
     ttx_files = []
     for x in config['state'].get('process_files', []):
@@ -246,20 +357,23 @@ def copy_ttx_files(project, build, log):
             ttx_files.append(x)
 
     for ttx_file in ttx_files:
-        _ttx_path = os.path.join(_in, ttx_file)
-        if not os.path.exists(_ttx_path):
-            run("echo file '{}' not found".format(_ttx_path), cwd=_out, log=log)
+        _ttx_path = op.join(_in, ttx_file)
+        if not op.exists(_ttx_path):
+            run("echo file '{}' not found".format(_ttx_path),
+                cwd=_out, log=log)
             continue
 
-        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True, verbose=False, allowVID=False)
+        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
+                            verbose=False, allowVID=False)
         font.importXML(_ttx_path, quiet=True)
-        _ttx_name = os.path.splitext(os.path.basename(_ttx_path))[0]
+        _ttx_name = op.splitext(op.basename(_ttx_path))[0]
 
         def nameTableRead(font, NameID, fallbackNameID=False):
             for record in font['name'].names:
                 if record.nameID == NameID:
                     if b'\000' in record.string:
-                        return record.string.decode('utf-16-be').encode('utf-8')
+                        string = record.string.decode('utf-16-be')
+                        return string.encode('utf-8')
                     else:
                         return record.string
 
@@ -271,13 +385,15 @@ def copy_ttx_files(project, build, log):
         if styleName == 'Normal':
             styleName = 'Regular'
 
-        # NameID=1 is required
+        #   NameID=1 is required
         familyName = nameTableRead(font, 16, 1)
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
 
-        _out_ttx_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace, stylename=styleNameNoWhitespace)
+        _out_ttx_name = "{familyname}-{stylename}"
+        _out_ttx_name = _out_ttx_name.format(familyname=familyNameNoWhitespace,
+                                             stylename=styleNameNoWhitespace)
 
         if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
             _out_name = '{}.ttf.ttx'.format(_out_ttx_name)
@@ -285,31 +401,36 @@ def copy_ttx_files(project, build, log):
             _out_name = '{}.otf.ttx'.format(_out_ttx_name)
 
         run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name, out_name=_out_name), cwd=_out_src, log=log)
+        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name,
+                                                      out_name=_out_name),
+            cwd=_out_src, log=log)
         run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
-        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name), cwd=_out_src, log=log)
+        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
+            cwd=_out_src, log=log)
+
         if font.sfntVersion == 'OTTO':  # OTF
-            scripts_folder = os.path.join(app.config['ROOT'], 'scripts')
-            cmd = "python autoconvert.py '{out_src}{ttx_name}.otf' '{out}{ttx_name}.ttf'".format(
-                    out_src=_out_src, ttx_name=_out_ttx_name, out=_out)
+            scripts_folder = op.join(app.config['ROOT'], 'scripts')
+            cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
+                   " '{out}{ttx_name}.ttf'")
+            cmd = cmd.format(out_src=_out_src,
+                             ttx_name=_out_ttx_name,
+                             out=_out)
             run(cmd, cwd=scripts_folder, log=log)
         else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name), _out_src, log=log)
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name),
+                _out_src, log=log)
 
 
 def copy_and_rename_process(project, build, log):
-    """
-    Setup UFOs for building
-    """
-    from .app import app
+    """ Setup UFOs for building """
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
-                'revision': build.revision, 'build': build.id}
+             'revision': build.revision, 'build': build.id}
 
-    _user = os.path.join(app.config['DATA_ROOT'], '%(login)s/' % param)
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _user = joinroot('%(login)s/' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
@@ -324,7 +445,8 @@ def copy_and_rename_process(project, build, log):
         licenseFileInFullPath = config['state']['license_file']
         licenseFileIn = licenseFileInFullPath.split('/')[-1]
         # List posible OFL and Apache filesnames
-        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt', 'OFL.md']
+        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt',
+                              'OFL.md']
         listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
         # Canonicalize _out license file name
         if licenseFileIn in listOfOflFilenames:
@@ -334,41 +456,45 @@ def copy_and_rename_process(project, build, log):
         else:
             licenseFileOut = licenseFileIn
         # Copy license file
-        _in_license = os.path.join(_in, licenseFileInFullPath)
-        _out_license = os.path.join(_out, licenseFileOut)
-        run('cp -a "%s" "%s"' % (_in_license, _out_license), cwd=_user, log=log)
+        _in_license = op.join(_in, licenseFileInFullPath)
+        _out_license = op.join(_out, licenseFileOut)
+        run('cp -a "%s" "%s"' % (_in_license, _out_license),
+            cwd=_user, log=log)
     else:
         log.write('License file not copied\n', prefix='Error: ')
 
     # Copy FONTLOG file
-    _in_fontlog = os.path.join(_in, 'FONTLOG.txt')
-    _out_fontlog = os.path.join(_out, 'FONTLOG.txt')
-    if os.path.exists(_in_fontlog) and os.path.isfile(_in_fontlog):
-        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog), cwd=_user, log=log)
+    _in_fontlog = op.join(_in, 'FONTLOG.txt')
+    _out_fontlog = op.join(_out, 'FONTLOG.txt')
+    if op.exists(_in_fontlog) and op.isfile(_in_fontlog):
+        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog),
+            cwd=_user, log=log)
     else:
         log.write('FONTLOG.txt does not exist\n', prefix='Error: ')
 
     # Copy DESCRIPTION.en_us.html file
-    _in_desc = os.path.join(_in, 'DESCRIPTION.en_us.html')
-    _out_desc = os.path.join(_out, 'DESCRIPTION.en_us.html')
-    if os.path.exists(_in_desc) and os.path.isfile(_in_desc):
+    _in_desc = op.join(_in, 'DESCRIPTION.en_us.html')
+    _out_desc = op.join(_out, 'DESCRIPTION.en_us.html')
+    if op.exists(_in_desc) and op.isfile(_in_desc):
         run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd=_user, log=log)
     else:
-        log.write('DESCRIPTION.en_us.html does not exist upstream, will generate one later\n', prefix='Error: ')
+        log.write(('DESCRIPTION.en_us.html does not exist upstream, '
+                   'will generate one later\n'), prefix='Error: ')
 
     # Copy METADATA.json file
-    _in_meta = os.path.join(_in, 'METADATA.json')
-    _out_meta = os.path.join(_out, 'METADATA.json')
-    if os.path.exists(_in_meta) and os.path.isfile(_in_meta):
+    _in_meta = op.join(_in, 'METADATA.json')
+    _out_meta = op.join(_out, 'METADATA.json')
+    if op.exists(_in_meta) and op.isfile(_in_meta):
         run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd=_user, log=log)
     else:
-        log.write('METADATA.json does not exist upstream, will generate one later\n', prefix='Error: ')
+        log.write(('METADATA.json does not exist upstream, '
+                   'will generate one later\n'), prefix='Error: ')
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
         for filename in config['state']['txt_files_copied']:
-            _in_file = os.path.join(_in, filename)
-            _out_file = os.path.join(_out, filename)
+            _in_file = op.join(_in, filename)
+            _out_file = op.join(_out, filename)
             run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd=_user, log=log)
 
 
@@ -378,14 +504,14 @@ def ttfautohint_process(project, build, log):
     ttf file in result src folder, outputting them in the _out root,
     or just copy the ttfs there.
     """
-    from .app import app
-    # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" -W -c original_font.ttf final_font.ttf
+    # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
+    #               -W -c original_font.ttf final_font.ttf
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     if config['state'].get('ttfautohint', None):
         log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
@@ -393,36 +519,38 @@ def ttfautohint_process(project, build, log):
         os.chdir(_out)
         for name in glob.glob("*.ttf"):
             name = name[:-4]  # cut .ttf
-            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
-            run("ttfautohint {params} '{name}.autohint.ttf' '{name}.ttf'".format(params=params, name=name), cwd=_out, log=log)
-            run("rm '{name}.autohint.ttf'".format(name=name), cwd=_out, log=log)
+            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name),
+                cwd=_out, log=log)
+            cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
+                   "'{name}.ttf'").format(params=params, name=name)
+            run(cmd, cwd=_out, log=log)
+            run("rm '{name}.autohint.ttf'".format(name=name),
+                cwd=_out, log=log)
 
 
 def ttx_process(project, build, log):
-    """
-    Roundtrip TTF files through TTX to compact their filesize
-    """
-    from .app import app
+    """ Roundtrip TTF files through TTX to compact their filesize """
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = joinroot(('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s/sources/') % param)
 
     log.write('Compact TTFs with ttx\n', prefix='### ')
 
     os.chdir(_out_src)
     for name in glob.glob("*.ufo"):
         name = name[:-4]  # cut .ufo
-        filename = os.path.join(_out, name)
+        filename = op.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
@@ -436,21 +564,26 @@ def ttx_process(project, build, log):
 
 
 def subset_process(project, build, log):
-    from .app import app
     config = project.config
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = joinroot(('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s/sources/') % param)
 
     log.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
     for subset in config['state']['subset']:
         os.chdir(_out_src)
-        for name in glob.glob("*.ufo"):
-            name = name[:-4]  # cut .ufo
+        for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
+            if name.endswith('.ttx') and project.source_files_type == 'ttx':
+                # after copy_ttx_files executed in source directory
+                # resulted truetype files does have double extension
+                # e.g. FontFamily-WeightStyle.ttf.ttx
+                name = name[:-4]
+            name = name[:-4]  # cut .ufo|.ttx
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
             cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
                    " --layout-features='*' --glyph-names --symbol-cmap"
@@ -458,10 +591,11 @@ def subset_process(project, build, log):
                    " --name-IDs='*' --name-legacy --name-languages='*'"
                    " --hinting")
             cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
-                         'out': os.path.join(_out, name)}
+                         'out': op.join(_out, name)}
             run(cmd, cwd=_out, log=log)
-            run('mv %(out)s.ttf.subset %(out)s.%(subset)s' % {'subset': subset,
-                'out': os.path.join(_out, name)}, cwd=_out, log=log)
+            cmd = 'mv %(out)s.ttf.subset %(out)s.%(subset)s'
+            run(cmd % {'subset': subset, 'out': op.join(_out, name)},
+                cwd=_out, log=log)
     # remove +latin from the subset name
     os.chdir(_out)
     files = glob.glob('*+latin*')
@@ -476,7 +610,7 @@ def generate_metadata_process(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     cmd = "python %(wd)s/scripts/genmetadata.py '%(out)s'"
     log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
@@ -484,14 +618,11 @@ def generate_metadata_process(project, build, log):
 
 
 def fontaine_process(project, build, log):
-    """
-    Run pyFontaine on ttf files
-    """
-    from .app import app
+    """ Run pyFontaine on ttf files """
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     log.write('pyFontaine (fontaine/main.py)\n', prefix='### ')
     os.chdir(_out)
@@ -511,9 +642,7 @@ def fontaine_process(project, build, log):
     #   project.save_state()
 
 
-from checker import run_set
 # register yaml serializer for tests result objects.
-from checker.base import BakeryTestCase
 
 
 def repr_testcase(dumper, data):
@@ -535,6 +664,26 @@ def repr_testcase(dumper, data):
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 
+def get_sources_lists(rootpath):
+    """ Return list of lists of UFO, TTX and METADATA.json """
+    ufo_dirs = []
+    ttx_files = []
+    metadata_files = []
+    l = len(rootpath)
+    for root, dirs, files in os.walk(rootpath):
+        for f in files:
+            fullpath = op.join(root, f)
+            if op.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
+                ttx_files.append(fullpath[l:])
+            if f.lower() == 'metadata.json':
+                metadata_files.append(fullpath[:l])
+        for d in dirs:
+            fullpath = op.join(root, d)
+            if op.splitext(fullpath)[1].lower() == '.ufo':
+                ufo_dirs.append(fullpath[l:])
+    return ufo_dirs, ttx_files, metadata_files
+
+
 def upstream_revision_tests(project, revision):
     """ This function run upstream tests set on
     project.config['local']['ufo_dirs'] set in selected git revision.
@@ -545,53 +694,37 @@ def upstream_revision_tests(project, revision):
     :param project: Project instance
     :param revision: Git revision
     :param force: force to make tests again
-    :return: dictionary with serialized tests results formatted by `repr_testcase`
+    :return: dictionary with serialized tests results formatted
+             by `repr_testcase`
     """
-    from .app import app
     param = {'login': project.login, 'id': project.id, 'revision': revision}
 
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
-    _out_folder = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/' % param)
-    _out_yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % project)
+    _out_folder = joinroot('%(login)s/%(id)s.out/utests/' % param)
+    _out_yaml = op.join(_out_folder, '%(revision)s.yaml' % param)
 
-    if os.path.exists(_out_yaml):
+    if op.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
 
-    if not os.path.exists(_out_folder):
+    if not op.exists(_out_folder):
         os.makedirs(_out_folder)
 
     result = {}
     os.chdir(_in)
     prun("git checkout %s" % revision, cwd=_in)
 
-    ufo_dirs = []
-    ttx_files = []
-    metadata_files = []
-    l = len(_in)
-    for root, dirs, files in os.walk(_in):
-        for f in files:
-            fullpath = os.path.join(root, f)
-            if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
-                ttx_files.append(fullpath[l:])
-            if f.lower() == 'metadata.json':
-                metadata_files.append(fullpath[l:])
-        for d in dirs:
-            fullpath = os.path.join(root, d)
-            if os.path.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath[l:])
+    ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
 
     for font in ufo_dirs:
-        if os.path.exists(os.path.join(_in, font)):
-            result[font] = run_set(os.path.join(_in, font), 'upstream')
+        if op.exists(op.join(_in, font)):
+            result[font] = run_set(op.join(_in, font), 'upstream')
 
     for metadata_path in metadata_files:
         result[metadata_path] = run_set(metadata_path, 'metadata')
 
     for font in ttx_files:
-        print(font)
-        print(os.path.join(_in, font))
-        if os.path.exists(os.path.join(_in, font)):
-            result[font] = run_set(os.path.join(_in, font), 'upstream-ttx')
+        if op.exists(op.join(_in, font)):
+            result[font] = run_set(op.join(_in, font), 'upstream-ttx')
 
     result['Consistency fonts'] = run_set(_in, 'consistency')
 
@@ -603,20 +736,23 @@ def upstream_revision_tests(project, revision):
 
 
 def result_tests(project, build):
-    from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param
+    _out_yaml = joinroot(path)
 
-    if os.path.exists(_out_yaml):
+    if op.exists(_out_yaml):
         return yaml.safe_load(open(_out_yaml, 'r'))
 
     result = {}
     os.chdir(_out_src)
     for font in glob.glob("*.ttf"):
-        result[font] = run_set(os.path.join(_out_src, font), 'result')
+        result[font] = run_set(op.join(_out_src, font), 'result')
+
+    if not result:
+        return
 
     # Comment during debug
     l = open(_out_yaml, 'w')
@@ -627,18 +763,17 @@ def result_tests(project, build):
     # os.remove(_out_yaml)
     return d
 
-from fixer import fix_font
-
 
 def result_fixes(project, build):
     from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _out_src = os.path.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = os.path.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param)
+    _out_src = op.join(app.config['DATA_ROOT'],
+                       '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_yaml = op.join(app.config['DATA_ROOT'],
+                        ('%(login)s/%(id)s.out/'
+                         '%(build)s.%(revision)s.rtests.yaml') % param)
 
     fix_font(_out_yaml, _out_src)
 
@@ -648,10 +783,12 @@ def discover_dashboard(project, build, log):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
-    _yaml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % param)
+    _yaml = op.join(app.config['DATA_ROOT'],
+                    '%(login)s/%(id)s.bakery.yaml' % param)
 
-    _out_src = os.path.join(app.config['DATA_ROOT'],
-        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    _out_src = op.join(app.config['DATA_ROOT'],
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s/') % param)
 
     cmd = "python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
         wd=app.config['ROOT'], out=_out_src, yaml=_yaml)
@@ -673,9 +810,13 @@ def process_project(project, build, revision, force_sync=False):
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % param)
-    _out_src = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param)
-    _out_log = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log' % param)
+    _in = joinroot('%(login)s/%(id)s.in/' % param)
+    _out_src = op.join(app.config['DATA_ROOT'],
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s/sources/') % param)
+    _out_log = op.join(app.config['DATA_ROOT'],
+                       ('%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s.process.log') % param)
 
     # Make logest path
     os.makedirs(_out_src)
@@ -706,8 +847,9 @@ def process_project(project, build, revision, force_sync=False):
             # zip out folder with revision
             param = {'login': project.login, 'id': project.id,
                      'revision': build.revision, 'build': build.id}
-            _out_src = os.path.join(app.config['DATA_ROOT'],
-                                    '%(login)s/%(id)s.out/%(build)s.%(revision)s' % param)
+            _out_src = op.join(app.config['DATA_ROOT'],
+                               ('%(login)s/%(id)s.out/'
+                                '%(build)s.%(revision)s') % param)
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
 
@@ -720,18 +862,48 @@ def process_project(project, build, revision, force_sync=False):
     log.close()
 
 
+@job
+def process_description_404(project, build):
+    """ Background task to check links in DESCRIPTION.en_us.html file
+
+        This method generates yaml file `*.*.404links.yaml` inside
+        repo out directory. """
+    param = {'login': project.login, 'id': project.id,
+             'revision': build.revision, 'build': build.id}
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    path = op.join(_out, 'DESCRIPTION.en_us.html')
+
+    _out_yaml = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param)
+
+    result = {}
+    test_results = run_set(path, 'description')
+    result = parse_test_results(test_results)
+    result['updated'] = datetime.datetime.now()
+
+    # Comment during debug
+    l = open(_out_yaml, 'w')
+    l.write(yaml.safe_dump(result))
+    l.close()
+
+    d = yaml.safe_load(open(_out_yaml, 'r'))
+    # os.remove(_out_yaml)
+    return d
+
+
 def zipdir(path, url, log):
     import zipfile
-    basename = os.path.basename(path)
-    zipfile_path = os.path.join(path, '..', '%s.zip' % basename)
+    basename = op.basename(path)
+    zipfile_path = op.join(path, '..', '%s.zip' % basename)
     zipf = zipfile.ZipFile(zipfile_path, 'w')
     for root, dirs, files in os.walk(path):
+        root = root.replace(path, '').lstrip('/')
         for file in files:
-            arcpath = os.path.join(basename, root.replace(path, '').lstrip('/'), file)
-            zipf.write(os.path.join(root, file), arcpath)
+            arcpath = op.join(basename, root, file)
+            zipf.write(op.join(root, file), arcpath)
             log.write('add %s\n' % arcpath)
     zipf.close()
-    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename, url, basename))
+    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
+                                                             url, basename))
 
 
 def set_done(build):

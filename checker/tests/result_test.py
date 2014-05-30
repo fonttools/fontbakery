@@ -60,6 +60,8 @@ weights_styles_map = {
 }
 
 
+valid_styles = weights_styles_map['normal'] + weights_styles_map['italic']
+
 italics_styles = {
     'ThinItalic': 'Thin Italic',
     'ExtraLight': 'Extra Light',
@@ -508,13 +510,13 @@ class FontForgeSimpleTest(TestCase):
 
     def test_font_weight_is_canonical(self):
         """ Font weight property is from canonical styles list"""
-        self.assertIn(self.font.weight, self.styles,
+        self.assertIn(self.font.weight, valid_styles,
                       'Font weight does not match for any valid styles')
 
     def test_font_name_canonical(self):
         """ Font name is canonical """
         self.assertTrue(any([self.font.fontname.endswith(x)
-                             for x in self.styles]))
+                             for x in valid_styles]))
 
     def test_font_file_name_canonical(self):
         """ Font name is canonical """
@@ -541,12 +543,14 @@ class FontForgeSimpleTest(TestCase):
     @tags('required')
     def test_menu_file_is_font(self):
         """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists("%s.menu" % self.fname))
         self.assertTrue(magic.from_file("%s.menu" % self.fname),
                         'TrueType font data')
 
     @tags('required')
     def test_file_is_font(self):
         """ Menu file have font-name-style.menu format """
+        self.assertTrue(os.path.exists(self.path))
         self.assertTrue(magic.from_file(self.path), 'TrueType font data')
 
     @tags('required')
@@ -841,7 +845,7 @@ class MetadataJSONTest(TestCase):
             'BlackItalic' """
         self.assertTrue(all(
             [any([x['postScriptName'].endswith("-" + i)
-             for i in self.styles]) for x in self.metadata.get('fonts', None)]
+             for i in valid_styles]) for x in self.metadata.get('fonts', None)]
         ))
 
     @tags('required')
@@ -903,7 +907,7 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get("fonts", None):
             style = None
             fn = x.get('fullName', None)
-            for i in self.styles:
+            for i in valid_styles:
                 if fn.endswith(i):
                     style = i
                     break
@@ -917,7 +921,7 @@ class MetadataJSONTest(TestCase):
         for x in self.metadata.get("fonts", None):
             style = None
             fn = x.get('filename', None)
-            for i in self.styles:
+            for i in valid_styles:
                 if fn.endswith("-%s.ttf" % i):
                     style = i
                     break
@@ -1023,6 +1027,7 @@ class MetadataJSONTest(TestCase):
                 break
         self.assertTrue(family)
 
+        self.assertTrue("%s.menu" % self.fname)
         font = fontforge.open("%s.menu" % self.fname)
         self.assertTrue(all([i in font for i in set(map(ord, family))]))
 
@@ -1071,7 +1076,7 @@ class MetadataJSONTest(TestCase):
                 self.assertIn(_style, weights_table.keys(),
                               msg="Style name not from expected list")
                 self.assertEqual("%s %s" % (self.font.familyname,
-                                            weights_table.keys[_style]),
+                                            weights_table.get(_style)),
                                  x.get("fullName", ''))
             else:
                 _style = 'Regular'

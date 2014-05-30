@@ -16,14 +16,17 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 # pylint:disable-msg=E1101
 
+from datetime import datetime, timedelta
 from flask import (Blueprint, render_template, g, flash, request,
                    url_for, redirect, json, Markup, current_app, abort, make_response)
 from flask.ext.babel import gettext as _
-
-from ..decorators import login_required
-from ..utils import project_fontaine
-from .models import Project, ProjectBuild
 from functools import wraps
+from yaml import YAMLError
+
+from bakery.decorators import login_required
+from bakery.project.models import Project, ProjectBuild
+from bakery.tasks import process_description_404
+from bakery.utils import project_fontaine
 
 import itsdangerous
 
@@ -79,7 +82,7 @@ def project_required(f):
             return f(*args, **kwargs)
         else:
             flash(_('Project is being synchronized, wait until it is done'))
-            return redirect(url_for('frontend.splash'))
+            return redirect(url_for('project.queue', project_id=p.id))
 
     return decorated_function
 
@@ -120,15 +123,27 @@ def pull(project_id):
     p.sync()
 
     flash(_("Changes will be pulled from upstream in a moment"))
-    return redirect(url_for('project.git', project_id=p.id))
+    return redirect(url_for('project.queue', project_id=p.id))
 
 
 # Setup views
+
+
+@project.route('/<int:project_id>/queue')
+@login_required
+def queue(project_id):
+    p = Project.query.filter_by(login=g.user.login, id=project_id)
+    p = p.first_or_404()
+    param = {'login': p.login, 'id': p.id}
+    log_file = "%(login)s/%(id)s.out/upstream.log" % param
+    return render_template('project/queue.html', project=p, log_file=log_file)
+
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 @project_required
 def setup(p):
+
     config = p.config
     originalConfig = p.config
     error = False
@@ -237,7 +252,7 @@ def ufiles(p, revision=None, name=None):
                            revision=revision)
 
 
-@project.route('/<int:project_id>/files/<revision>/<path:name>', methods=['GET'])
+@project.route('/<int:project_id>/files/<revision>/<path:name>')
 @login_required
 @project_required
 def ufile(p, revision=None, name=None):
@@ -318,7 +333,7 @@ def rfiles(p, build_id):
     tree = b.files()
 
     return render_template('project/rfiles.html', project=p, yaml=yaml,
-                            fontaineFonts=f, build=b, tree=tree)
+                           fontaineFonts=f, build=b, tree=tree)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
@@ -332,6 +347,15 @@ def rtests(p, build_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     test_result = b.result_tests()
+    if not test_result:
+        abort(404)
+
+    fix_asap_summary = []
+    for y, x in test_result.items():
+        for t in x['failure']:
+            if 'required' in t.get('tags', ''):
+                fix_asap_summary.append(dict(font=y, **t))
+
     summary = {
         'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
@@ -339,7 +363,7 @@ def rtests(p, build_id):
         'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
         'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
         'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
-        'fix_asap': [dict(font=y, **t) for t in x['failure'] for y, x in test_result.items() if 'required' in t['tags']],
+        'fix_asap': fix_asap_summary,
     }
     return render_template('project/rtests.html', project=p,
                            tests=test_result, build=b, summary=summary)
@@ -356,6 +380,16 @@ def summary(p, build_id):
         return redirect(url_for('project.log', project_id=p.id))
 
     test_result = b.result_tests()
+
+    if not test_result:
+        abort(404)
+
+    fix_asap_summary = []
+    for y, x in test_result.items():
+        for t in x['failure']:
+            if 'required' in t.get('tags', ''):
+                fix_asap_summary.append(dict(font=y, **t))
+
     summary = {
         'all_tests': sum([int(y.get('sum', 0)) for x, y in test_result.items()]),
         'fonts': test_result.keys(),
@@ -363,7 +397,7 @@ def summary(p, build_id):
         'all_failure': sum([len(x.get('failure', [])) for x in test_result.values()]),
         'all_fixed': sum([len(x.get('fixed', [])) for x in test_result.values()]),
         'all_success': sum([len(x.get('success', [])) for x in test_result.values()]),
-        'fix_asap': [dict(font=y, **t) for t in x.get('failure', []) for y, x in test_result.items() if 'required' in t['tags']],
+        'fix_asap': fix_asap_summary
     }
     return render_template('project/summary.html', project=p,
                            tests=test_result, build=b, summary=summary)
@@ -378,14 +412,27 @@ def description(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if request.method == 'GET':
+        try:
+            test_data = b.read_links404_test_data()
+            if test_data['updated'] < datetime.now() - timedelta(days=1):
+                # rerun background to check description 404 links
+                process_description_404.delay(p, b)
+            parsed_results = test_data.get('failure', [])
+        except (IOError, YAMLError, KeyError):
+            # possibly file does not exist, start background task if that so
+            process_description_404.delay(p, b)
+            parsed_results = []
+
         data = b.read_asset('description')
         return render_template('project/description.html', project=p, build=b,
-                                description=data)
+                               description=data, failures=parsed_results)
 
     # POST
     b.save_asset('description', request.form.get('description'))
     flash(_('Description saved'))
-    return redirect(url_for('project.description', build_id=b.id, project_id=p.id))
+
+    return redirect(url_for('project.description', build_id=b.id,
+                            project_id=p.id))
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])
@@ -412,8 +459,8 @@ def metadatajson(p, build_id):
         flash(_('Wrong format for METADATA.json file'))
         metadata_new = b.read_asset('metadata_new')
         return render_template('project/metadatajson.html', project=p, build=b,
-                                metadata=request.form.get('metadata'),
-                                metadata_new=metadata_new)
+                               metadata=request.form.get('metadata'),
+                               metadata_new=metadata_new)
 
 
 # Base views

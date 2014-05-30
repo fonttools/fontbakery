@@ -24,13 +24,14 @@ from datetime import datetime
 import difflib
 
 from flask import current_app
+from blinker.base import lazy_property
 
 from ..app import db
-from ..decorators import lazy_property
-from ..utils import saveMetadata
-from ..tasks import process_project, prun, project_git_sync, \
-    upstream_revision_tests, result_tests
-from .state import (project_state_get, project_state_save, walkWithoutGit)
+from ..utils import save_metadata
+from ..tasks import (process_project, prun, project_git_sync,
+                     upstream_revision_tests, result_tests,
+                     generate_subsets_coverage_list)
+from .state import project_state_get, project_state_save, walkWithoutGit
 
 
 class Project(db.Model):
@@ -44,8 +45,11 @@ class Project(db.Model):
     data = db.Column(db.PickleType())
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
+
+    # `is_ready` means that project is waiting until project is synced and
+    # upstream tests complete. it is very important to disable any user action
+    # on project until all tests finish
     is_ready = db.Column(db.Boolean(), index=True, default=False)
-    # builds = db.relationship('ProjectBuild', backref='project', lazy='dynamic')
 
     def cache_update(self, data):
         self.html_url = data['html_url']
@@ -220,35 +224,8 @@ class Project(db.Model):
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
-    def subset_coverage_utest_values(self, utest):
-        """ Returns name of subset and its coverage percentage.
-            If test is not Subset then result value will be None. """
-        if utest.get('tool', '').lower() != 'pyfontaine':
-            return
-        match_subset_name = re.match(r'Is\s+Subset\s+(.*?)\s+covered 100%\?',
-                                     utest.get('methodDoc', ''))
-        if match_subset_name:
-            if utest.get('err_msg'):
-                m = re.match(r'^(\d+)\s', utest.get('err_msg'))
-                value = int(m.group(1))
-            else:
-                value = 100
-            return tuple([match_subset_name.group(1), value])
-
     def get_subsets(self):
-        subsets = []
-        for name, td in self.revision_tests().items():
-            for utest in td.get('failure', []):
-                subsetval = self.subset_coverage_utest_values(utest)
-                if not subsetval or subsetval[0] in dict(subsets).keys():
-                    continue
-                subsets.append(subsetval)
-            for utest in td.get('success', []):
-                subsetval = self.subset_coverage_utest_values(utest)
-                if not subsetval or subsetval[0] in dict(subsets).keys():
-                    continue
-                subsets.append(subsetval)
-        return sorted(subsets)
+        return sorted(generate_subsets_coverage_list(self))
 
     def sync(self):
         """ Call in background git syncronization """
@@ -416,36 +393,61 @@ class ProjectBuild(db.Model):
 
     @property
     def path(self):
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         return '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
+
+    def metadata_exists(self):
+        """ Return True if build has METADATA.json """
+        param = self.get_path_params()
+        filepath = self.asset_list['metadata'] % param
+        return os.path.exists(filepath) and os.path.isfile(filepath)
+
+    def description_exists(self):
+        """ Return True if build has DESCRIPTION.en_us.html """
+        param = self.get_path_params()
+        filepath = self.asset_list['description'] % param
+        return os.path.exists(filepath) and os.path.isfile(filepath)
+
+    def result_tests_finished(self):
+        """ Return True if build completely executed and appropriate yaml
+            file exists """
+        param = self.get_path_params()
+        yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
+                    '%(build)s.%(revision)s.rtests.yaml') % param
+        return os.path.exists(yamlpath) and os.path.isfile(yamlpath)
 
     def utests(self):
         """ Return saved upstream test data """
         if not self.is_done:
             return {}
 
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
         _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param
         if os.path.exists(_out_yaml):
             return yaml.load(open(_out_yaml).read())
         else:
             return {}
 
+    def read_links404_test_data(self):
+        """ Return saved DESCRIPTION.en_us.html test data. """
+        param = self.get_path_params()
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param
+        return yaml.load(open(_out_yaml).read())
+
     asset_list = {
         'description': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/DESCRIPTION.en_us.html',
         'metadata': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json',
         'metadata_new': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json.new',
-        }
+    }
+
+    def get_path_params(self):
+        return {'login': self.project.login, 'id': self.project.id,
+                'revision': self.revision, 'build': self.id,
+                'root': current_app.config.get('DATA_ROOT')}
 
     def read_asset(self, name=None):
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         fn = self.asset_list[name] % param
         if os.path.exists(fn) and os.path.isfile(fn):
@@ -455,16 +457,14 @@ class ProjectBuild(db.Model):
 
     def save_asset(self, name=None, data=None, **kwarg):
         """ Save static files into out folder """
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         if name == 'description':
             f = open(self.asset_list['description'] % param, 'w')
             f.write(data)
             f.close()
         elif name == 'metadata':
-            saveMetadata(data, self.asset_list['metadata'] % param)
+            save_metadata(data, self.asset_list['metadata'] % param)
 
             if kwarg.get('del_new') and kwarg['del_new']:
                 if os.path.exists(self.asset_list['metadata_new'] % param):
@@ -476,12 +476,8 @@ class ProjectBuild(db.Model):
         db.session.refresh(self)
 
     def files(self):
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
-
+        param = self.get_path_params()
         path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
-
         return walkWithoutGit(path)
 
     def result_tests(self):

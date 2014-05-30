@@ -42,22 +42,27 @@
 
 {% macro subnav_build(active, revision) %}
  <ul class="nav nav-tabs">
+  {% if build.result_tests_finished() %}
   <li {% if active == 'summary' %}class="active" {% endif %}>{{ link(url_for('project.summary', project_id=project.id, build_id=build.id), "", _("Summary"), true) }}</li>
   <li {% if active == 'rfiles' %}class="active" {% endif %}>{{ link(url_for('project.rfiles', project_id=project.id, build_id=build.id), "", _("Results Files"), true) }}</li>
   <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', project_id=project.id, build_id=build.id), "", _("Results Tests"), true) }}</li>
+  {% endif %}
   <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', project_id=project.id, build_id=build.id), "", _("Build Log"), true) }}</li>
   {% set badge = "!" if build.modified else "" %}
-  <li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id) }}" >{{ _("METADATA.json") }}</a></li>
-  <li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id, build_id=build.id) }}" >{{ _("DESCRIPTION.en_us.html") }}</a></li>
+  {% if build.metadata_exists() %}<li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id) }}" >{{ _("METADATA.json") }}</a></li>{% endif %}
+  {% if build.description_exists() %}<li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id, build_id=build.id) }}" >{{ _("DESCRIPTION.en_us.html") }}</a></li>{% endif %}
 
  </ul>
 {% endmacro %}
 
 {% macro subnav_setup(active) %}
 <ul class="nav nav-tabs">
+  {% if not project.is_ready %}
+  <li {% if active == 'queue'  %}class="active" {% endif %}><a href="{{ url_for('project.queue',  project_id=project.id) }}">{{ _("Waiting for queue") }}</a></li>
+  {% endif %}
   <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">{{ _("Setup") }}</a></li>
   {% if project.config['local'].get('setup') %}
-    {# Additional setup views here, only will be awailable if primary setup is done #}
+    {# Additional setup views here, only will be available if primary setup is done #}
   {% endif %}
 </ul>
 {% endmacro %}

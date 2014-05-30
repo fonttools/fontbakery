@@ -16,7 +16,18 @@
         <div class="col-sm-5 col-md-5">
             <div id="editor"></div>
             <textarea name="description" id="descriptionta">{{ description }}</textarea>
-            <p style="padding-top:1em"><button type="submit" class="btn btn-primary">{{ _("Save") }}</button></p>
+            {% if not failures %}<span class="label label-success">{{ _("OK") }}</span>
+            {% else %}
+            <table class="table">
+              <tr><th nowrap>{{ _("Fix next links") }}</th>
+              <td>
+                {% for fail in failures %}
+                <div>{{ fail[1] }}</div>{% endfor %}
+                {% endif %}
+              </td></tr>
+            </table>
+            <p style="padding-top:1em">
+              <button type="submit" class="btn btn-primary">{{ _("Save") }}</button></p>
         </div>
         <div class="col-sm-5 col-md-5">
           <span id="preview"></span>

@@ -27,6 +27,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+/node_modules
 
 # Translations
 *.mo
@@ -49,3 +50,4 @@ tmp/*
 
 .DS_Store
 /ots
+.pylint-output

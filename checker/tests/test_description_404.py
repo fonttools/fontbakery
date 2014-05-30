@@ -14,9 +14,26 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import lxml.html
+import requests
 
-from .result_test import *
-from .ttx_test import *
-from .upstream_test import *
-from .metadata_test import *
-from .test_description_404 import *
+from checker.base import BakeryTestCase as TestCase
+
+
+class TestDescription404Links(TestCase):
+
+    path = '.'
+    targets = ['description']
+    tool = 'FontBakery'
+    name = __name__
+
+    def test_single(self):
+        contents = open(self.path).read()
+        doc = lxml.html.fromstring(contents)
+        for link in doc.xpath('//a/@href'):
+            try:
+                response = requests.head(link)
+                self.assertEqual(response.status_code, requests.codes.ok,
+                                 msg='%s is broken' % link)
+            except requests.exceptions.RequestException, ex:
+                self.fail('%s raises exception [%r]' % (link, ex))

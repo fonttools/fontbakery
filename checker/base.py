@@ -106,7 +106,7 @@ class BakeryTestRunner(unittest.TextTestRunner):
 
     def _makeResult(self):
         return self.resultclass(self.stream, self.descriptions,
-                                 self.verbosity, self.sl, self.el, self.fl)
+                                self.verbosity, self.sl, self.el, self.fl)
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -142,7 +142,7 @@ class tags(object):
         return f
 
 
-def make_suite(path, definedTarget):
+def make_suite(path, definedTarget, test_method=None):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
     """
@@ -152,15 +152,11 @@ def make_suite(path, definedTarget):
             TestCase.path = path
             if getattr(TestCase, '__generateTests__', None):
                 TestCase.__generateTests__()
-            if getattr(TestCase, 'tool', '').lower() == 'fontforge':
-                if path.lower().endswith('.ufo'):
-                    # dev branch of fontforge python library has a bug
-                    # when opening ufo fonts, so we ignore all fontforge tests
-                    # for UFO
-                    import fontforge
-                    if int(fontforge.version()) > int('20140402'):
-                        continue
-            suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(TestCase))
+
+            for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestCase):
+                if test_method and test_method != test._testMethodName:
+                    continue
+                suite.addTest(test)
 
     return suite
 
@@ -172,9 +168,9 @@ def run_suite(suite):
         'failure': []
     }
     runner = BakeryTestRunner(resultclass=BakeryTestResult,
-                               success_list=result['success'],
-                               error_list=result['error'],
-                               failure_list=result['failure'])
+                              success_list=result['success'],
+                              error_list=result['error'],
+                              failure_list=result['failure'])
     runner.run(suite)
     result['sum'] = sum(map(len, [result[x] for x in result.keys()]))
 

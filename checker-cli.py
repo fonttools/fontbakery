@@ -15,27 +15,22 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-import argparse, os
-import unittest
+import argparse
 import sys
 
-from checker.base import make_suite, run_suite, tests_report
+from checker.base import tests_report
 from checker import run_set
-
-def run_set1(path):
-    """ Return tests results for .ttf font in parameter """
-    assert os.path.exists(path)
-    return run_suite(make_suite(path, 'result'))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('action',
-        help="Action or target test suite",
-        choices=['list', 'result', 'upstream', 'upstream-ttx', 'metadata'],)
+    parser.add_argument('action', help="Action or target test suite",
+                        choices=['list', 'result', 'upstream',
+                                 'upstream-ttx', 'metadata',
+                                 'description'],)
     parser.add_argument('file', nargs="*", help="Test files, can be a list")
-    parser.add_argument('--verbose', '-v', action='count', help="Verbosity level", default=1)
+    parser.add_argument('--verbose', '-v', action='count',
+                        help="Verbosity level", default=1)
 
     args = parser.parse_args()
     if args.action == 'list':
@@ -47,9 +42,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for x in args.file:
-        print(x)
-        run_set(x, 'metadata')
-        # s = make_suite(x, args.action)
-        # runner = unittest.TextTestRunner(verbosity=args.verbose)
-        # # run_suite(s)
-        # runner.run(s)
+        result = run_set(x, args.action)
+        failures = map(lambda x: (x._testMethodName, x._err_msg), result.get('failure', []))
+        error = map(lambda x: (x._testMethodName, x._err_msg), result.get('error', []))
+        if not bool(failures + error):
+            print 'OK'
+        else:
+            import pprint
+            _pprint = pprint.PrettyPrinter(indent=4)
+            _pprint.pprint(failures + error)

@@ -14,9 +14,19 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+""" To run this tests use `nosetests tests.test_tasks` from command line """
+import os.path as op
+import unittest
 
-from .result_test import *
-from .ttx_test import *
-from .upstream_test import *
-from .metadata_test import *
-from .test_description_404 import *
+from bakery.app import app
+from bakery.tasks import get_subsets_coverage_data
+
+
+class TaskTestCase(unittest.TestCase):
+
+    def test_subsets_coverage_data(self):
+        path = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
+        self.assertTrue(get_subsets_coverage_data([path]))
+
+        path = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold.ttx')
+        self.assertTrue(get_subsets_coverage_data([path]))
