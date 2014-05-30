@@ -417,6 +417,24 @@ class ProjectBuild(db.Model):
                     '%(build)s.%(revision)s.rtests.yaml') % param
         return os.path.exists(yamlpath) and os.path.isfile(yamlpath)
 
+    def read_rtests_data(self):
+        param = self.get_path_params()
+        yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
+                    '%(build)s.%(revision)s.rtests.yaml') % param
+        try:
+            test_data = yaml.load(open(yamlpath).read())
+        except (IOError, yaml.YAMLError):
+            return {}
+
+        success = []
+        failure = []
+        error = []
+        for k, tests in test_data.items():
+            error += tests.get('error', [])
+            success += tests.get('success', [])
+            failure += tests.get('failure', [])
+        return {'success': success, 'error': error, 'failure': failure}
+
     def utests(self):
         """ Return saved upstream test data """
         if not self.is_done:

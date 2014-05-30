@@ -36,7 +36,8 @@
         {{b.updated}} {% if b.is_done %} <i class="fa fa-check-square-o"></i>{% endif %}
       </td>
       <td>
-        In 10/0/20, Out 1/0/50
+        {% set data = b.read_rtests_data() %}
+        Out <span class="label label-success">{{ data.success|length }}</span> / <span class="label label-warning">{{ data.failure|length }}</span> / <span class="label label-danger">{{ data.error|length }}</span>
       </td>
     </tr>
     {% else %}
