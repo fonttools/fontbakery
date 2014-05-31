@@ -232,13 +232,28 @@ class Project(db.Model):
         project_git_sync.delay(self)
 
     def gitlog(self, skip=0):
+        """ Return list of dictionaries described first 101 git repo commits
+
+            Each dictionary contains `hash` (str[:7]), `date`, `message`
+            (first line of git message), `author`."""
+        from git import Repo
+
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
-        params = "git log -n101 --skip=%(skip)s" % {'skip': skip}
-        fmt = """ --pretty=format:'- {"hash":"%h", "commit":"%H","author":"%an <%ae>","date":"%ar","message": "%s"}' """
-        log = prun(params + fmt, cwd=_in)
+        repo = Repo(_in)
 
-        return yaml.load(log.decode('utf-8').encode('ascii', 'xmlcharrefreplace'))
+        commits = repo.iter_commits('HEAD', max_count=101, skip=skip)
+        result = []
+        for commit in commits:
+            result.append({
+                'hash': commit.hexsha[:7],
+                'date': datetime.fromtimestamp(commit.committed_date),
+                'message': commit.summary,
+                'author': u'%s <%s>' % (commit.author.name,
+                                        commit.author.email)
+            })
+
+        return result
 
     def diff_files(self, left, right):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
