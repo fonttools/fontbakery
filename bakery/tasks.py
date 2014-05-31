@@ -563,6 +563,20 @@ def ttx_process(project, build, log):
         run(cmd, cwd=_out, log=log)
 
 
+def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
+    cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
+           " --notdef-outline --recommended-glyphs"
+           " --name-IDs='*' --hinting")
+    if args:
+        cmd += " " + args
+    cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
+                 'out': op.join(_out, name)}
+    run(cmd, cwd=_out, log=log)
+    cmd = 'mv %(out)s.ttf.subset %(out)s.%(subset)s'
+    run(cmd % {'subset': subset, 'out': op.join(_out, name)},
+        cwd=_out, log=log)
+
+
 def subset_process(project, build, log):
     config = project.config
 
@@ -576,6 +590,7 @@ def subset_process(project, build, log):
     log.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
     for subset in config['state']['subset']:
+        glyphs = open(SubsetExtension.get_subset_path(subset)).read()
         os.chdir(_out_src)
         for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
             if name.endswith('.ttx') and project.source_files_type == 'ttx':
@@ -583,18 +598,13 @@ def subset_process(project, build, log):
                 # resulted truetype files does have double extension
                 # e.g. FontFamily-WeightStyle.ttf.ttx
                 name = name[:-4]
+
             name = name[:-4]  # cut .ufo|.ttx
-            glyphs = open(SubsetExtension.get_subset_path(subset)).read()
-            cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-                   " --notdef-outline --recommended-glyphs"
-                   " --name-IDs='*'"
-                   " --hinting")
-            cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
-                         'out': op.join(_out, name)}
-            run(cmd, cwd=_out, log=log)
-            cmd = 'mv %(out)s.ttf.subset %(out)s.%(subset)s'
-            run(cmd % {'subset': subset, 'out': op.join(_out, name)},
-                cwd=_out, log=log)
+            execute_pyftsubset(subset, name, _out, glyphs=glyphs, log=log)
+
+            # create menu subset
+            execute_pyftsubset('menu', name, _out, log=log,
+                               args='--text="%s"' % op.basename(name))
     # remove +latin from the subset name
     os.chdir(_out)
     files = glob.glob('*+latin*')
