@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+#
+# Based on http://typophile.com/node/13081
+# Also see http://typophile.com/node/13081
 
 import os, sys
 import argparse

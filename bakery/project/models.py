@@ -408,51 +408,77 @@ class ProjectBuild(db.Model):
 
     @property
     def path(self):
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         return '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 
     def metadata_exists(self):
         """ Return True if build has METADATA.json """
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
         filepath = self.asset_list['metadata'] % param
         return os.path.exists(filepath) and os.path.isfile(filepath)
 
     def description_exists(self):
         """ Return True if build has DESCRIPTION.en_us.html """
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
         filepath = self.asset_list['description'] % param
         return os.path.exists(filepath) and os.path.isfile(filepath)
 
     def result_tests_finished(self):
         """ Return True if build completely executed and appropriate yaml
             file exists """
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
                     '%(build)s.%(revision)s.rtests.yaml') % param
         return os.path.exists(yamlpath) and os.path.isfile(yamlpath)
+
+    def read_rtests_data(self):
+        param = self.get_path_params()
+        yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
+                    '%(build)s.%(revision)s.rtests.yaml') % param
+        try:
+            test_data = yaml.load(open(yamlpath).read())
+        except (IOError, yaml.YAMLError):
+            return {}
+
+        success = []
+        failure = []
+        error = []
+        for k, tests in test_data.items():
+            error += tests.get('error', [])
+            success += tests.get('success', [])
+            failure += tests.get('failure', [])
+        return {'success': success, 'error': error, 'failure': failure}
+
+    def read_upstream_tests_data(self):
+        """ Return summary of upstream tests """
+        test_data = self.utests()
+        success = []
+        failure = []
+        error = []
+        for k, tests in test_data.items():
+            error += tests.get('error', [])
+            success += tests.get('success', [])
+            failure += tests.get('failure', [])
+        return {'success': success, 'error': error, 'failure': failure}
 
     def utests(self):
         """ Return saved upstream test data """
         if not self.is_done:
             return {}
 
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
-        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param
-        if os.path.exists(_out_yaml):
+        param = self.get_path_params()
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param
+        try:
             return yaml.load(open(_out_yaml).read())
-        else:
+        except (IOError, yaml.YAMLError):
             return {}
+
+    def read_links404_test_data(self):
+        """ Return saved DESCRIPTION.en_us.html test data. """
+        param = self.get_path_params()
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param
+        return yaml.load(open(_out_yaml).read())
 
     asset_list = {
         'description': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/DESCRIPTION.en_us.html',
@@ -460,10 +486,13 @@ class ProjectBuild(db.Model):
         'metadata_new': '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/METADATA.json.new',
     }
 
+    def get_path_params(self):
+        return {'login': self.project.login, 'id': self.project.id,
+                'revision': self.revision, 'build': self.id,
+                'root': current_app.config.get('DATA_ROOT')}
+
     def read_asset(self, name=None):
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         fn = self.asset_list[name] % param
         if os.path.exists(fn) and os.path.isfile(fn):
@@ -473,9 +502,7 @@ class ProjectBuild(db.Model):
 
     def save_asset(self, name=None, data=None, **kwarg):
         """ Save static files into out folder """
-        param = {'login': self.project.login, 'id': self.project.id,
-                 'revision': self.revision, 'build': self.id,
-                 'root': current_app.config.get('DATA_ROOT')}
+        param = self.get_path_params()
 
         if name == 'description':
             f = open(self.asset_list['description'] % param, 'w')
@@ -494,12 +521,8 @@ class ProjectBuild(db.Model):
         db.session.refresh(self)
 
     def files(self):
-        param = {'login': self.project.login, 'id': self.project.id,
-                    'revision': self.revision, 'build': self.id,
-                    'root': current_app.config.get('DATA_ROOT')}
-
+        param = self.get_path_params()
         path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
-
         return walkWithoutGit(path)
 
     def result_tests(self):

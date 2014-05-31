@@ -16,6 +16,18 @@
       </p>
       <p><a class="btn btn-xs btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
     </li>
+    {# TODO this doesn't work... #}
+    {# {% if repo.homepage %} #}
+    <!-- li>
+        <a href="{# repo.homepage #}"><i class="fa fa-home"></i></a>
+    </li -->
+    {# {% endif %} #}
+    {# TODO this doesn't work... #}
+    {# {% if repo.link %} #}
+    <!-- li>
+        <a href="{# repo.link #}"><i class="fa fa-external-link"></i></a>
+    </li -->
+    {# {% endif %} #}
     <li style="padding: 9px;">
       <small><a class="btn btn-link muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
     </li>

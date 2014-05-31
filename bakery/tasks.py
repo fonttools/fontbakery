@@ -19,6 +19,7 @@ from __future__ import print_function
 import sys
 
 import codecs
+import datetime
 import glob
 import os
 import os.path as op
@@ -27,7 +28,7 @@ import re
 import subprocess
 import yaml
 
-from checker import run_set
+from checker import run_set, parse_test_results
 from checker.base import BakeryTestCase
 from fixer import fix_font
 from flask.ext.rq import job
@@ -543,13 +544,13 @@ def ttx_process(project, build, log):
         name = name[:-4]  # cut .ufo
         filename = op.join(_out, name)
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i '%s.ttf'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
         # move the original ttf to the side
         cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
         run(cmd, cwd=_out, log=log)
         # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i '%s.ttx'" % filename  # -q
+        cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
@@ -577,7 +578,7 @@ def subset_process(project, build, log):
     for subset in config['state']['subset']:
         os.chdir(_out_src)
         for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
-            if name.endswith('.ttx'):
+            if name.endswith('.ttx') and project.source_files_type == 'ttx':
                 # after copy_ttx_files executed in source directory
                 # resulted truetype files does have double extension
                 # e.g. FontFamily-WeightStyle.ttf.ttx
@@ -585,9 +586,8 @@ def subset_process(project, build, log):
             name = name[:-4]  # cut .ufo|.ttx
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
             cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-                   " --layout-features='*' --glyph-names --symbol-cmap"
-                   " --notdef-glyph --notdef-outline --recommended-glyphs"
-                   " --name-IDs='*' --name-legacy --name-languages='*'"
+                   " --notdef-outline --recommended-glyphs"
+                   " --name-IDs='*'"
                    " --hinting")
             cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
                          'out': op.join(_out, name)}
@@ -711,6 +711,8 @@ def upstream_revision_tests(project, revision):
     result = {}
     os.chdir(_in)
     prun("git checkout %s" % revision, cwd=_in)
+
+    result[project.clone] = run_set(_in, 'upstream-repo')
 
     ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
 
@@ -859,6 +861,34 @@ def process_project(project, build, revision, force_sync=False):
             db.session.commit()
 
     log.close()
+
+
+@job
+def process_description_404(project, build):
+    """ Background task to check links in DESCRIPTION.en_us.html file
+
+        This method generates yaml file `*.*.404links.yaml` inside
+        repo out directory. """
+    param = {'login': project.login, 'id': project.id,
+             'revision': build.revision, 'build': build.id}
+    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+    path = op.join(_out, 'DESCRIPTION.en_us.html')
+
+    _out_yaml = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param)
+
+    result = {}
+    test_results = run_set(path, 'description')
+    result = parse_test_results(test_results)
+    result['updated'] = datetime.datetime.now()
+
+    # Comment during debug
+    l = open(_out_yaml, 'w')
+    l.write(yaml.safe_dump(result))
+    l.close()
+
+    d = yaml.safe_load(open(_out_yaml, 'r'))
+    # os.remove(_out_yaml)
+    return d
 
 
 def zipdir(path, url, log):
