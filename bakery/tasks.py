@@ -712,6 +712,8 @@ def upstream_revision_tests(project, revision):
     os.chdir(_in)
     prun("git checkout %s" % revision, cwd=_in)
 
+    result[project.clone] = run_set(_in, 'upstream-repo')
+
     ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
 
     for font in ufo_dirs:

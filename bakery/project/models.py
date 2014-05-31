@@ -435,16 +435,28 @@ class ProjectBuild(db.Model):
             failure += tests.get('failure', [])
         return {'success': success, 'error': error, 'failure': failure}
 
+    def read_upstream_tests_data(self):
+        """ Return summary of upstream tests """
+        test_data = self.utests()
+        success = []
+        failure = []
+        error = []
+        for k, tests in test_data.items():
+            error += tests.get('error', [])
+            success += tests.get('success', [])
+            failure += tests.get('failure', [])
+        return {'success': success, 'error': error, 'failure': failure}
+
     def utests(self):
         """ Return saved upstream test data """
         if not self.is_done:
             return {}
 
         param = self.get_path_params()
-        _out_yaml = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s.utests.yaml' % param
-        if os.path.exists(_out_yaml):
+        _out_yaml = '%(root)s/%(login)s/%(id)s.out/utests/%(revision)s.yaml' % param
+        try:
             return yaml.load(open(_out_yaml).read())
-        else:
+        except (IOError, yaml.YAMLError):
             return {}
 
     def read_links404_test_data(self):
