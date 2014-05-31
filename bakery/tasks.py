@@ -586,9 +586,8 @@ def subset_process(project, build, log):
             name = name[:-4]  # cut .ufo|.ttx
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
             cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-                   " --layout-features='*' --glyph-names --symbol-cmap"
-                   " --notdef-glyph --notdef-outline --recommended-glyphs"
-                   " --name-IDs='*' --name-legacy --name-languages='*'"
+                   " --notdef-outline --recommended-glyphs"
+                   " --name-IDs='*'"
                    " --hinting")
             cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
                          'out': op.join(_out, name)}
