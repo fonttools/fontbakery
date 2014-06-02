@@ -361,7 +361,7 @@ def getDesigner(familydir):
             ftfont = fontToolsOpenFont(filepath)
             desName = fontToolsGetDesignerName(ftfont)
             if isinstance(desName, str):
-                string = "Designer's name from font is: " + desName
+                string = u"Designer's name from font is: " + u(desName)
                 color = "green"
                 ansiprint(string, color)
                 return desName
@@ -411,7 +411,7 @@ def genmetadata(familydir):
         metadata = loadMetadata(familydir)
     familyname = inferFamilyName(familydir)
     setIfNotPresent(metadata, "name", familyname)
-    setIfNotPresent(metadata, "designer", getDesigner(familydir))
+    setIfNotPresent(metadata, "designer", u(getDesigner(familydir)))
                     # DC Should check it against profiles.json
     setIfNotPresent(metadata, "license", inferLicense(familydir))
     setIfNotPresent(metadata, "visibility", "Sandbox")
@@ -476,8 +476,8 @@ def striplines(jsontext):
     lines = jsontext.split("\n")
     newlines = []
     for line in lines:
-        newlines.append("%s\n" % (line.rstrip()))
-    return "".join(newlines)
+        newlines.append(u"%s\n" % (line.rstrip()))
+    return u"".join(newlines)
 
 
 def writeFile(familydir, metadata):
@@ -485,7 +485,9 @@ def writeFile(familydir, metadata):
     if hasMetadata(familydir):
         filename = "METADATA.json.new"
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
-        f.write(striplines(json.dumps(sortOldMetadata(metadata), indent=2, ensure_ascii=True)))
+        data = sortOldMetadata(metadata)
+        contents = json.dumps(data, indent=2, ensure_ascii=True)
+        f.write(striplines(contents))
     print(json.dumps(metadata, indent=2, ensure_ascii=True))
 
 
