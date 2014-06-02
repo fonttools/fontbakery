@@ -61,10 +61,11 @@ def load_yaml(default_yml, yml=None):
     return data
 
 
-def project_state_get(project, refresh=False):  # XXX rename refresh throughout codebase to refresh_bakeryStateInternal ?
+# XXX rename refresh throughout codebase to refresh_bakeryStateInternal ?
+def project_state_get(project, refresh=False):
     """
-    Get internal and external state of project from default, repo and local YAML files,
-    check external state matches that stored in the _in repo, and
+    Get internal and external state of project from default, repo and local
+    YAML files, check external state matches that stored in the _in repo, and
     save these states to local YAML files.
 
     :param project: :class:`~bakery.models.Project` instance
@@ -100,11 +101,13 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
     if os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
-    # if it doesn't exist, try to load a bakery.yml from _in repo and note that it was loaded
+    # if it doesn't exist, try to load a bakery.yml from _in repo and note
+    # that it was loaded
     elif os.path.exists(bakery_project_yml):
         state = load_yaml(bakery_default_yml, bakery_project_yml)
         local['status'] = 'repo'
-    # if neither exist, just load bakery.defaults.yaml and note that it was loaded
+    # if neither exist, just load bakery.defaults.yaml and note that
+    # it was loaded
     else:
         state = load_yaml(bakery_default_yml)
         local['status'] = 'default'
@@ -112,7 +115,9 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
     # note if both local and _in repo bakery.yaml files are in sync
     if os.path.exists(bakery_project_yml) and os.path.exists(bakery_local_yml):
         import filecmp
-        local['bakery_yaml_in_sync'] = filecmp.cmp(bakery_project_yml, bakery_local_yml, shallow=False)
+        local['bakery_yaml_in_sync'] = filecmp.cmp(bakery_project_yml,
+                                                   bakery_local_yml,
+                                                   shallow=False)
 
     # If local is already set up, save both states to YAML files and return them
     if not refresh:
@@ -144,7 +149,8 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
     local['ufo_dirs'] = ufo_dirs
     local['ttx_files'] = ttx_files
 
-    # If license_file not defined then choose OFL.txt or LICENSE.txt from the root of repo, if it exists
+    # If license_file not defined then choose OFL.txt or LICENSE.txt from
+    # the root of repo, if it exists
     lfn = state['license_file']
     if not lfn:
         for fn in ['OFL.txt', 'LICENSE.txt']:  # order means priority
