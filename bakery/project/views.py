@@ -212,7 +212,6 @@ def setup(p):
     config['local']['setup'] = True
     p.save_state()
     if request.form.get('bake'):
-        p.save_state()
         return redirect(url_for('project.build', project_id=p.id))
     else:
         flash(_("Setup saved"))

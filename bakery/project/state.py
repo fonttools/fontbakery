@@ -85,7 +85,8 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
 
     # Create internal state object, 'local'
     # TODO? rename this throughout codebase to bakeryStateInternal
-    # if local is already set up, load it from file, otherwise load from defaults and set it up later
+    # if local is already set up, load it from file, otherwise load
+    # from defaults and set it up later
     if os.path.exists(state_local_yml):
         local = load_yaml(state_default_yml, state_local_yml)
     else:
@@ -94,7 +95,8 @@ def project_state_get(project, refresh=False):  # XXX rename refresh throughout 
 
     # Create external state object, 'state'
     # TODO? rename this throughout codebase to bakeryState
-    # try to load the local bakery.yml from any previous runs and note that it was loaded
+    # try to load the local bakery.yml from any previous runs
+    # and note that it was loaded
     if os.path.exists(bakery_local_yml):
         state = load_yaml(bakery_default_yml, bakery_local_yml)
         local['status'] = 'local'
