@@ -24,6 +24,22 @@
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
 
+
+<h4>{{ _("TTF Table Sizes") }}</h4>
+{% for ttftablesize in ttftablesizes %}
+    <table class="table-striped table-bordered table-condensed">
+    <tr>
+        <th colspan="2">{{ ttftablesize.name }}</th>
+    </tr>
+    {% for table in ttftablesize.tables %}
+    <tr>
+        <td>{{ table.name }}</td>
+        <td>{{ table.size }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endfor %}
+
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="fa"></i> {{ fontaine._full_name }}</h4>
     <div>

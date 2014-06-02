@@ -153,7 +153,8 @@ class Project(db.Model):
         return textFiles
 
     def revision_tree(self, revision):
-        """ Get specific revision files as tree in format supported by tree macros """
+        """ Get specific revision files as tree in format supported
+            by tree macros """
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
         d = {}
@@ -409,7 +410,6 @@ class ProjectBuild(db.Model):
     @property
     def path(self):
         param = self.get_path_params()
-
         return '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
 
     def metadata_exists(self):
@@ -521,9 +521,7 @@ class ProjectBuild(db.Model):
         db.session.refresh(self)
 
     def files(self):
-        param = self.get_path_params()
-        path = '%(root)s/%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param
-        return walkWithoutGit(path)
+        return walkWithoutGit(self.path)
 
     def result_tests(self):
         return result_tests(self.project, self, )

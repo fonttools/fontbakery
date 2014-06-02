@@ -15,10 +15,12 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 # pylint:disable-msg=E1101
+import os
 
 from datetime import datetime, timedelta
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect, json, Markup, current_app, abort, make_response)
+                   url_for, redirect, json, Markup, current_app,
+                   abort, make_response)
 from flask.ext.babel import gettext as _
 from functools import wraps
 from yaml import YAMLError
@@ -53,7 +55,9 @@ def before_request():
 
 # project resolve decorator
 def project_required(f):
-    """ Decorator reads project_id from arguments list and resolve it into project object.
+    """ Decorator reads project_id from arguments list and resolve it
+        into project object.
+
         In parallel it check if project object is ready Usage:
 
         @project.route('/test', methods=['GET'])
@@ -108,8 +112,10 @@ def build(p):
     else:
         build = ProjectBuild.make_build(p, 'HEAD')
 
-    flash(Markup(_("Updated repository (<a href='%(repo)s'>see files</a>) Next step: <a href='%(step)s'>set it up</a>",
-                   repo=url_for('project.ufiles', project_id=p.id), step=url_for('project.setup', project_id=p.id))))
+    flash(Markup(_(("Updated repository (<a href='%(repo)s'>see files</a>)"
+                    " Next step: <a href='%(step)s'>set it up</a>"),
+                   repo=url_for('project.ufiles', project_id=p.id),
+                   step=url_for('project.setup', project_id=p.id))))
     return redirect(url_for('project.log', project_id=p.id, build_id=build.id))
 
 
@@ -313,13 +319,39 @@ def history(p):
 @project_required
 def log(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
-    param = {'login': p.login, 'id': p.id, 'revision': b.revision, 'build': b.id}
-    log_file = "%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log" % param
+    param = {'login': p.login, 'id': p.id,
+             'revision': b.revision, 'build': b.id}
+    log_file = "%(login)s/%(id)s.out/%(build)s.%(revision)s.process.log"
 
-    return render_template('project/log.html', project=p, build=b, log_file=log_file)
+    return render_template('project/log.html', project=p, build=b,
+                           log_file=log_file % param)
 
 
-@project.route('/<int:project_id>/build/<int:build_id>/rfiles', methods=['GET'])
+def get_fonts_table_sizes(fonts):
+    """ Returns list of dictionary data for SFNT table sizes of fonts
+
+        .. note:: Each dictionary has a format defined below
+
+        name: <example com>
+        tables:
+          -
+            name: <example sfnt name>
+            size: <example sfnt size>
+    """
+    from bakery.app import app
+    from fontTools.ttLib import sfnt
+    sfntdata = []
+    for font in fonts:
+        tables = []
+        with open(os.path.join(app.config['DATA_ROOT'], font)) as fp_font:
+            sf = sfnt.SFNTReader(fp_font)
+            for t in sf.tables:
+                tables.append({'name': t, 'size': sf.tables[t].length})
+        sfntdata.append({'name': os.path.basename(font), 'tables': tables})
+    return sfntdata
+
+
+@project.route('/<int:project_id>/build/<int:build_id>/rfiles')
 @login_required
 @project_required
 def rfiles(p, build_id):
@@ -332,8 +364,16 @@ def rfiles(p, build_id):
     f = project_fontaine(p, b)
     tree = b.files()
 
+    fonts = []
+    for k, v in tree.items():
+        if k.endswith('.ttf'):
+            fonts.append(os.path.join(b.path, k))
+
+    ttftablesizes = get_fonts_table_sizes(fonts)
+
     return render_template('project/rfiles.html', project=p, yaml=yaml,
-                           fontaineFonts=f, build=b, tree=tree)
+                           fontaineFonts=f, build=b, tree=tree,
+                           ttftablesizes=ttftablesizes)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
