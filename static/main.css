@@ -19,6 +19,10 @@ http://github.com/xen/fontbakery/
 
 */
 
+.stats {
+  white-space: nowrap;
+}
+
 .navbar-static-top {
   margin-bottom: 19px;
 }
