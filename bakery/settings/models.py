@@ -40,3 +40,6 @@ class FontStats(db.Model):
     @staticmethod
     def by_family(family):
         return FontStats.query.filter_by(family=family.lower()).first()
+
+
+db.create_all()

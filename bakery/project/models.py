@@ -525,3 +525,5 @@ class ProjectBuild(db.Model):
 
     def result_tests(self):
         return result_tests(self.project, self, )
+
+db.create_all()

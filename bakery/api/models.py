@@ -26,3 +26,5 @@ class Task(db.Model):
     payload = db.Column(db.PickleType())
     status = db.Column(db.Integer(), default=0, index=True)  # 0 - open, 1 - process, 2 - closed
     created = db.Column(db.DateTime(), default=datetime.now)
+
+db.create_all()

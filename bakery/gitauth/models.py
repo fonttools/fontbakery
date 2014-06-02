@@ -44,8 +44,12 @@ class User(db.Model):
 
     @staticmethod
     def get_or_init(login):
-        """ Find user with `login` in database if not then create new instance """
+        """ Find user with `login` in database if not then create
+            new instance """
         user = User.query.filter_by(login=login).first()
         if user is None:
             user = User(login)
         return user
+
+
+db.create_all()
