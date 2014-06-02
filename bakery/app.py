@@ -25,7 +25,9 @@ import logging.handlers
 app = Flask(__name__, static_folder=os.path.join(
     os.path.dirname(__file__), '..', 'static'))
 app.config.from_object('bakery.config')
-app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__), 'local.cfg')), silent=True)
+app.config.from_pyfile(os.path.realpath(op.join(op.dirname(__file__),
+                                                'local.cfg')),
+                       silent=True)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)

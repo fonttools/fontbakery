@@ -11,35 +11,13 @@
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('rtests') }}
 
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
-<script type="text/javascript">
-  google.load("visualization", "1", {packages:["corechart"]});
-  google.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-    ['{{ _("Tests") }}', '#'],
-    ['{{ _("Success") }} {{ summary["all_success"]}}', {{ summary["all_success"]}}],
-    ['{{ _("Auto fixed") }} {{ summary["all_fixed"]}}', {{ summary["all_fixed"]}}],
-    ['{{ _("Failed") }} {{ summary["all_failure"]}}', {{ summary["all_failure"]}}],
-    ['{{ _("Error") }} {{ summary["all_error"]}}', {{ summary["all_error"]}}]
-    ]);
-
-    var options = {
-      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
-    };
-
-    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-    chart.draw(data, options);
-  }
-</script>
-
 <h3>{{ _('Summary') }}</h3>
 <p>
   <strong>{{ _('Fonts:') }}</strong> {{ summary['fonts']|join(', ') }} <br>
 </p>
 
 <h5>{{ _('Stats')}}</h5>
-<div id="piechart" style="width: 500px; height: 150px;"></div>
+<div id="piechart"></div>
 
 <h5>{{ _('Blockers') }}</h5>
 <ul>
@@ -47,7 +25,7 @@
   <li class="text-danger">
     {{ item['font'] }} - {{item['methodName']}}: {{item['methodDoc']}}<br>
     {{ item['err_msg']}}
-  </li>    
+  </li>
   {% endfor %}
 </ul>
 
@@ -58,4 +36,55 @@
 
 {{ showTests() }}
 
+{% endblock %}
+
+{% block extrajs %}
+<script src="{{ url_for('static', filename='libs/d3/d3.min.js') }}"></script>
+<script type="text/javascript">
+// $(document).ready(function(){
+  var w = 500,
+      h = 250,
+      r = 100;
+
+  data = [{"label": '{{ _("Success") }} {{ summary["all_success"]}}', "value": {{ summary["all_success"]}}},
+          {"label": '{{ _("Auto fixed") }} {{ summary["all_fixed"]}}', "value": {{ summary["all_fixed"]}}},
+          {"label": '{{ _("Failed") }} {{ summary["all_failure"]}}', "value": {{ summary["all_failure"]}}},
+          {"label": '{{ _("Error") }} {{ summary["all_error"]}}', "value": {{ summary["all_error"]}}}];
+  var colors = ['#468847', '#3a87ad', '#b94a48', '#c09853'];
+
+  var vis = d3.select("div#piechart")
+      .append("svg:svg")
+      .data([data])
+          .attr("width", w)
+          .attr("height", h)
+      .append("svg:g")
+          .attr("transform", "translate(" + r + "," + r + ")")
+
+  var arc = d3.svg.arc()
+      .outerRadius(r);
+
+  var pie = d3.layout.pie()
+      .value(function(d) { return d.value; });
+
+  var arcs = vis.selectAll("g.slice")
+      .data(pie)
+      .enter()
+          .append("svg:g")
+              .attr("class", "slice");
+
+      arcs.append("svg:path")
+              .attr("fill", function(d, i) { return colors[i]; } )
+              .attr("d", arc);
+
+      arcs.append("svg:text")
+              .attr("transform", function(d) {
+
+              d.innerRadius = 0;
+              d.outerRadius = r;
+              return "translate(" + arc.centroid(d) + ")";
+          })
+          .attr("text-anchor", "middle")
+          .text(function(d, i) { return data[i].label; });
+// });
+</script>
 {% endblock %}
