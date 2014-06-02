@@ -263,8 +263,8 @@
         <td class="stats stat-{{key}}" style="text-align: right">{{ value }}</td>
         {% endfor %}
         #}
-        <td class="stats stat-total" style="text-align: right" data-sort-value="{{ repo.family_stat.total }}">{{ repo.family_stat.total | short }}</td>
-        <td class="stats stat-month" style="text-align: right" data-sort-value="{{ repo.family_stat.month }}">{{ repo.family_stat.month | short }}</td>
+        <td class="stats stat-total" style="text-align: right" data-sort-value="{{ repo.family_stat.total }}"><span class="apopover" data-trigger="hover" data-content="{{ repo.family_stat.total }}">{{ repo.family_stat.total | short }}</span></td>
+        <td class="stats stat-month" style="text-align: right"><span class="apopover" data-trigger="hover" data-content="{{ repo.family_stat.month }}">{{ repo.family_stat.month | short }}</span></td>
 {#
         <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
         <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
