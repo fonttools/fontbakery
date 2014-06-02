@@ -372,6 +372,28 @@ def getDesigner(familydir):
                 return desName
 
 
+def check_monospace(familydir):
+    files = os.listdir(familydir)
+    glyphwidths = []
+    for filepath in files:
+        if not filepath.endswith('.ttf'):
+            continue
+        font = fontToolsOpenFont(filepath)
+        for table in font['cmap'].tables:
+            if not (table.platformID == 3 and table.platEncID in [1, 10]):
+                continue
+
+            for glyphname in table.cmap:
+                try:
+                    glyphwidths.append(font['hmtx'][glyphname][0])
+                except (IndexError, KeyError):
+                    # can't read hmtx for glyphname, append value of zero
+                    glyphwidths.append(0)
+    # if all glyphs has the same widths then it is easy to check
+    # by casting list to python sets.
+    return len(set(glyphwidths)) == 1
+
+
 def getSize(familydir):
     files = os.listdir(familydir)
     matchedFiles = []
@@ -415,7 +437,11 @@ def genmetadata(familydir):
                     # DC Should check it against profiles.json
     setIfNotPresent(metadata, "license", inferLicense(familydir))
     setIfNotPresent(metadata, "visibility", "Sandbox")
-    setIfNotPresent(metadata, "category", "")
+
+    category = ''
+    if check_monospace(familydir):
+        category = 'monospace'
+    setIfNotPresent(metadata, "category", category)
                     # DC Should get this from the font or prompt?
     setIfNotPresent(metadata, "size", getSize(familydir))
                     # DC: this should check the filesize got smaller than last
