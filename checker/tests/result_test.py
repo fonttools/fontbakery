@@ -160,11 +160,13 @@ class FontToolsTest(TestCase):
         for name in self.font['name'].names:
             if name.nameID not in result_string_dicts:
                 result_string_dicts[name.nameID] = {'mac': '', 'win': ''}
-            if name.platformID == 3:  # Windows platform-specific
+            if name.platformID == 3 and name.langID == 0x409:
+                # Windows platform-specific
                 result_string_dicts[name.nameID]['win'] = name.string
                 if b'\000' in name.string:
                     result_string_dicts[name.nameID]['win'] = name.string.decode('utf-16-be').encode('utf-8')
-            if name.platformID == 1:  # Macintosh platform-specific
+            if name.platformID == 1 and name.langID == 0:
+                # Macintosh platform-specific
                 result_string_dicts[name.nameID]['mac'] = name.string
                 if b'\000' in name.string:
                     result_string_dicts[name.nameID]['mac'] = name.string.decode('utf-16-be').encode('utf-8')
