@@ -13,9 +13,9 @@
 
 <h3>{{ _("Bake Process Options") }}</h3>
 
+{% if config['state'].notes %}<div class="alert alert-warning"><p>Note: {{ config['state'].notes }}</p></div>{% endif %}
 
 <div class="alert alert-info">
-{% if config['state'].notes %}<p>{{ config['state'].notes }}</p>{% endif %}
 {{ _("Setup the project's bake process. Options can be pre-selected by storing them in a <code>bakery.yaml</code> file inside the git repository.") }}
 </div>
 
