@@ -152,8 +152,8 @@
 <div class="clearfix"></div>
 <hr>
 {% if repos %}
-<div style="overflow: scroll;">
-<table class="table table-striped table-bx table-condensed tablesorter" id="dashboard" style="">
+<div>
+<table class="table table-striped table-bx table-condensed" id="dashboard" style="">
   <thead>
   {# TODO: replace the follow static stats th cells with a loop:
     <tr>
@@ -231,7 +231,7 @@
             <a href="{{ repo.clone }}"><i class="fa fa-code-fork apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
-            <td style="text-align: center">
+            <td style="text-align: center"{% if item == 'price_total_usd' %} data-sort-value="{{ value }}"{% endif %}>
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
                 {% if item == 'stats_family_name' %}
@@ -246,7 +246,8 @@
                 {% elif repo.config['state'][item] in value.iterkeys() %}
                     {{ value[repo.config['state'][item]] | safe }}
                 {% else %}
-                    {{ repo.config['state'][item] }}
+                    {% if item == "price_total_usd" %}{{ repo.config['state'][item]|short }}{% else %}
+                    {{ repo.config['state'][item] }}{% endif %}
                 {% endif %}
             {% else %}
                 <i class="fa fa-square-o"></i>
@@ -262,18 +263,21 @@
         <td class="stats stat-{{key}}" style="text-align: right">{{ value }}</td>
         {% endfor %}
         #}
-        <td class="stats stat-total" style="text-align: right">{{ repo.family_stat.total }}</td>
-        <td class="stats stat-month" style="text-align: right">{{ repo.family_stat.month }}</td>
+        <td class="stats stat-total" style="text-align: right" data-sort-value="{{ repo.family_stat.total }}">{{ repo.family_stat.total | short }}</td>
+        <td class="stats stat-month" style="text-align: right" data-sort-value="{{ repo.family_stat.month }}">{{ repo.family_stat.month | short }}</td>
 {#
         <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
         <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
         <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
 #}
-        <td class="stats-fvpd" style="text-align: right">
         {% if repo.config['state'].get('price_total_usd') %}
-            {{ (repo.family_stat and repo.family_stat.month or 0) / repo.config['state']['price_total_usd'] | int }}
-        {% endif %}
+        {% set value = (repo.family_stat and repo.family_stat.month or 0) / repo.config['state']['price_total_usd'] | int %}
+        <td class="stats-fvpd" style="text-align: right" data-sort-value="{{ value }}">
+            {{ value | short }}
         </td>
+        {% else %}
+        <td class="stats-fvpd" style="text-align: right"></td>
+        {% endif %}
         <td style="text-align: center; white-space: nowrap">
         {% if not repo.is_ready %}
             <button class="btn btn-xs btn-disabled" disabled>{{ _("Waiting for queue") }}</button>
@@ -337,12 +341,12 @@ $(document).ready(function() {
     $(".stat-rate-total").html(grandTotals.rate);
 
     // Make the stats numbers prettyprinted
-    $(".stats").number(true, 0, '.', ',');
+    // $(".stats").number(true, 0, '.', ',');
 
-    $("#gotit").click(function ( event ) {
-          event.preventDefault();
-          $(this).parent().slideUp();
-        });
+    // $("#gotit").click(function ( event ) {
+    //       event.preventDefault();
+    //       $(this).parent().slideUp();
+    //     });
 /*
     guiders.createGuider({
         attachTo: "#dashboardGithubButton",

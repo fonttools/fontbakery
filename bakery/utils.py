@@ -177,3 +177,34 @@ def save_metadata(metadata, path):
     strip_dump = striplines(dump)
     with io.open(path, 'w', encoding='utf-8') as filep:
         filep.write(uniescape(strip_dump))
+
+
+from math import log
+unit_list = zip(['', 'k', 'M'], [0, 0, 1])
+
+
+def sizeof_fmt(num):
+    """Human friendly file size"""
+    if num > 1:
+        exponent = min(int(log(num, 1000)), len(unit_list) - 1)
+        quotient = float(num) / 1000 ** exponent
+        unit, num_decimals = unit_list[exponent]
+        format_string = '{:.%sf} {}' % (num_decimals)
+        return format_string.format(quotient, unit)
+    if num == 0:
+        return '0'
+    if num == 1:
+        return '1'
+
+
+def short(value):
+    if not value:
+        return 0
+    try:
+        value = int(value)
+        if not value:
+            return 0
+    except ValueError:
+        return 0
+
+    return '~{}'.format(sizeof_fmt(value))
