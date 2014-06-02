@@ -318,7 +318,26 @@
 
 {% block extrajs %}
 <script type="text/javascript">
+function zip(arrays) {
+    return Array.apply(null,Array(arrays[0].length)).map(function(_,i){
+        return arrays.map(function(array){return array[i]})
+    });
+}
 
+function shorten(num) {
+    var unit_list = [['', 0], ['k', 0], ['M', 1], ['B', 2]];
+    if (num > 1) {
+        var exponent = Math.min(Math.log(num, 1000), unit_list.length - 1);
+        var quotient = num / Math.pow(1000, exponent);
+        var unit = unit_list[exponent][0];
+        var num_decimals = unit_list[exponent][1]
+        return '~' + quotient.toFixed(num_decimals) + ' ' + unit
+    }
+    if (num == 0)
+        return '0';
+    if (num == 1)
+        return '1';
+}
 
 
 $(document).ready(function() {
@@ -329,10 +348,10 @@ $(document).ready(function() {
     $("#dashboard").tablesorter();
 
     $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).attr('data-sort-value') ); });
-    $(".stat-total-total").html(grandTotals.total);
+    $(".stat-total-total").html(shorten(grandTotals.total));
 
     $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).attr('data-sort-value') ); });
-    $(".stat-month-total").html(grandTotals.month);
+    $(".stat-month-total").html(shorten(grandTotals.month));
 
     $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-week-total").html(grandTotals.week);
@@ -341,7 +360,7 @@ $(document).ready(function() {
     $(".stat-yesterday-total").html(grandTotals.yesterday);
 
     $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).attr('data-sort-value') ); });
-    $(".stat-rate-total").html(grandTotals.rate);
+    $(".stat-rate-total").html(shorten(grandTotals.rate));
 
     // Make the stats numbers prettyprinted
     // $(".stats").number(true, 0, '.', ',');
