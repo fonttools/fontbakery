@@ -18,15 +18,16 @@
 #
 # Based on http://typophile.com/node/13081
 # Also see http://typophile.com/node/13081
-
-import os, sys
 import argparse
+import os
+import sys
 from fontTools import ttLib
+
 
 def get_bounds(font):
     ymin = 0
     ymax = 0
-    # .OTF fonts do not contain a `glyf` table, 
+    # .OTF fonts do not contain a `glyf` table,
     # but have a precomputed value in the `head` table
     if font.sfntVersion == 'OTTO':
         if hasattr(font['head'], 'yMin'):
@@ -47,50 +48,100 @@ def get_bounds(font):
     else:
         sys.exit("Unable to detect y values")
 
-def show_metrics(font):
-    ymin, ymax = get_bounds(font)
-    print("ymax  is: {}".format(ymax))
-    print("hhea asc: {}".format(font['hhea'].ascent))
-    print("OS/2 asc: {}".format(font['OS/2'].sTypoAscender))
-    print("Win  asc: {}".format(font['OS/2'].usWinAscent))
-    print("ymin  is: {}".format(ymin))
-    print("hhea des: {}".format(font['hhea'].descent))
-    print("OS/2 des: {}".format(font['OS/2'].sTypoDescender))
-    print("Win  des: {}".format(font['OS/2'].usWinDescent))
-    print("hhea lng: {}".format(font['hhea'].lineGap))
-    print("OS/2 lng: {}".format(font['OS/2'].sTypoLineGap))
 
-def set_metrics(font, filename, ascents, descents, linegaps):
-    font['hhea'].ascent = ascents
-    font['OS/2'].sTypoAscender = ascents
-    font['OS/2'].usWinAscent = ascents
-    font['hhea'].descent = descents
-    font['OS/2'].sTypoDescender = descents
-    font['OS/2'].usWinDescent = abs(descents)
-    font['hhea'].lineGap = linegaps
-    font['OS/2'].sTypoLineGap = linegaps
-    font.save(filename + '.fix')
+def get_metrics(ttfont):
+    ymin, ymax = get_bounds(ttfont)
+    return {
+        'ymax': ymax,
+        'ymin': ymin,
+        'hhea_ascent': ttfont['hhea'].ascent,
+        'hhea_descent': ttfont['hhea'].descent,
+        'OS2_sTypeAscender': ttfont['OS/2'].sTypoAscender,
+        'OS2_sTypeDescender': ttfont['OS/2'].sTypoDescender,
+        'OS2_usWinAscent': ttfont['OS/2'].usWinAscent,
+        'OS2_usWinDescent': ttfont['OS/2'].usWinDescent,
+        'lineGap': ttfont['hhea'].lineGap,
+        'OS2_lineGap': ttfont['OS/2'].sTypoLineGap
+    }
 
-def fix_metrics(font, filename):
-    ymin, ymax = get_bounds(font)
-    set_metrics(font, filename, ymax, ymin, 0)
+
+class VmetFix:
+
+    def __init__(self, fonts):
+        self.fonts = fonts
+
+    def set_metrics_for_font(self, ttfont, ascents, descents, linegaps):
+        ttfont['hhea'].ascent = ascents
+        ttfont['OS/2'].sTypoAscender = ascents
+        ttfont['OS/2'].usWinAscent = ascents
+        ttfont['hhea'].descent = descents
+        ttfont['OS/2'].sTypoDescender = descents
+        ttfont['OS/2'].usWinDescent = abs(descents)
+        ttfont['hhea'].lineGap = linegaps
+        ttfont['OS/2'].sTypoLineGap = linegaps
+
+    def set_metrics(self, ascents, descents, linegaps):
+        for fontpath in self.fonts:
+            ttfont = ttLib.TTFont(fontpath)
+            self.set_metrics_for_font(ttfont, ascents, descents, linegaps)
+            ttfont.save(fontpath + '.fix')
+
+    def fix_metrics(self):
+        for fontpath in self.fonts:
+            ttfont = ttLib.TTFont(fontpath)
+            ymin, ymax = get_bounds(ttfont)
+            self.set_metrics_for_font(ttfont, ymax, ymin, 0)
+            ttfont.save(fontpath + '.fix')
+
+    def show_metrics(self):
+        fonts = []
+        for fontpath in self.fonts:
+            ttfont = ttLib.TTFont(fontpath)
+            metrics = get_metrics(ttfont)
+            metrics.update({'name': os.path.basename(fontpath)})
+            fonts.append(metrics)
+
+        def row(key, title=None):
+            return [title or key] + map(lambda x: x[key], fonts)
+
+        header = ['Parameter'] + map(lambda x: x['name'], fonts)
+        formatstring = ('{:<%s}' * (len(fonts) + 1))
+        formatstring = formatstring % tuple(map(lambda x: len(x) + 4, header))
+        print(formatstring.format(*header))
+        print(formatstring.format(*row('ymax')))
+        print(formatstring.format(*row('hhea_ascent', 'hhea asc')))
+        print(formatstring.format(*row('OS2_sTypeAscender', 'OS/2 asc')))
+        print(formatstring.format(*row('OS2_usWinAscent', 'Win asc')))
+
+        print(formatstring.format(*row('ymin')))
+        print(formatstring.format(*row('hhea_descent', 'hhea desc')))
+        print(formatstring.format(*row('OS2_sTypeDescender', 'OS/2 desc')))
+        print(formatstring.format(*row('OS2_usWinDescent', 'Win desc')))
+        print(formatstring.format(*row('lineGap', 'hhea lng')))
+        print(formatstring.format(*row('OS2_lineGap', 'OS/2 lng')))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--ascents', type=int, help="Set new ascents value in 'Horizontal Header' table ('hhea')")
-    parser.add_argument('-d', '--descents', type=int, help="Set new descents value in 'Horizontal Header' table ('hhea')")
-    parser.add_argument('-l', '--linegaps', type=int, help="Set new linegaps value in 'Horizontal Header' table ('hhea')")
-    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
-    parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
+    parser.add_argument('-a', '--ascents', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('hhea')"))
+    parser.add_argument('-d', '--descents', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('hhea')"))
+    parser.add_argument('-l', '--linegaps', type=int,
+                        help=("Set new linegaps value in 'Horizontal Header'"
+                              " table ('hhea')"))
+    parser.add_argument('--autofix', action="store_true",
+                        help="Autofix font metrics")
+    parser.add_argument('filename', nargs='+',
+                        help="Font file in OpenType (TTF/OTF) format")
 
     args = parser.parse_args()
-    assert os.path.exists(args.filename)
-    font = ttLib.TTFont(args.filename)
+    vmetfixer = VmetFix(args.filename)
     if args.ascents and args.descents and args.linegaps:
-        set_metrics(font, args.filename, args.ascents, args.descents, args.linegaps)
+        vmetfixer.set_metrics(args.ascents, args.descents, args.linegaps)
     elif args.autofix:
-        fix_metrics(font, args.filename)
+        vmetfixer.fix_metrics()
     else:
-        show_metrics(font)
-
-# check that all 3 args needed to set are needed for set to happen
+        vmetfixer.show_metrics()

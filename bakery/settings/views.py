@@ -63,7 +63,8 @@ def update():
             page = 0
             _repos = []
             while True:
-                resp = auth.get('/user/repos?per_page=100&page=%s' % page, data={'type': 'all'})
+                resp = auth.get('/user/repos?per_page=100&page=%s' % page,
+                                data={'type': 'all'})
                 if resp.status_code == 200:
                     _repos.extend(resp.json())
                     if len(resp.json()) == 100:
@@ -72,6 +73,7 @@ def update():
                 else:
                     flash(_('Could not connect to Github to load repos list.'))
                 break
+
             orgs = auth.get('/user/orgs')
             if orgs.status_code == 200:
                 for x in orgs.json():
@@ -282,7 +284,8 @@ def delclone(project_id):
         return redirect(url_for('frontend.splash'))
     db.session.delete(project)
     db.session.commit()
-    flash(_("Repository %(pid)s succesfuly removed (but files remain on the server)", pid=project_id))
+    flash(_(("Repository %(pid)s succesfuly removed (but files remain"
+             " on the server)"), pid=project_id))
     return redirect(url_for('frontend.splash'))
 
 
@@ -298,7 +301,8 @@ def massgit():
     for p in projects:
         if p.full_name not in git_ids:
             db.session.delete(p)
-            flash(_("Repository %(name)s successfully removed (but files remain on the server)", name=p.full_name))
+            flash(_(("Repository %(name)s successfully removed (but files"
+                     " remain on the server)"), name=p.full_name))
         pfn[p.full_name] = p
 
     db.session.commit()
