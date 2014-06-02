@@ -180,7 +180,7 @@ def save_metadata(metadata, path):
 
 
 from math import log
-unit_list = zip(['', 'k', 'M'], [0, 0, 1])
+unit_list = zip(['', 'k', 'M', 'B'], [0, 0, 1, 2])
 
 
 def sizeof_fmt(num):

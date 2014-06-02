@@ -325,19 +325,19 @@ $(document).ready(function() {
 
     $("#dashboard").tablesorter();
 
-    $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).html() ); });
+    $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-total-total").html(grandTotals.total);
 
-    $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).html() ); });
+    $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-month-total").html(grandTotals.month);
 
-    $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).html() ); });
+    $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-week-total").html(grandTotals.week);
 
-    $(".stat-yesterday").each(function() { grandTotals.yesterday += parseInt( $(this).html() ); });
+    $(".stat-yesterday").each(function() { grandTotals.yesterday += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-yesterday-total").html(grandTotals.yesterday);
 
-    $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).html() ); });
+    $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-rate-total").html(grandTotals.rate);
 
     // Make the stats numbers prettyprinted
