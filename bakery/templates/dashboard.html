@@ -178,7 +178,7 @@
       <th style="text-align: center">{{ _("Day") }}</th>
       <th style="text-align: center">{{ _("Second") }}</th>
 #}
-      <th style="text-align: center">{{ _("Per $") }}</th>
+      <th style="text-align: center; white-space: nowrap;">{{ _("Per $") }}</th>
       <th colspan="2"></th>
     </tr>
     <tr>
@@ -200,7 +200,7 @@
       <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
 #}
       <th class="stats-fvpd" style="text-align: right"></th>
-      <th style="text-align: center">{{ _("Next Step") }}</th>
+      <th style="text-align: center; white-space: nowrap; ">{{ _("Next Step") }}</th>
       <th style="text-align: center">{{ _("Actions") }}</th>
     </tr>
   </thead>
@@ -231,7 +231,7 @@
             <a href="{{ repo.clone }}"><i class="fa fa-code-fork apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
-            <td style="text-align: center"{% if item == 'price_total_usd' %} data-sort-value="{{ value }}"{% endif %}>
+            <td style="text-align: center"{% if item == 'price_total_usd' %} class="stats" data-sort-value="{{ value }}"{% endif %}>
             <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
                 {% if item == 'stats_family_name' %}
@@ -318,6 +318,9 @@
 
 {% block extrajs %}
 <script type="text/javascript">
+
+
+
 $(document).ready(function() {
     // Make the dashboard table sortable
 
