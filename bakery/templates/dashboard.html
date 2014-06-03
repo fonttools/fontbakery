@@ -192,8 +192,8 @@
       {% endfor %}
       <th style="">{{ _("GWF")}}</th>
       <th style="">{{ _("AL3")}}</th>
-      <th class="stats stat-totals stat-total-total" style="text-align: right"></th>
-      <th class="stats stat-totals stat-month-total" style="text-align: right"></th>
+      <th class="stats stat-totals stat-total-total" style="text-align: right"><span class="apopover" data-content="" data-trigger="hover"></span></th>
+      <th class="stats stat-totals stat-month-total" style="text-align: right"><span class="apopover" data-content="" data-trigger="hover"></span></th>
 {#
       <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
       <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
@@ -348,10 +348,14 @@ $(document).ready(function() {
     $("#dashboard").tablesorter();
 
     $(".stat-total").each(function() { grandTotals.total += parseInt( $(this).attr('data-sort-value') ); });
-    $(".stat-total-total").html(shorten(grandTotals.total));
+    $(".stat-total-total span")
+        .attr('data-content', grandTotals.total)
+        .html(shorten(grandTotals.total));
 
     $(".stat-month").each(function() { grandTotals.month += parseInt( $(this).attr('data-sort-value') ); });
-    $(".stat-month-total").html(shorten(grandTotals.month));
+    $(".stat-month-total span")
+        .attr('data-content', grandTotals.month)
+        .html(shorten(grandTotals.month));
 
     $(".stat-week").each(function() { grandTotals.week += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-week-total").html(grandTotals.week);
