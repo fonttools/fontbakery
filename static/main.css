@@ -19,6 +19,10 @@ http://github.com/xen/fontbakery/
 
 */
 
+thead {
+  background-color: white;
+}
+
 .stats {
   white-space: nowrap;
 }

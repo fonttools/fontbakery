@@ -317,7 +317,10 @@
 {% endblock %}
 
 {% block extrajs %}
+<script type="text/javascript" src="{{ url_for('static', filename='libs/floatThead/dist/jquery.floatThead.min.js') }}"></script>
 <script type="text/javascript">
+$('#dashboard').floatThead();
+
 function zip(arrays) {
     return Array.apply(null,Array(arrays[0].length)).map(function(_,i){
         return arrays.map(function(array){return array[i]})
