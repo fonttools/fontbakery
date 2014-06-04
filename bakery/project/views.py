@@ -320,7 +320,8 @@ def ufileblob(p, revision=None):
 def history(p):
     """ Results of processing tests, for ttf files """
     b = ProjectBuild.query.filter_by(project=p).order_by("id desc").all()
-
+    if not len(b):
+        return redirect(url_for('project.setup', project_id=p.id))
     return render_template('project/history.html', project=p, builds=b)
 
 
