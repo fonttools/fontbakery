@@ -18,16 +18,18 @@
       <th style="text-align: center" rowspan="2"><i class="fa fa-circle text-muted"></i></th>
       <th rowspan="2">{{ _("Hashtag") }}:{{ _("Build id") }}</th>
       <th rowspan="2">{{ _("Date") }}</th>
-      <th colspan="3">{{ _("Upstream") }}</th>
-      <th colspan="3">{{ _("Results") }}</th>
+      <th colspan="4">{{ _("Upstream") }}</th>
+      <th colspan="4">{{ _("Results") }}</th>
     </tr>
     <tr>
       <th>Success</th>
       <th>Failure</th>
       <th>Error</th>
+      <th>Details</th>
       <th>Success</th>
       <th>Failure</th>
       <th>Error</th>
+      <th>Details</th>
     </tr>
   </thead>
   <tbody>
@@ -48,10 +50,12 @@
       <td class="success">{{ udata.success|length }}</td>
       <td class="warning">{{ udata.failure|length }}</td>
       <td class="danger">{{ udata.error|length }}</td>
+      <td><a href="{# url_for('project.utest', project_id=b.project.id, build_id=b.id) #}"> <i class="fa fa-file-text-o"> </i> </a></td>
       {% set data = b.read_rtests_data() %}
       <td class="success">{{ data.success|length }}</td>
       <td class="warning">{{ data.failure|length }}</td>
       <td class="danger">{{ data.error|length }}</td>
+      <td>{% if b.is_done %}<a href="{# url_for('project.rtest', project_id=b.project.id, build_id=b.id) #}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
     </tr>
     {% else %}
     <tr>
