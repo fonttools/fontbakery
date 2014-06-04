@@ -372,6 +372,10 @@ class Project(db.Model):
 
         return file_diff
 
+    def latest_build(self):
+        build = ProjectBuild.query.filter_by(project_id=self.id)
+        return build.order_by("id desc").first()
+
 
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'
@@ -384,7 +388,8 @@ class ProjectBuild(db.Model):
     is_done = db.Column(db.Boolean(), default=False)
     created = db.Column(db.DateTime, default=datetime.now)
     modified = db.Column(db.Boolean(), default=False)
-    updated = db.Column(db.DateTime, default=datetime.now, onupdate=db.func.now())
+    updated = db.Column(db.DateTime, default=datetime.now,
+                        onupdate=db.func.now())
 
     @staticmethod
     def make_build(project, revision, force_sync=False):

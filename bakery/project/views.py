@@ -53,6 +53,8 @@ def before_request():
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
 
+
+
 # project resolve decorator
 def project_required(f):
     """ Decorator reads project_id from arguments list and resolve it
@@ -89,6 +91,15 @@ def project_required(f):
             return redirect(url_for('project.queue', project_id=p.id))
 
     return decorated_function
+
+
+@project.route('/<int:project_id>', methods=['GET'])
+@login_required
+@project_required
+def home(p):
+    if not p.latest_build():
+        return redirect(url_for('project.setup', project_id=p.id))
+    return redirect(url_for('project.history', project_id=p.id))
 
 
 # API methods
@@ -309,7 +320,8 @@ def ufileblob(p, revision=None):
 def history(p):
     """ Results of processing tests, for ttf files """
     b = ProjectBuild.query.filter_by(project=p).order_by("id desc").all()
-
+    if not len(b):
+        return redirect(url_for('project.setup', project_id=p.id))
     return render_template('project/history.html', project=p, builds=b)
 
 
