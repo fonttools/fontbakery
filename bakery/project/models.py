@@ -388,7 +388,8 @@ class ProjectBuild(db.Model):
     is_done = db.Column(db.Boolean(), default=False)
     created = db.Column(db.DateTime, default=datetime.now)
     modified = db.Column(db.Boolean(), default=False)
-    updated = db.Column(db.DateTime, default=datetime.now, onupdate=db.func.now())
+    updated = db.Column(db.DateTime, default=datetime.now,
+                        onupdate=db.func.now())
 
     @staticmethod
     def make_build(project, revision, force_sync=False):
