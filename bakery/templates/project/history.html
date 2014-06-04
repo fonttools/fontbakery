@@ -50,12 +50,12 @@
       <td class="success">{{ udata.success|length }}</td>
       <td class="warning">{{ udata.failure|length }}</td>
       <td class="danger">{{ udata.error|length }}</td>
-      <td><a href="{# url_for('project.utest', project_id=b.project.id, build_id=b.id) #}"> <i class="fa fa-file-text-o"> </i> </a></td>
+      <td><a href="{{ url_for('project.utests', project_id=b.project_id, revision=b.revision) }}"> <i class="fa fa-file-text-o"> </i> </a></td>
       {% set data = b.read_rtests_data() %}
       <td class="success">{{ data.success|length }}</td>
       <td class="warning">{{ data.failure|length }}</td>
       <td class="danger">{{ data.error|length }}</td>
-      <td>{% if b.is_done %}<a href="{# url_for('project.rtest', project_id=b.project.id, build_id=b.id) #}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
+      <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
     </tr>
     {% else %}
     <tr>
