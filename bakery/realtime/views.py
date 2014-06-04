@@ -95,7 +95,8 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
         if os.path.exists(filename) and os.path.isfile(filename):
             f = open(filename, 'r')
-            # TODO: make this work so that the whole file is sent in one go if the process has ended.
+            # TODO: make this work so that the whole file is sent
+            # in one go if the process has ended.
             while True:
                 line = f.readline()
                 #self.emit('message', 'read a line: ')
@@ -106,8 +107,9 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                         self.emit('message', line)
                     if line.startswith('End:'):
                         break
-                    # A small delay to reduce browser hammering. It slows down the
-                    # 'real time' log feel, comment this out for that.
+                    # A small delay to reduce browser hammering.
+                    # It slows down the 'real time' log feel, comment this
+                    # out for that.
                     gevent.sleep()
                 else:
                     #self.emit('message', 'blank \n')
@@ -115,7 +117,8 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
             f.close()
         else:
             # It is valid path and file name, because it is signed param.
-            self.emit('message', 'Wait: Log file is not available yet. Reload page later.')
+            self.emit('message', ('Wait: Log file is not available yet.'
+                                  ' Reload page later.'))
 
 
 @realtime.route('/socket.io/<path:remaining>')
@@ -128,5 +131,5 @@ def socketio(remaining):
     socketio_manage(request.environ, {
         '/status': StatusNamespace,
         '/build': BuildNamespace,
-        }, request=real_request)
+    }, request=real_request)
     return Response()
