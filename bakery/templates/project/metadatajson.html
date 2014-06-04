@@ -59,16 +59,19 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/external/diff_match_patch_uncompressed.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/formatters.min.js') }}"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='libs/jsondiffpatch/src/formatters/html.css') }}" type="text/css" />
-<link rel="stylesheet" href="{{ url_for('static', filename='libs/jsondiffpatch/src/formatters/annotated.css') }}" type="text/css" />
 <script>
 $(document).ready(function () {
-  var left = {{ metadata|safe }};
-            var right = {{ metadata_new|safe }};
+  var left = {{ metadata|safe or {} }};
+            var right = {{ metadata_new|safe or {} }};
             var delta = jsondiffpatch.diff(left, right);
 
-  document.getElementById('diff').innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+  var visualdiff = document.getElementById('diff');
+  if (visualdiff) {
+    visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+  }
 
 
 // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/

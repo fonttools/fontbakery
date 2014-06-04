@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
 import datetime
+
 from bakery.app import db
 
 
@@ -25,6 +25,32 @@ class ProjectCache(db.Model):
     login = db.Column(db.String(60), index=True)
     data = db.Column(db.PickleType())
     updated = db.Column(db.DateTime(timezone=False), default=datetime.datetime)
+
+    @classmethod
+    def get_user_cache(cls, username):
+        return ProjectCache.query.filter_by(login=username).first()
+
+    @classmethod
+    def refresh_repos(cls, repos, username):
+        """ Stores repositories data received from github to database
+
+            .. note::
+
+            Each item in repos data is strongly formed and defined in github
+            API documentation https://developer.github.com/v3/repos/#response
+        """
+        if not repos:
+            return
+        cache = ProjectCache.get_user_cache(username)
+        if not cache:
+            cache = ProjectCache()
+            cache.login = username
+        cache.data = repos
+        # note the time
+        cache.updated = datetime.datetime.utcnow()
+        # add the cache to the database
+        db.session.add(cache)
+        db.session.commit()
 
 
 class FontStats(db.Model):

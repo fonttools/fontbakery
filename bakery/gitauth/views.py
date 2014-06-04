@@ -17,10 +17,12 @@
 
 from flask import (Blueprint, request, flash, g, session, redirect,
                    url_for, current_app, Markup)
-
-from .models import User
-from bakery.app import db, github
 from flask.ext.babel import gettext as _
+
+from bakery.app import db, github
+from bakery.gitauth.models import User
+from bakery.tasks import refresh_repositories
+
 
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
 
@@ -56,8 +58,8 @@ def me():
 def login():
     if session.get('user_id', None) is None:
         redirect_uri = url_for('.authorized',
-                                next=request.args.get('next') or request.referrer or None,
-                                _external=True)
+                               next=request.args.get('next') or request.referrer or None,
+                               _external=True)
         params = {'redirect_uri': redirect_uri, 'scope': 'user:email,public_repo'}
         return redirect(github.get_authorize_url(**params))
     else:
@@ -65,26 +67,11 @@ def login():
         return redirect(url_for('frontend.splash'))
 
 
-@gitauth.route('/callback')
-def authorized(next=None):
-    next_url = request.args.get('next') or url_for('frontend.splash')
+def authorize_user(me, token=None):
+    """ Return authorized user.
 
-    if not 'code' in request.args:
-        flash(Markup(_('You did not authorize this application with Github. Please see <a href="https://github.com/xen/fontbakery/blob/master/INSTALL.md#github-authorization">INSTALL</a> file for details.')))
-        return redirect(next_url)
-
-    redirect_uri = url_for('.authorized', _external=True)
-    data = dict(code=request.args['code'], redirect_uri=redirect_uri)
-    auth = github.get_auth_session(data=data)
-
-    token = auth.access_token
-    me = auth.get('user').json()
-
+        Method saves user session cookies `user_id` """
     user = User.get_or_init(me['login'])
-
-    # if user.id is None:
-    #     new record isn't saved yet
-    #     flash(_('Welcome to Bakery.'))
 
     # update user data
     user.name = me.get('name', me.get('login'))
@@ -96,8 +83,30 @@ def authorized(next=None):
     db.session.add(user)
     db.session.commit()
 
+    refresh_repositories.delay(user.login, token)
+
+    return user
+
+
+@gitauth.route('/callback')
+def authorized(next=None):
+    next_url = request.args.get('next') or url_for('frontend.splash')
+
+    if not 'code' in request.args:
+        flash(Markup(_(('You did not authorize this application with Github.'
+                        ' Please see <a href="https://github.com/xen/fontbakery/blob/master/INSTALL.md#github-authorization">INSTALL</a>'
+                        ' file for details.'))))
+        return redirect(next_url)
+
+    redirect_uri = url_for('.authorized', _external=True)
+    data = dict(code=request.args['code'], redirect_uri=redirect_uri)
+    auth = github.get_auth_session(data=data)
+
+    user = authorize_user(auth.get('user').json(), auth.access_token)
+
     session['user_id'] = user.id
     g.user = user
+
     return redirect(next_url)
 
 

@@ -38,6 +38,19 @@ from fontaine.ext.subsets import Extension as SubsetExtension
 from .utils import RedisFd
 
 
+@job
+def refresh_repositories(username, token):
+    from bakery.app import github
+    from bakery.github import GithubSessionAPI, GithubSessionException
+    from bakery.settings.models import ProjectCache
+    _github = GithubSessionAPI(github, token)
+    try:
+        repos = _github.get_repo_list()
+        ProjectCache.refresh_repos(repos, username)
+    except GithubSessionException, ex:
+        print(ex.message)
+
+
 def run(command, cwd, log):
     """ Wrapper for subprocess.Popen with custom logging support.
 
