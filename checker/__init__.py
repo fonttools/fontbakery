@@ -19,11 +19,12 @@ import tests
 from .base import run_suite, make_suite
 
 
-def run_set(path, target, test_method=None):
+def run_set(path, target, test_method=None, log=None):
     """ Return tests results for font file, target """
     import os
     assert os.path.exists(path)
-    return run_suite(make_suite(path, target, test_method=test_method))
+    tests_suite = make_suite(path, target, test_method=test_method, log=log)
+    return run_suite(tests_suite)
 
 
 def parse_test_results(result):

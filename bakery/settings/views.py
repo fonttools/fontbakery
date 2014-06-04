@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-import datetime
 from giturlparse import parse
 import logging
 from flask.ext.babel import gettext as _
@@ -28,6 +26,7 @@ from ..decorators import login_required
 from .models import ProjectCache
 from ..models import Project
 from ..utils import signify
+from bakery.github import GithubSessionAPI, GithubSessionException
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -36,7 +35,7 @@ settings = Blueprint('settings', __name__, url_prefix='/settings')
 @login_required
 def repos():
     # pylint:disable-msg=E1101
-    cache = ProjectCache.query.filter_by(login=g.user.login).first()
+    cache = ProjectCache.get_user_cache(g.user.login)
     myprojects = Project.query.filter_by(
         login=g.user.login, is_github=True).all()
     mygit = Project.query.filter_by(login=g.user.login, is_github=False).all()
@@ -47,60 +46,23 @@ def repos():
             p[i.full_name] = i
     # import ipdb; ipdb.set_trace()
     return render_template('settings/index.html',
-                           cache=cache,
-                           projects=p,
-                           gitprojects=mygit
-                           )
+                           cache=cache, projects=p, gitprojects=mygit)
 
 
 @settings.route('/update', methods=['POST'])
 @login_required
 def update():
-    """Update the list of the user's githib repos"""
-    auth = github.get_session(token=g.user.token)
+    """Update the list of the user's github repos"""
     if g.user is not None:
         if g.user.login != u'offline':
-            page = 0
-            _repos = []
-            while True:
-                resp = auth.get('/user/repos?per_page=100&page=%s' % page,
-                                data={'type': 'all'})
-                if resp.status_code == 200:
-                    _repos.extend(resp.json())
-                    if len(resp.json()) == 100:
-                        page = page + 1
-                        continue
-                else:
-                    flash(_('Could not connect to Github to load repos list.'))
-                break
-
-            orgs = auth.get('/user/orgs')
-            if orgs.status_code == 200:
-                for x in orgs.json():
-                    opage = 0
-                    while True:
-                        oresp = auth.get('/orgs/%s/repos?per_page=100&page=%s' % (x['login'], opage), data={'type': 'all'})
-                        if oresp.status_code == 200:
-                            _repos.extend(oresp.json())
-                            if len(oresp.json()) == 100:
-                                opage = opage + 1
-                                continue
-                        else:
-                            flash(_('Error get repos for organization %(login)s', login=x['login']))
-                        break
-
-            if _repos:
-                cache = ProjectCache.query.filter_by(login=g.user.login).first()
-                if not cache:
-                    cache = ProjectCache()
-                    cache.login = g.user.login
-                cache.data = _repos
-                # note the time
-                cache.updated = datetime.datetime.utcnow()
-                # add the cache to the database
-                db.session.add(cache)
-                db.session.commit()
-                flash(_('Repositories refreshed.'))
+            _github = GithubSessionAPI(github, g.user.token)
+            try:
+                _repos = _github.get_repo_list()
+                ProjectCache.refresh_repos(_repos, g.user.login)
+                if _repos:
+                    flash(_('Repositories refreshed.'))
+            except GithubSessionException, ex:
+                flash(ex.message)
         else:
             flash(_('Offline user has no Github account.'))
     else:

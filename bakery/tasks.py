@@ -38,6 +38,19 @@ from fontaine.ext.subsets import Extension as SubsetExtension
 from .utils import RedisFd
 
 
+@job
+def refresh_repositories(username, token):
+    from bakery.app import github
+    from bakery.github import GithubSessionAPI, GithubSessionException
+    from bakery.settings.models import ProjectCache
+    _github = GithubSessionAPI(github, token)
+    try:
+        repos = _github.get_repo_list()
+        ProjectCache.refresh_repos(repos, username)
+    except GithubSessionException, ex:
+        print(ex.message)
+
+
 def run(command, cwd, log):
     """ Wrapper for subprocess.Popen with custom logging support.
 
@@ -746,7 +759,7 @@ def upstream_revision_tests(project, revision):
     return yaml.safe_load(open(_out_yaml, 'r'))
 
 
-def result_tests(project, build):
+def result_tests(project, build, log=None):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
@@ -760,7 +773,7 @@ def result_tests(project, build):
     result = {}
     os.chdir(_out_src)
     for font in glob.glob("*.ttf"):
-        result[font] = run_set(op.join(_out_src, font), 'result')
+        result[font] = run_set(op.join(_out_src, font), 'result', log=log)
 
     if not result:
         return
@@ -775,7 +788,7 @@ def result_tests(project, build):
     return d
 
 
-def result_fixes(project, build):
+def result_fixes(project, build, log=None):
     from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
@@ -786,7 +799,7 @@ def result_fixes(project, build):
                         ('%(login)s/%(id)s.out/'
                          '%(build)s.%(revision)s.rtests.yaml') % param)
 
-    fix_font(_out_yaml, _out_src)
+    fix_font(_out_yaml, _out_src, log=log)
 
 
 def discover_dashboard(project, build, log):
@@ -849,9 +862,9 @@ def process_project(project, build, revision, force_sync=False):
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
-            result_tests(project, build)
+            result_tests(project, build, log)
             # apply fixes
-            result_fixes(project, build)
+            result_fixes(project, build, log)
             # discover_dashboard(project, build, log)
             log.write('Bake Succeeded!\n', prefix='### ')
 

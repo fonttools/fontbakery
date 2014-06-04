@@ -142,7 +142,7 @@
 <div class="col-md-6 col-xs-9">
   <div class="input-group">
     <span class="input-group-addon"><i class="fa fa-code-fork"></i> </span>
-    <input type="text" class="form-control" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
+    <input type="text" class="form-control" id="typeahead" data-provide="typeahead" autocomplete="off" name="clone" placeholder="git://[login:password@]domain.tld[:port]/path/to/repo.git">
     <span class="input-group-btn">
       <button class="btn btn-default" type="submit" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm') }}">{{ _("Add Repository") }}</button>
     </span>
@@ -318,6 +318,7 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{{ url_for('static', filename='libs/floatThead/dist/jquery.floatThead.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='libs/typeahead/bootstrap3-typeahead.min.js') }}"></script>
 <script type="text/javascript">
 $('#dashboard').floatThead();
 
@@ -368,6 +369,26 @@ $(document).ready(function() {
 
     $(".stat-rate").each(function() { grandTotals.rate += parseInt( $(this).attr('data-sort-value') ); });
     $(".stat-rate-total").html(shorten(grandTotals.rate));
+
+    var source = {{ cache | safe }};
+
+    $('#typeahead').typeahead({
+        source: function(query, process) {
+            var result = [];
+            for (var i = 0; i < source.length; i++) {
+                result.push(source[i].name);
+            }
+            return result;
+        },
+        updater: function(item){
+            for (var i = 0; i < source.length; i++) {
+                if (item == source[i].name)
+                {
+                    return source[i].url;
+                }
+            }
+        }
+    });
 
     // Make the stats numbers prettyprinted
     // $(".stats").number(true, 0, '.', ',');

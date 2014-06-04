@@ -58,7 +58,7 @@ class BakeryTestCase(unittest.TestCase):
 class BakeryTestResult(unittest.TestResult):
 
     def __init__(self, stream=None, descriptions=None, verbosity=None,
-                    success_list=None, error_list=None, failure_list=None):
+                 success_list=None, error_list=None, failure_list=None):
         self.sl = success_list
         self.el = error_list
         self.fl = failure_list
@@ -91,7 +91,7 @@ class BakeryTestResult(unittest.TestResult):
 
 class BakeryTestRunner(unittest.TextTestRunner):
     def __init__(self, descriptions=True, verbosity=1, resultclass=None,
-                    success_list=None, error_list=None, failure_list=None):
+                 success_list=None, error_list=None, failure_list=None):
 
         self.sl = success_list
         self.el = error_list
@@ -142,7 +142,22 @@ class tags(object):
         return f
 
 
-def make_suite(path, definedTarget, test_method=None):
+def logging(func, log):
+
+    def f(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+            if hasattr(func, '_err_msg'):
+                log.write('... %s .. FAIL\n' % func._testMethodName)
+            else:
+                log.write('... %s .. OK\n' % func._testMethodName)
+        except:
+            log.write('... %s .. FAIL\n' % func._testMethodName)
+            raise
+    return f
+
+
+def make_suite(path, definedTarget, test_method=None, log=None):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
     """
@@ -156,6 +171,10 @@ def make_suite(path, definedTarget, test_method=None):
             for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestCase):
                 if test_method and test_method != test._testMethodName:
                     continue
+
+                if log:
+                    # decorate function to write messages to build log
+                    test = logging(test, log)
                 suite.addTest(test)
 
     return suite
