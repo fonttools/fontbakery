@@ -13,7 +13,8 @@
     "jquery-number": "teamdf/jquery-number#~2.1.3",
     "d3": "mbostock/d3",
     "floatThead": "~1.2.7",
-    "jsondiffpatch": "~0.1.6"
+    "jsondiffpatch": "~0.1.6",
+    "typeahead": "bassjobsen/Bootstrap-3-Typeahead"
   },
   "devDependencies": {}
 }

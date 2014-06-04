@@ -19,8 +19,9 @@ from flask import (Blueprint, render_template, g, request,
                    current_app, send_from_directory, redirect)
 
 from bakery.app import pages
-from ..project.models import Project
-from ..settings.models import FontStats
+from bakery.project.models import Project
+from bakery.settings.models import FontStats, ProjectCache
+
 
 frontend = Blueprint('frontend', __name__)
 
@@ -39,7 +40,15 @@ def splash():
         return render_template('splash.html')
     else:
         projects = Project.query.filter_by(login=g.user.login).all()
-        return render_template('dashboard.html', repos=projects)
+        cache = ProjectCache.get_user_cache(g.user.login)
+        if cache:
+            import json
+            _func = lambda x: {"url": x['git_url'], "name": x['full_name']}
+            cache = json.dumps(map(_func, cache.data))
+            print cache
+        else:
+            cache = []
+        return render_template('dashboard.html', repos=projects, cache=cache)
 
 
 @frontend.route('/docs/', defaults={'path': 'index'})
