@@ -28,6 +28,7 @@ PYPATH = 'python'
 
 
 def fix_nbsp(font_path, log=None):
+    """ Fix width for space and nbsp """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-nbsp.py')
     subprocess.Popen("{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path),
                      shell=True, env=ENV).communicate()
@@ -37,6 +38,7 @@ def fix_nbsp(font_path, log=None):
 
 
 def fix_metrics(font_path, log=None):
+    """ Fix vmet table with actual min and max values """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-vmet.py')
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
@@ -44,11 +46,13 @@ def fix_metrics(font_path, log=None):
 
 
 def fix_name_ascii(font_path, log=None):
+    """ Replacing non ascii names in copyright """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-ascii-name.py')
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
 
 
 def fix_fstype_to_zero(font_path, log=None):
+    """ Fix fsType to zero """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-fstype.py')
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()
@@ -56,6 +60,7 @@ def fix_fstype_to_zero(font_path, log=None):
 
 
 def fix_ttf_stylenames(font_path, log=None):
+    """ Fix style names """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-stylenames.py')
     subprocess.Popen("{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path), shell=True, env=ENV).communicate()
     subprocess.Popen("rm {0}".format(font_path), shell=True).communicate()

@@ -799,7 +799,7 @@ def result_fixes(project, build, log=None):
                         ('%(login)s/%(id)s.out/'
                          '%(build)s.%(revision)s.rtests.yaml') % param)
 
-    fix_font(_out_yaml, _out_src)
+    fix_font(_out_yaml, _out_src, log=log)
 
 
 def discover_dashboard(project, build, log):

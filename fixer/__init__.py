@@ -43,7 +43,7 @@ available_fixes = {
 }
 
 
-def fix_font(yaml_file, path):
+def fix_font(yaml_file, path, log=None):
     """ yaml — font bakery checker tests results yaml file. This file
                will be modified when all fixes apply
         path — font output folder in specified format
@@ -63,8 +63,11 @@ def fix_font(yaml_file, path):
                 failure_list.append(test)
 
         if apply_fixes:
+            log.write('Applying fixes\n', prefix="### ")
             font_path = os.path.join(path, font)
             for fun in apply_fixes:
+                if log:
+                    log.write('Apply fix:  %s\n' % fun.__doc__)
                 fun(font_path)
 
         del result[font]['failure']
