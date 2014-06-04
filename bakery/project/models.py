@@ -372,6 +372,10 @@ class Project(db.Model):
 
         return file_diff
 
+    def latest_build(self):
+        build = ProjectBuild.query.filter_by(project_id=self.id)
+        return build.order_by("id desc").first()
+
 
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'

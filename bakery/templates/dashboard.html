@@ -304,9 +304,10 @@
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
           <a class="btn btn-xs btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
-          {% if b.is_done %}<a class="btn btn-xs" href="{# url_for('project.zip', project_id=repo.id, build_id=repo.bid) #}"> <i class="fa fa-download"></i> </a>{% endif %}
+          {% set build = repo.latest_build() %}
+          {% if build and build.is_done %}<a class="btn btn-xs" href="{# url_for('project.zip', project_id=repo.id, build_id=repo.bid) #}"> <i class="fa fa-download"></i> </a>{% endif %}
         </td>
       </tr>
     {%- endfor %}
