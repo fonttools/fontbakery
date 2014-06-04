@@ -417,7 +417,7 @@ def copy_ttx_files(project, build, log):
         run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name,
                                                       out_name=_out_name),
             cwd=_out_src, log=log)
-        run("ttx -i -q {}".format(_out_name), cwd=_out_src, log=log)
+        run("ttx {}".format(_out_name), cwd=_out_src, log=log)
         run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
             cwd=_out_src, log=log)
 
