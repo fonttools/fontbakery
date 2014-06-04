@@ -1,8 +1,7 @@
 language: python
 before_install:
+  sudo apt-get update -qq
   sudo apt-get install -qq wget
-  wget https://dl.dropboxusercontent.com/u/1927942/fontforge_2.0.20140101-1_amd64.deb
-  sudo dpkg --install fontforge_2.0.20140101-1_amd64.deb
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
