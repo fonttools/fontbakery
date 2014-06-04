@@ -759,7 +759,7 @@ def upstream_revision_tests(project, revision):
     return yaml.safe_load(open(_out_yaml, 'r'))
 
 
-def result_tests(project, build):
+def result_tests(project, build, log=None):
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
 
@@ -773,7 +773,7 @@ def result_tests(project, build):
     result = {}
     os.chdir(_out_src)
     for font in glob.glob("*.ttf"):
-        result[font] = run_set(op.join(_out_src, font), 'result')
+        result[font] = run_set(op.join(_out_src, font), 'result', log=log)
 
     if not result:
         return
@@ -788,7 +788,7 @@ def result_tests(project, build):
     return d
 
 
-def result_fixes(project, build):
+def result_fixes(project, build, log=None):
     from .app import app
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
@@ -862,9 +862,9 @@ def process_project(project, build, revision, force_sync=False):
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
-            result_tests(project, build)
+            result_tests(project, build, log)
             # apply fixes
-            result_fixes(project, build)
+            result_fixes(project, build, log)
             # discover_dashboard(project, build, log)
             log.write('Bake Succeeded!\n', prefix='### ')
 
