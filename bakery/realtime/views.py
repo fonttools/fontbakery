@@ -87,6 +87,12 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
 
     def emit_file(self, logfile):
         filename = os.path.join(self._data_root, logfile)
+
+        tries = 10
+        while not os.path.exists(filename) and tries:
+            gevent.sleep(0.3)
+            tries -= 1
+
         if os.path.exists(filename) and os.path.isfile(filename):
             f = open(filename, 'r')
             # TODO: make this work so that the whole file is sent in one go if the process has ended.
