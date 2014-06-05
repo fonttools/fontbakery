@@ -876,7 +876,6 @@ def process_project(project, build, revision, force_sync=False):
                                 '%(build)s.%(revision)s') % param)
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
-
         finally:
             # save that project is done
             build.is_done = True
