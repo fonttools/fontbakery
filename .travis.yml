@@ -5,5 +5,7 @@ before_install:
   - wget https://dl.dropboxusercontent.com/u/1927942/fontforge_2.0.20140101-1_amd64.deb
   - sudo dpkg --install fontforge_2.0.20140101-1_amd64.deb
 install:
+  - export LD_LIBRARY_PATH=/usr/local/lib
+  - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/dist-packages
   - "pip install -r requirements.txt"
 script: nosetests tests
