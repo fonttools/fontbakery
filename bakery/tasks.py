@@ -409,24 +409,15 @@ def copy_ttx_files(project, build, log):
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
 
-        _out_ttx_name = "{familyname}-{stylename}"
-        _out_ttx_name = _out_ttx_name.format(familyname=familyNameNoWhitespace,
-                                             stylename=styleNameNoWhitespace)
+        # Define the canonical filenames format
+        _out_name = "{familyname}-{stylename}.ttx".format(familyname=familyNameNoWhitespace,
+                                                          stylename=styleNameNoWhitespace)
 
-        if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
-            _out_name = '{}.ttf.ttx'.format(_out_ttx_name)
-        elif font.sfntVersion == 'OTTO':  # OTF
-            _out_name = '{}.otf.ttx'.format(_out_ttx_name)
         # Copy the upstream ttx file to the build directory
+        run("cp '{}' '{}'".format(_ttx_path, _out_name), cwd=_out_src, log=log)
 
-        run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name,
-                                                      out_name=_out_name),
-            cwd=_out_src, log=log)
         # Compile it
         run("ttx {}".format(_out_name), cwd=_out_src, log=log)
-        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
-            cwd=_out_src, log=log)
 
         # If OTF, convert it to TTF with FontForge
         # TODO: do this directly, since this autoconvert.py is just 3 lines,
@@ -438,7 +429,7 @@ def copy_ttx_files(project, build, log):
             cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
                    " '{out}{ttx_name}.ttf'")
             cmd = cmd.format(out_src=_out_src,
-                             ttx_name=_out_ttx_name,
+                             ttx_name=_out_name,
                              out=_out)
             run(cmd, cwd=scripts_folder, log=log)
         # If TTF already, move it up 
