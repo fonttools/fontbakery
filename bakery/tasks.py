@@ -418,8 +418,12 @@ def copy_ttx_files(project, build, log):
                                                       out_name=_out_name),
             cwd=_out_src, log=log)
         run("ttx {}".format(_out_name), cwd=_out_src, log=log)
-        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
-            cwd=_out_src, log=log)
+        if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
+            run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
+                cwd=_out_src, log=log)
+        elif font.sfntVersion == 'OTTO':  # OTF
+            run("mv {0}.otf.otf {0}.otf".format(_out_ttx_name),
+                cwd=_out_src, log=log)
 
         if font.sfntVersion == 'OTTO':  # OTF
             scripts_folder = op.join(app.config['ROOT'], 'scripts')
