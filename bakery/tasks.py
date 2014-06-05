@@ -371,16 +371,19 @@ def copy_ttx_files(project, build, log):
 
     for ttx_file in ttx_files:
         _ttx_path = op.join(_in, ttx_file)
+        # check if the file is there
         if not op.exists(_ttx_path):
             run("echo file '{}' not found".format(_ttx_path),
                 cwd=_out, log=log)
             continue
 
+        # open it
         font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
                             verbose=False, allowVID=False)
         font.importXML(_ttx_path, quiet=True)
         _ttx_name = op.splitext(op.basename(_ttx_path))[0]
-
+        # define how to read NAME table entries
+        # TODO: move this to a generic class, so its available in eg the tests scripts
         def nameTableRead(font, NameID, fallbackNameID=False):
             for record in font['name'].names:
                 if record.nameID == NameID:
@@ -393,42 +396,43 @@ def copy_ttx_files(project, build, log):
             if fallbackNameID:
                 return nameTableRead(font, fallbackNameID)
 
+        # Find the style name
         styleName = nameTableRead(font, 17, 2)
         # Always have a regular style
         if styleName == 'Normal':
             styleName = 'Regular'
 
-        #   NameID=1 is required
+        # Find the familyName
         familyName = nameTableRead(font, 16, 1)
+
         # Remove whitespace from names
         styleNameNoWhitespace = re.sub(r'\s', '', styleName)
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
 
-        _out_ttx_name = "{familyname}-{stylename}"
-        _out_ttx_name = _out_ttx_name.format(familyname=familyNameNoWhitespace,
-                                             stylename=styleNameNoWhitespace)
+        # Define the canonical filenames format
+        _out_name = "{familyname}-{stylename}.ttx".format(familyname=familyNameNoWhitespace,
+                                                          stylename=styleNameNoWhitespace)
 
-        if font.sfntVersion == '\x00\x01\x00\x00':  # TTF
-            _out_name = '{}.ttf.ttx'.format(_out_ttx_name)
-        elif font.sfntVersion == 'OTTO':  # OTF
-            _out_name = '{}.otf.ttx'.format(_out_ttx_name)
+        # Copy the upstream ttx file to the build directory
+        run("cp '{}' '{}'".format(_ttx_path, _out_name), cwd=_out_src, log=log)
 
-        run("cp '{}' '{}'".format(_ttx_path, _out_src), cwd=_out, log=log)
-        run("mv '{ttx_name}.ttx' '{out_name}'".format(ttx_name=_ttx_name,
-                                                      out_name=_out_name),
-            cwd=_out_src, log=log)
+        # Compile it
         run("ttx {}".format(_out_name), cwd=_out_src, log=log)
-        run("mv {0}.ttf.ttf {0}.ttf".format(_out_ttx_name),
-            cwd=_out_src, log=log)
 
+        # If OTF, convert it to TTF with FontForge
+        # TODO: do this directly, since this autoconvert.py is just 3 lines,
+        #  import fontforge
+        #  font = fontforge.open(sys.argv[1])
+        #  font.generate(sys.argv[2])
         if font.sfntVersion == 'OTTO':  # OTF
             scripts_folder = op.join(app.config['ROOT'], 'scripts')
             cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
                    " '{out}{ttx_name}.ttf'")
             cmd = cmd.format(out_src=_out_src,
-                             ttx_name=_out_ttx_name,
+                             ttx_name=_out_name,
                              out=_out)
             run(cmd, cwd=scripts_folder, log=log)
+        # If TTF already, move it up 
         else:
             run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name),
                 _out_src, log=log)
