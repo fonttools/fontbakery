@@ -45,7 +45,6 @@ def splash():
             import json
             _func = lambda x: {"url": x['git_url'], "name": x['full_name']}
             cache = json.dumps(map(_func, cache.data))
-            print cache
         else:
             cache = []
         return render_template('dashboard.html', repos=projects, cache=cache)

@@ -312,6 +312,29 @@ def ufileblob(p, revision=None):
         abort(500)
 
 
+@project.route('/<int:project_id>/zip/<int:build_id>')
+@login_required
+@project_required
+def zip(p, build_id):
+    build = ProjectBuild.query.filter_by(project_id=p.id, id=build_id)
+    build = build.first_or_404()
+
+    param = build.get_path_params()
+    zip_file = "%(login)s/%(id)s.out/%(build)s.%(revision)s.zip"
+
+    try:
+        path = os.path.join(current_app.config['DATA_ROOT'], zip_file % param)
+        data = open(path).read()
+    except (OSError, IOError):
+        abort(404)
+
+    response = make_response(data)
+    response.headers['Content-Type'] = 'application/octet-stream'
+    disposition = 'attachment; filename=%s' % os.path.basename(path)
+    response.headers['Content-Disposition'] = disposition
+    return response
+
+
 # Builds views
 
 @project.route('/<int:project_id>/build', methods=['GET'])
