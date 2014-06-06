@@ -1,6 +1,6 @@
 language: python
 before_install:
-  - sudo add-apt-repository ppa:hash-3g/fontforge
+  - sudo add-apt-repository --yes ppa:hash-3g/fontforge
   - sudo apt-get update -qq
   - sudo apt-get install -qq wget libtiff libgc-dev libglib2.0-dev libgif-dev libtiff-dev
   - sudo apt-get install fontforge
