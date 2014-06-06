@@ -582,8 +582,7 @@ def ttx_process(project, build, log):
 
 def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
     cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-           " --notdef-outline --recommended-glyphs"
-           " --name-IDs='*' --hinting")
+           " --notdef-outline --name-IDs='*' --hinting")
     if args:
         cmd += " " + args
     cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
