@@ -1,7 +1,7 @@
 <img src="https://raw.github.com/googlefonts/fontbakery/master/docs/image.png">
 
 [![Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
-[![Coverage Status](https://coveralls.io/repos/hash3g/fontbakery/badge.png)](https://coveralls.io/r/hash3g/fontbakery)
+[![Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
 
 ## Introduction
 
