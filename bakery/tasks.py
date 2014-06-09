@@ -293,7 +293,7 @@ def copy_ufo_files(project, build, log):
         # Get the styleName
         styleName = _in_ufoFontInfo['styleName']
         # Always have a regular style
-        if styleName == 'Normal':
+        if styleName == 'Normal' or 'Roman':
             styleName = 'Regular'
         # Get the familyName, if its not set
         if not familyName:
@@ -399,7 +399,7 @@ def copy_ttx_files(project, build, log):
         # Find the style name
         styleName = nameTableRead(font, 17, 2)
         # Always have a regular style
-        if styleName == 'Normal':
+        if styleName == 'Normal' or 'Roman':
             styleName = 'Regular'
 
         # Find the familyName
