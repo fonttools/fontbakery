@@ -3,4 +3,6 @@ omit =
     */python?.?/*
     */site-packages/nose/*
     */venv/*
+    */usr/*
+    */virtualenv/*
 
