@@ -850,7 +850,7 @@ def process_project(project, build, revision, force_sync=False):
         # this code change upstream repository
         try:
             run("git checkout %s" % revision, cwd=_in, log=log)
-            log.write('Bake Begins!\n', prefix='### ')
+            log.write('Bake Begins!\n', prefix='# ')
             copy_and_rename_process(project, build, log)
             ttfautohint_process(project, build, log)
             ttx_process(project, build, log)
@@ -863,9 +863,8 @@ def process_project(project, build, revision, force_sync=False):
             # apply fixes
             result_fixes(project, build, log)
             # discover_dashboard(project, build, log)
-            log.write('Bake Succeeded!\n', prefix='### ')
-
             # zip out folder with revision
+            # TODO: move these variable definitions inside zipdir() so they are the same as other bake methods
             param = {'login': project.login, 'id': project.id,
                      'revision': build.revision, 'build': build.id}
             _out_src = op.join(app.config['DATA_ROOT'],
@@ -878,6 +877,7 @@ def process_project(project, build, revision, force_sync=False):
             build.is_done = True
             db.session.add(build)
             db.session.commit()
+            log.write('Bake Succeeded!\n', prefix='# ')
 
     log.close()
 
@@ -922,7 +922,7 @@ def zipdir(path, url, log):
             zipf.write(op.join(root, file), arcpath)
             log.write('add %s\n' % arcpath)
     zipf.close()
-    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
+    log.write('#### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
                                                              url, basename))
 
 
