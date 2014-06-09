@@ -410,14 +410,14 @@ def copy_ttx_files(project, build, log):
         familyNameNoWhitespace = re.sub(r'\s', '', familyName)
 
         # Define the canonical filenames format
-        _out_name = "{familyname}-{stylename}.ttx".format(familyname=familyNameNoWhitespace,
+        _out_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace,
                                                           stylename=styleNameNoWhitespace)
 
         # Copy the upstream ttx file to the build directory
-        run("cp '{}' '{}'".format(_ttx_path, _out_name), cwd=_out_src, log=log)
+        run("cp '{}' '{}.ttx'".format(_ttx_path, _out_name), cwd=_out_src, log=log)
 
         # Compile it
-        run("ttx {}".format(_out_name), cwd=_out_src, log=log)
+        run("ttx {}.ttx".format(_out_name), cwd=_out_src, log=log)
 
         # If OTF, convert it to TTF with FontForge
         # TODO: do this directly, since this autoconvert.py is just 3 lines,
@@ -432,9 +432,9 @@ def copy_ttx_files(project, build, log):
                              ttx_name=_out_name,
                              out=_out)
             run(cmd, cwd=scripts_folder, log=log)
-        # If TTF already, move it up 
+        # If TTF already, move it up
         else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_ttx_name),
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
                 _out_src, log=log)
 
 
@@ -582,8 +582,7 @@ def ttx_process(project, build, log):
 
 def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
     cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-           " --notdef-outline --recommended-glyphs"
-           " --name-IDs='*' --hinting")
+           " --notdef-outline --name-IDs='*' --hinting")
     if args:
         cmd += " " + args
     cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
@@ -610,12 +609,6 @@ def subset_process(project, build, log):
         glyphs = open(SubsetExtension.get_subset_path(subset)).read()
         os.chdir(_out_src)
         for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
-            if name.endswith('.ttx') and project.source_files_type == 'ttx':
-                # after copy_ttx_files executed in source directory
-                # resulted truetype files does have double extension
-                # e.g. FontFamily-WeightStyle.ttf.ttx
-                name = name[:-4]
-
             name = name[:-4]  # cut .ufo|.ttx
             execute_pyftsubset(subset, name, _out, glyphs=glyphs, log=log)
 
@@ -880,7 +873,6 @@ def process_project(project, build, revision, force_sync=False):
                                 '%(build)s.%(revision)s') % param)
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
-
         finally:
             # save that project is done
             build.is_done = True
