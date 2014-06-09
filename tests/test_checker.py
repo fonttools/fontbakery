@@ -271,10 +271,10 @@ class CheckerTest(unittest.TestCase):
     #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
     #     self.assertInFailure('test_font_weight_matches_italic_style', run_set(p, 'result'))
 
-    def test_result_metadata_designer_exists_in_profiles_csv_success(self):
-        # TODO: create XXX_failure test
-        p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
-        self.assertInSuccess('test_metadata_designer_exists_in_profiles_csv', run_set(p, 'result', 'test_metadata_designer_exists_in_profiles_csv'))
+    # def test_result_metadata_designer_exists_in_profiles_csv_success(self):
+    #     # TODO: create XXX_failure test
+    #     p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Regular.ttf')
+    #     self.assertInSuccess('test_metadata_designer_exists_in_profiles_csv', run_set(p, 'result', 'test_metadata_designer_exists_in_profiles_csv'))
 
     def test_result_is_fsType_not_set_failure(self):
         # TODO: create XXX_success test
