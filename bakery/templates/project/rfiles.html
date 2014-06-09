@@ -12,6 +12,7 @@
 {{ subnav_build('rfiles') }}
 
 <h4>{{ _("Baked Files") }}</h4>
+<div><a href="{{ url_for('project.zip', project_id=build.project_id, build_id=build.id) }}">{{ build.id }}.{{ build.revision }}.zip</a></div>
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree(tree) }}
 
