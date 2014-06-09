@@ -8,6 +8,6 @@ install:
   - pip install coverage
   - "pip install -r requirements.txt"
   - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
-script: coverage run nosetests tests
+script: nosetests --with-coverage tests
 after_success:
   coveralls
