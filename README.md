@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
+[![Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
 
 ## Introduction
 
