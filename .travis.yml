@@ -5,7 +5,7 @@ before_install:
   - sudo apt-get install fontforge
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
-  - pip install coverage coveralls
+  - pip install coverage python-coveralls
   - "pip install -r requirements.txt"
 script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" coverage run -m nose.__main__ tests
 after_success:
