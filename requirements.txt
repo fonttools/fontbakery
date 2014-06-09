@@ -24,7 +24,7 @@ giturlparse.py
 # builder and checker
 TTFQuery
 -e git+http://github.com/behdad/fonttools.git#egg=fonttools
-git+https://github.com/davelab6/pyfontaine.git
+-e git+https://github.com/davelab6/pyfontaine.git#egg=fontaine
 freetype-py
 robofab
 numpy
