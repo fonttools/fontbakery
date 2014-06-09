@@ -7,7 +7,6 @@ install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - pip install coverage coveralls
   - "pip install -r requirements.txt"
-  - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
-script: LANG="en" coverage run -m nose.__main__ tests
+script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" coverage run -m nose.__main__ tests
 after_success:
   coveralls
