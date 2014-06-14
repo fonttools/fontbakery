@@ -262,6 +262,9 @@ class BehaviourCopyProcessAbstract(object):
         Inherited classes must implement `open_source` method
         and properties `style_name` and `family_name`. """
 
+    def __init__(self, path):
+        self.source = path
+
     def open_source(self, sourcepath):
         raise NotImplementedError
 
@@ -290,9 +293,6 @@ class BehaviourCopyProcessAbstract(object):
 
 
 class UFOCopyProcess(BehaviourCopyProcessAbstract):
-
-    def __init__(self, ufopath):
-        self.source = ufopath
 
     def open_source(self, path):
         self._source_path = op.join(path, 'fontinfo.plist')
@@ -405,22 +405,11 @@ def copy_ufo_files(project, build, log):
         run(cmd, cwd=scripts_folder, log=log)
 
 
-def process_ttx_copy(ttx_file, path_params, log):
-    from bakery.app import app
-    _ttx_path = op.join(path_params._in, ttx_file)
-    # check if the file is there
-    if not op.exists(_ttx_path):
-        run("echo file '{}' not found".format(_ttx_path),
-            cwd=path_params._out, log=log)
-        return
-
-    # open it
-    font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
-                        verbose=False, allowVID=False)
-    font.importXML(_ttx_path, quiet=True)
+class TTXCopyProcess(BehaviourCopyProcessAbstract):
 
     # define how to read NAME table entries
     # TODO: move this to a generic class, so its available in eg the tests scripts
+    @staticmethod
     def nameTableRead(font, NameID, fallbackNameID=False):
         for record in font['name'].names:
             if record.nameID == NameID:
@@ -431,20 +420,43 @@ def process_ttx_copy(ttx_file, path_params, log):
                     return record.string
 
         if fallbackNameID:
-            return nameTableRead(font, fallbackNameID)
+            return TTXCopyProcess.nameTableRead(font, fallbackNameID)
 
-    # Find the style name
-    styleName = nameTableRead(font, 17, 2)
-    # Always have a regular style
-    if styleName == 'Normal' or 'Roman':
-        styleName = 'Regular'
+    def open_source(self, path):
+        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
+                            verbose=False, allowVID=False)
+        font.importXML(path, quiet=True)
+        return font
 
-    # Find the familyName
-    familyName = nameTableRead(font, 16, 1)
+    @property
+    def style_name(self):
+        # Find the style name
+        style_name = TTXCopyProcess.nameTableRead(self.source, 17, 2)
+        # Always have a regular style
+        if style_name == 'Normal' or 'Roman':
+            style_name = 'Regular'
+        return style_name
+
+    @property
+    def family_name(self):
+        return TTXCopyProcess.nameTableRead(self.source, 16, 1)
+
+
+def process_ttx_copy(ttx_file, path_params, log):
+    from bakery.app import app
+    _ttx_path = op.join(path_params._in, ttx_file)
+
+    copyprocess = TTXCopyProcess(_ttx_path)
+
+    # check if the file is there
+    if not op.exists(_ttx_path):
+        run("echo file '{}' not found".format(_ttx_path),
+            cwd=path_params._out, log=log)
+        return
 
     # Remove whitespace from names
-    styleNameNoWhitespace = re.sub(r'\s', '', styleName)
-    familyNameNoWhitespace = re.sub(r'\s', '', familyName)
+    styleNameNoWhitespace = re.sub(r'\s', '', copyprocess.style_name)
+    familyNameNoWhitespace = re.sub(r'\s', '', copyprocess.family_name)
 
     # Define the canonical filenames format
     _out_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace,
@@ -461,7 +473,7 @@ def process_ttx_copy(ttx_file, path_params, log):
     #  import fontforge
     #  font = fontforge.open(sys.argv[1])
     #  font.generate(sys.argv[2])
-    if font.sfntVersion == 'OTTO':  # OTF
+    if copyprocess.source.sfntVersion == 'OTTO':  # OTF
         scripts_folder = op.join(app.config['ROOT'], 'scripts')
         cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
                " '{out}{ttx_name}.ttf'")
