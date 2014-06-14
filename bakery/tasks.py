@@ -256,18 +256,120 @@ def joinroot(path):
     return op.join(app.config['DATA_ROOT'], path)
 
 
+class BehaviourCopyProcessAbstract(object):
+    """ Abstract class to provide copy functional in baking process
+
+        Inherited classes must implement `open_source` method
+        and properties `style_name` and `family_name`. """
+
+    def open_source(self, sourcepath):
+        raise NotImplementedError
+
+    @property
+    def style_name(self):
+        raise NotImplementedError
+
+    @property
+    def family_name(self):
+        raise NotImplementedError
+
+    def source():
+        doc = "The source property."
+
+        def fget(self):
+            return self._source
+
+        def fset(self, value):
+            self._source = self.open_source(value)
+
+        def fdel(self):
+            del self._source
+
+        return locals()
+    source = property(**source())
+
+
+class UFOCopyProcess(BehaviourCopyProcessAbstract):
+
+    def __init__(self, ufopath):
+        self.source = ufopath
+
+    def open_source(self, path):
+        self._source_path = op.join(path, 'fontinfo.plist')
+        return plistlib.readPlist(self._source_path)
+
+    @property
+    def style_name(self):
+        # Get the styleName
+        style_name = self.source['styleName']
+        # Always have a regular style
+        if style_name == 'Normal' or 'Roman':
+            style_name = 'Regular'
+        return style_name
+
+    @property
+    def family_name(self):
+        pfn = self.source.get('openTypeNamePreferredFamilyName', '')
+        return pfn or self.source.get('familyName', '')
+
+
+def process_copy_ufo(_in_ufo, path_params, familyName, log):
+    # Decide the incoming filepath
+    _in_ufo_path = op.join(path_params._in, _in_ufo)
+
+    copyprocess = UFOCopyProcess(_in_ufo_path)
+
+    # Get the styleName
+    styleName = copyprocess.style_name
+
+    # Get the familyName, if its not set
+    familyName = familyName or copyprocess.family_name
+    if not familyName:
+        log.write(('Please set openTypeNamePreferredFamilyName or '
+                   'familyName in %s fontinfo.plist and run another'
+                   ' bake process.') % _in_ufo, prefix='### ')
+        raise Exception(('Please set openTypeNamePreferredFamilyName '
+                         'or familyName in %s fontinfo.plist and '
+                         'run another bake process.') % _in_ufo)
+
+    # Remove whitespace from names
+    styleNameNoWhitespace = re.sub(r'\s', '', styleName)
+    familyNameNoWhitespace = re.sub(r'\s', '', familyName)
+    # Decide the outgoing filepath
+    _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace,
+                              styleNameNoWhitespace)
+    _out_ufo_path = op.join(path_params._out_src, _out_ufo)
+    # Copy the UFOs
+    run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path),
+        cwd=path_params._out, log=log)
+
+    # If we rename, change the font family name metadata
+    # inside the _out_ufo
+    if familyName:
+        # Read the _out_ufo fontinfo.plist
+        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
+        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
+        # Set the familyName
+        _out_ufoFontInfo['familyName'] = familyName
+
+        # Set PS Name
+        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+        # < Family Name > < Vendor ID > - < Weight > < Width >
+        # < Slant > < Character Set >
+        psfn = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
+        _out_ufoFontInfo['postscriptFontName'] = psfn
+        # Set Full Name
+        psfn = "%s %s" % (familyName, styleName)
+        _out_ufoFontInfo['postscriptFullName'] = psfn
+        # Write _out fontinfo.plist
+        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+
 def copy_ufo_files(project, build, log):
     from .app import app
     config = project.config
 
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _in = joinroot('%(login)s/%(id)s.in/' % param)
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
-    _out_src = joinroot(path)
+    path_params = PathParam(project, build)
 
     log.write('Copy [and Rename] UFOs\n', prefix='### ')
 
@@ -284,158 +386,127 @@ def copy_ufo_files(project, build, log):
         if x.endswith('.ufo'):
             ufo_dirs.append(x)
 
+    if not ufo_dirs:
+        return
+
     for _in_ufo in ufo_dirs:
-        # Decide the incoming filepath
-        _in_ufo_path = op.join(_in, _in_ufo)
-        # Read the _in_ufo fontinfo.plist
-        _in_ufoPlist = op.join(_in_ufo_path, 'fontinfo.plist')
-        _in_ufoFontInfo = plistlib.readPlist(_in_ufoPlist)
-        # Get the styleName
-        styleName = _in_ufoFontInfo['styleName']
-        # Always have a regular style
-        if styleName == 'Normal' or 'Roman':
-            styleName = 'Regular'
-        # Get the familyName, if its not set
-        if not familyName:
-            pfn = _in_ufoFontInfo.get('openTypeNamePreferredFamilyName', '')
-            familyName = pfn or _in_ufoFontInfo.get('familyName', '')
-            if not familyName:
-                log.write(('Please set openTypeNamePreferredFamilyName or '
-                           'familyName in %s fontinfo.plist and run another'
-                           ' bake process.') % _in_ufo, prefix='### ')
-                raise Exception(('Please set openTypeNamePreferredFamilyName '
-                                 'or familyName in %s fontinfo.plist and '
-                                 'run another bake process.') % _in_ufo)
-
-        # Remove whitespace from names
-        styleNameNoWhitespace = re.sub(r'\s', '', styleName)
-        familyNameNoWhitespace = re.sub(r'\s', '', familyName)
-        # Decide the outgoing filepath
-        _out_ufo = "%s-%s.ufo" % (familyNameNoWhitespace,
-                                  styleNameNoWhitespace)
-        _out_ufo_path = op.join(_out_src, _out_ufo)
-        # Copy the UFOs
-        run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo_path),
-            cwd=_out, log=log)
-
-        # If we rename, change the font family name metadata
-        # inside the _out_ufo
-        if familyName:
-            # Read the _out_ufo fontinfo.plist
-            _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
-            _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-            # Set the familyName
-            _out_ufoFontInfo['familyName'] = familyName
-
-            # Set PS Name
-            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
-            # < Family Name > < Vendor ID > - < Weight > < Width >
-            # < Slant > < Character Set >
-            psfn = "%s-%s" % (familyNameNoWhitespace, styleNameNoWhitespace)
-            _out_ufoFontInfo['postscriptFontName'] = psfn
-            # Set Full Name
-            psfn = "%s %s" % (familyName, styleName)
-            _out_ufoFontInfo['postscriptFullName'] = psfn
-            # Write _out fontinfo.plist
-            plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+        process_copy_ufo(_in_ufo, path_params, familyName, log)
 
     scripts_folder = op.join(app.config['ROOT'], 'scripts')
     log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
 
-    os.chdir(_out_src)
+    os.chdir(path_params._out_src)
     for name in glob.glob("*.ufo"):
         name = name[:-4]  # cut .ufo
         cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
                "'{out}{name}.ttf' '{out_src}{name}.otf'")
-        cmd = cmd.format(out_src=_out_src, name=name, out=_out)
+        cmd = cmd.format(out_src=path_params._out_src, name=name,
+                         out=path_params._out)
         run(cmd, cwd=scripts_folder, log=log)
 
 
+def process_ttx_copy(ttx_file, path_params, log):
+    from bakery.app import app
+    _ttx_path = op.join(path_params._in, ttx_file)
+    # check if the file is there
+    if not op.exists(_ttx_path):
+        run("echo file '{}' not found".format(_ttx_path),
+            cwd=path_params._out, log=log)
+        return
+
+    # open it
+    font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
+                        verbose=False, allowVID=False)
+    font.importXML(_ttx_path, quiet=True)
+
+    # define how to read NAME table entries
+    # TODO: move this to a generic class, so its available in eg the tests scripts
+    def nameTableRead(font, NameID, fallbackNameID=False):
+        for record in font['name'].names:
+            if record.nameID == NameID:
+                if b'\000' in record.string:
+                    string = record.string.decode('utf-16-be')
+                    return string.encode('utf-8')
+                else:
+                    return record.string
+
+        if fallbackNameID:
+            return nameTableRead(font, fallbackNameID)
+
+    # Find the style name
+    styleName = nameTableRead(font, 17, 2)
+    # Always have a regular style
+    if styleName == 'Normal' or 'Roman':
+        styleName = 'Regular'
+
+    # Find the familyName
+    familyName = nameTableRead(font, 16, 1)
+
+    # Remove whitespace from names
+    styleNameNoWhitespace = re.sub(r'\s', '', styleName)
+    familyNameNoWhitespace = re.sub(r'\s', '', familyName)
+
+    # Define the canonical filenames format
+    _out_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace,
+                                                  stylename=styleNameNoWhitespace)
+
+    # Copy the upstream ttx file to the build directory
+    run("cp '{}' '{}.ttx'".format(_ttx_path, _out_name), cwd=path_params._out_src, log=log)
+
+    # Compile it
+    run("ttx {}.ttx".format(_out_name), cwd=path_params._out_src, log=log)
+
+    # If OTF, convert it to TTF with FontForge
+    # TODO: do this directly, since this autoconvert.py is just 3 lines,
+    #  import fontforge
+    #  font = fontforge.open(sys.argv[1])
+    #  font.generate(sys.argv[2])
+    if font.sfntVersion == 'OTTO':  # OTF
+        scripts_folder = op.join(app.config['ROOT'], 'scripts')
+        cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
+               " '{out}{ttx_name}.ttf'")
+        cmd = cmd.format(out_src=path_params._out_src,
+                         ttx_name=_out_name,
+                         out=path_params._out)
+        run(cmd, cwd=scripts_folder, log=log)
+    # If TTF already, move it up
+    else:
+        run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
+            path_params._out_src, log=log)
+
+
+class PathParam:
+
+    def __init__(self, project, build):
+        param = {'login': project.login, 'id': project.id,
+                 'revision': build.revision, 'build': build.id}
+
+        self._in = joinroot('%(login)s/%(id)s.in/' % param)
+        self._out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+        path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+        self._out_src = joinroot(path)
+
+
 def copy_ttx_files(project, build, log):
-    from .app import app
+    path_params = PathParam(project, build)
+
     config = project.config
-
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _in = joinroot('%(login)s/%(id)s.in/' % param)
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
-    _out_src = joinroot(path)
 
     ttx_files = []
     for x in config['state'].get('process_files', []):
         if x.endswith('.ttx'):
             ttx_files.append(x)
 
+    if not ttx_files:
+        return
+
     for ttx_file in ttx_files:
-        _ttx_path = op.join(_in, ttx_file)
-        # check if the file is there
-        if not op.exists(_ttx_path):
-            run("echo file '{}' not found".format(_ttx_path),
-                cwd=_out, log=log)
-            continue
+        process_ttx_copy(ttx_file, path_params, log)
 
-        # open it
-        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
-                            verbose=False, allowVID=False)
-        font.importXML(_ttx_path, quiet=True)
-        _ttx_name = op.splitext(op.basename(_ttx_path))[0]
-        # define how to read NAME table entries
-        # TODO: move this to a generic class, so its available in eg the tests scripts
-        def nameTableRead(font, NameID, fallbackNameID=False):
-            for record in font['name'].names:
-                if record.nameID == NameID:
-                    if b'\000' in record.string:
-                        string = record.string.decode('utf-16-be')
-                        return string.encode('utf-8')
-                    else:
-                        return record.string
 
-            if fallbackNameID:
-                return nameTableRead(font, fallbackNameID)
-
-        # Find the style name
-        styleName = nameTableRead(font, 17, 2)
-        # Always have a regular style
-        if styleName == 'Normal' or 'Roman':
-            styleName = 'Regular'
-
-        # Find the familyName
-        familyName = nameTableRead(font, 16, 1)
-
-        # Remove whitespace from names
-        styleNameNoWhitespace = re.sub(r'\s', '', styleName)
-        familyNameNoWhitespace = re.sub(r'\s', '', familyName)
-
-        # Define the canonical filenames format
-        _out_name = "{familyname}-{stylename}".format(familyname=familyNameNoWhitespace,
-                                                          stylename=styleNameNoWhitespace)
-
-        # Copy the upstream ttx file to the build directory
-        run("cp '{}' '{}.ttx'".format(_ttx_path, _out_name), cwd=_out_src, log=log)
-
-        # Compile it
-        run("ttx {}.ttx".format(_out_name), cwd=_out_src, log=log)
-
-        # If OTF, convert it to TTF with FontForge
-        # TODO: do this directly, since this autoconvert.py is just 3 lines,
-        #  import fontforge
-        #  font = fontforge.open(sys.argv[1])
-        #  font.generate(sys.argv[2])
-        if font.sfntVersion == 'OTTO':  # OTF
-            scripts_folder = op.join(app.config['ROOT'], 'scripts')
-            cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
-                   " '{out}{ttx_name}.ttf'")
-            cmd = cmd.format(out_src=_out_src,
-                             ttx_name=_out_name,
-                             out=_out)
-            run(cmd, cwd=scripts_folder, log=log)
-        # If TTF already, move it up
-        else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
-                _out_src, log=log)
+def copy_bin_files(project, build, log):
+    pass
 
 
 def copy_and_rename_process(project, build, log):
@@ -451,8 +522,13 @@ def copy_and_rename_process(project, build, log):
 
     if project.source_files_type == 'ufo':
         copy_ufo_files(project, build, log)
-    else:
+    elif project.source_files_type == 'ttx':
         copy_ttx_files(project, build, log)
+    elif project.source_files_type == 'bin':
+        copy_bin_files(project, build, log)
+    else:
+        log.write('Unsupported sources files', prefix='Error: ')
+        return
 
     # Copy licence file
     # TODO: Infer license type from filename

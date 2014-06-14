@@ -79,7 +79,7 @@
       <select multiple class="form-control" name="process_files" size={{ config['local']['ufo_dirs']|length + config['local']['ttx_files']|length}}>
         {% with %}
         {% set passed = [] %} {# project.passed_tests_files() #}
-        {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] %}
+        {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] + config['local']['bin_files'] %}
         <option {% if False %}disabled{% else %}selected{% endif %}>{{ i }} {% if False %}(not passed required tests){% endif %}</option> {# i not in passed #}
         {% endfor %}
         {% endwith %}
