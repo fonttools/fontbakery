@@ -71,14 +71,17 @@ class VmetFix:
         self.fonts = fonts
 
     def set_metrics_for_font(self, ttfont, ascents, descents, linegaps):
-        ttfont['hhea'].ascent = ascents
-        ttfont['OS/2'].sTypoAscender = ascents
-        ttfont['OS/2'].usWinAscent = ascents
-        ttfont['hhea'].descent = descents
-        ttfont['OS/2'].sTypoDescender = descents
-        ttfont['OS/2'].usWinDescent = abs(descents)
-        ttfont['hhea'].lineGap = linegaps
-        ttfont['OS/2'].sTypoLineGap = linegaps
+        if ascents:
+            ttfont['hhea'].ascent = ascents
+            ttfont['OS/2'].sTypoAscender = ascents
+            ttfont['OS/2'].usWinAscent = ascents
+        if descents:
+            ttfont['hhea'].descent = descents
+            ttfont['OS/2'].sTypoDescender = descents
+            ttfont['OS/2'].usWinDescent = abs(descents)
+        if linegaps:
+            ttfont['hhea'].lineGap = linegaps
+            ttfont['OS/2'].sTypoLineGap = linegaps
 
     def set_metrics(self, ascents, descents, linegaps):
         for fontpath in self.fonts:
@@ -139,7 +142,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     vmetfixer = VmetFix(args.filename)
-    if args.ascents and args.descents and args.linegaps:
+    if args.ascents or args.descents or args.linegaps:
         vmetfixer.set_metrics(args.ascents, args.descents, args.linegaps)
     elif args.autofix:
         vmetfixer.fix_metrics()
