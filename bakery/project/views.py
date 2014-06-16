@@ -139,7 +139,7 @@ def pull(project_id):
 
     p.sync()
 
-    flash(_("Changes will be pulled from upstream in a moment"))
+    flash(_("Pulling latest version from upstream"))
     return redirect(url_for('project.queue', project_id=p.id))
 
 

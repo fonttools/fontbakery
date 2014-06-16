@@ -689,7 +689,7 @@ def fontaine_process(project, build, log):
 
     _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    log.write('pyFontaine (fontaine/main.py)\n', prefix='### ')
+    log.write('pyFontaine TTFs\n', prefix='### ')
     os.chdir(_out)
     files = glob.glob('*.ttf')
     for file in files:
