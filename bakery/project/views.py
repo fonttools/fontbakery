@@ -180,16 +180,6 @@ def setup(p):
         if 'familyname' in config['state']:
             config['state'].pop('familyname')
 
-    if config['local']['ufo_dirs'] and config['local']['ttx_files']:
-        if request.form.get('source_files_type'):
-            if request.form.get('source_files_type') in ['ttx', 'ufo']:
-                config['state']['source_files_type'] = request.form.get('source_files_type')
-            else:
-                config['state'].pop('source_files_type')
-        else:
-            error = True
-            flash(_('Select UFO or TTX as primary source'))
-
     txt_files_to_copy = request.form.getlist('txt_files')
     config['state']['txt_files_copied'] = txt_files_to_copy
 
