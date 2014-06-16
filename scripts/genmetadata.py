@@ -191,7 +191,7 @@ def inferFamilyName(familydir):
         string = "FATAL: No *-Regular.ttf found to set family name!"
         color = "red"
         ansiprint(string, color)
-        sys.exit()
+        return "UNKNOWN"
     else:
         return familyName
 
