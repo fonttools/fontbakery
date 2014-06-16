@@ -354,17 +354,20 @@ def inferSubsets(familydir):
 
 
 def getDesigner(familydir):
+    import fontforge
     files = os.listdir(familydir)
     for f in files:
-        if f.endswith("Regular.ttf"): #DC should ansiprint red if no Reg exemplar
+        if f.endswith("Regular.ttf"):  # DC should ansiprint red if no Reg exemplar
             filepath = os.path.join(familydir, f)
-            ftfont = fontToolsOpenFont(filepath)
-            desName = fontToolsGetDesignerName(ftfont)
+            # ftfont = fontToolsOpenFont(filepath)
+            # desName = fontToolsGetDesignerName(ftfont)
+            ftfont = fontforge.open(filepath)
+            desName = ftfont.sfnt_names[9][2]
             if isinstance(desName, str):
-                string = u"Designer's name from font is: " + u(desName)
+                string = u"Designer's name from font is: " + desName.decode('utf8')
                 color = "green"
                 ansiprint(string, color)
-                return desName
+                return desName.decode('utf8')
             else:
                 desName = "Multiple Designers"
                 ansiprint(
@@ -433,7 +436,9 @@ def genmetadata(familydir):
         metadata = loadMetadata(familydir)
     familyname = inferFamilyName(familydir)
     setIfNotPresent(metadata, "name", familyname)
-    setIfNotPresent(metadata, "designer", u(getDesigner(familydir)))
+
+    desName = getDesigner(familydir)
+    setIfNotPresent(metadata, "designer", desName)
                     # DC Should check it against profiles.json
     setIfNotPresent(metadata, "license", inferLicense(familydir))
     setIfNotPresent(metadata, "visibility", "Sandbox")
@@ -512,9 +517,9 @@ def writeFile(familydir, metadata):
         filename = "METADATA.json.new"
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
         data = sortOldMetadata(metadata)
-        contents = json.dumps(data, indent=2, ensure_ascii=True)
+        contents = json.dumps(data, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
-    print(json.dumps(metadata, indent=2, ensure_ascii=True))
+    print(json.dumps(metadata, indent=2, ensure_ascii=False))
 
 
 def ansiprint(string, color):
@@ -563,6 +568,7 @@ def writeDescHtml(familydir):
         color = "green"
         ansiprint(string, color)
         ansiprint(descHtml, color)
+
 
 def run(familydir):
     writeDescHtml(familydir)

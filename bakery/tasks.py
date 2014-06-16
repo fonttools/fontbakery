@@ -256,6 +256,61 @@ def joinroot(path):
     return op.join(app.config['DATA_ROOT'], path)
 
 
+def process_copy_ufo(_in_ufo, path_params, familyName, log):
+    # Decide the incoming filepath
+    _in_ufo_path = op.join(path_params._in, _in_ufo)
+
+    fontsource = UFOFontSource(_in_ufo_path)
+    fontsource.family_name = familyName  # initial family name
+
+    if not fontsource.family_name:
+        log.write(('[MISSED] Please set openTypeNamePreferredFamilyName or '
+                   'familyName in %s fontinfo.plist and run another'
+                   ' bake process.') % _in_ufo, prefix='### ')
+
+    # Decide the outgoing filepath
+    _out_ufo = '{}.ufo'.format(fontsource.postscript_fontname)
+
+    log.write('Copy [and Rename] UFO\n', prefix='### ')
+
+    # Copy the UFOs
+    run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo),
+        cwd=path_params._out_src, log=log)
+
+    # If we rename, change the font family name metadata
+    # inside the _out_ufo
+    if familyName:
+        # Read the _out_ufo fontinfo.plist
+        _out_ufo_path = op.join(path_params._out_src, _out_ufo)
+        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
+        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
+        # Set the familyName
+        _out_ufoFontInfo['familyName'] = familyName
+
+        # Set PS Name
+        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+        # < Family Name > < Vendor ID > - < Weight > < Width >
+        # < Slant > < Character Set >
+        psfn = fontsource.postscript_fontname
+        _out_ufoFontInfo['postscriptFontName'] = psfn
+        # Set Full Name
+        psfn = "%s %s" % (familyName, fontsource.style_name)
+        _out_ufoFontInfo['postscriptFullName'] = psfn
+        # Write _out fontinfo.plist
+        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+    from .app import app
+    scripts_folder = op.join(app.config['ROOT'], 'scripts')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
+
+    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+           "'{out}{name}.ttf' '{out_src}{name}.otf'")
+    cmd = cmd.format(out_src=path_params._out_src,
+                     name=fontsource.postscript_fontname,
+                     out=path_params._out)
+    run(cmd, cwd=scripts_folder, log=log)
+
+
 class FontSourceAbstract(object):
     """ Abstract class to provide copy functional in baking process
 
@@ -332,64 +387,6 @@ class UFOFontSource(FontSourceAbstract):
 
     def list_sources(self, process_files):
         pass
-
-
-def process_copy_ufo(_in_ufo, path_params, familyName, log):
-    # Decide the incoming filepath
-    _in_ufo_path = op.join(path_params._in, _in_ufo)
-
-    fontsource = UFOFontSource(_in_ufo_path)
-    fontsource.family_name = familyName  # initial family name
-
-    if not fontsource.family_name:
-        log.write(('Please set openTypeNamePreferredFamilyName or '
-                   'familyName in %s fontinfo.plist and run another'
-                   ' bake process.') % _in_ufo, prefix='### ')
-        raise Exception(('Please set openTypeNamePreferredFamilyName '
-                         'or familyName in %s fontinfo.plist and '
-                         'run another bake process.') % _in_ufo)
-
-    # Decide the outgoing filepath
-    _out_ufo = '{}.ufo'.format(fontsource.postscript_fontname)
-
-    log.write('Copy [and Rename] UFO\n', prefix='### ')
-
-    # Copy the UFOs
-    run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo),
-        cwd=path_params._out_src, log=log)
-
-    # If we rename, change the font family name metadata
-    # inside the _out_ufo
-    if familyName:
-        # Read the _out_ufo fontinfo.plist
-        _out_ufo_path = op.join(path_params._out_src, _out_ufo)
-        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
-        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-        # Set the familyName
-        _out_ufoFontInfo['familyName'] = familyName
-
-        # Set PS Name
-        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
-        # < Family Name > < Vendor ID > - < Weight > < Width >
-        # < Slant > < Character Set >
-        psfn = fontsource.postscript_fontname
-        _out_ufoFontInfo['postscriptFontName'] = psfn
-        # Set Full Name
-        psfn = "%s %s" % (familyName, fontsource.style_name)
-        _out_ufoFontInfo['postscriptFullName'] = psfn
-        # Write _out fontinfo.plist
-        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
-
-    from .app import app
-    scripts_folder = op.join(app.config['ROOT'], 'scripts')
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
-
-    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
-           "'{out}{name}.ttf' '{out_src}{name}.otf'")
-    cmd = cmd.format(out_src=path_params._out_src,
-                     name=fontsource.postscript_fontname,
-                     out=path_params._out)
-    run(cmd, cwd=scripts_folder, log=log)
 
 
 class TTXFontSource(FontSourceAbstract):
