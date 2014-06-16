@@ -309,7 +309,7 @@ class UFOFontSource(FontSourceAbstract):
         # Get the styleName
         style_name = self.source['styleName']
         # Always have a regular style
-        if style_name == 'Normal' or 'Roman':
+        if style_name == 'Normal' or style_name == 'Roman':
             style_name = 'Regular'
         return style_name
 
@@ -351,6 +351,8 @@ def process_copy_ufo(_in_ufo, path_params, familyName, log):
 
     # Decide the outgoing filepath
     _out_ufo = '{}.ufo'.format(fontsource.postscript_fontname)
+
+    log.write('Copy [and Rename] UFO\n', prefix='### ')
 
     # Copy the UFOs
     run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo),
@@ -418,7 +420,7 @@ class TTXFontSource(FontSourceAbstract):
         # Find the style name
         style_name = TTXFontSource.nameTableRead(self.source, 17, 2)
         # Always have a regular style
-        if style_name == 'Normal' or 'Roman':
+        if style_name == 'Normal' or style_name == 'Roman':
             style_name = 'Regular'
         return style_name
 
@@ -439,7 +441,14 @@ class TTXFontSource(FontSourceAbstract):
     family_name = property(**family_name())
 
 
-def process_ttx_copy(ttx_file, path_params, family_name, log):
+class BINFontSource(TTXFontSource):
+
+    def open_source(self, path):
+        return ttLib.TTFont(path, lazy=False, recalcBBoxes=True,
+                            verbose=False, allowVID=False)
+
+
+def process_copy_ttx(ttx_file, path_params, family_name, log):
     from bakery.app import app
     _ttx_path = op.join(path_params._in, ttx_file)
 
@@ -453,6 +462,8 @@ def process_ttx_copy(ttx_file, path_params, family_name, log):
         return
 
     _out_name = fontsource.postscript_fontname
+
+    log.write('Copy [and Rename] TTX\n', prefix='### ')
 
     # Copy the upstream ttx file to the build directory
     run("cp '{}' '{}.ttx'".format(_ttx_path, _out_name),
@@ -480,6 +491,37 @@ def process_ttx_copy(ttx_file, path_params, family_name, log):
             path_params._out_src, log=log)
 
 
+def process_copy_bin(bin_path, path_params, family_name, log):
+    from bakery.app import app
+    log.write('Copy [and Rename] BIN\n', prefix='### ')
+
+    _bin_path = op.join(path_params._in, bin_path)
+    fontsource = BINFontSource(_bin_path)
+    fontsource.family_name = family_name
+
+    _out_name = fontsource.postscript_fontname
+
+    if bin_path.endswith('.otf'):
+        run("cp '{}' '{}.otf'".format(_bin_path, _out_name),
+            cwd=path_params._out_src, log=log)
+    elif bin_path.endswith('.ttf'):
+        run("cp '{}' '{}.ttf'".format(_bin_path, _out_name),
+            cwd=path_params._out_src, log=log)
+
+    if fontsource.source.sfntVersion == 'OTTO':  # OTF
+        scripts_folder = op.join(app.config['ROOT'], 'scripts')
+        cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
+               " '{out}{ttx_name}.ttf'")
+        cmd = cmd.format(out_src=path_params._out_src,
+                         ttx_name=_out_name,
+                         out=path_params._out)
+        run(cmd, cwd=scripts_folder, log=log)
+    # If TTF already, move it up
+    else:
+        run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
+            path_params._out_src, log=log)
+
+
 class PathParam:
 
     def __init__(self, project, build):
@@ -493,62 +535,6 @@ class PathParam:
         self._out_src = joinroot(path)
 
 
-def copy_ufo_files(project, build, log):
-    path_params = PathParam(project, build)
-
-    config = project.config
-
-    # Set the familyName
-    if config['state'].get('familyname', None):
-        familyName = config['state']['familyname']
-    else:
-        familyName = False
-
-    log.write('Copy [and Rename] UFOs\n', prefix='### ')
-
-    # Copy UFO files from git repo to _out_src [renaming their
-    # filename and metadata]
-    ufo_dirs = []
-    for x in config['state'].get('process_files', []):
-        if x.endswith('.ufo'):
-            ufo_dirs.append(x)
-
-    if not ufo_dirs:
-        return
-
-    for _in_ufo in ufo_dirs:  # sources:
-        process_copy_ufo(_in_ufo, path_params, familyName, log)
-
-
-def copy_ttx_files(project, build, log):
-    path_params = PathParam(project, build)
-
-    config = project.config
-
-    log.write('Copy [and Rename] TTXs\n', prefix='### ')
-
-    # Read Family Name from user setup configuration
-    if config['state'].get('familyname', None):
-        family_name = config['state']['familyname']
-    else:
-        family_name = False
-
-    ttx_files = []
-    for x in config['state'].get('process_files', []):
-        if x.endswith('.ttx'):
-            ttx_files.append(x)
-
-    if not ttx_files:
-        return
-
-    for ttx_file in ttx_files:
-        process_ttx_copy(ttx_file, path_params, family_name, log)
-
-
-def copy_bin_files(project, build, log):
-    pass
-
-
 def copy_and_rename_process(project, build, log):
     """ Setup UFOs for building """
     config = project.config
@@ -560,15 +546,20 @@ def copy_and_rename_process(project, build, log):
     _in = joinroot('%(login)s/%(id)s.in/' % param)
     _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    if project.source_files_type == 'ufo':
-        copy_ufo_files(project, build, log)
-    elif project.source_files_type == 'ttx':
-        copy_ttx_files(project, build, log)
-    elif project.source_files_type == 'bin':
-        copy_bin_files(project, build, log)
-    else:
-        log.write('Unsupported sources files', prefix='Error: ')
-        return
+    path_params = PathParam(project, build)
+    for x in config['state'].get('process_files', []):
+        if x.endswith('.ufo'):
+            process_copy_ufo(x, path_params,
+                             config['state'].get('familyname', None), log)
+        elif x.endswith('.ttx'):
+            process_copy_ttx(x, path_params,
+                             config['state'].get('familyname', None), log)
+        elif x.endswith('.ttf') or x.endswith('.otf'):
+            process_copy_bin(x, path_params,
+                             config['state'].get('familyname', None), log)
+        else:
+            log.write('[MISSED] Unsupported sources file: %s' % x,
+                      prefix='Error: ')
 
     # Copy licence file
     # TODO: Infer license type from filename

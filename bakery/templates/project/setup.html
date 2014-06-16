@@ -46,32 +46,6 @@
   </div>
 
   <div class="form-group  anchorUnderNavbar">
-    <label class="control-label col-sm-2" for="source_files_type"><strong>{{ _("Source files type:") }}</strong></label>
-    <div class="col-sm-8">
-    {% if config['local']['ufo_dirs'] and config['local']['ttx_files'] %}
-      <div class="alert alert-info">{{ _("UFO folders and TTX files are found in upstream repository. Select what files are primary source") }}</div>
-      <div class="radio">
-      <label>
-        <input type="radio" name="source_files_type" id="source_files_type" value="ufo"
-          {% if config['state']['source_files_type']=='ufo' %}checked{% endif %}>
-        {{ _("UFO is primary source") }}
-      </label>
-      </div>
-      <div class="radio">
-      <label>
-        <input type="radio" name="source_files_type" id="source_files_type" value="ttx"
-        {% if config['state']['source_files_type']=='ttx' %}checked{% endif %}>
-        {{ _("TTX, please") }}
-      </label>
-      </div>
-    {% else %}
-      <p class="form-control-static">{{ _("Only one type files found in reporitory, no action needed ")}}</p>
-      <input type="hidden" name="source_files_type" value="off">
-    {% endif %}
-    </div>
-  </div>
-
-  <div class="form-group  anchorUnderNavbar">
     <div class="form-control-static">
       <label class="control-label col-sm-2" for="process_files"><strong>{{ _("Process Files:") }}</strong></label>
       <div class="col-sm-8">
