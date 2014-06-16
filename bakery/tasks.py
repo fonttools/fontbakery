@@ -378,6 +378,17 @@ def process_copy_ufo(_in_ufo, path_params, familyName, log):
         # Write _out fontinfo.plist
         plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
+    from .app import app
+    scripts_folder = op.join(app.config['ROOT'], 'scripts')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
+
+    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+           "'{out}{name}.ttf' '{out_src}{name}.otf'")
+    cmd = cmd.format(out_src=path_params._out_src,
+                     name=fontsource.postscript_fontname,
+                     out=path_params._out)
+    run(cmd, cwd=scripts_folder, log=log)
+
 
 class TTXFontSource(FontSourceAbstract):
 
@@ -505,24 +516,8 @@ def copy_ufo_files(project, build, log):
     if not ufo_dirs:
         return
 
-    process_files = config['state'].get('process_files', [])
-    # sources = UFOFontSource.list_sources(process_files)
-
     for _in_ufo in ufo_dirs:  # sources:
         process_copy_ufo(_in_ufo, path_params, familyName, log)
-
-    from .app import app
-    scripts_folder = op.join(app.config['ROOT'], 'scripts')
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
-
-    os.chdir(path_params._out_src)
-    for name in glob.glob("*.ufo"):
-        name = name[:-4]  # cut .ufo
-        cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
-               "'{out}{name}.ttf' '{out_src}{name}.otf'")
-        cmd = cmd.format(out_src=path_params._out_src, name=name,
-                         out=path_params._out)
-        run(cmd, cwd=scripts_folder, log=log)
 
 
 def copy_ttx_files(project, build, log):
