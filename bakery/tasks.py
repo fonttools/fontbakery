@@ -49,7 +49,7 @@ def refresh_repositories(username, token):
         print(ex.message)
 
 
-def get_subsets_coverage_data(source_fonts_paths, log):
+def get_subsets_coverage_data(source_fonts_paths, log=None):
     """ Return dictionary with subsets coverages as a value
         and common name as a key """
     from fontaine.font import FontFactory
