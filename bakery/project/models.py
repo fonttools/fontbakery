@@ -27,8 +27,8 @@ from flask import current_app
 from blinker.base import lazy_property
 
 from ..app import db
-from ..utils import save_metadata
-from ..tasks import (process_project, prun, project_git_sync,
+from ..utils import save_metadata, prun
+from ..tasks import (process_project, project_git_sync,
                      upstream_revision_tests, result_tests,
                      generate_subsets_coverage_list)
 from .state import project_state_get, project_state_save, walkWithoutGit

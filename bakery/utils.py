@@ -22,6 +22,7 @@ import io
 import itsdangerous
 import os
 import os.path as op
+import subprocess
 
 from flask import current_app
 from scripts.genmetadata import sortOldMetadata as sortMetadata
@@ -208,3 +209,75 @@ def short(value):
         return 0
 
     return '~{}'.format(sizeof_fmt(value))
+
+
+def run(command, cwd, log):
+    """ Wrapper for subprocess.Popen with custom logging support.
+
+        :param command: shell command to run, required
+        :param cwd: - current working dir, required
+        :param log: - logging object with .write() method, required
+
+    """
+    # print the command on the worker console
+    print("[%s]:%s" % (cwd, command))
+    # log the command
+    log.write('\n$ %s\n' % command)
+    # Start the command
+    env = os.environ.copy()
+    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               close_fds=True, env=env)
+    while True:
+        # Read output and errors
+        stdout = process.stdout.readline()
+        stderr = process.stderr.readline()
+        # Log output
+        log.write(stdout)
+        # Log error
+        if stderr:
+            # print the error on the worker console
+            print(stderr, end='')
+            # log error
+            log.write(stderr, prefix='Error: ')
+        # If no output and process no longer running, stop
+        if not stdout and not stderr and process.poll() is not None:
+            break
+    # if the command did not exit cleanly (with returncode 0)
+    if process.returncode:
+        msg = 'Fatal: Exited with return code %s \n' % process.returncode
+        # Log the exit status
+        log.write(msg)
+        # Raise an error on the worker
+        raise StandardError(msg)
+
+
+def prun(command, cwd, log=None):
+    """
+    Wrapper for subprocess.Popen that capture output and return as result
+
+        :param command: shell command to run
+        :param cwd: current working dir
+        :param log: loggin object with .write() method
+
+    """
+    # print the command on the worker console
+    print("[%s]:%s" % (cwd, command))
+    env = os.environ.copy()
+    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
+    process = subprocess.Popen(command, shell=True, cwd=cwd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               close_fds=True, env=env)
+    if log:
+        log.write('$ %s\n' % command)
+
+    stdout = ''
+    for line in iter(process.stdout.readline, ''):
+        if log:
+            log.write(line)
+        stdout += line
+        process.stdout.flush()
+    return stdout

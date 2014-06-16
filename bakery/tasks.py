@@ -16,8 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-import sys
-
 import codecs
 import datetime
 import glob
@@ -25,7 +23,7 @@ import os
 import os.path as op
 import plistlib
 import re
-import subprocess
+import shutil
 import yaml
 
 from checker import run_set, parse_test_results
@@ -35,7 +33,7 @@ from flask.ext.rq import job
 from fontTools import ttLib
 from fontaine.ext.subsets import Extension as SubsetExtension
 
-from .utils import RedisFd
+from .utils import RedisFd, run, prun
 
 
 @job
@@ -51,79 +49,7 @@ def refresh_repositories(username, token):
         print(ex.message)
 
 
-def run(command, cwd, log):
-    """ Wrapper for subprocess.Popen with custom logging support.
-
-        :param command: shell command to run, required
-        :param cwd: - current working dir, required
-        :param log: - logging object with .write() method, required
-
-    """
-    # print the command on the worker console
-    print("[%s]:%s" % (cwd, command))
-    # log the command
-    log.write('\n$ %s\n' % command)
-    # Start the command
-    env = os.environ.copy()
-    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               close_fds=True, env=env)
-    while True:
-        # Read output and errors
-        stdout = process.stdout.readline()
-        stderr = process.stderr.readline()
-        # Log output
-        log.write(stdout)
-        # Log error
-        if stderr:
-            # print the error on the worker console
-            print(stderr, end='')
-            # log error
-            log.write(stderr, prefix='Error: ')
-        # If no output and process no longer running, stop
-        if not stdout and not stderr and process.poll() is not None:
-            break
-    # if the command did not exit cleanly (with returncode 0)
-    if process.returncode:
-        msg = 'Fatal: Exited with return code %s \n' % process.returncode
-        # Log the exit status
-        log.write(msg)
-        # Raise an error on the worker
-        raise StandardError(msg)
-
-
-def prun(command, cwd, log=None):
-    """
-    Wrapper for subprocess.Popen that capture output and return as result
-
-        :param command: shell command to run
-        :param cwd: current working dir
-        :param log: loggin object with .write() method
-
-    """
-    # print the command on the worker console
-    print("[%s]:%s" % (cwd, command))
-    env = os.environ.copy()
-    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               close_fds=True, env=env)
-    if log:
-        log.write('$ %s\n' % command)
-
-    stdout = ''
-    for line in iter(process.stdout.readline, ''):
-        if log:
-            log.write(line)
-        stdout += line
-        process.stdout.flush()
-    return stdout
-
-
-def get_subsets_coverage_data(source_fonts_paths):
+def get_subsets_coverage_data(source_fonts_paths, log):
     """ Return dictionary with subsets coverages as a value
         and common name as a key """
     from fontaine.font import FontFactory
@@ -131,7 +57,12 @@ def get_subsets_coverage_data(source_fonts_paths):
     library = Library(collections=['subsets'])
     subsets = {}
     for fontpath in source_fonts_paths:
-        font = FontFactory.openfont(fontpath)
+        try:
+            font = FontFactory.openfont(fontpath)
+        except AssertionError, ex:
+            if log:
+                log.write('Error: [%s] %s' % (fontpath, ex.message))
+            continue
         for charmap, _, coverage, _ in \
                 font.get_orthographies(_library=library):
             subsets[charmap.common_name.replace('Subset ', '')] = coverage
@@ -165,7 +96,7 @@ def generate_subsets_coverage_list(project, log=None):
     # on root and path
     for path in ufo_dirs + ttx_files:
         source_fonts_paths.append(op.join(_in, path))
-    subsets = get_subsets_coverage_data(source_fonts_paths)
+    subsets = get_subsets_coverage_data(source_fonts_paths, log)
 
     contents = yaml.safe_dump(subsets)
 
@@ -256,69 +187,17 @@ def joinroot(path):
     return op.join(app.config['DATA_ROOT'], path)
 
 
-def process_copy_ufo(_in_ufo, path_params, familyName, log):
-    # Decide the incoming filepath
-    _in_ufo_path = op.join(path_params._in, _in_ufo)
-
-    fontsource = UFOFontSource(_in_ufo_path)
-    fontsource.family_name = familyName  # initial family name
-
-    if not fontsource.family_name:
-        log.write(('[MISSED] Please set openTypeNamePreferredFamilyName or '
-                   'familyName in %s fontinfo.plist and run another'
-                   ' bake process.') % _in_ufo, prefix='### ')
-
-    # Decide the outgoing filepath
-    _out_ufo = '{}.ufo'.format(fontsource.postscript_fontname)
-
-    log.write('Copy [and Rename] UFO\n', prefix='### ')
-
-    # Copy the UFOs
-    run("cp -a '%s' '%s'" % (_in_ufo_path, _out_ufo),
-        cwd=path_params._out_src, log=log)
-
-    # If we rename, change the font family name metadata
-    # inside the _out_ufo
-    if familyName:
-        # Read the _out_ufo fontinfo.plist
-        _out_ufo_path = op.join(path_params._out_src, _out_ufo)
-        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
-        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-        # Set the familyName
-        _out_ufoFontInfo['familyName'] = familyName
-
-        # Set PS Name
-        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
-        # < Family Name > < Vendor ID > - < Weight > < Width >
-        # < Slant > < Character Set >
-        psfn = fontsource.postscript_fontname
-        _out_ufoFontInfo['postscriptFontName'] = psfn
-        # Set Full Name
-        psfn = "%s %s" % (familyName, fontsource.style_name)
-        _out_ufoFontInfo['postscriptFullName'] = psfn
-        # Write _out fontinfo.plist
-        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
-
-    from .app import app
-    scripts_folder = op.join(app.config['ROOT'], 'scripts')
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
-
-    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
-           "'{out}{name}.ttf' '{out_src}{name}.otf'")
-    cmd = cmd.format(out_src=path_params._out_src,
-                     name=fontsource.postscript_fontname,
-                     out=path_params._out)
-    run(cmd, cwd=scripts_folder, log=log)
-
-
 class FontSourceAbstract(object):
     """ Abstract class to provide copy functional in baking process
 
         Inherited classes must implement `open_source` method
         and properties `style_name` and `family_name`. """
 
-    def __init__(self, path):
-        self.source = path
+    def __init__(self, path, cwd, stdout_pipe=None):
+        self.source = self.open_source(op.join(cwd, path))
+        self.source_path = path
+        self.cwd = cwd
+        self.stdout_pipe = stdout_pipe
 
     def open_source(self, sourcepath):
         raise NotImplementedError
@@ -331,20 +210,28 @@ class FontSourceAbstract(object):
     def family_name(self):
         raise NotImplementedError
 
-    def source():
-        doc = "The source property."
+    def before_copy(self):
+        """ If method returns False then bakery process halted. Default: True.
 
-        def fget(self):
-            return self._source
+            Implement this if you need additional check before source
+            path will be copied.
 
-        def fset(self, value):
-            self._source = self.open_source(value)
+            Good practice to call inside self.stdout_pipe.write() method
+            to make user know what is wrong with source. """
+        return True
 
-        def fdel(self):
-            del self._source
+    def copy(self, destdir):
+        destpath = op.join(destdir,
+                           self.postscript_fontname + self.source_path[-4:])
 
-        return locals()
-    source = property(**source())
+        self.stdout_pipe.write('### Copy [and Rename] %s\n' % self.source_path)
+        logmessage = 'cp {} {}'.format(self.source_path, op.basename(destpath))
+        self.stdout_pipe.write(logmessage + '\n')
+
+        if os.path.isdir(op.join(self.cwd, self.source_path)):
+            shutil.copytree(op.join(self.cwd, self.source_path), destpath)
+        else:
+            shutil.copy(op.join(self.cwd, self.source_path), destpath)
 
     @property
     def postscript_fontname(self):
@@ -356,8 +243,7 @@ class FontSourceAbstract(object):
 class UFOFontSource(FontSourceAbstract):
 
     def open_source(self, path):
-        self._source_path = op.join(path, 'fontinfo.plist')
-        return plistlib.readPlist(self._source_path)
+        return plistlib.readPlist(op.join(path, 'fontinfo.plist'))
 
     @property
     def style_name(self):
@@ -385,8 +271,13 @@ class UFOFontSource(FontSourceAbstract):
         return locals()
     family_name = property(**family_name())
 
-    def list_sources(self, process_files):
-        pass
+    def before_copy(self):
+        if not self.family_name:
+            self.stdout_pipe.write(('[MISSED] Please set openTypeNamePreferredFamilyName or '
+                                    'familyName in %s fontinfo.plist and run another'
+                                    ' bake process.') % self.source_path, prefix='### ')
+            return False
+        return True
 
 
 class TTXFontSource(FontSourceAbstract):
@@ -445,36 +336,96 @@ class BINFontSource(TTXFontSource):
                             verbose=False, allowVID=False)
 
 
-def process_copy_ttx(ttx_file, path_params, family_name, log):
-    from bakery.app import app
-    _ttx_path = op.join(path_params._in, ttx_file)
+def get_fontsource(path, cwd, log):
+    """ Returns instance of XXXFontSource class based on path extension.
 
-    fontsource = TTXFontSource(_ttx_path)
-    fontsource.family_name = family_name
+        It supports only three XXXFontSource classes for the moment:
 
-    # check if the file is there
-    if not op.exists(_ttx_path):
-        run("echo file '{}' not found".format(_ttx_path),
-            cwd=path_params._out, log=log)
+        >>> get_fontsource('test.ufo')
+        <UFOFontSource instance>
+
+        >>> get_fontsource('test.ttx')
+        <TTXFontSource instance>
+
+        >>> get_fontsource('test.ttf')
+        <BINFontSource instance>
+
+        >>> get_fontsource('test.otf')
+        <BINFontSource instance>
+    """
+    if path.endswith('.ufo'):
+        return UFOFontSource(path, cwd, log)
+    elif path.endswith('.ttx'):
+        return TTXFontSource(path, cwd, log)
+    elif path.endswith('.ttf') or path.endswith('.otf'):
+        return BINFontSource(path, cwd, log)
+    else:
+        log.write('[MISSED] Unsupported sources file: %s' % path,
+                  prefix='Error: ')
+
+
+def process_copy(path, path_params, family_name, log):
+    fontsource = get_fontsource(path, path_params._in, log)
+    fontsource.family_name = family_name  # initial family name
+
+    if not fontsource.before_copy():
+        return
+
+    fontsource.copy(path_params._out_src)
+    return fontsource
+
+
+def process_copy_ufo(path, path_params, familyName, log):
+    fontsource = process_copy(path, path_params, familyName, log)
+    if not fontsource:
+        return
+
+    _out_ufo = fontsource.postscript_fontname + '.ufo'
+    # If we rename, change the font family name metadata
+    # inside the _out_ufo
+    if familyName:
+        # Read the _out_ufo fontinfo.plist
+        _out_ufo_path = op.join(path_params._out_src, _out_ufo)
+        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
+        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
+        # Set the familyName
+        _out_ufoFontInfo['familyName'] = familyName
+
+        # Set PS Name
+        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+        # < Family Name > < Vendor ID > - < Weight > < Width >
+        # < Slant > < Character Set >
+        psfn = fontsource.postscript_fontname
+        _out_ufoFontInfo['postscriptFontName'] = psfn
+        # Set Full Name
+        psfn = "%s %s" % (familyName, fontsource.style_name)
+        _out_ufoFontInfo['postscriptFullName'] = psfn
+        # Write _out fontinfo.plist
+        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+    from .app import app
+    scripts_folder = op.join(app.config['ROOT'], 'scripts')
+    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
+
+    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+           "'{out}{name}.ttf' '{out_src}{name}.otf'")
+    cmd = cmd.format(out_src=path_params._out_src,
+                     name=fontsource.postscript_fontname,
+                     out=path_params._out)
+    run(cmd, cwd=scripts_folder, log=log)
+
+
+def process_copy_ttx(path, path_params, family_name, log):
+    fontsource = process_copy(path, path_params, family_name, log)
+    if not fontsource:
         return
 
     _out_name = fontsource.postscript_fontname
-
-    log.write('Copy [and Rename] TTX\n', prefix='### ')
-
-    # Copy the upstream ttx file to the build directory
-    run("cp '{}' '{}.ttx'".format(_ttx_path, _out_name),
-        cwd=path_params._out_src, log=log)
-
     # Compile it
     run("ttx {}.ttx".format(_out_name), cwd=path_params._out_src, log=log)
 
-    # If OTF, convert it to TTF with FontForge
-    # TODO: do this directly, since this autoconvert.py is just 3 lines,
-    #  import fontforge
-    #  font = fontforge.open(sys.argv[1])
-    #  font.generate(sys.argv[2])
     if fontsource.source.sfntVersion == 'OTTO':  # OTF
+        from bakery.app import app
         scripts_folder = op.join(app.config['ROOT'], 'scripts')
         cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
                " '{out}{ttx_name}.ttf'")
@@ -488,24 +439,15 @@ def process_copy_ttx(ttx_file, path_params, family_name, log):
             path_params._out_src, log=log)
 
 
-def process_copy_bin(bin_path, path_params, family_name, log):
-    from bakery.app import app
-    log.write('Copy [and Rename] BIN\n', prefix='### ')
-
-    _bin_path = op.join(path_params._in, bin_path)
-    fontsource = BINFontSource(_bin_path)
-    fontsource.family_name = family_name
+def process_copy_bin(path, path_params, family_name, log):
+    fontsource = process_copy(path, path_params, family_name, log)
+    if not fontsource:
+        return
 
     _out_name = fontsource.postscript_fontname
 
-    if bin_path.endswith('.otf'):
-        run("cp '{}' '{}.otf'".format(_bin_path, _out_name),
-            cwd=path_params._out_src, log=log)
-    elif bin_path.endswith('.ttf'):
-        run("cp '{}' '{}.ttf'".format(_bin_path, _out_name),
-            cwd=path_params._out_src, log=log)
-
     if fontsource.source.sfntVersion == 'OTTO':  # OTF
+        from bakery.app import app
         scripts_folder = op.join(app.config['ROOT'], 'scripts')
         cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
                " '{out}{ttx_name}.ttf'")
@@ -921,6 +863,17 @@ def discover_dashboard(project, build, log):
     run(cmd, cwd=_out_src, log=log)
 
 
+def git_checkout(path, revision, log=None):
+    try:
+        from git import Repo, InvalidGitRepositoryError
+        repo = Repo(path)
+        repo.git.checkout(revision)
+        if log:
+            log.write("git checkout %s\n" % revision)
+    except InvalidGitRepositoryError:
+        pass
+
+
 @job
 def process_project(project, build, revision, force_sync=False):
     """
@@ -929,7 +882,7 @@ def process_project(project, build, revision, force_sync=False):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
-    from .app import app, db
+    from bakery.app import app
     if force_sync:
         project_git_sync(project)
 
@@ -951,9 +904,11 @@ def process_project(project, build, revision, force_sync=False):
     # setup is set after 'bake' button is first pressed
 
     if project.config['local'].get('setup', None):
+        git_checkout(_in, revision, log)
+
         # this code change upstream repository
         try:
-            run("git checkout %s" % revision, cwd=_in, log=log)
+            # run("git checkout %s" % revision, cwd=_in, log=log)
             log.write('Bake Begins!\n', prefix='# ')
             copy_and_rename_process(project, build, log)
             ttfautohint_process(project, build, log)
@@ -969,8 +924,6 @@ def process_project(project, build, revision, force_sync=False):
             # discover_dashboard(project, build, log)
             # zip out folder with revision
             # TODO: move these variable definitions inside zipdir() so they are the same as other bake methods
-            param = {'login': project.login, 'id': project.id,
-                     'revision': build.revision, 'build': build.id}
             _out_src = op.join(app.config['DATA_ROOT'],
                                ('%(login)s/%(id)s.out/'
                                 '%(build)s.%(revision)s') % param)
@@ -978,9 +931,7 @@ def process_project(project, build, revision, force_sync=False):
             zipdir(_out_src, _out_url, log)
         finally:
             # save that project is done
-            build.is_done = True
-            db.session.add(build)
-            db.session.commit()
+            set_done(build)
             log.write('Bake Succeeded!\n', prefix='# ')
 
     log.close()
@@ -1032,7 +983,7 @@ def zipdir(path, url, log):
 
 def set_done(build):
     """ Set done flag for build """
-    from .app import db
+    from bakery.app import db
     build.is_done = True
     db.session.add(build)
     db.session.commit()
