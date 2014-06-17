@@ -221,23 +221,38 @@ class FontSourceAbstract(object):
         return True
 
     def copy(self, destdir):
-        destpath = op.join(destdir,
-                           self.postscript_fontname + self.source_path[-4:])
+        destpath = op.join(destdir, self.get_file_name())
 
         self.stdout_pipe.write('### Copy [and Rename] %s\n' % self.source_path)
-        logmessage = 'cp {} {}'.format(self.source_path, op.basename(destpath))
-        self.stdout_pipe.write(logmessage + '\n')
 
         if os.path.isdir(op.join(self.cwd, self.source_path)):
-            shutil.copytree(op.join(self.cwd, self.source_path), destpath)
+            logmessage = '$ cp -a {} {}'.format(self.source_path, op.basename(destpath))
+            try:
+                shutil.copytree(op.join(self.cwd, self.source_path), destpath)
+            except (OSError, IOError), ex:
+                self.stdout_pipe.write('Error: %s' % ex.message)
+                raise
         else:
-            shutil.copy(op.join(self.cwd, self.source_path), destpath)
+            logmessage = '$ cp -a {} {}'.format(self.source_path, op.basename(destpath))
+            try:
+                shutil.copy(op.join(self.cwd, self.source_path), destpath)
+            except (OSError, IOError), ex:
+                self.stdout_pipe.write('Error: %s' % ex.message)
+                raise
+
+        self.stdout_pipe.write(logmessage + '\n')
+
+    def get_file_name(self):
+        return self.postscript_fontname + self.source_path[-4:]
 
     @property
     def postscript_fontname(self):
         stylename = re.sub(r'\s', '', self.style_name)
         familyname = re.sub(r'\s', '', self.family_name)
         return "{}-{}".format(familyname, stylename)
+
+    def after_copy(self, path_params):
+        return
 
 
 class UFOFontSource(FontSourceAbstract):
@@ -278,6 +293,39 @@ class UFOFontSource(FontSourceAbstract):
                                     ' bake process.') % self.source_path, prefix='### ')
             return False
         return True
+
+    def after_copy(self, path_params):
+        # If we rename, change the font family name metadata
+        # inside the _out_ufo
+        if self.family_name:
+            # Read the _out_ufo fontinfo.plist
+            _out_ufo_path = op.join(path_params._out_src, self.get_file_name())
+            _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
+            _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
+            # Set the familyName
+            _out_ufoFontInfo['familyName'] = self.family_name
+
+            # Set PS Name
+            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
+            # < Family Name > < Vendor ID > - < Weight > < Width >
+            # < Slant > < Character Set >
+            psfn = self.postscript_fontname
+            _out_ufoFontInfo['postscriptFontName'] = psfn
+            _out_ufoFontInfo['postscriptFullName'] = psfn.replace('-', ' ')
+            # Write _out fontinfo.plist
+            plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
+
+        from .app import app
+        scripts_folder = op.join(app.config['ROOT'], 'scripts')
+        self.stdout_pipe.write('Convert UFOs to TTFs (ufo2ttf.py)\n',
+                               prefix='### ')
+
+        cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
+               "'{out}{name}.ttf' '{out_src}{name}.otf'")
+        cmd = cmd.format(out_src=path_params._out_src,
+                         name=self.postscript_fontname,
+                         out=path_params._out)
+        run(cmd, cwd=scripts_folder, log=self.stdout_pipe)
 
 
 class TTXFontSource(FontSourceAbstract):
@@ -328,12 +376,41 @@ class TTXFontSource(FontSourceAbstract):
         return locals()
     family_name = property(**family_name())
 
+    def compile_ttx(self, path_params):
+        run("ttx {}.ttx".format(self.postscript_fontname),
+            cwd=path_params._out_src,
+            log=self.stdout_pipe)
+
+    def after_copy(self, path_params):
+        _out_name = self.postscript_fontname
+
+        self.compile_ttx(path_params)
+
+        if self.source.sfntVersion == 'OTTO':  # OTF
+            from bakery.app import app
+            scripts_folder = op.join(app.config['ROOT'], 'scripts')
+            cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
+                   " '{out}{ttx_name}.ttf'")
+            cmd = cmd.format(out_src=path_params._out_src,
+                             ttx_name=_out_name,
+                             out=path_params._out)
+            run(cmd, cwd=scripts_folder, log=self.stdout_pipe)
+        # If TTF already, move it up
+        else:
+            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
+                path_params._out_src, log=self.stdout_pipe)
+
 
 class BINFontSource(TTXFontSource):
 
     def open_source(self, path):
         return ttLib.TTFont(path, lazy=False, recalcBBoxes=True,
                             verbose=False, allowVID=False)
+
+    def compile_ttx(self, path_params):
+        """ Override TTXFontSource compile_ttx method as BINFontSource
+            based on compiled already fonts """
+        pass
 
 
 def get_fontsource(path, cwd, log):
@@ -372,93 +449,9 @@ def process_copy(path, path_params, family_name, log):
         return
 
     fontsource.copy(path_params._out_src)
+
+    fontsource.after_copy(path_params)
     return fontsource
-
-
-def process_copy_ufo(path, path_params, familyName, log):
-    fontsource = process_copy(path, path_params, familyName, log)
-    if not fontsource:
-        return
-
-    _out_ufo = fontsource.postscript_fontname + '.ufo'
-    # If we rename, change the font family name metadata
-    # inside the _out_ufo
-    if familyName:
-        # Read the _out_ufo fontinfo.plist
-        _out_ufo_path = op.join(path_params._out_src, _out_ufo)
-        _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
-        _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-        # Set the familyName
-        _out_ufoFontInfo['familyName'] = familyName
-
-        # Set PS Name
-        # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
-        # < Family Name > < Vendor ID > - < Weight > < Width >
-        # < Slant > < Character Set >
-        psfn = fontsource.postscript_fontname
-        _out_ufoFontInfo['postscriptFontName'] = psfn
-        # Set Full Name
-        psfn = "%s %s" % (familyName, fontsource.style_name)
-        _out_ufoFontInfo['postscriptFullName'] = psfn
-        # Write _out fontinfo.plist
-        plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
-
-    from .app import app
-    scripts_folder = op.join(app.config['ROOT'], 'scripts')
-    log.write('Convert UFOs to TTFs (ufo2ttf.py)\n', prefix='### ')
-
-    cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
-           "'{out}{name}.ttf' '{out_src}{name}.otf'")
-    cmd = cmd.format(out_src=path_params._out_src,
-                     name=fontsource.postscript_fontname,
-                     out=path_params._out)
-    run(cmd, cwd=scripts_folder, log=log)
-
-
-def process_copy_ttx(path, path_params, family_name, log):
-    fontsource = process_copy(path, path_params, family_name, log)
-    if not fontsource:
-        return
-
-    _out_name = fontsource.postscript_fontname
-    # Compile it
-    run("ttx {}.ttx".format(_out_name), cwd=path_params._out_src, log=log)
-
-    if fontsource.source.sfntVersion == 'OTTO':  # OTF
-        from bakery.app import app
-        scripts_folder = op.join(app.config['ROOT'], 'scripts')
-        cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
-               " '{out}{ttx_name}.ttf'")
-        cmd = cmd.format(out_src=path_params._out_src,
-                         ttx_name=_out_name,
-                         out=path_params._out)
-        run(cmd, cwd=scripts_folder, log=log)
-    # If TTF already, move it up
-    else:
-        run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
-            path_params._out_src, log=log)
-
-
-def process_copy_bin(path, path_params, family_name, log):
-    fontsource = process_copy(path, path_params, family_name, log)
-    if not fontsource:
-        return
-
-    _out_name = fontsource.postscript_fontname
-
-    if fontsource.source.sfntVersion == 'OTTO':  # OTF
-        from bakery.app import app
-        scripts_folder = op.join(app.config['ROOT'], 'scripts')
-        cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
-               " '{out}{ttx_name}.ttf'")
-        cmd = cmd.format(out_src=path_params._out_src,
-                         ttx_name=_out_name,
-                         out=path_params._out)
-        run(cmd, cwd=scripts_folder, log=log)
-    # If TTF already, move it up
-    else:
-        run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
-            path_params._out_src, log=log)
 
 
 class PathParam:
@@ -487,18 +480,8 @@ def copy_and_rename_process(project, build, log):
 
     path_params = PathParam(project, build)
     for x in config['state'].get('process_files', []):
-        if x.endswith('.ufo'):
-            process_copy_ufo(x, path_params,
-                             config['state'].get('familyname', None), log)
-        elif x.endswith('.ttx'):
-            process_copy_ttx(x, path_params,
-                             config['state'].get('familyname', None), log)
-        elif x.endswith('.ttf') or x.endswith('.otf'):
-            process_copy_bin(x, path_params,
-                             config['state'].get('familyname', None), log)
-        else:
-            log.write('[MISSED] Unsupported sources file: %s' % x,
-                      prefix='Error: ')
+        process_copy(x, path_params, config['state'].get('familyname', None),
+                     log)
 
     # Copy licence file
     # TODO: Infer license type from filename
