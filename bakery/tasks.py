@@ -140,9 +140,10 @@ def project_git_sync(project):
     log = RedisFd(op.join(_out, 'upstream.log'))
     # Create the incoming repo directory (_in) if it doesn't exist
     if not op.exists(_in):
-        log.write('$ Create incoming %s...')
+        log.write('$ mkdir -p /%(login)s/%(id)s.in/ ...' % project)
         try:
             os.makedirs(op.join(app.config['DATA_ROOT'], _in))
+            log.write('[OK]\n')
         except (OSError, IOError), e:
             log.write('[FAIL]\nError: %s' % e.message)
             raise e
