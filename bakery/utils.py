@@ -222,7 +222,7 @@ def run(command, cwd, log):
     # print the command on the worker console
     print("[%s]:%s" % (cwd, command))
     # log the command
-    log.write('\n$ %s\n' % command)
+    log.write('$ %s\n' % command)
     # Start the command
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})

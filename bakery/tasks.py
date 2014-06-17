@@ -116,7 +116,7 @@ def project_git_sync(project):
     :param project: :class:`~bakery.models.Project` instance
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
-    from .app import db, app
+    from bakery.app import db, app
     project.is_ready = False
     db.session.add(project)
     db.session.commit()
@@ -127,25 +127,37 @@ def project_git_sync(project):
     if not op.exists(_out):
         os.makedirs(_out)
 
-    prun('rm {}'.format('fontaine.yml'), cwd=_out)
-    prun('rm {}'.format('upstream.log'), cwd=_out)
+    try:
+        os.remove(op.join(_out, 'fontaine.yml'))
+    except OSError:
+        pass
+
+    try:
+        os.remove(op.join(_out, 'upstream.log'))
+    except OSError:
+        pass
 
     log = RedisFd(op.join(_out, 'upstream.log'))
-
     # Create the incoming repo directory (_in) if it doesn't exist
     if not op.exists(_in):
-        # log.write('Creating Incoming Directory\n', prefix='### ')
-        prun('mkdir -p %s' % _in, cwd=app.config['DATA_ROOT'], log=log)
+        log.write('$ Create incoming %s...')
+        try:
+            os.makedirs(op.join(app.config['DATA_ROOT'], _in))
+        except (OSError, IOError), e:
+            log.write('[FAIL]\nError: %s' % e.message)
+            raise e
+
     # Update _in if it already exists with a .git directory
-    if op.exists(op.join(_in, '.git')):
-        # log.write('Sync Git Repository\n', prefix='### ')
-        # remove anything in the _in directory that isn't checked in
-        prun('git reset --hard', cwd=_in, log=log)
-        prun('git clean --force', cwd=_in, log=log)
-        # pull from origin master branch
-        prun('git pull origin master', cwd=_in, log=log)
-    # Since it doesn't exist as a git repo, get the _in repo
-    else:
+    from git import Repo, InvalidGitRepositoryError
+    try:
+        repo = Repo(_in)
+        log.write('$ git reset --hard\n')
+        log.write(repo.git.reset(hard=True) + '\n')
+        log.write('$ git clean --force\n')
+        repo.git.clean(force=True)
+        log.write('$ git pull origin master\n')
+        repo.remotes.origin.pull()
+    except InvalidGitRepositoryError:
         # clone the repository
         # log.write('Copying Git Repository\n', prefix='### ')
         try:
@@ -389,12 +401,15 @@ class TTXFontSource(FontSourceAbstract):
         _ = '$ Converting {}.otf to {}.ttf...'
         self.stdout_pipe.write(_.format(self.postscript_fontname))
 
-        path = op.join(path_params._out_src, self.postscript_fontname + '.otf')
-        font = fontforge.open(path)
+        try:
+            path = op.join(path_params._out_src, self.postscript_fontname + '.otf')
+            font = fontforge.open(path)
 
-        path = op.join(path_params._out, self.postscript_fontname + '.ttf')
-        font.generate(path)
-        self.stdout_pipe.write('[OK]\n')
+            path = op.join(path_params._out, self.postscript_fontname + '.ttf')
+            font.generate(path)
+            self.stdout_pipe.write('[OK]\n')
+        except Exception, ex:
+            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
 
     def after_copy(self, path_params):
         out_name = self.postscript_fontname + '.ttf'
@@ -427,6 +442,46 @@ class BINFontSource(TTXFontSource):
         pass
 
 
+class SFDFontSource(FontSourceAbstract):
+
+    def open_source(self, path):
+        return fontforge.open(path)
+
+    def family_name():
+        doc = "The family_name property."
+
+        def fget(self):
+            return self._family_name or self.source.sfnt_names[1][2]
+
+        def fset(self, value):
+            self._family_name = value
+
+        def fdel(self):
+            del self._family_name
+        return locals()
+    family_name = property(**family_name())
+
+    @property
+    def style_name(self):
+        return self.source.sfnt_names[2][2]
+
+    def after_copy(self, path_params):
+        from scripts import ufo2ttf
+        _ = '$ Convert %s to %s... '
+        self.stdout_pipe.write(_ % (self.source_path,
+                                    self.postscript_fontname + '.ttf'))
+
+        ufopath = op.join(path_params._out_src, self.get_file_name())
+        ttfpath = op.join(path_params._out, self.postscript_fontname + '.ttf')
+        otfpath = op.join(path_params._out, self.postscript_fontname + '.otf')
+
+        try:
+            ufo2ttf.convert(ufopath, ttfpath, otfpath)
+            self.stdout_pipe.write('[OK]\n')
+        except Exception, ex:
+            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
+
+
 def get_fontsource(path, cwd, log):
     """ Returns instance of XXXFontSource class based on path extension.
 
@@ -443,6 +498,9 @@ def get_fontsource(path, cwd, log):
 
         >>> get_fontsource('test.otf')
         <BINFontSource instance>
+
+        >>> get_fontsource('test.sfd')
+        <SFDFontSource instance>
     """
     if path.endswith('.ufo'):
         return UFOFontSource(path, cwd, log)
@@ -450,8 +508,10 @@ def get_fontsource(path, cwd, log):
         return TTXFontSource(path, cwd, log)
     elif path.endswith('.ttf') or path.endswith('.otf'):
         return BINFontSource(path, cwd, log)
+    elif path.endswith('.sfd'):
+        return SFDFontSource(path, cwd, log)
     else:
-        log.write('[MISSED] Unsupported sources file: %s' % path,
+        log.write('[MISSED] Unsupported sources file: %s\n' % path,
                   prefix='Error: ')
 
 
@@ -773,7 +833,8 @@ def upstream_revision_tests(project, revision):
 
     result = {}
     os.chdir(_in)
-    prun("git checkout %s" % revision, cwd=_in)
+
+    git_checkout(_in, revision)
 
     result[project.clone] = run_set(_in, 'upstream-repo')
 

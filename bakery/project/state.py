@@ -129,6 +129,7 @@ def project_state_get(project, refresh=False):
     bin_files = []
     ufo_dirs = []
     ttx_files = []
+    sfd_files = []
     l = len(_in)
     for root, dirs, files in os.walk(_in):
         for f in files:
@@ -139,6 +140,8 @@ def project_state_get(project, refresh=False):
                 bin_files.append(fullpath[l:])
             if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
                 ttx_files.append(fullpath[l:])
+            if os.path.splitext(fullpath)[1].lower() == '.sfd':
+                sfd_files.append(fullpath[l:])
         for d in dirs:
             fullpath = os.path.join(root, d)
             if os.path.splitext(fullpath)[1].lower() == '.ufo':
@@ -148,6 +151,7 @@ def project_state_get(project, refresh=False):
     local['bin_files'] = bin_files
     local['ufo_dirs'] = ufo_dirs
     local['ttx_files'] = ttx_files
+    local['sfd_files'] = sfd_files
 
     # If license_file not defined then choose OFL.txt or LICENSE.txt from
     # the root of repo, if it exists
