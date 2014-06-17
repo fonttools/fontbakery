@@ -18,6 +18,7 @@ from __future__ import print_function
 
 import codecs
 import datetime
+import fontforge
 import glob
 import os
 import os.path as op
@@ -223,24 +224,23 @@ class FontSourceAbstract(object):
     def copy(self, destdir):
         destpath = op.join(destdir, self.get_file_name())
 
-        self.stdout_pipe.write('### Copy [and Rename] %s\n' % self.source_path)
+        _ = '$ Copy [and Rename] %s to %s... '
+        self.stdout_pipe.write(_ % (self.source_path, op.basename(destpath)))
 
         if os.path.isdir(op.join(self.cwd, self.source_path)):
-            logmessage = '$ cp -a {} {}'.format(self.source_path, op.basename(destpath))
             try:
                 shutil.copytree(op.join(self.cwd, self.source_path), destpath)
             except (OSError, IOError), ex:
-                self.stdout_pipe.write('Error: %s' % ex.message)
+                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
                 raise
         else:
-            logmessage = '$ cp -a {} {}'.format(self.source_path, op.basename(destpath))
             try:
                 shutil.copy(op.join(self.cwd, self.source_path), destpath)
             except (OSError, IOError), ex:
-                self.stdout_pipe.write('Error: %s' % ex.message)
+                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
                 raise
 
-        self.stdout_pipe.write(logmessage + '\n')
+        self.stdout_pipe.write('[OK]\n')
 
     def get_file_name(self):
         return self.postscript_fontname + self.source_path[-4:]
@@ -294,6 +294,22 @@ class UFOFontSource(FontSourceAbstract):
             return False
         return True
 
+    def convert_ufo2ttf(self, path_params):
+        from scripts import ufo2ttf
+        _ = '$ Convert %s to %s... '
+        self.stdout_pipe.write(_ % (self.source_path,
+                                    self.postscript_fontname + '.ttf'))
+
+        ufopath = op.join(path_params._out_src, self.get_file_name())
+        ttfpath = op.join(path_params._out, self.postscript_fontname + '.ttf')
+        otfpath = op.join(path_params._out, self.postscript_fontname + '.otf')
+
+        try:
+            ufo2ttf.convert(ufopath, ttfpath, otfpath)
+            self.stdout_pipe.write('[OK]\n')
+        except Exception, ex:
+            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
+
     def after_copy(self, path_params):
         # If we rename, change the font family name metadata
         # inside the _out_ufo
@@ -315,23 +331,11 @@ class UFOFontSource(FontSourceAbstract):
             # Write _out fontinfo.plist
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
-        from .app import app
-        scripts_folder = op.join(app.config['ROOT'], 'scripts')
-        self.stdout_pipe.write('Convert UFOs to TTFs (ufo2ttf.py)\n',
-                               prefix='### ')
-
-        cmd = ("python ufo2ttf.py '{out_src}{name}.ufo' "
-               "'{out}{name}.ttf' '{out_src}{name}.otf'")
-        cmd = cmd.format(out_src=path_params._out_src,
-                         name=self.postscript_fontname,
-                         out=path_params._out)
-        run(cmd, cwd=scripts_folder, log=self.stdout_pipe)
+        self.convert_ufo2ttf(path_params)
 
 
 class TTXFontSource(FontSourceAbstract):
 
-    # define how to read NAME table entries
-    # TODO: move this to a generic class, so its available in eg the tests scripts
     @staticmethod
     def nameTableRead(font, NameID, fallbackNameID=False):
         for record in font['name'].names:
@@ -381,24 +385,34 @@ class TTXFontSource(FontSourceAbstract):
             cwd=path_params._out_src,
             log=self.stdout_pipe)
 
+    def convert_otf2ttf(self, path_params):
+        _ = '$ Converting {}.otf to {}.ttf...'
+        self.stdout_pipe.write(_.format(self.postscript_fontname))
+
+        path = op.join(path_params._out_src, self.postscript_fontname + '.otf')
+        font = fontforge.open(path)
+
+        path = op.join(path_params._out, self.postscript_fontname + '.ttf')
+        font.generate(path)
+        self.stdout_pipe.write('[OK]\n')
+
     def after_copy(self, path_params):
-        _out_name = self.postscript_fontname
+        out_name = self.postscript_fontname + '.ttf'
 
         self.compile_ttx(path_params)
 
         if self.source.sfntVersion == 'OTTO':  # OTF
-            from bakery.app import app
-            scripts_folder = op.join(app.config['ROOT'], 'scripts')
-            cmd = ("python autoconvert.py '{out_src}{ttx_name}.otf'"
-                   " '{out}{ttx_name}.ttf'")
-            cmd = cmd.format(out_src=path_params._out_src,
-                             ttx_name=_out_name,
-                             out=path_params._out)
-            run(cmd, cwd=scripts_folder, log=self.stdout_pipe)
+            self.convert_otf2ttf(path_params)
         # If TTF already, move it up
         else:
-            run("mv '{0}.ttf' '../{0}.ttf'".format(_out_name),
-                path_params._out_src, log=self.stdout_pipe)
+            try:
+                _ = '$ Move %s to ../%s...'
+                self.stdout_pipe.write(_ % (out_name, out_name))
+                shutil.move(op.join(path_params._out_src, out_name),
+                            op.join(path_params._out, out_name))
+                self.stdout_pipe.write('[OK]\n')
+            except (OSError, IOError), ex:
+                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
 
 
 class BINFontSource(TTXFontSource):

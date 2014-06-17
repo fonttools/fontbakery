@@ -15,33 +15,37 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-import sys
-# TODO DC can the following 2 lines be removed?
-# hardcoded for OSX
-# sys.path.append('/usr/local/lib/python2.7/site-packages/')
-print "Input: %s, Output: %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
-
 import fontforge
+import sys
 
-font = fontforge.open(sys.argv[1])
 
-if sys.argv[3]:
-    otf = font.generate(sys.argv[3])
+def convert(ufo, ttf, otf=None):
+    font = fontforge.open(ufo)
 
-# Convert curves to quadratic
-font.layers["Fore"].is_quadratic = True
-# Select all glyphs
-font.selection.all()
-#   Add Extrema
-font.addExtrema()
-#   Simplify
-try:
-    font.simplify(1,('setstarttoextremum','removesingletonpoints'))
-except:
-    print "Error: Could not simplify"
-    pass
-#   Correct Directions
-font.correctDirection()
+    if otf:
+        otf = font.generate(otf)
 
-ttf = font.generate(sys.argv[2])
+    # Convert curves to quadratic
+    font.layers["Fore"].is_quadratic = True
+    # Select all glyphs
+    font.selection.all()
+    #   Add Extrema
+    font.addExtrema()
+    #   Simplify
+    try:
+        font.simplify(1, ('setstarttoextremum', 'removesingletonpoints'))
+    except:
+        print "Error: Could not simplify"
+        pass
+    #   Correct Directions
+    font.correctDirection()
+
+    font.generate(ttf)
+
+
+if __name__ == '__main__':
+    # TODO DC can the following 2 lines be removed?
+    # hardcoded for OSX
+    # sys.path.append('/usr/local/lib/python2.7/site-packages/')
+    print "Input: %s, Output: %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
+    convert(*sys.argv[1:])
