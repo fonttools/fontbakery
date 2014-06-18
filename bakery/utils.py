@@ -86,11 +86,19 @@ def signify(text):
 class RedisFd(object):
     """ Redis File Descriptor class, publish writen data to redis channel
         in parallel to file """
-    def __init__(self, name, mode='a'):
+    def __init__(self, name, mode='a', write_pipeline=None):
         self.filed = open(name, mode)
         self.filed.write("Start: Start of log\n")  # end of log
+        self.write_pipeline = write_pipeline
+        if write_pipeline and not isinstance(write_pipeline, list):
+            self.write_pipeline = [write_pipeline]
 
     def write(self, data, prefix=''):
+        if self.write_pipeline:
+
+            for pipeline in self.write_pipeline:
+                data = pipeline(data)
+
         self.filed.write("%s%s" % (prefix, data))
         self.filed.flush()
 

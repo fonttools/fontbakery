@@ -20,11 +20,11 @@ import codecs
 import datetime
 import fontforge
 import glob
-import os
+import os as os_origin
 import os.path as op
 import plistlib
 import re
-import shutil
+import shutil as shutil_origin
 import yaml
 
 from checker import run_set, parse_test_results
@@ -35,6 +35,46 @@ from fontTools import ttLib
 from fontaine.ext.subsets import Extension as SubsetExtension
 
 from .utils import RedisFd, run, prun
+
+
+class metaclass(type):
+
+    def __getattr__(cls, value):
+        if not hasattr(cls.__originmodule__, value):
+            _ = "'module' object has no attribute '%s'"
+            raise AttributeError(_ % value)
+
+        def func(*args, **kwargs):
+            log = kwargs.pop('log', None)
+            if log:
+                log.write('$ ' + value + ' ' + ' '.join(list(args)) + '...')
+            try:
+                result = getattr(cls.__originmodule__, value)(*args, **kwargs)
+                if log:
+                    log.write('[OK]\n')
+                return result
+            except Exception, e:
+                if log:
+                    log.write('[FAIL]\nError: %s\n' % e.message)
+                raise e
+
+        return func
+
+
+class osmetaclass(metaclass):
+    __originmodule__ = os_origin
+
+
+class shutilmetaclass(metaclass):
+    __originmodule__ = shutil_origin
+
+
+class shutil:
+    __metaclass__ = shutilmetaclass
+
+
+class os:
+    __metaclass__ = osmetaclass
 
 
 @job
@@ -89,7 +129,7 @@ def generate_subsets_coverage_list(project, log=None):
         return sorted(yaml.safe_load(open(_out_yaml, 'r')).items())
 
     if not op.exists(op.dirname(_out_yaml)):
-        os.makedirs(op.dirname(_out_yaml))
+        os.makedirs(op.dirname(_out_yaml), log=log)
 
     source_fonts_paths = []
     # `get_sources_list` returns list of paths relative to root.
@@ -140,13 +180,7 @@ def project_git_sync(project):
     log = RedisFd(op.join(_out, 'upstream.log'))
     # Create the incoming repo directory (_in) if it doesn't exist
     if not op.exists(_in):
-        log.write('$ mkdir -p /%(login)s/%(id)s.in/ ...' % project)
-        try:
-            os.makedirs(op.join(app.config['DATA_ROOT'], _in))
-            log.write('[OK]\n')
-        except (OSError, IOError), e:
-            log.write('[FAIL]\nError: %s' % e.message)
-            raise e
+        os.makedirs(op.join(app.config['DATA_ROOT'], _in), log=log)
 
     # Update _in if it already exists with a .git directory
     from git import Repo, InvalidGitRepositoryError
@@ -237,23 +271,12 @@ class FontSourceAbstract(object):
     def copy(self, destdir):
         destpath = op.join(destdir, self.get_file_name())
 
-        _ = '$ Copy [and Rename] %s to %s... '
-        self.stdout_pipe.write(_ % (self.source_path, op.basename(destpath)))
-
-        if os.path.isdir(op.join(self.cwd, self.source_path)):
-            try:
-                shutil.copytree(op.join(self.cwd, self.source_path), destpath)
-            except (OSError, IOError), ex:
-                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
-                raise
+        if op.isdir(op.join(self.cwd, self.source_path)):
+            shutil.copytree(op.join(self.cwd, self.source_path), destpath,
+                            log=self.stdout_pipe)
         else:
-            try:
-                shutil.copy(op.join(self.cwd, self.source_path), destpath)
-            except (OSError, IOError), ex:
-                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
-                raise
-
-        self.stdout_pipe.write('[OK]\n')
+            shutil.copy(op.join(self.cwd, self.source_path), destpath,
+                        log=self.stdout_pipe)
 
     def get_file_name(self):
         return self.postscript_fontname + self.source_path[-4:]
@@ -309,7 +332,7 @@ class UFOFontSource(FontSourceAbstract):
 
     def convert_ufo2ttf(self, path_params):
         from scripts import ufo2ttf
-        _ = '$ Convert %s to %s... '
+        _ = '$ ufo2ttf %s to %s... '
         self.stdout_pipe.write(_ % (self.source_path,
                                     self.postscript_fontname + '.ttf'))
 
@@ -422,13 +445,11 @@ class TTXFontSource(FontSourceAbstract):
         # If TTF already, move it up
         else:
             try:
-                _ = '$ Move %s to ../%s...'
-                self.stdout_pipe.write(_ % (out_name, out_name))
                 shutil.move(op.join(path_params._out_src, out_name),
-                            op.join(path_params._out, out_name))
-                self.stdout_pipe.write('[OK]\n')
-            except (OSError, IOError), ex:
-                self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
+                            op.join(path_params._out, out_name),
+                            log=self.stdout_pipe)
+            except (OSError, IOError):
+                pass
 
 
 class BINFontSource(TTXFontSource):
@@ -579,8 +600,9 @@ def copy_and_rename_process(project, build, log):
         # Copy license file
         _in_license = op.join(_in, licenseFileInFullPath)
         _out_license = op.join(_out, licenseFileOut)
-        run('cp -a "%s" "%s"' % (_in_license, _out_license),
-            cwd=_user, log=log)
+
+        shutil.copy(op.join(_user, _in_license), op.join(_user, _out_license),
+                    log=log)
     else:
         log.write('License file not copied\n', prefix='Error: ')
 
@@ -588,8 +610,8 @@ def copy_and_rename_process(project, build, log):
     _in_fontlog = op.join(_in, 'FONTLOG.txt')
     _out_fontlog = op.join(_out, 'FONTLOG.txt')
     if op.exists(_in_fontlog) and op.isfile(_in_fontlog):
-        run('cp -a "%s" "%s"' % (_in_fontlog, _out_fontlog),
-            cwd=_user, log=log)
+        shutil.copy(op.join(_user, _in_fontlog), op.join(_user, _out_fontlog),
+                    log=log)
     else:
         log.write('FONTLOG.txt does not exist\n', prefix='Error: ')
 
@@ -597,7 +619,8 @@ def copy_and_rename_process(project, build, log):
     _in_desc = op.join(_in, 'DESCRIPTION.en_us.html')
     _out_desc = op.join(_out, 'DESCRIPTION.en_us.html')
     if op.exists(_in_desc) and op.isfile(_in_desc):
-        run('cp -a "%s" "%s"' % (_in_desc, _out_desc), cwd=_user, log=log)
+        shutil.copy(op.join(_user, _in_desc), op.join(_user, _out_desc),
+                    log=log)
     else:
         log.write(('DESCRIPTION.en_us.html does not exist upstream, '
                    'will generate one later\n'), prefix='Error: ')
@@ -606,7 +629,8 @@ def copy_and_rename_process(project, build, log):
     _in_meta = op.join(_in, 'METADATA.json')
     _out_meta = op.join(_out, 'METADATA.json')
     if op.exists(_in_meta) and op.isfile(_in_meta):
-        run('cp -a "%s" "%s"' % (_in_meta, _out_meta), cwd=_user, log=log)
+        shutil.copy(op.join(_user, _in_meta), op.join(_user, _out_meta),
+                    log=log)
     else:
         log.write(('METADATA.json does not exist upstream, '
                    'will generate one later\n'), prefix='Error: ')
@@ -616,7 +640,8 @@ def copy_and_rename_process(project, build, log):
         for filename in config['state']['txt_files_copied']:
             _in_file = op.join(_in, filename)
             _out_file = op.join(_out, filename)
-            run('cp -a "%s" "%s"' % (_in_file, _out_file), cwd=_user, log=log)
+            shutil.copy(op.join(_user, _in_file), op.join(_user, _out_file),
+                        log=log)
 
 
 def ttfautohint_process(project, build, log):
@@ -640,13 +665,13 @@ def ttfautohint_process(project, build, log):
         os.chdir(_out)
         for name in glob.glob("*.ttf"):
             name = name[:-4]  # cut .ttf
-            run("mv '{name}.ttf' '{name}.autohint.ttf'".format(name=name),
-                cwd=_out, log=log)
+            shutil.move(op.join(_out, name + '.ttf'),
+                        op.join(_out, name + '.autohint.ttf'),
+                        log=log)
             cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
                    "'{name}.ttf'").format(params=params, name=name)
             run(cmd, cwd=_out, log=log)
-            run("rm '{name}.autohint.ttf'".format(name=name),
-                cwd=_out, log=log)
+            os.remove(op.join(_out, name + '.autohint.ttf'), log=log)
 
 
 def ttx_process(project, build, log):
@@ -667,21 +692,27 @@ def ttx_process(project, build, log):
         # convert the ttf to a ttx file - this may fail
         cmd = "ttx -i -q '%s.ttf'" % filename
         run(cmd, cwd=_out, log=log)
+
         # move the original ttf to the side
-        cmd = "mv '%s.ttf' '%s.ttf.orig'" % (filename, filename)
-        run(cmd, cwd=_out, log=log)
+        shutil.move(op.join(_out, filename + '.ttf'),
+                    op.join(_out, filename + '.ttf.orig'),
+                    log=log)
+
         # convert the ttx back to a ttf file - this may fail
         cmd = "ttx -i -q '%s.ttx'" % filename
         run(cmd, cwd=_out, log=log)
+
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
         run(cmd, cwd=_out, log=log)
+
         # remove the original (duplicate) ttf
-        cmd = "rm  '%s.ttf.orig'" % filename
-        run(cmd, cwd=_out, log=log)
+        os.remove(op.join(_out, filename + '.ttf.orig'),
+                  log=log)
+
         # move ttx files to src
-        cmd = "mv '%s.ttx' %s" % (filename, _out_src)
-        run(cmd, cwd=_out, log=log)
+        shutil.move(op.join(_out, filename + '.ttx'), _out_src,
+                    log=log)
 
 
 def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
@@ -692,9 +723,10 @@ def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
     cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
                  'out': op.join(_out, name)}
     run(cmd, cwd=_out, log=log)
-    cmd = 'mv %(out)s.ttf.subset %(out)s.%(subset)s'
-    run(cmd % {'subset': subset, 'out': op.join(_out, name)},
-        cwd=_out, log=log)
+
+    shutil.move(op.join(_out, name) + '.ttf.subset',
+                op.join(_out, name) + '.' + subset,
+                log=log)
 
 
 def subset_process(project, build, log):
@@ -724,7 +756,8 @@ def subset_process(project, build, log):
     files = glob.glob('*+latin*')
     for filename in files:
         newfilename = filename.replace('+latin', '')
-        run("mv \"%s\" \"%s\"" % (filename, newfilename), cwd=_out, log=log)
+        shutil.move(op.join(_out, filename), op.join(_out, newfilename),
+                    log=log)
 
 
 def generate_metadata_process(project, build, log):
@@ -904,24 +937,6 @@ def result_fixes(project, build, log=None):
     fix_font(_out_yaml, _out_src, log=log)
 
 
-def discover_dashboard(project, build, log):
-    from .app import app
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _yaml = op.join(app.config['DATA_ROOT'],
-                    '%(login)s/%(id)s.bakery.yaml' % param)
-
-    _out_src = op.join(app.config['DATA_ROOT'],
-                       ('%(login)s/%(id)s.out/'
-                        '%(build)s.%(revision)s/') % param)
-
-    cmd = "python {wd}/scripts/discovery.py '{out}' '{yaml}'".format(
-        wd=app.config['ROOT'], out=_out_src, yaml=_yaml)
-    log.write('Discovery Dashboard data\n', prefix='### ')
-    run(cmd, cwd=_out_src, log=log)
-
-
 def git_checkout(path, revision, log=None):
     try:
         from git import Repo, InvalidGitRepositoryError
@@ -954,11 +969,15 @@ def process_project(project, build, revision, force_sync=False):
     _out_log = op.join(app.config['DATA_ROOT'],
                        ('%(login)s/%(id)s.out/'
                         '%(build)s.%(revision)s.process.log') % param)
+    _user = joinroot('%(login)s/' % param)
+
+    def hide_abspath(content):
+        return content.replace(_user, '')
+
+    log = RedisFd(_out_log, 'w', write_pipeline=[hide_abspath])
 
     # Make logest path
-    os.makedirs(_out_src)
-
-    log = RedisFd(_out_log, 'w')
+    os.makedirs(_out_src, log=log)
 
     # setup is set after 'bake' button is first pressed
 
@@ -980,7 +999,6 @@ def process_project(project, build, revision, force_sync=False):
             result_tests(project, build, log)
             # apply fixes
             result_fixes(project, build, log)
-            # discover_dashboard(project, build, log)
             # zip out folder with revision
             # TODO: move these variable definitions inside zipdir() so they are the same as other bake methods
             _out_src = op.join(app.config['DATA_ROOT'],
@@ -1036,7 +1054,7 @@ def zipdir(path, url, log):
             zipf.write(op.join(root, file), arcpath)
             log.write('add %s\n' % arcpath)
     zipf.close()
-    log.write('#### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
+    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
                                                              url, basename))
 
 
