@@ -346,6 +346,34 @@ class UFOFontSource(FontSourceAbstract):
         except Exception, ex:
             self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
 
+    def optimize_ttx(self, path_params):
+        filename = self.postscript_fontname
+        # convert the ttf to a ttx file - this may fail
+        cmd = "ttx -i -q '%s.ttf'" % filename
+        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
+
+        # move the original ttf to the side
+        shutil.move(op.join(path_params._out, filename + '.ttf'),
+                    op.join(path_params._out, filename + '.ttf.orig'),
+                    log=self.stdout_pipe)
+
+        # convert the ttx back to a ttf file - this may fail
+        cmd = "ttx -i -q '%s.ttx'" % filename
+        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
+
+        # compare filesizes TODO print analysis of this :)
+        cmd = "ls -l '%s.ttf'*" % filename
+        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
+
+        # remove the original (duplicate) ttf
+        os.remove(op.join(path_params._out, filename + '.ttf.orig'),
+                  log=self.stdout_pipe)
+
+        # move ttx files to src
+        shutil.move(op.join(path_params._out, filename + '.ttx'),
+                    path_params._out_src,
+                    log=self.stdout_pipe)
+
     def after_copy(self, path_params):
         # If we rename, change the font family name metadata
         # inside the _out_ufo
@@ -368,6 +396,7 @@ class UFOFontSource(FontSourceAbstract):
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
         self.convert_ufo2ttf(path_params)
+        self.optimize_ttx(path_params)
 
 
 class TTXFontSource(FontSourceAbstract):
@@ -422,7 +451,7 @@ class TTXFontSource(FontSourceAbstract):
             log=self.stdout_pipe)
 
     def convert_otf2ttf(self, path_params):
-        _ = '$ Converting {}.otf to {}.ttf...'
+        _ = '$ Converting {0}.otf to {0}.ttf...'
         self.stdout_pipe.write(_.format(self.postscript_fontname))
 
         try:
@@ -563,6 +592,16 @@ class PathParam:
         self._out_src = joinroot(path)
 
 
+def copy_single_file(path_params, filename, log):
+    """ Copies single filename from src directory to dest directory """
+    src_file = op.join(path_params._in, filename)
+    dest_file = op.join(path_params._out, filename)
+    if op.exists(src_file) and op.isfile(src_file):
+        shutil.copy(src_file, dest_file, log=log)
+    else:
+        log.write(('%s does not exist upstream\n') % filename, prefix='Error: ')
+
+
 def copy_and_rename_process(project, build, log):
     """ Setup UFOs for building """
     config = project.config
@@ -607,41 +646,18 @@ def copy_and_rename_process(project, build, log):
         log.write('License file not copied\n', prefix='Error: ')
 
     # Copy FONTLOG file
-    _in_fontlog = op.join(_in, 'FONTLOG.txt')
-    _out_fontlog = op.join(_out, 'FONTLOG.txt')
-    if op.exists(_in_fontlog) and op.isfile(_in_fontlog):
-        shutil.copy(op.join(_user, _in_fontlog), op.join(_user, _out_fontlog),
-                    log=log)
-    else:
-        log.write('FONTLOG.txt does not exist\n', prefix='Error: ')
+    copy_single_file(path_params, 'FONTLOG.txt', log)
 
     # Copy DESCRIPTION.en_us.html file
-    _in_desc = op.join(_in, 'DESCRIPTION.en_us.html')
-    _out_desc = op.join(_out, 'DESCRIPTION.en_us.html')
-    if op.exists(_in_desc) and op.isfile(_in_desc):
-        shutil.copy(op.join(_user, _in_desc), op.join(_user, _out_desc),
-                    log=log)
-    else:
-        log.write(('DESCRIPTION.en_us.html does not exist upstream, '
-                   'will generate one later\n'), prefix='Error: ')
+    copy_single_file(path_params, 'DESCRIPTION.en_us.html', log)
 
     # Copy METADATA.json file
-    _in_meta = op.join(_in, 'METADATA.json')
-    _out_meta = op.join(_out, 'METADATA.json')
-    if op.exists(_in_meta) and op.isfile(_in_meta):
-        shutil.copy(op.join(_user, _in_meta), op.join(_user, _out_meta),
-                    log=log)
-    else:
-        log.write(('METADATA.json does not exist upstream, '
-                   'will generate one later\n'), prefix='Error: ')
+    copy_single_file(path_params, 'METADATA.json', log)
 
     # Copy any txt files selected by user
     if config['state'].get('txt_files_copied', None):
         for filename in config['state']['txt_files_copied']:
-            _in_file = op.join(_in, filename)
-            _out_file = op.join(_out, filename)
-            shutil.copy(op.join(_user, _in_file), op.join(_user, _out_file),
-                        log=log)
+            copy_single_file(path_params, filename, log)
 
 
 def ttfautohint_process(project, build, log):
@@ -990,7 +1006,6 @@ def process_project(project, build, revision, force_sync=False):
             log.write('Bake Begins!\n', prefix='# ')
             copy_and_rename_process(project, build, log)
             ttfautohint_process(project, build, log)
-            ttx_process(project, build, log)
             subset_process(project, build, log)
             generate_metadata_process(project, build, log)
             fontaine_process(project, build, log)
