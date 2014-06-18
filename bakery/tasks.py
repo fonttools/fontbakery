@@ -582,13 +582,13 @@ def process_copy(path, path_params, family_name, log):
 class PathParam:
 
     def __init__(self, project, build):
-        param = {'login': project.login, 'id': project.id,
-                 'revision': build.revision, 'build': build.id}
+        self.param = {'login': project.login, 'id': project.id,
+                      'revision': build.revision, 'build': build.id}
 
-        self._in = joinroot('%(login)s/%(id)s.in/' % param)
-        self._out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        self._in = joinroot('%(login)s/%(id)s.in/' % self.param)
+        self._out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % self.param)
 
-        path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % param
+        path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % self.param
         self._out_src = joinroot(path)
 
 
@@ -605,13 +605,6 @@ def copy_single_file(path_params, filename, log):
 def copy_and_rename_process(project, build, log):
     """ Setup UFOs for building """
     config = project.config
-
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _user = joinroot('%(login)s/' % param)
-    _in = joinroot('%(login)s/%(id)s.in/' % param)
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
     path_params = PathParam(project, build)
     for x in config['state'].get('process_files', []):
@@ -637,11 +630,10 @@ def copy_and_rename_process(project, build, log):
         else:
             licenseFileOut = licenseFileIn
         # Copy license file
-        _in_license = op.join(_in, licenseFileInFullPath)
-        _out_license = op.join(_out, licenseFileOut)
+        _in_license = op.join(path_params._in, licenseFileInFullPath)
+        _out_license = op.join(path_params._out, licenseFileOut)
 
-        shutil.copy(op.join(_user, _in_license), op.join(_user, _out_license),
-                    log=log)
+        shutil.copy(_in_license, _out_license, log=log)
     else:
         log.write('License file not copied\n', prefix='Error: ')
 
@@ -1015,7 +1007,8 @@ def process_project(project, build, revision, force_sync=False):
             # apply fixes
             result_fixes(project, build, log)
             # zip out folder with revision
-            # TODO: move these variable definitions inside zipdir() so they are the same as other bake methods
+            # TODO: move these variable definitions inside zipdir() so
+            #  they are the same as other bake methods
             _out_src = op.join(app.config['DATA_ROOT'],
                                ('%(login)s/%(id)s.out/'
                                 '%(build)s.%(revision)s') % param)
@@ -1035,12 +1028,13 @@ def process_description_404(project, build):
 
         This method generates yaml file `*.*.404links.yaml` inside
         repo out directory. """
+    path_params = PathParam(project, build)
+    path = op.join(path_params._out, 'DESCRIPTION.en_us.html')
+
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    path = op.join(_out, 'DESCRIPTION.en_us.html')
-
-    _out_yaml = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s.404links.yaml' % param)
+    _out_yaml = joinroot(('%(login)s/%(id)s.out/'
+                          '%(build)s.%(revision)s.404links.yaml') % param)
 
     result = {}
     test_results = run_set(path, 'description')
