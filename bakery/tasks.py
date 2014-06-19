@@ -18,63 +18,18 @@ from __future__ import print_function
 
 import codecs
 import datetime
-import fontforge
 import glob
-import os as os_origin
 import os.path as op
-import plistlib
-import re
-import shutil as shutil_origin
 import yaml
 
 from checker import run_set, parse_test_results
 from checker.base import BakeryTestCase
+from cli import os, shutil
 from fixer import fix_font
 from flask.ext.rq import job
-from fontTools import ttLib
 from fontaine.ext.subsets import Extension as SubsetExtension
 
 from .utils import RedisFd, run, prun
-
-
-class metaclass(type):
-
-    def __getattr__(cls, value):
-        if not hasattr(cls.__originmodule__, value):
-            _ = "'module' object has no attribute '%s'"
-            raise AttributeError(_ % value)
-
-        def func(*args, **kwargs):
-            log = kwargs.pop('log', None)
-            if log:
-                log.write('$ ' + value + ' ' + ' '.join(list(args)) + '...')
-            try:
-                result = getattr(cls.__originmodule__, value)(*args, **kwargs)
-                if log:
-                    log.write('[OK]\n')
-                return result
-            except Exception, e:
-                if log:
-                    log.write('[FAIL]\nError: %s\n' % e.message)
-                raise e
-
-        return func
-
-
-class osmetaclass(metaclass):
-    __originmodule__ = os_origin
-
-
-class shutilmetaclass(metaclass):
-    __originmodule__ = shutil_origin
-
-
-class shutil:
-    __metaclass__ = shutilmetaclass
-
-
-class os:
-    __metaclass__ = osmetaclass
 
 
 @job
@@ -235,350 +190,6 @@ def joinroot(path):
     return op.join(app.config['DATA_ROOT'], path)
 
 
-class FontSourceAbstract(object):
-    """ Abstract class to provide copy functional in baking process
-
-        Inherited classes must implement `open_source` method
-        and properties `style_name` and `family_name`. """
-
-    def __init__(self, path, cwd, stdout_pipe=None):
-        self.source = self.open_source(op.join(cwd, path))
-        self.source_path = path
-        self.cwd = cwd
-        self.stdout_pipe = stdout_pipe
-
-    def open_source(self, sourcepath):
-        raise NotImplementedError
-
-    @property
-    def style_name(self):
-        raise NotImplementedError
-
-    @property
-    def family_name(self):
-        raise NotImplementedError
-
-    def before_copy(self):
-        """ If method returns False then bakery process halted. Default: True.
-
-            Implement this if you need additional check before source
-            path will be copied.
-
-            Good practice to call inside self.stdout_pipe.write() method
-            to make user know what is wrong with source. """
-        return True
-
-    def copy(self, destdir):
-        destpath = op.join(destdir, self.get_file_name())
-
-        if op.isdir(op.join(self.cwd, self.source_path)):
-            shutil.copytree(op.join(self.cwd, self.source_path), destpath,
-                            log=self.stdout_pipe)
-        else:
-            shutil.copy(op.join(self.cwd, self.source_path), destpath,
-                        log=self.stdout_pipe)
-
-    def get_file_name(self):
-        return self.postscript_fontname + self.source_path[-4:]
-
-    @property
-    def postscript_fontname(self):
-        stylename = re.sub(r'\s', '', self.style_name)
-        familyname = re.sub(r'\s', '', self.family_name)
-        return "{}-{}".format(familyname, stylename)
-
-    def after_copy(self, path_params):
-        return
-
-
-class UFOFontSource(FontSourceAbstract):
-
-    def open_source(self, path):
-        return plistlib.readPlist(op.join(path, 'fontinfo.plist'))
-
-    @property
-    def style_name(self):
-        # Get the styleName
-        style_name = self.source['styleName']
-        # Always have a regular style
-        if style_name == 'Normal' or style_name == 'Roman':
-            style_name = 'Regular'
-        return style_name
-
-    def family_name():
-        doc = "The family_name property."
-
-        def fget(self):
-            pfn = self.source.get('openTypeNamePreferredFamilyName', '')
-            return (self._family_name or pfn
-                    or self.source.get('familyName', ''))
-
-        def fset(self, value):
-            self._family_name = value
-
-        def fdel(self):
-            del self._family_name
-
-        return locals()
-    family_name = property(**family_name())
-
-    def before_copy(self):
-        if not self.family_name:
-            self.stdout_pipe.write(('[MISSED] Please set openTypeNamePreferredFamilyName or '
-                                    'familyName in %s fontinfo.plist and run another'
-                                    ' bake process.') % self.source_path, prefix='### ')
-            return False
-        return True
-
-    def convert_ufo2ttf(self, path_params):
-        from scripts import ufo2ttf
-        _ = '$ ufo2ttf %s to %s... '
-        self.stdout_pipe.write(_ % (self.source_path,
-                                    self.postscript_fontname + '.ttf'))
-
-        ufopath = op.join(path_params._out_src, self.get_file_name())
-        ttfpath = op.join(path_params._out, self.postscript_fontname + '.ttf')
-        otfpath = op.join(path_params._out, self.postscript_fontname + '.otf')
-
-        try:
-            ufo2ttf.convert(ufopath, ttfpath, otfpath)
-            self.stdout_pipe.write('[OK]\n')
-        except Exception, ex:
-            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
-
-    def optimize_ttx(self, path_params):
-        filename = self.postscript_fontname
-        # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i -q '%s.ttf'" % filename
-        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
-
-        # move the original ttf to the side
-        shutil.move(op.join(path_params._out, filename + '.ttf'),
-                    op.join(path_params._out, filename + '.ttf.orig'),
-                    log=self.stdout_pipe)
-
-        # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i -q '%s.ttx'" % filename
-        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
-
-        # compare filesizes TODO print analysis of this :)
-        cmd = "ls -l '%s.ttf'*" % filename
-        run(cmd, cwd=path_params._out, log=self.stdout_pipe)
-
-        # remove the original (duplicate) ttf
-        os.remove(op.join(path_params._out, filename + '.ttf.orig'),
-                  log=self.stdout_pipe)
-
-        # move ttx files to src
-        shutil.move(op.join(path_params._out, filename + '.ttx'),
-                    path_params._out_src,
-                    log=self.stdout_pipe)
-
-    def after_copy(self, path_params):
-        # If we rename, change the font family name metadata
-        # inside the _out_ufo
-        if self.family_name:
-            # Read the _out_ufo fontinfo.plist
-            _out_ufo_path = op.join(path_params._out_src, self.get_file_name())
-            _out_ufoPlist = op.join(_out_ufo_path, 'fontinfo.plist')
-            _out_ufoFontInfo = plistlib.readPlist(_out_ufoPlist)
-            # Set the familyName
-            _out_ufoFontInfo['familyName'] = self.family_name
-
-            # Set PS Name
-            # Ref: www.adobe.com/devnet/font/pdfs/5088.FontNames.pdf‎
-            # < Family Name > < Vendor ID > - < Weight > < Width >
-            # < Slant > < Character Set >
-            psfn = self.postscript_fontname
-            _out_ufoFontInfo['postscriptFontName'] = psfn
-            _out_ufoFontInfo['postscriptFullName'] = psfn.replace('-', ' ')
-            # Write _out fontinfo.plist
-            plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
-
-        self.convert_ufo2ttf(path_params)
-        self.optimize_ttx(path_params)
-
-
-class TTXFontSource(FontSourceAbstract):
-
-    @staticmethod
-    def nameTableRead(font, NameID, fallbackNameID=False):
-        for record in font['name'].names:
-            if record.nameID == NameID:
-                if b'\000' in record.string:
-                    string = record.string.decode('utf-16-be')
-                    return string.encode('utf-8')
-                else:
-                    return record.string
-
-        if fallbackNameID:
-            return TTXFontSource.nameTableRead(font, fallbackNameID)
-
-    def open_source(self, path):
-        font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
-                            verbose=False, allowVID=False)
-        font.importXML(path, quiet=True)
-        return font
-
-    @property
-    def style_name(self):
-        # Find the style name
-        style_name = TTXFontSource.nameTableRead(self.source, 17, 2)
-        # Always have a regular style
-        if style_name == 'Normal' or style_name == 'Roman':
-            style_name = 'Regular'
-        return style_name
-
-    def family_name():
-        doc = "The family_name property."
-
-        def fget(self):
-            return (self._family_name
-                    or TTXFontSource.nameTableRead(self.source, 16, 1))
-
-        def fset(self, value):
-            self._family_name = value
-
-        def fdel(self):
-            del self._family_name
-
-        return locals()
-    family_name = property(**family_name())
-
-    def compile_ttx(self, path_params):
-        run("ttx {}.ttx".format(self.postscript_fontname),
-            cwd=path_params._out_src,
-            log=self.stdout_pipe)
-
-    def convert_otf2ttf(self, path_params):
-        _ = '$ Converting {0}.otf to {0}.ttf...'
-        self.stdout_pipe.write(_.format(self.postscript_fontname))
-
-        try:
-            path = op.join(path_params._out_src, self.postscript_fontname + '.otf')
-            font = fontforge.open(path)
-
-            path = op.join(path_params._out, self.postscript_fontname + '.ttf')
-            font.generate(path)
-            self.stdout_pipe.write('[OK]\n')
-        except Exception, ex:
-            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
-
-    def after_copy(self, path_params):
-        out_name = self.postscript_fontname + '.ttf'
-
-        self.compile_ttx(path_params)
-
-        if self.source.sfntVersion == 'OTTO':  # OTF
-            self.convert_otf2ttf(path_params)
-        # If TTF already, move it up
-        else:
-            try:
-                shutil.move(op.join(path_params._out_src, out_name),
-                            op.join(path_params._out, out_name),
-                            log=self.stdout_pipe)
-            except (OSError, IOError):
-                pass
-
-
-class BINFontSource(TTXFontSource):
-
-    def open_source(self, path):
-        return ttLib.TTFont(path, lazy=False, recalcBBoxes=True,
-                            verbose=False, allowVID=False)
-
-    def compile_ttx(self, path_params):
-        """ Override TTXFontSource compile_ttx method as BINFontSource
-            based on compiled already fonts """
-        pass
-
-
-class SFDFontSource(FontSourceAbstract):
-
-    def open_source(self, path):
-        return fontforge.open(path)
-
-    def family_name():
-        doc = "The family_name property."
-
-        def fget(self):
-            return self._family_name or self.source.sfnt_names[1][2]
-
-        def fset(self, value):
-            self._family_name = value
-
-        def fdel(self):
-            del self._family_name
-        return locals()
-    family_name = property(**family_name())
-
-    @property
-    def style_name(self):
-        return self.source.sfnt_names[2][2]
-
-    def after_copy(self, path_params):
-        from scripts import ufo2ttf
-        _ = '$ Convert %s to %s... '
-        self.stdout_pipe.write(_ % (self.source_path,
-                                    self.postscript_fontname + '.ttf'))
-
-        ufopath = op.join(path_params._out_src, self.get_file_name())
-        ttfpath = op.join(path_params._out, self.postscript_fontname + '.ttf')
-        otfpath = op.join(path_params._out, self.postscript_fontname + '.otf')
-
-        try:
-            ufo2ttf.convert(ufopath, ttfpath, otfpath)
-            self.stdout_pipe.write('[OK]\n')
-        except Exception, ex:
-            self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
-
-
-def get_fontsource(path, cwd, log):
-    """ Returns instance of XXXFontSource class based on path extension.
-
-        It supports only three XXXFontSource classes for the moment:
-
-        >>> get_fontsource('test.ufo')
-        <UFOFontSource instance>
-
-        >>> get_fontsource('test.ttx')
-        <TTXFontSource instance>
-
-        >>> get_fontsource('test.ttf')
-        <BINFontSource instance>
-
-        >>> get_fontsource('test.otf')
-        <BINFontSource instance>
-
-        >>> get_fontsource('test.sfd')
-        <SFDFontSource instance>
-    """
-    if path.endswith('.ufo'):
-        return UFOFontSource(path, cwd, log)
-    elif path.endswith('.ttx'):
-        return TTXFontSource(path, cwd, log)
-    elif path.endswith('.ttf') or path.endswith('.otf'):
-        return BINFontSource(path, cwd, log)
-    elif path.endswith('.sfd'):
-        return SFDFontSource(path, cwd, log)
-    else:
-        log.write('[MISSED] Unsupported sources file: %s\n' % path,
-                  prefix='Error: ')
-
-
-def process_copy(path, path_params, family_name, log):
-    fontsource = get_fontsource(path, path_params._in, log)
-    fontsource.family_name = family_name  # initial family name
-
-    if not fontsource.before_copy():
-        return
-
-    fontsource.copy(path_params._out_src)
-
-    fontsource.after_copy(path_params)
-    return fontsource
-
-
 class PathParam:
 
     def __init__(self, project, build):
@@ -599,19 +210,26 @@ def copy_single_file(path_params, filename, log):
     if op.exists(src_file) and op.isfile(src_file):
         shutil.copy(src_file, dest_file, log=log)
     else:
-        log.write(('%s does not exist upstream\n') % filename, prefix='Error: ')
+        log.write(('%s does not exist upstream\n') % filename,
+                  prefix='Error: ')
 
 
 def copy_and_rename_process(project, build, log):
     """ Setup UFOs for building """
     config = project.config
 
-    path_params = PathParam(project, build)
-    for x in config['state'].get('process_files', []):
-        process_copy(x, path_params, config['state'].get('familyname', None),
-                     log)
+    from cli.bakery import Bakery
 
-    # Copy licence file
+    path_params = PathParam(project, build)
+
+    b = Bakery(builddir=path_params._out, config=config['state'],
+               stdout_pipe=log)
+    process_files = []
+    for f in config['state'].get('process_files', []):
+        process_files.append(op.join(path_params._in, f))
+    b.run(process_files)
+
+    # Copy license file
     # TODO: Infer license type from filename
     # TODO: Copy file based on license type
     if config['state'].get('license_file', None):
