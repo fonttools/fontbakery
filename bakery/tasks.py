@@ -18,14 +18,12 @@ from __future__ import print_function
 
 import codecs
 import datetime
-import glob
 import os.path as op
 import yaml
 
 from checker import run_set, parse_test_results
 from checker.base import BakeryTestCase
-from cli.system import os, shutil, run, prun
-from fixer import fix_font
+from cli.system import os, prun
 from flask.ext.rq import job
 
 from .utils import RedisFd
@@ -202,47 +200,6 @@ class PathParam:
         self._out_src = joinroot(path)
 
 
-def ttx_process(project, build, log):
-    """ Roundtrip TTF files through TTX to compact their filesize """
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = joinroot(('%(login)s/%(id)s.out/'
-                         '%(build)s.%(revision)s/sources/') % param)
-
-    log.write('Compact TTFs with ttx\n', prefix='### ')
-
-    os.chdir(_out_src)
-    for name in glob.glob("*.ufo"):
-        name = name[:-4]  # cut .ufo
-        filename = op.join(_out, name)
-        # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i -q '%s.ttf'" % filename
-        run(cmd, cwd=_out, log=log)
-
-        # move the original ttf to the side
-        shutil.move(op.join(_out, filename + '.ttf'),
-                    op.join(_out, filename + '.ttf.orig'),
-                    log=log)
-
-        # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i -q '%s.ttx'" % filename
-        run(cmd, cwd=_out, log=log)
-
-        # compare filesizes TODO print analysis of this :)
-        cmd = "ls -l '%s.ttf'*" % filename
-        run(cmd, cwd=_out, log=log)
-
-        # remove the original (duplicate) ttf
-        os.remove(op.join(_out, filename + '.ttf.orig'),
-                  log=log)
-
-        # move ttx files to src
-        shutil.move(op.join(_out, filename + '.ttx'), _out_src,
-                    log=log)
-
-
 # register yaml serializer for tests result objects.
 
 
@@ -342,49 +299,6 @@ def upstream_revision_tests(project, revision):
     return yaml.safe_load(open(_out_yaml, 'r'))
 
 
-def result_tests(project, build, log=None):
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out_src = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/.tests.yaml' % param
-    _out_yaml = joinroot(path)
-
-    if op.exists(_out_yaml):
-        return yaml.safe_load(open(_out_yaml, 'r'))
-
-    result = {}
-    os.chdir(_out_src)
-    for font in glob.glob("*.ttf"):
-        result[font] = run_set(op.join(_out_src, font), 'result', log=log)
-
-    if not result:
-        return
-
-    # Comment during debug
-    l = open(_out_yaml, 'w')
-    l.write(yaml.safe_dump(result))
-    l.close()
-
-    d = yaml.safe_load(open(_out_yaml, 'r'))
-    # os.remove(_out_yaml)
-    return d
-
-
-def result_fixes(project, build, log=None):
-    from .app import app
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out_src = op.join(app.config['DATA_ROOT'],
-                       '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_yaml = op.join(app.config['DATA_ROOT'],
-                        ('%(login)s/%(id)s.out/'
-                         '%(build)s.%(revision)s/.tests.yaml') % param)
-
-    fix_font(_out_yaml, _out_src, log=log)
-
-
 def git_checkout(path, revision, log=None):
     try:
         from git import Repo, InvalidGitRepositoryError
@@ -444,12 +358,7 @@ def process_project(project, build, revision, force_sync=False):
             b = Bakery(config, builddir=builddir, stdout_pipe=log)
             b.run()
 
-            # fontaine_process(project, build, log)
-            # result_tests doesn't needed here, but since it is anyway
-            # background task make cache file for future use
-            result_tests(project, build, log)
-            # apply fixes
-            result_fixes(project, build, log)
+            log.write('Archiving baked files\n', prefix='### ')
             # zip out folder with revision
             # TODO: move these variable definitions inside zipdir() so
             #  they are the same as other bake methods
@@ -458,6 +367,9 @@ def process_project(project, build, revision, force_sync=False):
                                 '%(build)s.%(revision)s') % param)
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
+        except Exception:
+            log.write('Error: bakery process failed')
+            raise
         finally:
             # save that project is done
             set_done(build)

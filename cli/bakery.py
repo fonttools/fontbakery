@@ -19,8 +19,11 @@ import glob
 import os.path as op
 import yaml
 
+from checker import run_set
 from cli.source import get_fontsource
 from cli.system import os, shutil, run
+from fixer import fix_font
+from fontaine.builder import Director, Builder
 from fontaine.ext.subsets import Extension as SubsetExtension
 
 
@@ -116,8 +119,40 @@ class Bakery(object):
         # 10. Generate pyfontaine description of font
         self.pyfontaine_process()
 
+        # 11. Run result tests
+        self.result_tests_process()
+
+        # 12. Run auto fixes
+        self.autofix_process()
+
+    def autofix_process(self):
+        self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
+        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        fix_font(_out_yaml, self.builddir, log=self.stdout_pipe)
+
+    def result_tests_process(self):
+        self.stdout_pipe.write('Run tests for baked files\n', prefix='### ')
+        _out_yaml = op.join(self.builddir, '.tests.yaml')
+
+        if op.exists(_out_yaml):
+            return yaml.safe_load(open(_out_yaml, 'r'))
+
+        result = {}
+        os.chdir(self.builddir)
+        for font in glob.glob("*.ttf"):
+            result[font] = run_set(op.join(self.builddir, font), 'result',
+                                   log=self.stdout_pipe)
+
+        if not result:
+            return
+
+        l = open(_out_yaml, 'w')
+        l.write(yaml.safe_dump(result))
+        l.close()
+
+        return yaml.safe_load(open(_out_yaml, 'r'))
+
     def pyfontaine_process(self):
-        from fontaine.builder import Director, Builder
         self.stdout_pipe.write('pyFontaine TTFs\n', prefix='### ')
 
         os.chdir(self.builddir)

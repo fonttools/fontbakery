@@ -26,14 +26,14 @@ import difflib
 from flask import current_app
 from blinker.base import lazy_property
 
-from ..app import db
+from ..app import db, app
 from ..utils import save_metadata
 from ..tasks import (process_project, project_git_sync,
-                     upstream_revision_tests, result_tests,
+                     upstream_revision_tests,
                      generate_subsets_coverage_list)
 from .state import project_state_get, project_state_save, walkWithoutGit
 
-
+from cli.bakery import Bakery
 from cli.system import prun
 
 
@@ -520,6 +520,15 @@ class ProjectBuild(db.Model):
         return walkWithoutGit(self.path)
 
     def result_tests(self):
-        return result_tests(self.project, self, )
+        param = {'login': self.project.login, 'id': self.project.id,
+                 'revision': self.revision, 'build': self.id}
+        builddir = os.path.join(app.config['DATA_ROOT'],
+                                '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+        config = os.path.join(app.config['DATA_ROOT'],
+                              '%(login)s/%(id)s.in/.bakery.yaml' % self.project)
+
+        b = Bakery(config, builddir=builddir)
+        return b.result_tests_process()
 
 db.create_all()
