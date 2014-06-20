@@ -243,49 +243,27 @@ def ttx_process(project, build, log):
                     log=log)
 
 
-def fontaine_process(project, build, log):
-    """ Run pyFontaine on ttf files """
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    log.write('pyFontaine TTFs\n', prefix='### ')
-    os.chdir(_out)
-    files = glob.glob('*.ttf')
-    for file in files:
-        cmd = "pyfontaine --text '%s' >> 'sources/fontaine.txt'" % file
-        try:
-            run(cmd, cwd=_out, log=log)
-        except StandardError:
-            log.write('PyFontaine raised exception. Check latest version.\n')
-            # Ignore pyfontaine if it raises error
-            pass
-    # TODO also save the totals for the dashboard....
-    #   log.write('Running Fontaine on Results\n', prefix='### ')
-    #   fonts = utils.project_fontaine(project)
-    #   project.config['state']['fontaine'] = fonts
-    #   project.save_state()
-
-
 # register yaml serializer for tests result objects.
 
 
 def repr_testcase(dumper, data):
     def method_doc(doc):
         if doc is None:
-            return 'None'
+            return "None"
         else:
-            return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
-    return dumper.represent_mapping(u'tag:yaml.org,2002:map', {
+            return " ".join(doc.decode('utf-8', 'xmlcharrefreplace').split())
+
+    _ = {
         'methodDoc': method_doc(data._testMethodDoc),
         'tool': data.tool,
         'name': data.name,
         'methodName': data._testMethodName,
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': getattr(data, '_err_msg', '')
-    })
+        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
+                                                        'xmlcharrefreplace')
+    }
+    return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
 
 yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
@@ -369,7 +347,7 @@ def result_tests(project, build, log=None):
              'revision': build.revision, 'build': build.id}
 
     _out_src = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s.rtests.yaml' % param
+    path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/.tests.yaml' % param
     _out_yaml = joinroot(path)
 
     if op.exists(_out_yaml):
@@ -402,7 +380,7 @@ def result_fixes(project, build, log=None):
                        '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
     _out_yaml = op.join(app.config['DATA_ROOT'],
                         ('%(login)s/%(id)s.out/'
-                         '%(build)s.%(revision)s.rtests.yaml') % param)
+                         '%(build)s.%(revision)s/.tests.yaml') % param)
 
     fix_font(_out_yaml, _out_src, log=log)
 
@@ -463,10 +441,10 @@ def process_project(project, build, revision, force_sync=False):
             config = os.path.join(app.config['DATA_ROOT'],
                                   '%(login)s/%(id)s.in/.bakery.yaml' % project)
 
-            b = Bakery(builddir=builddir, config=config, stdout_pipe=log)
+            b = Bakery(config, builddir=builddir, stdout_pipe=log)
             b.run()
 
-            fontaine_process(project, build, log)
+            # fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
             result_tests(project, build, log)

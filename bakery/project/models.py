@@ -425,13 +425,13 @@ class ProjectBuild(db.Model):
             file exists """
         param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
-                    '%(build)s.%(revision)s.rtests.yaml') % param
+                    '%(build)s.%(revision)s/.tests.yaml') % param
         return os.path.exists(yamlpath) and os.path.isfile(yamlpath)
 
     def read_rtests_data(self):
         param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
-                    '%(build)s.%(revision)s.rtests.yaml') % param
+                    '%(build)s.%(revision)s/.tests.yaml') % param
         try:
             test_data = yaml.load(open(yamlpath).read())
         except (IOError, yaml.YAMLError):

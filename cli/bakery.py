@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import codecs
 import glob
 import os.path as op
 import yaml
@@ -39,7 +40,7 @@ class Bakery(object):
     """ Go through all baking process, from copying to optimizing
         resulted ttf files """
 
-    def __init__(self, builddir='build', config=None, stdout_pipe=None):
+    def __init__(self, config, builddir='build', stdout_pipe=None):
         """
         Class to handle all parts of bakery process.
 
@@ -111,6 +112,36 @@ class Bakery(object):
 
         # 9. Generate METADATA.json
         self.generate_metadata_json()
+
+        # 10. Generate pyfontaine description of font
+        self.pyfontaine_process()
+
+    def pyfontaine_process(self):
+        from fontaine.builder import Director, Builder
+        self.stdout_pipe.write('pyFontaine TTFs\n', prefix='### ')
+
+        os.chdir(self.builddir)
+        director = Director()
+
+        fonts = []
+        files = glob.glob('*.ttf')
+        for font in files:
+            fonts.append(op.join(self.builddir, font))
+
+        try:
+            fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
+            fp = codecs.open(fontaine_log, 'w', 'utf-8')
+        except OSError:
+            self.stdout_pipe.write("Failed to open fontaine log to write")
+            return
+
+        try:
+            result = Builder.text_(director.construct_tree(fonts))
+            fp.write(result.output)
+        except:
+            self.stdout_pipe.write(('PyFontaine raised exception.'
+                                    ' Check latest version.\n'))
+            raise
 
     def ansiprint(self, message, color):
         self.stdout_pipe.write(message + '\n')

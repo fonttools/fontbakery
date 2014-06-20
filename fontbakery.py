@@ -16,25 +16,19 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
-import os
 
 
-from bakery.cli import Bakery
+from cli.bakery import Bakery
 
 
 def main(path):
-    try:
-        os.makedirs('build')
-    except OSError:
-        pass
-
-    b = Bakery(path)
-    b.run(path, outdir='build')
+    b = Bakery()
+    b.run(path)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('filename',
                         help="Path to source. It can be UFO, TTX, TTF or OTF")
-    parser.parse_args()
-    main(parser.filename)
+    args = parser.parse_args()
+    main(args.filename)
