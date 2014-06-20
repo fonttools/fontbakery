@@ -440,6 +440,8 @@ class ProjectBuild(db.Model):
 
         try:
             test_data = yaml.load(open(yamlpath).read())
+            if not test_data:
+                return {}
         except (IOError, yaml.YAMLError):
             return {}
 
