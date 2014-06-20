@@ -432,6 +432,12 @@ class ProjectBuild(db.Model):
         param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
                     '%(build)s.%(revision)s/.tests.yaml') % param
+
+        if not os.path.exists(yamlpath):
+            # backward compatibility for rtests
+            yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s.rtests.yaml') % param
+
         try:
             test_data = yaml.load(open(yamlpath).read())
         except (IOError, yaml.YAMLError):
