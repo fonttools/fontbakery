@@ -222,14 +222,6 @@ class Bakery(object):
                 self.execute_pyftsubset('menu', name,
                                         args='--text="%s"' % op.basename(name))
 
-        # remove +latin from the subset name
-        os.chdir(op.join(self.builddir, 'sources'))
-        for filename in glob.glob('*+latin*'):
-            newfilename = filename.replace('+latin', '')
-            shutil.move(op.join(self.builddir, filename),
-                        op.join(self.builddir, newfilename),
-                        log=self.stdout_pipe)
-
     def ttfautohint_process(self):
         """
         Run ttfautohint with project command line settings for each
