@@ -24,12 +24,11 @@ import yaml
 
 from checker import run_set, parse_test_results
 from checker.base import BakeryTestCase
-from cli import os, shutil
+from cli.system import os, shutil, run, prun
 from fixer import fix_font
 from flask.ext.rq import job
-from fontaine.ext.subsets import Extension as SubsetExtension
 
-from .utils import RedisFd, run, prun
+from .utils import RedisFd
 
 
 @job
@@ -203,103 +202,6 @@ class PathParam:
         self._out_src = joinroot(path)
 
 
-def copy_single_file(path_params, filename, log):
-    """ Copies single filename from src directory to dest directory """
-    src_file = op.join(path_params._in, filename)
-    dest_file = op.join(path_params._out, filename)
-    if op.exists(src_file) and op.isfile(src_file):
-        shutil.copy(src_file, dest_file, log=log)
-    else:
-        log.write(('%s does not exist upstream\n') % filename,
-                  prefix='Error: ')
-
-
-def copy_and_rename_process(project, build, log):
-    """ Setup UFOs for building """
-    config = project.config
-
-    from cli.bakery import Bakery
-
-    path_params = PathParam(project, build)
-
-    b = Bakery(builddir=path_params._out, config=config['state'],
-               stdout_pipe=log)
-    process_files = []
-    for f in config['state'].get('process_files', []):
-        process_files.append(op.join(path_params._in, f))
-    b.run(process_files)
-
-    # Copy license file
-    # TODO: Infer license type from filename
-    # TODO: Copy file based on license type
-    if config['state'].get('license_file', None):
-        # Set _in license file name
-        licenseFileInFullPath = config['state']['license_file']
-        licenseFileIn = licenseFileInFullPath.split('/')[-1]
-        # List posible OFL and Apache filesnames
-        listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt',
-                              'OFL.md']
-        listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
-        # Canonicalize _out license file name
-        if licenseFileIn in listOfOflFilenames:
-            licenseFileOut = 'OFL.txt'
-        elif licenseFileIn in listOfApacheFilenames:
-            licenseFileOut = 'LICENSE.txt'
-        else:
-            licenseFileOut = licenseFileIn
-        # Copy license file
-        _in_license = op.join(path_params._in, licenseFileInFullPath)
-        _out_license = op.join(path_params._out, licenseFileOut)
-
-        shutil.copy(_in_license, _out_license, log=log)
-    else:
-        log.write('License file not copied\n', prefix='Error: ')
-
-    # Copy FONTLOG file
-    copy_single_file(path_params, 'FONTLOG.txt', log)
-
-    # Copy DESCRIPTION.en_us.html file
-    copy_single_file(path_params, 'DESCRIPTION.en_us.html', log)
-
-    # Copy METADATA.json file
-    copy_single_file(path_params, 'METADATA.json', log)
-
-    # Copy any txt files selected by user
-    if config['state'].get('txt_files_copied', None):
-        for filename in config['state']['txt_files_copied']:
-            copy_single_file(path_params, filename, log)
-
-
-def ttfautohint_process(project, build, log):
-    """
-    Run ttfautohint with project command line settings for each
-    ttf file in result src folder, outputting them in the _out root,
-    or just copy the ttfs there.
-    """
-    # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
-    #               -W -c original_font.ttf final_font.ttf
-    config = project.config
-
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    if config['state'].get('ttfautohint', None):
-        log.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
-        params = config['state']['ttfautohint']
-        os.chdir(_out)
-        for name in glob.glob("*.ttf"):
-            name = name[:-4]  # cut .ttf
-            shutil.move(op.join(_out, name + '.ttf'),
-                        op.join(_out, name + '.autohint.ttf'),
-                        log=log)
-            cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
-                   "'{name}.ttf'").format(params=params, name=name)
-            run(cmd, cwd=_out, log=log)
-            os.remove(op.join(_out, name + '.autohint.ttf'), log=log)
-
-
 def ttx_process(project, build, log):
     """ Roundtrip TTF files through TTX to compact their filesize """
     param = {'login': project.login, 'id': project.id,
@@ -338,51 +240,6 @@ def ttx_process(project, build, log):
 
         # move ttx files to src
         shutil.move(op.join(_out, filename + '.ttx'), _out_src,
-                    log=log)
-
-
-def execute_pyftsubset(subset, name, _out, glyphs="", log=None, args=""):
-    cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-           " --notdef-outline --name-IDs='*' --hinting")
-    if args:
-        cmd += " " + args
-    cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
-                 'out': op.join(_out, name)}
-    run(cmd, cwd=_out, log=log)
-
-    shutil.move(op.join(_out, name) + '.ttf.subset',
-                op.join(_out, name) + '.' + subset,
-                log=log)
-
-
-def subset_process(project, build, log):
-    config = project.config
-
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-    _out_src = joinroot(('%(login)s/%(id)s.out/'
-                         '%(build)s.%(revision)s/sources/') % param)
-
-    log.write('Subset TTFs (pyftsubset)\n', prefix='### ')
-
-    for subset in config['state']['subset']:
-        glyphs = open(SubsetExtension.get_subset_path(subset)).read()
-        os.chdir(_out_src)
-        for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
-            name = name[:-4]  # cut .ufo|.ttx
-            execute_pyftsubset(subset, name, _out, glyphs=glyphs, log=log)
-
-            # create menu subset
-            execute_pyftsubset('menu', name, _out, log=log,
-                               args='--text="%s"' % op.basename(name))
-    # remove +latin from the subset name
-    os.chdir(_out)
-    files = glob.glob('*+latin*')
-    for filename in files:
-        newfilename = filename.replace('+latin', '')
-        shutil.move(op.join(_out, filename), op.join(_out, newfilename),
                     log=log)
 
 
@@ -583,27 +440,25 @@ def process_project(project, build, revision, force_sync=False):
     :param log: :class:`~bakery.utils.RedisFd` as log
     """
     from bakery.app import app
+    from cli.bakery import Bakery
+    config = project.config  # lazy loading configuration file
+
     if force_sync:
         project_git_sync(project)
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
     _in = joinroot('%(login)s/%(id)s.in/' % param)
-    _out_src = op.join(app.config['DATA_ROOT'],
-                       ('%(login)s/%(id)s.out/'
-                        '%(build)s.%(revision)s/sources/') % param)
     _out_log = op.join(app.config['DATA_ROOT'],
                        ('%(login)s/%(id)s.out/'
                         '%(build)s.%(revision)s.process.log') % param)
+
     _user = joinroot('%(login)s/' % param)
 
     def hide_abspath(content):
         return content.replace(_user, '')
 
     log = RedisFd(_out_log, 'w', write_pipeline=[hide_abspath])
-
-    # Make logest path
-    os.makedirs(_out_src, log=log)
 
     # setup is set after 'bake' button is first pressed
 
@@ -612,11 +467,18 @@ def process_project(project, build, revision, force_sync=False):
 
         # this code change upstream repository
         try:
-            # run("git checkout %s" % revision, cwd=_in, log=log)
             log.write('Bake Begins!\n', prefix='# ')
-            copy_and_rename_process(project, build, log)
-            ttfautohint_process(project, build, log)
-            subset_process(project, build, log)
+
+            param = {'login': project.login, 'id': project.id,
+                     'revision': build.revision, 'build': build.id}
+            builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+            config = os.path.join(app.config['DATA_ROOT'],
+                                  '%(login)s/%(id)s.in/.bakery.yaml' % project)
+
+            b = Bakery(builddir=builddir, config=config, stdout_pipe=log)
+            b.run()
+
             generate_metadata_process(project, build, log)
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway

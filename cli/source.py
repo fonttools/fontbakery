@@ -30,10 +30,9 @@ class FontSourceAbstract(object):
         Inherited classes must implement `open_source` method
         and properties `style_name` and `family_name`. """
 
-    def __init__(self, path, cwd, stdout_pipe=None):
-        self.source = self.open_source(op.join(cwd, path))
+    def __init__(self, path, stdout_pipe=None):
+        self.source = self.open_source(path)
         self.source_path = path
-        self.cwd = cwd
         self.stdout_pipe = stdout_pipe or sys.stdout
 
     def open_source(self, sourcepath):
@@ -65,11 +64,11 @@ class FontSourceAbstract(object):
             http://forum.fontlab.com/index.php?topic=313.0 """
         destpath = op.join(destdir, self.get_file_name())
 
-        if op.isdir(op.join(self.cwd, self.source_path)):
-            shutil.copytree(op.join(self.cwd, self.source_path), destpath,
+        if op.isdir(self.source_path):
+            shutil.copytree(self.source_path, destpath,
                             log=self.stdout_pipe)
         else:
-            shutil.copy(op.join(self.cwd, self.source_path), destpath,
+            shutil.copy(self.source_path, destpath,
                         log=self.stdout_pipe)
 
     def get_file_name(self):
@@ -329,7 +328,7 @@ class SFDFontSource(FontSourceAbstract):
             self.stdout_pipe.write('[FAIL]\nError: %s\n' % ex.message)
 
 
-def get_fontsource(path, cwd, log):
+def get_fontsource(path, log):
     """ Returns instance of XXXFontSource class based on path extension.
 
         It supports only three XXXFontSource classes for the moment:
@@ -350,13 +349,13 @@ def get_fontsource(path, cwd, log):
         <SFDFontSource instance>
     """
     if path.endswith('.ufo'):
-        return UFOFontSource(path, cwd, log)
+        return UFOFontSource(path, log)
     elif path.endswith('.ttx'):
-        return TTXFontSource(path, cwd, log)
+        return TTXFontSource(path, log)
     elif path.endswith('.ttf') or path.endswith('.otf'):
-        return BINFontSource(path, cwd, log)
+        return BINFontSource(path, log)
     elif path.endswith('.sfd'):
-        return SFDFontSource(path, cwd, log)
+        return SFDFontSource(path, log)
     else:
         log.write('[MISSED] Unsupported sources file: %s\n' % path,
                   prefix='Error: ')

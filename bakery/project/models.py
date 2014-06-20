@@ -27,11 +27,14 @@ from flask import current_app
 from blinker.base import lazy_property
 
 from ..app import db
-from ..utils import save_metadata, prun
+from ..utils import save_metadata
 from ..tasks import (process_project, project_git_sync,
                      upstream_revision_tests, result_tests,
                      generate_subsets_coverage_list)
 from .state import project_state_get, project_state_save, walkWithoutGit
+
+
+from cli.system import prun
 
 
 class Project(db.Model):
@@ -93,7 +96,7 @@ class Project(db.Model):
     def read_asset(self, name=None):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'yaml':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % self)
+            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/.bakery.yaml' % self)
         elif name == 'license':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
         else:

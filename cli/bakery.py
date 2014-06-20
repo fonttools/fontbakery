@@ -14,24 +14,57 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
+import glob
 import os.path as op
+import yaml
 
 from cli.source import get_fontsource
+from cli.system import os, shutil, run
+from fontaine.ext.subsets import Extension as SubsetExtension
+
+
+BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'defaults.yaml')
+
+
+def copy_single_file(src, dest, log):
+    """ Copies single filename from src directory to dest directory """
+    if op.exists(src) and op.isfile(src):
+        shutil.copy(src, dest, log=log)
+    else:
+        log.write(('%s does not exist upstream\n') % src,
+                  prefix='Error: ')
 
 
 class Bakery(object):
     """ Go through all baking process, from copying to optimizing
         resulted ttf files """
 
-    def __init__(self, builddir='build', config={}, stdout_pipe=None):
+    def __init__(self, builddir='build', config=None, stdout_pipe=None):
+        """
+        Class to handle all parts of bakery process.
+
+        Params:
+
+            :builddir string: path to place baked fonts. If it does not exists
+            object will create this one.
+            :config string: path to bakery.yaml It has to be placed in
+            the root of project directory.
+            :stdout_pipe file-object: Each step is being logged while bakery
+            process executes """
         self.builddir = builddir
-        self.config = config
+        self.project_root = op.dirname(config)
         self.stdout_pipe = stdout_pipe
 
+        try:
+            configfile = open(config, 'r')
+        except OSError:
+            configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
+            self.stdout_pipe.write(('Cannot read configuration file.'
+                                    ' Using defaults'))
+        self.config = yaml.safe_load(configfile)
+
     def prepare_sources(self, path):
-        fontsource = get_fontsource(op.basename(path),
-                                    op.dirname(path), self.stdout_pipe)
+        fontsource = get_fontsource(path, self.stdout_pipe)
         fontsource.family_name = self.config.get('familyname', '')
 
         if not fontsource.before_copy():
@@ -46,10 +79,135 @@ class Bakery(object):
         fontsource.after_copy(self.builddir)
         return fontsource
 
-    def run(self, files):
-        if not isinstance(files, list):
-            files = [files]
+    def run(self):
+        # 1. Copy files to build/sources directory
+        for path in self.config.get('process_files', []):
+            self.prepare_sources(op.join(self.project_root, path))
 
-        for path in files:
-            self.prepare_sources(path)
+        if not self.config.get('process_files', []):
+            return  # no files to bake
 
+        # 2. Copy licenses to build/sources directory
+        self.copy_license()
+
+        # 3. Copy FONTLOG file
+        self.copy_fontlog_txt()
+
+        # 4. Copy DESCRIPTION.en_us.html file
+        self.copy_description_html()
+
+        # 5. Copy METADATA.json file
+        self.copy_metadata_json()
+
+        # 6. Copy any TXT files selected by user
+        self.copy_txt_files()
+
+        # 7. TTFAutohint
+        if self.config.get('ttfautohint', None):
+            self.ttfautohint_process()
+
+        # 8. Create subset files
+        self.subset_process()
+
+    def execute_pyftsubset(self, subset, name, glyphs="", args=""):
+        cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
+               " --notdef-outline --name-IDs='*' --hinting")
+        if args:
+            cmd += " " + args
+        cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
+                     'out': op.join(self.builddir, name)}
+        run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+
+        shutil.move(op.join(self.builddir, name) + '.ttf.subset',
+                    op.join(self.builddir, name) + '.' + subset,
+                    log=self.stdout_pipe)
+
+    def subset_process(self):
+        self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### ')
+
+        for subset in self.config['subset']:
+            glyphs = open(SubsetExtension.get_subset_path(subset)).read()
+
+            os.chdir(op.join(self.builddir, 'sources'))
+            for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
+                name = name[:-4]  # cut .ufo|.ttx
+                self.execute_pyftsubset(subset, name, glyphs=glyphs)
+
+                # create menu subset
+                self.execute_pyftsubset('menu', name,
+                                        args='--text="%s"' % op.basename(name))
+
+        # remove +latin from the subset name
+        os.chdir(op.join(self.builddir, 'sources'))
+        for filename in glob.glob('*+latin*'):
+            newfilename = filename.replace('+latin', '')
+            shutil.move(op.join(self.builddir, filename),
+                        op.join(self.builddir, newfilename),
+                        log=self.stdout_pipe)
+
+    def ttfautohint_process(self):
+        """
+        Run ttfautohint with project command line settings for each
+        ttf file in result src folder, outputting them in the _out root,
+        or just copy the ttfs there.
+        """
+        # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
+        #               -W -c original_font.ttf final_font.ttf
+        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
+        params = self.config.get('ttfautohint', '')
+        for name in glob.glob(op.join(self.builddir, "*.ttf")):
+            name = name[:-4]  # cut .ttf
+            shutil.move(op.join(self.builddir, name + '.ttf'),
+                        op.join(self.builddir, name + '.autohint.ttf'),
+                        log=self.stdout_pipe)
+            cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
+                   "'{name}.ttf'").format(params=params, name=name)
+            run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+            os.remove(op.join(self.builddir, name + '.autohint.ttf'),
+                      log=self.stdout_pipe)
+
+    def copy_fontlog_txt(self):
+        copy_single_file(op.join(self.project_root, 'FONTLOG.txt'),
+                         self.builddir, self.stdout_pipe)
+
+    def copy_description_html(self):
+        copy_single_file(op.join(self.project_root, 'DESCRIPTION.en_us.html'),
+                         self.builddir, self.stdout_pipe)
+
+    def copy_metadata_json(self):
+        copy_single_file(op.join(self.project_root, 'METADATA.json'),
+                         self.builddir, self.stdout_pipe)
+
+    def copy_txt_files(self):
+        if self.config.get('txt_files_copied', None):
+            for filename in self.config['txt_files_copied']:
+                copy_single_file(op.join(self.project_root, filename),
+                                 self.builddir, self.stdout_pipe)
+
+    def copy_license(self):
+        # Copy license file
+        # TODO: Infer license type from filename
+        # TODO: Copy file based on license type
+        if self.config.get('license_file', None):
+            # Set _in license file name
+            licenseFileInFullPath = self.config['license_file']
+            licenseFileIn = licenseFileInFullPath.split('/')[-1]
+            # List posible OFL and Apache filesnames
+            listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt',
+                                  'OFL.md']
+            listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
+            # Canonicalize _out license file name
+            if licenseFileIn in listOfOflFilenames:
+                licenseFileOut = 'OFL.txt'
+            elif licenseFileIn in listOfApacheFilenames:
+                licenseFileOut = 'LICENSE.txt'
+            else:
+                licenseFileOut = licenseFileIn
+            # Copy license file
+            _in_license = op.join(self.project_root, licenseFileInFullPath)
+            _out_license = op.join(self.builddir, licenseFileOut)
+
+            shutil.copy(_in_license, _out_license, log=self.stdout_pipe)
+        else:
+            self.stdout_pipe.write('License file not copied\n',
+                                   prefix='Error: ')

@@ -14,6 +14,3 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-from cli.bakery import Bakery
-from cli.system import *
