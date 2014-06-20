@@ -109,6 +109,25 @@ class Bakery(object):
         # 8. Create subset files
         self.subset_process()
 
+        # 9. Generate METADATA.json
+        self.generate_metadata_json()
+
+    def ansiprint(self, message, color):
+        self.stdout_pipe.write(message + '\n')
+
+    def generate_metadata_json(self):
+        from scripts import genmetadata
+        self.stdout_pipe.write('Generate METADATA.json (genmetadata.py)\n',
+                               prefix='### ')
+        try:
+            os.chdir(self.builddir)
+            # reassign ansiprint to our own method
+            genmetadata.ansiprint = self.ansiprint
+            genmetadata.run(self.builddir)
+        except Exception, e:
+            self.stdout_pipe.write(e.message + '\n', prefix="### Error:")
+            raise
+
     def execute_pyftsubset(self, subset, name, glyphs="", args=""):
         cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
                " --notdef-outline --name-IDs='*' --hinting")

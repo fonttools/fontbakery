@@ -197,9 +197,8 @@ def inferFamilyName(familydir):
 
 
 def fontToolsOpenFont(filepath):
-    if isinstance(filepath, str):
-        f = io.open(filepath, 'rb')
-        return ttLib.TTFont(f)
+    f = io.open(filepath, 'rb')
+    return ttLib.TTFont(f)
 
 
 # DC This should check both copyright strings match

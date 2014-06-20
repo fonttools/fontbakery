@@ -243,19 +243,6 @@ def ttx_process(project, build, log):
                     log=log)
 
 
-def generate_metadata_process(project, build, log):
-    """ Generate METADATA.json using genmetadata.py """
-    from .app import app
-    param = {'login': project.login, 'id': project.id,
-             'revision': build.revision, 'build': build.id}
-
-    _out = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-    cmd = "python %(wd)s/scripts/genmetadata.py '%(out)s'"
-    log.write('Generate METADATA.json (genmetadata.py)\n', prefix='### ')
-    run(cmd % {'wd': app.config['ROOT'], 'out': _out}, cwd=_out, log=log)
-
-
 def fontaine_process(project, build, log):
     """ Run pyFontaine on ttf files """
     param = {'login': project.login, 'id': project.id,
@@ -479,7 +466,6 @@ def process_project(project, build, revision, force_sync=False):
             b = Bakery(builddir=builddir, config=config, stdout_pipe=log)
             b.run()
 
-            generate_metadata_process(project, build, log)
             fontaine_process(project, build, log)
             # result_tests doesn't needed here, but since it is anyway
             # background task make cache file for future use
