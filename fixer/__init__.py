@@ -63,7 +63,6 @@ def fix_font(yaml_file, path, log=None):
                 failure_list.append(test)
 
         if apply_fixes:
-            log.write('Applying fixes\n', prefix="### ")
             font_path = os.path.join(path, font)
             for fun in apply_fixes:
                 if log:
