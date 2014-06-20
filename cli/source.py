@@ -331,7 +331,7 @@ class SFDFontSource(FontSourceAbstract):
 def get_fontsource(path, log):
     """ Returns instance of XXXFontSource class based on path extension.
 
-        It supports only three XXXFontSource classes for the moment:
+        It supports only four XXXFontSource classes for the moment:
 
         >>> get_fontsource('test.ufo')
         <UFOFontSource instance>
