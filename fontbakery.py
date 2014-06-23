@@ -16,19 +16,44 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
+import os
+import sys
+import yaml
 
 
-from cli.bakery import Bakery
+from cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
+
+
+class systdout:
+
+    @staticmethod
+    def write(msg, prefix=''):
+        sys.stdout.write(prefix + msg)
 
 
 def main(path):
-    b = Bakery()
-    b.run(path)
+    rootpath = os.path.dirname(path)
+
+    config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
+
+    if path[-4:] in ['.ufo', '.ttx', '.ttf', '.otf', '.sfd']:
+        # create config bakery.yaml from defaults
+        if 'process_files' not in config:
+            config['process_files'] = []
+        config['process_files'].append(os.path.basename(path))
+
+    l = open(os.path.join(rootpath, '.bakery.yaml'), 'w')
+    l.write(yaml.safe_dump(config))
+    l.close()
+
+    b = Bakery(os.path.join(rootpath, '.bakery.yaml'), stdout_pipe=systdout)
+    b.run()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('filename',
-                        help="Path to source. It can be UFO, TTX, TTF or OTF")
+                        help=("Path to source project. It can also be "
+                              "UFO, TTX, TTF or OTF files"))
     args = parser.parse_args()
     main(args.filename)

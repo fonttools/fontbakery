@@ -55,7 +55,7 @@ class Bakery(object):
             the root of project directory.
             :stdout_pipe file-object: Each step is being logged while bakery
             process executes """
-        self.builddir = builddir
+        self.builddir = os.path.abspath(builddir)
         self.project_root = op.dirname(config)
         self.stdout_pipe = stdout_pipe
 
@@ -69,6 +69,7 @@ class Bakery(object):
 
     def prepare_sources(self, path):
         fontsource = get_fontsource(path, self.stdout_pipe)
+        assert fontsource
         fontsource.family_name = self.config.get('familyname', '')
 
         if not fontsource.before_copy():
@@ -210,7 +211,7 @@ class Bakery(object):
     def subset_process(self):
         self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
-        for subset in self.config['subset']:
+        for subset in self.config.get('subset', []):
             glyphs = open(SubsetExtension.get_subset_path(subset)).read()
 
             os.chdir(op.join(self.builddir, 'sources'))
@@ -230,15 +231,19 @@ class Bakery(object):
         """
         # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
         #               -W -c original_font.ttf final_font.ttf
-        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
         params = self.config.get('ttfautohint', '')
-        for name in glob.glob(op.join(self.builddir, "*.ttf")):
+        if not params:
+            return
+        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
+
+        os.chdir(self.builddir)
+        for name in glob.glob("*.ttf"):
             name = name[:-4]  # cut .ttf
             shutil.move(op.join(self.builddir, name + '.ttf'),
                         op.join(self.builddir, name + '.autohint.ttf'),
                         log=self.stdout_pipe)
             cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
-                   "'{name}.ttf'").format(params=params, name=name)
+                   "'{name}.ttf'").format(params=params, name=os.path.join(self.builddir, name))
             run(cmd, cwd=self.builddir, log=self.stdout_pipe)
             os.remove(op.join(self.builddir, name + '.autohint.ttf'),
                       log=self.stdout_pipe)
