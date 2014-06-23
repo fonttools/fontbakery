@@ -73,6 +73,21 @@ class Bakery(object):
                                     ' Using defaults'))
         self.config = yaml.safe_load(configfile)
 
+    def interactive():
+        doc = "If True then user will be asked to apply autofix"
+
+        def fget(self):
+            return self._interactive
+
+        def fset(self, value):
+            self._interactive = value
+
+        def fdel(self):
+            del self._interactive
+
+        return locals()
+    interactive = property(**interactive())
+
     def prepare_sources(self, path):
         fontsource = get_fontsource(path, self.stdout_pipe)
         assert fontsource
@@ -90,13 +105,16 @@ class Bakery(object):
         fontsource.after_copy(self.builddir)
         return fontsource
 
-    def run(self):
+    def run(self, with_upstream=False):
         # 1. Copy files to build/sources directory
         for path in self.config.get('process_files', []):
             self.prepare_sources(op.join(self.project_root, path))
 
         if not self.config.get('process_files', []):
             return  # no files to bake
+
+        if with_upstream:
+            self.upstream_tests()
 
         # 2. Copy licenses to build/sources directory
         self.copy_license()
@@ -135,7 +153,8 @@ class Bakery(object):
     def autofix_process(self):
         self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
         _out_yaml = op.join(self.builddir, '.tests.yaml')
-        fix_font(_out_yaml, self.builddir, log=self.stdout_pipe)
+        fix_font(_out_yaml, self.builddir, interactive=self.interactive,
+                 log=self.stdout_pipe)
 
     def result_tests_process(self):
         self.stdout_pipe.write('Run tests for baked files\n', prefix='### ')
@@ -302,8 +321,25 @@ class Bakery(object):
                                    prefix='Error: ')
 
     def upstream_tests(self):
-        return True
+        result = {}
+        source_dir = op.join(self.builddir, 'sources')
+        self.stdout_pipe.write('Run upstream tests\n', prefix='### ')
+        for font in self.config.get('process_files', []):
+            if font[-4:] in '.ttx':
+                result[font] = run_set(op.join(source_dir, font),
+                                       'upstream-ttx', log=self.stdout_pipe)
+            else:
+                result[font] = run_set(op.join(source_dir, font),
+                                       'upstream', log=self.stdout_pipe)
 
+        result['Consistency fonts'] = run_set(source_dir, 'consistency',
+                                              log=self.stdout_pipe)
+
+        _out_yaml = op.join(source_dir, '.upstream.yaml')
+
+        l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
+        l.write(yaml.safe_dump(result))
+        l.close()
 
 # register yaml serializer for tests result objects.
 
@@ -313,7 +349,7 @@ def repr_testcase(dumper, data):
         if doc is None:
             return "None"
         else:
-            return " ".join(doc.decode('utf-8', 'xmlcharrefreplace').split())
+            return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
