@@ -17,6 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 import os
+import shutil
 import sys
 import yaml
 
@@ -31,29 +32,45 @@ class systdout:
         sys.stdout.write(prefix + msg)
 
 
-def main(path):
-    rootpath = os.path.dirname(path)
+def main(sources, config):
 
-    config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
+    rootpath = os.path.abspath('build/tmp')
+    if not config:
+        config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
+    else:
+        config = yaml.safe_load(open(config))
 
-    if path[-4:] in ['.ufo', '.ttx', '.ttf', '.otf', '.sfd']:
-        # create config bakery.yaml from defaults
-        if 'process_files' not in config:
-            config['process_files'] = []
-        config['process_files'].append(os.path.basename(path))
+    if 'process_files' not in config:
+        config['process_files'] = []
+
+    for source in sources:
+        if source[-4:] in ['.ufo', '.ttx', '.ttf', '.otf', '.sfd']:
+            # create config bakery.yaml from defaults
+            config['process_files'].append(source)
+        else:
+            continue
+        if os.path.isdir(source):
+            shutil.copytree(source, rootpath)
+        else:
+            shutil.copy(source, rootpath)
 
     l = open(os.path.join(rootpath, '.bakery.yaml'), 'w')
     l.write(yaml.safe_dump(config))
     l.close()
 
-    b = Bakery(os.path.join(rootpath, '.bakery.yaml'), stdout_pipe=systdout)
-    b.run()
+    try:
+        b = Bakery(os.path.join(rootpath, '.bakery.yaml'),
+                   stdout_pipe=systdout)
+        b.run()
+    finally:
+        shutil.rmtree(rootpath)
+        pass
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename',
-                        help=("Path to source project. It can also be "
-                              "UFO, TTX, TTF or OTF files"))
+    parser.add_argument('filename', nargs="+",
+                        help=("Path to source UFO, TTX, TTF or OTF files"))
+    parser.add_argument('--config', type=str, default='')
     args = parser.parse_args()
-    main(args.filename)
+    main(args.filename, args.config)
