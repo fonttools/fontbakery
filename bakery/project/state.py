@@ -75,9 +75,10 @@ def project_state_get(project, refresh=False):
         local: the internal state of the project
         state: the external state of the project
     """
+    from cli.bakery import BAKERY_CONFIGURATION_DEFAULTS
     _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     # Define bakery.yaml locations
-    bakery_default_yml = os.path.join(app.config['ROOT'], 'bakery', 'bakery.defaults.yaml')
+    bakery_default_yml = BAKERY_CONFIGURATION_DEFAULTS
     bakery_project_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/bakery.yaml' % project)
     bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/.bakery.yaml' % project)
     # Define state.yaml locations
