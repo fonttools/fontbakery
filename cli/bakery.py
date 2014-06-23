@@ -41,21 +41,26 @@ def copy_single_file(src, dest, log):
 
 
 class Bakery(object):
-    """ Go through all baking process, from copying to optimizing
-        resulted ttf files """
+    """ Class to handle all parts of bakery process.
+
+        Attributes:
+            builddir: Path where to place baked fonts.
+                If it does not exists object will create this one.
+            config: Path to yaml file describing bake configuration.
+                It has to be placed in the root of project directory.
+            stdout_pipe: Optional attribute to make bakery process
+                loggable.
+
+                It is a class that must have defined `write` method. Eg:
+
+                class stdlog:
+
+                    @staticmethod
+                    def write(msg, prefix=''):
+                        pass
+    """
 
     def __init__(self, config, builddir='build', stdout_pipe=None):
-        """
-        Class to handle all parts of bakery process.
-
-        Params:
-
-            :builddir string: path to place baked fonts. If it does not exists
-            object will create this one.
-            :config string: path to bakery.yaml It has to be placed in
-            the root of project directory.
-            :stdout_pipe file-object: Each step is being logged while bakery
-            process executes """
         self.builddir = os.path.abspath(builddir)
         self.project_root = op.dirname(config)
         self.stdout_pipe = stdout_pipe
@@ -295,6 +300,9 @@ class Bakery(object):
         else:
             self.stdout_pipe.write('License file not copied\n',
                                    prefix='Error: ')
+
+    def upstream_tests(self):
+        return True
 
 
 # register yaml serializer for tests result objects.

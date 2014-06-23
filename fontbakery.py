@@ -61,7 +61,8 @@ def main(sources, config):
     try:
         b = Bakery(os.path.join(rootpath, '.bakery.yaml'),
                    stdout_pipe=systdout)
-        b.run()
+        if b.upstream_tests():
+            b.run()
     finally:
         shutil.rmtree(rootpath)
         pass
