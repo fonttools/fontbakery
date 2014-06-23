@@ -71,7 +71,7 @@ def main(sources, config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', nargs="+",
-                        help=("Path to source UFO, TTX, TTF or OTF files"))
+                        help=("Path to UFO, SFD, TTX, TTF or OTF files"))
     parser.add_argument('--config', type=str, default='')
     args = parser.parse_args()
     main(args.filename, args.config)
