@@ -22,7 +22,6 @@ import os.path as op
 import yaml
 
 from checker import run_set, parse_test_results
-from checker.base import BakeryTestCase
 from cli.system import os, prun
 from flask.ext.rq import job
 
@@ -198,31 +197,6 @@ class PathParam:
 
         path = '%(login)s/%(id)s.out/%(build)s.%(revision)s/sources/' % self.param
         self._out_src = joinroot(path)
-
-
-# register yaml serializer for tests result objects.
-
-
-def repr_testcase(dumper, data):
-    def method_doc(doc):
-        if doc is None:
-            return "None"
-        else:
-            return " ".join(doc.decode('utf-8', 'xmlcharrefreplace').split())
-
-    _ = {
-        'methodDoc': method_doc(data._testMethodDoc),
-        'tool': data.tool,
-        'name': data.name,
-        'methodName': data._testMethodName,
-        'targets': data.targets,
-        'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
-                                                        'xmlcharrefreplace')
-    }
-    return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
-
-yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
 
 
 def get_sources_lists(rootpath):

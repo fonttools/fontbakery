@@ -20,6 +20,7 @@ import os.path as op
 import yaml
 
 from checker import run_set
+from checker.base import BakeryTestCase
 from cli.source import get_fontsource
 from cli.system import os, shutil, run
 from fixer import fix_font
@@ -243,7 +244,8 @@ class Bakery(object):
                         op.join(self.builddir, name + '.autohint.ttf'),
                         log=self.stdout_pipe)
             cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
-                   "'{name}.ttf'").format(params=params, name=os.path.join(self.builddir, name))
+                   "'{name}.ttf'").format(params=params,
+                                          name=op.join(self.builddir, name))
             run(cmd, cwd=self.builddir, log=self.stdout_pipe)
             os.remove(op.join(self.builddir, name + '.autohint.ttf'),
                       log=self.stdout_pipe)
@@ -293,3 +295,28 @@ class Bakery(object):
         else:
             self.stdout_pipe.write('License file not copied\n',
                                    prefix='Error: ')
+
+
+# register yaml serializer for tests result objects.
+
+
+def repr_testcase(dumper, data):
+    def method_doc(doc):
+        if doc is None:
+            return "None"
+        else:
+            return " ".join(doc.decode('utf-8', 'xmlcharrefreplace').split())
+
+    _ = {
+        'methodDoc': method_doc(data._testMethodDoc),
+        'tool': data.tool,
+        'name': data.name,
+        'methodName': data._testMethodName,
+        'targets': data.targets,
+        'tags': getattr(data, data._testMethodName).tags,
+        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
+                                                        'xmlcharrefreplace')
+    }
+    return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
+
+yaml.SafeDumper.add_multi_representer(BakeryTestCase, repr_testcase)
