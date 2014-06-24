@@ -528,15 +528,17 @@ class ProjectBuild(db.Model):
         return walkWithoutGit(self.path)
 
     def result_tests(self):
+
         param = {'login': self.project.login, 'id': self.project.id,
                  'revision': self.revision, 'build': self.id}
         builddir = os.path.join(app.config['DATA_ROOT'],
                                 '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        if not os.path.exists(os.path.join(builddir, '.tests.yaml')):
+            config = os.path.join(app.config['DATA_ROOT'],
+                                  '%(login)s/%(id)s.in/.bakery.yaml' % self.project)
 
-        config = os.path.join(app.config['DATA_ROOT'],
-                              '%(login)s/%(id)s.in/.bakery.yaml' % self.project)
-
-        b = Bakery(config, builddir=builddir)
-        return b.result_tests_process()
+            b = Bakery(config, builddir=builddir)
+            return b.result_tests_process()
+        return yaml.safe_load(open(os.path.join(builddir, '.tests.yaml')))
 
 db.create_all()

@@ -64,6 +64,7 @@ class Bakery(object):
         self.builddir = os.path.abspath(builddir)
         self.project_root = op.dirname(config)
         self.stdout_pipe = stdout_pipe
+        self.interactive = False
 
         try:
             configfile = open(config, 'r')
@@ -345,11 +346,13 @@ class Bakery(object):
 
 
 def repr_testcase(dumper, data):
+    import codecs
+
     def method_doc(doc):
         if doc is None:
             return "None"
         else:
-            return " ".join(doc.encode('utf-8', 'xmlcharrefreplace').split())
+            return codecs.unicode_escape_decode(doc)[0].strip()
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
