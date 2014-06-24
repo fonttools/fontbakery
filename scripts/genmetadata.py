@@ -180,6 +180,7 @@ def inferFamilyName(familydir):
     NAMEID_STYLE = 2
     files = os.listdir(familydir)
     familyName = ""
+    styleName = ""
     for f in files:
         if f.endswith("Regular.ttf"):
             filepath = os.path.join(familydir, f)

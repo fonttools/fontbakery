@@ -316,11 +316,12 @@ def process_project(project, build, revision, force_sync=False):
     # setup is set after 'bake' button is first pressed
 
     if project.config['local'].get('setup', None):
+        log.write('Preparing build\n', prefix='### ')
         git_checkout(_in, revision, log)
 
         # this code change upstream repository
         try:
-            log.write('Bake Begins!\n', prefix='# ')
+            log.write('Bake Begins!\n', prefix='### ')
 
             param = {'login': project.login, 'id': project.id,
                      'revision': build.revision, 'build': build.id}
@@ -342,12 +343,13 @@ def process_project(project, build, revision, force_sync=False):
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
         except Exception:
-            log.write('Error: bakery process failed')
+            log.write('Error: bakery process failed\n')
             raise
         finally:
             # save that project is done
             set_done(build)
-            log.write('Bake Succeeded!\n', prefix='# ')
+
+        log.write('Bake Succeeded!\n', prefix='### ')
 
     log.close()
 

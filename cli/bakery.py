@@ -190,6 +190,8 @@ class Bakery(object):
         for font in files:
             fonts.append(op.join(self.builddir, font))
 
+        self.stdout_pipe.write('fontaine --text %s' % ' '.join(fonts),
+                               prefix='$ ')
         try:
             fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
             fp = codecs.open(fontaine_log, 'w', 'utf-8')
