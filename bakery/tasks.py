@@ -333,7 +333,7 @@ def process_project(project, build, revision, force_sync=False):
             b = Bakery(config, builddir=builddir, stdout_pipe=log)
             b.run()
 
-            log.write('Archiving baked files\n', prefix='### ')
+            log.write('ZIP result for download\n', prefix='### ')
             # zip out folder with revision
             # TODO: move these variable definitions inside zipdir() so
             #  they are the same as other bake methods
