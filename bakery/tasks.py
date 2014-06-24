@@ -279,7 +279,7 @@ def git_checkout(path, revision, log=None):
         repo = Repo(path)
         repo.git.checkout(revision)
         if log:
-            log.write("git checkout %s\n" % revision)
+            log.write("git checkout %s\n" % revision, prefix='$ ')
     except InvalidGitRepositoryError:
         pass
 
