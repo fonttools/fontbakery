@@ -55,32 +55,33 @@ socket.on('message', function (logs) {
     var lines = logString.match(/^.*((\r\n|\n|\r)|$)/gm);
 //  console.log(lines);
     lines.forEach( function(data) {
-//      console.log(data);
-    if (data.startswith('### ')) {
-        $('#log').append($('<h4>').addClass('text-header').html(data.slice('### '.length)));
-    } else if (data.startswith('Error: ')) {
-        $('#log').append($('<span>').addClass('text-danger').html(data.slice('Error: '.length)));
-    } else if (data.startswith('Fatal: ')) {
-        $('#log').append($('<span>').addClass('text-danger').html('<span class="label label-important">{{ _("Fatal") }}</span> ' + data.slice('Fatal: '.length)));
-        $('#logEndButtonRebake').show();
-        $('#logEndButtons').slideDown();
-    } else if (data.startswith('Start: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">{{ _("Start") }}</span> ' + data.slice('Start: '.length)));
-    } else if (data.startswith('Wait: ')){
-        $('#log').append($('<span>').addClass('text-info').html('<span class="label label-info">{{ _("Wait") }}</span> ' + data.slice('Wait: '.length)));
-    } else if (data.startswith('End: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End") }}</span> ' + data.slice('End: '.length)));
-        $('#logEndButtonSuccess').show();
-        $('#logEndButtons').slideDown();
-    }  else if (data.startswith('End: ')){
-        $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End") }}</span> ' + data.slice('End: '.length)));
-        $('#logEndButtonSuccess').show();
-        $('#logEndButtons').slideDown();
-    }  else if (data.startswith('$ ')){
-        $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('$ '.length)));
-    }  else {
-        $('#log').append($('<span>').addClass('text-info').html(data));
-    };
+        console.log(data);
+        if (data.startswith('### ')) {
+            $('#log').append($('<h4>').addClass('text-header').html(data.slice('### '.length)));
+        } else if (data.startswith('Error: ')) {
+            $('#log').append($('<span>').addClass('text-danger').html(data.slice('Error: '.length)));
+        } else if (data.startswith('Fatal: ')) {
+            $('#log').append($('<span>').addClass('text-danger').html('<span class="label label-important">{{ _("Fatal") }}</span> ' + data.slice('Fatal: '.length)));
+            $('#logEndButtonRebake').show();
+            $('#logEndButtons').slideDown();
+        } else if (data.startswith('Start: ')){
+            $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success">{{ _("Start") }}</span> ' + data.slice('Start: '.length)));
+        } else if (data.startswith('Wait: ')){
+            $('#log').append($('<span>').addClass('text-info').html('<span class="label label-info">{{ _("Wait") }}</span> ' + data.slice('Wait: '.length)));
+        } else if (data.startswith('End: ')){
+            $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End") }}</span> ' + data.slice('End: '.length)));
+            $('#logEndButtonSuccess').show();
+            $('#logEndButtons').slideDown();
+        }  else if (data.startswith('End: ')){
+            $('#log').append($('<span>').addClass('text-success').html('<span class="label label-success label-end">{{ _("End") }}</span> ' + data.slice('End: '.length)));
+            $('#logEndButtonSuccess').show();
+            $('#logEndButtons').slideDown();
+        }  else if (data.startswith('$ ')){
+            $('#log').append($('<span>').addClass('text-command').html("$ " + data.slice('$ '.length)));
+        }  else {
+            $('#log').append($('<span>').addClass('text-info').html(data));
+        };
+        $(document).scrollTop($(document).height());
   });
 });
 
