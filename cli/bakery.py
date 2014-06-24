@@ -268,7 +268,7 @@ class Bakery(object):
         for name in glob.glob("*.ttf"):
             name = op.join(self.builddir, name[:-4])  # cut .ttf
             cmd = ("ttfautohint {params} '{name}.ttf' "
-                   "'{name}.autohint.ttf'").format(params=params,
+                   "'{name}.autohint.ttf'").format(params=params.strip(),
                                                    name=name)
             run(cmd, cwd=self.builddir, log=self.stdout_pipe)
             shutil.move(name + '.autohint.ttf', name + '.ttf',

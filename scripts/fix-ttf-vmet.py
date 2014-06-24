@@ -70,30 +70,36 @@ class VmetFix:
     def __init__(self, fonts):
         self.fonts = fonts
 
-    def set_metrics_for_font(self, ttfont, ascents, descents, linegaps):
-        if ascents:
-            ttfont['hhea'].ascent = ascents
-            ttfont['OS/2'].sTypoAscender = ascents
-            ttfont['OS/2'].usWinAscent = ascents
-        if descents:
-            ttfont['hhea'].descent = descents
-            ttfont['OS/2'].sTypoDescender = descents
-            ttfont['OS/2'].usWinDescent = abs(descents)
-        if linegaps:
-            ttfont['hhea'].lineGap = linegaps
-            ttfont['OS/2'].sTypoLineGap = linegaps
+    def set_metrics_for_font(self, ttfont, ah, at, aw, dh, dt, dw, lh, lt):
+        if ah is not None:
+            ttfont['hhea'].ascent = ah
+        if at is not None:
+            ttfont['OS/2'].sTypoAscender = at
+        if aw is not None:
+            ttfont['OS/2'].usWinAscent = aw
+        if dh is not None:
+            ttfont['hhea'].descent = dh
+        if dt is not None:
+            ttfont['OS/2'].sTypoDescender = dt
+        if dw is not None:
+            ttfont['OS/2'].usWinDescent = abs(dw)
+        if lh is not None:
+            ttfont['hhea'].lineGap = lh
+        if lt is not None:
+            ttfont['OS/2'].sTypoLineGap = lt
 
-    def set_metrics(self, ascents, descents, linegaps):
+    def set_metrics(self, ah, at, aw, dh, dt, dw, lh, lt):
         for fontpath in self.fonts:
             ttfont = ttLib.TTFont(fontpath)
-            self.set_metrics_for_font(ttfont, ascents, descents, linegaps)
+            self.set_metrics_for_font(ttfont, ah, at, aw, dh, dt, dw, lh, lt)
             ttfont.save(fontpath + '.fix')
 
     def fix_metrics(self):
         for fontpath in self.fonts:
             ttfont = ttLib.TTFont(fontpath)
             ymin, ymax = get_bounds(ttfont)
-            self.set_metrics_for_font(ttfont, ymax, ymin, 0)
+            self.set_metrics_for_font(ttfont, ymax, ymax, ymax,
+                                      ymin, ymin, ymin, 0, 0)
             ttfont.save(fontpath + '.fix')
 
     def show_metrics(self):
@@ -126,15 +132,35 @@ class VmetFix:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--ascents', type=int,
+    # ascent parameters
+    parser.add_argument('-ah', '--ascents-hhea', type=int,
                         help=("Set new ascents value in 'Horizontal Header'"
                               " table ('hhea')"))
-    parser.add_argument('-d', '--descents', type=int,
+    parser.add_argument('-at', '--ascents-typo', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('OS/2')"))
+    parser.add_argument('-aw', '--ascents-win', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('OS/2.Win')"))
+
+    # descent parameters
+    parser.add_argument('-dh', '--descents-hhea', type=int,
                         help=("Set new descents value in 'Horizontal Header'"
                               " table ('hhea')"))
-    parser.add_argument('-l', '--linegaps', type=int,
+    parser.add_argument('-dt', '--descents-typo', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('OS/2')"))
+    parser.add_argument('-dw', '--descents-win', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('OS/2.Win')"))
+
+    parser.add_argument('-lh', '--linegaps', type=int,
                         help=("Set new linegaps value in 'Horizontal Header'"
                               " table ('hhea')"))
+    parser.add_argument('-lt', '--linegaps-typo', type=int,
+                        help=("Set new linegaps value in 'Horizontal Header'"
+                              " table ('OS/2')"))
+
     parser.add_argument('--autofix', action="store_true",
                         help="Autofix font metrics")
     parser.add_argument('filename', nargs='+',
@@ -142,8 +168,19 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     vmetfixer = VmetFix(args.filename)
-    if args.ascents or args.descents or args.linegaps:
-        vmetfixer.set_metrics(args.ascents, args.descents, args.linegaps)
+
+    argv = ['ascents_hhea', 'ascents_typo', 'ascents_win',
+            'descents_hhea', 'descents_typo', 'descents_win',
+            'linegaps', 'linegaps_typo']
+
+    if (args.ascents_hhea or args.ascents_typo or
+            args.ascents_win or args.descents_hhea or
+            args.descents_typo or args.descents_win or
+            args.linegaps or args.linegaps_typo):
+        vmetfixer.set_metrics(args.ascents_hhea, args.ascents_typo,
+                              args.ascents_win, args.descents_hhea,
+                              args.descents_typo, args.descents_win,
+                              args.linegaps, args.linegaps_typo)
     elif args.autofix:
         vmetfixer.fix_metrics()
     else:
