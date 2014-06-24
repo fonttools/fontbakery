@@ -175,6 +175,7 @@ def inferStyle(ftfont):
 
 def inferFamilyName(familydir):
     NAMEID_FAMILYNAME = 1
+    NAMEID_STYLE = 2
     files = os.listdir(familydir)
     familyName = ""
     for f in files:
@@ -187,6 +188,15 @@ def inferFamilyName(familydir):
                         familyName = record.string.decode('utf-16-be').encode('utf-8')
                     else:
                         familyName = record.string
+                # Some authors creates TTF with wrong family name including styles
+                if record.nameID == NAMEID_STYLE:
+                    if b'\000' in record.string:
+                        styleName = record.string.decode('utf-16-be').encode('utf-8')
+                    else:
+                        styleName = record.string
+
+    familyName = familyName.replace(styleName, '').strip()
+
     if familyName == "":
         string = "FATAL: No *-Regular.ttf found to set family name!"
         color = "red"
