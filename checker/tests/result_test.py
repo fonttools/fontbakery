@@ -279,7 +279,6 @@ class FontToolsTest(TestCase):
         for font in metadata.get('fonts', []):
             if os.path.basename(self.path) == font['filename']:
                 font_metadata = font
-                print font_metadata
                 break
         self.assertTrue(font_metadata)
         return font_metadata

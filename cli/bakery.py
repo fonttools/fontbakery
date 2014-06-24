@@ -263,16 +263,13 @@ class Bakery(object):
 
         os.chdir(self.builddir)
         for name in glob.glob("*.ttf"):
-            name = name[:-4]  # cut .ttf
-            shutil.move(op.join(self.builddir, name + '.ttf'),
-                        op.join(self.builddir, name + '.autohint.ttf'),
-                        log=self.stdout_pipe)
-            cmd = ("ttfautohint {params} '{name}.autohint.ttf' "
-                   "'{name}.ttf'").format(params=params,
-                                          name=op.join(self.builddir, name))
+            name = op.join(self.builddir, name[:-4])  # cut .ttf
+            cmd = ("ttfautohint {params} '{name}.ttf' "
+                   "'{name}.autohint.ttf'").format(params=params,
+                                                   name=name)
             run(cmd, cwd=self.builddir, log=self.stdout_pipe)
-            os.remove(op.join(self.builddir, name + '.autohint.ttf'),
-                      log=self.stdout_pipe)
+            shutil.move(name + '.autohint.ttf', name + '.ttf',
+                        log=self.stdout_pipe)
 
     def copy_fontlog_txt(self):
         copy_single_file(op.join(self.project_root, 'FONTLOG.txt'),
