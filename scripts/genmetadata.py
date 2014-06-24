@@ -108,6 +108,7 @@ class InsertOrderedDict(dict):
             return self.pop(self.orderedKeys[0])
         return dict.popitem(self)  # should raise KeyError
 
+
 SUPPORTED_SUBSETS = frozenset([
     "menu",
     "arabic",
@@ -141,7 +142,8 @@ SUPPORTED_SUBSETS = frozenset([
     "telugu",
     "thai",
     "tibetan",
-    "vietnamese"
+    "vietnamese",
+    "devanagari"
 ])
 
 
