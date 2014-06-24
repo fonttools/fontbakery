@@ -25,6 +25,15 @@ import sys
 __all__ = ['os', 'shutil', 'run', 'prun']
 
 
+def shell_cmd_repr(command):
+    available_commands = {
+        'move': 'mv',
+        'copy': 'cp',
+        'copytree': 'cp -a'
+    }
+    return available_commands[command]
+
+
 class metaclass(type):
 
     def __getattr__(cls, value):
@@ -39,7 +48,7 @@ class metaclass(type):
         def func(*args, **kwargs):
             log = kwargs.pop('log', None)
             if log:
-                log.write('$ ' + value + ' ' + ' '.join(list(args)))
+                log.write('$ ' + shell_cmd_repr(value) + ' ' + ' '.join(list(args)))
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
                 if log:
