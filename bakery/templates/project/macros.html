@@ -10,11 +10,11 @@
     <li {% if active == 'build' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "fa fa-building", _("Build History"), full) }}</li>
     {% if full %}
     <li>
-      <p>
         <small> {{ _("Clone string:") }} <br /></small>
         <input class="input-sm" class="clone_url" type="text" value="{{ project.clone }}" readonly="readonly" onclick="this.select()">
-      </p>
-      <p><a class="btn btn-xs btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a></p>
+    </li>
+    <li style="padding-top: 36px;">
+      <a class="btn btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a>
     </li>
     {% if project.homepage %}
     <li>
@@ -26,8 +26,8 @@
         <a href="{{ project.link }}"><i class="fa fa-external-link"></i></a>
     </li>
     {% endif %}
-    <li style="padding: 9px;">
-      <small><a class="btn btn-link muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a></small>
+    <li style="padding-top: 18px;">
+      <a class="btn btn-danger muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a>
     </li>
 
     {% endif %}
