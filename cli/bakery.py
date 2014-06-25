@@ -62,6 +62,7 @@ class Bakery(object):
         self.project_root = op.dirname(config)
         self.stdout_pipe = stdout_pipe
         self.interactive = False
+        self.errors_in_footer = []
 
         try:
             configfile = open(config, 'r')
@@ -357,7 +358,7 @@ def repr_testcase(dumper, data):
             return "None"
         else:
             doc = ' '.join(doc.split())
-            return doc.encode('utf-8', 'ignore')
+            return doc.decode('utf-8', 'ignore')
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
@@ -366,7 +367,7 @@ def repr_testcase(dumper, data):
         'methodName': data._testMethodName,
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': getattr(data, '_err_msg', '').encode('utf-8',
+        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
                                                         'ignore')
     }
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)

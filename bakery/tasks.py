@@ -333,17 +333,14 @@ def process_project(project, build, revision, force_sync=False):
         git_checkout(_in, revision, log)
 
         # this code change upstream repository
+        param = {'login': project.login, 'id': project.id,
+                 'revision': build.revision, 'build': build.id}
+        builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        config = os.path.join(app.config['DATA_ROOT'],
+                              '%(login)s/%(id)s.in/.bakery.yaml' % project)
+        b = Bakery(config, builddir=builddir, stdout_pipe=log)
         try:
             log.write('Bake Begins!\n', prefix='### ')
-
-            param = {'login': project.login, 'id': project.id,
-                     'revision': build.revision, 'build': build.id}
-            builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-
-            config = os.path.join(app.config['DATA_ROOT'],
-                                  '%(login)s/%(id)s.in/.bakery.yaml' % project)
-
-            b = Bakery(config, builddir=builddir, stdout_pipe=log)
             b.run()
 
             log.write('ZIP result for download\n', prefix='### ')
@@ -358,6 +355,8 @@ def process_project(project, build, revision, force_sync=False):
         except Exception:
             log.write('ERROR: BUILD FAILED\n', prefix="### ")
             build.failed = True
+            for line in b.errors_in_footer:
+                log.write(line + '\n')
             raise
         finally:
             # save that project is done
