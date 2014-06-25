@@ -20,7 +20,7 @@ import lxml.etree
 import os
 import re
 
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 from fontaine.builder import Director, Builder
 from fontaine.cmap import library
 
@@ -38,10 +38,32 @@ class ProjectUpstreamTestCase(TestCase):
     path = '.'
     name = __name__
 
+    @tags('note')
     def test_bakery_yaml_exists(self):
         """ Repository does contain bakery.yaml configuration file """
         self.assertTrue(os.path.exists(os.path.join(self.path, 'bakery.yaml')),
                         msg=('File `bakery.yaml` does not exist in root '
+                             'of upstream repository'))
+
+    @tags('note')
+    def test_fontlog_txt_exists(self):
+        """ Repository does contain bakery.yaml configuration file """
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'FONTLOG.txt')),
+                        msg=('File `FONTLOG.txt` does not exist in root '
+                             'of upstream repository'))
+
+    @tags('note')
+    def test_description_html_exists(self):
+        """ Repository does contain bakery.yaml configuration file """
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'DESCRIPTION.en_us.html')),
+                        msg=('File `DESCRIPTION.en_us.html` does not exist in root '
+                             'of upstream repository'))
+
+    @tags('note')
+    def test_metadata_json_exists(self):
+        """ Repository does contain bakery.yaml configuration file """
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'METADATA.json')),
+                        msg=('File `METADATA.json` does not exist in root '
                              'of upstream repository'))
 
 

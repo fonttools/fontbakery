@@ -35,9 +35,6 @@ def copy_single_file(src, dest, log):
     """ Copies single filename from src directory to dest directory """
     if op.exists(src) and op.isfile(src):
         shutil.copy(src, dest, log=log)
-    else:
-        log.write(('%s does not exist upstream\n') % src,
-                  prefix='Error: ')
 
 
 class Bakery(object):
