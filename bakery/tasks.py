@@ -22,7 +22,6 @@ import os.path as op
 import yaml
 
 from checker import run_set, parse_test_results
-from checker.base import BakeryTestCase
 from cli.system import os, prun
 from flask.ext.rq import job
 
@@ -43,8 +42,12 @@ def refresh_repositories(username, token):
 
 
 def get_subsets_coverage_data(source_fonts_paths, log=None):
-    """ Return dictionary with subsets coverages as a value
-        and common name as a key """
+    """ Return dict mapping key to the corresponding subsets coverage.
+
+    For example:
+
+    {'latin': 86, 'devanagari': 72}
+    """
     from fontaine.font import FontFactory
     from fontaine.cmap import Library
     library = Library(collections=['subsets'])
@@ -63,11 +66,20 @@ def get_subsets_coverage_data(source_fonts_paths, log=None):
 
 
 def generate_subsets_coverage_list(project, log=None):
-    """ Returns sorted subsets from prepared yaml file in
-        tuple [(common_name, coverage),].
+    """ Generates available subsets from project sources.
 
-        If file does not exist method creates one and writes pyfontaine
-        coverages data using its Font API. """
+        Method writes result to yaml file to avoid calling pyfontaine
+        api each time.
+
+        Args:
+            project: A :class:`~bakery.project.models.Project` instance
+            log: A :class:`~bakery.utils.RedisFd` instance
+
+        Returns:
+            Sorted subsets from prepared yaml file in tuple
+            [(common_name, coverage),]
+
+    """
     from .app import app
     if log:
         log.write('PyFontaine subsets with coverage values\n')
@@ -102,11 +114,11 @@ def generate_subsets_coverage_list(project, log=None):
 
 @job
 def project_git_sync(project):
-    """
-    Sync _in git repo, or download it if it doesn't yet exist.
+    """ Sync git repo, or download it if it doesn't yet exist.
 
-    :param project: :class:`~bakery.models.Project` instance
-    :param log: :class:`~bakery.utils.RedisFd` as log
+    Args:
+        project: A :class:`~bakery.models.Project` instance
+        log: A :class:`~bakery.utils.RedisFd` instance
     """
     from bakery.app import db, app
     project.is_ready = False
@@ -221,17 +233,18 @@ def get_sources_lists(rootpath):
 
 
 def upstream_revision_tests(project, revision):
-    """ This function run upstream tests set on
-    project.config['local']['ufo_dirs'] set in selected git revision.
-    This mean that success (aka getting any result) should be occasional
-    particular case. Because data and
-    set of folders are changing during font development process.
+    """ This function run upstream tests on all sources fonts in project.
 
-    :param project: Project instance
-    :param revision: Git revision
-    :param force: force to make tests again
-    :return: dictionary with serialized tests results formatted
-             by `repr_testcase`
+        This mean that success (aka getting any result) should be occasional
+        particular case. Because data and set of folders are changing during
+        font development process.
+
+        Args:
+            project: Project instance
+            revision: Git revision
+
+        Returns:
+            A dict with serialized tests results formatted by `repr_testcase`.
     """
     param = {'login': project.login, 'id': project.id, 'revision': revision}
 
@@ -265,7 +278,7 @@ def upstream_revision_tests(project, revision):
         if op.exists(op.join(_in, font)):
             result[font] = run_set(op.join(_in, font), 'upstream-ttx')
 
-    l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
+    l = open(_out_yaml, mode='w')
     l.write(yaml.safe_dump(result))
     l.close()
 
@@ -285,11 +298,12 @@ def git_checkout(path, revision, log=None):
 
 @job
 def process_project(project, build, revision, force_sync=False):
-    """
-    Bake the project, building all fonts according to the project setup.
+    """ Runs bake the project.
 
-    :param project: :class:`~bakery.models.Project` instance
-    :param log: :class:`~bakery.utils.RedisFd` as log
+    Args:
+        project: :class:`~bakery.models.Project` instance
+        build: :class:`~bakery.models.ProjectBuild` instance
+        force_sync: means that project has to be checked out before baking
     """
     from bakery.app import app
     from cli.bakery import Bakery
@@ -343,6 +357,7 @@ def process_project(project, build, revision, force_sync=False):
             zipdir(_out_src, _out_url, log)
         except Exception:
             log.write('ERROR: BUILD FAILED\n', prefix="### ")
+            build.failed = True
             raise
         finally:
             # save that project is done
@@ -357,8 +372,9 @@ def process_project(project, build, revision, force_sync=False):
 def process_description_404(project, build):
     """ Background task to check links in DESCRIPTION.en_us.html file
 
-        This method generates yaml file `*.*.404links.yaml` inside
-        repo out directory. """
+    This method generates yaml file `*.*.404links.yaml` inside repo out
+    directory.
+    """
     path_params = PathParam(project, build)
     path = op.join(path_params._out, 'DESCRIPTION.en_us.html')
 

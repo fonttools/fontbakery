@@ -381,6 +381,11 @@ class ProjectBuild(db.Model):
     modified = db.Column(db.Boolean(), default=False)
     updated = db.Column(db.DateTime, default=datetime.now,
                         onupdate=db.func.now())
+    failed = db.Column(db.Boolean, default=False)
+
+    @property
+    def succeeded(self):
+        return not self.failed and self.is_done
 
     @staticmethod
     def make_build(project, revision, force_sync=False):

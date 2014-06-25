@@ -57,7 +57,7 @@
       <td class="warning">{{ data.failure|length }}</td>
       <td class="danger">{{ data.error|length }}</td>
       <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
-      <td>{% if b.is_done %}<a href="{{ url_for('project.zip', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
+      <td>{% if b.succeeded %}<a href="{{ url_for('project.zip', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
     </tr>
     {% else %}
     <tr>

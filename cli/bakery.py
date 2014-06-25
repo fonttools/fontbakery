@@ -187,8 +187,8 @@ class Bakery(object):
         for font in files:
             fonts.append(op.join(self.builddir, font))
 
-        self.stdout_pipe.write('fontaine --text %s > sources/fontaine.txt' % ' '.join(fonts),
-                               prefix='$ ')
+        _ = 'fontaine --text %s > sources/fontaine.txt' % ' '.join(fonts)
+        self.stdout_pipe.write(_, prefix='$ ')
         try:
             fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
             fp = codecs.open(fontaine_log, 'w', 'utf-8')
@@ -248,8 +248,8 @@ class Bakery(object):
                 self.execute_pyftsubset(subset, name, glyphs=glyphs)
 
                 # create menu subset
-                self.execute_pyftsubset('menu', name,
-                                        args=['--text="%s"' % op.basename(name)])
+                args = ['--text="%s"' % op.basename(name)]
+                self.execute_pyftsubset('menu', name, args=args)
 
     def ttfautohint_process(self):
         """
@@ -348,19 +348,16 @@ class Bakery(object):
         l.write(yaml.safe_dump(result))
         l.close()
 
+
 # register yaml serializer for tests result objects.
-
-
 def repr_testcase(dumper, data):
 
     def method_doc(doc):
         if doc is None:
             return "None"
         else:
-            import codecs
-            doc = u' '.join(doc.split())
-            print doc, data._testMethodName
-            return codecs.utf_8_encode(doc)[0].strip()
+            doc = ' '.join(doc.split())
+            return doc.encode('utf-8', 'ignore')
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
@@ -369,8 +366,8 @@ def repr_testcase(dumper, data):
         'methodName': data._testMethodName,
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
-                                                        'xmlcharrefreplace')
+        'err_msg': getattr(data, '_err_msg', '').encode('utf-8',
+                                                        'ignore')
     }
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
 
