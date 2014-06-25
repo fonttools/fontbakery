@@ -240,7 +240,7 @@ def upstream_revision_tests(project, revision):
         font development process.
 
         Args:
-            project: Project instance
+            project: A :class:`~bakery.models.Project` instance
             revision: Git revision
 
         Returns:
@@ -373,6 +373,10 @@ def process_description_404(project, build):
 
     This method generates yaml file `*.*.404links.yaml` inside repo out
     directory.
+
+    Args:
+        project: A :class:`~bakery.models.Project` instance
+        build: A :class:`~bakery.models.ProjectBuild` instance
     """
     path_params = PathParam(project, build)
     path = op.join(path_params._out, 'DESCRIPTION.en_us.html')

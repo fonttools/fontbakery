@@ -188,7 +188,7 @@ class Bakery(object):
         for font in files:
             fonts.append(op.join(self.builddir, font))
 
-        _ = 'fontaine --text %s > sources/fontaine.txt' % ' '.join(fonts)
+        _ = 'fontaine --text %s > sources/fontaine.txt\n' % ' '.join(fonts)
         self.stdout_pipe.write(_, prefix='$ ')
         try:
             fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
