@@ -29,7 +29,8 @@ def shell_cmd_repr(command):
     available_commands = {
         'move': 'mv',
         'copy': 'cp',
-        'copytree': 'cp -a'
+        'copytree': 'cp -a',
+        'makedirs': 'mkdir -p'
     }
     return available_commands[command]
 

@@ -22,6 +22,7 @@ import os.path as op
 import yaml
 
 from checker import run_set, parse_test_results
+from checker.base import BakeryTestCase
 from cli.system import os, prun
 from flask.ext.rq import job
 
@@ -263,8 +264,6 @@ def upstream_revision_tests(project, revision):
     for font in ttx_files:
         if op.exists(op.join(_in, font)):
             result[font] = run_set(op.join(_in, font), 'upstream-ttx')
-
-    result['Consistency fonts'] = run_set(_in, 'consistency')
 
     l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
     l.write(yaml.safe_dump(result))

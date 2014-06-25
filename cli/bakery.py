@@ -324,6 +324,8 @@ class Bakery(object):
         result = {}
         source_dir = op.join(self.builddir, 'sources')
         self.stdout_pipe.write('Run upstream tests\n', prefix='### ')
+
+        result['/'] = run_set(source_dir, 'upstream-repo')
         for font in self.config.get('process_files', []):
             if font[-4:] in '.ttx':
                 result[font] = run_set(op.join(source_dir, font),
@@ -331,9 +333,6 @@ class Bakery(object):
             else:
                 result[font] = run_set(op.join(source_dir, font),
                                        'upstream', log=self.stdout_pipe)
-
-        result['Consistency fonts'] = run_set(source_dir, 'consistency',
-                                              log=self.stdout_pipe)
 
         _out_yaml = op.join(source_dir, '.upstream.yaml')
 
@@ -345,13 +344,15 @@ class Bakery(object):
 
 
 def repr_testcase(dumper, data):
-    import codecs
 
     def method_doc(doc):
         if doc is None:
             return "None"
         else:
-            return codecs.unicode_escape_decode(doc)[0].strip()
+            import codecs
+            doc = u' '.join(doc.split())
+            print doc, data._testMethodName
+            return codecs.utf_8_encode(doc)[0].strip()
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
