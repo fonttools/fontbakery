@@ -342,7 +342,7 @@ def process_project(project, build, revision, force_sync=False):
             _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
             zipdir(_out_src, _out_url, log)
         except Exception:
-            log.write('Error: bakery process failed\n')
+            log.write('ERROR: BUILD FAILED\n', prefix="### ")
             raise
         finally:
             # save that project is done
