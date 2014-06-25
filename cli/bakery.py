@@ -273,7 +273,12 @@ class Bakery(object):
             cmd = ("ttfautohint {params} '{name}.ttf' "
                    "'{name}.autohint.ttf'").format(params=params.strip(),
                                                    name=name)
-            run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+            try:
+                run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+            except:
+                self.stdout_pipe.write('TTFAutoHint is not available',
+                                       prefix="### Error:")
+                break
             shutil.move(name + '.autohint.ttf', name + '.ttf',
                         log=self.stdout_pipe)
 
