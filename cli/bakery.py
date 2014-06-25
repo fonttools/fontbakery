@@ -277,7 +277,7 @@ class Bakery(object):
             try:
                 run(cmd, cwd=self.builddir, log=self.stdout_pipe)
             except:
-                self.stdout_pipe.write('TTFAutoHint is not available',
+                self.stdout_pipe.write('TTFAutoHint is not available\n',
                                        prefix="### Error:")
                 break
             shutil.move(name + '.autohint.ttf', name + '.ttf',
@@ -307,22 +307,22 @@ class Bakery(object):
         # TODO: Copy file based on license type
         if self.config.get('license_file', None):
             # Set _in license file name
-            licenseFileInFullPath = self.config['license_file']
-            licenseFileIn = licenseFileInFullPath.split('/')[-1]
+            license_file_in_full_path = self.config['license_file']
+            license_file_in = license_file_in_full_path.split('/')[-1]
             # List posible OFL and Apache filesnames
-            listOfOflFilenames = ['Open Font License.markdown', 'OFL.txt',
-                                  'OFL.md']
+            list_of_ofl_filenames = ['Open Font License.markdown', 'OFL.txt',
+                                     'OFL.md']
             listOfApacheFilenames = ['APACHE.txt', 'LICENSE']
             # Canonicalize _out license file name
-            if licenseFileIn in listOfOflFilenames:
-                licenseFileOut = 'OFL.txt'
-            elif licenseFileIn in listOfApacheFilenames:
-                licenseFileOut = 'LICENSE.txt'
+            if license_file_in in list_of_ofl_filenames:
+                license_file_out = 'OFL.txt'
+            elif license_file_in in listOfApacheFilenames:
+                license_file_out = 'LICENSE.txt'
             else:
-                licenseFileOut = licenseFileIn
+                license_file_out = license_file_in
             # Copy license file
-            _in_license = op.join(self.project_root, licenseFileInFullPath)
-            _out_license = op.join(self.builddir, licenseFileOut)
+            _in_license = op.join(self.project_root, license_file_in_full_path)
+            _out_license = op.join(self.builddir, license_file_out)
 
             shutil.copy(_in_license, _out_license, log=self.stdout_pipe)
         else:
