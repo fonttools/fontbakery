@@ -30,7 +30,8 @@ def shell_cmd_repr(command):
         'move': 'mv',
         'copy': 'cp',
         'copytree': 'cp -a',
-        'makedirs': 'mkdir -p'
+        'makedirs': 'mkdir -p',
+        'remove': 'rm -rf'
     }
     return available_commands[command]
 

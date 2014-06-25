@@ -220,17 +220,20 @@ class Bakery(object):
             self.stdout_pipe.write(e.message + '\n', prefix="### Error:")
             raise
 
-    def execute_pyftsubset(self, subset, name, glyphs="", args=""):
-        cmd = ("pyftsubset %(out)s.ttf %(glyphs)s"
-               " --notdef-outline --name-IDs='*' --hinting")
+    def execute_pyftsubset(self, subsetname, name, glyphs="", args=""):
+        from fontTools import subset
+        argv = [op.join(self.builddir, name) + '.ttf'] + glyphs.split()
+        argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
         if args:
-            cmd += " " + args
-        cmd = cmd % {'glyphs': glyphs.replace('\n', ' '),
-                     'out': op.join(self.builddir, name)}
-        run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+            argv += args
+        subset.main(argv)
 
+        self.stdout_pipe.write('$ pyftsubset %s' % ' '.join(argv))
+
+        # need to move result .subset file to avoid overwrite with
+        # next subset
         shutil.move(op.join(self.builddir, name) + '.ttf.subset',
-                    op.join(self.builddir, name) + '.' + subset,
+                    op.join(self.builddir, name) + '.' + subsetname,
                     log=self.stdout_pipe)
 
     def subset_process(self):
@@ -246,7 +249,7 @@ class Bakery(object):
 
                 # create menu subset
                 self.execute_pyftsubset('menu', name,
-                                        args='--text="%s"' % op.basename(name))
+                                        args=['--text="%s"' % op.basename(name)])
 
     def ttfautohint_process(self):
         """
