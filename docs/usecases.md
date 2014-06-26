@@ -41,3 +41,21 @@ After bakery process finished user gets ability to view build info
 #### 4.4 Build Tests
 #### 4.5 Generated METADATA.json
 #### 4.6 Content of DESCRIPTION.en_us.html
+
+
+### 5. User can view list of projects.
+
+On home page user views project lists.
+
+![User Projects Cases](usecases/User-Project-Cases.png)
+
+From this list he can
+
+#### 5.1 Delete project
+#### 5.2 Update project from git repo (restart upstream tests)
+
+
+### 6. User can see upstream info
+
+![User can see upstream info](usecases/User-Upstream-Cases.png)
+
