@@ -125,20 +125,20 @@ class UFOFontSource(FontSourceAbstract):
         return True
 
     def convert_ufo2ttf(self, builddir):
-        from scripts import ufo2ttf
-        _ = '$ ufo2ttf.py %s %s'
+        from scripts.font2ttf import convert
+        _ = '$ font2ttf.py %s %s %s'
         self.stdout_pipe.write(_ % (self.source_path,
-                                    self.postscript_fontname + '.ttf'))
+                                    self.postscript_fontname + '.ttf',
+                                    self.postscript_fontname + '.otf'))
 
         ufopath = op.join(builddir, 'sources', self.get_file_name())
         ttfpath = op.join(builddir, self.postscript_fontname + '.ttf')
         otfpath = op.join(builddir, self.postscript_fontname + '.otf')
 
         try:
-            ufo2ttf.convert(ufopath, ttfpath, otfpath)
-            self.stdout_pipe.write('  # OK\n')
+            convert(ufopath, ttfpath, otfpath, log=self.stdout_pipe)
         except Exception, ex:
-            self.stdout_pipe.write('  # FAILED\n# Error: %s\n' % ex.message)
+            self.stdout_pipe.write('# Error: %s\n' % ex.message)
 
     def optimize_ttx(self, builddir):
         filename = self.postscript_fontname
@@ -245,19 +245,16 @@ class TTXFontSource(FontSourceAbstract):
             log=self.stdout_pipe)
 
     def convert_otf2ttf(self, builddir):
-        _ = '$ autoconvert.py {0}.otf {0}.ttf'
+        _ = '$ font2ttf.py {0}.otf {0}.ttf\n'
         self.stdout_pipe.write(_.format(self.postscript_fontname))
-
+        from scripts.font2ttf import convert
         try:
             path = op.join(builddir, 'sources',
                            self.postscript_fontname + '.otf')
-            font = fontforge.open(path)
-
-            path = op.join(builddir, self.postscript_fontname + '.ttf')
-            font.generate(path)
-            self.stdout_pipe.write('  # OK\n')
+            ttfpath = op.join(builddir, self.postscript_fontname + '.ttf')
+            convert(path, ttfpath, log=self.stdout_pipe)
         except Exception, ex:
-            self.stdout_pipe.write('  # FAILED\nError: %s\n' % ex.message)
+            self.stdout_pipe.write('Error: %s\n' % ex.message)
 
     def after_copy(self, builddir):
         out_name = self.postscript_fontname + '.ttf'
@@ -312,20 +309,20 @@ class SFDFontSource(FontSourceAbstract):
         return self.source.sfnt_names[2][2]
 
     def after_copy(self, builddir):
-        from scripts import ufo2ttf
-        _ = '$ ufo2ttf.py %s %s'
+        from scripts.font2ttf import convert
+        _ = '$ font2ttf.py %s %s %s'
         self.stdout_pipe.write(_ % (self.source_path,
-                                    self.postscript_fontname + '.ttf'))
+                                    self.postscript_fontname + '.ttf',
+                                    self.postscript_fontname + '.otf'))
 
         ufopath = op.join(builddir, 'sources', self.get_file_name())
         ttfpath = op.join(builddir, self.postscript_fontname + '.ttf')
         otfpath = op.join(builddir, self.postscript_fontname + '.otf')
 
         try:
-            ufo2ttf.convert(ufopath, ttfpath, otfpath)
-            self.stdout_pipe.write('  # OK\n')
+            convert(ufopath, ttfpath, otfpath, log=self.stdout_pipe)
         except Exception, ex:
-            self.stdout_pipe.write('  # FAILED\nError: %s\n' % ex.message)
+            self.stdout_pipe.write('FAILED\nError: %s\n' % ex.message)
 
 
 def get_fontsource(path, log):

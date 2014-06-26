@@ -39,7 +39,7 @@
       <td style="text-align: center">
         {% if not b.is_done %}<i class="fa fa-spinner fa-spin text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build is not ready yet') }}"></i>
         {% elif b.modified %}<i class="fa fa-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build was manually modified') }}"></i>
-        {% elif b.succeeded %}<i class="fa fa-spinner text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('Success') }}"></i>
+        {% elif b.succeeded %}<i class="fa fa-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('Success') }}"></i>
         {% else %}<i class="fa fa-circle text-danger" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('Failed') }}"></i>
         {% endif %}
       </td>
