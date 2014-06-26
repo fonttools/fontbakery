@@ -224,7 +224,7 @@ class Bakery(object):
     def execute_pyftsubset(self, subsetname, name, glyphs="", args=""):
         from fontTools import subset
         argv = [op.join(self.builddir, name) + '.ttf'] + glyphs.split()
-        argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
+        # argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
         if args:
             argv += args
         subset.main(argv)

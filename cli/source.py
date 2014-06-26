@@ -21,7 +21,7 @@ import re
 import sys
 
 from fontTools import ttLib
-from cli.system import os, shutil, run
+from cli.system import shutil, run
 
 
 class FontSourceAbstract(object):
@@ -143,29 +143,27 @@ class UFOFontSource(FontSourceAbstract):
     def optimize_ttx(self, builddir):
         filename = self.postscript_fontname
         # convert the ttf to a ttx file - this may fail
-        cmd = "ttx -i -q '%s.ttf'" % filename
-        run(cmd, cwd=builddir, log=self.stdout_pipe)
+        font = fontforge.open(op.join(builddir, filename) + '.ttf')
+        glyphs = []
+        for g in font.glyphs():
+            if not g.codepoint:
+                continue
+            glyphs.append(g.codepoint)
 
-        # move the original ttf to the side
-        shutil.move(op.join(builddir, filename + '.ttf'),
-                    op.join(builddir, filename + '.ttf.orig'),
-                    log=self.stdout_pipe)
+        from fontTools import subset
+        args = [op.join(builddir, filename) + '.ttf'] + glyphs
+        # args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
+        subset.main(args)
 
-        # convert the ttx back to a ttf file - this may fail
-        cmd = "ttx -i -q '%s.ttx'" % filename
-        run(cmd, cwd=builddir, log=self.stdout_pipe)
+        self.stdout_pipe.write(' '.join(args))
 
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
         run(cmd, cwd=builddir, log=self.stdout_pipe)
 
-        # remove the original (duplicate) ttf
-        os.remove(op.join(builddir, filename + '.ttf.orig'),
-                  log=self.stdout_pipe)
-
         # move ttx files to src
-        shutil.move(op.join(builddir, filename + '.ttx'),
-                    op.join(builddir, 'sources'),
+        shutil.move(op.join(builddir, filename + '.ttf.subset'),
+                    op.join(builddir, filename + '.ttf'),
                     log=self.stdout_pipe)
 
     def after_copy(self, builddir):
