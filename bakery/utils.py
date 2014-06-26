@@ -98,6 +98,8 @@ class RedisFd(object):
             for pipeline in self.write_pipeline:
                 data = pipeline(data)
 
+        if not data.endswith('\n'):
+            data += '\n'
         self.filed.write("%s%s" % (prefix, data))
         self.filed.flush()
 
