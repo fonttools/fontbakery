@@ -1,6 +1,6 @@
 title: Documentation
 
-Project in development mode, for more information please go to [project page](https://github.com/xen/fontbakery/)
+Project in development mode, for more information please go to [project page](https://github.com/googlefonts/fontbakery/)
 
 ## About the Font Bakery Project
 
@@ -8,7 +8,7 @@ Font Bakery is a font build service. The vision is to bring the [Continuous Inte
 
 You give it a font project git repository, tell it which license the project is under, which font source files you wish to build into binaries, and set some build options. It then runs tests on the sources, and if they pass, builds the fonts and runs further tests on the binaries.
 
-For more information (and to report any issues, make feature requests, or even contribute code) please see the [project page on GitHub](https://github.com/xen/fontbakery/).
+For more information (and to report any issues, make feature requests, or even contribute code) please see the [project page on GitHub](https://github.com/googlefonts/fontbakery/).
 
 ### Adding Checks
 
