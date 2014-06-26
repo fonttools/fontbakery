@@ -265,9 +265,6 @@ class Bakery(object):
             return
         self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
 
-        if 'devanagari' in self.config.get('subset', []):
-            params += ' -f deva'
-
         os.chdir(self.builddir)
         for name in glob.glob("*.ttf"):
             name = op.join(self.builddir, name[:-4])  # cut .ttf

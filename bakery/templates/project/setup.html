@@ -108,7 +108,7 @@
     <div class="col-sm-8">
     <input type="text" placeholder="" name="ttfautohint"
       value="{{ config['state'].get('ttfautohint', '') }}"
-      class="form-control" >
+      class="form-control" id="ttfautohint">
     <p class="text-muted">{{ _("If you wish to bake the TTFs with ttfautohint, type the command line options here.<br/>Else, leave it blank") }}</p>
     </div>
   </div>
@@ -250,7 +250,30 @@
 
 {% block extrajs %}
 <script>
+
+function reset_ttfautohint_arg(option) {
+  var val = $('#ttfautohint').val();
+  $('#ttfautohint').val(val.replace(option, '').replace(/\s{2}/, ' '));
+}
+
+function set_ttfautohint_arg(option) {
+  var val = $('#ttfautohint').val();
+  if (val.indexOf(option) == -1)
+    $('#ttfautohint').val(val + ' ' + option);
+}
+
 $(document).ready(function() {
+  $('[name=subset]').on('change', function(){
+    if ($(this).val() == 'devanagari') {
+      var option = '-f deva';
+      if ($(this).is(':checked'))
+        set_ttfautohint_arg(option);
+      else {
+        reset_ttfautohint_arg(option);
+      }
+    }
+  });
+
   $('button[data-confirm]').click(function(ev) {
     var form = $(this).closest('form');
 
