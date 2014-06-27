@@ -10,7 +10,7 @@
 {% from 'project/macros.html' import subnav_build with context%}
 {{ subnav_build('metadatajson') }}
 
-{% if metadata_new %}
+{% if metadata_new and metadata %}
 <div class="col-md-6">
   <h4>{{ _("METADATA.json imported from upstream repo") }}</h4>
   <pre><code>{{ metadata }}</code></pre>
@@ -27,6 +27,11 @@
 </div>
 
 <div id="diff"></div>
+{% elif not metadata %}
+<div class="col-md-12">
+  <h4 class="text-danger">{{ _("METADATA.json does not yet exist") }}</h4>
+  {{ metadata }}
+</div>
 {% else %}
 <div class="col-md-12">
   <h4>{{ _("METADATA.json generated from files") }}</h4>
@@ -38,6 +43,7 @@
 
 
 {% block extrajs %}
+{% if metadata_new and metadata %}
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/bundle.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/external/diff_match_patch_uncompressed.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/formatters.min.js') }}"></script>
@@ -54,5 +60,5 @@ $(document).ready(function () {
   }
 });
 </script>
-</div>
+{% endif %}
 {% endblock %}
