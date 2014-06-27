@@ -51,8 +51,10 @@
 <script>
 $(document).ready(function () {
   var left = {{ metadata|safe or {} }};
-            var right = {{ metadata_new|safe or {} }};
-            var delta = jsondiffpatch.diff(left, right);
+  var right = {{ metadata_new|safe or {} }};
+
+  var diffpatcher = jsondiffpatch.create();
+  var delta = diffpatcher.diff(left, right);
 
   var visualdiff = document.getElementById('diff');
   if (visualdiff) {
