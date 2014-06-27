@@ -18,6 +18,7 @@
 #
 # Based on http://typophile.com/node/13081
 # Also see http://typophile.com/node/13081
+from __future__ import print_function
 import argparse
 import os
 import sys
@@ -102,12 +103,40 @@ class VmetFix:
                                       ymin, ymin, ymin, 0, 0)
             ttfont.save(fontpath + '.fix')
 
+    def get_unicode(self, glyph, cmap_table):
+        for u, g in cmap_table.cmap.items():
+            if g == glyph:
+                return g
+
+    def get_highest_and_lowest(self, ttfont, asc, desc):
+        high = []
+        low = []
+        for glyph, params in ttfont['glyf'].glyphs.items():
+            if hasattr(params, 'yMax') and params.yMax == asc:
+                # high.append(self.get_unicode(glyph, ttfont['cmap'].tables[0]))
+                high.append(glyph)
+            if hasattr(params, 'yMin') and params.yMin == desc:
+                # low.append(self.get_unicode(glyph, ttfont['cmap'].tables[0]))
+                low.append(glyph)
+        return high, low
+
     def show_metrics(self):
         fonts = []
         for fontpath in self.fonts:
             ttfont = ttLib.TTFont(fontpath)
             metrics = get_metrics(ttfont)
             metrics.update({'name': os.path.basename(fontpath)})
+
+            ascent = max(metrics['hhea_ascent'],
+                         metrics['OS2_sTypeAscender'],
+                         metrics['OS2_usWinAscent'])
+
+            descent = min(metrics['hhea_descent'],
+                          metrics['OS2_sTypeDescender'],
+                          metrics['OS2_usWinDescent'])
+            high, low = self.get_highest_and_lowest(ttfont, ascent, descent)
+            metrics.update({'highest_glyphs': high, 'lowest_glyphs': low})
+
             fonts.append(metrics)
 
         def row(key, title=None):
@@ -128,6 +157,16 @@ class VmetFix:
         print(formatstring.format(*row('OS2_usWinDescent', 'Win desc')))
         print(formatstring.format(*row('lineGap', 'hhea lng')))
         print(formatstring.format(*row('OS2_lineGap', 'OS/2 lng')))
+
+        print()
+        print('High Glyphs')
+        for font in fonts:
+            print(font['name'] + ':', ' '.join(font['highest_glyphs']))
+
+        print()
+        print('Low Glyphs')
+        for font in fonts:
+            print(font['name'] + ':', ' '.join(font['lowest_glyphs']))
 
 
 if __name__ == '__main__':
