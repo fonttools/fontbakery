@@ -90,6 +90,9 @@
       {% set path = [] %}
       {% for key, value in tree.items() recursive %}
         <li {{ highlight(key) }} class="{%- if key == 'glyphs' and value -%}mother_of_glyphs{%- elif key.lower().endswith('.ufo') -%}mothership{%- endif -%}">
+          {%- if value and not key.lower().endswith('.ufo') %}
+          <i class="fa fa-folder-open"></i>
+          {% endif %}
         {%- if revision %}
           <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
         {%- else %}
@@ -103,9 +106,8 @@
             {%- elif key.lower().endswith('.ttf') %}<i class="fa fa-file"></i>
             {%- elif key.lower().split('.')[-1] in ['txt', 'md', 'mdown', 'markdown'] %}<i class="fa fa-book"></i>
             {%- elif key.lower().split('.')[-1] in ['plist'] %}<i class="fa fa-list"></i>
-            {%- elif key in ['glyphs', 'ttf', 'otf', 'src', 'sources'] %}<i class="fa fa-folder"></i>
             {%- elif key == 'bakery.yaml' %}<i class="fa fa-rocket text-danger"></i>
-            {%- else %}<i class="fa fa-file-o text-muted"></i>
+            {%- elif not value %}<i class="fa fa-file-o text-muted"></i>
             {%- endif %}
              {{ key }}
           {%- endif %}

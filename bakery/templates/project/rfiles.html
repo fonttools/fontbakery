@@ -110,42 +110,54 @@
 
 {% block extrajs %}
 <script>
-$(document).ready(function() {
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/solarized_light");
-editor.getSession().setMode("ace/mode/yaml");
-editor.getSession().setUseSoftTabs(true);
-editor.setHighlightActiveLine(false);
+$(function() {
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/solarized_light");
+    editor.getSession().setMode("ace/mode/yaml");
+    editor.getSession().setUseSoftTabs(true);
+    editor.setHighlightActiveLine(false);
 
-// var textarea = $('textarea[name="yaml"]');
-var textarea = $('textarea[name="yaml"]').hide();
-editor.getSession().setUseWrapMode(true);
-editor.getSession().setValue(textarea.val());
-editor.setReadOnly(true);
+    // var textarea = $('textarea[name="yaml"]');
+    var textarea = $('textarea[name="yaml"]').hide();
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setValue(textarea.val());
+    editor.setReadOnly(true);
 
-// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
-var heightUpdateFunction = function() {
-    var newHeight =
-              editor.getSession().getScreenLength()
-              * editor.renderer.lineHeight
-              + editor.renderer.scrollBar.getWidth();
-    $('#editor').height(newHeight.toString() + "px");
-    $('#editor-section').height(newHeight.toString() + "px");
-    // This call is required for the editor to fix all of its inner structure for adapting to a change in size
-    editor.resize();
-};
-// Set initial size to match initial content
-heightUpdateFunction();
-// Whenever a change happens inside the ACE editor, update the size again
-editor.getSession().on('change', heightUpdateFunction);
-// End
+    // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+    var heightUpdateFunction = function() {
+        var newHeight =
+                  editor.getSession().getScreenLength()
+                  * editor.renderer.lineHeight
+                  + editor.renderer.scrollBar.getWidth();
+        $('#editor').height(newHeight.toString() + "px");
+        $('#editor-section').height(newHeight.toString() + "px");
+        // This call is required for the editor to fix all of its inner structure for adapting to a change in size
+        editor.resize();
+    };
+    // Set initial size to match initial content
+    heightUpdateFunction();
+    // Whenever a change happens inside the ACE editor, update the size again
+    editor.getSession().on('change', heightUpdateFunction);
+    // End
 
-// call the tablesorter plugin
-$(".tablesorter").tablesorter({
-    // sort on the 2nd column and order desc
-    sortList: [[1,1]]
-});
+    // call the tablesorter plugin
+    $(".tablesorter").tablesorter({
+        // sort on the 2nd column and order desc
+        sortList: [[1,1]]
+    });
 
+    $('.tree li:has(ul)').addClass('parent_li');
+    $('.tree li.parent_li > i').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide();
+            $(this).removeClass('fa-folder-open').addClass('fa-folder');
+        } else {
+            children.show();
+            $(this).removeClass('fa-folder').addClass('fa-folder-open');
+        }
+        e.stopPropagation();
+    });
 });
 </script>
 {% endblock %}
