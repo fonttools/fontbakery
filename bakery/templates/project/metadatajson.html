@@ -30,12 +30,12 @@
 {% elif not metadata %}
 <div class="col-md-12">
   <h4 class="text-danger">{{ _("METADATA.json does not yet exist") }}</h4>
-  {{ metadata }}
+  <pre><code>{{ metadata }}</code></pre>
 </div>
 {% else %}
 <div class="col-md-12">
   <h4>{{ _("METADATA.json generated from files") }}</h4>
-  {{ metadata }}
+  <pre><code>{{ metadata }}</code></pre>
 </div>
 {% endif %}
 
