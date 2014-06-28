@@ -71,36 +71,45 @@ class VmetFix:
     def __init__(self, fonts):
         self.fonts = fonts
 
-    def set_metrics_for_font(self, ttfont, ah, at, aw, dh, dt, dw, lh, lt):
-        if ah is not None:
-            ttfont['hhea'].ascent = ah
-        if at is not None:
-            ttfont['OS/2'].sTypoAscender = at
-        if aw is not None:
-            ttfont['OS/2'].usWinAscent = aw
-        if dh is not None:
-            ttfont['hhea'].descent = dh
-        if dt is not None:
-            ttfont['OS/2'].sTypoDescender = dt
-        if dw is not None:
-            ttfont['OS/2'].usWinDescent = abs(dw)
-        if lh is not None:
-            ttfont['hhea'].lineGap = lh
-        if lt is not None:
-            ttfont['OS/2'].sTypoLineGap = lt
+    def set_metrics_for_font(self, ttfont, a, ah, at, aw, d, dh, dt, dw, l, lh, lt):
+        if ah is not None or a is not None:
+            ttfont['hhea'].ascent = ah or a
+        if at is not None or a is not None:
+            ttfont['OS/2'].sTypoAscender = at or a
+        if aw is not None or a is not None:
+            ttfont['OS/2'].usWinAscent = aw or a
+        if dh is not None or d is not None:
+            ttfont['hhea'].descent = dh or d
+        if dt is not None or d is not None:
+            ttfont['OS/2'].sTypoDescender = dt or d
+        if dw is not None or d is not None:
+            ttfont['OS/2'].usWinDescent = abs(dw or d)
+        if lh is not None or l is not None:
+            ttfont['hhea'].lineGap = lh or l
+        if lt is not None or l is not None:
+            ttfont['OS/2'].sTypoLineGap = lt or l
 
-    def set_metrics(self, ah, at, aw, dh, dt, dw, lh, lt):
+    def set_metrics(self, a, ah, at, aw, d, dh, dt, dw, l, lh, lt):
         for fontpath in self.fonts:
             ttfont = ttLib.TTFont(fontpath)
-            self.set_metrics_for_font(ttfont, ah, at, aw, dh, dt, dw, lh, lt)
+            self.set_metrics_for_font(ttfont, a, ah, at, aw, d, dh, dt, dw, l, lh, lt)
             ttfont.save(fontpath + '.fix')
 
     def fix_metrics(self):
+        ymax = 0
+        ymin = 0
+        ttfonts = []
+
         for fontpath in self.fonts:
             ttfont = ttLib.TTFont(fontpath)
-            ymin, ymax = get_bounds(ttfont)
-            self.set_metrics_for_font(ttfont, ymax, ymax, ymax,
-                                      ymin, ymin, ymin, 0, 0)
+            font_ymin, font_ymax = get_bounds(ttfont)
+            ymin = min(font_ymin, ymin)
+            ymax = max(font_ymax, ymax)
+            ttfonts.append(ttfont)
+
+        for ttfont in ttfonts:
+            self.set_metrics_for_font(ttfont, ymax, ymax, ymax, ymax,
+                                      ymin, ymin, ymin, ymin, 0, 0, 0)
             ttfont.save(fontpath + '.fix')
 
     def get_unicode(self, glyph, cmap_table):
@@ -172,28 +181,45 @@ class VmetFix:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # ascent parameters
+    parser.add_argument('-a', '--ascents', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table"))
+
     parser.add_argument('-ah', '--ascents-hhea', type=int,
                         help=("Set new ascents value in 'Horizontal Header'"
-                              " table ('hhea')"))
+                              " table ('hhea'). This argument"
+                              " cancels --ascents."))
     parser.add_argument('-at', '--ascents-typo', type=int,
                         help=("Set new ascents value in 'Horizontal Header'"
-                              " table ('OS/2')"))
+                              " table ('OS/2'). This argument"
+                              " cancels --ascents."))
     parser.add_argument('-aw', '--ascents-win', type=int,
                         help=("Set new ascents value in 'Horizontal Header'"
-                              " table ('OS/2.Win')"))
+                              " table ('OS/2.Win'). This argument"
+                              " cancels --ascents."))
 
     # descent parameters
+    parser.add_argument('-d', '--descents', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table"))
     parser.add_argument('-dh', '--descents-hhea', type=int,
                         help=("Set new descents value in 'Horizontal Header'"
-                              " table ('hhea')"))
+                              " table ('hhea'). This argument"
+                              " cancels --descents."))
     parser.add_argument('-dt', '--descents-typo', type=int,
                         help=("Set new descents value in 'Horizontal Header'"
-                              " table ('OS/2')"))
+                              " table ('OS/2'). This argument"
+                              " cancels --descents."))
     parser.add_argument('-dw', '--descents-win', type=int,
                         help=("Set new descents value in 'Horizontal Header'"
-                              " table ('OS/2.Win')"))
+                              " table ('OS/2.Win'). This argument"
+                              " cancels --descents."))
 
-    parser.add_argument('-lh', '--linegaps', type=int,
+    # linegaps parameters
+    parser.add_argument('-l', '--linegaps', type=int,
+                        help=("Set new linegaps value in 'Horizontal Header'"
+                              " table"))
+    parser.add_argument('-lh', '--linegaps-hhea', type=int,
                         help=("Set new linegaps value in 'Horizontal Header'"
                               " table ('hhea')"))
     parser.add_argument('-lt', '--linegaps-typo', type=int,
@@ -210,16 +236,25 @@ if __name__ == '__main__':
 
     argv = ['ascents_hhea', 'ascents_typo', 'ascents_win',
             'descents_hhea', 'descents_typo', 'descents_win',
-            'linegaps', 'linegaps_typo']
+            'linegaps_hhea', 'linegaps_typo', 'ascents', 'descents',
+            'linegaps']
 
     if (args.ascents_hhea or args.ascents_typo or
             args.ascents_win or args.descents_hhea or
             args.descents_typo or args.descents_win or
-            args.linegaps or args.linegaps_typo):
-        vmetfixer.set_metrics(args.ascents_hhea, args.ascents_typo,
-                              args.ascents_win, args.descents_hhea,
-                              args.descents_typo, args.descents_win,
-                              args.linegaps, args.linegaps_typo)
+            args.linegaps_hhea or args.linegaps_typo or
+            args.ascents or args.descents or args.linegaps):
+        vmetfixer.set_metrics(args.ascents,
+                              args.ascents_hhea,
+                              args.ascents_typo,
+                              args.ascents_win,
+                              args.descents,
+                              args.descents_hhea,
+                              args.descents_typo,
+                              args.descents_win,
+                              args.linegaps,
+                              args.linegaps_hhea,
+                              args.linegaps_typo)
     elif args.autofix:
         vmetfixer.fix_metrics()
     else:
