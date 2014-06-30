@@ -37,6 +37,14 @@ def copy_single_file(src, dest, log):
         shutil.copy(src, dest, log=log)
 
 
+def bin2unistring(string):
+    if b'\000' in string:
+        string = string.decode('utf-16-be')
+        return string.encode('utf-8')
+    else:
+        return string
+
+
 class Bakery(object):
     """ Class to handle all parts of bakery process.
 
@@ -238,19 +246,36 @@ class Bakery(object):
                     log=self.stdout_pipe)
 
     def subset_process(self):
+        from fontTools import ttLib
         self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### ')
 
-        for subset in self.config.get('subset', []):
-            glyphs = open(SubsetExtension.get_subset_path(subset)).read()
+        os.chdir(op.join(self.builddir, 'sources'))
+        for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
+            name = name[:-4]  # cut .ufo|.ttx
 
-            os.chdir(op.join(self.builddir, 'sources'))
-            for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
-                name = name[:-4]  # cut .ufo|.ttx
+            # create menu subset with glyph for text of family name
+            ttfont = ttLib.TTFont(op.join(self.builddir, name + '.ttf'))
+            L = map(lambda X: (X.nameID, X.string), ttfont['name'].names)
+            D = dict(L)
+
+            string = bin2unistring(D.get(16) or D.get(1))
+            menu_glyphs = ['U+%04x' % ord(c) for c in string]
+
+            for subset in self.config.get('subset', []):
+                glyphs = SubsetExtension.get_glyphs(subset)
+
                 self.execute_pyftsubset(subset, name, glyphs=glyphs)
 
-                # create menu subset
-                args = ['--text="%s"' % op.basename(name)]
-                self.execute_pyftsubset('menu', name, args=args)
+                # If any subset other than latin or latin-ext has been
+                #   generated when the subsetting is done, this string should
+                #   additionally include some characters corresponding to each
+                #   of those subsets.
+                G = SubsetExtension.get_glyphs(subset + '-menu')
+                if G:
+                    menu_glyphs += G.split()
+
+            self.execute_pyftsubset('menu', name,
+                                    glyphs='\n'.join(menu_glyphs))
 
     def ttfautohint_process(self):
         """

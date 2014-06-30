@@ -48,9 +48,13 @@ class TextMetricsView(object):
         self.glyphs = collections.OrderedDict()
 
     def add_to_table(self, key, value):
-        if self._its_metrics[key] and value not in self._its_metrics[key]:
-            self._in_consistent = False
         self._its_metrics[key].append(value)
+
+    @property
+    def in_consistent(self):
+        """ Check that groups of ascent, descent and linegaps are in
+        consistent """
+        pass
 
     def add_metric(self, font_name, vmet):
         ymin, ymax = vmet.get_bounding()
@@ -148,7 +152,6 @@ class FontVerticalMetrics(object):
 
         def fget(self):
             return self.ttfont['hhea'].ascent
-        fget.name = '111'
 
         @is_none_protected
         def fset(self, value):
@@ -272,12 +275,6 @@ class FontVerticalMetrics(object):
 
     def save(self, fontpath):
         self.ttfont.save(fontpath)
-
-
-class Metrics(object):
-
-    def __init__(self):
-        pass
 
 
 if __name__ == '__main__':
