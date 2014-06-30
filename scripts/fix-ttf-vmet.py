@@ -44,17 +44,13 @@ class TextMetricsView(object):
             ('hhea.lineGap', []),
             ('OS/2.sTypoLineGap', [])
         ])
-        self._in_consistent = True
+        self._inconsistent = set()
         self.glyphs = collections.OrderedDict()
 
     def add_to_table(self, key, value):
+        if self._its_metrics[key] and value not in self._its_metrics:
+            self._inconsistent.add(key)
         self._its_metrics[key].append(value)
-
-    @property
-    def in_consistent(self):
-        """ Check that groups of ascent, descent and linegaps are in
-        consistent """
-        pass
 
     def add_metric(self, font_name, vmet):
         ymin, ymax = vmet.get_bounding()
@@ -73,8 +69,10 @@ class TextMetricsView(object):
         self.glyphs[font_name] = vmet.get_highest_and_lowest()
 
     def print_metrics(self):
-        if not self._in_consistent:
-            print('Values are not in consistent', end='\n\n')
+        if self._inconsistent:
+            _ = 'WARNING: Inconsistent {}'
+            print(_.format(' '.join([str(x) for x in self._inconsistent])),
+                  end='\n\n')
         formatstring = ''
         for k in self._its_metrics_header:
             print(('{:<%s}' % (len(k) + 4)).format(k), end='')
