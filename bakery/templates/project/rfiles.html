@@ -32,7 +32,7 @@
 
 <h4>{{ _("TTF Table Sizes") }}</h4>
 {% for ttftablesize in ttftablesizes %}
-    <table class="table-striped table-bordered table-condensed" style="float:left">
+    <table class="table-striped table-bordered table-condensed">
     <tr>
         <th colspan="2">{{ ttftablesize.name }}</th>
     </tr>
@@ -44,6 +44,33 @@
     {% endfor %}
     </table>
 {% endfor %}
+
+{% if build.state.get('autohinting_sizes', []) %}
+<h4>{{ _("ttfautohint filesize impact statistic") }}</h4>
+<table class="table-striped table-bordered table-condensed">
+{% for t in build.state.get('autohinting_sizes', []) %}
+    <tr>
+        <th colspan="2">{{ t['fontname'] }}</th>
+    </tr>
+    <tr>
+        <td>Before</td>
+        <td>{{ t['origin'] }}</td>
+    </tr>
+    <tr>
+        <td>After</td>
+        <td>{{ t['processed'] }}</td>
+    </tr>
+    <tr>
+        <td>Increase</td>
+        <td>{{ t['processed'] - t['origin'] }}</td>
+    </tr>
+    <tr>
+        <td>Change</td>
+        <td>{{ '{:.3f}x'.format(t['processed'] / t['origin']) }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
 
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="fa"></i> {{ fontaine._full_name }}</h4>

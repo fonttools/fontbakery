@@ -533,7 +533,6 @@ class ProjectBuild(db.Model):
         return walkWithoutGit(self.path)
 
     def result_tests(self):
-
         param = {'login': self.project.login, 'id': self.project.id,
                  'revision': self.revision, 'build': self.id}
         builddir = os.path.join(app.config['DATA_ROOT'],
@@ -545,5 +544,17 @@ class ProjectBuild(db.Model):
             b = Bakery(config, builddir=builddir)
             return b.result_tests_process()
         return yaml.safe_load(open(os.path.join(builddir, '.tests.yaml')))
+
+    @lazy_property
+    def state(self):
+        param = {'login': self.project.login, 'id': self.project.id,
+                 'revision': self.revision, 'build': self.id}
+        builddir = os.path.join(app.config['DATA_ROOT'],
+                                '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        try:
+            y = yaml.safe_load(open(os.path.join(builddir, 'build.state.yaml')))
+            return y or {}
+        except:
+            return {}
 
 db.create_all()

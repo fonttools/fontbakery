@@ -80,6 +80,14 @@ class Bakery(object):
                                     ' Using defaults'))
         self.config = yaml.safe_load(configfile)
 
+        self.state = {}
+        self.state['autohinting_sizes'] = []
+
+    def save_build_state(self):
+        l = open(op.join(self.builddir, 'build.state.yaml'), 'w')
+        l.write(yaml.safe_dump(self.state))
+        l.close()
+
     def interactive():
         doc = "If True then user will be asked to apply autofix"
 
@@ -156,6 +164,8 @@ class Bakery(object):
 
         # 12. Run auto fixes
         self.autofix_process()
+
+        self.save_build_state()
 
     def autofix_process(self):
         self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
@@ -302,6 +312,11 @@ class Bakery(object):
                 self.stdout_pipe.write('TTFAutoHint is not available\n',
                                        prefix="### Error:")
                 break
+            self.state['autohinting_sizes'].append({
+                'fontname': op.basename(name) + '.ttf',
+                'origin': op.getsize(name + '.ttf'),
+                'processed': op.getsize(name + '.autohint.ttf')
+            })
             shutil.move(name + '.autohint.ttf', name + '.ttf',
                         log=self.stdout_pipe)
 
