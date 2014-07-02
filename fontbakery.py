@@ -69,6 +69,8 @@ def main(sources, config):
 
 
 if __name__ == '__main__':
+    sys.path.append(0, os.path.abspath(os.path.dirname(__file__)))
+
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', nargs="+",
                         help=("Path to UFO, SFD, TTX, TTF or OTF files"))
