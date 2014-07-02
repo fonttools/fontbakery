@@ -28,7 +28,7 @@ __all__ = ['os', 'shutil', 'run', 'prun']
 def shell_cmd_repr(command, args):
     available_commands = {
         'move': 'mv %s',
-        'copy': 'cp %s',
+        'copy': 'cp -a %s',
         'copytree': 'cp -a %s',
         'makedirs': 'mkdir -p %s'
     }
