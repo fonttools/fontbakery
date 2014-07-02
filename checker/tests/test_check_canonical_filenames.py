@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
-
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
 
@@ -43,14 +41,15 @@ class CheckCanonicalFilenames(TestCase):
     tool = 'Lint'
     targets = ['metadata']
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def test_check_canonical_filenames(self):
         """ Test If filename is canonical """
-        family_metadata = Metadata.get_family_metadata(open(self.path).read())
+        contents = self.read_metadata_contents()
+        family_metadata = Metadata.get_family_metadata(contents)
         for font_metadata in family_metadata.fonts:
             canonical_filename = self.create_canonical_filename(font_metadata)
-            # try to open file
-            open(os.path.join(os.path.dirname(self.path),
-                              font_metadata.filename))
             self.assertEqual(canonical_filename, font_metadata.filename)
 
     def create_canonical_filename(self, font_metadata):
