@@ -194,7 +194,8 @@ class TextMetricsView(object):
             ('OS/2.sTypoDescender', []),
             ('OS/2.usWinDescent', []),
             ('hhea.lineGap', []),
-            ('OS/2.sTypoLineGap', [])
+            ('OS/2.sTypoLineGap', []),
+            ('UPM:Heights', [])
         ])
         self._inconsistent = set()
         self.glyphs = collections.OrderedDict()
@@ -218,6 +219,9 @@ class TextMetricsView(object):
         self.add_to_table('OS/2.sTypoLineGap', vmet.linegaps.os2typo)
         self._its_metrics['ymax'].append(ymax)
         self._its_metrics['ymin'].append(ymin)
+
+        upm = 'UPM:%s' % vmet.get_upm_heights()
+        self._its_metrics['UPM:Heights'].append(upm)
 
         self.glyphs[font_name] = vmet.get_highest_and_lowest()
 
@@ -253,6 +257,9 @@ class FontVerticalMetrics(object):
         self.ascents = AscentGroup(self.ttfont)
         self.descents = DescentGroup(self.ttfont)
         self.linegaps = LineGapGroup(self.ttfont)
+
+    def get_upm_heights(self):
+        return self.ascents.os2typo + abs(self.descents.os2typo)
 
     def get_highest_and_lowest(self):
         high = []
