@@ -30,6 +30,6 @@ class MetadataTestCase(unittest.TestCase):
         self.assertEqual(fm.post_script_name, "")
         self.assertEqual(fm.full_name, "")
         self.assertEqual(fm.style, "normal")
-        self.assertEqual(fm.weight, 0)
+        self.assertEqual(fm.weight, 400)
         self.assertEqual(fm.filename, "")
         self.assertEqual(fm.copyright, "")

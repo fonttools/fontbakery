@@ -14,14 +14,20 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from checker.base import BakeryTestCase as TestCase
+from checker.metadata import Metadata
 
-from .result_test import *
-from .ttx_test import *
-from .upstream_test import *
-from .metadata_test import *
-from .test_description_404 import *
-from .test_check_canonical_filenames import *
-from .test_check_canonical_styles import *
-from .test_check_canonical_weights import *
-from .test_check_familyname_matches_fontnames import *
-from .test_check_menu_subset_contains_proper_glyphs import *
+
+class CheckFamilyNameMatchesFontNames(TestCase):
+
+    name = __name__
+    path = '.'
+    targets = ['metadata']
+    tool = 'lint'
+
+    def test_check_familyname_matches_fontnames(self):
+        fm = Metadata.get_family_metadata(open(self.path).read())
+        for font_metadata in fm.fonts:
+            _ = '%s: Family name "%s" does not match font name: "%s"'
+            _ = _ % (font_metadata.filename, fm.name, font_metadata.name)
+            self.assertEqual(font_metadata.name, fm.name, _)

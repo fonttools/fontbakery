@@ -68,7 +68,7 @@ class FontMetadata(object):
 
     @property
     def weight(self):
-        return self.metadata_object.get('weight', 0)
+        return self.metadata_object.get('weight', 400)
 
     @property
     def filename(self):
