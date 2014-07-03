@@ -6,6 +6,8 @@ import StringIO
 
 from checker.tests import test_check_canonical_filenames as tf_f
 from checker.tests import test_check_canonical_styles as tf_s
+from checker.tests import test_check_canonical_weights as tf_w
+from checker.ttfont import Font as OriginFont
 
 
 def _get_tests(TestCase):
@@ -72,29 +74,97 @@ class Test_CheckCanonicalStyles(unittest.TestCase):
             italicAngle = 0
             names = []
 
-        with mock.patch.object(tf_s.Font, 'get_ttfont') as mock_method:
-            mock_method.return_value = Font()
-            mock_method.return_value.macStyle = tf_s.ITALIC_MASK
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            mocked_get_ttfont.return_value.macStyle = tf_s.ITALIC_MASK
             result = _run_font_test(tf_s.CheckCanonicalStyles)
 
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertTrue(bool(result.failures))
 
-        with mock.patch.object(tf_s.Font, 'get_ttfont') as mock_method:
-            mock_method.return_value = Font()
-            mock_method.return_value.macStyle = 0
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            mocked_get_ttfont.return_value.macStyle = 0
             result = _run_font_test(tf_s.CheckCanonicalStyles)
 
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertFalse(bool(result.failures))
 
-        with mock.patch.object(tf_s.Font, 'get_ttfont') as mock_method:
-            mock_method.return_value = Font()
-            mock_method.return_value.italicAngle = 10
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            mocked_get_ttfont.return_value.italicAngle = 10
             result = _run_font_test(tf_s.CheckCanonicalStyles)
 
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertTrue(bool(result.failures))
+
+        class name:
+            string = ''
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            n = name()
+            n.string = 'italic'
+            mocked_get_ttfont.return_value.names.append(n)
+            result = _run_font_test(tf_s.CheckCanonicalStyles)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
+
+
+class Test_CheckCanonicalWeights(unittest.TestCase):
+
+    @mock.patch.object(tf_w.CheckCanonicalWeights, 'read_metadata_contents')
+    def test_three(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{
+                'weight': 50
+            }]
+        })
+
+        class Font(object):
+            OS2_usWeightClass = 400
+
+        # test if font weight less than 100 is invalid value
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_w.CheckCanonicalWeights)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
+
+        # test if font weight larger than 900 is invalid value
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{
+                'weight': 901
+            }]
+        })
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_w.CheckCanonicalWeights)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
+
+        # test if range 100..900 is valid values and checked for fonts
+        for n in range(1, 10):
+            with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+                mocked_get_ttfont.return_value = Font()
+                metadata_contents.return_value = simplejson.dumps({
+                    'fonts': [{
+                        'weight': n * 100
+                    }]
+                })
+                mocked_get_ttfont.return_value.OS2_usWeightClass = n * 100
+                result = _run_font_test(tf_w.CheckCanonicalWeights)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+            self.assertFalse(bool(result.failures))

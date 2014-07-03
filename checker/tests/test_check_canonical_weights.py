@@ -18,7 +18,7 @@ import os.path as op
 
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
-from fontTools.ttLib import TTFont
+from checker.ttfont import Font
 
 
 class CheckCanonicalWeights(TestCase):
@@ -28,8 +28,12 @@ class CheckCanonicalWeights(TestCase):
     name = __name__
     tool = 'lint'
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def test_check_canonical_weights(self):
-        fm = Metadata.get_family_metadata(open(self.path).read())
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
             weight = font_metadata.weight
             first_digit = weight / 100
@@ -41,11 +45,11 @@ class CheckCanonicalWeights(TestCase):
             self.assertFalse(is_invalid, _ % (op.basename(self.path),
                                               font_metadata.weight))
 
-            tf = TTFont(op.join(op.dirname(self.path), font_metadata.filename))
+            tf = Font.get_ttfont(font_metadata)
             _ = ("%s: METADATA.json overwrites the weight. "
                  " The METADATA.json weight is %d and the font"
                  " file %s weight is %d")
             _ = _ % (font_metadata.filename, font_metadata.weight,
-                     font_metadata.filename, tf['OS/2'].usWeightClass)
+                     font_metadata.filename, tf.OS2_usWeightClass)
 
-            self.assertEqual(tf['OS/2'].usWeightClass, font_metadata.weight)
+            self.assertEqual(tf.OS2_usWeightClass, font_metadata.weight)
