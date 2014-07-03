@@ -21,6 +21,32 @@ from checker.metadata import Metadata
 from fontTools import ttLib
 
 
+ITALIC_MASK = 0b10
+
+
+class Font(object):
+
+    @staticmethod
+    def get_ttfont(path, font_metadata):
+        path = op.join(op.dirname(path), font_metadata.filename)
+        return Font(path)
+
+    def __init__(self, fontpath):
+        self.ttfont = ttLib.TTFont(fontpath)
+
+    @property
+    def macStyle(self):
+        return self.ttfont['head'].macStyle
+
+    @property
+    def italicAngle(self):
+        return self.ttfont['post'].italicAngle
+
+    @property
+    def names(self):
+        return self.ttfont['name'].names
+
+
 class CheckCanonicalStyles(TestCase):
 
     path = '.'
@@ -30,30 +56,32 @@ class CheckCanonicalStyles(TestCase):
 
     CANONICAL_STYLE_VALUES = ['italic', 'normal']
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def test_check_canonical_styles(self):
         """ Test If font styles are canonical """
-        fm = Metadata.get_family_metadata(open(self.path).read())
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
             self.assertIn(font_metadata.style, self.CANONICAL_STYLE_VALUES)
-            self.check_style_matches_in_fontfile(font_metadata)
+            if self.is_italic(font_metadata):
+                if font_metadata.style != 'italic':
+                    _ = "%s: The font style is %s but it should be italic"
+                    self.fail(_ % (font_metadata.filename, font_metadata.style))
+            else:
+                if font_metadata.style != 'normal':
+                    _ = "%s: The font style is %s but it should be normal"
+                    self.fail(_ % (font_metadata.filename, font_metadata.style))
 
-    def check_style_matches_in_fontfile(self, font_metadata):
-        fontpath = op.join(op.dirname(self.path), font_metadata.filename)
-        ttfont = ttLib.TTFont(fontpath)
-        is_italic = (ttfont['head'].macStyle & 0b10
-                     or ttfont['post'].italicAngle
-                     or self.find_italic_in_name_table(ttfont))
-        if is_italic:
-            if font_metadata.style != 'italic':
-                _ = "%s: The font style is %s but it should be italic"
-                self.fail(_ % (font_metadata.filename, font_metadata.style))
-        else:
-            if font_metadata.style != 'normal':
-                _ = "%s: The font style is %s but it should be normal"
-                self.fail(_ % (font_metadata.filename, font_metadata.style))
+    def is_italic(self, font_metadata):
+        ttfont = Font.get_ttfont(font_metadata)
+        return (ttfont.macStyle & ITALIC_MASK
+                or ttfont.italicAngle
+                or self.find_italic_in_name_table(ttfont))
 
     def find_italic_in_name_table(self, ttfont):
-        for entry in ttfont['name'].names:
+        for entry in ttfont.names:
             if 'italic' in self.bin2unistring(entry).lower():
                 return True
 
