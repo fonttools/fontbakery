@@ -14,11 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os.path as op
-
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
-from fontTools.ttLib import TTFont
+from checker.ttfont import Font
 
 
 class CheckMenuSubsetContainsProperGlyphs(TestCase):
@@ -28,35 +26,28 @@ class CheckMenuSubsetContainsProperGlyphs(TestCase):
     name = __name__
     tool = 'lint'
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def test_check_menu_subset_contains_proper_glyphs(self):
-        fm = Metadata.get_family_metadata(open(self.path).read())
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            menu = op.join(op.dirname(self.path),
-                           font_metadata.filename.replace('.ttf', '.menu'))
-
-            if not op.exists(menu):
-                print menu
-                continue
-
-            self.check_retrieve_glyphs(TTFont(menu), font_metadata)
+            tf = Font.get_ttfont(self.path, font_metadata, is_menu=True)
+            self.check_retrieve_glyphs(tf, font_metadata)
 
     def check_retrieve_glyphs(self, ttfont, font_metadata):
-        cmap = self.retrieve_cmap_format_4(ttfont)
+        glyphs = ttfont.retrieve_glyphs_from_cmap_format_4()
 
         missing_glyphs = set()
-        if ord(' ') not in cmap.cmap:
+        if ord(' ') not in glyphs:
             missing_glyphs.add(' ')
 
         for g in font_metadata.name:
-            if ord(g) not in cmap.cmap:
+            if ord(g) not in glyphs:
                 missing_glyphs.add(g)
 
         if missing_glyphs:
             _ = '%s: Menu is missing glyphs: "%s"'
             report = _ % (font_metadata.filename, ''.join(missing_glyphs))
             self.fail(report)
-
-    def retrieve_cmap_format_4(self, ttfont):
-        for cmap in ttfont['cmap'].tables:
-            if cmap.format == 4:
-                return cmap

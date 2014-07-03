@@ -25,8 +25,12 @@ class CheckFamilyNameMatchesFontNames(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def test_check_familyname_matches_fontnames(self):
-        fm = Metadata.get_family_metadata(open(self.path).read())
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
             _ = '%s: Family name "%s" does not match font name: "%s"'
             _ = _ % (font_metadata.filename, fm.name, font_metadata.name)

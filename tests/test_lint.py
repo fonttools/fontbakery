@@ -7,6 +7,8 @@ import StringIO
 from checker.tests import test_check_canonical_filenames as tf_f
 from checker.tests import test_check_canonical_styles as tf_s
 from checker.tests import test_check_canonical_weights as tf_w
+from checker.tests import test_check_familyname_matches_fontnames as tf_fm_eq
+from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_subset
 from checker.ttfont import Font as OriginFont
 
 
@@ -168,3 +170,67 @@ class Test_CheckCanonicalWeights(unittest.TestCase):
             if result.errors:
                 self.fail(result.errors[0][1])
             self.assertFalse(bool(result.failures))
+
+
+class Test_CheckFamilyNameMatchesFontName(unittest.TestCase):
+
+    @mock.patch.object(tf_fm_eq.CheckFamilyNameMatchesFontNames, 'read_metadata_contents')
+    def test_four(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'name': 'Family',
+            'fonts': [{
+                'name': 'Family'
+            }]
+        })
+        result = _run_font_test(tf_fm_eq.CheckFamilyNameMatchesFontNames)
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertFalse(bool(result.failures))
+
+        metadata_contents.return_value = simplejson.dumps({
+            'name': 'Family',
+            'fonts': [{
+                'name': 'FontName'
+            }]
+        })
+        result = _run_font_test(tf_fm_eq.CheckFamilyNameMatchesFontNames)
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
+
+
+class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
+
+    @mock.patch.object(tf_subset.CheckMenuSubsetContainsProperGlyphs, 'read_metadata_contents')
+    def test_five(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'name': 'Font Family',
+            'fonts': [{
+                'name': 'FontName',
+                'filename': 'FontName-Regular.ttf'
+            }]
+        })
+
+        class FontS:
+
+            def retrieve_glyphs_from_cmap_format_4(self):
+                return dict(map(lambda x: (ord(x), x), 'Font Name'))
+
+        class FontF:
+
+            def retrieve_glyphs_from_cmap_format_4(self):
+                return dict(map(lambda x: (ord(x), x), 'FontName'))
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = FontS()
+            result = _run_font_test(tf_subset.CheckMenuSubsetContainsProperGlyphs)
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertFalse(bool(result.failures))
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = FontF()
+            result = _run_font_test(tf_subset.CheckMenuSubsetContainsProperGlyphs)
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
