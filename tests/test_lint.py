@@ -10,6 +10,7 @@ from checker.tests import test_check_canonical_weights as tf_w
 from checker.tests import test_check_familyname_matches_fontnames as tf_fm_eq
 from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_subset
 from checker.tests import test_check_metadata_matches_nametable as tf_fm_eq_nt
+from checker.tests import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_sp
 from checker.ttfont import Font as OriginFont
 
 
@@ -239,3 +240,47 @@ class Test_CheckMetadataMatchesNameTable(unittest.TestCase):
                 'filename': 'FontFamily-Regular.ttf'
             }]
         })
+
+        class Font:
+            familyname = 'Font Family'
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_fm_eq_nt.CheckMetadataMatchesNameTable)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertFalse(bool(result.failures))
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            mocked_get_ttfont.return_value.familyname = 'Arial Font Family'
+            result = _run_font_test(tf_fm_eq_nt.CheckMetadataMatchesNameTable)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertTrue(bool(result.failures))
+
+
+class Test_CheckNbspWidthMatchesSpWidth(unittest.TestCase):
+
+    @mock.patch.object(tf_nbsp_eq_sp.CheckNbspWidthMatchesSpWidth, 'read_metadata_contents')
+    def test_seven(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{
+                'name': 'Font Name'
+            }]
+        })
+
+        class Font:
+
+            def advanceWidth(self, glyphId):
+                return 1680
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_nbsp_eq_sp.CheckNbspWidthMatchesSpWidth)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertFalse(bool(result.failures))

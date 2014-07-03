@@ -19,23 +19,24 @@ from checker.metadata import Metadata
 from checker.ttfont import Font
 
 
-class CheckMetadataMatchesNameTable(TestCase):
-
-    path = '.'
-    targets = ['metadata']
-    tool = 'lint'
-    name = __name__
+class CheckNbspWidthMatchesSpWidth(TestCase):
 
     def read_metadata_contents(self):
         return open(self.path).read()
 
-    def test_check_metadata_matches_nametable(self):
+    def test_check_nbsp_width_matches_sp_width(self):
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            ttfont = Font.get_ttfont(self.path, font_metadata)
+            tf = Font.get_ttfont()
+            space_advance_width = tf.advanceWidth('space')
+            nbsp_advance_width = tf.advanceWidth('uni00A0')
 
-            report = '%s: Family name was supposed to be "%s" but is "%s"'
-            report = report % (font_metadata.name, fm.name,
-                               ttfont.familyname)
-            self.assertEqual(ttfont.familyname, fm.name, report)
+            _ = "%s: The font does not contain a sp glyph"
+            self.assertTrue(space_advance_width, _ % font_metadata.filename)
+            _ = "%s: The font does not contain a nbsp glyph"
+            self.assertTrue(nbsp_advance_width, _ % font_metadata.filename)
+
+            _ = ("%s: The nbsp advance width does not match "
+                 "the sp advance width") % font_metadata.filename
+            self.assertEqual(space_advance_width, nbsp_advance_width, _)

@@ -57,12 +57,5 @@ class CheckCanonicalStyles(TestCase):
 
     def find_italic_in_name_table(self, ttfont):
         for entry in ttfont.names:
-            if 'italic' in self.bin2unistring(entry).lower():
+            if 'italic' in Font.bin2unistring(entry).lower():
                 return True
-
-    def bin2unistring(self, record):
-        if b'\000' in record.string:
-            string = record.string.decode('utf-16-be')
-            return string.encode('utf-8')
-        else:
-            return record.string
