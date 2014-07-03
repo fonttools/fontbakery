@@ -9,6 +9,7 @@ from checker.tests import test_check_canonical_styles as tf_s
 from checker.tests import test_check_canonical_weights as tf_w
 from checker.tests import test_check_familyname_matches_fontnames as tf_fm_eq
 from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_subset
+from checker.tests import test_check_metadata_matches_nametable as tf_fm_eq_nt
 from checker.ttfont import Font as OriginFont
 
 
@@ -27,26 +28,20 @@ class Test_CheckCanonicalFilenamesTestCase(unittest.TestCase):
     @mock.patch.object(tf_f.CheckCanonicalFilenames, 'read_metadata_contents')
     def test_one(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
-            'name': 'Family',
             'fonts': [{
-                'name': 'Family',
-                'style': 'normal',
-                'weight': 400,
-                'filename': 'Family-Regular.ttf'
+                'name': 'FamilyName',
+                'filename': 'FamilyName-Regular.ttf'
             }]
         })
         result = _run_font_test(tf_f.CheckCanonicalFilenames)
 
         if result.errors:
             self.fail(result.errors[0][1])
-        self.assertEqual(result.failures, [])
+        self.assertFalse(bool(result.failures))
 
         metadata_contents.return_value = simplejson.dumps({
-            'name': 'Family',
             'fonts': [{
                 'name': 'Family',
-                'style': 'normal',
-                'weight': 400,
                 'filename': 'Family-Bold.ttf'
             }]
         })
@@ -62,11 +57,8 @@ class Test_CheckCanonicalStyles(unittest.TestCase):
     @mock.patch.object(tf_s.CheckCanonicalStyles, 'read_metadata_contents')
     def test_two(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
-            'name': 'Family',
             'fonts': [{
                 'name': 'Family',
-                'style': 'normal',
-                'weight': 400,
                 'filename': 'Family-Regular.ttf'
             }]
         })
@@ -234,3 +226,16 @@ class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertTrue(bool(result.failures))
+
+
+class Test_CheckMetadataMatchesNameTable(unittest.TestCase):
+
+    @mock.patch.object(tf_fm_eq_nt.CheckMetadataMatchesNameTable, 'read_metadata_contents')
+    def test_six(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'name': 'Font Family',
+            'fonts': [{
+                'name': 'Font Family',
+                'filename': 'FontFamily-Regular.ttf'
+            }]
+        })

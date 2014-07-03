@@ -14,25 +14,26 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os.path as op
-
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
-from fontTools.ttLib import TTFont
+from checker.ttfont import Font
 
 
-class CheckFamilyNameMatchesNameTable(TestCase):
+class CheckMetadataMatchesNameTable(TestCase):
 
     path = '.'
     targets = ['metadata']
     tool = 'lint'
     name = __name__
 
-    def test_check_familyname_matches_nametable(self):
-        fm = Metadata.get_family_metadata(open(self.path).read())
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
+    def test_check_metadata_matches_nametable(self):
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            filepath = op.join(op.basename(self.path), font_metadata.filename)
-            ttfont = TTFont(filepath)
+            ttfont = Font.get_ttfont(self.path, font_metadata)
             familyname_from_font = self.find_familyname_in_nametable(ttfont)
 
             report = '%s: Family name was supposed to be "%s" but is "%s"'
