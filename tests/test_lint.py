@@ -398,4 +398,4 @@ class Test_CheckNoProblematicFormats(unittest.TestCase):
         if result.errors:
             self.fail(result.errors[0][1])
 
-        self.assertFalse(bool(result.failures), result.failures[0][1])
+        self.assertTrue(bool(result.failures))
