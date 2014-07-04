@@ -29,6 +29,7 @@ from checker.tests import test_check_metadata_matches_nametable as tf_fm_eq_nt
 from checker.tests import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_sp
 from checker.tests import test_check_subsets_exists as tf_subset
 from checker.tests import test_check_unused_glyph_data as tf_unused
+from checker.tests import test_check_os2_width_class as tf_widthclass
 from checker.ttfont import Font as OriginFont
 
 
@@ -351,8 +352,30 @@ class Test_CheckUnusedGlyphData(unittest.TestCase):
 
         if result.errors:
             self.fail(result.errors[0][1])
-        if result.failures:
-            print result.failures[0][1]
         self.assertFalse(bool(result.failures))
 
 
+class Test_CheckOS2WidthClass(unittest.TestCase):
+
+    def test_ten(self):
+
+        class Font:
+            OS2_usWidthClass = 4
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_widthclass.CheckOS2WidthClass)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+        self.assertFalse(bool(result.failures))
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            for i in [0, 10]:
+                mocked_get_ttfont.return_value.OS2_usWidthClass = i
+                result = _run_font_test(tf_widthclass.CheckOS2WidthClass)
+
+                if result.errors:
+                    self.fail(result.errors[0][1])
+                self.assertTrue(bool(result.failures))
