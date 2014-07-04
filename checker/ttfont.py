@@ -130,3 +130,17 @@ class Font(object):
             503
         """
         return len(self.ttfont['loca'].locations)
+
+
+class FontTool:
+
+    @staticmethod
+    def get_tables(path):
+        """ Retrieves tables names existing in font
+
+            >>> FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf")
+            ['GDEF', 'gasp', 'loca', 'name', 'post', 'OS/2', 'maxp', 'head', \
+'kern', 'FFTM', 'GSUB', 'glyf', 'GPOS', 'cmap', 'hhea', 'hmtx', 'DSIG']
+        """
+        font = ttLib.TTFont(path)
+        return font.reader.tables.keys()

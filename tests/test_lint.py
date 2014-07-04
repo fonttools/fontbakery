@@ -30,6 +30,7 @@ from checker.tests import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_s
 from checker.tests import test_check_subsets_exists as tf_subset
 from checker.tests import test_check_unused_glyph_data as tf_unused
 from checker.tests import test_check_os2_width_class as tf_widthclass
+from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
 from checker.ttfont import Font as OriginFont
 
 
@@ -379,3 +380,22 @@ class Test_CheckOS2WidthClass(unittest.TestCase):
                 if result.errors:
                     self.fail(result.errors[0][1])
                 self.assertTrue(bool(result.failures))
+
+
+class Test_CheckNoProblematicFormats(unittest.TestCase):
+
+    def test_eleven(self):
+
+        class FontTool:
+
+            @staticmethod
+            def get_tables(p):
+                return ['glyf', 'post', 'GPOS']
+
+        with mock.patch('checker.tests.test_check_no_problematic_formats.FontTool', FontTool):
+            result = _run_font_test(tf_pr_fmt.CheckNoProblematicFormats)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertFalse(bool(result.failures), result.failures[0][1])
