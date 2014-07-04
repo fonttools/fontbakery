@@ -33,7 +33,7 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            tf = Font.get_ttfont()
+            tf = Font.get_ttfont_from_metadata(self.path, font_metadata)
             space_advance_width = tf.advanceWidth('space')
             nbsp_advance_width = tf.advanceWidth('uni00A0')
 

@@ -45,7 +45,7 @@ class CheckCanonicalWeights(TestCase):
             self.assertFalse(is_invalid, _ % (op.basename(self.path),
                                               font_metadata.weight))
 
-            tf = Font.get_ttfont(self.path, font_metadata)
+            tf = Font.get_ttfont_from_metadata(self.path, font_metadata)
             _ = ("%s: METADATA.json overwrites the weight. "
                  " The METADATA.json weight is %d and the font"
                  " file %s weight is %d")

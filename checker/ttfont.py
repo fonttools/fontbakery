@@ -6,10 +6,14 @@ from fontTools import ttLib
 class Font(object):
 
     @staticmethod
-    def get_ttfont(path, font_metadata, is_menu=False):
+    def get_ttfont_from_metadata(path, font_metadata, is_menu=False):
         path = op.join(op.dirname(path), font_metadata.filename)
         if is_menu:
             path = path.replace('.ttf', '.menu')
+        return Font(path)
+
+    @staticmethod
+    def get_ttfont(path):
         return Font(path)
 
     def __init__(self, fontpath):
@@ -64,3 +68,39 @@ class Font(object):
             return string.encode('utf-8')
         else:
             return record.string
+
+    def get_glyf_length(self):
+        """ Retrieve length of glyf table
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.get_glyf_length()
+            21804
+        """
+        return self.ttfont.reader.tables['glyf'].length
+
+    def get_loca_glyph_offset(self, num):
+        """ Retrieve offset of glyph in font tables
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.get_loca_glyph_offset(0)
+            0L
+        """
+        return self.ttfont['loca'].locations[num]
+
+    def get_loca_glyph_length(self, num):
+        """ Retrieve length of glyph in font loca table
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.get_loca_glyph_length(15)
+            68L
+        """
+        return self.get_loca_glyph_offset(num + 1) - self.get_loca_glyph_offset(num)
+
+    def get_loca_num_glyphs(self):
+        """ Retrieve number of glyph in font loca table
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.get_loca_num_glyphs()
+            503
+        """
+        return len(self.ttfont['loca'].locations)

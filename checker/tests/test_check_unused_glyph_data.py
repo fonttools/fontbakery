@@ -15,27 +15,27 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from checker.base import BakeryTestCase as TestCase
-from checker.metadata import Metadata
 from checker.ttfont import Font
 
 
-class CheckMetadataMatchesNameTable(TestCase):
+class CheckUnusedGlyphData(TestCase):
 
     path = '.'
-    targets = ['metadata']
+    targets = ['result']
     tool = 'lint'
     name = __name__
 
-    def read_metadata_contents(self):
-        return open(self.path).read()
+    def test_check_unused_glyph_data(self):
+        f = Font.get_ttfont(self.path)
+        glyf_length = f.get_glyf_length()
 
-    def test_check_metadata_matches_nametable(self):
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
-        for font_metadata in fm.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+        loca_num_glyphs = f.get_loca_num_glyphs()
 
-            report = '%s: Family name was supposed to be "%s" but is "%s"'
-            report = report % (font_metadata.name, fm.name,
-                               ttfont.familyname)
-            self.assertEqual(ttfont.familyname, fm.name, report)
+        last_glyph_offset = f.get_loca_glyph_offset(loca_num_glyphs - 1)
+        last_glyph_length = f.get_loca_glyph_length(loca_num_glyphs - 1)
+
+        unused_data = glyf_length - (last_glyph_offset + last_glyph_length)
+
+        error = ("there were %s bytes of unused data at the end"
+                 " of the glyf table") % unused_data
+        self.assertEqual(unused_data, 0, error)

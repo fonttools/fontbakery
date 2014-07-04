@@ -27,3 +27,4 @@ from .test_check_familyname_matches_fontnames import *
 from .test_check_menu_subset_contains_proper_glyphs import *
 from .test_check_metadata_matches_nametable import *
 from .test_check_subsets_exists import *
+from .test_check_unused_glyph_data import *
