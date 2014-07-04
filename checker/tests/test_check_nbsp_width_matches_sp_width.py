@@ -21,6 +21,11 @@ from checker.ttfont import Font
 
 class CheckNbspWidthMatchesSpWidth(TestCase):
 
+    targets = ['metadata']
+    path = '.'
+    tool = 'lint'
+    name = __name__
+
     def read_metadata_contents(self):
         return open(self.path).read()
 
