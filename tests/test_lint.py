@@ -8,9 +8,10 @@ from checker.tests import test_check_canonical_filenames as tf_f
 from checker.tests import test_check_canonical_styles as tf_s
 from checker.tests import test_check_canonical_weights as tf_w
 from checker.tests import test_check_familyname_matches_fontnames as tf_fm_eq
-from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_subset
+from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_menu
 from checker.tests import test_check_metadata_matches_nametable as tf_fm_eq_nt
 from checker.tests import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_sp
+from checker.tests import test_check_subsets_exists as tf_subset
 from checker.ttfont import Font as OriginFont
 
 
@@ -194,7 +195,7 @@ class Test_CheckFamilyNameMatchesFontName(unittest.TestCase):
 
 class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
 
-    @mock.patch.object(tf_subset.CheckMenuSubsetContainsProperGlyphs, 'read_metadata_contents')
+    @mock.patch.object(tf_menu.CheckMenuSubsetContainsProperGlyphs, 'read_metadata_contents')
     def test_five(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
             'name': 'Font Family',
@@ -216,14 +217,14 @@ class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = FontS()
-            result = _run_font_test(tf_subset.CheckMenuSubsetContainsProperGlyphs)
+            result = _run_font_test(tf_menu.CheckMenuSubsetContainsProperGlyphs)
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertFalse(bool(result.failures))
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = FontF()
-            result = _run_font_test(tf_subset.CheckMenuSubsetContainsProperGlyphs)
+            result = _run_font_test(tf_menu.CheckMenuSubsetContainsProperGlyphs)
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertTrue(bool(result.failures))
@@ -284,3 +285,26 @@ class Test_CheckNbspWidthMatchesSpWidth(unittest.TestCase):
         if result.errors:
             self.fail(result.errors[0][1])
         self.assertFalse(bool(result.failures))
+
+
+class Test_CheckSubsetsExist(unittest.TestCase):
+
+    @mock.patch.object(tf_subset.CheckSubsetsExist, 'read_metadata_contents')
+    def test_eight(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{
+                'filename': 'FontName-Regular.ttf'
+            }],
+            'subsets': ['cyrillic']
+        })
+
+        with mock.patch.object(tf_subset.File, 'exists') as exists, mock.patch.object(tf_subset.File, 'size') as size:
+            size.return_value = 11
+            result = _run_font_test(tf_subset.CheckSubsetsExist)
+            if result.errors:
+                self.fail(result.errors[0][1])
+            self.assertFalse(bool(result.failures))
+            exists.assert_called_with('FontName-Regular.cyrillic')
+            self.assertEqual(size.call_args_list,
+                             [mock.call('FontName-Regular.cyrillic'),
+                              mock.call('FontName-Regular.ttf')])

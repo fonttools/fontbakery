@@ -17,6 +17,7 @@ class MetadataTestCase(unittest.TestCase):
         self.assertEqual(fm.category, "")
         self.assertEqual(fm.size, 0)
         self.assertEqual(fm.date_added, "")
+        self.assertEqual(fm.subsets, [])
 
     def test_font_metadata_is_loaded(self):
         """ Check if font metadata can be read from family metadata """

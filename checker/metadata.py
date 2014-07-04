@@ -40,6 +40,10 @@ class FamilyMetadata(object):
         return self.metadata_object.get('dateAdded', '')
 
     @property
+    def subsets(self):
+        return self.metadata_object.get('subsets', [])
+
+    @property
     def fonts(self):
         for f in self.metadata_object['fonts']:
             yield FontMetadata(f)
