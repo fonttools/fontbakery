@@ -49,15 +49,21 @@ class Font(object):
 
     @property
     def OS2_usWeightClass(self):
+        """ OS/2.usWeightClass property value
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.OS2_usWeightClass
+        400
+        """
         return self.ttfont['OS/2'].usWeightClass
 
     @property
     def OS2_usWidthClass(self):
         """ Returns OS/2.usWidthClass property value
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.OS2_usWidthClass
-            5
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.OS2_usWidthClass
+        5
         """
         return self.ttfont['OS/2'].usWidthClass
 
@@ -82,6 +88,12 @@ class Font(object):
                 return cmap.cmap
 
     def advanceWidth(self, glyph_id):
+        """ AdvanceWidth of glyph from "hmtx" table
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.advanceWidth("a")
+        572
+        """
         try:
             return self.ttfont['hmtx'].metrics[glyph_id][0]
         except KeyError:
@@ -96,7 +108,7 @@ class Font(object):
             return record.string
 
     def get_glyf_length(self):
-        """ Retrieve length of "glyf" table
+        """ Length of "glyf" table
 
             >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
             >>> font.get_glyf_length()
@@ -105,60 +117,49 @@ class Font(object):
         return self.ttfont.reader.tables['glyf'].length
 
     def get_loca_length(self):
-        """ Retrieve length of "loca" table
+        """ Length of "loca" table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_loca_length()
-            1006
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_loca_length()
+        1006
         """
         return self.ttfont.reader.tables['loca'].length
 
     def get_loca_glyph_offset(self, num):
         """ Retrieve offset of glyph in font tables
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_loca_glyph_offset(15)
-            836L
-            >>> font.get_loca_glyph_offset(16)
-            904L
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_loca_glyph_offset(15)
+        836L
+        >>> font.get_loca_glyph_offset(16)
+        904L
         """
         return self.ttfont['loca'].locations[num]
 
     def get_loca_glyph_length(self, num):
         """ Retrieve length of glyph in font loca table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_loca_glyph_length(15)
-            68L
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_loca_glyph_length(15)
+        68L
         """
         return self.get_loca_glyph_offset(num + 1) - self.get_loca_glyph_offset(num)
 
     def get_loca_num_glyphs(self):
         """ Retrieve number of glyph in font loca table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_loca_num_glyphs()
-            503
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_loca_num_glyphs()
+        503
         """
         return len(self.ttfont['loca'].locations)
-
-    def get_loca_locas_num(self):
-        """ Get the number of locations or locas. This will be one more than
-            the number of glyphs for this table since the last loca position
-            is used to indicate the size of the final glyph.
-
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_loca_locas_num()
-            504
-        """
-        return self.get_loca_num_glyphs() + 1
 
     def get_hmtx_max_advanced_width(self):
         """ AdvanceWidthMax from "hmtx" table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_hmtx_max_advanced_width()
-            1409
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_hmtx_max_advanced_width()
+        1409
         """
         advance_width_max = 0
         for g in self.ttfont['hmtx'].metrics.values():
@@ -169,9 +170,9 @@ class Font(object):
     def advance_width_max(self):
         """ AdvanceWidthMax from "hhea" table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.advance_width_max
-            1409
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.advance_width_max
+        1409
         """
         return self.ttfont['hhea'].advanceWidthMax
 
@@ -182,8 +183,8 @@ class FontTool:
     def get_tables(path):
         """ Retrieves tables names existing in font
 
-            >>> FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf")
-            ['GDEF', 'gasp', 'loca', 'name', 'post', 'OS/2', 'maxp', 'head', \
+        >>> FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf")
+        ['GDEF', 'gasp', 'loca', 'name', 'post', 'OS/2', 'maxp', 'head', \
 'kern', 'FFTM', 'GSUB', 'glyf', 'GPOS', 'cmap', 'hhea', 'hmtx', 'DSIG']
         """
         font = ttLib.TTFont(path)

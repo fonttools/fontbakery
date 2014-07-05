@@ -33,6 +33,7 @@ from checker.tests import test_check_os2_width_class as tf_widthclass
 from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
 from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
 from checker.tests import test_check_glyf_table_length as tf_glyflen
+from checker.tests import test_check_full_font_name_begins_with_family_name as tf_ff_names
 from checker.ttfont import Font as OriginFont
 
 
@@ -497,3 +498,53 @@ class Test_CheckGlyfTableLength(unittest.TestCase):
 
             self.assertTrue(bool(result.failures))
 
+
+class Test_CheckFullFontNameBeginsWithFamilyName(unittest.TestCase):
+
+    def test_sixteen(self):
+        class Font:
+            bin2unistring = OriginFont.bin2unistring
+
+            @property
+            def names(self):
+                return [
+                    type('name', (object,),
+                         {'nameID': 1, 'string': 'FamilyName', 'platEncID': 1,
+                          'langID': 1, 'platformID': 1}),
+                    type('name', (object,),
+                         {'nameID': 4, 'string': 'FamilyNameRegular', 'platEncID': 1,
+                          'langID': 1, 'platformID': 1})
+                ]
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_ff_names.CheckFullFontNameBeginsWithFamilyName)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertFalse(bool(result.failures))
+
+    def test_seventeen(self):
+        class Font:
+            bin2unistring = OriginFont.bin2unistring
+
+            @property
+            def names(self):
+                return [
+                    type('name', (object,),
+                         {'nameID': 1, 'string': 'FamilyName', 'platEncID': 1,
+                          'langID': 1, 'platformID': 1}),
+                    type('name', (object,),
+                         {'nameID': 4, 'string': 'FamilyRegular', 'platEncID': 1,
+                          'langID': 1, 'platformID': 1})
+                ]
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_ff_names.CheckFullFontNameBeginsWithFamilyName)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))
