@@ -31,6 +31,7 @@ from checker.tests import test_check_subsets_exists as tf_subset
 from checker.tests import test_check_unused_glyph_data as tf_unused
 from checker.tests import test_check_os2_width_class as tf_widthclass
 from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
+from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
 from checker.ttfont import Font as OriginFont
 
 
@@ -399,3 +400,27 @@ class Test_CheckNoProblematicFormats(unittest.TestCase):
             self.fail(result.errors[0][1])
 
         self.assertTrue(bool(result.failures))
+
+
+class Test_CheckHmtxHheaMaxAdvanceWidthAgreement(unittest.TestCase):
+
+    def test_twelve(self):
+
+        class Font:
+
+            def get_hmtx_max_advanced_width(self):
+                return 250
+
+            @property
+            def advance_width_max(self):
+                return 240
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            result = _run_font_test(tf_htmx.CheckHmtxHheaMaxAdvanceWidthAgreement)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))
+
+

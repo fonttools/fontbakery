@@ -131,6 +131,28 @@ class Font(object):
         """
         return len(self.ttfont['loca'].locations)
 
+    def get_hmtx_max_advanced_width(self):
+        """ AdvanceWidthMax from "hmtx" table
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.get_hmtx_max_advanced_width()
+            1409
+        """
+        advance_width_max = 0
+        for g in self.ttfont['hmtx'].metrics.values():
+            advance_width_max = max(g[0], advance_width_max)
+        return advance_width_max
+
+    @property
+    def advance_width_max(self):
+        """ AdvanceWidthMax from "hhea" table
+
+            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+            >>> font.advance_width_max
+            1409
+        """
+        return self.ttfont['hhea'].advanceWidthMax
+
 
 class FontTool:
 
