@@ -18,21 +18,29 @@ from checker.base import BakeryTestCase as TestCase
 from checker.ttfont import Font
 
 
-class CheckHmtxHheaMaxAdvanceWidthAgreement(TestCase):
+class CheckGlyfTableLength(TestCase):
 
     path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
-    def test_check_hmtx_hhea_max_advance_width_agreement(self):
-        """ Check if MaxAdvanceWidth agree in the Hmtx and Hhea tables """
+    def test_check_glyf_table_length(self):
+        """ Check if there is unused data at the end of the glyf table """
         font = Font.get_ttfont(self.path)
 
-        hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
-        hhea_advance_width_max = font.advance_width_max
-        error = ("AdvanceWidthMax mismatch: expected %s (from hmtx);"
-                 " got %s (from hhea)") % (hmtx_advance_width_max,
-                                           hhea_advance_width_max)
-        self.assertEqual(hmtx_advance_width_max,
-                         hhea_advance_width_max, error)
+        expected = font.get_loca_length()
+        actual = font.get_glyf_length()
+        diff = actual - expected
+
+        # allow up to 3 bytes of padding
+        if diff > 3:
+            _ = ("Glyf table has unreachable data at the end of the table."
+                 " Expected glyf table length %s (from loca table), got length"
+                 " %s (difference: %s)") % (expected, actual, diff)
+            self.fail(_)
+        elif diff < 0:
+            _ = ("Loca table references data beyond the end of the glyf table."
+                 " Expected glyf table length %s (from loca table), got length"
+                 " %s (difference: %s)") % (expected, actual, diff)
+            self.fail(_)

@@ -32,6 +32,7 @@ from checker.tests import test_check_unused_glyph_data as tf_unused
 from checker.tests import test_check_os2_width_class as tf_widthclass
 from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
 from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
+from checker.tests import test_check_glyf_table_length as tf_glyflen
 from checker.ttfont import Font as OriginFont
 
 
@@ -413,14 +414,86 @@ class Test_CheckHmtxHheaMaxAdvanceWidthAgreement(unittest.TestCase):
 
             @property
             def advance_width_max(self):
-                return 240
+                return 250
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
             result = _run_font_test(tf_htmx.CheckHmtxHheaMaxAdvanceWidthAgreement)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
+            if result.errors:
+                self.fail(result.errors[0][1])
 
-        self.assertTrue(bool(result.failures))
+            self.assertFalse(bool(result.failures))
 
+            mocked_get_ttfont.return_value.advance_width_max = 240
+
+            result = _run_font_test(tf_htmx.CheckHmtxHheaMaxAdvanceWidthAgreement)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+
+class Test_CheckGlyfTableLength(unittest.TestCase):
+
+    def test_thirteen(self):
+
+        class Font:
+
+            def get_loca_length(self):
+                return 5541  # considering padding in 3 bytes
+
+            def get_glyf_length(self):
+                return 5544
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+
+            result = _run_font_test(tf_glyflen.CheckGlyfTableLength)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+    def test_fourteen(self):
+        class Font:
+
+            def get_loca_length(self):
+                return 5550  # considering "loca" length greater than "glyf"
+
+            def get_glyf_length(self):
+                return 5544
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+
+            result = _run_font_test(tf_glyflen.CheckGlyfTableLength)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+    def test_fifteen(self):
+        class Font:
+
+            def get_loca_length(self):
+                # considering "loca" less than glyf on more
+                # than 3 bytes (allowed padding)
+                return 5540
+
+            def get_glyf_length(self):
+                return 5544
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+
+            result = _run_font_test(tf_glyflen.CheckGlyfTableLength)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
 
