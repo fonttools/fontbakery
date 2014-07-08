@@ -1,5 +1,6 @@
 #!/bin/bash
 kill `cat /var/www/bakery.pid`
+sleep 2
 gunicorn wsgi:app \
     --log-file bakery-error.log \
     -p /var/www/bakery.pid -D \
