@@ -394,8 +394,11 @@ def repr_testcase(dumper, data):
         if doc is None:
             return "None"
         else:
-            doc = ' '.join(doc.split())
-            return doc.decode('utf-8', 'ignore')
+            try:
+                doc = ' '.join(doc.split())
+                return doc.decode('utf-8', 'ignore')
+            except UnicodeDecodeError:
+                return ''
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
