@@ -17,3 +17,23 @@
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree(project.revision_tree(revision), revision) }}
 {% endblock %}
+
+
+{% block extrajs %}
+<script>
+$(function(){
+    $('.tree li:has(ul)').addClass('parent_li');
+    $('.tree li.parent_li > i').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide();
+            $(this).removeClass('fa-folder-open').addClass('fa-folder');
+        } else {
+            children.show();
+            $(this).removeClass('fa-folder').addClass('fa-folder-open');
+        }
+        e.stopPropagation();
+    });
+});
+</script>
+{% endblock %}

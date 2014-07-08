@@ -75,14 +75,15 @@ def project_state_get(project, refresh=False):
         local: the internal state of the project
         state: the external state of the project
     """
+    from cli.bakery import BAKERY_CONFIGURATION_DEFAULTS
     _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     # Define bakery.yaml locations
-    bakery_default_yml = os.path.join(app.config['ROOT'], 'bakery', 'bakery.defaults.yaml')
+    bakery_default_yml = BAKERY_CONFIGURATION_DEFAULTS
     bakery_project_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/bakery.yaml' % project)
-    bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % project)
+    bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/.bakery.yaml' % project)
     # Define state.yaml locations
     state_default_yml = os.path.join(app.config['ROOT'], 'bakery', 'state.defaults.yaml')
-    state_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.state.yaml' % project)
+    state_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/.state.yaml' % project)
 
     # Create internal state object, 'local'
     # TODO? rename this throughout codebase to bakeryStateInternal
@@ -423,16 +424,20 @@ def project_state_save(project, state=None, local=None):
     Save project state in bakery.yaml and state.yaml files.
 
     :param project: :class:`~bakery.models.Project` instance
-    :param state: Optional, the external state of this project. If not given, will be loaded from project
-    :param local: Optional, the internal state of this project. If not given, will be loaded from project
+    :param state: Optional, the external state of this project.
+                    If not given, will be loaded from project
+    :param local: Optional, the internal state of this project.
+                    If not given, will be loaded from project
     """
     if not state:
         state = project.config['state']
     if not local:
         local = project.config['local']
 
-    bakery_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.bakery.yaml' % project)
-    state_local_yml = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.state.yaml' % project)
+    bakery_local_yml = os.path.join(app.config['DATA_ROOT'],
+                                    '%(login)s/%(id)s.in/.bakery.yaml' % project)
+    state_local_yml = os.path.join(app.config['DATA_ROOT'],
+                                   '%(login)s/%(id)s.in/.state.yaml' % project)
 
     f = open(bakery_local_yml, 'w')
     f.write(yaml.safe_dump(state))

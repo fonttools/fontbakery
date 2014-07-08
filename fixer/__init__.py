@@ -43,11 +43,27 @@ available_fixes = {
 }
 
 
-def fix_font(yaml_file, path, log=None):
-    """ yaml — font bakery checker tests results yaml file. This file
-               will be modified when all fixes apply
-        path — font output folder in specified format
+def fix_font(yaml_file, path, log=None, interactive=False):
+    """ Applies available fixes to baked fonts.
 
+        Looks through yaml_file to search available fixes and apply it
+        upon the concrete baked font.
+
+        Args:
+            yaml: Font bakery checker tests results yaml file.
+                This file will be modified when all fixes apply.
+            path: Folder where baked fonts generated.
+            interactive: Optional.
+                If True then user will be asked to start applying fixes
+                manually.
+            log: Optional argument to make fixes process loggable.
+                It is a class that must have defined `write` method. Eg:
+
+                class stdlog:
+
+                    @staticmethod
+                    def write(msg, prefix=''):
+                        pass
     """
     result = yaml.safe_load(open(yaml_file, 'r'))
     fonts = result.keys()
@@ -63,11 +79,15 @@ def fix_font(yaml_file, path, log=None):
                 failure_list.append(test)
 
         if apply_fixes:
-            log.write('Applying fixes\n', prefix="### ")
             font_path = os.path.join(path, font)
             for fun in apply_fixes:
+                if interactive:
+                    answer = raw_input("Apply fix %s? [y/N]" % fun.__doc__)
+                    if answer.lower() != 'y':
+                        log.write('N\n')
+                        continue
                 if log:
-                    log.write('Apply fix:  %s\n' % fun.__doc__)
+                    log.write('Apply fix %s\n' % fun.__doc__.strip())
                 fun(font_path)
 
         del result[font]['failure']

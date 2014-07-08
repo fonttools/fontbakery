@@ -12,7 +12,11 @@
 {{ subnav_build('rfiles') }}
 
 <h4>{{ _("Baked Files") }}</h4>
-<div><a href="{{ url_for('project.zip', project_id=build.project_id, build_id=build.id) }}">{{ build.id }}.{{ build.revision }}.zip</a></div>
+{% if build.succeeded %}
+<div>
+    <a href="{{ url_for('project.zip', project_id=build.project_id, build_id=build.id) }}">{{ build.id }}.{{ build.revision }}.zip</a>
+</div>
+{% endif %}
 {% from 'project/macros.html' import filestree with context %}
 {{ filestree(tree) }}
 
@@ -28,7 +32,7 @@
 
 <h4>{{ _("TTF Table Sizes") }}</h4>
 {% for ttftablesize in ttftablesizes %}
-    <table class="table-striped table-bordered table-condensed" style="float:left">
+    <table class="table-striped table-bordered table-condensed">
     <tr>
         <th colspan="2">{{ ttftablesize.name }}</th>
     </tr>
@@ -40,6 +44,33 @@
     {% endfor %}
     </table>
 {% endfor %}
+
+{% if build.state.get('autohinting_sizes', []) %}
+<h4>{{ _("ttfautohint filesize impact statistic") }}</h4>
+<table class="table-striped table-bordered table-condensed">
+{% for t in build.state.get('autohinting_sizes', []) %}
+    <tr>
+        <th colspan="2">{{ t['fontname'] }}</th>
+    </tr>
+    <tr>
+        <td>Before</td>
+        <td>{{ t['origin'] }}</td>
+    </tr>
+    <tr>
+        <td>After</td>
+        <td>{{ t['processed'] }}</td>
+    </tr>
+    <tr>
+        <td>Increase</td>
+        <td>{{ t['processed'] - t['origin'] }}</td>
+    </tr>
+    <tr>
+        <td>Change</td>
+        <td>{{ '{:.3f}x'.format(t['processed'] / t['origin']) }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
 
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="fa"></i> {{ fontaine._full_name }}</h4>
@@ -106,42 +137,54 @@
 
 {% block extrajs %}
 <script>
-$(document).ready(function() {
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/solarized_light");
-editor.getSession().setMode("ace/mode/yaml");
-editor.getSession().setUseSoftTabs(true);
-editor.setHighlightActiveLine(false);
+$(function() {
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/solarized_light");
+    editor.getSession().setMode("ace/mode/yaml");
+    editor.getSession().setUseSoftTabs(true);
+    editor.setHighlightActiveLine(false);
 
-// var textarea = $('textarea[name="yaml"]');
-var textarea = $('textarea[name="yaml"]').hide();
-editor.getSession().setUseWrapMode(true);
-editor.getSession().setValue(textarea.val());
-editor.setReadOnly(true);
+    // var textarea = $('textarea[name="yaml"]');
+    var textarea = $('textarea[name="yaml"]').hide();
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setValue(textarea.val());
+    editor.setReadOnly(true);
 
-// From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
-var heightUpdateFunction = function() {
-    var newHeight =
-              editor.getSession().getScreenLength()
-              * editor.renderer.lineHeight
-              + editor.renderer.scrollBar.getWidth();
-    $('#editor').height(newHeight.toString() + "px");
-    $('#editor-section').height(newHeight.toString() + "px");
-    // This call is required for the editor to fix all of its inner structure for adapting to a change in size
-    editor.resize();
-};
-// Set initial size to match initial content
-heightUpdateFunction();
-// Whenever a change happens inside the ACE editor, update the size again
-editor.getSession().on('change', heightUpdateFunction);
-// End
+    // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+    var heightUpdateFunction = function() {
+        var newHeight =
+                  editor.getSession().getScreenLength()
+                  * editor.renderer.lineHeight
+                  + editor.renderer.scrollBar.getWidth();
+        $('#editor').height(newHeight.toString() + "px");
+        $('#editor-section').height(newHeight.toString() + "px");
+        // This call is required for the editor to fix all of its inner structure for adapting to a change in size
+        editor.resize();
+    };
+    // Set initial size to match initial content
+    heightUpdateFunction();
+    // Whenever a change happens inside the ACE editor, update the size again
+    editor.getSession().on('change', heightUpdateFunction);
+    // End
 
-// call the tablesorter plugin
-$(".tablesorter").tablesorter({
-    // sort on the 2nd column and order desc
-    sortList: [[1,1]]
-});
+    // call the tablesorter plugin
+    $(".tablesorter").tablesorter({
+        // sort on the 2nd column and order desc
+        sortList: [[1,1]]
+    });
 
+    $('.tree li:has(ul)').addClass('parent_li');
+    $('.tree li.parent_li > i').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide();
+            $(this).removeClass('fa-folder-open').addClass('fa-folder');
+        } else {
+            children.show();
+            $(this).removeClass('fa-folder').addClass('fa-folder-open');
+        }
+        e.stopPropagation();
+    });
 });
 </script>
 {% endblock %}

@@ -15,7 +15,7 @@ license_file: ''
 
 ### ttfautohint default command line parameter
 ###   If ttfautohint is not defined, it is not used.
-# ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c
+ttfautohint: -l 7 -r 28 -G 50 -x 13 -w "G"
 
 ### New font family name.
 ###   If newfamily is not defined, the fonts are not renamed.

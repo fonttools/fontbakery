@@ -18,133 +18,390 @@
 #
 # Based on http://typophile.com/node/13081
 # Also see http://typophile.com/node/13081
+from __future__ import print_function
 import argparse
+import collections
 import os
 import sys
 from fontTools import ttLib
 
 
-def get_bounds(font):
-    ymin = 0
-    ymax = 0
-    # .OTF fonts do not contain a `glyf` table,
-    # but have a precomputed value in the `head` table
-    if font.sfntVersion == 'OTTO':
-        if hasattr(font['head'], 'yMin'):
-            ymin = font['head'].yMin
-        if hasattr(font['head'], 'yMax'):
-            ymax = font['head'].yMax
-    else:
-        for g in font['glyf'].glyphs:
-            char = font['glyf'][g]
-            if hasattr(char, 'yMin') and ymin > char.yMin:
-                ymin = char.yMin
-                # print 'ymin is now ' + str(ymin)
-            if hasattr(char, 'yMax') and ymax < char.yMax:
-                ymax = char.yMax
-                # print 'ymax is now ' + str(ymax)
-    if ymin != 0 and ymax != 0:
-        return(ymin, ymax)
-    else:
-        sys.exit("Unable to detect y values")
+def is_none_protected(func):
+
+    def f(self, value):
+        if value is None:
+            return
+        func(self, value)
+
+    return f
 
 
-def get_metrics(ttfont):
-    ymin, ymax = get_bounds(ttfont)
-    return {
-        'ymax': ymax,
-        'ymin': ymin,
-        'hhea_ascent': ttfont['hhea'].ascent,
-        'hhea_descent': ttfont['hhea'].descent,
-        'OS2_sTypeAscender': ttfont['OS/2'].sTypoAscender,
-        'OS2_sTypeDescender': ttfont['OS/2'].sTypoDescender,
-        'OS2_usWinAscent': ttfont['OS/2'].usWinAscent,
-        'OS2_usWinDescent': ttfont['OS/2'].usWinDescent,
-        'lineGap': ttfont['hhea'].lineGap,
-        'OS2_lineGap': ttfont['OS/2'].sTypoLineGap
-    }
+class AscentGroup(object):
+
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
+
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+        self.os2win = value
+
+    def get_max(self):
+        return max(self.hhea, self.os2typo, self.os2win)
+
+    def hhea():
+        doc = "Ascent value in 'Horizontal Header' (hhea.ascent)"
+
+        def fget(self):
+            return self.ttfont['hhea'].ascent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].ascent = value
+
+        return locals()
+    hhea = property(**hhea())
+
+    def os2typo():
+        doc = "Ascent value in 'Horizontal Header' (OS/2.sTypoAscender)"
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoAscender
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoAscender = value
+
+        return locals()
+    os2typo = property(**os2typo())
+
+    def os2win():
+        doc = "Ascent value in 'Horizontal Header' (OS/2.usWinAscent)"
+
+        def fget(self):
+            return self.ttfont['OS/2'].usWinAscent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].usWinAscent = value
+
+        return locals()
+    os2win = property(**os2win())
 
 
-class VmetFix:
+class DescentGroup(object):
 
-    def __init__(self, fonts):
-        self.fonts = fonts
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
 
-    def set_metrics_for_font(self, ttfont, ascents, descents, linegaps):
-        if ascents:
-            ttfont['hhea'].ascent = ascents
-            ttfont['OS/2'].sTypoAscender = ascents
-            ttfont['OS/2'].usWinAscent = ascents
-        if descents:
-            ttfont['hhea'].descent = descents
-            ttfont['OS/2'].sTypoDescender = descents
-            ttfont['OS/2'].usWinDescent = abs(descents)
-        if linegaps:
-            ttfont['hhea'].lineGap = linegaps
-            ttfont['OS/2'].sTypoLineGap = linegaps
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+        self.os2win = value
 
-    def set_metrics(self, ascents, descents, linegaps):
-        for fontpath in self.fonts:
-            ttfont = ttLib.TTFont(fontpath)
-            self.set_metrics_for_font(ttfont, ascents, descents, linegaps)
-            ttfont.save(fontpath + '.fix')
+    def get_min(self):
+        return min(self.hhea, self.os2typo, self.os2win)
 
-    def fix_metrics(self):
-        for fontpath in self.fonts:
-            ttfont = ttLib.TTFont(fontpath)
-            ymin, ymax = get_bounds(ttfont)
-            self.set_metrics_for_font(ttfont, ymax, ymin, 0)
-            ttfont.save(fontpath + '.fix')
+    def hhea():
+        doc = "Descent value in 'Horizontal Header' (hhea.descent)"
 
-    def show_metrics(self):
-        fonts = []
-        for fontpath in self.fonts:
-            ttfont = ttLib.TTFont(fontpath)
-            metrics = get_metrics(ttfont)
-            metrics.update({'name': os.path.basename(fontpath)})
-            fonts.append(metrics)
+        def fget(self):
+            return self.ttfont['hhea'].descent
 
-        def row(key, title=None):
-            return [title or key] + map(lambda x: x[key], fonts)
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].descent = value
 
-        header = ['Parameter'] + map(lambda x: x['name'], fonts)
-        formatstring = ('{:<%s}' * (len(fonts) + 1))
-        formatstring = formatstring % tuple(map(lambda x: len(x) + 4, header))
-        print(formatstring.format(*header))
-        print(formatstring.format(*row('ymax')))
-        print(formatstring.format(*row('hhea_ascent', 'hhea asc')))
-        print(formatstring.format(*row('OS2_sTypeAscender', 'OS/2 asc')))
-        print(formatstring.format(*row('OS2_usWinAscent', 'Win asc')))
+        return locals()
+    hhea = property(**hhea())
 
-        print(formatstring.format(*row('ymin')))
-        print(formatstring.format(*row('hhea_descent', 'hhea desc')))
-        print(formatstring.format(*row('OS2_sTypeDescender', 'OS/2 desc')))
-        print(formatstring.format(*row('OS2_usWinDescent', 'Win desc')))
-        print(formatstring.format(*row('lineGap', 'hhea lng')))
-        print(formatstring.format(*row('OS2_lineGap', 'OS/2 lng')))
+    def os2typo():
+        doc = "Descent value in 'Horizontal Header' (OS/2.sTypoDescender)"
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoDescender
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoDescender = value
+
+        return locals()
+    os2typo = property(**os2typo())
+
+    def os2win():
+        doc = "Descent value in 'Horizontal Header' (OS/2.usWinDescent)"
+
+        def fget(self):
+            return self.ttfont['OS/2'].usWinDescent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].usWinDescent = abs(value)
+
+        return locals()
+    os2win = property(**os2win())
+
+
+class LineGapGroup(object):
+
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
+
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+
+    def hhea():
+        doc = "The hhea.lineGap property"
+
+        def fget(self):
+            return self.ttfont['hhea'].lineGap
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].lineGap = value
+
+        return locals()
+    hhea = property(**hhea())
+
+    def os2typo():
+        doc = "The OS/2.sTypoLineGap property"
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoLineGap
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoLineGap = value
+
+        return locals()
+    os2typo = property(**os2typo())
+
+
+class TextMetricsView(object):
+
+    def __init__(self):
+        self._its_metrics_header = ['Parameter          ']
+        # first column has a length of largest parameter
+        # named OS/2.sTypoDescender
+        self._its_metrics = collections.OrderedDict([
+            ('ymax', []),
+            ('hhea.ascent', []),
+            ('OS/2.sTypoAscender', []),
+            ('OS/2.usWinAscent', []),
+            ('ymin', []),
+            ('hhea.descent', []),
+            ('OS/2.sTypoDescender', []),
+            ('OS/2.usWinDescent', []),
+            ('hhea.lineGap', []),
+            ('OS/2.sTypoLineGap', []),
+            ('UPM:Heights', [])
+        ])
+        self._inconsistent = set()
+        self.glyphs = collections.OrderedDict()
+
+    def add_to_table(self, key, value):
+        if self._its_metrics[key] and value not in self._its_metrics[key]:
+            self._inconsistent.add(key)
+
+        self._its_metrics[key].append(value)
+
+    def add_metric(self, font_name, vmet):
+        ymin, ymax = vmet.get_bounding()
+        self._its_metrics_header.append(font_name)
+        self.add_to_table('hhea.ascent', vmet.ascents.hhea)
+        self.add_to_table('OS/2.sTypoAscender', vmet.ascents.os2typo)
+        self.add_to_table('OS/2.usWinAscent', vmet.ascents.os2win)
+        self.add_to_table('hhea.descent', vmet.descents.hhea)
+        self.add_to_table('OS/2.sTypoDescender', vmet.descents.os2typo)
+        self.add_to_table('OS/2.usWinDescent', vmet.descents.os2win)
+        self.add_to_table('hhea.lineGap', vmet.linegaps.hhea)
+        self.add_to_table('OS/2.sTypoLineGap', vmet.linegaps.os2typo)
+        self._its_metrics['ymax'].append(ymax)
+        self._its_metrics['ymin'].append(ymin)
+
+        upm = 'UPM:%s' % vmet.get_upm_heights()
+        self._its_metrics['UPM:Heights'].append(upm)
+
+        self.glyphs[font_name] = vmet.get_highest_and_lowest()
+
+    def print_metrics(self):
+        if self._inconsistent:
+            _ = 'WARNING: Inconsistent {}'
+            print(_.format(' '.join([str(x) for x in self._inconsistent])),
+                  end='\n\n')
+        formatstring = ''
+        for k in self._its_metrics_header:
+            print(('{:<%s}' % (len(k) + 4)).format(k), end='')
+            formatstring += '{:<%s}' % (len(k) + 4)
+        print()
+        for k, values in self._its_metrics.items():
+            print(formatstring.format(*([k] + values)))
+        print()
+        print('High Glyphs')
+        for font, glyphs in self.glyphs.items():
+            if glyphs[0]:
+                print(font + ':', ' '.join(glyphs[0]))
+        print()
+        print('Low Glyphs')
+        for font, glyphs in self.glyphs.items():
+            if glyphs[1]:
+                print(font + ':', ' '.join(glyphs[1]))
+
+
+class FontVerticalMetrics(object):
+
+    def __init__(self, fontpath):
+        self.ttfont = ttLib.TTFont(fontpath)
+
+        self.ascents = AscentGroup(self.ttfont)
+        self.descents = DescentGroup(self.ttfont)
+        self.linegaps = LineGapGroup(self.ttfont)
+
+    def get_upm_heights(self):
+        return self.ascents.os2typo + abs(self.descents.os2typo)
+
+    def get_highest_and_lowest(self):
+        high = []
+        low = []
+        maxval = self.ascents.get_max()
+        minval = self.descents.get_min()
+        for glyph, params in self.ttfont['glyf'].glyphs.items():
+            if hasattr(params, 'yMax') and params.yMax == maxval:
+                high.append(glyph)
+            if hasattr(params, 'yMin') and params.yMin == minval:
+                low.append(glyph)
+        return high, low
+
+    def get_bounding(self):
+        ymin = 0
+        ymax = 0
+        # .OTF fonts do not contain a `glyf` table,
+        # but have a precomputed value in the `head` table
+        if self.ttfont.sfntVersion == 'OTTO':
+            if hasattr(self.ttfont['head'], 'yMin'):
+                ymin = self.ttfont['head'].yMin
+            if hasattr(self.ttfont['head'], 'yMax'):
+                ymax = self.ttfont['head'].yMax
+        else:
+            for g in self.ttfont['glyf'].glyphs:
+                char = self.ttfont['glyf'][g]
+                if hasattr(char, 'yMin') and ymin > char.yMin:
+                    ymin = char.yMin
+                if hasattr(char, 'yMax') and ymax < char.yMax:
+                    ymax = char.yMax
+        if ymin != 0 and ymax != 0:
+            return(ymin, ymax)
+        else:
+            sys.exit("Unable to detect y values")
+
+    def save(self, fontpath):
+        self.ttfont.save(fontpath)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    # ascent parameters
     parser.add_argument('-a', '--ascents', type=int,
                         help=("Set new ascents value in 'Horizontal Header'"
-                              " table ('hhea')"))
+                              " table"))
+
+    parser.add_argument('-ah', '--ascents-hhea', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('hhea'). This argument"
+                              " cancels --ascents."))
+    parser.add_argument('-at', '--ascents-typo', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('OS/2'). This argument"
+                              " cancels --ascents."))
+    parser.add_argument('-aw', '--ascents-win', type=int,
+                        help=("Set new ascents value in 'Horizontal Header'"
+                              " table ('OS/2.Win'). This argument"
+                              " cancels --ascents."))
+
+    # descent parameters
     parser.add_argument('-d', '--descents', type=int,
                         help=("Set new descents value in 'Horizontal Header'"
-                              " table ('hhea')"))
+                              " table"))
+    parser.add_argument('-dh', '--descents-hhea', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('hhea'). This argument"
+                              " cancels --descents."))
+    parser.add_argument('-dt', '--descents-typo', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('OS/2'). This argument"
+                              " cancels --descents."))
+    parser.add_argument('-dw', '--descents-win', type=int,
+                        help=("Set new descents value in 'Horizontal Header'"
+                              " table ('OS/2.Win'). This argument"
+                              " cancels --descents."))
+
+    # linegaps parameters
     parser.add_argument('-l', '--linegaps', type=int,
                         help=("Set new linegaps value in 'Horizontal Header'"
+                              " table"))
+    parser.add_argument('-lh', '--linegaps-hhea', type=int,
+                        help=("Set new linegaps value in 'Horizontal Header'"
                               " table ('hhea')"))
+    parser.add_argument('-lt', '--linegaps-typo', type=int,
+                        help=("Set new linegaps value in 'Horizontal Header'"
+                              " table ('OS/2')"))
+
     parser.add_argument('--autofix', action="store_true",
                         help="Autofix font metrics")
-    parser.add_argument('filename', nargs='+',
+    parser.add_argument('fonts', nargs='+', metavar='font',
                         help="Font file in OpenType (TTF/OTF) format")
 
-    args = parser.parse_args()
-    vmetfixer = VmetFix(args.filename)
-    if args.ascents or args.descents or args.linegaps:
-        vmetfixer.set_metrics(args.ascents, args.descents, args.linegaps)
-    elif args.autofix:
-        vmetfixer.fix_metrics()
+    options = parser.parse_args()
+
+    fonts = options.fonts
+
+    if (options.ascents or options.descents or options.linegaps
+            or options.ascents_hhea or options.ascents_typo
+            or options.ascents_win or options.descents_hhea
+            or options.descents_typo or options.descents_win
+            or options.linegaps_hhea or options.linegaps_typo):
+        for f in fonts:
+            metrics = FontVerticalMetrics(f)
+
+            # set ascents, descents and linegaps. FontVerticalMetrics will
+            # not set those values if None, and overwrite them if concrete
+            # argument has been passed
+            metrics.ascents.set(options.ascents)
+            metrics.descents.set(options.descents)
+            metrics.linegaps.set(options.linegaps)
+
+            metrics.ascents.hhea = options.ascents_hhea
+            metrics.ascents.os2typo = options.ascents_typo
+            metrics.ascents.os2win = options.ascents_win
+
+            metrics.descents.hhea = options.descents_hhea
+            metrics.descents.os2typo = options.descents_typo
+            metrics.descents.os2win = options.descents_win
+
+            metrics.linegaps.hhea = options.linegaps_hhea
+            metrics.linegaps.os2typo = options.linegaps_typo
+            metrics.save(f + '.fix')
+
+    elif options.autofix:
+        ymin = 0
+        ymax = 0
+
+        for f in fonts:
+            metrics = FontVerticalMetrics(f)
+            font_ymin, font_ymax = metrics.get_bounding()
+            ymin = min(font_ymin, ymin)
+            ymax = max(font_ymax, ymax)
+
+        for f in fonts:
+            metrics = FontVerticalMetrics(f)
+            metrics.ascents.set(ymax)
+            metrics.descents.set(ymin)
+            metrics.linegaps.set(0)
+            metrics.save(f + '.fix')
     else:
-        vmetfixer.show_metrics()
+        view = TextMetricsView()
+        for f in fonts:
+            metrics = FontVerticalMetrics(f)
+            view.add_metric(os.path.basename(f), metrics)
+        view.print_metrics()

@@ -39,6 +39,8 @@
       <td style="text-align: center">
         {% if not b.is_done %}<i class="fa fa-spinner fa-spin text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build is not ready yet') }}"></i>
         {% elif b.modified %}<i class="fa fa-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('This build was manually modified') }}"></i>
+        {% elif b.succeeded %}<i class="fa fa-circle text-success" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('Success') }}"></i>
+        {% else %}<i class="fa fa-circle text-danger" data-toggle="tooltip" rel="tooltip" data-original-title="{{ _('Failed') }}"></i>
         {% endif %}
       </td>
       <td>
@@ -53,11 +55,15 @@
       <td class="danger">{{ udata.error|length }}</td>
       <td><a href="{{ url_for('project.utests', project_id=b.project_id, revision=b.revision) }}"> <i class="fa fa-file-text-o"> </i> </a></td>
       {% set data = b.read_rtests_data() %}
+      {% if data %}
       <td class="success">{{ data.success|length }}</td>
       <td class="warning">{{ data.failure|length }}</td>
       <td class="danger">{{ data.error|length }}</td>
       <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
-      <td>{% if b.is_done %}<a href="{{ url_for('project.zip', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
+      {% else %}
+      <td colspan="4"></td>
+      {% endif %}
+      <td>{% if b.succeeded %}<a href="{{ url_for('project.zip', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
     </tr>
     {% else %}
     <tr>

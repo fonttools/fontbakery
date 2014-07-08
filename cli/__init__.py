@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -15,12 +14,3 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-import sys
-# hardcoded for OSX
-# sys.path.append('/usr/local/lib/python2.7/site-packages/')
-import fontforge
-
-# magic is that fontforge detect output format by extension
-font = fontforge.open(sys.argv[1])
-font.generate(sys.argv[2])

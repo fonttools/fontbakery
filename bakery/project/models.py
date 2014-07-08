@@ -26,12 +26,15 @@ import difflib
 from flask import current_app
 from blinker.base import lazy_property
 
-from ..app import db
-from ..utils import save_metadata, prun
+from ..app import db, app
+from ..utils import save_metadata
 from ..tasks import (process_project, project_git_sync,
-                     upstream_revision_tests, result_tests,
+                     upstream_revision_tests,
                      generate_subsets_coverage_list)
 from .state import project_state_get, project_state_save, walkWithoutGit
+
+from cli.bakery import Bakery
+from cli.system import prun
 
 
 class Project(db.Model):
@@ -93,7 +96,7 @@ class Project(db.Model):
     def read_asset(self, name=None):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         if name == 'yaml':
-            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.bakery.yaml' % self)
+            fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/.bakery.yaml' % self)
         elif name == 'license':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
         else:
@@ -378,6 +381,11 @@ class ProjectBuild(db.Model):
     modified = db.Column(db.Boolean(), default=False)
     updated = db.Column(db.DateTime, default=datetime.now,
                         onupdate=db.func.now())
+    failed = db.Column(db.Boolean, default=False)
+
+    @property
+    def succeeded(self):
+        return not self.failed and self.is_done
 
     @staticmethod
     def make_build(project, revision, force_sync=False):
@@ -422,15 +430,23 @@ class ProjectBuild(db.Model):
             file exists """
         param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
-                    '%(build)s.%(revision)s.rtests.yaml') % param
+                    '%(build)s.%(revision)s/.tests.yaml') % param
         return os.path.exists(yamlpath) and os.path.isfile(yamlpath)
 
     def read_rtests_data(self):
         param = self.get_path_params()
         yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
-                    '%(build)s.%(revision)s.rtests.yaml') % param
+                    '%(build)s.%(revision)s/.tests.yaml') % param
+
+        if not os.path.exists(yamlpath):
+            # backward compatibility for rtests
+            yamlpath = ('%(root)s/%(login)s/%(id)s.out/'
+                        '%(build)s.%(revision)s.rtests.yaml') % param
+
         try:
             test_data = yaml.load(open(yamlpath).read())
+            if not test_data:
+                return {}
         except (IOError, yaml.YAMLError):
             return {}
 
@@ -517,6 +533,28 @@ class ProjectBuild(db.Model):
         return walkWithoutGit(self.path)
 
     def result_tests(self):
-        return result_tests(self.project, self, )
+        param = {'login': self.project.login, 'id': self.project.id,
+                 'revision': self.revision, 'build': self.id}
+        builddir = os.path.join(app.config['DATA_ROOT'],
+                                '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        if not os.path.exists(os.path.join(builddir, '.tests.yaml')):
+            config = os.path.join(app.config['DATA_ROOT'],
+                                  '%(login)s/%(id)s.in/.bakery.yaml' % self.project)
+
+            b = Bakery(config, builddir=builddir)
+            return b.result_tests_process()
+        return yaml.safe_load(open(os.path.join(builddir, '.tests.yaml')))
+
+    @lazy_property
+    def state(self):
+        param = {'login': self.project.login, 'id': self.project.id,
+                 'revision': self.revision, 'build': self.id}
+        builddir = os.path.join(app.config['DATA_ROOT'],
+                                '%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+        try:
+            y = yaml.safe_load(open(os.path.join(builddir, 'build.state.yaml')))
+            return y or {}
+        except:
+            return {}
 
 db.create_all()

@@ -215,7 +215,7 @@ class CheckerTest(unittest.TestCase):
     def test_consistency_copyright_notice_success(self):
         # TODO: create XXX_failure test
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertInSuccess('test_copyright_notices_same_across_family', run_set(p, 'consistency', 'test_copyright_notices_same_across_family'))
+        self.assertInSuccess('test_copyright_notices_same_across_family', run_set(p, 'upstream-repo', 'test_copyright_notices_same_across_family'))
 
     def test_result_font_italic_style_matches_internal_font_properties_values_success(self):
         p = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Italic.ttf')

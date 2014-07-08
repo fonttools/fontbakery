@@ -91,7 +91,6 @@ def writeFont(font, filename):
     if os.path.exists(filename):
         filename = filename + '.fix'
         font.save(filename)
-        print "Wrote font to", filename
 
 
 def checkAndFix(filename):
