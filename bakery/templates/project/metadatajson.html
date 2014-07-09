@@ -48,7 +48,6 @@
 {% block extrajs %}
 {% if metadata_new and metadata %}
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/bundle.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/external/diff_match_patch_uncompressed.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/jsondiffpatch/build/formatters.min.js') }}"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='libs/jsondiffpatch/src/formatters/html.css') }}" type="text/css" />
 <script>
