@@ -13,12 +13,12 @@
 {% if metadata_new and metadata %}
 <div class="col-md-6">
   <h4>{{ _("METADATA.json imported from upstream repo") }}</h4>
-  <pre><code>{{ metadata }}</code></pre>
+  <pre><code id="left">{{ metadata }}</code></pre>
 </div>
 
 <div class="col-md-6">
   <h4>{{ _("METADATA.json.new generated from files") }}</h4>
-  <pre><code>{{ metadata_new }}</code></pre>
+  <pre><code id="right">{{ metadata_new }}</code></pre>
   <!-- <div style="margin-bottom: 12px;">
     <a class="btn btn-danger">
       <span>{{ _('Delete <code>METADATA.json.new</code>') }}</span>
@@ -53,8 +53,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='libs/jsondiffpatch/src/formatters/html.css') }}" type="text/css" />
 <script>
 $(document).ready(function () {
-  var left = {{ metadata|safe or {} }};
-  var right = {{ metadata_new|safe or {} }};
+  var left = JSON.parse($('#left').text());
+  var right = JSON.parse($('#right').text());
 
   var instance = jsondiffpatch.create({
         objectHash: function(obj) {
