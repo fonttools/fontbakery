@@ -397,8 +397,13 @@ def repr_testcase(dumper, data):
             try:
                 doc = ' '.join(doc.split())
                 return doc.decode('utf-8', 'ignore')
-            except UnicodeDecodeError:
+            except:
                 return ''
+
+    try:
+        err_msg = getattr(data, '_err_msg', '').decode('utf-8', 'ignore')
+    except:
+        err_msg = ''
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
@@ -407,8 +412,7 @@ def repr_testcase(dumper, data):
         'methodName': data._testMethodName,
         'targets': data.targets,
         'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': getattr(data, '_err_msg', '').decode('utf-8',
-                                                        'ignore')
+        'err_msg': err_msg
     }
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
 
