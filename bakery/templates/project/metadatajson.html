@@ -26,7 +26,10 @@
   </div> -->
 </div>
 
-<div id="diff"></div>
+  <div id="delta-panel-visual" style="clear: both;">
+      <p id="visualdiff"></p>
+  </div>
+
 {% elif not metadata %}
 <div class="col-md-12">
   <h4 class="text-danger">{{ _("METADATA.json does not yet exist") }}</h4>
@@ -53,12 +56,24 @@ $(document).ready(function () {
   var left = {{ metadata|safe or {} }};
   var right = {{ metadata_new|safe or {} }};
 
-  var diffpatcher = jsondiffpatch.create();
-  var delta = diffpatcher.diff(left, right);
+  var instance = jsondiffpatch.create({
+        objectHash: function(obj) {
+            return obj._id || obj.id || obj.name || JSON.stringify(obj);
+        }
+    });
 
-  var visualdiff = document.getElementById('diff');
+  var delta = instance.diff(left, right);
+
+  var visualdiff = document.getElementById('visualdiff');
   if (visualdiff) {
     visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+
+    var scripts = visualdiff.querySelectorAll('script');
+    for (var i = 0; i < scripts.length; i++) {
+        var s = scripts[i];
+        /* jshint evil: true */
+        eval(s.innerHTML);
+    }
   }
 });
 </script>
