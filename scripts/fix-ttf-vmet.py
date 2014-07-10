@@ -267,9 +267,9 @@ class FontVerticalMetrics(object):
         maxval = self.ascents.get_max()
         minval = self.descents.get_min()
         for glyph, params in self.ttfont['glyf'].glyphs.items():
-            if hasattr(params, 'yMax') and params.yMax == maxval:
+            if hasattr(params, 'yMax') and params.yMax > maxval:
                 high.append(glyph)
-            if hasattr(params, 'yMin') and params.yMin == minval:
+            if hasattr(params, 'yMin') and params.yMin < minval:
                 low.append(glyph)
         return high, low
 
