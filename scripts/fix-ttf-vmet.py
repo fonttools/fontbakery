@@ -259,7 +259,7 @@ class FontVerticalMetrics(object):
         self.linegaps = LineGapGroup(self.ttfont)
 
     def get_upm_heights(self):
-        return self.ascents.os2typo + abs(self.descents.os2typo)
+        return self.ttfont['head'].unitsPerEm
 
     def get_highest_and_lowest(self):
         high = []

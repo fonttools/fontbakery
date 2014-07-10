@@ -220,8 +220,7 @@
             <a href="{{ url_for('project.home', project_id = repo.id )}}">{{ repo.title }}</a>
         </td>
         <td style="text-align: center">
-            {# TODO this doesn't work... also broken in macros.html #}
-            {% if repo.homepage %}<a href="{{ repo.homepage}}"><i class="fa fa-home"></i></a>{% endif %}
+            {% if repo.html_url %}<a href="{{ repo.html_url }}"><i class="fa fa-home"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
             {# TODO this doesn't work... also broken in macros.html #}

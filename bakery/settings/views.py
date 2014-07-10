@@ -204,6 +204,7 @@ def addclone():
     #
     # TODO we could do very light validation that the form field is not 0 in JS
     # TODO we could do very light validation of the URL in JS
+
     clone = request.form.get('clone')
     if len(clone) == 0:
         flash(_('Enter a URL.'))
@@ -213,7 +214,10 @@ def addclone():
         clone += '.git'  # quick fix to validate clone git url
 
     # pylint:disable-msg=E1101
-    dup = Project.query.filter_by(login=g.user.login, is_github=False, clone=clone).first()
+    user = ProjectCache.get_user_cache(g.user.login)
+
+    dup = Project.query.filter_by(login=g.user.login,
+                                  is_github=False, clone=clone).first()
     if dup:
         flash(_("This repository is a duplicate"))
 
@@ -221,10 +225,11 @@ def addclone():
         flash(_("Problem parsing git url"))
         return redirect(url_for('settings.repos') + "#tab_massgithub")
 
-    project = Project(
-        login=g.user.login,
-        clone=clone,
-        is_github=False)
+    project = Project(login=g.user.login, clone=clone, is_github=False)
+
+    if (clone in map(lambda x: x['clone_url'], user.data)
+            or clone in map(lambda x: x['git_url'], user.data)):
+        pass
 
     if project:
         db.session.add(project)
@@ -301,7 +306,7 @@ def batch():
             flash(_("Url %(url)s isn't accepted, parse error", url=l))
         else:
             dup = Project.query.filter_by(login=g.user.login,
-                                            is_github=False, clone=l).first()
+                                          is_github=False, clone=l).first()
 
             if dup:
                 flash(_("Url %(url)s is duplicate", url=l))
