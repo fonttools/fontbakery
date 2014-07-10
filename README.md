@@ -1,8 +1,8 @@
 <img src="https://raw.github.com/googlefonts/fontbakery/master/docs/image.png">
 
-[![Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
-[![Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
-[![Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
+[![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
+[![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
+[![Drone.io Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
 
 ## Introduction
 
@@ -90,23 +90,7 @@ To restore Font Bakery, reinstall it so that files like `local.cfg` are recreate
 
 ## Contribution
 
-[![Drone.io Build Status](https://drone.io/github.com/googlefonts/fontbakery/status.png)](https://drone.io/github.com/googlefonts/fontbakery/latest)
-[![Coveralls.io Test Coverage Status](https://coveralls.io/repos/googlefonts/fontbakery/badge.png?branch=master)](https://coveralls.io/repos/googlefonts/fontbakery)
-
-The project is run on Github, in the [typical](http://producingoss.com) free software way - your issues and pull requests are welcome in any way!
-
-Thanks to Robert Martinez (@mray) for [contributing](https://github.com/googlefonts/fontbakery/pull/255) the project logo!
-
-### Contributor License Agreement
-
-However, all contributors must agree to the appropriate Google Contributor License Agreement, found here:
-
-http://code.google.com/legal/individual-cla-v1.0.html
-http://code.google.com/legal/corporate-cla-v1.0.html
-
-After your contribution is included, you will be listed in CONTRIBUTORS.txt and/or AUTHORS.txt: CONTRIBUTORS is the official list of people who can contribute (and typically have contributed) code to this repository, while the AUTHORS file lists the copyright holders.
-
-A series of videos explaining the project are posting on the [Font Bakery tumblr](http://fontbakery.tumblr.com) and the [first video](http://www.youtube.com/watch?v=paKa_Kok2EA) covers basic functionality and the overall codebase.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### Software License
 
