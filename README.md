@@ -90,7 +90,7 @@ To restore Font Bakery, reinstall it so that files like `local.cfg` are recreate
 
 ## Contribution
 
-Please see [CONTRIBUORS.md](./CONTRIBUTORS.md)
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### Software License
 
