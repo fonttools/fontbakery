@@ -213,7 +213,13 @@ class TTXFontSource(FontSourceAbstract):
         return font
 
     def copy(self, destdir):
+        import glob
         super(TTXFontSource, self).copy(destdir)
+        rootpath = op.dirname(self.source_path)
+        fontname = op.basename(self.source_path)
+        for f in glob.glob(op.join(rootpath, '%s.*.ttx' % fontname[:-4])):
+            fontpath = op.join(rootpath, f)
+            shutil.copy(fontpath, op.join(destdir, fontpath), log=self.stdout_pipe)
 
     @property
     def style_name(self):

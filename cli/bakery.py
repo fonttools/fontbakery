@@ -261,6 +261,8 @@ class Bakery(object):
 
         os.chdir(op.join(self.builddir, 'sources'))
         for name in list(glob.glob("*.ufo")) + list(glob.glob("*.ttx")):
+            if name.endswith('.ttx') and name.count('.') > 1:
+                continue
             name = name[:-4]  # cut .ufo|.ttx
 
             # create menu subset with glyph for text of family name
