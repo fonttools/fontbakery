@@ -195,11 +195,15 @@ class TextMetricsView(object):
             ('OS/2.usWinDescent', []),
             ('hhea.lineGap', []),
             ('OS/2.sTypoLineGap', []),
+            ('hhea total', []),
+            ('typo total', []),
+            ('win total', []),
             ('UPM:Heights', []),
             ('UPM:Heights %', [])
         ])
         self._inconsistent = set()
         self._inconsistent_table = {}
+        self._warnings = []
 
         self.glyphs = collections.OrderedDict()
 
@@ -249,6 +253,18 @@ class TextMetricsView(object):
         value = (value / float(vmet.get_upm_heights())) * 100
         self._its_metrics['UPM:Heights %'].append('%d %%' % value)
 
+        hhea_total = vmet.ascents.hhea + abs(vmet.descents.hhea) + vmet.linegaps.hhea
+        self._its_metrics['hhea total'].append(hhea_total)
+
+        typo_total = vmet.ascents.os2typo + abs(vmet.descents.os2typo) + vmet.linegaps.os2typo
+        self._its_metrics['typo total'].append(typo_total)
+
+        win_total = vmet.ascents.os2win + abs(vmet.descents.os2win)
+        self._its_metrics['win total'].append(win_total)
+
+        if len(set([typo_total, hhea_total, win_total])) > 1:
+            self._warnings.append('%s has NOT even heights' % font_name)
+
         self.glyphs[font_name] = vmet.get_highest_and_lowest()
 
     def print_metrics(self):
@@ -256,6 +272,11 @@ class TextMetricsView(object):
             _ = 'WARNING: Inconsistent {}'
             print(_.format(' '.join([str(x) for x in self._inconsistent])),
                   end='\n\n')
+
+        if self._warnings:
+            for warn in self._warnings:
+                print('WARNING: %s' % warn)
+
         formatstring = ''
         for k in self._its_metrics_header:
             print(('{:<%s}' % (len(k) + 4)).format(k), end='')
@@ -283,6 +304,7 @@ class TextMetricsView(object):
                     header_printed = True
                 print(font + ':', ' '.join(glyphs[1]))
 
+        print()
         for metrickey, row in self._inconsistent_table.items():
             value = self.find_max_occurs_from_metrics_key(row)
 
