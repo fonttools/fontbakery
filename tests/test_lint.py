@@ -34,6 +34,7 @@ from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
 from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
 from checker.tests import test_check_glyf_table_length as tf_glyflen
 from checker.tests import test_check_full_font_name_begins_with_family_name as tf_ff_names
+from checker.tests import test_check_upm_heights_less_120 as tf_upm
 from checker.ttfont import Font as OriginFont
 
 
@@ -548,3 +549,48 @@ class Test_CheckFullFontNameBeginsWithFamilyName(unittest.TestCase):
             self.fail(result.errors[0][1])
 
         self.assertTrue(bool(result.failures))
+
+
+class Test_CheckUPMHeightsLess120(unittest.TestCase):
+
+    def test_eighteen(self):
+
+        class FakeAscents:
+
+            maxv = 910
+
+            def get_max(self):
+                return self.maxv
+
+        class FakeDescents:
+
+            minv = -210
+
+            def get_min(self):
+                return self.minv
+
+        class Font:
+
+            @property
+            def upm_heights(self):
+                return 1024
+
+            ascents = FakeAscents()
+            descents = FakeDescents()
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(tf_upm.TestCheckUPMHeightsLess120)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+            mocked_get_ttfont.return_value.ascents.maxv = 1400
+            result = _run_font_test(tf_upm.TestCheckUPMHeightsLess120)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
