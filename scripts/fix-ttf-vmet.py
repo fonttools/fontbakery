@@ -199,25 +199,46 @@ class TextMetricsView(object):
             ('UPM:Heights %', [])
         ])
         self._inconsistent = set()
+        self._inconsistent_table = {}
+
         self.glyphs = collections.OrderedDict()
 
-    def add_to_table(self, key, value):
+    def add_to_table(self, fontname, key, value):
         if self._its_metrics[key] and value not in self._its_metrics[key]:
-            self._inconsistent.add(key)
+                self._inconsistent.add(key)
+
+        if key not in self._inconsistent_table:
+            self._inconsistent_table[key] = []
+
+        # lookup row with value and append fontname to `fonts` key, eg.:
+        # {'hhea.ascent': [{'value': 390,
+        #                   'fonts': ['fontname.ttf', 'fontname2.ttf']}]}
+        #
+        # It looks like json groupped by metrics key
+        row = {}
+        for r in self._inconsistent_table[key]:
+            if r['value'] == value:
+                row = r
+
+        if not row:
+            row = {'value': value, 'fonts': []}
+            self._inconsistent_table[key].append(row)
+
+        row['fonts'].append(fontname)
 
         self._its_metrics[key].append(value)
 
     def add_metric(self, font_name, vmet):
         ymin, ymax = vmet.get_bounding()
         self._its_metrics_header.append(font_name)
-        self.add_to_table('hhea.ascent', vmet.ascents.hhea)
-        self.add_to_table('OS/2.sTypoAscender', vmet.ascents.os2typo)
-        self.add_to_table('OS/2.usWinAscent', vmet.ascents.os2win)
-        self.add_to_table('hhea.descent', vmet.descents.hhea)
-        self.add_to_table('OS/2.sTypoDescender', vmet.descents.os2typo)
-        self.add_to_table('OS/2.usWinDescent', vmet.descents.os2win)
-        self.add_to_table('hhea.lineGap', vmet.linegaps.hhea)
-        self.add_to_table('OS/2.sTypoLineGap', vmet.linegaps.os2typo)
+        self.add_to_table(font_name, 'hhea.ascent', vmet.ascents.hhea)
+        self.add_to_table(font_name, 'OS/2.sTypoAscender', vmet.ascents.os2typo)
+        self.add_to_table(font_name, 'OS/2.usWinAscent', vmet.ascents.os2win)
+        self.add_to_table(font_name, 'hhea.descent', vmet.descents.hhea)
+        self.add_to_table(font_name, 'OS/2.sTypoDescender', vmet.descents.os2typo)
+        self.add_to_table(font_name, 'OS/2.usWinDescent', vmet.descents.os2win)
+        self.add_to_table(font_name, 'hhea.lineGap', vmet.linegaps.hhea)
+        self.add_to_table(font_name, 'OS/2.sTypoLineGap', vmet.linegaps.os2typo)
         self._its_metrics['ymax'].append(ymax)
         self._its_metrics['ymin'].append(ymin)
 
@@ -239,19 +260,51 @@ class TextMetricsView(object):
         for k in self._its_metrics_header:
             print(('{:<%s}' % (len(k) + 4)).format(k), end='')
             formatstring += '{:<%s}' % (len(k) + 4)
+
         print()
         for k, values in self._its_metrics.items():
             print(formatstring.format(*([k] + values)))
-        print()
-        print('High Glyphs')
+
+        header_printed = False
         for font, glyphs in self.glyphs.items():
             if glyphs[0]:
+                if not header_printed:
+                    print()
+                    print('High Glyphs')
+                    header_printed = True
                 print(font + ':', ' '.join(glyphs[0]))
-        print()
-        print('Low Glyphs')
+
+        header_printed = False
         for font, glyphs in self.glyphs.items():
             if glyphs[1]:
+                if not header_printed:
+                    print()
+                    print('Low Glyphs')
+                    header_printed = True
                 print(font + ':', ' '.join(glyphs[1]))
+
+        for metrickey, row in self._inconsistent_table.items():
+            value = self.find_max_occurs_from_metrics_key(row)
+
+            tbl = {}
+            for r in row:
+                if r['value'] == value:
+                    continue
+                if metrickey not in tbl:
+                    tbl[metrickey] = []
+                tbl[metrickey] += r['fonts']
+
+            for k, r in tbl.items():
+                print('Inconsistent %s:' % k, ', '.join(r))
+
+    def find_max_occurs_from_metrics_key(self, metricvalues):
+        result = 0
+        occurs = 0
+        for v in metricvalues:
+            if len(v['fonts']) > occurs:
+                occurs = len(v['fonts'])
+                result = v['value']
+        return result
 
 
 class FontVerticalMetrics(object):
