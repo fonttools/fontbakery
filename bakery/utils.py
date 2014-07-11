@@ -22,6 +22,7 @@ import io
 import itsdangerous
 import os
 import os.path as op
+import re
 
 from flask import current_app
 from scripts.genmetadata import sortOldMetadata as sortMetadata
@@ -100,8 +101,11 @@ class RedisFd(object):
 
         if not data.endswith('\n'):
             data += '\n'
-        self.filed.write("%s%s" % (prefix, data))
-        self.filed.flush()
+
+        data = re.sub('\n{3,}', '\n\n', data.strip())
+        if data:
+            self.filed.write("%s%s" % (prefix, data))
+            self.filed.flush()
 
     def close(self):
         self.filed.write("End: End of log\n")  # end of log
