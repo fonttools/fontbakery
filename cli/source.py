@@ -155,7 +155,7 @@ class UFOFontSource(FontSourceAbstract):
         args += ['--layout-features="*"']
         subset.main(args)
 
-        self.stdout_pipe.write(' '.join(args))
+        self.stdout_pipe.write('$ pyftsubset %s' % ' '.join(args))
 
         # compare filesizes TODO print analysis of this :)
         cmd = "ls -l '%s.ttf'*" % filename
