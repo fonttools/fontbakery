@@ -185,7 +185,7 @@ def project_git_sync(project):
     generate_subsets_coverage_list(project, log=log)
 
     revision = prun("git rev-parse --short HEAD", cwd=_in).strip()
-    upstream_revision_tests(project, revision)
+    upstream_revision_tests(project, revision, log=log)
 
     log.write('End: Repository is ready. Please Setup\n', prefix='### ')
     # set project state as ready after sync is done
@@ -234,7 +234,7 @@ def get_sources_lists(rootpath):
     return ufo_dirs, ttx_files, metadata_files
 
 
-def upstream_revision_tests(project, revision):
+def upstream_revision_tests(project, revision, log=None):
     """ This function run upstream tests on all sources fonts in project.
 
         This mean that success (aka getting any result) should be occasional
@@ -254,8 +254,8 @@ def upstream_revision_tests(project, revision):
     _out_folder = joinroot('%(login)s/%(id)s.out/utests/' % param)
     _out_yaml = op.join(_out_folder, '%(revision)s.yaml' % param)
 
-    if op.exists(_out_yaml):
-        return yaml.safe_load(open(_out_yaml, 'r'))
+    # if op.exists(_out_yaml):
+    #     return yaml.safe_load(open(_out_yaml, 'r'))
 
     if not op.exists(_out_folder):
         os.makedirs(_out_folder)
@@ -263,39 +263,42 @@ def upstream_revision_tests(project, revision):
     result = {}
     os.chdir(_in)
 
-    git_checkout(_in, revision)
+    try:
+        git_checkout(_in, revision)
 
-    result[project.clone] = run_set(_in, 'upstream-repo')
+        result[project.clone] = run_set(_in, 'upstream-repo', log=log)
 
-    ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
+        ufo_dirs, ttx_files, metadata_files = get_sources_lists(_in)
 
-    for font in ufo_dirs:
-        if op.exists(op.join(_in, font)):
-            result[font] = run_set(op.join(_in, font), 'upstream')
+        for font in ufo_dirs:
+            if op.exists(op.join(_in, font)):
+                result[font] = run_set(op.join(_in, font), 'upstream', log=log)
 
-    for metadata_path in metadata_files:
-        result[metadata_path] = run_set(metadata_path, 'metadata')
+        for metadata_path in metadata_files:
+            result[metadata_path] = run_set(metadata_path, 'metadata', log=log)
 
-    for font in ttx_files:
-        if op.exists(op.join(_in, font)):
-            result[font] = run_set(op.join(_in, font), 'upstream-ttx')
+        for font in ttx_files:
+            if op.exists(op.join(_in, font)):
+                result[font] = run_set(op.join(_in, font), 'upstream-ttx', log=log)
 
-    l = open(_out_yaml, mode='w')
-    l.write(yaml.safe_dump(result))
-    l.close()
+        l = open(_out_yaml, mode='w')
+        l.write(yaml.safe_dump(result))
+        l.close()
 
-    return yaml.safe_load(open(_out_yaml, 'r'))
+        return yaml.safe_load(open(_out_yaml, 'r'))
+    except Exception, ex:
+        if log:
+            log.write('UPSTREAM: FAILED')
+            log.write('Details: %s' % ex)
+        return {}
 
 
 def git_checkout(path, revision, log=None):
-    try:
-        from git import Repo, InvalidGitRepositoryError
-        repo = Repo(path)
-        repo.git.checkout(revision)
-        if log:
-            log.write("git checkout %s\n" % revision, prefix='$ ')
-    except InvalidGitRepositoryError:
-        pass
+    from git import Repo
+    repo = Repo(path)
+    repo.git.checkout(revision)
+    if log:
+        log.write("git checkout %s\n" % revision, prefix='$ ')
 
 
 @job
