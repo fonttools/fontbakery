@@ -27,6 +27,9 @@ ttfautohint: -l 7 -r 28 -G 50 -x 13 -w "G"
 ### Use FontCrunch by default
 fontcrunch: True
 
+### Pyftsubset defaults parameters
+pyftsubset: --notdef-outline --name-IDs="*" --hinting
+
 ### Dashboard metadata - anything autodetectable may be detected from files in the _in directory
 
 # copyright_license: # ofl/apache/ufl, can be autodiscovered

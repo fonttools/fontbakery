@@ -63,23 +63,6 @@
     </div>
   </div>
 
-  <div class="form-group  anchorUnderNavbar">
-    <label class="control-label col-sm-2" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
-    <div class="col-sm-8">
-      {% set subsetvals = project.get_subsets() %}
-      <table class="table">
-        <tbody>
-          {% for subset_name, percentage in subsetvals %}
-          <tr>
-            <td>{{ subset_name }}</td>
-            <td>{{ percentage }}%</td>
-            <td><input type="checkbox" value="{{ subset_name }}" name="subset"{% if subset_name in config['state']['subset'] %} checked="checked"{% endif %}></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 
   <div class="form-group  anchorUnderNavbar">
     <label class="control-label col-sm-2" for="txt_files">{{ _("Text Files:") }}</label>
@@ -90,6 +73,34 @@
       <option {% if i in config['state']['txt_files_copied'] %}selected="selected"{% endif %} >{{ i }}</option>
       {% endfor %}
     </select>
+    </div>
+  </div>
+
+  <div class="form-group  anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
+    <div class="col-sm-8">
+      {% set subsetvals = project.get_subsets() %}
+      <table class="table">
+        <tbody>
+          {% for subset_name, percentage in subsetvals %}
+          <tr>
+            <td><label for="subset.{{ subset_name }}">{{ subset_name }}</label></td>
+            <td><input type="text" name="pyftsubset.{{ subset_name }}" value="{{ config['state'].get('pyftsubset.%s' % subset_name) or "" }}" /></td>
+            <td>{{ percentage }}%</td>
+            <td><input type="checkbox" id="subset.{{ subset_name }}" value="{{ subset_name }}" name="subset"{% if subset_name in config['state']['subset'] %} checked="checked"{% endif %}></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="form-group anchorUnderNavbar">
+    <label class="control-label col-sm-2" for="pyftsubset">{{ _("<code>pyftsubset</code> options?") }}</label>
+    <div class="col-sm-8">
+    <input type="text" placeholder="" name="pyftsubset"
+      value="{{ config['state'].get('pyftsubset', '') }}"
+      class="form-control" id="pyftsubset">
     </div>
   </div>
 

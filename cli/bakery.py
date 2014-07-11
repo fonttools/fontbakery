@@ -243,8 +243,15 @@ class Bakery(object):
         from fontTools import subset
         argv = [op.join(self.builddir, name) + '.ttf'] + glyphs.split()
         # argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
-        if args:
-            argv += args
+
+        override_argv = []
+        if self.config.get('pyftsubset'):
+            override_argv = self.config['pyftsubset'].split()
+
+        if self.config.get('pyftsubset.%s' % subsetname):
+            override_argv = self.config['pyftsubset.%s' % subsetname].split()
+
+        argv = argv + override_argv
         subset.main(argv)
 
         self.stdout_pipe.write('$ pyftsubset %s' % ' '.join(argv))

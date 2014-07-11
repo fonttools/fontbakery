@@ -188,10 +188,17 @@ def setup(p):
     config['state']['process_files'] = process_files
 
     subset_list = request.form.getlist('subset')
+    subsets = dict(p.get_subsets()).keys()
     for i in subset_list:
-        if i not in dict(p.get_subsets()).keys():
+        if i not in subsets:
             error = True
             flash(_('Subset value is wrong'))
+
+    for subset in subsets:
+        if request.form.get('pyftsubset.%s' % subset):
+            value = request.form.get('pyftsubset.%s' % subset, '')
+            config['state']['pyftsubset.%s' % subset] = value
+
     if len(subset_list) < 0:
         error = True
         flash(_("Select at least one subset from list"))
