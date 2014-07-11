@@ -222,6 +222,8 @@ def get_sources_lists(rootpath):
         for f in files:
             fullpath = op.join(root, f)
             if op.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
+                if fullpath[l:].count('.') > 1:
+                    continue
                 ttx_files.append(fullpath[l:])
             if f.lower() == 'metadata.json':
                 metadata_files.append(fullpath[:l])

@@ -34,7 +34,7 @@
           <input type="text" data-provide="typeahead" data-source="[
            {# TODO DC This doesn't work, not sure why #}
            {%- for item in cache.data %}
-              '{{ item.full_name }}', 
+              '{{ item.full_name }}',
            {%- endfor %}
            ]">
           <div class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
@@ -99,7 +99,7 @@
         <div class="form-actions jumbotron">
               <button type="submit" class="btn btn-primary" data-confirm="{{ _('Does this repository contain only works you have permission to modify (because you are the owner or it is licensed with an Open Source license)?') }}" data-title="{{ _('Confirm?') }}">{{ _("Add repositories") }}</button>
         </div>
-      </div>          
+      </div>
 
 
      </div>
@@ -121,14 +121,10 @@ var hash = document.location.hash;
 var prefix = "tab_";
 if (hash) {
     $('.nav-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
-} 
+}
 // Change hash for page-reload
 $('.nav-tabs a').on('shown', function (e) {
     window.location.hash = e.target.hash.replace("#", "#" + prefix);
 });
-
-// $(document).ready(function() {
-//      $("#massgithub").highlight("font");
-// });
 </script>
 {% endblock %}

@@ -140,6 +140,8 @@ def project_state_get(project, refresh=False):
             if os.path.splitext(fullpath)[1].lower() in ['.ttf', '.otf']:
                 bin_files.append(fullpath[l:])
             if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
+                if fullpath[l:].count('.') > 1:
+                    continue
                 ttx_files.append(fullpath[l:])
             if os.path.splitext(fullpath)[1].lower() == '.sfd':
                 sfd_files.append(fullpath[l:])

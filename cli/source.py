@@ -212,6 +212,9 @@ class TTXFontSource(FontSourceAbstract):
         font.importXML(path, quiet=True)
         return font
 
+    def copy(self, destdir):
+        super(TTXFontSource, self).copy(destdir)
+
     @property
     def style_name(self):
         # Find the style name
