@@ -53,11 +53,11 @@ class metaclass(type):
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
                 if log:
-                    log.write('  # OK\n')
+                    log.write('OK\n')
                 return result
             except Exception, e:
                 if log:
-                    log.write('  # FAIL\n# Error: %s\n' % e.message)
+                    log.write('Error: %s\n' % e.message)
                 raise e
 
         return func
