@@ -158,7 +158,8 @@ class UFOFontSource(FontSourceAbstract):
         self.stdout_pipe.write('$ pyftsubset %s' % ' '.join(args))
 
         # compare filesizes TODO print analysis of this :)
-        cmd = "ls -l '%s.ttf'*" % filename
+        comment = "# look at the size savings of that subset process"
+        cmd = "ls -l '%s.ttf'* %s" % (filename, comment)
         run(cmd, cwd=builddir, log=self.stdout_pipe)
 
         # move ttx files to src
