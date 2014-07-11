@@ -25,7 +25,7 @@ import os
 import sys
 from fontTools import ttLib
 
-sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
 from checker.ttfont import AscentGroup, DescentGroup, LineGapGroup
 
