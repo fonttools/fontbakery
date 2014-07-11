@@ -25,9 +25,199 @@ import os
 import sys
 from fontTools import ttLib
 
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-from checker.ttfont import AscentGroup, DescentGroup, LineGapGroup
+def is_none_protected(func):
+
+    def f(self, value):
+        if value is None:
+            return
+        func(self, value)
+
+    return f
+
+
+class AscentGroup(object):
+
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
+
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+        self.os2win = value
+
+    def get_max(self):
+        """ Returns largest value of ascents
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.ascents.get_max()
+        1178
+        """
+        return max(self.hhea, self.os2typo, self.os2win)
+
+    def hhea():
+        doc = """Ascent value in 'Horizontal Header' (hhea.ascent)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.ascents.hhea
+        1178
+        """
+
+        def fget(self):
+            return self.ttfont['hhea'].ascent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].ascent = value
+
+        return locals()
+    hhea = property(**hhea())
+
+    def os2typo():
+        doc = """Ascent value in 'Horizontal Header' (OS/2.sTypoAscender)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.ascents.os2typo
+        1178
+        """
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoAscender
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoAscender = value
+
+        return locals()
+    os2typo = property(**os2typo())
+
+    def os2win():
+        doc = """Ascent value in 'Horizontal Header' (OS/2.usWinAscent)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.ascents.os2win
+        1178
+        """
+
+        def fget(self):
+            return self.ttfont['OS/2'].usWinAscent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].usWinAscent = value
+
+        return locals()
+    os2win = property(**os2win())
+
+
+class DescentGroup(object):
+
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
+
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+        self.os2win = value
+
+    def get_min(self):
+        """ Returns least value of descents.
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.descents.get_min()
+        -384
+        """
+        return min(self.hhea, self.os2typo, self.os2win)
+
+    def hhea():
+        doc = """ Descent value in 'Horizontal Header' (hhea.descent)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.descents.hhea
+        -384
+        """
+
+        def fget(self):
+            return self.ttfont['hhea'].descent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].descent = value
+
+        return locals()
+    hhea = property(**hhea())
+
+    def os2typo():
+        doc = """Descent value in 'Horizontal Header' (OS/2.sTypoDescender)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.descents.os2typo
+        -384
+        """
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoDescender
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoDescender = value
+
+        return locals()
+    os2typo = property(**os2typo())
+
+    def os2win():
+        doc = """Descent value in 'Horizontal Header' (OS/2.usWinDescent)
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.descents.os2win
+        384
+        """
+
+        def fget(self):
+            return self.ttfont['OS/2'].usWinDescent
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].usWinDescent = abs(value)
+
+        return locals()
+    os2win = property(**os2win())
+
+
+class LineGapGroup(object):
+
+    def __init__(self, ttfont):
+        self.ttfont = ttfont
+
+    def set(self, value):
+        self.hhea = value
+        self.os2typo = value
+
+    def hhea():
+        doc = "The hhea.lineGap property"
+
+        def fget(self):
+            return self.ttfont['hhea'].lineGap
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['hhea'].lineGap = value
+
+        return locals()
+    hhea = property(**hhea())
+
+    def os2typo():
+        doc = "The OS/2.sTypoLineGap property"
+
+        def fget(self):
+            return self.ttfont['OS/2'].sTypoLineGap
+
+        @is_none_protected
+        def fset(self, value):
+            self.ttfont['OS/2'].sTypoLineGap = value
+
+        return locals()
+    os2typo = property(**os2typo())
 
 
 class TextMetricsView(object):
