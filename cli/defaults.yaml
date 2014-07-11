@@ -4,6 +4,9 @@
 ### Optional keys are commented out.
 ###
 
+### Commit to build, or HEAD
+commit: HEAD
+
 ### License file filename
 ###   This file must exist.
 license_file: ''
