@@ -152,7 +152,7 @@ class UFOFontSource(FontSourceAbstract):
 
         from fontTools import subset
         args = [op.join(builddir, filename) + '.ttf'] + glyphs
-        # args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
+        args += ['--layout-features="*"']
         subset.main(args)
 
         self.stdout_pipe.write(' '.join(args))
