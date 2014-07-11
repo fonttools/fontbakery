@@ -326,6 +326,10 @@ class Bakery(object):
                 'origin': op.getsize(name + '.ttf'),
                 'processed': op.getsize(name + '.autohint.ttf')
             })
+            # compare filesizes TODO print analysis of this :)
+            comment = "# look at the size savings of that subset process"
+            cmd = "ls -l %s.*ttf %s" % (op.basename(name), comment)
+            run(cmd, cwd=self.builddir, log=self.stdout_pipe)
             shutil.move(name + '.autohint.ttf', name + '.ttf',
                         log=self.stdout_pipe)
 
