@@ -105,7 +105,7 @@ def run(command, cwd, log):
         stderr = process.stderr.readline()
         # Log output
         if stdout.strip():
-            log.write(stdout.strip())
+            log.write(stdout)
         # Log error
         if stderr:
             # print the error on the worker console
@@ -146,8 +146,8 @@ def prun(command, cwd, log=None):
 
     stdout = ''
     for line in iter(process.stdout.readline, ''):
-        if log and line.strip():
-            log.write(line.strip())
+        if log:
+            log.write(line)
         stdout += line
         process.stdout.flush()
     return stdout

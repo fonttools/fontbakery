@@ -102,7 +102,7 @@ class RedisFd(object):
         if not data.endswith('\n'):
             data += '\n'
 
-        data = re.sub('\n{3,}', '\n\n', data.strip())
+        data = re.sub('\n{3,}', '\n\n', data)
         if data:
             self.filed.write("%s%s" % (prefix, data))
             self.filed.flush()
