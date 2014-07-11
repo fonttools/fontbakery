@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <h3>
-  <a href="{{ url_for('project.ufiles', project_id = project.id) }}">{{ project.title }}</a> / {{ page_title }}
+  {{ _("Project") }}: <a href="{{ url_for('project.home', project_id = project.id) }}">{{ project.title }}</a> / {{ page_title }}
 </h3>
 <div clas="container">
 <div class="row">
