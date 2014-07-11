@@ -366,15 +366,15 @@ def inferSubsets(familydir):
 
 
 def getDesigner(familydir):
-    import fontforge
+    # import fontforge
     files = os.listdir(familydir)
     for f in files:
         if f.endswith("Regular.ttf"):  # DC should ansiprint red if no Reg exemplar
             filepath = os.path.join(familydir, f)
-            # ftfont = fontToolsOpenFont(filepath)
-            # desName = fontToolsGetDesignerName(ftfont)
-            ftfont = fontforge.open(filepath)
-            desName = ftfont.sfnt_names[9][2]
+            ftfont = fontToolsOpenFont(filepath)
+            desName = fontToolsGetDesignerName(ftfont)
+            #ftfont = fontforge.open(filepath)
+            #desName = ftfont.sfnt_names[9][2]
             if isinstance(desName, str):
                 string = u"Designer's name from font is: " + desName.decode('utf8')
                 color = "green"
