@@ -334,6 +334,7 @@ def process_project(project, build, revision, force_sync=False):
     # setup is set after 'bake' button is first pressed
 
     if project.config['local'].get('setup', None):
+
         log.write('Preparing build\n', prefix='### ')
         git_checkout(_in, revision, log)
 

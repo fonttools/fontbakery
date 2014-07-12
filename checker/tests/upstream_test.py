@@ -16,13 +16,13 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import glob
-import lxml.etree
 import os
+import os.path as op
 import re
 
 from checker.base import BakeryTestCase as TestCase, tags
-from fontaine.builder import Director, Builder
-from fontaine.cmap import library
+from fontaine.font import FontFactory
+from fontaine.cmap import Library
 
 
 class ProjectUpstreamTestCase(TestCase):
@@ -128,44 +128,48 @@ def get_test_subset_function(value):
     return function
 
 
+def get_sources_lists(rootpath):
+    """ Return list of lists of UFO, TTX and METADATA.json """
+    ufo_dirs = []
+    ttx_files = []
+    metadata_files = []
+    l = len(rootpath)
+    for root, dirs, files in os.walk(rootpath):
+        for f in files:
+            fullpath = op.join(root, f)
+            if op.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
+                if fullpath[l:].count('.') > 1:
+                    continue
+                ttx_files.append(fullpath[l:])
+            if f.lower() == 'metadata.json':
+                metadata_files.append(fullpath[:l])
+        for d in dirs:
+            fullpath = op.join(root, d)
+            if op.splitext(fullpath)[1].lower() == '.ufo':
+                ufo_dirs.append(fullpath[l:])
+    return ufo_dirs, ttx_files, metadata_files
+
+
 class FontaineTest(TestCase):
 
-    targets = ['upstream', 'result']
+    targets = ['upstream-repo']
     tool = 'PyFontaine'
     name = __name__
     path = '.'
 
-    def setUp(self):
-        # This test uses custom collections for pyFontaine call
-        # We should save previous state of collection and then
-        # restore it in tearDown
-        self.old_collections = library.collections
-
-    def tearDown(self):
-        library.collections = self.old_collections
-
     @classmethod
     def __generateTests__(cls):
         pattern = re.compile('[\W_]+')
-
-        library.collections = ['subsets']
-
-        try:
-            tree = Director().construct_tree([cls.path])
-            contents = Builder.xml_(tree).doc.toprettyxml(indent="  ")
-        except:
-            return
-
-        docroot = lxml.etree.fromstring(contents)
-        for orth in docroot.xpath('//orthography'):
-            try:
-                value = int(orth.xpath('./percentCoverage/text()')[0])
-                common_name = orth.xpath('./commonName/text()')[0]
-            except IndexError:
-                continue
-            shortname = pattern.sub('', common_name)
-            exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, value)
-            exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
+        library = Library(collections=['subsets'])
+        ufo_files, ttx_files, _ = get_sources_lists(cls.path)
+        for fontpath in ufo_files + ttx_files:
+            font = FontFactory.openfont(fontpath)
+            for charmap, _, coverage, _ in \
+                    font.get_orthographies(_library=library):
+                common_name = charmap.common_name.replace('Subset ', '')
+                shortname = pattern.sub('', common_name)
+                exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, coverage)
+                exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
 
 
 import fontforge
