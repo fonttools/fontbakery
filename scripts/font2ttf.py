@@ -51,7 +51,7 @@ def convert(sourceFont, ttf, otf=None, log=log):
     if otf:
         try:
             font.generate(otf)
-            log.write("Success: Generated OpenType-CFF (%s)" % otf)
+            log.write("OK: Generated OpenType-CFF (%s)" % otf)
         except:
             log.write("Error: Could not generate OpenType-CFF (%s)" % otf)
 
