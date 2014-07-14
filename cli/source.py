@@ -21,7 +21,7 @@ import re
 import sys
 
 from fontTools import ttLib
-from cli.system import shutil, run
+from cli.system import shutil, run, prun
 
 
 class FontSourceAbstract(object):
@@ -140,7 +140,7 @@ class UFOFontSource(FontSourceAbstract):
         except Exception, ex:
             self.stdout_pipe.write('# Error: %s\n' % ex.message)
 
-    def optimize_ttx(self, builddir):
+    def optimize(self, builddir):
         filename = self.postscript_fontname
         # convert the ttf to a ttx file - this may fail
         font = fontforge.open(op.join(builddir, filename) + '.ttf')
@@ -189,7 +189,7 @@ class UFOFontSource(FontSourceAbstract):
             plistlib.writePlist(_out_ufoFontInfo, _out_ufoPlist)
 
         self.convert_ufo2ttf(builddir)
-        self.optimize_ttx(builddir)
+        self.optimize(builddir)
 
 
 class TTXFontSource(FontSourceAbstract):
@@ -263,6 +263,13 @@ class TTXFontSource(FontSourceAbstract):
             convert(path, ttfpath, log=self.stdout_pipe)
         except Exception, ex:
             self.stdout_pipe.write('Error: %s\n' % ex.message)
+
+        SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
+
+        command = op.join(builddir, self.postscript_fontname + '.ttf')
+        prun('python %s %s' % (SCRIPTPATH, command),
+             cwd=op.abspath(op.join(op.dirname(__file__), '..')),
+             log=self.stdout_pipe)
 
     def after_copy(self, builddir):
         out_name = self.postscript_fontname + '.ttf'
