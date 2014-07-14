@@ -368,7 +368,7 @@ def process_project(project, build, revision, force_sync=False):
             # save that project is done
             set_done(build)
 
-        log.write('Bake Succeeded!\n', prefix='### ')
+        log.write('Bake Succeeded! Now see [Build History](/project/%s/build)\n' % project.id, prefix='### ')
 
     log.close()
 

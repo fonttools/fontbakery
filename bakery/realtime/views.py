@@ -103,6 +103,8 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 if line:
                     if line.startswith('### Link to archive '):
                         self.emit('message', markdown.markdown(line))
+                    elif line.startswith('### Bake Succeeded'):
+                        self.emit('message', markdown.markdown(line))
                     else:
                         self.emit('message', line)
                     if line.startswith('End:'):
