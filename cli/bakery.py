@@ -26,6 +26,7 @@ from cli.system import os, shutil, run
 from fixer import fix_font
 from fontaine.builder import Director, Builder
 from fontaine.ext.subsets import Extension as SubsetExtension
+from fontaine.cmap import Library
 
 
 BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'defaults.yaml')
@@ -199,14 +200,16 @@ class Bakery(object):
         self.stdout_pipe.write('pyFontaine TTFs\n', prefix='### ')
 
         os.chdir(self.builddir)
-        director = Director()
+
+        library = Library(collections=['subsets'])
+        director = Director(_library=library)
 
         fonts = []
         files = glob.glob('*.ttf')
         for font in files:
             fonts.append(op.join(self.builddir, font))
 
-        _ = 'fontaine --text %s > sources/fontaine.txt\n' % ' '.join(fonts)
+        _ = 'fontaine --collections subsets --text %s > sources/fontaine.txt\n' % ' '.join(fonts)
         self.stdout_pipe.write(_, prefix='$ ')
         try:
             fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
