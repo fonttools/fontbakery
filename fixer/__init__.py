@@ -86,9 +86,7 @@ def fix_font(yaml_file, path, log=None, interactive=False):
                     if answer.lower() != 'y':
                         log.write('N\n')
                         continue
-                if log:
-                    log.write('Apply fix %s\n' % fun.__doc__.strip())
-                fun(font_path)
+                fun(font_path, log)
 
         del result[font]['failure']
         result[font]['failure'] = failure_list
