@@ -30,7 +30,7 @@ PYPATH = 'python'
 def logging(log, command):
     if not log:
         return
-    log.write(u'$ %s' % command)
+    log.write(u'$ %s' % command.replace(app.config['ROOT'], '').strip('/'))
 
 
 def fix_nbsp(font_path, log=None):
@@ -38,15 +38,15 @@ def fix_nbsp(font_path, log=None):
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-nbsp.py')
 
     command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True, env=ENV).communicate()
 
     command = "rm {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
     command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
 
@@ -55,15 +55,20 @@ def fix_metrics(font_path, log=None):
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-vmet.py')
 
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True, env=ENV).communicate()
 
     command = "rm {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
+    command = "{0} {1} {2}.fix".format(PYPATH, SCRIPTPATH, font_path)
+    logging(log, command)
+    r = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    logging(log, r.stdout.read())
+
     command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
 
@@ -72,7 +77,7 @@ def fix_name_ascii(font_path, log=None):
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts',
                               'fix-ttf-ascii-name.py')
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True, env=ENV).communicate()
 
 
@@ -81,15 +86,15 @@ def fix_fstype_to_zero(font_path, log=None):
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts',
                               'fix-ttf-fstype.py')
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True, env=ENV).communicate()
 
     command = "rm {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
     command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
 
@@ -99,13 +104,13 @@ def fix_ttf_stylenames(font_path, log=None):
                               'fix-ttf-stylenames.py')
 
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True, env=ENV).communicate()
 
     command = "rm {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
 
     command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command.replace(app.config['ROOT'], '').strip('/'))
+    logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
