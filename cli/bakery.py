@@ -23,7 +23,7 @@ from checker import run_set
 from checker.base import BakeryTestCase
 from cli.source import get_fontsource
 from cli.system import os, shutil, run
-from fixer import fix_font
+from cli.pipe.autofix import autofix
 from fontaine.builder import Director, Builder
 from fontaine.ext.subsets import Extension as SubsetExtension
 from fontaine.cmap import Library
@@ -171,8 +171,8 @@ class Bakery(object):
     def autofix_process(self):
         self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
         _out_yaml = op.join(self.builddir, '.tests.yaml')
-        fix_font(_out_yaml, self.builddir, interactive=self.interactive,
-                 log=self.stdout_pipe)
+        autofix(_out_yaml, self.builddir, interactive=self.interactive,
+                log=self.stdout_pipe)
 
     def result_tests_process(self):
         self.stdout_pipe.write('Run tests for baked files\n', prefix='### ')
@@ -209,7 +209,8 @@ class Bakery(object):
         for font in files:
             fonts.append(op.join(self.builddir, font))
 
-        _ = 'fontaine --collections subsets --text %s > sources/fontaine.txt\n' % ' '.join(fonts)
+        _ = ('fontaine --collections subsets --text %s'
+             ' > sources/fontaine.txt\n') % ' '.join(fonts)
         self.stdout_pipe.write(_, prefix='$ ')
         try:
             fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')

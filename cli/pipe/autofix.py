@@ -14,10 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
 import os
 import subprocess
 import sys
+import yaml
 
 from bakery.app import app
 
@@ -114,3 +114,68 @@ def fix_ttf_stylenames(font_path, log=None):
     command = "mv {0}.fix {0}".format(font_path)
     logging(log, command)
     subprocess.Popen(command, shell=True).communicate()
+
+
+available_fixes = {
+    'test_nbsp_and_space_glyphs_width': fix_nbsp,
+    'test_metrics_linegaps_are_zero': fix_metrics,
+    'test_metrics_ascents_equal_max_bbox': fix_metrics,
+    'test_metrics_descents_equal_min_bbox': fix_metrics,
+    'test_non_ascii_chars_in_names': fix_name_ascii,
+    'test_is_fsType_not_set': fix_fstype_to_zero,
+    'test_font_weight_is_canonical': fix_ttf_stylenames
+}
+
+
+def autofix(yaml_file, path, log=None, interactive=False):
+    """ Applies available fixes to baked fonts.
+
+        Looks through yaml_file to search available fixes and apply it
+        upon the concrete baked font.
+
+        Args:
+            yaml: Font bakery checker tests results yaml file.
+                This file will be modified when all fixes apply.
+            path: Folder where baked fonts generated.
+            interactive: Optional.
+                If True then user will be asked to start applying fixes
+                manually.
+            log: Optional argument to make fixes process loggable.
+                It is a class that must have defined `write` method. Eg:
+
+                class stdlog:
+
+                    @staticmethod
+                    def write(msg, prefix=''):
+                        pass
+    """
+    result = yaml.safe_load(open(yaml_file, 'r'))
+    fonts = result.keys()
+    for font in fonts:
+        failure_list = []
+        fixed_list = []
+        apply_fixes = set()
+        for test in result[font]['failure']:
+            if test['methodName'] in available_fixes:
+                apply_fixes.add(available_fixes[test['methodName']])
+                fixed_list.append(test)
+            else:
+                failure_list.append(test)
+
+        if apply_fixes:
+            font_path = os.path.join(path, font)
+            for fun in apply_fixes:
+                if interactive:
+                    answer = raw_input("Apply fix %s? [y/N]" % fun.__doc__)
+                    if answer.lower() != 'y':
+                        log.write('N\n')
+                        continue
+                fun(font_path, log)
+
+        del result[font]['failure']
+        result[font]['failure'] = failure_list
+        result[font]['fixed'] = fixed_list
+
+    l = open(yaml_file, 'w')
+    l.write(yaml.safe_dump(result))
+    l.close()
