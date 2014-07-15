@@ -101,9 +101,7 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                 line = f.readline()
                 #self.emit('message', 'read a line: ')
                 if line:
-                    if line.startswith('### Link to archive '):
-                        self.emit('message', markdown.markdown(line))
-                    elif line.startswith('### Bake Succeeded'):
+                    if line.startswith('#'):
                         self.emit('message', markdown.markdown(line))
                     else:
                         self.emit('message', line)
