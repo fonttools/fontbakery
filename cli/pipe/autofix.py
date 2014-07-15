@@ -15,11 +15,26 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os
+import os.path as op
 import subprocess
 import sys
 import yaml
 
 from bakery.app import app
+from cli.system import stdoutlog
+
+
+class AutoFix(object):
+
+    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
+        self.project_root = project_root
+        self.builddir = builddir
+        self.stdout_pipe = stdout_pipe
+
+    def execute(self, pipedata):
+        self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
+        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        autofix(_out_yaml, self.builddir, log=self.stdout_pipe)
 
 
 ENV = os.environ.copy()

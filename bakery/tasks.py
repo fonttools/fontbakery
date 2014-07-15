@@ -344,7 +344,9 @@ def process_project(project, build, revision, force_sync=False):
         builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
         config = os.path.join(app.config['DATA_ROOT'],
                               '%(login)s/%(id)s.in/.bakery.yaml' % project)
-        b = Bakery(config, builddir=builddir, stdout_pipe=log)
+        project_root = os.path.join(app.config['DATA_ROOT'],
+                                    '%(login)s/%(id)s.in' % project)
+        b = Bakery(config, project_root, builddir=builddir, stdout_pipe=log)
         try:
             log.write('Bake Begins!\n', prefix='### ')
             b.run()

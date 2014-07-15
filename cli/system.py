@@ -22,6 +22,15 @@ import subprocess
 import sys
 
 
+class stdoutlog(object):
+
+    @staticmethod
+    def write(msg, prefix=None):
+        if prefix:
+            msg = u'%s %s' % (prefix, msg)
+        print(msg)
+
+
 __all__ = ['os', 'shutil', 'run', 'prun']
 
 
@@ -49,11 +58,9 @@ class metaclass(type):
         def func(*args, **kwargs):
             log = kwargs.pop('log', None)
             if log:
-                log.write('$ ' + shell_cmd_repr(value, args))
+                log.write('$ ' + shell_cmd_repr(value, args) + '\n')
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
-                if log:
-                    log.write('OK\n')
                 return result
             except Exception, e:
                 if log:
