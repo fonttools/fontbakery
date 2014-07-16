@@ -33,3 +33,4 @@ from .test_check_hmtx_hhea_max_advance_width_agreement import *
 from .test_check_glyf_table_length import *
 from .test_check_full_font_name_begins_with_family_name import *
 from .test_check_upm_heights_less_120 import *
+from .test_check_vertical_metrics import *

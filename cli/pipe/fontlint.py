@@ -25,6 +25,10 @@ class FontLint(object):
             result[font] = run_set(op.join(self.builddir, font), 'result',
                                    log=self.stdout_pipe)
 
+        path = op.join(self.builddir, 'METADATA.json')
+        result['METADATA.json'] = run_set(path, 'metadata',
+                                          log=self.stdout_pipe)
+
         if not result:
             return
 

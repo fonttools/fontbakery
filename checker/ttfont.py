@@ -39,6 +39,27 @@ class Font(object):
         self.descents = DescentGroup(self.ttfont)
         self.linegaps = LineGapGroup(self.ttfont)
 
+    def get_bbox(self):
+        """ Returns max and min bbox font
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.get_bbox()
+        (-384, 1178)
+        """
+        ymax = 0
+        for g in self.ttfont['glyf'].glyphs:
+            char = self.ttfont['glyf'][g]
+            if hasattr(char, 'yMax') and ymax < char.yMax:
+                ymax = char.yMax
+
+        ymin = 0
+        for g in self.ttfont['glyf'].glyphs:
+            char = self.ttfont['glyf'][g]
+            if hasattr(char, 'yMin') and ymin > char.yMin:
+                ymin = char.yMin
+
+        return ymin, ymax
+
     @property
     def macStyle(self):
         return self.ttfont['head'].macStyle
