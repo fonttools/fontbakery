@@ -63,7 +63,7 @@ class Build(object):
         if bin:
             self.execute_bin(self.project_root, self.builddir, bin)
 
-        binfiles = self.movebin_to_builddir(self.project_root, self.builddir, ufo + ttx + sfd + bin)
+        binfiles = self.movebin_to_builddir(self.project_root, self.builddir, ufo + ttxfiles + sfd + bin)
 
         SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
         command = ' '.join(binfiles)

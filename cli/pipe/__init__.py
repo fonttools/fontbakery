@@ -8,3 +8,4 @@ from cli.pipe.metadata import Metadata
 from cli.pipe.fontlint import FontLint
 from cli.pipe.optimize import Optimize
 from cli.pipe.autofix import AutoFix
+from cli.pipe.rename import Rename

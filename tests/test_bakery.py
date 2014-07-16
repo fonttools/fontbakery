@@ -2,6 +2,7 @@ import unittest
 from mock import patch
 from cli.pipe.copy import Copy
 from cli.pipe.build import Build
+from cli.pipe.rename import Rename
 
 
 class TestBakery(unittest.TestCase):
@@ -56,3 +57,18 @@ class TestBakery(unittest.TestCase):
                                  ['fontname-bold.ttf', 'fontname-regular.ttf'])
                 move.assert_called_once_with('', 'build', ['sources/fontname-bold.ttx',
                                                            'sources/fontname-regular.ttx'])
+
+    def test_rename(self):
+        pipedata = {'bin_files': ['sources/fontname-bold.ttf']}
+        b = Rename('', '')
+
+        with patch.object(b, 'get_psname') as getpsname:
+            with patch('cli.system.shutil.move') as move:
+                with patch('fontTools.ttLib.TTFont') as TTFont:
+                    TTFont.return_value = ''
+                    getpsname.return_value = 'fontname-regular.ttf'
+                    b.execute(pipedata)
+                    move.assert_called_once_with('sources/fontname-bold.ttf',
+                                                 'sources/fontname-regular.ttf')
+        self.assertEqual(pipedata['bin_files'], ['sources/fontname-regular.ttf'])
+
