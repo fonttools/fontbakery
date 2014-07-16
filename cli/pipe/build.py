@@ -1,7 +1,7 @@
 import os.path as op
-import shutil
 
-from cli.system import stdoutlog, run, prun, shutil as shellutil
+from cli.system import stdoutlog, prun, shutil as shellutil
+from fontTools import ttx
 from scripts.font2ttf import convert
 
 
@@ -32,18 +32,18 @@ class Build(object):
             d = op.join(project_root, builddir, op.basename(a)[:-4] + '.ttf')
             s = op.join(project_root, builddir, a[:-4] + '.ttf')
 
-            shutil.move(s, d)
+            shellutil.move(s, d, log=self.stdout_pipe)
             result.append(d)
         return result
 
     def execute(self, pipedata):
-        ttx = []
+        ttxfiles = []
         ufo = []
         sfd = []
         bin = []
         for p in pipedata['process_files']:
             if p.endswith('.ttx'):
-                ttx.append(p)
+                ttxfiles.append(p)
             elif p.endswith('.sfd'):
                 sfd.append(p)
             elif p.endswith('.ufo'):
@@ -54,8 +54,8 @@ class Build(object):
                 bin.append(p)
 
         self.stdout_pipe.write('Convert sources to TTF\n', prefix="### ")
-        if ttx:
-            self.execute_ttx(self.project_root, self.builddir, ttx)
+        if ttxfiles:
+            self.execute_ttx(self.project_root, self.builddir, ttxfiles)
         if ufo:
             self.execute_ufo_sfd(self.project_root, self.builddir, ufo)
         if sfd:
@@ -81,8 +81,7 @@ class Build(object):
             f = op.join(project_root, builddir, f)
             paths.append(f)
 
-        run("ttx {}".format(' '.join(paths)), cwd=builddir,
-            log=self.stdout_pipe)
+        ttx.main(paths)
 
         for p in files:
             self.otf2ttf(p)

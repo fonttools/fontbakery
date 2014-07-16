@@ -214,7 +214,7 @@ def addclone():
         clone += '.git'  # quick fix to validate clone git url
 
     # pylint:disable-msg=E1101
-    user = ProjectCache.get_user_cache(g.user.login)
+    # user = ProjectCache.get_user_cache(g.user.login)
 
     dup = Project.query.filter_by(login=g.user.login,
                                   is_github=False, clone=clone).first()
@@ -227,9 +227,9 @@ def addclone():
 
     project = Project(login=g.user.login, clone=clone, is_github=False)
 
-    if (clone in map(lambda x: x['clone_url'], user.data)
-            or clone in map(lambda x: x['git_url'], user.data)):
-        pass
+    # if (clone in map(lambda x: x['clone_url'], user.data)
+    #         or clone in map(lambda x: x['git_url'], user.data)):
+    #     pass
 
     if project:
         db.session.add(project)

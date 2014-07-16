@@ -109,6 +109,7 @@ class Bakery(object):
         pipes = [
             pipe.Copy,
             pipe.Build,
+            pipe.Rename,
             pipe.FontLint,
             pipe.Optimize,
             pipe.AutoFix,
@@ -120,7 +121,7 @@ class Bakery(object):
             pipe.TTFAutoHint,
             pipe.PyFtSubset,
             pipe.PyFontaine,
-            pipe.Metadata
+            pipe.Metadata,
         ]
 
         for pipe_klass in pipes:
