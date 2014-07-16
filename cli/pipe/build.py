@@ -1,3 +1,4 @@
+import os
 import os.path as op
 
 from cli.system import stdoutlog, prun, shutil as shellutil
@@ -21,7 +22,7 @@ class Build(object):
             path = '{}.otf'.format(fontname)
             ttfpath = '{}.ttf'.format(fontname)
             convert(path, ttfpath, log=self.stdout_pipe)
-            shellutil.remove(path, log=self.stdout_pipe)
+            os.remove(path)
         except Exception, ex:
             self.stdout_pipe.write('Error: %s\n' % ex.message)
             raise

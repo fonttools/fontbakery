@@ -178,6 +178,8 @@ def project_git_sync(project):
                 prun('git add *', cwd=_in, log=log)
                 msg = "Initial commit made automatically by Font Bakery"
                 prun('git commit -a -m "%s"' % msg, cwd=_in, log=log)
+            else:
+                raise
         # Now we have it, create an initial project state
         finally:
             config = project.config
