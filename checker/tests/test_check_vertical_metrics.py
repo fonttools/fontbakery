@@ -11,7 +11,7 @@ class CheckVerticalMetrics(TestCase):
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path)
+        return open(self.path).read()
 
     def test_metrics_linegaps_are_zero(self):
         """ Check that linegaps in tables are zero """
@@ -25,7 +25,8 @@ class CheckVerticalMetrics(TestCase):
                 fonts_gaps_are_not_zero.append(font_metadata.filename)
 
         if fonts_gaps_are_not_zero:
-            self.fail('%s have not zero linegaps' % fonts_gaps_are_not_zero)
+            _ = '[%s] have not zero linegaps'
+            self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
     def test_metrics_ascents_equal_bbox(self):
         """ Check that ascents values are same as max glyph point """
@@ -42,7 +43,7 @@ class CheckVerticalMetrics(TestCase):
             ymin_, ymax_ = ttfont.get_bbox()
             ymax = max(ymax, ymax_)
 
-            _cache[font_metadata['filename']] = {
+            _cache[font_metadata.filename] = {
                 'os2typo': ttfont.ascents.os2typo,
                 'os2win': ttfont.ascents.os2win,
                 'hhea': ttfont.ascents.hhea
@@ -53,8 +54,8 @@ class CheckVerticalMetrics(TestCase):
                 fonts_ascents_not_bbox.append(filename)
 
         if fonts_ascents_not_bbox:
-            _ = '%s ascents differ to max value: %s'
-            self.fail(_ % (fonts_ascents_not_bbox, ymax))
+            _ = '[%s] ascents differ to maximum value: %s'
+            self.fail(_ % (', '.join(fonts_ascents_not_bbox), ymax))
 
     def test_metrics_descents_equal_bbox(self):
         """ Check that descents values are same as min glyph point """
@@ -71,7 +72,7 @@ class CheckVerticalMetrics(TestCase):
             ymin_, ymax_ = ttfont.get_bbox()
             ymin = min(ymin, ymin_)
 
-            _cache[font_metadata['filename']] = {
+            _cache[font_metadata.filename] = {
                 'os2typo': ttfont.descents.os2typo,
                 'os2win': ttfont.descents.os2win,
                 'hhea': ttfont.descents.hhea
@@ -82,5 +83,5 @@ class CheckVerticalMetrics(TestCase):
                 fonts_descents_not_bbox.append(filename)
 
         if fonts_descents_not_bbox:
-            _ = '%s ascents differ to max value: %s'
-            self.fail(_ % (fonts_descents_not_bbox, ymin))
+            _ = '[%s] ascents differ to minimum value: %s'
+            self.fail(_ % (', '.join(fonts_descents_not_bbox), ymin))
