@@ -22,6 +22,7 @@ class FontLint(object):
 
         result = {}
         for font in pipedata['bin_files']:
+            self.stdout_pipe.write('Test %s' % font, prefix="### ")
             result[font] = run_set(op.join(self.builddir, font), 'result',
                                    log=self.stdout_pipe)
 

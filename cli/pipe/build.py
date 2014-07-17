@@ -27,14 +27,14 @@ class Build(object):
             self.stdout_pipe.write('Error: %s\n' % ex.message)
             raise
 
-    def movebin_to_builddir(self, project_root, builddir, files):
+    def movebin_to_builddir(self, builddir, files):
         result = []
         for a in files:
-            d = op.join(project_root, builddir, op.basename(a)[:-4] + '.ttf')
-            s = op.join(project_root, builddir, a[:-4] + '.ttf')
+            d = op.join(builddir, op.basename(a)[:-4] + '.ttf')
+            s = op.join(builddir, a[:-4] + '.ttf')
 
             shellutil.move(s, d, log=self.stdout_pipe)
-            result.append(d)
+            result.append(op.basename(a)[:-4] + '.ttf')
         return result
 
     def execute(self, pipedata):
@@ -64,10 +64,10 @@ class Build(object):
         if bin:
             self.execute_bin(self.project_root, self.builddir, bin)
 
-        binfiles = self.movebin_to_builddir(self.project_root, self.builddir, ufo + ttxfiles + sfd + bin)
+        binfiles = self.movebin_to_builddir(self.builddir, ufo + ttxfiles + sfd + bin)
 
         SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
-        command = ' '.join(binfiles)
+        command = ' '.join(map(lambda x: op.join(self.builddir, x), binfiles))
         prun('python %s %s' % (SCRIPTPATH, command),
              cwd=op.abspath(op.join(op.dirname(__file__), '..', '..')),
              log=self.stdout_pipe)

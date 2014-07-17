@@ -30,6 +30,7 @@ class CheckMenuSubsetContainsProperGlyphs(TestCase):
         return open(self.path).read()
 
     def test_check_menu_subset_contains_proper_glyphs(self):
+        """ Check menu file contain glyphs """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

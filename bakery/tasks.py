@@ -354,14 +354,26 @@ def process_project(project, build, revision, force_sync=False):
             b.run()
 
             log.write('ZIP result for download\n', prefix='### ')
+            archive_name = '%(build)s.%(revision)s' % param
+            archive_root = joinroot('%(login)s/%(id)s.out' % param)
+
+            log.write('$ zip -r {0}.zip {0}'.format(archive_name))
+
+            import zipfile
+            zipf = zipfile.ZipFile(op.join(archive_root, archive_name + '.zip'), 'w')
+            for root, dirs, files in os.walk(op.join(archive_root, archive_name)):
+                root = root.replace(op.join(archive_root, archive_name), '').lstrip('/')
+                for file in files:
+                    arcpath = op.join(archive_name, root, file)
+                    log.write('add %s\n' % arcpath)
+                    zipf.write(op.join(archive_root, archive_name, root, file), arcpath)
+            zipf.close()
+
             # zip out folder with revision
-            # TODO: move these variable definitions inside zipdir() so
-            #  they are the same as other bake methods
-            _out_src = op.join(app.config['DATA_ROOT'],
-                               ('%(login)s/%(id)s.out/'
-                                '%(build)s.%(revision)s') % param)
-            _out_url = app.config['DATA_URL'] + '%(login)s/%(id)s.out' % param
-            zipdir(_out_src, _out_url, log)
+            url = app.config['DATA_URL']
+            url += '%(login)s/%(id)s.out' % param
+            _ = 'Link to archive [%s.zip](%s/%s.zip)\n' % (archive_name, url, archive_name)
+            log.write(_, prefix="### ")
         except Exception:
             log.write('ERROR: BUILD FAILED\n', prefix="### ")
             build.failed = True
@@ -409,22 +421,6 @@ def process_description_404(project, build):
     d = yaml.safe_load(open(_out_yaml, 'r'))
     # os.remove(_out_yaml)
     return d
-
-
-def zipdir(path, url, log):
-    import zipfile
-    basename = op.basename(path)
-    zipfile_path = op.join(path, '..', '%s.zip' % basename)
-    zipf = zipfile.ZipFile(zipfile_path, 'w')
-    for root, dirs, files in os.walk(path):
-        root = root.replace(path, '').lstrip('/')
-        for file in files:
-            arcpath = op.join(basename, root, file)
-            zipf.write(op.join(root, file), arcpath)
-            log.write('add %s\n' % arcpath)
-    zipf.close()
-    log.write('### Link to archive [%s.zip](%s/%s.zip)\n' % (basename,
-                                                             url, basename))
 
 
 def set_done(build):
