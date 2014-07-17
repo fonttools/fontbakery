@@ -55,8 +55,8 @@ class TestBakery(unittest.TestCase):
                                                   'sources/fontname-regular.ttx'])
                 self.assertEqual(pipedata['bin_files'],
                                  ['fontname-bold.ttf', 'fontname-regular.ttf'])
-                move.assert_called_once_with('', 'build', ['sources/fontname-bold.ttx',
-                                                           'sources/fontname-regular.ttx'])
+                move.assert_called_once_with('build', ['sources/fontname-bold.ttx',
+                                                       'sources/fontname-regular.ttx'])
 
     def test_rename(self):
         pipedata = {'bin_files': ['sources/fontname-bold.ttf']}
