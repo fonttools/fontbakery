@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import json
 import os
 import os.path as op
 import subprocess
@@ -65,26 +66,36 @@ def fix_nbsp(font_path, log=None):
     subprocess.Popen(command, shell=True).communicate()
 
 
-def fix_metrics(font_path, log=None):
+def fix_metrics(path, log=None):
     """ Fix vmet table with actual min and max values """
     SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-vmet.py')
 
-    command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True, env=ENV).communicate()
+    from checker.metadata import FamilyMetadata
+    family_metadata = FamilyMetadata(json.load(open(path)))
 
-    command = "rm {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
+    paths = []
 
-    command = "{0} {1} {2}.fix".format(PYPATH, SCRIPTPATH, font_path)
+    for f in family_metadata.fonts:
+        paths.append(op.join(op.dirname(path), f.filename))
+
+        command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH,
+                                                 ' '.join(paths))
+        logging(log, command)
+        subprocess.Popen(command, shell=True, env=ENV).communicate()
+
+    for font_path in paths:
+        command = "rm {0}".format(font_path)
+        logging(log, command)
+        subprocess.Popen(command, shell=True).communicate()
+
+        command = "mv {0}.fix {0}".format(font_path)
+        logging(log, command)
+        subprocess.Popen(command, shell=True).communicate()
+
+    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, ' '.join(paths))
     logging(log, command)
     r = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     logging(log, r.stdout.read())
-
-    command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
 
 
 def fix_name_ascii(font_path, log=None):
@@ -134,8 +145,8 @@ def fix_ttf_stylenames(font_path, log=None):
 available_fixes = {
     'test_nbsp_and_space_glyphs_width': fix_nbsp,
     'test_metrics_linegaps_are_zero': fix_metrics,
-    'test_metrics_ascents_equal_max_bbox': fix_metrics,
-    'test_metrics_descents_equal_min_bbox': fix_metrics,
+    'test_metrics_ascents_equal_bbox': fix_metrics,
+    'test_metrics_descents_equal_bbox': fix_metrics,
     'test_non_ascii_chars_in_names': fix_name_ascii,
     'test_is_fsType_not_set': fix_fstype_to_zero,
     'test_font_weight_is_canonical': fix_ttf_stylenames

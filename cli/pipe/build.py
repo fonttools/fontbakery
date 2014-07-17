@@ -82,6 +82,7 @@ class Build(object):
             f = op.join(project_root, builddir, f)
             paths.append(f)
 
+        self.stdout_pipe.write('$ ttx %s' % ' '.join(paths))
         ttx.main(paths)
 
         for p in files:
