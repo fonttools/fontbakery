@@ -3,6 +3,7 @@ from mock import patch
 from cli.pipe.copy import Copy
 from cli.pipe.build import Build
 from cli.pipe.rename import Rename
+import cli.system
 
 
 class TestBakery(unittest.TestCase):
@@ -69,6 +70,7 @@ class TestBakery(unittest.TestCase):
                     getpsname.return_value = 'fontname-regular.ttf'
                     b.execute(pipedata)
                     move.assert_called_once_with('sources/fontname-bold.ttf',
-                                                 'sources/fontname-regular.ttf')
+                                                 'sources/fontname-regular.ttf',
+                                                 cli.system.stdoutlog)
         self.assertEqual(pipedata['bin_files'], ['sources/fontname-regular.ttf'])
 

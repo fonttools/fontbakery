@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
-from checker.ttfont import Font
+from cli.ttfont import Font
 
 
 ITALIC_MASK = 0b10

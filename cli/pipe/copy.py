@@ -53,7 +53,7 @@ class Copy(Pipe):
             else:
                 shutil.copy(path, build_source_dir)
 
-        return build_source_dir
+        return 'sources'
 
     def execute(self, pipedata):
         self.stdout_pipe.write('Copying sources\n', prefix='### ')

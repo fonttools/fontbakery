@@ -1,5 +1,5 @@
 from checker.base import BakeryTestCase as TestCase
-from checker.ttfont import Font
+from cli.ttfont import Font
 from checker.metadata import Metadata
 
 
@@ -40,7 +40,7 @@ class CheckVerticalMetrics(TestCase):
         for font_metadata in family_metadata.fonts:
             ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
 
-            ymin_, ymax_ = ttfont.get_bbox()
+            ymin_, ymax_ = ttfont.get_bounding()
             ymax = max(ymax, ymax_)
 
             _cache[font_metadata.filename] = {
@@ -69,7 +69,7 @@ class CheckVerticalMetrics(TestCase):
         for font_metadata in family_metadata.fonts:
             ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
 
-            ymin_, ymax_ = ttfont.get_bbox()
+            ymin_, ymax_ = ttfont.get_bounding()
             ymin = min(ymin, ymin_)
 
             _cache[font_metadata.filename] = {

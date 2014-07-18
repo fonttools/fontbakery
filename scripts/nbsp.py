@@ -22,7 +22,7 @@
 
 
 def usage():
-    print >> sys.stderr, "./fix-ttf-nbsp.py font.ttf"
+    print >> sys.stderr, "scripts/nbsp.py font.ttf"
 
 # Pseudo Code:
 #

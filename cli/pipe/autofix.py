@@ -17,12 +17,15 @@
 import json
 import os
 import os.path as op
-import subprocess
-import sys
 import yaml
 
 from bakery.app import app
-from cli.system import stdoutlog
+from cli.system import stdoutlog, shutil
+from scripts.vmet import metricview, metricfix
+from scripts.ascii import fix_name_table
+from scripts.fstype import reset_fstype
+from scripts.stylenames import fix_style_names
+from scripts.nbsp import checkAndFix
 
 
 class AutoFix(object):
@@ -38,8 +41,6 @@ class AutoFix(object):
         autofix(_out_yaml, self.builddir, log=self.stdout_pipe)
 
 
-ENV = os.environ.copy()
-ENV.update({'PYTHONPATH': os.pathsep.join(sys.path)})
 PYPATH = 'python'
 
 
@@ -51,95 +52,68 @@ def logging(log, command):
 
 def fix_nbsp(font_path, log=None):
     """ Fix width for space and nbsp """
-    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-nbsp.py')
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'nbsp.py')
 
     command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
-    subprocess.Popen(command, shell=True, env=ENV).communicate()
-
-    command = "rm {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
+    checkAndFix(font_path)
 
     command = "mv {0}.fix {0}".format(font_path)
     logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
+    shutil.move(font_path + '.fix', font_path, log=log)
 
 
 def fix_metrics(path, log=None):
     """ Fix vmet table with actual min and max values """
-    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fix-ttf-vmet.py')
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'vmet.py')
 
     from checker.metadata import FamilyMetadata
     family_metadata = FamilyMetadata(json.load(open(path)))
 
     paths = []
-
     for f in family_metadata.fonts:
-        paths.append(op.join(op.dirname(path), f.filename))
+        path = op.join(op.dirname(path), f.filename)
+        paths.append(path)
 
-        command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH,
-                                                 ' '.join(paths))
-        logging(log, command)
-        subprocess.Popen(command, shell=True, env=ENV).communicate()
+    command = "{0} {1} --autofix {2}"
+    command = command.format(PYPATH, SCRIPTPATH, ' '.join(paths))
+    logging(log, command)
+
+    metricfix(paths)
 
     for font_path in paths:
-        command = "rm {0}".format(font_path)
-        logging(log, command)
-        subprocess.Popen(command, shell=True).communicate()
-
-        command = "mv {0}.fix {0}".format(font_path)
-        logging(log, command)
-        subprocess.Popen(command, shell=True).communicate()
+        shutil.move(font_path + '.fix', font_path, log=log)
 
     command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, ' '.join(paths))
     logging(log, command)
-    r = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    logging(log, r.stdout.read())
+    log.write(metricview(paths))
 
 
 def fix_name_ascii(font_path, log=None):
     """ Replacing non ascii names in copyright """
-    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts',
-                              'fix-ttf-ascii-name.py')
-    command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'ascii.py')
+    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
-    subprocess.Popen(command, shell=True, env=ENV).communicate()
+    fix_name_table(font_path)
 
 
 def fix_fstype_to_zero(font_path, log=None):
     """ Fix fsType to zero """
-    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts',
-                              'fix-ttf-fstype.py')
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'fstype.py')
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
-    subprocess.Popen(command, shell=True, env=ENV).communicate()
-
-    command = "rm {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
-
-    command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
+    reset_fstype(font_path)
 
 
 def fix_ttf_stylenames(font_path, log=None):
     """ Fix style names """
-    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts',
-                              'fix-ttf-stylenames.py')
+    SCRIPTPATH = os.path.join(app.config['ROOT'], 'scripts', 'stylenames.py')
 
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
-    subprocess.Popen(command, shell=True, env=ENV).communicate()
+    fix_style_names(font_path)
 
-    command = "rm {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
-
-    command = "mv {0}.fix {0}".format(font_path)
-    logging(log, command)
-    subprocess.Popen(command, shell=True).communicate()
+    shutil.move(font_path + '.fix', font_path, log=log)
 
 
 available_fixes = {

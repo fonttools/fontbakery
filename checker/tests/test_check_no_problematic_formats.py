@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from checker.base import BakeryTestCase as TestCase
-from checker.ttfont import FontTool
+from cli.ttfont import FontTool
 
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',

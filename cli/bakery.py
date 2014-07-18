@@ -72,9 +72,6 @@ class Bakery(object):
         else:
             self.config = self.load_config(config)
 
-        self.state = {}
-        self.state['autohinting_sizes'] = []
-
     def load_config(self, configfilepath):
         try:
             configfile = open(configfilepath, 'r')
@@ -84,9 +81,9 @@ class Bakery(object):
                                     ' Using defaults'))
         return yaml.safe_load(configfile)
 
-    def save_build_state(self):
+    def save_build_state(self, state):
         l = open(op.join(self.builddir, 'build.state.yaml'), 'w')
-        l.write(yaml.safe_dump(self.state))
+        l.write(yaml.safe_dump(state))
         l.close()
 
     def interactive():
@@ -128,7 +125,7 @@ class Bakery(object):
             p = pipe_klass(self.project_root, self.builddir, self.stdout_pipe)
             p.execute(self.config)
 
-        self.save_build_state()
+        self.save_build_state(self.config)
 
         return
 

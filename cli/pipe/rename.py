@@ -27,7 +27,8 @@ class Rename(object):
                         self.stdout_pipe.write('Rename built files with PS Naming',
                                                prefix='### ')
                         rename_executed = True
-                    shutil.move(path, op.join(op.dirname(path), psname))
+                    shutil.move(path, op.join(op.dirname(path), psname),
+                                log=self.stdout_pipe)
                 newfiles.append(filepath.replace(op.basename(filepath), psname))
             else:
                 newfiles.append(filepath)

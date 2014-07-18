@@ -15,31 +15,24 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import argparse
+
 import os
 
-from fontTools import ttLib
+from cli.ttfont import Font
 
 
-def set_fstype(fontpath):
-    font = ttLib.TTFont(fontpath)
-    font['OS/2'].fsType = 0
-    font.save(fontpath + '.fix')
-
-
-def show_fstype(fontpath):
-    font = ttLib.TTFont(fontpath)
-    print(font['OS/2'].fsType)
+def fix_name_table(fontfile):
+    font = Font(fontfile)
+    for name_record in font['name'].names:
+        name_record.string = Font.bin2unistring(name_record.string)
+    font.save(fontfile)
 
 
 if __name__ == '__main__':
+    import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
-    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
+    parser.add_argument('filename', help="Font file in TTF format")
 
     args = parser.parse_args()
     assert os.path.exists(args.filename)
-    if args.autofix:
-        set_fstype(args.filename)
-    else:
-        show_fstype(args.filename)
+    fix_name_table(args.filename)

@@ -18,17 +18,18 @@
 import argparse
 import os
 
-from fontTools import ttLib
+from cli.ttfont import Font
 
 
 def set_stylenames(fontpath):
-    font = ttLib.TTFont(fontpath)
-    font['name'].fsType = 0
-    font.save(fontpath + '.fix')
+    pass  # TODO: Implement fix
+    # font = ttLib.TTFont(fontpath)
+    # font['name'].fsType = 0
+    # font.save(fontpath + '.fix')
 
 
 def show_stylenames(fontpath):
-    font = ttLib.TTFont(fontpath)
+    font = Font(fontpath)
     print(font['name'].names[2].string)
 
 

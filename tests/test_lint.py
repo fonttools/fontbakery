@@ -35,7 +35,7 @@ from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf
 from checker.tests import test_check_glyf_table_length as tf_glyflen
 from checker.tests import test_check_full_font_name_begins_with_family_name as tf_ff_names
 from checker.tests import test_check_upm_heights_less_120 as tf_upm
-from checker.ttfont import Font as OriginFont
+from cli.ttfont import Font as OriginFont
 
 
 def _get_tests(TestCase):

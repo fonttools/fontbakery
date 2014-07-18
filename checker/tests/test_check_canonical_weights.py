@@ -18,7 +18,7 @@ import os.path as op
 
 from checker.base import BakeryTestCase as TestCase
 from checker.metadata import Metadata
-from checker.ttfont import Font
+from cli.ttfont import Font
 
 
 class CheckCanonicalWeights(TestCase):

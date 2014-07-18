@@ -39,11 +39,11 @@ class Font(object):
         self.descents = DescentGroup(self.ttfont)
         self.linegaps = LineGapGroup(self.ttfont)
 
-    def get_bbox(self):
+    def get_bounding(self):
         """ Returns max and min bbox font
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.get_bbox()
+        >>> font.get_bounding()
         (-384, 1178)
         """
         ymax = 0
@@ -200,6 +200,24 @@ class Font(object):
         1409
         """
         return self.ttfont['hhea'].advanceWidthMax
+
+    def get_upm_heights(self):
+        return self.ttfont['head'].unitsPerEm
+
+    def get_highest_and_lowest(self):
+        high = []
+        low = []
+        maxval = self.ascents.get_max()
+        minval = self.descents.get_min()
+        for glyph, params in self.ttfont['glyf'].glyphs.items():
+            if hasattr(params, 'yMax') and params.yMax > maxval:
+                high.append(glyph)
+            if hasattr(params, 'yMin') and params.yMin < minval:
+                low.append(glyph)
+        return high, low
+
+    def save(self, fontpath):
+        self.ttfont.save(fontpath)
 
 
 def is_none_protected(func):

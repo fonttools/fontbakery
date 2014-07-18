@@ -22,207 +22,43 @@ from __future__ import print_function
 import argparse
 import collections
 import os
-import sys
-from fontTools import ttLib
+import StringIO
+
+from cli.ttfont import Font
 
 
-def is_none_protected(func):
-
-    def f(self, value):
-        if value is None:
-            return
-        func(self, value)
-
-    return f
-
-
-class AscentGroup(object):
-
-    def __init__(self, ttfont):
-        self.ttfont = ttfont
-
-    def set(self, value):
-        self.hhea = value
-        self.os2typo = value
-        self.os2win = value
-
-    def get_max(self):
-        """ Returns largest value of ascents
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.ascents.get_max()
-        1178
-        """
-        return max(self.hhea, self.os2typo, self.os2win)
-
-    def hhea():
-        doc = """Ascent value in 'Horizontal Header' (hhea.ascent)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.ascents.hhea
-        1178
-        """
-
-        def fget(self):
-            return self.ttfont['hhea'].ascent
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['hhea'].ascent = value
-
-        return locals()
-    hhea = property(**hhea())
-
-    def os2typo():
-        doc = """Ascent value in 'Horizontal Header' (OS/2.sTypoAscender)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.ascents.os2typo
-        1178
-        """
-
-        def fget(self):
-            return self.ttfont['OS/2'].sTypoAscender
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['OS/2'].sTypoAscender = value
-
-        return locals()
-    os2typo = property(**os2typo())
-
-    def os2win():
-        doc = """Ascent value in 'Horizontal Header' (OS/2.usWinAscent)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.ascents.os2win
-        1178
-        """
-
-        def fget(self):
-            return self.ttfont['OS/2'].usWinAscent
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['OS/2'].usWinAscent = value
-
-        return locals()
-    os2win = property(**os2win())
+def metricview(fonts):
+    view = TextMetricsView()
+    for f in fonts:
+        metrics = Font(f)
+        view.add_metric(os.path.basename(f), metrics)
+    view.print_metrics()
+    return view.get_contents()
 
 
-class DescentGroup(object):
+def metricfix(fonts):
+    ymin = 0
+    ymax = 0
 
-    def __init__(self, ttfont):
-        self.ttfont = ttfont
+    for f in fonts:
+        metrics = Font(f)
+        font_ymin, font_ymax = metrics.get_bounding()
+        ymin = min(font_ymin, ymin)
+        ymax = max(font_ymax, ymax)
 
-    def set(self, value):
-        self.hhea = value
-        self.os2typo = value
-        self.os2win = value
-
-    def get_min(self):
-        """ Returns least value of descents.
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.descents.get_min()
-        -384
-        """
-        return min(self.hhea, self.os2typo, self.os2win)
-
-    def hhea():
-        doc = """ Descent value in 'Horizontal Header' (hhea.descent)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.descents.hhea
-        -384
-        """
-
-        def fget(self):
-            return self.ttfont['hhea'].descent
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['hhea'].descent = value
-
-        return locals()
-    hhea = property(**hhea())
-
-    def os2typo():
-        doc = """Descent value in 'Horizontal Header' (OS/2.sTypoDescender)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.descents.os2typo
-        -384
-        """
-
-        def fget(self):
-            return self.ttfont['OS/2'].sTypoDescender
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['OS/2'].sTypoDescender = value
-
-        return locals()
-    os2typo = property(**os2typo())
-
-    def os2win():
-        doc = """Descent value in 'Horizontal Header' (OS/2.usWinDescent)
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.descents.os2win
-        384
-        """
-
-        def fget(self):
-            return self.ttfont['OS/2'].usWinDescent
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['OS/2'].usWinDescent = abs(value)
-
-        return locals()
-    os2win = property(**os2win())
-
-
-class LineGapGroup(object):
-
-    def __init__(self, ttfont):
-        self.ttfont = ttfont
-
-    def set(self, value):
-        self.hhea = value
-        self.os2typo = value
-
-    def hhea():
-        doc = "The hhea.lineGap property"
-
-        def fget(self):
-            return self.ttfont['hhea'].lineGap
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['hhea'].lineGap = value
-
-        return locals()
-    hhea = property(**hhea())
-
-    def os2typo():
-        doc = "The OS/2.sTypoLineGap property"
-
-        def fget(self):
-            return self.ttfont['OS/2'].sTypoLineGap
-
-        @is_none_protected
-        def fset(self, value):
-            self.ttfont['OS/2'].sTypoLineGap = value
-
-        return locals()
-    os2typo = property(**os2typo())
+    for f in fonts:
+        metrics = Font(f)
+        metrics.ascents.set(ymax)
+        metrics.descents.set(ymin)
+        metrics.linegaps.set(0)
+        metrics.save(f)
 
 
 class TextMetricsView(object):
 
     def __init__(self):
+        self.outstream = StringIO.StringIO()
+
         self._its_metrics_header = ['Parameter          ']
         # first column has a length of largest parameter
         # named OS/2.sTypoDescender
@@ -310,43 +146,54 @@ class TextMetricsView(object):
         self.glyphs[font_name] = vmet.get_highest_and_lowest()
 
     def print_metrics(self):
+        self.print_warnings()
+        self.print_metrics_table()
+        self.print_high_glyphs()
+        self.print_low_glyphs()
+        self.print_inconsistent_table()
+
+    def print_warnings(self):
         if self._inconsistent:
             _ = 'WARNING: Inconsistent {}'
             print(_.format(' '.join([str(x) for x in self._inconsistent])),
-                  end='\n\n')
+                  end='\n\n', file=self.outstream)
 
         if self._warnings:
             for warn in self._warnings:
-                print('WARNING: %s' % warn)
+                print('WARNING: %s' % warn, file=self.outstream)
 
+    def print_metrics_table(self):
         formatstring = ''
         for k in self._its_metrics_header:
-            print(('{:<%s}' % (len(k) + 4)).format(k), end='')
+            print(('{:<%s}' % (len(k) + 4)).format(k), end='', file=self.outstream)
             formatstring += '{:<%s}' % (len(k) + 4)
 
-        print()
+        print(file=self.outstream)
         for k, values in self._its_metrics.items():
-            print(formatstring.format(*([k] + values)))
+            print(formatstring.format(*([k] + values)), file=self.outstream)
 
+    def print_high_glyphs(self):
         header_printed = False
         for font, glyphs in self.glyphs.items():
             if glyphs[0]:
                 if not header_printed:
-                    print()
-                    print('High Glyphs')
+                    print(file=self.outstream)
+                    print('High Glyphs', file=self.outstream)
                     header_printed = True
-                print(font + ':', ' '.join(glyphs[0]))
+                print(font + ':', ' '.join(glyphs[0]), file=self.outstream)
 
+    def print_low_glyphs(self):
         header_printed = False
         for font, glyphs in self.glyphs.items():
             if glyphs[1]:
                 if not header_printed:
-                    print()
-                    print('Low Glyphs')
+                    print(file=self.outstream)
+                    print('Low Glyphs', file=self.outstream)
                     header_printed = True
-                print(font + ':', ' '.join(glyphs[1]))
+                print(font + ':', ' '.join(glyphs[1]), file=self.outstream)
 
-        print()
+    def print_inconsistent_table(self):
+        print(file=self.outstream)
         for metrickey, row in self._inconsistent_table.items():
             value = self.find_max_occurs_from_metrics_key(row)
 
@@ -359,7 +206,7 @@ class TextMetricsView(object):
                 tbl[metrickey] += r['fonts']
 
             for k, r in tbl.items():
-                print('Inconsistent %s:' % k, ', '.join(r))
+                print('Inconsistent %s:' % k, ', '.join(r), file=self.outstream)
 
     def find_max_occurs_from_metrics_key(self, metricvalues):
         result = 0
@@ -370,55 +217,9 @@ class TextMetricsView(object):
                 result = v['value']
         return result
 
-
-class FontVerticalMetrics(object):
-
-    def __init__(self, fontpath):
-        self.ttfont = ttLib.TTFont(fontpath)
-
-        self.ascents = AscentGroup(self.ttfont)
-        self.descents = DescentGroup(self.ttfont)
-        self.linegaps = LineGapGroup(self.ttfont)
-
-    def get_upm_heights(self):
-        return self.ttfont['head'].unitsPerEm
-
-    def get_highest_and_lowest(self):
-        high = []
-        low = []
-        maxval = self.ascents.get_max()
-        minval = self.descents.get_min()
-        for glyph, params in self.ttfont['glyf'].glyphs.items():
-            if hasattr(params, 'yMax') and params.yMax > maxval:
-                high.append(glyph)
-            if hasattr(params, 'yMin') and params.yMin < minval:
-                low.append(glyph)
-        return high, low
-
-    def get_bounding(self):
-        ymin = 0
-        ymax = 0
-        # .OTF fonts do not contain a `glyf` table,
-        # but have a precomputed value in the `head` table
-        if self.ttfont.sfntVersion == 'OTTO':
-            if hasattr(self.ttfont['head'], 'yMin'):
-                ymin = self.ttfont['head'].yMin
-            if hasattr(self.ttfont['head'], 'yMax'):
-                ymax = self.ttfont['head'].yMax
-        else:
-            for g in self.ttfont['glyf'].glyphs:
-                char = self.ttfont['glyf'][g]
-                if hasattr(char, 'yMin') and ymin > char.yMin:
-                    ymin = char.yMin
-                if hasattr(char, 'yMax') and ymax < char.yMax:
-                    ymax = char.yMax
-        if ymin != 0 and ymax != 0:
-            return(ymin, ymax)
-        else:
-            sys.exit("Unable to detect y values")
-
-    def save(self, fontpath):
-        self.ttfont.save(fontpath)
+    def get_contents(self):
+        self.outstream.seek(0)
+        return self.outstream.read()
 
 
 if __name__ == '__main__':
@@ -484,7 +285,7 @@ if __name__ == '__main__':
             or options.descents_typo or options.descents_win
             or options.linegaps_hhea or options.linegaps_typo):
         for f in fonts:
-            metrics = FontVerticalMetrics(f)
+            metrics = Font(f)
 
             # set ascents, descents and linegaps. FontVerticalMetrics will
             # not set those values if None, and overwrite them if concrete
@@ -506,24 +307,6 @@ if __name__ == '__main__':
             metrics.save(f + '.fix')
 
     elif options.autofix:
-        ymin = 0
-        ymax = 0
-
-        for f in fonts:
-            metrics = FontVerticalMetrics(f)
-            font_ymin, font_ymax = metrics.get_bounding()
-            ymin = min(font_ymin, ymin)
-            ymax = max(font_ymax, ymax)
-
-        for f in fonts:
-            metrics = FontVerticalMetrics(f)
-            metrics.ascents.set(ymax)
-            metrics.descents.set(ymin)
-            metrics.linegaps.set(0)
-            metrics.save(f + '.fix')
+        metricfix(fonts)
     else:
-        view = TextMetricsView()
-        for f in fonts:
-            metrics = FontVerticalMetrics(f)
-            view.add_metric(os.path.basename(f), metrics)
-        view.print_metrics()
+        print(metricview(fonts))

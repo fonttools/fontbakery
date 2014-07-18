@@ -15,42 +15,27 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
+import argparse
 import os
 
-from fontTools import ttLib
-from unidecode import unidecode
+from cli.ttfont import Font
 
 
-def fix_ascii(string):
-    if b'\000' in string:
-        string = string.decode('utf-16-be').encode('utf-8')
-    else:
-        string = string
-    return unidecode(string).encode('utf-16-be')
-
-
-def fix_name_table(fontfile):
-    font = ttLib.TTFont(fontfile)
-    for name_record in font['name'].names:
-        name_record.string = fix_ascii(name_record.string)
-    font.save(fontfile)
-
-
-def show_name_table(fontfile):
-    pass
+def reset_fstype(fontpath):
+    font = Font(fontpath)
+    font.fstype = 0
+    font.save(fontpath)
 
 
 if __name__ == '__main__':
-    import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--autofix', action="store_true",
-                        help="Autofix font ascii name")
-    parser.add_argument('filename', help="Font file in TTF format")
+    parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
+    parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
 
     args = parser.parse_args()
     assert os.path.exists(args.filename)
     if args.autofix:
-        fix_name_table(args.filename)
+        reset_fstype(args.filename)
     else:
-        show_name_table(args.filename)
+        font = Font(args.filename)
+        print(font.fstype)

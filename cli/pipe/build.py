@@ -21,8 +21,9 @@ class Build(object):
         try:
             path = '{}.otf'.format(fontname)
             ttfpath = '{}.ttf'.format(fontname)
-            convert(path, ttfpath, log=self.stdout_pipe)
-            os.remove(path)
+            convert(op.join(self.builddir, path),
+                    op.join(self.builddir, ttfpath), log=self.stdout_pipe)
+            os.remove(op.join(self.builddir, path))
         except Exception, ex:
             self.stdout_pipe.write('Error: %s\n' % ex.message)
             raise
@@ -79,7 +80,7 @@ class Build(object):
     def execute_ttx(self, project_root, builddir, files):
         paths = []
         for f in files:
-            f = op.join(project_root, builddir, f)
+            f = op.join(self.builddir, f)
             paths.append(f)
 
         self.stdout_pipe.write('$ ttx %s' % ' '.join(paths))
@@ -97,7 +98,8 @@ class Build(object):
             ttfpath = filepath[:-4] + '.ttf'
 
             try:
-                convert(filepath, ttfpath, log=self.stdout_pipe)
+                convert(op.join(self.builddir, filepath),
+                        op.join(self.builddir, ttfpath), log=self.stdout_pipe)
             except Exception, ex:
                 self.stdout_pipe.write('# Error: %s\n' % ex.message)
 

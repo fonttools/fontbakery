@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from checker.base import BakeryTestCase as TestCase
-from checker.ttfont import Font
+from cli.ttfont import Font
 
 
 class TestCheckUPMHeightsLess120(TestCase):
