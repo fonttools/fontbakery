@@ -44,6 +44,9 @@
     </table>
 {% endfor %}
 
+<h4>Vertical metrics</h4>
+<pre style=""><code>{{ vmettable }}</code></pre>
+
 {% if build.state.get('autohinting_sizes', []) %}
 <h4>{{ _("ttfautohint filesize impact statistic") }}</h4>
 <table class="table-striped table-bordered table-condensed">
@@ -174,14 +177,14 @@ $(function() {
     });
 
     $('.tree li:has(ul)').addClass('parent_li');
-    $('.tree li.parent_li > i').on('click', function (e) {
+    $('.tree li.parent_li > span').on('click', function (e) {
         var children = $(this).parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
             children.hide();
-            $(this).removeClass('fa-folder-open').addClass('fa-folder');
+            $(this).find('i').removeClass('fa-folder-open').addClass('fa-folder');
         } else {
             children.show();
-            $(this).removeClass('fa-folder').addClass('fa-folder-open');
+            $(this).find('i').removeClass('fa-folder').addClass('fa-folder-open');
         }
         e.stopPropagation();
     });

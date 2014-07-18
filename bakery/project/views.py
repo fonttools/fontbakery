@@ -406,10 +406,12 @@ def rfiles(p, build_id):
 
     ttftablesizes = get_fonts_table_sizes(fonts)
 
+    from scripts.vmet import metricview
     return render_template('project/rfiles.html', project=p, yaml=yaml,
                            fontaineFonts=f, build=b, tree=tree,
                            ttftablesizes=ttftablesizes,
-                           get_orthography=get_orthography)
+                           get_orthography=get_orthography,
+                           vmettable=metricview(fonts))
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
