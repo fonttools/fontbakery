@@ -14,7 +14,8 @@
 {% from 'project/macros.html' import revision_head with context %}
 {{ revision_head(revision) }}
 {% if mime.startswith('text') or mime == 'application/xml' %}
-<pre>{{ data }}</pre>
+<div id="editor"></div>
+<textarea name="ufile" id="" cols="30" rows="10">{{ data }}</textarea>
 {% elif mime.startswith('image') %}
 {% set sname=name|signify %}
 <div class="well text-center" style="overflow: auto;overflow-x: auto;overflow-y: hidden;">
@@ -29,4 +30,40 @@
 
 </pre>
 {% endif %}
+{% endblock %}
+
+{% block extrajs %}
+<script>
+$(document).ready(function () {
+
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/solarized_light");
+  editor.getSession().setMode("ace/mode/html");
+  editor.getSession().setUseSoftTabs(false);
+  editor.getSession().setUseWrapMode(true);
+  editor.setHighlightActiveLine(false);
+
+  var textarea = $('textarea[name="ufile"]').hide();
+  editor.getSession().setUseWrapMode(true);
+  editor.getSession().setValue(textarea.val());
+  editor.getSession().on('change', function(){
+    textarea.val(editor.getSession().getValue());
+  });
+
+  // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+  var heightUpdateFunction = function() {
+      var newHeight =
+                editor.getSession().getScreenLength()
+                * editor.renderer.lineHeight
+                + editor.renderer.scrollBar.getWidth();
+      $('#editor').height(newHeight.toString() + "px");
+      $('#editor-section').height(newHeight.toString() + "px");
+      // This call is required for the editor to fix all of its inner structure for adapting to a change in size
+      editor.resize();
+  };
+
+  heightUpdateFunction();
+});
+</script>
+
 {% endblock %}
