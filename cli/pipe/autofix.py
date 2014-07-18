@@ -95,6 +95,7 @@ def fix_name_ascii(font_path, log=None):
     command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
     fix_name_table(font_path)
+    shutil.move(font_path + '.fix', font_path, log=log)
 
 
 def fix_fstype_to_zero(font_path, log=None):
@@ -103,6 +104,7 @@ def fix_fstype_to_zero(font_path, log=None):
     command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
     logging(log, command)
     reset_fstype(font_path)
+    shutil.move(font_path + '.fix', font_path, log=log)
 
 
 def fix_ttf_stylenames(font_path, log=None):

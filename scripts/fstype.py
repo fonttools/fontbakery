@@ -24,7 +24,7 @@ from cli.ttfont import Font
 def reset_fstype(fontpath):
     font = Font(fontpath)
     font.fstype = 0
-    font.save(fontpath)
+    font.save(fontpath + '.fix')
 
 
 if __name__ == '__main__':
