@@ -46,7 +46,7 @@
         {% endif %}
       </td>
       <td>
-        {{ b.revision }}:{{ b.id }}
+        <a href="{{ url_for('project.summary', project_id=b.project_id, build_id=b.id) }}">{{ b.revision }}:{{ b.id }}</a>
       </td>
       <td>
         {{b.updated}} {% if b.is_done %} <i class="fa fa-check-square-o"></i>{% endif %}

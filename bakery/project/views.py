@@ -19,7 +19,7 @@ import os
 
 from datetime import datetime, timedelta
 from flask import (Blueprint, render_template, g, flash, request,
-                   url_for, redirect, json, Markup, current_app,
+                   url_for, redirect, Markup, current_app,
                    abort, make_response)
 from flask.ext.babel import gettext as _
 from functools import wraps
@@ -51,8 +51,6 @@ def chkhash(hashstr):
 def before_request():
     if g.user:
         g.projects = Project.query.filter_by(login=g.user.login).all()
-
-
 
 
 # project resolve decorator
@@ -382,6 +380,12 @@ def get_fonts_table_sizes(fonts):
     return sfntdata
 
 
+def get_orthography(fontaine):
+    from fontaine.cmap import Library
+    library = Library(collections=['subsets'])
+    return fontaine.get_orthographies(_library=library)
+
+
 @project.route('/<int:project_id>/build/<int:build_id>/rfiles')
 @login_required
 @project_required
@@ -404,7 +408,8 @@ def rfiles(p, build_id):
 
     return render_template('project/rfiles.html', project=p, yaml=yaml,
                            fontaineFonts=f, build=b, tree=tree,
-                           ttftablesizes=ttftablesizes)
+                           ttftablesizes=ttftablesizes,
+                           get_orthography=get_orthography)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])

@@ -114,6 +114,7 @@ class RedisFd(object):
 
 def project_fontaine(project, build):
     from fontaine.font import FontFactory
+    from fontaine.cmap import Library
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
@@ -140,7 +141,8 @@ def project_fontaine(project, build):
     for fontfilename, fontaine in fonts.iteritems():
         # Use the font file name as a key to a dictionary of char sets
         family[fontfilename] = {}
-        for orthography in fontaine.get_orthographies():
+        library = Library(collections=['subsets'])
+        for orthography in fontaine.get_orthographies(_library=library):
             charset, coverage, percent_complete, missing_chars = orthography
             # Use each charset name as a key to dictionary of font's
             # coverage details

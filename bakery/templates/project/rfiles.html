@@ -29,7 +29,6 @@
 <div id="editor"></div>
 <textarea name="yaml">{{ yaml }}</textarea>
 
-
 <h4>{{ _("TTF Table Sizes") }}</h4>
 {% for ttftablesize in ttftablesizes %}
     <table class="table-striped table-bordered table-condensed">
@@ -75,6 +74,43 @@
 {% for fontaine in fontaineFonts %}
     <h4 class="toggle"><i class="fa"></i> {{ fontaine._full_name }}</h4>
     <div>
+
+        <dl class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
+            <dt>{{ _("Common Name") }}</dt>
+            <dd>{{ fontaine.common_name }}</dd>
+            <dt>{{ _("Full Name") }}</dt>
+            <dd>{{ fontaine._full_name }}</dd>
+            <dt>{{ _("PostScript Name") }}</dt>
+            <dd>{{ fontaine._postscript }}    </dd>
+            <dt>{{ _("Subfamily") }}</dt>
+            <dd>{{ fontaine.sub_family }}     </dd>
+            <dt>{{ _("Weight") }}</dt>
+            <dd>{{ fontaine.weight }}         </dd>
+            <dt>{{ _("Version") }}</dt>
+            <dd>{{ fontaine.version }}        </dd>
+            <dt>{{ _("UniqueID") }}</dt>
+            <dd>{{ fontaine._unique_id }}     </dd>
+            <dt>{{ _("Copyright") }}</dt>
+            <dd>{{ fontaine.copyright }}      </dd>
+            <dt>{{ _("License") }}</dt>
+            <dd>{{ fontaine.license }}        </dd>
+            <dt>{{ _("License URL") }}</dt>
+            <dd><a href="{{ fontaine.license_url }}">{{ fontaine.license_url }}</a></dd>
+            <dt>{{ _("Designer") }}</dt>
+            <dd>{{ fontaine.designer }}       </dd>
+            <dt>{{ _("Designer URL") }}</dt>
+            <dd><a href="{{ fontaine.designer_url }}">{{ fontaine.designer_url }}</a></dd>
+            <dt>{{ _("Vendor") }}</dt>
+            <dd>{{ fontaine.vendor }}         </dd>
+            <dd><a href="{{ fontaine.vendor_url }}">{{ fontaine.vendor_url }}</a></dd>
+            <dt>{{ _("has_fixed_sizes") }}</dt>
+            <dd>{{ fontaine.has_fixed_sizes }}</dd>
+            <dt>{{ _("is_fixed_width") }}</dt>
+            <dd>{{ fontaine.is_fixed_width }} </dd>
+            <dt>{{ _("style_flags") }}</dt>
+            <dd>{{ fontaine.style_flags }}    </dd>
+        </dl>
+
     <table class="table table-striped table-bordered table-condensed tablesorter" id="" style="">
     <thead>
       <tr>
@@ -84,7 +120,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for charmap, support, missing, missingchars in fontaine.get_orthographies() %}
+    {% for charmap, support, missing, missingchars in get_orthography(fontaine) %}
       <tr class="{{ support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}">
         <td>{{ charmap.common_name }}
         <td>{{ missing }}
@@ -93,42 +129,6 @@
     {% endfor %}
     </tbody>
     </table>
-
-    <dl class="" style="columns:100px 3; -webkit-columns:100px 3; /* Safari and Chrome */ -moz-columns:100px 3; /* Firefox */">
-        <dt>{{ _("Common Name") }}</dt>
-        <dd>{{ fontaine.common_name }}</dd>
-        <dt>{{ _("Full Name") }}</dt>
-        <dd>{{ fontaine._full_name }}</dd>
-        <dt>{{ _("PostScript Name") }}</dt>
-        <dd>{{ fontaine._postscript }}    </dd>
-        <dt>{{ _("Subfamily") }}</dt>
-        <dd>{{ fontaine.sub_family }}     </dd>
-        <dt>{{ _("Weight") }}</dt>
-        <dd>{{ fontaine.weight }}         </dd>
-        <dt>{{ _("Version") }}</dt>
-        <dd>{{ fontaine.version }}        </dd>
-        <dt>{{ _("UniqueID") }}</dt>
-        <dd>{{ fontaine._unique_id }}     </dd>
-        <dt>{{ _("Copyright") }}</dt>
-        <dd>{{ fontaine.copyright }}      </dd>
-        <dt>{{ _("License") }}</dt>
-        <dd>{{ fontaine.license }}        </dd>
-        <dt>{{ _("License URL") }}</dt>
-        <dd><a href="{{ fontaine.license_url }}">{{ fontaine.license_url }}</a></dd>
-        <dt>{{ _("Designer") }}</dt>
-        <dd>{{ fontaine.designer }}       </dd>
-        <dt>{{ _("Designer URL") }}</dt>
-        <dd><a href="{{ fontaine.designer_url }}">{{ fontaine.designer_url }}</a></dd>
-        <dt>{{ _("Vendor") }}</dt>
-        <dd>{{ fontaine.vendor }}         </dd>
-        <dd><a href="{{ fontaine.vendor_url }}">{{ fontaine.vendor_url }}</a></dd>
-        <dt>{{ _("has_fixed_sizes") }}</dt>
-        <dd>{{ fontaine.has_fixed_sizes }}</dd>
-        <dt>{{ _("is_fixed_width") }}</dt>
-        <dd>{{ fontaine.is_fixed_width }} </dd>
-        <dt>{{ _("style_flags") }}</dt>
-        <dd>{{ fontaine.style_flags }}    </dd>
-    </dl>
     </div>
 
 {% endfor %}
