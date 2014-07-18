@@ -71,6 +71,6 @@ class TestBakery(unittest.TestCase):
                     b.execute(pipedata)
                     move.assert_called_once_with('sources/fontname-bold.ttf',
                                                  'sources/fontname-regular.ttf',
-                                                 cli.system.stdoutlog)
+                                                 log=cli.system.stdoutlog)
         self.assertEqual(pipedata['bin_files'], ['sources/fontname-regular.ttf'])
 

@@ -21,7 +21,7 @@ import os
 from cli.ttfont import Font
 
 
-def set_stylenames(fontpath):
+def fix_style_names(fontpath):
     pass  # TODO: Implement fix
     # font = ttLib.TTFont(fontpath)
     # font['name'].fsType = 0
@@ -41,6 +41,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     assert os.path.exists(args.filename)
     if args.autofix:
-        set_stylenames(args.filename)
+        fix_style_names(args.filename)
     else:
         show_stylenames(args.filename)
