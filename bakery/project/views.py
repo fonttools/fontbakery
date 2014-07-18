@@ -511,11 +511,23 @@ def description(p, build_id):
                             project_id=p.id))
 
 
-@project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET'])
+@project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])
 @login_required
 @project_required
 def metadatajson(p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
+
+    if request.method == 'POST':
+        metadatajson = request.form.get('metadatajson')
+        try:
+            import json
+            json.loads(metadatajson)
+            b.save_asset('metadata', metadatajson)
+            flash('METADATA.json has been saved')
+        except:
+            flash('Unable to save METADATA.json for build')
+        return redirect(url_for('project.metadatajson', project_id=p.id,
+                                build_id=b.id))
 
     metadata = b.read_asset('metadata')
     metadata_new = b.read_asset('metadata_new')
