@@ -91,16 +91,16 @@
       {% for key, value in tree.items() recursive %}
         <li {{ highlight(key) }} class="{%- if key == 'glyphs' and value -%}mother_of_glyphs{%- elif key.lower().endswith('.ufo') -%}mothership{%- endif -%}">
           {%- if value and not key.lower().endswith('.ufo') %}
-          <i class="fa fa-folder-open"></i>
-          {% endif %}
-        {%- if revision %}
-          <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
-        {%- else %}
-          <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
-        {%- endif %}
-          {%- if key == '' %}
+          <span><i class="fa fa-folder-open"></i> {{ key }}</span>
+          {% else %}
+            {%- if revision %}
+              <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
+            {%- else %}
+              <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
+            {%- endif %}
+            {%- if key == '' %}
             &nbsp;
-          {%- else %}
+            {%- else %}
             {%-   if key.lower().endswith('.ufo') and value %}<i class="fa fa-font text-info"></i>
             {%- elif key.lower().endswith('.otf') %}<i class="fa fa-file"></i>
             {%- elif key.lower().endswith('.ttf') %}<i class="fa fa-file"></i>
@@ -109,9 +109,10 @@
             {%- elif key == 'bakery.yaml' %}<i class="fa fa-rocket text-danger"></i>
             {%- elif not value %}<i class="fa fa-file-o text-muted"></i>
             {%- endif %}
-             {{ key }}
+            {{ key }}
+            {% endif %}
+             </a>
           {%- endif %}
-          </a>
         {%- if value %}<ul class="{% if key == 'glyphs' %}glyphs{% elif key.lower().endswith('.ufo') %}ufo-files{% endif %}">{%- do path.append(key) %}{{ loop(value.items()) }}{%- do path.pop() %}</ul>
         {% endif %}
         </li>

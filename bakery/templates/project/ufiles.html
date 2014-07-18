@@ -23,14 +23,14 @@
 <script>
 $(function(){
     $('.tree li:has(ul)').addClass('parent_li');
-    $('.tree li.parent_li > i').on('click', function (e) {
+    $('.tree li.parent_li > span').on('click', function (e) {
         var children = $(this).parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
             children.hide();
-            $(this).removeClass('fa-folder-open').addClass('fa-folder');
+            $(this).find('i').removeClass('fa-folder-open').addClass('fa-folder');
         } else {
             children.show();
-            $(this).removeClass('fa-folder').addClass('fa-folder-open');
+            $(this).find('i').removeClass('fa-folder').addClass('fa-folder-open');
         }
         e.stopPropagation();
     });
