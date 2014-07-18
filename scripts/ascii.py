@@ -25,7 +25,7 @@ def fix_name_table(fontfile):
     font = Font(fontfile)
     for name_record in font['name'].names:
         name_record.string = Font.bin2unistring(name_record.string)
-    font.save(fontfile)
+    font.save(fontfile + '.fix')
 
 
 if __name__ == '__main__':

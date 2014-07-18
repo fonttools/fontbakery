@@ -51,7 +51,7 @@ def metricfix(fonts):
         metrics.ascents.set(ymax)
         metrics.descents.set(ymin)
         metrics.linegaps.set(0)
-        metrics.save(f)
+        metrics.save(f + '.fix')
 
 
 class TextMetricsView(object):
