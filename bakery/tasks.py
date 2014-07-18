@@ -298,9 +298,15 @@ def upstream_revision_tests(project, revision, log=None):
 def git_checkout(path, revision, log=None):
     from git import Repo
     repo = Repo(path)
-    repo.git.checkout(revision)
     if log:
+        headcommit = repo.git.rev_parse('HEAD', short=True)
+        if headcommit != revision:
+            log.write('Checkout commit %s\n' % revision, prefix='### ')
+        else:
+            log.write('Checkout most recent commit (%s)' % revision,
+                      prefix='### ')
         log.write("git checkout %s\n" % revision, prefix='$ ')
+    repo.git.checkout(revision)
 
 
 @job
@@ -337,7 +343,6 @@ def process_project(project, build, revision, force_sync=False):
 
     if project.config['local'].get('setup', None):
 
-        log.write('Preparing build\n', prefix='### ')
         git_checkout(_in, revision, log)
 
         # this code change upstream repository
