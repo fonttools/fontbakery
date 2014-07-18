@@ -523,11 +523,13 @@ def metadatajson(p, build_id):
         metadatajson = request.form.get('metadatajson')
         try:
             import json
+            from bakery.tasks import execute_metadata_tests
             json.loads(metadatajson)
             b.save_asset('metadata', metadatajson)
+            execute_metadata_tests.delay(p.login, p.id, b.id, b.revision)
             flash('METADATA.json has been saved')
-        except:
-            flash('Unable to save METADATA.json for build')
+        except Exception, ex:
+            flash('Unable to save METADATA.json for build %s' % ex)
         return redirect(url_for('project.metadatajson', project_id=p.id,
                                 build_id=b.id))
 

@@ -434,3 +434,16 @@ def set_done(build):
     build.is_done = True
     db.session.add(build)
     db.session.commit()
+
+
+@job
+def execute_metadata_tests(login, project_id, build_id, revision):
+    param = {'login': login, 'id': project_id,
+             'revision': revision, 'build': build_id}
+    builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
+
+    from cli.pipe.fontlint import FontLint
+    fontlint = FontLint('', builddir)
+    testsresult = fontlint.read_lint_testsresult()
+    testsresult['METADATA.json'] = fontlint.run_metadata_tests()
+    fontlint.write_lint_results(testsresult)

@@ -13,6 +13,23 @@ class FontLint(object):
         self.builddir = builddir
         self.stdout_pipe = stdout_pipe
 
+    def read_lint_testsresult(self):
+        try:
+            _out_yaml = op.join(self.builddir, '.tests.yaml')
+            return yaml.safe_load(open(_out_yaml))
+        except (IOError, OSError):
+            return {}
+
+    def write_lint_results(self, testsresult):
+        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        l = open(_out_yaml, 'w')
+        l.write(yaml.safe_dump(testsresult))
+        l.close()
+
+    def run_metadata_tests(self):
+        path = op.join(self.builddir, 'METADATA.json')
+        return run_set(path, 'metadata', log=self.stdout_pipe)
+
     def execute(self, pipedata):
         self.stdout_pipe.write('Run tests for baked files\n', prefix='### ')
         _out_yaml = op.join(self.builddir, '.tests.yaml')
@@ -26,16 +43,12 @@ class FontLint(object):
             result[font] = run_set(op.join(self.builddir, font), 'result',
                                    log=self.stdout_pipe)
 
-        path = op.join(self.builddir, 'METADATA.json')
-        result['METADATA.json'] = run_set(path, 'metadata',
-                                          log=self.stdout_pipe)
+        result['METADATA.json'] = self.run_metadata_tests()
 
         if not result:
             return
 
-        l = open(_out_yaml, 'w')
-        l.write(yaml.safe_dump(result))
-        l.close()
+        self.write_lint_results(result)
 
 
 # register yaml serializer for tests result objects.
