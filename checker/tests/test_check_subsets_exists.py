@@ -49,6 +49,7 @@ class CheckSubsetsExist(TestCase):
         return font_filename.replace('.ttf', '.%s' % subset_name)
 
     def test_check_subsets_exists(self):
+        """ Check that corresponding subset files exist for fonts """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

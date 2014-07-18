@@ -73,13 +73,13 @@ class CheckVerticalMetrics(TestCase):
             ymin = min(ymin, ymin_)
 
             _cache[font_metadata.filename] = {
-                'os2typo': ttfont.descents.os2typo,
-                'os2win': ttfont.descents.os2win,
-                'hhea': ttfont.descents.hhea
+                'os2typo': abs(ttfont.descents.os2typo),
+                'os2win': abs(ttfont.descents.os2win),
+                'hhea': abs(ttfont.descents.hhea)
             }
 
         for filename, data in _cache.items():
-            if [data['os2typo'], data['os2win'], data['hhea']] != [ymin] * 3:
+            if [data['os2typo'], data['os2win'], data['hhea']] != [abs(ymin)] * 3:
                 fonts_descents_not_bbox.append(filename)
 
         if fonts_descents_not_bbox:

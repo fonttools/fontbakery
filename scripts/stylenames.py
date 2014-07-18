@@ -22,10 +22,9 @@ from cli.ttfont import Font
 
 
 def fix_style_names(fontpath):
-    pass  # TODO: Implement fix
-    # font = ttLib.TTFont(fontpath)
+    font = Font(fontpath)
     # font['name'].fsType = 0
-    # font.save(fontpath + '.fix')
+    font.save(fontpath + '.fix')
 
 
 def show_stylenames(fontpath):
