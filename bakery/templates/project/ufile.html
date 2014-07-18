@@ -13,7 +13,7 @@
   <h4>{{ _("Repository Files") }} </h4>
 {% from 'project/macros.html' import revision_head with context %}
 {{ revision_head(revision) }}
-{% if mime.startswith('text') %}
+{% if mime.startswith('text') or mime == 'application/xml' %}
 <pre>{{ data }}</pre>
 {% elif mime.startswith('image') %}
 {% set sname=name|signify %}

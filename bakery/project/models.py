@@ -167,6 +167,7 @@ class Project(db.Model):
         # XXX: result can be tree
         data = prun('git show "%(revision)s:%(fn)s"' % locals(), cwd=_in)
         mime = magic.from_buffer(data, mime=True)
+        print mime
         if mime.startswith("text") or mime.startswith('application/xml'):
             data = unicode(data, "utf8")
         return mime, data
