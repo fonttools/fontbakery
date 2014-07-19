@@ -144,7 +144,26 @@ class CommandNamespace(BaseNamespace, BroadcastMixin):
         pubsub.subscribe('global:%s' % login)
         for msg in pubsub.listen():
             if msg['type'] == 'message':
-                self.emit('message', msg['data'])
+                import json
+                commanddata = json.loads(msg['data'])
+                if commanddata['type'] == 'UPSTREAMFINISHED':
+                    from bakery.app import app
+                    from bakery.project.models import Project
+                    from flask import g
+                    _ = '{% from "macros/dashboard.html" import project_actions %}{{ project_actions(repo) }}'
+
+                    ctx = app.test_request_context('/')
+                    ctx.push()
+
+                    tml = app.jinja_env.from_string(_)
+                    p = Project.query.filter_by(id=commanddata['project_id']).first()
+                    g.user = p.login
+                    r = tml.render({'repo': p})
+
+                    commanddata.update({'html': r})
+                    self.emit('message', json.dumps(commanddata))
+                else:
+                    self.emit('message', msg['data'])
 
 
 @realtime.route('/socket.io/<path:remaining>')

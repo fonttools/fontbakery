@@ -1,5 +1,6 @@
 {# Dashboard for logged in user #}
 {% extends 'base.html' %}
+{% from "macros/dashboard.html" import project_actions %}
 {% set page_title = _('Dashboard') %}
 {% set stateDict = {
     'copyright_license': {
@@ -281,25 +282,7 @@
         {% if not repo.is_ready %}
             <button class="btn btn-xs btn-disabled" id="sp-upstreamfinished" disabled>{{ _("Waiting for queue") }}</button>
         {% else %}
-            {# setup's values are loaded from defaults #}
-            {%   if repo.config['local']['status']=='default' %}
-                <a href="{{ url_for('project.setup', project_id = repo.id )}}" class="btn btn-xs">{{ _("Setup") }}</a>
-            {# setup's values are pre-loaded from the repo #}
-            {% elif repo.config['local']['status']=='repo' %}
-                <a href="{{ url_for('project.home', project_id = repo.id )}}" class="btn btn-xs">{{ _("Check") }}</a>
-            {# setup's values here and in the repo don't match #}
-            {# {% elif not repo.config['local'].get('bakery_yaml_in_sync') %}
-                <a href="{{ url_for('project.rfiles', project_id = repo.id )}}" class="btn btn-xs">{{ _("Push bakery.yaml") }}</a> #}
-            {# setup's values here and in the repo match #}
-            {% elif repo.config['local']['status']=='local' %}
-                <a href="{{ url_for('project.home', project_id = repo.id )}}" class="btn btn-xs">{{ _("Build") }}</a>
-            {# build completed successfully #}
-            {# {% elif repo.config['local']['status']=='built' %}
-                <a href="{{ url_for('project.log', project_id = repo.id )}}" class="btn btn-xs">{{ _("Review") }}</a>  #}
-            {# This should never be shown, but just in case... # TODO: make this button link to some documentation about how to file issues #}
-            {% else %}
-                <a class="btn btn-xs btn-danger">{{ _("State Unknown") }}</a>
-            {% endif %}
+            {{ project_actions(repo) }}
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
@@ -441,7 +424,6 @@ $(document).ready(function() {
     var socket = io.connect("/listen", {'force new connection': true});
 
     socket.on("connect", function(e) {
-      console.log("Connected", arguments);
       socket.emit('subscribe', '{{ g.user.login }}');
     });
 
@@ -453,7 +435,7 @@ $(document).ready(function() {
         try {
             var data = $.parseJSON(data);
             if (data['type'] == 'UPSTREAMFINISHED') {
-                $('td[pid='+ data['project_id'] +']').text('Build');
+                $('td[pid='+ data['project_id'] +']').html(data['html']);
             }
         } catch(err) {}
     });
