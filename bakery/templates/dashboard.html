@@ -304,7 +304,7 @@
         </td>
         <td nowrap>
           <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
-          <a class="btn btn-xs btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
+          <a class="btn btn-xs btn-danger" request-url="{{ url_for('settings.delclone', project_id=repo.id) }}" data-toggle="modal" data-target="#deleteCloneModal"><i class="fa fa-trash-o"></i></a>
           {% set build = repo.latest_build() %}
           {% if build and build.succeeded %}<a class="btn btn-xs" href="{{ url_for('project.zip', project_id=repo.id, build_id=build.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}
         </td>
@@ -313,6 +313,28 @@
 </tbody>
 </table>
 </div>
+
+
+<div class="modal" id="deleteCloneModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form action="" method="post">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">{{ _('Are you sure?') }}</h4>
+          </div>
+          <div class="modal-body">
+                {{ _('Do you really want to remove this repository?') }}
+                <p><input type="checkbox" id="removefromdisk" name="remove-from-disk"> <label for="removefromdisk">Remove from disk?</label></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="{{ _('Delete') }}"/>
+          </div>
+        </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endif %}
 
 {% endblock %}
@@ -347,6 +369,10 @@ function shorten(num) {
 
 $(document).ready(function() {
     // Make the dashboard table sortable
+
+    $('a[request-url]').on('click', function() {
+        $('#deleteCloneModal form').attr('action', $(this).attr('request-url'));
+    })
 
     var grandTotals = { "total": 0, "month": 0, "week": 0, "yesterday": 0, "rate": 0}
 

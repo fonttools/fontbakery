@@ -14,19 +14,22 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from giturlparse import parse
 import logging
-from flask.ext.babel import gettext as _
+import os
+import shutil
 
+from flask.ext.babel import gettext as _
 from flask import (Blueprint, render_template, request, flash, g, redirect,
                    url_for, json, current_app)
+from giturlparse import parse
 
-from bakery.app import github, db
-from ..decorators import login_required
-from .models import ProjectCache
-from ..models import Project
-from ..utils import signify
+from bakery.app import github, db, app
+from bakery.decorators import login_required
 from bakery.github import GithubSessionAPI, GithubSessionException
+from bakery.models import Project
+from bakery.settings.models import ProjectCache
+from bakery.utils import signify
+
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -240,19 +243,29 @@ def addclone():
     return redirect(url_for('frontend.splash'))
 
 
-@settings.route('/delclone/<int:project_id>', methods=['GET'])
+@settings.route('/delclone/<int:project_id>', methods=['POST'])
 @login_required
 def delclone(project_id):
     # pylint:disable-msg=E1101
-    project = Project.query.filter_by(
-        login=g.user.login, id=project_id).first()
+    project = Project.query.filter_by(login=g.user.login,
+                                      id=project_id).first()
     if not project:
         flash(_("Project not found."))
         return redirect(url_for('frontend.splash'))
+
+    if request.form.get('remove-from-disk'):
+        source_dir = '%s.in' % project.id
+        build_dir = '%s.out' % project.id
+        shutil.rmtree(os.path.join(app.config['DATA_ROOT'],
+                                   g.user.login, source_dir))
+        shutil.rmtree(os.path.join(app.config['DATA_ROOT'],
+                                   g.user.login, build_dir))
+
     db.session.delete(project)
     db.session.commit()
     flash(_(("Repository %(pid)s succesfuly removed (but files remain"
              " on the server)"), pid=project_id))
+
     return redirect(url_for('frontend.splash'))
 
 
