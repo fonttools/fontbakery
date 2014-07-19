@@ -16,16 +16,18 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-import os
 import gevent
 import itsdangerous
 import markdown
+import os
+
 from flask import Response, current_app
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin
 from flask.ext.rq import get_connection
 from rq import Worker
+import redis
 
 from flask import (Blueprint, request)
 
@@ -121,6 +123,30 @@ class BuildNamespace(BaseNamespace, BroadcastMixin):
                                   ' Reload page later.'))
 
 
+class CommandNamespace(BaseNamespace, BroadcastMixin):
+
+    def __init__(self, *args, **kwargs):
+        r = kwargs.get('request', None)
+        if hasattr(r, '_conn'):
+            self._conn = r._conn
+            self._data_root = r._data_root
+            self._signer = r._signer
+        super(CommandNamespace, self).__init__(*args, **kwargs)
+
+    def on_subscribe(self, data):
+        # login = self._signer.unsign(data)
+        gevent.spawn(self.listen_channel, 'hash3g')
+
+    def listen_channel(self, login):
+        self.emit('message', 'Listened...')
+        client = redis.StrictRedis()
+        pubsub = client.pubsub()
+        pubsub.subscribe('global:%s' % login)
+        for msg in pubsub.listen():
+            if msg['type'] == 'message':
+                self.emit('message', msg['data'])
+
+
 @realtime.route('/socket.io/<path:remaining>')
 def socketio(remaining):
     real_request = request._get_current_object()
@@ -131,5 +157,6 @@ def socketio(remaining):
     socketio_manage(request.environ, {
         '/status': StatusNamespace,
         '/build': BuildNamespace,
+        '/listen': CommandNamespace
     }, request=real_request)
     return Response()

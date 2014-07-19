@@ -19,6 +19,7 @@ from __future__ import print_function
 import codecs
 import datetime
 import os.path as op
+import redis
 import yaml
 
 from checker import run_set, parse_test_results
@@ -126,6 +127,8 @@ def project_git_sync(project):
     db.session.commit()
     db.session.refresh(project)
 
+    client = redis.StrictRedis()
+
     _in = joinroot('%(login)s/%(id)s.in/' % project)
     _out = joinroot('%(login)s/%(id)s.out/' % project)
     if not op.exists(_out):
@@ -194,6 +197,11 @@ def project_git_sync(project):
     project.is_ready = True
     db.session.add(project)
     db.session.commit()
+
+    import json
+    client.publish('global:%s' % project.login,
+                   json.dumps({'type': 'UPSTREAMFINISHED',
+                               'project_id': project.id}))
 
 
 def joinroot(path):

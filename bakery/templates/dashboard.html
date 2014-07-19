@@ -277,9 +277,9 @@
         {% else %}
         <td class="stats-fvpd" style="text-align: right"></td>
         {% endif %}
-        <td style="text-align: center; white-space: nowrap">
+        <td style="text-align: center; white-space: nowrap" pid="{{ repo.id }}">
         {% if not repo.is_ready %}
-            <button class="btn btn-xs btn-disabled" disabled>{{ _("Waiting for queue") }}</button>
+            <button class="btn btn-xs btn-disabled" id="sp-upstreamfinished" disabled>{{ _("Waiting for queue") }}</button>
         {% else %}
             {# setup's values are loaded from defaults #}
             {%   if repo.config['local']['status']=='default' %}
@@ -343,6 +343,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='libs/floatThead/dist/jquery.floatThead.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='libs/typeahead/bootstrap3-typeahead.min.js') }}"></script>
 <script type="text/javascript">
+
 $('#dashboard').floatThead();
 
 function zip(arrays) {
@@ -436,6 +437,26 @@ $(document).ready(function() {
         width: 200
     }).show();
 */
+
+    var socket = io.connect("/listen", {'force new connection': true});
+
+    socket.on("connect", function(e) {
+      console.log("Connected", arguments);
+      socket.emit('subscribe', '{{ g.user.login }}');
+    });
+
+    socket.on("disconnect", function(e) {
+      console.log("Disconnected from redis", arguments);
+    });
+
+    socket.on('message', function (data) {
+        try {
+            var data = $.parseJSON(data);
+            if (data['type'] == 'UPSTREAMFINISHED') {
+                $('td[pid='+ data['project_id'] +']').text('Build');
+            }
+        } catch(err) {}
+    });
 });
 </script>
 {% endblock %}
