@@ -93,19 +93,36 @@ class Project(db.Model):
             title = self.config['state']['familyname']
         return title
 
-    def read_asset(self, name=None):
+    def get_asset_path(self, asset_name):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
-        if name == 'yaml':
+        if asset_name == 'yaml':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/.bakery.yaml' % self)
-        elif name == 'license':
+        elif asset_name == 'license':
             fn = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self, self.config['state']['license_file'])
-        else:
-            return ''
+        return fn
 
+    def get_asset(self, asset_name):
+        fn = self.get_asset_path(asset_name)
+        if not fn:
+            return None
         if os.path.exists(fn) and os.path.isfile(fn):
-            return unicode(open(fn, 'r').read(), "utf8")
-        else:
-            return ''
+            return open(fn)
+        return None
+
+    def read_asset(self, name=None):
+        fn = self.get_asset(name)
+        if fn:
+            return unicode(name.read(), "utf8")
+        return ''
+
+    def save_bakery(self, data):
+        _out_yaml = self.get_asset_path('yaml')
+        l = open(_out_yaml, mode='w')
+        l.write(yaml.safe_dump(data))
+        l.close()
+
+    def read_bakery(self):
+        return yaml.safe_load(self.get_asset('yaml'))
 
     def treeFromFilesystem(self, folder=None):
         """

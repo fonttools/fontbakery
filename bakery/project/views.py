@@ -105,19 +105,55 @@ def home(p):
 @login_required
 @project_required
 def checkout(p):
-    if not p.config['local'].get('setup'):
-        flash(_("Complete setup first"))
-        return redirect(url_for('project.setup', project_id=p.id))
-
-    from git import Repo
-    path = os.path.join(app.config['DATA_ROOT'], p.login, '%s.in' % p.id)
-    repo = Repo(path)
-    revision = 'master'
-    if request.args.get('revision'):
-        signer = itsdangerous.Signer(current_app.secret_key)
-        revision = signer.unsign(request.args.get('revision'))
-    repo.git.checkout(revision)
+    transaction = CheckoutTransaction(p, request.args.get('revision'))
+    try:
+        transaction.execute()
+    except TransactionException, ex:
+        flash(ex)
     return redirect(url_for('project.ufiles', project_id=p.id))
+
+
+class CheckoutTransaction(object):
+
+    default_checkout_revision = 'master'
+
+    def __init__(self, project, revision=None):
+        self.project = project
+        self.revision = revision or self.default_checkout_revision
+        if revision:
+            signer = itsdangerous.Signer(app.secret_key)
+            self.revision = signer.unsign(revision)
+
+    def get_project_root(self):
+        return os.path.join(app.config['DATA_ROOT'],
+                            self.project.login, '%s.in' % self.project.id)
+
+    def read_project_config(self):
+        return self.project.read_bakery()
+
+    def save_project_config(self, data):
+        self.project.save_bakery(data)
+
+    def checkout(self):
+        from git import Repo
+        repo = Repo(self.get_project_root())
+        repo.git.checkout(self.revision)
+
+    def project_setup(self):
+        return bool(self.project.config['local'].get('setup'))
+
+    def execute(self):
+        if not self.project_setup():
+            raise TransactionException(_("Complete setup first"))
+
+        bakery_config = self.read_project_config()
+        bakery_config['commit'] = self.revision
+
+        self.save_project_config(bakery_config)
+
+
+class TransactionException(Exception):
+    pass
 
 
 # API methods
