@@ -12,6 +12,8 @@
 
 <p>{{ _("Select revision and press its hashtag to build. Only latest 200 revisions") }}</p>
 
+<a href="{{ url_for('project.checkout', project_id=project.id)}}" class="btn btn-primary">{{ _("Checkout 'HEAD'") }}</a>
+
 <form action="{{ url_for('project.diff', project_id=project.id) }}" method="GET">
 <table class="table table-bordered table-condensed">
   <thead>

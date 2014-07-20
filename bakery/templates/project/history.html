@@ -9,7 +9,6 @@
 {% block pbody %}
 
 <p>
-  <a href="{{ url_for('project.build', project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a>
   {% set build = project.latest_build() %}
   {% if build and build.succeeded %}<a class="btn btn-primary" href="{{ url_for('project.zip', project_id=project.id, build_id=build.id) }}">Download</a>{% endif %}
 </p>
