@@ -224,3 +224,19 @@ def short(value):
         return 0
 
     return '~{}'.format(sizeof_fmt(value))
+
+
+def get_directory_size(path):
+    total = 0
+    for item in os.walk(path):
+        for file in item[2]:
+            try:
+                total += os.path.getsize(os.path.join(item[0], file))
+            except:
+                pass
+    return total / 1024 / 1024
+
+
+def get_directory_sizes(root):
+    for dir in os.listdir(root):
+        yield (dir, get_directory_size(os.path.join(root, dir)))

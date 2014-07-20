@@ -14,7 +14,8 @@
     "d3": "mbostock/d3",
     "floatThead": "~1.2.7",
     "jsondiffpatch": "~0.1.6",
-    "typeahead": "bassjobsen/Bootstrap-3-Typeahead"
+    "typeahead": "bassjobsen/Bootstrap-3-Typeahead",
+    "dc": "dc-js/dc.js"
   },
   "devDependencies": {}
 }
