@@ -109,15 +109,14 @@ def checkout(p):
         flash(_("Complete setup first"))
         return redirect(url_for('project.setup', project_id=p.id))
 
+    from git import Repo
+    path = os.path.join(app.config['DATA_ROOT'], p.login, '%s.in' % p.id)
+    repo = Repo(path)
+    revision = 'head'
     if request.args.get('revision'):
         signer = itsdangerous.Signer(current_app.secret_key)
         revision = signer.unsign(request.args.get('revision'))
-
-        path = os.path.join(app.config['DATA_ROOT'], p.login, '%s.in' % p.id)
-
-        from git import Repo
-        repo = Repo(path)
-        repo.git.checkout(revision)
+    repo.git.checkout(revision)
     return redirect(url_for('project.ufiles', project_id=p.id))
 
 
