@@ -109,7 +109,9 @@ def checkout(p):
     try:
         transaction.execute()
     except TransactionException, ex:
-        flash(ex)
+        flash(ex.message)
+        return redirect(url_for('project.git', project_id=p.id))
+
     return redirect(url_for('project.ufiles', project_id=p.id))
 
 
@@ -137,7 +139,11 @@ class CheckoutTransaction(object):
     def checkout(self):
         from git import Repo
         repo = Repo(self.get_project_root())
-        repo.git.checkout(self.revision)
+        try:
+            repo.git.checkout(self.revision)
+        except:
+            msg = _('Unable to checkout to %s' % self.revision)
+            raise TransactionException(msg)
 
     def project_setup(self):
         return bool(self.project.config['local'].get('setup'))
@@ -145,6 +151,8 @@ class CheckoutTransaction(object):
     def execute(self):
         if not self.project_setup():
             raise TransactionException(_("Complete setup first"))
+
+        self.checkout()
 
         bakery_config = self.read_project_config()
         bakery_config['commit'] = self.revision

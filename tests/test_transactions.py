@@ -21,9 +21,13 @@ class TestTransactionCheckout(unittest.TestCase):
         with patch.object(CheckoutTransaction, 'project_setup') as ps:
             ps.return_value = True
 
-            with patch('bakery.project.models.Project.read_bakery') as read_conf:
-                read_conf.return_value = {}
+            with patch.object(CheckoutTransaction, 'checkout'):
 
-                with patch('bakery.project.models.Project.save_bakery') as save_conf:
-                    transaction.execute()
+                with patch('bakery.project.models.Project.read_bakery') as read_conf:
+                    read_conf.return_value = {}
+
+                    with patch('bakery.project.models.Project.save_bakery') as save_conf:
+
+                        transaction.execute()
+
                     save_conf.assert_called_with({'commit': 'master'})
