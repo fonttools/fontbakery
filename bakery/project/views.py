@@ -25,6 +25,7 @@ from flask.ext.babel import gettext as _
 from functools import wraps
 from yaml import YAMLError
 
+from bakery.app import app
 from bakery.decorators import login_required
 from bakery.project.models import Project, ProjectBuild
 from bakery.tasks import process_description_404
@@ -98,6 +99,26 @@ def home(p):
     if not p.latest_build():
         return redirect(url_for('project.setup', project_id=p.id))
     return redirect(url_for('project.history', project_id=p.id))
+
+
+@project.route('/api/<int:project_id>/checkout', methods=['GET'])
+@login_required
+@project_required
+def checkout(p):
+    if not p.config['local'].get('setup'):
+        flash(_("Complete setup first"))
+        return redirect(url_for('project.setup', project_id=p.id))
+
+    if request.args.get('revision'):
+        signer = itsdangerous.Signer(current_app.secret_key)
+        revision = signer.unsign(request.args.get('revision'))
+
+        path = os.path.join(app.config['DATA_ROOT'], p.login, '%s.in' % p.id)
+
+        from git import Repo
+        repo = Repo(path)
+        repo.git.checkout(revision)
+    return redirect(url_for('project.ufiles', project_id=p.id))
 
 
 # API methods
