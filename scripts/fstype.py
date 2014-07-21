@@ -17,17 +17,24 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 import os
+import sys
 
-from cli.ttfont import Font
+from fontTools.ttLib import TTLibError
 
 
 def reset_fstype(fontpath):
-    font = Font(fontpath)
+    from cli.ttfont import Font
+    try:
+        font = Font(fontpath)
+    except TTLibError, ex:
+        print >> sys.stderr, "ERROR: %s" % ex
+        return
     font.fstype = 0
     font.save(fontpath + '.fix')
 
 
 if __name__ == '__main__':
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
     parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
@@ -37,5 +44,10 @@ if __name__ == '__main__':
     if args.autofix:
         reset_fstype(args.filename)
     else:
-        font = Font(args.filename)
+        from cli.ttfont import Font
+        try:
+            font = Font(args.filename)
+        except TTLibError, ex:
+            print >> sys.stderr, "ERROR: %s" % ex
+            exit(1)
         print(font.fstype)

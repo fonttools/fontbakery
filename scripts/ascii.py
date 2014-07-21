@@ -15,20 +15,26 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
 import os
+import sys
 
-from cli.ttfont import Font
+from fontTools.ttLib import TTLibError
 
 
 def fix_name_table(fontfile):
-    font = Font(fontfile)
+    from cli.ttfont import Font
+    try:
+        font = Font(fontfile)
+    except TTLibError, ex:
+        print >> sys.stderr, "ERROR: %s" % ex
+        return
     for name_record in font['name'].names:
         name_record.string = Font.bin2unistring(name_record.string)
     font.save(fontfile + '.fix')
 
 
 if __name__ == '__main__':
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help="Font file in TTF format")

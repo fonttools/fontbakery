@@ -38,7 +38,11 @@ from fontTools import ttLib
 
 
 def openFont(filename):
-    font = ttLib.TTFont(filename)
+    try:
+        font = ttLib.TTFont(filename)
+    except ttLib.TTLibError, ex:
+        print >> sys.stderr, "ERROR: %s" % ex
+        return None
     if font.sfntVersion == 'OTTO':
         sys.exit("Error: Need TTF font, got CFF")
     return font
@@ -96,6 +100,8 @@ def writeFont(font, filename):
 def checkAndFix(filename):
     # open
     font = openFont(filename)
+    if not font:
+        return
     # check
     space = getGlyph(font, 0x0020)
     nbsp = getGlyph(font, 0x00A0)

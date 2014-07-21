@@ -15,24 +15,38 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 import argparse
 import os
 
-from cli.ttfont import Font
+from fontTools.ttLib import TTLibError
 
 
 def fix_style_names(fontpath):
-    font = Font(fontpath)
+    from cli.ttfont import Font
+    try:
+        font = Font(fontpath)
+    except TTLibError, ex:
+        print("ERROR: %s" % ex)
+        return
     # font['name'].fsType = 0
     font.save(fontpath + '.fix')
 
 
 def show_stylenames(fontpath):
-    font = Font(fontpath)
+    from cli.ttfont import Font
+    try:
+        font = Font(fontpath)
+    except TTLibError, ex:
+        print("ERROR: %s" % ex)
+        return
     print(font['name'].names[2].string)
 
 
 if __name__ == '__main__':
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help="Font file in OpenType (TTF/OTF) format")
     parser.add_argument('--autofix', action="store_true", help="Autofix font metrics")
