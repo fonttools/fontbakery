@@ -40,6 +40,7 @@ def metricview(fonts):
 
 
 def metricfix(fonts):
+    from cli.ttfont import Font
     ymin = 0
     ymax = 0
 
