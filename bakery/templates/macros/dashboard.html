@@ -10,7 +10,7 @@
 
 {% macro project_actions(repo) %}
 {# setup's values are loaded from defaults #}
-{%   if repo.config['local']['status']=='default' %}
+{%   if not repo.config['local'].get('setup') %}
     <a href="{{ url_for('project.setup', project_id=repo.id )}}" class="btn btn-xs">{{ _("Setup") }}</a>
 {# setup's values are pre-loaded from the repo #}
 {% elif repo.config['local']['status']=='repo' %}
