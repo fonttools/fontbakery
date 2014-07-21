@@ -11,8 +11,8 @@ class Optimize(object):
         self.builddir = builddir
         self.stdout_pipe = stdout_pipe
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Optimizing TTF', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Optimizing TTF', prefix='### %s ' % prefix)
 
         for filename in pipedata['bin_files']:
             # convert the ttf to a ttx file - this may fail

@@ -44,8 +44,8 @@ class PyFtSubset(object):
                     op.join(self.builddir, name)[:-4] + '.' + subsetname,
                     log=self.stdout_pipe)
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### %s ' % prefix)
 
         os.chdir(op.join(self.builddir, 'sources'))
         for name in pipedata['bin_files']:

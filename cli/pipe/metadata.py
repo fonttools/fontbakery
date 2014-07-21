@@ -11,9 +11,9 @@ class Metadata(object):
         self.builddir = builddir
         self.stdout_pipe = stdout_pipe
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         self.stdout_pipe.write('Generate METADATA.json (genmetadata.py)\n',
-                               prefix='### ')
+                               prefix='### %s ' % prefix)
         try:
             os.chdir(self.builddir)
             # reassign ansiprint to our own method

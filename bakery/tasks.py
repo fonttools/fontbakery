@@ -335,7 +335,6 @@ def process_project(project, build, force_sync=False):
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _in = joinroot('%(login)s/%(id)s.in/' % param)
     _out_log = op.join(app.config['DATA_ROOT'],
                        ('%(login)s/%(id)s.out/'
                         '%(build)s.%(revision)s.process.log') % param)
@@ -350,8 +349,6 @@ def process_project(project, build, force_sync=False):
     # setup is set after 'bake' button is first pressed
 
     if project.config['local'].get('setup', None):
-
-        git_checkout(_in, project.config['state'].get('commit', 'master'), log)
 
         # this code change upstream repository
         param = {'login': project.login, 'id': project.id,

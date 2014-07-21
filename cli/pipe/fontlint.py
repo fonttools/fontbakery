@@ -30,8 +30,8 @@ class FontLint(object):
         path = op.join(self.builddir, 'METADATA.json')
         return run_set(path, 'metadata', log=self.stdout_pipe)
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Run tests for baked files\n', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Run tests for baked files\n', prefix='### %s ' % prefix)
         _out_yaml = op.join(self.builddir, '.tests.yaml')
 
         if op.exists(_out_yaml):

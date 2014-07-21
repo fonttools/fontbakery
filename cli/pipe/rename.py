@@ -12,7 +12,7 @@ class Rename(object):
         self.builddir = builddir
         self.stdout_pipe = stdout_pipe
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         rename_executed = False
         newfiles = []
         for i, filepath in enumerate(pipedata['bin_files']):
@@ -25,7 +25,7 @@ class Rename(object):
                 if op.basename(path) != psname:
                     if not rename_executed:
                         self.stdout_pipe.write('Rename built files with PS Naming',
-                                               prefix='### ')
+                                               prefix='### %s ' % prefix)
                         rename_executed = True
                     shutil.move(path, op.join(op.dirname(path), psname),
                                 log=self.stdout_pipe)

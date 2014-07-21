@@ -20,10 +20,10 @@ class Pipe(object):
         self.project_root = project_root
         self.builddir = builddir
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         if copy_single_file(op.join(self.project_root, self.filename),
                             self.builddir, self.stdout_pipe):
-            self.stdout_pipe.write('Copy %s' % self.filename, prefix='### ')
+            self.stdout_pipe.write('Copy %s' % self.filename, prefix='### %s ' % prefix)
 
         return pipedata
 
@@ -55,8 +55,8 @@ class Copy(Pipe):
 
         return 'sources'
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Copying sources\n', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Copying sources\n', prefix='### %s ' % prefix)
 
         process_files = list(pipedata.get('process_files', []))
 
@@ -78,8 +78,8 @@ class Copy(Pipe):
 
 class CopyLicense(Pipe):
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Copy license file', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Copy license file', prefix='### %s ' % prefix)
         if pipedata.get('license_file', None):
             # Set _in license file name
             license_file_in_full_path = pipedata['license_file']
@@ -113,9 +113,9 @@ class CopyDescription(Pipe):
 
 class CopyTxtFiles(Pipe):
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         if pipedata.get('txt_files_copied', None):
-            self.stdout_pipe.write('Copy txt files', prefix='### ')
+            self.stdout_pipe.write('Copy txt files', prefix='### %s ' % prefix)
             paths = []
             for filename in pipedata['txt_files_copied']:
                 paths.append(op.join(self.project_root, filename))

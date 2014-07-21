@@ -39,7 +39,7 @@ class Build(object):
             result.append(op.basename(a)[:-4] + '.ttf')
         return result
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         ttxfiles = []
         ufo = []
         sfd = []
@@ -56,7 +56,7 @@ class Build(object):
             elif p.endswith('.otf'):
                 bin.append(p)
 
-        self.stdout_pipe.write('Convert sources to TTF\n', prefix="### ")
+        self.stdout_pipe.write('Convert sources to TTF\n', prefix="### %s " % prefix)
         if ttxfiles:
             self.execute_ttx(self.project_root, self.builddir, ttxfiles)
         if ufo:

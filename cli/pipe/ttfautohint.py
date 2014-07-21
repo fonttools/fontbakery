@@ -10,7 +10,7 @@ class TTFAutoHint(object):
         self.project_root = project_root
         self.builddir = builddir
 
-    def execute(self, pipedata):
+    def execute(self, pipedata, prefix=""):
         """ Run ttfautohint with project command line settings
 
         For each ttf file in result src folder, outputting them in
@@ -21,7 +21,7 @@ class TTFAutoHint(object):
         params = pipedata.get('ttfautohint', '')
         if not params:
             return pipedata
-        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### ')
+        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### %s ' % prefix)
         if 'autohinting_sizes' not in pipedata:
             pipedata['autohinting_sizes'] = []
 

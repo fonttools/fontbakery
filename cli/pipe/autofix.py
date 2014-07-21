@@ -35,8 +35,8 @@ class AutoFix(object):
         self.builddir = builddir
         self.stdout_pipe = stdout_pipe
 
-    def execute(self, pipedata):
-        self.stdout_pipe.write('Applying autofixes\n', prefix='### ')
+    def execute(self, pipedata, prefix=""):
+        self.stdout_pipe.write('Applying autofixes\n', prefix='### %s ' % prefix)
         _out_yaml = op.join(self.builddir, '.tests.yaml')
         autofix(_out_yaml, self.builddir, log=self.stdout_pipe)
 

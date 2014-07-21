@@ -104,6 +104,7 @@ class Bakery(object):
     def run(self, with_upstream=False):
 
         pipes = [
+            pipe.Checkout,
             pipe.Copy,
             pipe.Build,
             pipe.Rename,
@@ -121,9 +122,9 @@ class Bakery(object):
             pipe.PyFontaine
         ]
 
-        for pipe_klass in pipes:
+        for i, pipe_klass in enumerate(pipes):
             p = pipe_klass(self.project_root, self.builddir, self.stdout_pipe)
-            p.execute(self.config)
+            p.execute(self.config, '(%s of %s)' % (i + 1, len(pipes)))
 
         self.save_build_state(self.config)
 
