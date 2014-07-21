@@ -23,14 +23,17 @@ import argparse
 import collections
 import os
 import StringIO
-
-from cli.ttfont import Font
+from fontTools.ttLib import TTLibError
 
 
 def metricview(fonts):
     view = TextMetricsView()
     for f in fonts:
-        metrics = Font(f)
+        try:
+            metrics = Font(f)
+        except TTLibError, ex:
+            print("ERROR: %s" % ex)
+            continue
         view.add_metric(os.path.basename(f), metrics)
     view.print_metrics()
     return view.get_contents()
@@ -223,6 +226,10 @@ class TextMetricsView(object):
 
 
 if __name__ == '__main__':
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    from cli.ttfont import Font
+
     parser = argparse.ArgumentParser()
     # ascent parameters
     parser.add_argument('-a', '--ascents', type=int,
@@ -285,7 +292,11 @@ if __name__ == '__main__':
             or options.descents_typo or options.descents_win
             or options.linegaps_hhea or options.linegaps_typo):
         for f in fonts:
-            metrics = Font(f)
+            try:
+                metrics = Font(f)
+            except TTLibError, ex:
+                print('Error: %s' % ex)
+                continue
 
             # set ascents, descents and linegaps. FontVerticalMetrics will
             # not set those values if None, and overwrite them if concrete
