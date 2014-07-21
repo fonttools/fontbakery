@@ -177,13 +177,7 @@ def build(p):
         flash(_("Complete setup first"))
         return redirect(url_for('project.setup', project_id=p.id))
 
-    if request.args.get('revision'):
-        signer = itsdangerous.Signer(current_app.secret_key)
-        revision = signer.unsign(request.args.get('revision'))
-
-        build = ProjectBuild.make_build(p, revision)
-    else:
-        build = ProjectBuild.make_build(p, 'HEAD')
+    build = ProjectBuild.make_build(p)
 
     flash(Markup(_(("Updated repository (<a href='%(repo)s'>see files</a>)"
                     " Next step: <a href='%(step)s'>set it up</a>"),

@@ -318,7 +318,7 @@ def git_checkout(path, revision, log=None):
 
 
 @job
-def process_project(project, build, revision, force_sync=False):
+def process_project(project, build, force_sync=False):
     """ Runs bake the project.
 
     Args:
@@ -351,7 +351,7 @@ def process_project(project, build, revision, force_sync=False):
 
     if project.config['local'].get('setup', None):
 
-        git_checkout(_in, revision, log)
+        git_checkout(_in, project.config['state'].get('commit', 'master'), log)
 
         # this code change upstream repository
         param = {'login': project.login, 'id': project.id,

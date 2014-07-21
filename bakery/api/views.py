@@ -29,7 +29,7 @@ def webhook(project_id):
     # secret key is project signify(full_path)
     p = Project.query.filter_by(login=g.user.login, id=project_id)
     p = p.first_or_404()
-    ProjectBuild.make_build(p, revision='HEAD', force_sync=True)
+    ProjectBuild.make_build(p, force_sync=True)
     return "Ok"
 
 

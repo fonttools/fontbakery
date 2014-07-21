@@ -406,24 +406,23 @@ class ProjectBuild(db.Model):
         return not self.failed and self.is_done
 
     @staticmethod
-    def make_build(project, revision, force_sync=False):
+    def make_build(project, force_sync=False):
         """ Initiate project build process
 
         :param project: `Project` instance
         :param revision: git revision id
         :return: `ProjectBuild` instance
         """
-        if revision == 'HEAD':
-            revision = project.current_revision()
+        revision = project.current_revision()
         build = ProjectBuild(project=project, revision=revision)
         db.session.add(build)
         db.session.commit()
         db.session.refresh(project)
         db.session.refresh(build)
         if current_app.config.get('BACKGROUND'):
-            process_project.delay(project, build, revision, force_sync)
+            process_project.delay(project, build, force_sync)
         else:
-            process_project(project, build, revision, force_sync)
+            process_project(project, build, force_sync)
         return build
 
     @property
