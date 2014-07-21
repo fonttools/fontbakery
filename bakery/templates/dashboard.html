@@ -218,7 +218,7 @@
             <span>{{ _("H") }}</span></nobr>
         </td>
         <td style="text-align: left; white-space: nowrap; font-weight: bold">
-            <a href="{{ url_for('project.home', project_id = repo.id )}}">{{ repo.title }}</a>
+            <a href="{{ url_for('project.home', username=repo.login, project_id=repo.id )}}">{{ repo.title }}</a>
         </td>
         <td style="text-align: center">
             {% if repo.html_url %}<a href="{{ repo.html_url }}"><i class="fa fa-home"></i></a>{% endif %}
@@ -232,7 +232,7 @@
         </td>
         {% for item, value in stateDict.iteritems() | sort %}
             <td style="text-align: center"{% if item == 'price_total_usd' %} class="stats" data-sort-value="{{ value }}"{% endif %}>
-            <a href="{{ url_for('project.home', project_id = repo.id ) + '#' + item }}">
+            <a href="{{ url_for('project.home', username=repo.login, project_id=repo.id ) + '#' + item }}">
             {% if repo.config['state'][item] %}
                 {% if item == 'stats_family_name' %}
                     <i class="fa fa-check-square-o"></i>
@@ -286,10 +286,10 @@
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', username=repo.login, project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
           <a class="btn btn-xs btn-danger" request-url="{{ url_for('settings.delclone', project_id=repo.id) }}" data-toggle="modal" data-target="#deleteCloneModal"><i class="fa fa-trash-o"></i></a>
           {% set build = repo.latest_build() %}
-          {% if build and build.succeeded %}<a class="btn btn-xs" href="{{ url_for('project.zip', project_id=repo.id, build_id=build.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}
+          {% if build and build.succeeded %}<a class="btn btn-xs" href="{{ url_for('project.zip', username=repo.login, project_id=repo.id, build_id=build.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}
         </td>
       </tr>
     {%- endfor %}

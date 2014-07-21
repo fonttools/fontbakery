@@ -186,9 +186,9 @@ class UFO_FontFamilyNamingTest(TestCase):
     def test_ufo_family_naming_recommendation(self):
         """ The font corresponds the font family naming recommendation.
         See http://forum.fontlab.com/index.php?topic=313.0 """
-        if self.path.lower().endswith('.ttx'):
+        if (not self.path.lower().endswith('.ufo')
+                or not self.path.lower().endswith('.sfd')):
             # This test checks only UFO source font.
-            # To see
             return
         font = fontforge.open(self.path)
         # <Full name> limitation is < 64 chars

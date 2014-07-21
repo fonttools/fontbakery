@@ -10,7 +10,7 @@
 
 <p>
   {% set build = project.latest_build() %}
-  {% if build and build.succeeded %}<a class="btn btn-primary" href="{{ url_for('project.zip', project_id=project.id, build_id=build.id) }}">Download</a>{% endif %}
+  {% if build and build.succeeded %}<a class="btn btn-primary" href="{{ url_for('project.zip', username=project.login, project_id=project.id, build_id=build.id) }}">Download</a>{% endif %}
 </p>
 
 <table class="table table-bordered table-condensed">
@@ -45,7 +45,7 @@
         {% endif %}
       </td>
       <td>
-        <a href="{{ url_for('project.summary', project_id=b.project_id, build_id=b.id) }}">{{ b.revision }}:{{ b.id }}</a>
+        <a href="{{ url_for('project.summary', username=project.login, project_id=b.project_id, build_id=b.id) }}">{{ b.revision }}:{{ b.id }}</a>
       </td>
       <td>
         {{b.updated}} {% if b.is_done %} <i class="fa fa-check-square-o"></i>{% endif %}
@@ -54,24 +54,24 @@
       <td class="success">{{ udata.success|length }}</td>
       <td class="warning">{{ udata.failure|length }}</td>
       <td class="danger">{{ udata.error|length }}</td>
-      <td><a href="{{ url_for('project.utests', project_id=b.project_id, revision=b.revision) }}"> <i class="fa fa-file-text-o"> </i> </a></td>
+      <td><a href="{{ url_for('project.utests', username=project.login, project_id=b.project_id, revision=b.revision) }}"> <i class="fa fa-file-text-o"> </i> </a></td>
       {% set data = b.read_rtests_data() %}
       {% if data %}
       <td class="success">{{ data.success|length }}</td>
       <td class="warning">{{ data.failure|length }}</td>
       <td class="danger">{{ data.error|length }}</td>
-      <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
+      <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', username=project.login, project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
       {% else %}
       <td colspan="4"></td>
       {% endif %}
-      <td>{% if b.succeeded %}<a href="{{ url_for('project.zip', project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
+      <td>{% if b.succeeded %}<a href="{{ url_for('project.zip', username=project.login, project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}</td>
     </tr>
     {% else %}
     <tr>
       <td colspan="4">
         <div class="well">
-        <p>{{ _("No recent builds found, select hash from <a href='%(url)s'>git log page</a> or build latest head build.", url=url_for('project.git', project_id=project.id)) }}</p>
-        <p class="text-center"><a href="{{ url_for('project.build', project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a></p>
+        <p>{{ _("No recent builds found, select hash from <a href='%(url)s'>git log page</a> or build latest head build.", url=url_for('project.git', username=project.login, project_id=project.id)) }}</p>
+        <p class="text-center"><a href="{{ url_for('project.build', username=project.login, project_id = project.id)}}" class="btn btn-primary">{{ _("Build 'HEAD'") }}</a></p>
 
         </div>
       </td>

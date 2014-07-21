@@ -23,7 +23,7 @@
   <div class="row">
     <div class="col-md-12 col-xs-12">
 
-<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', project_id = project.id)}}" method="POST" role="form">
+<form id="setup" class="form-horizontal" action="{{ url_for('project.setup', username=project.login, project_id=project.id)}}" method="POST" role="form">
   <div class="form-group  anchorUnderNavbar">
     <div class="col-sm-offset-2 col-sm-8">
       <div class="form-control-static">
@@ -219,7 +219,7 @@
     <div class="alert alert-block">{{ _("These details are <strong>NOT</strong> yet saved in the upstream repository. To save your setup for all Font Bakery installations to load, add a file named <code>bakery.yaml</code> to the upstream repository that contains the following information.") }}</div>
 {% endif %}
 
-<form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', project_id = project.id)}}" method="POST">
+<form id="setup" class="form-horizontal" action="{{ url_for('project.dashboard_save', username=project.login, project_id=project.id)}}" method="POST">
     {% for item, value in stateDict.iteritems() | sort %}
     <div id="{{ item }}" class="form-group ">
       <label class="control-label col-sm-3" for="{{ item }}">{{ item }}:</label>

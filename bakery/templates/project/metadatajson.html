@@ -15,7 +15,7 @@
   <h4>{{ _("METADATA.json imported from upstream repo") }}</h4>
   <div class="container">
     <div class="row">
-        <form class="form-horizontal" action="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id)}}" method="POST">
+        <form class="form-horizontal" action="{{ url_for('project.metadatajson', username=project.login, project_id=project.id, build_id=build.id)}}" method="POST">
           <div class="col-sm-5 col-md-5">
               <div id="editor"></div>
               <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>
@@ -49,7 +49,7 @@
 {% else %}
 <div class="col-md-12">
   <h4>{{ _("METADATA.json generated from files") }}</h4>
-        <form class="form-horizontal" action="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id)}}" method="POST">
+        <form class="form-horizontal" action="{{ url_for('project.metadatajson', username=project.login, project_id=project.id, build_id=build.id) }}" method="POST">
           <div>
               <div id="editor"></div>
               <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>

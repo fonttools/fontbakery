@@ -12,7 +12,7 @@
 <p></p>
 <div class="container">
   <div class="row">
-      <form class="form-horizontal" action="{{ url_for('project.description', project_id = project.id, build_id = build.id)}}" method="POST">
+      <form class="form-horizontal" action="{{ url_for('project.description', username=project.login, project_id=project.id, build_id=build.id)}}" method="POST">
         <div class="col-sm-5 col-md-5">
             <div id="editor"></div>
             <textarea name="description" id="descriptionta">{{ description }}</textarea>

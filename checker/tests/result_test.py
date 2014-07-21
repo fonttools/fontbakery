@@ -387,12 +387,11 @@ class FontToolsTest(TestCase):
 
 class FontForgeSimpleTest(TestCase):
     targets = ['result']
-    tool = 'FontForge'
+    tool = 'FontTools'
     name = __name__
     path = '.'
 
     def setUp(self):
-        self.font = fontforge.open(self.path)
         self.fname = os.path.splitext(self.path)[0]
         # You can use ipdb here to interactively develop tests!
         # Uncommand the next line, then at the iPython prompt: print(self.path)

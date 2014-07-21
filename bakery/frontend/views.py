@@ -40,7 +40,7 @@ def splash():
     if g.user is None:
         return render_template('splash.html')
     else:
-        projects = Project.query.filter_by(login=g.user.login).all()
+        projects = Project.query.order_by(Project.id.desc())
         cache = ProjectCache.get_user_cache(g.user.login)
         if cache:
             import json

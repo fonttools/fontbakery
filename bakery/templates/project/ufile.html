@@ -19,7 +19,7 @@
 {% elif mime.startswith('image') %}
 {% set sname=name|signify %}
 <div class="well text-center" style="overflow: auto;overflow-x: auto;overflow-y: hidden;">
-<img src="{{ url_for('project.ufileblob', project_id=project.id, revision=revision, name=sname)}}" class="img-polaroid" style="vertical-align: middle;" />
+<img src="{{ url_for('project.ufileblob', username=project.login, project_id=project.id, revision=revision, name=sname)}}" class="img-polaroid" style="vertical-align: middle;" />
 </div>
 {% else %}
 <pre>

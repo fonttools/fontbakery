@@ -5,16 +5,16 @@
 {% macro nav(active, full=1) -%}
 <div class="tabs-right pull-left">
   <ul class="nav nav-tabs">
-    <li {% if active == 'upstream' %}class="active" {% endif %}>{{ link(url_for('project.git', project_id=project.id), "fa fa-code-fork", _("Repo History "), full) }}</li>
-    <li {% if active == 'setup' %}class="active" {% endif %}>{% set badge = "" if project.config['local'].get('setup') else "!" %}{{ link(url_for('project.setup', project_id=project.id), "fa fa-cog", _("Setup"), full, badge=badge) }}</li>
-    <li {% if active == 'build' %}class="active" {% endif %}>{{ link(url_for('project.history', project_id=project.id), "fa fa-building", _("Build History"), full) }}</li>
+    <li {% if active == 'upstream' %}class="active" {% endif %}>{{ link(url_for('project.git', username=project.login, project_id=project.id), "fa fa-code-fork", _("Repo History "), full) }}</li>
+    <li {% if active == 'setup' %}class="active" {% endif %}>{% set badge = "" if project.config['local'].get('setup') else "!" %}{{ link(url_for('project.setup', username=project.login, project_id=project.id), "fa fa-cog", _("Setup"), full, badge=badge) }}</li>
+    <li {% if active == 'build' %}class="active" {% endif %}>{{ link(url_for('project.history', username=project.login, project_id=project.id), "fa fa-building", _("Build History"), full) }}</li>
     {% if full %}
     <li>
         <small> {{ _("Clone string:") }} <br /></small>
         <input class="input-sm" class="clone_url" type="text" value="{{ project.clone }}" readonly="readonly" onclick="this.select()">
     </li>
     <li style="padding-top: 36px;">
-      <a class="btn btn-primary" href="{{ url_for('project.pull', project_id = project.id )}}">{{ _("Pull updates") }}</a>
+      <a class="btn btn-primary" href="{{ url_for('project.pull', username=project.login, project_id=project.id )}}">{{ _("Pull updates") }}</a>
     </li>
     {% if project.homepage %}
     <li>
@@ -27,7 +27,7 @@
     </li>
     {% endif %}
     <li style="padding-top: 18px;">
-      <a class="btn btn-danger muted" href="{{ url_for('settings.delclone', project_id = project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a>
+      <a class="btn btn-danger muted" href="{{ url_for('settings.delclone', project_id=project.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}">{{ _("Delete project") }}</a>
     </li>
 
     {% endif %}
@@ -37,14 +37,14 @@
 
 {% macro subnav_git(active, revision) %}
  <ul class="nav nav-tabs">
-  <li {% if active == 'ufiles' and revision == 'HEAD' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id), "", _("Upstream Files"), true) }}</li>
-  <li {% if active == 'gitlog' %}class="active" {% endif %}>{{ link(url_for('project.git', project_id=project.id), "", _("Git History"), true) }}</li>
+  <li {% if active == 'ufiles' and revision == 'HEAD' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', username=project.login, project_id=project.id), "", _("Upstream Files"), true) }}</li>
+  <li {% if active == 'gitlog' %}class="active" {% endif %}>{{ link(url_for('project.git', username=project.login, project_id=project.id), "", _("Git History"), true) }}</li>
   {% if revision and revision != 'HEAD' %}
-    <li {% if active == 'ufiles' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', project_id=project.id, revision=revision), "", _("Files: %(revision)s", revision=revision), true) }}</li>
-    <li {% if active == 'utests' %}class="active" {% endif %}>{{ link(url_for('project.utests', project_id=project.id, revision=revision), "", _("Tests"), true) }}</li>
+    <li {% if active == 'ufiles' %}class="active" {% endif %}>{{ link(url_for('project.ufiles', username=project.login, project_id=project.id, revision=revision), "", _("Files: %(revision)s", revision=revision), true) }}</li>
+    <li {% if active == 'utests' %}class="active" {% endif %}>{{ link(url_for('project.utests', username=project.login, project_id=project.id, revision=revision), "", _("Tests"), true) }}</li>
   {% endif %}
   {% if active == 'diff' %}
-  <li class="active"><a href="{{ url_for('project.diff', project_id=project.id, left=left, right=right) }}">{{ _("Diff") }}</a></li>
+  <li class="active"><a href="{{ url_for('project.diff', username=project.login, project_id=project.id, left=left, right=right) }}">{{ _("Diff") }}</a></li>
  {%  endif %}
 </ul>
 <p></p>
@@ -53,14 +53,14 @@
 {% macro subnav_build(active, revision) %}
  <ul class="nav nav-tabs">
   {% if build.result_tests_finished() %}
-  <li {% if active == 'summary' %}class="active" {% endif %}>{{ link(url_for('project.summary', project_id=project.id, build_id=build.id), "", _("Summary"), true) }}</li>
-  <li {% if active == 'rfiles' %}class="active" {% endif %}>{{ link(url_for('project.rfiles', project_id=project.id, build_id=build.id), "", _("Results Files"), true) }}</li>
-  <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', project_id=project.id, build_id=build.id), "", _("Results Tests"), true) }}</li>
+  <li {% if active == 'summary' %}class="active" {% endif %}>{{ link(url_for('project.summary', username=project.login, project_id=project.id, build_id=build.id), "", _("Summary"), true) }}</li>
+  <li {% if active == 'rfiles' %}class="active" {% endif %}>{{ link(url_for('project.rfiles', username=project.login, project_id=project.id, build_id=build.id), "", _("Results Files"), true) }}</li>
+  <li {% if active == 'rtests' %}class="active" {% endif %}>{{ link(url_for('project.rtests', username=project.login, project_id=project.id, build_id=build.id), "", _("Results Tests"), true) }}</li>
   {% endif %}
-  <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', project_id=project.id, build_id=build.id), "", _("Build Log"), true) }}</li>
+  <li {% if active == 'log' %}class="active" {% endif %}>{{ link(url_for('project.log', username=project.login, project_id=project.id, build_id=build.id), "", _("Build Log"), true) }}</li>
   {% set badge = "!" if build.modified else "" %}
-  {% if build.metadata_exists() %}<li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', project_id=project.id, build_id=build.id) }}" >{{ _("METADATA.json") }}</a></li>{% endif %}
-  {% if build.description_exists() %}<li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description',  project_id=project.id, build_id=build.id) }}" >{{ _("DESCRIPTION.en_us.html") }}</a></li>{% endif %}
+  {% if build.metadata_exists() %}<li {% if active == 'metadatajson' %}class="active" {% endif %}><a href="{{ url_for('project.metadatajson', username=project.login, project_id=project.id, build_id=build.id) }}" >{{ _("METADATA.json") }}</a></li>{% endif %}
+  {% if build.description_exists() %}<li {% if active == 'description' %}class="active"  {% endif %}><a href="{{ url_for('project.description', username=project.login,  project_id=project.id, build_id=build.id) }}" >{{ _("DESCRIPTION.en_us.html") }}</a></li>{% endif %}
 
  </ul>
 {% endmacro %}
@@ -68,9 +68,9 @@
 {% macro subnav_setup(active) %}
 <ul class="nav nav-tabs">
   {% if not project.is_ready %}
-  <li {% if active == 'queue'  %}class="active" {% endif %}><a href="{{ url_for('project.queue',  project_id=project.id) }}">{{ _("Waiting for queue") }}</a></li>
+  <li {% if active == 'queue'  %}class="active" {% endif %}><a href="{{ url_for('project.queue', username=project.login,  project_id=project.id) }}">{{ _("Waiting for queue") }}</a></li>
   {% endif %}
-  <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup',  project_id=project.id) }}">{{ _("Setup") }}</a></li>
+  <li {% if active == 'setup'  %}class="active" {% endif %}><a href="{{ url_for('project.setup', username=project.login,  project_id=project.id) }}">{{ _("Setup") }}</a></li>
   {% if project.config['local'].get('setup') %}
     {# Additional setup views here, only will be available if primary setup is done #}
   {% endif %}
@@ -94,7 +94,7 @@
           <span><i class="fa fa-folder-open"></i> {{ key }}</span>
           {% else %}
             {%- if revision %}
-              <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
+              <a href="{{ url_for('project.ufile', username=project.login, project_id=project.id, revision=revision, name="/".join(path+[key])) }}">
             {%- else %}
               <a {%- if key in project.config['local']['txt_files'] %} href="#{{ key }}" id="tree-{{ key }}"{%- endif %}>
             {%- endif %}
@@ -176,12 +176,12 @@
 {%- endmacro %}
 
 {%- macro revision_head(revision) %}
-<h4><a href="{{ url_for('project.ufiles', project_id = project.id, revision=revision) }}"><i class="fa fa-home"></i> </a> /
+<h4><a href="{{ url_for('project.ufiles', username=project.login, project_id=project.id, revision=revision) }}"><i class="fa fa-home"></i> </a> /
 {% set lname = name.split('/') if name else [] %}
 {% for i in range(lname|length) %}
   {%- if loop.last %}{{lname[i]}}
   {%- else %}
-    <a href="{{ url_for('project.ufile', project_id=project.id, revision=revision, name="/".join(lname[0:i+1])+'/') }}">{{lname[i]}}</a> /
+    <a href="{{ url_for('project.ufile', username=project.login, project_id=project.id, revision=revision, name="/".join(lname[0:i+1])+'/') }}">{{lname[i]}}</a> /
   {% endif %}
 {% endfor %} <small>{{revision}}</small></h4>
 

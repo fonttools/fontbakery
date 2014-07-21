@@ -27,13 +27,14 @@ from yaml import YAMLError
 
 from bakery.app import app
 from bakery.decorators import login_required
+from bakery.gitauth.models import User
 from bakery.project.models import Project, ProjectBuild
 from bakery.tasks import process_description_404
 from bakery.utils import project_fontaine
 
 import itsdangerous
 
-project = Blueprint('project', __name__, url_prefix='/project')
+project = Blueprint('project', __name__, url_prefix='/<string:username>')
 
 DEFAULT_SUBSET_LIST = [
     'menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
@@ -69,25 +70,18 @@ def project_required(f):
 
     """
     @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'project_id' in kwargs:
-            project_id = kwargs.pop('project_id')
-        else:
-            project_id = args.pop(0)
+    def decorated_function(username, project_id, *args, **kwargs):
+        user = User.query.filter_by(login=username).first_or_404()
 
-        args = list(args)
-
-        p = Project.query.filter_by(
-            login=g.user.login, id=project_id).first_or_404()
+        p = Project.query.filter_by(id=project_id, login=username)
+        p = p.first_or_404()
 
         # Here can be located ownership access checks in the future.
-
         if p.is_ready:
-            args.insert(0, p)
-            return f(*args, **kwargs)
+            return f(user, p, *args, **kwargs)
         else:
             flash(_('Project is being synchronized, wait until it is done'))
-            return redirect(url_for('project.queue', project_id=p.id))
+            return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 
     return decorated_function
 
@@ -95,24 +89,24 @@ def project_required(f):
 @project.route('/<int:project_id>', methods=['GET'])
 @login_required
 @project_required
-def home(p):
+def home(user, p):
     if not p.latest_build():
-        return redirect(url_for('project.setup', project_id=p.id))
-    return redirect(url_for('project.history', project_id=p.id))
+        return redirect(url_for('project.setup', username=user.login, project_id=p.id))
+    return redirect(url_for('project.history', username=user.login, project_id=p.id))
 
 
-@project.route('/api/<int:project_id>/checkout', methods=['GET'])
+@project.route('/<int:project_id>/api/checkout', methods=['GET'])
 @login_required
 @project_required
-def checkout(p):
+def checkout(user, p):
     transaction = CheckoutTransaction(p, request.args.get('revision'))
     try:
         transaction.execute()
     except TransactionException, ex:
         flash(ex.message)
-        return redirect(url_for('project.git', project_id=p.id))
+        return redirect(url_for('project.git', username=user.login, project_id=p.id))
 
-    return redirect(url_for('project.ufiles', project_id=p.id))
+    return redirect(url_for('project.ufiles', username=user.login, project_id=p.id))
 
 
 class CheckoutTransaction(object):
@@ -166,37 +160,37 @@ class TransactionException(Exception):
 
 # API methods
 
-@project.route('/api/<int:project_id>/build', methods=['GET'])
+@project.route('/<int:project_id>/api/build', methods=['GET'])
 @login_required
 @project_required
-def build(p):
+def build(user, p):
     """ Revision id is dangerous parameter, because it added to command line to
     git call. That is why it always should be signed with hash.
     """
     if not p.config['local'].get('setup'):
         flash(_("Complete setup first"))
-        return redirect(url_for('project.setup', project_id=p.id))
+        return redirect(url_for('project.setup', username=user.login, project_id=p.id))
 
     build = ProjectBuild.make_build(p)
 
     flash(Markup(_(("Updated repository (<a href='%(repo)s'>see files</a>)"
                     " Next step: <a href='%(step)s'>set it up</a>"),
-                   repo=url_for('project.ufiles', project_id=p.id),
-                   step=url_for('project.setup', project_id=p.id))))
-    return redirect(url_for('project.log', project_id=p.id, build_id=build.id))
+                   repo=url_for('project.ufiles', username=user.login, project_id=p.id),
+                   step=url_for('project.setup', username=user.login, project_id=p.id))))
+    return redirect(url_for('project.log', username=user.login, project_id=p.id, build_id=build.id))
 
 
-@project.route('/api/<int:project_id>/pull', methods=['GET'])
+@project.route('/<int:project_id>/api/pull', methods=['GET'])
 @login_required
 # this is only exception where decorator @project_required is not needed
-def pull(project_id):
+def pull(user, project_id):
     p = Project.query.filter_by(
         login=g.user.login, id=project_id).first_or_404()
 
     p.sync()
 
     flash(_("Pulling latest version from upstream"))
-    return redirect(url_for('project.queue', project_id=p.id))
+    return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 
 
 # Setup views
@@ -204,18 +198,18 @@ def pull(project_id):
 
 @project.route('/<int:project_id>/queue')
 @login_required
-def queue(project_id):
+def queue(user, project_id):
     p = Project.query.filter_by(login=g.user.login, id=project_id)
     p = p.first_or_404()
     param = {'login': p.login, 'id': p.id}
     log_file = "%(login)s/%(id)s.out/upstream.log" % param
-    return render_template('project/queue.html', project=p, log_file=log_file)
+    return render_template('project/queue.html', username=user.login, project=p, log_file=log_file)
 
 
 @project.route('/<int:project_id>/setup', methods=['GET', 'POST'])
 @login_required
 @project_required
-def setup(p):
+def setup(user, p):
 
     config = p.config
     originalConfig = p.config
@@ -276,18 +270,18 @@ def setup(p):
     config['local']['setup'] = True
     p.save_state()
     if request.form.get('bake'):
-        return redirect(url_for('project.build', project_id=p.id))
+        return redirect(url_for('project.build', username=user.login, project_id=p.id))
     else:
         flash(_("Setup saved"))
-        return redirect(url_for('project.setup', project_id=p.id))
+        return redirect(url_for('project.setup', username=user.login, project_id=p.id))
 
 
 @project.route('/<int:project_id>/setup/dashboard_save', methods=['POST'])
 @login_required
 @project_required
-def dashboard_save(p):
+def dashboard_save(user, p):
     if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+        return redirect(url_for('project.log', username=user.login, project_id=p.id))
 
     for item in request.form:
         if request.form.get(item):
@@ -300,7 +294,7 @@ def dashboard_save(p):
                 flash(_('Unset %(item)s', item=item))
 
     p.save_state()
-    return redirect(url_for('project.setup', project_id=p.id))
+    return redirect(url_for('project.setup', username=user.login, project_id=p.id))
 
 
 # File browser views
@@ -309,7 +303,7 @@ def dashboard_save(p):
 @project.route('/<int:project_id>/files/<revision>/', methods=['GET'])
 @login_required
 @project_required
-def ufiles(p, revision=None, name=None):
+def ufiles(user, p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     if revision and revision != 'HEAD':
@@ -324,7 +318,7 @@ def ufiles(p, revision=None, name=None):
 @project.route('/<int:project_id>/files/<revision>/<path:name>')
 @login_required
 @project_required
-def ufile(p, revision=None, name=None):
+def ufile(user, p, revision=None, name=None):
     # this page can be visible by others, not only by owner
     # TODO consider all pages for that
     if revision and revision != 'HEAD':
@@ -341,7 +335,7 @@ def ufile(p, revision=None, name=None):
 @project.route('/<int:project_id>/files/<revision>/blob', methods=['GET'])
 @login_required
 @project_required
-def ufileblob(p, revision=None):
+def ufileblob(user, p, revision=None):
     """ Mandatory parameter is `name` signed by cypher hash on server side.
     This view is pretty much "heavy", each request spawn additional process and
     read its output.
@@ -368,7 +362,7 @@ def ufileblob(p, revision=None):
 @project.route('/<int:project_id>/zip/<int:build_id>')
 @login_required
 @project_required
-def zip(p, build_id):
+def zip(user, p, build_id):
     build = ProjectBuild.query.filter_by(project_id=p.id, id=build_id)
     build = build.first_or_404()
 
@@ -393,18 +387,18 @@ def zip(p, build_id):
 @project.route('/<int:project_id>/build', methods=['GET'])
 @login_required
 @project_required
-def history(p):
+def history(user, p):
     """ Results of processing tests, for ttf files """
     b = ProjectBuild.query.filter_by(project=p).order_by("id desc").all()
     if not len(b):
-        return redirect(url_for('project.setup', project_id=p.id))
+        return redirect(url_for('project.setup', username=user.login, project_id=p.id))
     return render_template('project/history.html', project=p, builds=b)
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/log', methods=['GET'])
 @login_required
 @project_required
-def log(p, build_id):
+def log(user, p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
     param = {'login': p.login, 'id': p.id,
              'revision': b.revision, 'build': b.id}
@@ -447,14 +441,14 @@ def get_orthography(fontaine):
 @project.route('/<int:project_id>/build/<int:build_id>/rfiles')
 @login_required
 @project_required
-def rfiles(p, build_id):
+def rfiles(user, p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not b.is_done:
-        return redirect(url_for('project.log', project_id=p.id, build_id=b.id))
+        return redirect(url_for('project.log', username=user.login, project_id=p.id, build_id=b.id))
 
     yaml = p.read_asset('yaml')
-    f = project_fontaine(p, b)
+    f = project_fontaine(user, p, b)
     tree = b.files()
 
     fonts = []
@@ -475,12 +469,12 @@ def rfiles(p, build_id):
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
 @login_required
 @project_required
-def rtests(p, build_id):
+def rtests(user, p, build_id):
     """ Results of processing tests, for ttf files """
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+        return redirect(url_for('project.log', username=user.login, project_id=p.id))
 
     test_result = b.result_tests()
     if not test_result:
@@ -508,12 +502,12 @@ def rtests(p, build_id):
 @project.route('/<int:project_id>/build/<int:build_id>/', methods=['GET'])
 @login_required
 @project_required
-def summary(p, build_id):
+def summary(user, p, build_id):
     """ Results of processing tests, for ttf files """
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+        return redirect(url_for('project.log', username=user.login, project_id=p.id))
 
     test_result = b.result_tests()
 
@@ -542,7 +536,7 @@ def summary(p, build_id):
 @project.route('/<int:project_id>/build/<int:build_id>/description', methods=['GET', 'POST'])
 @login_required
 @project_required
-def description(p, build_id):
+def description(user, p, build_id):
     """ Description file management """
 
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
@@ -552,11 +546,11 @@ def description(p, build_id):
             test_data = b.read_links404_test_data()
             if test_data['updated'] < datetime.now() - timedelta(days=1):
                 # rerun background to check description 404 links
-                process_description_404.delay(p, b)
+                process_description_404.delay(user, p, b)
             parsed_results = test_data.get('failure', [])
         except (IOError, YAMLError, KeyError):
             # possibly file does not exist, start background task if that so
-            process_description_404.delay(p, b)
+            process_description_404.delay(user, p, b)
             parsed_results = []
 
         data = b.read_asset('description')
@@ -574,7 +568,7 @@ def description(p, build_id):
 @project.route('/<int:project_id>/build/<int:build_id>/metadatajson', methods=['GET', 'POST'])
 @login_required
 @project_required
-def metadatajson(p, build_id):
+def metadatajson(user, p, build_id):
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if request.method == 'POST':
@@ -588,7 +582,7 @@ def metadatajson(p, build_id):
             flash('METADATA.json has been saved')
         except Exception, ex:
             flash('Unable to save METADATA.json for build %s' % ex)
-        return redirect(url_for('project.metadatajson', project_id=p.id,
+        return redirect(url_for('project.metadatajson', username=user.login, project_id=p.id,
                                 build_id=b.id))
 
     metadata = b.read_asset('metadata')
@@ -602,10 +596,10 @@ def metadatajson(p, build_id):
 @project.route('/<int:project_id>/tests/<revision>', methods=['GET'])
 @login_required
 @project_required
-def utests(p, revision):
+def utests(user, p, revision):
     """ Results of processing tests, for ufo files """
     if not p.is_ready:
-        return redirect(url_for('project.log', project_id=p.id))
+        return redirect(url_for('project.log', username=user.login, project_id=p.id))
 
     test_result = p.revision_tests(revision)
     return render_template('project/utests.html', project=p, revision=revision,
@@ -615,7 +609,7 @@ def utests(p, revision):
 @project.route('/<int:project_id>/git', methods=['GET'])
 @login_required
 @project_required
-def git(p):
+def git(user, p):
     """ Results of processing tests, for ttf files """
     gitlog = p.gitlog()
 
@@ -625,7 +619,7 @@ def git(p):
 @project.route('/<int:project_id>/diff', methods=['GET'])
 @login_required
 @project_required
-def diff(p):
+def diff(user, p):
     """ Show diff between different revisions, since we want to make this view
     more user friendly we can't signify left and right revision. And this mean
     that we should check input data"""
@@ -642,7 +636,7 @@ def diff(p):
         int(right, 16)
     except ValueError:
         flash(_('Error in provided data'))
-        return redirect(url_for('project.git', project_id=p.id))
+        return redirect(url_for('project.git', username=user.login, project_id=p.id))
 
     diffdata = p.diff_files(left, right)
 

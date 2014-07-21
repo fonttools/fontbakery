@@ -154,7 +154,7 @@ def addhook(full_name):
 
     flash(_('Added webhook for %(name)s.', name=full_name))
     project.sync()
-    return redirect(url_for('project.queue', project_id=project.id))
+    return redirect(url_for('project.queue', username=project.login, project_id=project.id))
 
 
 @settings.route('/delhook/<path:full_name>', methods=['GET'])
