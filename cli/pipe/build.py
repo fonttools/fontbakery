@@ -18,15 +18,16 @@ class Build(object):
         fontname = filepath[:-4]
 
         self.stdout_pipe.write(_.format(fontname))
-        try:
-            path = '{}.otf'.format(fontname)
-            ttfpath = '{}.ttf'.format(fontname)
-            convert(op.join(self.builddir, path),
-                    op.join(self.builddir, ttfpath), log=self.stdout_pipe)
-            os.remove(op.join(self.builddir, path))
-        except Exception, ex:
-            self.stdout_pipe.write('Error: %s\n' % ex.message)
-            raise
+        path = '{}.otf'.format(fontname)
+        if op.exists(op.join(self.builddir, path)):
+            try:
+                ttfpath = '{}.ttf'.format(fontname)
+                convert(op.join(self.builddir, path),
+                        op.join(self.builddir, ttfpath), log=self.stdout_pipe)
+                os.remove(op.join(self.builddir, path))
+            except Exception, ex:
+                self.stdout_pipe.write('Error: %s\n' % ex.message)
+                raise
 
     def movebin_to_builddir(self, builddir, files):
         result = []
