@@ -27,6 +27,7 @@ from fontTools.ttLib import TTLibError
 
 
 def metricview(fonts):
+    from cli.ttfont import Font
     view = TextMetricsView()
     for f in fonts:
         try:

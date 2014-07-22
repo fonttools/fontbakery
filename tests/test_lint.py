@@ -20,21 +20,21 @@ import simplejson
 import StringIO
 
 
-from checker.tests import test_check_canonical_filenames as tf_f
-from checker.tests import test_check_canonical_styles as tf_s
-from checker.tests import test_check_canonical_weights as tf_w
-from checker.tests import test_check_familyname_matches_fontnames as tf_fm_eq
-from checker.tests import test_check_menu_subset_contains_proper_glyphs as tf_menu
-from checker.tests import test_check_metadata_matches_nametable as tf_fm_eq_nt
-from checker.tests import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_sp
-from checker.tests import test_check_subsets_exists as tf_subset
-from checker.tests import test_check_unused_glyph_data as tf_unused
-from checker.tests import test_check_os2_width_class as tf_widthclass
-from checker.tests import test_check_no_problematic_formats as tf_pr_fmt
-from checker.tests import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
-from checker.tests import test_check_glyf_table_length as tf_glyflen
-from checker.tests import test_check_full_font_name_begins_with_family_name as tf_ff_names
-from checker.tests import test_check_upm_heights_less_120 as tf_upm
+from checker.tests.downstream import test_check_canonical_filenames as tf_f
+from checker.tests.downstream import test_check_canonical_styles as tf_s
+from checker.tests.downstream import test_check_canonical_weights as tf_w
+from checker.tests.downstream import test_check_familyname_matches_fontnames as tf_fm_eq
+from checker.tests.downstream import test_check_menu_subset_contains_proper_glyphs as tf_menu
+from checker.tests.downstream import test_check_metadata_matches_nametable as tf_fm_eq_nt
+from checker.tests.downstream import test_check_nbsp_width_matches_sp_width as tf_nbsp_eq_sp
+from checker.tests.downstream import test_check_subsets_exists as tf_subset
+from checker.tests.downstream import test_check_unused_glyph_data as tf_unused
+from checker.tests.downstream import test_check_os2_width_class as tf_widthclass
+from checker.tests.downstream import test_check_no_problematic_formats as tf_pr_fmt
+from checker.tests.downstream import test_check_hmtx_hhea_max_advance_width_agreement as tf_htmx
+from checker.tests.downstream import test_check_glyf_table_length as tf_glyflen
+from checker.tests.downstream import test_check_full_font_name_begins_with_family_name as tf_ff_names
+from checker.tests.downstream import test_check_upm_heights_less_120 as tf_upm
 from cli.ttfont import Font as OriginFont
 
 
@@ -393,10 +393,12 @@ class Test_CheckNoProblematicFormats(unittest.TestCase):
         class FontTool:
 
             @staticmethod
-            def get_tables(p):
+            def get_tables():
                 return ['glyf', 'post', 'GPOS']
 
-        with mock.patch('checker.tests.test_check_no_problematic_formats.FontTool', FontTool):
+        import cli.ttfont
+        with mock.patch.object(cli.ttfont.FontTool, 'get_tables') as get_tables:
+            get_tables.return_value = FontTool.get_tables()
             result = _run_font_test(tf_pr_fmt.CheckNoProblematicFormats)
 
         if result.errors:

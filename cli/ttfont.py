@@ -26,7 +26,7 @@ class Font(object):
         path = op.join(op.dirname(path), font_metadata.filename)
         if is_menu:
             path = path.replace('.ttf', '.menu')
-        return Font(path)
+        return Font.get_ttfont(path)
 
     @staticmethod
     def get_ttfont(path):
@@ -73,6 +73,16 @@ class Font(object):
         return self.ttfont['name'].names
 
     @property
+    def glyphs(self):
+        """ Returns list of glyphs names in fonts
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> len(font.glyphs)
+        502
+        """
+        return self.ttfont.getGlyphOrder()
+
+    @property
     def OS2_usWeightClass(self):
         """ OS/2.usWeightClass property value
 
@@ -93,7 +103,34 @@ class Font(object):
         return self.ttfont['OS/2'].usWidthClass
 
     @property
+    def fullname(self):
+        """ Returns fullname of fonts
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.fullname
+        'Monda Regular'
+        """
+        windows_entry = None
+
+        for entry in self.names:
+            if entry.nameID != 4:
+                continue
+            # macintosh platform
+            if entry.platformID == 1 and entry.langID == 0:
+                return Font.bin2unistring(entry)
+            if entry.platformID == 3 and entry.langID == 0x409:
+                windows_entry = entry
+
+        return windows_entry
+
+    @property
     def familyname(self):
+        """ Returns fullname of fonts
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.familyname
+        'Monda-Regular'
+        """
         windows_entry = None
 
         for entry in self.names:
@@ -108,9 +145,15 @@ class Font(object):
         return windows_entry
 
     def retrieve_cmap_format_4(self):
+        """ Returns cmap table format 4
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.retrieve_cmap_format_4().platEncID
+        3
+        """
         for cmap in self.ttfont['cmap'].tables:
             if cmap.format == 4:
-                return cmap.cmap
+                return cmap
 
     def advanceWidth(self, glyph_id):
         """ AdvanceWidth of glyph from "hmtx" table

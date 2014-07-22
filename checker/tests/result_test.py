@@ -21,12 +21,10 @@ import unicodedata
 import yaml
 import os
 import re
-import subprocess
-import sys
 import magic
 
+from cli.ttfont import Font
 from fontTools import ttLib
-from bakery.app import app
 
 
 weights = {
@@ -90,43 +88,6 @@ normal_styles = {
 }
 
 
-def prun(command, cwd, log=None):
-    """
-    Wrapper for subprocess.Popen that capture output and return as result
-
-        :param command: shell command to run
-        :param cwd: current working dir
-        :param log: loggin object with .write() method
-
-    """
-    env = os.environ.copy()
-    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    p = subprocess.Popen(command, shell=True, cwd=cwd,
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                         close_fds=True, env=env)
-    stdout = p.communicate()[0]
-    if log:
-        log.write('$ %s' % command)
-        log.write(stdout)
-    return stdout
-
-
-class OTSTest(TestCase):
-
-    targets = ['result']
-    tool = 'OTS'
-    name = __name__
-    path = '.'
-
-    @tags('required',)
-    def test_ots(self):
-        """ Is TTF file correctly sanitized for Firefox and Chrome """
-        stdout = prun('{0} {1}'.format(app.config['OTS_BINARY_PATH'],
-                                       self.path),
-                      app.config['ROOT'])
-        self.assertEqual('', stdout.replace('\n', '. '))
-
-
 class FontToolsTest(TestCase):
     targets = ['result']
     tool = 'FontTools'
@@ -134,7 +95,7 @@ class FontToolsTest(TestCase):
     path = '.'
 
     def setUp(self):
-        self.font = ttLib.TTFont(self.path)
+        self.font = Font.get_ttfont(self.path)
 
     def test_camelcase_in_fontname(self):
         """ Font family is not CamelCase'd """
@@ -146,7 +107,7 @@ class FontToolsTest(TestCase):
         """ Font contains in PREP table magic code """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         try:
-            bytecode = self.font['prep'].program.getBytecode()
+            bytecode = self.font.ttfont['prep'].program.getBytecode()
         except KeyError:
             bytecode = ''
         self.assertTrue(bytecode == magiccode,
@@ -157,7 +118,7 @@ class FontToolsTest(TestCase):
         """ Font names are equal for Macintosh and Windows
             specific-platform """
         result_string_dicts = {}
-        for name in self.font['name'].names:
+        for name in self.font.names:
             if name.nameID not in result_string_dicts:
                 result_string_dicts[name.nameID] = {'mac': '', 'win': ''}
             if name.platformID == 3 and name.langID == 0x409:
@@ -173,22 +134,10 @@ class FontToolsTest(TestCase):
         for row in result_string_dicts.values():
             self.assertEqual(row['win'], row['mac'])
 
-    def test_tables(self):
-        """ List of tables that shoud be in font file """
-        # xen: actually I take this list from most popular open font Open Sans,
-        # belive that it is most mature.
-        # This list should be reviewed
-        tables = ['GlyphOrder', 'head', 'hhea', 'maxp', 'OS/2', 'hmtx',
-                  'cmap', 'fpgm', 'prep', 'cvt ', 'loca', 'glyf', 'name',
-                  'post', 'gasp', 'GDEF', 'GPOS', 'GSUB', 'DSIG']
-
-        for x in self.font.keys():
-            self.assertIn(x, tables, msg="%s does not exist in font" % x)
-
     @tags('required')
     def test_license_url_is_included_and_correct(self):
         """ License URL is included and correct url """
-        licenseurl = self.font['name'].names[13].string
+        licenseurl = self.font.names[13].string
         if b'\000' in licenseurl:
             licenseurl = licenseurl.decode('utf-16-be').encode('utf-8')
 
@@ -201,18 +150,6 @@ class FontToolsTest(TestCase):
             r'(?::\d+)?'  # optional port
             r'(?:/?|[/?]\S+)$', re.IGNORECASE)
         self.assertTrue(regex.match(licenseurl))
-
-    def get_postscript_name(self):
-        fontname = self.font['name'].names[6].string
-        if b'\000' in fontname:
-            return fontname.decode('utf-16-be').encode('utf-8')
-        return fontname
-
-    def get_font_fullname(self):
-        fontname = self.font['name'].names[4].string
-        if b'\000' in fontname:
-            return fontname.decode('utf-16-be').encode('utf-8')
-        return fontname
 
     def test_metadata_weight_matches_postscriptname(self):
         """ Metadata weight matches postScriptName """
@@ -263,8 +200,8 @@ class FontToolsTest(TestCase):
 
     def test_fontname_is_equal_to_macstyle(self):
         """ Is internal fontname is equal to macstyle flags """
-        fontname = self.get_postscript_name()
-        macStyle = self.font['head'].macStyle
+        fontname = self.font.familyname
+        macStyle = self.font.macStyle
         weight_style = fontname.split('-')[1]
         if 'Italic' in weight_style:
             self.assertTrue(macStyle & 0b10)
@@ -277,7 +214,7 @@ class FontToolsTest(TestCase):
         metadata = yaml.load(open(medatata_path, 'r').read())
         font_metadata = {}
         for font in metadata.get('fonts', []):
-            if os.path.basename(self.path) == font['filename']:
+            if os.path.basename(self.path) == font.filename:
                 font_metadata = font
                 break
         self.assertTrue(font_metadata)
@@ -286,11 +223,11 @@ class FontToolsTest(TestCase):
     def test_font_italic_style_matches_internal_font_properties_values(self):
         """ Check metadata.json font.style `italic` matches font internal """
         font_metadata = self.get_metadata()
-        psname = self.get_postscript_name()
-        fullname = self.get_font_fullname()
+        psname = self.font.familyname
+        fullname = self.font.fullname
         if font_metadata['style'] != 'italic':
             return
-        self.assertTrue(self.font['head'].macStyle & 0b10)
+        self.assertTrue(self.font.macStyle & 0b10)
         self.assertTrue(any([psname.endswith('-' + x)
                              for x in italics_styles.keys()]))
         self.assertTrue(any([fullname.endswith(' ' + x)
@@ -299,8 +236,8 @@ class FontToolsTest(TestCase):
     def test_font_normal_style_matches_internal_font_properties_values(self):
         """ Check metadata.json font.style `normal` matches font internal """
         font_metadata = self.get_metadata()
-        psname = self.get_postscript_name()
-        fullname = self.get_font_fullname()
+        psname = self.font.familyname
+        fullname = self.font.fullname
         if font_metadata['style'] != 'normal':
             return
         self.assertTrue(any([psname.endswith('-' + x)
@@ -333,15 +270,15 @@ class FontToolsTest(TestCase):
     @tags('required')
     def test_font_has_dsig_table(self):
         """ Check that font has DSIG table """
-        self.assertIn('DSIG', self.font.keys(),
+        self.assertIn('DSIG', self.font.ttfont.keys(),
                       msg="`dsig` does not exist in font")
 
     def test_font_gpos_table_has_kerning_info(self):
         """ GPOS table has kerning information """
-        self.assertIn('GPOS', self.font.keys(),
+        self.assertIn('GPOS', self.font.ttfont.keys(),
                       msg="`gpos` does not exist in font")
         flaglookup = False
-        for lookup in self.font['GPOS'].table.LookupList.Lookup:
+        for lookup in self.font.ttfont['GPOS'].table.LookupList.Lookup:
             if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
                 flaglookup = lookup
         self.assertTrue(flaglookup, msg='GPOS doesnt have kerning information')
@@ -352,28 +289,28 @@ class FontToolsTest(TestCase):
         """ Check that METADATA.json family matches fullName
             and postScriptName family part"""
         font_metadata = self.get_metadata()
-        psname = self.get_postscript_name()
-        fullname = self.get_font_fullname()
+        psname = self.font.familyname
+        fullname = self.font.fullname
         self.assertTrue(psname.startswith(font_metadata['name'] + '-'))
         self.assertTrue(fullname.startswith(font_metadata['name'] + ' '))
 
     def test_no_kern_table_exists(self):
         """ Check that no KERN table exists """
-        self.assertNotIn('kern', self.font.keys())
+        self.assertNotIn('kern', self.font.ttfont.keys())
 
     def test_table_gasp_type(self):
         """ Font table gasp should be 15 """
-        keys = self.font.keys()
+        keys = self.font.ttfont.keys()
         self.assertIn('gasp', keys, msg="GASP table not found")
-        self.assertEqual(type({}), type(self.font['gasp'].gaspRange),
+        self.assertEqual(type({}), type(self.font.ttfont['gasp'].gaspRange),
             msg="GASP table: gaspRange method value have wrong type")
-        self.assertTrue(65535 in self.font['gasp'].gaspRange)
+        self.assertTrue(65535 in self.font.ttfont['gasp'].gaspRange)
         # XXX: Needs review
-        self.assertEqual(self.font['gasp'].gaspRange[65535], 15)
+        self.assertEqual(self.font.ttfont['gasp'].gaspRange[65535], 15)
 
     def test_non_ascii_chars_in_names(self):
         """ NAME and CFF tables must not contain non-ascii characters """
-        for name_record in self.font['name'].names:
+        for name_record in self.font.names:
             string = name_record.string
             if b'\000' in string:
                 string = string.decode('utf-16-be').encode('utf-8')
@@ -563,108 +500,6 @@ class FontForgeSimpleTest(TestCase):
             os.path.dirname(self.path), 'FONTLOG.txt')))
 
 
-class FontForgeValidateStateTest(TestCase):
-
-    targets = ['result']
-    tool = 'FontForge'
-    name = __name__
-    path = '.'
-    longMessage = True
-
-    def setUp(self):
-        font = fontforge.open(self.path)
-        self.validation_state = font.validate()
-
-    def test_validation_open_contours(self):
-        """ Glyphs do not have opened contours """
-        self.assertFalse(bool(self.validation_state & 0x2))
-
-    def test_validation_glyph_intersect(self):
-        """ Glyphs do not intersect somewhere """
-        self.assertFalse(bool(self.validation_state & 0x4))
-
-    def test_wrong_direction_in_glyphs(self):
-        """ Contours do not have wrong direction """
-        self.assertFalse(bool(self.validation_state & 0x8))
-
-    def test_flipped_reference_in_glyphs(self):
-        """ Reference in the glyph haven't been flipped """
-        self.assertFalse(bool(self.validation_state & 0x10))
-
-    def test_missing_extrema_in_glyphs(self):
-        """ Glyphs do not have missing extrema """
-        self.assertFalse(bool(self.validation_state & 0x20))
-
-    def test_referenced_glyphs_are_present(self):
-        """ Glyph names referred to from glyphs present in the font """
-        self.assertFalse(bool(self.validation_state & 0x40))
-
-    def test_points_are_not_too_far_apart(self):
-        """ Points (or control points) are not too far apart """
-        self.assertFalse(bool(self.validation_state & 0x40000))
-
-    def test_postscript_hasnt_limit_points_in_glyphs(self):
-        """ PostScript has not a limit of 1500 points in glyphs """
-        self.assertFalse(bool(self.validation_state & 0x80))
-
-    def test_postscript_hasnt_limit_hints_in_glyphs(self):
-        """ PostScript hasnt a limit of 96 hints in glyphs """
-        self.assertFalse(bool(self.validation_state & 0x100))
-
-    def test_valid_glyph_names(self):
-        """ Font doesn't have invalid glyph names """
-        self.assertFalse(bool(self.validation_state & 0x200))
-
-    def test_allowed_numbers_points_in_glyphs(self):
-        """ Glyphs have allowed numbers of points defined in maxp """
-        self.assertFalse(bool(self.validation_state & 0x400))
-
-    def test_allowed_numbers_paths_in_glyphs(self):
-        """ Glyphs have allowed numbers of paths defined in maxp """
-        self.assertFalse(bool(self.validation_state & 0x800))
-
-    def test_allowed_numbers_points_in_composite_glyphs(self):
-        """ Composite glyphs have allowed numbers of points defined in maxp """
-        self.assertFalse(bool(self.validation_state & 0x1000))
-
-    def test_allowed_numbers_paths_in_composite_glyphs(self):
-        """ Composite glyphs have allowed numbers of paths defined in maxp """
-        self.assertFalse(bool(self.validation_state & 0x2000))
-
-    def test_valid_length_instructions(self):
-        """ Glyphs instructions have valid lengths """
-        self.assertFalse(bool(self.validation_state & 0x4000))
-
-    def test_points_are_integer_aligned(self):
-        """ Points in glyphs are integer aligned """
-        self.assertFalse(bool(self.validation_state & 0x80000))
-
-    def test_missing_anchors(self):
-        """ Glyphs have not missing anchor.
-
-            According to the opentype spec, if a glyph contains an anchor point
-            for one anchor class in a subtable, it must contain anchor points
-            for all anchor classes in the subtable. Even it, logically,
-            they do not apply and are unnecessary. """
-        self.assertFalse(bool(self.validation_state & 0x100000))
-
-    def test_duplicate_glyphs(self):
-        """ Font does not have duplicated glyphs.
-
-            Two (or more) glyphs in this font have the same name. """
-        self.assertFalse(bool(self.validation_state & 0x200000))
-
-    def test_duplicate_unicode_codepoints(self):
-        """ Glyphs do not have duplicate unicode code points.
-
-            Two (or more) glyphs in this font have the code point. """
-        self.assertFalse(bool(self.validation_state & 0x400000))
-
-    def test_overlapped_hints(self):
-        """ Glyphs do not have overlapped hints """
-        self.assertFalse(bool(self.validation_state & 0x800000))
-
-
 class MetadataJSONTest(TestCase):
     targets = ['result']
     tool = 'FontForge'
@@ -680,34 +515,6 @@ class MetadataJSONTest(TestCase):
         self.fname = os.path.splitext(self.path)[0]
         self.root_dir = os.path.dirname(self.path)
 
-    def test_the_same_number_of_glyphs_across_family(self):
-        """ The same number of glyphs across family? """
-        numbers_of_glyphs = 0
-        for resultdata in self.metadata.get('fonts', []):
-            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
-            if not numbers_of_glyphs:
-                numbers_of_glyphs = len(list(font.glyphs()))
-            self.assertEqual(numbers_of_glyphs, len(list(font.glyphs())))
-            font.close()
-
-    def test_the_same_names_of_glyphs_across_family(self):
-        """ The same names of glyphs across family? """
-        glyphs = None
-        for resultdata in self.metadata.get('fonts', []):
-            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
-            if not glyphs:
-                glyphs = map(lambda g: g.glyphname, font.glyphs())
-            self.assertEqual(glyphs, map(lambda g: g.glyphname, font.glyphs()))
-
-    def test_the_same_encodings_of_glyphs_across_family(self):
-        """ The same unicode encodings of glyphs across family? """
-        glyphs = None
-        for resultdata in self.metadata.get('fonts', []):
-            font = fontforge.open(os.path.join(self.root_dir, resultdata['filename']))
-            if not glyphs:
-                glyphs = map(lambda g: g.encoding, font.glyphs())
-            self.assertEqual(glyphs, map(lambda g: g.encoding, font.glyphs()))
-
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
         import requests
@@ -715,16 +522,6 @@ class MetadataJSONTest(TestCase):
         fp = requests.get(url)
         self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
         self.assertEqual(self.metadata.get('visibility'), 'External')
-
-    def test_metadata_family_matches_font_filenames(self):
-        """ Check that METADATA family value matches font filenames """
-        family = ''
-        for x in self.metadata.get('fonts', []):
-            if os.path.basename(self.path) == x['filename']:
-                family = x['name']
-                break
-        self.assertTrue(family)
-        self.assertTrue(os.path.basename(self.path).startswith(family))
 
     def test_metadata_family_values_are_all_the_same(self):
         """ Check that METADATA family values are all the same """
@@ -863,7 +660,7 @@ class MetadataJSONTest(TestCase):
             font internal 'fontname' metadata """
         for font in self.metadata.get('fonts', []):
             font_filename = os.path.basename(self.fname)
-            if font['filename'] != font_filename:
+            if font['filename'] == font_filename:
                 continue
             self.assertEqual(font['postScriptName'],
                              os.path.splitext(font_filename)[0])
@@ -880,20 +677,6 @@ class MetadataJSONTest(TestCase):
                     break
             self.assertTrue(style)
             self.assertEqual("%s %s" % (self.font.familyname, style), fn)
-
-    @tags('required')
-    def test_metadata_font_filename_canonical(self):
-        """ METADATA.json fonts filename property should be
-            [font.familyname]-[font.style].ttf format."""
-        for x in self.metadata.get("fonts", None):
-            style = None
-            fn = x.get('filename', None)
-            for i in valid_styles:
-                if fn.endswith("-%s.ttf" % i):
-                    style = i
-                    break
-            self.assertTrue(style, msg="%s not in canonical format" % x.get('filename', None))
-            self.assertEqual("%s-%s.ttf" % (self.font.familyname, style), fn)
 
     def test_metadata_fonts_no_dupes(self):
         """ METADATA.json fonts propery only should have uniq values """
@@ -975,35 +758,6 @@ class MetadataJSONTest(TestCase):
             self.assertEqual(magic.from_file(name, mime=True),
                              'application/x-font-ttf')
 
-    def test_subsets_exists_opentype(self):
-        """ Each font file should have its own set of opentype file format
-        subsets defined in METADATA.json """
-        for x in self.metadata.get('fonts', None):
-            for i in self.metadata.get('subsets', None):
-                name = "%s.%s-opentype" % (self.fname, i)
-                self.assertTrue(os.path.exists(name))
-                self.assertEqual(magic.from_file(name, mime=True),
-                                 'application/x-font-ttf')
-
-    def test_menu_have_chars_for_family_key(self):
-        """ Test does .menu file have chars needed for METADATA family key """
-        family = ''
-        for x in self.metadata.get('fonts', []):
-            if os.path.basename(self.path) == x['filename']:
-                family = x['name']
-                break
-        self.assertTrue(family)
-
-        self.assertTrue("%s.menu" % self.fname)
-        font = fontforge.open("%s.menu" % self.fname)
-        self.assertTrue(all([i in font for i in set(map(ord, family))]))
-
-    def test_subset_file_smaller_font_file(self):
-        """ Subset files should be smaller than font file """
-        for x in self.metadata.get('subsets', None):
-            name = "%s.%s" % (self.fname, x)
-            self.assertLess(os.path.getsize(name), os.path.getsize(self.path))
-
     def test_metadata_value_match_font_weight(self):
         """Check that METADATA font.weight keys match font internal metadata"""
         fonts = {}
@@ -1050,18 +804,6 @@ class MetadataJSONTest(TestCase):
 
             self.assertEqual("%s-%s.ttf" % (self.font.familyname,
                                             _style), x.get("filename", ''))
-
-    def test_metadata_font_style_italic_correct(self):
-        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
-        "filename" should have the same style """
-        for x in self.metadata.get('fonts', None):
-            if x.get('postScriptName', '') != self.font.familyname:
-                # this is not regular style
-                _style = x["postScriptName"].split('-').pop(-1)
-                if _style in italics_styles.keys():
-                    self.assertEqual(x.get('style', ''), 'italic')
-                else:
-                    self.assertEqual(x.get('style', ''), 'normal')
 
     @tags('required')
     def test_metadata_keys(self):

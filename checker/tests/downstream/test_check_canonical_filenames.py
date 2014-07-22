@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 from checker.metadata import Metadata
 
 
@@ -44,6 +44,7 @@ class CheckCanonicalFilenames(TestCase):
     def read_metadata_contents(self):
         return open(self.path).read()
 
+    @tags('required')
     def test_check_canonical_filenames(self):
         """ Test If filename is canonical """
         contents = self.read_metadata_contents()

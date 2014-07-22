@@ -15,22 +15,35 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from .result_test import *
-from .ttx_test import *
-from .upstream_test import *
+
+# collection of upstream tests
+from .upstream.test_check_upstream_sources import *
+from .upstream.test_check_ufo_fontfamily_recommendations import *
+from .upstream.test_check_ufo_requirements import *
+from .upstream.test_check_ttx_fontfamily_recommendations import *
+from .upstream.test_check_ttx_requirements import *
+from .upstream.test_check_pyfontaine_subsets_coverage import *
+
+# collection of downstream tests
 from .metadata_test import *
-from .test_description_404 import *
-from .test_check_canonical_filenames import *
-from .test_check_canonical_styles import *
-from .test_check_canonical_weights import *
-from .test_check_familyname_matches_fontnames import *
-from .test_check_menu_subset_contains_proper_glyphs import *
-from .test_check_metadata_matches_nametable import *
-from .test_check_subsets_exists import *
-from .test_check_unused_glyph_data import *
-from .test_check_os2_width_class import *
-from .test_check_no_problematic_formats import *
-from .test_check_hmtx_hhea_max_advance_width_agreement import *
-from .test_check_glyf_table_length import *
-from .test_check_full_font_name_begins_with_family_name import *
-from .test_check_upm_heights_less_120 import *
-from .test_check_vertical_metrics import *
+
+from .downstream.test_description_404 import *
+from .downstream.test_check_canonical_filenames import *
+from .downstream.test_check_canonical_styles import *
+from .downstream.test_check_canonical_weights import *
+from .downstream.test_check_familyname_matches_fontnames import *
+from .downstream.test_check_menu_subset_contains_proper_glyphs import *
+from .downstream.test_check_metadata_matches_nametable import *
+from .downstream.test_check_subsets_exists import *
+from .downstream.test_check_unused_glyph_data import *
+from .downstream.test_check_os2_width_class import *
+from .downstream.test_check_no_problematic_formats import *
+from .downstream.test_check_hmtx_hhea_max_advance_width_agreement import *
+from .downstream.test_check_glyf_table_length import *
+from .downstream.test_check_full_font_name_begins_with_family_name import *
+from .downstream.test_check_upm_heights_less_120 import *
+from .downstream.test_check_vertical_metrics import *
+from .downstream.test_check_nbsp_width_matches_sp_width import *
+from .downstream.test_check_font_sanitized_for_chrome_and_firefox import *
+from .downstream.test_check_glyph_consistency import *
+from .downstream.test_fontforge_validation_state import *
