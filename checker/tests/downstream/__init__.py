@@ -14,3 +14,27 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
+import importlib
+import inspect
+
+
+modules = []
+
+
+for testfile in os.listdir(os.path.dirname(__file__)):
+    if testfile.startswith('test_'):
+        try:
+            module_name, _ = os.path.splitext(testfile)
+            module = 'checker.tests.downstream.%s' % module_name
+            module = importlib.import_module(module)
+
+            for name, obj in inspect.getmembers(module):
+                if obj.__bases__[0].__name__ == 'BakeryTestCase':
+                    importstring = 'from checker.tests.downstream.%s import %s' % (module_name, name)
+                    if importstring not in modules:
+                        modules.append(importstring)
+                        exec importstring
+                        print name
+        except (ImportError, AttributeError, IndexError):
+            pass

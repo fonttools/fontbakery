@@ -39,6 +39,18 @@ class Font(object):
         self.descents = DescentGroup(self.ttfont)
         self.linegaps = LineGapGroup(self.ttfont)
 
+    def get_program_bytecode(self):
+        """ Return binary program code from "prep" table.
+
+        >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
+        >>> font.get_program_bytecode()
+        '\\xb8\\x01\\xff\\x85\\xb0\\x04\\x8d'
+        """
+        try:
+            return self.ttfont['prep'].program.getBytecode()
+        except KeyError:
+            return ""
+
     def get_bounding(self):
         """ Returns max and min bbox font
 

@@ -19,9 +19,6 @@ from checker.metadata import Metadata
 from cli.ttfont import Font
 
 
-ITALIC_MASK = 0b10
-
-
 class CheckCanonicalStyles(TestCase):
 
     path = '.'
@@ -30,6 +27,7 @@ class CheckCanonicalStyles(TestCase):
     tool = 'lint'
 
     CANONICAL_STYLE_VALUES = ['italic', 'normal']
+    ITALIC_MASK = 0b10
 
     def read_metadata_contents(self):
         return open(self.path).read()
@@ -51,7 +49,7 @@ class CheckCanonicalStyles(TestCase):
 
     def is_italic(self, font_metadata):
         ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
-        return (ttfont.macStyle & ITALIC_MASK
+        return (ttfont.macStyle & self.ITALIC_MASK
                 or ttfont.italicAngle
                 or self.find_italic_in_name_table(ttfont))
 

@@ -15,7 +15,6 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-from checker.base import BakeryTestCase as TestCase, tags
 import fontforge
 import unicodedata
 import yaml
@@ -23,6 +22,8 @@ import os
 import re
 import magic
 
+from checker.base import BakeryTestCase as TestCase, tags
+from checker.metadata import Metadata
 from cli.ttfont import Font
 from fontTools import ttLib
 
@@ -97,22 +98,6 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = Font.get_ttfont(self.path)
 
-    def test_camelcase_in_fontname(self):
-        """ Font family is not CamelCase'd """
-        metadata = self.get_metadata()
-        self.assertTrue(bool(re.match(r'([A-Z][a-z]+){2,}', metadata['name'])),
-                        msg='May be you have to use space in family')
-
-    def test_prep_magic_code(self):
-        """ Font contains in PREP table magic code """
-        magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
-        try:
-            bytecode = self.font.ttfont['prep'].program.getBytecode()
-        except KeyError:
-            bytecode = ''
-        self.assertTrue(bytecode == magiccode,
-                        msg='PREP does not contain magic code')
-
     @tags('required')
     def test_macintosh_platform_names_matches_windows_platform(self):
         """ Font names are equal for Macintosh and Windows
@@ -174,20 +159,6 @@ class FontToolsTest(TestCase):
                                  r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
 
     @tags('required')
-    def test_metadata_weight_in_range(self):
-        """ Font weight should be in range from 100 to 900, step 100 """
-        metadata = self.get_metadata()
-        self.assertTrue(metadata.get('weight', 0) in range(100, 1000, 100))
-
-    # TODO: Ask Dave about "Check that font.weight keys match the style names"
-    # @tags('required')
-    # def test_font_weight_matches_italic_style(self):
-    #     font_metadata = self.get_metadata()
-    #     for k, weight in weights.items():
-    #         if weight == font_metadata.get('weight'):
-    #             self.assertIn(k, weights_styles_map[font_metadata['style']])
-
-    @tags('required')
     def test_metadata_fonts_fields(self):
         """ METADATA.json "fonts" property items should have
             "name", "postScriptName", "fullName", "style", "weight",
@@ -208,12 +179,14 @@ class FontToolsTest(TestCase):
         if 'Bold' in weight_style:
             self.assertTrue(macStyle & 0b01)
 
+    def read_metadata_contents(self):
+        root_dir = os.path.dirname(self.path)
+        return open(os.path.join(root_dir, 'METADATA.json')).read()
+
     def get_metadata(self):
-        medatata_path = os.path.join(os.path.dirname(self.path),
-                                     'METADATA.json')
-        metadata = yaml.load(open(medatata_path, 'r').read())
-        font_metadata = {}
-        for font in metadata.get('fonts', []):
+        contents = self.read_metadata_contents()
+        familymetadata = Metadata.get_family_metadata(contents)
+        for font in familymetadata.fonts:
             if os.path.basename(self.path) == font.filename:
                 font_metadata = font
                 break
@@ -225,7 +198,7 @@ class FontToolsTest(TestCase):
         font_metadata = self.get_metadata()
         psname = self.font.familyname
         fullname = self.font.fullname
-        if font_metadata['style'] != 'italic':
+        if font_metadata.style != 'italic':
             return
         self.assertTrue(self.font.macStyle & 0b10)
         self.assertTrue(any([psname.endswith('-' + x)
@@ -238,13 +211,13 @@ class FontToolsTest(TestCase):
         font_metadata = self.get_metadata()
         psname = self.font.familyname
         fullname = self.font.fullname
-        if font_metadata['style'] != 'normal':
+        if font_metadata.style != 'normal':
             return
         self.assertTrue(any([psname.endswith('-' + x)
                              for x in normal_styles.keys()]))
         self.assertTrue(any([fullname.endswith(' ' + x)
                              for x in normal_styles.values()]))
-        self.assertFalse(self.font['head'].macStyle & 0b10)
+        self.assertFalse(self.font.macStyle & 0b10)
 
     @tags('required')
     def test_metadata_font_keys_types(self):

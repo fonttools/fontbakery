@@ -14,20 +14,25 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
-import importlib
-import inspect
+from checker.base import BakeryTestCase as TestCase
+from cli.ttfont import Font
 
 
-for testfile in os.listdir(os.path.dirname(__file__)):
-    if testfile.startswith('test_'):
+class CheckMagicPREPByteCode(TestCase):
+
+    path = '.'
+    targets = ['result']
+    name = __name__
+    tool = 'lint'
+    longMessage = True
+
+    def test_prep_magic_code(self):
+        """ Font contains in PREP table magic code """
+        magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
+        font = Font.get_ttfont(self.path)
         try:
-            module_name, _ = os.path.splitext(testfile)
-            module = 'checker.tests.upstream.%s' % module_name
-            module = importlib.import_module(module)
-
-            for name, obj in inspect.getmembers(module):
-                if obj.__bases__[0].__name__ == 'BakeryTestCase':
-                    exec 'from checker.tests.upstream.%s import %s' % (module_name, name)
-        except (ImportError, AttributeError, IndexError):
-            pass
+            bytecode = font.get_program_bytecode()
+        except KeyError:
+            bytecode = ''
+        self.assertTrue(bytecode == magiccode,
+                        msg='PREP does not contain magic code')
