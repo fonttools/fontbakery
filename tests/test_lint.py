@@ -691,3 +691,78 @@ class Test_CheckFontNamesSameAcrossPlatforms(unittest.TestCase):
                 self.fail(result.failures[0][1])
 
             self.assertFalse(bool(result.failures))
+
+
+class Test_CheckPostScriptNameMatchesWeight(unittest.TestCase):
+
+    @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight, 'read_metadata_contents')
+    def test_three(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'weight': 400, 'postScriptName': 'Family-Regular'},
+                      {'weight': 400, 'postScriptName': 'Family-Italic'},
+                      {'weight': 100, 'postScriptName': 'Family-Thin'},
+                      {'weight': 100, 'postScriptName': 'Family-ThinItalic'},
+                      {'weight': 200, 'postScriptName': 'Family-ExtraLight'},
+                      {'weight': 200, 'postScriptName': 'Family-ExtraLightItalic'},
+                      {'weight': 300, 'postScriptName': 'Family-Light'},
+                      {'weight': 300, 'postScriptName': 'Family-LightItalic'},
+                      {'weight': 500, 'postScriptName': 'Family-Medium'},
+                      {'weight': 500, 'postScriptName': 'Family-MediumItalic'},
+                      {'weight': 600, 'postScriptName': 'Family-SemiBold'},
+                      {'weight': 600, 'postScriptName': 'Family-SemiBoldItalic'},
+                      {'weight': 700, 'postScriptName': 'Family-Bold'},
+                      {'weight': 700, 'postScriptName': 'Family-BoldItalic'},
+                      {'weight': 800, 'postScriptName': 'Family-ExtraBold'},
+                      {'weight': 800, 'postScriptName': 'Family-ExtraBoldItalic'},
+                      {'weight': 900, 'postScriptName': 'Family-Black'},
+                      {'weight': 900, 'postScriptName': 'Family-BlackItalic'}]
+        })
+        result = _run_font_test(downstream.CheckPostScriptNameMatchesWeight)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        if result.failures:
+            self.fail(result.failures[0][1])
+
+        self.assertFalse(bool(result.failures))
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'weight': 500, 'postScriptName': 'Family-Regular'}]
+        })
+
+        result = _run_font_test(downstream.CheckPostScriptNameMatchesWeight)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))
+
+
+class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
+
+    @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
+    def test_three(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'copyright': 'Copyright 2014 with Reserved Font Name'}]
+        })
+        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        if result.failures:
+            self.fail(result.failures[0][1])
+
+        self.assertFalse(bool(result.failures))
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'copyright': 'Copyright 2014 for fontbakery'}]
+        })
+
+        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))

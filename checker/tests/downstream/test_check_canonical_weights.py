@@ -21,6 +21,28 @@ from checker.metadata import Metadata
 from cli.ttfont import Font
 
 
+weights = {
+    'Thin': 100,
+    'ThinItalic': 100,
+    'ExtraLight': 200,
+    'ExtraLightItalic': 200,
+    'Light': 300,
+    'LightItalic': 300,
+    'Regular': 400,
+    'Italic': 400,
+    'Medium': 500,
+    'MediumItalic': 500,
+    'SemiBold': 600,
+    'SemiBoldItalic': 600,
+    'Bold': 700,
+    'BoldItalic': 700,
+    'ExtraBold': 800,
+    'ExtraBoldItalic': 800,
+    'Black': 900,
+    'BlackItalic': 900,
+}
+
+
 class CheckCanonicalWeights(TestCase):
 
     path = '.'
@@ -53,3 +75,35 @@ class CheckCanonicalWeights(TestCase):
                      font_metadata.filename, tf.OS2_usWeightClass)
 
             self.assertEqual(tf.OS2_usWeightClass, font_metadata.weight)
+
+
+class CheckPostScriptNameMatchesWeight(TestCase):
+
+    path = '.'
+    targets = 'metadata'
+    name = __name__
+    tool = 'lint'
+
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
+    def test_postscriptname_contains_correct_weight(self):
+        """ Metadata weight matches postScriptName """
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        for font_metadata in fm.fonts:
+            pair = []
+            for k, weight in weights.items():
+                if weight == font_metadata.weight:
+                    pair.append((k, weight))
+
+            if not pair:
+                self.fail('Font weight does not match for "postScriptName"')
+
+            if not (font_metadata.post_script_name.endswith('-%s' % pair[0][0])
+                    or font_metadata.post_script_name.endswith('-%s' % pair[1][0])):
+
+                _ = ('postScriptName with weight %s must be '
+                     'ended with "%s" or "%s"')
+                self.fail(_ % (pair[0][1], pair[0][0], pair[1][0]))

@@ -76,7 +76,7 @@ class FontMetadata(object):
 
     @property
     def post_script_name(self):
-        return self.metadata_object.get('post_script_name', '')
+        return self.metadata_object.get('postScriptName', '')
 
     @property
     def full_name(self):

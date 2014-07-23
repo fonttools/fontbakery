@@ -99,27 +99,6 @@ class FontToolsTest(TestCase):
         self.font = Font.get_ttfont(self.path)
 
     @tags('required')
-    def test_macintosh_platform_names_matches_windows_platform(self):
-        """ Font names are equal for Macintosh and Windows
-            specific-platform """
-        result_string_dicts = {}
-        for name in self.font.names:
-            if name.nameID not in result_string_dicts:
-                result_string_dicts[name.nameID] = {'mac': '', 'win': ''}
-            if name.platformID == 3 and name.langID == 0x409:
-                # Windows platform-specific
-                result_string_dicts[name.nameID]['win'] = name.string
-                if b'\000' in name.string:
-                    result_string_dicts[name.nameID]['win'] = name.string.decode('utf-16-be').encode('utf-8')
-            if name.platformID == 1 and name.langID == 0:
-                # Macintosh platform-specific
-                result_string_dicts[name.nameID]['mac'] = name.string
-                if b'\000' in name.string:
-                    result_string_dicts[name.nameID]['mac'] = name.string.decode('utf-16-be').encode('utf-8')
-        for row in result_string_dicts.values():
-            self.assertEqual(row['win'], row['mac'])
-
-    @tags('required')
     def test_license_url_is_included_and_correct(self):
         """ License URL is included and correct url """
         licenseurl = self.font.names[13].string
@@ -135,15 +114,6 @@ class FontToolsTest(TestCase):
             r'(?::\d+)?'  # optional port
             r'(?:/?|[/?]\S+)$', re.IGNORECASE)
         self.assertTrue(regex.match(licenseurl))
-
-    def test_metadata_weight_matches_postscriptname(self):
-        """ Metadata weight matches postScriptName """
-        metadata = self.get_metadata()
-        pair = []
-        for k, weight in weights.items():
-            if weight == metadata['weight']:
-                pair.append(k)
-        self.assertTrue(metadata['postScriptName'].endswith('-%s' % pair[0]) or metadata['postScriptName'].endswith('-%s' % pair[1]))
 
     @tags(['required', 'info'])
     def test_metadata_copyright_contains_rfn(self):
