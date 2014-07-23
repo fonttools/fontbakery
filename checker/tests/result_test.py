@@ -108,16 +108,6 @@ class FontToolsTest(TestCase):
         for j in keys:
             self.assertTrue(j in metadata)
 
-    def test_fontname_is_equal_to_macstyle(self):
-        """ Is internal fontname is equal to macstyle flags """
-        fontname = self.font.familyname
-        macStyle = self.font.macStyle
-        weight_style = fontname.split('-')[1]
-        if 'Italic' in weight_style:
-            self.assertTrue(macStyle & 0b10)
-        if 'Bold' in weight_style:
-            self.assertTrue(macStyle & 0b01)
-
     def read_metadata_contents(self):
         root_dir = os.path.dirname(self.path)
         return open(os.path.join(root_dir, 'METADATA.json')).read()

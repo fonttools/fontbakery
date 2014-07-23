@@ -842,3 +842,45 @@ class Test_CheckFontWeightSameAsInMetadata(unittest.TestCase):
                 self.fail(result.errors[0][1])
 
             self.assertTrue(bool(result.failures))
+
+
+class Test_CheckFontNameEqualToMacStyleFlags(unittest.TestCase):
+
+    def test_twenty_seven(self):
+
+        class Font:
+
+            macStyle = 0b00101011
+            fontname = 'Family-Regular'
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font()
+
+            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+            get_ttfont.return_value.fontname = 'Family-BoldItalic'
+
+            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            if result.failures:
+                self.fail(result.failures[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+            get_ttfont.return_value.fontname = 'Family-Regular'
+            get_ttfont.return_value.macStyle = 0b00
+
+            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            if result.failures:
+                self.fail(result.failures[0][1])
+
+            self.assertFalse(bool(result.failures))
