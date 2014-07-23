@@ -720,3 +720,25 @@ class Test_CheckNormalStyleMatchesMacStyle(TestCase):
 
             get_ttfont.return_value.macStyle = 0b10
             self.failure_run(downstream.CheckNormalStyleMatchesMacStyle)
+
+
+class Test_CheckNamesAreASCIIOnly(TestCase):
+
+    def test_twenty_six(self):
+        class Font:
+            pass
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font()
+            get_ttfont.return_value.names = [
+                type('name', (object,),
+                     {'nameID': 1, 'string': 'FamilyNameRegular',
+                      'langID': 0x409, 'platformID': 3}),
+            ]
+            self.success_run(downstream.CheckNamesAreASCIIOnly)
+
+            get_ttfont.return_value.names = [
+                type('name', (object,),
+                     {'nameID': 1, 'string': u'FamilyNameRegularЙ',
+                      'langID': 0x409, 'platformID': 3}),
+            ]
