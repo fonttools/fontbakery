@@ -23,3 +23,13 @@ class CheckMetadataContainsReservedFontName(TestCase):
             if 'Reserved Font Name' not in font_metadata.copyright:
                 msg = '"%s" should have "Reserved File Name"'
                 self.fail(msg % font_metadata.copyright)
+
+    @tags('required')
+    def test_copyright_matches_pattern(self):
+        """ Copyright string matches to Copyright * 20\d\d * (*@*.*) """
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        for font_metadata in fm.fonts:
+            self.assertRegexpMatches(font_metadata.copyright,
+                                     r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')

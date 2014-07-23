@@ -744,7 +744,7 @@ class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
     @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
     def test_three(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
-            'fonts': [{'copyright': 'Copyright 2014 with Reserved Font Name'}]
+            'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com) with Reserved Font Name'}]
         })
         result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
 
@@ -757,7 +757,18 @@ class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
         self.assertFalse(bool(result.failures))
 
         metadata_contents.return_value = simplejson.dumps({
-            'fonts': [{'copyright': 'Copyright 2014 for fontbakery'}]
+            'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com)'}]
+        })
+
+        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'copyright': 'Copyright (c) 2014 with Reserved Font Name'}]
         })
 
         result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)

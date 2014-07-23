@@ -115,19 +115,6 @@ class FontToolsTest(TestCase):
             r'(?:/?|[/?]\S+)$', re.IGNORECASE)
         self.assertTrue(regex.match(licenseurl))
 
-    @tags(['required', 'info'])
-    def test_metadata_copyright_contains_rfn(self):
-        """ Copyright string should contains 'Reserved Font Name' substring """
-        metadata = self.get_metadata()
-        self.assertIn('Reserved Font Name', metadata['copyright'])
-
-    @tags('required')
-    def test_metadata_copyright_matches_pattern(self):
-        """ Copyright string matches to Copyright * 20\d\d * (*@*.*) """
-        metadata = self.get_metadata()
-        self.assertRegexpMatches(metadata['copyright'],
-                                 r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
-
     @tags('required')
     def test_metadata_fonts_fields(self):
         """ METADATA.json "fonts" property items should have
