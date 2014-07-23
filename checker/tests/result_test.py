@@ -122,19 +122,6 @@ class FontToolsTest(TestCase):
         self.assertTrue(font_metadata)
         return font_metadata
 
-    def test_font_normal_style_matches_internal_font_properties_values(self):
-        """ Check metadata.json font.style `normal` matches font internal """
-        font_metadata = self.get_metadata()
-        psname = self.font.familyname
-        fullname = self.font.fullname
-        if font_metadata.style != 'normal':
-            return
-        self.assertTrue(any([psname.endswith('-' + x)
-                             for x in normal_styles.keys()]))
-        self.assertTrue(any([fullname.endswith(' ' + x)
-                             for x in normal_styles.values()]))
-        self.assertFalse(self.font.macStyle & 0b10)
-
     @tags('required')
     def test_metadata_font_keys_types(self):
         """ METADATA.json fonts items dicts items should have proper types """
