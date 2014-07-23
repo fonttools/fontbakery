@@ -34,6 +34,16 @@ def before_request():
         g.projects = Project.query.filter_by(login=g.user.login).all()
 
 
+def unique(ar, key):
+    r = []
+    ar2 = []
+    for item in ar:
+        if item[key] not in r:
+            r.append(item[key])
+            ar2.append(item)
+    return ar2
+
+
 @frontend.route('/')
 def splash():
     # Splash page, if user is logged in then show dashboard
@@ -45,7 +55,7 @@ def splash():
         if cache:
             import json
             _func = lambda x: {"url": x['git_url'], "name": x['full_name']}
-            cache = json.dumps(map(_func, cache.data))
+            cache = json.dumps(unique(map(_func, cache.data), 'name'))
         else:
             cache = []
 
