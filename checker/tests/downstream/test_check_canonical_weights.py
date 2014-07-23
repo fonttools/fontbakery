@@ -107,3 +107,26 @@ class CheckPostScriptNameMatchesWeight(TestCase):
                 _ = ('postScriptName with weight %s must be '
                      'ended with "%s" or "%s"')
                 self.fail(_ % (pair[0][1], pair[0][0], pair[1][0]))
+
+
+class CheckFontWeightSameAsInMetadata(TestCase):
+
+    path = '.'
+    targets = 'metadata'
+    name = __name__
+    tool = 'lint'
+
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
+    def test_postscriptname_contains_correct_weight(self):
+        """ Metadata weight matches postScriptName """
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        for font_metadata in fm.fonts:
+
+            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            if font.OS2_usWeightClass != font_metadata.weight:
+                msg = 'METADATA.JSON has weight %s but in TTF it is %s'
+                self.fail(msg % (font_metadata.weight, font.OS2_usWeightClass))

@@ -307,8 +307,9 @@ class Test_CheckSubsetsExist(unittest.TestCase):
             'subsets': ['cyrillic']
         })
 
-        with mock.patch.object(File, 'exists') as exists, mock.patch.object(File, 'size') as size:
+        with mock.patch.object(File, 'exists') as exists, mock.patch.object(File, 'size') as size, mock.patch.object(File, 'mime') as mime:
             size.return_value = 11
+            mime.return_value = 'application/x-font-ttf'
             result = _run_font_test(downstream.CheckSubsetsExist)
             if result.errors:
                 self.fail(result.errors[0][1])
@@ -696,7 +697,7 @@ class Test_CheckFontNamesSameAcrossPlatforms(unittest.TestCase):
 class Test_CheckPostScriptNameMatchesWeight(unittest.TestCase):
 
     @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight, 'read_metadata_contents')
-    def test_three(self, metadata_contents):
+    def test_twenty_three(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'weight': 400, 'postScriptName': 'Family-Regular'},
                       {'weight': 400, 'postScriptName': 'Family-Italic'},
@@ -742,7 +743,7 @@ class Test_CheckPostScriptNameMatchesWeight(unittest.TestCase):
 class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
 
     @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
-    def test_three(self, metadata_contents):
+    def test_twenty_four(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com) with Reserved Font Name'}]
         })
@@ -777,3 +778,67 @@ class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
             self.fail(result.errors[0][1])
 
         self.assertTrue(bool(result.failures))
+
+
+class Test_CheckLicenseIncluded(unittest.TestCase):
+
+    def test_twenty_five(self):
+
+        class Font:
+            bin2unistring = OriginFont.bin2unistring
+
+            license_url = ''
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
+            mocked_get_ttfont.return_value = Font()
+            result = _run_font_test(downstream.CheckLicenseIncluded)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+            mocked_get_ttfont.return_value.license_url = 'http://example.com/ofl'
+
+            result = _run_font_test(downstream.CheckLicenseIncluded)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            if result.failures:
+                self.fail(result.failures[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+
+class Test_CheckFontWeightSameAsInMetadata(unittest.TestCase):
+
+    @mock.patch.object(downstream.CheckFontWeightSameAsInMetadata, 'read_metadata_contents')
+    def test_twenty_six(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'filename': 'Family-Regular.ttf', 'weight': 400}]
+        })
+
+        class Font:
+            OS2_usWeightClass = 400
+
+        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
+            get_ttfont.return_value = Font()
+
+            result = _run_font_test(downstream.CheckFontWeightSameAsInMetadata)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            if result.failures:
+                self.fail(result.failures[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+            get_ttfont.return_value.OS2_usWeightClass = 300
+            result = _run_font_test(downstream.CheckFontWeightSameAsInMetadata)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))

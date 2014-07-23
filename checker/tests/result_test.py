@@ -19,7 +19,6 @@ import fontforge
 import unicodedata
 import yaml
 import os
-import re
 import magic
 
 from checker.base import BakeryTestCase as TestCase, tags
@@ -97,23 +96,6 @@ class FontToolsTest(TestCase):
 
     def setUp(self):
         self.font = Font.get_ttfont(self.path)
-
-    @tags('required')
-    def test_license_url_is_included_and_correct(self):
-        """ License URL is included and correct url """
-        licenseurl = self.font.names[13].string
-        if b'\000' in licenseurl:
-            licenseurl = licenseurl.decode('utf-16-be').encode('utf-8')
-
-        regex = re.compile(
-            r'^(?:http|ftp)s?://'  # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+'
-            r'(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-            r'localhost|'  # localhost...
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-            r'(?::\d+)?'  # optional port
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-        self.assertTrue(regex.match(licenseurl))
 
     @tags('required')
     def test_metadata_fonts_fields(self):
@@ -678,15 +660,6 @@ class MetadataJSONTest(TestCase):
             'cyrillic', 'cyrillic_ext', 'arabic'] """
         self.assertTrue(all([x in self.subset_list
                              for x in self.metadata.get('subsets', None)]))
-
-    def test_font_subsets_exists(self):
-        """ Each font file should have its own set of subsets
-            defined in METADATA.json """
-        for i in self.metadata.get('subsets', []):
-            name = "%s.%s" % (self.fname, i)
-            self.assertTrue(os.path.exists(name), msg="'%s' not found" % name)
-            self.assertEqual(magic.from_file(name, mime=True),
-                             'application/x-font-ttf')
 
     def test_metadata_value_match_font_weight(self):
         """Check that METADATA font.weight keys match font internal metadata"""

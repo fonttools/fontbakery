@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import magic
 import os.path as op
 
 from checker.base import BakeryTestCase as TestCase
@@ -30,6 +31,9 @@ class File(object):
 
     def size(self, filename):
         return op.getsize(op.join(self.rootdir, filename))
+
+    def mime(self, filename):
+        return magic.from_file(op.join(self.rootdir, filename), mime=True)
 
 
 class CheckSubsetsExist(TestCase):
@@ -65,3 +69,6 @@ class CheckSubsetsExist(TestCase):
                 self.assertLessEqual(self.f.size(subset_filename),
                                      self.f.size(font_metadata.filename),
                                      error)
+
+                self.assertEqual(self.f.mime(subset_filename),
+                                 'application/x-font-ttf')
