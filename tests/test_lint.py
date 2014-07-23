@@ -24,17 +24,39 @@ from checker.tests.downstream.test_check_subsets_exists import File
 from cli.ttfont import Font as OriginFont
 
 
-def _get_tests(TestCase):
-    return unittest.defaultTestLoader.loadTestsFromTestCase(TestCase)
+class TestCase(unittest.TestCase):
+
+    def failure_run(self, test_klass):
+        result = _run_font_test(test_klass)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        self.assertTrue(bool(result.failures))
+
+    def success_run(self, test_klass):
+        result = _run_font_test(test_klass)
+
+        if result.errors:
+            self.fail(result.errors[0][1])
+
+        if result.failures:
+            self.fail(result.failures[0][1])
+
+        self.assertFalse(bool(result.failures))
 
 
-def _run_font_test(TestCase):
+def _get_tests(testcase_klass):
+    return unittest.defaultTestLoader.loadTestsFromTestCase(testcase_klass)
+
+
+def _run_font_test(testcase_klass):
     runner = unittest.TextTestRunner(stream=StringIO.StringIO())
-    tests = _get_tests(TestCase)
+    tests = _get_tests(testcase_klass)
     return runner.run(tests)
 
 
-class Test_CheckCanonicalFilenamesTestCase(unittest.TestCase):
+class Test_CheckCanonicalFilenamesTestCase(TestCase):
 
     @mock.patch.object(downstream.CheckCanonicalFilenames, 'read_metadata_contents')
     def test_one(self, metadata_contents):
@@ -44,11 +66,7 @@ class Test_CheckCanonicalFilenamesTestCase(unittest.TestCase):
                 'filename': 'FamilyName-Regular.ttf'
             }]
         })
-        result = _run_font_test(downstream.CheckCanonicalFilenames)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+        self.success_run(downstream.CheckCanonicalFilenames)
 
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{
@@ -56,14 +74,10 @@ class Test_CheckCanonicalFilenamesTestCase(unittest.TestCase):
                 'filename': 'Family-Bold.ttf'
             }]
         })
-        result = _run_font_test(downstream.CheckCanonicalFilenames)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckCanonicalFilenames)
 
 
-class Test_CheckCanonicalStyles(unittest.TestCase):
+class Test_CheckCanonicalStyles(TestCase):
 
     @mock.patch.object(downstream.CheckCanonicalStyles, 'read_metadata_contents')
     def test_two(self, metadata_contents):
@@ -82,29 +96,18 @@ class Test_CheckCanonicalStyles(unittest.TestCase):
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
             mocked_get_ttfont.return_value.macStyle = downstream.CheckCanonicalStyles.ITALIC_MASK
-            result = _run_font_test(downstream.CheckCanonicalStyles)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckCanonicalStyles)
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
             mocked_get_ttfont.return_value.macStyle = 0
-            result = _run_font_test(downstream.CheckCanonicalStyles)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckCanonicalStyles)
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
             mocked_get_ttfont.return_value.italicAngle = 10
-            result = _run_font_test(downstream.CheckCanonicalStyles)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckCanonicalStyles)
 
         class name:
             string = ''
@@ -114,68 +117,48 @@ class Test_CheckCanonicalStyles(unittest.TestCase):
             n = name()
             n.string = 'italic'
             mocked_get_ttfont.return_value.names.append(n)
-            result = _run_font_test(downstream.CheckCanonicalStyles)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckCanonicalStyles)
 
 
-class Test_CheckCanonicalWeights(unittest.TestCase):
+class Test_CheckCanonicalWeights(TestCase):
 
     @mock.patch.object(downstream.CheckCanonicalWeights, 'read_metadata_contents')
     def test_three(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
-            'fonts': [{
-                'weight': 50
-            }]
-        })
 
         class Font(object):
             OS2_usWeightClass = 400
 
-        # test if font weight less than 100 is invalid value
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
+            # test if font weight less than 100 is invalid value
+            metadata_contents.return_value = simplejson.dumps({
+                'fonts': [{
+                    'weight': 50
+                }]
+            })
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckCanonicalWeights)
+            self.failure_run(downstream.CheckCanonicalWeights)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
-
-        # test if font weight larger than 900 is invalid value
-        metadata_contents.return_value = simplejson.dumps({
-            'fonts': [{
-                'weight': 901
-            }]
-        })
-
-        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
+            # test if font weight larger than 900 is invalid value
+            metadata_contents.return_value = simplejson.dumps({
+                'fonts': [{
+                    'weight': 901
+                }]
+            })
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckCanonicalWeights)
+            self.failure_run(downstream.CheckCanonicalWeights)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
-
-        # test if range 100..900 is valid values and checked for fonts
-        for n in range(1, 10):
-            with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
-                mocked_get_ttfont.return_value = Font()
+            # test if range 100..900 is valid values and checked for fonts
+            for n in range(1, 10):
                 metadata_contents.return_value = simplejson.dumps({
                     'fonts': [{
                         'weight': n * 100
                     }]
                 })
                 mocked_get_ttfont.return_value.OS2_usWeightClass = n * 100
-                result = _run_font_test(downstream.CheckCanonicalWeights)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-            self.assertFalse(bool(result.failures))
+                self.success_run(downstream.CheckCanonicalWeights)
 
 
-class Test_CheckFamilyNameMatchesFontName(unittest.TestCase):
+class Test_CheckFamilyNameMatchesFontName(TestCase):
 
     @mock.patch.object(downstream.CheckFamilyNameMatchesFontNames, 'read_metadata_contents')
     def test_four(self, metadata_contents):
@@ -185,10 +168,7 @@ class Test_CheckFamilyNameMatchesFontName(unittest.TestCase):
                 'name': 'Family'
             }]
         })
-        result = _run_font_test(downstream.CheckFamilyNameMatchesFontNames)
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+        self.success_run(downstream.CheckFamilyNameMatchesFontNames)
 
         metadata_contents.return_value = simplejson.dumps({
             'name': 'Family',
@@ -196,13 +176,10 @@ class Test_CheckFamilyNameMatchesFontName(unittest.TestCase):
                 'name': 'FontName'
             }]
         })
-        result = _run_font_test(downstream.CheckFamilyNameMatchesFontNames)
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckFamilyNameMatchesFontNames)
 
 
-class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
+class Test_CheckMenuSubsetContainsProperGlyphs(TestCase):
 
     @mock.patch.object(downstream.CheckMenuSubsetContainsProperGlyphs, 'read_metadata_contents')
     def test_five(self, metadata_contents):
@@ -226,20 +203,13 @@ class Test_CheckMenuSubsetContainsProperGlyphs(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = FontS()
-            result = _run_font_test(downstream.CheckMenuSubsetContainsProperGlyphs)
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckMenuSubsetContainsProperGlyphs)
 
-        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = FontF()
-            result = _run_font_test(downstream.CheckMenuSubsetContainsProperGlyphs)
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckMenuSubsetContainsProperGlyphs)
 
 
-class Test_CheckMetadataMatchesNameTable(unittest.TestCase):
+class Test_CheckMetadataMatchesNameTable(TestCase):
 
     @mock.patch.object(downstream.CheckMetadataMatchesNameTable, 'read_metadata_contents')
     def test_six(self, metadata_contents):
@@ -256,23 +226,13 @@ class Test_CheckMetadataMatchesNameTable(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckMetadataMatchesNameTable)
+            self.success_run(downstream.CheckMetadataMatchesNameTable)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
-
-        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
-            mocked_get_ttfont.return_value = Font()
             mocked_get_ttfont.return_value.familyname = 'Arial Font Family'
-            result = _run_font_test(downstream.CheckMetadataMatchesNameTable)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckMetadataMatchesNameTable)
 
 
-class Test_CheckNbspWidthMatchesSpWidth(unittest.TestCase):
+class Test_CheckNbspWidthMatchesSpWidth(TestCase):
 
     @mock.patch.object(downstream.CheckNbspWidthMatchesSpWidth, 'read_metadata_contents')
     def test_seven(self, metadata_contents):
@@ -289,14 +249,10 @@ class Test_CheckNbspWidthMatchesSpWidth(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckNbspWidthMatchesSpWidth)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckNbspWidthMatchesSpWidth)
 
 
-class Test_CheckSubsetsExist(unittest.TestCase):
+class Test_CheckSubsetsExist(TestCase):
 
     @mock.patch.object(downstream.CheckSubsetsExist, 'read_metadata_contents')
     def test_eight(self, metadata_contents):
@@ -307,20 +263,20 @@ class Test_CheckSubsetsExist(unittest.TestCase):
             'subsets': ['cyrillic']
         })
 
-        with mock.patch.object(File, 'exists') as exists, mock.patch.object(File, 'size') as size, mock.patch.object(File, 'mime') as mime:
-            size.return_value = 11
-            mime.return_value = 'application/x-font-ttf'
-            result = _run_font_test(downstream.CheckSubsetsExist)
-            if result.errors:
-                self.fail(result.errors[0][1])
-            self.assertFalse(bool(result.failures))
-            exists.assert_called_with('FontName-Regular.cyrillic')
-            self.assertEqual(size.call_args_list,
-                             [mock.call('FontName-Regular.cyrillic'),
-                              mock.call('FontName-Regular.ttf')])
+        with mock.patch.object(File, 'exists') as exists:
+            with mock.patch.object(File, 'size') as size:
+                size.return_value = 11
+                with mock.patch.object(File, 'mime') as mime:
+                    mime.return_value = 'application/x-font-ttf'
+                    self.success_run(downstream.CheckSubsetsExist)
+
+                    exists.assert_called_with('FontName-Regular.cyrillic')
+                    self.assertEqual(size.call_args_list,
+                                     [mock.call('FontName-Regular.cyrillic'),
+                                      mock.call('FontName-Regular.ttf')])
 
 
-class Test_CheckUnusedGlyphData(unittest.TestCase):
+class Test_CheckUnusedGlyphData(TestCase):
 
     def test_nine(self):
 
@@ -340,14 +296,10 @@ class Test_CheckUnusedGlyphData(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckUnusedGlyphData)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckUnusedGlyphData)
 
 
-class Test_CheckOS2WidthClass(unittest.TestCase):
+class Test_CheckOS2WidthClass(TestCase):
 
     def test_ten(self):
 
@@ -356,24 +308,14 @@ class Test_CheckOS2WidthClass(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckOS2WidthClass)
+            self.success_run(downstream.CheckOS2WidthClass)
 
-        if result.errors:
-            self.fail(result.errors[0][1])
-        self.assertFalse(bool(result.failures))
-
-        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
-            mocked_get_ttfont.return_value = Font()
             for i in [0, 10]:
                 mocked_get_ttfont.return_value.OS2_usWidthClass = i
-                result = _run_font_test(downstream.CheckOS2WidthClass)
-
-                if result.errors:
-                    self.fail(result.errors[0][1])
-                self.assertTrue(bool(result.failures))
+                self.failure_run(downstream.CheckOS2WidthClass)
 
 
-class Test_CheckNoProblematicFormats(unittest.TestCase):
+class Test_CheckNoProblematicFormats(TestCase):
 
     def test_eleven(self):
 
@@ -386,15 +328,10 @@ class Test_CheckNoProblematicFormats(unittest.TestCase):
         import cli.ttfont
         with mock.patch.object(cli.ttfont.FontTool, 'get_tables') as get_tables:
             get_tables.return_value = FontTool.get_tables()
-            result = _run_font_test(downstream.CheckNoProblematicFormats)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckNoProblematicFormats)
 
 
-class Test_CheckHmtxHheaMaxAdvanceWidthAgreement(unittest.TestCase):
+class Test_CheckHmtxHheaMaxAdvanceWidthAgreement(TestCase):
 
     def test_twelve(self):
 
@@ -409,24 +346,13 @@ class Test_CheckHmtxHheaMaxAdvanceWidthAgreement(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckHmtxHheaMaxAdvanceWidthAgreement)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckHmtxHheaMaxAdvanceWidthAgreement)
 
             mocked_get_ttfont.return_value.advance_width_max = 240
-
-            result = _run_font_test(downstream.CheckHmtxHheaMaxAdvanceWidthAgreement)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckHmtxHheaMaxAdvanceWidthAgreement)
 
 
-class Test_CheckGlyfTableLength(unittest.TestCase):
+class Test_CheckGlyfTableLength(TestCase):
 
     def test_thirteen(self):
 
@@ -440,13 +366,7 @@ class Test_CheckGlyfTableLength(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-
-            result = _run_font_test(downstream.CheckGlyfTableLength)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckGlyfTableLength)
 
     def test_fourteen(self):
         class Font:
@@ -459,13 +379,7 @@ class Test_CheckGlyfTableLength(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-
-            result = _run_font_test(downstream.CheckGlyfTableLength)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckGlyfTableLength)
 
     def test_fifteen(self):
         class Font:
@@ -480,16 +394,10 @@ class Test_CheckGlyfTableLength(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-
-            result = _run_font_test(downstream.CheckGlyfTableLength)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckGlyfTableLength)
 
 
-class Test_CheckFullFontNameBeginsWithFamilyName(unittest.TestCase):
+class Test_CheckFullFontNameBeginsWithFamilyName(TestCase):
 
     def test_sixteen(self):
         class Font:
@@ -502,18 +410,13 @@ class Test_CheckFullFontNameBeginsWithFamilyName(unittest.TestCase):
                          {'nameID': 1, 'string': 'FamilyName', 'platEncID': 1,
                           'langID': 1, 'platformID': 1}),
                     type('name', (object,),
-                         {'nameID': 4, 'string': 'FamilyNameRegular', 'platEncID': 1,
-                          'langID': 1, 'platformID': 1})
+                         {'nameID': 4, 'string': 'FamilyNameRegular',
+                          'platEncID': 1, 'langID': 1, 'platformID': 1})
                 ]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckFullFontNameBeginsWithFamilyName)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckFullFontNameBeginsWithFamilyName)
 
     def test_seventeen(self):
         class Font:
@@ -526,21 +429,16 @@ class Test_CheckFullFontNameBeginsWithFamilyName(unittest.TestCase):
                          {'nameID': 1, 'string': 'FamilyName', 'platEncID': 1,
                           'langID': 1, 'platformID': 1}),
                     type('name', (object,),
-                         {'nameID': 4, 'string': 'FamilyRegular', 'platEncID': 1,
-                          'langID': 1, 'platformID': 1})
+                         {'nameID': 4, 'string': 'FamilyRegular',
+                          'platEncID': 1, 'langID': 1, 'platformID': 1})
                 ]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckFullFontNameBeginsWithFamilyName)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckFullFontNameBeginsWithFamilyName)
 
 
-class Test_CheckUPMHeightsLess120(unittest.TestCase):
+class Test_CheckUPMHeightsLess120(TestCase):
 
     def test_eighteen(self):
 
@@ -569,23 +467,13 @@ class Test_CheckUPMHeightsLess120(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.TestCheckUPMHeightsLess120)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.TestCheckUPMHeightsLess120)
 
             mocked_get_ttfont.return_value.ascents.maxv = 1400
-            result = _run_font_test(downstream.TestCheckUPMHeightsLess120)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.TestCheckUPMHeightsLess120)
 
 
-class Test_CheckFontNameInCamelCase(unittest.TestCase):
+class Test_CheckFontNameInCamelCase(TestCase):
 
     @mock.patch.object(downstream.CheckFontNameNotInCamelCase, 'read_metadata_contents')
     def test_nineteen(self, metadata_contents):
@@ -596,12 +484,7 @@ class Test_CheckFontNameInCamelCase(unittest.TestCase):
                 'filename': 'FontFamily-Regular.ttf'
             }]
         })
-        result = _run_font_test(downstream.CheckFontNameNotInCamelCase)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertFalse(bool(result.failures))
+        self.success_run(downstream.CheckFontNameNotInCamelCase)
 
         metadata_contents.return_value = simplejson.dumps({
             'name': 'Font Family',
@@ -611,15 +494,10 @@ class Test_CheckFontNameInCamelCase(unittest.TestCase):
             }]
         })
 
-        result = _run_font_test(downstream.CheckFontNameNotInCamelCase)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckFontNameNotInCamelCase)
 
 
-class Test_CheckMagicPREPByteCode(unittest.TestCase):
+class Test_CheckMagicPREPByteCode(TestCase):
 
     def test_twenty(self):
 
@@ -631,23 +509,13 @@ class Test_CheckMagicPREPByteCode(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckMagicPREPByteCode)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckMagicPREPByteCode)
 
             mocked_get_ttfont.return_value.bytecode = '\x00'
-            result = _run_font_test(downstream.CheckMagicPREPByteCode)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckMagicPREPByteCode)
 
 
-class Test_CheckFontNamesSameAcrossPlatforms(unittest.TestCase):
+class Test_CheckFontNamesSameAcrossPlatforms(TestCase):
 
     def test_twenty_one(self):
 
@@ -667,12 +535,7 @@ class Test_CheckFontNamesSameAcrossPlatforms(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckNamesSameAcrossPlatforms)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckNamesSameAcrossPlatforms)
 
             mocked_get_ttfont.return_value.names = [
                 type('name', (object,),
@@ -683,18 +546,10 @@ class Test_CheckFontNamesSameAcrossPlatforms(unittest.TestCase):
                       'langID': 0, 'platformID': 1})
             ]
 
-            result = _run_font_test(downstream.CheckNamesSameAcrossPlatforms)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckNamesSameAcrossPlatforms)
 
 
-class Test_CheckPostScriptNameMatchesWeight(unittest.TestCase):
+class Test_CheckPostScriptNameMatchesWeight(TestCase):
 
     @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight, 'read_metadata_contents')
     def test_twenty_three(self, metadata_contents):
@@ -718,69 +573,38 @@ class Test_CheckPostScriptNameMatchesWeight(unittest.TestCase):
                       {'weight': 900, 'postScriptName': 'Family-Black'},
                       {'weight': 900, 'postScriptName': 'Family-BlackItalic'}]
         })
-        result = _run_font_test(downstream.CheckPostScriptNameMatchesWeight)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        if result.failures:
-            self.fail(result.failures[0][1])
-
-        self.assertFalse(bool(result.failures))
+        self.success_run(downstream.CheckPostScriptNameMatchesWeight)
 
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'weight': 500, 'postScriptName': 'Family-Regular'}]
         })
 
-        result = _run_font_test(downstream.CheckPostScriptNameMatchesWeight)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckPostScriptNameMatchesWeight)
 
 
-class Test_CheckMetadataContainsReservedFontName(unittest.TestCase):
+class Test_CheckMetadataContainsReservedFontName(TestCase):
 
     @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
     def test_twenty_four(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com) with Reserved Font Name'}]
         })
-        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        if result.failures:
-            self.fail(result.failures[0][1])
-
-        self.assertFalse(bool(result.failures))
+        self.success_run(downstream.CheckMetadataContainsReservedFontName)
 
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com)'}]
         })
 
-        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckMetadataContainsReservedFontName)
 
         metadata_contents.return_value = simplejson.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 with Reserved Font Name'}]
         })
 
-        result = _run_font_test(downstream.CheckMetadataContainsReservedFontName)
-
-        if result.errors:
-            self.fail(result.errors[0][1])
-
-        self.assertTrue(bool(result.failures))
+        self.failure_run(downstream.CheckMetadataContainsReservedFontName)
 
 
-class Test_CheckLicenseIncluded(unittest.TestCase):
+class Test_CheckLicenseIncluded(TestCase):
 
     def test_twenty_five(self):
 
@@ -791,27 +615,13 @@ class Test_CheckLicenseIncluded(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
-            result = _run_font_test(downstream.CheckLicenseIncluded)
+            self.failure_run(downstream.CheckLicenseIncluded)
 
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
-
-            mocked_get_ttfont.return_value.license_url = 'http://example.com/ofl'
-
-            result = _run_font_test(downstream.CheckLicenseIncluded)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            mocked_get_ttfont.return_value.license_url = 'http://example.com/'
+            self.success_run(downstream.CheckLicenseIncluded)
 
 
-class Test_CheckFontWeightSameAsInMetadata(unittest.TestCase):
+class Test_CheckFontWeightSameAsInMetadata(TestCase):
 
     @mock.patch.object(downstream.CheckFontWeightSameAsInMetadata, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
@@ -825,26 +635,13 @@ class Test_CheckFontWeightSameAsInMetadata(unittest.TestCase):
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
             get_ttfont.return_value = Font()
 
-            result = _run_font_test(downstream.CheckFontWeightSameAsInMetadata)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckFontWeightSameAsInMetadata)
 
             get_ttfont.return_value.OS2_usWeightClass = 300
-            result = _run_font_test(downstream.CheckFontWeightSameAsInMetadata)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckFontWeightSameAsInMetadata)
 
 
-class Test_CheckFontNameEqualToMacStyleFlags(unittest.TestCase):
+class Test_CheckFontNameEqualToMacStyleFlags(TestCase):
 
     def test_twenty_seven(self):
 
@@ -856,37 +653,17 @@ class Test_CheckFontNameEqualToMacStyleFlags(unittest.TestCase):
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
             get_ttfont.return_value = Font()
 
-            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckFontNameEqualToMacStyleFlags)
 
             get_ttfont.return_value.fontname = 'Family-BoldItalic'
-
-            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckFontNameEqualToMacStyleFlags)
 
             get_ttfont.return_value.fontname = 'Family-Regular'
             get_ttfont.return_value.macStyle = 0b00
-
-            result = _run_font_test(downstream.CheckFontNameEqualToMacStyleFlags)
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckFontNameEqualToMacStyleFlags)
 
 
-class Test_CheckItalicStyleMatchesMacStyle(unittest.TestCase):
+class Test_CheckItalicStyleMatchesMacStyle(TestCase):
 
     @mock.patch.object(downstream.CheckItalicStyleMatchesMacStyle, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
@@ -903,46 +680,19 @@ class Test_CheckItalicStyleMatchesMacStyle(unittest.TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
             get_ttfont.return_value = Font()
-
-            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckItalicStyleMatchesMacStyle)
 
             get_ttfont.return_value.fullname = 'Family-Regular'
-
-            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckItalicStyleMatchesMacStyle)
 
             get_ttfont.return_value.familyname = 'Family-Regular'
-
-            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckItalicStyleMatchesMacStyle)
 
             get_ttfont.return_value.macStyle = 0
-
-            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckItalicStyleMatchesMacStyle)
 
 
-class Test_CheckNormalStyleMatchesMacStyle(unittest.TestCase):
+class Test_CheckNormalStyleMatchesMacStyle(TestCase):
 
     @mock.patch.object(downstream.CheckNormalStyleMatchesMacStyle, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
@@ -960,39 +710,13 @@ class Test_CheckNormalStyleMatchesMacStyle(unittest.TestCase):
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
             get_ttfont.return_value = Font()
 
-            result = _run_font_test(downstream.CheckNormalStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            if result.failures:
-                self.fail(result.failures[0][1])
-
-            self.assertFalse(bool(result.failures))
+            self.success_run(downstream.CheckNormalStyleMatchesMacStyle)
 
             get_ttfont.return_value.fullname = 'Family-Italic'
-
-            result = _run_font_test(downstream.CheckNormalStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckNormalStyleMatchesMacStyle)
 
             get_ttfont.return_value.familyname = 'Family-BoldItalic'
-
-            result = _run_font_test(downstream.CheckNormalStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckNormalStyleMatchesMacStyle)
 
             get_ttfont.return_value.macStyle = 0b10
-
-            result = _run_font_test(downstream.CheckNormalStyleMatchesMacStyle)
-
-            if result.errors:
-                self.fail(result.errors[0][1])
-
-            self.assertTrue(bool(result.failures))
+            self.failure_run(downstream.CheckNormalStyleMatchesMacStyle)
