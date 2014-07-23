@@ -122,19 +122,6 @@ class FontToolsTest(TestCase):
         self.assertTrue(font_metadata)
         return font_metadata
 
-    def test_font_italic_style_matches_internal_font_properties_values(self):
-        """ Check metadata.json font.style `italic` matches font internal """
-        font_metadata = self.get_metadata()
-        psname = self.font.familyname
-        fullname = self.font.fullname
-        if font_metadata.style != 'italic':
-            return
-        self.assertTrue(self.font.macStyle & 0b10)
-        self.assertTrue(any([psname.endswith('-' + x)
-                             for x in italics_styles.keys()]))
-        self.assertTrue(any([fullname.endswith(' ' + x)
-                             for x in italics_styles.values()]))
-
     def test_font_normal_style_matches_internal_font_properties_values(self):
         """ Check metadata.json font.style `normal` matches font internal """
         font_metadata = self.get_metadata()

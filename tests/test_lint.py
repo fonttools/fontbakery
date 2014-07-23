@@ -884,3 +884,59 @@ class Test_CheckFontNameEqualToMacStyleFlags(unittest.TestCase):
                 self.fail(result.failures[0][1])
 
             self.assertFalse(bool(result.failures))
+
+
+class Test_CheckItalicStyleMatchesMacStyle(unittest.TestCase):
+
+    @mock.patch.object(downstream.CheckItalicStyleMatchesMacStyle, 'read_metadata_contents')
+    def test_twenty_six(self, metadata_contents):
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'filename': 'Family-Regular.ttf',
+                       'style': 'italic'}]
+        })
+
+        class Font:
+            macStyle = 0b10
+            fullname = 'Family-Italic'
+            familyname = 'Family-Italic'
+
+        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
+            get_ttfont.return_value = Font()
+
+            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            if result.failures:
+                self.fail(result.failures[0][1])
+
+            self.assertFalse(bool(result.failures))
+
+            get_ttfont.return_value.fullname = 'Family-Regular'
+
+            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+            get_ttfont.return_value.familyname = 'Family-Regular'
+
+            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
+
+            get_ttfont.return_value.macStyle = 0
+
+            result = _run_font_test(downstream.CheckItalicStyleMatchesMacStyle)
+
+            if result.errors:
+                self.fail(result.errors[0][1])
+
+            self.assertTrue(bool(result.failures))
