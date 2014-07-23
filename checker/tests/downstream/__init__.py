@@ -35,6 +35,5 @@ for testfile in os.listdir(os.path.dirname(__file__)):
                     if importstring not in modules:
                         modules.append(importstring)
                         exec importstring
-                        print name
         except (ImportError, AttributeError, IndexError):
             pass
