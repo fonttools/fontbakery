@@ -13,7 +13,7 @@ class CheckFontNameEqualToMacStyleFlags(TestCase):
         """ Check that fontname is equal to macstyle flags """
         font = Font.get_ttfont(self.path)
 
-        fontname = font.fontname
+        fontname = font.fullname
         macStyle = font.macStyle
 
         try:

@@ -130,10 +130,10 @@ class TextMetricsView(object):
         self._its_metrics['ymin'].append(ymin)
 
         value = vmet.ascents.get_max() + abs(vmet.descents.get_min())
-        upm = '%s:%s' % (vmet.get_upm_heights(), value)
+        upm = '%s:%s' % (vmet.get_upm_height(), value)
         self._its_metrics['UPM:Heights'].append(upm)
 
-        value = (value / float(vmet.get_upm_heights())) * 100
+        value = (value / float(vmet.get_upm_height())) * 100
         self._its_metrics['UPM:Heights %'].append('%d %%' % value)
 
         hhea_total = vmet.ascents.hhea + abs(vmet.descents.hhea) + vmet.linegaps.hhea

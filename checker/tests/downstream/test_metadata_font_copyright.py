@@ -49,3 +49,24 @@ class CheckMetadataContainsReservedFontName(TestCase):
         for font_metadata in fm.fonts:
             self.assertRegexpMatches(font_metadata.copyright,
                                      r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
+
+    @tags('required')
+    def test_copyright_is_consistent_across_family(self):
+        """ METADATA.json fonts copyright string is the same for all items """
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        copyright = ''
+        for font_metadata in fm.fonts:
+            if copyright and font_metadata.copyright != copyright:
+                self.fail('Copyright is not in consistent across family')
+            copyright = font_metadata.copyright
+
+    @tags('required')
+    def test_metadata_copyright_size(self):
+        """ Copyright string should be less than 500 chars """
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        for font_metadata in fm.fonts:
+            self.assertLessEqual(len(font_metadata.copyright), 500)

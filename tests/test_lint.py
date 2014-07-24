@@ -653,17 +653,17 @@ class Test_CheckFontNameEqualToMacStyleFlags(TestCase):
         class Font:
 
             macStyle = 0b00101011
-            fontname = 'Family-Regular'
+            fullname = 'Family-Regular'
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
             get_ttfont.return_value = Font()
 
             self.failure_run(downstream.CheckFontNameEqualToMacStyleFlags)
 
-            get_ttfont.return_value.fontname = 'Family-BoldItalic'
+            get_ttfont.return_value.fullname = 'Family-BoldItalic'
             self.success_run(downstream.CheckFontNameEqualToMacStyleFlags)
 
-            get_ttfont.return_value.fontname = 'Family-Regular'
+            get_ttfont.return_value.fullname = 'Family-Regular'
             get_ttfont.return_value.macStyle = 0b00
             self.success_run(downstream.CheckFontNameEqualToMacStyleFlags)
 

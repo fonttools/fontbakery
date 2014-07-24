@@ -43,6 +43,7 @@ class FontLint(object):
             result[font] = run_set(op.join(self.builddir, font), 'result',
                                    log=self.stdout_pipe)
 
+        self.stdout_pipe.write('Test METADATA.json', prefix="### ")
         result['METADATA.json'] = self.run_metadata_tests()
 
         if not result:

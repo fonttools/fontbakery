@@ -23,113 +23,6 @@ import magic
 from checker.base import BakeryTestCase as TestCase, tags
 
 
-weights = {
-    'Thin': 100,
-    'ThinItalic': 100,
-    'ExtraLight': 200,
-    'ExtraLightItalic': 200,
-    'Light': 300,
-    'LightItalic': 300,
-    'Regular': 400,
-    'Italic': 400,
-    'Medium': 500,
-    'MediumItalic': 500,
-    'SemiBold': 600,
-    'SemiBoldItalic': 600,
-    'Bold': 700,
-    'BoldItalic': 700,
-    'ExtraBold': 800,
-    'ExtraBoldItalic': 800,
-    'Black': 900,
-    'BlackItalic': 900,
-}
-
-
-weights_styles_map = {
-    'normal': ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold',
-               'Bold', 'ExtraBold', 'Black'],
-    'italic': ['ThinItalic', 'ExtraLightItalic', 'LightItalic', 'Italic',
-               'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
-               'ExtraBoldItalic', 'BlackItalic']
-}
-
-
-valid_styles = weights_styles_map['normal'] + weights_styles_map['italic']
-
-italics_styles = {
-    'ThinItalic': 'Thin Italic',
-    'ExtraLight': 'Extra Light',
-    'ExtraLightItalic': 'Extra Light Italic',
-    'LightItalic': 'Light Italic',
-    'Italic': 'Italic',
-    'MediumItalic': 'Medium Italic',
-    'SemiBoldItalic': 'Semi Bold Italic',
-    'BoldItalic': 'Bold Italic',
-    'ExtraBoldItalic': 'Extra Bold Italic',
-    'BlackItalic': 'Black Italic',
-}
-
-
-normal_styles = {
-    'Thin': 'Thin',
-    'ExtraLight': 'Extra Light',
-    'Light': 'Light',
-    'Regular': 'Regular',
-    'Italic': 'Italic',
-    'Medium': 'Medium',
-    'SemiBold': 'Semi Bold',
-    'Bold': 'Bold',
-    'ExtraBold': 'Extra Bold',
-    'Black': 'Black'
-}
-
-
-class FontForgeSimpleTest(TestCase):
-    targets = ['result']
-    tool = 'FontTools'
-    name = __name__
-    path = '.'
-
-    def setUp(self):
-        self.font = fontforge.open(self.path)
-        self.fname = os.path.splitext(self.path)[0]
-        # You can use ipdb here to interactively develop tests!
-        # Uncommand the next line, then at the iPython prompt: print(self.path)
-        # import ipdb; ipdb.set_trace()
-
-    @tags('required')
-    def test_em_is_1000(self):
-        """ Font em should be equal 1000 """
-        self.assertEqual(self.font.em, 1000)
-
-    @tags('required')
-    def test_is_fsType_not_set(self):
-        """Is the OS/2 table fsType set to 0?"""
-        self.assertEqual(self.font.os2_fstype, 0)
-
-    def test_font_name_canonical(self):
-        """ Font name is canonical """
-        self.assertTrue(any([self.font.fontname.endswith(x)
-                             for x in valid_styles]))
-
-    @tags('required')
-    def test_latin_file_exists(self):
-        """ Menu file have font-name-style.menu format """
-        self.assertTrue(os.path.exists("%s.latin" % self.fname))
-
-    @tags('required')
-    def test_file_is_font(self):
-        """ Menu file have font-name-style.menu format """
-        self.assertTrue(os.path.exists(self.path))
-        self.assertTrue(magic.from_file(self.path), 'TrueType font data')
-
-    @tags('required')
-    def test_font_is_font(self):
-        """ File provided as parameter is TTF font file """
-        self.assertTrue(magic.from_file(self.path, mime=True),
-                        'application/x-font-ttf')
-
-
 class MetadataJSONTest(TestCase):
     targets = ['result']
     tool = 'FontForge'
@@ -193,26 +86,6 @@ class MetadataJSONTest(TestCase):
                 have = True
         self.assertTrue(have)
 
-    styles = ['Thin', 'ThinItalic', 'ExtraLight',
-              'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
-              'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
-              'BoldItalic', 'ExtraBold', 'ExtraBoldItalic',
-              'Black', 'BlackItalic']
-
-    # test each key for font item:
-    # {
-    #   "name": "Merritest", --- doesn't incule style name
-    #   "postScriptName": "Merritest-Bold", ---
-    #   "fullName": "Merritest Bold", ---
-    #   "style": "normal",
-    #   "weight": 700,
-    #   "filename": "Merritest-Bold.ttf", ---
-    #   "copyright": "Merriweather is a medium contrast semi condesed typeface
-    #         designed to be readable at very small sizes. Merriweather is
-    #         traditional in feeling despite a the modern shapes it has adopted
-    #         for screens."
-    # },
-
     def test_metadata_fonts_exists(self):
         """ METADATA.json font propery should exists """
         self.assertTrue(self.metadata.get('fonts', False))
@@ -226,36 +99,6 @@ class MetadataJSONTest(TestCase):
             same as font familyname """
         self.assertTrue(all([x['name'] == self.font.familyname
                              for x in self.metadata.get('fonts', None)]))
-
-    @tags('required')
-    def test_metadata_postScriptName_canonical(self):
-        """ METADATA.json fonts postScriptName should be
-            [font familyname]-[style].
-
-            Alowed styles are: 'Thin', 'ThinItalic', 'ExtraLight',
-            'ExtraLightItalic', 'Light', 'LightItalic', 'Regular', 'Italic',
-            'Medium', 'MediumItalic', 'SemiBold', 'SemiBoldItalic', 'Bold',
-            'BoldItalic', 'ExtraBold', 'ExtraBoldItalic', 'Black',
-            'BlackItalic' """
-        self.assertTrue(all(
-            [any([x['postScriptName'].endswith("-" + i)
-             for i in valid_styles]) for x in self.metadata.get('fonts', None)]
-        ))
-
-    @tags('required')
-    def test_metadata_style_matches_postScriptName(self):
-        """ METADATA.json `style` is matched to `postScriptName` property """
-        sn_italic = ['ThinItalic', 'ExtraLightItalic', 'LightItalic',
-                     'Italic', 'MediumItalic', 'SemiBoldItalic', 'BoldItalic',
-                     'ExtraBoldItalic', 'BlackItalic']
-        for x in self.metadata.get("fonts", None):
-            post_script_name = x.get('postScriptName', '')
-            style = x.get('style', '')
-            if style == 'italic':
-                self.assertTrue(any([post_script_name.endswith("-" + i)
-                                     for i in sn_italic]))
-            else:
-                self.assertEqual(style, 'normal')
 
     @tags('required')
     def test_metadata_filename_matches_postScriptName(self):
@@ -294,19 +137,6 @@ class MetadataJSONTest(TestCase):
                 continue
             self.assertEqual(font['postScriptName'],
                              os.path.splitext(font_filename)[0])
-
-    def test_metadata_font_fullname_canonical(self):
-        """ METADATA.json fonts fullName property should be
-            '[font.familyname] [font.style]' format (w/o quotes)"""
-        for x in self.metadata.get("fonts", None):
-            style = None
-            fn = x.get('fullName', None)
-            for i in valid_styles:
-                if fn.endswith(i):
-                    style = i
-                    break
-            self.assertTrue(style)
-            self.assertEqual("%s %s" % (self.font.familyname, style), fn)
 
     def test_metadata_fonts_no_dupes(self):
         """ METADATA.json fonts propery only should have uniq values """
@@ -349,21 +179,6 @@ class MetadataJSONTest(TestCase):
             self.assertIn("".join(str(self.font.familyname).split()),
                           x.get('postScriptName', ''))
 
-    def test_metadata_style_value_matches_font_italicAngle_value(self):
-        """ METADATA.json fonts style property should be italic
-            if font is italic """
-        font = None
-        current_font = "%s %s" % (self.font.familyname, self.font.weight)
-        for x in self.metadata.get('fonts', None):
-            if x.get('fullName', None) == current_font:
-                font = x
-                break
-        self.assertTrue(font)
-        if int(self.font.italicangle) == 0:
-            self.assertEqual(font.get('style', None), 'normal')
-        else:
-            self.assertEqual(font.get('style', None), 'italic')
-
     def test_metadata_have_subset(self):
         """ METADATA.json shoyld have 'subsets' property """
         self.assertTrue(self.metadata.get('subsets', None))
@@ -378,53 +193,6 @@ class MetadataJSONTest(TestCase):
             'cyrillic', 'cyrillic_ext', 'arabic'] """
         self.assertTrue(all([x in self.subset_list
                              for x in self.metadata.get('subsets', None)]))
-
-    def test_metadata_value_match_font_weight(self):
-        """Check that METADATA font.weight keys match font internal metadata"""
-        fonts = {}
-        for x in self.metadata.get('fonts', None):
-            fonts[x.get('fullName', '')] = x
-        self.assertEqual(weights.get(self.font.weight, 0),
-                         fonts.get(self.font.fullname, {'weight': ''}).get('weight', 0))
-
-    def test_metadata_font_style_same_all_fields(self):
-        """ METADATA.json fonts properties "name" "postScriptName" "fullName"
-        "filename" should have the same style """
-        weights_table = {
-            'Thin': 'Thin',
-            'ThinItalic': 'Thin Italic',
-            'ExtraLight': 'Extra Light',
-            'ExtraLightItalic': 'Extra Light Italic',
-            'Light': 'Light',
-            'LightItalic': 'Light Italic',
-            'Regular': 'Regular',
-            'Italic': 'Italic',
-            'Medium': 'Medium',
-            'MediumItalic': 'Medium Italic',
-            'SemiBold': 'Semi Bold',
-            'SemiBoldItalic': 'Semi Bold Italic',
-            'Bold': 'Bold',
-            'BoldItalic': 'Bold Italic',
-            'ExtraBold': 'Extra Bold',
-            'ExtraBoldItalic': 'Extra Bold Italic',
-            'Black': 'Black',
-            'BlackItalic': 'Black Italic',
-        }
-
-        for x in self.metadata.get('fonts', None):
-            if x.get('postScriptName', '') != self.font.familyname:
-                # this is not regular style
-                _style = x["postScriptName"].split('-').pop(-1)
-                self.assertIn(_style, weights_table.keys(),
-                              msg="Style name not from expected list")
-                self.assertEqual("%s %s" % (self.font.familyname,
-                                            weights_table.get(_style)),
-                                 x.get("fullName", ''))
-            else:
-                _style = 'Regular'
-
-            self.assertEqual("%s-%s.ttf" % (self.font.familyname,
-                                            _style), x.get("filename", ''))
 
     @tags('required')
     def test_metadata_keys(self):
@@ -521,32 +289,11 @@ class MetadataJSONTest(TestCase):
                       msg="Subsets missing latin")
 
     @tags('required')
-    def test_metadata_copyrights_are_equal_for_all_fonts(self):
-        """ METADATA.json fonts copyright string is the same for all items """
-
-        copyright = None
-
-        for x in self.metadata.get('fonts', None):
-            copyright = x.get('copyright', None)
-            break
-
-        if copyright:
-            for x in self.metadata.get('fonts', None):
-                self.assertEqual(x.get('copyright', ''), copyright)
-
-    @tags('required')
     def test_metadata_license(self):
         """ METADATA.json license is 'Apache2', 'UFL' or 'OFL' """
         licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.get('license', ''), licenses,
                       msg='License has invalid value')
-
-# TODO: Find where this check came from
-    @tags('required')
-    def test_metadata_copyright_size(self):
-        """ Copyright string should be less than 500 chars """
-        for x in self.metadata.get('fonts', None):
-            self.assertLessEqual(len(x.get('copyright', '')), 500)
 
     @tags('required')
     def test_metadata_has_unique_style_weight_pairs(self):

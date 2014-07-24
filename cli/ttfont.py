@@ -261,7 +261,7 @@ class Font(object):
         >>> font.get_loca_num_glyphs()
         503
         """
-        return len(self.ttfont['loca'].locations)
+        return len(self['loca'].locations)
 
     def get_hmtx_max_advanced_width(self):
         """ AdvanceWidthMax from "hmtx" table
@@ -285,7 +285,7 @@ class Font(object):
         """
         return self.advance_width()
 
-    def get_upm_heights(self):
+    def get_upm_height(self):
         return self.ttfont['head'].unitsPerEm
 
     def get_highest_and_lowest(self):
