@@ -39,6 +39,15 @@ class Font(object):
         self.descents = DescentGroup(self.ttfont)
         self.linegaps = LineGapGroup(self.ttfont)
 
+    def __getitem__(self, key):
+        """ Returns TTFont table with key name
+
+        >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
+        >>> type(font['name'])
+        <class 'fontTools.ttLib.tables._n_a_m_e.table__n_a_m_e'>
+        """
+        return self.ttfont[key]
+
     def get_program_bytecode(self):
         """ Return binary program code from "prep" table.
 

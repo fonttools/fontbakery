@@ -97,83 +97,6 @@ class FontToolsTest(TestCase):
     def setUp(self):
         self.font = Font.get_ttfont(self.path)
 
-    @tags('required')
-    def test_metadata_fonts_fields(self):
-        """ METADATA.json "fonts" property items should have
-            "name", "postScriptName", "fullName", "style", "weight",
-            "filename", "copyright" keys """
-        keys = ["name", "postScriptName", "fullName", "style", "weight",
-                "filename", "copyright"]
-        metadata = self.get_metadata()
-        for j in keys:
-            self.assertTrue(j in metadata)
-
-    def read_metadata_contents(self):
-        root_dir = os.path.dirname(self.path)
-        return open(os.path.join(root_dir, 'METADATA.json')).read()
-
-    def get_metadata(self):
-        contents = self.read_metadata_contents()
-        familymetadata = Metadata.get_family_metadata(contents)
-        for font in familymetadata.fonts:
-            if os.path.basename(self.path) == font.filename:
-                font_metadata = font
-                break
-        self.assertTrue(font_metadata)
-        return font_metadata
-
-    @tags('required')
-    def test_metadata_font_keys_types(self):
-        """ METADATA.json fonts items dicts items should have proper types """
-        metadata = self.get_metadata()
-        self.assertEqual(type(metadata.get("name", None)), type(""))
-        self.assertEqual(type(metadata.get("postScriptName", None)), type(""))
-        self.assertEqual(type(metadata.get("fullName", None)), type(""))
-        self.assertEqual(type(metadata.get("style", None)), type(""))
-        self.assertEqual(type(metadata.get("weight", None)), type(0))
-        self.assertEqual(type(metadata.get("filename", None)), type(""))
-        self.assertEqual(type(metadata.get("copyright", None)), type(""))
-
-    @tags('required')
-    def test_metadata_fonts_no_unknown_keys(self):
-        """ METADATA.json fonts don't have unknown top keys """
-        fonts_keys = ["name", "postScriptName", "fullName", "style", "weight",
-                      "filename", "copyright"]
-        metadata = self.get_metadata()
-        for i in metadata.keys():
-            self.assertIn(i, fonts_keys, msg="`%s` is unknown key in json" % i)
-
-    @tags('required')
-    def test_font_has_dsig_table(self):
-        """ Check that font has DSIG table """
-        self.assertIn('DSIG', self.font.ttfont.keys(),
-                      msg="`dsig` does not exist in font")
-
-    def test_font_gpos_table_has_kerning_info(self):
-        """ GPOS table has kerning information """
-        self.assertIn('GPOS', self.font.ttfont.keys(),
-                      msg="`gpos` does not exist in font")
-        flaglookup = False
-        for lookup in self.font.ttfont['GPOS'].table.LookupList.Lookup:
-            if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
-                flaglookup = lookup
-        self.assertTrue(flaglookup, msg='GPOS doesnt have kerning information')
-        self.assertGreater(flaglookup.SubTableCount, 0)
-        self.assertGreater(flaglookup.SubTable[0].PairSetCount, 0)
-
-    def test_metadata_family_matches_fullname_psname_family_part(self):
-        """ Check that METADATA.json family matches fullName
-            and postScriptName family part"""
-        font_metadata = self.get_metadata()
-        psname = self.font.familyname
-        fullname = self.font.fullname
-        self.assertTrue(psname.startswith(font_metadata['name'] + '-'))
-        self.assertTrue(fullname.startswith(font_metadata['name'] + ' '))
-
-    def test_no_kern_table_exists(self):
-        """ Check that no KERN table exists """
-        self.assertNotIn('kern', self.font.ttfont.keys())
-
     def test_table_gasp_type(self):
         """ Font table gasp should be 15 """
         keys = self.font.ttfont.keys()
@@ -183,19 +106,6 @@ class FontToolsTest(TestCase):
         self.assertTrue(65535 in self.font.ttfont['gasp'].gaspRange)
         # XXX: Needs review
         self.assertEqual(self.font.ttfont['gasp'].gaspRange[65535], 15)
-
-    def test_non_ascii_chars_in_names(self):
-        """ NAME and CFF tables must not contain non-ascii characters """
-        for name_record in self.font.names:
-            string = name_record.string
-            if b'\000' in string:
-                string = string.decode('utf-16-be').encode('utf-8')
-            else:
-                string = string
-            try:
-                string.encode('ascii')
-            except UnicodeEncodeError:
-                self.fail("%s contain non-ascii chars" % name_record.nameID)
 
 
 class FontForgeSimpleTest(TestCase):

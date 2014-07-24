@@ -70,6 +70,10 @@ class FontMetadata(object):
     def __init__(self, metadata_object):
         self.metadata_object = metadata_object
 
+    def __iter__(self):
+        for k in self.metadata_object:
+            yield k
+
     @property
     def name(self):
         return self.metadata_object['name']
@@ -80,7 +84,7 @@ class FontMetadata(object):
 
     @property
     def full_name(self):
-        return self.metadata_object.get('full_name', '')
+        return self.metadata_object.get('fullName', '')
 
     @property
     def style(self):

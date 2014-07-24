@@ -214,15 +214,17 @@ class Test_CheckMetadataMatchesNameTable(TestCase):
     @mock.patch.object(downstream.CheckMetadataMatchesNameTable, 'read_metadata_contents')
     def test_six(self, metadata_contents):
         metadata_contents.return_value = simplejson.dumps({
-            'name': 'Font Family',
+            'name': 'Family',
             'fonts': [{
-                'name': 'Font Family',
-                'filename': 'FontFamily-Regular.ttf'
+                'name': 'Family',
+                'filename': 'FontFamily-Regular.ttf',
+                'fullName': 'Family Font'
             }]
         })
 
         class Font:
-            familyname = 'Font Family'
+            familyname = 'Family'
+            fullname = 'Family Font'
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
@@ -724,7 +726,7 @@ class Test_CheckNormalStyleMatchesMacStyle(TestCase):
 
 class Test_CheckNamesAreASCIIOnly(TestCase):
 
-    def test_twenty_six(self):
+    def test_twenty_seven(self):
         class Font:
             pass
 
@@ -742,3 +744,94 @@ class Test_CheckNamesAreASCIIOnly(TestCase):
                      {'nameID': 1, 'string': u'FamilyNameRegularЙ',
                       'langID': 0x409, 'platformID': 3}),
             ]
+
+
+class Test_CheckMetadataFields(TestCase):
+
+    @mock.patch.object(downstream.CheckMetadataFields, 'read_metadata_contents')
+    def test_twenty_eight(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'name': 'Family',
+                       'filename': 'Family-Regular.ttf',
+                       'weight': 400,
+                       'fullName': 'Family Regular',
+                       'postScriptName': 'Family-Regular',
+                       'style': 'normal',
+                       'copyright': ''}]
+        })
+        self.success_run(downstream.CheckMetadataFields)
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'name': 'Family',
+                       'filename': 'Family-Regular.ttf',
+                       # 'weight': 400,
+                       # 'fullName': 'Family Regular',
+                       # 'postScriptName': 'Family-Regular',
+                       # 'style': 'normal',
+                       'copyright': ''}]
+        })
+        self.failure_run(downstream.CheckMetadataFields)
+
+        metadata_contents.return_value = simplejson.dumps({
+            'fonts': [{'name': 'Family',
+                       'filename': 'Family-Regular.ttf',
+                       'weight': 400,
+                       'fullName': 'Family Regular',
+                       'postScriptName': 'Family-Regular',
+                       'style': 'normal',
+                       'copyright': '',
+                       'tables': []}]
+        })
+        self.failure_run(downstream.CheckMetadataFields)
+
+
+class Test_CheckFontHasDsigTable(TestCase):
+
+    def test_twenty_nine(self):
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = {'DSIG': True}
+            self.success_run(downstream.CheckFontHasDsigTable)
+
+            get_ttfont.return_value = {}
+            self.failure_run(downstream.CheckFontHasDsigTable)
+
+
+class Test_CheckFontHasNotKernTable(TestCase):
+
+    def test_twenty_nine(self):
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = {'KERN': True}
+            self.failure_run(downstream.CheckFontHasNotKernTable)
+
+            get_ttfont.return_value = {}
+            self.success_run(downstream.CheckFontHasNotKernTable)
+
+
+class Test_CheckGposTableHasKerningInfo(TestCase):
+
+    def test_thirty(self):
+
+        PairSet = type('PairSet', (object, ),
+                       {'PairSetCount': 1})
+
+        PairAdjustement = type('PairAdjustement', (object, ),
+                               {'LookupType': 2,
+                                'SubTableCount': 1,
+                                'SubTable': [PairSet]})
+
+        Lookup = type('Lookup', (object, ), {'Lookup': [PairAdjustement]})
+
+        gpos = type('gpos', (object, ),
+                    {'table': type('table', (object, ),
+                                   {'LookupList': Lookup})})
+
+        Font = {'GPOS': gpos}
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font
+            self.success_run(downstream.CheckGposTableHasKerningInfo)
+
+            get_ttfont.return_value = {}
+            self.failure_run(downstream.CheckGposTableHasKerningInfo)

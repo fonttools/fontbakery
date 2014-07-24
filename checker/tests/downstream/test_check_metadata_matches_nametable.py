@@ -39,3 +39,4 @@ class CheckMetadataMatchesNameTable(TestCase):
             report = report % (font_metadata.name, fm.name,
                                ttfont.familyname)
             self.assertEqual(ttfont.familyname, fm.name, report)
+            self.assertEqual(ttfont.fullname, font_metadata.full_name)
