@@ -11,7 +11,14 @@ class CheckTextFilesExist(TestCase):
     tool = 'lint'
 
     def assertExists(self, filename):
-        if not op.exists(op.join(op.dirname(self.path), filename)):
+        if not isinstance(filename, list):
+            filename = [filename]
+
+        exist = False
+        for p in filename:
+            if op.exists(op.join(op.dirname(self.path), p)):
+                exist = True
+        if not exist:
             self.fail('%s does not exist in project' % filename)
 
     @tags('required')
@@ -27,8 +34,7 @@ class CheckTextFilesExist(TestCase):
     @tags('required')
     def test_licensetxt_exists(self):
         """ Font folder should contains LICENSE.txt """
-        # TODO: This should be OFL.txt or LICENSE.txt
-        self.assertExists('LICENSE.txt')
+        self.assertExists(['LICENSE.txt', 'OFL.txt'])
 
     def test_fontlogtxt_exists(self):
         """ Font folder should contains FONTLOG.txt """
