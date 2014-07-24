@@ -902,5 +902,8 @@ class Test_CheckItalicAngleAgreement(TestCase):
 
             self.success_run(downstream.CheckItalicAngleAgreement)
 
-            get_ttfont.return_value.italicAngle = 70
+            get_ttfont.return_value.italicAngle = 10
+            self.failure_run(downstream.CheckItalicAngleAgreement)
+
+            get_ttfont.return_value.italicAngle = -30
             self.failure_run(downstream.CheckItalicAngleAgreement)

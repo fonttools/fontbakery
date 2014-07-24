@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from checker.base import BakeryTestCase as TestCase
+from checker.base import BakeryTestCase as TestCase, tags
 from checker.metadata import Metadata
 from cli.ttfont import Font
 
@@ -29,6 +29,7 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
     def read_metadata_contents(self):
         return open(self.path).read()
 
+    @tags('required')
     def test_check_nbsp_width_matches_sp_width(self):
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)

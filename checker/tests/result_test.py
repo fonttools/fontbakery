@@ -22,7 +22,6 @@ import os
 import magic
 
 from checker.base import BakeryTestCase as TestCase, tags
-from fontTools import ttLib
 
 
 weights = {
@@ -99,14 +98,6 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
-    # TODO: Ask Dave about this test
-    # def test_pfm_family_style_is_correct(self):
-    #     """ PFM Family Style is valid. Valid value are: Serif, Sans-Serif,
-    #         Monospace, Decorative """
-    #     self.assertIn(self.font.os2_pfm_family,
-    #                   ['Serif', 'Sans-Serif', 'Monospace', 'Decorative'],
-    #                   'PFM Family Style is not valid.')
-
     def get_metadata(self):
         medatata_path = os.path.join(os.path.dirname(self.path),
                                      'METADATA.json')
@@ -127,18 +118,6 @@ class FontForgeSimpleTest(TestCase):
     def test_space(self):
         """Check if 'SPACE' exsist in font glyphs"""
         self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
-
-    @tags('required',)
-    def test_nbsp_and_space_glyphs_width(self):
-        """ Nbsp and space glyphs should have the same width"""
-        space = 0
-        nbsp = 0
-        for x in self.font.glyphs():
-            if x.unicode == ord(unicodedata.lookup('NO-BREAK SPACE')):
-                nbsp = x.width
-            elif x.unicode == ord(unicodedata.lookup('SPACE')):
-                space = x.width
-        self.assertEqual(space, nbsp)
 
     def test_euro(self):
         """Check if 'EURO SIGN' exsist in font glyphs"""
@@ -161,27 +140,9 @@ class FontForgeSimpleTest(TestCase):
         self.assertEqual(name, canonic_name)
 
     @tags('required')
-    def test_menu_file_exists(self):
-        """ Menu file have font-name-style.menu format """
-        self.assertTrue(os.path.exists("%s.menu" % self.fname))
-
-    @tags('required')
     def test_latin_file_exists(self):
         """ Menu file have font-name-style.menu format """
         self.assertTrue(os.path.exists("%s.latin" % self.fname))
-
-    def test_menu_file_is_canonical(self):
-        """ Menu file should be [font.familyname]-[font.weight].menu """
-        name = "%s.menu" % self.fname
-        canonic_name = "%s-%s.menu" % (self.font.familyname, self.font.weight)
-        self.assertEqual(os.path.basename(name), canonic_name)
-
-    @tags('required')
-    def test_menu_file_is_font(self):
-        """ Menu file have font-name-style.menu format """
-        self.assertTrue(os.path.exists("%s.menu" % self.fname))
-        self.assertTrue(magic.from_file("%s.menu" % self.fname),
-                        'TrueType font data')
 
     @tags('required')
     def test_file_is_font(self):
@@ -195,41 +156,10 @@ class FontForgeSimpleTest(TestCase):
         self.assertEqual(self.font.em, 1000)
 
     @tags('required')
-    def test_font_italicangle_limits(self):
-        """ font.italicangle maximum abs(value) can be between 0 an 20 degree """
-        # VV: This test will passed only in case of italicAngle is zero.
-        self.assertTrue(abs(self.font.italicangle) >= 0
-                        and abs(self.font.italicangle) <= 20)
-
-    @tags('required')
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
         self.assertTrue(magic.from_file(self.path, mime=True),
                         'application/x-font-ttf')
-
-    @tags('required')
-    def test_copyrighttxt_exists(self):
-        """ Font folder should contains COPYRIGHT.txt """
-        self.assertTrue(os.path.exists(os.path.join(
-            os.path.dirname(self.path), 'COPYRIGHT.txt')))
-
-    @tags('required')
-    def test_description_exists(self):
-        """ Font folder should contains DESCRIPTION.en_us.html """
-        self.assertTrue(os.path.exists(os.path.join(
-            os.path.dirname(self.path), 'DESCRIPTION.en_us.html')))
-
-    @tags('required')
-    def test_licensetxt_exists(self):
-        """ Font folder should contains LICENSE.txt """
-        # TODO: This should be OFL.txt or LICENSE.txt
-        self.assertTrue(os.path.exists(os.path.join(
-            os.path.dirname(self.path), 'LICENSE.txt')))
-
-    def test_fontlogtxt_exists(self):
-        """ Font folder should contains FONTLOG.txt """
-        self.assertTrue(os.path.exists(os.path.join(
-            os.path.dirname(self.path), 'FONTLOG.txt')))
 
 
 class MetadataJSONTest(TestCase):
