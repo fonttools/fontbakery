@@ -34,8 +34,8 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
             tf = Font.get_ttfont_from_metadata(self.path, font_metadata)
-            space_advance_width = tf.advanceWidth('space')
-            nbsp_advance_width = tf.advanceWidth('uni00A0')
+            space_advance_width = tf.advance_width('space')
+            nbsp_advance_width = tf.advance_width('uni00A0')
 
             _ = "%s: The font does not contain a sp glyph"
             self.assertTrue(space_advance_width, _ % font_metadata.filename)

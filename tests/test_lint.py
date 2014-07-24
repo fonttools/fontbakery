@@ -246,7 +246,7 @@ class Test_CheckNbspWidthMatchesSpWidth(TestCase):
 
         class Font:
 
-            def advanceWidth(self, glyphId):
+            def advance_width(self, glyphId):
                 return 1680
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
@@ -857,3 +857,50 @@ class Test_CheckGaspTableType(TestCase):
 
             get_ttfont.return_value = {}
             self.failure_run(downstream.CheckGaspTableType)
+
+
+class Test_CheckMonospaceAgreement(TestCase):
+
+    @mock.patch.object(downstream.CheckMonospaceAgreement, 'read_metadata_contents')
+    def test_thirty_two(self, metadata_contents):
+        metadata_contents.return_value = simplejson.dumps({
+            'category': 'Monospace',
+            'fonts': [{'name': 'Family',
+                       'filename': 'Family-Regular.ttf'}]
+        })
+
+        class Font:
+
+            _glyph_advance_width = 2134
+            _advance_width = 2134
+
+            def glyphs(self):
+                return ['a', 'b']
+
+            def advance_width(self, glyphid=None):
+                if not glyphid:
+                    return self._advance_width
+                return self._glyph_advance_width
+
+        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as get_ttfont:
+            get_ttfont.return_value = Font()
+            self.success_run(downstream.CheckMonospaceAgreement)
+
+            get_ttfont.return_value._glyph_advance_width = 1111
+            self.failure_run(downstream.CheckMonospaceAgreement)
+
+
+class Test_CheckItalicAngleAgreement(TestCase):
+
+    def test_thirty_three(self):
+
+        class Font:
+            italicAngle = 0
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font()
+
+            self.success_run(downstream.CheckItalicAngleAgreement)
+
+            get_ttfont.return_value.italicAngle = 70
+            self.failure_run(downstream.CheckItalicAngleAgreement)

@@ -95,15 +95,15 @@ class Font(object):
 
     @property
     def macStyle(self):
-        return self.ttfont['head'].macStyle
+        return self['head'].macStyle
 
     @property
     def italicAngle(self):
-        return self.ttfont['post'].italicAngle
+        return self['post'].italicAngle
 
     @property
     def names(self):
-        return self.ttfont['name'].names
+        return self['name'].names
 
     @property
     def glyphs(self):
@@ -123,7 +123,7 @@ class Font(object):
         >>> font.OS2_usWeightClass
         400
         """
-        return self.ttfont['OS/2'].usWeightClass
+        return self['OS/2'].usWeightClass
 
     @property
     def OS2_usWidthClass(self):
@@ -133,7 +133,7 @@ class Font(object):
         >>> font.OS2_usWidthClass
         5
         """
-        return self.ttfont['OS/2'].usWidthClass
+        return self['OS/2'].usWidthClass
 
     @property
     def fullname(self):
@@ -180,19 +180,21 @@ class Font(object):
         >>> font.retrieve_cmap_format_4().platEncID
         3
         """
-        for cmap in self.ttfont['cmap'].tables:
+        for cmap in self['cmap'].tables:
             if cmap.format == 4:
                 return cmap
 
-    def advanceWidth(self, glyph_id):
+    def advance_width(self, glyph_id=None):
         """ AdvanceWidth of glyph from "hmtx" table
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.advanceWidth("a")
+        >>> font.advance_width("a")
         572
         """
+        if not glyph_id:
+            return self['hhea'].advanceWidthMax
         try:
-            return self.ttfont['hmtx'].metrics[glyph_id][0]
+            return self['hmtx'].metrics[glyph_id][0]
         except KeyError:
             return None
 
@@ -271,7 +273,7 @@ class Font(object):
         >>> font.advance_width_max
         1409
         """
-        return self.ttfont['hhea'].advanceWidthMax
+        return self.advance_width()
 
     def get_upm_heights(self):
         return self.ttfont['head'].unitsPerEm

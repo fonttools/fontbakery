@@ -113,38 +113,6 @@ class FontForgeSimpleTest(TestCase):
         metadata = yaml.load(open(medatata_path, 'r').read())
         return metadata
 
-    def test_metrics_maximum_advanced_width_in_hhea(self):
-        """ Actual maximum advanced width is consistent to
-            hhea.advanceWidthMax """
-        maxwidth = 0
-        ttfont = ttLib.TTFont(self.path)
-        for g in self.font.glyphs():
-            if hasattr(g, 'width') and maxwidth < g.width:
-                maxwidth = g.width
-        self.assertEqual(ttfont['hhea'].advanceWidthMax, maxwidth)
-
-    def test_metrics_advance_width_in_glyphs_same_if_monospace(self):
-        """ Monospace font has hhea.advanceWidthMax equal to each
-            glyph advanceWidth """
-        metadata = self.get_metadata()
-        if metadata.get('category') != 'Monospace':
-            return
-        ttfont = ttLib.TTFont(self.path)
-        advance_width = None
-        for g in self.font.glyphs():
-            if not advance_width:
-                advance_width = g.width
-            self.assertEqual(advance_width, g.width)
-        self.assertEqual(ttfont['hhea'].advanceWidthMax, advance_width)
-
-    @tags('required')
-    def test_font_italicangle_is_zero_or_negative(self):
-        """ font.italicangle property can be zero or negative """
-        if self.font.italicangle == 0:
-            self.assertEqual(self.font.italicangle, 0)
-        else:
-            self.assertLess(self.font.italicangle, 0)
-
     @tags('required')
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
