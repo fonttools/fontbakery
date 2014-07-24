@@ -12,6 +12,9 @@ class CheckFontsMenuAgreements(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
     def menufile(self, font_metadata):
         return '%s.menu' % font_metadata.post_script_name
 
