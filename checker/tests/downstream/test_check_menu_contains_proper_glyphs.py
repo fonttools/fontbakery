@@ -29,8 +29,8 @@ class CheckMenuSubsetContainsProperGlyphs(TestCase):
     def read_metadata_contents(self):
         return open(self.path).read()
 
-    def test_check_menu_subset_contains_proper_glyphs(self):
-        """ Check menu file contain glyphs """
+    def test_check_menu_contains_proper_glyphs(self):
+        """ Check menu file contains proper glyphs """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
@@ -38,7 +38,9 @@ class CheckMenuSubsetContainsProperGlyphs(TestCase):
             self.check_retrieve_glyphs(tf, font_metadata)
 
     def check_retrieve_glyphs(self, ttfont, font_metadata):
-        glyphs = ttfont.retrieve_glyphs_from_cmap_format_4()
+        cmap = ttfont.retrieve_cmap_format_4()
+
+        glyphs = cmap.cmap
 
         missing_glyphs = set()
         if ord(' ') not in glyphs:

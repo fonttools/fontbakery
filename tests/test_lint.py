@@ -193,13 +193,15 @@ class Test_CheckMenuSubsetContainsProperGlyphs(TestCase):
 
         class FontS:
 
-            def retrieve_glyphs_from_cmap_format_4(self):
-                return dict(map(lambda x: (ord(x), x), 'Font Name'))
+            def retrieve_cmap_format_4(self):
+                return type('cmap', (object, ),
+                            {'cmap': dict(map(lambda x: (ord(x), x), 'Font Name'))})
 
         class FontF:
 
-            def retrieve_glyphs_from_cmap_format_4(self):
-                return dict(map(lambda x: (ord(x), x), 'FontName'))
+            def retrieve_cmap_format_4(self):
+                return type('cmap', (object, ),
+                            {'cmap': dict(map(lambda x: (ord(x), x), 'FontName'))})
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = FontS()
