@@ -98,6 +98,11 @@ class FontForgeSimpleTest(TestCase):
         # import ipdb; ipdb.set_trace()
 
     @tags('required')
+    def test_em_is_1000(self):
+        """ Font em should be equal 1000 """
+        self.assertEqual(self.font.em, 1000)
+
+    @tags('required')
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 0)
@@ -123,11 +128,6 @@ class FontForgeSimpleTest(TestCase):
         """ File provided as parameter is TTF font file """
         self.assertTrue(magic.from_file(self.path, mime=True),
                         'application/x-font-ttf')
-
-    @tags('required')
-    def test_em_is_1000(self):
-        """ Font em should be equal 1000 """
-        self.assertEqual(self.font.em, 1000)
 
 
 class MetadataJSONTest(TestCase):

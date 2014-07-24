@@ -462,9 +462,10 @@ class Test_CheckUPMHeightsLess120(TestCase):
 
         class Font:
 
-            @property
-            def upm_heights(self):
-                return 1024
+            upm_height = 1024
+
+            def get_upm_heights(self):
+                return self.upm_height
 
             ascents = FakeAscents()
             descents = FakeDescents()

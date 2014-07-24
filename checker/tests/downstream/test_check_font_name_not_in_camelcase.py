@@ -32,6 +32,7 @@ class CheckFontNameNotInCamelCase(TestCase):
         return open(self.path).read()
 
     def test_fontname_not_in_camel_case(self):
+        """ Check if fontname is not camel cased """
         contents = self.read_metadata_contents()
         familymetadata = Metadata.get_family_metadata(contents)
 

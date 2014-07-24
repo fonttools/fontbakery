@@ -29,7 +29,7 @@ class TestCheckUPMHeightsLess120(TestCase):
         """ Check if UPM Heights NOT more than 120% """
         ttfont = Font.get_ttfont(self.path)
         value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
-        value = value * 100 / float(ttfont.upm_heights)
+        value = value * 100 / float(ttfont.get_upm_heights())
         if value > 120:
             _ = "UPM:Height is %d%%, consider redesigning to 120%% or less"
             self.fail(_ % value)

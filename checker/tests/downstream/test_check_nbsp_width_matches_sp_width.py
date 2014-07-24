@@ -31,6 +31,7 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
 
     @tags('required')
     def test_check_nbsp_width_matches_sp_width(self):
+        """ Check NO-BREAK SPACE advanceWidth is the same as SPACE """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

@@ -54,6 +54,7 @@ class CheckCanonicalWeights(TestCase):
         return open(self.path).read()
 
     def test_check_canonical_weights(self):
+        """ Check that weights have canonical value """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

@@ -26,7 +26,9 @@ class CheckFontsMenuAgreements(TestCase):
         for font_metadata in fm.fonts:
             menufile = self.menufile(font_metadata)
             path = op.join(op.dirname(self.path), menufile)
+
             if not op.exists(path):
                 self.fail('%s does not exist' % menufile)
-            if magic.from_file("%s.menu" % self.fname) != 'TrueType font data':
+
+            if magic.from_file(path) != 'TrueType font data':
                 self.fail('%s is not actual TTF file' % menufile)

@@ -29,6 +29,7 @@ class CheckFamilyNameMatchesFontNames(TestCase):
         return open(self.path).read()
 
     def test_check_familyname_matches_fontnames(self):
+        """ Check font name is the same as family name """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
