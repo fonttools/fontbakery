@@ -20,7 +20,7 @@ class CheckFontsMenuAgreements(TestCase):
 
     @tags('required')
     def test_menu_file_agreement(self):
-        """ Menu file have font-name-style.menu format """
+        """ Check fonts have corresponding menu files """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

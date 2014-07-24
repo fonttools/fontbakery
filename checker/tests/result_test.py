@@ -16,7 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import fontforge
-import unicodedata
 import yaml
 import os
 import magic
@@ -98,46 +97,15 @@ class FontForgeSimpleTest(TestCase):
         # Uncommand the next line, then at the iPython prompt: print(self.path)
         # import ipdb; ipdb.set_trace()
 
-    def get_metadata(self):
-        medatata_path = os.path.join(os.path.dirname(self.path),
-                                     'METADATA.json')
-        metadata = yaml.load(open(medatata_path, 'r').read())
-        return metadata
-
     @tags('required')
     def test_is_fsType_not_set(self):
         """Is the OS/2 table fsType set to 0?"""
         self.assertEqual(self.font.os2_fstype, 0)
 
-    @tags('required',)
-    def test_nbsp(self):
-        """Check if 'NO-BREAK SPACE' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('NO-BREAK SPACE')) in self.font)
-
-    @tags('required',)
-    def test_space(self):
-        """Check if 'SPACE' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('SPACE')) in self.font)
-
-    def test_euro(self):
-        """Check if 'EURO SIGN' exsist in font glyphs"""
-        self.assertTrue(ord(unicodedata.lookup('EURO SIGN')) in self.font)
-
-    def test_font_weight_is_canonical(self):
-        """ Font weight property is from canonical styles list"""
-        self.assertIn(self.font.weight, valid_styles,
-                      'Font weight does not match for any valid styles')
-
     def test_font_name_canonical(self):
         """ Font name is canonical """
         self.assertTrue(any([self.font.fontname.endswith(x)
                              for x in valid_styles]))
-
-    def test_font_file_name_canonical(self):
-        """ Font name is canonical """
-        name = os.path.basename(self.path)
-        canonic_name = "%s-%s.ttf" % (self.font.familyname, self.font.weight)
-        self.assertEqual(name, canonic_name)
 
     @tags('required')
     def test_latin_file_exists(self):
@@ -151,15 +119,15 @@ class FontForgeSimpleTest(TestCase):
         self.assertTrue(magic.from_file(self.path), 'TrueType font data')
 
     @tags('required')
-    def test_em_is_1000(self):
-        """ Font em should be equal 1000 """
-        self.assertEqual(self.font.em, 1000)
-
-    @tags('required')
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
         self.assertTrue(magic.from_file(self.path, mime=True),
                         'application/x-font-ttf')
+
+    @tags('required')
+    def test_em_is_1000(self):
+        """ Font em should be equal 1000 """
+        self.assertEqual(self.font.em, 1000)
 
 
 class MetadataJSONTest(TestCase):

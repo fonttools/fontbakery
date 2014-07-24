@@ -907,3 +907,42 @@ class Test_CheckItalicAngleAgreement(TestCase):
 
             get_ttfont.return_value.italicAngle = -30
             self.failure_run(downstream.CheckItalicAngleAgreement)
+
+
+class Test_CheckGlyphExistence(TestCase):
+
+    def test_thirty_four(self):
+
+        class Font:
+
+            _cmap = {
+                160: 'nonbreakingspace',
+                32: 'space',
+                8364: 'Euro'
+            }
+
+            def retrieve_cmap_format_4(self):
+                return type('cmap', (object, ), {'cmap': self._cmap})
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font()
+
+            self.success_run(downstream.CheckGlyphExistence)
+
+            get_ttfont.return_value._cmap = {
+                160: 'nonbreakingspace',
+                32: 'space'
+            }
+            self.failure_run(downstream.CheckGlyphExistence)
+
+            get_ttfont.return_value._cmap = {
+                160: 'nonbreakingspace',
+                8364: 'Euro'
+            }
+            self.failure_run(downstream.CheckGlyphExistence)
+
+            get_ttfont.return_value._cmap = {
+                32: 'space',
+                8364: 'Euro'
+            }
+            self.failure_run(downstream.CheckGlyphExistence)

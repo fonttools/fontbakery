@@ -136,6 +136,16 @@ class Font(object):
         return self['OS/2'].usWidthClass
 
     @property
+    def OS2_fsType(self):
+        """ OS/2.fsType property value
+
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font.OS2_fsType
+        8
+        """
+        return self['OS/2'].fsType
+
+    @property
     def fullname(self):
         """ Returns fullname of fonts
 
