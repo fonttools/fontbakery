@@ -835,3 +835,25 @@ class Test_CheckGposTableHasKerningInfo(TestCase):
 
             get_ttfont.return_value = {}
             self.failure_run(downstream.CheckGposTableHasKerningInfo)
+
+
+class Test_CheckGaspTableType(TestCase):
+
+    def test_thirty_one(self):
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+
+            gasp = type('GASP', (object, ), {'gaspRange': {65535: 15}})
+            get_ttfont.return_value = {'gasp': gasp}
+            self.success_run(downstream.CheckGaspTableType)
+
+            gasp = type('GASP', (object, ), {'gaspRange': []})
+            get_ttfont.return_value = {'gasp': gasp}
+            self.failure_run(downstream.CheckGaspTableType)
+
+            gasp = type('GASP', (object, ), {'gaspRange': {65535: 14}})
+            get_ttfont.return_value = {'gasp': gasp}
+            self.failure_run(downstream.CheckGaspTableType)
+
+            get_ttfont.return_value = {}
+            self.failure_run(downstream.CheckGaspTableType)

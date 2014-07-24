@@ -143,18 +143,14 @@ class Font(object):
         >>> font.fullname
         'Monda Regular'
         """
-        windows_entry = None
-
         for entry in self.names:
             if entry.nameID != 4:
                 continue
             # macintosh platform
             if entry.platformID == 1 and entry.langID == 0:
                 return Font.bin2unistring(entry)
-            if entry.platformID == 3 and entry.langID == 0x409:
-                windows_entry = entry
-
-        return windows_entry
+            elif entry.platformID == 3 and entry.langID == 0x409:
+                return Font.bin2unistring(entry)
 
     @property
     def familyname(self):

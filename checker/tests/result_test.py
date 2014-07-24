@@ -22,8 +22,6 @@ import os
 import magic
 
 from checker.base import BakeryTestCase as TestCase, tags
-from checker.metadata import Metadata
-from cli.ttfont import Font
 from fontTools import ttLib
 
 
@@ -86,26 +84,6 @@ normal_styles = {
     'ExtraBold': 'Extra Bold',
     'Black': 'Black'
 }
-
-
-class FontToolsTest(TestCase):
-    targets = ['result']
-    tool = 'FontTools'
-    name = __name__
-    path = '.'
-
-    def setUp(self):
-        self.font = Font.get_ttfont(self.path)
-
-    def test_table_gasp_type(self):
-        """ Font table gasp should be 15 """
-        keys = self.font.ttfont.keys()
-        self.assertIn('gasp', keys, msg="GASP table not found")
-        self.assertEqual(type({}), type(self.font.ttfont['gasp'].gaspRange),
-            msg="GASP table: gaspRange method value have wrong type")
-        self.assertTrue(65535 in self.font.ttfont['gasp'].gaspRange)
-        # XXX: Needs review
-        self.assertEqual(self.font.ttfont['gasp'].gaspRange[65535], 15)
 
 
 class FontForgeSimpleTest(TestCase):
