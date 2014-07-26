@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
-import fontforge
 import yaml
 import os
 import magic
@@ -31,12 +29,9 @@ class MetadataJSONTest(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.font = fontforge.open(self.path)
         medatata_path = os.path.join(os.path.dirname(self.path),
                                      'METADATA.json')
         self.metadata = yaml.load(open(medatata_path, 'r').read())
-        self.fname = os.path.splitext(self.path)[0]
-        self.root_dir = os.path.dirname(self.path)
 
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
@@ -46,46 +41,6 @@ class MetadataJSONTest(TestCase):
         self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
         self.assertEqual(self.metadata.get('visibility'), 'External')
 
-    def test_metadata_family_values_are_all_the_same(self):
-        """ Check that METADATA family values are all the same """
-        families_names = set([x['name'] for x in self.metadata.get('fonts')])
-        self.assertEqual(len(set(families_names)), 1)
-
-    @tags('required',)
-    def test_metadata_family(self):
-        """ Font and METADATA.json have the same name """
-        self.assertEqual(self.font.familyname, self.metadata.get('name', None))
-
-    def test_metadata_font_have_regular(self):
-        """ According GWF standarts font should have Regular style. """
-        # this tests will appear in each font
-        have = False
-        for i in self.metadata['fonts']:
-            if i['fullName'].endswith('Regular'):
-                have = True
-
-        self.assertTrue(have)
-
-    @tags('required',)
-    def test_metadata_regular_is_400(self):
-        """ Usually Regular should be 400 """
-        have = False
-        for i in self.metadata['fonts']:
-            if i['fullName'].endswith('Regular') \
-                    and int(i.get('weight', 0)) == 400:
-                have = True
-
-        self.assertTrue(have)
-
-    def test_metadata_regular_is_normal(self):
-        """ Usually Regular should be normal style """
-        have = False
-        for x in self.metadata.get('fonts', None):
-            if x.get('fullName', '').endswith('Regular') \
-                    and x.get('style', '') == 'normal':
-                have = True
-        self.assertTrue(have)
-
     def test_metadata_fonts_exists(self):
         """ METADATA.json font propery should exists """
         self.assertTrue(self.metadata.get('fonts', False))
@@ -93,50 +48,6 @@ class MetadataJSONTest(TestCase):
     def test_metadata_fonts_list(self):
         """ METADATA.json font propery should be list """
         self.assertEqual(type(self.metadata.get('fonts', False)), type([]))
-
-    def test_metadata_font_name_canonical(self):
-        """ METADATA.json fonts 'name' property should be
-            same as font familyname """
-        self.assertTrue(all([x['name'] == self.font.familyname
-                             for x in self.metadata.get('fonts', None)]))
-
-    @tags('required')
-    def test_metadata_filename_matches_postScriptName(self):
-        """ METADATA.json `filename` is matched to `postScriptName`
-            property """
-        for x in self.metadata.get("fonts", None):
-            post_script_name = x.get('postScriptName', '')
-            filename = x.get('filename', '')
-            self.assertEqual(os.path.splitext(filename)[0], post_script_name)
-
-    @tags('required')
-    def test_metadata_fullname_matches_postScriptName(self):
-        """ METADATA.json `fullName` is matched to `postScriptName`
-            property """
-        for x in self.metadata.get("fonts", None):
-            post_script_name = x.get('postScriptName', '').replace('-', ' ')
-            fullname = x.get('fullName', '')
-            self.assertEqual(fullname, post_script_name)
-
-    @tags('required')
-    def test_metadata_postScriptName_matches_internal_fontname(self):
-        """ Checks that METADATA.json 'postScriptName' value matches
-            font internal 'fontname' metadata """
-        for font in self.metadata.get('fonts', []):
-            if font['filename'] != os.path.basename(self.fname):
-                continue
-            self.assertEqual(font['postScriptName'], self.font.fontname)
-
-    @tags('required')
-    def test_metadata_postScriptName_matches_font_filename(self):
-        """ Checks that METADATA.json 'postScriptName' value matches
-            font internal 'fontname' metadata """
-        for font in self.metadata.get('fonts', []):
-            font_filename = os.path.basename(self.fname)
-            if font['filename'] == font_filename:
-                continue
-            self.assertEqual(font['postScriptName'],
-                             os.path.splitext(font_filename)[0])
 
     def test_metadata_fonts_no_dupes(self):
         """ METADATA.json fonts propery only should have uniq values """
@@ -147,37 +58,6 @@ class MetadataJSONTest(TestCase):
 
         self.assertEqual(len(set(fonts.keys())),
                          len(self.metadata.get('fonts', None)))
-
-    def test_metadata_contains_current_font(self):
-        """ METADATA.json should contains testing font, under canonic name"""
-        font = None
-        current_font = "%s %s" % (self.font.familyname, self.font.weight)
-        for x in self.metadata.get('fonts', None):
-            if x.get('fullName', None) == current_font:
-                font = x
-                break
-
-        self.assertTrue(font)
-
-    def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
-        """ METADATA.json 'fullname' value matches internal 'fullname' """
-        metadata_fullname = ''
-        for font in self.metadata.get('fonts', []):
-            if font['filename'] == os.path.basename(self.path):
-                metadata_fullname = font['fullName']
-                break
-        self.assertEqual(self.font.fullname, metadata_fullname)
-
-    def test_metadata_fonts_fields_have_fontname(self):
-        """ METADATA.json fonts items fields "name", "postScriptName",
-            "fullName", "filename" contains font name right format """
-        for x in self.metadata.get('fonts', None):
-            self.assertIn(self.font.familyname, x.get('name', ''))
-            self.assertIn(self.font.familyname, x.get('fullName', ''))
-            self.assertIn("".join(str(self.font.familyname).split()),
-                          x.get('filename', ''))
-            self.assertIn("".join(str(self.font.familyname).split()),
-                          x.get('postScriptName', ''))
 
     def test_metadata_have_subset(self):
         """ METADATA.json shoyld have 'subsets' property """

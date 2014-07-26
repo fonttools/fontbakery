@@ -131,3 +131,38 @@ class CheckFontWeightSameAsInMetadata(TestCase):
             if font.OS2_usWeightClass != font_metadata.weight:
                 msg = 'METADATA.JSON has weight %s but in TTF it is %s'
                 self.fail(msg % (font_metadata.weight, font.OS2_usWeightClass))
+
+
+class CheckFullNameEqualCanonicalName(TestCase):
+
+    path = '.'
+    targets = 'metadata'
+    name = __name__
+    tool = 'lint'
+
+    def read_metadata_contents(self):
+        return open(self.path).read()
+
+    def test_metadata_contains_current_font(self):
+        """ METADATA.json should contains testing font, under canonic name"""
+
+        contents = self.read_metadata_contents()
+        fm = Metadata.get_family_metadata(contents)
+
+        for font_metadata in fm.fonts:
+            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+
+            _weights = []
+            for value, intvalue in weights.items():
+                if intvalue == font.OS2_usWeightClass:
+                    _weights.append(value)
+
+            for w in _weights:
+                current_font = "%s %s" % (font.familyname, font.weight)
+                if font_metadata.full_name != current_font:
+                    is_canonical = True
+
+            if not is_canonical:
+                v = map(lambda x: font.familyname + ' ' + x, _weights)
+                msg = 'Canonical name in font expected: [%s] but %s'
+                self.fail(msg % (v, font_metadata.full_name))

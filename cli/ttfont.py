@@ -166,12 +166,27 @@ class Font(object):
     def familyname(self):
         """ Returns fullname of fonts
 
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
         >>> font.familyname
-        'Monda-Regular'
+        'Font'
         """
-        windows_entry = None
+        for entry in self.names:
+            if entry.nameID != 1:
+                continue
+            # macintosh platform
+            if entry.platformID == 1 and entry.langID == 0:
+                return Font.bin2unistring(entry)
+            if entry.platformID == 3 and entry.langID == 0x409:
+                return Font.bin2unistring(entry)
 
+    @property
+    def post_script_name(self):
+        """ Returns fullname of fonts
+
+        >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
+        >>> font.post_script_name
+        'Font-Bold'
+        """
         for entry in self.names:
             if entry.nameID != 6:
                 continue
@@ -179,9 +194,7 @@ class Font(object):
             if entry.platformID == 1 and entry.langID == 0:
                 return Font.bin2unistring(entry)
             if entry.platformID == 3 and entry.langID == 0x409:
-                windows_entry = entry
-
-        return windows_entry
+                return Font.bin2unistring(entry)
 
     def retrieve_cmap_format_4(self):
         """ Returns cmap table format 4
