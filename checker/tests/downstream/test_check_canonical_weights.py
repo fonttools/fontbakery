@@ -158,7 +158,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
                     _weights.append(value)
 
             for w in _weights:
-                current_font = "%s %s" % (font.familyname, font.weight)
+                current_font = "%s %s" % (font.familyname, w)
                 if font_metadata.full_name != current_font:
                     is_canonical = True
 

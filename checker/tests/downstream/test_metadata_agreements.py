@@ -51,7 +51,7 @@ class CheckMetadataAgreements(TestCase):
         """ Usually Regular should be 400 """
         have = False
         for i in self.metadata.fonts:
-            if i.fullname.endswith('Regular') and i.weight == 400:
+            if i.full_name.endswith('Regular') and i.weight == 400:
                 have = True
 
         self.assertTrue(have)
