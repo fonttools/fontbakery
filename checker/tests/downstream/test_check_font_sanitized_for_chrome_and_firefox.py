@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from checker.base import BakeryTestCase as TestCase, tags
 from cli.system import prun
-from flask import current_app
+from bakery.app import app
 
 
 class OTSTest(TestCase):
@@ -29,7 +29,7 @@ class OTSTest(TestCase):
     @tags('required',)
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome """
-        stdout = prun('{0} {1}'.format(current_app.config['OTS_BINARY_PATH'],
+        stdout = prun('{0} {1}'.format(app.config['OTS_BINARY_PATH'],
                                        self.path),
-                      current_app.config['ROOT'])
+                      app.config['ROOT'])
         self.assertEqual('', stdout.replace('\n', '. '))

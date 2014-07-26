@@ -28,7 +28,9 @@ class CheckFontAgreements(TestCase):
     @tags('required')
     def test_latin_file_exists(self):
         """ Check latin subset font file exists """
-        self.assertTrue(os.path.exists("%s.latin" % self.fname))
+        path = os.path.dirname(self.path)
+        path = os.path.join(path, self.path[:-3] + "latin")
+        self.assertTrue(os.path.exists(path))
 
     @tags('required')
     def test_file_is_font(self):

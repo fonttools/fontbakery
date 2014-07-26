@@ -464,7 +464,7 @@ class Test_CheckUPMHeightsLess120(TestCase):
 
             upm_height = 1024
 
-            def get_upm_heights(self):
+            def get_upm_height(self):
                 return self.upm_height
 
             ascents = FakeAscents()
