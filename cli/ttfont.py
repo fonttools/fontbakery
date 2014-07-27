@@ -67,15 +67,18 @@ class Font(object):
         >>> font.get_bounding()
         (-384, 1178)
         """
+        if self.ttfont.sfntVersion == 'OTTO':
+            return self['head'].yMin, self['head'].yMax
+
         ymax = 0
-        for g in self.ttfont['glyf'].glyphs:
-            char = self.ttfont['glyf'][g]
+        for g in self['glyf'].glyphs:
+            char = self['glyf'][g]
             if hasattr(char, 'yMax') and ymax < char.yMax:
                 ymax = char.yMax
 
         ymin = 0
-        for g in self.ttfont['glyf'].glyphs:
-            char = self.ttfont['glyf'][g]
+        for g in self['glyf'].glyphs:
+            char = self['glyf'][g]
             if hasattr(char, 'yMin') and ymin > char.yMin:
                 ymin = char.yMin
 
@@ -304,6 +307,8 @@ class Font(object):
     def get_highest_and_lowest(self):
         high = []
         low = []
+        if self.ttfont.sfntVersion == 'OTTO':
+            return high, low
         maxval = self.ascents.get_max()
         minval = self.descents.get_min()
         for glyph, params in self.ttfont['glyf'].glyphs.items():
