@@ -168,7 +168,8 @@ Make supervisor autostarted on server booting and start it, if server will be re
 
 
 ```
-./fontbakery.py /path/to/project
+git clone https://github.com/user/repo.git
+./fontbakery.py /path/to/repo
 ```
 
 This will create in current directory `build` with bakery font directory structure and archive `build.zip` with contents of that.
