@@ -339,7 +339,8 @@ def gen_segs(glyph):
 def generate(fn):
 	f = ttLib.TTFont(fn)
 	glyf = f['glyf']
-	for name, g in glyf.glyphs.iteritems():
+	for name in glyf.keys():
+		g = glyf[name]
 		print 'generating', name
 		gen_segs(g)
 
@@ -397,7 +398,8 @@ def repack_glyph(glyph):
 def repack(fn, newfn):
 	f = ttLib.TTFont(fn)
 	glyf = f['glyf']
-	for name, g in glyf.glyphs.iteritems():
+	for name in glyf.keys():
+		g = glyf[name]
 		if not g.isComposite():
 			repack_glyph(g)
 	if newfn:
