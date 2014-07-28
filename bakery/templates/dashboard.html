@@ -118,6 +118,7 @@
 
 {% block body %}
 
+{% if tasks %}
 <h3>Recent tasks</h3>
 <table class="table">
   <thead>
@@ -142,9 +143,15 @@
   </tr>
   {% endfor %}
   </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2"><a href="{{ url_for('frontend.queue_tasks') }}">View queue history</a></td>
+    </tr>
+  </tfoot>
 </table>
+{% endif %}
 
-
+{% if builds %}
 <h3>Recent builds</h3>
 <table class="table">
   <thead>
@@ -174,8 +181,13 @@
   </tr>
   {% endfor %}
   </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2"><a href="{{ url_for('frontend.queue_builds') }}">View queue history</a></td>
+    </tr>
+  </tfoot>
 </table>
-
+{% endif %}
 
 {% if not repos %}
 <div class="alert alert-info alert-dismissable">

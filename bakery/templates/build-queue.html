@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% set page_title = _('View tasks queue') %}
+
+{% block body %}
+<h3>Build Queue</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Title</th>
+      <th>Revision</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task in builds %}
+  <tr{% if task.is_done and not task.failed %} class="text-warning"{% elif task.is_done and task.failed %} class="text-danger"{% endif %}>
+    <td>{{ task.id }}</td>
+    <td>{{ task.project.title }}</td>
+    <td>{{ task.revision }}</td>
+    <td>{{ task.updated }}</td>
+    <td>
+    {% if task.is_done %}
+      {% if not task.failed %}<i class="glyphicon glyphicon-ok" />
+      {% else %}<i class="glyphicon glyphicon-remove" />{% endif %}
+    {% else %}
+      <i class="glyphicon glyphicon-refresh" />
+    {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

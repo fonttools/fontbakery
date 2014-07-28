@@ -44,6 +44,18 @@ def unique(ar, key):
     return ar2
 
 
+@frontend.route('/queue/tasks')
+def queue_tasks():
+    tasks = Task.query.order_by(Task.id.desc())
+    return render_template('task-queue.html', tasks=tasks)
+
+
+@frontend.route('/queue/builds')
+def queue_builds():
+    builds = ProjectBuild.query.order_by(ProjectBuild.created.desc()).limit(10)
+    return render_template('build-queue.html', builds=builds)
+
+
 @frontend.route('/')
 def splash():
     # Splash page, if user is logged in then show dashboard
