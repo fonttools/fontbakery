@@ -84,6 +84,7 @@ class Bakery(object):
         self.builds_dir = op.join(root, builds_dir)
 
         self.rootpath = root
+        self.taskset = BakeryTaskSet()
 
     def init_logging(self, logfile):
         self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')

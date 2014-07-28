@@ -22,6 +22,11 @@ class Checkout(object):
 
         if self.bakery.forcerun:
             return
-        repo.git.checkout(revision)
+
+        try:
+            repo.git.checkout(revision)
+        except:
+            self.bakery.logging_task_done(task, failed=True)
+            raise
 
         self.bakery.logging_task_done(task)

@@ -18,6 +18,7 @@ class Rename(object):
 
         rename_executed = False
         newfiles = []
+        task = None
         for i, filepath in enumerate(pipedata['bin_files']):
             path = op.join(self.builddir, filepath)
 
@@ -28,13 +29,21 @@ class Rename(object):
                 if op.basename(path) != psname:
                     if not rename_executed:
                         msg = 'Rename built files with PS Naming'
-                        self.bakery.logging_task(msg)
+                        task = self.bakery.logging_task(msg)
                         rename_executed = True
-                    shutil.move(path, op.join(op.dirname(path), psname),
-                                log=self.bakery.log)
+                    try:
+                        shutil.move(path, op.join(op.dirname(path), psname),
+                                    log=self.bakery.log)
+                    except:
+                        if task:
+                            self.bakery.logging_task_done(task, failed=True)
+                        raise
                 newfiles.append(filepath.replace(op.basename(filepath), psname))
             else:
                 newfiles.append(filepath)
+
+        if task:
+            self.bakery.logging_task_done(task)
         pipedata['bin_files'] = newfiles
         return pipedata
 

@@ -36,13 +36,18 @@ class AutoFix(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        self.bakery.logging_task('Applying autofixes')
+        task = self.bakery.logging_task('Applying autofixes')
 
         if self.bakery.forcerun:
             return
 
         _out_yaml = op.join(self.builddir, '.tests.yaml')
-        autofix(_out_yaml, self.builddir, log=self.bakery.log)
+        try:
+            autofix(_out_yaml, self.builddir, log=self.bakery.log)
+        except:
+            self.bakery.logging_task_done(task, failed=True)
+            raise
+        self.bakery.logging_task_done(task)
 
 
 PYPATH = 'python'

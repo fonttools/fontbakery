@@ -11,7 +11,7 @@ class Metadata(object):
         self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        self.bakery.logging_task('Generate METADATA.json (genmetadata.py)')
+        task = self.bakery.logging_task('Generate METADATA.json (genmetadata.py)')
         if self.bakery.forcerun:
             return
         try:
@@ -19,8 +19,10 @@ class Metadata(object):
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint
             genmetadata.run(self.builddir)
+            self.bakery.logging_task_done(task)
         except Exception, e:
             self.bakery.logging_err(e.message)
+            self.bakery.logging_task_done(task, failed=True)
             raise
 
     def ansiprint(self, message, color):

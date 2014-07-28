@@ -22,7 +22,7 @@ class TTFAutoHint(object):
         if not params:
             return pipedata
 
-        self.bakery.logging_task('Autohint TTFs (ttfautohint)')
+        task = self.bakery.logging_task('Autohint TTFs (ttfautohint)')
 
         if self.bakery.forcerun:
             return
@@ -30,6 +30,7 @@ class TTFAutoHint(object):
         if 'autohinting_sizes' not in pipedata:
             pipedata['autohinting_sizes'] = []
 
+        is_failed = False
         for filepath in pipedata['bin_files']:
             filepath = op.join(self.project_root,
                                self.builddir, filepath)
@@ -41,6 +42,8 @@ class TTFAutoHint(object):
                 run(cmd, cwd=self.builddir, log=self.bakery.log)
             except:
                 self.bakery.logging_err('TTFAutoHint is not available')
+                self.bakery.logging_task_done(task, failed=True)
+                is_failed = True
                 break
             pipedata['autohinting_sizes'].append({
                 'fontname': op.basename(filepath),
@@ -54,4 +57,6 @@ class TTFAutoHint(object):
             shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
                            log=self.bakery.log)
 
+        if not is_failed:
+            self.bakery.logging_task_done(task)
         return pipedata

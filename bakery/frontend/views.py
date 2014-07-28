@@ -63,7 +63,7 @@ def splash():
         datadir_sizes = [{"key": item[0], "value": item[1]}
                          for item in datadir_sizes]
 
-        tasks = Task.query.order_by(Task.updated.desc()).limit(20)
+        tasks = Task.query.order_by(Task.id.desc()).limit(20)
         builds = ProjectBuild.query.order_by(ProjectBuild.created.desc()).limit(10)
 
         return render_template('dashboard.html', repos=projects, cache=cache,
