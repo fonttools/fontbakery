@@ -11,7 +11,7 @@ class Optimize(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def execute(self, pipedata, prefix=""):
+    def execute(self, pipedata):
         self.bakery.logging_task('Optimizing TTF')
         if self.bakery.forcerun:
             return

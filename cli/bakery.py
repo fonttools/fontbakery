@@ -66,13 +66,13 @@ class Bakery(object):
         '/home/user/out'
     """
 
+    log = stdoutlog
+
     def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
         self.build_dir = op.join(root, builds_dir, build_dir)
 
         self.project_root = op.join(root, project_dir)
         self.builds_dir = op.join(root, builds_dir)
-
-        self.log = stdoutlog
 
         self.rootpath = root
 
@@ -191,6 +191,9 @@ class Bakery(object):
         prefix = "### (%s of %s) " % (self._counter, self.total_tasks)
         self.log.write(message.strip() + '\n', prefix=prefix)
         self.incr_task_counter()
+
+    def logging_task_done(self, task):
+        pass
 
     def logging_cmd(self, message):
         self.log.write(message.strip() + '\n', prefix="$ ")

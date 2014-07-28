@@ -12,7 +12,7 @@ class Rename(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def execute(self, pipedata, prefix=""):
+    def execute(self, pipedata):
         if self.bakery.forcerun:
             return
 

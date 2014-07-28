@@ -44,7 +44,7 @@ class PyFtSubset(object):
                     op.join(self.builddir, name)[:-4] + '.' + subsetname,
                     log=self.bakery.log)
 
-    def execute(self, pipedata, prefix=""):
+    def execute(self, pipedata):
         self.bakery.logging_task('Subset TTFs (pyftsubset)')
         if self.bakery.forcerun:
             return

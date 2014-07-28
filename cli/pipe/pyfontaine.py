@@ -12,7 +12,7 @@ class PyFontaine(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def execute(self, pipedata, prefix=""):
+    def execute(self, pipedata):
         self.bakery.logging_task('pyFontaine TTFs')
         if self.bakery.forcerun:
             return

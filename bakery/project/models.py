@@ -386,6 +386,19 @@ class Project(db.Model):
         return build.order_by("id desc").first()
 
 
+class ProjectTask(db.Model):
+
+    __tablename__ = 'project_build_tasks'
+    __table_args__ = {'sqlite_autoincrement': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(128))
+    updated = db.Column(db.DateTime, default=datetime.now,
+                        onupdate=db.func.now())
+    failed = db.Column(db.Boolean, default=False)
+    done = db.Column(db.Boolean, default=False)
+
+
 class ProjectBuild(db.Model):
     __tablename__ = 'project_build'
     __table_args__ = {'sqlite_autoincrement': True}

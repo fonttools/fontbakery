@@ -16,9 +16,12 @@ class Checkout(object):
             msg = 'Checkout commit %s\n' % headcommit
         else:
             msg = 'Checkout most recent commit (%s)' % headcommit
-        self.bakery.logging_task(msg)
+
+        task = self.bakery.logging_task(msg)
         self.bakery.logging_cmd('git checkout %s' % revision)
 
         if self.bakery.forcerun:
             return
         repo.git.checkout(revision)
+
+        self.bakery.logging_task_done(task)

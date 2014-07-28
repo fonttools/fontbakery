@@ -41,11 +41,11 @@ class FontLint(object):
 
         result = {}
         for font in pipedata['bin_files']:
-            self.bakery.logging_raw('# Test %s\n' % font)
+            self.bakery.logging_raw('### Test %s\n' % font)
             result[font] = run_set(op.join(self.builddir, font), 'result',
                                    log=self.bakery.log)
 
-        self.bakery.logging_raw('# Test METADATA.json\n')
+        self.bakery.logging_raw('### Test METADATA.json\n')
         result['METADATA.json'] = self.run_metadata_tests()
 
         if not result:
