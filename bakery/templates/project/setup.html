@@ -50,7 +50,7 @@
       <label class="control-label col-sm-2" for="process_files"><strong>{{ _("Process Files:") }}</strong></label>
       <div class="col-sm-8">
       <p class="form-control-static">{{ _("Found source files, please select files that should be processed. Data is actual for current revision '%(revision)s'", revision=project.current_revision()) }}</p>
-      <select multiple class="form-control" name="process_files" size={{ config['local']['ufo_dirs']|length + config['local']['ttx_files']|length}}>
+      <select multiple class="form-control" name="process_files" size={{ config['local']['ufo_dirs']|length + config['local']['ttx_files']|length + config['local']['bin_files']|length + config['local']['sfd_files']|length }}>
         {% with %}
         {% set passed = [] %} {# project.passed_tests_files() #}
         {% for i in config['local']['ufo_dirs'] + config['local']['ttx_files'] + config['local']['bin_files'] + config['local'].get('sfd_files', []) %}
