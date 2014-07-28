@@ -47,8 +47,10 @@ class Copy(Pipe):
 
         srcpath = op.join(self.project_root, rootpath,
                           '%s.*.ttx' % fontname[:-4])
+
+        l = len(self.project_root)
         for path in glob.glob(srcpath):
-            splitted_ttx_paths.append(path)
+            splitted_ttx_paths.append(path[l:].strip('/'))
         return splitted_ttx_paths
 
     def copy_to_builddir(self, process_files):
@@ -170,5 +172,3 @@ class CopyFontLog(Pipe):
 class CopyMetadata(Pipe):
 
     filename = 'METADATA.json'
-
-
