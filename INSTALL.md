@@ -162,3 +162,13 @@ Make supervisor autostarted on server booting and start it, if server will be re
 ```
     service supervisor start
 ```
+
+
+### Using command line tool
+
+
+```
+./fontbakery.py /path/to/project
+```
+
+This will create in current directory `build` with bakery font directory structure and archive `build.zip` with contents of that.
