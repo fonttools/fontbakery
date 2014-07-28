@@ -317,6 +317,32 @@ def git_checkout(path, revision, log=None):
     repo.git.checkout(revision)
 
 
+class DBTaskSet(object):
+
+    def __init__(self, project_id, build_id, revision):
+        self.project_id = project_id
+        self.build_id = build_id
+        self.revision = revision
+
+    def create_task(self, message):
+        from bakery.app import db
+        from bakery.project.models import Task
+        task = Task()
+        task.description = message
+        task.build_id = self.build_id
+        task.revision = self.revision
+        task.project_id = self.project_id
+        db.session.add(task)
+        db.session.commit()
+        return task
+
+    def close_task(self, task, failed=False):
+        from bakery.app import db
+        task.done = True
+        task.failed = failed
+        db.session.commit()
+
+
 @job
 def process_project(project, build, force_sync=False):
     """ Runs bake the project.
@@ -351,6 +377,8 @@ def process_project(project, build, force_sync=False):
 
         logfile = '%(build)s.%(revision)s.process.log' % param
         b.init_logging(logfile)
+
+        b.init_taskset(DBTaskSet(project.id, build.id, build.revision))
 
         try:
             config = b.run()

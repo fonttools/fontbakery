@@ -41,7 +41,7 @@ class Build(object):
         return result
 
     def execute(self, pipedata, prefix=""):
-        self.bakery.logging_task('Convert sources to TTF')
+        task = self.bakery.logging_task('Convert sources to TTF')
         if self.bakery.forcerun:
             return
 
@@ -61,25 +61,30 @@ class Build(object):
             elif p.endswith('.otf'):
                 bin.append(p)
 
-        if ttxfiles:
-            self.execute_ttx(ttxfiles)
-        if ufo:
-            self.execute_ufo_sfd(ufo)
-        if sfd:
-            self.execute_ufo_sfd(sfd)
-        if bin:
-            self.execute_bin(bin)
+        try:
+            if ttxfiles:
+                self.execute_ttx(ttxfiles)
+            if ufo:
+                self.execute_ufo_sfd(ufo)
+            if sfd:
+                self.execute_ufo_sfd(sfd)
+            if bin:
+                self.execute_bin(bin)
 
-        binfiles = self.movebin_to_builddir(ufo + ttxfiles + sfd + bin)
+            binfiles = self.movebin_to_builddir(ufo + ttxfiles + sfd + bin)
 
-        SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
-        command = ' '.join(map(lambda x: op.join(self.builddir, x), binfiles))
-        prun('python %s %s' % (SCRIPTPATH, command),
-             cwd=op.abspath(op.join(op.dirname(__file__), '..', '..')),
-             log=self.bakery.log)
+            SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
+            command = ' '.join(map(lambda x: op.join(self.builddir, x), binfiles))
+            prun('python %s %s' % (SCRIPTPATH, command),
+                 cwd=op.abspath(op.join(op.dirname(__file__), '..', '..')),
+                 log=self.bakery.log)
 
-        pipedata['bin_files'] = binfiles
+            pipedata['bin_files'] = binfiles
+        except:
+            self.bakery.logging_task_done(task, failed=True)
+            raise
 
+        self.bakery.logging_task_done(task)
         return pipedata
 
     def execute_ttx(self, files):

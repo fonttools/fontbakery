@@ -27,6 +27,15 @@ from cli import pipe
 from cli.utils import RedisFd
 
 
+class BakeryTaskSet(object):
+
+    def create_task(self, message):
+        pass
+
+    def close_task(self, task, failed=False):
+        pass
+
+
 BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'defaults.yaml')
 
 
@@ -78,6 +87,16 @@ class Bakery(object):
 
     def init_logging(self, logfile):
         self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')
+
+    def init_taskset(self, taskset):
+        """ Defines object to use TaskSet interface. Default: BakeryTaskSet
+
+        TaskSet must have 2 implemented functions
+
+        - create_task(): Task
+        - close_task(task: Task, status: Boolean)
+        """
+        self.taskset = taskset
 
     def load_config(self, config):
         """ Loading settings from yaml bake configuration. """
@@ -192,8 +211,10 @@ class Bakery(object):
         self.log.write(message.strip() + '\n', prefix=prefix)
         self.incr_task_counter()
 
-    def logging_task_done(self, task):
-        pass
+        return self.taskset.create_task(prefix + message)
+
+    def logging_task_done(self, task, failed=False):
+        self.taskset.close_task(task, failed=failed)
 
     def logging_cmd(self, message):
         self.log.write(message.strip() + '\n', prefix="$ ")

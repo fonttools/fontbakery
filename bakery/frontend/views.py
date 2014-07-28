@@ -19,7 +19,7 @@ from flask import (Blueprint, render_template, g, request,
                    current_app, send_from_directory, redirect)
 
 from bakery.app import app, pages
-from bakery.project.models import Project
+from bakery.project.models import Project, Task, ProjectBuild
 from bakery.settings.models import FontStats, ProjectCache
 from bakery.utils import get_directory_sizes
 
@@ -62,8 +62,13 @@ def splash():
         datadir_sizes = get_directory_sizes(app.config['DATA_ROOT'])
         datadir_sizes = [{"key": item[0], "value": item[1]}
                          for item in datadir_sizes]
+
+        tasks = Task.query.order_by(Task.updated.desc()).limit(20)
+        builds = ProjectBuild.query.order_by(ProjectBuild.created.desc()).limit(10)
+
         return render_template('dashboard.html', repos=projects, cache=cache,
-                               datadir_sizes=datadir_sizes)
+                               datadir_sizes=datadir_sizes, tasks=tasks,
+                               builds=builds)
 
 
 @frontend.route('/docs/', defaults={'path': 'index'})
