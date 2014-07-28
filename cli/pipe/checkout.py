@@ -1,21 +1,24 @@
 from git import Repo
-from cli.system import stdoutlog
 
 
 class Checkout(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.project_root = project_root
-        self.builddir = builddir
-        self.stdout_pipe = stdout_pipe
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.bakery = bakery
 
     def execute(self, pipedata, prefix=''):
-        repo = Repo(self.project_root)
         revision = pipedata.get('commit') or 'master'
+
+        repo = Repo(self.project_root)
         headcommit = repo.git.rev_parse('HEAD', short=True)
         if revision != 'master':
             msg = 'Checkout commit %s\n' % headcommit
         else:
             msg = 'Checkout most recent commit (%s)' % headcommit
-        self.stdout_pipe.write(msg, prefix='### %s ' % prefix)
+        self.bakery.logging_task(msg)
+        self.bakery.logging_cmd('git checkout %s' % revision)
+
+        if self.bakery.forcerun:
+            return
         repo.git.checkout(revision)

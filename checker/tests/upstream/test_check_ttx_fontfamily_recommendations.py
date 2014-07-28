@@ -20,6 +20,9 @@ from checker.base import BakeryTestCase as TestCase
 
 
 def bin2unistring(record):
+    if not record:
+        return ''
+
     if b'\000' in record.string:
         string = record.string.decode('utf-16-be')
         return string.encode('utf-8')

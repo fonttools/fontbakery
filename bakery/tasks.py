@@ -22,11 +22,11 @@ import os.path as op
 import redis
 import yaml
 
-from checker import run_set, parse_test_results
-from cli.system import os, prun
 from flask.ext.rq import job
 
-from .utils import RedisFd
+from checker import run_set, parse_test_results
+from cli.system import os, prun
+from cli.utils import RedisFd
 
 
 @job
@@ -264,8 +264,8 @@ def upstream_revision_tests(project, revision, log=None):
     _out_folder = joinroot('%(login)s/%(id)s.out/utests/' % param)
     _out_yaml = op.join(_out_folder, '%(revision)s.yaml' % param)
 
-    # if op.exists(_out_yaml):
-    #     return yaml.safe_load(open(_out_yaml, 'r'))
+    if op.exists(_out_yaml):
+        return yaml.safe_load(open(_out_yaml, 'r'))
 
     if not op.exists(_out_folder):
         os.makedirs(_out_folder)
@@ -328,75 +328,50 @@ def process_project(project, build, force_sync=False):
     """
     from bakery.app import app
     from cli.bakery import Bakery
-    config = project.config  # lazy loading configuration file
 
     if force_sync:
         project_git_sync(project)
 
     param = {'login': project.login, 'id': project.id,
              'revision': build.revision, 'build': build.id}
-    _out_log = op.join(app.config['DATA_ROOT'],
-                       ('%(login)s/%(id)s.out/'
-                        '%(build)s.%(revision)s.process.log') % param)
 
-    _user = joinroot('%(login)s/' % param)
-
-    def hide_abspath(content):
-        return content.replace(_user, '')
-
-    log = RedisFd(_out_log, 'w', write_pipeline=[hide_abspath])
+    project_dir = '%(id)s.in' % param
+    builds_dir = '%(id)s.out' % param
+    build_dir = '%(build)s.%(revision)s' % param
 
     # setup is set after 'bake' button is first pressed
-
-    if project.config['local'].get('setup', None):
+    if project.config['local'].get('setup'):
 
         # this code change upstream repository
-        param = {'login': project.login, 'id': project.id,
-                 'revision': build.revision, 'build': build.id}
-        builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
-        config = os.path.join(app.config['DATA_ROOT'],
-                              '%(login)s/%(id)s.in/.bakery.yaml' % project)
-        project_root = os.path.join(app.config['DATA_ROOT'],
-                                    '%(login)s/%(id)s.in' % project)
-        b = Bakery(config, project_root, builddir=builddir, stdout_pipe=log)
+        root = joinroot('%(login)s' % param)
+        b = Bakery(root, project_dir, builds_dir, build_dir)
+
+        config = os.path.join(root, project_dir, '.bakery.yaml')
+        b.load_config(config)
+
+        logfile = '%(build)s.%(revision)s.process.log' % param
+        b.init_logging(logfile)
+
         try:
-            log.write('Bake Begins!\n', prefix='### ')
-            b.run()
+            config = b.run()
 
-            log.write('ZIP result for download\n', prefix='### ')
-            archive_name = '%(build)s.%(revision)s' % param
-            archive_root = joinroot('%(login)s/%(id)s.out' % param)
+            if 'zip' in config:
+                # zip out folder with revision
+                url = app.config['DATA_URL']
+                url += '%(login)s/%(id)s.out' % param
+                _ = 'Link to archive [%(name)s.zip](%(url)s/%(name)s)\n'
+                _ = _ % {'name': config['zip'], 'url': url}
+                b.log.write(_, prefix="### ")
 
-            log.write('$ zip -r {0}.zip {0}'.format(archive_name))
-
-            import zipfile
-            zipf = zipfile.ZipFile(op.join(archive_root, archive_name + '.zip'), 'w')
-            for root, dirs, files in os.walk(op.join(archive_root, archive_name)):
-                root = root.replace(op.join(archive_root, archive_name), '').lstrip('/')
-                for file in files:
-                    arcpath = op.join(archive_name, root, file)
-                    log.write('add %s\n' % arcpath)
-                    zipf.write(op.join(archive_root, archive_name, root, file), arcpath)
-            zipf.close()
-
-            # zip out folder with revision
-            url = app.config['DATA_URL']
-            url += '%(login)s/%(id)s.out' % param
-            _ = 'Link to archive [%s.zip](%s/%s.zip)\n' % (archive_name, url, archive_name)
-            log.write(_, prefix="### ")
+            b.log.write(('Bake Succeeded! Now see '
+                         '[Build History](/project/%s/build)\n') % project.id,
+                        prefix='### ')
         except Exception:
-            log.write('ERROR: BUILD FAILED\n', prefix="### ")
             build.failed = True
-            for line in b.errors_in_footer:
-                log.write(line + '\n')
             raise
         finally:
             # save that project is done
             set_done(build)
-
-        log.write('Bake Succeeded! Now see [Build History](/project/%s/build)\n' % project.id, prefix='### ')
-
-    log.close()
 
 
 @job

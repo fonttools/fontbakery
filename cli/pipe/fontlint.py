@@ -3,15 +3,14 @@ import yaml
 
 from checker import run_set
 from checker.base import BakeryTestCase
-from cli.system import stdoutlog
 
 
 class FontLint(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.project_root = project_root
-        self.builddir = builddir
-        self.stdout_pipe = stdout_pipe
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def read_lint_testsresult(self):
         try:
@@ -28,10 +27,13 @@ class FontLint(object):
 
     def run_metadata_tests(self):
         path = op.join(self.builddir, 'METADATA.json')
-        return run_set(path, 'metadata', log=self.stdout_pipe)
+        return run_set(path, 'metadata', log=self.bakery.log)
 
     def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Run tests for baked files\n', prefix='### %s ' % prefix)
+        self.bakery.logging_task('Run tests for baked files')
+        if self.bakery.forcerun:
+            return
+
         _out_yaml = op.join(self.builddir, '.tests.yaml')
 
         if op.exists(_out_yaml):
@@ -39,11 +41,11 @@ class FontLint(object):
 
         result = {}
         for font in pipedata['bin_files']:
-            self.stdout_pipe.write('Test %s' % font, prefix="### ")
+            self.bakery.logging_raw('# Test %s\n' % font)
             result[font] = run_set(op.join(self.builddir, font), 'result',
-                                   log=self.stdout_pipe)
+                                   log=self.bakery.log)
 
-        self.stdout_pipe.write('Test METADATA.json', prefix="### ")
+        self.bakery.logging_raw('# Test METADATA.json\n')
         result['METADATA.json'] = self.run_metadata_tests()
 
         if not result:

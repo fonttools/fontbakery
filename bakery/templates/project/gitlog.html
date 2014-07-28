@@ -15,7 +15,7 @@
 <p>{{ _("Select revision and press its hashtag to build. Only latest 200 revisions") }}</p>
 
 
-<form action="{{ url_for('project.diff', project_id=project.id) }}" method="GET">
+<form action="{{ url_for('project.diff', username=project.login, project_id=project.id) }}" method="GET">
 <table class="table table-bordered table-condensed">
   <thead>
     <tr>

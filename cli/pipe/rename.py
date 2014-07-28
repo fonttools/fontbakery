@@ -1,18 +1,21 @@
 import os.path as op
 import re
 
-from cli.system import stdoutlog, shutil
+from cli.system import shutil
 from fontTools import ttLib
 
 
 class Rename(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.project_root = project_root
-        self.builddir = builddir
-        self.stdout_pipe = stdout_pipe
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
+        if self.bakery.forcerun:
+            return
+
         rename_executed = False
         newfiles = []
         for i, filepath in enumerate(pipedata['bin_files']):
@@ -24,11 +27,11 @@ class Rename(object):
             if psname:
                 if op.basename(path) != psname:
                     if not rename_executed:
-                        self.stdout_pipe.write('Rename built files with PS Naming',
-                                               prefix='### %s ' % prefix)
+                        msg = 'Rename built files with PS Naming'
+                        self.bakery.logging_task(msg)
                         rename_executed = True
                     shutil.move(path, op.join(op.dirname(path), psname),
-                                log=self.stdout_pipe)
+                                log=self.bakery.log)
                 newfiles.append(filepath.replace(op.basename(filepath), psname))
             else:
                 newfiles.append(filepath)

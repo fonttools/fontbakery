@@ -189,7 +189,7 @@ def pull(user, project_id):
 
     p.sync()
 
-    flash(_("Pulling latest version from upstream"))
+    flash(_("Pull latest version from upstream"))
     return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 
 
@@ -198,9 +198,8 @@ def pull(user, project_id):
 
 @project.route('/<int:project_id>/queue')
 @login_required
-def queue(user, project_id):
-    p = Project.query.filter_by(login=g.user.login, id=project_id)
-    p = p.first_or_404()
+@project_required
+def queue(user, p):
     param = {'login': p.login, 'id': p.id}
     log_file = "%(login)s/%(id)s.out/upstream.log" % param
     return render_template('project/queue.html', username=user.login, project=p, log_file=log_file)

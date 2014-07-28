@@ -3,7 +3,7 @@ import os
 import os.path as op
 import shutil
 
-from cli.system import stdoutlog, shutil as shellutil
+from cli.system import shutil as shellutil
 
 
 def copy_single_file(src, dest, log):
@@ -15,15 +15,19 @@ def copy_single_file(src, dest, log):
 
 class Pipe(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.stdout_pipe = stdout_pipe
-        self.project_root = project_root
-        self.builddir = builddir
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        if copy_single_file(op.join(self.project_root, self.filename),
-                            self.builddir, self.stdout_pipe):
-            self.stdout_pipe.write('Copy %s' % self.filename, prefix='### %s ' % prefix)
+
+        if op.exists(op.join(self.project_root, self.filename)):
+            self.bakery.logging_task('Copy %s' % self.filename)
+            if self.bakery.forcerun:
+                return pipedata
+            copy_single_file(op.join(self.project_root, self.filename),
+                             self.builddir, self.bakery.log)
 
         return pipedata
 
@@ -34,7 +38,10 @@ class Copy(Pipe):
         rootpath = op.dirname(fontpath)
         fontname = op.basename(fontpath)
         splitted_ttx_paths = []
-        for path in glob.glob(op.join(self.project_root, rootpath, '%s.*.ttx' % fontname[:-4])):
+
+        srcpath = op.join(self.project_root, rootpath,
+                          '%s.*.ttx' % fontname[:-4])
+        for path in glob.glob(srcpath):
             splitted_ttx_paths.append(op.join(rootpath, path))
         return splitted_ttx_paths
 
@@ -44,7 +51,7 @@ class Copy(Pipe):
             os.makedirs(build_source_dir)
 
         args = ' '.join(process_files + [build_source_dir])
-        self.stdout_pipe.write('$ cp -a %s\n' % args)
+        self.bakery.logging_cmd('cp -a %s' % args)
 
         for path in process_files:
             path = op.join(self.project_root, path)
@@ -55,8 +62,10 @@ class Copy(Pipe):
 
         return 'sources'
 
-    def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Copying sources\n', prefix='### %s ' % prefix)
+    def execute(self, pipedata):
+        self.bakery.logging_task('Copying sources')
+        if self.bakery.forcerun:
+            return pipedata
 
         process_files = list(pipedata.get('process_files', []))
 
@@ -78,8 +87,11 @@ class Copy(Pipe):
 
 class CopyLicense(Pipe):
 
-    def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Copy license file', prefix='### %s ' % prefix)
+    def execute(self, pipedata):
+        self.bakery.logging_task('Copy license file')
+        if self.bakery.forcerun:
+            return
+
         if pipedata.get('license_file', None):
             # Set _in license file name
             license_file_in_full_path = pipedata['license_file']
@@ -99,10 +111,9 @@ class CopyLicense(Pipe):
             _in_license = op.join(self.project_root, license_file_in_full_path)
             _out_license = op.join(self.builddir, license_file_out)
 
-            shellutil.copy(_in_license, _out_license, log=self.stdout_pipe)
+            shellutil.copy(_in_license, _out_license, log=self.bakery.log)
         else:
-            self.stdout_pipe.write('License file not copied\n',
-                                   prefix='Error: ')
+            self.bakery.logging_err('License file not copied')
         return pipedata
 
 
@@ -115,7 +126,10 @@ class CopyTxtFiles(Pipe):
 
     def execute(self, pipedata, prefix=""):
         if pipedata.get('txt_files_copied', None):
-            self.stdout_pipe.write('Copy txt files', prefix='### %s ' % prefix)
+            self.bakery.logging_task('Copy txt files')
+            if self.bakery.forcerun:
+                return
+
             paths = []
             for filename in pipedata['txt_files_copied']:
                 paths.append(op.join(self.project_root, filename))
@@ -123,7 +137,7 @@ class CopyTxtFiles(Pipe):
                             self.builddir)
 
             args = paths + [self.builddir]
-            self.stdout_pipe.write('$ cp -a %s' % ' '.join(args))
+            self.bakery.logging_cmd('cp -a %s' % ' '.join(args))
         return pipedata
 
 

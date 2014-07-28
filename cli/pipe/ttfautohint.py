@@ -1,14 +1,14 @@
 import os.path as op
 
-from cli.system import stdoutlog, run, shutil as shellutil
+from cli.system import run, shutil as shellutil
 
 
 class TTFAutoHint(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.stdout_pipe = stdout_pipe
-        self.project_root = project_root
-        self.builddir = builddir
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
         """ Run ttfautohint with project command line settings
@@ -21,7 +21,12 @@ class TTFAutoHint(object):
         params = pipedata.get('ttfautohint', '')
         if not params:
             return pipedata
-        self.stdout_pipe.write('Autohint TTFs (ttfautohint)\n', prefix='### %s ' % prefix)
+
+        self.bakery.logging_task('Autohint TTFs (ttfautohint)')
+
+        if self.bakery.forcerun:
+            return
+
         if 'autohinting_sizes' not in pipedata:
             pipedata['autohinting_sizes'] = []
 
@@ -33,10 +38,9 @@ class TTFAutoHint(object):
                                                     name=filepath[:-4],
                                                     source=filepath)
             try:
-                run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+                run(cmd, cwd=self.builddir, log=self.bakery.log)
             except:
-                self.stdout_pipe.write('TTFAutoHint is not available\n',
-                                       prefix="### Error:")
+                self.bakery.logging_err('TTFAutoHint is not available')
                 break
             pipedata['autohinting_sizes'].append({
                 'fontname': op.basename(filepath),
@@ -46,8 +50,8 @@ class TTFAutoHint(object):
             # compare filesizes TODO print analysis of this :)
             comment = "# look at the size savings of that subset process"
             cmd = "ls -l %s.*ttf %s" % (filepath[:-4], comment)
-            run(cmd, cwd=self.builddir, log=self.stdout_pipe)
+            run(cmd, cwd=self.builddir, log=self.bakery.log)
             shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
-                           log=self.stdout_pipe)
+                           log=self.bakery.log)
 
         return pipedata

@@ -1,27 +1,27 @@
 import os
 
 from scripts import genmetadata
-from cli.system import stdoutlog
 
 
 class Metadata(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.project_root = project_root
-        self.builddir = builddir
-        self.stdout_pipe = stdout_pipe
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Generate METADATA.json (genmetadata.py)\n',
-                               prefix='### %s ' % prefix)
+        self.bakery.logging_task('Generate METADATA.json (genmetadata.py)')
+        if self.bakery.forcerun:
+            return
         try:
             os.chdir(self.builddir)
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint
             genmetadata.run(self.builddir)
         except Exception, e:
-            self.stdout_pipe.write(e.message + '\n', prefix="### Error:")
+            self.bakery.logging_err(e.message)
             raise
 
     def ansiprint(self, message, color):
-        self.stdout_pipe.write(message + '\n')
+        self.bakery.logging_raw(message + '\n')

@@ -20,7 +20,7 @@ import os.path as op
 import yaml
 
 from bakery.app import app
-from cli.system import stdoutlog, shutil
+from cli.system import shutil
 from scripts.vmet import metricview, metricfix
 from scripts.ascii import fix_name_table
 from scripts.fstype import reset_fstype
@@ -30,15 +30,19 @@ from scripts.nbsp import checkAndFix
 
 class AutoFix(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.project_root = project_root
-        self.builddir = builddir
-        self.stdout_pipe = stdout_pipe
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
-    def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Applying autofixes\n', prefix='### %s ' % prefix)
+    def execute(self, pipedata):
+        self.bakery.logging_task('Applying autofixes')
+
+        if self.bakery.forcerun:
+            return
+
         _out_yaml = op.join(self.builddir, '.tests.yaml')
-        autofix(_out_yaml, self.builddir, log=self.stdout_pipe)
+        autofix(_out_yaml, self.builddir, log=self.bakery.log)
 
 
 PYPATH = 'python'

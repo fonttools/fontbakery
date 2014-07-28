@@ -1,7 +1,7 @@
 import os
 import os.path as op
 
-from cli.system import shutil, stdoutlog
+from cli.system import shutil
 from fontaine.ext.subsets import Extension as SubsetExtension
 from fontTools import ttLib
 
@@ -16,10 +16,10 @@ def bin2unistring(string):
 
 class PyFtSubset(object):
 
-    def __init__(self, project_root, builddir, stdout_pipe=stdoutlog):
-        self.stdout_pipe = stdout_pipe
-        self.project_root = project_root
-        self.builddir = builddir
+    def __init__(self, bakery):
+        self.project_root = bakery.project_root
+        self.builddir = bakery.build_dir
+        self.bakery = bakery
 
     def execute_pyftsubset(self, pipedata, subsetname, name, glyphs="", args=""):
         from fontTools import subset
@@ -36,16 +36,18 @@ class PyFtSubset(object):
         argv = argv + override_argv
         subset.main(argv)
 
-        self.stdout_pipe.write('$ pyftsubset %s' % ' '.join(argv))
+        self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
 
         # need to move result .subset file to avoid overwrite with
         # next subset
         shutil.move(op.join(self.builddir, name) + '.subset',
                     op.join(self.builddir, name)[:-4] + '.' + subsetname,
-                    log=self.stdout_pipe)
+                    log=self.bakery.log)
 
     def execute(self, pipedata, prefix=""):
-        self.stdout_pipe.write('Subset TTFs (pyftsubset)\n', prefix='### %s ' % prefix)
+        self.bakery.logging_task('Subset TTFs (pyftsubset)')
+        if self.bakery.forcerun:
+            return
 
         os.chdir(op.join(self.builddir, 'sources'))
         for name in pipedata['bin_files']:

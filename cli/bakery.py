@@ -15,12 +15,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import codecs
+import os
 import os.path as op
 import yaml
 
 from checker import run_set
-from cli.system import os, shutil, stdoutlog
+
+from cli.system import shutil, stdoutlog
 from cli import pipe
+
+from cli.utils import RedisFd
 
 
 BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'defaults.yaml')
@@ -44,47 +48,56 @@ class Bakery(object):
     """ Class to handle all parts of bakery process.
 
         Attributes:
-            builddir: Path where to place baked fonts.
-                If it does not exists object will create this one.
-            config: Path to yaml file describing bake configuration.
-                It has to be placed in the root of project directory.
-            stdout_pipe: Optional attribute to make bakery process
-                loggable.
 
-                It is a class that must have defined `write` method. Eg:
+            root: Absolute path of directory where user project placed
+            project_dir: Project directory name (eg. 12.in)
+            build_dir: Build directory name (eg. 21.abcdef)
+            builds_dir: Builds directory name (eg. 12.out)
 
-                class stdlog:
+        All arguments will be appended to `root`. Eg:
 
-                    @staticmethod
-                    def write(msg, prefix=''):
-                        pass
+        >>> b = Bakery("/home/user", "projectclone", build_dir="build",
+        ...            builds_dir="out")
+        >>> b.build_dir
+        '/home/user/out/build'
+        >>> b.project_root
+        '/home/user/projectclone'
+        >>> b.builds_dir
+        '/home/user/out'
     """
 
-    def __init__(self, config, project_root, builddir='build', stdout_pipe=stdoutlog):
-        self.builddir = os.path.abspath(builddir)
-        self.project_root = project_root
-        self.stdout_pipe = stdout_pipe
-        self.interactive = False
-        self.errors_in_footer = []
+    def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
+        self.build_dir = op.join(root, builds_dir, build_dir)
 
+        self.project_root = op.join(root, project_dir)
+        self.builds_dir = op.join(root, builds_dir)
+
+        self.log = stdoutlog
+
+        self.rootpath = root
+
+    def init_logging(self, logfile):
+        self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')
+
+    def load_config(self, config):
+        """ Loading settings from yaml bake configuration. """
         if isinstance(config, dict):
             self.config = config or {}
         else:
-            self.config = self.load_config(config)
+            try:
+                configfile = open(config, 'r')
+            except OSError:
+                configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
+                self.stdout_pipe.write(('Cannot read configuration file.'
+                                        ' Using defaults'))
+            self.config = yaml.safe_load(configfile)
 
-    def load_config(self, configfilepath):
-        try:
-            configfile = open(configfilepath, 'r')
-        except OSError:
-            configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
-            self.stdout_pipe.write(('Cannot read configuration file.'
-                                    ' Using defaults'))
-        return yaml.safe_load(configfile)
-
-    def save_build_state(self, state):
-        l = open(op.join(self.builddir, 'build.state.yaml'), 'w')
-        l.write(yaml.safe_dump(state))
+    def save_build_state(self):
+        l = open(op.join(self.build_dir, 'build.state.yaml'), 'w')
+        l.write(yaml.safe_dump(self.config))
         l.close()
+
+    _interactive = False
 
     def interactive():
         doc = "If True then user will be asked to apply autofix"
@@ -101,7 +114,11 @@ class Bakery(object):
         return locals()
     interactive = property(**interactive())
 
-    def run(self, with_upstream=False):
+    def run(self):
+        if not os.path.exists(self.build_dir):
+            os.makedirs(self.build_dir)
+
+        self.logging_raw('# Bake Begins!\n')
 
         pipes = [
             pipe.Checkout,
@@ -119,20 +136,74 @@ class Bakery(object):
             pipe.CopyMetadata,
             pipe.CopyTxtFiles,
             pipe.TTFAutoHint,
-            pipe.PyFontaine
+            pipe.PyFontaine,
+            pipe.Zip
         ]
 
+        # run in force mode to auto count available tasks
+        self.force_run(pipes)
+
+        return self.normal_run(pipes)
+
+    forcerun = False
+
+    def force_run(self, pipes):
+        self.forcerun = True
+        for pipe_klass in pipes:
+            try:
+                p = pipe_klass(self)
+                p.execute(self.config)
+            except:
+                self.save_build_state()
+                self.logging_raw('ERROR: BUILD FAILED\n')
+
+        return self.config
+
+    def normal_run(self, pipes):
+
+        self.forcerun = False
         for i, pipe_klass in enumerate(pipes):
-            p = pipe_klass(self.project_root, self.builddir, self.stdout_pipe)
-            p.execute(self.config, '(%s of %s)' % (i + 1, len(pipes)))
+            try:
+                p = pipe_klass(self)
+                p.execute(self.config)
+                self.save_build_state()
+            except:
+                self.logging_raw('ERROR: BUILD FAILED\n')
+                self.save_build_state()
+                raise
 
-        self.save_build_state(self.config)
+        return self.config
 
-        return
+    total_tasks = 0
+    _counter = 1
+
+    def incr_total_tasks(self):
+        self.total_tasks += 1
+
+    def incr_task_counter(self):
+        self._counter += 1
+
+    def logging_task(self, message):
+        if self.forcerun:
+            self.incr_total_tasks()
+            return
+
+        prefix = "### (%s of %s) " % (self._counter, self.total_tasks)
+        self.log.write(message.strip() + '\n', prefix=prefix)
+        self.incr_task_counter()
+
+    def logging_cmd(self, message):
+        self.log.write(message.strip() + '\n', prefix="$ ")
+
+    def logging_raw(self, message):
+        self.log.write(message)
+
+    def logging_err(self, message):
+        self.log.write(message.strip() + '\n', prefix="Error: ")
 
     def upstream_tests(self):
         result = {}
-        source_dir = op.join(self.builddir, 'sources')
+        source_dir = op.join(self.build_dir, 'sources')
         self.stdout_pipe.write('Run upstream tests\n', prefix='### ')
 
         result['/'] = run_set(source_dir, 'upstream-repo')
