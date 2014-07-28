@@ -73,7 +73,7 @@ class Build(object):
 
             binfiles = self.movebin_to_builddir(ufo + ttxfiles + sfd + bin)
 
-            SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
+            SCRIPTPATH = op.join('scripts', 'vmet.py')
             command = ' '.join(map(lambda x: op.join(self.builddir, x), binfiles))
             prun('python %s %s' % (SCRIPTPATH, command),
                  cwd=op.abspath(op.join(op.dirname(__file__), '..', '..')),

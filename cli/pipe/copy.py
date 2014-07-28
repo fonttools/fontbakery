@@ -48,7 +48,7 @@ class Copy(Pipe):
         srcpath = op.join(self.project_root, rootpath,
                           '%s.*.ttx' % fontname[:-4])
         for path in glob.glob(srcpath):
-            splitted_ttx_paths.append(op.join(rootpath, path))
+            splitted_ttx_paths.append(path)
         return splitted_ttx_paths
 
     def copy_to_builddir(self, process_files):

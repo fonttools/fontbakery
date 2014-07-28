@@ -21,59 +21,40 @@ import shutil
 import sys
 import yaml
 
-
-from cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
-
-
-class systdout:
-
-    @staticmethod
-    def write(msg, prefix=''):
-        sys.stdout.write(prefix + msg)
+import cli.system
+from cli.bakery import Bakery
 
 
-def main(sources, config):
+def main(sourcedir, config):
 
-    rootpath = os.path.abspath('build/tmp')
-    if not config:
-        config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
-    else:
-        config = yaml.safe_load(open(config))
+    config = {}
 
     if 'process_files' not in config:
-        config['process_files'] = []
+        config['process_files'] = cli.system.find_source_paths(sourcedir)
+        print config
 
-    for source in sources:
-        if source[-4:] in ['.ufo', '.ttx', '.ttf', '.otf', '.sfd']:
-            # create config bakery.yaml from defaults
-            config['process_files'].append(source)
-        else:
-            continue
-        if os.path.isdir(source):
-            shutil.copytree(source, rootpath)
-        else:
-            shutil.copy(source, rootpath)
-
-    l = open(os.path.join(rootpath, '.bakery.yaml'), 'w')
+    l = open(os.path.join(sourcedir, '.bakery.yaml'), 'w')
     l.write(yaml.safe_dump(config))
     l.close()
 
     try:
-        b = Bakery(os.path.join(rootpath, '.bakery.yaml'),
-                   stdout_pipe=systdout)
-        b.interactive = True
-        b.run(with_upstream=True)
+        b = Bakery('', sourcedir, '')
+
+        config = os.path.join(sourcedir, '.bakery.yaml')
+        b.load_config(config)
+
+        b.run()
     finally:
-        shutil.rmtree(rootpath)
+        shutil.rmtree('', sourcedir)
         pass
 
 
 if __name__ == '__main__':
-    sys.path.append(0, os.path.abspath(os.path.dirname(__file__)))
+    sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', nargs="+",
+    parser.add_argument('projectpath',
                         help=("Path to UFO, SFD, TTX, TTF or OTF files"))
     parser.add_argument('--config', type=str, default='')
     args = parser.parse_args()
-    main(args.filename, args.config)
+    main(args.projectpath, args.config)

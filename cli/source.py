@@ -264,7 +264,7 @@ class TTXFontSource(FontSourceAbstract):
         except Exception, ex:
             self.stdout_pipe.write('Error: %s\n' % ex.message)
 
-        SCRIPTPATH = op.join('scripts', 'fix-ttf-vmet.py')
+        SCRIPTPATH = op.join('scripts', 'vmet.py')
 
         command = op.join(builddir, self.postscript_fontname + '.ttf')
         prun('python %s %s' % (SCRIPTPATH, command),

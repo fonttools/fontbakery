@@ -78,12 +78,13 @@ class Bakery(object):
     log = stdoutlog
 
     def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
-        self.build_dir = op.join(root, builds_dir, build_dir)
+        self.rootpath = op.abspath(root)
 
-        self.project_root = op.join(root, project_dir)
-        self.builds_dir = op.join(root, builds_dir)
+        self.build_dir = op.join(self.rootpath, builds_dir, build_dir)
 
-        self.rootpath = root
+        self.project_root = op.join(self.rootpath, project_dir)
+        self.builds_dir = op.join(self.rootpath, builds_dir)
+
         self.taskset = BakeryTaskSet()
 
     def init_logging(self, logfile):
@@ -113,7 +114,7 @@ class Bakery(object):
             self.config = yaml.safe_load(configfile)
 
     def save_build_state(self):
-        l = open(op.join(self.build_dir, 'build.state.yaml'), 'w')
+        l = open(op.join(self.rootpath, self.builds_dir, self.build_dir, 'build.state.yaml'), 'w')
         l.write(yaml.safe_dump(self.config))
         l.close()
 
