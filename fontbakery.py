@@ -16,29 +16,26 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
+from multiprocessing import Process
 import os
 import shutil
 import sys
 import yaml
 
 import cli.system
-from cli.bakery import Bakery
+from cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 
 
-def main(sourcedir, config):
-
-    config = {}
-
+def run_bakery(sourcedir, config):
     if 'process_files' not in config:
         config['process_files'] = cli.system.find_source_paths(sourcedir)
-        print config
 
     l = open(os.path.join(sourcedir, '.bakery.yaml'), 'w')
     l.write(yaml.safe_dump(config))
     l.close()
 
     try:
-        b = Bakery('', sourcedir, '')
+        b = Bakery('', sourcedir, 'builds', sourcedir)
 
         config = os.path.join(sourcedir, '.bakery.yaml')
         b.load_config(config)
@@ -49,12 +46,25 @@ def main(sourcedir, config):
         pass
 
 
+def main(sourcesdir, config):
+
+    if config:
+        config = yaml.safe_load(open(config, 'r'))
+    else:
+        config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
+
+    for sourcedir in sourcesdir:
+        p = Process(target=run_bakery, args=(sourcedir, config))
+        p.start()
+        p.join()
+        # run_bakery(sourcedir, config)
+
 if __name__ == '__main__':
     sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('projectpath',
-                        help=("Path to UFO, SFD, TTX, TTF or OTF files"))
+    parser.add_argument('projectpath', nargs='+',
+                        help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
     parser.add_argument('--config', type=str, default='')
     args = parser.parse_args()
     main(args.projectpath, args.config)

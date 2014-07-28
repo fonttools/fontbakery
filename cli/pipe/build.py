@@ -109,7 +109,7 @@ class Build(object):
 
             try:
                 convert(op.join(self.builddir, filepath),
-                        op.join(self.builddir, ttfpath), log=self.stdout_pipe)
+                        op.join(self.builddir, ttfpath), log=self.bakery.log)
             except Exception, ex:
                 self.bakery.logging_err(ex.message)
                 raise
