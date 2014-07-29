@@ -32,6 +32,7 @@ from ..tasks import (process_project, project_git_sync,
                      upstream_revision_tests,
                      generate_subsets_coverage_list)
 from .state import project_state_get, project_state_save, walkWithoutGit
+from bakery.json_field import JSONEncodedDict
 
 from cli.bakery import Bakery
 from cli.system import prun
@@ -45,11 +46,13 @@ class Project(db.Model):
     name = db.Column(db.String(60), index=True)
     full_name = db.Column(db.String(60))
     html_url = db.Column(db.String(60))
-    data = db.Column(db.PickleType())
+    data = db.Column(JSONEncodedDict())
     clone = db.Column(db.String(400))
     is_github = db.Column(db.Boolean(), index=True)
+    latest_commit = db.Column(db.String(60), default='')
+    last_updated = db.Column(db.DateTime, index=True)
 
-    # `is_ready` means that project is waiting until project is synced and
+    # `is_ready` means project is waiting while project is synced and
     # upstream tests complete. it is very important to disable any user action
     # on project until all tests finish
     is_ready = db.Column(db.Boolean(), index=True, default=False)

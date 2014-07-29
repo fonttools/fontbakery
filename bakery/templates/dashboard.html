@@ -245,11 +245,6 @@
       <th colspan="2">{{ _("Char Sets") }}</th>
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
-{#
-      <th style="text-align: center">{{ _("Week") }}</th>
-      <th style="text-align: center">{{ _("Day") }}</th>
-      <th style="text-align: center">{{ _("Second") }}</th>
-#}
       <th style="text-align: center; white-space: nowrap;">{{ _("Per $") }}</th>
       <th colspan="2"></th>
     </tr>
@@ -266,11 +261,6 @@
       <th style="">{{ _("AL3")}}</th>
       <th class="stats stat-totals stat-total-total" style="text-align: right"><span class="apopover" data-content="" data-trigger="hover"></span></th>
       <th class="stats stat-totals stat-month-total" style="text-align: right"><span class="apopover" data-content="" data-trigger="hover"></span></th>
-{#
-      <th class="stats stat-totals stat-week-total" style="text-align: right"></th>
-      <th class="stats stat-totals stat-yesterday-total" style="text-align: right"></th>
-      <th class="stats stat-totals stat-rate-total" style="text-align: right"></th>
-#}
       <th class="stats-fvpd" style="text-align: right"></th>
       <th style="text-align: center; white-space: nowrap; ">{{ _("Next Step") }}</th>
       <th style="text-align: center">{{ _("Actions") }}</th>
@@ -283,6 +273,7 @@
 
   <tbody>
     {% for repo in repos -%}
+      {% set build = repo.latest_build() %}
       <tr>
         <td style="text-align: right"><nobr>
             <span>{{repo.id}}</span>
@@ -290,6 +281,9 @@
         </td>
         <td style="text-align: left; white-space: nowrap; font-weight: bold">
             <a href="{{ url_for('project.home', username=repo.login, project_id=repo.id )}}">{{ repo.title }}</a>
+            {% if repo.current_revision() != repo.latest_commit %}
+              <span class="label label-warning">Updates available</span>
+            {% endif %}
         </td>
         <td style="text-align: center">
             {% if repo.html_url %}<a href="{{ repo.html_url }}"><i class="fa fa-home"></i></a>{% endif %}
@@ -336,11 +330,6 @@
         #}
         <td class="stats stat-total" style="text-align: right" data-sort-value="{{ repo.family_stat.total }}"><span class="apopover" data-trigger="hover" data-content="{{ repo.family_stat.total }}">{{ repo.family_stat.total | short }}</span></td>
         <td class="stats stat-month" style="text-align: right" data-sort-value="{{ repo.family_stat.month }}"><span class="apopover" data-trigger="hover" data-content="{{ repo.family_stat.month }}">{{ repo.family_stat.month | short }}</span></td>
-{#
-        <td class="stats stat-week" style="text-align: right">{{ repo.family_stat.week }}</td>
-        <td class="stats stat-yesterday" style="text-align: right">{{ repo.family_stat.yesterday }}</td>
-        <td class="stats stat-rate" style="text-align: right">{{ repo.family_stat.rate }}</td>
-#}
         {% if repo.config['state'].get('price_total_usd') %}
         {% set value = (repo.family_stat and repo.family_stat.month or 0) / repo.config['state']['price_total_usd'] | int %}
         <td class="stats-fvpd" style="text-align: right" data-sort-value="{{ value }}">
@@ -359,7 +348,6 @@
         <td nowrap>
           <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', username=repo.login, project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
           <a class="btn btn-xs btn-danger" request-url="{{ url_for('settings.delclone', project_id=repo.id) }}" data-toggle="modal" data-target="#deleteCloneModal"><i class="fa fa-trash-o"></i></a>
-          {% set build = repo.latest_build() %}
           {% if build and build.succeeded %}<a class="btn btn-xs" href="{{ url_for('project.zip', username=repo.login, project_id=repo.id, build_id=build.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}
         </td>
       </tr>

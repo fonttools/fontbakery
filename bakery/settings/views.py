@@ -92,7 +92,8 @@ def addclone():
     # near impossibru to validate url, so just check if its length is > 10
     # (let it be 10)
     #
-    # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html to validate the URL string
+    # TODO in the future, use http://schacon.github.io/git/git-ls-remote.html
+    #  to validate the URL string
     # http://stackoverflow.com/questions/9610131/how-to-check-the-validity-of-a-remote-git-repository-url
     #
     # TODO we could do very light validation that the form field is not 0 in JS

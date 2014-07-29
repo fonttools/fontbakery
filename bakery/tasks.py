@@ -195,6 +195,8 @@ def project_git_sync(project):
     log.write('End: Repository is ready. Please Setup\n', prefix='### ')
     # set project state as ready after sync is done
     project.is_ready = True
+    project.latest_commit = revision
+    project.last_updated = datetime.datetime.now()
     db.session.add(project)
     db.session.commit()
 
