@@ -51,15 +51,21 @@
         {{b.updated}} {% if b.is_done %} <i class="fa fa-check-square-o"></i>{% endif %}
       </td>
       {% set udata = b.read_upstream_tests_data() %}
-      <td class="success">{{ udata.success|length }}</td>
-      <td class="warning">{{ udata.failure|length }}</td>
-      <td class="danger">{{ udata.error|length }}</td>
+      {% set total = udata.success|length + udata.failure|length + udata.error|length %}
+      {% if total %}
+      <td class="success">{{ (udata.success|length * 100 / total)|int }}% ({{ udata.success|length }})</td>
+      <td class="warning">{{ (udata.failure|length * 100 / total)|int }}% ({{ udata.failure|length }})</td>
+      <td class="danger">{{ (udata.error|length * 100 / total)|int }}% ({{ udata.error|length }})</td>
       <td><a href="{{ url_for('project.utests', username=project.login, project_id=b.project_id, revision=b.revision) }}"> <i class="fa fa-file-text-o"> </i> </a></td>
+      {% else %}
+      <td colspan="4"></td>
+      {% endif %}
       {% set data = b.read_rtests_data() %}
-      {% if data %}
-      <td class="success">{{ data.success|length }}</td>
-      <td class="warning">{{ data.failure|length }}</td>
-      <td class="danger">{{ data.error|length }}</td>
+      {% set total = data.success|length + data.failure|length + data.error|length %}
+      {% if total %}
+      <td class="success">{{ (data.success|length * 100 / total)|int }}% ({{ data.success|length }})</td>
+      <td class="warning">{{ (data.failure|length * 100 / total)|int }}% ({{ data.failure|length }})</td>
+      <td class="danger">{{ (data.error|length * 100 / total)|int }}% ({{ data.error|length }})</td>
       <td>{% if b.is_done %}<a href="{{ url_for('project.rtests', username=project.login, project_id=b.project_id, build_id=b.id) }}"> <i class="fa fa-file-text-o"></i> </a>{% endif %}</td>
       {% else %}
       <td colspan="4"></td>
