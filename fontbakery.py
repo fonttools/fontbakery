@@ -43,6 +43,8 @@ def run_bakery(sourcedir, config=None):
 
         b = Bakery('', sourcedir, 'builds', sourcedir)
 
+        b.init_logging('%s.process.log' % sourcedir.replace('/', '-'))
+
         b.pipes = [
             pipe.Copy,
             pipe.Build,
@@ -66,7 +68,7 @@ def run_bakery(sourcedir, config=None):
 
         b.run()
     except Exception, ex:
-        print ex
+        print >> sys.stderr, ex
 
 
 if __name__ == '__main__':
