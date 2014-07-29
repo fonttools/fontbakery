@@ -12,16 +12,13 @@ class CheckPanoseIdentification(TestCase):
     def test_check_panose_identification(self):
         font = Font.get_ttfont(self.path)
 
-        values = {'bArmStyle': 0,
-                  'bContrast': 0,
-                  'bFamilyType': 0,
-                  'bLetterForm': 0,
-                  'bMidline': 0,
-                  'bProportion': 0,
-                  'bSerifStyle': 0,
-                  'bStrokeVariation': 0,
-                  'bWeight': 0,
-                  'bXHeight': 0}.values()
-
-        if font['OS/2'].panose.values() != values:
-            self.fail('PANOSE should not be set to font')
+        if font['OS/2'].panose['bProportion'] == 9:
+            prev = 0
+            for g in font.glyphs():
+                if prev and font.advance_width(g) != prev:
+                    link = ('http://www.thomasphinney.com/2013/01'
+                            '/obscure-panose-issues-for-font-makers/')
+                    self.fail(('Your font does not seem monospaced but PANOSE'
+                               ' bProportion set to monospace. It may have '
+                               ' a bug in windows. Details: %s' % link))
+                prev = font.advance_width(g)
