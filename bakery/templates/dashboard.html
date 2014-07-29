@@ -246,7 +246,8 @@
       <th style="text-align: center">{{ _("Total") }}</th>
       <th style="text-align: center">{{ _("Month") }}</th>
       <th style="text-align: center; white-space: nowrap;">{{ _("Per $") }}</th>
-      <th colspan="2"></th>
+      <th colspan="2"><form action="{{ url_for('settings.check_updates') }}" method="post">
+        <input type="submit" class="btn btn-xs btn-success" value="{{ _('Check if Updates Available') }}" /></form></th>
     </tr>
     <tr>
       <th style="text-align: center">{{ _("ID") }}</th>

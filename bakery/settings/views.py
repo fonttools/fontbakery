@@ -32,6 +32,14 @@ from bakery.settings.models import ProjectCache
 settings = Blueprint('settings', __name__, url_prefix='/settings')
 
 
+@settings.route('/check-updates', methods=['POST'])
+@login_required
+def check_updates():
+    from bakery.tasks import refresh_latest_commits
+    refresh_latest_commits.delay()
+    return redirect(url_for('frontend.splash'))
+
+
 @settings.route('/', methods=['GET'])
 @login_required
 def repos():
