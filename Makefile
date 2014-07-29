@@ -3,13 +3,6 @@ VENV=venv
 # target: all — Default target. Bootstraps environment
 all: setup
 
-# ifdef DEV
-# 	REQ=requiremets.dev.txt
-# else
-# 	REQ=requirements.txt
-# 	@echo "Use `make DEV` for development environment"
-# endif
-
 ifdef VENVRUN
 else
 VENVRUN=virtualenv-2.7
@@ -59,11 +52,6 @@ worker: venv/bin/activate
 # target: mail — run mailserver
 mail:
 	python -m smtpd -n -c DebuggingServer localhost:20025
-
-# target: init — initial data setup
-init: venv/bin/activate requirements.txt
-	. venv/bin/activate; python init.py
-	make stats
 
 # target: offline — add offline user
 offline: venv/bin/activate

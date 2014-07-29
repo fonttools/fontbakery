@@ -14,13 +14,12 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import logging
 import os
 import shutil
 
 from flask.ext.babel import gettext as _
 from flask import (Blueprint, render_template, request, flash, g, redirect,
-                   url_for, json, current_app)
+                   url_for)
 from giturlparse import parse
 
 from bakery.app import github, db, app
@@ -28,7 +27,6 @@ from bakery.decorators import login_required
 from bakery.github import GithubSessionAPI, GithubSessionException
 from bakery.models import Project
 from bakery.settings.models import ProjectCache
-from bakery.utils import signify
 
 
 settings = Blueprint('settings', __name__, url_prefix='/settings')
@@ -85,114 +83,6 @@ def profile():
         else:
             flash(_('Unable to load repos list.'))
     return render_template('settings/index.html', repos=_repos)
-
-
-@settings.route('/addhook/<path:full_name>')  # , methods=['GET'])
-@login_required
-def addhook(full_name):
-    auth = github.get_session(token=g.user.token)
-    old_hooks = auth.get('/repos/%s/hooks' % full_name)
-    if old_hooks.status_code != 200:
-        logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('GitHub API access error, please try again later'))
-        return redirect(url_for('settings.repos') + "#tab_github")
-
-    exist_id = False
-    if old_hooks.json():
-        for i in old_hooks.json():
-            if 'name' in i and i['name'] == 'web':
-                if 'config' in i and 'url' in i['config'] \
-                        and i['config']['url'] == current_app.config.get('HOOK_URL').format(id=full_name):
-                    exist_id = i['id']
-
-    if exist_id:
-        logging.warn('Delete old webhook for user %s, repo %s and id %s' %
-                     (g.user.login, full_name, exist_id))
-        resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' %
-                           {'full_name': full_name, 'id': exist_id})
-        if resp.status_code != 204:
-            flash(_('Error deleting old webhook, delete if manually or retry'))
-            return redirect(url_for('settings.repos') + "#tab_github")
-
-    resp = auth.post('/repos/%(full_name)s/hooks' % {'full_name': full_name},
-                     data=json.dumps({
-                                     'name': 'web',
-                                     'active': True,
-                                     'events': ['push'],
-                                     'config': {
-                                         'url': current_app.config.get('HOOK_URL').format(id=full_name),
-                                         'content_type': 'json',
-                                         'secret': signify(full_name)  # TODO: sign from name and SECRET.
-                                     }
-                                     })
-                     )
-    if resp.status_code < 300:  # no errors, in 2xx range
-        project = Project.query.filter_by(
-            login=g.user.login, full_name=full_name).first()
-        if not project:
-            project = Project(
-                login=g.user.login,
-                full_name=full_name,
-                # TODO: Use actual github clone string used by Github
-                # clone='git@github.com:%s/%s.git' % (g.user.login, full_name),
-                clone='git://github.com/%s.git' % full_name,
-                is_github=True
-            )
-        project_data = auth.get('/repos/%s' % full_name)
-        if project_data.status_code == 200:
-            project.cache_update(data=project_data.json())
-        else:
-            flash(_('Repository information update error'))
-            return redirect(url_for('settings.repos') + "#tab_github")
-        project.is_github = True
-        db.session.add(project)
-        db.session.commit()
-    else:
-        logging.error('Web hook registration error for %s' % full_name)
-        flash(_('Repository webhook update error'))
-        return redirect(url_for('settings.repos') + "#tab_github")
-
-    flash(_('Added webhook for %(name)s.', name=full_name))
-    project.sync()
-    return redirect(url_for('project.queue', username=project.login, project_id=project.id))
-
-
-@settings.route('/delhook/<path:full_name>', methods=['GET'])
-@login_required
-def delhook(full_name):
-    auth = github.get_session(token=g.user.token)
-
-    old_hooks = auth.get('/repos/%s/hooks' % full_name)
-    if old_hooks.status_code != 200:
-        logging.error('Repos API reading error for user %s' % g.user.login)
-        flash(_('GitHub API access error, please try again later'))
-        return redirect(url_for('settings.repos') + "#tab_github")
-
-    exist_id = False
-    if old_hooks.json():
-        for i in old_hooks.json():
-            if i.has_key('name') and i['name'] == 'web':
-                if i.has_key('config') and i['config'].has_key('url') \
-                        and i['config']['url'] == current_app.config.get('HOOK_URL').format(id=full_name):
-                    exist_id = i['id']
-
-    if exist_id:
-        resp = auth.delete('/repos/%(full_name)s/hooks/%(id)s' %
-                           {'full_name': full_name, 'id': exist_id})
-        if resp.status_code != 204:
-            flash(_('Error deleting old webhook: Delete it manually, or retry'))
-    else:
-        flash(_("Webhook is not registered on Github, it was probably deleted manually"))
-
-    # pylint:disable-msg=E1101
-    project = Project.query.filter_by(
-        login=g.user.login, full_name=full_name).first()
-
-    if project:
-        db.session.delete(project)
-        db.session.commit()
-
-    return redirect(url_for('settings.repos') + "#tab_github")
 
 
 @settings.route('/addclone', methods=['POST'])

@@ -1,5 +1,0 @@
--r requirements.txt
-ipdb
-ipython
-mock
-nose
