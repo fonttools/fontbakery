@@ -30,6 +30,12 @@ from cli.utils import RedisFd
 
 
 @job
+def refresh_latest_commits():
+    from scripts.gitupdate import main
+    main()
+
+
+@job
 def refresh_repositories(username, token):
     from bakery.app import github
     from bakery.github import GithubSessionAPI, GithubSessionException
@@ -196,7 +202,17 @@ def project_git_sync(project):
     # set project state as ready after sync is done
     project.is_ready = True
     project.latest_commit = revision
+
+    import urlparse
+    pp = urlparse.urlparse(project.clone)
+    if pp.netloc == 'github.com':
+        project.is_github = True
+        full_name = os.path.splitext(pp.path.strip('/'))[0]
+        project.full_name = full_name
+        project.name = full_name.split('/')[1]
+
     project.last_updated = datetime.datetime.now()
+
     db.session.add(project)
     db.session.commit()
 

@@ -21,7 +21,7 @@ from flask.ext.babel import gettext as _
 
 from bakery.app import db, github
 from bakery.gitauth.models import User
-from bakery.tasks import refresh_repositories
+from bakery.tasks import refresh_repositories, refresh_latest_commits
 
 
 gitauth = Blueprint('gitauth', __name__, url_prefix='/auth')
@@ -84,6 +84,7 @@ def authorize_user(me, token=None):
     db.session.commit()
 
     refresh_repositories.delay(user.login, token)
+    refresh_latest_commits.delay()
 
     return user
 

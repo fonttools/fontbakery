@@ -29,6 +29,14 @@ class GithubSessionAPI:
     def __init__(self, github_session, usertoken):
         self._session = github_session.get_session(usertoken)
 
+    def get_latest_commit(self, fullname):
+        resp = self._session.get('repos/%s/commits' % fullname)
+        if resp.status_code == 200:
+            return resp.json()[0]
+        else:
+            raise GithubSessionException(_(('Could not connect to Github'
+                                            ' to load repo data.')))
+
     def get_repo_list(self):
         """ Returns list of repos for user token """
         page = 0
