@@ -182,13 +182,9 @@ def build(user, p):
 
 @project.route('/<int:project_id>/api/pull', methods=['GET'])
 @login_required
-# this is only exception where decorator @project_required is not needed
-def pull(user, project_id):
-    p = Project.query.filter_by(
-        login=g.user.login, id=project_id).first_or_404()
-
+@project_required
+def pull(user, p):
     p.sync()
-
     flash(_("Pull latest version from upstream"))
     return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 

@@ -347,7 +347,7 @@
         {% endif %} {# is_ready #}
         </td>
         <td nowrap>
-          <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', username=repo.login, project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+          <a class="btn btn-xs {% if repo.latest_commit and repo.current_revision() != repo.latest_commit %}btn-danger{% else %}btn-info{% endif %}" href="{{ url_for('project.pull', username=repo.login, project_id=repo.id)}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
           <a class="btn btn-xs btn-danger" request-url="{{ url_for('settings.delclone', project_id=repo.id) }}" data-toggle="modal" data-target="#deleteCloneModal"><i class="fa fa-trash-o"></i></a>
           {% if build and build.succeeded %}<a class="btn btn-xs" href="{{ url_for('project.zip', username=repo.login, project_id=repo.id, build_id=build.id) }}"> <i class="fa fa-download"></i> </a>{% endif %}
         </td>
