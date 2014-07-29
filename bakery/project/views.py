@@ -447,7 +447,7 @@ def rfiles(user, p, build_id):
         return redirect(url_for('project.log', username=user.login, project_id=p.id, build_id=b.id))
 
     yaml = p.read_asset('yaml')
-    f = project_fontaine(user, p, b)
+    f = project_fontaine(p, b)
     tree = b.files()
 
     fonts = []

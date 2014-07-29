@@ -112,7 +112,7 @@ class Project(db.Model):
     def read_asset(self, name=None):
         fn = self.get_asset(name)
         if fn:
-            return unicode(name.read(), "utf8")
+            return unicode(fn.read(), "utf8")
         return ''
 
     def save_bakery(self, data):
