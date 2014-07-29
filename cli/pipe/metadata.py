@@ -12,6 +12,8 @@ class Metadata(object):
         task = self.bakery.logging_task('Generate METADATA.json (genmetadata.py)')
         if self.bakery.forcerun:
             return
+
+        self.bakery.logging_cmd(' python scripts/genmetadata.py %s' % self.builddir)
         try:
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint

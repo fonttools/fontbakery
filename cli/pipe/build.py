@@ -36,8 +36,11 @@ class Build(object):
             d = op.join(self.builddir, op.basename(a)[:-4] + '.ttf')
             s = op.join(self.builddir, a[:-4] + '.ttf')
 
-            shellutil.move(s, d, log=self.bakery.log)
-            result.append(op.basename(a)[:-4] + '.ttf')
+            try:
+                shellutil.move(s, d, log=self.bakery.log)
+                result.append(op.basename(a)[:-4] + '.ttf')
+            except:
+                pass
         return result
 
     def execute(self, pipedata, prefix=""):

@@ -390,9 +390,10 @@ def getDesigner(familydir):
 def check_monospace(familydir):
     files = os.listdir(familydir)
     glyphwidths = []
-    for filepath in files:
-        if not filepath.endswith('.ttf'):
+    for f in files:
+        if not f.endswith('.ttf'):
             continue
+        filepath = os.path.join(familydir, f)
         font = fontToolsOpenFont(filepath)
         for table in font['cmap'].tables:
             if not (table.platformID == 3 and table.platEncID in [1, 10]):
@@ -573,7 +574,7 @@ def writeDescHtml(familydir):
             color = "red"
             ansiprint(string, color)
             fontDesc = "TODO"
-        descHtml = "<p>" + fontDesc + "</p>"
+        descHtml = u"<p>" + fontDesc.decode('utf-8') + u"</p>"
         with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
             f.write(descHtml)
         string = "Created " + filename + " with:"
