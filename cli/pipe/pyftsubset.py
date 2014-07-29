@@ -1,4 +1,3 @@
-import os
 import os.path as op
 
 from cli.system import shutil
@@ -50,7 +49,6 @@ class PyFtSubset(object):
             return
 
         try:
-            os.chdir(op.join(self.builddir, 'sources'))
             for name in pipedata['bin_files']:
                 # create menu subset with glyph for text of family name
                 ttfont = ttLib.TTFont(op.join(self.builddir, name))

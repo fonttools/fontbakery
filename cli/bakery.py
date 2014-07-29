@@ -87,6 +87,26 @@ class Bakery(object):
 
         self.taskset = BakeryTaskSet()
 
+        self.pipes = [
+            pipe.Checkout,
+            pipe.Copy,
+            pipe.Build,
+            pipe.Rename,
+            pipe.Metadata,
+            pipe.PyFtSubset,
+            pipe.FontLint,
+            pipe.Optimize,
+            pipe.AutoFix,
+            pipe.CopyLicense,
+            pipe.CopyFontLog,
+            pipe.CopyDescription,
+            pipe.CopyMetadata,
+            pipe.CopyTxtFiles,
+            pipe.TTFAutoHint,
+            pipe.PyFontaine,
+            pipe.Zip
+        ]
+
     def init_logging(self, logfile):
         self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')
 
@@ -141,30 +161,10 @@ class Bakery(object):
 
         self.logging_raw('# Bake Begins!\n')
 
-        pipes = [
-            pipe.Checkout,
-            pipe.Copy,
-            pipe.Build,
-            pipe.Rename,
-            pipe.Metadata,
-            pipe.PyFtSubset,
-            pipe.FontLint,
-            pipe.Optimize,
-            pipe.AutoFix,
-            pipe.CopyLicense,
-            pipe.CopyFontLog,
-            pipe.CopyDescription,
-            pipe.CopyMetadata,
-            pipe.CopyTxtFiles,
-            pipe.TTFAutoHint,
-            pipe.PyFontaine,
-            pipe.Zip
-        ]
-
         # run in force mode to auto count available tasks
-        self.force_run(pipes)
+        self.force_run(self.pipes)
 
-        return self.normal_run(pipes)
+        return self.normal_run(self.pipes)
 
     forcerun = False
 

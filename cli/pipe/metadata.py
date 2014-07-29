@@ -1,5 +1,3 @@
-import os
-
 from scripts import genmetadata
 
 
@@ -15,7 +13,6 @@ class Metadata(object):
         if self.bakery.forcerun:
             return
         try:
-            os.chdir(self.builddir)
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint
             genmetadata.run(self.builddir)
