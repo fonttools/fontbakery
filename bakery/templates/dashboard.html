@@ -118,77 +118,6 @@
 
 {% block body %}
 
-{% if tasks %}
-<h3>Recent tasks</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Task</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for task in tasks %}
-  <tr{% if task.done and not task.failed %} class="text-success"{% elif task.done and task.failed %} class="text-danger"{% endif %}>
-    <td>{{ task.description }}</td>
-    <td>{{ task.project.title }}</td>
-    <td>
-    {% if task.done %}
-      {% if not task.failed %}<i class="glyphicon glyphicon-ok" />
-      {% else %}<i class="glyphicon glyphicon-remove" />{% endif %}
-    {% else %}
-      <i class="glyphicon glyphicon-refresh" />
-    {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="2"><a href="{{ url_for('frontend.queue_tasks') }}">View queue history</a></td>
-    </tr>
-  </tfoot>
-</table>
-{% endif %}
-
-{% if builds %}
-<h3>Recent builds</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Title</th>
-      <th>Revision</th>
-      <th>Date</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for task in builds %}
-  <tr{% if task.is_done and not task.failed %} class="text-warning"{% elif task.is_done and task.failed %} class="text-danger"{% endif %}>
-    <td>{{ task.id }}</td>
-    <td>{{ task.project.title }}</td>
-    <td>{{ task.revision }}</td>
-    <td>{{ task.updated }}</td>
-    <td>
-    {% if task.is_done %}
-      {% if not task.failed %}<i class="glyphicon glyphicon-ok" />
-      {% else %}<i class="glyphicon glyphicon-remove" />{% endif %}
-    {% else %}
-      <i class="glyphicon glyphicon-refresh" />
-    {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="2"><a href="{{ url_for('frontend.queue_builds') }}">View queue history</a></td>
-    </tr>
-  </tfoot>
-</table>
-{% endif %}
-
 {% if not repos %}
 <div class="alert alert-info alert-dismissable">
     <button type="button" class="close" aria-hidden="true">&times;</button>
@@ -268,9 +197,6 @@
     </tr>
   </thead>
 
-  <tfoot>
-
-  </tfoot>
 
   <tbody>
     {% for repo in repos -%}
@@ -354,8 +280,84 @@
       </tr>
     {%- endfor %}
 </tbody>
+<tfoot>
+
+</tfoot>
 </table>
 </div>
+
+
+
+{% if tasks %}
+<h3>Recent tasks</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task in tasks %}
+  <tr{% if task.done and not task.failed %} class="text-success"{% elif task.done and task.failed %} class="text-danger"{% endif %}>
+    <td>{{ task.description }}</td>
+    <td>{{ task.project.title }}</td>
+    <td>
+    {% if task.done %}
+      {% if not task.failed %}<i class="glyphicon glyphicon-ok" />
+      {% else %}<i class="glyphicon glyphicon-remove" />{% endif %}
+    {% else %}
+      <i class="glyphicon glyphicon-refresh" />
+    {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2"><a href="{{ url_for('frontend.queue_tasks') }}">View queue history</a></td>
+    </tr>
+  </tfoot>
+</table>
+{% endif %}
+
+{% if builds %}
+<h3>Recent builds</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Title</th>
+      <th>Revision</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task in builds %}
+  <tr{% if task.is_done and not task.failed %} class="text-warning"{% elif task.is_done and task.failed %} class="text-danger"{% endif %}>
+    <td>{{ task.id }}</td>
+    <td>{{ task.project.title }}</td>
+    <td>{{ task.revision }}</td>
+    <td>{{ task.updated }}</td>
+    <td>
+    {% if task.is_done %}
+      {% if not task.failed %}<i class="glyphicon glyphicon-ok" />
+      {% else %}<i class="glyphicon glyphicon-remove" />{% endif %}
+    {% else %}
+      <i class="glyphicon glyphicon-refresh" />
+    {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2"><a href="{{ url_for('frontend.queue_builds') }}">View queue history</a></td>
+    </tr>
+  </tfoot>
+</table>
+{% endif %}
 
 
 <h3>Data directory usage</h3>
