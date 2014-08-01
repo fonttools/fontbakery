@@ -37,7 +37,8 @@ def run_bakery(sourcedir, config=None):
         if 'process_files' not in config:
             config['process_files'] = cli.system.find_source_paths(sourcedir)
 
-        l = open(os.path.join(sourcedir, '.bakery.yaml'), 'w')
+        bakeryyaml = os.path.abspath(os.path.join(sourcedir, '.bakery.yaml'))
+        l = open(bakeryyaml, 'w')
         l.write(yaml.safe_dump(config))
         l.close()
 
@@ -67,8 +68,9 @@ def run_bakery(sourcedir, config=None):
         b.load_config(config)
 
         b.run()
-    except Exception:
+    except Exception, ex:
         print >> sys.stderr, 'FAILED: %s' % sourcedir
+        print >> sys.stderr, ex
 
 
 if __name__ == '__main__':

@@ -81,9 +81,8 @@ def linebreaks(value):
 
 
 def send_mail(subject, message, recipients=["hash.3g@gmail.com"]):
-    from flask import current_app
     import mandrill
-    with current_app.test_request_context('/'):
+    with app.test_request_context('/'):
         request_msg = {
             "html": linebreaks(message),
             "subject": subject,

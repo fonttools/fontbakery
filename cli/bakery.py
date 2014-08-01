@@ -108,6 +108,8 @@ class Bakery(object):
         ]
 
     def init_logging(self, logfile):
+        if not os.path.exists(self.builds_dir):
+            os.makedirs(self.builds_dir)
         self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')
 
     def init_taskset(self, taskset):
