@@ -318,7 +318,7 @@ function fillSubsetTable(values) {
 
     string = $(string.replace(/\{2\}/g, coverage));
 
-    if (STATE['subset'].indexOf(subsetname) >= 0) {
+    if (('subset' in STATE) && STATE['subset'].indexOf(subsetname) >= 0) {
       string.find('[type=checkbox]').attr('checked', 'checked')
     }
     $('#id_subset').find('tbody').append(string);
