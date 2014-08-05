@@ -37,6 +37,15 @@ class GithubSessionAPI:
             raise GithubSessionException(_(('Could not connect to Github'
                                             ' to load repo data.')))
 
+    def get_repo_data(self, fullname):
+        print fullname
+        resp = self._session.get('repos/%s' % fullname)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            raise GithubSessionException(_(('Could not connect to Github'
+                                            ' to load repo data.')))
+
     def get_repo_list(self):
         """ Returns list of repos for user token """
         page = 0

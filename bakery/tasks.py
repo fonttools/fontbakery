@@ -31,18 +31,18 @@ from cli.utils import RedisFd
 
 @job
 def refresh_latest_commits():
-    from bakery.app import app
-    from bakery.models import Project, ProjectBuild
-    with app.test_request_context('/'):
-        for project in Project.query.all():
-            # build = project.latest_build()
-            # if not build:
-            #     continue
-            # if build.revision == project.latest_commit:
-            #     continue
-            # if not build.is_failed and build.is_done:
-            build = ProjectBuild.make_build(project)
-            process_project(project, build, force_sync=True)
+    # from bakery.app import app
+    # from bakery.models import Project, ProjectBuild
+    # with app.test_request_context('/'):
+    #     for project in Project.query.all():
+    #         # build = project.latest_build()
+    #         # if not build:
+    #         #     continue
+    #         # if build.revision == project.latest_commit:
+    #         #     continue
+    #         # if not build.is_failed and build.is_done:
+    #         build = ProjectBuild.make_build(project)
+    #         process_project(project, build, force_sync=True)
 
     from scripts.gitupdate import main
     main()
@@ -424,7 +424,7 @@ def process_project(project, build, force_sync=False):
                 # zip out folder with revision
                 url = app.config['DATA_URL']
                 url += '%(login)s/%(id)s.out' % param
-                _ = 'Link to archive [%(name)s.zip](%(url)s/%(name)s)\n'
+                _ = 'Link to archive [%(name)s](%(url)s/%(name)s)\n'
                 _ = _ % {'name': config['zip'], 'url': url}
                 b.log.write(_, prefix="### ")
 

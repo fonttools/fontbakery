@@ -93,6 +93,27 @@ def profile():
     return render_template('settings/index.html', repos=_repos)
 
 
+def find_cachedata(clone):
+    import urlparse
+    pp = urlparse.urlparse(clone)
+    full_name = pp.path[:-4].strip('/')
+
+    if 'github.com' == pp.netloc:
+        projects = ProjectCache.query.all()
+        for p in projects:
+
+            for d in p.data:
+                if d['full_name'] == full_name:
+                    return d
+
+    _github = GithubSessionAPI(github, g.user.token)
+    try:
+        data = _github.get_repo_data(full_name)
+        return data
+    except GithubSessionException:
+        pass
+
+
 @settings.route('/addclone', methods=['POST'])
 @login_required
 def addclone():
@@ -127,15 +148,15 @@ def addclone():
         flash(_("Problem parsing git url"))
         return redirect(url_for('settings.repos') + "#tab_massgithub")
 
-    project = Project(login=g.user.login, clone=clone, is_github=False)
+    project = Project(login=g.user.login, clone=clone)
 
-    # if (clone in map(lambda x: x['clone_url'], user.data)
-    #         or clone in map(lambda x: x['git_url'], user.data)):
-    #     pass
+    cachedata = find_cachedata(clone)
+    if cachedata:
+        project.html_url = cachedata['homepage']
+        project.full_name = cachedata['full_name']
 
-    if project:
-        db.session.add(project)
-        db.session.commit()
+    db.session.add(project)
+    db.session.commit()
 
     flash(_("Repository successfully added"))
     project.sync()

@@ -216,8 +216,7 @@
             {% if repo.html_url %}<a href="{{ repo.html_url }}"><i class="fa fa-home"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
-            {# TODO this doesn't work... also broken in macros.html #}
-            {% if repo.link %}<a href="{{ repo.link}}"><i class="fa fa-external-link"></i></a>{% endif %}
+            {% if repo.full_name %}<a href="http://github.com/{{ repo.full_name }}"><i class="fa fa-external-link"></i></a>{% endif %}
         </td>
         <td style="text-align: center">
             <a href="{{ repo.clone }}"><i class="fa fa-code-fork apopover" data-trigger="hover" data-content="{{ _('Repository URL') }}"></i></a>

@@ -16,14 +16,14 @@
     <li style="padding-top: 36px;">
       <a class="btn btn-primary" href="{{ url_for('project.pull', username=project.login, project_id=project.id )}}">{{ _("Pull updates") }}</a>
     </li>
-    {% if project.homepage %}
+    {% if project.html_url %}
     <li>
-        <a href="{{ project.homepage }}"><i class="fa fa-home"></i></a>
+        <a href="{{ project.html_url }}"><i class="fa fa-home"></i></a>
     </li>
     {% endif %}
-    {% if project.link %}
+    {% if project.full_name %}
     <li>
-        <a href="{{ project.link }}"><i class="fa fa-external-link"></i></a>
+        <a href="http://github.com/{{ project.full_name }}"><i class="fa fa-external-link"></i></a>
     </li>
     {% endif %}
     <li style="padding-top: 18px;">
