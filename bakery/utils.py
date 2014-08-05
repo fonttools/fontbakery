@@ -43,6 +43,11 @@ def get_current_time():
     return datetime.utcnow()
 
 
+def json(value):
+    import simplejson
+    return simplejson.dumps(value)
+
+
 def pretty_date(date, default=None):
     """
     Returns string representing "time since" e.g.

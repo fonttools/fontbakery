@@ -174,11 +174,12 @@ def register_blueprints(app):
 
 def register_filters(app):
     # Additional Jinja filters
-    from utils import pretty_date, signify, short
+    from utils import pretty_date, signify, short, json
 
     app.jinja_env.filters['pretty_date'] = pretty_date
     app.jinja_env.filters['signify'] = signify
     app.jinja_env.filters['short'] = short
+    app.jinja_env.filters['json'] = json
     app.jinja_env.globals['app_version'] = git_info
     app.jinja_env.add_extension('jinja2.ext.do')
 

@@ -61,12 +61,14 @@ def refresh_repositories(username, token):
         print(ex.message)
 
 
-def get_subsets_coverage_data(source_fonts_paths, log=None):
-    """ Return dict mapping key to the corresponding subsets coverage.
+def get_subsets_coverage_data(source_fonts_paths, _in, log=None):
+    """ Return dict mapping key to the corresponding subsets coverage
 
-    For example:
-
-    {'latin': 86, 'devanagari': 72}
+        {'subsetname':
+            {'fontname-light': 13, 'fontname-bold': 45},
+         'subsetname':
+            {'fontname-light': 9, 'fontname-bold': 100}
+        }
     """
     from fontaine.font import FontFactory
     from fontaine.cmap import Library
@@ -74,14 +76,19 @@ def get_subsets_coverage_data(source_fonts_paths, log=None):
     subsets = {}
     for fontpath in source_fonts_paths:
         try:
-            font = FontFactory.openfont(fontpath)
+            font = FontFactory.openfont(op.join(_in, fontpath))
         except AssertionError, ex:
             if log:
                 log.write('Error: [%s] %s' % (fontpath, ex.message))
             continue
         for charmap, _, coverage, _ in \
                 font.get_orthographies(_library=library):
-            subsets[charmap.common_name.replace('Subset ', '')] = coverage
+
+            subsetname = charmap.common_name.replace('Subset ', '')
+            if subsetname not in subsets:
+                subsets[subsetname] = {}
+
+            subsets[subsetname][fontpath] = coverage
     return subsets
 
 
@@ -97,7 +104,6 @@ def generate_subsets_coverage_list(project, log=None):
 
         Returns:
             Sorted subsets from prepared yaml file in tuple
-            [(common_name, coverage),]
 
     """
     from .app import app
@@ -120,8 +126,8 @@ def generate_subsets_coverage_list(project, log=None):
     # To complete to absolute paths use python os.path.join method
     # on root and path
     for path in ufo_dirs + ttx_files:
-        source_fonts_paths.append(op.join(_in, path))
-    subsets = get_subsets_coverage_data(source_fonts_paths, log)
+        source_fonts_paths.append(path)
+    subsets = get_subsets_coverage_data(source_fonts_paths, _in, log)
 
     contents = yaml.safe_dump(subsets)
 

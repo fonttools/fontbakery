@@ -79,9 +79,16 @@
   <div class="form-group  anchorUnderNavbar">
     <label class="control-label col-sm-2" for="subset"><strong>{{ _("Subsets:") }}</strong></label>
     <div class="col-sm-8">
-      {% set subsetvals = project.get_subsets() %}
-      <table class="table">
+      <table class="table" id="id_subset">
+        <thead>
+          <tr>
+            <th>{{ _("Subset Name") }}</th>
+            <th>{{ _("TTFAutoHint options") }}</th>
+            <th>{{ _("Coverage, %%") }}</th>
+          </tr>
+        </thead>
         <tbody>
+          {#
           {% for subset_name, percentage in subsetvals %}
           <tr>
             <td><label for="subset.{{ subset_name }}">{{ subset_name }}</label></td>
@@ -90,6 +97,7 @@
             <td><input type="checkbox" id="subset.{{ subset_name }}" value="{{ subset_name }}" name="subset"{% if subset_name in config['state']['subset'] %} checked="checked"{% endif %}></td>
           </tr>
           {% endfor %}
+          #}
         </tbody>
       </table>
     </div>
@@ -273,6 +281,54 @@ function set_ttfautohint_arg(option) {
     $('#ttfautohint').val(val + ' ' + option);
 }
 
+
+var STATE = {{ config['state']|json|safe }};
+
+// get('pyftsubset.%s' % subset_name)
+{% if subset_name in config['state']['subset'] %} checked="checked"{% endif %}
+
+
+function fillSubsetTable(values) {
+  $('#id_subset').find('tbody').html('');
+  var subsetdata = {{ project.get_subsets()|json|safe }};
+  var tmpl = '<tr>'
+         + ' <td><label for="subset.{0}">{0}</label></td>'
+         + ' <td><input type="text" name="pyftsubset.{0}" value="{1}" /></td>'
+         + ' <td>{2}</td>'
+         + ' <td><input type="checkbox" id="subset.{0}" value="{0}" name="subset"></td>'
+         + '</tr>';
+
+
+  for (var k = 0; k < subsetdata.length; k++) {
+    var subsetname = subsetdata[k][0];
+    var ttfautohint = ''
+    if ('pyftsubset.' + subsetname in STATE) {
+      ttfautohint = STATE['pyftsubset.' + subsetname];
+    }
+    string = tmpl.replace(/\{0\}/g, subsetname)
+                 .replace(/\{1\}/g, ttfautohint);
+
+    coverage = ''
+    for (var f in subsetdata[k][1]) {
+      if (values.indexOf(f) < 0) {
+        continue;
+      }
+      if (coverage) {
+        coverage += '<br />';
+      }
+      coverage = coverage + f + ': ' + subsetdata[k][1][f] + ' %';
+    }
+
+    string = $(string.replace(/\{2\}/g, coverage));
+
+    if (STATE['subset'].indexOf(subsetname) >= 0) {
+      string.find('[type=checkbox]').attr('checked', 'checked')
+    }
+    $('#id_subset').find('tbody').append(string);
+  }
+}
+
+
 $(document).ready(function() {
   $('[name=subset]').on('change', function(){
     if ($(this).val() == 'devanagari') {
@@ -284,6 +340,13 @@ $(document).ready(function() {
       }
     }
   });
+
+
+  $('[name=process_files]').on('change', function(){
+    fillSubsetTable($(this).val());
+  })
+
+  fillSubsetTable($('[name=process_files]').val());
 
   $('button[data-confirm]').click(function(ev) {
     var form = $(this).closest('form');

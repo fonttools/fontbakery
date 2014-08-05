@@ -235,6 +235,8 @@ class Project(db.Model):
     def current_revision(self):
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        if not os.path.exists(_in):
+            os.makedirs(_in)
         return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
     def get_subsets(self):
@@ -253,6 +255,9 @@ class Project(db.Model):
 
         DATA_ROOT = current_app.config.get('DATA_ROOT')
         _in = os.path.join(DATA_ROOT, '%(login)s/%(id)s.in/' % self)
+        if not os.path.exists(_in):
+            os.makedirs(_in)
+
         repo = Repo(_in)
 
         commits = repo.iter_commits('HEAD', max_count=101, skip=skip)

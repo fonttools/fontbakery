@@ -26,7 +26,7 @@ class TaskTestCase(unittest.TestCase):
 
     def test_subsets_coverage_data(self):
         path = op.join(app.config['ROOT'], 'tests/fixtures/ttf/Font-Bold.ttf')
-        self.assertTrue(get_subsets_coverage_data([path]))
+        self.assertTrue(get_subsets_coverage_data([path], ''))
 
         path = op.join(app.config['ROOT'], 'tests/fixtures/src/Font-Bold.ttx')
-        self.assertTrue(get_subsets_coverage_data([path]))
+        self.assertTrue(get_subsets_coverage_data([path], ''))
