@@ -12,6 +12,7 @@ class TestRepository(unittest.TestCase):
     def test_execute_refresh_repos_task_after_login(self):
         with app.test_request_context('/'):
             refresh_repositories.delay = MagicMock(name='refresh_repos')
+            refresh_latest_commits.delay = MagicMock(name='refresh_commits')
 
             authorize_user({'login': 'offline', 'gravatar_id': '',
                             'email': ''}, token='')
@@ -20,7 +21,8 @@ class TestRepository(unittest.TestCase):
 
     def test_execute_refresh_latest_commit_after_login(self):
         with app.test_request_context('/'):
-            refresh_latest_commits.delay = MagicMock(name='refresh_repos')
+            refresh_repositories.delay = MagicMock(name='refresh_repos')
+            refresh_latest_commits.delay = MagicMock(name='refresh_commits')
 
             authorize_user({'login': 'offline', 'gravatar_id': '',
                             'email': ''}, token='')
