@@ -35,9 +35,13 @@ def extract_emails_from_string(string):
     return regex.findall(string)
 
 
+LICENSE_URLS = ['http://scripts.sil.org/OFL',
+                'http://www.apache.org/licenses/LICENSE-2.0.html']
+
+
 def extract_urls_from_string(string):
-    regex = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
-    return [x[0] for x in regex.findall(string)]
+    regex = re.compile(ur'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s|()<>]+|\(([^\s|()<>]+|(\([^\s|()<>]+\)))*\))+(?:\(([^\s|()<>]+|(\([^\s|()<>]+\)))*\)|[^\s|`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
+    return [x[0] for x in regex.findall(string) if x[0] not in LICENSE_URLS]
 
 
 def extract_designers_from_string(string):
