@@ -22,7 +22,6 @@ import io
 import itsdangerous
 import os
 import os.path as op
-import re
 
 from flask import current_app
 from scripts.genmetadata import sortOldMetadata as sortMetadata
@@ -44,8 +43,8 @@ def get_current_time():
 
 
 def json(value):
-    import simplejson
-    return simplejson.dumps(value)
+    import json
+    return json.dumps(value)
 
 
 def pretty_date(date, default=None):
