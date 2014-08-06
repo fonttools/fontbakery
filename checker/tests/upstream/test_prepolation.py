@@ -15,6 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import fontforge
+import lxml.etree
+import os
 import os.path as op
 
 from checker.base import BakeryTestCase as TestCase
@@ -46,10 +48,47 @@ class FontTestPrepolation(TestCase):
 
         glyphs = []
         for f in directory.get_fonts():
-            if f[-4:] in ['.ufo', '.sfd']:
-                glyphs_ = self.get_ufo_glyphs(f)
-            else:
-                glyphs_ = self.get_ttf_glyphs(f)
+            glyphs_ = self.get_glyphs(f)
 
             if glyphs and glyphs != glyphs_:
                 self.fail('Family has different glyphs across fonts')
+
+    def get_glyphs(self, f):
+        if f[-4:] in ['.ufo', '.sfd']:
+            return self.get_ufo_glyphs(f)
+        return self.get_ttf_glyphs(f)
+
+    def get_contours(self, f, g):
+        file_extension = f[-4:]
+        if file_extension == '.ufo':
+            for k in os.listdir(op.join(self.path, f, 'glyphs')):
+                doc = lxml.etree.parse(op.join(self.path, f, 'glyphs', k))
+                if not doc.xpath('//glyph[@name="%s"]' % g):
+                    continue
+
+                value = len(doc.xpath('//outline/contour'))
+
+                components = doc.xpath('//outline/component/@base')
+                for component in components:
+                    value += self.get_contours(f, component)
+
+                return value
+
+        if file_extension in ['.ttf', '.ttx', '.otf']:
+            pass
+
+    def test_font_prepolation_glyph_contours(self):
+        """ Check that glyphs has same number of contours across family """
+        directory = UpstreamDirectory(self.path)
+
+        glyphs = {}
+        for f in directory.get_fonts():
+            glyphs_ = self.get_glyphs(f)
+
+            for g in glyphs_:
+                number_contours = self.get_contours(f, g)
+                if g in glyphs and glyphs[g] != number_contours:
+                    msg = ('Number of contours of glyph "%s" does not match'
+                           'Expected %s contours, but actual is %s contours')
+                    self.fail(msg % (g, glyphs[g], number_contours))
+                glyphs[g] = number_contours

@@ -27,8 +27,9 @@ if __name__ == '__main__':
     parser.add_argument('action', help="Action or target test suite",
                         choices=['list', 'result', 'upstream',
                                  'upstream-ttx', 'metadata',
-                                 'description'],)
+                                 'description', 'upstream-repo'],)
     parser.add_argument('file', nargs="*", help="Test files, can be a list")
+    parser.add_argument('--test', help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=1)
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for x in args.file:
-        result = run_set(x, args.action)
+        result = run_set(x, args.action, test_method=args.test)
         failures = map(lambda x: (x._testMethodName, x._err_msg), result.get('failure', []))
         error = map(lambda x: (x._testMethodName, x._err_msg), result.get('error', []))
         if not bool(failures + error):

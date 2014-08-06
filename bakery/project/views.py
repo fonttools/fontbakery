@@ -81,6 +81,8 @@ def project_required(f):
             return f(user, p, *args, **kwargs)
         else:
             flash(_('Project is being synchronized, wait until it is done'))
+            if request.path == url_for('project.queue', username=user.login, project_id=p.id):
+                return f(user, p, *args, **kwargs)
             return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 
     return decorated_function
