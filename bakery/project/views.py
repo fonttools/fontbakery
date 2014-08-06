@@ -231,6 +231,7 @@ def setup(user, p):
     # XXX: unsure should it be local or state property
     process_files = request.form.getlist('process_files')
     config['state']['process_files'] = process_files
+    config['state']['fontcrunch'] = bool(request.form.get('fontcrunch'))
 
     subset_list = request.form.getlist('subset')
     subsets = dict(p.get_subsets()).keys()
