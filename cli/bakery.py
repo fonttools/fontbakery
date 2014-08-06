@@ -96,6 +96,7 @@ class Bakery(object):
             pipe.PyFtSubset,
             pipe.FontLint,
             pipe.Optimize,
+            pipe.FontCrunch,
             pipe.AutoFix,
             pipe.CopyLicense,
             pipe.CopyFontLog,

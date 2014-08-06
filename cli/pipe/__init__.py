@@ -11,3 +11,4 @@ from cli.pipe.autofix import AutoFix
 from cli.pipe.rename import Rename
 from cli.pipe.checkout import Checkout
 from cli.pipe.zip import Zip
+from cli.pipe.fontcrunch import FontCrunch
