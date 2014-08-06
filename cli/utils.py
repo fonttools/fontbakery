@@ -61,11 +61,11 @@ class UpstreamDirectory(object):
     ['Font-SemiBold.ttf']
     >>> upstream.METADATA
     ['METADATA.json']
-    >>> upstream.LICENSE
+    >>> sorted(upstream.LICENSE)
     ['APACHE.txt', 'LICENSE.txt']
     >>> upstream.SFD
     ['Font-Bold.sfd']
-    >>> upstream.TXT
+    >>> sorted(upstream.TXT)
     ['APACHE.txt', 'LICENSE.txt']
     """
 

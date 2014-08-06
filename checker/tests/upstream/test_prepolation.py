@@ -34,8 +34,11 @@ class FontTestPrepolation(TestCase):
         return [g.glyphname for g in f.glyphs()]
 
     def get_ttf_glyphs(self, path):
-        f = Font.get_ttfont(op.join(self.path, path))
-        return [g for g in f.getGlyphOrder()]
+        try:
+            f = Font.get_ttfont(op.join(self.path, path))
+        except Exception, ex:
+            self.fail('%s: %s' % (ex, path))
+        return [g for g in f.ttfont.getGlyphOrder()]
 
     def test_font_test_prepolation_glyph_names(self):
         """ Check glyph names are all the same across family """
@@ -44,9 +47,9 @@ class FontTestPrepolation(TestCase):
         glyphs = []
         for f in directory.get_fonts():
             if f[-4:] in ['.ufo', '.sfd']:
-                glyphs_ = self.get_ufo_glyphs()
+                glyphs_ = self.get_ufo_glyphs(f)
             else:
-                glyphs_ = self.get_ttf_glyphs()
+                glyphs_ = self.get_ttf_glyphs(f)
 
             if glyphs and glyphs != glyphs_:
                 self.fail('Family has different glyphs across fonts')

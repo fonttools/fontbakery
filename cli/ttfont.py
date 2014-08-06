@@ -1,4 +1,4 @@
-# coding: utf-8
+    # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,11 @@ class BaseFont(object):
 class Font(BaseFont):
 
     def __init__(self, fontpath):
-        self.ttfont = ttLib.TTFont(fontpath)
+        if fontpath[-4:] == '.ttx':
+            self.ttfont = ttLib.TTFont(None)
+            self.ttfont.importXML(fontpath, quiet=True)
+        else:
+            self.ttfont = ttLib.TTFont(fontpath)
 
         self.ascents = AscentGroup(self.ttfont)
         self.descents = DescentGroup(self.ttfont)
