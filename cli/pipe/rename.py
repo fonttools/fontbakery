@@ -18,6 +18,7 @@ import os.path as op
 import re
 
 from cli.system import shutil
+from cli.utils import nameTableRead
 from fontTools import ttLib
 
 
@@ -63,19 +64,6 @@ class Rename(object):
         pipedata['bin_files'] = newfiles
         return pipedata
 
-    @staticmethod
-    def nameTableRead(font, NameID, fallbackID=None):
-        for record in font['name'].names:
-            if record.nameID == NameID:
-                if b'\000' in record.string:
-                    string = record.string.decode('utf-16-be')
-                    return string.encode('utf-8')
-                else:
-                    return record.string
-        if fallbackID:
-            return Rename.nameTableRead(font, fallbackID)
-        return ''
-
     def get_psname(self, ttfont):
         stylename = re.sub(r'\s', '', self.get_style(ttfont))
         familyname = re.sub(r'\s', '', self.get_family(ttfont))
@@ -83,11 +71,11 @@ class Rename(object):
 
     def get_style(self, ttfont):
         # Find the style name
-        style_name = Rename.nameTableRead(ttfont, 17, 2)
+        style_name = nameTableRead(ttfont, 17, 2)
         # Always have a regular style
         if style_name == 'Normal' or style_name == 'Roman':
             style_name = 'Regular'
         return style_name
 
     def get_family(self, ttfont):
-        return Rename.nameTableRead(ttfont, 16, 1)
+        return nameTableRead(ttfont, 16, 1)

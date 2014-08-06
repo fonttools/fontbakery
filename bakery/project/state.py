@@ -19,9 +19,11 @@ import fontforge
 import os
 import re
 import yaml
-# from flask import current_app
+
 from fontTools.ttLib import TTFont
 from bakery.app import app
+
+from cli.utils import UpstreamDirectory, nameTableRead
 
 
 def walkWithoutGit(path):
@@ -125,36 +127,13 @@ def project_state_get(project, refresh=False):
         project_state_save(project, state, local)
         return state, local
 
-    # otherwise, list txt and ufo files found in _in
-    txt_files = []
-    bin_files = []
-    ufo_dirs = []
-    ttx_files = []
-    sfd_files = []
-    l = len(_in)
-    for root, dirs, files in os.walk(_in):
-        for f in files:
-            fullpath = os.path.join(root, f)
-            if os.path.splitext(fullpath)[1].lower() in ['.txt', '.md', '.markdown', 'LICENSE']:
-                txt_files.append(fullpath[l:])
-            if os.path.splitext(fullpath)[1].lower() in ['.ttf', '.otf']:
-                bin_files.append(fullpath[l:])
-            if os.path.splitext(fullpath)[1].lower() in ['.ttx', ]:
-                if fullpath[l:].count('.') > 1:
-                    continue
-                ttx_files.append(fullpath[l:])
-            if os.path.splitext(fullpath)[1].lower() == '.sfd':
-                sfd_files.append(fullpath[l:])
-        for d in dirs:
-            fullpath = os.path.join(root, d)
-            if os.path.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath[l:])
+    directory = UpstreamDirectory(_in)
 
-    local['txt_files'] = txt_files
-    local['bin_files'] = bin_files
-    local['ufo_dirs'] = ufo_dirs
-    local['ttx_files'] = ttx_files
-    local['sfd_files'] = sfd_files
+    local['txt_files'] = directory.TXT
+    local['bin_files'] = directory.BIN
+    local['ufo_dirs'] = directory.UFO
+    local['ttx_files'] = directory.TTX
+    local['sfd_files'] = directory.SFD
 
     # If license_file not defined then choose OFL.txt or LICENSE.txt from
     # the root of repo, if it exists
@@ -179,20 +158,6 @@ def project_state_get(project, refresh=False):
 
 def license_filter(licenses, files):
     return filter(lambda fn: os.path.basename(fn).lower() in licenses, files)
-
-
-def nameTableRead(font, NameID, fallbackNameID=False):
-    for record in font['name'].names:
-        if record.nameID == NameID:
-            if b'\000' in record.string:
-                return record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                return record.string
-
-    if fallbackNameID:
-        return nameTableRead(font, fallbackNameID)
-
-    return ''
 
 
 class StateAutodiscover:

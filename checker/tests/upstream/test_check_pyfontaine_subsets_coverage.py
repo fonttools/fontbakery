@@ -14,11 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
-import os.path as op
 import re
 
 from checker.base import BakeryTestCase as TestCase
+from cli.utils import UpstreamDirectory
 
 from fontaine.font import FontFactory
 from fontaine.cmap import Library
@@ -29,28 +28,6 @@ def get_test_subset_function(value):
         self.assertEqual(value, 100)
     function.tags = ['note']
     return function
-
-
-def get_sources_lists(rootpath):
-    """ Return list of lists of UFO, TTX and METADATA.json """
-    ufo_dirs = []
-    ttx_files = []
-    metadata_files = []
-    l = len(rootpath)
-    for root, dirs, files in os.walk(rootpath):
-        for f in files:
-            fullpath = op.join(root, f)
-            if op.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
-                if fullpath[l:].count('.') > 1:
-                    continue
-                ttx_files.append(fullpath[l:])
-            if f.lower() == 'metadata.json':
-                metadata_files.append(fullpath[:l])
-        for d in dirs:
-            fullpath = op.join(root, d)
-            if op.splitext(fullpath)[1].lower() == '.ufo':
-                ufo_dirs.append(fullpath[l:])
-    return ufo_dirs, ttx_files, metadata_files
 
 
 class FontaineTest(TestCase):
@@ -64,8 +41,9 @@ class FontaineTest(TestCase):
     def __generateTests__(cls):
         pattern = re.compile('[\W_]+')
         library = Library(collections=['subsets'])
-        ufo_files, ttx_files, _ = get_sources_lists(cls.path)
-        for fontpath in ufo_files + ttx_files:
+
+        directory = UpstreamDirectory(cls.path)
+        for fontpath in directory.UFO + directory.TTX:
             font = FontFactory.openfont(fontpath)
             for charmap, _, coverage, _ in \
                     font.get_orthographies(_library=library):

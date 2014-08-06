@@ -21,9 +21,9 @@ import os
 import sys
 import yaml
 
-import cli.system
-from cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 from cli import pipe
+from cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
+from cli.utils import UpstreamDirectory
 
 
 def run_bakery(sourcedir, config=None):
@@ -35,7 +35,8 @@ def run_bakery(sourcedir, config=None):
             config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
         if 'process_files' not in config:
-            config['process_files'] = cli.system.find_source_paths(sourcedir)
+            directory = UpstreamDirectory(sourcedir)
+            config['process_files'] = directory.get_fonts()
 
         bakeryyaml = os.path.abspath(os.path.join(sourcedir, '.bakery.yaml'))
         l = open(bakeryyaml, 'w')

@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import lxml.etree
+import os
+import os.path as op
 import re
 
 
@@ -44,3 +47,98 @@ class RedisFd(object):
     def close(self):
         self.filed.write("End: End of log\n")  # end of log
         self.filed.close()
+
+
+class UpstreamDirectory(object):
+    """ Describes structure of upstream directory
+
+    >>> upstream = UpstreamDirectory("tests/fixtures/upstream-example")
+    >>> upstream.UFO
+    ['Font-Regular.ufo']
+    >>> upstream.TTX
+    ['Font-Light.ttx']
+    >>> upstream.BIN
+    ['Font-SemiBold.ttf']
+    >>> upstream.METADATA
+    ['METADATA.json']
+    >>> upstream.LICENSE
+    ['APACHE.txt', 'LICENSE.txt']
+    >>> upstream.SFD
+    ['Font-Bold.sfd']
+    >>> upstream.TXT
+    ['APACHE.txt', 'LICENSE.txt']
+    """
+
+    OFL = ['open font license.markdown', 'ofl.txt', 'ofl.md']
+    LICENSE = ['license.txt', 'license.md', 'copyright.txt']
+    APACHE = ['apache.txt', 'apache.md']
+    UFL = ['ufl.txt', 'ufl.md']
+
+    ALL_LICENSES = OFL + LICENSE + APACHE + UFL
+
+    def __init__(self, upstream_path):
+        self.upstream_path = upstream_path
+
+        self.UFO = []
+        self.TTX = []
+        self.BIN = []
+        self.LICENSE = []
+        self.METADATA = []
+        self.SFD = []
+        self.TXT = []
+
+        self.walk()
+
+    def get_fonts(self):
+        return self.UFO + self.TTX + self.BIN + self.SFD
+    ALL_FONTS = property(get_fonts)
+
+    def walk(self):
+        l = len(self.upstream_path)
+        for root, dirs, files in os.walk(self.upstream_path):
+            for f in files:
+                fullpath = op.join(root, f)
+
+                if f[-4:].lower() == '.ttx':
+                    try:
+                        doc = lxml.etree.parse(fullpath)
+                        el = doc.xpath('//ttFont[@sfntVersion]')
+                        if not el:
+                            continue
+                    except:
+                        continue
+                    self.TTX.append(fullpath[l:].strip('/'))
+
+                if op.basename(f).lower() == 'metadata.json':
+                    self.METADATA.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() in ['.ttf', '.otf']:
+                    self.BIN.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() == '.sfd':
+                    self.SFD.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() in ['.txt', '.markdown', '.md', '.LICENSE']:
+                    self.TXT.append(fullpath[l:].strip('/'))
+
+                if op.basename(f).lower() in UpstreamDirectory.ALL_LICENSES:
+                    self.LICENSE.append(fullpath[l:].strip('/'))
+
+            for d in dirs:
+                fullpath = op.join(root, d)
+                if op.splitext(fullpath)[1].lower() == '.ufo':
+                    self.UFO.append(fullpath[l:].strip('/'))
+
+
+def nameTableRead(font, NameID, fallbackNameID=False):
+    for record in font['name'].names:
+        if record.nameID == NameID:
+            if b'\000' in record.string:
+                return record.string.decode('utf-16-be').encode('utf-8')
+            else:
+                return record.string
+
+    if fallbackNameID:
+        return nameTableRead(font, fallbackNameID)
+
+    return ''

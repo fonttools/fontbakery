@@ -19,7 +19,11 @@ import os.path as op
 from fontTools import ttLib
 
 
-class Font(object):
+class BaseFont(object):
+
+    @staticmethod
+    def get_ttfont(path):
+        return Font(path)
 
     @staticmethod
     def get_ttfont_from_metadata(path, font_metadata, is_menu=False):
@@ -28,9 +32,8 @@ class Font(object):
             path = path.replace('.ttf', '.menu')
         return Font.get_ttfont(path)
 
-    @staticmethod
-    def get_ttfont(path):
-        return Font(path)
+
+class Font(BaseFont):
 
     def __init__(self, fontpath):
         self.ttfont = ttLib.TTFont(fontpath)
@@ -56,7 +59,7 @@ class Font(object):
         '\\xb8\\x01\\xff\\x85\\xb0\\x04\\x8d'
         """
         try:
-            return self.ttfont['prep'].program.getBytecode()
+            return self['prep'].program.getBytecode()
         except KeyError:
             return ""
 
@@ -148,6 +151,12 @@ class Font(object):
         """
         return self['OS/2'].fsType
 
+    def platform_entry(self, entry):
+        if entry.platformID == 1 and entry.langID == 0:
+            return Font.bin2unistring(entry)
+        elif entry.platformID == 3 and entry.langID == 0x409:
+            return Font.bin2unistring(entry)
+
     @property
     def fullname(self):
         """ Returns fullname of fonts
@@ -159,11 +168,9 @@ class Font(object):
         for entry in self.names:
             if entry.nameID != 4:
                 continue
-            # macintosh platform
-            if entry.platformID == 1 and entry.langID == 0:
-                return Font.bin2unistring(entry)
-            elif entry.platformID == 3 and entry.langID == 0x409:
-                return Font.bin2unistring(entry)
+            value = self.platform_entry(entry)
+            if value:
+                return value
 
     @property
     def familyname(self):
@@ -176,11 +183,9 @@ class Font(object):
         for entry in self.names:
             if entry.nameID != 1:
                 continue
-            # macintosh platform
-            if entry.platformID == 1 and entry.langID == 0:
-                return Font.bin2unistring(entry)
-            if entry.platformID == 3 and entry.langID == 0x409:
-                return Font.bin2unistring(entry)
+            value = self.platform_entry(entry)
+            if value:
+                return value
 
     @property
     def post_script_name(self):
@@ -259,7 +264,7 @@ class Font(object):
         >>> font.get_loca_glyph_offset(16)
         904L
         """
-        return self.ttfont['loca'].locations[num]
+        return self['loca'].locations[num]
 
     def get_loca_glyph_length(self, num):
         """ Retrieve length of glyph in font loca table
@@ -287,7 +292,7 @@ class Font(object):
         1409
         """
         advance_width_max = 0
-        for g in self.ttfont['hmtx'].metrics.values():
+        for g in self['hmtx'].metrics.values():
             advance_width_max = max(g[0], advance_width_max)
         return advance_width_max
 
@@ -302,7 +307,7 @@ class Font(object):
         return self.advance_width()
 
     def get_upm_height(self):
-        return self.ttfont['head'].unitsPerEm
+        return self['head'].unitsPerEm
 
     def get_highest_and_lowest(self):
         high = []
@@ -311,7 +316,7 @@ class Font(object):
             return high, low
         maxval = self.ascents.get_max()
         minval = self.descents.get_min()
-        for glyph, params in self.ttfont['glyf'].glyphs.items():
+        for glyph, params in self['glyf'].glyphs.items():
             if hasattr(params, 'yMax') and params.yMax > maxval:
                 high.append(glyph)
             if hasattr(params, 'yMin') and params.yMin < minval:

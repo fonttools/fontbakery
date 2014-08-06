@@ -158,30 +158,3 @@ def prun(command, cwd, log=None):
         stdout += line
         process.stdout.flush()
     return stdout
-
-
-import lxml.etree
-
-
-def find_source_paths(sourcedir):
-    """ Return list of lists of UFO, TTX and METADATA.json """
-    resultsources = []
-    l = len(sourcedir)
-    for root, dirs, files in os.walk(sourcedir):
-        for f in files:
-            fullpath = os.path.join(root, f)
-            if os.path.splitext(fullpath[l:])[1].lower() in ['.ttx', ]:
-                try:
-                    doc = lxml.etree.parse(fullpath)
-                    el = doc.xpath('//ttFont[@sfntVersion]')
-                    if not el:
-                        continue
-                except:
-                    continue
-            if os.path.splitext(fullpath[l:])[1].lower() in ['.ttx', '.ttf', '.otf', '.sfd']:
-                resultsources.append(fullpath[l:].strip('/'))
-        for d in dirs:
-            fullpath = os.path.join(root, d)
-            if os.path.splitext(fullpath)[1].lower() in ['.ufo']:
-                resultsources.append(fullpath[l:].strip('/'))
-    return resultsources

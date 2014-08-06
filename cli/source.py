@@ -20,8 +20,9 @@ import plistlib
 import re
 import sys
 
-from fontTools import ttLib
 from cli.system import shutil, run, prun
+from cli.utils import nameTableRead
+from fontTools import ttLib
 
 
 class FontSourceAbstract(object):
@@ -194,19 +195,6 @@ class UFOFontSource(FontSourceAbstract):
 
 class TTXFontSource(FontSourceAbstract):
 
-    @staticmethod
-    def nameTableRead(font, NameID, fallbackNameID=False):
-        for record in font['name'].names:
-            if record.nameID == NameID:
-                if b'\000' in record.string:
-                    string = record.string.decode('utf-16-be')
-                    return string.encode('utf-8')
-                else:
-                    return record.string
-
-        if fallbackNameID:
-            return TTXFontSource.nameTableRead(font, fallbackNameID)
-
     def open_source(self, path):
         font = ttLib.TTFont(None, lazy=False, recalcBBoxes=True,
                             verbose=False, allowVID=False)
@@ -225,7 +213,7 @@ class TTXFontSource(FontSourceAbstract):
     @property
     def style_name(self):
         # Find the style name
-        style_name = TTXFontSource.nameTableRead(self.source, 17, 2)
+        style_name = nameTableRead(self.source, 17, 2)
         # Always have a regular style
         if style_name == 'Normal' or style_name == 'Roman':
             style_name = 'Regular'
@@ -236,7 +224,7 @@ class TTXFontSource(FontSourceAbstract):
 
         def fget(self):
             return (self._family_name
-                    or TTXFontSource.nameTableRead(self.source, 16, 1))
+                    or nameTableRead(self.source, 16, 1))
 
         def fset(self, value):
             self._family_name = value

@@ -637,4 +637,4 @@ def diff(user, p):
     diffdata = p.diff_files(left, right)
 
     return render_template('project/diff.html', project=p,
-                            diff=diffdata, left=left, right=right)
+                           diff=diffdata, left=left, right=right)
