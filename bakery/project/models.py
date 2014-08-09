@@ -28,9 +28,9 @@ from blinker.base import lazy_property
 
 from ..app import db, app
 from ..utils import save_metadata
-from ..tasks import (process_project, project_git_sync,
-                     upstream_revision_tests,
-                     generate_subsets_coverage_list)
+
+from bakery import tasks
+
 from .state import project_state_get, project_state_save, walkWithoutGit
 from bakery.json_field import JSONEncodedDict
 
@@ -201,9 +201,9 @@ class Project(db.Model):
     def revision_tests(self, revision='HEAD'):
         # XXX: check revision for safety
         if revision == 'HEAD':
-            return upstream_revision_tests(self, self.current_revision())
+            return tasks.upstream_revision_tests(self, self.current_revision())
         else:
-            return upstream_revision_tests(self, revision)
+            return tasks.upstream_revision_tests(self, revision)
 
     def passed_tests_files(self, revision='HEAD'):
         passed = []
@@ -240,11 +240,11 @@ class Project(db.Model):
         return prun("git rev-parse --short HEAD", cwd=_in).strip()
 
     def get_subsets(self):
-        return sorted(generate_subsets_coverage_list(self))
+        return sorted(tasks.generate_subsets_coverage_list(self))
 
     def sync(self):
         """ Call in background git syncronization """
-        project_git_sync.delay(self)
+        tasks.project_git_sync.delay(self)
 
     def gitlog(self, skip=0):
         """ Return list of dictionaries described first 101 git repo commits
@@ -428,9 +428,9 @@ class ProjectBuild(db.Model):
         db.session.refresh(project)
         db.session.refresh(build)
         if current_app.config.get('BACKGROUND'):
-            process_project.delay(project, build, force_sync)
+            tasks.process_project.delay(project, build, force_sync)
         else:
-            process_project(project, build, force_sync)
+            tasks.process_project(project, build, force_sync)
         return build
 
     @property

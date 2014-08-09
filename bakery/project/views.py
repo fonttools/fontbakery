@@ -36,10 +36,6 @@ import itsdangerous
 
 project = Blueprint('project', __name__, url_prefix='/<string:username>')
 
-DEFAULT_SUBSET_LIST = [
-    'menu', 'latin', 'latin-ext+latin', 'cyrillic+latin', 'cyrillic-ext+latin',
-    'greek+latin', 'greek-ext+latin', 'vietnamese+latin']
-
 
 def chkhash(hashstr):
     try:
@@ -56,7 +52,7 @@ def before_request():
 
 
 # project resolve decorator
-def project_required(f):
+def project_required(method):
     """ Decorator reads project_id from arguments list and resolve it
         into project object.
 
@@ -69,7 +65,7 @@ def project_required(f):
             return "Project is available"
 
     """
-    @wraps(f)
+    @wraps(method)
     def decorated_function(username, project_id, *args, **kwargs):
         user = User.query.filter_by(login=username).first_or_404()
 
@@ -78,11 +74,9 @@ def project_required(f):
 
         # Here can be located ownership access checks in the future.
         if p.is_ready:
-            return f(user, p, *args, **kwargs)
+            return method(user, p, *args, **kwargs)
         else:
             flash(_('Project is being synchronized, wait until it is done'))
-            if request.path == url_for('project.queue', username=user.login, project_id=p.id):
-                return f(user, p, *args, **kwargs)
             return redirect(url_for('project.queue', username=user.login, project_id=p.id))
 
     return decorated_function
@@ -184,8 +178,12 @@ def build(user, p):
 
 @project.route('/<int:project_id>/api/pull', methods=['GET'])
 @login_required
-@project_required
-def pull(user, p):
+def pull(username, project_id):
+    user = User.query.filter_by(login=username).first_or_404()
+
+    p = Project.query.filter_by(id=project_id, login=username)
+    p = p.first_or_404()
+
     p.sync()
     flash(_("Pull latest version from upstream"))
     return redirect(url_for('project.queue', username=user.login, project_id=p.id))
@@ -196,8 +194,12 @@ def pull(user, p):
 
 @project.route('/<int:project_id>/queue')
 @login_required
-@project_required
-def queue(user, p):
+def queue(username, project_id):
+    user = User.query.filter_by(login=username).first_or_404()
+
+    p = Project.query.filter_by(id=project_id, login=username)
+    p = p.first_or_404()
+
     param = {'login': p.login, 'id': p.id}
     log_file = "%(login)s/%(id)s.out/upstream.log" % param
     return render_template('project/queue.html', username=user.login, project=p, log_file=log_file)

@@ -184,6 +184,8 @@ def project_git_sync(project):
         repo.git.clean(force=True)
         log.write('$ git pull origin master\n')
         repo.remotes.origin.pull()
+    except AttributeError:
+        pass
     except InvalidGitRepositoryError:
         # clone the repository
         # log.write('Copying Git Repository\n', prefix='### ')
