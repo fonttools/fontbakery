@@ -14,13 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import fontforge
-import lxml.etree
-import os
 import os.path as op
 
 from checker.base import BakeryTestCase as TestCase
-from cli.ttfont import Font
+from cli.pifont import PiFont
 from cli.utils import UpstreamDirectory
 
 
@@ -31,24 +28,14 @@ class FontTestPrepolation(TestCase):
     targets = ['upstream-repo']
     tool = 'lint'
 
-    def get_ufo_glyphs(self, path):
-        f = fontforge.open(op.join(self.path, path))
-        return [g.glyphname for g in f.glyphs()]
-
-    def get_ttf_glyphs(self, path):
-        try:
-            f = Font.get_ttfont(op.join(self.path, path))
-        except Exception, ex:
-            self.fail('%s: %s' % (ex, path))
-        return [g for g in f.ttfont.getGlyphOrder()]
-
     def test_font_test_prepolation_glyph_names(self):
         """ Check glyph names are all the same across family """
         directory = UpstreamDirectory(self.path)
 
         glyphs = []
         for f in directory.get_fonts():
-            glyphs_ = self.get_glyphs(f)
+            font = PiFont(op.join(self.path, f))
+            glyphs_ = font.get_glyphs()
 
             if glyphs and glyphs != glyphs_:
                 self.fail('Family has different glyphs across fonts')
@@ -59,15 +46,16 @@ class FontTestPrepolation(TestCase):
 
         glyphs = {}
         for f in directory.get_fonts():
-            glyphs_ = self.get_glyphs(f)
+            font = PiFont(op.join(self.path, f))
+            glyphs_ = font.get_glyphs()
 
-            for g in glyphs_:
-                number_contours = self.get_contours(f, g)
-                if g in glyphs and glyphs[g] != number_contours:
-                    msg = ('Number of contours of glyph "%s" does not match'
-                           'Expected %s contours, but actual is %s contours')
-                    self.fail(msg % (g, glyphs[g], number_contours))
-                glyphs[g] = number_contours
+            for glyphcode, glyphname in glyphs_:
+                contours = font.get_contours_count(glyphname)
+                if glyphcode in glyphs and glyphs[glyphcode] != contours:
+                    msg = ('Number of contours of glyph "%s" does not match.'
+                           ' Expected %s contours, but actual is %s contours')
+                    self.fail(msg % (glyphname, glyphs[glyphcode], contours))
+                glyphs[glyphcode] = contours
 
     def test_font_prepolation_glyph_points(self):
         """ Check that glyphs has same number of points across family """
@@ -75,52 +63,13 @@ class FontTestPrepolation(TestCase):
 
         glyphs = {}
         for f in directory.get_fonts():
-            glyphs_ = self.get_glyphs(f)
-            for g in glyphs_:
-                number_points = self.get_points(f, g)
-                if g in glyphs and glyphs[g] != number_points:
-                    msg = ('Number of points of glyph "%s" does not match'
-                           'Expected %s points, but actual is %s points')
-                    self.fail(msg % (g, glyphs[g], number_points))
-                glyphs[g] = number_points
+            font = PiFont(op.join(self.path, f))
+            glyphs_ = font.get_glyphs()
 
-    def get_glyphs(self, f):
-        if f[-4:] in ['.ufo', '.sfd']:
-            return self.get_ufo_glyphs(f)
-        return self.get_ttf_glyphs(f)
-
-    def get_contours(self, f, g):
-        file_extension = f[-4:]
-        if file_extension == '.ufo':
-            for k in os.listdir(op.join(self.path, f, 'glyphs')):
-                doc = lxml.etree.parse(op.join(self.path, f, 'glyphs', k))
-                if not doc.xpath('//glyph[@name="%s"]' % g):
-                    continue
-
-                value = len(doc.xpath('//outline/contour'))
-
-                components = doc.xpath('//outline/component/@base')
-                for component in components:
-                    value += self.get_contours(f, component)
-
-                return value
-
-        return 0
-
-    def get_points(self, f, g):
-        file_extension = f[-4:]
-        if file_extension == '.ufo':
-            for k in os.listdir(op.join(self.path, f, 'glyphs')):
-                doc = lxml.etree.parse(op.join(self.path, f, 'glyphs', k))
-                if not doc.xpath('//glyph[@name="%s"]' % g):
-                    continue
-
-                value = len(doc.xpath('//outline/contour/point'))
-
-                components = doc.xpath('//outline/component/@base')
-                for component in components:
-                    value += self.get_points(f, component)
-
-                return value
-
-        return 0
+            for g, glyphname in glyphs_:
+                points = font.get_points_count(glyphname)
+                if g in glyphs and glyphs[g] != points:
+                    msg = ('Number of points of glyph "%s" does not match.'
+                           ' Expected %s points, but actual is %s points')
+                    self.fail(msg % (glyphname, glyphs[g], points))
+                glyphs[g] = points
