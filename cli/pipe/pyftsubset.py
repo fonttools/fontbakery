@@ -78,7 +78,7 @@ class PyFtSubset(object):
                     glyphs = SubsetExtension.get_glyphs(subset)
 
                     # The Devanagari subset must include the latin unicode set too
-                    if subset == 'devanagari':
+                    if subset != 'latin':
                         G = SubsetExtension.get_glyphs('latin')
                         glyphs += ' ' + ' '.join(G.split())
                     self.execute_pyftsubset(pipedata, subset, name, glyphs=glyphs)
