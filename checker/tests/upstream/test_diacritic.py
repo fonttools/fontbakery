@@ -58,13 +58,7 @@ class TestDiacritic(TestCase):
 
         flatglyphs = 0
         for glyph in diacritic_glyphs:
-            if glyph.components:
-                # compositeglyphs += 1
-                pass
-            elif glyph.anchors:
-                # markglyphs += 1
-                pass
-            elif glyph.contours:
+            if glyph.contours and not glyph.components and not glyph.anchors:
                 flatglyphs += 1
 
         if flatglyphs and len(diacritic_glyphs) != flatglyphs:
@@ -79,12 +73,6 @@ class TestDiacritic(TestCase):
         for glyph in diacritic_glyphs:
             if glyph.components:
                 compositeglyphs += 1
-                # pass
-            elif glyph.anchors:
-                pass
-            elif glyph.contours:
-                # flatglyphs += 1
-                pass
 
         if compositeglyphs and len(diacritic_glyphs) != compositeglyphs:
             percentage = compositeglyphs * 100. / len(diacritic_glyphs)
@@ -96,15 +84,8 @@ class TestDiacritic(TestCase):
 
         markglyphs = 0
         for glyph in diacritic_glyphs:
-            if glyph.components:
-                # compositeglyphs += 1
-                pass
-            elif glyph.anchors:
+            if glyph.anchors:
                 markglyphs += 1
-                pass
-            elif glyph.contours:
-                # flatglyphs += 1
-                pass
 
         if markglyphs and len(diacritic_glyphs) != markglyphs:
             percentage = markglyphs * 100. / len(diacritic_glyphs)
