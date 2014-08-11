@@ -63,7 +63,7 @@ class TestDiacritic(TestCase):
 
         if flatglyphs and len(diacritic_glyphs) != flatglyphs:
             percentage = flatglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%.2f%% are made by Flat' % percentage)
+            self.fail('%s%% are made by Flat' % percentage)
 
     def test_diacritic_made_as_component(self):
         """ Check that diacritic glyph are made completely with composite method """
@@ -76,7 +76,7 @@ class TestDiacritic(TestCase):
 
         if compositeglyphs and len(diacritic_glyphs) != compositeglyphs:
             percentage = compositeglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%.2f%% are made by Composite' % percentage)
+            self.fail('%s%% are made by Composite' % percentage)
 
     def test_diacritic_made_as_mark_to_mark(self):
         """ Check that diacritic glyph are made completely with mark method """
@@ -89,4 +89,4 @@ class TestDiacritic(TestCase):
 
         if markglyphs and len(diacritic_glyphs) != markglyphs:
             percentage = markglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%.2f%% are made by Mark' % percentage)
+            self.fail('%s%% are made by Mark' % percentage)
