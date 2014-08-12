@@ -43,6 +43,10 @@ class PiFont(object):
         if path[-4:] == '.sfd':
             return PiFontSFD(path)
 
+    def get_glyph(self, glyphname):
+        """ Return glyph instance """
+        return self.font.get_glyph(glyphname)
+
     def get_glyphs(self):
         """ Retrieves glyphs list with their names
 
@@ -95,6 +99,12 @@ class PiFontSFD:
         ll = self.font.glyphs()
         return sorted(map(lambda x: (x.unicode, x.glyphname), ll))
 
+    def get_contours_count(self):
+        return 0
+
+    def get_points_count(self):
+        return 0
+
 
 class PiFontUfo:
     """ Supplies methods used by PiFont class to access UFO """
@@ -117,6 +127,9 @@ class PiFontUfo:
                  map(lambda x: x[0],
                      self.font.getCharacterMapping().values()))
         return sorted(ll)
+
+    def get_glyph(self, glyphname):
+        return self.font[glyphname]
 
     def get_contours_count(self, glyphname):
         """ Retrieves count of glyph contours
@@ -176,3 +189,9 @@ class PiFontFontTools:
         cmap4 = self.font.retrieve_cmap_format_4().cmap
         ll = zip(cmap4, cmap4.values())
         return sorted(ll)
+
+    def get_contours_count(self):
+        return 0
+
+    def get_points_count(self):
+        return 0

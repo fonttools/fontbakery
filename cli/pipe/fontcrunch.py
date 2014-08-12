@@ -24,7 +24,7 @@ class FontCrunch(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        if not self.pipedata.get('fontcrunch'):
+        if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
         task = self.bakery.logging_task('Foncrunching TTF')
         if self.bakery.forcerun:
