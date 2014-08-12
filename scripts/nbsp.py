@@ -106,12 +106,17 @@ def checkAndFix(filename):
     space = getGlyph(font, 0x0020)
     nbsp = getGlyph(font, 0x00A0)
     if not nbsp:
+        print("No nbsp glyph")
         nbsp = addGlyph(font, 0x00A0, 'nbsp')
     spaceWidth = getWidth(font, space)
+    print("spaceWidth is    " + str(spaceWidth))
     nbspWidth = getWidth(font, nbsp)
+    print("nbspWidth is     " + str(nbspWidth))
     if spaceWidth != nbspWidth:
         setWidth(font, nbsp, spaceWidth)
-    writeFont(font, filename)
+        writeFont(font, filename)
+        print("nbspWidth is now " + str(nbspWidth))
+    print("Nothing to do")
     return
 
 
