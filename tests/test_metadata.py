@@ -17,7 +17,7 @@
 import types
 import unittest
 
-from checker.metadata import Metadata, FamilyMetadata, FontMetadata
+from bakery_lint.metadata import Metadata, FamilyMetadata, FontMetadata
 
 
 class MetadataTestCase(unittest.TestCase):

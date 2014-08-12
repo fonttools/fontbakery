@@ -1,10 +1,10 @@
 import unittest
 from mock import patch
-from cli.pipe.copy import Copy
-from cli.pipe.build import Build
-from cli.pipe.rename import Rename
-from cli.bakery import Bakery
-import cli.system
+from bakery_cli.pipe.copy import Copy
+from bakery_cli.pipe.build import Build
+from bakery_cli.pipe.rename import Rename
+from bakery_cli.bakery import Bakery
+import bakery_cli.system
 
 
 class TestBakery(unittest.TestCase):
@@ -74,13 +74,12 @@ class TestBakery(unittest.TestCase):
         b = Rename(b)
 
         with patch.object(b, 'get_psname') as getpsname:
-            with patch('cli.system.shutil.move'):
+            with patch('bakery_cli.system.shutil.move'):
                 with patch('fontTools.ttLib.TTFont') as TTFont:
                     TTFont.return_value = ''
                     getpsname.return_value = 'fontname-regular.ttf'
                     b.execute(pipedata)
                     # move.assert_called_once_with('sources/fontname-bold.ttf',
                     #                              'sources/fontname-regular.ttf',
-                    #                              log=cli.system.stdoutlog)
+                    #                              log=bakery_cli.system.stdoutlog)
         self.assertEqual(pipedata['bin_files'], ['sources/fontname-regular.ttf'])
-

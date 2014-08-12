@@ -19,9 +19,9 @@ import mock
 import simplejson
 import StringIO
 
-from checker.tests import downstream
-from checker.tests.downstream.test_check_subsets_exists import File
-from cli.ttfont import Font as OriginFont
+from bakery_lint.tests import downstream
+from bakery_lint.tests.downstream.test_check_subsets_exists import File
+from bakery_cli.ttfont import Font as OriginFont
 
 
 class TestCase(unittest.TestCase):
@@ -329,8 +329,8 @@ class Test_CheckNoProblematicFormats(TestCase):
             def get_tables():
                 return ['glyf', 'post', 'GPOS']
 
-        import cli.ttfont
-        with mock.patch.object(cli.ttfont.FontTool, 'get_tables') as get_tables:
+        import bakery_cli.ttfont
+        with mock.patch.object(bakery_cli.ttfont.FontTool, 'get_tables') as get_tables:
             get_tables.return_value = FontTool.get_tables()
             self.failure_run(downstream.CheckNoProblematicFormats)
 

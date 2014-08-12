@@ -24,9 +24,9 @@ import yaml
 
 from flask.ext.rq import job
 
-from checker import run_set, parse_test_results
-from cli.system import os, prun
-from cli.utils import RedisFd
+from bakery_lint import run_set, parse_test_results
+from bakery_cli.system import os, prun
+from bakery_cli.utils import RedisFd
 
 
 @job
@@ -392,7 +392,7 @@ def process_project(project, build, force_sync=False):
         force_sync: means that project has to be checked out before baking
     """
     from bakery.app import app
-    from cli.bakery import Bakery
+    from bakery_cli.bakery import Bakery
 
     if force_sync:
         project_git_sync(project)
@@ -489,7 +489,7 @@ def execute_metadata_tests(login, project_id, build_id, revision):
              'revision': revision, 'build': build_id}
     builddir = joinroot('%(login)s/%(id)s.out/%(build)s.%(revision)s/' % param)
 
-    from cli.pipe.fontlint import FontLint
+    from bakery_cli.pipe.fontlint import FontLint
     fontlint = FontLint('', builddir)
     testsresult = fontlint.read_lint_testsresult()
     testsresult['METADATA.json'] = fontlint.run_metadata_tests()

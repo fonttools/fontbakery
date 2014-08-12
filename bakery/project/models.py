@@ -34,8 +34,8 @@ from bakery import tasks
 from .state import project_state_get, project_state_save, walkWithoutGit
 from bakery.json_field import JSONEncodedDict
 
-from cli.bakery import Bakery
-from cli.system import prun
+from bakery_cli.bakery import Bakery
+from bakery_cli.system import prun
 
 
 class Project(db.Model):

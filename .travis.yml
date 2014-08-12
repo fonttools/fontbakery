@@ -7,6 +7,6 @@ install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - pip install coverage python-coveralls
   - "pip install -r requirements.txt"
-script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" coverage run -m nose.__main__ tests cli.pifont cli.bakery cli.utils cli.ttfont --with-doctest
+script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" coverage run -m nose.__main__ tests bakery_cli.pifont bakery_cli.bakery bakery_cli.utils bakery_cli.ttfont --with-doctest
 after_success:
   coveralls

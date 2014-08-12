@@ -23,7 +23,7 @@ import yaml
 from fontTools.ttLib import TTFont
 from bakery.app import app
 
-from cli.utils import UpstreamDirectory, nameTableRead
+from bakery_cli.utils import UpstreamDirectory, nameTableRead
 
 
 def walkWithoutGit(path):
@@ -77,7 +77,7 @@ def project_state_get(project, refresh=False):
         local: the internal state of the project
         state: the external state of the project
     """
-    from cli.bakery import BAKERY_CONFIGURATION_DEFAULTS
+    from bakery_cli.bakery import BAKERY_CONFIGURATION_DEFAULTS
     _in = os.path.join(app.config['DATA_ROOT'], '%(login)s/%(id)s.in/' % project)
     # Define bakery.yaml locations
     bakery_default_yml = BAKERY_CONFIGURATION_DEFAULTS
