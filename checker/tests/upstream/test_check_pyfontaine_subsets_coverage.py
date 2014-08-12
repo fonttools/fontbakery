@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os.path as op
 import re
 
 from checker.base import BakeryTestCase as TestCase
@@ -44,7 +45,7 @@ class FontaineTest(TestCase):
 
         directory = UpstreamDirectory(cls.path)
         for fontpath in directory.UFO + directory.TTX:
-            font = FontFactory.openfont(fontpath)
+            font = FontFactory.openfont(op.join(cls.path, fontpath))
             for charmap, _, coverage, _ in \
                     font.get_orthographies(_library=library):
                 common_name = charmap.common_name.replace('Subset ', '')

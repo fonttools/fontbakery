@@ -84,13 +84,13 @@ def repr_testcase(dumper, data):
             try:
                 doc = ' '.join(doc.split())
                 return doc.decode('utf-8', 'ignore')
-            except:
-                return ''
+            except Exception, ex:
+                return '%s' % ex
 
     try:
         err_msg = getattr(data, '_err_msg', '').decode('utf-8', 'ignore')
-    except:
-        err_msg = ''
+    except Exception, ex:
+        err_msg = '%s' % ex
 
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),

@@ -25,19 +25,19 @@ class TestDiacritic(TestCase):
     """ These tests are using text file with contents of diacritics glyphs """
 
     path = '.'
+    name = __name__
     targets = ['upstream-repo']
     tool = 'lint'
-    name = __name__
 
     def setUp(self):
         path = op.realpath(op.dirname(__file__))
         content = open(op.join(path, 'diacritics.txt')).read()
-        self.diacriticglyphs = [x for x in content.split() if x.strip()]
+        self.diacriticglyphs = [x.strip() for x in content.split() if x.strip()]
         self.directory = UpstreamDirectory(self.path)
 
     def is_diacritic(self, glyphname):
         for diacriticglyph in self.diacriticglyphs:
-            if glyphname.index(glyphname) >= 1:
+            if glyphname.find(diacriticglyph) >= 1:
                 return True
 
     def filter_diacritics_glyphs(self):
@@ -45,10 +45,8 @@ class TestDiacritic(TestCase):
         for filepath in self.directory.UFO:
             pifont = PiFont(op.join(self.path, filepath))
             for glyphcode, glyphname in pifont.get_glyphs():
-
                 if not self.is_diacritic(glyphname):
                     continue
-
                 diacritic_glyphs.append(pifont.get_glyph(glyphname))
         return diacritic_glyphs
 
@@ -63,10 +61,11 @@ class TestDiacritic(TestCase):
 
         if flatglyphs and len(diacritic_glyphs) != flatglyphs:
             percentage = flatglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%s%% are made by Flat' % percentage)
+            self.fail('%.2f%% are made by Flat' % percentage)
+        self.fail(len(diacritic_glyphs))
 
     def test_diacritic_made_as_component(self):
-        """ Check that diacritic glyph are made completely with composite method """
+        """ Check that diacritic glyph are made completely with composite """
         diacritic_glyphs = self.filter_diacritics_glyphs()
 
         compositeglyphs = 0
@@ -76,7 +75,7 @@ class TestDiacritic(TestCase):
 
         if compositeglyphs and len(diacritic_glyphs) != compositeglyphs:
             percentage = compositeglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%s%% are made by Composite' % percentage)
+            self.fail('%.2f%% are made by Composite' % percentage)
 
     def test_diacritic_made_as_mark_to_mark(self):
         """ Check that diacritic glyph are made completely with mark method """
@@ -89,4 +88,4 @@ class TestDiacritic(TestCase):
 
         if markglyphs and len(diacritic_glyphs) != markglyphs:
             percentage = markglyphs * 100. / len(diacritic_glyphs)
-            self.fail('%s%% are made by Mark' % percentage)
+            self.fail('%.2f%% are made by Mark' % percentage)

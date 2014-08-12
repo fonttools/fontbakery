@@ -46,9 +46,10 @@ if __name__ == '__main__':
         result = run_set(x, args.action, test_method=args.test)
         failures = map(lambda x: (x._testMethodName, x._err_msg), result.get('failure', []))
         error = map(lambda x: (x._testMethodName, x._err_msg), result.get('error', []))
+        success = map(lambda x: (x._testMethodName, 'OK'), result.get('success', []))
         if not bool(failures + error):
             print 'OK'
         else:
             import pprint
             _pprint = pprint.PrettyPrinter(indent=4)
-            _pprint.pprint(failures + error)
+            _pprint.pprint(failures + error + success)
