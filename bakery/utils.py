@@ -24,7 +24,7 @@ import os
 import os.path as op
 
 from flask import current_app
-from scripts.genmetadata import sortOldMetadata as sortMetadata
+from bakery_cli.scripts.genmetadata import sortOldMetadata as sortMetadata
 
 
 import sys
