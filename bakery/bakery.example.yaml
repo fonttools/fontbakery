@@ -1,7 +1,0 @@
-familyname: Demo
-license_file: OFL.txt
-subset: [menu, latin, latin-ext+latin]
-ttfautohint: -l 7 -r 28 -G 0 -x 13 -w "" -W -c
-ufo: [sources/otf/Merritest-Bold.ufo, sources/otf/Merritest-BoldItalic.ufo, sources/otf/Merritest-Heavy.ufo,
-  sources/otf/Merritest-HeavyItalic.ufo, sources/otf/Merritest-Italic.ufo, sources/otf/Merritest-Light.ufo,
-  sources/otf/Merritest-LightItalic.ufo, sources/otf/Merritest-Regular.ufo, fileDoesNotExist.ufo]
