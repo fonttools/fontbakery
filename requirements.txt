@@ -51,4 +51,4 @@ unidecode
 # library to send emails
 mandrill
 
-fontbakery-cli
+-e git+https://github.com/googlefonts/fontbakery-cli.git#egg=fontbakery-cli
