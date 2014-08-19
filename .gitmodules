@@ -1,0 +1,3 @@
+[submodule "fontcrunch"]
+	path = fontcrunch
+	url = http://github.com/googlefonts/fontcrunch.git
