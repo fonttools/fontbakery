@@ -458,7 +458,7 @@ def rfiles(user, p, build_id):
 
     ttftablesizes = get_fonts_table_sizes(fonts)
 
-    from scripts.vmet import metricview
+    from bakery_cli.scripts.vmet import metricview
     return render_template('project/rfiles.html', project=p, yaml=yaml,
                            fontaineFonts=f, build=b, tree=tree,
                            ttftablesizes=ttftablesizes,
