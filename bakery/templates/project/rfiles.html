@@ -30,19 +30,24 @@
 <textarea name="yaml">{{ yaml }}</textarea>
 
 <h4>{{ _("TTF Table Sizes") }}</h4>
-{% for ttftablesize in ttftablesizes %}
-    <table class="table-striped table-bordered table-condensed">
+
+<table class="table-striped table-bordered table-condensed">
     <tr>
-        <th colspan="2">{{ ttftablesize.name }}</th>
+        <th></th>
+        {% for f in ttftablesizes[1] %}
+        <th>{{ f }}</th>
+        {% endfor %}
     </tr>
-    {% for table in ttftablesize.tables %}
+
+    {% for table in ttftablesizes[0] %}{# loop for list of available tables #}
     <tr>
-        <td>{{ table.name }}</td>
-        <td>{{ table.size }}</td>
+        <td>{{ table }}</td>
+        {% for f in ttftablesizes[1] %}
+            <td>{{ ttftablesizes[1][f].get(table, '') }}</td>
+        {% endfor %}
     </tr>
     {% endfor %}
-    </table>
-{% endfor %}
+</table>
 
 <h4>Vertical metrics</h4>
 <pre style=""><code>{{ vmettable }}</code></pre>

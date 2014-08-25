@@ -409,27 +409,19 @@ def log(user, p, build_id):
 
 
 def get_fonts_table_sizes(fonts):
-    """ Returns list of dictionary data for SFNT table sizes of fonts
-
-        .. note:: Each dictionary has a format defined below
-
-        name: <example com>
-        tables:
-          -
-            name: <example sfnt name>
-            size: <example sfnt size>
-    """
-    from bakery.app import app
+    """ Returns tuple with available tables from all fonts and their length """
     from fontTools.ttLib import sfnt
-    sfntdata = []
+    _fonts = {}
+    tables = []
     for font in fonts:
-        tables = []
-        with open(os.path.join(app.config['DATA_ROOT'], font)) as fp_font:
+        _fonts[font] = {}
+        with open(font) as fp_font:
             sf = sfnt.SFNTReader(fp_font)
             for t in sf.tables:
-                tables.append({'name': t, 'size': sf.tables[t].length})
-        sfntdata.append({'name': os.path.basename(font), 'tables': tables})
-    return sfntdata
+                if t not in tables:
+                    tables.append(t)
+                _fonts[font][t] = sf.tables[t].length
+    return tables, _fonts
 
 
 def get_orthography(fontaine):
@@ -442,6 +434,7 @@ def get_orthography(fontaine):
 @login_required
 @project_required
 def rfiles(user, p, build_id):
+    from bakery_cli.utils import UpstreamDirectory
     b = ProjectBuild.query.filter_by(id=build_id, project=p).first_or_404()
 
     if not b.is_done:
@@ -449,21 +442,18 @@ def rfiles(user, p, build_id):
 
     yaml = p.read_asset('yaml')
     f = project_fontaine(p, b)
+
+    directory = UpstreamDirectory(b.path)
     tree = b.files()
 
-    fonts = []
-    for k, v in tree.items():
-        if k.endswith('.ttf'):
-            fonts.append(os.path.join(b.path, k))
-
-    ttftablesizes = get_fonts_table_sizes(fonts)
+    ttftablesizes = get_fonts_table_sizes(directory.BIN)
 
     from bakery_cli.scripts.vmet import metricview
     return render_template('project/rfiles.html', project=p, yaml=yaml,
                            fontaineFonts=f, build=b, tree=tree,
                            ttftablesizes=ttftablesizes,
                            get_orthography=get_orthography,
-                           vmettable=metricview(fonts))
+                           vmettable=metricview(directory.BIN))
 
 
 @project.route('/<int:project_id>/build/<int:build_id>/tests', methods=['GET'])
