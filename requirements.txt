@@ -23,7 +23,6 @@ giturlparse.py
 
 # builder and checker
 TTFQuery
--e git+http://github.com/behdad/fonttools.git#egg=fonttools
 fontaine
 freetype-py
 robofab
@@ -51,4 +50,5 @@ unidecode
 # library to send emails
 mandrill
 
--e git+https://github.com/googlefonts/fontbakery-cli.git#egg=fontbakery-cli
+git+http://github.com/behdad/fonttools.git
+git+https://github.com/googlefonts/fontbakery-cli.git
