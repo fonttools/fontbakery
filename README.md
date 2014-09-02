@@ -53,7 +53,7 @@ During the development process you may wish to run a fake mail server:
 
     $ python fontbakery.py --config /path/to/bakery.yaml /path/to/source.ufo
 
-Supported sources - UFO, TTX, SFD, TTF, OTF, TTX
+Supported sources - UFO, TTX, SFD, TTF, OTF
 
 ### Font Tests
 
