@@ -24,10 +24,38 @@ import sys
 
 
 def main():
-    families = ['Ek Mukta', 'Hind', 'Teko', 'Kalam', 'Karma', 'Rajdhani',
-                'Khand', 'Vesper Libre']
+    """
+    Script to list font views per day of devanagari families
 
-    r = requests.get('http://www.google.com/fonts/stats?key=WebFonts2010')
+    Usage: $ ./stats-devanagari-per-day.py 'http://www.google.com/fonts'
+    
+    """
+
+    if len(sys.argv) < 2:
+        print(__doc__)
+        sys.exit()
+
+    families = [
+      'Ek Mukta',
+      'Hind', 
+      'Teko', 
+      'Kalam', 
+      'Karma',
+      'Rajdhani',
+      'Khand',
+      'Vesper Libre',
+# this has a lot of views already from just latin
+#      'Glegoo', 
+      'Halant', 
+      'Laila', 
+      'Palanquin', 
+      'Rozha One', 
+      'Sarpanch'
+      ]
+
+    url = sys.argv[1]
+
+    r = requests.get(url)
     if r.status_code != 200:
         print("Wrong download code", file=sys.stderr)
         sys.exit(1)
