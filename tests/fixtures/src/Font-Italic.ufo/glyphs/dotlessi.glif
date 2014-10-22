@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="dotlessi" format="1">
+  <advance width="556"/>
+  <unicode hex="0131"/>
+  <outline>
+    <contour>
+      <point x="99" y="0" type="line"/>
+      <point x="287" y="0" type="line"/>
+      <point x="473" y="1060" type="line"/>
+      <point x="285" y="1060" type="line"/>
+    </contour>
+    <contour>
+      <point x="388" y="1060" type="move" name="top"/>
+    </contour>
+    <contour>
+      <point x="211" y="0" type="move" name="ogonek"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

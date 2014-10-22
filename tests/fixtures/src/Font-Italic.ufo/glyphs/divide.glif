@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="divide" format="1">
+  <advance width="1025"/>
+  <unicode hex="00F7"/>
+  <outline>
+    <contour>
+      <point x="333" y="90" type="line"/>
+      <point x="538" y="90" type="line"/>
+      <point x="575" y="299" type="line"/>
+      <point x="370" y="299" type="line"/>
+    </contour>
+    <contour>
+      <point x="87" y="472" type="line"/>
+      <point x="912" y="472" type="line"/>
+      <point x="937" y="609" type="line"/>
+      <point x="112" y="609" type="line"/>
+    </contour>
+    <contour>
+      <point x="456" y="787" type="line"/>
+      <point x="661" y="787" type="line"/>
+      <point x="698" y="996" type="line"/>
+      <point x="493" y="996" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>org.robofab.postScriptHintData</key>
+      <dict/>
+    </dict>
+  </lib>
+</glyph>

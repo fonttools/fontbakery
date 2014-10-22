@@ -1,0 +1,68 @@
+### Default bakery.yaml file
+###
+### Mandatory keys should exist.
+### Optional keys are commented out.
+###
+
+### Commit to build, or HEAD
+commit: HEAD
+
+### License file filename
+###   This file must exist.
+license_file: ''
+
+### Source file type if there is more than one format is found in upstream repository
+### Subsets list
+###   Possible values: latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, greek-ext+latin, vietnamese+latin
+subset: [latin]
+
+### ttfautohint default command line parameter
+###   If ttfautohint is not defined, it is not used.
+ttfautohint: -l 7 -r 28 -G 50 -x 13 -w "G"
+
+### New font family name.
+###   If newfamily is not defined, the fonts are not renamed.
+# newfamily: ''
+
+### Use FontCrunch by default
+fontcrunch: False
+
+# downstream: False  # bakery does not run downstream tests process for font
+# optimize: False   # bakery does not run optimization for fonts
+
+### Pyftsubset defaults parameters
+pyftsubset: --notdef-outline --name-IDs=* --hinting
+# pyftsubset: False # bakery does not run pyftsubset pipe
+
+
+# By default bakery uses fontforge compiler to build fonts from ufo
+# To use AFDKO SDK there should be installed SDK on the system
+
+# compiler: fontforge  # default
+# compiler: afdko
+
+# if compiler is "afdko" then can define additional arguments to compiler
+# afdko: -gf GlyphOrderAndAliasDB ...
+
+### Dashboard metadata - anything autodetectable may be detected from files in the _in directory
+
+# copyright_license: # ofl/apache/ufl, can be autodiscovered
+# copyright_notice: # string, extracted from Regular.ufo
+# trademark_notice: false # true, can be autodiscovered
+# trademark_permission: false # true
+# rfn_asserted: false # true, can be autodiscovered
+# rfn_permission: false # true
+# source_drawing_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# source_cff_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# source_ttf_filetype: # none/vfb/glyphs/ufo/sfd, can be autodiscovered
+# price_design_usd: # int
+# price_total_usd: # int
+# hinting_level: # no_hinting/non_hinting/ttfautohinting/hand_tuned_autohinting/hand_hinting, can be autodiscovered
+# vendor_category: # apprentice/journeyman/master
+# vendor_quality: # int:_range(4)_displayed_as_a_star_rating
+# design_category: # sans/serif/script/display
+# design_quality: # int:_range(4)_isplayed_as_a_star_rating
+# hinting_quality: # int:_range(4)_displayed_as_a_star_rating
+# prints_ok: false # true
+# stats_family_name: # string used to find family's stats on Google Fonts stats page
+notes: ''

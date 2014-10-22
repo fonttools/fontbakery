@@ -1,9 +1,0 @@
-[program:fontbakery]
-command=make worker
-stdout_logfile=/var/log/rqworker/rqworker.bake.log
-stderr_logfile=/var/log/rqworker/rqworker.bake.log
-directory=/var/www/www.site.com/src/fontbakery
-
-[program:gunicorn]
-command=make prun
-directory=/var/www/www.site.com/src/fontbakery
