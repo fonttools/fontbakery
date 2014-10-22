@@ -1,5 +1,5 @@
-[![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery-cli.svg)](https://travis-ci.org/googlefonts/fontbakery-cli)
-[![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery-cli.svg)](https://coveralls.io/r/googlefonts/fontbakery-cli)
+[![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
+[![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
 
 # FontBakery CLI
 
@@ -33,7 +33,7 @@ before_install:
 install:
 - pip install git+https://github.com/behdad/fontTools.git
 - pip install git+https://github.com/googlefonts/fontcrunch.git
-- pip install git+https://github.com/googlefonts/fontbakery-cli.git
+- pip install git+https://github.com/googlefonts/fontbakery.git
 before_script:
 - mkdir -p builds/$TRAVIS_COMMIT
 script: (set -o pipefail; PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery-build.py . 2>&1 | tee -a builds/$TRAVIS_COMMIT/buildlog.txt)

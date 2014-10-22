@@ -14,7 +14,7 @@ install:
   - pip install Scrapy
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlefonts/fontcrunch.git"
-  - "pip install git+https://github.com/googlefonts/fontbakery-cli.git"
+  - "pip install git+https://github.com/googlefonts/fontbakery.git"
 script: LANG="en" python setup.py nosetests
 after_success:
   coveralls
