@@ -1,0 +1,190 @@
+/*Web Fonts Tab styles*/
+/* Google Fonts logo styling*/
+.projectLogo {
+    font-family: "Open Sans", arial, sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: #63666a !important;  /*need to force since a:link rule is more specific*/
+    line-height: 1.375;
+    text-decoration: none;
+}
+.projectLogo img {
+    margin: -1px 0 -4px;
+    vertical-align: middle;
+}
+/* Web Fonts tab styles */
+.main-panel {
+    color: #222;
+    margin: 0;
+    background: #fff;
+
+    font: 13px/1.2 Arial,sans-serif;
+    background: none repeat scroll 0 0 #fff;
+    padding-right: 20px;
+}
+
+.main-panel h1,
+.main-panel h2,
+.main-panel h3,
+.main-panel h4,
+.main-panel h5,
+.main-panel h6 {
+    font-weight: normal;
+    margin-bottom: 1em;
+    font-family: Arial, sans-serif;
+}
+
+.main-panel h1 {
+    font-size: 36px;
+}
+
+.main-panel h2 {
+    font-size: 24px;
+}
+
+.main-panel h3 {
+    font-size: 16px;
+}
+
+.main-panel h4 {
+    font-size: 13px;
+}
+
+p {
+    margin-bottom: 1em;
+    line-height: 1.4em;
+}
+
+.sample {
+    padding-bottom: 2em;
+    overflow: hidden;
+}
+
+.sample>div {
+    float: left;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 1.25em;
+    height: 2em;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    font-size: 3.2em;
+}
+
+.sample>div .defaultCharacter {
+    color: #ccc;
+    font-family: arial, sans-serif;
+    font-size: .4em;
+    display: block;
+}
+
+.fontcard {
+    border: 1px solid #bbb;
+    margin: 0 3px 10px 0;
+    background: #fff;
+    position: relative;
+    -moz-box-shadow: 0 1px 1px #e1e1e1;
+    -webkit-box-shadow: 0 1px 1px #eee;
+    -o-box-shadow: 0 1px 1px #eee;
+    box-shadow: 0 1px 1px #eee;
+    position: relative;
+}
+
+.fontcard .fontname {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.fontcard .fontname .styles {
+    display: inline;
+}
+
+.fontcard .fontadd {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px !important;
+}
+
+.fontcard .familylinks {
+    position: absolute;
+    bottom: 10px;
+    right: 175px;
+}
+
+.fontcard .familylinks li {
+    display: inline;
+}
+
+.superspecimen {
+    padding: 20px 0 80px 20px;
+    max-width: 700px;
+    min-height: 800px;
+}
+
+.superspecimen .superheader {
+    margin-bottom: 20px;
+}
+
+.superspecimen .openlink {
+    float: right;
+    margin-top: 5px;
+}
+
+.superspecimen h1, .superspecimen h2, .superspecimen h3 {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: arial;
+    margin-bottom: 3px;
+}
+
+.superspecimen h2, .superspecimen h3 {
+    font-size: 13px;
+}
+
+.superspecimen h3 {
+    margin-bottom: 20px;
+}
+
+.superspecimen .fontcard {
+    padding: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.superspecimen .supersample {
+    font-size: 64px;
+    line-height: 1.1em;
+    margin-bottom: 20px;
+}
+
+.superspecimen .styles {
+    margin-bottom: 20px;
+    font-size: 32px;
+    white-space: nowrap;
+}
+
+.superspecimen .styles p {
+    margin-bottom: 10px;
+}
+
+.superspecimen .identifier {
+    font-size: 11px;
+    color: #777;
+    font-family: arial;
+    display: block;
+}
+
+.missing-glyph {
+    color: #C0C0C0;
+    font-family: sans-serif;
+}
+
+.hide {
+    display: none !important;
+}
+
+.visibility-hidden {
+    visibility: hidden !important;
+}

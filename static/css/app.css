@@ -1,0 +1,155 @@
+.footer {
+    color: #bbb;
+    text-align: center;
+    font-size: smaller;
+    padding: 0 0;
+    margin-top: 70px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.footer:hover {
+    color: #444;
+}
+
+.footer a {
+    color: #add8e6;
+}
+
+.footer:hover a {
+    color: #0088cc;
+}
+
+.footer p {
+    margin-bottom: 0;
+    color: #777;
+}
+.footer-links {
+    margin: 10px 0;
+}
+.footer-links li {
+    list-style: none;
+    line-height: 1.2em;
+}
+.footer-links li:first-child {
+    padding-left: 0;
+}
+
+.flex-container {
+    /* We first create a flex layout context */
+    display: flex;
+
+    /* Then we define the flow direction and if we allow the items to wrap
+     * Remember this is the same as:
+     * flex-direction: row;
+     * flex-wrap: wrap;
+     */
+    flex-flow: row wrap;
+
+    /* Then we define how is distributed the remaining space */
+    justify-content: space-around;
+}
+
+/*make table with depend on content*/
+.table-dynamic-width {
+    max-width: none;
+    width: inherit;
+}
+
+td.clickable {
+    cursor: pointer;
+}
+
+.popover {
+    max-width: 1980px;
+    font-family: Courier,serif;
+}
+
+/*just to have editor visible when it gets rendered*/
+.ace_editor { height: 100px; }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
+}
+
+
+/* Login box styling */
+#login-box {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+
+#login-box .splash {
+    background: #fff;
+    text-align: center;
+    margin: 45px auto;
+    width: 300px;
+    border: 1px solid #a8afb2;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0), 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.round {
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.icon.landing {
+    width: 110px;
+    height: 110px;
+    margin: 30px auto 0;
+}
+
+.icon {
+    background: transparent url('https://avatars2.githubusercontent.com/u/5728147?v=2&s=100') no-repeat 0 0;
+    width: 40px;
+    height: 40px;
+    display: block;
+    text-indent: -999em;
+}
+
+.inner {
+    padding: 15px;
+}
+
+#login-box button, #login-box .button {
+    cursor: pointer;
+    background: #516066;
+    display: block;
+    position: relative;
+    padding: 10px 15px;
+    margin: 0 0 5px;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.round {
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+
+#login-box .button:hover {
+    background: #3d494e;
+    color: #fff;
+}
+
+#login-box a {
+    color: #3d494e;
+    text-decoration: none;
+    font-weight: 700;
+    -webkit-transition: color 100ms linear;
+    -moz-transition: color 100ms linear;
+    -o-transition: color 100ms linear;
+    transition: color 100ms linear;
+}

@@ -1,0 +1,62 @@
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <h3>METADATA Tests</h3>
+  <div ng-repeat="chart in charts">
+    <div google-chart chart="chart" style="{{cssStyle}}"></div>
+  </div>
+  <div class="flex-container">
+    <table id="testsTable" ng-table="testsTableParams" class="table table-striped table-hover table-bordered table-condensed">
+      <tr ng-repeat="test in $data" class="{{ test.result_class }}">
+        <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
+        <td data-title="'Description'" sortable="'description'"><span popover-title="{{ test.orig_data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test.orig_data.methodName }}()">{{ test.description }}</span></td>
+        <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
+        <td data-title="'Result'" sortable="'result_msg'">{{ test.result_msg }}</td>
+        <td data-title="'Status'" sortable="'result_status'">{{ test.result_status }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <h3 class="text-center">JSON Diff of the Two Files</h3>
+  <div class="row">
+    <div class="col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <h4>METADATA.json imported from upstream repo</h4>
+      <div id="editor1" class="editor" ui-ace="{
+         mode: 'json',
+         theme: 'solarized_light',
+         UseSoftTabs: false,
+         useWrapMode: true,
+         HighlightActiveLine: false,
+         onLoad: aceLoaded1,
+         onChange: aceChanged1,
+         autoHeight: true
+         }" ng-model="metadata1"></div>
+      <p class="navbar-text navbar-left">
+        <span><a ng-href="{{ view_url }}" target="_blank" class="navbar-link">View</a></span>
+        <span><a ng-href="{{ edit_url }}" target="_blank" class="navbar-link">Edit</a></span>
+      </p>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <h4>METADATA.json.new generated from files</h4>
+      <div id="editor2" class="editor" ui-ace="{
+         mode: 'json',
+         theme: 'solarized_light',
+         UseSoftTabs: false,
+         useWrapMode: true,
+         HighlightActiveLine: false,
+         onLoad: aceLoaded2,
+         onChange: aceChanged2,
+         autoHeight: true
+         }" ng-model="metadata2"></div>
+    </div>
+  </div>
+  <div class="text-center">
+    <button class="btn btn-primary text-center" ng-click="doDiff()" ng-disabled="!dataLoaded">Compare Two Files</button>
+  </div>
+  <div class="row flex-container">
+    <div id="delta-panel-visual" style="clear: both;">
+      <p id="visualdiff"></p>
+    </div>
+  </div>
+</div>

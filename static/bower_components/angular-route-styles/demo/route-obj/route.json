@@ -1,0 +1,13 @@
+{
+    "params": {},
+    "pathParams": {},
+    "$$route": {
+        "reloadOnSearch": true,
+        "controller": "Route1Ctrl",
+        "templateUrl": "partials/partial1.html",
+        "css": "partial-css/partial1.css",
+        "originalPath": "/route-one",
+        "regexp": {},
+        "keys": []
+    }
+}

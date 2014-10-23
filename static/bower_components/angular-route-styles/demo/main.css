@@ -1,0 +1,21 @@
+.link-list a{
+	display: inline-block;
+	min-width: 120px;
+	padding: 5px 8px;
+	background-color: #999;
+	color: white;
+	text-decoration: none;
+    margin-right: 10px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.link-list a:hover{
+	background-color: #555;
+}
+
+h3{
+	padding: 10px 20px
+	color: magenta;
+}

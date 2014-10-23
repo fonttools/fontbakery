@@ -1,0 +1,41 @@
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <ul class="tab-content">
+    <li class="tab-pane active" id="subtabs">
+      <ul class="nav nav-tabs">
+        <li class="active"><a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/review">Web Fonts</a></li>
+        <li><a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/review/glyph-inspector">Glyph Inspector</a></li>
+      </ul>
+      <ul class="tab-content">
+        <li class="tab-pane fade active in" id="#/review-web-fonts">
+          <div class="main-panel">
+            <div class="superspecimen">
+              <div itemprop="text" class="fontcard" id="font-card-container">
+                <div id="_set" class="supersample">{{ pangram }}</div>
+                <div ng-repeat="font in metadata.fonts">
+                  <div class="fontitem">
+                    <span class="identifier">{{ font.weight }} {{font.style}}</span>
+                    <span class="stylesample" ng-style="{'font-family': font.postScriptName, 'font-style': 'font.style', 'font-size': '24pt'}">{{ pangram }}</span>
+                  </div>
+                </div>
+                <p class="face-example">
+                  One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.
+                <p>
+                <div>
+                  <p><button id="toggleMissingGlyphs" ng-click="toggleMissingGlyphs()">{{ missing_chars_hidden && 'Hide missing glyphs' || 'Show missing glyphs' }}</button></p>
+                  <div id="glyphContainer" class="sample Exo-normal-400">
+                    <div ng-repeat="g in glyphs" ng-init="glyph_decoded = mixins.decodeHtmlEntity('&#'+g.glyph+';'); is_missing = g.is_missing;" ng-style="{display: updateParentStyle(g.is_missing)}">
+                      <div insert-glyph></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

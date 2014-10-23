@@ -1,0 +1,22 @@
+<html ng-app="RouteStylesApp" ng-controller="RouteStylesCtrl">
+<head>
+	<title>Angular Route Styles Demo</title>
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+	<h1>Some Static Content</h1>
+
+	<div class="link-list">
+		<a ng-repeat="(route, url) in routes" ng-href="#{{url}}">
+			{{route}}
+		</a>
+	</div>
+
+	<div ng-view></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular-route.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

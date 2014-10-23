@@ -1,0 +1,28 @@
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <h3>Pre-Build Checks</h3>
+  <div class="row" ng-if="average_chart">
+    <div class="col-md-6 col-md-offset-3">
+      <div google-chart chart="average_chart" style="{{cssStyle}}"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" ng-repeat="chart in charts">
+      <div google-chart chart="chart" on-ready="mixins.updateChartTitle(chart)" style="{{cssStyle}}"></div>
+    </div>
+  </div>
+  <div class="flex-container">
+    <table id="testsTable" ng-table="testsTableParams" class="table table-striped table-hover table-bordered table-condensed">
+      <tr ng-repeat="test in $data" class="{{ test.result_class }}">
+        <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
+        <td data-title="'Description'" sortable="'description'"><span popover-title="{{ test.orig_data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test.orig_data.methodName }}()">{{ test.description }}</span></td>
+        <td data-title="'Code'" sortable="'gh_link'"><a href="{{ test.gh_link }}">{{ test.orig_data.methodName }}</a></td>
+        <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
+        <td data-title="'Result'" sortable="'result_msg'">{{ test.result_msg }}</td>
+        <td data-title="'Status'" sortable="'result_status'">{{ test.result_status }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

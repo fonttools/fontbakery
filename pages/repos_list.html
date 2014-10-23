@@ -1,0 +1,38 @@
+<div class="container-fluid">
+  <p class="text-center" ng-hide="dataLoaded">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+  </p>
+  <div ng-show="dataLoaded">
+    <div class="flex-container">
+      <div loading-container="buildsTableParams.settings().$loading">
+        <table id="buildsTable" ng-table="buildsTableParams" class="table table-striped table-hover table-bordered table-condensed">
+          <caption ng-hide="itemsLoaded">
+            <span><i class="fa fa-spinner fa-spin"></i> Loaded {{ getItemsLoaded() }} items</span>
+          </caption>
+          <tr ng-repeat="build in $data track by $index">
+            <td data-title="'Repo'" sortable="'repoPath'"><a ng-href="{{ build.repoLink }}">{{ build.repoPath }}</a></td>
+            <td data-title="'Build Date'" sortable="'buildDateOrig'" am-time-ago="build.buildDateOrig" get-build-info></td>
+            <td data-title="'Build Status'" sortable="'buildStatus'" class="text-center"><a ng-href="{{ build.travisLink }}"><img ng-src="{{ build.travisImg }}"></a></td>
+            <td data-title="'Build Report'" sortable="'reportLink'"><a ng-href="{{ build.reportLink }}">{{ build.reportLink }}</a></td>
+            <td data-title="'Tests Passing'" sortable="'passingTestsPercentage'" class="text-center" get-tests-info>
+              <span ng-if="build.passingTestsPercentage" popover-title="Tests" popover="Total: {{ build.totalTests }}; Success: {{ build.successTests }}" popover-trigger="mouseenter" class="label label-info"><i class="fa fa-info-circle"></i> <span ng-bind="(build.passingTestsPercentage)+'%'"></span></span>
+              <span ng-if="!build.passingTestsPercentage" popover-title="{{ build.noTestsInfo.status }}" popover="{{ build.noTestsInfo.url }}" popover-trigger="mouseenter" class="label label-warning"><i class="fa fa-info-circle"></i> N/A</span>
+            </td>
+            <td data-title="'Tests Failure'" sortable="'failureTestsPercentage'" class="text-center" get-tests-info>
+              <span ng-if="build.failureTestsPercentage" popover-title="Tests" popover="Total: {{ build.totalTests }}; Failure: {{ build.failureTests }}" popover-trigger="mouseenter" class="label label-info"><i class="fa fa-info-circle"></i> <span ng-bind="(build.failureTestsPercentage)+'%'"></span></span>
+              <span ng-if="!build.failureTestsPercentage" popover-title="{{ build.noTestsInfo.status }}" popover="{{ build.noTestsInfo.url }}" popover-trigger="mouseenter" class="label label-warning"><i class="fa fa-info-circle"></i> N/A</span>
+            </td>
+            <td data-title="'Tests Fixed'" sortable="'fixedTestsPercentages'" class="text-center" get-tests-info>
+              <span ng-if="build.fixedTestsPercentages" popover-title="Tests" popover="Total: {{ build.totalTests }}; Fixed: {{ build.fixedTests }}" popover-trigger="mouseenter" class="label label-info"><i class="fa fa-info-circle"></i> <span ng-bind="(build.fixedTestsPercentages)+'%'"></span></span>
+              <span ng-if="!build.fixedTestsPercentages" popover-title="{{ build.noTestsInfo.status }}" popover="{{ build.noTestsInfo.url }}" popover-trigger="mouseenter" class="label label-warning"><i class="fa fa-info-circle"></i> N/A</span>
+            </td>
+            <td data-title="'Tests Error'" sortable="'errorTestsPercentage'" class="text-center" get-tests-info>
+              <span ng-if="build.errorTestsPercentage" popover-title="Tests" popover="Total: {{ build.totalTests }}; Error: {{ build.errorTests }}" popover-trigger="mouseenter" class="label label-info"><i class="fa fa-info-circle"></i> <span ng-bind="(build.errorTestsPercentage)+'%'"></span></span>
+              <span ng-if="!build.errorTestsPercentage" popover-title="{{ build.noTestsInfo.status }}" popover="{{ build.noTestsInfo.url }}" popover-trigger="mouseenter" class="label label-warning"><i class="fa fa-info-circle"></i> N/A</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

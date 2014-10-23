@@ -1,0 +1,50 @@
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <ul class="tab-content">
+    <li class="tab-pane active" id="subtabs">
+      <ul class="nav nav-tabs">
+        <li><a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/review">Web Fonts</a></li>
+        <li class="active"><a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/review/glyph-inspector">Glyph Inspector</a></li>
+      </ul>
+      <ul class="tab-content">
+        <li class="tab-pane fade active in" id="#/review-glyph-inspector">
+          <div class="container">
+            <hr>
+
+            <input id="file" type="file">
+            <span class="info" id="font-name"></span>
+            <div id="message"></div>
+
+            <hr>
+
+            <div>
+              Glyphs <span id="pagination"></span>
+              <br>
+              <div id="glyph-list-end"></div>
+            </div>
+            <div style="position: relative">
+              <div id="glyph-display">
+                <canvas id="glyph-bg" width="500" height="500"></canvas>
+                <canvas id="glyph" width="500" height="500"></canvas>
+              </div>
+              <div id="glyph-data"></div>
+              <div style="clear: both"></div>
+            </div>
+
+            <hr>
+
+            <div class="explain">
+              <h1>Free Software</h1>
+              <p>opentype.js is available on <a href="https://github.com/nodebox/opentype.js">GitHub</a> under the <a href="https://raw.github.com/nodebox/opentype.js/master/LICENSE">MIT License</a>.</p>
+              <p>Copyright &copy; 2014 Frederik De Bleser.</p>
+            </div>
+
+            <hr>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
