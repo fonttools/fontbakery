@@ -135,3 +135,24 @@ angular.module('myApp').directive('loadingContainer', function () {
         }
     };
 });
+
+angular.module('myApp').directive('applySorting', ['$timeout', function($timeout) {
+    return function(scope, element, attrs) {
+        var resort = true,
+            callback = function(table){},
+            config = {};
+        if (attrs.applySorting) {
+            if (angular.isFunction(attrs.applySorting)) {
+                config = attrs.applySorting(element);
+            }
+            callback = function(table){
+                element.tablesorter(config);
+            };
+        }
+        //#TODO what event can be considered as event
+        // of finished rendering & updating of all cells?
+        $timeout(function() {
+            element.trigger("updateAll", [ resort, callback ]);
+        }, 5000);
+    };
+}]);

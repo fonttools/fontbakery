@@ -3,7 +3,7 @@
 </p>
 <div ng-show="isReady()" ng-cloak>
 <div class="flex-container">
-  <table id="fontFacesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed">
+  <table id="fontFacesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
     <thead>
     <tr>
       <th>Weight</th>
@@ -55,35 +55,18 @@
   </table>
 </div>
 
-<!--<div class="flex-container">-->
-  <!--<table id="vmetTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed">-->
-    <!--<caption><h4>Vertical metrics</h4></caption>-->
-    <!--<thead>-->
-    <!--<tr>-->
-      <!--<th ng-repeat="heading in metrics.headings track by $index">{{ heading }}</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tr ng-repeat="(parameter, values) in metrics.data track by $index">-->
-      <!--<td>{{ parameter }}</td>-->
-      <!--<td ng-repeat="value in values track by $index" class="text-right">{{ value }}</td>-->
-    <!--</tr>-->
-  <!--</table>-->
-<!--</div>-->
-
-
 <div class="flex-container">
-  <table id="metricsTable" ng-table="metricsTableParams" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed">
+  <table id="vmetTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
     <caption><h4>Vertical metrics</h4></caption>
     <thead>
     <tr>
-      <th ng-repeat="column in metrics_columns" ng-show="column.visible" class="text-center sortable" ng-class="{'sort-asc': metricsTableParams.isSortBy(column.field, 'asc'), 'sort-desc': metricsTableParams.isSortBy(column.field, 'desc')}" ng-click="metricsTableParams.sorting(column.field, metricsTableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">{{column.title}}</th>
+      <th ng-repeat="heading in metrics.headings track by $index">{{ heading }}</th>
     </tr>
     </thead>
-    <tbody>
-    <tr ng-repeat="item in $data">
-      <td ng-repeat="column in metrics_columns" ng-show="column.visible" sortable="column.field" class="text-center">{{item['value'+$index]}}</td>
+    <tr ng-repeat="(parameter, values) in metrics.data track by $index">
+      <td>{{ parameter }}</td>
+      <td ng-repeat="value in values track by $index" class="text-right">{{ value }}</td>
     </tr>
-    </tbody>
   </table>
 </div>
 
@@ -96,7 +79,7 @@
 </div>
 
 <div class="flex-container">
-  <table id="ttfTableSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed">
+  <table id="ttfTableSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
     <thead>
     <tr>
       <th></th>
@@ -116,7 +99,7 @@
 
 <div ngif="autohint_sizes">
   <div class="flex-container">
-    <table class="table table-dynamic-width table-striped table-hover table-bordered table-condensed">
+    <table id="autohintSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
       <caption><h4>ttfautohint filesize impact statistic</h4></caption>
       <tr>
         <th></th>
@@ -143,7 +126,7 @@
 </div>
 
 <div class="flex-container">
-  <table id="fontDescrTable" class="table table-dynamic-width table-dynamic-width table-striped table-hover table-bordered table-condensed">
+  <table id="fontDescrTable" class="table table-dynamic-width table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
     <caption><h4>Font Description</h4></caption>
     <thead>
     <tr>
@@ -231,7 +214,7 @@
 </div>
 
 <div class="flex-container">
-  <table id="fontCoverageTable" class="table table-dynamic-width table-dynamic-width table-bordered table-striped table-hover table-condensed">
+  <table id="fontCoverageTable" class="table table-dynamic-width table-dynamic-width table-bordered table-striped table-hover table-condensed" apply-sorting>
     <caption><h4>Font Coverage characters</h4></caption>
     <thead>
     <tr>
@@ -280,29 +263,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  angular.element(document)
-      .on("click", "td.coverageStats", function() {
-        // show modal window on click in td
-        // in Font Coverage characters table
-        var hidden_td = angular.element(this).closest('td').next(),
-            missing_chars = hidden_td.html(),
-            subset = hidden_td.attr("data-subset"),
-            font = hidden_td.attr("data-fontname");
-        angular.element("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
-        angular.element(".modal-body").html(missing_chars);
-      })
-      .on("click", "td.coverageAverage", function() {
-        var parent_tr = angular.element(this).parent('tr'),
-            subset = angular.element(parent_tr).find('td.missing-chars:first').attr("data-subset"),
-            modal_body = angular.element(".modal-body");
-        modal_body.empty();
-        angular.element("#myModalInfo").html("<h5>"+subset+"</h5>");
-        angular.element(parent_tr).find('td.missing-chars').each(function(i){
-          var font = angular.element(this).attr("data-fontname"),
-              missing_chars = angular.element(this).html();
-          modal_body.append("<strong>"+font+"</strong>"+missing_chars+"<hr>")
-        });
-      });
-</script>

@@ -1,4 +1,4 @@
-myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', 'summaryApi', 'Mixins', 'ngTableParams', function($scope, $rootScope, $http, $filter, summaryApi, Mixins, ngTableParams) {
+myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', '$document', 'summaryApi', 'Mixins', 'ngTableParams', function($scope, $rootScope, $http, $filter, $document, summaryApi, Mixins, ngTableParams) {
     $scope.pie_charts = [];
     $scope.average_pie_chart = null;
     $scope.average_line_chart = null;
@@ -25,42 +25,6 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
     });
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
-        $scope.metrics_columns = [];
-        var vmet_data = [];
-
-        angular.forEach($scope.metrics.headings, function(heading, index) {
-            $scope.metrics_columns.push({title: heading, field: 'value'+index, visible: true})
-        });
-
-        angular.forEach($scope.metrics.data, function(vals, param) {
-            vals.unshift(param);
-            var item = {};
-            angular.forEach($scope.metrics.headings, function(name, index) {
-                item['name'+index] = name;
-                item['value'+index] = vals[index];
-            });
-            vmet_data.push(item);
-        });
-        $scope.metricsTableParams = new ngTableParams({
-            // show first page
-            page: 1,
-            // count per page
-            count: vmet_data.length
-        }, {
-            // hide page counts control
-            counts: [],
-            // length of data
-            total: vmet_data.length,
-            getData: function($defer, params) {
-                // use build-in angular filter
-                var orderedData = params.sorting() ?
-                    $filter('orderBy')(vmet_data, params.orderBy()) :
-                    vmet_data;
-                params.total(orderedData.length);
-                $defer.resolve(orderedData);
-            }
-        });
-
     });
 
     summaryApi.getTableSizes().then(function(response) {
@@ -220,7 +184,6 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
 
     });
 
-
     $scope.isReady = function() {
         return !Mixins.checkAll(
             null, $scope.metrics, $scope.tests, $scope.faces,
@@ -228,4 +191,36 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
             $scope.fontaine_fonts, $scope.fonts_orthography
         )
     };
+    $document
+        .ready(function() {
+            angular.element("#fontFacesTable").tablesorter();
+            angular.element("#vmetTable").tablesorter();
+            angular.element("#ttfTableSizesTable").tablesorter();
+            angular.element("#autohintSizesTable").tablesorter();
+            angular.element("#fontDescrTable").tablesorter();
+            angular.element("#fontCoverageTable").tablesorter();
+            $document
+                .on("click", "td.coverageStats", function() {
+                    // show modal window on click in td
+                    // in Font Coverage characters table
+                    var hidden_td = angular.element(this).closest('td').next(),
+                        missing_chars = hidden_td.html(),
+                        subset = hidden_td.attr("data-subset"),
+                        font = hidden_td.attr("data-fontname");
+                    angular.element("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
+                    angular.element(".modal-body").html(missing_chars);
+                })
+                .on("click", "td.coverageAverage", function() {
+                    var parent_tr = angular.element(this).parent('tr'),
+                        subset = angular.element(parent_tr).find('td.missing-chars:first').attr("data-subset"),
+                        modal_body = angular.element(".modal-body");
+                    modal_body.empty();
+                    angular.element("#myModalInfo").html("<h5>"+subset+"</h5>");
+                    angular.element(parent_tr).find('td.missing-chars').each(function(i){
+                        var font = angular.element(this).attr("data-fontname"),
+                            missing_chars = angular.element(this).html();
+                        modal_body.append("<strong>"+font+"</strong>"+missing_chars+"<hr>")
+                    });
+                });
+        })
 }]);

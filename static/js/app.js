@@ -8,6 +8,7 @@ var myApp = angular.module(
 // #TODO it would be better to get it from .json conf file once and use later.
 // Allows to not change code, but rather external file
 myApp.constant("appConfig", {
+    dev_mode: false,
     base_url: '//rawgit.com',
     base_url_no_cdn: '//rawgit.com',
     git_modules_url: '//rawgit.com/fontdirectory/collection/master/gitmodules.json',
@@ -91,11 +92,14 @@ myApp.config(['$routeProvider', '$httpProvider', '$locationProvider', 'appConfig
             controller  : 'summaryController',
             activetab: 'summary',
             css: function(params) {
+                var links = [
+                    '/static/css/tablesorter-theme-custom.css'
+                ];
                 if (params.repo_name) {
-                    return [[appConfig.base_url_no_cdn, params.repo_owner, params.repo_name, 'gh-pages/build_info/static/css/faces.css'].join('/')];
-                } else {
-                    return [];
+                    var faces = [appConfig.base_url_no_cdn, params.repo_owner, params.repo_name, 'gh-pages/build_info/static/css/faces.css'].join('/');
+                    links.push(faces);
                 }
+                return links;
             }
         })
 
