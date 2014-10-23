@@ -25,7 +25,44 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
     });
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
+        $scope.metrics_columns = [];
+        var vmet_data = [];
+
+        angular.forEach($scope.metrics.headings, function(heading, index) {
+            $scope.metrics_columns.push({title: heading, field: 'value'+index, visible: true})
+        });
+
+        angular.forEach($scope.metrics.data, function(vals, param) {
+            vals.unshift(param);
+            var item = {};
+            angular.forEach($scope.metrics.headings, function(name, index) {
+                item['name'+index] = name;
+                item['value'+index] = vals[index];
+            });
+            vmet_data.push(item);
+        });
+        $scope.metricsTableParams = new ngTableParams({
+            // show first page
+            page: 1,
+            // count per page
+            count: vmet_data.length
+        }, {
+            // hide page counts control
+            counts: [],
+            // length of data
+            total: vmet_data.length,
+            getData: function($defer, params) {
+                // use build-in angular filter
+                var orderedData = params.sorting() ?
+                    $filter('orderBy')(vmet_data, params.orderBy()) :
+                    vmet_data;
+                params.total(orderedData.length);
+                $defer.resolve(orderedData);
+            }
+        });
+
     });
+
     summaryApi.getTableSizes().then(function(response) {
         $scope.table_sizes = response.data;
     });

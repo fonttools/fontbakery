@@ -163,7 +163,4 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
 
         }
     });
-    $scope.$on('$viewContentLoaded', function() {
-        // can be used as a signal to other controllers?
-    });
 }]);
