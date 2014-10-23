@@ -3,7 +3,7 @@
 <html ng-app="myApp">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title ng-bind="'Google Fonts &mdash; ' + title"></title>
+  <title ng-bind="'Font Directory &mdash; ' + title"></title>
 
   <!-- load bootstrap and fontawesome via CDN -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
@@ -90,7 +90,7 @@
 <!-- MAIN CONTENT AND INJECTED VIEWS -->
 <div id="main" class="container-fluid" ng-show="$storage.OAuth_passed" ng-cloak>
   <!--this is the place where all alerts pop-up, controlled by mainController -->
-  <div id=alerts-box ng-cloak>
+  <div id="alerts-box" ng-cloak>
     <alert ng-repeat="alert in alerts.getAlerts()" type="{{alert.type}}" close="alerts.closeAlert($index)">{{ alert.msg }}</alert>
   </div>
   <!-- angular templating -->
