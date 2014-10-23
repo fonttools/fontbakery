@@ -82,6 +82,18 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
         }
     };
 
+    $scope.getMainFont = function() {
+        var filtered = $rootScope.metadata.fonts.filter(function(font) {
+            return font.style == 'normal' && font.weight == 400 ;
+        });
+        if (filtered.length > 0) {
+            $rootScope.font_regular = filtered[0]
+        } else {
+            $rootScope.font_regular = $rootScope.metadata.fonts[0];
+        }
+        return $rootScope.font_regular;
+    };
+
     $scope.mainInit = function() {
         appApi.getRepos().then(function(dataResponse) {
             $scope.repos_list = dataResponse.data;
@@ -106,11 +118,13 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
                             function(dataResponse) {
                                 $rootScope.metadata = dataResponse.data;
                                 $rootScope.repo_selected.name = $rootScope.metadata.name;
+                                $scope.getMainFont();
                             },
                             function(error) {
                                 appApi.getMetadataNew().then(function(dataResponse) {
                                     $rootScope.metadata = dataResponse.data;
                                     $rootScope.repo_selected.name = $rootScope.metadata.name;
+                                    $scope.getMainFont();
                                 });
                             });
                     },

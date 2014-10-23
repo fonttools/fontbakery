@@ -59,7 +59,7 @@ angular.module('myApp').directive('navMenu', ['$location', function($location) {
 
 angular.module('myApp').directive('insertGlyph', ['$compile', function($compile) {
     var getTemplate = function(is_missing) {
-        return is_missing ? '<div style="display: none;"><span class="defaultCharacter">{{ glyph_decoded }}</span><span class="missing-glyph">X</span></div>' : '<div><span class="defaultCharacter">{{ glyph_decoded }}</span><span>{{ glyph_decoded }}</span></div>';
+        return is_missing ? '<div style="display: none;"><span class="defaultCharacter">{{ glyph_decoded }}</span><span class="missing-glyph">X</span></div>' : '<div ng-style="{\'font-family\': font_regular.postScriptName, \'font-style\': font_regular.style}"><span class="defaultCharacter">{{ glyph_decoded }}</span><span>{{ glyph_decoded }}</span></div>';
     };
     return {
         restrict: 'A',
