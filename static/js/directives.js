@@ -165,8 +165,6 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
     return {
         replace: true,
         link: function(scope, element, attr) {
-            console.log("element: ", $(element).find(fixed_td_locator));
-
             var arrows = '<span class="pull-right"><i class="fa fa-caret-left"></i> <i class="fa fa-caret-right"></i></span>',
                 arrow_left = '<span class="pull-right"><i class="fa fa-caret-left"></i></span>',
                 arrow_right = '<span class="pull-right"><i class="fa fa-caret-right"></i></span>',
