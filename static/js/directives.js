@@ -161,10 +161,12 @@ angular.module('myApp').directive('applySorting', ['$timeout', function($timeout
     }
 }]);
 
-angular.module('myApp').directive('transposeTable', function() {
+angular.module('myApp').directive('transposeTable', ['$timeout', function($timeout) {
     return {
         replace: true,
         link: function(scope, element, attr) {
+            console.log("element: ", $(element).find(fixed_td_locator));
+
             var arrows = '<span class="pull-right"><i class="fa fa-caret-left"></i> <i class="fa fa-caret-right"></i></span>',
                 arrow_left = '<span class="pull-right"><i class="fa fa-caret-left"></i></span>',
                 arrow_right = '<span class="pull-right"><i class="fa fa-caret-right"></i></span>',
@@ -264,7 +266,6 @@ angular.module('myApp').directive('transposeTable', function() {
                 element.trigger("updateAll", [true]);
                 $(element).find(fixed_td_locator).append(arrows);
                 $(element).find(fixed_td_locator).on('click', function() {
-                    console.log('clicked')
                     toggleDirection(this);
                     var colIndex = $(this).index();
                     var trIndex = $(this).closest('tr').index();
@@ -272,11 +273,20 @@ angular.module('myApp').directive('transposeTable', function() {
                 });
             });
             $(element).find(fixed_td_locator).on('click', function() {
-                console.log('clicked')
                 toggleDirection(this);
                 var colIndex = $(this).index();
                 var trIndex = $(this).closest('tr').index();
                 sortTableCols(trIndex+1, 'outerText', $(this).attr(sorting_attr));
             });
-        }}
-});
+            //#TODO trigger on specific event
+            $timeout(function() {
+                $(element).find(fixed_td_locator).on('click', function() {
+                    toggleDirection(this);
+                    var colIndex = $(this).index();
+                    var trIndex = $(this).closest('tr').index();
+                    sortTableCols(trIndex+1, 'outerText', $(this).attr(sorting_attr));
+                });
+            }, 5000)
+        }
+    }
+}]);
