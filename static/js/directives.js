@@ -165,20 +165,78 @@ angular.module('myApp').directive('transposeTable', function() {
     return {
         replace: true,
         link: function(scope, element, attr) {
-            $(element).find(attr.transposeTable).on('click', function(){
+            var arrows = '<span class="pull-right"><i class="fa fa-caret-left"></i> <i class="fa fa-caret-right"></i></span>',
+                arrow_left = '<span class="pull-right"><i class="fa fa-caret-left"></i></span>',
+                arrow_right = '<span class="pull-right"><i class="fa fa-caret-right"></i></span>',
+                sorting_attr = 'data-sorting',
+                td_class_locator = 'fixed-col',
+                hidden_class_locator= '.hidden',
+                fixed_td_locator = 'td.'+td_class_locator,
+                asc = 'asc',
+                dsc = 'dsc';
+
+            function getDirection(direction) {
+                return direction === asc ? {asc: 1, dsc: -1} : {asc: -1, dsc: 1};
+            }
+
+            function toggleDirection(td) {
+                $(element).find(fixed_td_locator).find('span').remove();
+                $(element).find(fixed_td_locator).append(arrows);
+                $(td).find('span').remove();
+                if ($(td).attr(sorting_attr) === asc) {
+                    $(td).attr(sorting_attr, dsc);
+                    $(td).append(arrow_right)
+                } else {
+                    $(td).attr(sorting_attr, asc);
+                    $(td).append(arrow_left)
+                }
+            }
+
+            function sortTableCols(row_num, compare_by, direction) {
+                var drc = getDirection(direction);
+                //Get all the rows
+                var rows = element.find('tr');
+                var vals = [];
+                //Start sorting column along with data
+                var tds = rows.eq(row_num).find('td').not('.'+td_class_locator);
+                //compare_by outerText
+                angular.forEach(tds, function(td) { vals.push(td[compare_by]) });
+                var filtered = vals.sort();
+                tds.sort(function(a, b) {
+                    return filtered.indexOf($.text([a])) > filtered.indexOf($.text([b])) ? drc.asc : drc.dsc;
+                }).each(function(new_Index) {
+                        //Original Index
+                        var original_Index = $(this).index();
+                        //Reorder Header Text
+                        rows.each(function() {
+                            var th = $(this).find('th');
+                            if (original_Index !== new_Index)
+                                th.eq(original_Index).insertAfter(th.eq(new_Index));
+                        });
+                        //Reorder Column Data
+                        rows.each(function() {
+                            var td = $(this).find('td');
+                            if (original_Index !== new_Index)
+                                td.eq(original_Index).insertAfter(td.eq(new_Index));
+                        });
+                    });
+                return false;
+            }
+            $(element).find(attr.transposeTable).on('click', function() {
+                $(element).find(fixed_td_locator).find('span').remove();
                 element.find('thead tr').detach().prependTo(element.find('tbody'));
                 var t = element.find('tbody').eq(0);
                 var r = t.find('tr');
-                var cols= r.length;
-                var rows= r.eq(0).find('td,th').not('.hidden').length;
+                var cols = r.length;
+                var rows = r.eq(0).find('td,th').not(hidden_class_locator).length;
                 var cell, next, tem, i = 0;
                 var tb= $('<tbody></tbody>');
 
-                while(i<rows){
-                    cell= 0;
+                while (i < rows){
+                    cell = 0;
                     tem= $('<tr></tr>');
-                    while(cell<cols){
-                        next= r.eq(cell++).find('td,th').not('.hidden').eq(0);
+                    while(cell < cols){
+                        next = r.eq(cell++).find('td,th').not(hidden_class_locator).eq(0);
                         tem.append(next);
                     }
                     tb.append(tem);
@@ -197,13 +255,28 @@ angular.module('myApp').directive('transposeTable', function() {
                 element
                     .find('tbody tr th:first-child')
                     .each(function(){
-                        $(this).replaceWith('<td scope="row">'+$(this).html()+'</td>');
+                        $(this).replaceWith('<td class="'+td_class_locator+'" scope="row" ' + sorting_attr + '="' + asc +'">'+$(this).html()+'</td>');
                     });
                 element.show();
                 element.trigger('resetToLoadState');
                 element.trigger('destroy');
                 element.tablesorter();
                 element.trigger("updateAll", [true]);
-            })
+                $(element).find(fixed_td_locator).append(arrows);
+                $(element).find(fixed_td_locator).on('click', function() {
+                    console.log('clicked')
+                    toggleDirection(this);
+                    var colIndex = $(this).index();
+                    var trIndex = $(this).closest('tr').index();
+                    sortTableCols(trIndex+1, 'outerText', $(this).attr(sorting_attr));
+                });
+            });
+            $(element).find(fixed_td_locator).on('click', function() {
+                console.log('clicked')
+                toggleDirection(this);
+                var colIndex = $(this).index();
+                var trIndex = $(this).closest('tr').index();
+                sortTableCols(trIndex+1, 'outerText', $(this).attr(sorting_attr));
+            });
         }}
 });

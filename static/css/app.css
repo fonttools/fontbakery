@@ -154,6 +154,14 @@ td.clickable {
     transition: color 100ms linear;
 }
 
+td.fixed-col {
+    cursor: pointer;
+}
+
+/*td.fixed-col span {*/
+    /*opacity: .7;*/
+/*}*/
+
 button.transposer {
     background: none;
     border: none;
