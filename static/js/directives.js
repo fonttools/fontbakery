@@ -137,22 +137,73 @@ angular.module('myApp').directive('loadingContainer', function () {
 });
 
 angular.module('myApp').directive('applySorting', ['$timeout', function($timeout) {
-    return function(scope, element, attrs) {
-        var resort = true,
-            callback = function(table){},
-            config = {};
-        if (attrs.applySorting) {
-            if (angular.isFunction(attrs.applySorting)) {
-                config = attrs.applySorting(element);
+    return {
+        link: function(scope, element, attrs) {
+            var resort = true,
+                callback = function(table){},
+                config = {};
+            element.tablesorter();
+            if (attrs.applySorting) {
+                if (angular.isFunction(attrs.applySorting)) {
+                    config = attrs.applySorting(element);
+                }
+                callback = function(table){
+                    element.tablesorter(config);
+                };
             }
-            callback = function(table){
-                element.tablesorter(config);
-            };
+
+            //#TODO what event can be considered as event
+            // of finished rendering & updating of all cells?
+            $timeout(function() {
+                element.trigger("updateAll", [ resort, callback ]);
+            }, 2000);
         }
-        //#TODO what event can be considered as event
-        // of finished rendering & updating of all cells?
-        $timeout(function() {
-            element.trigger("updateAll", [ resort, callback ]);
-        }, 5000);
-    };
+    }
 }]);
+
+angular.module('myApp').directive('transposeTable', function() {
+    return {
+        replace: true,
+        link: function(scope, element, attr) {
+            $(element).find(attr.transposeTable).on('click', function(){
+                element.find('thead tr').detach().prependTo(element.find('tbody'));
+                var t = element.find('tbody').eq(0);
+                var r = t.find('tr');
+                var cols= r.length;
+                var rows= r.eq(0).find('td,th').not('.hidden').length;
+                var cell, next, tem, i = 0;
+                var tb= $('<tbody></tbody>');
+
+                while(i<rows){
+                    cell= 0;
+                    tem= $('<tr></tr>');
+                    while(cell<cols){
+                        next= r.eq(cell++).find('td,th').not('.hidden').eq(0);
+                        tem.append(next);
+                    }
+                    tb.append(tem);
+                    ++i;
+                }
+                element.find('tbody').remove();
+                $(tb).appendTo(element);
+                element
+                    .find('tbody tr:eq(0)')
+                    .detach()
+                    .appendTo(element.find('thead'))
+                    .children()
+                    .each(function(){
+                        $(this).replaceWith('<th scope="col">'+$(this).html()+'</th>');
+                    });
+                element
+                    .find('tbody tr th:first-child')
+                    .each(function(){
+                        $(this).replaceWith('<td scope="row">'+$(this).html()+'</td>');
+                    });
+                element.show();
+                element.trigger('resetToLoadState');
+                element.trigger('destroy');
+                element.tablesorter();
+                element.trigger("updateAll", [true]);
+            })
+        }}
+});

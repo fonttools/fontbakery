@@ -191,14 +191,9 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
             $scope.fontaine_fonts, $scope.fonts_orthography
         )
     };
+
     $document
         .ready(function() {
-            angular.element("#fontFacesTable").tablesorter();
-            angular.element("#vmetTable").tablesorter();
-            angular.element("#ttfTableSizesTable").tablesorter();
-            angular.element("#autohintSizesTable").tablesorter();
-            angular.element("#fontDescrTable").tablesorter();
-            angular.element("#fontCoverageTable").tablesorter();
             $document
                 .on("click", "td.coverageStats", function() {
                     // show modal window on click in td
@@ -221,6 +216,6 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
                             missing_chars = angular.element(this).html();
                         modal_body.append("<strong>"+font+"</strong>"+missing_chars+"<hr>")
                     });
-                });
+                })
         })
 }]);

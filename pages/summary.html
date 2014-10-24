@@ -3,7 +3,8 @@
 </p>
 <div ng-show="isReady()" ng-cloak>
 <div class="flex-container">
-  <table id="fontFacesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
+  <table id="fontFacesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting transpose-table="button.transposer">
+    <caption><h4>Fon Styles <button class="btn btn-mini transposer" tooltip="Transpose table"><i class="fa fa-repeat"></i></button></h4></caption>
     <thead>
     <tr>
       <th>Weight</th>
@@ -56,17 +57,19 @@
 </div>
 
 <div class="flex-container">
-  <table id="vmetTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
-    <caption><h4>Vertical metrics</h4></caption>
+  <table id="vmetTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting transpose-table="button.transposer">
+    <caption><h4>Vertical metrics <button class="btn btn-mini transposer" tooltip="Transpose table"><i class="fa fa-repeat"></i></button></h4></caption>
     <thead>
     <tr>
       <th ng-repeat="heading in metrics.headings track by $index">{{ heading }}</th>
     </tr>
     </thead>
+    <tbody>
     <tr ng-repeat="(parameter, values) in metrics.data track by $index">
       <td>{{ parameter }}</td>
       <td ng-repeat="value in values track by $index" class="text-right">{{ value }}</td>
     </tr>
+    </tbody>
   </table>
 </div>
 
@@ -79,32 +82,42 @@
 </div>
 
 <div class="flex-container">
-  <table id="ttfTableSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
+  <table id="ttfTableSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting transpose-table="button.transposer">
+    <caption>
+      <h4>Table sizes <button class="btn btn-mini transposer" tooltip="Transpose table"><i class="fa fa-repeat"></i></button></h4>
+    </caption>
     <thead>
     <tr>
-      <th></th>
+      <th>Parameter</th>
       <th class="hidden" ng-repeat-start="font in table_sizes.sizes"></th>
       <th ng-repeat="(name, params) in font">{{ name }}</th>
       <th class="hidden" ng-repeat-end></th>
     </tr>
     </thead>
+    <tbody>
     <tr ng-repeat="table in table_sizes.tables">
       <td>{{ table }}</td>
       <td class="hidden" ng-repeat-start="font in table_sizes.sizes"></td>
       <td ng-repeat="(name, params) in font" class="text-right">{{ params[table]|default:'N/A' }}</td>
       <td class="hidden" ng-repeat-end></td>
     </tr>
+    </tbody>
   </table>
 </div>
 
 <div ngif="autohint_sizes">
   <div class="flex-container">
-    <table id="autohintSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
-      <caption><h4>ttfautohint filesize impact statistic</h4></caption>
+    <table id="autohintSizesTable" class="table table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting transpose-table="button.transposer">
+      <caption>
+        <h4>ttfautohint filesize impact statistic <button class="btn btn-mini transposer" tooltip="Transpose table"><i class="fa fa-repeat"></i></button></h4>
+      </caption>
+      <thead>
       <tr>
-        <th></th>
+        <th>Parameter</th>
         <th ng-repeat="item in autohint_sizes">{{ item['fontname'] }}</th>
       </tr>
+      </thead>
+      <tbody>
       <tr>
         <td>Before</td>
         <td ng-repeat="item in autohint_sizes">{{ item['origin'] }}</td>
@@ -121,92 +134,93 @@
         <td>Change</td>
         <td ng-repeat="item in autohint_sizes">{{ item['processed'] / item['origin'] | number: 3 }}</td>
       </tr>
+      </tbody>
     </table>
   </div>
 </div>
 
 <div class="flex-container">
-  <table id="fontDescrTable" class="table table-dynamic-width table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting>
-    <caption><h4>Font Description</h4></caption>
+  <table id="fontDescrTable" class="table table-dynamic-width table-dynamic-width table-striped table-hover table-bordered table-condensed" apply-sorting transpose-table="button.transposer">
+    <caption><h4>Font Description <button class="btn btn-mini transposer" tooltip="Transpose table"><i class="fa fa-repeat"></i></button></h4></caption>
     <thead>
     <tr>
-      <th></th>
+      <th>Parameter</th>
       <th ng-repeat="(font, fontaine) in fontaine_fonts">{{ font }}</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-      <th>Common Name</th>
+      <td>Common Name</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.common_name }}</td>
     </tr>
     <tr>
-      <th>Full Name</th>
+      <td>Full Name</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine._full_name }}</td>
     </tr>
     <tr>
-      <th>PostScript Name</th>
+      <td>PostScript Name</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine._postscript }}</td>
     </tr>
     <tr>
-      <th>Subfamily</th>
+      <td>Subfamily</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.sub_family }}</td>
     </tr>
     <tr>
-      <th>Weight</th>
+      <td>Weight</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.weight }}</td>
     </tr>
     <tr>
-      <th>Version</th>
+      <td>Version</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.version }}</td>
     </tr>
     <tr>
-      <th>UniqueID</th>
+      <td>UniqueID</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine._unique_id }}</td>
     </tr>
     <tr>
-      <th>Copyright</th>
+      <td>Copyright</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.copyright }}</td>
     </tr>
     <tr>
-      <th>License</th>
+      <td>License</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.license }}</td>
     </tr>
     <tr>
-      <th>License URL</th>
+      <td>License URL</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">
         <a href="{{ fontaine.license_url }}">{{ fontaine.license_url }}</a>
       </td>
     </tr>
     <tr>
-      <th>Designer</th>
+      <td>Designer</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.designer }}</td>
     </tr>
     <tr>
-      <th>Designer URL</th>
+      <td>Designer URL</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">
         <a href="{{ fontaine.designer_url }}">{{ fontaine.designer_url }}</a>
       </td>
     </tr>
     <tr>
-      <th>Vendor</th>
+      <td>Vendor</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.vendor }}</td>
     </tr>
     <tr>
-      <th>Vendor URL</th>
+      <td>Vendor URL</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">
         <a href="{{ fontaine.vendor_url }}">{{ fontaine.vendor_url }}</a>
       </td>
     </tr>
     <tr>
-      <th>has_fixed_sizes</th>
+      <td>has_fixed_sizes</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.has_fixed_sizes }}</td>
     </tr>
     <tr>
-      <th>is_fixed_width</th>
+      <td>is_fixed_width</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.is_fixed_width }}</td>
     </tr>
     <tr>
-      <th>style_flags</th>
+      <td>style_flags</td>
       <td ng-repeat="(font, fontaine) in fontaine_fonts">{{ fontaine.style_flags }}</td>
     </tr>
     </tbody>
