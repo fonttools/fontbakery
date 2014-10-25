@@ -18,6 +18,7 @@
 <div id="login-box" ng-hide="$storage.OAuth_passed || $storage.OAuth_redirect_done" ng-cloak>
   <div class="round splash">
     <h2 class="icon landing">Font Bakery</h2>
+    <div ng-show="$storage.OAuth_error" class="text-danger" ng-bind="$storage.OAuth_error.message"></div>
     <div class="inner">
       <p>Font Bakery displays the status of font projects on GitHub.</p>
       <p><a target="_blank" href="https://github.com/googlefonts/fontbakery">Learn more</a></p>
