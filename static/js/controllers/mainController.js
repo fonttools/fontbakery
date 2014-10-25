@@ -15,6 +15,7 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
     $scope.repos_list = null;
     $scope.app_info = null;
     $scope.repo_info = null;
+    $scope.build_info = null;
     $rootScope.metadata = null;
 
     $scope.repo_is_valid = false;
@@ -26,6 +27,7 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
             $scope.repos_list != null &&
             $scope.app_info != null &&
             $scope.repo_info != null &&
+            $scope.build_info != null &&
             $scope.repo_current != null
     };
 
@@ -94,6 +96,14 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
         return $rootScope.font_regular;
     };
 
+    $scope.getRepoTravisLink = function() {
+        return ['http://travis-ci.org', $scope.repo_current.owner, $scope.repo_current.name].join('/');
+    };
+
+    $scope.getRepoTravisImageLink = function() {
+        return ['https://travis-ci.org',  $scope.repo_current.owner, $scope.repo_current.name + '.svg'].join('/');
+    };
+
     $scope.mainInit = function() {
         appApi.getRepos().then(function(dataResponse) {
             $scope.repos_list = dataResponse.data;
@@ -112,6 +122,23 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
 
                         appApi.getRepoInfo().then(function(dataResponse) {
                             $scope.repo_info = dataResponse.data;
+                        });
+
+//                        this.getCurrentRepoBuildInfo = function(repo) {
+//                            var info = {};
+//                            info['travisLink'] = ['http://travis-ci.org', $scope.repo_current.owner, $scope.repo_current.name].join('/');
+//                            info['travisImg'] = ['https://travis-ci.org',  $scope.repo_current.owner, $scope.repo_current.name, '.svg'].join('/');
+//                            $http.get(['https://api.travis-ci.org/repos', $scope.repo_current.owner, $scope.repo_current.name].join('/'), {headers: { 'Accept': 'application/vnd.travis-ci.2+json' }}).then(function(dataResponse) {
+//                                info['buildDateOrig'] = dataResponse.data.repo.last_build_finished_at;
+//                                info['buildStatus'] = dataResponse.data.repo.last_build_state;
+//                            }, function(error) {
+//                                info['buildDateOrig'] = null;
+//                                info['buildStatus'] = null;
+//                            });
+//                        };
+
+                        appApi.getRepoBuildInfo().then(function(dataResponse) {
+                            $scope.build_info = dataResponse.data;
                         });
 
                         appApi.getMetadata().then(

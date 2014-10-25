@@ -85,6 +85,9 @@ angular.module('myApp').service('PathBuilder', ['appConfig', function(appConfig)
         return args.join('/');
     };
 
+    this.buildTravisUrl = function() {
+        return ['https://api.travis-ci.org/repos', this._repo.owner, this._repo.name].join('/');
+    };
 }]);
 
 //API services
@@ -116,6 +119,10 @@ angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appCon
     this.checkRepo = function(repo) {
         var url = [appConfig.base_url, repo.owner, repo.name, 'gh-pages', appConfig.metadata].join('/');
         return $http.get(url);
+    };
+
+    this.getRepoBuildInfo = function() {
+        return $http.get(PathBuilder.buildTravisUrl(), {headers: { 'Accept': 'application/vnd.travis-ci.2+json' }});
     };
 }]);
 

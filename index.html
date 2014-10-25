@@ -75,11 +75,19 @@
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a ng-href="{{repo_info.gh_pages}}" target="_blank"><i class="fa fa-external-link"></i> gh-pages</a>
+          <li ng-if="build_info">
+            <a ng-href="{{getRepoTravisLink()}}" target="_blank"><img ng-src="{{getRepoTravisImageLink()}}"></a>
           </li>
-          <li>
-            <a ng-href="{{repo_info.url}}" target="_blank"><i class="fa fa-external-link"></i> Github Page</a>
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> <i class="fa fa-github"></i> Github <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li>
+                <a ng-href="{{repo_info.gh_pages}}" target="_blank"><i class="fa fa-external-link"></i> gh-pages</a>
+              </li>
+              <li>
+                <a ng-href="{{repo_info.url}}" target="_blank"><i class="fa fa-external-link"></i> Github Page</a>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
