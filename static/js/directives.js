@@ -180,8 +180,8 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
             }
 
             function toggleDirection(td) {
-                $(element).find(fixed_td_locator).find('span').remove();
-                $(element).find(fixed_td_locator).append(arrows);
+                element.find(fixed_td_locator).find('span').remove();
+                element.find(fixed_td_locator).append(arrows);
                 $(td).find('span').remove();
                 if ($(td).attr(sorting_attr) === asc) {
                     $(td).attr(sorting_attr, dsc);
@@ -223,7 +223,8 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
                 return false;
             }
             $(element).find(attr.transposeTable).on('click', function() {
-                $(element).find(fixed_td_locator).find('span').remove();
+                element.trigger('destroy');
+                element.find(fixed_td_locator).find('span').remove();
                 element.find('thead tr').detach().prependTo(element.find('tbody'));
                 var t = element.find('tbody').eq(0);
                 var r = t.find('tr');
@@ -258,19 +259,19 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
                         $(this).replaceWith('<td class="'+td_class_locator+'" scope="row" ' + sorting_attr + '="' + asc +'">'+$(this).html()+'</td>');
                     });
                 element.show();
-                element.trigger('resetToLoadState');
+                //element.trigger('resetToLoadState');
                 element.trigger('destroy');
                 element.tablesorter();
                 element.trigger("updateAll", [true]);
-                $(element).find(fixed_td_locator).append(arrows);
-                $(element).find(fixed_td_locator).on('click', function() {
+                element.find(fixed_td_locator).append(arrows);
+                element.find(fixed_td_locator).on('click', function() {
                     toggleDirection(this);
                     var colIndex = $(this).index();
                     var trIndex = $(this).closest('tr').index();
                     sortTableCols(trIndex+1, 'outerText', $(this).attr(sorting_attr));
                 });
             });
-            $(element).find(fixed_td_locator).on('click', function() {
+            element.find(fixed_td_locator).on('click', function() {
                 toggleDirection(this);
                 var colIndex = $(this).index();
                 var trIndex = $(this).closest('tr').index();
@@ -278,7 +279,7 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
             });
             //#TODO trigger on specific event
             $timeout(function() {
-                $(element).find(fixed_td_locator).on('click', function() {
+                element.find(fixed_td_locator).on('click', function() {
                     toggleDirection(this);
                     var colIndex = $(this).index();
                     var trIndex = $(this).closest('tr').index();
