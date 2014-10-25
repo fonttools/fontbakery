@@ -124,19 +124,6 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
                             $scope.repo_info = dataResponse.data;
                         });
 
-//                        this.getCurrentRepoBuildInfo = function(repo) {
-//                            var info = {};
-//                            info['travisLink'] = ['http://travis-ci.org', $scope.repo_current.owner, $scope.repo_current.name].join('/');
-//                            info['travisImg'] = ['https://travis-ci.org',  $scope.repo_current.owner, $scope.repo_current.name, '.svg'].join('/');
-//                            $http.get(['https://api.travis-ci.org/repos', $scope.repo_current.owner, $scope.repo_current.name].join('/'), {headers: { 'Accept': 'application/vnd.travis-ci.2+json' }}).then(function(dataResponse) {
-//                                info['buildDateOrig'] = dataResponse.data.repo.last_build_finished_at;
-//                                info['buildStatus'] = dataResponse.data.repo.last_build_state;
-//                            }, function(error) {
-//                                info['buildDateOrig'] = null;
-//                                info['buildStatus'] = null;
-//                            });
-//                        };
-
                         appApi.getRepoBuildInfo().then(function(dataResponse) {
                             $scope.build_info = dataResponse.data;
                         });

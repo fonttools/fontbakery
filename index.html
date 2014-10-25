@@ -74,8 +74,8 @@
             <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/review"><i class="fa fa-binoculars"></i> Review</a>
           </li>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li ng-if="build_info">
+        <ul class="nav navbar-nav navbar-right" ng-cloak>
+          <li ng-if="build_info" popover-trigger="mouseenter" popover-placement="bottom" popover-title="Last build" popover="{{build_info.repo.last_build_finished_at|amCalendar}}">
             <a ng-href="{{getRepoTravisLink()}}" target="_blank"><img ng-src="{{getRepoTravisImageLink()}}"></a>
           </li>
           <li class="dropdown">
