@@ -82,12 +82,12 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
      - master
    ```
 
-3. Add the `secure` section.  
-   First fetch a Github secure token for your repository:
+3. Add the `secure` section to the file.
+   First fetch a Github secure token for your repository, replacing `yourGithubUsername` and `yourRepoName` with your own:
    ```sh
-   curl -u yourUsername \
-       -d '{"scopes":["public_repo"],"note":"FontBakery for yourRepo"}' \
-       -s "https://api.github.com/authorizations"; # yourUsername and yourRepo must be your own
+   curl -u yourGithubUsername \
+       -d '{"scopes":["public_repo"],"note":"FontBakery for yourRepoName"}' \
+       -s "https://api.github.com/authorizations";
    ```
   If you get the following response, you already have a token for `note`, and you can find it on your [github profile page](https://github.com/settings/applications#personal-access-tokens)
    ```json
@@ -103,12 +103,12 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
      ]
    }
    ```
-  Now add the token using the travis command:
+  Now add the token using the travis command, replacing `yourGithubUserEmail` and `yourGithubRepoToken` with your own:
   ```sh
-  travis encrypt GIT_NAME="<githubUserName>" \
-    GIT_EMAIL="<githubUserEmail>" \
-    GH_TOKEN="<token>" \
-    --add --no-interactive -x;
+  travis encrypt GIT_NAME="yourGithubUsername" \
+    GIT_EMAIL="yourGithubUserEmail" \
+    GH_TOKEN="yourGithubRepoToken" \
+    --add --no-interactive -x; 
   ```
 
 4. Add and commit your `.travis.yml` file and push it to Github.
@@ -118,4 +118,4 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
    git push origin master;
    ```
 
-5. After each build by Travis you can see a report at <http://yourUsername.github.io/yourRepo>
+5. After each build by Travis you can see a report at <http://yourGithubUsername.github.io/yourRepo>
