@@ -78,16 +78,11 @@
           <li ng-if="build_info" popover-trigger="mouseenter" popover-placement="bottom" popover-title="Last build" popover="{{build_info.repo.last_build_finished_at|amCalendar}}">
             <a ng-href="{{getRepoTravisLink()}}" target="_blank"><img ng-src="{{getRepoTravisImageLink()}}"></a>
           </li>
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> <i class="fa fa-github"></i> Github <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a ng-href="{{repo_info.gh_pages}}" target="_blank"><i class="fa fa-external-link"></i> gh-pages</a>
-              </li>
-              <li>
-                <a ng-href="{{repo_info.url}}" target="_blank"><i class="fa fa-external-link"></i> Github Page</a>
-              </li>
-            </ul>
+          <li>
+            <a ng-href="{{repo_info.gh_pages}}" target="_blank"><i class="fa fa-external-link"></i> gh-pages</a>
+          </li>
+          <li>
+            <a ng-href="{{repo_info.url}}" target="_blank"><i class="fa fa-external-link"></i> Github Page</a>
           </li>
         </ul>
       </div>
