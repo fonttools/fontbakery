@@ -56,10 +56,10 @@
             <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/setup"><i class="fa fa-file"></i> Setup</a>
           </li>
           <li ng-class="{'disabled': !app_info.build_passed, 'active': activetab == 'checks' && app_info.build_passed}">
-            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a>
+            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/checks"><i class="fa fa-briefcase"></i> Checks</a>
           </li>
           <li ng-class="{'disabled': !app_info.build_passed, 'active': activetab == 'log' && app_info.build_passed}">
-            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/log"><i class="fa fa-file-text-o"></i> Build Log</a>
+            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/log"><i class="fa fa-file-text-o"></i> Log</a>
           </li>
           <li ng-class="{'disabled': !app_info.build_passed, 'active': activetab == 'tests' && app_info.build_passed}">
             <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/tests"><i class="fa fa-bug"></i> Tests</a>
