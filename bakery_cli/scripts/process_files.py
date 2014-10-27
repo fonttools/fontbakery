@@ -29,20 +29,19 @@ for path, dirs, files in os.walk('.'):
     for f in files:
         for ext in extensions:
             if f.endswith(ext):
-                process_files.append({'path': path, 'item': f, 'isfile': True})
+                process_files.append({'path': path, 'name': f, 'isfile': True})
     for d in dirs:
         for ext in extensions:
             if d.endswith(ext):
-                process_files.append({'path': path, 'item': d, 'isfile': False})
+                process_files.append({'path': path, 'name': d, 'isfile': False})
 
 if BAKERY_DEFAULTS_EXISTS:
-    print "Exists"
     with open(BAKERY_CONFIGURATION_DEFAULTS, 'r') as f:
         BAKERY_DEFAULTS_CONTENT = f.read()
 
 with open(FILENAME, 'w') as f:
     f.seek(0)
     f.write(BAKERY_DEFAULTS_CONTENT)
-    for item in process_files:
-        f.write('["{} {}"]\n'.format(item.path, item.item))
+    process_files_str = ', '.join(['"{}"'.format(item.name) for item in process_files])
+    f.write('[{}]'.format(process_files_str))
     f.truncate()
