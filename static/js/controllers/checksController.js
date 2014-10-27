@@ -78,6 +78,16 @@ myApp.controller('checksController', ['$scope', '$http', '$filter', 'PathBuilder
                 "fixed": chartsum.fixed + fixed_len
             }
         });
+        var filtered = $filter('filter')($scope.charts, function(chart, index) {
+            return chart.options.title == 'Project'
+        });
+        if (filtered != []) {
+            angular.forEach(filtered, function(item) {
+                $scope.charts.splice($scope.charts.indexOf(item), 1);
+                $scope.charts.unshift(item);
+            })
+        }
+
         // build chart of average values if we have more than 1 font
         if ($scope.tests.length > 1) {
             var success_len = chartsum.success,
