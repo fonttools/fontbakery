@@ -8,6 +8,7 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
     // errors should come through it
     $scope.alerts = alertsFactory;
     $scope.mixins = Mixins;
+    $scope.config = appConfig;
     $scope.statusMap = appConfig.statusMap;
     $scope.resultMap = appConfig.resultMap;
     $scope.pangram = appConfig.pangram;

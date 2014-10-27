@@ -8,7 +8,6 @@ var myApp = angular.module(
 // #TODO it would be better to get it from .json conf file once and use later.
 // Allows to not change code, but rather external file
 myApp.constant("appConfig", {
-    dev_mode: false,
     base_url: '//rawgit.com',
     base_url_no_cdn: '//rawgit.com',
     git_modules_url: '//rawgit.com/fontdirectory/collection/master/gitmodules.json',
