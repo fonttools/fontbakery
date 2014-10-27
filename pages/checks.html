@@ -3,14 +3,12 @@
 </p>
 <div ng-show="dataLoaded">
   <h3>Pre-Build Checks</h3>
-  <div class="row" ng-if="average_chart">
-    <div class="col-md-6 col-md-offset-3">
-      <div google-chart chart="average_chart" style="{{cssStyle}}"></div>
-    </div>
-  </div>
   <div class="row">
+    <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" ng-if="average_chart">
+      <div google-chart chart="average_chart" on-ready="mixins.updateChartTitle('Average')" style="{{cssStyle}}"></div>
+    </div>
     <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" ng-repeat="chart in charts">
-      <div google-chart chart="chart" on-ready="mixins.updateChartTitle(chart)" style="{{cssStyle}}"></div>
+      <div google-chart chart="chart" on-ready="mixins.updateChartTitle(chart.options.title)" style="{{cssStyle}}"></div>
     </div>
   </div>
   <div class="flex-container">

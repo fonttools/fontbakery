@@ -47,6 +47,7 @@
 
     /* Then we define how is distributed the remaining space */
     justify-content: space-around;
+    clear: both;
 }
 
 /*make table with depend on content*/

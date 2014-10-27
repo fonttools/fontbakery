@@ -21,8 +21,8 @@ angular.module('myApp').service('Mixins', [function() {
         });
     };
 
-    this.updateChartTitle = function(chart, attrs) {
-        $("svg > g > text:contains(" + chart.options.title + ")").attr(attrs || {x:50});
+    this.updateChartTitle = function(title, attrs) {
+        $("svg > g > text:contains(" + title + ")").attr(attrs || {x:50});
     };
 
     this.encodeHtmlEntity = function(str) {

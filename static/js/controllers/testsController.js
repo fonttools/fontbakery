@@ -67,7 +67,6 @@ myApp.controller('testsController', ['$scope', '$http', '$filter', 'PathBuilder'
                 options = {
                     title: test.name,
                     is3D: true,
-//                    width: 330,
                     chartArea: {'width': '100%'},
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
@@ -95,6 +94,7 @@ myApp.controller('testsController', ['$scope', '$http', '$filter', 'PathBuilder'
                 options = {
                     title: "Average",
                     is3D: true,
+                    chartArea: {'width': '100%'},
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
             $scope.average_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
