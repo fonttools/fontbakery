@@ -166,3 +166,7 @@ button.transposer {
     background: none;
     border: none;
 }
+
+#homeIcon {
+    color: inherit;
+}

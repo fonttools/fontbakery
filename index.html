@@ -39,6 +39,7 @@
         </button>
         <form class="navbar-form" role="search">
           <div class="input-group">
+            <span class="input-group-addon"><a id="homeIcon" ng-class="{'active': activetab == 'repos'}" ng-href="#/"><i class="fa fa-home fa"></i></a></span>
             <input type="text" autofocus class="form-control" placeholder="{{ metadata.name | default: 'Search'}}" name="selectRepo" ng-model="repo_selected.name" typeahead-editable="true" typeahead="r.submodule for r in repos_list | filter:filterReposList($viewValue) | limitTo:10" typeahead-on-select='onRepoSelect($item, $model, $label)' ng-cloak>
             <div class="input-group-btn">
               <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
@@ -65,7 +66,7 @@
             <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/tests"><i class="fa fa-bug"></i> Tests</a>
           </li>
           <li ng-class="{'disabled': !app_info.build_passed, 'active': activetab == 'metadata' && app_info.build_passed}">
-            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a>
+            <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/metadata"><i class="fa fa-info-circle"></i> Metadata</a>
           </li>
           <li ng-class="{'disabled': !app_info.build_passed, 'active': activetab == 'description' && app_info.build_passed}">
             <a ng-href="#/{{ repo_current.owner }}/{{ repo_current.name }}/description"><i class="fa fa-pencil-square-o"></i> Description</a>
