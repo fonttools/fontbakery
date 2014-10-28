@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import glob
 import os
 
 # require python fontforge module
@@ -97,6 +98,7 @@ setup(
              'tools/fontbakery-fix-gasp.py',
              'tools/fontbakery-fix-dsig.py',
              'tools/fontbakery-fix-glyph-private-encoding.py',
+             'tools/fontbakery-setup.py',
              'tools/collection-management/fontbakery-travis-secure.sh'],
     zip_safe=False,
     classifiers=[

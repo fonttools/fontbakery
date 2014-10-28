@@ -32,7 +32,8 @@ class BakeryTaskSet(object):
         pass
 
 
-BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'defaults.yaml')
+BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'bakery.defaults.yaml')
+BAKERY_CONFIGURATION_NEW = op.join(op.dirname(__file__), 'bakery.new.yaml')
 
 
 def copy_single_file(src, dest, log):
