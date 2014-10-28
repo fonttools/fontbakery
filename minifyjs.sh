@@ -32,7 +32,7 @@ source_files=(
 
 source_files_arg=$(IFS=" ";echo "${source_files[*]}")
 echo "Minifying sources..."
-echo "uglifyjs2 $source_files_arg --output static/js/all.min.js --stats true"
+echo "uglifyjs2 $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true"
 echo ""
 
 uglifyjs2 $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true

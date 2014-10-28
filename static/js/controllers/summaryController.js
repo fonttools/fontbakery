@@ -129,7 +129,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
                     ['Error '+error_len, error_len]
                 ]),
                 options = {
-                    title: "Average",
+                    title: 'Average',
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
@@ -137,27 +137,40 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
         }
     });
     summaryApi.getFontsTableGrouped().then(function(response) {
+        var colors_array = [
+            '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099',
+            '#3B3EAC', '#0099C6', '#DD4477', '#66AA00', '#B82E2E',
+            '#316395', '#994499', '#22AA99', '#AAAA11', '#6633CC',
+            '#E67300', '#8B0707', '#329262', '#5574A6', '#3B3EAC'
+        ];
         $scope.fonts_tables_grouped = response.data;
-        var headings = ["Table", "Average"].concat($scope.fonts_tables_grouped.grouped.fonts);
+        var headings1 = ['Table', 'Average (dashed line)'].concat($scope.fonts_tables_grouped.grouped.fonts);
         var aggregated_table = [];
-        aggregated_table.push(headings);
+        aggregated_table.push(headings1);
         angular.forEach($scope.fonts_tables_grouped.grouped.tables, function(table) {
             aggregated_table.push(table)
         });
 
-        var average_data = google.visualization.arrayToDataTable(aggregated_table);
-        var average_options = {
-            title: "Fonts compared to average",
+        var data1 = google.visualization.arrayToDataTable(aggregated_table);
+        var colors_array1 = angular.copy(colors_array);
+        colors_array1.unshift('#1a1a1a');
+        var options1 = {
+            series: {
+                0: { lineDashStyle: [10, 2] }
+            },
+
+            colors: colors_array1,
+            title: 'Fonts compared to average',
             is3D: true,
             vAxis: {
-                title: "Size (bytes)"
+                title: 'Size (bytes)'
             },
             hAxis: {
                 slantedText: true
             },
             height: 500
         };
-        $scope.average_line_chart = {data: average_data, options: average_options, type: 'LineChart', displayed: true};
+        $scope.average_line_chart = {data: data1, options: options1, type: 'LineChart', displayed: true};
 
         var headings2 = ["Table"].concat($scope.fonts_tables_grouped.delta.fonts);
         var deviation_table = [];
@@ -169,6 +182,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
         var data2 = google.visualization.arrayToDataTable(deviation_table);
 
         var options2 = {
+            colors: colors_array,
             bar: {groupWidth: "68%"},
             title: "Deviation from an average",
             is3D: true,
