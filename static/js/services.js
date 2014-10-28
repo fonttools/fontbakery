@@ -268,7 +268,7 @@ angular.module('myApp').service('githubService', ['$q', '$location', '$localStor
 
     this.initializeOAuth = function() {
         //initialize OAuth.io with public key of the application
-        OAuth.initialize('ZapNqQn-kP45Mq8tXYZi0u_G9bc', {cache:true});
+        OAuth.initialize('t5jdh3VeWpRP2zg0tkRSen4N66Y', {cache:true});
         //try to create an authorization result when the page loads,
         $storage.OAuth_result = OAuth.create(
             'github',
