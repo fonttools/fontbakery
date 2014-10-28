@@ -50,12 +50,6 @@ if __name__ == '__main__':
         bakery.generate(config)
         buildlog.generate(config)
 
-        for item in ('METADATA.yaml', 'buildlog.txt', 'fontaine.txt',
-                     'summary.tests.json', 'upstream.yaml'):
-            path = os.path.join(config['path'], item)
-            if os.path.exists(path):
-                report_app.move_to_data(path)
-
         if os.path.exists(os.path.join(config['path'], 'FONTLOG.txt')):
 
             if not bool(glob.glob(os.path.join(config['path'], 'README*'))):
@@ -76,6 +70,13 @@ if __name__ == '__main__':
         with open(os.path.join(config['path'], 'README.md'), 'w') as l:
             l.write(contents)
         report_app.copy_to_data(os.path.join(config['path'], 'summary.tests.json'))
+
+        for item in ('METADATA.yaml', 'buildlog.txt', 'fontaine.txt',
+                     'summary.tests.json', 'upstream.yaml'):
+            path = os.path.join(config['path'], item)
+            if os.path.exists(path):
+                report_app.move_to_data(path)
+
     else:
         config = {'path': args.path, 'failed': True}
         utils.BuildInfo(config)
