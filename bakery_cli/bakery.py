@@ -83,11 +83,11 @@ class Bakery(object):
 
         self.pipes = [
             pipe.Copy,
-            pipe.PyFontaine,
             pipe.UpstreamLint,
             pipe.Build,
             pipe.Metadata,
-            pipe.MetadataLint
+            pipe.MetadataLint,
+            pipe.PyFontaine
         ]
 
         self.logger = logging.getLogger(__name__)
