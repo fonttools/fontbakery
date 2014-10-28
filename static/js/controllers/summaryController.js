@@ -104,9 +104,10 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
                     ['Error '+error_len, error_len]
                 ]),
                 options = {
-                    title: test.name,
+                    title: test.name == 'METADATA.json' ? 'Overall Test Results' : test.name,
                     is3D: true,
-                    colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
+                    colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+                    chartArea: {width: '50%'}
                 };
             $scope.pie_charts.push({data: gdata, options: options, type: "PieChart", displayed: true});
             chartsum = {
