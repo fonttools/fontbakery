@@ -227,12 +227,18 @@ def generate(config):
                       'meta': f})
 
     metadata = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    upstreamdata = {}
+    upstreamdatafile = op.join(config['path'], 'upstream.yaml')
+    if op.exists(upstreamdatafile):
+        upstreamdata = yaml.load(open(upstreamdatafile))
+
     data = {}
     for fp in directory.BIN:
         path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
         if op.exists(path):
             data[fp] = yaml.load(open(path))
     data.update(metadata)
+    data.update(upstreamdata)
 
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
