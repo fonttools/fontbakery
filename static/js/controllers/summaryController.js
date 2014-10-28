@@ -1,6 +1,5 @@
 myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', '$document', 'summaryApi', 'Mixins', 'ngTableParams', function($scope, $rootScope, $http, $filter, $document, summaryApi, Mixins, ngTableParams) {
-    $scope.pie_charts = [];
-    $scope.average_pie_chart = null;
+    $scope.overall_pie_chart = null;
     $scope.average_line_chart = null;
     $scope.deviation_line_chart = null;
     $scope.tests = null;
@@ -95,21 +94,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
             var success_len = test['success'].length,
                 fixed_len = test['fixed'].length,
                 failure_len = test['failure'].length,
-                error_len = test['error'].length,
-                gdata = google.visualization.arrayToDataTable([
-                    ['Tests', '#'],
-                    ['Success '+success_len, success_len],
-                    ['Fixed '+fixed_len, fixed_len],
-                    ['Failed '+failure_len, failure_len],
-                    ['Error '+error_len, error_len]
-                ]),
-                options = {
-                    title: test.name == 'METADATA.json' ? 'Overall Test Results' : test.name,
-                    is3D: true,
-                    colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
-                    chartArea: {width: '50%'}
-                };
-            $scope.pie_charts.push({data: gdata, options: options, type: "PieChart", displayed: true});
+                error_len = test['error'].length;
             chartsum = {
                 "success": chartsum.success + success_len,
                 "error": error_len,
@@ -130,11 +115,12 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
                     ['Error '+error_len, error_len]
                 ]),
                 options = {
-                    title: 'Average',
+                    title: 'Overall Test Results',
+                    chartArea: {'width': '50%'},
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
-            $scope.average_pie_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
+            $scope.overall_pie_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
         }
     });
     summaryApi.getFontsTableGrouped().then(function(response) {

@@ -22,7 +22,7 @@ angular.module('myApp').service('Mixins', [function() {
     };
 
     this.updateChartTitle = function(title, attrs) {
-        $("svg > g > text:contains(" + title + ")").attr(attrs || {x:50});
+        $("svg > g > text:contains('" + title + "')").attr(attrs || {x:50});
     };
 
     this.encodeHtmlEntity = function(str) {
