@@ -216,8 +216,10 @@ def generate(config):
         return
 
     directory = UpstreamDirectory(config['path'])
-
-    metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
+    if op.exists(op.join(config['path'], 'METADATA.new.json')):
+        metadata_file = open(op.join(config['path'], 'METADATA.new.json')).read()
+    else:
+        metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
     family_metadata = Metadata.get_family_metadata(metadata_file)
     faces = []
     for f in family_metadata.fonts:
