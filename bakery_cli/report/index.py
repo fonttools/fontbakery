@@ -216,8 +216,10 @@ def generate(config):
         return
 
     directory = UpstreamDirectory(config['path'])
-
-    metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
+    if op.exists(op.join(config['path'], 'METADATA.new.json')):
+        metadata_file = open(op.join(config['path'], 'METADATA.new.json')).read()
+    else:
+        metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
     family_metadata = Metadata.get_family_metadata(metadata_file)
     faces = []
     for f in family_metadata.fonts:
@@ -226,7 +228,19 @@ def generate(config):
                       'path': f.filename,
                       'meta': f})
 
-    data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    metadata = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    upstreamdata = {}
+    upstreamdatafile = op.join(config['path'], 'upstream.yaml')
+    if op.exists(upstreamdatafile):
+        upstreamdata = yaml.load(open(upstreamdatafile))
+
+    data = {}
+    for fp in directory.BIN:
+        path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
+        if op.exists(path):
+            data[fp] = yaml.load(open(path))
+    data.update(metadata)
+    data.update(upstreamdata)
 
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
