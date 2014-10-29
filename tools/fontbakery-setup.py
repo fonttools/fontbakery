@@ -28,6 +28,19 @@ from bakery_cli.system import prun
 from bakery_cli.utils import UpstreamDirectory
 
 
+class Widgets(object):
+
+    def __init__(self, app):
+        self.commit = urwid.Edit(edit_text=app.commit)
+        self.ttfautohint = urwid.Edit(edit_text=app.ttfautohint)
+        self.newfamily = urwid.Edit(edit_text=app.newfamily)
+        self.fontcrunch = urwid.CheckBox('Use FontCrunch?',
+            state=app.fontcrunch)
+        self.downstream = urwid.CheckBox('Run tests?', state=app.downstream)
+        self.optimize = urwid.CheckBox('Run optimization?', state=app.optimize)
+        self.pyftsubset = urwid.Edit(edit_text=app.pyftsubset)
+
+
 class App(object):
 
     commit = 'HEAD'
@@ -43,35 +56,48 @@ class App(object):
     notes = ''
     newfamily = ''
     fontcrunch = None
+    config = {}
+    configfile = 'bakery.yaml'
 
     def __init__(self):
-        config = {}
 
         if os.path.exists('bakery.yaml'):
-            config = yaml.load(open('bakery.yaml'))
+            self.configfile = 'bakery.yaml'
+            self.config = yaml.load(open('bakery.yaml'))
         elif os.path.exists('bakery.yml'):
-            config = yaml.load(open('bakery.yml'))
+            self.config = yaml.load(open('bakery.yml'))
+            self.configfile = 'bakery.yml'
 
-        self.commit = config.get('commit', 'HEAD')
-        self.process_files = config.get('process_files', [])
-        self.subset = config.get('subset', [])
-        self.compiler = config.get('compiler', 'fontforge')
-        self.ttfautohint = config.get('ttfautohint', '')
-        self.afdko = config.get('afdko', '')
+        self.commit = self.config.get('commit', 'HEAD')
+        self.process_files = self.config.get('process_files', [])
+        self.subset = self.config.get('subset', [])
+        self.compiler = self.config.get('compiler', 'fontforge')
+        self.ttfautohint = self.config.get('ttfautohint', '')
+        self.afdko = self.config.get('afdko', '')
 
-        self.downstream = config.get('downstream', True)
-        self.optimize = config.get('optimize', True)
-        self.license = config.get('license', '')
-        self.pyftsubset = config.get('pyftsubset', '--notdef-outline --name-IDs=* --hinting')
-        self.notes = config.get('notes', '')
-        self.fontcrunch = config.get('fontcrunch')
-        self.newfamily = config.get('newfamily', '')
+        self.downstream = self.config.get('downstream', True)
+        self.optimize = self.config.get('optimize', True)
+        self.license = self.config.get('license', '')
+        self.pyftsubset = self.config.get('pyftsubset',
+                                     '--notdef-outline --name-IDs=* --hinting')
+        self.notes = self.config.get('notes', '')
+        self.fontcrunch = self.config.get('fontcrunch')
+        self.newfamily = self.config.get('newfamily', '')
 
+        self.widgets = Widgets(self)
 
-def save(*args, **kwargs):
-    print('bakery.yml exists...')
-    print('Wrote bakery.yml.new')
-    sys.exit(1)
+    def save(self, *args, **kwargs):
+        if os.path.exists(self.configfile):
+            print('{} exists...'.format(self.configfile))
+
+        self.config['commit'] = self.widgets.commit.get_edit_text()
+        if not self.config['commit']:
+            del self.config['commit']
+
+        yaml.safe_dump(self.config,
+                       open('{}.new'.format(self.configfile), 'w'))
+        print('Wrote {}.new'.format(self.configfile))
+        sys.exit(1)
 
 
 def get_subsets_coverage_data(source_fonts_paths):
@@ -157,7 +183,7 @@ widgets = []
 if os.path.exists('.git/config'):
     githead = urwid.Text(u"Build a specific git commit, or HEAD? ")
     widgets.append(urwid.AttrMap(githead, 'key'))
-    widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.commit)))
+    widgets.append(urwid.LineBox(app.widgets.commit))
     widgets.append(urwid.Divider())
 
 
@@ -197,14 +223,9 @@ for s in sorted(subsets):
 widgets.append(urwid.Divider())
 
 widgets.append(urwid.AttrMap(
-    urwid.CheckBox('Use ttfautohint?', state=bool(app.ttfautohint)), 'key'))
-
-widgets.append(urwid.Divider())
-
-widgets.append(urwid.AttrMap(
     urwid.Text('ttfautohint command line parameters?'), 'key'))
 
-widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.ttfautohint)))
+widgets.append(urwid.LineBox(app.widgets.ttfautohint))
 
 widgets.append(urwid.Divider())
 
@@ -212,26 +233,26 @@ widgets.append(urwid.AttrMap(
     urwid.Text(('New font family name (ie, replacing repo'
                 ' codename with RFN)?')), 'key'))
 
-widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.newfamily)))
+widgets.append(urwid.LineBox(app.widgets.newfamily))
 
 widgets.append(urwid.Divider())
 
-widgets.append(urwid.AttrMap(urwid.CheckBox('Use FontCrunch?', state=app.fontcrunch), 'key'))
+widgets.append(urwid.AttrMap(app.widgets.fontcrunch, 'key'))
 
 widgets.append(urwid.Divider())
 
-widgets.append(urwid.AttrMap(urwid.CheckBox('Run tests?', state=app.downstream), 'key'))
+widgets.append(urwid.AttrMap(app.widgets.downstream, 'key'))
 
 widgets.append(urwid.Divider())
 
-widgets.append(urwid.AttrMap(urwid.CheckBox('Run optimization?', state=app.optimize), 'key'))
+widgets.append(urwid.AttrMap(app.widgets.optimize, 'key'))
 
 widgets.append(urwid.Divider())
 
 widgets.append(urwid.AttrMap(
     urwid.Text('pyftsubset defaults parameters?'), 'key'))
 
-widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.pyftsubset)))
+widgets.append(urwid.LineBox(app.widgets.pyftsubset))
 
 widgets.append(urwid.Divider())
 
@@ -257,7 +278,7 @@ widgets.append(urwid.AttrMap(
 
 widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.notes)))
 
-widgets.append(urwid.Button(u'Save and Exit', on_press=save))
+widgets.append(urwid.Button(u'Save and Exit', on_press=app.save))
 
 header = urwid.AttrWrap(header, 'header')
 lw = urwid.SimpleListWalker(widgets)
