@@ -129,14 +129,14 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
                             $scope.build_info = dataResponse.data;
                         });
 
-                        appApi.getMetadata().then(
+                        appApi.getMetadataNew().then(
                             function(dataResponse) {
                                 $rootScope.metadata = dataResponse.data;
                                 $rootScope.repo_selected.name = $rootScope.metadata.name;
                                 $scope.getMainFont();
                             },
                             function(error) {
-                                appApi.getMetadataNew().then(function(dataResponse) {
+                                appApi.getMetadata().then(function(dataResponse) {
                                     $rootScope.metadata = dataResponse.data;
                                     $rootScope.repo_selected.name = $rootScope.metadata.name;
                                     $scope.getMainFont();
