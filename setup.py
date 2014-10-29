@@ -119,6 +119,7 @@ setup(
         'python-magic',
         'markdown',
         'scrapy',
+        'urwid',
         'GitPython==0.3.2.RC1'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
