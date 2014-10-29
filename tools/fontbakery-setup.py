@@ -31,6 +31,7 @@ from bakery_cli.utils import UpstreamDirectory
 class Widgets(object):
 
     def __init__(self, app):
+        self.app = app
         self.commit = urwid.Edit(edit_text=app.commit)
         self.ttfautohint = urwid.Edit(edit_text=app.ttfautohint)
         self.newfamily = urwid.Edit(edit_text=app.newfamily)
@@ -39,6 +40,20 @@ class Widgets(object):
         self.downstream = urwid.CheckBox('Run tests?', state=app.downstream)
         self.optimize = urwid.CheckBox('Run optimization?', state=app.optimize)
         self.pyftsubset = urwid.Edit(edit_text=app.pyftsubset)
+
+        self.compiler = []
+        self.licenses = []
+        self.process_files = []
+
+    def create_process_file(self, f):
+        try:
+            state = self.app.process_files.index(f) >= 0
+        except ValueError:
+            state = False
+
+        widget = urwid.CheckBox(f, state=state)
+        self.process_files.append(widget)
+        return widget
 
 
 class App(object):
@@ -93,6 +108,17 @@ class App(object):
         self.config['commit'] = self.widgets.commit.get_edit_text()
         if not self.config['commit']:
             del self.config['commit']
+
+        self.config['ttfautohint'] = self.widgets.ttfautohint.get_edit_text()
+        self.config['newfamily'] = self.widgets.newfamily.get_edit_text()
+        self.config['fontcrunch'] = self.widgets.fontcrunch.get_state()
+        self.config['downstream'] = self.widgets.downstream.get_state()
+        self.config['optimize'] = self.widgets.optimize.get_state()
+        self.config['pyftsubset'] = self.widgets.pyftsubset.get_edit_text()
+
+        self.config['process_files'] = [w.get_label()
+                                        for w in self.widgets.process_files
+                                        if w.get_state()]
 
         yaml.safe_dump(self.config,
                        open('{}.new'.format(self.configfile), 'w'))
@@ -189,23 +215,20 @@ if os.path.exists('.git/config'):
 
 widgets.append(urwid.AttrMap(urwid.Text('Which files to process?'), 'key'))
 for f in process_files:
-    try:
-        state = app.process_files.index(f) >= 0
-    except ValueError:
-        state = False
-    widgets.append(urwid.CheckBox(f, state=state))
+    widgets.append(app.widgets.create_process_file(f))
 
 widgets.append(urwid.Divider())
-licenses = ['OFL.txt', 'LICENSE.txt', 'LICENSE']
-group = []
-widgets.append(
-    urwid.AttrMap(
-        urwid.Text('License filename?'), 'key'))
-for f in licenses:
+
+widgets.append(urwid.AttrMap(
+    urwid.Text('License filename?'), 'key'))
+
+for f in ['OFL.txt', 'LICENSE.txt', 'LICENSE']:
     if os.path.exists(f):
-        widgets.append(urwid.RadioButton(group, f + ' (exists)', state=bool(f == app.license)))
+        widgets.append(urwid.RadioButton(app.widgets.licenses, f + ' (exists)',
+            state=bool(f == app.license)))
     else:
-        widgets.append(urwid.RadioButton(group, f, state=bool(f == app.license)))
+        widgets.append(urwid.RadioButton(app.widgets.licenses, f,
+            state=bool(f == app.license)))
 
 widgets.append(urwid.Divider())
 widgets.append(
@@ -267,9 +290,8 @@ widgets.append(urwid.Padding(urwid.Text(quote), left=4))
 widgets.append(urwid.Divider())
 
 choices = ['fontforge', 'afdko', 'make', 'build.py']
-group = []
 for choice in choices:
-    widgets.append(urwid.RadioButton(group, choice, state=bool(choice == app.compiler)))
+    widgets.append(urwid.RadioButton(app.widgets.compiler, choice, state=bool(choice == app.compiler)))
 
 
 widgets.append(urwid.Divider())
