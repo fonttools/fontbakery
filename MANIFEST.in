@@ -10,5 +10,5 @@ recursive-include bakery_cli/report/build_info/static/js/libs/jsondiffpatch *
 recursive-include bakery_cli/report/templates *
 recursive-include bakery_cli/report/templates/css *
 include bakery_lint/tests/upstream/diacritics.txt
-include bakery_cli/defaults.yaml
+include bakery_cli/bakery.defaults.yaml
 recursive-include bakery_lint/tests/licenses *
