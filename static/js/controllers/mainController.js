@@ -178,4 +178,9 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
 
         }
     });
+    $scope.$watch('repo_current', function(newValue, oldValue) {
+        if (newValue != null && oldValue != null && newValue != oldValue) {
+            $window.location.reload();
+        }
+    }, true)
 }]);
