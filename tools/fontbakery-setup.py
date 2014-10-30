@@ -40,19 +40,29 @@ class Widgets(object):
         self.downstream = urwid.CheckBox('Run tests?', state=app.downstream)
         self.optimize = urwid.CheckBox('Run optimization?', state=app.optimize)
         self.pyftsubset = urwid.Edit(edit_text=app.pyftsubset)
+        self.notes = urwid.Edit(edit_text=app.notes)
+        self.afdko_parameters = urwid.Edit(edit_text=app.afdko)
 
         self.compiler = []
         self.licenses = []
         self.process_files = []
+        self.subset = []
 
-    def create_process_file(self, f):
+    def create_process_file(self, filepath):
         try:
-            state = self.app.process_files.index(f) >= 0
+            state = self.app.process_files.index(filepath) >= 0
         except ValueError:
             state = False
 
-        widget = urwid.CheckBox(f, state=state)
+        widget = urwid.CheckBox(filepath, state=state)
         self.process_files.append(widget)
+        return widget
+
+    def create_subset_widget(self, subsetname, coverage):
+        widget = urwid.CheckBox('{0} ({1})'.format(subsetname, coverage),
+                                state=bool(subsetname in app.subset),
+                                user_data={'name': subsetname})
+        self.subset.append(widget)
         return widget
 
 
@@ -119,6 +129,21 @@ class App(object):
         self.config['process_files'] = [w.get_label()
                                         for w in self.widgets.process_files
                                         if w.get_state()]
+
+        self.config['compiler'] = ', '.join([w.get_label()
+                                             for w in self.widgets.compiler
+                                             if w.get_state()])
+
+        self.config['license'] = ', '.join([w.get_label()
+                                            for w in self.widgets.licenses
+                                            if w.get_state()])
+
+        self.config['notes'] = self.widgets.notes.get_edit_text()
+
+        self.config['subset'] = [w.user_data['name']
+                                 for w in self.widgets.subset]
+
+        self.config['afdko'] = self.widgets.afdko_parameters.get_edit_text()
 
         yaml.safe_dump(self.config,
                        open('{}.new'.format(self.configfile), 'w'))
@@ -240,7 +265,7 @@ for s in sorted(subsets):
     ll = ', '.join(set(['{}%'.format(subsets[s][k])
                         for k in subsets[s] if subsets[s][k]]))
     if ll:
-        widgets.append(urwid.CheckBox('{0} ({1})'.format(s, ll), state=bool(s in app.subset)))
+        widgets.append(app.widgets.create_subset_widget(s, ll))
 
 
 widgets.append(urwid.Divider())
@@ -291,14 +316,22 @@ widgets.append(urwid.Divider())
 
 choices = ['fontforge', 'afdko', 'make', 'build.py']
 for choice in choices:
-    widgets.append(urwid.RadioButton(app.widgets.compiler, choice, state=bool(choice == app.compiler)))
+    widgets.append(urwid.RadioButton(app.widgets.compiler, choice,
+        state=bool(choice == app.compiler)))
+
+widgets.append(urwid.Divider())
+
+widgets.append(urwid.AttrMap(
+    urwid.Text('afdko default command line parameters?'), 'key'))
+
+widgets.append(urwid.LineBox(app.widgets.afdko_parameters))
 
 
 widgets.append(urwid.Divider())
 widgets.append(urwid.AttrMap(
     urwid.Text('Notes to display on Summary page?'), 'key'))
 
-widgets.append(urwid.LineBox(urwid.Edit(edit_text=app.notes)))
+widgets.append(urwid.LineBox(app.widgets.notes))
 
 widgets.append(urwid.Button(u'Save and Exit', on_press=app.save))
 
