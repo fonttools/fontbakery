@@ -178,9 +178,17 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
 
         }
     });
+
     $scope.$watch('repo_current', function(newValue, oldValue) {
-        if (newValue != null && oldValue != null && newValue != oldValue) {
-            $window.location.reload();
+        if (newValue && oldValue){
+            var filtered = Object.keys(newValue).filter(function(key) {
+                return typeof newValue[key] === 'undefined';
+            }).concat(Object.keys(oldValue).filter(function(key) {
+                    return typeof oldValue[key] === 'undefined';
+                }));
+            if (newValue != oldValue && filtered.length == 0) {
+                $window.location.reload();
+            }
         }
     }, true)
 }]);
