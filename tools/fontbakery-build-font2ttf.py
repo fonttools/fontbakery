@@ -30,7 +30,7 @@ from bakery_cli.scripts import font2ttf
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--otf', type=str)
-parser.add_argument('sourcefont', type=str)
+parser.add_argument('source', type=str)
 parser.add_argument('ttf', type=str)
 
 
