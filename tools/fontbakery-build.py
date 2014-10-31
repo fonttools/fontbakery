@@ -70,9 +70,9 @@ def run_bakery(sourcedir):
                 builddir = repo.git.rev_parse('HEAD', short=True)
             except git.exc.InvalidGitRepositoryError:
                 pass
+        builddir = os.environ.get('TRAVIS_COMMIT', builddir)
 
-
-        build_project_dir = op.join(sourcedir, 'builds', os.environ.get('TRAVIS_COMMIT', builddir))
+        build_project_dir = op.join(sourcedir, 'builds', builddir)
 
         if 'process_files' not in config:
             directory = UpstreamDirectory(sourcedir)
@@ -81,7 +81,7 @@ def run_bakery(sourcedir):
 
         create_bakery_config(build_project_dir, config)
 
-        b = Bakery('', sourcedir, 'builds', os.environ.get('TRAVIS_COMMIT', builddir))
+        b = Bakery('', sourcedir, 'builds', builddir)
         config = op.join(build_project_dir, 'bakery.yaml')
         b.load_config(config)
         b.run()
@@ -93,7 +93,7 @@ def run_bakery(sourcedir):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('projectpath', nargs='+',
-                        help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
+                        help="Directory to run bakery build process on")
     args = parser.parse_args()
 
     for p in args.projectpath:

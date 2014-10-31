@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 import argparse
 import sys
 
@@ -29,7 +30,7 @@ if __name__ == '__main__':
                                  'upstream-ttx', 'metadata',
                                  'description', 'upstream-repo'],)
     parser.add_argument('file', nargs="*", help="Test files, can be a list")
-    parser.add_argument('--test', help="Test files, can be a list")
+    parser.add_argument('--test', help="Comma-separated tests to run")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=1)
 
@@ -39,16 +40,20 @@ if __name__ == '__main__':
         sys.exit()
 
     if not args.file:
-        print("Missing files to test")
+        print("Missing files to test", file=sys.stderr)
         sys.exit(1)
 
     for x in args.file:
         result = run_set(x, args.action, test_method=args.test)
-        failures = map(lambda x: (x._testMethodName, x._err_msg), result.get('failure', []))
-        error = map(lambda x: (x._testMethodName, x._err_msg), result.get('error', []))
-        success = map(lambda x: (x._testMethodName, 'OK'), result.get('success', []))
+        failures = [(x._testMethodName, x._err_msg)
+                    for x in result.get('failure', [])]
+        error = [(x._testMethodName, x._err_msg)
+                 for x in result.get('error', [])]
+        success = [(x._testMethodName, 'OK')
+                   for x in result.get('success', [])]
+
         if not bool(failures + error):
-            print 'OK'
+            print('OK')
         else:
             import pprint
             _pprint = pprint.PrettyPrinter(indent=4)
