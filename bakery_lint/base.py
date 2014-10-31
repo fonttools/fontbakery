@@ -91,6 +91,17 @@ class BakeryTestResult(unittest.TestResult):
         mod = importlib.import_module(pkg)
         getattr(mod, methodname.split('.')[-1])(test)
 
+    def _format_test_output(self, test, status):
+        tags = getattr(getattr(test, test._testMethodName), 'tags', [])
+        return '{category}: {status}: {filename}.py: {klass}.{method}(): ' \
+               '{description}: {result}'.format(category=', '.join(tags),
+                                                status=status,
+                                                filename=test.name.replace('.', '/'),
+                                                klass=test.__class__.__name__,
+                                                method=test._testMethodName,
+                                                description=test._testMethodDoc,
+                                                result=getattr(test, '_err_msg', ''))
+
     def startTest(self, test):
         super(BakeryTestResult, self).startTest(test)
 
@@ -98,7 +109,7 @@ class BakeryTestResult(unittest.TestResult):
         super(BakeryTestResult, self).addSuccess(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug('{}(): OK'.format(test.id()))
+            test.operator.debug(self._format_test_output(test, 'OK'))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
@@ -120,7 +131,7 @@ class BakeryTestResult(unittest.TestResult):
             self.el.append(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug('{}(): ERROR'.format(test.id()))
+            test.operator.debug(self._format_test_output(test, 'ERROR'))
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
@@ -130,7 +141,7 @@ class BakeryTestResult(unittest.TestResult):
         test._err_msg = _err_exception.message
 
         if hasattr(test, 'operator'):
-            test.operator.debug('{}(): FAIL'.format(test.id()))
+            test.operator.debug(self._format_test_output(test, 'FAIL'))
 
         test_method = getattr(test, test._testMethodName)
 
