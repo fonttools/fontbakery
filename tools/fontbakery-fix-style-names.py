@@ -23,14 +23,14 @@ from bakery_cli.scripts import stylenames
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename',
+parser.add_argument('font',
                     help="Font file in OpenType (TTF/OTF) format")
 parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")
 
 args = parser.parse_args()
-assert os.path.exists(args.filename)
+assert os.path.exists(args.font)
 if args.autofix:
-    stylenames.fix_style_names(args.filename)
+    stylenames.fix_style_names(args.font)
 else:
-    stylenames.show_stylenames(args.filename)
+    stylenames.show_stylenames(args.font)

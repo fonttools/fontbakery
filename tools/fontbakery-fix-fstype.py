@@ -27,18 +27,18 @@ from fontTools.ttLib import TTLibError
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename',
-                    help="Font file in OpenType (TTF/OTF) format")
+parser.add_argument('font',
+                    help="Font in OpenType (TTF/OTF) format")
 parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")
 
 args = parser.parse_args()
-assert os.path.exists(args.filename)
+assert os.path.exists(args.font)
 if args.autofix:
-    reset_fstype(args.filename)
+    reset_fstype(args.font)
 else:
     try:
-        font = Font(args.filename)
+        font = Font(args.font)
     except TTLibError as ex:
         print("ERROR: %s" % ex, file=sys.stderr)
         exit(1)

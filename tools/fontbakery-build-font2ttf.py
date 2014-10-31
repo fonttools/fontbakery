@@ -22,13 +22,18 @@
 # $ fontbakery-build-font2ttf.py font.sfdir font.ttf font.otf
 # $ fontbakery-build-font2ttf.py font.ufo font.ttf font.otf
 # $ fontbakery-build-font2ttf.py font.otf font.ttf
+import argparse
 import sys
+
 from bakery_cli.scripts import font2ttf
 
 
-if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print "Usage: %s <source font> <ttf> [<otf>]" % sys.argv[0]
-        sys.exit(0)
-    print("Input: %s, Output: %s" % (sys.argv[1], ', '.join(sys.argv[1:])))
-    font2ttf.convert(*sys.argv[1:])
+parser = argparse.ArgumentParser()
+parser.add_argument('--otf', type=str)
+parser.add_argument('sourcefont', type=str)
+parser.add_argument('ttf', type=str)
+
+
+args = parser.parse_args()
+
+font2ttf.convert(args.source, args.ttf, args.otf)

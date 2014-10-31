@@ -22,8 +22,8 @@ from bakery_cli.scripts import dsig
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('file', help="Test files, can be a list")
+    parser.add_argument('font', help="Font where to create DSIG table inside")
 
     args = parser.parse_args()
 
-    dsig.create(args.file)
+    dsig.create(args.font)

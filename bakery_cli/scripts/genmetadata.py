@@ -149,10 +149,6 @@ SUPPORTED_SUBSETS = frozenset([
     "devanagari"
 ])
 
-
-def usage():
-    print("fontbakery-build-metadata.py family_directory", file=sys.stderr)
-
 # DC This should check the NAME table for correct values of the license
 # and licenseurl keys
 

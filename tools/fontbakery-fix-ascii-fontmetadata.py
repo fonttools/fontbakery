@@ -22,8 +22,8 @@ from bakery_cli.scripts.ascii import fix_name_table
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('filename', help="Font file in TTF format")
+parser.add_argument('font', help="Font in OpenType (TTF/OTF) format")
 
 args = parser.parse_args()
-assert os.path.exists(args.filename)
-fix_name_table(args.filename)
+assert os.path.exists(args.font)
+fix_name_table(args.font)

@@ -20,12 +20,9 @@ import os
 
 from bakery_cli.scripts import opentype
 
+parser = argparse.ArgumentParser()
+parser.add_argument('font', help='Font in OpenType (TTF/OTF) format')
 
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('filename', help="Font file in TTF format")
-
-    args = parser.parse_args()
-    assert os.path.exists(args.filename)
-    opentype.fix(args.filename)
+args = parser.parse_args()
+assert os.path.exists(args.font)
+opentype.fix(args.font)

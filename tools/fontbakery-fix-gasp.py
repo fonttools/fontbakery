@@ -22,7 +22,7 @@ from bakery_cli.scripts import gasp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('file', help="Test files, can be a list")
+    parser.add_argument('font', help="Font in OpenType (TTF/OTF) format")
     parser.add_argument('--set', type=int,
                         help=('Change gasprange value of key 65535'
                               ' to new value'), default=None)
@@ -30,6 +30,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.set is not None:
-        gasp.set(args.file, args.set)
+        gasp.set(args.font, args.set)
     else:
-        gasp.show(args.file)
+        gasp.show(args.font)

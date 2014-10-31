@@ -15,19 +15,18 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
+
+import argparse
 import sys
 
 from bakery_cli.scripts import genmetadata
 
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    if len(argv) != 2:
-        genmetadata.usage()
-        return 1
-    genmetadata.run(argv[1])
-    return 0
+parser = argparse.ArgumentParser()
+parser.add_argument('family_directory', type=str)
 
-if __name__ == '__main__':
-    sys.exit(main())
+args = parser.parse_args()
+
+
+genmetadata.run(args.family_directory)
