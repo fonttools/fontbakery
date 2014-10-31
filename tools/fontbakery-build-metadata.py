@@ -18,15 +18,15 @@
 from __future__ import print_function
 
 import argparse
-import sys
 
 from bakery_cli.scripts import genmetadata
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('family_directory', type=str)
+parser = argparse.ArgumentParser(description='Builds METADATA.json[.new] in'
+                                             ' and for specified directory(s)')
+parser.add_argument('project_path', type=str)
 
 args = parser.parse_args()
 
 
-genmetadata.run(args.family_directory)
+genmetadata.run(args.project_path)
