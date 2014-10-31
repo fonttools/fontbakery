@@ -49,10 +49,11 @@ def get_orthography(fontaineFonts):
     library = Library(collections=['subsets'])
     for font, fontaine in fontaineFonts:
         orthographies = fontaine.get_orthographies(_library=library)
-        for charmap, support, coverage, missing_chars in orthographies:
-            result.append(dict(name=font, support=support,
-                               coverage=coverage, missing_glyphs=missing_chars,
-                               glyphs=charmap.glyphs))
+        for info in orthographies:
+            result.append(dict(name=font, support=info.support_level,
+                               coverage=info.coverage,
+                               missing_glyphs=info.missing,
+                               glyphs=info.charmap.glyphs))
     return sorted(result, key=lambda x: x['coverage'], reverse=True)
 
 
