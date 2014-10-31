@@ -36,7 +36,7 @@ def _build_repo_url(base_url, *chunks, **kwargs):
 
 
 def build_fontbakery_url(*chunks):
-    return op.join(GH, 'googlefonts', 'fontbakery-cli', *chunks)
+    return op.join(GH, 'googlefonts', 'fontbakery', *chunks)
 
 
 def build_repo_url(*chunks, **kwargs):

@@ -17,17 +17,16 @@
 from __future__ import print_function
 import os.path as op
 from markdown import markdown
+import codecs
 
 from bakery_cli.report import utils as report_utils
 
 TAB = 'BuildLog'
-
-
 def generate(config):
     report_app = report_utils.BuildInfo(config)
     report_app.build_page.copy_file(op.join(config['path'], 'buildlog.txt'), alt_name='buildlog.html')
     build_page_dir = op.join(report_app.pages_dir, report_app.build_page.name)
-    with open(op.join(build_page_dir, 'buildlog.html'), 'r+') as f:
+    with codecs.open(op.join(build_page_dir, 'buildlog.html'), 'r+', encoding='utf-8', errors='ignore') as f:
         data = f.read()
         f.seek(0)
         f.write(markdown(data))
