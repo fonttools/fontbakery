@@ -38,28 +38,28 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if int(os.environ.get('TRAVIS_TEST_RESULT', 0)) == 0:
-        conf = {'path': args.path}
-        report_app = utils.BuildInfo(conf)
-        # app.generate(conf)
-        tests.generate(conf)
-        index.generate(conf)
-        metadata.generate(conf)
-        description.generate(conf)
-        checks.generate(conf)
-        review.generate(conf)
-        bakery.generate(conf)
-        buildlog.generate(conf)
+        config = {'path': args.path}
+        report_app = utils.BuildInfo(config)
+        # app.generate(config)
+        tests.generate(config)
+        index.generate(config)
+        metadata.generate(config)
+        description.generate(config)
+        checks.generate(config)
+        review.generate(config)
+        bakery.generate(config)
+        buildlog.generate(config)
 
-        if os.path.exists(os.path.join(conf['path'], 'FONTLOG.txt')):
+        if os.path.exists(os.path.join(config['path'], 'FONTLOG.txt')):
 
-            if not bool(glob.glob(os.path.join(conf['path'], 'README*'))):
-                src = os.path.join(conf['path'], 'FONTLOG.txt')
-                dst = os.path.join(conf['path'], 'README.md')
+            if not bool(glob.glob(os.path.join(config['path'], 'README*'))):
+                src = os.path.join(config['path'], 'FONTLOG.txt')
+                dst = os.path.join(config['path'], 'README.md')
                 shutil.move(src, dst)
 
         contents = ''
-        if os.path.exists(os.path.join(conf['path'], 'README.md')):
-            with open(os.path.join(conf['path'], 'README.md')) as l:
+        if os.path.exists(os.path.join(config['path'], 'README.md')):
+            with open(os.path.join(config['path'], 'README.md')) as l:
                 contents = l.read()
 
         reposlug = os.environ.get('TRAVIS_REPO_SLUG', 'dummy/repo')
@@ -67,12 +67,19 @@ if __name__ == '__main__':
         travis = '[![Build Status]({0}.svg?branch=master)]({0})'
 
         contents = travis.format(travis_http) + '\n\n' + contents
-        with open(os.path.join(conf['path'], 'README.md'), 'w') as l:
+        with open(os.path.join(config['path'], 'README.md'), 'w') as l:
             l.write(contents)
-        report_app.copy_to_data(os.path.join(conf['path'], 'summary.tests.json'))
+        report_app.copy_to_data(os.path.join(config['path'], 'summary.tests.json'))
+
+        for item in ('METADATA.yaml', 'buildlog.txt', 'fontaine.txt',
+                     'summary.tests.json', 'upstream.yaml'):
+            path = os.path.join(config['path'], item)
+            if os.path.exists(path):
+                report_app.move_to_data(path)
+
     else:
-        conf = {'path': args.path, 'failed': True}
-        utils.BuildInfo(conf)
-        # app.generate(conf)
-        # index.generate(conf)
+        config = {'path': args.path, 'failed': True}
+        utils.BuildInfo(config)
+        # app.generate(config)
+        # index.generate(config)
 

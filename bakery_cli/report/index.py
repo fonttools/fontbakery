@@ -174,10 +174,11 @@ def get_orthography(fontaineFonts):
     fonts_names = []
     for font, fontaine in fontaineFonts:
         fonts_names.append(font)
-        for charmap, support, coverage, missing_chars in fontaine.get_orthographies(_library=library):
-            font_info = dict(name=font, support=support,
-                             coverage=coverage, missing_chars=missing_chars)
-            fonts_dict[charmap.common_name].append(font_info)
+        for info in fontaine.get_orthographies(_library=library):
+            font_info = dict(name=font, support=info.support_level,
+                             coverage=info.coverage,
+                             missing_chars=info.missing)
+            fonts_dict[info.charmap.common_name].append(font_info)
     averages = {}
     for subset, fonts in fonts_dict.items():
         averages[subset] = sum([font['coverage'] for font in fonts]) / len(fonts)
@@ -207,7 +208,7 @@ def _obj_to_dict(instance, exclude_attrs=()):
 def font_factory_instance_to_dict(instance):
     return _obj_to_dict(instance, exclude_attrs=(
         'get_othography_info', 'get_orthographies', 'orthographies',
-        'refresh_sfnt_properties', '_fontFace',
+        'refresh_sfnt_properties', '_fontFace', 'getGlyphNames'
     ))
 
 
@@ -216,8 +217,10 @@ def generate(config):
         return
 
     directory = UpstreamDirectory(config['path'])
-
-    metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
+    if op.exists(op.join(config['path'], 'METADATA.new.json')):
+        metadata_file = open(op.join(config['path'], 'METADATA.new.json')).read()
+    else:
+        metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
     family_metadata = Metadata.get_family_metadata(metadata_file)
     faces = []
     for f in family_metadata.fonts:
@@ -226,7 +229,19 @@ def generate(config):
                       'path': f.filename,
                       'meta': f})
 
-    data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    metadata = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    upstreamdata = {}
+    upstreamdatafile = op.join(config['path'], 'upstream.yaml')
+    if op.exists(upstreamdatafile):
+        upstreamdata = yaml.load(open(upstreamdatafile))
+
+    data = {}
+    for fp in directory.BIN:
+        path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
+        if op.exists(path):
+            data[fp] = yaml.load(open(path))
+    data.update(metadata)
+    data.update(upstreamdata)
 
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
