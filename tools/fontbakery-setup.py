@@ -18,6 +18,7 @@
 from __future__ import print_function
 
 import os
+import re
 import sys
 import yaml
 
@@ -35,10 +36,6 @@ class Widgets(object):
         self.commit = urwid.Edit(edit_text=app.commit)
         self.ttfautohint = urwid.Edit(edit_text=app.ttfautohint)
         self.newfamily = urwid.Edit(edit_text=app.newfamily)
-        self.fontcrunch = urwid.CheckBox('FontCrunch?',
-            state=app.fontcrunch)
-        self.downstream = urwid.CheckBox('Run tests?', state=app.downstream)
-        self.optimize = urwid.CheckBox('Run optimization?', state=app.optimize)
         self.pyftsubset = urwid.Edit(edit_text=app.pyftsubset)
         self.notes = urwid.Edit(edit_text=app.notes)
         self.afdko_parameters = urwid.Edit(edit_text=app.afdko)
@@ -47,6 +44,13 @@ class Widgets(object):
         self.licenses = []
         self.process_files = []
         self.subset = []
+
+    def on_checkbox_state_change(self, widget, state, user_data):
+        self.app.config[user_data['name']] = state
+
+    def create_checkbox(self, title, name, state=False):
+        return urwid.CheckBox(title, user_data={'name': name}, state=state,
+                              on_state_change=self.on_checkbox_state_change)
 
     def create_process_file(self, filepath):
         try:
@@ -72,7 +76,7 @@ class App(object):
     process_files = []
     subset = []
     compiler = 'fontforge'
-    ttfautohint = None
+    ttfautohint = False
     afdko = ''
     downstream = True
     optimize = True
@@ -80,7 +84,7 @@ class App(object):
     pyftsubset = '--notdef-outline --name-IDs=* --hinting'
     notes = ''
     newfamily = ''
-    fontcrunch = None
+    fontcrunch = False
     config = {}
     configfile = 'bakery.yaml'
 
@@ -100,13 +104,10 @@ class App(object):
         self.ttfautohint = self.config.get('ttfautohint', '')
         self.afdko = self.config.get('afdko', '')
 
-        self.downstream = self.config.get('downstream', True)
-        self.optimize = self.config.get('optimize', True)
         self.license = self.config.get('license', '')
         self.pyftsubset = self.config.get('pyftsubset',
                                      '--notdef-outline --name-IDs=* --hinting')
         self.notes = self.config.get('notes', '')
-        self.fontcrunch = self.config.get('fontcrunch')
         self.newfamily = self.config.get('newfamily', '')
 
         self.widgets = Widgets(self)
@@ -121,9 +122,6 @@ class App(object):
 
         self.config['ttfautohint'] = self.widgets.ttfautohint.get_edit_text()
         self.config['newfamily'] = self.widgets.newfamily.get_edit_text()
-        self.config['fontcrunch'] = self.widgets.fontcrunch.get_state()
-        self.config['downstream'] = self.widgets.downstream.get_state()
-        self.config['optimize'] = self.widgets.optimize.get_state()
         self.config['pyftsubset'] = self.widgets.pyftsubset.get_edit_text()
 
         self.config['process_files'] = [w.get_label()
@@ -140,15 +138,17 @@ class App(object):
 
         self.config['notes'] = self.widgets.notes.get_edit_text()
 
-        self.config['subset'] = [w.user_data['name']
-                                 for w in self.widgets.subset]
+        regex = re.compile(r'\s*\(\d+%\)')
+        self.config['subset'] = [regex.sub('', w.get_label())
+                                 for w in self.widgets.subset
+                                 if w.get_state()]
 
         self.config['afdko'] = self.widgets.afdko_parameters.get_edit_text()
 
         yaml.safe_dump(self.config,
                        open('{}.new'.format(self.configfile), 'w'))
         print('Wrote {}.new'.format(self.configfile))
-        sys.exit(1)
+        sys.exit(0)
 
 
 def get_subsets_coverage_data(source_fonts_paths):
@@ -278,15 +278,15 @@ widgets.append(urwid.LineBox(app.widgets.newfamily))
 
 widgets.append(urwid.Divider())
 
-widgets.append(urwid.AttrMap(app.widgets.downstream, 'key'))
+widgets.append(urwid.AttrMap(app.widgets.create_checkbox('Use FontCrunch?', 'fontcrunch', app.fontcrunch), 'key'))
 
 widgets.append(urwid.Divider())
 
-widgets.append(urwid.AttrMap(app.widgets.optimize, 'key'))
+widgets.append(urwid.AttrMap(app.widgets.create_checkbox('Run tests?', 'downstream', app.downstream), 'key'))
 
-# widgets.append(urwid.Divider())
+widgets.append(urwid.Divider())
 
-# widgets.append(urwid.AttrMap(app.widgets.fontcrunch, 'key'))
+widgets.append(urwid.AttrMap(app.widgets.create_checkbox('Run optimize?', 'optimize', app.optimize), 'key'))
 
 widgets.append(urwid.Divider())
 
