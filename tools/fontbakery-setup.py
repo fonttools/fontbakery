@@ -35,7 +35,7 @@ class Widgets(object):
         self.commit = urwid.Edit(edit_text=app.commit)
         self.ttfautohint = urwid.Edit(edit_text=app.ttfautohint)
         self.newfamily = urwid.Edit(edit_text=app.newfamily)
-        self.fontcrunch = urwid.CheckBox('Use FontCrunch?',
+        self.fontcrunch = urwid.CheckBox('FontCrunch?',
             state=app.fontcrunch)
         self.downstream = urwid.CheckBox('Run tests?', state=app.downstream)
         self.optimize = urwid.CheckBox('Run optimization?', state=app.optimize)
@@ -216,14 +216,6 @@ def show_or_exit(key):
     if key in ('q', 'Q', 'esc'):
         raise urwid.ExitMainLoop()
 
-
-if urwid.web_display.is_web_request():
-    Screen = urwid.web_display.Screen
-else:
-    Screen = urwid.curses_display.Screen
-
-
-screen = Screen()
 header = urwid.Text("Fontbakery Setup. Q exits.")
 
 
@@ -250,10 +242,10 @@ widgets.append(urwid.AttrMap(
 for f in ['OFL.txt', 'LICENSE.txt', 'LICENSE']:
     if os.path.exists(f):
         widgets.append(urwid.RadioButton(app.widgets.licenses, f + ' (exists)',
-            state=bool(f == app.license)))
+                    state=bool(f == app.license)))
     else:
         widgets.append(urwid.RadioButton(app.widgets.licenses, f,
-            state=bool(f == app.license)))
+                    state=bool(f == app.license)))
 
 widgets.append(urwid.Divider())
 widgets.append(
@@ -283,9 +275,6 @@ widgets.append(urwid.AttrMap(
 
 widgets.append(urwid.LineBox(app.widgets.newfamily))
 
-widgets.append(urwid.Divider())
-
-widgets.append(urwid.AttrMap(app.widgets.fontcrunch, 'key'))
 
 widgets.append(urwid.Divider())
 
@@ -294,6 +283,10 @@ widgets.append(urwid.AttrMap(app.widgets.downstream, 'key'))
 widgets.append(urwid.Divider())
 
 widgets.append(urwid.AttrMap(app.widgets.optimize, 'key'))
+
+# widgets.append(urwid.Divider())
+
+# widgets.append(urwid.AttrMap(app.widgets.fontcrunch, 'key'))
 
 widgets.append(urwid.Divider())
 
@@ -326,7 +319,6 @@ widgets.append(urwid.AttrMap(
 
 widgets.append(urwid.LineBox(app.widgets.afdko_parameters))
 
-
 widgets.append(urwid.Divider())
 widgets.append(urwid.AttrMap(
     urwid.Text('Notes to display on Summary page?'), 'key'))
@@ -342,10 +334,8 @@ listbox = urwid.ListBox(lw)
 listbox = urwid.AttrWrap(listbox, 'listbox')
 top = urwid.Frame(listbox, header)
 
-
-#     fill = urwid.Filler(txt, 'top')
 palette = [('header', 'black', 'dark cyan', 'standout'),
            ('key', 'white', 'dark blue', 'bold'),
            ('listbox', 'light gray', 'black')]
-loop = urwid.MainLoop(top, palette, screen, unhandled_input=show_or_exit)
+loop = urwid.MainLoop(top, palette, unhandled_input=show_or_exit)
 loop.run()
