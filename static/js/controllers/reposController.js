@@ -151,7 +151,7 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
                             info['repoLink'] = 'https://github.com/fontdirectory/' + path;
                             info['travisLink'] = 'http://travis-ci.org/fontdirectory/' + path;
                             info['travisImg'] = 'https://travis-ci.org/fontdirectory/' + path + '.svg';
-                            info['reportLink'] = 'https://fontdirectory.github.io/' + path;
+                            info['reportLink'] = 'http://googlefonts.github.io/fontbakery/#/fontdirectory/' + path;
                             info['getBuildInfoCallback'] = getBuildInfo;
                             info['getTestsInfoCallback'] = getTestsInfo;
                             data.push(info);
