@@ -92,15 +92,25 @@ class BakeryTestResult(unittest.TestResult):
         getattr(mod, methodname.split('.')[-1])(test)
 
     def _format_test_output(self, test, status):
+        result = getattr(test, '_err_msg', '')
         tags = getattr(getattr(test, test._testMethodName), 'tags', [])
+        if result:
+            return '{category}: {status}: {filename}.py: {klass}.{method}(): ' \
+                   '{description}: {result}'\
+                .format(category=', '.join(tags),
+                        status=status,
+                        filename=test.name.replace('.', '/'),
+                        klass=test.__class__.__name__,
+                        method=test._testMethodName,
+                        description=test._testMethodDoc,
+                        result=result)
         return '{category}: {status}: {filename}.py: {klass}.{method}(): ' \
-               '{description}: {result}'.format(category=', '.join(tags),
-                                                status=status,
-                                                filename=test.name.replace('.', '/'),
-                                                klass=test.__class__.__name__,
-                                                method=test._testMethodName,
-                                                description=test._testMethodDoc,
-                                                result=getattr(test, '_err_msg', ''))
+               '{description}'.format(category=', '.join(tags),
+                                      status=status,
+                                      filename=test.name.replace('.', '/'),
+                                      klass=test.__class__.__name__,
+                                      method=test._testMethodName,
+                                      description=test._testMethodDoc)
 
     def startTest(self, test):
         super(BakeryTestResult, self).startTest(test)
