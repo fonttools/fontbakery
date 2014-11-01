@@ -22,18 +22,31 @@
 # $ fontbakery-build-font2ttf.py font.sfdir font.ttf font.otf
 # $ fontbakery-build-font2ttf.py font.ufo font.ttf font.otf
 # $ fontbakery-build-font2ttf.py font.otf font.ttf
+from __future__ import print_function
+
 import argparse
+import os
 import sys
 
 from bakery_cli.scripts import font2ttf
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--otf', type=str)
-parser.add_argument('source', type=str)
-parser.add_argument('ttf', type=str)
-
+parser.add_argument('--with-otf', action="store_true",
+                    help='Generate otf file')
+parser.add_argument('source', nargs='+', type=str)
 
 args = parser.parse_args()
 
-font2ttf.convert(args.source, args.ttf, args.otf)
+for src in args.source:
+    if not os.path.exists(src):
+        print('\nError: {} does not exists\n'.format(src), file=sys.stderr)
+        continue
+
+    basename, _ = os.path.splitext(src)
+
+    otffile = None
+    if args.with_otf:
+        otffile = '{}.otf'.format(basename)
+
+    font2ttf.convert(src, '{}.ttf'.format(basename), otffile)
