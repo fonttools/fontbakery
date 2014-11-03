@@ -54,6 +54,7 @@ class RunCrawlerCommand(object):
         self.cmd = cmd
         self.verbose = kwargs.get('verbose', False)
         self.process = None
+        self.timedout = False
 
     def run(self, timeout):
         def target():
@@ -74,8 +75,9 @@ class RunCrawlerCommand(object):
 
         thread.join(timeout)
         if thread.is_alive():
-            print('\nCommand "{}" has timed out. '
-                  '\nTerminating...'.format(self.cmd))
+            self.timedout = True
+            print('Command "{}" has timed out. '
+                  'Terminating...\n'.format(self.cmd))
             self.process.terminate()
             self.process.terminate()
             thread.join()
@@ -123,12 +125,13 @@ else:
                 command = RunCrawlerCommand(' '.join(spider_args),
                                             verbose=crawling_verbose)
                 command.run(timeout=crawling_timeout)
-                crawling_results[spider] = 'OK'
+                crawling_results[spider] = \
+                    'ERROR (Timeout)' if command.timedout else 'OK'
             except Exception as exc:
                 crawling_results[spider] = 'ERROR'
                 print('Spider {} has failed with error: '
                       '{}'.format(spider, traceback.print_exc()))
         print('\nAll crawlers:')
         for k, v in crawling_results.items():
-            print('{:<20}{:>5}'.format(k, v))
+            print('{:<20}{}'.format(k, v))
         print('\nStats are written into "{}" directory'.format(data_dir))
