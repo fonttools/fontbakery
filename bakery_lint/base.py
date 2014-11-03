@@ -95,22 +95,22 @@ class BakeryTestResult(unittest.TestResult):
         result = getattr(test, '_err_msg', '')
         tags = getattr(getattr(test, test._testMethodName), 'tags', [])
         if result:
-            return '{category}: {status}: {filename}.py: {klass}.{method}(): ' \
-                   '{description}: {result}'\
-                .format(category=', '.join(tags),
-                        status=status,
-                        filename=test.name.replace('.', '/'),
-                        klass=test.__class__.__name__,
-                        method=test._testMethodName,
-                        description=test._testMethodDoc,
-                        result=result)
-        return '{category}: {status}: {filename}.py: {klass}.{method}(): ' \
-               '{description}'.format(category=', '.join(tags),
-                                      status=status,
-                                      filename=test.name.replace('.', '/'),
-                                      klass=test.__class__.__name__,
-                                      method=test._testMethodName,
-                                      description=test._testMethodDoc)
+            message = unicode('{category}: {status}: {filename}.py:'
+                              ' {klass}.{method}(): {description}: {result}')
+
+        else:
+            message = unicode('{category}: {status}: {filename}.py:'
+                              ' {klass}.{method}(): {description}')
+
+        test.operator.debug(u'{}'.format(result))
+        message = message.format(category=', '.join(tags),
+                                 status=status,
+                                 filename=test.name.replace('.', '/'),
+                                 klass=test.__class__.__name__,
+                                 method=test._testMethodName,
+                                 description=getattr(test, '_testMethodDoc', '') or '',
+                                 result=result)
+        return message
 
     def startTest(self, test):
         super(BakeryTestResult, self).startTest(test)

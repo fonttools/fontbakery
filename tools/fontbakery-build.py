@@ -33,36 +33,25 @@ from bakery_cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 from bakery_cli.utils import UpstreamDirectory
 
 
-def create_bakery_config(bakery_config_dir, data):
-    if not op.exists(bakery_config_dir):
-        os.makedirs(bakery_config_dir)
-
-    bakeryyaml = op.abspath(op.join(bakery_config_dir, 'bakery.yaml'))
+def create_bakery_config(bakery_yml_file, data):
+    if not op.exists(op.dirname(bakery_yml_file)):
+        os.makedirs(op.dirname(bakery_yml_file))
 
     data = {k: data[k] for k in data if data[k]}
 
-    l = open(bakeryyaml, 'w')
+    l = open(bakery_yml_file, 'w')
     l.write(yaml.safe_dump(data))
     l.close()
 
 
-def find_bakery_config(sourcedir):
-    for bakeryfile in ['bakery.yaml', 'bakery.yml']:
-        try:
-            bakeryyaml = open(op.join(sourcedir, bakeryfile), 'r')
-            return yaml.safe_load(bakeryyaml)
-        except IOError:
-            pass
-    return None
-
-
-def run_bakery(sourcedir):
-    sourcedir = op.realpath(sourcedir)
+def run_bakery(bakery_yml_file):
     try:
-        config = find_bakery_config(sourcedir)
-        if not config:
-            config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
+        config = yaml.safe_load(open(op.join(bakery_yml_file), 'r'))
+    except IOError:
+        config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
+    sourcedir = op.dirname(bakery_yml_file)
+    try:
         builddir = 'build'
         if GITPYTHON_INSTALLED:
             try:
@@ -72,29 +61,29 @@ def run_bakery(sourcedir):
                 pass
         builddir = os.environ.get('TRAVIS_COMMIT', builddir)
 
-        build_project_dir = op.join(sourcedir, 'builds', builddir)
-
         if 'process_files' not in config:
             directory = UpstreamDirectory(sourcedir)
             # normalize process_files path
             config['process_files'] = directory.get_fonts()
 
-        create_bakery_config(build_project_dir, config)
+        create_bakery_config(bakery_yml_file, config)
 
         b = Bakery('', sourcedir, 'builds', builddir)
-        config = op.join(build_project_dir, 'bakery.yaml')
-        b.load_config(config)
+        b.load_config(bakery_yml_file)
         b.run()
     except:
         if os.environ.get('DEBUG'):
             raise
         sys.exit(1)
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('projectpath', nargs='+',
+    description = ('Builds projects specified by bakery.yml file(s).'
+                   ' Output is in project/builds/commit/')
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('bakery.yml', nargs='+',
                         help="Directory to run bakery build process on")
     args = parser.parse_args()
 
-    for p in args.projectpath:
-        run_bakery(p)
+    for p in getattr(args, 'bakery.yml', []):
+        run_bakery(op.abspath(p))

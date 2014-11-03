@@ -27,10 +27,10 @@ class CheckOTStyleNameRecommendation(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name must be equal to one of the following four
-            values: “Regular”, “Italic”, “Bold” or “Bold Italic” """
+            values: "Regular", "Italic", "Bold" or "Bold Italic" """
         font = Font.get_ttfont(self.operator.path)
-        self.assertIn(font.ot_style_name, ['Regular', 'Italic',
-                                           'Bold', 'Bold Italic'])
+        self.assertIn(str(font.ot_style_name), ['Regular', 'Italic',
+                                                'Bold', 'Bold Italic'])
 
 
 class CheckOTFamilyNameRecommendation(TestCase):
