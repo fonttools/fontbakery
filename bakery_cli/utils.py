@@ -157,3 +157,18 @@ def nameTableRead(font, NameID, fallbackNameID=False):
         return nameTableRead(font, fallbackNameID)
 
     return ''
+
+
+def get_data_directory():
+    FONTBAKERY_DATA_DIRNAME = 'fontbakery'
+    try:
+        #Windows code:
+        d = os.path.join(os.environ["FONTBAKERY_DATA_DIRNAME"],
+                         FONTBAKERY_DATA_DIRNAME)
+    except KeyError:
+        #Linux and Mac code:
+        d = os.path.join(os.path.expanduser("~"),
+                         ".local", "share", FONTBAKERY_DATA_DIRNAME)
+    if not os.path.exists(d):
+        os.makedirs(d)
+    return d
