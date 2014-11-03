@@ -21,8 +21,10 @@ from bakery_cli.scripts import gasp
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('font', help="Font in OpenType (TTF/OTF) format")
+    description = 'Fixes TTF GASP table'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('ttf_font', nargs='*',
+                        help="Font in OpenType (TTF/OTF) format")
     parser.add_argument('--autofix', action='store_true', help='Apply autofix')
     parser.add_argument('--set', type=int,
                         help=('Change gasprange value of key 65535'
@@ -30,7 +32,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.set is not None:
-        gasp.set(args.font, args.set)
-    else:
-        gasp.show(args.font)
+    for path in args.ttf_font:
+        if args.set is not None:
+            gasp.set(path, args.set)
+        else:
+            gasp.show(path)
