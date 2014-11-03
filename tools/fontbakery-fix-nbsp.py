@@ -20,13 +20,14 @@
 # A script for generating a HTML file containing copyright notices
 # for all fonts found in a directory tree, using fontTools
 import argparse
-import sys
+import os
 
 from bakery_cli.scripts import nbsp
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('font', help='Font in OpenType (TTF/OTF) format')
+parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
 assert os.path.exists(args.font)

@@ -23,6 +23,7 @@ from bakery_cli.scripts.ascii import fix_name_table
 
 parser = argparse.ArgumentParser()
 parser.add_argument('font', help="Font in OpenType (TTF/OTF) format")
+parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
 assert os.path.exists(args.font)
