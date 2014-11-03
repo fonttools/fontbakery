@@ -23,19 +23,21 @@ from bakery_lint.base import tests_report
 from bakery_lint import run_set
 
 
+available_tests = ['result', 'upstream', 'upstream-ttx', 'metadata',
+                   'description', 'upstream-repo']
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('action', help="Action or target test suite",
-                        choices=['list', 'result', 'upstream',
-                                 'upstream-ttx', 'metadata',
-                                 'description', 'upstream-repo'],)
+    description = 'Runs checks or tests on specified directory/file(s)'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('test', help="Action or target test suite",
+                        choices=['*', 'list'] + available_tests)
     parser.add_argument('file', nargs="*", help="Test files, can be a list")
-    parser.add_argument('--test', help="Comma-separated tests to run")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=1)
 
     args = parser.parse_args()
-    if args.action == 'list':
+    if args.test == 'list':
         tests_report()
         sys.exit()
 
@@ -44,13 +46,22 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for x in args.file:
-        result = run_set(x, args.action, test_method=args.test)
-        failures = [(x._testMethodName, x._err_msg)
-                    for x in result.get('failure', [])]
-        error = [(x._testMethodName, x._err_msg)
-                 for x in result.get('error', [])]
-        success = [(x._testMethodName, 'OK')
-                   for x in result.get('success', [])]
+        failures = []
+        success = []
+        error = []
+        tests = [args.test]
+
+        if args.test == '*':
+            tests = available_tests
+
+        for test in tests:
+            result = run_set(x, test)
+            failures += [(x._testMethodName, x._err_msg)
+                        for x in result.get('failure', [])]
+            error += [(x._testMethodName, x._err_msg)
+                     for x in result.get('error', [])]
+            success += [(x._testMethodName, 'OK')
+                       for x in result.get('success', [])]
 
         if not bool(failures + error):
             print('OK')
