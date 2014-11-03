@@ -23,6 +23,7 @@ from bakery_cli.scripts import gasp
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('font', help="Font in OpenType (TTF/OTF) format")
+    parser.add_argument('--autofix', action='store_true', help='Apply autofix')
     parser.add_argument('--set', type=int,
                         help=('Change gasprange value of key 65535'
                               ' to new value'), default=None)

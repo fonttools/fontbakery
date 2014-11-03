@@ -23,6 +23,7 @@ from bakery_cli.scripts import dsig
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('font', help="Font where to create DSIG table inside")
+    parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
     args = parser.parse_args()
 
