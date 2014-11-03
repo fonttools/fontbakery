@@ -26,20 +26,27 @@ from bakery_cli.scripts.fstype import reset_fstype
 from fontTools.ttLib import TTLibError
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('font',
+description = 'Fixes TTF fsType to 0'
+
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='*',
                     help="Font in OpenType (TTF/OTF) format")
 parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")
 
 args = parser.parse_args()
-assert os.path.exists(args.font)
-if args.autofix:
-    reset_fstype(args.font)
-else:
-    try:
-        font = Font(args.font)
-    except TTLibError as ex:
-        print("ERROR: %s" % ex, file=sys.stderr)
-        exit(1)
-    print(font.OS2_fsType)
+
+
+for path in args.ttf_font:
+    if not os.path.exists(path):
+        continue
+
+    if args.autofix:
+        reset_fstype(path)
+    else:
+        try:
+            font = Font(path)
+        except TTLibError as ex:
+            print("ERROR: {0}: {1}".format(path, ex), file=sys.stderr)
+            continue
+        print('{0}: {1}'.format(path, font.OS2_fsType))

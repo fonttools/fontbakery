@@ -16,15 +16,21 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
+import os
 
 from bakery_cli.scripts import dsig
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('font', help="Font where to create DSIG table inside")
+    description = 'Fixes TTF to have a dummy DSIG table'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('ttf_font', nargs='*',
+                        help="Font where to create DSIG table inside")
     parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
     args = parser.parse_args()
 
-    dsig.create(args.font)
+    for path in args.ttf_font:
+        if not os.path.exists(path):
+            continue
+        dsig.create(path)
