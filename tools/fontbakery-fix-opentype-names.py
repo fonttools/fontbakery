@@ -20,10 +20,16 @@ import os
 
 from bakery_cli.scripts import opentype
 
-parser = argparse.ArgumentParser()
-parser.add_argument('font', help='Font in OpenType (TTF/OTF) format')
+
+description = 'Fixes TTF NAME table naming values to work with Windows GDI'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
+                    help='Font in OpenType (TTF/OTF) format')
 parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
-assert os.path.exists(args.font)
-opentype.fix(args.font)
+
+for path in args.ttf_font:
+    if not os.path.exists(path):
+        continue
+    opentype.fix(path)

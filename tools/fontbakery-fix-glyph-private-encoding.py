@@ -23,18 +23,24 @@ import fontTools.ttLib
 from bakery_cli.scripts import encode_glyphs
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('font', help='Font in OpenType (TTF/OTF) format')
+description = 'Fixes TTF unencoded glyphs to have Private Use Area encodings'
+
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
+                    help='Font in OpenType (TTF/OTF) format')
 parser.add_argument('--autofix', action="store_true",
                     help='Apply autofix. '
                          'Otherwise just check if there are unencoded glyphs')
 
 args = parser.parse_args()
-assert os.path.exists(args.font)
 
-ttx = fontTools.ttLib.TTFont(args.font, 0)
-if args.autofix:
-    glyphs = encode_glyphs.get_unencoded_glyphs(ttx)
-    encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(ttx, args.font, glyphs)
-else:
-    print(encode_glyphs.get_unencoded_glyphs(ttx))
+for path in args.ttf_font:
+    if not os.path.exists(path):
+        continue
+
+    ttx = fontTools.ttLib.TTFont(path, 0)
+    if args.autofix:
+        glyphs = encode_glyphs.get_unencoded_glyphs(ttx)
+        encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(ttx, path, glyphs)
+    else:
+        print('{0}: {1}'.format(path, encode_glyphs.get_unencoded_glyphs(ttx)))

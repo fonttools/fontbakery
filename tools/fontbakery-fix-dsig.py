@@ -24,7 +24,7 @@ from bakery_cli.scripts import dsig
 if __name__ == '__main__':
     description = 'Fixes TTF to have a dummy DSIG table'
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('ttf_font', nargs='*',
+    parser.add_argument('ttf_font', nargs='+',
                         help="Font where to create DSIG table inside")
     parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 

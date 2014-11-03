@@ -23,7 +23,7 @@ from bakery_cli.scripts.ascii import fix_name_table
 
 description = 'Fixes TTF NAME table strings to be ascii only'
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('ttf_font', nargs='*', type=str,
+parser.add_argument('ttf_font', nargs='+',
                     help="Font in OpenType (TTF/OTF) format")
 parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 

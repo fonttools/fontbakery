@@ -23,7 +23,7 @@ from bakery_cli.scripts import gasp
 if __name__ == '__main__':
     description = 'Fixes TTF GASP table'
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('ttf_font', nargs='*',
+    parser.add_argument('ttf_font', nargs='+',
                         help="Font in OpenType (TTF/OTF) format")
     parser.add_argument('--autofix', action='store_true', help='Apply autofix')
     parser.add_argument('--set', type=int,

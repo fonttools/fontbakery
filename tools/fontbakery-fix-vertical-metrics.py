@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
+from __future__ import print_function
 import argparse
 
 from fontTools.ttLib import TTLibError
@@ -73,12 +73,12 @@ parser.add_argument('-lt', '--linegaps-typo', type=int,
 
 parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")
-parser.add_argument('fonts', nargs='+', metavar='font',
+parser.add_argument('ttf_font', nargs='+', metavar='ttf_font',
                     help="Font file in OpenType (TTF/OTF) format")
 
 options = parser.parse_args()
 
-fonts = options.fonts
+fonts = options.ttf_font
 
 if (options.ascents or options.descents or options.linegaps
         or options.ascents_hhea or options.ascents_typo
@@ -89,7 +89,7 @@ if (options.ascents or options.descents or options.linegaps
         try:
             metrics = Font(f)
         except TTLibError as ex:
-            print('Error: %s' % ex)
+            print('Error: {0}: {1}'.format(f, ex))
             continue
 
         # set ascents, descents and linegaps. FontVerticalMetrics will

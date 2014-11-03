@@ -29,7 +29,7 @@ from fontTools.ttLib import TTLibError
 description = 'Fixes TTF fsType to 0'
 
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('ttf_font', nargs='*',
+parser.add_argument('ttf_font', nargs='+',
                     help="Font in OpenType (TTF/OTF) format")
 parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")

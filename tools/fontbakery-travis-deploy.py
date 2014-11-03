@@ -16,10 +16,14 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
+import argparse
 import os
 import sys
 from subprocess import Popen
 
+
+description = 'Deploys build to gh-pages branch of project repo'
+parser = argparse.ArgumentParser(description=description)
 
 try:
     commit = os.environ['TRAVIS_COMMIT']

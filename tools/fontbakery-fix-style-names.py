@@ -22,15 +22,20 @@ import os
 from bakery_cli.scripts import stylenames
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('font',
+description = 'Fixes TTF NAME table style names to be canonical'
+
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
                     help="Font file in OpenType (TTF/OTF) format")
-parser.add_argument('--autofix', action="store_true",
-                    help="Autofix font metrics")
+parser.add_argument('--autofix', action="store_true")
 
 args = parser.parse_args()
-assert os.path.exists(args.font)
-if args.autofix:
-    stylenames.fix_style_names(args.font)
-else:
-    stylenames.show_stylenames(args.font)
+
+
+for path in args.ttf_font:
+    if not os.path.exists(path):
+        continue
+    if args.autofix:
+        stylenames.fix_style_names(path)
+    else:
+        stylenames.show_stylenames(path)

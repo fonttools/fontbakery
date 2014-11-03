@@ -24,11 +24,16 @@ import os
 
 from bakery_cli.scripts import nbsp
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('font', help='Font in OpenType (TTF/OTF) format')
+description = ('Fixes TTF non-breaking-space glyph to exist'
+               ' with same advanceWidth as space')
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
+                    help='Font in OpenType (TTF/OTF) format')
 parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
-assert os.path.exists(args.font)
-nbsp.run(args.font)
+
+for path in args.ttf_font:
+    if not os.path.exists(path):
+        continue
+    nbsp.run(path)
