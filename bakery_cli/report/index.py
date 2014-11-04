@@ -20,6 +20,7 @@ import os
 import os.path as op
 import yaml
 
+import fontforge
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
 
@@ -212,6 +213,17 @@ def font_factory_instance_to_dict(instance):
     ))
 
 
+def get_stem(fontfile, glyph='n'):
+    ttf = fontforge.open(fontfile)
+    glyph = ttf[glyph]
+    if not glyph.vhints:
+        glyph.autoHint()
+    if not glyph.vhints:
+        return None
+    v_hints = [item[1] for item in glyph.vhints]
+    return sum(v_hints)/len(v_hints)
+
+
 def generate(config):
     if config.get('failed'):
         return
@@ -256,6 +268,8 @@ def generate(config):
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
 
+    stems = [dict(fontname=path, stem=get_stem(op.join(config['path'], path))) for path in directory.BIN]
+
     new_data = []
     for k in data:
         d = {'name': k}
@@ -266,6 +280,7 @@ def generate(config):
     metrics = {'data': vmet._its_metrics, 'headings': vmet._its_metrics_header}
     table_sizes = {'tables': ttftablesizes[0], 'sizes': ttftablesizes[1:]}
     report_app.summary_page.dump_file(metrics, 'metrics.json')
+    report_app.summary_page.dump_file(stems, 'stems.json')
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
     report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
     report_app.summary_page.dump_file(new_data, 'tests.json')
