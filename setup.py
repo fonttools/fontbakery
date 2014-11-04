@@ -100,6 +100,7 @@ setup(
              'tools/fontbakery-fix-gasp.py',
              'tools/fontbakery-fix-dsig.py',
              'tools/fontbakery-fix-glyph-private-encoding.py',
+             'tools/fontbakery-crawl.py',
              'tools/fontbakery-setup.py',
              'tools/collection-management/fontbakery-travis-secure.sh'],
     zip_safe=False,
