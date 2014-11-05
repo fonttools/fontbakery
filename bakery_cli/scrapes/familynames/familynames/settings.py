@@ -11,5 +11,6 @@ BOT_NAME = 'FontBakery'
 SPIDER_MODULES = ['familynames.spiders']
 NEWSPIDER_MODULE = 'familynames.spiders'
 
+COMMANDS_MODULE = 'familynames.commands'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'familynames (+http://www.yourdomain.com)'
