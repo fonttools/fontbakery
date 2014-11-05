@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Source: https://github.com/mekkablue/Glyphs-Scripts/blob/master/Masters/Insert%20instances.py
+
 from __future__ import division
 
 
