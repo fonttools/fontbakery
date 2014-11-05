@@ -34,6 +34,119 @@ angular.module('myApp').service('Mixins', [function() {
     };
 }]);
 
+//#TODO Angular fails on generators
+//angular.module('myApp').service('stemWeights', [function() {
+//    function zip() {
+//        var args = [].slice.call(arguments);
+//        var longest = args.reduce(function(a,b){
+//            return a.length>b.length ? a : b
+//        }, []);
+//
+//        return longest.map(function(_,i){
+//            return args.map(function(array){return array[i]})
+//        });
+//    }
+//
+//    function* range(n) {
+//        for (var i = 0; i < n; i++)
+//            yield i;
+//    }
+//
+//    this.distributeEqual = function(min_val, max_val, n){
+//        var d = mathjs.divide((max_val - min_val), (n-1));
+//        return [min_val + i*d for (i of range(n))];
+//    };
+//
+//    this.distributeLucas = function(min_val, max_val, n){
+//        var q = mathjs.divide(max_val, min_val);
+//        return [mathjs.multiply(min_val, mathjs.pow(q, (mathjs.divide(i, n-1)))) for (i of range(n))];
+//    };
+//
+//    this.distributePablo = function(min_val, max_val, n){
+//        var results = [];
+//        var es = this.distributeEqual(min_val, max_val, n);
+//        var ls = this.distributeLucas(min_val, max_val, n);
+//        var zipped = zip([i for (i of range(n))], es, ls);
+//        for(var j = 0; j < zipped.length; j++) {
+//            var i= zipped[j][0],
+//                e = zipped[j][1],
+//                l = zipped[j][2];
+//            var res = mathjs.multiply(l, (mathjs.subtract(1, mathjs.divide(i, mathjs.subtract(n, 1))))) + mathjs.multiply(e, (mathjs.divide(i, (mathjs.subtract(n, 1)))));
+//            results.push(res);
+//        }
+//    };
+//}]);
+
+angular.module('myApp').service('stemWeights', [function() {
+    function zip() {
+        var args = [].slice.call(arguments);
+        var longest = args.reduce(function(a,b){
+            return a.length>b.length ? a : b
+        }, []);
+
+        return longest.map(function(_,i){
+            return args.map(function(array){return array[i]})
+        });
+    }
+
+    function range(start, stop, step){
+        if (typeof stop=='undefined'){
+            // one param defined
+            stop = start;
+            start = 0;
+        }
+        if (typeof step=='undefined'){
+            step = 1;
+        }
+        if ((step>0 && start>=stop) || (step<0 && start<=stop)){
+            return [];
+        }
+        var result = [];
+        for (var i=start; step>0 ? i<stop : i>stop; i+=step){
+            result.push(i);
+        }
+        return result;
+    }
+
+    this.distributeEqual = function(min_val, max_val, n){
+        var d = mathjs.divide((mathjs.subtract(max_val, min_val)), mathjs.subtract(n, 1)),
+            items = range(n),
+            results = [];
+        for(var i = 0; i < items.length; i++) {
+            var result = mathjs.add(min_val, mathjs.multiply(i, d));
+            results.push(result);
+        }
+        return results;
+    };
+
+    this.distributeLucas = function(min_val, max_val, n){
+        var q = mathjs.divide(max_val, min_val),
+            items = range(n),
+            results = [];
+        for(var i = 0; i < items.length; i++) {
+            var result = mathjs.multiply(min_val, mathjs.pow(q, (mathjs.divide(i, n-1))));
+            results.push(result);
+        }
+        return results;
+    };
+
+    this.distributePablo = function(min_val, max_val, n){
+        var items = range(n),
+            results = [],
+            es = this.distributeEqual(min_val, max_val, n),
+            ls = this.distributeLucas(min_val, max_val, n),
+            zipped = zip(items, es, ls);
+        for(var j = 0; j < zipped.length; j++) {
+            var i= zipped[j][0],
+                e = zipped[j][1],
+                l = zipped[j][2];
+            var res = mathjs.multiply(l, (mathjs.subtract(1, mathjs.divide(i, mathjs.subtract(n, 1))))) + mathjs.multiply(e, (mathjs.divide(i, (mathjs.subtract(n, 1)))));
+            results.push(res);
+        }
+        return results;
+    };
+}]);
+
 // helper service to build paths
 angular.module('myApp').service('PathBuilder', ['appConfig', function(appConfig) {
     //#TODO should be some built-in solution
@@ -194,6 +307,9 @@ angular.module('myApp').service('testsApi', ['$http', '$q', 'PathBuilder', funct
 
 angular.module('myApp').service('summaryApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'summary';
+    this.getStems = function() {
+        return $http.get(PathBuilder.buildPagesUrl(name, 'stems.json'));
+    };
     this.getMetrics = function() {
         return $http.get(PathBuilder.buildPagesUrl(name, 'metrics.json'));
     };

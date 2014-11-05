@@ -1,9 +1,10 @@
-myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', '$document', 'summaryApi', 'Mixins', 'ngTableParams', function($scope, $rootScope, $http, $filter, $document, summaryApi, Mixins, ngTableParams) {
+myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', '$document', 'summaryApi', 'Mixins', 'stemWeights', 'ngTableParams', function($scope, $rootScope, $http, $filter, $document, summaryApi, Mixins, stemWeights, ngTableParams) {
     $scope.overall_pie_chart = null;
     $scope.average_line_chart = null;
     $scope.deviation_line_chart = null;
     $scope.tests = null;
     $scope.metrics = null;
+    $scope.stems = null;
     $scope.faces = {};
     $scope.table_sizes = null;
     $scope.autohint_sizes = null;
@@ -16,14 +17,126 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
         'fragmentary': 'warning',
         'unsupported': 'danger'
     };
+    $scope.distribute_font_family = [];
+    $scope.distribute_equal = [];
+    $scope.distribute_pablo = [];
+    $scope.distribute_lucas = [];
+
+    $scope.stemCalcParams = {min: 20, max: 220, steps: 9}; // set some defaults
 
     angular.forEach([100, 200, 300, 400, 500, 600, 700, 800, 900], function(weight) {
         $scope.faces[weight] = $rootScope.metadata.fonts.filter(function(face) {
             return face.weight == weight;
         });
     });
+
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
+    });
+
+    $scope.getStemDiff = function(data, index) {
+        if (index > 0) {
+            return data[index] - data[index-1]
+        }
+        return null;
+    };
+
+    $scope.getDistributeFontFamily = function() {
+        var data = [];
+        angular.forEach($scope.stems, function(item) {
+            data.push(item.stem);
+        });
+        data.sort();
+        return data;
+    };
+
+    $scope.getDistributeEqual = function() {
+        var distributeEqual = stemWeights.distributeEqual(
+            $scope.stemCalcParams.min,
+            $scope.stemCalcParams.max,
+            $scope.stemCalcParams.steps
+        );
+        angular.forEach(distributeEqual, function(item, index) {
+            distributeEqual[index] = mathjs.round(item);
+        });
+        return distributeEqual;
+    };
+
+    $scope.getDistributeLucas = function() {
+        var distributeLucas = stemWeights.distributeLucas(
+            $scope.stemCalcParams.min,
+            $scope.stemCalcParams.max,
+            $scope.stemCalcParams.steps
+        );
+        angular.forEach(distributeLucas, function(item, index) {
+            distributeLucas[index] = mathjs.round(item);
+        });
+        return distributeLucas;
+    };
+
+    $scope.getDistributePablo = function() {
+        var distributePablo = stemWeights.distributePablo(
+            $scope.stemCalcParams.min,
+            $scope.stemCalcParams.max,
+            $scope.stemCalcParams.steps
+        );
+        angular.forEach(distributePablo, function(item, index) {
+            distributePablo[index] = mathjs.round(item);
+        });
+        return distributePablo;
+    };
+
+    $scope.calculateStemWeightsDistributions = function() {
+        $scope.distribute_equal = $scope.getDistributeEqual();
+        $scope.distribute_pablo = $scope.getDistributePablo();
+        $scope.distribute_lucas = $scope.getDistributeLucas();
+        $scope.distribute_font_family = $scope.getDistributeFontFamily();
+        if ($scope.stemTableParams) {
+            $scope.stemTableParams.reload();
+            $scope.stemTableParams.total($scope.distribute_equal.length);
+            $scope.stemTableParams.counts = [];
+            $scope.stemTableParams.count($scope.distribute_equal.length);
+        }
+    };
+
+    summaryApi.getStems().then(function(response) {
+        $scope.stems = response.data;
+        $scope.calculateStemWeightsDistributions();
+
+        $scope.stemTableParams = new ngTableParams({
+            // show first page
+            page: 1,
+            // count per page
+            sorting: {
+                step: 'asc'
+            },
+            count: $scope.distribute_equal.length
+        }, {
+            // hide page counts control
+            counts: [],
+            // length of data
+            total: $scope.distribute_equal.length,
+            getData: function($defer, params) {
+                var data = [];
+                for(var i = 0; i < $scope.stemCalcParams.steps; i++) {
+                    var item = {
+                        step: i + 1,
+                        distribute_equal: $scope.distribute_equal[i],
+                        distribute_pablo: $scope.distribute_pablo[i],
+                        distribute_lucas: $scope.distribute_lucas[i],
+                        distribute_equal_stem_diff: $scope.getStemDiff($scope.distribute_equal, i),
+                        distribute_pablo_stem_diff: $scope.getStemDiff($scope.distribute_pablo, i),
+                        distribute_lucas_stem_diff: $scope.getStemDiff($scope.distribute_lucas, i)
+                    };
+                    data.push(item);
+                }
+                var orderedData = params.sorting() ?
+                    $filter('orderBy')(data, params.orderBy()) :
+                    data;
+                params.total(orderedData.length);
+                $defer.resolve(orderedData);
+            }
+        });
     });
 
     summaryApi.getTableSizes().then(function(response) {
@@ -187,7 +300,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
 
     $scope.isReady = function() {
         return !Mixins.checkAll(
-            null, $scope.metrics, $scope.tests, $scope.faces,
+            null, $scope.metrics, $scope.stems, $scope.tests, $scope.faces,
             $scope.table_sizes, $scope.autohint_sizes,
             $scope.fontaine_fonts, $scope.fonts_orthography
         )

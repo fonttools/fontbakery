@@ -92,6 +92,7 @@ myApp.config(['$routeProvider', '$httpProvider', '$locationProvider', 'appConfig
             activetab: 'summary',
             css: function(params) {
                 var links = [
+                    'static/css/pages/summary.css',
                     '/static/css/tablesorter-theme-custom.css'
                 ];
                 if (params.repo_name) {

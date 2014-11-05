@@ -1,0 +1,47 @@
+.d3chart {
+    padding: 3px;
+}
+
+.d3chart div {
+    width: 0;
+    transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+}
+
+.d3chart div {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 5px;
+    color: white;
+    box-shadow: 2px 2px 2px #666;
+}
+
+#stemCalculator {
+    margin: 30px 20px 20px;
+}
+
+.nested-group input:focus {
+    box-shadow: none;
+}
+
+.nested-group input:first-child {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.nested-group input {
+    margin-left: -5px;
+    border-radius: 0px;
+}
+
+.nested-group button {
+    margin-left: -5px;
+    border-left: none;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}

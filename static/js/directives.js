@@ -289,3 +289,48 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
         }
     }
 }]);
+
+
+angular.module('myApp').directive('barsChart', ['$parse', function($parse) {
+    var drawChart = function(element, data, redraw) {
+        //in D3, any selection[0] contains the group
+        //selection[0][0] is the DOM node
+        //but we won't need that this time
+        var chart = d3.select(element);
+        if (redraw) {
+            angular.element(element).empty();
+        }
+        var max_data = d3.max(data),
+            mean_data = d3.mean(data),
+            scale = mean_data * 1.8;
+        var x = d3.scale.linear()
+            .domain([0, max_data])
+            .range([0, scale]);
+        //to our original directive markup bars-chart
+        //we add a div with out chart stling and bind each
+        //data entry to the chart
+        chart.append("div").attr("class", "d3chart")
+            .selectAll('div')
+            .data(data).enter().append("div")
+            .transition().ease("elastic")
+            .style("width", function(d) { return x(d) + "px"; })
+            .text(function(d) { return d; });
+    };
+    return {
+        restrict: 'E',
+        scope: {data: '=chartData'},
+        replace: false,
+        link: function (scope, element, attrs) {
+            var changed = false;
+            scope.$watch("data", function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    changed = true;
+                    drawChart(element[0], scope.data, changed);
+                }
+            });
+            if (!changed) {
+                drawChart(element[0], scope.data, false);
+            }
+        }
+    };
+}]);
