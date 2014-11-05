@@ -117,7 +117,7 @@ class App(object):
             print('{} exists...'.format(self.configfile))
 
             self.configfile = '{}.new'.format(self.configfile)
-            while os.path.exists('{}.new'.format(self.configfile)):
+            while os.path.exists(self.configfile):
                 self.configfile = '{}.new'.format(self.configfile)
 
         self.config['commit'] = self.widgets.commit.get_edit_text()
@@ -139,7 +139,7 @@ class App(object):
                                              for w in self.widgets.compiler
                                              if w.get_state()])
 
-        self.config['license'] = ', '.join([w.get_label()
+        self.config['license'] = ', '.join([w.get_label().replace(' (exists)', '')
                                             for w in self.widgets.licenses
                                             if w.get_state()])
 
