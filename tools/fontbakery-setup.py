@@ -76,7 +76,7 @@ class App(object):
     process_files = []
     subset = []
     compiler = 'fontforge'
-    ttfautohint = False
+    ttfautohint = '-l 7 -r 28 -G 50 -x 13 -w "G"'
     afdko = ''
     downstream = True
     optimize = True
@@ -101,7 +101,7 @@ class App(object):
         self.process_files = self.config.get('process_files', [])
         self.subset = self.config.get('subset', [])
         self.compiler = self.config.get('compiler', 'fontforge')
-        self.ttfautohint = self.config.get('ttfautohint', '')
+        self.ttfautohint = self.config.get('ttfautohint', '-l 7 -r 28 -G 50 -x 13 -w "G"')
         self.afdko = self.config.get('afdko', '')
 
         self.license = self.config.get('license', '')
@@ -116,12 +116,19 @@ class App(object):
         if os.path.exists(self.configfile):
             print('{} exists...'.format(self.configfile))
 
+            self.configfile = '{}.new'.format(self.configfile)
+            while os.path.exists('{}.new'.format(self.configfile)):
+                self.configfile = '{}.new'.format(self.configfile)
+
         self.config['commit'] = self.widgets.commit.get_edit_text()
         if not self.config['commit']:
             del self.config['commit']
 
         self.config['ttfautohint'] = self.widgets.ttfautohint.get_edit_text()
         self.config['newfamily'] = self.widgets.newfamily.get_edit_text()
+        if not self.config['newfamily']:
+            del self.config['newfamily']
+
         self.config['pyftsubset'] = self.widgets.pyftsubset.get_edit_text()
 
         self.config['process_files'] = [w.get_label()
@@ -137,6 +144,8 @@ class App(object):
                                             if w.get_state()])
 
         self.config['notes'] = self.widgets.notes.get_edit_text()
+        if not self.config['notes']:
+            del self.config['notes']
 
         regex = re.compile(r'\s*\(\d+%\)')
         self.config['subset'] = [regex.sub('', w.get_label())
@@ -144,10 +153,11 @@ class App(object):
                                  if w.get_state()]
 
         self.config['afdko'] = self.widgets.afdko_parameters.get_edit_text()
+        if not self.config['afdko']:
+            del self.config['afdko']
 
-        yaml.safe_dump(self.config,
-                       open('{}.new'.format(self.configfile), 'w'))
-        print('Wrote {}.new'.format(self.configfile))
+        yaml.safe_dump(self.config, open(self.configfile, 'w'))
+        print('Wrote {}'.format(self.configfile))
         sys.exit(0)
 
 

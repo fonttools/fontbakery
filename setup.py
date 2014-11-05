@@ -65,7 +65,7 @@ if not libmagic or not libmagic._name:
 # now installation can begin!
 from setuptools import setup
 setup(
-    name="fontbakerycli",
+    name="fontbakery",
     version='0.0.3',
     url='https://github.com/googlefonts/fontbakery-cli/',
     description='fontbakery-cli',

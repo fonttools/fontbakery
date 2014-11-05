@@ -102,7 +102,6 @@ class BakeryTestResult(unittest.TestResult):
             message = unicode('{category}: {status}: {filename}.py:'
                               ' {klass}.{method}(): {description}')
 
-        test.operator.debug(u'{}'.format(result))
         message = message.format(category=', '.join(tags),
                                  status=status,
                                  filename=test.name.replace('.', '/'),
