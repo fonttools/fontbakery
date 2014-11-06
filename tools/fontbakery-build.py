@@ -44,7 +44,7 @@ def create_bakery_config(bakery_yml_file, data):
     l.close()
 
 
-def run_bakery(bakery_yml_file):
+def run_bakery(bakery_yml_file, verbose=False):
     try:
         config = yaml.safe_load(open(op.join(bakery_yml_file), 'r'))
     except IOError:
@@ -72,7 +72,7 @@ def run_bakery(bakery_yml_file):
         b.load_config(bakery_yml_file)
         b.run()
     except:
-        if os.environ.get('DEBUG'):
+        if verbose or config.get('verbose'):
             raise
         sys.exit(1)
 
@@ -83,7 +83,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('bakery.yml', nargs='+',
                         help="Directory to run bakery build process on")
+    parser.add_argument('--verbose', default=False, action='store_true')
     args = parser.parse_args()
 
     for p in getattr(args, 'bakery.yml', []):
-        run_bakery(op.abspath(p))
+        run_bakery(op.abspath(p), verbose=args.verbose)
