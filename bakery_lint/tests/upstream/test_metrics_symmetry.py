@@ -30,6 +30,7 @@ class TestMetricsSymmetry(TestCase):
         return not cls.operator.path.endswith('.ufo')
 
     def test_metrics_symmetry(self):
+        """ The side-bearings are almost equal. """
         font = robofab.world.OpenFont(self.operator.path)
 
         for glyph in font:
