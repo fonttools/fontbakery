@@ -242,7 +242,6 @@ def make_suite(path, definedTarget, test_method=None, log=None):
     suite = unittest.TestSuite()
 
     operator = TestCaseOperator(path, log)
-
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             TestCase.operator = operator
@@ -257,7 +256,6 @@ def make_suite(path, definedTarget, test_method=None, log=None):
             for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestCase):
                 if test_method and test_method != test._testMethodName:
                     continue
-
                 suite.addTest(test)
 
     return suite
