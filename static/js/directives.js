@@ -290,19 +290,18 @@ angular.module('myApp').directive('transposeTable', ['$timeout', function($timeo
     }
 }]);
 
-
 angular.module('myApp').directive('barsChart', ['$parse', function($parse) {
-    var drawChart = function(element, data, redraw) {
+    var drawChart = function(element, data) {
         //in D3, any selection[0] contains the group
         //selection[0][0] is the DOM node
         //but we won't need that this time
         var chart = d3.select(element);
-        if (redraw) {
-            angular.element(element).empty();
-        }
         var max_data = d3.max(data),
             mean_data = d3.mean(data),
             scale = mean_data * 1.8;
+        if (scale > 300) {
+            scale = 300;
+        }
         var x = d3.scale.linear()
             .domain([0, max_data])
             .range([0, scale]);
@@ -325,11 +324,121 @@ angular.module('myApp').directive('barsChart', ['$parse', function($parse) {
             scope.$watch("data", function(newValue, oldValue) {
                 if (newValue != oldValue) {
                     changed = true;
-                    drawChart(element[0], scope.data, changed);
+                    angular.element(element).empty();
+                    drawChart(element[0], scope.data);
                 }
             });
             if (!changed) {
-                drawChart(element[0], scope.data, false);
+                drawChart(element[0], scope.data);
+            }
+        }
+    };
+}]);
+
+angular.module('myApp').directive('lineChart', ['$parse', function($parse) {
+    var drawChart = function(element, data, steps_x, steps_y) {
+
+        var margin = {top: 30, right: 20, bottom: 70, left: 50},
+            width = 800 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+
+        // Set the ranges
+        var x = d3.scale.linear().range([0, width]);
+        var y = d3.scale.linear().range([height, 0]);
+
+        // Define the axes
+        var xAxis = d3.svg.axis().scale(x)
+            .orient("bottom").ticks(steps_x).tickSize(-height, 0, 0);
+
+        var yAxis = d3.svg.axis().scale(y)
+            .orient("left").ticks(steps_y).tickSize(-width, 0, 0);
+
+        // Define the line
+        var distributeline = d3.svg.line()
+            .x(function(d) { return x(d.step); })
+            .y(function(d) { return y(d.distribute); });
+        // Adds the svg canvas
+        var svg = d3.select(element)
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+            data.forEach(function(d) {
+                d.distribute = +d.distribute;
+            });
+
+            // Scale the range of the data
+            x.domain(d3.extent(data, function(d) { return d.step; }));
+            y.domain([0, d3.max(data, function(d) { return d.distribute; })]);
+
+            // Nest the entries by symbol
+            var dataNest = d3.nest()
+                .key(function(d) {return d.symbol;})
+                .entries(data);
+
+            var color = d3.scale.category10(); // set the colour scale
+
+            legendSpace = width/dataNest.length; // spacing for the legend
+
+            // Loop through each symbol / key
+            dataNest.forEach(function(d,i) {
+                svg.append("path")
+                    .attr("class", "line")
+                    .style("stroke", function() { // Add the colours dynamically
+                        return d.color = color(d.key); })
+                    .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign ID
+                    .attr("d", distributeline(d.values));
+
+                // Add the Legend
+                svg.append("text")
+                    .attr("x", (legendSpace/2)+i*legendSpace) // space legend
+                    .attr("y", height + (margin.bottom/2)+ 5)
+                    .attr("class", "d3legend noselect") // style the legend
+                    .style("fill", function() { // Add the colours dynamically
+                        return d.color = color(d.key); })
+                    .on("click", function(){
+                        // Determine if current line is visible
+                        var active = d.active ? false : true,
+                            newOpacity = active ? 0 : 1;
+                        // Hide or show the elements based on the ID
+                        d3.select("#tag"+d.key.replace(/\s+/g, ''))
+                            .transition().duration(100)
+                            .style("opacity", newOpacity);
+                        // Update whether or not the elements are active
+                        d.active = active;
+                    })
+                    .text(d.key);
+            });
+
+            // Add the X Axis
+            svg.append("g")
+                .attr("class", "x d3axis grid")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            // Add the Y Axis
+            svg.append("g")
+                .attr("class", "y d3axis grid")
+                .call(yAxis);
+    };
+    return {
+        restrict: 'E',
+        scope: {data: '=chartData', stepsX: '=stepsX', stepsY: '=stepsY'},
+        replace: false,
+        link: function (scope, element, attrs) {
+            var changed = false;
+            scope.$watch("data", function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    changed = true;
+                    angular.element(element).empty();
+                    drawChart(element[0], scope.data, scope.stepsX, scope.stepsY);
+                }
+            });
+            if (!changed) {
+                drawChart(element[0], scope.data, scope.stepsX, scope.stepsY);
             }
         }
     };

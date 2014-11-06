@@ -21,6 +21,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
     $scope.distribute_equal = [];
     $scope.distribute_pablo = [];
     $scope.distribute_lucas = [];
+    $scope.distribute_all = [];
 
     $scope.stemCalcParams = {min: 20, max: 220, steps: 9}; // set some defaults
 
@@ -86,11 +87,33 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
         return distributePablo;
     };
 
+    $scope.getDistributeAll = function() {
+        var data = [];
+        var distributions = {
+            'Equal Steps': $scope.distribute_equal,
+            'Impallari Formula': $scope.distribute_pablo,
+            'Lucas Formula': $scope.distribute_lucas
+        };
+        distributions[$rootScope.metadata.name] = $scope.distribute_font_family;
+        angular.forEach(distributions, function(distr, key) {
+            for(var i = 0; i < distr.length; i++) {
+                var item = {
+                    step: i + 1,
+                    distribute: distr[i],
+                    symbol: key
+                };
+                data.push(item);
+            }
+        });
+        return data;
+    };
+
     $scope.calculateStemWeightsDistributions = function() {
         $scope.distribute_equal = $scope.getDistributeEqual();
         $scope.distribute_pablo = $scope.getDistributePablo();
         $scope.distribute_lucas = $scope.getDistributeLucas();
         $scope.distribute_font_family = $scope.getDistributeFontFamily();
+        $scope.distribute_all = $scope.getDistributeAll();
         if ($scope.stemTableParams) {
             $scope.stemTableParams.reload();
             $scope.stemTableParams.total($scope.distribute_equal.length);

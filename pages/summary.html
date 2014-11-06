@@ -49,43 +49,61 @@
           <!--<label for="blackWeightInput">Black</label>-->
           <input type="number" max="1000" min="1" id="blackWeightInput" class="form-control input-sm" ng-model="stemCalcParams.max" tooltip="Black">
           <!--<label for="stepsWeightInput">Steps</label>-->
-          <input type="number" max="20" min="1" id="stepsWeightInput" class="form-control input-sm" ng-model="stemCalcParams.steps" tooltip="Steps">
+          <input type="number" max="9" min="3" id="stepsWeightInput" class="form-control input-sm" ng-model="stemCalcParams.steps" tooltip="Steps">
           <button type="button" class="btn btn-primary btn-sm" ng-click="calculateStemWeightsDistributions()">Calculate</button>
         </div>
       </form>
     </div>
+  </div>
 
-    <div class="col-md-3 col-centered">
-      <h5>Equal Steps</h5>
-      <bars-chart chart-data="distribute_equal"></bars-chart>
-    </div>
-    <div class="col-md-3 col-centered">
-      <h5>Impallari Formula</h5>
-      <bars-chart chart-data="distribute_pablo"></bars-chart>
-    </div>
-    <div class="col-md-3 col-centered">
-      <h5>Luc(as) Formula</h5>
-      <bars-chart chart-data="distribute_lucas"></bars-chart>
-    </div>
+  <div class="row">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Equal Steps</th>
+        <th>Impallari Formula</th>
+        <th>Luc(as) Formula</th>
+        <th ng-bind="metadata.name"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <bars-chart chart-data="distribute_equal"></bars-chart>
+        </td>
+        <td>
+          <bars-chart chart-data="distribute_pablo"></bars-chart>
+        </td>
+        <td>
+          <bars-chart chart-data="distribute_lucas"></bars-chart>
+        </td>
+        <td>
+          <bars-chart chart-data="distribute_font_family"></bars-chart>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="col-md-3 col-centered">
-      <h5 ng-bind="metadata.name"></h5>
-      <bars-chart chart-data="distribute_font_family"></bars-chart>
-      <!--<div id="fontFamilyStemsChart"></div>-->
+  <div class="row row-centered">
+    <div class="col-md3 col-centered">
+      <table id="stemWeightsTable" ng-table="stemTableParams" class="table">
+        <tbody>
+        <tr class="text-center" ng-repeat="item in $data track by $index">
+          <td data-title="'Styles'">{{ item.step }}</td>
+          <td class="text-right" data-title="'Equal Steps'"><span ng-if="item.distribute_equal_stem_diff"><small class="text-muted">+ {{item.distribute_equal_stem_diff}}</small></span> {{ item.distribute_equal }}</td>
+          <td class="text-right" data-title="'Impallari Formula'"><span ng-if="item.distribute_pablo_stem_diff"><small class="text-muted">+ {{item.distribute_pablo_stem_diff}}</small></span> {{ item.distribute_pablo }}</td>
+          <td class="text-right" data-title="'Luc(as) Formula'"><span ng-if="item.distribute_lucas_stem_diff"><small class="text-muted">+ {{item.distribute_lucas_stem_diff}}</small></span> {{ item.distribute_lucas }}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-</div>
 
-<div class="row row-centered">
-  <div class="col-md3 col-centered">
-    <table id="stemWeightsTable" ng-table="stemTableParams" class="table">
-      <tr class="text-center" ng-repeat="item in $data track by $index">
-        <td data-title="'Styles'">{{ item.step }}</td>
-        <td class="text-right" data-title="'Equal Steps'"><span ng-if="item.distribute_equal_stem_diff"><small class="text-muted">+ {{item.distribute_equal_stem_diff}}</small></span> {{ item.distribute_equal }}</td>
-        <td class="text-right" data-title="'Impallari Formula'"><span ng-if="item.distribute_pablo_stem_diff"><small class="text-muted">+ {{item.distribute_pablo_stem_diff}}</small></span> {{ item.distribute_pablo }}</td>
-        <td class="text-right" data-title="'Luc(as) Formula'"><span ng-if="item.distribute_lucas_stem_diff"><small class="text-muted">+ {{item.distribute_lucas_stem_diff}}</small></span> {{ item.distribute_lucas }}</td>
-      </tr>
-    </table>
+  <div class="row row-centered">
+    <div class="col-md10 col-centered">
+      <line-chart id="stemWeightsLineChart" chart-data="distribute_all" stepsX="stemCalcParams.steps" stepsY="stemCalcParams.max"></line-chart>
+    </div>
   </div>
 </div>
 

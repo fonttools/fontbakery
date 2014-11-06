@@ -45,3 +45,30 @@
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
+
+
+#stemWeightsLineChart path {
+    stroke-width: 2;
+    fill: none;
+}
+
+.d3axis path,
+.d3axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.d3legend {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    stroke-dasharray: 1, 5;
+    opacity: 0.7;
+}
