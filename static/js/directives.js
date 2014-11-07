@@ -308,9 +308,17 @@ angular.module('myApp').directive('barsChart', ['$parse', function($parse) {
         //to our original directive markup bars-chart
         //we add a div with out chart stling and bind each
         //data entry to the chart
-        chart.append("div").attr("class", "d3chart")
+        chart.append("div")
+            .attr("class", "d3chart")
             .selectAll('div')
             .data(data).enter().append("div")
+            .style({'opacity': function(d) {
+                if (d == 0) {
+                    return 0;
+                }
+                return 1;
+            }
+            })
             .transition().ease("elastic")
             .style("width", function(d) { return x(d) + "px"; })
             .text(function(d) { return d; });
@@ -335,7 +343,7 @@ angular.module('myApp').directive('barsChart', ['$parse', function($parse) {
     };
 }]);
 
-angular.module('myApp').directive('lineChart', ['$parse', function($parse) {
+angular.module('myApp').directive('lineChart', ['$parse', 'stemWeights', function($parse, stemWeights) {
     var drawChart = function(element, data, steps_x, steps_y) {
 
         var margin = {top: 30, right: 20, bottom: 70, left: 50},
@@ -356,8 +364,10 @@ angular.module('myApp').directive('lineChart', ['$parse', function($parse) {
         // Define the line
         var distributeline = d3.svg.line()
             .x(function(d) { return x(d.step); })
+//            .y(function(d) { return y(d.distribute); }).defined(function(d) { return d.distribute > 0; });
             .y(function(d) { return y(d.distribute); });
         // Adds the svg canvas
+
         var svg = d3.select(element)
             .append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -366,63 +376,59 @@ angular.module('myApp').directive('lineChart', ['$parse', function($parse) {
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
-            data.forEach(function(d) {
-                d.distribute = +d.distribute;
-            });
+        // Scale the range of the data
+        x.domain(d3.extent(data, function(d) { return d.step; }));
+        y.domain([0, d3.max(data, function(d) { return d.distribute; })]);
 
-            // Scale the range of the data
-            x.domain(d3.extent(data, function(d) { return d.step; }));
-            y.domain([0, d3.max(data, function(d) { return d.distribute; })]);
+        // Nest the entries by symbol
+        var dataNest = d3.nest()
+            .key(function(d) {return d.symbol;})
+            .entries(data);
 
-            // Nest the entries by symbol
-            var dataNest = d3.nest()
-                .key(function(d) {return d.symbol;})
-                .entries(data);
+        var color = d3.scale.category10(); // set the colour scale
 
-            var color = d3.scale.category10(); // set the colour scale
+        legendSpace = width/dataNest.length; // spacing for the legend
 
-            legendSpace = width/dataNest.length; // spacing for the legend
+        // Loop through each symbol / key
+        dataNest.forEach(function(d, i) {
+            svg.append("path")
+                .attr("class", "line")
+                // Add the colours dynamically
+                .style("stroke", function() { return d.color = color(d.key); })
+                .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign ID
+                .attr("d", distributeline(d.values));
 
-            // Loop through each symbol / key
-            dataNest.forEach(function(d,i) {
-                svg.append("path")
-                    .attr("class", "line")
-                    .style("stroke", function() { // Add the colours dynamically
-                        return d.color = color(d.key); })
-                    .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign ID
-                    .attr("d", distributeline(d.values));
+            // Add the Legend
+            svg.append("text")
+                .attr("x", (legendSpace/2)+i*legendSpace) // space legend
+                .attr("y", height + (margin.bottom/2)+ 5)
+                .attr("class", "d3legend noselect") // style the legend
+                .style("fill", function() { // Add the colours dynamically
+                    return d.color = color(d.key); })
+                .on("click", function(){
+                    // Determine if current line is visible
+                    var active = d.active ? false : true,
+                        newOpacity = active ? 0 : 1;
+                    // Hide or show the elements based on the ID
+                    d3.select("#tag"+d.key.replace(/\s+/g, ''))
+                        .transition().duration(100)
+                        .style("opacity", newOpacity);
+                    // Update whether or not the elements are active
+                    d.active = active;
+                })
+                .text(d.key);
+        });
 
-                // Add the Legend
-                svg.append("text")
-                    .attr("x", (legendSpace/2)+i*legendSpace) // space legend
-                    .attr("y", height + (margin.bottom/2)+ 5)
-                    .attr("class", "d3legend noselect") // style the legend
-                    .style("fill", function() { // Add the colours dynamically
-                        return d.color = color(d.key); })
-                    .on("click", function(){
-                        // Determine if current line is visible
-                        var active = d.active ? false : true,
-                            newOpacity = active ? 0 : 1;
-                        // Hide or show the elements based on the ID
-                        d3.select("#tag"+d.key.replace(/\s+/g, ''))
-                            .transition().duration(100)
-                            .style("opacity", newOpacity);
-                        // Update whether or not the elements are active
-                        d.active = active;
-                    })
-                    .text(d.key);
-            });
+        // Add the X Axis
+        svg.append("g")
+            .attr("class", "x d3axis grid")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-            // Add the X Axis
-            svg.append("g")
-                .attr("class", "x d3axis grid")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            // Add the Y Axis
-            svg.append("g")
-                .attr("class", "y d3axis grid")
-                .call(yAxis);
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "y d3axis grid")
+            .call(yAxis);
     };
     return {
         restrict: 'E',

@@ -43,11 +43,15 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
     };
 
     $scope.getDistributeFontFamily = function() {
-        var data = [];
+        var data = Array.apply(null, new Array($scope.stemCalcParams.steps)).map(Number.prototype.valueOf, 0);
         angular.forEach($scope.stems, function(item) {
-            data.push(item.stem);
+            if (item.style == 'normal') {
+                var step = Math.floor(item.weight / 100) - 1;
+                if (step <= $scope.stemCalcParams.steps) {
+                    data[Math.floor(item.weight / 100) - 1] = item.stem;
+                }
+            }
         });
-        data.sort();
         return data;
     };
 
@@ -94,7 +98,7 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
             'Impallari Formula': $scope.distribute_pablo,
             'Lucas Formula': $scope.distribute_lucas
         };
-        distributions[$rootScope.metadata.name] = $scope.distribute_font_family;
+
         angular.forEach(distributions, function(distr, key) {
             for(var i = 0; i < distr.length; i++) {
                 var item = {
@@ -105,6 +109,26 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
                 data.push(item);
             }
         });
+
+        var start_step = $scope.distribute_font_family.indexOf($scope.distribute_font_family.filter(function(item) {
+            return item != 0;
+        })[0]);
+        // While the lest element is a 0,
+        while($scope.distribute_font_family[$scope.distribute_font_family.length-1] === 0){
+            $scope.distribute_font_family.pop(); // Remove that last element
+        }
+//        while ($scope.distribute_font_family[0] === 0 && $scope.distribute_font_family.length > 1) {
+//            $scope.distribute_font_family.shift();
+//        }
+        var distribute_font_family_filtered = $scope.distribute_font_family;
+        for(var i = 0; i < distribute_font_family_filtered.length; i++) {
+            var item = {
+                step: i + start_step,
+                distribute: distribute_font_family_filtered[i],
+                symbol: $rootScope.metadata.name
+            };
+            data.push(item);
+        }
         return data;
     };
 
@@ -124,6 +148,19 @@ myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter
 
     summaryApi.getStems().then(function(response) {
         $scope.stems = response.data;
+        var _data = [];
+        function getMaxOfArray(numArray) {
+            return Math.max.apply(null, numArray);
+        }
+        function getMinOfArray(numArray) {
+            return Math.min.apply(null, numArray);
+        }
+        angular.forEach($scope.stems, function(item) {
+            if (item.style == 'normal') {
+                _data.push(item.stem);
+            }
+        });
+        $scope.stemCalcParams = {min: getMinOfArray(_data), max: getMaxOfArray(_data), steps: 9};
         $scope.calculateStemWeightsDistributions();
 
         $scope.stemTableParams = new ngTableParams({
