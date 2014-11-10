@@ -14,7 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import lxml.etree
+from __future__ import print_function
+
+import sys
+import defusedxml.lxml
 import os
 import os.path as op
 import re
@@ -116,11 +119,14 @@ class UpstreamDirectory(object):
 
                 if f[-4:].lower() == '.ttx':
                     try:
-                        doc = lxml.etree.parse(fullpath)
+                        doc = defusedxml.lxml.parse(fullpath)
                         el = doc.xpath('//ttFont[@sfntVersion]')
                         if not el:
                             continue
-                    except:
+                    except Exception as exc:
+                        print('Failed to parse "{0}". '
+                              'Error: {1}'.format(fullpath, exc),
+                              file=sys.stderr)
                         continue
                     self.TTX.append(fullpath[l:].strip('/'))
 

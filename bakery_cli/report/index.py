@@ -213,15 +213,22 @@ def font_factory_instance_to_dict(instance):
     ))
 
 
-def get_stem(fontfile, glyph='n'):
+def get_stem_info(fontfile, glyph='n'):
     ttf = fontforge.open(fontfile)
+    if ttf.italicangle != 0.0:
+        style = 'italic'
+    else:
+        style = 'normal'
     glyph = ttf[glyph]
     if not glyph.vhints:
         glyph.autoHint()
-    if not glyph.vhints:
-        return None
-    v_hints = [item[1] for item in glyph.vhints]
-    return sum(v_hints)/len(v_hints)
+    if glyph.vhints:
+        v_hints = [item[1] for item in glyph.vhints]
+        stem = sum(v_hints)/len(v_hints)
+    else:
+        stem = None
+    return {'stem': stem, 'fontname': ttf.fontname, 'style': style,
+            'weight': ttf.os2_weight}
 
 
 def generate(config):
@@ -268,7 +275,7 @@ def generate(config):
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
 
-    stems = [dict(fontname=path, stem=get_stem(op.join(config['path'], path))) for path in directory.BIN]
+    stems = [get_stem_info(op.join(config['path'], path)) for path in directory.BIN]
 
     new_data = []
     for k in data:
