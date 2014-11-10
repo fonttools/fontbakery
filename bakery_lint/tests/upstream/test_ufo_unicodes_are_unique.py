@@ -56,16 +56,16 @@ class UniqueUnicodeValues(BakeryTestCase):
                 uniFromName = m.group(1)
                 uniFromName = int(uniFromName, 16)
                 if uni != uniFromName:
-                    self.fail("Unicode value of glyph {} " +
-                        "does not match glyph name " +
-                        "of uniXXXX".format(name))
+                    self.fail(("Unicode value of glyph {} "
+                               "does not match glyph name "
+                               "of uniXXXX").format(name))
             # test against AGLFN
             else:
                 expectedUni = AGL2UV.get(name)
                 if expectedUni != uni:
-                    self.fail("Unicode value of glyph {} " +
-                        "does not match glyph name " +
-                        "from fontTools AGL2UV".format(name))
+                    self.fail(("Unicode value of glyph {} "
+                               "does not match glyph name "
+                               "from fontTools AGL2UV").format(name))
 
             # look for duplicates
             if uni is not None:

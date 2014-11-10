@@ -577,7 +577,7 @@ class TestForExtremePoints(TestCase):
                 # TODO: RGlyph does not have extremePoints
                 #  so need to ask Dave what they are and probably find
                 #  opensource decision of function.
-                # dummy.extremePoints()
+                contour.extremePoints()
                 testPoints = _getOnCurves(dummy[0])
                 points = _getOnCurves(contour)
                 if points != testPoints:
