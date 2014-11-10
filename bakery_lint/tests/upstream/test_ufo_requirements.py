@@ -19,7 +19,7 @@ import os
 from bakery_lint.base import BakeryTestCase as TestCase
 
 import robofab.world
-import robofab.objects
+import robofab
 
 
 class UfoOpenTest(TestCase):
@@ -77,9 +77,10 @@ class UfoOpenTest(TestCase):
         glyph = None
         if character in self.font:
             glyph = self.font[character]
-        self.assertIsInstance(glyph, robofab.objects.objectsRF.RGlyph)
+        if not glyph:
+            self.fail(u'Font does not contain glyph {}'.format(character))
 
     def test_has_rupee(self):
         u""" Does this font include a glyph for ₹, the Indian Rupee Sign
              codepoint?"""
-        self.has_character(self, u'₹')
+        self.has_character(u'₹')
