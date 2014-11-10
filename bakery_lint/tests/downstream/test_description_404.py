@@ -14,7 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import lxml.html
+from lxml.html import HTMLParser
+import defusedxml.lxml
 import requests
 
 from bakery_lint.base import BakeryTestCase as TestCase
@@ -28,7 +29,7 @@ class TestDescription404Links(TestCase):
 
     def test_single(self):
         contents = open(self.operator.path).read()
-        doc = lxml.html.fromstring(contents)
+        doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
         for link in doc.xpath('//a/@href'):
             try:
                 response = requests.head(link)

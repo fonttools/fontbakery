@@ -17,7 +17,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-import lxml.etree
+from lxml.html import HTMLParser
+import defusedxml.lxml
 from StringIO import StringIO
 import requests
 import sys
@@ -60,8 +61,7 @@ def main():
         print("Wrong download code", file=sys.stderr)
         sys.exit(1)
 
-    parser = lxml.etree.HTMLParser()
-    doc = lxml.etree.parse(StringIO(r.text), parser)
+    doc = defusedxml.lxml.parse(StringIO(r.text), HTMLParser())
 
     total = 0
     for i, family in enumerate(families):
@@ -69,7 +69,7 @@ def main():
         try:
             value = int(el[0][4].text.replace(',', ''))
             families[i] = (family, value)
-            total = total + value
+            total += value
         except IndexError:
             print('ERROR: %s could not be found in stat' % family, sys.stderr)
 
