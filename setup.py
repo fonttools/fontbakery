@@ -67,9 +67,10 @@ from setuptools import setup
 setup(
     name="fontbakery",
     version='0.0.3',
-    url='https://github.com/googlefonts/fontbakery-cli/',
-    description='fontbakery-cli',
-    author='Vitaliy Volkov',
+    url='https://github.com/googlefonts/fontbakery/',
+    description='Font Bakery is a set of command-line tools for building'
+                ' and testing font projects',
+    author='Vitaly Volkov',
     author_email='hash3g@gmail.com',
     packages=["bakery_cli",
               "bakery_cli.pipe",

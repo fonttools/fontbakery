@@ -1,3 +1,6 @@
+[![Latest Version](https://pypip.in/version/fontbakery/badge.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
+[![License](https://pypip.in/license/fontbakery/badge.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
+[![Python](https://pypip.in/py_versions/fontbakery/badge.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
 
@@ -11,7 +14,7 @@ If you use Github for your font project, you can use FontBakery on Travis so tha
 
 ## Install
 
-### Mac OS X 
+### Mac OS X
 
 Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readthedocs.org) and [gem](https://rubygems.org):
 
@@ -19,11 +22,11 @@ Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readt
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" # install homebrew
 brew install python giflib libspiro; # fontforge optional dependencies
 brew install --HEAD --with-x fontforge; # fontforge
-brew install ttfautohint swig; # fontbakery dependencies 
+brew install ttfautohint swig; # fontbakery dependencies
 easy_install pip # install pip
-pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependencies 
-pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependencies 
-sudo gem install travis; # fontbakery dependencies 
+pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependencies
+pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependencies
+sudo gem install travis; # fontbakery dependencies
 pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery
 ```
 
@@ -51,13 +54,13 @@ After building your fonts, it will publish the build to the `gh-pages` branch of
 
 **Warning:** This will replace the entire contents of the `gh-pages` branch if any exist. The previous versions will be available in git history, though.
 
-Travis requires a `.travis.yml` file in the root directory of your repository. 
+Travis requires a `.travis.yml` file in the root directory of your repository.
 Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.com/) but you can use a typical template.
 
 1. Enable your font repository in your travis profile, [travis-ci.org/profile](https://travis-ci.org/profile)
 
 2. Create the `.travis.yml` text file with your favorite text editor as follows:
-   
+
    ```yml
    language: python
    before_install:
@@ -108,7 +111,7 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
   travis encrypt GIT_NAME="yourGithubUsername" \
     GIT_EMAIL="yourGithubUserEmail" \
     GH_TOKEN="yourGithubRepoToken" \
-    --add --no-interactive -x; 
+    --add --no-interactive -x;
   ```
 
 4. Add and commit your `.travis.yml` file and push it to Github.
