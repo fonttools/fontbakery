@@ -372,6 +372,18 @@ angular.module('myApp').service('reviewApi', ['$http', '$q', 'PathBuilder', func
     };
 }]);
 
+angular.module('myApp').service('aboutApi', ['$http', '$q', function($http, $q) {
+    var name = 'about';
+
+    this.getAuthors = function() {
+        return $http.get('AUTHORS.txt', {transformResponse: []});
+    };
+
+    this.getContributors = function() {
+        return $http.get('CONTRIBUTORS.txt', {transformResponse: []});
+    };
+
+}]);
 
 angular.module('myApp').service('githubService', ['$q', '$location', '$localStorage', '$sessionStorage', function($q, $location, $localStorage, $sessionStorage) {
     var $storage = $sessionStorage.$default({

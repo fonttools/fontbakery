@@ -1,0 +1,20 @@
+<div>
+  <h3>Authors</h3>
+  <ul>
+    <li ng-repeat="author in authors">
+      <div ng-if="author.email">
+        <a href="mailto:{{author.email}}" target="_top">{{ author.name }}</a>
+      </div>
+      <div ng-if="!author.email">{{ author.name }}</div>
+    </li>
+  </ul>
+  <h3>Contributors</h3>
+  <ul>
+    <li ng-repeat="contributor in contributors">
+      <div ng-if="contributor.email">
+        <a href="mailto:{{contributor.email}}" target="_top">{{ contributor.name }}</a>
+      </div>
+      <div ng-if="!contributor.email">{{ contributor.name }}</div>
+    </li>
+  </ul>
+</div>

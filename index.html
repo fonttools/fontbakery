@@ -101,7 +101,7 @@
   <!-- angular templating -->
   <!-- this is where content will be injected -->
   <div class="row">
-    <div ng-if="(app_info.build_passed || !repo_is_valid) && (initDone() && $storage.OAuth_passed) || ($storage.OAuth_passed && isRoot())">
+    <div ng-if="(app_info.build_passed || !repo_is_valid) && (initDone() && $storage.OAuth_passed) || ($storage.OAuth_passed && (isRoot() || isAboutPage()))">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-view ng-cloak></div>
     </div>
     <div ng-if="app_info.build_passed == false">
@@ -118,6 +118,7 @@
       <li><a href='https://github.com/googlefonts/fontbakery/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
       <li>Please <a href='https://github.com/googlefonts/fontbakery/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery/'>GitHub <i class='icon-github'></i></a></li>
       <li ng-if="app_info">{{ app_info.commit }}, {{ app_info.date }}</li>
+      <li><a href="#/about">About</a></li>
     </ul>
   </div>
 </footer>
@@ -169,6 +170,7 @@
 <!--<script src="static/js/filters.js"></script>-->
 <!--<script src="static/js/services.js"></script>-->
 <!--<script src="static/js/controllers/mainController.js"></script>-->
+<!--<script src="static/js/controllers/aboutController.js"></script>-->
 <!--<script src="static/js/controllers/setupController.js"></script>-->
 <!--<script src="static/js/controllers/logController.js"></script>-->
 <!--<script src="static/js/controllers/checksController.js"></script>-->

@@ -65,6 +65,10 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
         return $location.path() == '/';
     };
 
+    $scope.isAboutPage = function() {
+        return $location.path() == '/about';
+    };
+
     $scope.onRepoSelect = function ($item, $model, $label) {
         //#TODO refactor this horror!!!
         var loc_path = $location.path(),
@@ -108,7 +112,10 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
     $scope.mainInit = function() {
         appApi.getRepos().then(function(dataResponse) {
             $scope.repos_list = dataResponse.data;
-            if ($scope.repo_current.name === null || $scope.repo_current.name === undefined || $scope.repo_current.owner === null || $scope.repo_current.owner === undefined) {
+            if ($scope.repo_current.name === null ||
+                $scope.repo_current.name === undefined ||
+                $scope.repo_current.owner === null ||
+                $scope.repo_current.owner === undefined) {
                 $scope.repo_is_valid = false;
             }
             else {
@@ -164,6 +171,7 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
     };
 
     $scope.$on('$routeChangeSuccess', function() {
+        console.log("$location.path(): ", $location.path())
         $scope.repo_current = {
             owner: $routeParams.repo_owner,
             name: $routeParams.repo_name

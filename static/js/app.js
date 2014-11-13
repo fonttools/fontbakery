@@ -84,6 +84,13 @@ myApp.config(['$routeProvider', '$httpProvider', '$locationProvider', 'appConfig
             activetab: 'repos'
         })
 
+        .when('/about', {
+            controller : 'aboutController',
+            title: 'About',
+            templateUrl : 'pages/about.html'
+//            activetab: 'repos'
+        })
+
         // route for the summary page
         .when('/:repo_owner/:repo_name/', {
             title: 'Summary',

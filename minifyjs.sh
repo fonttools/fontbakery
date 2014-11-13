@@ -18,6 +18,7 @@ source_files=(
     'static/js/filters.js'
     'static/js/services.js'
     'static/js/controllers/mainController.js'
+    'static/js/controllers/aboutController.js'
     'static/js/controllers/setupController.js'
     'static/js/controllers/logController.js'
     'static/js/controllers/checksController.js'
