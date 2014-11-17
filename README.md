@@ -122,3 +122,13 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
    ```
 
 5. After each build by Travis you can see a report at <http://yourGithubUsername.github.io/yourRepo>
+
+### Tips for working with Github
+
+When working with font projects on Github, it is typical to work with several forks of the same project. To keep things simple, create a folder in your projects director called `github.com`, inside that make a directory for each username you work with, and clone each user's repo inside their correpsonding folder. This way on your harddisk you have a 'mirror' of the github.com site structure. 
+
+There are many good guides for Github around the web, including:
+
+* <http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1>
+* <https://try.github.io>
+* <https://guides.github.com>
