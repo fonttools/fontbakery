@@ -94,7 +94,6 @@ class Copy(Pipe):
         return source_dir
 
     def copy_helper_files(self, pipedata):
-
         pipechain = [CopyMetadata, CopyLicense, CopyDescription, CopyFontLog,
                      CopyTxtFiles, CopyCopyright]
 
@@ -110,23 +109,41 @@ class Copy(Pipe):
 
         source_dir = self.create_source_dir()
 
+        if pipedata.get('compiler') == 'make':
+            makefile = op.join(self.project_root, 'Makefile')
+            shutil.copy(makefile, source_dir)
+
         self.copy_helper_files(pipedata)
 
         try:
-            process_files = list(pipedata.get('process_files', []))
+            if pipedata.get('compiler') != 'make':
+                process_files = list(pipedata.get('process_files', []))
 
-            paths_to_copy = list(pipedata.get('process_files', []))
-            for path in process_files:
-                paths_to_copy += self.lookup_splitted_ttx(path)
+                paths_to_copy = list(pipedata.get('process_files', []))
+                for path in process_files:
+                    paths_to_copy += self.lookup_splitted_ttx(path)
 
-            self.copy_to_builddir(paths_to_copy, source_dir)
+                self.copy_to_builddir(paths_to_copy, source_dir)
 
-            sources = []
-            for path in process_files:
-                filename = op.basename(path)
-                sources.append(op.join(source_dir, filename))
+                sources = []
+                for path in process_files:
+                    filename = op.basename(path)
+                    sources.append(op.join(source_dir, filename))
 
-            pipedata.update({'process_files': sources})
+                pipedata.update({'process_files': sources})
+            else:
+                for root, dirs, files in os.walk(self.project_root):
+                    if root.startswith(self.builddir.rstrip('/')):
+                        continue
+
+                    d = op.join(source_dir, root.replace(self.project_root, '').strip('/'))
+                    if not op.exists(d):
+                        os.makedirs(d)
+
+                    for f in files:
+                        # self.bakery.logging_raw('copy {0} - {1}'.format(op.join(root, f), op.join(d, f)))
+                        shutil.copy(op.join(root, f), op.join(d, f))
+
             self.bakery.logging_task_done(task)
         except Exception as ex:
             self.bakery.logger.debug('Unable process copy. Exception info: %s' % ex)

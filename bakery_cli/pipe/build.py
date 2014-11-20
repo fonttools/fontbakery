@@ -102,6 +102,24 @@ class Build(object):
         if self.bakery.forcerun:
             return
 
+        if pipedata.get('compiler') == 'make':
+            import subprocess
+            directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
+            snapshot_bin = directory.BIN
+
+            process = subprocess.Popen(['make'], cwd=op.join(self.builddir, 'sources'))
+            print(process.communicate())
+
+            directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
+            snapshot_after_bin = directory.BIN
+
+            for fontpath in set(snapshot_bin) ^ set(snapshot_after_bin):
+                if fontpath.lower().endswith('.ttf'):
+                    os.copy(fontpath, self.builddir)
+                    self.start_processes(op.basename(fontpath), pipedata)
+
+            return pipedata
+
         self.convert(pipedata)
 
         return pipedata
