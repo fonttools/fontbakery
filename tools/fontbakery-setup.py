@@ -61,7 +61,7 @@ class Widgets(object):
 
     def create_process_file(self, filepath):
         try:
-            state = self.app.process_files.index(filepath) >= 0
+            state = [x.lstrip('./') for x in self.app.process_files].index(filepath) >= 0
         except ValueError:
             state = False
 
@@ -204,21 +204,9 @@ def generate_subsets_coverage_list():
 
 process_files = []
 
-extensions = ['.sfd', '.ufo', '.ttx', '.ttf']
 
-for path, dirs, files in os.walk('.'):
-
-    for f in files:
-        for ext in extensions:
-            if not f.endswith(ext):
-                continue
-            process_files.append('/'.join([path, f]))
-
-    for d in dirs:
-        for ext in extensions:
-            if not d.endswith(ext):
-                continue
-            process_files.append('/'.join([path, d]))
+directory = UpstreamDirectory('.')
+process_files = directory.ALL_FONTS
 
 import urwid.curses_display
 import urwid.raw_display
