@@ -108,14 +108,14 @@ class Build(object):
             snapshot_bin = directory.BIN
 
             process = subprocess.Popen(['make'], cwd=op.join(self.builddir, 'sources'))
-            print(process.communicate())
+            process.communicate()
 
             directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
             snapshot_after_bin = directory.BIN
 
             for fontpath in set(snapshot_bin) ^ set(snapshot_after_bin):
                 if fontpath.lower().endswith('.ttf'):
-                    os.copy(fontpath, self.builddir)
+                    os.copy(op.join(self.builddir, 'sources', fontpath), self.builddir)
                     self.start_processes(op.basename(fontpath), pipedata)
 
             return pipedata

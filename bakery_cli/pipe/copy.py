@@ -136,6 +136,10 @@ class Copy(Pipe):
                     if root.startswith(self.builddir.rstrip('/')):
                         continue
 
+                    # ignore git repo
+                    if op.basename(root) in ['.git']:
+                        continue
+
                     d = op.join(source_dir, root.replace(self.project_root, '').strip('/'))
                     if not op.exists(d):
                         os.makedirs(d)

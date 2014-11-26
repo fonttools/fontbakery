@@ -48,6 +48,13 @@ class Widgets(object):
     def on_checkbox_state_change(self, widget, state, user_data):
         self.app.config[user_data['name']] = state
 
+    def on_subset_state_change(self, widget, state, user_data):
+        try:
+            index = self.app.config['subset'].index(user_data['name'])
+            del self.app.config['subset'][index]
+        except ValueError:
+            self.app.config['subset'].append(user_data['name'])
+
     def create_checkbox(self, title, name, state=False):
         return urwid.CheckBox(title, user_data={'name': name}, state=state,
                               on_state_change=self.on_checkbox_state_change)
@@ -65,7 +72,8 @@ class Widgets(object):
     def create_subset_widget(self, subsetname, coverage):
         widget = urwid.CheckBox('{0} ({1})'.format(subsetname, coverage),
                                 state=bool(subsetname in app.subset),
-                                user_data={'name': subsetname})
+                                user_data={'name': subsetname},
+                                on_state_change=self.on_subset_state_change)
         self.subset.append(widget)
         return widget
 
@@ -146,11 +154,6 @@ class App(object):
         self.config['notes'] = self.widgets.notes.get_edit_text()
         if not self.config['notes']:
             del self.config['notes']
-
-        regex = re.compile(r'\s*\(\d+%\)')
-        self.config['subset'] = [regex.sub('', w.get_label())
-                                 for w in self.widgets.subset
-                                 if w.get_state()]
 
         self.config['afdko'] = self.widgets.afdko_parameters.get_edit_text()
         if not self.config['afdko']:
