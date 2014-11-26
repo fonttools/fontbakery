@@ -46,8 +46,8 @@ class TTX_FontFamilyNamingTest(TestCase):
     tool = 'TTFont'
 
     def test_ttx_family_naming_recommendation(self):
-        """ The font corresponds the font family naming recommendation.
-        See http://forum.fontlab.com/index.php?topic=313.0 """
+        "The font follows the font family naming recommendation."
+        # See http://forum.fontlab.com/index.php?topic=313.0
         if not self.operator.path.lower().endswith('.ttx'):
             return
         font = TTFont(None)
