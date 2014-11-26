@@ -51,8 +51,15 @@ class Widgets(object):
     def on_subset_state_change(self, widget, state, user_data):
         try:
             index = self.app.config['subset'].index(user_data['name'])
+            if user_data['name'] == 'devanagari':
+                self.ttfautohint.edit_text = self.ttfautohint.edit_text.replace('-f deva', '')
+                self.ttfautohint.edit_text = self.ttfautohint.edit_text.replace('-D deva', '')
+                self.ttfautohint.edit_text = self.ttfautohint.edit_text.strip()
+                self.ttfautohint.edit_text = self.ttfautohint.edit_text.replace('  ', ' ')
             del self.app.config['subset'][index]
         except ValueError:
+            if user_data['name'] == 'devanagari':
+                self.ttfautohint.edit_text += ' -f deva -D deva'
             self.app.config['subset'].append(user_data['name'])
 
     def create_checkbox(self, title, name, state=False):
