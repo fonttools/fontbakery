@@ -103,7 +103,9 @@ class App(object):
     config = {}
     configfile = 'bakery.yaml'
 
-    def __init__(self):
+    def __init__(self, directory):
+
+        os.chdir(directory)
 
         if os.path.exists('bakery.yaml'):
             self.configfile = 'bakery.yaml'
@@ -209,10 +211,17 @@ def generate_subsets_coverage_list():
     return get_subsets_coverage_data(source_fonts_paths)
 
 
-process_files = []
+import argparse
 
 
-directory = UpstreamDirectory('.')
+parser = argparse.ArgumentParser()
+parser.add_argument('directory')
+
+
+args = parser.parse_args()
+
+
+directory = UpstreamDirectory(args.directory)
 process_files = directory.ALL_FONTS
 
 import urwid.curses_display
@@ -227,7 +236,7 @@ def show_or_exit(key):
 header = urwid.Text("Fontbakery Setup. Q exits.")
 
 
-app = App()
+app = App(args.directory)
 
 
 widgets = []
