@@ -33,9 +33,8 @@ class SourceTTXTest(TestCase):
         self.font = font
 
     def test_ttx_duplicate_glyphs(self):
-        """ Font contains unique glyph names?
-            (Duplicate glyph names prevent font installation on Mac OS X.)
-        """
+        """ Font contains unique glyph names? """
+        # (Duplicate glyph names prevent font installation on Mac OS X.)
         glyphs = []
         for _, g in enumerate(self.font.getGlyphOrder()):
             self.assertFalse(re.search(r'#\w+$', g),
