@@ -23,8 +23,6 @@ from bakery_cli.scripts.font2ttf import convert
 from bakery_cli.system import shutil as shellutil, run
 from bakery_cli.utils import UpstreamDirectory
 
-import multiprocessing
-
 
 class Build(object):
 
@@ -55,7 +53,7 @@ class Build(object):
         shellutil.move(op.join(self.builddir, 'sources', ttfpath),
                        op.join(self.builddir, ttfpath),
                        log=self.bakery.logger)
-        self.start_processes(ttfpath, pipedata)
+        self.run_processes(ttfpath, pipedata)
 
     def movebin_to_builddir(self, files):
         result = []
@@ -72,9 +70,7 @@ class Build(object):
 
     def print_vertical_metrics(self, binfiles):
         from bakery_cli.scripts import vmet
-        SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
         fonts = [op.join(self.builddir, x) for x in binfiles]
-        command = ' '.join(fonts)
         self.bakery.logging_raw(vmet.metricview(fonts))
 
     def convert(self, pipedata):
@@ -116,7 +112,7 @@ class Build(object):
             for fontpath in set(snapshot_bin) ^ set(snapshot_after_bin):
                 if fontpath.lower().endswith('.ttf'):
                     os.copy(op.join(self.builddir, 'sources', fontpath), self.builddir)
-                    self.start_processes(op.basename(fontpath), pipedata)
+                    self.run_processes(op.basename(fontpath), pipedata)
 
             return pipedata
 
@@ -131,9 +127,6 @@ class Build(object):
         from bakery_cli.pipe.ttfautohint import TTFAutoHint
         from bakery_cli.pipe.font_crunch import FontCrunch
 
-        pyftsubset = PyFtSubset(self.bakery)
-        pyftsubset.run(filename, pipedata)
-
         fontlint = FontLint(self.bakery)
         fontlint.run(filename, pipedata)
 
@@ -143,14 +136,11 @@ class Build(object):
         ttfautohint = TTFAutoHint(self.bakery)
         ttfautohint.run(filename, pipedata)
 
+        pyftsubset = PyFtSubset(self.bakery)
+        pyftsubset.run(filename, pipedata)
+
         fontcrunch = FontCrunch(self.bakery)
         fontcrunch.run(filename, pipedata)
-
-    def start_processes(self, f, pipedata):
-        self.run_processes(f, pipedata)
-        # p = multiprocessing.Process(target=self.run_processes, args=(f, pipedata, ))
-        # p.start()
-        # p.join()
 
     def execute_ttx(self, files, pipedata):
         paths = []
@@ -187,7 +177,7 @@ class Build(object):
                     self.bakery.logging_cmd(_ % (filepath, ttfpath))
                     convert(op.join(self.builddir, filepath),
                             op.join(self.builddir, ttfpath), log=self.bakery.logger)
-                    self.start_processes(op.basename(ttfpath), pipedata)
+                    self.run_processes(op.basename(ttfpath), pipedata)
             except Exception as ex:
                 self.bakery.logging_err(ex.message)
                 raise

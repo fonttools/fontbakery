@@ -18,14 +18,12 @@
 from __future__ import print_function
 
 import os
-import re
 import sys
 import yaml
 
 from fontaine.font import FontFactory
 from fontaine.cmap import Library
 
-from bakery_cli.system import prun
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -49,6 +47,8 @@ class Widgets(object):
         self.app.config[user_data['name']] = state
 
     def on_subset_state_change(self, widget, state, user_data):
+        if 'subset' not in self.app.config:
+            self.app.config['subset'] = []
         try:
             index = self.app.config['subset'].index(user_data['name'])
             if user_data['name'] == 'devanagari':

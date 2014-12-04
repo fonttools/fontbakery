@@ -48,4 +48,4 @@ class SourceTTXTest(TestCase):
 
     def test_epar_in_keys(self):
         """ EPAR table present in font? """
-        self.assertIn('EPAR', self.font.keys())
+        self.assertIn('EPAR', self.font.keys(), 'No')

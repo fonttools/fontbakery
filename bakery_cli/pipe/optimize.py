@@ -14,10 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
 import os.path as op
 
-from bakery_cli.system import run, shutil
+from bakery_cli.system import shutil
 
 
 class Optimize(object):
@@ -55,6 +54,8 @@ class Optimize(object):
         options.hinting = True
         options.legacy_kern = True
         options.notdef_outline = True
+        options.no_subset_tables += ['DSIG']
+        options.drop_tables = list(set(options._drop_tables_default) - set(['DSIG']))
 
         font = load_font(op.join(self.builddir, filename), options)
         self.bakery.logging_raw('Before: {}'.format(font.keys()))
