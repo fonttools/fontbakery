@@ -33,7 +33,6 @@ from fontTools import ttLib
 import io
 import json
 import os
-import shutil
 import sys
 import gzip
 
@@ -330,19 +329,12 @@ def createFonts(familydir, familyname):
             filepath = os.path.join(familydir, f)
             ftfont = fontToolsOpenFont(filepath)
             fontmetadata["name"] = u(familyname)
-            ansiprint("Family Name: " + fontmetadata["name"], "green")
             fontmetadata["postScriptName"] = u(fontToolsGetPSName(ftfont))
-            ansiprint("PS Name: " + fontmetadata["postScriptName"], "green")
             fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
-            ansiprint("Full Name: " + fontmetadata["fullName"], "green")
             fontmetadata["style"] = u(inferStyle(ftfont))
-            ansiprint("Style: " + fontmetadata["style"], "green")
             fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
-            ansiprint("Weight: " + str(fontmetadata["weight"]), "green")
             fontmetadata["filename"] = f
-            ansiprint("Filename: " + fontmetadata["filename"], "green")
             fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
-            ansiprint(u"Copyright: %s" % fontmetadata["copyright"].encode('ascii', 'ignore'), "green")
             fonts.append(fontmetadata)
     return fonts
 
@@ -372,8 +364,6 @@ def getDesigner(familydir):
             filepath = os.path.join(familydir, f)
             ftfont = fontToolsOpenFont(filepath)
             desName = fontToolsGetDesignerName(ftfont)
-            #ftfont = fontforge.open(filepath)
-            #desName = ftfont.sfnt_names[9][2]
             if isinstance(desName, str):
                 string = u"Designer's name from font is: " + desName.decode('utf8')
                 color = "green"
