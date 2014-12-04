@@ -27,21 +27,20 @@ class CheckMetadataContainsReservedFontName(TestCase):
     def read_metadata_contents(self):
         return open(self.operator.path).read()
 
-    @tags('required', 'info')
+    @tags('info')
     def test_copyright_contains_correct_rfn(self):
-        """ Copyright string contains "Reserved File Name" """
+        """ Copyright notice does not contain Reserved File Name """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 
         for font_metadata in fm.fonts:
-
-            if 'Reserved Font Name' not in font_metadata.copyright:
-                msg = '"%s" should have "Reserved File Name"'
+            if 'Reserved Font Name' in font_metadata.copyright:
+                msg = '"%s" contains "Reserved File Name"'
                 self.fail(msg % font_metadata.copyright)
 
-    @tags('required')
+    @tags('info')
     def test_copyright_matches_pattern(self):
-        """ Copyright string matches to Copyright * 20\d\d * (*@*.*) """
+        """ Copyright notice matches canonical pattern """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 
@@ -49,9 +48,9 @@ class CheckMetadataContainsReservedFontName(TestCase):
             self.assertRegexpMatches(font_metadata.copyright,
                                      r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
 
-    @tags('required')
+    @tags('info')
     def test_copyright_is_consistent_across_family(self):
-        """ METADATA.json fonts copyright string is the same for all items """
+        """ Copyright notice is the same in all fonts? """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 
@@ -61,9 +60,9 @@ class CheckMetadataContainsReservedFontName(TestCase):
                 self.fail('Copyright is inconsistent across family')
             copyright = font_metadata.copyright
 
-    @tags('required')
+    @tags('info')
     def test_metadata_copyright_size(self):
-        """ Copyright string should be less than 500 chars """
+        """ Copyright notice should be less than 500 chars """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 

@@ -7,10 +7,10 @@
 # Font Bakery
 
 Font Bakery is a set of command-line tools for building and testing font projects, and a web interface for reviewing them.
-It runs checks on source files in UFO, SFD, OTF, TTF and TTX formats.
-Then it builds them into OTF and TTF files, and runs tests on those.
+It runs checks on source files in UFO, SFD or TTX formats and builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
+It runs tests on these files and stores the results in files that can be browsed by the Font Bakery web app. 
 
-If you use Github for your font project, you can use FontBakery on Travis so that with each update to your Github repository your files are built and tested, and the binary font files and test results are available on the web via Github Pages.
+If you use Github for your font project, you can use FontBakery on Travis so that with each update to your Github repository, your files are built and tested. Travis can then upload the result back to the project's `gh-pages` branch, so that they are available on the web via Github Pages.
 
 ## Install
 
@@ -46,6 +46,46 @@ pip install git+https://github.com/googlefonts/fontbakery.git;
 ### On Your Computer
 
 All fontbakery commands begin with `fontbakery-`
+
+You will have a font project directory with your source files. 
+The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow. An interactive terminal application will create one in its current directory:
+
+```sh
+cd ~/src/github.com/davelab6/fontproject/;
+fontbakery-setup.py;
+```
+
+
+
+```sh
+fontbakery-build.py --verbose bakery.yaml;
+```
+
+
+`fontbakery-build.py` 
+
+`fontbakery-check.py`
+
+
+fontbakery-build-font2ttf.py
+fontbakery-build-metadata.py
+
+
+fontbakery-crawl.py
+fontbakery-fix-ascii-fontmetadata.py
+fontbakery-fix-dsig.py
+fontbakery-fix-fstype.py
+fontbakery-fix-gasp.py
+fontbakery-fix-glyph-private-encoding.py
+fontbakery-fix-nbsp.py
+fontbakery-fix-opentype-names.py
+fontbakery-fix-style-names.py
+fontbakery-fix-vertical-metrics.py
+fontbakery-report.py
+fontbakery-setup-orig.py
+
+fontbakery-travis-deploy.py
+fontbakery-travis-secure.sh
 
 ### On Travis
 

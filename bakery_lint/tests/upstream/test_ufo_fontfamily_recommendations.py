@@ -34,9 +34,8 @@ def ufo_required(f):
 
 
 class TestUFOFontFamilyNamingTest(TestCase):
-    """ The font corresponds the font family naming recommendation
-
-    See: http://forum.fontlab.com/index.php?topic=313.0 """
+    "The font follows the font family naming recommendation"
+    # See http://forum.fontlab.com/index.php?topic=313.0
 
     targets = ['upstream']
     # TODO use robofab to test this in UFOs
