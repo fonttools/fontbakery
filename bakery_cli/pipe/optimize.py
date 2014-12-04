@@ -55,6 +55,7 @@ class Optimize(object):
         options.legacy_kern = True
         options.notdef_outline = True
         options.no_subset_tables += ['DSIG']
+        options.drop_tables = list(set(options._drop_tables_default) - set(['DSIG']))
 
         font = load_font(op.join(self.builddir, filename), options)
         self.bakery.logging_raw('Before: {}'.format(font.keys()))
