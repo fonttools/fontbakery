@@ -16,7 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import codecs
 import os.path as op
-import multiprocessing
 
 from fontaine.cmap import Library
 from fontaine.builder import Builder, Director
@@ -29,12 +28,14 @@ def targettask(pyfontaine, pipedata, task):
         library = Library(collections=['subsets'])
         director = Director(_library=library)
 
-        sourcedir = op.join(pyfontaine.builddir, 'sources')
+        sourcedir = op.join(pyfontaine.builddir)
         directory = UpstreamDirectory(sourcedir)
 
         fonts = []
         for font in directory.ALL_FONTS:
-            fonts.append(op.join(pyfontaine.builddir, 'sources', font))
+            if font.startswith('sources'):
+                continue
+            fonts.append(op.join(pyfontaine.builddir, font))
 
         _ = ('fontaine --collections subsets --text %s'
              ' > fontaine.txt\n') % ' '.join(fonts)
@@ -66,5 +67,3 @@ class PyFontaine(object):
             return
 
         targettask(self, pipedata, task)
-        # p = multiprocessing.Process(target=targettask, args=(self, pipedata, task))
-        # p.start()
