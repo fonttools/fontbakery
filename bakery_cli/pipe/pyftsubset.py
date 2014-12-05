@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.system import shutil
+from bakery_cli.utils import shutil
 from fontaine.ext.subsets import Extension as SubsetExtension
 from fontTools import ttLib
 

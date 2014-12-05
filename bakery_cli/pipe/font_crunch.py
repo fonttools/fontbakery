@@ -19,7 +19,7 @@ import os
 
 from fontcrunch import fontcrunch
 
-from bakery_cli.system import shutil
+from bakery_cli.utils import shutil
 
 
 class FontCrunch(object):

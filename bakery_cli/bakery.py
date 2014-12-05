@@ -20,7 +20,7 @@ import os.path as op
 import yaml
 
 from bakery_cli import pipe
-from bakery_cli.system import shutil
+from bakery_cli.utils import shutil
 
 
 class BakeryTaskSet(object):

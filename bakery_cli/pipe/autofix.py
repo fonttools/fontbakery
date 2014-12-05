@@ -14,10 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import json
 import os
 import os.path as op
-import yaml
 
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview, metricfix
@@ -28,7 +26,7 @@ from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
 from bakery_cli.scripts import dsig
 from bakery_cli.scripts import encode_glyphs
-from bakery_cli.system import shutil
+from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
 
 

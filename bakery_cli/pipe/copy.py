@@ -21,7 +21,7 @@ import os.path as op
 import shutil
 
 
-from bakery_cli.system import shutil as shellutil
+from bakery_cli.utils import shutil as shellutil
 
 
 def copy_single_file(src, dest, log):

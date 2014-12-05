@@ -17,7 +17,7 @@
 import os
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags
-from bakery_cli.system import prun
+from bakery_cli.utils import prun
 
 
 class OTSTest(TestCase):

@@ -20,7 +20,7 @@ import os.path as op
 from fontTools import ttx
 
 from bakery_cli.scripts.font2ttf import convert
-from bakery_cli.system import shutil as shellutil, run
+from bakery_cli.utils import shutil as shellutil, run
 from bakery_cli.utils import UpstreamDirectory
 
 
