@@ -19,12 +19,11 @@ import os.path as op
 
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview, metricfix
-from bakery_cli.scripts.ascii import fix_name_table
+from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer
 from bakery_cli.scripts.fstype import reset_fstype
 from bakery_cli.scripts.nbsp import checkAndFix
 from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
-from bakery_cli.scripts import dsig
 from bakery_cli.scripts import encode_glyphs
 from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
@@ -41,7 +40,6 @@ def replace_licenseurl(testcase):
                 nameRecord.string = testcase.placeholderUrlText
     font.save(testcase.operator.path + '.fix')
     replace_origfont(testcase)
-
 
 
 def replace_license_with_short(testcase):
@@ -98,7 +96,7 @@ def dsig_signature(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
-    dsig.create(targetpath)
+    CreateDSIGFixer(targetpath).apply()
 
     replace_origfont(testcase)
 
@@ -186,7 +184,7 @@ def fix_name_ascii(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
-    fix_name_table(targetpath)
+    SpecCharsForASCIIFixer(targetpath).apply()
     shutil.move(targetpath + '.fix', targetpath,
                 log=testcase.operator.logger)
 

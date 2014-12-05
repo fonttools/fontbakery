@@ -18,7 +18,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import dsig
+from bakery_cli.scripts import dsig, CreateDSIGFixer
 
 
 if __name__ == '__main__':
@@ -33,4 +33,4 @@ if __name__ == '__main__':
     for path in args.ttf_font:
         if not os.path.exists(path):
             continue
-        dsig.create(path)
+        CreateDSIGFixer(path).apply()

@@ -16,20 +16,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
-import os
 
-from bakery_cli.scripts.ascii import fix_name_table
+from bakery_cli.scripts import SpecCharsForASCIIFixer
 
 
 description = 'Fixes TTF NAME table strings to be ascii only'
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument('ttf_font', nargs='+',
                     help="Font in OpenType (TTF/OTF) format")
-parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
 
 for path in args.ttf_font:
-    if not os.path.exists(path):
-        continue
-    fix_name_table(path)
+    SpecCharsForASCIIFixer(path).apply()
