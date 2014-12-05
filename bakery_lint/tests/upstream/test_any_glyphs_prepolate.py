@@ -17,7 +17,7 @@
 import os.path as op
 
 from bakery_lint.base import BakeryTestCase as TestCase
-from bakery_cli.pifont import PiFont
+from bakery_cli.ttfont import PiFont
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -37,7 +37,7 @@ class FontTestPrepolation(TestCase):
             glyphs_ = font.get_glyphs()
 
             if glyphs and glyphs != glyphs_:
-                # TODO report which font 
+                # TODO report which font
                 self.fail('Family has different glyphs across fonts')
 
     def test_font_prepolation_glyph_contours(self):

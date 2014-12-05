@@ -17,8 +17,9 @@
 import os
 
 from bakery_lint.base import BakeryTestCase as TestCase
-from bakery_cli.pifont import PiFont
+from bakery_cli.ttfont import PiFont
 from bakery_cli.utils import UpstreamDirectory
+
 
 class TestDiacritic(TestCase):
     """ These tests are using text file with contents of diacritics glyphs """
