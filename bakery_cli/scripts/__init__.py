@@ -80,3 +80,9 @@ class CreateDSIGFixer(Fixer):
         newDSIG.signatureRecords = [sig]
         self.font.tables["DSIG"] = newDSIG
         return True
+
+
+class ResetFSTypeFlagFixer(Fixer):
+
+    def fix(self):
+        self.font['OS/2'].fsType = 0

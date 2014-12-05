@@ -21,7 +21,7 @@ import os
 import sys
 
 from bakery_cli.ttfont import Font
-from bakery_cli.scripts.fstype import reset_fstype
+from bakery_cli.scripts import ResetFSTypeFlagFixer
 
 from fontTools.ttLib import TTLibError
 
@@ -42,7 +42,7 @@ for path in args.ttf_font:
         continue
 
     if args.autofix:
-        reset_fstype(path)
+        ResetFSTypeFlagFixer(path).apply()
     else:
         try:
             font = Font(path)
