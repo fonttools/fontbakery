@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.utils import shutil
+from bakery_cli.utils import shutil, prun
 
 
 class Optimize(object):
@@ -57,27 +57,25 @@ class Optimize(object):
         options.no_subset_tables += ['DSIG']
         options.drop_tables = list(set(options._drop_tables_default) - set(['DSIG']))
 
-        font = load_font(op.join(self.builddir, filename), options)
-        self.bakery.logging_raw('Before: {}'.format(font.keys()))
+        cmd_options = '--glyphs=* --layout-features=* --name-IDs=* --hinting --legacy-kern --notdef-outline --no-subset-tables+=DSIG --drop-tables-=DSIG'
 
-        self.bakery.logging_raw('{}'.format(options.__dict__))
+        font = load_font(op.join(self.builddir, filename), options)
+
+        cmdline = 'pyftsubset {1} {0}'.format(cmd_options, op.join(self.builddir, filename))
+        self.bakery.logging_cmd(cmdline)
+
         subsetter = Subsetter(options=options)
         subsetter.populate(glyphs=font.getGlyphOrder())
         subsetter.subset(font)
         save_font(font, op.join(self.builddir, filename + '.opt'), options)
 
-        newsize = op.getsize(op.join(self.builddir, filename + '.opt'))
-        origsize = op.getsize(op.join(self.builddir, filename))
-
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
-        self.bakery.logging_cmd("ls -l '%s'* %s" % (filename, comment))
+        self.bakery.logging_cmd(comment)
+        prun("ls -la {0} {0}.opt | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)), log=self.bakery.logger)
 
-        statusmessage = "{0}.opt: {1} bytes\n{0}: {2} bytes\n"
-        self.bakery.logging_raw(statusmessage.format(filename, newsize, origsize))
-
-        self.bakery.logging_raw('Now: {}'.format(font.keys()))
-        # move ttx files to src
+        comment = "# copy back optimized ttf to original filename"
+        self.bakery.logging_cmd(comment)
         shutil.move(op.join(self.builddir, filename + '.opt'),
                     op.join(self.builddir, filename),
                     log=self.bakery.logger)

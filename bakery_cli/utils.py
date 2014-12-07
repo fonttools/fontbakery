@@ -235,7 +235,7 @@ class os(object):
     __metaclass__ = osmetaclass
 
 
-def run(command, cwd, log):
+def run(command, cwd=None, log=None):
     """ Wrapper for subprocess.Popen with custom logging support.
 
         :param command: shell command to run, required
@@ -248,7 +248,7 @@ def run(command, cwd, log):
 
     log.info('$ %s\n' % command.replace(os.getcwd() + os.path.sep, ''))
     env.update({'PYTHONPATH': os_origin.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd,
+    process = subprocess.Popen(command, shell=True, cwd=cwd or os.getcwd(),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
                                close_fds=True, env=env)
@@ -257,10 +257,10 @@ def run(command, cwd, log):
         stdout = process.stdout.readline()
         stderr = process.stderr.readline()
         # Log output
-        if stdout.strip():
-            log.debug(stdout)
+        if stdout.strip() and log:
+            log.debug(stdout.replace(os.getcwd() + os.path.sep, ''))
         # Log error
-        if stderr:
+        if stderr and log:
             # log error
             log.error('Error: ' + stderr)
         # If no output and process no longer running, stop
@@ -270,12 +270,13 @@ def run(command, cwd, log):
     if process.returncode:
         msg = 'Fatal: Exited with return code %s \n' % process.returncode
         # Log the exit status
-        log.error(msg)
+        if log:
+            log.error(msg)
         # Raise an error on the worker
         raise StandardError(msg)
 
 
-def prun(command, cwd, log=None):
+def prun(command, cwd=None, log=None):
     """
     Wrapper for subprocess.Popen that capture output and return as result
 
@@ -286,7 +287,7 @@ def prun(command, cwd, log=None):
     """
     env = os.environ.copy()
     env.update({'PYTHONPATH': os_origin.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd,
+    process = subprocess.Popen(command, shell=True, cwd=cwd or os.getcwd(),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT,
                                close_fds=True, env=env)
@@ -296,7 +297,39 @@ def prun(command, cwd, log=None):
     stdout = ''
     for line in iter(process.stdout.readline, ''):
         if log:
-            log.debug(line)
+            log.debug(line.replace(os.getcwd() + os.path.sep, ''))
         stdout += line
         process.stdout.flush()
     return stdout
+
+
+def formatter(start, end, step):
+    return '{}-{}'.format('U+{0:04x}'.format(start), 'U+{0:04x}'.format(end))
+
+
+def re_range(lst):
+    n = len(lst)
+    result = []
+    scan = 0
+    while n - scan > 2:
+        step = lst[scan + 1] - lst[scan]
+        if lst[scan + 2] - lst[scan + 1] != step:
+            result.append('U+{0:04x}'.format(lst[scan]))
+            scan += 1
+            continue
+
+        for j in range(scan+2, n-1):
+            if lst[j+1] - lst[j] != step:
+                result.append(formatter(lst[scan], lst[j], step))
+                scan = j+1
+                break
+        else:
+            result.append(formatter(lst[scan], lst[-1], step))
+            return ','.join(result)
+
+    if n - scan == 1:
+        result.append('U+{0:04x}'.format(lst[scan]))
+    elif n - scan == 2:
+        result.append(','.join(map('U+{0:04x}'.format, lst[scan:])))
+
+    return ','.join(result)

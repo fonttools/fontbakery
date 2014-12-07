@@ -33,8 +33,7 @@ class TTFAutoHint(object):
         self.bakery.logging_raw('### Autohint TTFs (ttfautohint) {}\n'.format(filepath))
 
         params = pipedata['ttfautohint']
-        filepath = op.join(self.project_root,
-                           self.builddir, filepath)
+        filepath = op.join(self.project_root, self.builddir, filepath)
         cmd = ("ttfautohint {params} {source}"
                " '{name}.autohint.ttf'").format(params=params.strip(),
                                                 name=filepath[:-4],

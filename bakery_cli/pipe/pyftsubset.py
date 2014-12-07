@@ -15,10 +15,11 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
-from bakery_cli.utils import shutil
 
 from fontaine.ext.subsets import Extension as SubsetExtension
 from fontTools import ttLib
+
+from bakery_cli.utils import re_range
 
 
 def bin2unistring(string):
@@ -27,38 +28,6 @@ def bin2unistring(string):
         return string.encode('utf-8')
     else:
         return string
-
-
-def formatter(start, end, step):
-    return '{}-{}'.format('U+{0:04x}'.format(start), 'U+{0:04x}'.format(end))
-
-
-def re_range(lst):
-    n = len(lst)
-    result = []
-    scan = 0
-    while n - scan > 2:
-        step = lst[scan + 1] - lst[scan]
-        if lst[scan + 2] - lst[scan + 1] != step:
-            result.append('U+{0:04x}'.format(lst[scan]))
-            scan += 1
-            continue
-
-        for j in range(scan+2, n-1):
-            if lst[j+1] - lst[j] != step:
-                result.append(formatter(lst[scan], lst[j], step))
-                scan = j+1
-                break
-        else:
-            result.append(formatter(lst[scan], lst[-1], step))
-            return ','.join(result)
-
-    if n - scan == 1:
-        result.append('U+{0:04x}'.format(lst[scan]))
-    elif n - scan == 2:
-        result.append(','.join(map('U+{0:04x}'.format, lst[scan:])))
-
-    return ','.join(result)
 
 
 class PyFtSubset(object):
