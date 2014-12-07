@@ -497,7 +497,8 @@ class Test_CheckUPMHeightsLess120(TestCase):
 
 class Test_CheckFontNameInCamelCase(TestCase):
 
-    @mock.patch.object(downstream.CheckFontNameNotInCamelCase, 'read_metadata_contents')
+    @mock.patch.object(downstream.CheckFontNameNotInCamelCase,
+                       'read_metadata_contents')
     def test_nineteen(self, metadata_contents):
         targetTestCase = downstream.CheckFontNameNotInCamelCase
         targetTestCase.operator = TestCaseOperator('')
@@ -578,7 +579,8 @@ class Test_CheckFontNamesSameAcrossPlatforms(TestCase):
 
 class Test_CheckPostScriptNameMatchesWeight(TestCase):
 
-    @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight, 'read_metadata_contents')
+    @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight,
+                       'read_metadata_contents')
     def test_twenty_three(self, metadata_contents):
         targetTestCase = downstream.CheckPostScriptNameMatchesWeight
         targetTestCase.operator = TestCaseOperator('')
@@ -614,7 +616,8 @@ class Test_CheckPostScriptNameMatchesWeight(TestCase):
 
 class Test_CheckMetadataContainsReservedFontName(TestCase):
 
-    @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
+    @mock.patch.object(downstream.CheckMetadataContainsReservedFontName,
+                       'read_metadata_contents')
     def test_twenty_four(self, metadata_contents):
         targetTestCase = downstream.CheckMetadataContainsReservedFontName
         targetTestCase.operator = TestCaseOperator('')
@@ -925,7 +928,8 @@ class Test_CheckGaspTableType(TestCase):
 
 class Test_CheckMonospaceAgreement(TestCase):
 
-    @mock.patch.object(downstream.CheckMonospaceAgreement, 'read_metadata_contents')
+    @mock.patch.object(downstream.CheckMonospaceAgreement,
+                       'read_metadata_contents')
     def test_thirty_two(self, metadata_contents):
         targetTestCase = downstream.CheckMonospaceAgreement
         targetTestCase.operator = TestCaseOperator('')
@@ -1253,7 +1257,8 @@ class Test_CheckVerticalMetricsAutoFixCalled(TestCase):
 
 class TestFontOnDiskFamilyEqualToMetadataJSON(TestCase):
 
-    @mock.patch.object(downstream.TestFontOnDiskFamilyEqualToMetadataJSON, 'read_metadata_contents')
+    @mock.patch.object(downstream.TestFontOnDiskFamilyEqualToMetadataJSON,
+                       'read_metadata_contents')
     def test_font_on_disk_family_equal_in_metadata_json(self, obj):
         obj.return_value = json.dumps({
             'fonts': [{
@@ -1284,7 +1289,8 @@ class TestFontOnDiskFamilyEqualToMetadataJSON(TestCase):
 
 class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
 
-    @mock.patch.object(downstream.TestPostScriptNameInMetadataEqualFontOnDisk, 'read_metadata_contents')
+    @mock.patch.object(downstream.TestPostScriptNameInMetadataEqualFontOnDisk,
+                       'read_metadata_contents')
     def test_font_on_disk_family_equal_in_metadata_json(self, obj):
         obj.return_value = json.dumps({
             'fonts': [{
@@ -1319,6 +1325,7 @@ class SourceFontFileNameEqualsFamilyStyle(TestCase):
         targetTestCase.operator = TestCaseOperator('')
 
         from fontTools.ttLib.tables._n_a_m_e import NameRecord
+
         class TableName(object):
 
             def getName(self, *args, **kwargs):

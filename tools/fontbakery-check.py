@@ -23,7 +23,7 @@ from bakery_lint.base import tests_report
 from bakery_lint import run_set
 
 
-available_tests = ['result', 'upstream', 'upstream-ttx', 'metadata',
+available_tests = ['result', 'upstream', 'metadata',
                    'description', 'upstream-repo']
 
 
