@@ -184,12 +184,13 @@ def get_data_directory():
 
 def shell_cmd_repr(command, args):
     available_commands = {
-        'move': 'mv %s',
-        'copy': 'cp -a %s',
-        'copytree': 'cp -a %s',
-        'makedirs': 'mkdir -p %s'
+        'move': 'mv {}',
+        'copy': 'cp -a {}',
+        'copytree': 'cp -a {}',
+        'makedirs': 'mkdir -p {}'
     }
-    return available_commands[command] % ' '.join(list(args))
+    cmdline = available_commands[command].format(' '.join(list(args)))
+    return cmdline.replace(os.getcwd() + os.path.sep, '')
 
 
 class metaclass(type):
@@ -245,7 +246,7 @@ def run(command, cwd, log):
     # Start the command
     env = os.environ.copy()
 
-    log.info('$ %s\n' % command)
+    log.info('$ %s\n' % command.replace(os.getcwd() + os.path.sep, ''))
     env.update({'PYTHONPATH': os_origin.pathsep.join(sys.path)})
     process = subprocess.Popen(command, shell=True, cwd=cwd,
                                stdout=subprocess.PIPE,
@@ -290,7 +291,7 @@ def prun(command, cwd, log=None):
                                stderr=subprocess.STDOUT,
                                close_fds=True, env=env)
     if log:
-        log.info('$ %s\n' % command)
+        log.info('$ %s\n' % command.replace(os.getcwd() + os.path.sep, ''))
 
     stdout = ''
     for line in iter(process.stdout.readline, ''):

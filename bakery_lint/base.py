@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import importlib
 import logging
+import os
 import unittest
 
 from itertools import chain
@@ -61,7 +62,7 @@ class TestCaseOperator(object):
     def debug(self, message):
         if not self.logger:
             return
-        self.logger.info(message)
+        self.logger.info(message.replace(os.getcwd() + os.path.sep, ''))
 
 
 class BakeryTestCase(unittest.TestCase):

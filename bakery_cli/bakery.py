@@ -228,13 +228,13 @@ class Bakery(object):
         self.taskset.close_task(task, failed=failed)
 
     def logging_cmd(self, message):
-        self.logger.info('\n$ ' + message.strip())
+        self.logger.info('\n$ ' + message.strip().replace(os.getcwd() + os.path.sep, ''))
 
     def logging_raw(self, message):
         if message.startswith('### ') or message.startswith('## '):
             message = '\n' * 3 + message.strip()
         if message.startswith('$ '):
-            message = '\n' + message.strip()
+            message = '\n' + message.strip().replace(os.getcwd() + os.path.sep, '')
         self.logger.info(message)
 
     def logging_err(self, message):
