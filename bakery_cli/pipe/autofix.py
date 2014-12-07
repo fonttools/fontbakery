@@ -20,7 +20,6 @@ import os.path as op
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview, metricfix
 from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, ResetFSTypeFlagFixer
-from bakery_cli.scripts.fstype import reset_fstype
 from bakery_cli.scripts.nbsp import checkAndFix
 from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp

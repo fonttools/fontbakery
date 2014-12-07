@@ -26,7 +26,6 @@ def fix_style_names(fontpath):
     except TTLibError as ex:
         print("ERROR: %s" % ex)
         return
-    # font['name'].fsType = 0
     font.save(fontpath + '.fix')
 
 

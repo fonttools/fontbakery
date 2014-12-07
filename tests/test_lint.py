@@ -623,13 +623,13 @@ class Test_CheckMetadataContainsReservedFontName(TestCase):
             'fonts': [{'copyright': ('Copyright (c) 2014 (mail@example.com)'
                                      ' with Reserved Font Name')}]
         })
-        self.success_run(targetTestCase)
+        self.failure_run(targetTestCase)
 
         metadata_contents.return_value = json.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com)'}]
         })
 
-        self.failure_run(targetTestCase)
+        self.success_run(targetTestCase)
 
         metadata_contents.return_value = json.dumps({
             'fonts': [{'copyright': ('Copyright (c) 2014'
