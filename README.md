@@ -48,51 +48,51 @@ pip install git+https://github.com/googlefonts/fontbakery.git;
 All fontbakery commands begin with `fontbakery-`
 
 You will have a font project directory with your source files. 
-The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow. An interactive terminal application will create one in its current directory:
+The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow. 
+An interactive terminal application will create one in its current directory:
 
 ```sh
 cd ~/src/github.com/davelab6/fontproject/;
 fontbakery-setup.py;
 ```
 
-
+You can then run the build process with this file. 
+It is helpful to run in verbose mode.
 
 ```sh
 fontbakery-build.py --verbose bakery.yaml;
 ```
 
+This will run many individual fontbakery tools, such as
 
-`fontbakery-build.py` 
+* `fontbakery-check.py` to check a font file
+* `fontbakery-build-font2ttf.py` to convert a ufo or otf to a ttf with fontforge
+* `fontbakery-build-metadata.py` to create a METADATA.json file
 
-`fontbakery-check.py`
+The check tool will fix some problems, and you can run these fixing tools individually also:
+* `fontbakery-fix-ascii-fontmetadata.py`
+* `fontbakery-fix-dsig.py`
+* `fontbakery-fix-fstype.py`
+* `fontbakery-fix-gasp.py`
+* `fontbakery-fix-glyph-private-encoding.py`
+* `fontbakery-fix-nbsp.py`
+* `fontbakery-fix-opentype-names.py`
+* `fontbakery-fix-style-names.py`
+* `fontbakery-fix-vertical-metrics.py`
 
+There are some fontbakery tools not used in the build process:
 
-fontbakery-build-font2ttf.py
-fontbakery-build-metadata.py
+`fontbakery-report.py`
 
-
-fontbakery-crawl.py
-fontbakery-fix-ascii-fontmetadata.py
-fontbakery-fix-dsig.py
-fontbakery-fix-fstype.py
-fontbakery-fix-gasp.py
-fontbakery-fix-glyph-private-encoding.py
-fontbakery-fix-nbsp.py
-fontbakery-fix-opentype-names.py
-fontbakery-fix-style-names.py
-fontbakery-fix-vertical-metrics.py
-fontbakery-report.py
-fontbakery-setup-orig.py
-
-fontbakery-travis-deploy.py
-fontbakery-travis-secure.sh
+`fontbakery-travis-deploy.py` and `fontbakery-travis-secure.sh` are used to set up a `.travis.yml` file (see below)
 
 ### On Travis
 
 [Travis-CI.org](http://travis-ci.org) is a Continuous Integration system that will run Font Bakery on your files each time you update them on Github.
 After building your fonts, it will publish the build to the `gh-pages` branch of your repository.
 
-**Warning:** This will replace the entire contents of the `gh-pages` branch if any exist. The previous versions will be available in git history, though.
+**Warning:** This will replace the entire contents of the `gh-pages` branch if any exist. 
+The previous versions will be available in git history, though.
 
 Travis requires a `.travis.yml` file in the root directory of your repository.
 Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.com/) but you can use a typical template.
@@ -132,6 +132,14 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
        -d '{"scopes":["public_repo"],"note":"FontBakery for yourRepoName"}' \
        -s "https://api.github.com/authorizations";
    ```
+  
+  If you use 2-Factor Authentication, use the following:
+  ```sh
+  curl -i -u yourGithubUsername -H "X-GitHub-OTP: optCode" \
+    -d '{"scopes": ["public_repo"], "note": "FontBakery for yourRepoName"}' \
+    https://api.github.com/authorizations
+  ```
+  
   If you get the following response, you already have a token for `note`, and you can find it on your [github profile page](https://github.com/settings/applications#personal-access-tokens)
    ```json
    {
