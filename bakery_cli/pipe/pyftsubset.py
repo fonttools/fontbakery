@@ -15,8 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
-
 from bakery_cli.utils import shutil
+
 from fontaine.ext.subsets import Extension as SubsetExtension
 from fontTools import ttLib
 
@@ -27,6 +27,38 @@ def bin2unistring(string):
         return string.encode('utf-8')
     else:
         return string
+
+
+def formatter(start, end, step):
+    return '{}-{}'.format('U+{0:04x}'.format(start), 'U+{0:04x}'.format(end))
+
+
+def re_range(lst):
+    n = len(lst)
+    result = []
+    scan = 0
+    while n - scan > 2:
+        step = lst[scan + 1] - lst[scan]
+        if lst[scan + 2] - lst[scan + 1] != step:
+            result.append('U+{0:04x}'.format(lst[scan]))
+            scan += 1
+            continue
+
+        for j in range(scan+2, n-1):
+            if lst[j+1] - lst[j] != step:
+                result.append(formatter(lst[scan], lst[j], step))
+                scan = j+1
+                break
+        else:
+            result.append(formatter(lst[scan], lst[-1], step))
+            return ','.join(result)
+
+    if n - scan == 1:
+        result.append('U+{0:04x}'.format(lst[scan]))
+    elif n - scan == 2:
+        result.append(','.join(map('U+{0:04x}'.format, lst[scan:])))
+
+    return ','.join(result)
 
 
 class PyFtSubset(object):
@@ -40,21 +72,28 @@ class PyFtSubset(object):
         from fontTools.subset import Subsetter, Options, load_font, save_font
         target_file = '{0}.{1}'.format(op.join(self.builddir, name)[:-4],
                                        subsetname)
-        self.bakery.logging_cmd('pyftsubset {}'.format(op.basename(target_file)))
 
         options = Options()
+        cmd_options = ''
         if pipedata.get('pyftsubset'):
+            cmd_options = pipedata['pyftsubset']
             options.parse_opts(pipedata['pyftsubset'].split())
 
         if pipedata.get('pyftsubset.%s' % subsetname):
+            cmd_options = pipedata['pyftsubset.%s' % subsetname]
             options.parse_opts(pipedata['pyftsubset.%s' % subsetname].split())
 
         font = load_font(op.join(self.builddir, name), options)
+
+        unicodes = re_range([int(g.replace('U+', ''), 16) for g in glyphs.split()])
+        self.bakery.logging_cmd('pyftsubset --unicodes="{0}" {2} {1}'.format(unicodes, name,
+                                                                             cmd_options))
 
         subsetter = Subsetter(options=options)
         subsetter.populate(unicodes=[int(g.replace('U+', ''), 16) for g in glyphs.split()])
         subsetter.subset(font)
 
+        self.bakery.logging_cmd('mv {0}.subset {1}'.format(name, target_file))
         save_font(font, target_file, options)
 
 
