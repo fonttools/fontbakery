@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.utils import run, shutil as shellutil
+from bakery_cli.utils import prun, run, shutil
 
 
 class TTFAutoHint(object):
@@ -34,10 +34,9 @@ class TTFAutoHint(object):
 
         params = pipedata['ttfautohint']
         filepath = op.join(self.project_root, self.builddir, filepath)
-        cmd = ("ttfautohint {params} {source}"
-               " '{name}.autohint.ttf'").format(params=params.strip(),
-                                                name=filepath[:-4],
-                                                source=filepath)
+        cmd = ("ttfautohint {params} {name}"
+               " '{name}.fix'").format(params=params.strip(),
+                                       name=filepath)
         try:
             run(cmd, cwd=self.builddir, log=self.bakery.logger)
         except:
@@ -47,7 +46,7 @@ class TTFAutoHint(object):
             pipedata['autohinting_sizes'] = []
 
         origsize = op.getsize(filepath)
-        autohintsize = op.getsize(filepath[:-4] + '.autohint.ttf')
+        autohintsize = op.getsize(filepath + '.fix')
 
         pipedata['autohinting_sizes'].append({
             'fontname': op.basename(filepath),
@@ -56,14 +55,14 @@ class TTFAutoHint(object):
         })
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
-        cmd = "ls -l %s.*ttf %s" % (filepath[:-4], comment)
-        self.bakery.logging_cmd(cmd)
 
-        statusmessage = "{0}: {1} bytes\n{2}: {3} bytes\n"
-        self.bakery.logging_raw(statusmessage.format(filepath, origsize, filepath[:-4] + '.autohint.ttf', autohintsize))
 
-        shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
-                       log=self.bakery.logger)
+        prun("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(filepath), log=self.bakery.logger)
+
+        comment = "# copy back optimized ttf to original filename"
+        self.bakery.logging_cmd(comment)
+
+        shutil.move(filepath + '.fix', filepath, log=self.bakery.logger)
         return 1
 
     def execute(self, pipedata, prefix=""):

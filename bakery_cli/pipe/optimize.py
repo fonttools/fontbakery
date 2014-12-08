@@ -67,15 +67,15 @@ class Optimize(object):
         subsetter = Subsetter(options=options)
         subsetter.populate(glyphs=font.getGlyphOrder())
         subsetter.subset(font)
-        save_font(font, op.join(self.builddir, filename + '.opt'), options)
+        save_font(font, op.join(self.builddir, filename + '.fix'), options)
 
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
         self.bakery.logging_cmd(comment)
-        prun("ls -la {0} {0}.opt | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)), log=self.bakery.logger)
+        prun("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)), log=self.bakery.logger)
 
         comment = "# copy back optimized ttf to original filename"
         self.bakery.logging_cmd(comment)
-        shutil.move(op.join(self.builddir, filename + '.opt'),
+        shutil.move(op.join(self.builddir, filename + '.fix'),
                     op.join(self.builddir, filename),
                     log=self.bakery.logger)
