@@ -26,16 +26,16 @@ from bakery_lint.tests.downstream.test_check_subsets_exists import File
 
 class TestCase(unittest.TestCase):
 
-    def failure_run(self, test_klass):
-        result = _run_font_test(test_klass)
+    def failure_run(self, test_klass, test_method=None):
+        result = _run_font_test(test_klass, test_method)
 
         if result.errors:
             self.fail(result.errors[0][1])
 
         self.assertTrue(bool(result.failures))
 
-    def success_run(self, test_klass):
-        result = _run_font_test(test_klass)
+    def success_run(self, test_klass, test_method=None):
+        result = _run_font_test(test_klass, test_method)
 
         if result.errors:
             self.fail(result.errors[0][1])
@@ -46,15 +46,17 @@ class TestCase(unittest.TestCase):
         self.assertFalse(bool(result.failures))
 
 
-def _get_tests(testcase_klass):
-    return unittest.defaultTestLoader.loadTestsFromTestCase(testcase_klass)
-
-
-def _run_font_test(testcase_klass):
+def _run_font_test(testcase_klass, test_method):
     from bakery_lint.base import BakeryTestRunner, BakeryTestResult
     runner = BakeryTestRunner(resultclass=BakeryTestResult)
-    tests = _get_tests(testcase_klass)
-    return runner.run(tests)
+    tests = unittest.defaultTestLoader.loadTestsFromTestCase(testcase_klass)
+
+    suite = unittest.TestSuite()
+    for i, test in enumerate(tests):
+        if test_method and test._testMethodName != test_method:
+            continue
+        suite.addTest(test)
+    return runner.run(suite)
 
 
 class Test_CheckCanonicalFilenamesTestCase(TestCase):
@@ -1321,7 +1323,7 @@ class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
 class SourceFontFileNameEqualsFamilyStyle(TestCase):
 
     def test_source_ttf_font_filename_equals_familystyle(self):
-        targetTestCase = upstream.TestTTFSourceFontFileNameEqualsFamilyStyle
+        targetTestCase = downstream.TTXTestCase
         targetTestCase.operator = TestCaseOperator('')
 
         from fontTools.ttLib.tables._n_a_m_e import NameRecord
@@ -1352,7 +1354,7 @@ class SourceFontFileNameEqualsFamilyStyle(TestCase):
             with mock.patch('bakery_cli.pipe.autofix.rename') as renamefix:
                 get_ttfont.return_value = Font('Font.ttf.ttx')
                 targetTestCase.operator.path = 'Font.ttf.ttx'
-                self.failure_run(targetTestCase)
+                self.failure_run(targetTestCase, 'test_source_ttf_font_filename_equals_familystyle')
 
                 self.assert_(renamefix.called)
 
@@ -1360,6 +1362,6 @@ class SourceFontFileNameEqualsFamilyStyle(TestCase):
                 get_ttfont.return_value = Font('Gaa-Gaa.ttx')
 
                 targetTestCase.operator.path = 'Gaa-Gaa.ttx'
-                self.success_run(targetTestCase)
+                self.success_run(targetTestCase, 'test_source_ttf_font_filename_equals_familystyle')
 
                 self.assert_(not renamefix.called)
