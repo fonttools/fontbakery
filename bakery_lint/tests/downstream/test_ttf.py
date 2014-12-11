@@ -14,11 +14,26 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import fontforge
+import os
 import os.path
 import re
+import StringIO
+import sys
+
+from contextlib import contextmanager
 
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
+
+
+@contextmanager
+def redirect_stdout(new_target):
+    old_target, sys.stdout = sys.stdout, new_target  # replace sys.stdout
+    try:
+        yield new_target  # run some code with the replaced stdout
+    finally:
+        sys.stdout = old_target  # restore to the previous value
 
 
 class TTXTestCase(TestCase):
@@ -26,6 +41,12 @@ class TTXTestCase(TestCase):
     targets = ['result']
     tool = 'lint'
     name = __name__
+
+    def test_fontforge_openfile_contains_stderr(self):
+        with redirect_stdout(StringIO.StringIO()) as std:
+            fontforge.open(self.operator.path)
+            if std.getvalue():
+                self.fail('FontForge prints STDERR')
 
     @autofix('bakery_cli.pipe.autofix.rename')
     def test_source_ttf_font_filename_equals_familystyle(self):
@@ -166,7 +187,7 @@ class TTXTestCase(TestCase):
         # (Duplicate glyph names prevent font installation on Mac OS X.)
         font = Font.get_ttfont(self.operator.path)
         glyphs = []
-        for _, g in enumerate(font.getGlyphOrder()):
+        for _, g in enumerate(font.ttfont.getGlyphOrder()):
             self.assertFalse(re.search(r'#\w+$', g),
                              msg="Font contains incorrectly named glyph %s" % g)
             glyphID = re.sub(r'#\w+', '', g)
@@ -179,4 +200,4 @@ class TTXTestCase(TestCase):
     def test_epar_in_keys(self):
         """ EPAR table present in font? """
         font = Font.get_ttfont(self.operator.path)
-        self.assertIn('EPAR', font.keys(), 'No')
+        self.assertIn('EPAR', font.ttfont.keys(), 'No')

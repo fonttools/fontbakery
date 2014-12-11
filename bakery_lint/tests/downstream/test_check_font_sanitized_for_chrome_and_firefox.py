@@ -30,5 +30,6 @@ class OTSTest(TestCase):
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome """
         stdout = run('{0} {1}'.format('ot-sanitise', self.operator.path),
-                      os.path.dirname(self.operator.path))
+                      os.path.dirname(self.operator.path),
+                      log=self.operator.logger)
         self.assertEqual('', stdout.strip())
