@@ -7,6 +7,7 @@ import subprocess
 import shutil
 import six
 from jinja2 import Environment, FileSystemLoader
+from bakery_cli.utils import run
 
 try:
     import urllib.parse as urllib_parse
@@ -51,35 +52,6 @@ jinjaenv.globals['build_repo_url'] = build_repo_url
 jinjaenv.globals['build_raw_repo_url'] = build_raw_repo_url
 
 
-def prun(command, cwd, log=None):
-    """
-    Wrapper for subprocess.Popen that capture output and return as result
-
-        :param command: shell command to run
-        :param cwd: current working dir
-        :param log: loggin object with .write() method
-
-    """
-    # print the command on the worker console
-    print("[%s]:%s" % (cwd, command))
-    env = os.environ.copy()
-    env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               close_fds=True, env=env)
-    if log:
-        log.write('$ %s\n' % command)
-
-    stdout = ''
-    for line in iter(process.stdout.readline, ''):
-        if log:
-            log.write(line)
-        stdout += line
-        process.stdout.flush()
-    return stdout
-
-
 def git_info(config):
     """ If application is under git then return commit's hash
         and timestamp of the version running.
@@ -87,7 +59,8 @@ def git_info(config):
         Return None if application is not under git."""
     params = "git log -n1"
     fmt = """ --pretty=format:'{"hash":"%h", "commit":"%H","date":"%cd"}'"""
-    log = prun(params + fmt, cwd=config['path'])
+    print("[%s]:%s" % (config['path'], params + fmt))
+    log = run(params + fmt, cwd=config['path'])
     try:
         return json.loads(log)
     except ValueError:
@@ -213,7 +186,7 @@ class BuildInfo(six.with_metaclass(Singleton, object)):
                                         'https://github.com/andriyko/angular-route-styles.git',
                                         'ng-table']
         params = ' '.join(components_lst)
-        log = prun('bower install {}'.format(params), self.static_dir)
+        log = run('bower install {}'.format(params), self.static_dir)
         print(log)
 
     def exists(self):

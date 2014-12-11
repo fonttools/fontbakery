@@ -252,55 +252,12 @@ def run(command, cwd=None, log=None):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
                                close_fds=True, env=env)
-    while True:
-        # Read output and errors
-        stdout = process.stdout.readline()
-        stderr = process.stderr.readline()
-        # Log output
-        if stdout.strip() and log:
-            log.debug(stdout.replace(os.getcwd() + os.path.sep, ''))
-        # Log error
-        if stderr and log:
-            # log error
-            log.error('Error: ' + stderr)
-        # If no output and process no longer running, stop
-        if not stdout and not stderr and process.poll() is not None:
-            break
-    # if the command did not exit cleanly (with returncode 0)
-    if process.returncode:
-        msg = 'Fatal: Exited with return code %s \n' % process.returncode
-        # Log the exit status
-        if log:
-            log.error(msg)
-        # Raise an error on the worker
-        raise StandardError(msg)
-
-
-def prun(command, cwd=None, log=None):
-    """
-    Wrapper for subprocess.Popen that capture output and return as result
-
-        :param command: shell command to run
-        :param cwd: current working dir
-        :param log: loggin object with .write() method
-
-    """
-    env = os.environ.copy()
-    env.update({'PYTHONPATH': os_origin.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd or os.getcwd(),
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               close_fds=True, env=env)
-    if log:
-        log.info('$ %s\n' % command.replace(os.getcwd() + os.path.sep, ''))
-
-    stdout = ''
-    for line in iter(process.stdout.readline, ''):
-        if log:
-            log.debug(line.replace(os.getcwd() + os.path.sep, ''))
-        stdout += line
-        process.stdout.flush()
-    return stdout
+    out, err = process.communicate()
+    if log and out.strip():
+        log.info(out.strip())
+    if log and err.strip():
+        log.error(err.strip())
+    return out
 
 
 def formatter(start, end, step):

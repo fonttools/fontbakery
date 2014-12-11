@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.utils import prun, run, shutil
+from bakery_cli.utils import run, shutil
 
 
 class TTFAutoHint(object):
@@ -56,8 +56,7 @@ class TTFAutoHint(object):
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
 
-
-        prun("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(filepath), log=self.bakery.logger)
+        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(filepath), log=self.bakery.logger)
 
         comment = "# copy back optimized ttf to original filename"
         self.bakery.logging_cmd(comment)

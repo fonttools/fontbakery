@@ -17,7 +17,7 @@
 import os
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags
-from bakery_cli.utils import prun
+from bakery_cli.utils import run
 
 
 class OTSTest(TestCase):
@@ -29,6 +29,6 @@ class OTSTest(TestCase):
     @tags('required',)
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome """
-        stdout = prun('{0} {1}'.format('ot-sanitise', self.operator.path),
+        stdout = run('{0} {1}'.format('ot-sanitise', self.operator.path),
                       os.path.dirname(self.operator.path))
         self.assertEqual('', stdout.strip())
