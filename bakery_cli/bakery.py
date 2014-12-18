@@ -32,7 +32,8 @@ class BakeryTaskSet(object):
         pass
 
 
-BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__), 'bakery.defaults.yaml')
+BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__),
+                                        'bakery.defaults.yaml')
 BAKERY_CONFIGURATION_NEW = op.join(op.dirname(__file__), 'bakery.new.yaml')
 
 
@@ -48,6 +49,13 @@ def bin2unistring(string):
         return string.encode('utf-8')
     else:
         return string
+
+
+class WhitespaceRemovingFormatter(logging.Formatter):
+    def format(self, record):
+        import re
+        record.msg = re.sub('\s+', ' ', record.msg.strip())
+        return super(WhitespaceRemovingFormatter, self).format(record)
 
 
 class Bakery(object):
@@ -99,7 +107,7 @@ class Bakery(object):
         ch.setLevel(logging.DEBUG)
 
         # create formatter
-        formatter = logging.Formatter('%(message)s')
+        formatter = WhitespaceRemovingFormatter('%(message)s')
 
         # add formatter to ch
         ch.setFormatter(formatter)
