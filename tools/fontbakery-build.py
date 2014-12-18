@@ -44,13 +44,36 @@ def create_bakery_config(bakery_yml_file, data):
     l.close()
 
 
-def run_bakery(bakery_yml_file, verbose=False):
+def run_bakery(path, verbose=False):
+    # fontbakery-build supports passing arguments of directory or
+    # concrete bakery.y[a]ml files. In case of passing directory
+    # it looks at existing bakery.yml or bakery.yaml and runs on
+    # first matched filepath
+
+    # There can also be cases when directory does not contain any
+    # bakery.y[a]ml or passed bakery.yml file does not exist. Then
+    # fontbakery-build loads default configuration.
+    bakery_yml_file = None
+    sourcedir = path
+
+    if os.path.isdir(path):
+        for filename in ['bakery.yml', 'bakery.yaml']:
+            if os.path.exists(os.path.join(path, filename)):
+                bakery_yml_file = os.path.join(path, filename)
+                break
+    else:
+        bakery_yml_file = path
+        sourcedir = os.path.dirname(path)
+
     try:
-        config = yaml.safe_load(open(op.join(bakery_yml_file), 'r'))
+        if bakery_yml_file:
+            config = yaml.safe_load(open(bakery_yml_file, 'r'))
+        else:
+            raise IOError
     except IOError:
+        bakery_yml_file = os.path.join(sourcedir, 'bakery.yml')
         config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
-    sourcedir = op.dirname(bakery_yml_file)
     try:
         builddir = 'build'
         if GITPYTHON_INSTALLED:
@@ -81,10 +104,11 @@ if __name__ == '__main__':
     description = ('Builds projects specified by bakery.yml file(s).'
                    ' Output is in project/builds/commit/')
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('bakery.yml', nargs='+',
-                        help="Directory to run bakery build process on")
+    parser.add_argument('path', metavar='DIRECTORY OR BAKERY.YML', nargs='+',
+                        help="Directory or path to bakery.y[a]ml to run"
+                             " bakery build process on")
     parser.add_argument('--verbose', default=False, action='store_true')
     args = parser.parse_args()
 
-    for p in getattr(args, 'bakery.yml', []):
-        run_bakery(op.abspath(p), verbose=args.verbose)
+    for p in args.path:
+        run_bakery(os.path.abspath(p), verbose=args.verbose)
