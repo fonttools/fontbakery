@@ -50,7 +50,7 @@ else:
 # We only care about the the json object being able to iterate over the keys, so
 # other stuff might be broken...
 METADATA_JSON = 'METADATA.json'
-METADATA_JSON_NEW = 'METADATA.new.json'
+METADATA_JSON_NEW = 'METADATA.json.new'
 
 
 class InsertOrderedDict(dict):

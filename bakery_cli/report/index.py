@@ -236,8 +236,8 @@ def generate(config):
         return
 
     directory = UpstreamDirectory(config['path'])
-    if op.exists(op.join(config['path'], 'METADATA.new.json')):
-        metadata_file = open(op.join(config['path'], 'METADATA.new.json')).read()
+    if op.exists(op.join(config['path'], 'METADATA.json.new')):
+        metadata_file = open(op.join(config['path'], 'METADATA.json.new')).read()
     else:
         metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
     family_metadata = Metadata.get_family_metadata(metadata_file)
