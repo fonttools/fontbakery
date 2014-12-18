@@ -146,29 +146,28 @@ class BakeryTestResult(unittest.TestResult):
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
 
+        import copy
+        failTest = copy.copy(test)
         _, _err_exception, _ = err
-        test._err = err
-        test._err_msg = _err_exception.message
+        failTest._err = err
+        failTest._err_msg = _err_exception.message
 
-        if hasattr(test, 'operator'):
-            test.operator.debug(self._format_test_output(test, 'FAIL'))
+        if hasattr(failTest, 'operator'):
+            failTest.operator.debug(self._format_test_output(failTest, 'FAIL'))
 
         test_method = getattr(test, test._testMethodName)
 
         if hasattr(test_method, 'autofix'):
             if not self.restart:
-                self.callmethod(test_method.autofix_method, test)
+                self.callmethod(test_method.autofix_method, failTest)
                 if hasattr(self.ff, 'append'):
-                    self.ff.append(test)
+                    self.ff.append(failTest)
                     self.restart = True  # mark next test as restarted
                     test.run(result=self)
                     self.restart = False  # reset restart state
                     return
         elif hasattr(self.fl, 'append'):
-            self.fl.append(test)
-        # if 'required' in list(getattr(test_method, 'tags', [])):
-        #     import sys
-        #     sys.exit(1)
+            self.fl.append(failTest)
 
 
 class BakeryTestRunner(unittest.TextTestRunner):

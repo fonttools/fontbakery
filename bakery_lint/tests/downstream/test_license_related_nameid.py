@@ -60,7 +60,7 @@ class TestNameIdOFLLicense(TestCase):
         text = open(path).read()
 
         placeholderPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.placeholder')
-        self.placeholderText = open(placeholderPath).read()
+        self.placeholderText = open(placeholderPath).read().strip()
 
         fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
 
@@ -68,9 +68,9 @@ class TestNameIdOFLLicense(TestCase):
         for nameRecord in font['name'].names:
             if nameRecord.nameID == 13:
                 value = getNameRecordValue(nameRecord)
-                self.assertFalse(value != self.placeholderText and os.path.exists(fontLicensePath),
-                    u'License file OFL.txt exists but NameID value is not specified for that')
-                self.assertFalse(text in value)
+                if value != self.placeholderText and os.path.exists(fontLicensePath):
+                    self.fail('License file OFL.txt exists but NameID value is not specified for that.')
+                # self.assertFalse(value in text, 'placeholder is in text')
 
 
 class TestNameIdOFLLicenseURL(TestCase):
