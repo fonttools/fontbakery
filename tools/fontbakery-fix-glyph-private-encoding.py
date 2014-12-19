@@ -20,7 +20,7 @@ import argparse
 import os
 
 import fontTools.ttLib
-from bakery_cli.scripts import encode_glyphs
+from bakery_cli.scripts import AddSPUAByGlyphIDToCmap, get_unencoded_glyphs
 
 
 description = 'Fixes TTF unencoded glyphs to have Private Use Area encodings'
@@ -40,7 +40,7 @@ for path in args.ttf_font:
 
     ttx = fontTools.ttLib.TTFont(path, 0)
     if args.autofix:
-        glyphs = encode_glyphs.get_unencoded_glyphs(ttx)
-        encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(ttx, path, glyphs)
+        glyphs = get_unencoded_glyphs(ttx)
+        AddSPUAByGlyphIDToCmap(path).apply(glyphs)
     else:
-        print('{0}: {1}'.format(path, encode_glyphs.get_unencoded_glyphs(ttx)))
+        print('{0}: {1}'.format(path, get_unencoded_glyphs(ttx)))

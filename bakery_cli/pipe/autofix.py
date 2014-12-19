@@ -20,11 +20,10 @@ import os.path as op
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview, metricfix
 from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, \
-    ResetFSTypeFlagFixer
+    ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap
 from bakery_cli.scripts.nbsp import checkAndFix
 from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
-from bakery_cli.scripts import encode_glyphs
 from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
 
@@ -210,10 +209,8 @@ def fix_encode_glyphs(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
-    encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(
-        testcase.ttx, targetpath, testcase.unencoded_glyphs)
-
-    if testcase.unencoded_glyphs:
+    fixer = AddSPUAByGlyphIDToCmap(targetpath)
+    if fixer.apply(testcase.unencoded_glyphs):
         replace_origfont(testcase)
 
 

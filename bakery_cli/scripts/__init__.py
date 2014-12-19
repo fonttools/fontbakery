@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import copy
+import fontTools.ttLib
+
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 
@@ -38,10 +41,11 @@ class Fixer(object):
         """
         raise NotImplementedError
 
-    def apply(self):
-        if not self.fix():
-            return
+    def apply(self, *args, **kwargs):
+        if not self.fix(*args, **kwargs):
+            return False
         self.font.save(self.fixfont_path)
+        return True
 
 
 class SpecCharsForASCIIFixer(Fixer):
@@ -86,3 +90,57 @@ class ResetFSTypeFlagFixer(Fixer):
 
     def fix(self):
         self.font['OS/2'].fsType = 0
+
+
+class AddSPUAByGlyphIDToCmap(Fixer):
+
+    def fix(self, unencoded_glyphs):
+
+        if not unencoded_glyphs:
+            return
+
+        ucs2cmap = None
+        cmap = self.font["cmap"]
+
+        # Check if an UCS-2 cmap exists
+        for ucs2cmapid in ((3, 1), (0, 3), (3, 0)):
+            ucs2cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
+            if ucs2cmap:
+                break
+        # Create UCS-4 cmap and copy the contents of UCS-2 cmap
+        # unless UCS 4 cmap already exists
+        ucs4cmap = cmap.getcmap(3, 10)
+        if not ucs4cmap:
+            cmapModule = fontTools.ttLib.getTableModule('cmap')
+            ucs4cmap = cmapModule.cmap_format_12(12)
+            ucs4cmap.platformID = 3
+            ucs4cmap.platEncID = 10
+            ucs4cmap.language = 0
+            if ucs2cmap:
+                ucs4cmap.cmap = copy.deepcopy(ucs2cmap.cmap)
+            cmap.tables.append(ucs4cmap)
+        # Map all glyphs to UCS-4 cmap Supplementary PUA-A codepoints
+        # by 0xF0000 + glyphID
+        ucs4cmap = cmap.getcmap(3, 10)
+        for glyphID, glyphName in enumerate(self.font.getGlyphOrder()):
+            if glyphName in unencoded_glyphs:
+                ucs4cmap.cmap[0xF0000 + glyphID] = glyphName
+        self.font['cmap'] = cmap
+        return True
+
+
+def get_unencoded_glyphs(ttx):
+    """ Check if font has unencoded glyphs """
+    cmap = ttx['cmap']
+
+    new_cmap = cmap.getcmap(3, 10)
+    if not new_cmap:
+        for ucs2cmapid in ((3, 1), (0, 3), (3, 0)):
+            new_cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
+            if new_cmap:
+                break
+
+    assert new_cmap
+
+    diff = list(set(ttx.glyphOrder) - set(new_cmap.cmap.values()) - {'.notdef'})
+    return [g for g in diff[:] if g != '.notdef']
