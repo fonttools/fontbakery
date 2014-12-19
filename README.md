@@ -8,7 +8,7 @@
 
 Font Bakery is a set of command-line tools for building and testing font projects, and a web interface for reviewing them.
 It runs checks on source files in UFO, SFD or TTX formats and builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
-It runs tests on these files and stores the results in files that can be browsed by the Font Bakery web app. 
+It runs tests on these files and stores the results in files that can be browsed by the Font Bakery web app.
 
 If you use Github for your font project, you can use FontBakery on Travis so that with each update to your Github repository, your files are built and tested. Travis can then upload the result back to the project's `gh-pages` branch, so that they are available on the web via Github Pages.
 
@@ -47,8 +47,8 @@ pip install git+https://github.com/googlefonts/fontbakery.git;
 
 All fontbakery commands begin with `fontbakery-`
 
-You will have a font project directory with your source files. 
-The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow. 
+You will have a font project directory with your source files.
+The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow.
 An interactive terminal application will create one in its current directory:
 
 ```sh
@@ -56,7 +56,7 @@ cd ~/src/github.com/davelab6/fontproject/;
 fontbakery-setup.py;
 ```
 
-You can then run the build process with this file. 
+You can then run the build process with this file.
 It is helpful to run in verbose mode.
 
 ```sh
@@ -91,11 +91,13 @@ There are some fontbakery tools not used in the build process:
 [Travis-CI.org](http://travis-ci.org) is a Continuous Integration system that will run Font Bakery on your files each time you update them on Github.
 After building your fonts, it will publish the build to the `gh-pages` branch of your repository.
 
-**Warning:** This will replace the entire contents of the `gh-pages` branch if any exist. 
+**Warning:** This will replace the entire contents of the `gh-pages` branch if any exist.
 The previous versions will be available in git history, though.
 
 Travis requires a `.travis.yml` file in the root directory of your repository.
 Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.com/) but you can use a typical template.
+
+Steps below can be ignored if you use `fontbakery-travis-init.py` script. It gets path to repo as an argument and make all steps to update your .travis.yml with token from github. Optional arguments are `-u, --user` and `-e, --email`. Script will ask you for all info if something missed. Actually it is enough to set user name and email inside .git/config. Last actions script will do for you.
 
 1. Enable your font repository in your travis profile, [travis-ci.org/profile](https://travis-ci.org/profile)
 
@@ -132,14 +134,14 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
        -d '{"scopes":["public_repo"],"note":"FontBakery for yourRepoName"}' \
        -s "https://api.github.com/authorizations";
    ```
-  
+
   If you use 2-Factor Authentication, use the following:
   ```sh
   curl -i -u yourGithubUsername -H "X-GitHub-OTP: optCode" \
     -d '{"scopes": ["public_repo"], "note": "FontBakery for yourRepoName"}' \
     https://api.github.com/authorizations
   ```
-  
+
   If you get the following response, you already have a token for `note`, and you can find it on your [github profile page](https://github.com/settings/applications#personal-access-tokens)
    ```json
    {
@@ -171,9 +173,10 @@ Full documentation is available from [docs.travis-ci.com](http://docs.travis-ci.
 
 5. After each build by Travis you can see a report at <http://yourGithubUsername.github.io/yourRepo>
 
+
 ### Tips for working with Github
 
-When working with font projects on Github, it is typical to work with several forks of the same project. To keep things simple, create a folder in your projects director called `github.com`, inside that make a directory for each username you work with, and clone each user's repo inside their correpsonding folder. This way on your harddisk you have a 'mirror' of the github.com site structure. 
+When working with font projects on Github, it is typical to work with several forks of the same project. To keep things simple, create a folder in your projects director called `github.com`, inside that make a directory for each username you work with, and clone each user's repo inside their correpsonding folder. This way on your harddisk you have a 'mirror' of the github.com site structure.
 
 There are many good guides for Github around the web, including:
 

@@ -103,6 +103,7 @@ setup(
              'tools/fontbakery-fix-glyph-private-encoding.py',
              'tools/fontbakery-crawl.py',
              'tools/fontbakery-setup.py',
+             'tools/fontbakery-travis-init.py',
              'tools/collection-management/fontbakery-travis-secure.sh'],
     zip_safe=False,
     classifiers=[
