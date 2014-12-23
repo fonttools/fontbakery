@@ -18,7 +18,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import opentype
+from bakery_cli.scripts import FamilyAndStyleNameFixer
 
 
 description = 'Fixes TTF NAME table naming values to work with Windows GDI'
@@ -32,4 +32,4 @@ args = parser.parse_args()
 for path in args.ttf_font:
     if not os.path.exists(path):
         continue
-    opentype.fix(path)
+    FamilyAndStyleNameFixer(path).apply()

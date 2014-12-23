@@ -21,8 +21,7 @@ from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview
 from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, \
     ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth, \
-    GaspFixer, Vmet
-from bakery_cli.scripts import opentype
+    GaspFixer, Vmet, FamilyAndStyleNameFixer
 from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
 
@@ -122,9 +121,8 @@ def fix_opentype_specific_fields(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
-    opentype.fix(targetpath)
-
-    replace_origfont(testcase)
+    if FamilyAndStyleNameFixer(targetpath).apply():
+        replace_origfont(testcase)
 
 
 def fix_nbsp(testcase):

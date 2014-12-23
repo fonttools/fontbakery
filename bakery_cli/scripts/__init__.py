@@ -22,6 +22,7 @@ import sys
 
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
+from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 from bakery_cli.ttfont import Font
 from bakery_cli.utils import normalizestr
@@ -255,4 +256,91 @@ class VmetFixer(Fixer):
         AscentGroup(self.font).set(ymax)
         DescentGroup(self.font).set(ymin)
         LineGapGroup(self.font).set(0)
+        return True
+
+
+mapping = {
+    'Thin': 'Regular',
+    'Extra Light': 'Regular',
+    'Light': 'Regular',
+    'Regular': 'Regular',
+    'Medium': 'Regular',
+    'SemiBold': 'Regular',
+    'Extra Bold': 'Regular',
+    'Black': 'Regular',
+
+    'Thin Italic': 'Italic',
+    'Extra Light Italic': 'Italic',
+    'Light Italic': 'Italic',
+    'Italic': 'Italic',
+    'Medium Italic': 'Italic',
+    'SemiBold Italic': 'Italic',
+    'Extra Bold Italic': 'Italic',
+    'Black Italic': 'Bold Italic',
+
+    'Bold': 'Bold',
+    'Bold Italic': 'Bold Italic'
+}
+
+
+class FamilyAndStyleNameFixer(Fixer):
+
+    def suggestNameValues(self):
+        from bakery_cli.ttfont import getSuggestedFontNameValues
+        return getSuggestedFontNameValues(self.font)
+
+    def getOrCreateNameRecord(self, nameId, val):
+        result_namerec = self.font['name'].getName(nameId, 3, 1)
+        if result_namerec:
+            return result_namerec
+
+        ot_namerecord = NameRecord()
+        ot_namerecord.nameID = nameId
+        ot_namerecord.platformID = 3
+        ot_namerecord.langID = 0x409
+        ot_namerecord.string = val.encode("utf_16_be")
+
+        # When building a Unicode font for Windows, the platform ID
+        # should be 3 and the encoding ID should be 1
+        ot_namerecord.platEncID = 1
+
+        self.font['name'].names.append(ot_namerecord)
+        return ot_namerecord
+
+    def fix(self):
+        values = self.suggestNameValues()
+
+        family_name = values['family']
+
+        subfamily_name = values['subfamily']
+
+        for pair in [[4, 3, 1], [4, 1, 0]]:
+            name = self.font['name'].getName(*pair)
+            if name:
+                name.string = ' '.join([family_name.replace(' ', ''),
+                                        subfamily_name]).encode('utf_16_be')
+
+        for pair in [[6, 3, 1], [6, 1, 0]]:
+            name = self.font['name'].getName(*pair)
+            if name:
+                name.string = '-'.join([family_name.replace(' ', ''),
+                                        subfamily_name.replace(' ', '')])
+                name.string = name.string.encode('utf_16_be')
+
+        for pair in [[1, 3, 1], [1, 1, 0]]:
+            name = self.font['name'].getName(*pair)
+            if name:
+                name.string = family_name.replace(' ', '').encode('utf_16_be')
+
+        for pair in [[2, 3, 1], [2, 1, 0]]:
+            name = self.font['name'].getName(*pair)
+            if name:
+                name.string = subfamily_name.encode('utf_16_be')
+
+        self.getOrCreateNamerecord(16, family_name.replace(' ', ''))
+        self.getOrCreateNamerecord(17, mapping.get(subfamily_name, 'Regular'))
+
+        value = ' '.join([family_name.replace(' ', ''),
+                          mapping.get(subfamily_name, 'Regular')])
+        self.getOrCreateNamerecord(18, value)
         return True
