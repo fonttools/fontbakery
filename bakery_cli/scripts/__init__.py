@@ -228,3 +228,31 @@ class GaspFixer(Fixer):
             print(self.font['gasp'].gaspRange[65535])
         except IndexError:
             print('no index 65535', file=sys.stderr)
+
+
+class Vmet(object):
+
+    @staticmethod
+    def fix(fonts):
+        from bakery_cli.ttfont import Font
+        ymin = 0
+        ymax = 0
+
+        for f in fonts:
+            metrics = Font(f)
+            font_ymin, font_ymax = metrics.get_bounding()
+            ymin = min(font_ymin, ymin)
+            ymax = max(font_ymax, ymax)
+
+        for f in fonts:
+            VmetFixer(f).apply()
+
+
+class VmetFixer(Fixer):
+
+    def fix(self, ymin, ymax):
+        from bakery_cli.ttfont import AscentGroup, DescentGroup, LineGapGroup
+        AscentGroup(self.font).set(ymax)
+        DescentGroup(self.font).set(ymin)
+        LineGapGroup(self.font).set(0)
+        return True

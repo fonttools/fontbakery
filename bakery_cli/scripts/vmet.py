@@ -61,25 +61,6 @@ def get_metric_view(fonts):
     return view
 
 
-def metricfix(fonts):
-    from bakery_cli.ttfont import Font
-    ymin = 0
-    ymax = 0
-
-    for f in fonts:
-        metrics = Font(f)
-        font_ymin, font_ymax = metrics.get_bounding()
-        ymin = min(font_ymin, ymin)
-        ymax = max(font_ymax, ymax)
-
-    for f in fonts:
-        metrics = Font(f)
-        metrics.ascents.set(ymax)
-        metrics.descents.set(ymin)
-        metrics.linegaps.set(0)
-        metrics.save(f + '.fix')
-
-
 class TextMetricsView(object):
 
     def __init__(self):

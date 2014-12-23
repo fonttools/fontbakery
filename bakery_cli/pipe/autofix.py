@@ -18,12 +18,11 @@ import os
 import os.path as op
 
 from fontTools.ttLib import TTFont
-from bakery_cli.scripts.vmet import metricview, metricfix
+from bakery_cli.scripts.vmet import metricview
 from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, \
     ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth, \
-    GaspFixer
+    GaspFixer, Vmet
 from bakery_cli.scripts import opentype
-from bakery_cli.scripts import gasp
 from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
 
@@ -158,7 +157,7 @@ def fix_metrics(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
-    metricfix(paths)
+    Vmet.fix(paths)
 
     for path in paths:
         try:

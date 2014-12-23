@@ -21,7 +21,7 @@ import argparse
 from fontTools.ttLib import TTLibError
 
 from bakery_cli.ttfont import Font
-from bakery_cli.scripts import vmet
+from bakery_cli.scripts import vmet, Vmet
 
 
 parser = argparse.ArgumentParser()
@@ -112,6 +112,6 @@ if (options.ascents or options.descents or options.linegaps
         metrics.save(f + '.fix')
 
 elif options.autofix:
-    vmet.metricfix(fonts)
+    Vmet.fix(fonts)
 else:
     print(vmet.metricview(fonts))
