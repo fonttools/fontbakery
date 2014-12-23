@@ -20,8 +20,7 @@ import os.path as op
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview, metricfix
 from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, \
-    ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap
-from bakery_cli.scripts.nbsp import checkAndFix
+    ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth
 from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
 from bakery_cli.utils import shutil
@@ -138,9 +137,8 @@ def fix_nbsp(testcase):
     command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
-    checkAndFix(targetpath)
-
-    replace_origfont(testcase)
+    if NbspAndSpaceSameWidth(targetpath).apply():
+        replace_origfont(testcase)
 
 
 def fix_metrics(testcase):

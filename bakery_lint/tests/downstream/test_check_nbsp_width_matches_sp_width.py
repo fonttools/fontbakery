@@ -15,9 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
-from bakery_cli.ttfont import Font
 
-from bakery_cli.scripts.nbsp import getGlyph, getWidth
+from bakery_cli.scripts import NbspAndSpaceSameWidth
 
 
 class CheckNbspWidthMatchesSpWidth(TestCase):
@@ -30,19 +29,16 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_nbsp')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check non-breaking space's advancewidth is the same as space """
-        tf = Font.get_ttfont(self.operator.path)
+        checker = NbspAndSpaceSameWidth(self.operator.path)
 
-        space = getGlyph(tf.ttfont, 0x0020)
-        nbsp = getGlyph(tf.ttfont, 0x00A0)
+        space = checker.getGlyph(0x0020)
+        nbsp = checker.getGlyph(0x00A0)
 
-        _ = "Font does not contain a space glyph"
-        self.assertTrue(space, _)
-        _ = "Font does not contain a nbsp glyph"
-        self.assertTrue(nbsp, _)
+        self.assertTrue(space, "Font does not contain a space glyph")
+        self.assertTrue(nbsp, "Font does not contain a nbsp glyph")
 
-        _ = ("The nbsp advance width does not match "
-             "the space advance width")
-
-        spaceWidth = getWidth(tf.ttfont, space)
-        nbspWidth = getWidth(tf.ttfont, nbsp)
-        self.assertEqual(spaceWidth, nbspWidth, _)
+        spaceWidth = checker.getWidth(space)
+        nbspWidth = checker.getWidth(nbsp)
+        self.assertEqual(spaceWidth, nbspWidth,
+                         ("The nbsp advance width does not match "
+                          "the space advance width"))

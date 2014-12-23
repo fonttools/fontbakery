@@ -22,7 +22,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import nbsp
+from bakery_cli.scripts import NbspAndSpaceSameWidth
 
 description = ('Fixes TTF non-breaking-space glyph to exist'
                ' with same advanceWidth as space')
@@ -36,4 +36,9 @@ args = parser.parse_args()
 for path in args.ttf_font:
     if not os.path.exists(path):
         continue
-    nbsp.run(path)
+
+    fixer = NbspAndSpaceSameWidth(path)
+    if args.autofix and fixer.apply():
+        message = "{} made with spaceWidth and nbspWidth of {}"
+        print(message.format(os.path.basename(fixer.fixfont_path),
+                             fixer.getWidth(fixer.getGlyph(0x020))))

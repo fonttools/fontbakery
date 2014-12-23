@@ -122,9 +122,9 @@ class AddSPUAByGlyphIDToCmap(Fixer):
         # Map all glyphs to UCS-4 cmap Supplementary PUA-A codepoints
         # by 0xF0000 + glyphID
         ucs4cmap = cmap.getcmap(3, 10)
-        for glyphID, glyphName in enumerate(self.font.getGlyphOrder()):
-            if glyphName in unencoded_glyphs:
-                ucs4cmap.cmap[0xF0000 + glyphID] = glyphName
+        for glyphID, glyph in enumerate(self.font.getGlyphOrder()):
+            if glyph in unencoded_glyphs:
+                ucs4cmap.cmap[0xF0000 + glyphID] = glyph
         self.font['cmap'] = cmap
         return True
 
@@ -144,3 +144,63 @@ def get_unencoded_glyphs(ttx):
 
     diff = list(set(ttx.glyphOrder) - set(new_cmap.cmap.values()) - {'.notdef'})
     return [g for g in diff[:] if g != '.notdef']
+
+
+class NbspAndSpaceSameWidth(Fixer):
+
+    def getGlyph(self, uchar):
+        for table in self.font['cmap'].tables:
+            if not (table.platformID == 3 and table.platEncID in [1, 10]):
+                continue
+            if uchar in table.cmap:
+                return table.cmap[uchar]
+        return None
+
+    def addGlyph(self, uchar, glyph):
+        # Add to glyph list
+        glyphOrder = self.font.getGlyphOrder()
+        assert glyph not in glyphOrder
+        glyphOrder.append(glyph)
+        self.font.setGlyphOrder(glyphOrder)
+
+        # Add horizontal metrics (to zero)
+        self.font['hmtx'][glyph] = [0, 0]
+
+        # Add to cmap
+        for table in self.font['cmap'].tables:
+            if not (table.platformID == 3 and table.platEncID in [1, 10]):
+                continue
+            if not table.cmap:  # Skip UVS cmaps
+                continue
+            assert uchar not in table.cmap
+            table.cmap[uchar] = glyph
+
+        # Add empty glyph outline
+        self.font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
+        return glyph
+
+    def getWidth(self, glyph):
+        return self.font['hmtx'][glyph][0]
+
+    def setWidth(self, glyph, width):
+        self.font['hmtx'][glyph] = (width, self.font['hmtx'][glyph][1])
+
+    def fix(self):
+        space = self.getGlyph(0x0020)
+        nbsp = self.getGlyph(0x00A0)
+        if not nbsp:
+            print("No nbsp glyph")
+            nbsp = self.addGlyph(0x00A0, 'nbsp')
+
+        spaceWidth = self.getWidth(space)
+        nbspWidth = self.getWidth(nbsp)
+
+        print("spaceWidth is    " + str(spaceWidth))
+        print("nbspWidth is     " + str(nbspWidth))
+        if spaceWidth != nbspWidth or nbspWidth < 0:
+            width = max(abs(spaceWidth), abs(nbspWidth))
+            self.setWidth(nbsp, width)
+            self.setWidth(space, width)
+            print("spaceWidth and nbspWidth of {1}".format(width))
+            return True
+        return
