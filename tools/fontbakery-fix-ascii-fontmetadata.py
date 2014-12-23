@@ -17,7 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 
-from bakery_cli.scripts import SpecCharsForASCIIFixer
+from bakery_cli.fixers import SpecCharsForASCIIFixer
 
 
 description = 'Fixes TTF NAME table strings to be ascii only'

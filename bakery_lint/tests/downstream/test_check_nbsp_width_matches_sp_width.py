@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 
-from bakery_cli.scripts import NbspAndSpaceSameWidth
+from bakery_cli.fixers import NbspAndSpaceSameWidth
 
 
 class CheckNbspWidthMatchesSpWidth(TestCase):

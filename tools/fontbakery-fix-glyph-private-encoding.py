@@ -20,7 +20,7 @@ import argparse
 import os
 
 import fontTools.ttLib
-from bakery_cli.scripts import AddSPUAByGlyphIDToCmap, get_unencoded_glyphs
+from bakery_cli.fixers import AddSPUAByGlyphIDToCmap, get_unencoded_glyphs
 
 
 description = 'Fixes TTF unencoded glyphs to have Private Use Area encodings'

@@ -17,7 +17,7 @@
 import fontTools.ttLib
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
-from bakery_cli.scripts import get_unencoded_glyphs
+from bakery_cli.fixers import get_unencoded_glyphs
 
 
 class TestFontUnencodedGlyph(TestCase):

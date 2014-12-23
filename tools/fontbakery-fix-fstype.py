@@ -21,7 +21,7 @@ import os
 import sys
 
 from bakery_cli.ttfont import Font
-from bakery_cli.scripts import ResetFSTypeFlagFixer
+from bakery_cli.fixers import ResetFSTypeFlagFixer
 
 from fontTools.ttLib import TTLibError
 

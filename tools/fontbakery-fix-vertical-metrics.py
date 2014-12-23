@@ -21,7 +21,8 @@ import argparse
 from fontTools.ttLib import TTLibError
 
 from bakery_cli.ttfont import Font
-from bakery_cli.scripts import vmet, Vmet
+from bakery_cli.scripts import vmet
+from bakery_cli.fixers import Vmet
 
 
 parser = argparse.ArgumentParser()

@@ -17,7 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 
-from bakery_cli.scripts import GaspFixer
+from bakery_cli.fixers import GaspFixer
 
 
 if __name__ == '__main__':

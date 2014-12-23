@@ -18,7 +18,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import dsig, CreateDSIGFixer
+from bakery_cli.fixers import CreateDSIGFixer
 
 
 if __name__ == '__main__':

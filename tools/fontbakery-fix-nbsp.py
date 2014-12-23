@@ -22,7 +22,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import NbspAndSpaceSameWidth
+from bakery_cli.fixers import NbspAndSpaceSameWidth
 
 description = ('Fixes TTF non-breaking-space glyph to exist'
                ' with same advanceWidth as space')

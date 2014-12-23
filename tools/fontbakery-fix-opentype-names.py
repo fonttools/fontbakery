@@ -18,7 +18,7 @@
 import argparse
 import os
 
-from bakery_cli.scripts import FamilyAndStyleNameFixer
+from bakery_cli.fixers import FamilyAndStyleNameFixer
 
 
 description = 'Fixes TTF NAME table naming values to work with Windows GDI'

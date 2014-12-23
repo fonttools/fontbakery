@@ -19,7 +19,7 @@ import os.path as op
 
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview
-from bakery_cli.scripts import SpecCharsForASCIIFixer, CreateDSIGFixer, \
+from bakery_cli.fixers import SpecCharsForASCIIFixer, CreateDSIGFixer, \
     ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth, \
     GaspFixer, Vmet, FamilyAndStyleNameFixer
 from bakery_cli.utils import shutil
