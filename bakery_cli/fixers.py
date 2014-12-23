@@ -18,7 +18,7 @@ from __future__ import print_function
 
 import copy
 import fontTools.ttLib
-import sys
+import logging
 
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
@@ -31,6 +31,7 @@ from bakery_cli.utils import normalizestr
 class Fixer(object):
 
     def __init__(self, fontpath):
+        self.logging = logging.getLogger('bakery_cli.fixers')
         self.font = ttLib.TTFont(fontpath)
         self.fixfont_path = '{}.fix'.format(fontpath)
 
@@ -193,19 +194,19 @@ class NbspAndSpaceSameWidth(Fixer):
         space = self.getGlyph(0x0020)
         nbsp = self.getGlyph(0x00A0)
         if not nbsp:
-            print("No nbsp glyph")
+            self.logging.info("No nbsp glyph")
             nbsp = self.addGlyph(0x00A0, 'nbsp')
 
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)
 
-        print("spaceWidth is    " + str(spaceWidth))
-        print("nbspWidth is     " + str(nbspWidth))
+        self.logging.info("spaceWidth is    " + str(spaceWidth))
+        self.logging.info("nbspWidth is     " + str(nbspWidth))
         if spaceWidth != nbspWidth or nbspWidth < 0:
             width = max(abs(spaceWidth), abs(nbspWidth))
             self.setWidth(nbsp, width)
             self.setWidth(space, width)
-            print("spaceWidth and nbspWidth of {1}".format(width))
+            self.logging.info("spaceWidth and nbspWidth of {}".format(width))
             return True
         return
 
@@ -214,7 +215,7 @@ class GaspFixer(Fixer):
 
     def fix(self, value=15):
         if 'gasp' not in self.font.tables:
-            print('no table gasp', file=sys.stderr)
+            self.logging.error('no table gasp')
             return
 
         self.font['gasp'].gaspRange[65535] = value
@@ -222,13 +223,13 @@ class GaspFixer(Fixer):
 
     def show(self):
         if 'gasp' not in self.font.tables:
-            print('no table gasp', file=sys.stderr)
+            self.logging.error('no table gasp')
             return
 
         try:
-            print(self.font['gasp'].gaspRange[65535])
+            self.logging.info(self.font['gasp'].gaspRange[65535])
         except IndexError:
-            print('no index 65535', file=sys.stderr)
+            self.logging.error('no index 65535')
 
 
 class Vmet(object):
@@ -246,7 +247,7 @@ class Vmet(object):
             ymax = max(font_ymax, ymax)
 
         for f in fonts:
-            VmetFixer(f).apply()
+            VmetFixer(f).apply(ymin, ymax)
 
 
 class VmetFixer(Fixer):
@@ -337,10 +338,10 @@ class FamilyAndStyleNameFixer(Fixer):
             if name:
                 name.string = subfamily_name.encode('utf_16_be')
 
-        self.getOrCreateNamerecord(16, family_name.replace(' ', ''))
-        self.getOrCreateNamerecord(17, mapping.get(subfamily_name, 'Regular'))
+        self.getOrCreateNameRecord(16, family_name.replace(' ', ''))
+        self.getOrCreateNameRecord(17, mapping.get(subfamily_name, 'Regular'))
 
         value = ' '.join([family_name.replace(' ', ''),
                           mapping.get(subfamily_name, 'Regular')])
-        self.getOrCreateNamerecord(18, value)
+        self.getOrCreateNameRecord(18, value)
         return True
