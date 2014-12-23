@@ -40,7 +40,6 @@ for path in args.ttf_font:
 
     ttx = fontTools.ttLib.TTFont(path, 0)
     if args.autofix:
-        glyphs = get_unencoded_glyphs(ttx)
-        AddSPUAByGlyphIDToCmap(path).apply(glyphs)
+        AddSPUAByGlyphIDToCmap(path).apply()
     else:
         print('{0}: {1}'.format(path, get_unencoded_glyphs(ttx)))

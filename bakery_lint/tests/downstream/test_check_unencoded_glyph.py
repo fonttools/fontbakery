@@ -33,6 +33,6 @@ class TestFontUnencodedGlyph(TestCase):
     def test_font_unencoded_glyphs(self):
         """ Font does not have unencoded glyphs """
         ttx = fontTools.ttLib.TTFont(self.operator.path, 0)
-        self.unencoded_glyphs = get_unencoded_glyphs(ttx)
-        self.assertIs(self.unencoded_glyphs, [],
+        unencoded_glyphs = get_unencoded_glyphs(ttx)
+        self.assertIs(unencoded_glyphs, [],
                       msg='There should not be unencoded glyphs')

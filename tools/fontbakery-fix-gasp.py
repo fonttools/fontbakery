@@ -17,7 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 
-from bakery_cli.scripts import gasp
+from bakery_cli.scripts import GaspFixer
 
 
 if __name__ == '__main__':
@@ -34,6 +34,6 @@ if __name__ == '__main__':
 
     for path in args.ttf_font:
         if args.set is not None:
-            gasp.set(path, args.set)
+            GaspFixer(path).apply(path, args.set)
         else:
-            gasp.show(path)
+            GaspFixer(path).show()

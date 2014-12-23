@@ -14,8 +14,11 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
+
 import copy
 import fontTools.ttLib
+import sys
 
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
@@ -94,8 +97,8 @@ class ResetFSTypeFlagFixer(Fixer):
 
 class AddSPUAByGlyphIDToCmap(Fixer):
 
-    def fix(self, unencoded_glyphs):
-
+    def fix(self):
+        unencoded_glyphs = get_unencoded_glyphs(self.font)
         if not unencoded_glyphs:
             return
 
@@ -204,3 +207,24 @@ class NbspAndSpaceSameWidth(Fixer):
             print("spaceWidth and nbspWidth of {1}".format(width))
             return True
         return
+
+
+class GaspFixer(Fixer):
+
+    def fix(self, value=15):
+        if 'gasp' not in self.font.tables:
+            print('no table gasp', file=sys.stderr)
+            return
+
+        self.font['gasp'].gaspRange[65535] = value
+        return True
+
+    def show(self):
+        if 'gasp' not in self.font.tables:
+            print('no table gasp', file=sys.stderr)
+            return
+
+        try:
+            print(self.font['gasp'].gaspRange[65535])
+        except IndexError:
+            print('no index 65535', file=sys.stderr)

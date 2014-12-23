@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import re
-
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
