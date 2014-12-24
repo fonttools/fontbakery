@@ -14,14 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
 import os.path as op
 
 from fontTools.ttLib import TTFont
-from bakery_cli.scripts.vmet import metricview
-from bakery_cli.fixers import Vmet
 from bakery_cli.utils import shutil
-from bakery_cli.utils import UpstreamDirectory
 
 
 def replace_licenseurl(testcase):
@@ -60,37 +56,6 @@ def replace_origfont(testcase):
     fixed_font_path = '{}.fix'.format(targetpath)
     if op.exists(fixed_font_path):
         shutil.move(fixed_font_path, targetpath)
-
-
-def fix_metrics(testcase):
-    """ Fix vmet table with actual min and max values """
-    targetpath = os.path.dirname(testcase.operator.path)
-    SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
-
-    directory = UpstreamDirectory(targetpath)
-
-    paths = []
-    for f in directory.BIN:
-        path = op.join(targetpath, f)
-        paths.append(path)
-
-    command = "$ {0} --autofix {1}"
-    command = command.format(SCRIPTPATH, ' '.join(paths))
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    Vmet.fix(paths)
-
-    for path in paths:
-        try:
-            shutil.move(path + '.fix', path, log=testcase.operator.logger)
-        except IOError:
-            pass
-
-    command = "$ {0} {1}".format(SCRIPTPATH, ' '.join(paths))
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-        testcase.operator.debug(metricview(paths))
 
 
 def rename(testcase):

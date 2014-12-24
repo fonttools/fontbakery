@@ -28,7 +28,7 @@ class CheckVerticalLinegapMetrics(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.fix_metrics')
+    @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_linegaps_are_zero(self):
         """ Check that linegaps in tables are zero """
         dirname = os.path.dirname(self.operator.path)
@@ -45,13 +45,14 @@ class CheckVerticalLinegapMetrics(TestCase):
             _ = '[%s] have not zero linegaps'
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
+
 class CheckVerticalAscentMetrics(TestCase):
 
     targets = ['result']
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.fix_metrics')
+    @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_ascents_equal_bbox(self):
         """ Check that ascents values are same as max glyph point """
         dirname = os.path.dirname(self.operator.path)
@@ -93,7 +94,7 @@ class CheckVerticalDescentMetrics(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.fix_metrics')
+    @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_descents_equal_bbox(self):
         """ Check that descents values are same as min glyph point """
         dirname = os.path.dirname(self.operator.path)

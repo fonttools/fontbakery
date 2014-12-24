@@ -26,14 +26,19 @@ from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
+from bakery_cli.scripts.vmet import metricview
 from bakery_cli.ttfont import Font
+from bakery_cli.utils import UpstreamDirectory
 
 
 class Fixer(object):
 
+    def loadfont(self, fontpath):
+        return ttLib.TTFont(fontpath)
+
     def __init__(self, fontpath):
         self.logging = logging.getLogger('bakery_cli.fixers')
-        self.font = ttLib.TTFont(fontpath)
+        self.font = self.loadfont(fontpath)
         self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
 
@@ -275,20 +280,38 @@ class GaspFixer(Fixer):
 
 class Vmet(Fixer):
 
-    @staticmethod
-    def fix(fonts):
+    SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
+
+    def loadfont(self, fontpath):
+        return ttLib.TTFont()  # return for this fixer empty TTFont
+
+    def __init__(self, fontpath):
+        super(Vmet, self).__init__(fontpath)
+        d = os.path.dirname(fontpath)
+        directory = UpstreamDirectory(d)
+        self.fonts = [os.path.join(d, f) for f in directory.BIN]
+
+    def get_shell_command(self):
+        return "{} --autofix {}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
+
+    def apply(self, override_origin=False):
         from bakery_cli.ttfont import Font
         ymin = 0
         ymax = 0
 
-        for f in fonts:
+        for f in self.fonts:
             metrics = Font(f)
             font_ymin, font_ymax = metrics.get_bounding()
             ymin = min(font_ymin, ymin)
             ymax = max(font_ymax, ymax)
 
-        for f in fonts:
-            VmetFixer(f).apply(ymin, ymax)
+        for f in self.fonts:
+            VmetFixer(f).apply(ymin, ymax, override_origin=override_origin)
+
+        command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
+
+        self.logging.debug(command)
+        self.logging.debug(metricview(self.fonts))
 
 
 class VmetFixer(Fixer):
