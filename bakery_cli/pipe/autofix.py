@@ -19,9 +19,7 @@ import os.path as op
 
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview
-from bakery_cli.fixers import CreateDSIGFixer, \
-    ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth, \
-    GaspFixer, Vmet, FamilyAndStyleNameFixer
+from bakery_cli.fixers import Vmet
 from bakery_cli.utils import shutil
 from bakery_cli.utils import UpstreamDirectory
 
@@ -54,25 +52,6 @@ def replace_license_with_short(testcase):
     replace_origfont(testcase)
 
 
-def remove_description_with_substr(testcase):
-    ttf = TTFont(testcase.operator.path)
-    records = []
-    for record in ttf['name'].names:
-        passed = True
-        for namerecord in testcase.namerecords:
-            if (record.nameID == namerecord.nameID
-                    and record.platformID == namerecord.platformID
-                    and record.platEncID == namerecord.platEncID
-                    and record.langID == namerecord.langID):
-                passed = False
-                break
-        if passed:
-            records.append(record)
-    ttf['name'].names = records
-    ttf.save(testcase.operator.path + '.fix')
-    replace_origfont(testcase)
-
-
 def replace_origfont(testcase):
     targetpath = testcase.operator.path
     command = "$ mv {0}.fix {0}".format(targetpath)
@@ -81,61 +60,6 @@ def replace_origfont(testcase):
     fixed_font_path = '{}.fix'.format(targetpath)
     if op.exists(fixed_font_path):
         shutil.move(fixed_font_path, targetpath)
-
-
-def dsig_signature(testcase):
-    """ Create "DSIG" table with default signaturerecord """
-    targetpath = testcase.operator.path
-
-    SCRIPTPATH = 'fontbakery-fix-dsig.py'
-
-    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    CreateDSIGFixer(targetpath).apply()
-
-    replace_origfont(testcase)
-
-
-def gaspfix(testcase):
-    """ Set in "gasp" table value of key "65535" to "15" """
-    targetpath = testcase.operator.path
-
-    SCRIPTPATH = 'fontbakery-fix-gasp.py'
-
-    command = "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    if GaspFixer(targetpath).apply(15):
-        replace_origfont(testcase)
-
-
-def fix_opentype_specific_fields(testcase):
-    """ Fix Opentype-specific fields in "name" table """
-    targetpath = testcase.operator.path
-    SCRIPTPATH = 'fontbakery-fix-opentype-names.py'
-
-    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    if FamilyAndStyleNameFixer(targetpath).apply():
-        replace_origfont(testcase)
-
-
-def fix_nbsp(testcase):
-    """ Fix width for space and nbsp """
-    targetpath = testcase.operator.path
-
-    SCRIPTPATH = 'fontbakery-fix-nbsp.py'
-
-    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-    if NbspAndSpaceSameWidth(targetpath).apply():
-        replace_origfont(testcase)
 
 
 def fix_metrics(testcase):
@@ -167,31 +91,6 @@ def fix_metrics(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
         testcase.operator.debug(metricview(paths))
-
-
-def fix_fstype_to_zero(testcase):
-    """ Fix fsType to zero """
-    targetpath = testcase.operator.path
-
-    SCRIPTPATH = 'fontbakery-fix-fstype.py'
-    command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    if ResetFSTypeFlagFixer(targetpath).apply():
-        replace_origfont(testcase)
-
-
-def fix_encode_glyphs(testcase):
-    targetpath = testcase.operator.path
-    SCRIPTPATH = 'fontbakery-fix-glyph-private-encoding.py'
-    command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    fixer = AddSPUAByGlyphIDToCmap(targetpath)
-    if fixer.apply():
-        replace_origfont(testcase)
 
 
 def rename(testcase):

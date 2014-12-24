@@ -24,7 +24,7 @@ class CheckOTStyleNameRecommendation(TestCase):
     tool = 'lint'
     name = __name__
 
-    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
+    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name must be equal to one of the following four
             values: "Regular", "Italic", "Bold" or "Bold Italic" """
@@ -39,7 +39,7 @@ class CheckOTFamilyNameRecommendation(TestCase):
     tool = 'lint'
     name = __name__
 
-    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
+    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_check_opentype_familyname(self):
         """ OT Family Name for Windows should be equal to Family Name """
         font = Font.get_ttfont(self.operator.path)
@@ -52,7 +52,7 @@ class CheckOTFullNameRecommendation(TestCase):
     tool = 'lint'
     name = __name__
 
-    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
+    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_check_opentype_fullname(self):
         """ Full name matches Windows-only Opentype-specific FullName """
         font = Font.get_ttfont(self.operator.path)
@@ -65,7 +65,7 @@ class CheckSuggestedSubfamilyName(TestCase):
     tool = 'lint'
     name = __name__
 
-    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
+    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_suggested_subfamily_name(self):
         """ Family does not contain subfamily in `name` table """
         # Currently we just look that family does not contain any spaces

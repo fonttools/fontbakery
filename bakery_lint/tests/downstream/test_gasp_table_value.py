@@ -24,7 +24,7 @@ class CheckGaspTableType(TestCase):
     targets = ['result']
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.gaspfix', always_run=True)
+    @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
         """ Font table gasp should be 15 """
         font = Font.get_ttfont(self.operator.path)

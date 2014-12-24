@@ -23,7 +23,6 @@ import shutil as shutil_origin
 import os.path as op
 import re
 import subprocess
-import unicodedata
 
 
 class RedisFd(object):

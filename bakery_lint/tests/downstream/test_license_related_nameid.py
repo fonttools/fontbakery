@@ -32,19 +32,16 @@ class TestNameIdCopyright(TestCase):
     name = __name__
     tool = 'lint'
 
-    # Collection of namerecords that will be removed from table `name`
-    namerecords = []
-
     def containsSubstr(self, nameRecord, substr):
         return substr in getNameRecordValue(nameRecord)
 
-    @autofix('bakery_cli.pipe.autofix.remove_description_with_substr')
+    @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
     def test_name_id_copyright(self):
         """ Is there `opyright` substring nameID in nameId (10) ? """
         font = ttLib.TTFont(self.operator.path)
-        self.namerecords = [f for f in font['name'].names
-                            if self.containsSubstr(f, 'opyright') and f.nameID == 10]
-        self.assertFalse(bool(self.namerecords))
+        records = [f for f in font['name'].names
+                   if self.containsSubstr(f, 'opyright') and f.nameID == 10]
+        self.assertFalse(bool(records))
 
 
 class TestNameIdOFLLicense(TestCase):

@@ -76,7 +76,6 @@ class BakeryTestCase(unittest.TestCase):
 
 class BakeryTestResult(unittest.TestResult):
 
-
     def __init__(self, stream=None, descriptions=None, verbosity=None,
                  success_list=None, error_list=None, failure_list=None,
                  fixed_list=None, restart=False):
@@ -95,7 +94,7 @@ class BakeryTestResult(unittest.TestResult):
         if not inspect.isclass(method):
             return method(test)
         klass_instance = method(test.operator.path)
-        test.operator.info(klass_instance.get_command())
+        test.operator.info('$ {}'.format(klass_instance.get_shell_command()))
         klass_instance.apply(override_origin=True)
 
     def _format_test_output(self, test, status):

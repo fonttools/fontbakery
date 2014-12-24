@@ -95,6 +95,9 @@ class CharacterSymbolsFixer(Fixer):
 class CreateDSIGFixer(Fixer):
     """ Create DSIG table in font if it does not exist """
 
+    def get_shell_command(self):
+        return "fontbakery-fix-dsig.py {}".format(self.fontpath)
+
     def fix(self):
         if 'DSIG' in self.font:
             return False
@@ -117,11 +120,18 @@ class CreateDSIGFixer(Fixer):
 
 class ResetFSTypeFlagFixer(Fixer):
 
+    def get_shell_command(self):
+        return "fontbakery-fix-fstype.py --autofix {}".format(self.fontpath)
+
     def fix(self):
         self.font['OS/2'].fsType = 0
 
 
 class AddSPUAByGlyphIDToCmap(Fixer):
+
+    def get_shell_command(self):
+        SCRIPTPATH = 'fontbakery-fix-glyph-private-encoding.py'
+        return "{0} --autofix {1}".format(SCRIPTPATH, self.fontpath)
 
     def fix(self):
         unencoded_glyphs = get_unencoded_glyphs(self.font)
@@ -176,6 +186,9 @@ def get_unencoded_glyphs(ttx):
 
 
 class NbspAndSpaceSameWidth(Fixer):
+
+    def get_shell_command(self):
+        return "fontbakery-fix-nbsp.py {}".format(self.fontpath)
 
     def getGlyph(self, uchar):
         for table in self.font['cmap'].tables:
@@ -237,6 +250,10 @@ class NbspAndSpaceSameWidth(Fixer):
 
 class GaspFixer(Fixer):
 
+    def get_shell_command(self):
+        SCRIPTPATH = 'fontbakery-fix-gasp.py'
+        return "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, self.fontpath)
+
     def fix(self, value=15):
         if 'gasp' not in self.font.tables:
             self.logging.error('no table gasp')
@@ -256,7 +273,7 @@ class GaspFixer(Fixer):
             self.logging.error('no index 65535')
 
 
-class Vmet(object):
+class Vmet(Fixer):
 
     @staticmethod
     def fix(fonts):
@@ -309,6 +326,9 @@ mapping = {
 
 
 class FamilyAndStyleNameFixer(Fixer):
+
+    def get_shell_command(self):
+        return "fontbakery-fix-opentype-names.py {}".format(self.fontpath)
 
     def suggestNameValues(self):
         from bakery_cli.ttfont import getSuggestedFontNameValues
@@ -369,3 +389,21 @@ class FamilyAndStyleNameFixer(Fixer):
                           mapping.get(subfamily_name, 'Regular')])
         self.getOrCreateNameRecord(18, value)
         return True
+
+
+class RemoveNameRecordWithOpyright(Fixer):
+
+    def containsSubstr(self, namerecord, substr):
+        if namerecord.isUnicode():
+            string = namerecord.string.decode('utf-16-be')
+        else:
+            string = namerecord.string
+        return bool(substr in string)
+
+    def fix(self):
+        records = []
+        for record in self.font['name'].names:
+            if self.containsSubstr(record, 'opyright') and record.nameID == 10:
+                continue
+            records.append(record)
+        self.font['name'].names = records

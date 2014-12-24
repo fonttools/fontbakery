@@ -24,7 +24,7 @@ class CheckFontHasDsigTable(TestCase):
     targets = ['result']
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.dsig_signature')
+    @autofix('bakery_cli.fixers.CreateDSIGFixer')
     def test_check_font_has_dsig_table(self):
         """ Check that font has DSIG table """
         font = Font.get_ttfont(self.operator.path)

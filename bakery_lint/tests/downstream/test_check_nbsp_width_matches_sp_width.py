@@ -26,7 +26,7 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
     name = __name__
 
     @tags('required')
-    @autofix('bakery_cli.pipe.autofix.fix_nbsp')
+    @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check non-breaking space's advancewidth is the same as space """
         checker = NbspAndSpaceSameWidth(self.operator.path)

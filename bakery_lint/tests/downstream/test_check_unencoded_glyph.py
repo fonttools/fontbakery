@@ -29,7 +29,7 @@ class TestFontUnencodedGlyph(TestCase):
     unencoded_glyphs = []
 
     @tags('note')
-    @autofix('bakery_cli.pipe.autofix.fix_encode_glyphs')
+    @autofix('bakery_cli.fixers.AddSPUAByGlyphIDToCmap')
     def test_font_unencoded_glyphs(self):
         """ Font does not have unencoded glyphs """
         ttx = fontTools.ttLib.TTFont(self.operator.path, 0)
