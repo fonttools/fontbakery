@@ -19,13 +19,14 @@ from __future__ import print_function
 import copy
 import fontTools.ttLib
 import logging
+import os
+import shutil
 
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 from bakery_cli.ttfont import Font
-from bakery_cli.utils import normalizestr
 
 
 class Fixer(object):
@@ -33,6 +34,7 @@ class Fixer(object):
     def __init__(self, fontpath):
         self.logging = logging.getLogger('bakery_cli.fixers')
         self.font = ttLib.TTFont(fontpath)
+        self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
 
     def fix(self):
@@ -47,20 +49,42 @@ class Fixer(object):
         raise NotImplementedError
 
     def apply(self, *args, **kwargs):
+        override_origin = kwargs.pop('override_origin', None)
         if not self.fix(*args, **kwargs):
             return False
+
         self.font.save(self.fixfont_path)
+
+        if override_origin and os.path.exists(self.fixfont_path):
+            command = "$ mv {} {}".format(self.fixfont_path, self.fontpath)
+            self.logging.debug(command)
+            shutil.move(self.fixfont_path, self.fontpath)
+
         return True
 
 
-class SpecCharsForASCIIFixer(Fixer):
+class CharacterSymbolsFixer(Fixer):
     """ Converts special characters like copyright, trademark signs to ascii
     name """
+
+    def get_shell_command(self):
+        return 'fontbakery-fix-ascii-fontmetadata.py {}'.format(self.fontpath)
+
+    @staticmethod
+    def normalizestr(string):
+        for mark, ascii_repl in CharacterSymbolsFixer.unicode_marks(string):
+            string = string.replace(mark, ascii_repl)
+        return string
+
+    @staticmethod
+    def unicode_marks(string):
+        unicodemap = [(u'©', '(c)'), (u'®', '(r)'), (u'™', '(tm)')]
+        return filter(lambda char: char[0] in string, unicodemap)
 
     def fix(self):
         for name in self.font['name'].names:
             title = Font.bin2unistring(name)
-            title = normalizestr(title)
+            title = CharacterSymbolsFixer.normalizestr(title)
             if name.platformID == 3:
                 name.string = title.encode('utf-16-be')
             else:

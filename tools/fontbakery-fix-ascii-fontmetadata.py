@@ -17,7 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 
-from bakery_cli.fixers import SpecCharsForASCIIFixer
+from bakery_cli.fixers import CharacterSymbolsFixer
 
 
 description = 'Fixes TTF NAME table strings to be ascii only'
@@ -28,4 +28,4 @@ parser.add_argument('ttf_font', nargs='+',
 args = parser.parse_args()
 
 for path in args.ttf_font:
-    SpecCharsForASCIIFixer(path).apply()
+    CharacterSymbolsFixer(path).apply()

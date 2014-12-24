@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
-from bakery_cli.utils import normalizestr
+from bakery_cli.fixers import CharacterSymbolsFixer
 
 
 class CheckNamesAreASCIIOnly(TestCase):
@@ -25,13 +25,13 @@ class CheckNamesAreASCIIOnly(TestCase):
     targets = ['result']
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.fix_name_ascii')
+    @autofix('bakery_cli.fixers.CharacterSymbolsFixer')
     def test_check_names_are_ascii_only(self):
         """ NAME and CFF tables must not contain non-ascii characters """
         font = Font.get_ttfont(self.operator.path)
 
         for name in font.names:
             string = Font.bin2unistring(name)
-            expected = normalizestr(string)
-            self.assertEqual(string, expected)
-
+            marks = CharacterSymbolsFixer.unicode_marks(string)
+            if marks:
+                self.fail('Contains {}'.format(marks))

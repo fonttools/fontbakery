@@ -19,7 +19,7 @@ import os.path as op
 
 from fontTools.ttLib import TTFont
 from bakery_cli.scripts.vmet import metricview
-from bakery_cli.fixers import SpecCharsForASCIIFixer, CreateDSIGFixer, \
+from bakery_cli.fixers import CreateDSIGFixer, \
     ResetFSTypeFlagFixer, AddSPUAByGlyphIDToCmap, NbspAndSpaceSameWidth, \
     GaspFixer, Vmet, FamilyAndStyleNameFixer
 from bakery_cli.utils import shutil
@@ -167,19 +167,6 @@ def fix_metrics(testcase):
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
         testcase.operator.debug(metricview(paths))
-
-
-def fix_name_ascii(testcase):
-    """ Replacing non ascii names in copyright """
-    targetpath = testcase.operator.path
-
-    SCRIPTPATH = 'fontbakery-fix-ascii-fontmetadata.py'
-    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
-    if hasattr(testcase, 'operator'):
-        testcase.operator.debug(command)
-
-    if SpecCharsForASCIIFixer(targetpath).apply():
-        replace_origfont(testcase)
 
 
 def fix_fstype_to_zero(testcase):

@@ -88,9 +88,15 @@ class BakeryTestResult(unittest.TestResult):
         super(BakeryTestResult, self).__init__()
 
     def callmethod(self, methodname, test):
+        import inspect
         pkg = '.'.join(methodname.split('.')[:-1])
         mod = importlib.import_module(pkg)
-        getattr(mod, methodname.split('.')[-1])(test)
+        method = getattr(mod, methodname.split('.')[-1])
+        if not inspect.isclass(method):
+            return method(test)
+        klass_instance = method(test.operator.path)
+        test.operator.info(klass_instance.get_command())
+        klass_instance.apply(override_origin=True)
 
     def _format_test_output(self, test, status):
         result = getattr(test, '_err_msg', '')

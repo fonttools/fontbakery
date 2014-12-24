@@ -26,12 +26,6 @@ import subprocess
 import unicodedata
 
 
-def normalizestr(string):
-    string = string.replace(u'©', '(c)')
-    string = string.replace(u'®', '(r)')
-    return unicodedata.normalize('NFKD', string).encode('ascii', 'ignore')
-
-
 class RedisFd(object):
     """ Redis File Descriptor class, publish writen data to redis channel
         in parallel to file """
