@@ -54,7 +54,7 @@ def bin2unistring(string):
 class WhitespaceRemovingFormatter(logging.Formatter):
     def format(self, record):
         import re
-        record.msg = re.sub('\s+', ' ', record.msg.strip())
+        record.msg = re.sub('\n+', ' ', record.msg.strip())
         return super(WhitespaceRemovingFormatter, self).format(record)
 
 
@@ -99,7 +99,7 @@ class Bakery(object):
             pipe.PyFontaine
         ]
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger('fontbakery')
         self.logger.setLevel(logging.DEBUG)
 
         # create console handler and set level to debug

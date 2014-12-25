@@ -37,7 +37,7 @@ class Fixer(object):
         return ttLib.TTFont(fontpath)
 
     def __init__(self, fontpath):
-        self.logging = logging.getLogger('bakery_cli.fixers')
+        self.logging = logging.getLogger('fontbakery')
         self.font = self.loadfont(fontpath)
         self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
@@ -311,7 +311,10 @@ class Vmet(Fixer):
         command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
 
         self.logging.debug(command)
-        self.logging.debug(metricview(self.fonts))
+
+        import StringIO
+        for l in StringIO.StringIO(metricview(self.fonts)):
+            self.logging.debug(l)
 
 
 class VmetFixer(Fixer):
