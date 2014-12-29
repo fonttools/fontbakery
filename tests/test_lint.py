@@ -845,7 +845,7 @@ class Test_CheckFontHasDsigTable(TestCase):
         targetTestCase.operator = TestCaseOperator('')
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.pipe.autofix.dsig_signature') as dsig:
+            with mock.patch('bakery_cli.fixers.CreateDSIGFixer') as dsig:
                 get_ttfont.return_value = {'DSIG': True}
                 self.success_run(targetTestCase)
                 self.assert_(not dsig.called)
@@ -907,7 +907,7 @@ class Test_CheckGaspTableType(TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
 
-            with mock.patch('bakery_cli.pipe.autofix.gaspfix') as fix:
+            with mock.patch('bakery_cli.fixers.GaspFixer') as fix:
 
                 gasp = type('GASP', (object, ), {'gaspRange': {65535: 15}})
                 get_ttfont.return_value = {'gasp': gasp}
@@ -1092,7 +1092,7 @@ class Test_NameTableRecommendation(TestCase):
             ot_style_name = 'Regular'
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
                 get_ttfont.return_value = Font
                 for stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
                     get_ttfont.return_value.stylename = stylename
@@ -1122,7 +1122,7 @@ class Test_CheckOTFamilyNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
                 get_ttfont.return_value = Font('')
                 self.success_run(targetTestCase)
                 assert not fix.called
@@ -1155,7 +1155,7 @@ class Test_CheckOTFullNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
                 get_ttfont.return_value = Font('')
                 self.success_run(targetTestCase)
                 assert not fix.called
@@ -1183,7 +1183,7 @@ class Test_CheckFSTypeTest(TestCase):
             OS2_fsType = 12
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.pipe.autofix.fix_fstype_to_zero') as fix:
+            with mock.patch('bakery_cli.fixers.ResetFSTypeFlagFixer') as fix:
                 get_ttfont.return_value = Font('')
                 self.failure_run(targetTestCase)
                 assert fix.called
@@ -1212,13 +1212,13 @@ class Test_CheckVerticalMetricsAutoFixCalled(TestCase):
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
             with mock.patch('bakery_cli.utils.UpstreamDirectory.get_binaries') as get_binaries:
                 get_ttfont.return_value = Font()
-                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                with mock.patch('bakery_cli.fixers.Vmet') as fix:
 
                     get_binaries.return_value = ['Font-Regular.ttf']
                     self.failure_run(targetTestCase)
                     assert fix.called
 
-                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                with mock.patch('bakery_cli.fixers.Vmet') as fix:
                     get_ttfont.return_value.ascents.os2typo = 1000
                     get_ttfont.return_value.ascents.os2win = 1000
                     get_ttfont.return_value.ascents.hhea = 1000
@@ -1244,12 +1244,12 @@ class Test_CheckVerticalMetricsAutoFixCalled(TestCase):
             with mock.patch('bakery_cli.utils.UpstreamDirectory.get_binaries') as get_binaries:
                 get_binaries.return_value = ['Font-Regular.ttf']
 
-                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                with mock.patch('bakery_cli.fixers.Vmet') as fix:
 
                     self.failure_run(targetTestCase)
                     assert fix.called
 
-                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                with mock.patch('bakery_cli.fixers.Vmet') as fix:
                     get_ttfont.return_value.descents.os2typo = 1000
                     get_ttfont.return_value.descents.os2win = 1000
                     get_ttfont.return_value.descents.hhea = 1000
