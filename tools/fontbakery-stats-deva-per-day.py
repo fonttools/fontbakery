@@ -29,7 +29,7 @@ def main():
     Script to list font views per day of devanagari families
 
     Usage: $ ./stats-devanagari-per-day.py 'http://www.google.com/fonts'
-    
+
     """
 
     if len(sys.argv) < 2:
@@ -38,19 +38,19 @@ def main():
 
     families = [
       'Ek Mukta',
-      'Hind', 
-      'Teko', 
-      'Kalam', 
+      'Hind',
+      'Teko',
+      'Kalam',
       'Karma',
       'Rajdhani',
       'Khand',
       'Vesper Libre',
 # this has a lot of views already from just latin
-#      'Glegoo', 
-      'Halant', 
-      'Laila', 
-      'Palanquin', 
-      'Rozha One', 
+#      'Glegoo',
+      'Halant',
+      'Laila',
+      'Palanquin',
+      'Rozha One',
       'Sarpanch'
       ]
 
