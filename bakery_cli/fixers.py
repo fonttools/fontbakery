@@ -27,7 +27,7 @@ from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 from bakery_cli.scripts.vmet import metricview
-from bakery_cli.ttfont import Font
+from bakery_cli.ttfont import Font, getSuggestedFontNameValues
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -36,11 +36,12 @@ class Fixer(object):
     def loadfont(self, fontpath):
         return ttLib.TTFont(fontpath)
 
-    def __init__(self, fontpath):
+    def __init__(self, testcase, fontpath):
         self.logging = logging.getLogger('fontbakery')
         self.font = self.loadfont(fontpath)
         self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
+        self.testcase = testcase
 
     def fix(self):
         """ Make a concrete fix for the font.
@@ -130,6 +131,7 @@ class ResetFSTypeFlagFixer(Fixer):
 
     def fix(self):
         self.font['OS/2'].fsType = 0
+        return True
 
 
 class AddSPUAByGlyphIDToCmap(Fixer):
@@ -285,8 +287,8 @@ class Vmet(Fixer):
     def loadfont(self, fontpath):
         return ttLib.TTFont()  # return for this fixer empty TTFont
 
-    def __init__(self, fontpath):
-        super(Vmet, self).__init__(fontpath)
+    def __init__(self, testcase, fontpath):
+        super(Vmet, self).__init__(testcase, fontpath)
         d = os.path.dirname(fontpath)
         directory = UpstreamDirectory(d)
         self.fonts = [os.path.join(d, f) for f in directory.BIN]
@@ -306,7 +308,8 @@ class Vmet(Fixer):
             ymax = max(font_ymax, ymax)
 
         for f in self.fonts:
-            VmetFixer(f).apply(ymin, ymax, override_origin=override_origin)
+            fixer = VmetFixer(self.testcase, f)
+            fixer.apply(ymin, ymax, override_origin=override_origin)
 
         command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
 
@@ -433,3 +436,127 @@ class RemoveNameRecordWithOpyright(Fixer):
                 continue
             records.append(record)
         self.font['name'].names = records
+        return True
+
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
+DATA_DIR = os.path.abspath(DATA_DIR)
+
+
+class ReplaceLicenseURL(Fixer):
+
+    def get_licenseurl_filename(self):
+        return None
+
+    def get_licensecontent_filename(self):
+        return None
+
+    def validate(self):
+        path = os.path.join(DATA_DIR, self.get_licensecontent_filename())
+        licenseText = open(path).read()
+
+        path = os.path.join(DATA_DIR, self.get_licenseurl_filename())
+        placeholder = open(path).read().strip()
+
+        for field in self.font['name'].names:
+            if field.nameID == 14:
+                if field.isUnicode():
+                    string = field.string.decode('utf-16-be')
+                else:
+                    string = field.string
+
+                if string != placeholder:
+                    return placeholder
+
+            if field.nameID == 13:
+                if field.isUnicode():
+                    string = field.string.decode('utf-16-be')
+                else:
+                    string = field.string
+                if licenseText.strip() in string:
+                    return placeholder
+
+        return
+
+    def fix(self):
+        placeholder = self.validate()
+        if not placeholder:
+            return
+
+        for nameRecord in self.font['name'].names:
+            if nameRecord.nameID == 14:
+                if nameRecord.isUnicode():
+                    nameRecord.string = placeholder.encode('utf-16-be')
+                else:
+                    nameRecord.string = placeholder
+        return True
+
+
+class ReplaceOFLLicenseURL(ReplaceLicenseURL):
+
+    def get_licenseurl_filename(self):
+        return 'OFL.url'
+
+    def get_licensecontent_filename(self):
+        return 'OFL.license'
+
+
+class ReplaceApacheLicenseURL(ReplaceLicenseURL):
+
+    def get_licenseurl_filename(self):
+        return 'APACHE.url'
+
+    def get_licensecontent_filename(self):
+        return 'APACHE.license'
+
+
+class ReplaceLicenseWithShortline(Fixer):
+
+    def get_placeholder(self):
+        path = self.get_placeholder_filename()
+        with open(os.path.join(DATA_DIR, path)) as fp:
+            return fp.read().strip()
+
+    def fix(self):
+        placeholder = self.get_placeholder()
+        for nameRecord in self.font['name'].names:
+            if nameRecord.nameID == 13:
+                if nameRecord.isUnicode():
+                    nameRecord.string = placeholder.encode('utf-16-be')
+                else:
+                    nameRecord.string = placeholder
+        return True
+
+
+class ReplaceOFLLicenseWithShortLine(Fixer):
+
+    def get_placeholder_filename(self):
+        return 'OFL.placeholder'
+
+
+class ReplaceApacheLicenseWithShortLine(Fixer):
+
+    def get_placeholder_filename(self):
+        return 'APACHE.placeholder'
+
+
+class RenameFileWithSuggestedName(Fixer):
+
+    def validate(self):
+        suggestedvalues = getSuggestedFontNameValues(self.font)
+
+        family_name = suggestedvalues['family']
+        subfamily_name = suggestedvalues['subfamily']
+
+        expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
+                                        subfamily_name.replace(' ', ''))
+        actualname, extension = os.path.splitext(self.fontpath)
+
+        return '{0}{1}'.format(expectedname, extension)
+
+    def fix(self):
+        new_targetpath = os.path.join(os.path.dirname(self.fontpath),
+                                      self.validate())
+        shutil.move(self.fontpath, new_targetpath, log=self.logging)
+        self.testcase.operator.path = new_targetpath
+        return True

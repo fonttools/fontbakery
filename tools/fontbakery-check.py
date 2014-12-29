@@ -23,8 +23,8 @@ from bakery_lint.base import tests_report
 from bakery_lint import run_set
 
 
-available_tests = ['result', 'upstream', 'metadata',
-                   'description', 'upstream-repo']
+available_tests = ['result', 'upstream', 'metadata', 'description',
+                   'upstream-repo']
 
 
 if __name__ == '__main__':
@@ -57,11 +57,11 @@ if __name__ == '__main__':
         for test in tests:
             result = run_set(x, test)
             failures += [(x._testMethodName, x._err_msg)
-                        for x in result.get('failure', [])]
+                         for x in result.get('failure', [])]
             error += [(x._testMethodName, x._err_msg)
-                     for x in result.get('error', [])]
+                      for x in result.get('error', [])]
             success += [(x._testMethodName, 'OK')
-                       for x in result.get('success', [])]
+                        for x in result.get('success', [])]
 
         if not bool(failures + error):
             print('OK')

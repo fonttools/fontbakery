@@ -93,7 +93,7 @@ class BakeryTestResult(unittest.TestResult):
         method = getattr(mod, methodname.split('.')[-1])
         if not inspect.isclass(method):
             return method(test)
-        klass_instance = method(test.operator.path)
+        klass_instance = method(test, test.operator.path)
         test.operator.logger.info('$ {}'.format(klass_instance.get_shell_command()))
         klass_instance.apply(override_origin=True)
 

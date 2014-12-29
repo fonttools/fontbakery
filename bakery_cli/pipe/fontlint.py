@@ -17,7 +17,6 @@
 import os
 import os.path as op
 import yaml
-import json
 import traceback
 
 from bakery_lint import run_set

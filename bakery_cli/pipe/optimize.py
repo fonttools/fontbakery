@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.utils import shutil, run
+from bakery_cli.utils import shutil, run, UpstreamDirectory
 
 
 class Optimize(object):
@@ -33,8 +33,8 @@ class Optimize(object):
             return
 
         try:
-            for filename in pipedata['bin_files']:
-                self.run(filename, pipedata)
+            for filename in UpstreamDirectory(self.builddir).BIN:
+                self.run(op.join(self.builddir, filename), pipedata)
             self.bakery.logging_task_done(task)
         except:
             self.bakery.logging_task_done(task, failed=True)

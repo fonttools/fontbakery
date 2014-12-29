@@ -17,6 +17,8 @@
 import os
 
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
+from bakery_cli.fixers import ReplaceOFLLicenseURL, ReplaceApacheLicenseURL, \
+    ReplaceOFLLicenseWithShortLine, ReplaceApacheLicenseWithShortLine
 from fontTools import ttLib
 
 
@@ -50,24 +52,22 @@ class TestNameIdOFLLicense(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.replace_license_with_short')
+    @autofix('bakery_cli.fixers.ReplaceOFLLicenseWithShortLine')
     def test_name_id_of_license(self):
         """ Is there OFL in nameId (13) ? """
-        path = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.license')
-        text = open(path).read()
+        fixer = ReplaceOFLLicenseWithShortLine(self.operator.path)
 
-        placeholderPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.placeholder')
-        self.placeholderText = open(placeholderPath).read().strip()
+        placeholder = fixer.get_placeholder()
 
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
+        path = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
+        licenseexists = os.path.exists(path)
 
-        font = ttLib.TTFont(self.operator.path)
-        for nameRecord in font['name'].names:
+        for nameRecord in fixer.font['name'].names:
             if nameRecord.nameID == 13:
                 value = getNameRecordValue(nameRecord)
-                if value != self.placeholderText and os.path.exists(fontLicensePath):
-                    self.fail('License file OFL.txt exists but NameID value is not specified for that.')
-                # self.assertFalse(value in text, 'placeholder is in text')
+                if value != placeholder and licenseexists:
+                    self.fail('License file OFL.txt exists but NameID'
+                              ' value is not specified for that.')
 
 
 class TestNameIdOFLLicenseURL(TestCase):
@@ -76,33 +76,24 @@ class TestNameIdOFLLicenseURL(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.replace_licenseurl')
+    @autofix('bakery_cli.fixers.ReplaceOFLLicenseURL')
     def test_name_id_of_license_url(self):
         """ Is there OFL in nameId (13) ? """
-        path = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.license')
-        text = open(path).read()
+        fixer = ReplaceOFLLicenseURL(self.operator.path)
 
-        placeholderPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.placeholder')
-        placeholderText = open(placeholderPath).read()
+        text = open(fixer.get_licensecontent_filename()).read()
 
-        placeholderUrlPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'OFL.url')
-        self.placeholderUrlText = open(placeholderUrlPath).read()
-
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
-
-        font = ttLib.TTFont(self.operator.path)
+        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
+                                       'OFL.txt')
 
         isLicense = False
 
-        licenseUrlNameRecord = None
-        for nameRecord in font['name'].names:
-            if nameRecord.nameID == 13:
+        for nameRecord in fixer.font['name'].names:
+            if nameRecord.nameID == 13:  # check license nameID only
                 value = getNameRecordValue(nameRecord)
                 isLicense = os.path.exists(fontLicensePath) or text in value
-            if nameRecord.nameID == 14:
-                licenseUrlNameRecord = nameRecord
 
-        self.assertFalse(isLicense and getNameRecordValue(licenseUrlNameRecord) != self.placeholderUrlText)
+        self.assertFalse(isLicense and bool(fixer.validate()))
 
 
 class TestNameIdApacheLicense(TestCase):
@@ -111,24 +102,22 @@ class TestNameIdApacheLicense(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.replace_license_with_short')
+    @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
     def test_name_id_apache_license(self):
         """ Is there Apache in nameId (13) ? """
-        path = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'APACHE.license')
-        text = open(path).read()
+        fixer = ReplaceApacheLicenseWithShortLine(self.operator.path)
 
-        placeholderPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'APACHE.placeholder')
-        self.placeholderText = open(placeholderPath).read()
+        placeholder = fixer.get_placeholder()
 
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
+        path = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
+        licenseexists = os.path.exists(path)
 
-        font = ttLib.TTFont(self.operator.path)
-        for nameRecord in font['name'].names:
+        for nameRecord in fixer.font['name'].names:
             if nameRecord.nameID == 13:
                 value = getNameRecordValue(nameRecord)
-                self.assertFalse(value != self.placeholderText and os.path.exists(fontLicensePath),
-                    u'License file LICENSE.txt exists but NameID value is not specified for that')
-                self.assertFalse(text in value)
+                if value != placeholder and licenseexists:
+                    self.fail('License file LICENSE.txt exists but NameID'
+                              ' value is not specified for that.')
 
 
 class TestNameIdApacheLicenseURL(TestCase):
@@ -137,30 +126,21 @@ class TestNameIdApacheLicenseURL(TestCase):
     name = __name__
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.replace_licenseurl')
+    @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
     def test_name_id_apache_license_url(self):
         """ Is there OFL in nameId (13) ? """
-        path = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'APACHE.license')
-        text = open(path).read()
+        fixer = ReplaceApacheLicenseURL(self.operator.path)
 
-        placeholderPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'APACHE.placeholder')
-        placeholderText = open(placeholderPath).read()
+        text = open(fixer.get_licensecontent_filename()).read()
 
-        placeholderUrlPath = os.path.join(os.path.dirname(__file__), '..', 'licenses', 'APACHE.url')
-        self.placeholderUrlText = open(placeholderUrlPath).read()
-
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
-
-        font = ttLib.TTFont(self.operator.path)
+        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
+                                       'LICENSE.txt')
 
         isLicense = False
 
-        licenseUrlNameRecord = None
-        for nameRecord in font['name'].names:
-            if nameRecord.nameID == 13:
+        for nameRecord in fixer.font['name'].names:
+            if nameRecord.nameID == 13:  # check license nameID only
                 value = getNameRecordValue(nameRecord)
                 isLicense = os.path.exists(fontLicensePath) or text in value
-            if nameRecord.nameID == 14:
-                licenseUrlNameRecord = nameRecord
 
-        self.assertFalse(isLicense and getNameRecordValue(licenseUrlNameRecord) != self.placeholderUrlText)
+        self.assertFalse(isLicense and bool(fixer.validate()))

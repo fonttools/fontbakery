@@ -24,7 +24,8 @@ import sys
 from contextlib import contextmanager
 
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
-from bakery_cli.ttfont import Font, getSuggestedFontNameValues
+from bakery_cli.fixers import RenameFileWithSuggestedName
+from bakery_cli.ttfont import Font
 
 
 @contextmanager
@@ -48,23 +49,11 @@ class TTXTestCase(TestCase):
             if std.getvalue():
                 self.fail('FontForge prints STDERR')
 
-    @autofix('bakery_cli.pipe.autofix.rename')
+    @autofix('bakery_cli.fixers.RenameFileWithSuggestedName')
     def test_source_ttf_font_filename_equals_familystyle(self):
         """ Source TTF Font filename equals family style """
-        ttfont = Font.get_ttfont(self.operator.path)
-
-        suggestedvalues = getSuggestedFontNameValues(ttfont.ttfont)
-
-        family_name = suggestedvalues['family']
-        subfamily_name = suggestedvalues['subfamily']
-
-        expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
-                                        subfamily_name.replace(' ', ''))
-        actualname, extension = os.path.splitext(self.operator.path)
-
-        expected_filename = '{0}{1}'.format(expectedname, extension)
-        setattr(self, 'expectedfilename', expected_filename)
-        self.assertEqual(os.path.basename(actualname), expectedname)
+        fixer = RenameFileWithSuggestedName(self, self.operator.path)
+        self.assertEqual(fixer.validate(), os.path.basename(self.operator.path))
 
     def test_ttx_family_naming_recommendation(self):
         "The font follows the font family naming recommendation."
