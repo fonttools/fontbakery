@@ -1092,12 +1092,11 @@ class Test_NameTableRecommendation(TestCase):
             ot_style_name = 'Regular'
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
+            with mock.patch.object('bakery_cli.fixers.FamilyAndStyleNameFixer') as fix:
                 get_ttfont.return_value = Font
                 for stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
                     get_ttfont.return_value.stylename = stylename
                     self.success_run(targetTestCase)
-                    assert not fix.called
 
                 get_ttfont.return_value.ot_style_name = 'Black Italic'
 
@@ -1122,20 +1121,18 @@ class Test_CheckOTFamilyNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
-                get_ttfont.return_value = Font('')
-                self.success_run(targetTestCase)
-                assert not fix.called
-                get_ttfont.return_value.names = [
-                    type('name', (object, ),
-                         {'nameID': 1, 'string': 'Hello', 'platformID': 1,
-                          'langID': 0}),
-                    type('name', (object, ),
-                         {'nameID': 16, 'string': 'Hello', 'platformID': 1,
-                          'langID': 0})
-                ]
-                self.failure_run(targetTestCase)
-                assert fix.called
+            get_ttfont.return_value = Font('')
+            self.success_run(targetTestCase)
+
+            get_ttfont.return_value.names = [
+                type('name', (object, ),
+                     {'nameID': 1, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 16, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0})
+            ]
+            self.failure_run(targetTestCase)
 
 
 class Test_CheckOTFullNameRecommendation(TestCase):
@@ -1155,21 +1152,18 @@ class Test_CheckOTFullNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            with mock.patch('bakery_cli.fixers.RenameFileWithSuggestedName') as fix:
-                get_ttfont.return_value = Font('')
-                self.success_run(targetTestCase)
-                assert not fix.called
+            get_ttfont.return_value = Font('')
+            self.success_run(targetTestCase)
 
-                get_ttfont.return_value.names = [
-                    type('name', (object, ),
-                         {'nameID': 4, 'string': 'Hello', 'platformID': 1,
-                          'langID': 0}),
-                    type('name', (object, ),
-                         {'nameID': 18, 'string': 'Hello', 'platformID': 1,
-                          'langID': 0})
-                ]
-                self.failure_run(targetTestCase)
-                assert fix.called
+            get_ttfont.return_value.names = [
+                type('name', (object, ),
+                     {'nameID': 4, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 18, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0})
+            ]
+            self.failure_run(targetTestCase)
 
 
 class Test_CheckFSTypeTest(TestCase):
