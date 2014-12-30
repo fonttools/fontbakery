@@ -23,7 +23,7 @@ import sys
 
 from contextlib import contextmanager
 
-from bakery_lint.base import BakeryTestCase as TestCase, autofix
+from bakery_lint.base import BakeryTestCase as TestCase, tags
 from bakery_cli.ttfont import Font
 
 
@@ -48,6 +48,7 @@ class TTXTestCase(TestCase):
             if std.getvalue():
                 self.fail('FontForge prints STDERR')
 
+    @tags('info',)
     def test_source_ttf_font_filename_equals_familystyle(self):
         """ Source TTF Font filename equals family style """
         fixer = RenameFileWithSuggestedName(self, self.operator.path)
