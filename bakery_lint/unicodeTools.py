@@ -11,7 +11,7 @@ _scriptsText = """
 
 # ================================================
 
-# Property:	Script
+# Property: Script
 
 #  All code points not explicitly listed for Script
 #  have the value Unknown (Zzzz).
@@ -1561,13 +1561,13 @@ _blocksText = """
 # Note:   When comparing block names, casing, whitespace, hyphens,
 #         and underbars are ignored.
 #         For example, "Latin Extended-A" and "latin extended a" are equivalent.
-#         For more information on the comparison of property values, 
+#         For more information on the comparison of property values,
 #            see UCD.html.
 #
 #  All code points not explicitly listed for Block
 #  have the value No_Block.
 
-# Property:	Block
+# Property: Block
 #
 # @missing: 0000..10FFFF; No_Block
 
@@ -2130,5 +2130,3 @@ def _searchRanges(value, available):
         return _searchRanges(value, greaterRange)
     else:
         return name
-
-

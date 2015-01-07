@@ -16,7 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-from collections import defaultdict, Counter, namedtuple
 import os.path as op
 import yaml
 import json

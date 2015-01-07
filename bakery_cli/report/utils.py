@@ -2,8 +2,6 @@ import json
 import fnmatch
 import os.path as op
 import os
-import sys
-import subprocess
 import shutil
 import six
 from jinja2 import Environment, FileSystemLoader
@@ -60,11 +58,11 @@ def git_info(config):
     params = "git log -n1"
     fmt = """ --pretty=format:'{"hash":"%h", "commit":"%H","date":"%cd"}'"""
     print("[%s]:%s" % (config['path'], params + fmt))
-    log = run(params + fmt, cwd=config['path'])
     try:
+        log = run(params + fmt, cwd=config['path'])
         return json.loads(log)
-    except ValueError:
-        return None
+    except (ValueError, AttributeError):
+        return {}
 
 
 class Singleton(type):
@@ -244,7 +242,8 @@ class BuildInfo(six.with_metaclass(Singleton, object)):
     def write_build_info(self):
         travis_link = 'https://travis-ci.org/{}'.format(self.repo_slug)
         info = self.version
-        info.update(dict(build_passed=not self.config.get('failed', False), travis_link=travis_link))
+        info.update(dict(build_passed=not self.config.get('failed', False),
+                         travis_link=travis_link))
         self.dump_data_file(info, 'build_info.json')
         self.dump_data_file(self.repo, 'repo.json')
 

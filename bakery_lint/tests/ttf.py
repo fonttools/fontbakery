@@ -23,8 +23,9 @@ import sys
 
 from contextlib import contextmanager
 
-from bakery_lint.base import BakeryTestCase as TestCase, tags
 from bakery_cli.ttfont import Font
+from bakery_cli.fixers import RenameFileWithSuggestedName
+from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 
 @contextmanager

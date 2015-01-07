@@ -15,11 +15,9 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import robofab.world
-from bakery_lint.tests import unicodeTools
 
+from bakery_lint import unicodeTools
 from bakery_lint.base import BakeryTestCase as TestCase
-
-
 
 
 class TestComponentMetrics(TestCase):
