@@ -327,6 +327,7 @@ class VmetFixer(Fixer):
         AscentGroup(self.font).set(ymax)
         DescentGroup(self.font).set(ymin)
         LineGapGroup(self.font).set(0)
+        self.font['head'].unitsPerEm = ymax
         return True
 
 

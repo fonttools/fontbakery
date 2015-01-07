@@ -22,7 +22,7 @@ from fontTools.ttLib import TTLibError
 
 from bakery_cli.ttfont import Font
 from bakery_cli.scripts import vmet
-from bakery_cli.fixers import Vmet
+from bakery_cli.fixers import VmetFixer
 
 
 parser = argparse.ArgumentParser()
@@ -113,6 +113,18 @@ if (options.ascents or options.descents or options.linegaps
         metrics.save(f + '.fix')
 
 elif options.autofix:
-    Vmet.fix(fonts)
+    from bakery_cli.ttfont import Font
+    ymin = 0
+    ymax = 0
+
+    for f in fonts:
+        metrics = Font(f)
+        font_ymin, font_ymax = metrics.get_bounding()
+        ymin = min(font_ymin, ymin)
+        ymax = max(font_ymax, ymax)
+
+    for f in fonts:
+        fixer = VmetFixer(None, f)
+        fixer.apply(ymin, ymax)
 else:
     print(vmet.metricview(fonts))

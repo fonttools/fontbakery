@@ -29,7 +29,7 @@ from scrapy import cmdline
 from scrapy.crawler import Crawler
 from scrapy.utils.project import get_project_settings
 
-from bakery_cli.scrapes import familynames
+from bakery.crawl.scrapes import familynames
 from bakery_cli.utils import get_data_directory
 
 CRAWLER_TIMEOUT = 60
