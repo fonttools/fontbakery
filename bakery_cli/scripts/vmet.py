@@ -213,7 +213,8 @@ class TextMetricsView(object):
                 tbl[metrickey] += r['fonts']
 
             for k, r in tbl.items():
-                print('Inconsistent %s:' % k, ', '.join(r), file=self.outstream)
+                print('WARNING: Inconsistent %s:' % k, ', '.join(r),
+                      file=self.outstream)
 
     def find_max_occurs_from_metrics_key(self, metricvalues):
         result = 0
