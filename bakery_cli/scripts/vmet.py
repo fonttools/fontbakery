@@ -94,7 +94,7 @@ class TextMetricsView(object):
 
     def add_to_table(self, fontname, key, value):
         if self._its_metrics[key] and value not in self._its_metrics[key]:
-                self._inconsistent.add(key)
+            self._inconsistent.add(key)
 
         if key not in self._inconsistent_table:
             self._inconsistent_table[key] = []
@@ -104,16 +104,16 @@ class TextMetricsView(object):
         #                   'fonts': ['fontname.ttf', 'fontname2.ttf']}]}
         #
         # It looks like json groupped by metrics key
-        row = {}
+        inconsistentRow = {}
         for r in self._inconsistent_table[key]:
             if r['value'] == value:
-                row = r
+                inconsistentRow = r
 
-        if not row:
-            row = {'value': value, 'fonts': []}
-            self._inconsistent_table[key].append(row)
+        if not inconsistentRow:
+            inconsistentRow = {'value': value, 'fonts': []}
+            self._inconsistent_table[key].append(inconsistentRow)
 
-        row['fonts'].append(fontname)
+        inconsistentRow['fonts'].append(fontname)
 
         self._its_metrics[key].append(value)
 
@@ -219,6 +219,8 @@ class TextMetricsView(object):
     def find_max_occurs_from_metrics_key(self, metricvalues):
         result = 0
         occurs = 0
+        if len(metricvalues) == 2:
+            return metricvalues[1]['value']
         for v in metricvalues:
             if len(v['fonts']) > occurs:
                 occurs = len(v['fonts'])
