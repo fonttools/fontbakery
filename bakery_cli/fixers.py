@@ -529,13 +529,13 @@ class ReplaceLicenseWithShortline(Fixer):
         return True
 
 
-class ReplaceOFLLicenseWithShortLine(Fixer):
+class ReplaceOFLLicenseWithShortLine(ReplaceLicenseWithShortline):
 
     def get_placeholder_filename(self):
         return 'OFL.placeholder'
 
 
-class ReplaceApacheLicenseWithShortLine(Fixer):
+class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
 
     def get_placeholder_filename(self):
         return 'APACHE.placeholder'

@@ -16,10 +16,73 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import glob
 import os
+import os.path as op
 import re
 import yaml
 
+from fontaine.font import FontFactory
+from fontaine.cmap import Library
+
+from bakery_cli.ttfont import PiFont
+from bakery_cli.utils import UpstreamDirectory
 from bakery_lint.base import BakeryTestCase as TestCase, tags
+
+
+COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+
+
+class FontTestPrepolation(TestCase):
+
+    name = __name__
+    targets = ['upstream-repo']
+    tool = 'lint'
+
+    def test_family_glyph_names_match(self):
+        """ Each font in family has matching glyph names? """
+        directory = UpstreamDirectory(self.operator.path)
+        # TODO does this glyphs list object get populated?
+        glyphs = []
+        for f in directory.get_fonts():
+            font = PiFont(op.join(self.operator.path, f))
+            glyphs_ = font.get_glyphs()
+
+            if glyphs and glyphs != glyphs_:
+                # TODO report which font
+                self.fail('Family has different glyphs across fonts')
+
+    def test_font_prepolation_glyph_contours(self):
+        """ Check that glyphs has same number of contours across family """
+        directory = UpstreamDirectory(self.operator.path)
+
+        glyphs = {}
+        for f in directory.get_fonts():
+            font = PiFont(op.join(self.operator.path, f))
+            glyphs_ = font.get_glyphs()
+
+            for glyphcode, glyphname in glyphs_:
+                contours = font.get_contours_count(glyphname)
+                if glyphcode in glyphs and glyphs[glyphcode] != contours:
+                    msg = ('Number of contours of glyph "%s" does not match.'
+                           ' Expected %s contours, but actual is %s contours')
+                    self.fail(msg % (glyphname, glyphs[glyphcode], contours))
+                glyphs[glyphcode] = contours
+
+    def test_font_prepolation_glyph_points(self):
+        """ Check that glyphs has same number of points across family """
+        directory = UpstreamDirectory(self.operator.path)
+
+        glyphs = {}
+        for f in directory.get_fonts():
+            font = PiFont(op.join(self.operator.path, f))
+            glyphs_ = font.get_glyphs()
+
+            for g, glyphname in glyphs_:
+                points = font.get_points_count(glyphname)
+                if g in glyphs and glyphs[g] != points:
+                    msg = ('Number of points of glyph "%s" does not match.'
+                           ' Expected %s points, but actual is %s points')
+                    self.fail(msg % (glyphname, glyphs[g], points))
+                glyphs[g] = points
 
 
 class TestTTFAutoHintHasDeva(TestCase):
@@ -150,4 +213,40 @@ class TestUpstreamRepo(TestCase):
         return
 
 
-COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+def get_test_subset_function(value):
+    def function(self):
+        self.assertEqual(value, 100)
+    function.tags = ['note']
+    return function
+
+
+class FontaineTest(TestCase):
+
+    targets = ['upstream-repo']
+    tool = 'PyFontaine'
+    name = __name__
+
+    @classmethod
+    def __generateTests__(cls):
+        pattern = re.compile(r'[\W_]+')
+        library = Library(collections=['subsets'])
+
+        directory = UpstreamDirectory(cls.operator.path)
+
+        yamlpath = op.join(cls.operator.path, 'bakery.yaml')
+        try:
+            bakerydata = yaml.load(open(yamlpath))
+        except IOError:
+            from bakery_cli.bakery import BAKERY_CONFIGURATION_DEFAULTS
+            bakerydata = yaml.load(open(BAKERY_CONFIGURATION_DEFAULTS))
+
+        for fontpath in directory.UFO + directory.TTX:
+            font = FontFactory.openfont(op.join(cls.operator.path, fontpath))
+            for charmap in font.get_orthographies(_library=library):
+                common_name = charmap.charmap.common_name.replace('Subset ', '')
+                shortname = pattern.sub('', common_name)
+                if shortname not in bakerydata['subset']:
+                    continue
+
+                exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, charmap.coverage)
+                exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)

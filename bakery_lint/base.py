@@ -94,7 +94,8 @@ class BakeryTestResult(unittest.TestResult):
         if not inspect.isclass(method):
             return method(test)
         klass_instance = method(test, test.operator.path)
-        test.operator.logger.info('$ {}'.format(klass_instance.get_shell_command()))
+        if hasattr(klass_instance, 'get_shell_command'):
+            test.operator.logger.info('$ {}'.format(klass_instance.get_shell_command()))
         klass_instance.apply(override_origin=True)
 
     def _format_test_output(self, test, status):

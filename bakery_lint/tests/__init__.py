@@ -14,13 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-# 1. collection of upstream tests
-from .upstream import *
 
-# 2. collection of downstream tests
-
-#  a) for metadata
-from .metadata_test import *
-
-#  b) for fonts
-from .downstream import *
+from .test_ttf import *
+from .test_metadata import *
+from .test_ufo import *
+from .test_description import *
+from .test_upstream import *
