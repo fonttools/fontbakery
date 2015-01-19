@@ -38,8 +38,8 @@ for path in args.ttf_font:
     if not os.path.exists(path):
         continue
 
-    ttx = fontTools.ttLib.TTFont(path, 0)
     if args.autofix:
-        AddSPUAByGlyphIDToCmap(path).apply()
+        AddSPUAByGlyphIDToCmap(None, path).apply()
     else:
+        ttx = fontTools.ttLib.TTFont(path, 0)
         print('{0}: {1}'.format(path, get_unencoded_glyphs(ttx)))

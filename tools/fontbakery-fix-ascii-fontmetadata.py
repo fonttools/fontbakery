@@ -28,4 +28,4 @@ parser.add_argument('ttf_font', nargs='+',
 args = parser.parse_args()
 
 for path in args.ttf_font:
-    CharacterSymbolsFixer(path).apply()
+    CharacterSymbolsFixer(None, path).apply()

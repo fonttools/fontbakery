@@ -37,7 +37,7 @@ for path in args.ttf_font:
     if not os.path.exists(path):
         continue
 
-    fixer = NbspAndSpaceSameWidth(path)
+    fixer = NbspAndSpaceSameWidth(None, path)
     if args.autofix and fixer.apply():
         message = "{} made with spaceWidth and nbspWidth of {}"
         print(message.format(os.path.basename(fixer.fixfont_path),

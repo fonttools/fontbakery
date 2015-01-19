@@ -42,7 +42,7 @@ for path in args.ttf_font:
         continue
 
     if args.autofix:
-        ResetFSTypeFlagFixer(path).apply()
+        ResetFSTypeFlagFixer(None, path).apply()
     else:
         try:
             font = Font(path)

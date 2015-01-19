@@ -33,4 +33,4 @@ if __name__ == '__main__':
     for path in args.ttf_font:
         if not os.path.exists(path):
             continue
-        CreateDSIGFixer(path).apply()
+        CreateDSIGFixer(None, path).apply()
