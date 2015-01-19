@@ -179,3 +179,34 @@ class TestSuggestNameTestCase(TestCase):
             [17, 'Bold'],
             [18, 'Roboto Bold']], [[x['nameID'], x['string']]
                                    for x in fontdata['names']])
+
+    def test_suggest_name_testcase_black(self):
+
+        fontdata = {
+            'names': [
+                {'nameID': 1, 'string': 'Family'},
+            ],
+            'OS/2': {
+                'fsSelection': 0b00000,  # Regular
+                'usWeightClass': 900,  # Bold
+            },
+            'head': {
+                'macStyle': 0b00,  # Italic
+            },
+            'CFF': {
+                'Weight': 400,  # This value have to be fixed to 300
+            }
+        }
+        fontdata = utils.fix_all_names(fontdata, 'Family')
+        self.assertEqual(fontdata['OS/2']['usWeightClass'], 900)
+        self.assertEqual(fontdata['CFF']['Weight'],
+                         fontdata['OS/2']['usWeightClass'])
+        self.assertEqual([
+            [1, 'Family Black'],
+            [2, 'Regular'],
+            [4, 'Family Black'],
+            [6, 'Family-Black'],
+            [16, 'Family'],
+            [17, 'Black'],
+            [18, 'Family Black']], [[x['nameID'], x['string']]
+                                    for x in fontdata['names']])
