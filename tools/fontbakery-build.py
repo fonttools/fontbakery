@@ -92,6 +92,7 @@ def run_bakery(path, verbose=False):
         create_bakery_config(bakery_yml_file, config)
 
         b = Bakery('', sourcedir, 'builds', builddir)
+        b.addLoggingToFile()
         b.load_config(bakery_yml_file)
         b.run()
     except:

@@ -32,4 +32,4 @@ args = parser.parse_args()
 for path in args.ttf_font:
     if not os.path.exists(path):
         continue
-    FamilyAndStyleNameFixer(path).apply()
+    FamilyAndStyleNameFixer(None, path).apply()

@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import tests
+import fonttests
 
 from bakery_lint.base import run_suite, make_suite
 

@@ -28,7 +28,8 @@ from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 from bakery_cli.scripts.vmet import metricview
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
-from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.utils import UpstreamDirectory, fix_all_names, \
+    clean_name_values, nameTableRead
 
 
 class Fixer(object):
@@ -331,38 +332,10 @@ class VmetFixer(Fixer):
         return True
 
 
-mapping = {
-    'Thin': 'Regular',
-    'Extra Light': 'Regular',
-    'Light': 'Regular',
-    'Regular': 'Regular',
-    'Medium': 'Regular',
-    'SemiBold': 'Regular',
-    'Extra Bold': 'Regular',
-    'Black': 'Regular',
-
-    'Thin Italic': 'Italic',
-    'Extra Light Italic': 'Italic',
-    'Light Italic': 'Italic',
-    'Italic': 'Italic',
-    'Medium Italic': 'Italic',
-    'SemiBold Italic': 'Italic',
-    'Extra Bold Italic': 'Italic',
-    'Black Italic': 'Bold Italic',
-
-    'Bold': 'Bold',
-    'Bold Italic': 'Bold Italic'
-}
-
-
 class FamilyAndStyleNameFixer(Fixer):
 
     def get_shell_command(self):
         return "fontbakery-fix-opentype-names.py {}".format(self.fontpath)
-
-    def suggestNameValues(self):
-        from bakery_cli.ttfont import getSuggestedFontNameValues
-        return getSuggestedFontNameValues(self.font)
 
     def getOrCreateNameRecord(self, nameId, val):
         result_namerec = self.font['name'].getName(nameId, 3, 1)
@@ -383,41 +356,40 @@ class FamilyAndStyleNameFixer(Fixer):
         return ot_namerecord
 
     def fix(self):
-        values = self.suggestNameValues()
+        # Convert huge and complex fontTools to config python dict
+        fontdata = {
+            'names': [
+                {'nameID': rec.nameID,
+                 'platformID': rec.platformID,
+                 'langID': rec.langID,
+                 'string': rec.string.decode("utf_16_be")
+                 if rec.isUnicode() else rec.string,
+                 'platEncID': rec.platEncID} for rec in self.font['name'].names
+            ],
+            'OS/2': {
+                'fsSelection': self.font['OS/2'].fsSelection,
+                'usWeightClass': self.font['OS/2'].usWeightClass,
+            },
+            'head': {
+                'macStyle': self.font['head'].macStyle,
+            },
+            'CFF': {
+                'Weight': self.font.get('CFF ', {}).get('Weight'),
+            }
+        }
 
-        family_name = values['family']
+        fontdata = clean_name_values(fontdata)
+        familyname = ''
+        for rec in fontdata['names']:
+            if rec['nameID'] == 1:
+                familyname = rec['string']
+                break
+        fontdata = fix_all_names(fontdata, familyname)
 
-        subfamily_name = values['subfamily']
-
-        for pair in [[4, 3, 1], [4, 1, 0]]:
-            name = self.font['name'].getName(*pair)
-            if name:
-                name.string = ' '.join([family_name.replace(' ', ''),
-                                        subfamily_name]).encode('utf_16_be')
-
-        for pair in [[6, 3, 1], [6, 1, 0]]:
-            name = self.font['name'].getName(*pair)
-            if name:
-                name.string = '-'.join([family_name.replace(' ', ''),
-                                        subfamily_name.replace(' ', '')])
-                name.string = name.string.encode('utf_16_be')
-
-        for pair in [[1, 3, 1], [1, 1, 0]]:
-            name = self.font['name'].getName(*pair)
-            if name:
-                name.string = family_name.replace(' ', '').encode('utf_16_be')
-
-        for pair in [[2, 3, 1], [2, 1, 0]]:
-            name = self.font['name'].getName(*pair)
-            if name:
-                name.string = subfamily_name.encode('utf_16_be')
-
-        self.getOrCreateNameRecord(16, family_name.replace(' ', ''))
-        self.getOrCreateNameRecord(17, mapping.get(subfamily_name, 'Regular'))
-
-        value = ' '.join([family_name.replace(' ', ''),
-                          mapping.get(subfamily_name, 'Regular')])
-        self.getOrCreateNameRecord(18, value)
+        for field in fontdata['names']:
+            value = nameTableRead(self.font, field['nameID'])
+            if not value:
+                self.getOrCreateNameRecord(field['nameID'], value)
         return True
 
 

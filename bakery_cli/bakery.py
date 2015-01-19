@@ -85,16 +85,6 @@ class Bakery(object):
 
         self.build_dir = op.join(self.rootpath, builds_dir, build_dir)
 
-        if not os.path.exists(self.build_dir):
-            os.makedirs(self.build_dir)
-        else:
-            index = 1
-            b = self.build_dir
-            while os.path.exists(b + '.' + str(index)):
-                index += 1
-            self.build_dir = b + '.' + str(index)
-            os.makedirs(self.build_dir)
-
         self.project_root = op.join(self.rootpath, project_dir)
         self.builds_dir = op.join(self.rootpath, builds_dir)
 
@@ -125,7 +115,20 @@ class Bakery(object):
         # add ch to logger
         self.logger.addHandler(ch)
 
+    def addLoggingToFile(self):
+        if not os.path.exists(self.build_dir):
+            os.makedirs(self.build_dir)
+        else:
+            index = 1
+            b = self.build_dir
+            while os.path.exists(b + '.' + str(index)):
+                index += 1
+            self.build_dir = b + '.' + str(index)
+            os.makedirs(self.build_dir)
+
         chf = logging.FileHandler(op.join(self.build_dir, 'buildlog.txt'))
+
+        formatter = WhitespaceRemovingFormatter('%(message)s')
         chf.setFormatter(formatter)
         chf.setLevel(logging.DEBUG)
         self.logger.addHandler(chf)

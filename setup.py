@@ -76,7 +76,7 @@ setup(
               "bakery_cli.pipe",
               "bakery_cli.scripts",
               "bakery_lint",
-              "bakery_lint.tests",
+              "bakery_lint.fonttests",
               "bakery_cli.report"],
     scripts=['bakery_cli/scrapes/familynames/scrapy.cfg',
              'tools/fontbakery-build.py',

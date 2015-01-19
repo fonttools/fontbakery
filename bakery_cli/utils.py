@@ -157,7 +157,7 @@ def nameTableRead(font, NameID, fallbackNameID=False):
     if fallbackNameID:
         return nameTableRead(font, fallbackNameID)
 
-    return ''
+    return None
 
 
 def get_data_directory():
@@ -283,3 +283,185 @@ def re_range(lst):
         result.append(','.join(map('U+{0:04x}'.format, lst[scan:])))
 
     return ','.join(result)
+
+
+def clean_name_values(fontdata):
+    styles = ['Thin', 'Extra Light', 'Light', 'Regular', 'Medium',
+              'SemiBold', 'Extra Bold', 'Black', 'Thin Italic',
+              'Extra Light Italic', 'Light Italic', 'Italic',
+              'Medium Italic', 'SemiBold Italic', 'Extra Bold Italic',
+              'Black Italic', 'Bold', 'Bold Italic']
+    for style in styles:
+        fontdata['names'] = [{'nameID': x['nameID'],
+                             'string': x['string'].replace(style, '').strip()}
+                             for x in fontdata['names'] if x['nameID'] in [1, 2, 4, 6, 16, 17, 18]]
+    return fontdata
+
+
+def fix_all_names(fontdata, familyname):
+
+    isBold = isItalic = False
+
+    if fontdata['OS/2']['fsSelection'] & 0b10000:
+        isBold = True
+    if fontdata['head']['macStyle'] & 0b01:
+        isBold = True
+    if fontdata['OS/2']['fsSelection'] & 0b00001:
+        isItalic = True
+    if fontdata['head']['macStyle'] & 0b10:
+        isItalic = True
+
+    weight = fontdata['OS/2']['usWeightClass']
+
+    if isBold:
+        weight = 700
+    fontdata['CFF']['Weight'] = fontdata['OS/2']['usWeightClass'] = weight
+
+    rules = NameTableNamingRule({'isBold': isBold,
+                                 'isItalic': isItalic,
+                                 'familyName': familyname,
+                                 'weight': weight})
+    for nameID in [1, 2, 4, 6, 16, 17, 18]:
+        string = rules.apply(nameID)
+        for namerecord in fontdata['names']:
+            nameRecordExists = False
+            if namerecord['nameID'] == nameID:
+                namerecord['string'] = string
+                nameRecordExists = True
+                break
+
+        if not nameRecordExists:
+            fontdata['names'].append({'nameID': nameID, 'string': string})
+
+    return fontdata
+
+
+class NameTableNamingRule(object):
+
+    def __init__(self, fontconfig):
+        self.fontconfig = fontconfig
+
+    def apply(self, nameID):
+        """ Return func """
+        return getattr(self, 'ruleNameID_{}'.format(nameID))()
+
+    @property
+    def isRegular(self):
+        return self.fontconfig['weight'] == 400 \
+            and not (self.fontconfig['isItalic'] or self.fontconfig['isBold'])
+
+    @property
+    def isItalic(self):
+        return self.fontconfig['weight'] == 400 and self.fontconfig['isItalic']
+
+    @property
+    def isBlack(self):
+        return self.fontconfig['weight'] == 900
+
+    @property
+    def isThin(self):
+        return self.fontconfig['weight'] == 250
+
+    @property
+    def isLight(self):
+        return self.fontconfig['weight'] == 300
+
+    @property
+    def isMedium(self):
+        return self.fontconfig['weight'] == 500
+
+    def ruleNameID_1(self):
+        if self.isBlack:
+            return self.fontconfig['familyName'] + ' Black'
+        if self.isThin:
+            return self.fontconfig['familyName'] + ' Thin'
+        if self.isLight:
+            return self.fontconfig['familyName'] + ' Light'
+        if self.isMedium:
+            return self.fontconfig['familyName'] + ' Medium'
+
+        if not self.fontconfig['isBold'] and not self.fontconfig['isItalic']:
+            return self.fontconfig['familyName'] + ' Regular'
+        return self.fontconfig['familyName']
+
+    def ruleNameID_2(self):
+        if self.fontconfig['isBold'] and not self.fontconfig['isItalic']:
+            return 'Bold'
+        if self.fontconfig['isItalic'] and not self.fontconfig['isBold']:
+            return 'Italic'
+        if self.fontconfig['isItalic'] and self.fontconfig['isBold']:
+            return 'Bold Italic'
+        return 'Regular'
+
+    def ruleNameID_4(self):
+        if self.fontconfig['isBold'] and not self.fontconfig['isItalic']:
+            return self.ruleNameID_1() + ' Bold'
+        elif self.fontconfig['isItalic'] and not self.fontconfig['isBold']:
+            return self.ruleNameID_1() + ' Italic'
+        elif self.fontconfig['isItalic'] and self.fontconfig['isBold']:
+            return self.ruleNameID_1() + ' Bold Italic'
+        elif self.fontconfig['weight'] == 400:
+            return self.ruleNameID_1() + ' Regular'
+        return self.ruleNameID_1()
+
+    def ruleNameID_6(self):
+        psn = self.fontconfig['familyName'] + '-'
+        if self.isBlack:
+            psn += 'Black'
+            if self.fontconfig['isItalic']:
+                psn += 'Italic'
+        if self.fontconfig['isBold']:
+            psn += 'Bold'
+            if self.fontconfig['isItalic']:
+                psn += 'Italic'
+        elif self.isThin:
+            psn += 'Thin'
+            if self.fontconfig['isItalic']:
+                psn += 'Italic'
+        elif self.isLight:
+            psn += 'Light'
+            if self.fontconfig['isItalic']:
+                psn += 'Italic'
+        elif self.isMedium:
+            psn += 'Medium'
+            if self.fontconfig['isItalic']:
+                psn += 'Italic'
+        elif self.isItalic:
+            return psn + 'Italic'
+        elif self.isRegular:
+            return psn + 'Regular'
+        return psn.strip('-')
+
+    def ruleNameID_16(self):
+        return self.fontconfig['familyName']
+
+    def ruleNameID_17(self):
+        tsn = 'Regular'
+        if self.isBlack:
+            tsn = 'Black'
+            if self.fontconfig['isItalic']:
+                tsn += ' Italic'
+        if self.fontconfig['isBold']:
+            tsn = 'Bold'
+            if self.fontconfig['isItalic']:
+                tsn += ' Italic'
+        elif self.isThin:
+            tsn = 'Thin'
+            if self.fontconfig['isItalic']:
+                tsn += ' Italic'
+        elif self.isLight:
+            tsn = 'Light'
+            if self.fontconfig['isItalic']:
+                tsn += ' Italic'
+        elif self.isMedium:
+            tsn = 'Medium'
+            if self.fontconfig['isItalic']:
+                tsn += ' Italic'
+        elif self.isRegular:
+            tsn = 'Regular'
+        elif self.fontconfig['isItalic']:
+            tsn = 'Italic'
+        return tsn
+
+    def ruleNameID_18(self):
+        return self.ruleNameID_4()
