@@ -138,7 +138,7 @@ class ResetFSTypeFlagFixer(Fixer):
             return
 
         if check:
-            msg = 'ER: {} {}'.format(os.path.basename(self.fontpath), val)
+            msg = 'ER: {} {}: Change to 0'.format(os.path.basename(self.fontpath), val)
             self.logging.info(msg)
         else:
             msg = 'ER: {} {}: Fixed to 0'
