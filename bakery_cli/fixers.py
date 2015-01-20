@@ -138,11 +138,11 @@ class ResetFSTypeFlagFixer(Fixer):
             return
 
         if not check:
-            self.logging.info('ERR: {} {}'.format(os.path.basename(self.fontpath),
+            self.logging.info('ER: {} {}'.format(os.path.basename(self.fontpath),
                                                   val))
             self.font['OS/2'].fsType = 0
         else:
-            msg = 'ERR: {} {}: Fixed to 0'
+            msg = 'ER: {} {}: Fixed to 0'
             msg = msg.format(os.path.basename(self.fontpath), val)
             self.logging.info(msg)
         return True
@@ -268,17 +268,17 @@ class NbspAndSpaceSameWidth(Fixer):
 
             if isNbspAdded:
                 if check:
-                    msg = 'ERR: {} space {} nbsp N: Add nbsp'
+                    msg = 'ER: {} space {} nbsp N: Add nbsp'
                     msg = msg.format(fontfile, spaceWidth)
                 else:
-                    msg = 'ERR: {} space {} nbsp {}: Fixed nbsp to {}'
+                    msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
             else:
                 if check:
-                    msg = 'ERR: {} space {} nbsp {}: Change nbsp to {}'
+                    msg = 'ER: {} space {} nbsp {}: Change nbsp to {}'
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
                 else:
-                    msg = 'ERR: {} space {} nbsp {}: Fixed nbsp to {}'
+                    msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
             self.logging.info(msg)
             return True
