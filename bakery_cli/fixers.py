@@ -130,8 +130,21 @@ class ResetFSTypeFlagFixer(Fixer):
     def get_shell_command(self):
         return "fontbakery-fix-fstype.py --autofix {}".format(self.fontpath)
 
-    def fix(self):
-        self.font['OS/2'].fsType = 0
+    def fix(self, check=False):
+        val = self.font['OS/2'].fsType
+
+        if val == 0:
+            self.logging.info('OK: {}'.format(os.path.basename(self.fontpath)))
+            return
+
+        if not check:
+            self.logging.info('ERR: {} {}'.format(os.path.basename(self.fontpath),
+                                                  val))
+            self.font['OS/2'].fsType = 0
+        else:
+            msg = 'ERR: {} {}: Fixed to 0'
+            msg = msg.format(os.path.basename(self.fontpath), val)
+            self.logging.info(msg)
         return True
 
 
@@ -235,24 +248,43 @@ class NbspAndSpaceSameWidth(Fixer):
     def setWidth(self, glyph, width):
         self.font['hmtx'][glyph] = (width, self.font['hmtx'][glyph][1])
 
-    def fix(self):
+    def fix(self, check=False):
         space = self.getGlyph(0x0020)
         nbsp = self.getGlyph(0x00A0)
+        isNbspAdded = False
         if not nbsp:
-            self.logging.info("No nbsp glyph")
+            # self.logging.info("No nbsp glyph")
+            isNbspAdded = True
             nbsp = self.addGlyph(0x00A0, 'nbsp')
 
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)
 
-        self.logging.info("spaceWidth is    " + str(spaceWidth))
-        self.logging.info("nbspWidth is     " + str(nbspWidth))
+        fontfile = os.path.basename(self.fontpath)
         if spaceWidth != nbspWidth or nbspWidth < 0:
             width = max(abs(spaceWidth), abs(nbspWidth))
             self.setWidth(nbsp, width)
             self.setWidth(space, width)
-            self.logging.info("spaceWidth and nbspWidth of {}".format(width))
+
+            if isNbspAdded:
+                if check:
+                    msg = 'ERR: {} space {} nbsp N: Add nbsp'
+                    msg = msg.format(fontfile, spaceWidth)
+                else:
+                    msg = 'ERR: {} space {} nbsp {}: Fixed nbsp to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+            else:
+                if check:
+                    msg = 'ERR: {} space {} nbsp {}: Change nbsp to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                else:
+                    msg = 'ERR: {} space {} nbsp {}: Fixed nbsp to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+            self.logging.info(msg)
             return True
+
+        msg = 'OK: {}'.format(fontfile)
+        self.logging.info(msg)
         return
 
 

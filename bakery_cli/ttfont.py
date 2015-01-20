@@ -635,27 +635,6 @@ def getSuggestedFontNameValues(font):
     full_name = getName(font, [[4, 3, 1],
                                [4, 1, 0]])
 
-    # subfamilies = ['Regular',
-    #                'Bold',
-    #                'Italic',
-    #                'Semi Bold Italic',
-    #                'Semi Bold',
-    #                'Heavy',
-    #                'Heavy Italic',
-    #                'Extra Light Italic',
-    #                'Extra Light',
-    #                'Medium',
-    #                'Extra Bold',
-    #                'Medium Italic',
-    #                'Extra Bold Italic',
-    #                'Bold Italic',
-    #                'Thin Italic',
-    #                'Thin',
-    #                'Light Italic',
-    #                'Light',
-    #                'Black',
-    #                'Black Italic']
-
     if full_name == family_name:
         try:
             family_name, subfamily_name = full_name.split(' ', 1)[:]

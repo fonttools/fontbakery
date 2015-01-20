@@ -17,13 +17,11 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
+import logging
 import os
-import sys
 
-from bakery_cli.ttfont import Font
+from bakery_cli.bakery import WhitespaceRemovingFormatter
 from bakery_cli.fixers import ResetFSTypeFlagFixer
-
-from fontTools.ttLib import TTLibError
 
 
 description = 'Fixes TTF fsType to 0'
@@ -41,12 +39,23 @@ for path in args.ttf_font:
     if not os.path.exists(path):
         continue
 
+    fixer = ResetFSTypeFlagFixer(None, path)
+    fixer.logging.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = WhitespaceRemovingFormatter('%(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    fixer.logging.addHandler(ch)
+
     if args.autofix:
-        ResetFSTypeFlagFixer(None, path).apply()
+        fixer.apply()
     else:
-        try:
-            font = Font(path)
-        except TTLibError as ex:
-            print("ERROR: {0}: {1}".format(path, ex), file=sys.stderr)
-            continue
-        print('{0}: {1}'.format(path, font.OS2_fsType))
+        fixer.fix(check=True)
