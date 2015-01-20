@@ -34,26 +34,28 @@ parser.add_argument('--autofix', action="store_true",
 
 args = parser.parse_args()
 
+logger = logging.getLogger('fontbakery')
+logger.setLevel(logging.DEBUG)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = WhitespaceRemovingFormatter('%(message)s')
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
+
 
 for path in args.ttf_font:
     if not os.path.exists(path):
         continue
 
     fixer = ResetFSTypeFlagFixer(None, path)
-    fixer.logging.setLevel(logging.DEBUG)
-
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-
-    # create formatter
-    formatter = WhitespaceRemovingFormatter('%(message)s')
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
-    # add ch to logger
-    fixer.logging.addHandler(ch)
 
     if args.autofix:
         fixer.apply()

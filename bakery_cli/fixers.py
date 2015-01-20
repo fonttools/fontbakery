@@ -92,7 +92,7 @@ class CharacterSymbolsFixer(Fixer):
         for name in self.font['name'].names:
             title = Font.bin2unistring(name)
             title = CharacterSymbolsFixer.normalizestr(title)
-            if name.platformID == 3:
+            if name.platformID == 3 and name.isUnicode():
                 name.string = title.encode('utf-16-be')
             else:
                 name.string = title
@@ -378,7 +378,10 @@ class FamilyAndStyleNameFixer(Fixer):
         ot_namerecord.nameID = nameId
         ot_namerecord.platformID = 3
         ot_namerecord.langID = 0x409
-        ot_namerecord.string = val.encode("utf_16_be")
+        if ot_namerecord.isUnicode():
+            ot_namerecord.string = (val or '').encode("utf-16-be")
+        else:
+            ot_namerecord.string = val or ''
 
         # When building a Unicode font for Windows, the platform ID
         # should be 3 and the encoding ID should be 1
