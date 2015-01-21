@@ -76,14 +76,13 @@ class TTFAutoHint(object):
         if not params:
             return pipedata
 
-        task = self.bakery.logging_task('Autohint TTFs (ttfautohint)')
+        self.bakery.logging_task('Autohint TTFs (ttfautohint)')
 
         if self.bakery.forcerun:
             return
 
         for filepath in pipedata['bin_files']:
             if not self.run(filepath, pipedata):
-                self.bakery.logging_task_done(task)
                 break
 
         return pipedata

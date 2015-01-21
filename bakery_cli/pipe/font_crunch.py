@@ -42,15 +42,11 @@ class FontCrunch(object):
     def execute(self, pipedata):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
-        task = self.bakery.logging_task('Fontcrunch TTF')
+
+        self.bakery.logging_task('Fontcrunch TTF')
         if self.bakery.forcerun:
             return
 
-        try:
-            for filename in [os.path.join(self.builddir, x) \
-                             for x in pipedata['bin_files']]:
-                self.run(filename, pipedata)
-            self.bakery.logging_task_done(task)
-        except:
-            self.bakery.logging_task_done(task, failed=True)
-            raise
+        for filename in [os.path.join(self.builddir, x) \
+                         for x in pipedata['bin_files']]:
+            self.run(filename, pipedata)

@@ -24,15 +24,6 @@ from bakery_cli.utils import shutil
 from bakery_cli.logger import logger, WhitespaceRemovingFormatter
 
 
-class BakeryTaskSet(object):
-
-    def create_task(self, message):
-        pass
-
-    def close_task(self, task, failed=False):
-        pass
-
-
 BAKERY_CONFIGURATION_DEFAULTS = op.join(op.dirname(__file__),
                                         'bakery.defaults.yaml')
 BAKERY_CONFIGURATION_NEW = op.join(op.dirname(__file__), 'bakery.new.yaml')
@@ -84,8 +75,6 @@ class Bakery(object):
         self.project_root = op.join(self.rootpath, project_dir)
         self.builds_dir = op.join(self.rootpath, builds_dir)
 
-        self.taskset = BakeryTaskSet()
-
         self.pipes = [
             pipe.Copy,
             pipe.UpstreamLint,
@@ -112,16 +101,6 @@ class Bakery(object):
         chf.setFormatter(formatter)
         chf.setLevel(logging.DEBUG)
         logger.addHandler(chf)
-
-    def init_taskset(self, taskset):
-        """ Defines object to use TaskSet interface. Default: BakeryTaskSet
-
-        TaskSet must have 2 implemented functions
-
-        - create_task(): Task
-        - close_task(task: Task, status: Boolean)
-        """
-        self.taskset = taskset
 
     def load_config(self, config):
         """ Loading settings from yaml bake configuration. """
@@ -214,10 +193,6 @@ class Bakery(object):
         self.incr_task_counter()
 
         logger.info('\n\n\n' + (prefix + message.strip()).strip())
-        return self.taskset.create_task(prefix + message)
-
-    def logging_task_done(self, task, failed=False):
-        self.taskset.close_task(task, failed=failed)
 
     def logging_cmd(self, message):
         logger.info('\n$ ' + message.strip().replace(os.getcwd() + os.path.sep, ''))

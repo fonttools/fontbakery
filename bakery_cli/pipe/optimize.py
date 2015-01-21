@@ -28,17 +28,12 @@ class Optimize(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Optimizing TTF')
+        self.bakery.logging_task('Optimizing TTF')
         if self.bakery.forcerun:
             return
 
-        try:
-            for filename in UpstreamDirectory(self.builddir).BIN:
-                self.run(op.join(self.builddir, filename), pipedata)
-            self.bakery.logging_task_done(task)
-        except:
-            self.bakery.logging_task_done(task, failed=True)
-            raise
+        for filename in UpstreamDirectory(self.builddir).BIN:
+            self.run(op.join(self.builddir, filename), pipedata)
 
     def run(self, filename, pipedata):
         if 'optimize' in pipedata and not pipedata['optimize']:
@@ -57,7 +52,13 @@ class Optimize(object):
         options.no_subset_tables += ['DSIG']
         options.drop_tables = list(set(options._drop_tables_default) - set(['DSIG']))
 
-        cmd_options = '--glyphs=* --layout-features=* --name-IDs=* --hinting --legacy-kern --notdef-outline --no-subset-tables+=DSIG --drop-tables-=DSIG'
+        cmd_options = ('--glyphs=*'
+                       ' --layout-features=*'
+                       ' --name-IDs=*'
+                       ' --hinting'
+                       ' --legacy-kern --notdef-outline'
+                       ' --no-subset-tables+=DSIG'
+                       ' --drop-tables-=DSIG')
 
         font = load_font(op.join(self.builddir, filename), options)
 

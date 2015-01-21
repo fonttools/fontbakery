@@ -51,7 +51,7 @@ class MetadataLint(object):
         return run_set(path, 'metadata')
 
     def execute(self, pipedata, prefix=""):
-        task = self.bakery.logging_task('Run tests for METADATA.json')
+        self.bakery.logging_task('Run tests for METADATA.json')
         if self.bakery.forcerun:
             return
 
@@ -59,12 +59,8 @@ class MetadataLint(object):
         result = {}
         try:
             result['METADATA.json'] = self.run_metadata_tests()
-            self.bakery.logging_task_done(task)
         except Exception:
-            self.bakery.logging_task_done(task, failed=True)
-
-        # if not result:
-        #     return
+            pass
 
         self.write_lint_results(result)
 

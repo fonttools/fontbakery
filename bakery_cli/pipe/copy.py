@@ -148,10 +148,8 @@ class Copy(Pipe):
                     for f in files:
                         shutil.copy(op.join(root, f), op.join(d, f))
 
-            self.bakery.logging_task_done(task)
         except Exception as ex:
             logger.debug('Unable process copy. Exception info: %s' % ex)
-            self.bakery.logging_task_done(task, failed=True)
             raise
 
         return pipedata

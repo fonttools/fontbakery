@@ -33,7 +33,7 @@ class Checkout(object):
         else:
             msg = 'Checkout most recent commit (%s)' % headcommit
 
-        task = self.bakery.logging_task(msg)
+        self.bakery.logging_task(msg)
 
         if self.bakery.forcerun:
             return
@@ -42,7 +42,4 @@ class Checkout(object):
         try:
             repo.git.checkout(revision)
         except:
-            self.bakery.logging_task_done(task, failed=True)
             raise
-
-        self.bakery.logging_task_done(task)

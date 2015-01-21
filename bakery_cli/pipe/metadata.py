@@ -25,7 +25,7 @@ class Metadata(object):
         self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        task = self.bakery.logging_task('Generate METADATA.json (fontbakery-build-metadata.py)')
+        self.bakery.logging_task('Generate METADATA.json (fontbakery-build-metadata.py)')
         if self.bakery.forcerun:
             return
 
@@ -34,11 +34,9 @@ class Metadata(object):
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint
             genmetadata.run(self.builddir)
-            self.bakery.logging_task_done(task)
-        except Exception as  e:
+        except Exception as e:
             self.bakery.logging_err(e.message)
-            self.bakery.logging_task_done(task, failed=True)
             raise
 
     def ansiprint(self, message, color):
-        self.bakery.logging_raw(u'{}\n'.format(message.encode('unicode_escape', 'ignore')))
+        self.bakery.logging_raw(u'{}'.format(message.encode('unicode_escape', 'ignore')))

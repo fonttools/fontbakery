@@ -65,16 +65,13 @@ class PyFtSubset(object):
         self.bakery.logging_cmd('mv {0}.subset {1}'.format(name, target_file))
         save_font(font, target_file, options)
 
-
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Subset TTFs (pyftsubset)')
+        self.bakery.logging_task('Subset TTFs (pyftsubset)')
         if self.bakery.forcerun:
             return
 
         for name in pipedata['bin_files']:
             self.run(name, pipedata)
-
-        self.bakery.logging_task_done(task)
 
     def run(self, name, pipedata):
         # create menu subset with glyph for text of family name

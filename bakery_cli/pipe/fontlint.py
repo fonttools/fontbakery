@@ -70,20 +70,13 @@ class FontLint(object):
         if op.exists(_out_yaml):
             return yaml.safe_load(open(_out_yaml, 'r'))
 
-        task = self.bakery.logging_task('Run tests for baked files')
+        self.bakery.logging_task('Run tests for baked files')
         if self.bakery.forcerun:
             return
 
-        try:
-            result = {}
-            for font in pipedata['bin_files']:
-                self.run(font, pipedata)
-
-            # self.bakery.logging_raw('### Test METADATA.json\n')
-            # result['METADATA.json'] = self.run_metadata_tests()
-            self.bakery.logging_task_done(task)
-        except:
-            self.bakery.logging_task_done(task, failed=True)
+        result = {}
+        for font in pipedata['bin_files']:
+            self.run(font, pipedata)
 
         if not result:
             return
