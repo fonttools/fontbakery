@@ -72,10 +72,9 @@ class Optimize(object):
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
         self.bakery.logging_cmd(comment)
-        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)), log=self.bakery.logger)
+        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)))
 
         comment = "# copy back optimized ttf to original filename"
         self.bakery.logging_cmd(comment)
         shutil.move(op.join(self.builddir, filename + '.fix'),
-                    op.join(self.builddir, filename),
-                    log=self.bakery.logger)
+                    op.join(self.builddir, filename))

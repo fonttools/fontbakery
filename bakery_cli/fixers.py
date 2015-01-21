@@ -18,7 +18,6 @@ from __future__ import print_function
 
 import copy
 import fontTools.ttLib
-import logging
 import os
 import shutil
 
@@ -26,6 +25,7 @@ from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
+from bakery_cli.logger import logger
 from bakery_cli.scripts.vmet import metricview
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
 from bakery_cli.utils import UpstreamDirectory, fix_all_names, \
@@ -38,7 +38,6 @@ class Fixer(object):
         return ttLib.TTFont(fontpath)
 
     def __init__(self, testcase, fontpath):
-        self.logging = logging.getLogger('fontbakery')
         self.font = self.loadfont(fontpath)
         self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
@@ -64,7 +63,7 @@ class Fixer(object):
 
         if override_origin and os.path.exists(self.fixfont_path):
             command = "$ mv {} {}".format(self.fixfont_path, self.fontpath)
-            self.logging.debug(command)
+            logger.debug(command)
             shutil.move(self.fixfont_path, self.fontpath)
 
         return True
@@ -132,18 +131,16 @@ class ResetFSTypeFlagFixer(Fixer):
 
     def fix(self, check=False):
         val = self.font['OS/2'].fsType
+        fontfile = os.path.basename(self.fontpath)
 
         if val == 0:
-            self.logging.info('OK: {}'.format(os.path.basename(self.fontpath)))
+            logger.info('OK: {}'.format(fontfile))
             return
 
         if check:
-            msg = 'ER: {} {}: Change to 0'.format(os.path.basename(self.fontpath), val)
-            self.logging.info(msg)
+            logger.info('ER: {} {}: Change to 0'.format(fontfile, val))
         else:
-            msg = 'ER: {} {}: Fixed to 0'
-            msg = msg.format(os.path.basename(self.fontpath), val)
-            self.logging.info(msg)
+            logger.info('ER: {} {}: Fixed to 0'.format(fontfile, val))
             self.font['OS/2'].fsType = 0
         return True
 
@@ -253,11 +250,11 @@ class NbspAndSpaceSameWidth(Fixer):
         nbsp = self.getGlyph(0x00A0)
         isNbspAdded = False
         if not nbsp:
-            # self.logging.info("No nbsp glyph")
+            # logger.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x00A0, 'nbsp')
         if not space:
-            # self.logging.info("No nbsp glyph")
+            # logger.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x0020, 'space')
 
@@ -284,10 +281,10 @@ class NbspAndSpaceSameWidth(Fixer):
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
-            self.logging.info(msg)
+            logger.info(msg)
             return True
 
-        self.logging.info('OK: {}'.format(fontfile))
+        logger.info('OK: {}'.format(fontfile))
         return
 
 
@@ -299,7 +296,7 @@ class GaspFixer(Fixer):
 
     def fix(self, value=15):
         if 'gasp' not in self.font.tables:
-            self.logging.error('no table gasp')
+            logger.error('no table gasp')
             return
 
         self.font['gasp'].gaspRange[65535] = value
@@ -307,13 +304,13 @@ class GaspFixer(Fixer):
 
     def show(self):
         if 'gasp' not in self.font.tables:
-            self.logging.error('no table gasp')
+            logger.error('no table gasp')
             return
 
         try:
-            self.logging.info(self.font['gasp'].gaspRange[65535])
+            logger.info(self.font['gasp'].gaspRange[65535])
         except IndexError:
-            self.logging.error('no index 65535')
+            logger.error('no index 65535')
 
 
 class Vmet(Fixer):
@@ -349,11 +346,11 @@ class Vmet(Fixer):
 
         command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
 
-        self.logging.debug(command)
+        logger.debug(command)
 
         import StringIO
         for l in StringIO.StringIO(metricview(self.fonts)):
-            self.logging.debug(l)
+            logger.debug(l)
 
 
 class VmetFixer(Fixer):
@@ -381,14 +378,13 @@ class FamilyAndStyleNameFixer(Fixer):
         ot_namerecord.nameID = nameId
         ot_namerecord.platformID = 3
         ot_namerecord.langID = 0x409
+        # When building a Unicode font for Windows, the platform ID
+        # should be 3 and the encoding ID should be 1
+        ot_namerecord.platEncID = 1
         if ot_namerecord.isUnicode():
             ot_namerecord.string = (val or '').encode("utf-16-be")
         else:
             ot_namerecord.string = val or ''
-
-        # When building a Unicode font for Windows, the platform ID
-        # should be 3 and the encoding ID should be 1
-        ot_namerecord.platEncID = 1
 
         self.font['name'].names.append(ot_namerecord)
         return ot_namerecord
@@ -568,6 +564,6 @@ class RenameFileWithSuggestedName(Fixer):
     def fix(self):
         new_targetpath = os.path.join(os.path.dirname(self.fontpath),
                                       self.validate())
-        shutil.move(self.fontpath, new_targetpath, log=self.logging)
+        shutil.move(self.fontpath, new_targetpath, log=logger)
         self.testcase.operator.path = new_targetpath
         return True

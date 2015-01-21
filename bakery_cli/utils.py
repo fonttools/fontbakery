@@ -24,6 +24,8 @@ import os.path as op
 import re
 import subprocess
 
+from bakery_cli.logger import logger
+
 
 class RedisFd(object):
     """ Redis File Descriptor class, publish writen data to redis channel
@@ -119,9 +121,8 @@ class UpstreamDirectory(object):
                         if not el:
                             continue
                     except Exception as exc:
-                        print('Failed to parse "{0}". '
-                              'Error: {1}'.format(fullpath, exc),
-                              file=sys.stderr)
+                        msg = 'Failed to parse "{}". Error: {}'
+                        logger.error(msg.format(fullpath, exc))
                         continue
                     self.TTX.append(fullpath[l:].strip('/'))
 
@@ -183,7 +184,7 @@ def shell_cmd_repr(command, args):
         'makedirs': 'mkdir -p {}'
     }
     cmdline = available_commands[command].format(' '.join(list(args)))
-    return cmdline.replace(os.getcwd() + os.path.sep, '')
+    return cmdline.replace(os_origin.getcwd() + os_origin.path.sep, '')
 
 
 class metaclass(type):
@@ -198,15 +199,12 @@ class metaclass(type):
             return attr
 
         def func(*args, **kwargs):
-            log = kwargs.pop('log', None)
-            if log:
-                log.debug('\n$ ' + shell_cmd_repr(value, args))
+            logger.debug('\n$ ' + shell_cmd_repr(value, args))
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
                 return result
             except Exception as e:
-                if log:
-                    log.debug('Error: %s' % e.message)
+                logger.error('Error: %s' % e.message)
                 raise e
 
         return func
@@ -228,7 +226,7 @@ class os(object):
     __metaclass__ = osmetaclass
 
 
-def run(command, cwd=None, log=None):
+def run(command, cwd=None):
     """ Wrapper for subprocess.Popen with custom logging support.
 
         :param command: shell command to run, required
@@ -239,17 +237,17 @@ def run(command, cwd=None, log=None):
     # Start the command
     env = os.environ.copy()
 
-    log.info('$ %s\n' % command.replace(os.getcwd() + os.path.sep, ''))
+    logger.info('$ %s\n' % command.replace(os_origin.getcwd() + os.path.sep, ''))
     env.update({'PYTHONPATH': os_origin.pathsep.join(sys.path)})
-    process = subprocess.Popen(command, shell=True, cwd=cwd or os.getcwd(),
+    process = subprocess.Popen(command, shell=True, cwd=cwd or os_origin.getcwd(),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
                                close_fds=True, env=env)
     out, err = process.communicate()
-    if log and out.strip():
-        log.info(out.strip())
-    if log and err.strip():
-        log.error(err.strip())
+    if out.strip():
+        logger.info(out.strip())
+    if err.strip():
+        logger.error(err.strip())
     return out
 
 

@@ -21,15 +21,17 @@ import logging
 
 import fontforge
 
+from bakery_cli.logger import logger
+
 
 log = logging.getLogger(__name__)
 
 
-def convert(sourceFont, ttf, otf=None, log=log):
+def convert(sourceFont, ttf, otf=None):
     try:
         font = fontforge.open(sourceFont)
     except:
-        log.info("Error: Could not open font (%s)" % sourceFont)
+        logger.error("Error: Could not open font (%s)" % sourceFont)
         return
 
     font.selection.all()
@@ -38,20 +40,20 @@ def convert(sourceFont, ttf, otf=None, log=log):
     try:
         font.removeOverlap()
     except:
-        log.info("Error: Could not remove overlaps")
+        logger.error("Error: Could not remove overlaps")
 
     if otf:
         try:
             font.generate(otf)
-            log.info("OK: Generated OpenType-CFF (%s)" % otf)
+            logger.info("OK: Generated OpenType-CFF (%s)" % otf)
         except:
-            log.info("Error: Could not generate OpenType-CFF (%s)" % otf)
+            logger.error("Error: Could not generate OpenType-CFF (%s)" % otf)
 
     # Convert curves to quadratic (TrueType)
     try:
         font.layers["Fore"].is_quadratic = True
     except:
-        log.info("Error: Could not convert to quadratic TrueType curves")
+        logger.error("Error: Could not convert to quadratic TrueType curves")
         return
 
     # Simplify
@@ -60,19 +62,19 @@ def convert(sourceFont, ttf, otf=None, log=log):
                           'removesingletonpoints',
                           'mergelines'))
     except:
-        log.info("Error: Could not simplify")
+        logger.error("Error: Could not simplify")
 
     # Correct Directions
     try:
         font.correctDirection()
     except:
-        log.info("Error: Could not correct directions")
+        logger.error("Error: Could not correct directions")
 
     # Generate with DSIG and OpenType tables
     try:
         flags = ('dummy-dsig', 'opentype')
         font.generate(ttf, flags=flags)
-        log.info("Success: Generated OpenType-TTF (%s)" % ttf)
+        logger.info("Success: Generated OpenType-TTF (%s)" % ttf)
     except:
-        log.info("Error: Could not generate OpenType-TTF (%s)" % ttf)
+        logger.error("Error: Could not generate OpenType-TTF (%s)" % ttf)
         return

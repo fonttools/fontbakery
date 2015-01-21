@@ -46,10 +46,6 @@ class FontLint(object):
         l.write(yaml.safe_dump(testsresult))
         l.close()
 
-    # def run_metadata_tests(self):
-    #     path = op.join(self.builddir, 'METADATA.json')
-    #     return run_set(path, 'metadata', log=self.bakery.logger)
-
     def run(self, ttf_path, pipedata):
         if 'downstream' in pipedata and not pipedata['downstream']:
             return
@@ -59,8 +55,7 @@ class FontLint(object):
         self.bakery.logging_cmd('fontbakery-check.py result {}'.format(ttf_path))
 
         try:
-            data = run_set(op.join(self.builddir, ttf_path), 'result',
-                           log=self.bakery.logger)
+            data = run_set(op.join(self.builddir, ttf_path), 'result')
             l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
             l.write(yaml.safe_dump(data))
             l.close()

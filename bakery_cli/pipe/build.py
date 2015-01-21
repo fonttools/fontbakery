@@ -43,16 +43,14 @@ class Build(object):
             self.bakery.logging_cmd(_.format(fontname, ttfpath))
             try:
                 convert(op.join(self.builddir, 'sources', path),
-                        op.join(self.builddir, 'sources', ttfpath),
-                        log=self.bakery.logger)
+                        op.join(self.builddir, 'sources', ttfpath))
                 os.remove(op.join(self.builddir, 'sources', path))
             except Exception as ex:
                 self.bakery.logging_err(ex.message)
                 raise
 
         shellutil.move(op.join(self.builddir, 'sources', ttfpath),
-                       op.join(self.builddir, ttfpath),
-                       log=self.bakery.logger)
+                       op.join(self.builddir, ttfpath))
         self.run_processes(ttfpath, pipedata)
 
     def movebin_to_builddir(self, files):
@@ -62,7 +60,7 @@ class Build(object):
             s = op.join(self.builddir, a[:-4] + '.ttf')
 
             try:
-                shellutil.move(s, d, log=self.bakery.logger)
+                shellutil.move(s, d)
                 result.append(op.basename(a)[:-4] + '.ttf')
             except:
                 pass
@@ -168,15 +166,14 @@ class Build(object):
                                                                      self.bakery.config.get('afdko', ''),
                                                                      op.join(self.builddir, filepath)[:-4])
                     self.bakery.logging_cmd(op.join(self.builddir, op.dirname(filepath)))
-                    run(command, op.join(self.builddir, op.dirname(filepath)),
-                        self.bakery.logger)
+                    run(command, op.join(self.builddir, op.dirname(filepath)))
                     elapsedtime = time.time() - starttime
                     self.bakery.logging_raw('Time elapsed: {}'.format(elapsedtime))
                     self.otf2ttf('{}.otf'.format(filepath[:-4]), pipedata)
                 else:
                     self.bakery.logging_cmd(_ % (filepath, ttfpath))
                     convert(op.join(self.builddir, filepath),
-                            op.join(self.builddir, ttfpath), log=self.bakery.logger)
+                            op.join(self.builddir, ttfpath))
                     self.run_processes(op.basename(ttfpath), pipedata)
             except Exception as ex:
                 self.bakery.logging_err(ex.message)

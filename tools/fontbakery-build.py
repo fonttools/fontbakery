@@ -91,6 +91,8 @@ def run_bakery(path, verbose=False):
 
         create_bakery_config(bakery_yml_file, config)
 
+        Bakery.verbose = verbose or config.get('verbose')
+
         b = Bakery('', sourcedir, 'builds', builddir)
         b.addLoggingToFile()
         b.load_config(bakery_yml_file)

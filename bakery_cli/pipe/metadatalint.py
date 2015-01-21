@@ -48,7 +48,7 @@ class MetadataLint(object):
         path = op.join(self.builddir, 'METADATA.json.new')
         if not os.path.exists(path):
             path = op.join(self.builddir, 'METADATA.json')
-        return run_set(path, 'metadata', log=self.bakery.logger)
+        return run_set(path, 'metadata')
 
     def execute(self, pipedata, prefix=""):
         task = self.bakery.logging_task('Run tests for METADATA.json')
@@ -60,7 +60,7 @@ class MetadataLint(object):
         try:
             result['METADATA.json'] = self.run_metadata_tests()
             self.bakery.logging_task_done(task)
-        except Exception, ex:
+        except Exception:
             self.bakery.logging_task_done(task, failed=True)
 
         # if not result:

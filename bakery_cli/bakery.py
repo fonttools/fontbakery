@@ -17,11 +17,11 @@
 import logging
 import os
 import os.path as op
-import sys
 import yaml
 
 from bakery_cli import pipe
 from bakery_cli.utils import shutil
+from bakery_cli.logger import logger, WhitespaceRemovingFormatter
 
 
 class BakeryTaskSet(object):
@@ -52,13 +52,6 @@ def bin2unistring(string):
         return string
 
 
-class WhitespaceRemovingFormatter(logging.Formatter):
-    def format(self, record):
-        import re
-        record.msg = re.sub('\n+', ' ', record.msg.strip())
-        return super(WhitespaceRemovingFormatter, self).format(record)
-
-
 class Bakery(object):
     """ Class to handle all parts of bakery process.
 
@@ -81,6 +74,8 @@ class Bakery(object):
     '/home/user/out'
     """
 
+    verbose = False
+
     def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
         self.rootpath = op.abspath(root)
 
@@ -100,22 +95,6 @@ class Bakery(object):
             pipe.PyFontaine
         ]
 
-        self.logger = logging.getLogger('fontbakery')
-        self.logger.setLevel(logging.DEBUG)
-
-        # create console handler and set level to debug
-        ch = logging.StreamHandler(stream=sys.stdout)
-        ch.setLevel(logging.DEBUG)
-
-        # create formatter
-        formatter = WhitespaceRemovingFormatter('%(message)s')
-
-        # add formatter to ch
-        ch.setFormatter(formatter)
-
-        # add ch to logger
-        self.logger.addHandler(ch)
-
     def addLoggingToFile(self):
         if not os.path.exists(self.build_dir):
             os.makedirs(self.build_dir)
@@ -132,7 +111,7 @@ class Bakery(object):
         formatter = WhitespaceRemovingFormatter('%(message)s')
         chf.setFormatter(formatter)
         chf.setLevel(logging.DEBUG)
-        self.logger.addHandler(chf)
+        logger.addHandler(chf)
 
     def init_taskset(self, taskset):
         """ Defines object to use TaskSet interface. Default: BakeryTaskSet
@@ -153,12 +132,13 @@ class Bakery(object):
                 configfile = open(config, 'r')
             except OSError:
                 configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
-                self.logger.error(('Cannot read configuration file.'
-                                   ' Using defaults'))
+                logger.error(('Cannot read configuration file.'
+                              ' Using defaults'))
             self.config = yaml.safe_load(configfile)
 
     def save_build_state(self):
-        l = open(op.join(self.rootpath, self.builds_dir, self.build_dir, 'build.state.yaml'), 'w')
+        l = open(op.join(self.rootpath, self.builds_dir,
+                         self.build_dir, 'build.state.yaml'), 'w')
         l.write(yaml.safe_dump(self.config))
         l.close()
 
@@ -233,21 +213,21 @@ class Bakery(object):
         prefix = "### (%s of %s) " % (self._counter, self.total_tasks)
         self.incr_task_counter()
 
-        self.logger.info('\n\n\n' + (prefix + message.strip()).strip())
+        logger.info('\n\n\n' + (prefix + message.strip()).strip())
         return self.taskset.create_task(prefix + message)
 
     def logging_task_done(self, task, failed=False):
         self.taskset.close_task(task, failed=failed)
 
     def logging_cmd(self, message):
-        self.logger.info('\n$ ' + message.strip().replace(os.getcwd() + os.path.sep, ''))
+        logger.info('\n$ ' + message.strip().replace(os.getcwd() + os.path.sep, ''))
 
     def logging_raw(self, message):
         if message.startswith('### ') or message.startswith('## '):
             message = '\n' * 3 + message.strip()
         if message.startswith('$ '):
             message = '\n' + message.strip().replace(os.getcwd() + os.path.sep, '')
-        self.logger.info(message)
+        logger.info(message)
 
     def logging_err(self, message):
-        self.logger.info('Error: ' + message.strip())
+        logger.error('Error: ' + message.strip())

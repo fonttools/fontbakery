@@ -17,11 +17,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
-import logging
-import sys
 import os
 
-from bakery_cli.bakery import WhitespaceRemovingFormatter
 from bakery_cli.fixers import ResetFSTypeFlagFixer
 
 
@@ -34,22 +31,6 @@ parser.add_argument('--autofix', action="store_true",
                     help="Autofix font metrics")
 
 args = parser.parse_args()
-
-logger = logging.getLogger('fontbakery')
-logger.setLevel(logging.DEBUG)
-
-# create console handler and set level to debug
-ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.DEBUG)
-
-# create formatter
-formatter = WhitespaceRemovingFormatter('%(message)s')
-
-# add formatter to ch
-ch.setFormatter(formatter)
-
-# add ch to logger
-logger.addHandler(ch)
 
 
 for path in args.ttf_font:

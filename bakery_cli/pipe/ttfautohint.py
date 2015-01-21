@@ -38,7 +38,7 @@ class TTFAutoHint(object):
                " '{name}.fix'").format(params=params.strip(),
                                        name=filepath)
         try:
-            run(cmd, cwd=self.builddir, log=self.bakery.logger)
+            run(cmd, cwd=self.builddir)
         except:
             return False
 
@@ -56,12 +56,12 @@ class TTFAutoHint(object):
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
 
-        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(filepath), log=self.bakery.logger)
+        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(filepath))
 
         comment = "# copy back optimized ttf to original filename"
         self.bakery.logging_cmd(comment)
 
-        shutil.move(filepath + '.fix', filepath, log=self.bakery.logger)
+        shutil.move(filepath + '.fix', filepath)
         return 1
 
     def execute(self, pipedata, prefix=""):

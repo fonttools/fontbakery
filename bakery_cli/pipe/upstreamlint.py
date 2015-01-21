@@ -30,7 +30,7 @@ class UpstreamLint(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Run upstream tests')
+        self.bakery.logging_task('Run upstream tests')
         if self.bakery.forcerun:
             return
 
@@ -38,15 +38,13 @@ class UpstreamLint(object):
         upstreamdir = op.join(self.builddir, 'sources')
 
         self.bakery.logging_cmd('fontbakery-check.py upstream-repo sources')
-        result['Project'] = run_set(upstreamdir, 'upstream-repo',
-                                    log=self.bakery.logger)
+        result['Project'] = run_set(upstreamdir, 'upstream-repo')
         directory = UpstreamDirectory(upstreamdir)
 
         for font in directory.ALL_FONTS:
             if font[-4:] not in '.ttx':
                 self.bakery.logging_cmd('fontbakery-check.py upstream {}'.format(font))
-                result[font] = run_set(op.join(upstreamdir, font),
-                                       'upstream', log=self.bakery.logger)
+                result[font] = run_set(op.join(upstreamdir, font), 'upstream')
 
         _out_yaml = op.join(self.builddir, 'upstream.yaml')
 

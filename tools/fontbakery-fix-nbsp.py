@@ -20,12 +20,9 @@
 # A script for generating a HTML file containing copyright notices
 # for all fonts found in a directory tree, using fontTools
 import argparse
-import logging
-import sys
 import os
 
 from bakery_cli.fixers import NbspAndSpaceSameWidth
-from bakery_cli.bakery import WhitespaceRemovingFormatter
 
 description = ('Fixes TTF non-breaking-space glyph to exist'
                ' with same advanceWidth as space')
@@ -35,23 +32,6 @@ parser.add_argument('ttf_font', nargs='+',
 parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
 args = parser.parse_args()
-
-
-logger = logging.getLogger('fontbakery')
-logger.setLevel(logging.DEBUG)
-
-# create console handler and set level to debug
-ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.DEBUG)
-
-# create formatter
-formatter = WhitespaceRemovingFormatter('%(message)s')
-
-# add formatter to ch
-ch.setFormatter(formatter)
-
-# add ch to logger
-logger.addHandler(ch)
 
 for path in args.ttf_font:
     if not os.path.exists(path):

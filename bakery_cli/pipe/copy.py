@@ -22,12 +22,13 @@ import shutil
 
 
 from bakery_cli.utils import shutil as shellutil
+from bakery_cli.logger import logger
 
 
-def copy_single_file(src, dest, log):
+def copy_single_file(src, dest):
     """ Copies single filename from src directory to dest directory """
     if op.exists(src) and op.isfile(src):
-        shellutil.copy(src, dest, log=log)
+        shellutil.copy(src, dest)
         return True
 
 
@@ -45,9 +46,9 @@ class Pipe(object):
                 args = [op.join(self.project_root, self.filename),
                         self.builddir]
                 copy_single_file(op.join(self.project_root, self.filename),
-                                 self.builddir, self.bakery.logger)
+                                 self.builddir)
             except:
-                self.bakery.logger.debug('Unable to copy files')
+                logger.debug('Unable to copy files')
                 raise
 
         return pipedata
@@ -145,12 +146,11 @@ class Copy(Pipe):
                         os.makedirs(d)
 
                     for f in files:
-                        # self.bakery.logging_raw('copy {0} - {1}'.format(op.join(root, f), op.join(d, f)))
                         shutil.copy(op.join(root, f), op.join(d, f))
 
             self.bakery.logging_task_done(task)
         except Exception as ex:
-            self.bakery.logger.debug('Unable process copy. Exception info: %s' % ex)
+            logger.debug('Unable process copy. Exception info: %s' % ex)
             self.bakery.logging_task_done(task, failed=True)
             raise
 
@@ -182,7 +182,7 @@ class CopyLicense(Pipe):
             _out_license = op.join(self.builddir, license_file_out)
 
             try:
-                shellutil.copy(_in_license, _out_license, log=self.bakery.logger)
+                shellutil.copy(_in_license, _out_license)
             except:
                 raise
         else:
@@ -193,7 +193,7 @@ class CopyLicense(Pipe):
                 src = op.join(self.project_root, lic)
                 dest = op.join(self.builddir, lic)
                 if os.path.exists(src):
-                    shellutil.copy(src, dest, log=self.bakery.logger)
+                    shellutil.copy(src, dest)
                     pipedata['license_file'] = lic
                     break
         return pipedata
