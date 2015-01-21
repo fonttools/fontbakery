@@ -19,14 +19,12 @@ from __future__ import print_function
 import copy
 import fontTools.ttLib
 import os
-import StringIO
 import shutil
 
 from fontTools import ttLib
 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
-from bakery_cli.bakery import Bakery
 from bakery_cli.logger import logger
 from bakery_cli.scripts.vmet import metricview
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
@@ -136,6 +134,7 @@ class ResetFSTypeFlagFixer(Fixer):
         fontfile = os.path.basename(self.fontpath)
 
         if val == 0:
+            from bakery_cli.bakery import Bakery
             if Bakery.verbose:
                 logger.info('OK: {}'.format(fontfile))
             return
@@ -253,9 +252,11 @@ class NbspAndSpaceSameWidth(Fixer):
         nbsp = self.getGlyph(0x00A0)
         isNbspAdded = False
         if not nbsp:
+            # logger.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x00A0, 'nbsp')
         if not space:
+            # logger.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x0020, 'space')
 
@@ -285,6 +286,7 @@ class NbspAndSpaceSameWidth(Fixer):
             logger.info(msg)
             return True
 
+        from bakery_cli.bakery import Bakery
         if Bakery.verbose:
             logger.info('OK: {}'.format(fontfile))
         return
@@ -350,6 +352,7 @@ class Vmet(Fixer):
 
         logger.debug(command)
 
+        import StringIO
         for l in StringIO.StringIO(metricview(self.fonts)):
             logger.debug(l)
 
