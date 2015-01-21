@@ -21,6 +21,7 @@
 # for all fonts found in a directory tree, using fontTools
 import argparse
 import logging
+import sys
 import os
 
 from bakery_cli.fixers import NbspAndSpaceSameWidth
@@ -40,7 +41,7 @@ logger = logging.getLogger('fontbakery')
 logger.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
-ch = logging.StreamHandler()
+ch = logging.StreamHandler(stream=sys.stdout)
 ch.setLevel(logging.DEBUG)
 
 # create formatter

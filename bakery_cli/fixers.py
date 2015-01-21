@@ -256,6 +256,10 @@ class NbspAndSpaceSameWidth(Fixer):
             # self.logging.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x00A0, 'nbsp')
+        if not space:
+            # self.logging.info("No nbsp glyph")
+            isNbspAdded = True
+            nbsp = self.addGlyph(0x0020, 'space')
 
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)
@@ -283,8 +287,7 @@ class NbspAndSpaceSameWidth(Fixer):
             self.logging.info(msg)
             return True
 
-        msg = 'OK: {}'.format(fontfile)
-        self.logging.info(msg)
+        self.logging.info('OK: {}'.format(fontfile))
         return
 
 

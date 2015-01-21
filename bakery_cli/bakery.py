@@ -17,6 +17,7 @@
 import logging
 import os
 import os.path as op
+import sys
 import yaml
 
 from bakery_cli import pipe
@@ -103,7 +104,7 @@ class Bakery(object):
         self.logger.setLevel(logging.DEBUG)
 
         # create console handler and set level to debug
-        ch = logging.StreamHandler()
+        ch = logging.StreamHandler(stream=sys.stdout)
         ch.setLevel(logging.DEBUG)
 
         # create formatter

@@ -18,6 +18,7 @@
 from __future__ import print_function
 import argparse
 import logging
+import sys
 import os
 
 from bakery_cli.bakery import WhitespaceRemovingFormatter
@@ -38,7 +39,7 @@ logger = logging.getLogger('fontbakery')
 logger.setLevel(logging.DEBUG)
 
 # create console handler and set level to debug
-ch = logging.StreamHandler()
+ch = logging.StreamHandler(stream=sys.stdout)
 ch.setLevel(logging.DEBUG)
 
 # create formatter
