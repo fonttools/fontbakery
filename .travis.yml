@@ -8,7 +8,10 @@ before_install:
   - sudo apt-get install python-fontforge ttfautohint swig
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
-  - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/dist-packages
+  - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
+  - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
+  - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
+  - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
   - pip install python-coveralls
   - pip install Jinja2
   - pip install Scrapy
