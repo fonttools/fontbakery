@@ -221,7 +221,7 @@ class NbspAndSpaceSameWidth(Fixer):
     def addGlyph(self, uchar, glyph):
         # Add to glyph list
         glyphOrder = self.font.getGlyphOrder()
-        assert glyph not in glyphOrder
+        # assert glyph not in glyphOrder
         glyphOrder.append(glyph)
         self.font.setGlyphOrder(glyphOrder)
 
@@ -250,15 +250,13 @@ class NbspAndSpaceSameWidth(Fixer):
     def fix(self, check=False):
         space = self.getGlyph(0x0020)
         nbsp = self.getGlyph(0x00A0)
-        isNbspAdded = False
+        isNbspAdded = isSpaceAdded = False
         if not nbsp:
-            # logger.info("No nbsp glyph")
             isNbspAdded = True
             nbsp = self.addGlyph(0x00A0, 'nbsp')
         if not space:
-            # logger.info("No nbsp glyph")
-            isNbspAdded = True
-            nbsp = self.addGlyph(0x0020, 'space')
+            isSpaceAdded = True
+            space = self.addGlyph(0x0020, 'space')
 
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)
@@ -282,6 +280,20 @@ class NbspAndSpaceSameWidth(Fixer):
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+            if isSpaceAdded:
+                if check:
+                    msg = 'ER: {} space N nbsp {}: Add space'
+                    msg = msg.format(fontfile, nbspWidth)
+                else:
+                    msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+            else:
+                if check:
+                    msg = 'ER: {} space {} nbsp {}: Change space to {}'
+                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                else:
+                    msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
                     msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
             logger.info(msg)
             return True
