@@ -263,38 +263,40 @@ class NbspAndSpaceSameWidth(Fixer):
 
         fontfile = os.path.basename(self.fontpath)
         if spaceWidth != nbspWidth or nbspWidth < 0:
-            width = max(abs(spaceWidth), abs(nbspWidth))
-            self.setWidth(nbsp, width)
-            self.setWidth(space, width)
+            if spaceWidth:
+                self.setWidth(nbsp, spaceWidth)
+            else:
+                self.setWidth(space, nbspWidth)
 
+            args = fontfile, spaceWidth, nbspWidth, spaceWidth
             if isNbspAdded:
                 if check:
                     msg = 'ER: {} space {} nbsp N: Add nbsp'
                     msg = msg.format(fontfile, spaceWidth)
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
             else:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change nbsp to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
             if isSpaceAdded:
                 if check:
                     msg = 'ER: {} space N nbsp {}: Add space'
                     msg = msg.format(fontfile, nbspWidth)
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
             else:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change space to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
-                    msg = msg.format(fontfile, spaceWidth, nbspWidth, width)
+                    msg = msg.format(*args)
             logger.info(msg)
             return True
 
