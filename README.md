@@ -12,6 +12,9 @@ It runs tests on these files and stores the results in files that can be browsed
 
 If you use Github for your font project, you can use FontBakery on Travis so that with each update to your Github repository, your files are built and tested. Travis can then upload the result back to the project's `gh-pages` branch, so that they are available on the web via Github Pages.
 
+Font Bakery is not an official Google project, and Google provides no support for it.
+
+
 ## Install
 
 ### Mac OS X
