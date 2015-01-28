@@ -505,20 +505,6 @@ def loadMetadata(familydir):
         return json.load(fp, object_pairs_hook=collections.OrderedDict)
 
 
-# def sortOldMetadata(oldmetadata):
-    orderedMetadata = InsertOrderedDict()
-    orderedMetadata["name"] = oldmetadata["name"]
-    orderedMetadata["designer"] = oldmetadata["designer"]
-    orderedMetadata["license"] = oldmetadata["license"]
-    orderedMetadata["visibility"] = oldmetadata["visibility"]
-    orderedMetadata["category"] = oldmetadata["category"]
-    orderedMetadata["size"] = oldmetadata["size"]
-    orderedMetadata["dateAdded"] = oldmetadata["dateAdded"]
-    orderedMetadata["fonts"] = sortFont(oldmetadata["fonts"])
-    orderedMetadata["subsets"] = sorted(oldmetadata["subsets"])
-    return orderedMetadata
-
-
 def sortFont(fonts):
     sortedfonts = []
     for font in fonts:
@@ -547,7 +533,6 @@ def writeFile(familydir, metadata):
     if hasMetadata(familydir):
         filename = METADATA_JSON_NEW
 
-    # data = sortOldMetadata(metadata)
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
         contents = json.dumps(metadata, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
