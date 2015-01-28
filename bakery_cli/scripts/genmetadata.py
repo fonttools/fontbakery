@@ -53,6 +53,14 @@ METADATA_JSON = 'METADATA.json'
 METADATA_JSON_NEW = 'METADATA.json.new'
 
 
+def listdir(familydir):
+    files = []
+    for dirpath, dirnames, filenames in os.walk(familydir):
+        files += [os.path.join(dirpath, fn)
+                  for fn in filenames if fn.lower().endswith('.ttf')]
+    return files
+
+
 class InsertOrderedDict(dict):
 
     def __init__(self):
@@ -176,7 +184,7 @@ def inferStyle(ftfont):
 def inferFamilyName(familydir):
     NAMEID_FAMILYNAME = 1
     NAMEID_STYLE = 2
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     familyName = ""
     styleName = ""
     for f in files:
@@ -209,7 +217,11 @@ def inferFamilyName(familydir):
 
 def fontToolsOpenFont(filepath):
     f = io.open(filepath, 'rb')
-    return ttLib.TTFont(f)
+    try:
+        return ttLib.TTFont(f)
+    except:
+        print(filepath)
+        raise
 
 
 # DC This should check both copyright strings match
@@ -322,7 +334,7 @@ def fontToolsGetDesc(ftfont):
 
 def createFonts(familydir, familyname):
     fonts = []
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     for f in files:
         if f.endswith(".ttf"):
             fontmetadata = InsertOrderedDict()
@@ -344,7 +356,7 @@ def createFonts(familydir, familyname):
 
 def inferSubsets(familydir):
     subsets = set()
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     for f in files:
         index = f.rfind(".")
         if index != -1:
@@ -358,7 +370,7 @@ def inferSubsets(familydir):
 
 def getDesigner(familydir):
     # import fontforge
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     for f in files:
         if f.endswith("Regular.ttf"):  # DC should ansiprint red if no Reg exemplar
             filepath = os.path.join(familydir, f)
@@ -377,7 +389,7 @@ def getDesigner(familydir):
 
 
 def check_monospace(familydir):
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     glyphwidths = []
     for f in files:
         if not f.endswith('.ttf'):
@@ -400,7 +412,7 @@ def check_monospace(familydir):
 
 
 def getSize(familydir):
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     matchedFiles = []
     for f in files:
         if f.endswith("Regular.ttf"):
@@ -545,7 +557,7 @@ def writeDescHtml(familydir):
         return
 
     foundRegular = False
-    files = os.listdir(familydir)
+    files = listdir(familydir)
     for f in files:
         if f.endswith("Regular.ttf"):
             foundRegular = True
