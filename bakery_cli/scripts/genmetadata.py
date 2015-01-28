@@ -453,8 +453,9 @@ def setIfNotPresent(metadata, key, value):
 
 def genmetadata(familydir):
     metadata = InsertOrderedDict()
-    # if hasMetadata(familydir):
-    #     metadata = loadMetadata(familydir)
+    if hasMetadata(familydir):
+        metadata = loadMetadata(familydir)
+        print(metadata)
     familyname = inferFamilyName(familydir)
 
     if not metadata.get('name') or metadata.get('name', "UNKNOWN") == "UNKNOWN":
@@ -499,11 +500,12 @@ def hasMetadata(familydir):
 
 
 def loadMetadata(familydir):
+    import collections
     with io.open(os.path.join(familydir, METADATA_JSON), 'r', encoding="utf-8") as fp:
-        return sortOldMetadata(json.load(fp))
+        return json.load(fp, object_pairs_hook=collections.OrderedDict)
 
 
-def sortOldMetadata(oldmetadata):
+# def sortOldMetadata(oldmetadata):
     orderedMetadata = InsertOrderedDict()
     orderedMetadata["name"] = oldmetadata["name"]
     orderedMetadata["designer"] = oldmetadata["designer"]
@@ -545,12 +547,12 @@ def writeFile(familydir, metadata):
     if hasMetadata(familydir):
         filename = METADATA_JSON_NEW
 
-    data = sortOldMetadata(metadata)
+    # data = sortOldMetadata(metadata)
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
-        contents = json.dumps(data, indent=2, ensure_ascii=False)
+        contents = json.dumps(metadata, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
 
-    print(json.dumps(data, indent=2, ensure_ascii=False))
+    print(json.dumps(metadata, indent=2, ensure_ascii=False))
 
 
 def ansiprint(string, color):
