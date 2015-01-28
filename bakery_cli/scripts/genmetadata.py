@@ -53,6 +53,18 @@ METADATA_JSON = 'METADATA.json'
 METADATA_JSON_NEW = 'METADATA.json.new'
 
 
+def check_regular(filename):
+    fontdata = fontToolsOpenFont(filename)
+    isRegular = True
+
+    if fontdata['OS/2'].fsSelection & 0b10001:
+        isRegular = False
+    if fontdata['head'].macStyle & 0b11:
+        isRegular = False
+
+    return fontdata['OS/2'].usWeightClass == 400 and isRegular
+
+
 def listdir(familydir):
     files = []
     for dirpath, dirnames, filenames in os.walk(familydir):
@@ -188,9 +200,8 @@ def inferFamilyName(familydir):
     familyName = ""
     styleName = ""
     for f in files:
-        if f.endswith("Regular.ttf"):
-            filepath = os.path.join(familydir, f)
-            ftfont = fontToolsOpenFont(filepath)
+        if check_regular(f):
+            ftfont = fontToolsOpenFont(f)
             for record in ftfont['name'].names:
                 if record.nameID == NAMEID_FAMILYNAME:
                     if b'\000' in record.string:
@@ -336,18 +347,16 @@ def createFonts(familydir, familyname):
     fonts = []
     files = listdir(familydir)
     for f in files:
-        if f.endswith(".ttf"):
-            fontmetadata = InsertOrderedDict()
-            filepath = os.path.join(familydir, f)
-            ftfont = fontToolsOpenFont(filepath)
-            fontmetadata["name"] = u(familyname)
-            fontmetadata["postScriptName"] = u(fontToolsGetPSName(ftfont))
-            fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
-            fontmetadata["style"] = u(inferStyle(ftfont))
-            fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
-            fontmetadata["filename"] = f
-            fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
-            fonts.append(fontmetadata)
+        fontmetadata = InsertOrderedDict()
+        ftfont = fontToolsOpenFont(f)
+        fontmetadata["name"] = u(familyname)
+        fontmetadata["postScriptName"] = u(fontToolsGetPSName(ftfont))
+        fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
+        fontmetadata["style"] = u(inferStyle(ftfont))
+        fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
+        fontmetadata["filename"] = f.lstrip('./')
+        fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
+        fonts.append(fontmetadata)
     return fonts
 
 # DC This should also print the subset filesizes and check they are
@@ -372,9 +381,8 @@ def getDesigner(familydir):
     # import fontforge
     files = listdir(familydir)
     for f in files:
-        if f.endswith("Regular.ttf"):  # DC should ansiprint red if no Reg exemplar
-            filepath = os.path.join(familydir, f)
-            ftfont = fontToolsOpenFont(filepath)
+        if check_regular(f):  # DC should ansiprint red if no Reg exemplar
+            ftfont = fontToolsOpenFont(f)
             desName = fontToolsGetDesignerName(ftfont)
             if isinstance(desName, str):
                 string = u"Designer's name from font is: " + desName.decode('utf8')
@@ -394,8 +402,7 @@ def check_monospace(familydir):
     for f in files:
         if not f.endswith('.ttf'):
             continue
-        filepath = os.path.join(familydir, f)
-        font = fontToolsOpenFont(filepath)
+        font = fontToolsOpenFont(f)
         for table in font['cmap'].tables:
             if not (table.platformID == 3 and table.platEncID in [1, 10]):
                 continue
@@ -415,14 +422,14 @@ def getSize(familydir):
     files = listdir(familydir)
     matchedFiles = []
     for f in files:
-        if f.endswith("Regular.ttf"):
+        if check_regular(f):
             matchedFiles.append(f)
     if matchedFiles == []:
         gzipSize = str(-1)
         string = "WARNING: No *-Regular.ttf to calculate gzipped filesize!"
         color = "red"
     else:
-        filepath = os.path.join(familydir, matchedFiles[0])
+        filepath = matchedFiles[0]
         tmpgzip = "/tmp/tempfont.gz"
         string = "Original size: "
         string += str(os.path.getsize(filepath))
@@ -559,7 +566,7 @@ def writeDescHtml(familydir):
     foundRegular = False
     files = listdir(familydir)
     for f in files:
-        if f.endswith("Regular.ttf"):
+        if check_regular(f):
             foundRegular = True
             filepath = os.path.join(familydir, f)
             ftfont = fontToolsOpenFont(filepath)
