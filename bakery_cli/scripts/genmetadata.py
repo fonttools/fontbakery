@@ -456,7 +456,9 @@ def genmetadata(familydir):
     if hasMetadata(familydir):
         metadata = loadMetadata(familydir)
     familyname = inferFamilyName(familydir)
-    setIfNotPresent(metadata, "name", familyname)
+
+    if not metadata.get('name') or metadata.get('name', "UNKNOWN") == "UNKNOWN":
+        metadata["name"] = familyname
 
     desName = getDesigner(familydir)
     setIfNotPresent(metadata, "designer", desName)
@@ -469,7 +471,9 @@ def genmetadata(familydir):
         category = 'monospace'
     setIfNotPresent(metadata, "category", category)
                     # DC Should get this from the font or prompt?
-    setIfNotPresent(metadata, "size", getSize(familydir))
+
+    if not metadata.get('size') or metadata.get('size', -1) == -1:
+        metadata["size"] = getSize(familydir)
                     # DC: this should check the filesize got smaller than last
                     # time
     setIfNotPresent(metadata, "dateAdded", getToday())
