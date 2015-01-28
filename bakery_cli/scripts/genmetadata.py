@@ -461,9 +461,13 @@ def genmetadata(familydir):
         metadata["name"] = familyname
 
     desName = getDesigner(familydir)
-    setIfNotPresent(metadata, "designer", desName)
+    if not metadata.get('designer'):
+        metadata["designer"] = desName
                     # DC Should check it against profiles.json
-    setIfNotPresent(metadata, "license", inferLicense(familydir))
+
+    if not metadata.get('license'):
+        metadata["license"] = inferLicense(familydir)
+
     setIfNotPresent(metadata, "visibility", "Sandbox")
 
     category = ''
