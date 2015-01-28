@@ -453,8 +453,8 @@ def setIfNotPresent(metadata, key, value):
 
 def genmetadata(familydir):
     metadata = InsertOrderedDict()
-    if hasMetadata(familydir):
-        metadata = loadMetadata(familydir)
+    # if hasMetadata(familydir):
+    #     metadata = loadMetadata(familydir)
     familyname = inferFamilyName(familydir)
 
     if not metadata.get('name') or metadata.get('name', "UNKNOWN") == "UNKNOWN":
@@ -511,9 +511,9 @@ def sortOldMetadata(oldmetadata):
     orderedMetadata["visibility"] = oldmetadata["visibility"]
     orderedMetadata["category"] = oldmetadata["category"]
     orderedMetadata["size"] = oldmetadata["size"]
+    orderedMetadata["dateAdded"] = oldmetadata["dateAdded"]
     orderedMetadata["fonts"] = sortFont(oldmetadata["fonts"])
     orderedMetadata["subsets"] = sorted(oldmetadata["subsets"])
-    orderedMetadata["dateAdded"] = oldmetadata["dateAdded"]
     return orderedMetadata
 
 
@@ -544,11 +544,13 @@ def writeFile(familydir, metadata):
     filename = METADATA_JSON
     if hasMetadata(familydir):
         filename = METADATA_JSON_NEW
+
+    data = sortOldMetadata(metadata)
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
-        data = sortOldMetadata(metadata)
         contents = json.dumps(data, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
-    print(json.dumps(metadata, indent=2, ensure_ascii=False))
+
+    print(json.dumps(data, indent=2, ensure_ascii=False))
 
 
 def ansiprint(string, color):
