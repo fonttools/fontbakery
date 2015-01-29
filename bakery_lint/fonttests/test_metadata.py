@@ -1244,7 +1244,8 @@ class CheckCanonicalStyles(TestCase):
                     self.fail(_ % (font_metadata.filename, font_metadata.style))
 
     def is_italic(self, font_metadata):
-        ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+        ttfont = Font.get_ttfont_from_metadata(self.operator.path,
+                                               font_metadata)
         return (ttfont.macStyle & self.ITALIC_MASK
                 or ttfont.italicAngle
                 or self.find_italic_in_name_table(ttfont))
@@ -1253,6 +1254,20 @@ class CheckCanonicalStyles(TestCase):
         for entry in ttfont.names:
             if 'italic' in Font.bin2unistring(entry).lower():
                 return True
+
+
+class TestSpaceIndentationInMetadata(TestCase):
+
+    targets = ['metadata']
+    tool = 'lint'
+    name = __name__
+
+    # @autofix('bakery_cli.fixers.SpaceIndentationWriter')
+    def test_space_indentation_in_metadata(self):
+        for line in open(self.operator.path):
+            if line.startswith('\t'):
+                msg = 'METADATA.json contains tabs instead of space indentation'
+                self.fail(msg)
 
 
 class CheckCanonicalFilenames(TestCase):
