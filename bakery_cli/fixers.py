@@ -585,3 +585,17 @@ class RenameFileWithSuggestedName(Fixer):
         shutil.move(self.fontpath, new_targetpath, log=logger)
         self.testcase.operator.path = new_targetpath
         return True
+
+
+class SpaceIndentationWriter(Fixer):
+
+    def loadfont(self, path):
+        return  # this fixer does not operate with font
+
+    def apply(self, *args, **kwargs):
+        string = ''
+        for line in open(self.fontpath):
+            string += line.expandtabs(2)
+        fp = open(self.fontpath, 'w')
+        fp.write(string)
+        return True

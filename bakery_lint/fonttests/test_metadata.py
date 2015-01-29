@@ -26,7 +26,7 @@ import re
 import requests
 
 from bakery_cli.ttfont import Font
-from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_lint.metadata import Metadata
 
 ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
@@ -1262,7 +1262,7 @@ class TestSpaceIndentationInMetadata(TestCase):
     tool = 'lint'
     name = __name__
 
-    # @autofix('bakery_cli.fixers.SpaceIndentationWriter')
+    @autofix('bakery_cli.fixers.SpaceIndentationWriter')
     def test_space_indentation_in_metadata(self):
         for line in open(self.operator.path):
             if line.startswith('\t'):
