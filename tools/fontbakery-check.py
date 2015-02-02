@@ -68,8 +68,10 @@ if __name__ == '__main__':
                 for testmethod, dummyvar in success:
                     print('OK: {}'.format(testmethod))
         else:
-            for testmethod, errormessage in failures + error:
+            for testmethod, errormessage in error:
                 print('ER: {}: {}'.format(testmethod, errormessage))
             if args.verbose:
                 for testmethod, dummyvar in success:
                     print('OK: {}'.format(testmethod))
+            for testmethod, errormessage in failures:
+                print('FAIL: {}: {}'.format(testmethod, errormessage))
