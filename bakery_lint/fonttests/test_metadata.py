@@ -556,7 +556,10 @@ class CheckMetadataAgreements(TestCase):
         import re
         regex = re.compile(r'\W')
 
-        for x in self.metadata.fonts:
+        fonts = [font for font in self.metadata.fonts
+                 if not font.post_script_name.endswith('-Regular')]
+
+        for x in fonts:
             post_script_name = regex.sub('', x.post_script_name)
             filename = regex.sub('', os.path.splitext(x.filename)[0])
             if filename != post_script_name:
