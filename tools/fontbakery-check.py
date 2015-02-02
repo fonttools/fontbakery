@@ -34,7 +34,7 @@ if __name__ == '__main__':
                         choices=['*', 'list'] + available_tests)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count',
-                        help="Verbosity level", default=1)
+                        help="Verbosity level", default=False)
 
     args = parser.parse_args()
     if args.test == 'list':
@@ -64,8 +64,12 @@ if __name__ == '__main__':
                         for x in result.get('success', [])]
 
         if not bool(failures + error):
-            print('OK')
+            if args.verbose:
+                for testmethod, dummyvar in success:
+                    print('OK: {}'.format(testmethod))
         else:
-            import pprint
-            _pprint = pprint.PrettyPrinter(indent=4)
-            _pprint.pprint(failures + error + success)
+            for testmethod, errormessage in failures + error:
+                print('ER: {}: {}'.format(testmethod, errormessage))
+            if args.verbose:
+                for testmethod, dummyvar in success:
+                    print('OK: {}'.format(testmethod))
