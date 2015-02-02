@@ -170,7 +170,7 @@ class App(object):
 
         yaml.safe_dump(self.config, open(self.configfile, 'w'))
         print('Wrote {}'.format(self.configfile))
-        sys.exit(0)
+        raise urwid.ExitMainLoop()
 
 
 def get_subsets_coverage_data(source_fonts_paths):
@@ -228,6 +228,7 @@ import urwid.curses_display
 import urwid.raw_display
 import urwid.web_display
 import urwid
+
 
 def show_or_exit(key):
     if key in ('q', 'Q', 'esc'):
