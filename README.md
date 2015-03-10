@@ -8,9 +8,9 @@
 
 Font Bakery is a set of command-line tools for building and testing font projects, and a web interface for reviewing them.
 It runs checks on source files in UFO, SFD or TTX formats and builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
-It runs tests on these files and stores the results in files that can be browsed by the Font Bakery web app.
+It runs tests on the build results, and the test logs can be parsed into graphical views by the Font Bakery web app.
 
-If you use Github for your font project, you can use FontBakery on Travis so that with each update to your Github repository, your files are built and tested. Travis can then upload the result back to the project's `gh-pages` branch, so that they are available on the web via Github Pages.
+Optionally, if you are developing a font project publicly with Github or a similar host, you can set up a Continuous Integration server like Travis to run FontBakery on eah commit, so that with each update your files are built and tested in the CI server and then uploaded to the project's `gh-pages` branch for browsing and testing live.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
