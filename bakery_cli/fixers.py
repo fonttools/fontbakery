@@ -302,7 +302,7 @@ class NbspAndSpaceSameWidth(Fixer):
 
         from bakery_cli.bakery import Bakery
         if Bakery.verbose:
-            logger.info('OK: {}'.format(fontfile))
+            logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
         return
 
 
