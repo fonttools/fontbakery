@@ -186,3 +186,4 @@ There are many good guides for Github around the web, including:
 * <http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1>
 * <https://try.github.io>
 * <https://guides.github.com>
+* [Articles about Github in Wired.com](https://www.google.com/search?q=github+everything+site:wired.com)
