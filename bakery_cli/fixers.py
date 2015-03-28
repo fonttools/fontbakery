@@ -199,7 +199,8 @@ def get_unencoded_glyphs(ttx):
             if new_cmap:
                 break
 
-    assert new_cmap
+    if not new_cmap:
+        return []
 
     diff = list(set(ttx.glyphOrder) - set(new_cmap.cmap.values()) - {'.notdef'})
     return [g for g in diff[:] if g != '.notdef']
@@ -253,10 +254,18 @@ class NbspAndSpaceSameWidth(Fixer):
         isNbspAdded = isSpaceAdded = False
         if not nbsp:
             isNbspAdded = True
-            nbsp = self.addGlyph(0x00A0, 'nbsp')
+            try:
+                nbsp = self.addGlyph(0x00A0, 'nbsp')
+            except Exception as ex:
+                logger.info('ER: {}'.format(ex))
+                return False
         if not space:
             isSpaceAdded = True
-            space = self.addGlyph(0x0020, 'space')
+            try:
+                space = self.addGlyph(0x0020, 'space')
+            except Exception as ex:
+                logger.info('ER: {}'.format(ex))
+                return False
 
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)

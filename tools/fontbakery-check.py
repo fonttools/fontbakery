@@ -56,12 +56,12 @@ if __name__ == '__main__':
 
         for test in tests:
             result = run_set(x, test)
-            failures += [(x._testMethodName, x._err_msg)
-                         for x in result.get('failure', [])]
-            error += [(x._testMethodName, x._err_msg)
-                      for x in result.get('error', [])]
-            success += [(x._testMethodName, 'OK')
-                        for x in result.get('success', [])]
+            failures += [(testklass._testMethodName, testklass._err_msg)
+                         for testklass in result.get('failure', [])]
+            error += [(testklass._testMethodName, testklass._err_msg)
+                      for testklass in result.get('error', [])]
+            success += [(testklass._testMethodName, 'OK')
+                        for testklass in result.get('success', [])]
 
         if not bool(failures + error):
             if args.verbose:

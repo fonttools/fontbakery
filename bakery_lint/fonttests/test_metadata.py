@@ -54,7 +54,10 @@ class MetadataSubsetsListTest(TestCase):
 
     @classmethod
     def __generateTests__(cls):
-        metadata = json.load(open(cls.operator.path))
+        try:
+            metadata = json.load(open(cls.operator.path))
+        except:
+            return
         for font in metadata.get('fonts', []):
             for subset in metadata.get('subsets', []) + ['menu']:
                 path = op.join(op.dirname(cls.operator.path),
