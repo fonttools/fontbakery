@@ -626,14 +626,11 @@ def getName(font, pairs):
 
 
 def getSuggestedFontNameValues(font):
-    family_name = getName(font, [[1, 3, 1],
-                                 [1, 1, 0]])
+    family_name = getName(font, [[1, 3, 1]])
 
-    subfamily_name = getName(font, [[2, 3, 1],
-                                    [2, 1, 0]])
+    subfamily_name = getName(font, [[2, 3, 1]])
 
-    full_name = getName(font, [[4, 3, 1],
-                               [4, 1, 0]])
+    full_name = getName(font, [[4, 3, 1]])
 
     if full_name == family_name:
         try:

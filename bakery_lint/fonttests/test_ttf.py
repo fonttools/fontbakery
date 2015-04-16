@@ -84,22 +84,10 @@ class TTFTestCase(TestCase):
         # See http://forum.fontlab.com/index.php?topic=313.0
         font = Font.get_ttfont(self.operator.path)
 
-        # <Full name> limitation is < 64 chars
-        length = len(Font.bin2unistring(font['name'].getName(4, 1, 0, 0)))
-        self.assertLess(length, 64,
-                        msg=('`Full Font Name` limitation is less'
-                             ' than 64 chars. Now: %s') % length)
-
         length = len(Font.bin2unistring(font['name'].getName(4, 3, 1, 1033)))
         self.assertLess(length, 64,
                         msg=('`Full Font Name` limitation is less'
                              ' than 64 chars. Now: %s') % length)
-
-        # <Postscript name> limitation is < 30 chars
-        length = len(Font.bin2unistring(font['name'].getName(6, 1, 0, 0)))
-        self.assertLess(length, 30,
-                        msg=('`PostScript Name` limitation is less'
-                             ' than 30 chars. Now: %s') % length)
 
         length = len(Font.bin2unistring(font['name'].getName(6, 3, 1, 1033)))
         self.assertLess(length, 30,
@@ -108,15 +96,6 @@ class TTFTestCase(TestCase):
 
         # <Postscript name> may contain only a-zA-Z0-9
         # and one hyphen
-        name = Font.bin2unistring(font['name'].getName(6, 1, 0, 0))
-        self.assertRegexpMatches(name, r'[a-zA-Z0-9-]+',
-                                 msg=('`PostScript Name` may contain'
-                                      ' only a-zA-Z0-9 characters and'
-                                      ' one hyphen'))
-        self.assertLessEqual(name.count('-'), 1,
-                             msg=('`PostScript Name` may contain only'
-                                  ' one hyphen'))
-
         name = Font.bin2unistring(font['name'].getName(6, 3, 1, 1033))
         self.assertRegexpMatches(name, r'[a-zA-Z0-9-]+',
                                  msg=('`PostScript Name` may contain'
@@ -127,22 +106,12 @@ class TTFTestCase(TestCase):
                                   ' one hyphen'))
 
         # <Family Name> limitation is 32 chars
-        length = len(Font.bin2unistring(font['name'].getName(1, 1, 0, 0)))
-        self.assertLess(length, 32,
-                        msg=('`Family Name` limitation is < 32 chars.'
-                             ' Now: %s') % length)
-
         length = len(Font.bin2unistring(font['name'].getName(1, 3, 1, 1033)))
         self.assertLess(length, 32,
                         msg=('`Family Name` limitation is < 32 chars.'
                              ' Now: %s') % length)
 
         # <Style Name> limitation is 32 chars
-        length = len(Font.bin2unistring(font['name'].getName(2, 1, 0, 0)))
-        self.assertLess(length, 32,
-                        msg=('`Style Name` limitation is < 32 chars.'
-                             ' Now: %s') % length)
-
         length = len(Font.bin2unistring(font['name'].getName(2, 3, 1, 1033)))
         self.assertLess(length, 32,
                         msg=('`Style Name` limitation is < 32 chars.'
@@ -224,6 +193,13 @@ class TTFTestCase(TestCase):
 
     def containsSubstr(self, nameRecord, substr):
         return substr in getNameRecordValue(nameRecord)
+
+    @autofix('bakery_cli.fixers.RemoveItemsWithPlatformID1')
+    def test_platformID_1_exists(self):
+        """ Check if NAME table does not contain items with platformID = 1 """
+        font = ttLib.TTFont(self.operator.path)
+        items = [item for item in font['name'].names if item.platformID == 1]
+        self.assertTrue(bool(items))
 
     @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
     def test_name_id_copyright(self):
