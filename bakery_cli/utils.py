@@ -313,7 +313,8 @@ def fix_all_names(fontdata, familyname):
 
     if isBold:
         weight = 700
-    fontdata['CFF']['Weight'] = fontdata['OS/2']['usWeightClass'] = weight
+    fontdata['OS/2']['usWeightClass'] = weight
+    if 'CFF' in fontdata: fontdata['CFF']['Weight'] = fontdata['OS/2']['usWeightClass']
 
     rules = NameTableNamingRule({'isBold': isBold,
                                  'isItalic': isItalic,
