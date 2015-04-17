@@ -436,7 +436,9 @@ class FamilyAndStyleNameFixer(Fixer):
             }
         }
         if 'CFF ' in self.font:
-            fontdata['CFF ']['Weight'] = self.font['CFF '].cff.topDictIndex[0].Weight
+            fontdata['CFF'] = {
+                'Weight': self.font['CFF '].cff.topDictIndex[0].Weight
+            }
 
         fontdata = clean_name_values(fontdata)
         familyname = ''
