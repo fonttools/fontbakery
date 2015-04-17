@@ -406,6 +406,8 @@ class TTFTestCase(TestCase):
     def test_check_glyf_table_length(self):
         """ Check if there is unused data at the end of the glyf table """
         font = Font.get_ttfont(self.operator.path)
+        # TODO: should this test support CFF as well?
+        if 'CFF ' in font: self.skip("No 'glyf' table to check in a CFF font.")
 
         expected = font.get_loca_length()
         actual = font.get_glyf_length()
@@ -468,6 +470,7 @@ class TTFTestCase(TestCase):
         """ Font contains in PREP table magic code """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         font = Font.get_ttfont(self.operator.path)
+        if 'CFF ' in font: self.skip("Not applicable to a CFF font.")
         try:
             bytecode = font.get_program_bytecode()
         except KeyError:
