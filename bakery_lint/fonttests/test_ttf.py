@@ -39,8 +39,8 @@ from bakery_cli.utils import UpstreamDirectory
 
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post', 'glyf'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep', 'CFF',
+                       'OS/2', 'post'])
+OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
                        'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
                        'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
                        'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
@@ -550,10 +550,12 @@ class TTFTestCase(TestCase):
         """ Check that font contain required tables """
         tables = set(FontTool.get_tables(self.operator.path))
         desc = []
-        if REQUIRED_TABLES - tables:
-            desc += ["Font is missing required tables: [%s]" % (REQUIRED_TABLES - tables)]
+        font = Font.get_ttfont(self.operator.path)
+        glyphs = set(['glyf'] if 'glyf' in font else ['CFF '])
+        if REQUIRED_TABLES + glyphs - tables:
+            desc += ["Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES + glyphs - tables))]
             if OPTIONAL_TABLES & tables:
-                desc += ["includes optional tables %s" % (OPTIONAL_TABLES & tables)]
+                desc += ["includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))]
         if desc:
             self.fail(' but '.join(desc))
 
