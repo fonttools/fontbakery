@@ -435,7 +435,7 @@ class FamilyAndStyleNameFixer(Fixer):
                 'macStyle': self.font['head'].macStyle,
             },
             'CFF': {
-                'Weight': self.font.get('CFF ', {}).get('Weight'),
+                'Weight': self.font['CFF '].cff.topDictIndex[0].Weight,
             }
         }
 
