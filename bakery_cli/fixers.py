@@ -433,14 +433,12 @@ class FamilyAndStyleNameFixer(Fixer):
             },
             'head': {
                 'macStyle': self.font['head'].macStyle,
-            },
-            'CFF': {
-                # FIXME: This attempted to fix https://github.com/googlefonts/fontbakery/issues/523
-                # but didn't work, so holding for now
-                # 'Weight': self.font['CFF '].cff.topDictIndex[0].Weight,
-                'Weight': self.font.get('CFF ', {}).get('Weight'),
             }
         }
+        if 'CFF ' in self.font:
+            fontdata['CFF'] = {
+                'Weight': self.font['CFF '].cff.topDictIndex[0].Weight
+            }
 
         fontdata = clean_name_values(fontdata)
         familyname = ''
