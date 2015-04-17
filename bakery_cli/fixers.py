@@ -435,7 +435,10 @@ class FamilyAndStyleNameFixer(Fixer):
                 'macStyle': self.font['head'].macStyle,
             },
             'CFF': {
-                'Weight': self.font['CFF '].cff.topDictIndex[0].Weight,
+                # FIXME: This attempted to fix https://github.com/googlefonts/fontbakery/issues/523
+                # but didn't work, so holding for now
+                # 'Weight': self.font['CFF '].cff.topDictIndex[0].Weight,
+                'Weight': self.font.get('CFF ', {}).get('Weight'),
             }
         }
 
