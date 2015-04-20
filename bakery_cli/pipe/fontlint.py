@@ -55,7 +55,7 @@ class FontLint(object):
         self.bakery.logging_cmd('fontbakery-check.py result {}'.format(ttf_path))
 
         try:
-            data = run_set(op.join(self.builddir, ttf_path), 'result')
+            data = run_set(op.join(self.builddir, ttf_path), 'result', apply_fix=True)
             l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
             l.write(yaml.safe_dump(data))
             l.close()

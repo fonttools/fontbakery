@@ -96,7 +96,9 @@ class BakeryTestResult(unittest.TestResult):
         klass_instance = method(test, test.operator.path)
         if hasattr(klass_instance, 'get_shell_command'):
             test.operator.logger.info('$ {}'.format(klass_instance.get_shell_command()))
-        klass_instance.apply(override_origin=True)
+
+        if test.apply_fix:
+            klass_instance.apply(override_origin=test.apply_fix)
 
     def _format_test_output(self, test, status):
         result = getattr(test, '_err_msg', '')
@@ -129,9 +131,6 @@ class BakeryTestResult(unittest.TestResult):
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
-            if getattr(test_method, 'autofix_always_run', False):
-                self.callmethod(test_method.autofix_method, test)
-
             # if testcase is marked as autofixed then add it to ff
             if hasattr(self.ff, 'append'):
                 self.ff.append(test)
@@ -237,11 +236,10 @@ class autofix(object):
     def __call__(self, f):
         f.autofix = True
         f.autofix_method = self.methodname
-        f.autofix_always_run = self.always_run
         return f
 
 
-def make_suite(path, definedTarget, test_method=None, log=None):
+def make_suite(path, definedTarget, apply_fix=False, test_method=None, log=None):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
     """
@@ -251,6 +249,7 @@ def make_suite(path, definedTarget, test_method=None, log=None):
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             TestCase.operator = operator
+            TestCase.apply_fix = apply_fix
 
             if getattr(TestCase, 'skipUnless', False):
                 if TestCase.skipUnless():
