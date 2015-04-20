@@ -32,7 +32,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('test', help="Action or target test suite",
                         choices=['*', 'list'] + available_tests)
-    parser.add_argument('file', nargs="+", help="Test files, can be a list")
+    parser.add_argument('file', nargs="*", help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
 
