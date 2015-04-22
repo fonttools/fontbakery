@@ -354,7 +354,7 @@ def createFonts(familydir, familyname):
         fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
         fontmetadata["style"] = u(inferStyle(ftfont))
         fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
-        fontmetadata["filename"] = f.lstrip('./')
+        fontmetadata["filename"] = os.path.basename(f.lstrip('./'))
         fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
         fonts.append(fontmetadata)
     return fonts

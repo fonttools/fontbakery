@@ -30,12 +30,10 @@ if __name__ == '__main__':
                         help="Autofix fonts if test has been failed", default=False)
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
+    parser.add_argument('--list-checks', '-l', action='store_true',
+                        help="Print available checks", default=False)
 
     args = parser.parse_args()
-
-    if not args.file:
-        print("Missing files to test", file=sys.stderr)
-        sys.exit(1)
 
     for x in args.file:
         failures = []
