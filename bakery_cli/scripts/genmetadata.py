@@ -481,12 +481,12 @@ def genmetadata(familydir):
         metadata["size"] = getSize(familydir)
                     # DC: this should check the filesize got smaller than last
                     # time
+    metadata["fonts"] = createFonts(familydir, familyname)
+    metadata["subsets"] = inferSubsets(familydir)
     setIfNotPresent(metadata, "dateAdded", getToday())
                     # DC This is used for the Date Added sort in the GWF
                     # Directory - DC to check all existing values in hg repo
                     # are correct
-    metadata["fonts"] = createFonts(familydir, familyname)
-    metadata["subsets"] = inferSubsets(familydir)
     return metadata
 
 
