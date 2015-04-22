@@ -26,6 +26,8 @@ if __name__ == '__main__':
     description = 'Runs checks or tests on specified TTF file(s)'
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
+    parser.add_argument('--autofix', '-f', action='store_true',
+                        help="Autofix fonts if test has been failed", default=False)
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
 
@@ -44,7 +46,7 @@ if __name__ == '__main__':
             print('ER: {} is not TTF'.format(x), file=sys.stderr)
             continue
 
-        result = run_set('result', test)
+        result = run_set('result', test, apply_fix=args.autofix)
         failures += [(testklass._testMethodName, testklass._err_msg)
                      for testklass in result.get('failure', [])]
         error += [(testklass._testMethodName, testklass._err_msg)
