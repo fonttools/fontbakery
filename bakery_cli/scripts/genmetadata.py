@@ -173,12 +173,20 @@ SUPPORTED_SUBSETS = frozenset([
 
 
 def inferLicense(familydir):
-    if familydir.find("ufl/") != -1:
-        return "UFL"
-    if familydir.find("ofl/") != -1:
-        return "OFL"
-    if familydir.find("apache/") != -1:
-        return "Apache2"
+    from bakery_cli.utils import UpstreamDirectory
+    directory = UpstreamDirectory(familydir)
+
+    if not directory.LICENSE:
+        return ""
+
+    with io.open(directory.LICENSE[0]) as fp:
+        content = fp.read()
+        if 'Apache License' in content:
+            return 'Apache2'
+        if 'SIL Open Font License, Version 1.1' in content:
+            return 'OFL'
+        if 'UBUNTU FONT LICENCE Version 1.0':
+            return 'UFL'
     return ""
 
 # DC This should check the italicangle matches the other ways italic can
