@@ -185,7 +185,7 @@ def inferLicense(familydir):
             return 'Apache2'
         if 'SIL Open Font License, Version 1.1' in content:
             return 'OFL'
-        if 'UBUNTU FONT LICENCE Version 1.0':
+        if 'UBUNTU FONT LICENCE Version 1.0' in content:
             return 'UFL'
     return ""
 
