@@ -29,11 +29,15 @@ if __name__ == '__main__':
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
 
+    parser.add_argument('--list-checks', '-l', action='store_true',
+                        help="Print available checks", default=False)
+
     args = parser.parse_args()
 
-    if not args.file:
-        print("Missing files to test", file=sys.stderr)
-        sys.exit(1)
+    if args.list_checks:
+        from bakery_lint.base import tests_report
+        print(tests_report('upstream'))
+        sys.exit()
 
     for x in args.file:
         if not x.lower().endswith('.otf'):

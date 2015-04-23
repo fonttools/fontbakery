@@ -291,11 +291,13 @@ def run_suite(suite):
     return result
 
 
-def tests_report():
+def tests_report(target=None):
     """ Small helper to make test report """
     f = lambda x: True if x.startswith('test') else False
     m = []
     for x in TestRegistry.list():
+        if target and target not in getattr(x, 'targets', []):
+            continue
         m.extend([getattr(x, i) for i in filter(f, dir(x))])
 
     for i in m:

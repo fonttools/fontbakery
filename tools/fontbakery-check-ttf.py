@@ -35,6 +35,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.list_checks:
+        from bakery_lint.base import tests_report
+        print(tests_report('result'))
+        sys.exit()
+
     for x in args.file:
         failures = []
         success = []

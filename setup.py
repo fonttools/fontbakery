@@ -82,7 +82,6 @@ setup(
              'tools/fontbakery-build-font2ttf.py',
              'tools/fontbakery-build-metadata.py',
              'tools/fontbakery-build.py',
-             'tools/fontbakery-check.py',
              'tools/fontbakery-check-ufo.py',
              'tools/fontbakery-check-description.py',
              'tools/fontbakery-check-ttf.py',

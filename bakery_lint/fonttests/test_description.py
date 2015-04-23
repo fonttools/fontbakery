@@ -27,7 +27,8 @@ class TestDescription404Links(TestCase):
     tool = 'FontBakery'
     name = __name__
 
-    def test_single(self):
+    def test_broken_links(self):
+        """ Check if DESCRIPTION.txt do not have broken links """
         contents = open(self.operator.path).read()
         doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
         for link in doc.xpath('//a/@href'):
