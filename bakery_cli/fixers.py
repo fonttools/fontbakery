@@ -219,6 +219,15 @@ class NbspAndSpaceSameWidth(Fixer):
                 return table.cmap[uchar]
         return None
 
+    def addCFFGlyph(glyphName=None, program=None, private=None,
+          globalSubrs=None, charStringsIndex=None, topDict=None, charStrings=None):
+        from fontTools.misc.psCharStrings import T2CharString
+        charString = T2CharString(program=program, private=private, globalSubrs=globalSubrs)
+        charStringsIndex.append(charString)
+        glyphID = len(topDict.charset)
+        charStrings.charStrings[glyphName] = glyphID
+        topDict.charset.append(glyphName)
+
     def addGlyph(self, uchar, glyph):
         # Add to glyph list
         glyphOrder = self.font.getGlyphOrder()
@@ -239,7 +248,18 @@ class NbspAndSpaceSameWidth(Fixer):
             table.cmap[uchar] = glyph
 
         # Add empty glyph outline
-        self.font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
+        if 'glyf' in self.font:
+            self.font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
+        else:
+            cff = self.font['CFF '].cff
+            addCFFGlyph(
+                glyphName=glyph,
+                private=cff.topDictIndex[0].topDict.Private,
+                globalSubrs=cff.GlobalSubrs,
+                charStringsIndex=cff.topDictIndex[0].topDict.CharStrings.charStrings.charStringsIndex,
+                topDict=cff.topDictIndex[0],
+                charStrings=cff.topDictIndex[0].CharStrings
+            )
         return glyph
 
     def getWidth(self, glyph):
