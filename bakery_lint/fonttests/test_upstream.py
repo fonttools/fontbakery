@@ -16,7 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import glob
 import os
-import os.path as op
 import re
 import yaml
 
@@ -44,7 +43,7 @@ class FontTestPrepolation(TestCase):
         # TODO does this glyphs list object get populated?
         glyphs = []
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.operator.path, f))
+            font = PiFont(os.path.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             if glyphs and glyphs != glyphs_:
@@ -57,7 +56,7 @@ class FontTestPrepolation(TestCase):
 
         glyphs = {}
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.operator.path, f))
+            font = PiFont(os.path.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             for glyphcode, glyphname in glyphs_:
@@ -74,7 +73,7 @@ class FontTestPrepolation(TestCase):
 
         glyphs = {}
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.operator.path, f))
+            font = PiFont(os.path.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             for g, glyphname in glyphs_:
@@ -120,6 +119,43 @@ class TestTTFAutoHintHasDeva(TestCase):
                        u' does not have `-f deva` option'))
 
 
+class CheckTextFilesExist(TestCase):
+
+    name = __name__
+    targets = ['upstream-repo']
+    tool = 'lint'
+
+    def assertExists(self, filename):
+        if not isinstance(filename, list):
+            filename = [filename]
+
+        exist = False
+        for p in filename:
+            if os.path.exists(os.path.join(self.operator.path, p)):
+                exist = True
+        if not exist:
+            self.fail('%s does not exist in project' % filename)
+
+    @tags('required')
+    def test_copyrighttxt_exists(self):
+        """ Font folder should contains COPYRIGHT.txt """
+        self.assertExists('COPYRIGHT.txt')
+
+    @tags('required')
+    def test_description_exists(self):
+        """ Font folder should contains DESCRIPTION.en_us.html """
+        self.assertExists('DESCRIPTION.en_us.html')
+
+    @tags('required')
+    def test_licensetxt_exists(self):
+        """ Font folder should contains LICENSE.txt """
+        self.assertExists(['LICENSE.txt', 'OFL.txt'])
+
+    def test_fontlogtxt_exists(self):
+        """ Font folder should contains FONTLOG.txt """
+        self.assertExists('FONTLOG.txt')
+
+
 class TestUpstreamRepo(TestCase):
     """ Tests for common upstream repository files.
 
@@ -135,30 +171,16 @@ class TestUpstreamRepo(TestCase):
     @tags('note')
     def test_bakery_yaml_exists(self):
         """ Repository contains bakery.yaml configuration file? """
-        f = os.path.exists(os.path.join(self.operator.path, '..', 'bakery.yaml'))
-        f = f or os.path.exists(os.path.join(self.operator.path, '..', 'bakery.yml'))
+        f = os.path.exists(os.path.join(self.operator.path, 'bakery.yaml'))
+        f = f or os.path.exists(os.path.join(self.operator.path, 'bakery.yml'))
         self.assertTrue(f,
                         msg=('File `bakery.yaml` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
-    def test_fontlog_txt_exists(self):
-        """ Repository contains FONTLOG.txt file? """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'FONTLOG.txt')),
-                        msg=('File `FONTLOG.txt` does not exist in root '
-                             'of upstream repository'))
-
-    @tags('note')
-    def test_description_html_exists(self):
-        """ Repository contains DESCRIPTION.en_us.html file? """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'DESCRIPTION.en_us.html')),
-                        msg=('File `DESCRIPTION.en_us.html` does not exist in root '
-                             'of upstream repository'))
-
-    @tags('note')
     def test_metadata_json_exists(self):
         """ Repository contains METADATA.json file? """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'METADATA.json')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'METADATA.json')),
                         msg=('File `METADATA.json` does not exist in root '
                              'of upstream repository'))
 
@@ -234,7 +256,7 @@ class FontaineTest(TestCase):
 
         directory = UpstreamDirectory(cls.operator.path)
 
-        yamlpath = op.join(cls.operator.path, 'bakery.yaml')
+        yamlpath = os.path.join(cls.operator.path, 'bakery.yaml')
         try:
             bakerydata = yaml.load(open(yamlpath))
         except IOError:
@@ -242,7 +264,7 @@ class FontaineTest(TestCase):
             bakerydata = yaml.load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
         for fontpath in directory.UFO + directory.TTX:
-            font = FontFactory.openfont(op.join(cls.operator.path, fontpath))
+            font = FontFactory.openfont(os.path.join(cls.operator.path, fontpath))
             for charmap in font.get_orthographies(_library=library):
                 common_name = charmap.charmap.common_name.replace('Subset ', '')
                 shortname = pattern.sub('', common_name)
@@ -258,6 +280,7 @@ def get_suite(path, apply_autofix=False):
     suite = unittest.TestSuite()
 
     testcases = [
+        CheckTextFilesExist,
         FontTestPrepolation,
         TestTTFAutoHintHasDeva,
         TestUpstreamRepo,

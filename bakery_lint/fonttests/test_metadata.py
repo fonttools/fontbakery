@@ -108,20 +108,6 @@ class MetadataTest(TestCase):
     def setUp(self):
         self.metadata = json.load(open(self.operator.path))
 
-    def test_description_is_valid_html(self):
-        """ DESCRIPTION.en_us.html is not real html file """
-        p = op.join(op.dirname(self.operator.path), 'DESCRIPTION.en_us.html')
-        msg = 'DESCRIPTION.en_us.html is not real html file'
-        self.assertEqual(magic.from_file(p, mime=True), 'text/html', msg)
-
-    def test_description_is_more_than_500b(self):
-        """ DESCRIPTION.en_us.html is more than 500 bytes """
-        p = op.join(op.dirname(self.operator.path), 'DESCRIPTION.en_us.html')
-        msg = 'DESCRIPTION.en_us.html is not real html file'
-        statinfo = os.stat(p)
-        msg = 'DESCRIPTION.en_us.html must have size larger than 500 bytes'
-        self.assertGreater(statinfo.st_size, 500, msg)
-
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
         url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
@@ -455,43 +441,6 @@ class CheckMetadataContainsReservedFontName(TestCase):
 
         for font_metadata in fm.fonts:
             self.assertLessEqual(len(font_metadata.copyright), 500)
-
-
-class CheckTextFilesExist(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    def assertExists(self, filename):
-        if not isinstance(filename, list):
-            filename = [filename]
-
-        exist = False
-        for p in filename:
-            if op.exists(op.join(op.dirname(self.operator.path), p)):
-                exist = True
-        if not exist:
-            self.fail('%s does not exist in project' % filename)
-
-    @tags('required')
-    def test_copyrighttxt_exists(self):
-        """ Font folder should contains COPYRIGHT.txt """
-        self.assertExists('COPYRIGHT.txt')
-
-    @tags('required')
-    def test_description_exists(self):
-        """ Font folder should contains DESCRIPTION.en_us.html """
-        self.assertExists('DESCRIPTION.en_us.html')
-
-    @tags('required')
-    def test_licensetxt_exists(self):
-        """ Font folder should contains LICENSE.txt """
-        self.assertExists(['LICENSE.txt', 'OFL.txt'])
-
-    def test_fontlogtxt_exists(self):
-        """ Font folder should contains FONTLOG.txt """
-        self.assertExists('FONTLOG.txt')
 
 
 class File(object):
