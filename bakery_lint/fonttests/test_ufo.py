@@ -28,7 +28,8 @@ from robofab.pens.digestPen import DigestPointPen
 from bakery_cli.ttfont import PiFont
 from bakery_cli.utils import UpstreamDirectory
 from bakery_lint import unicodeTools
-from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.base import BakeryTestCase as TestCase, tags, \
+    TestCaseOperator
 
 
 class TestDiacritic(TestCase):
@@ -1144,3 +1145,49 @@ class UniqueUnicodeValues(TestCase):
 
                 if duplicates:
                     self.fail("Unicode value of {0} is also used by {1}".format(glyph.name, " ".join(duplicates)))
+
+
+def get_suite(path, apply_autofix=False):
+    import unittest
+    suite = unittest.TestSuite()
+
+    testcases = [
+        TestDiacritic,
+        TestComponentMetrics,
+        TestForOverlappingPoints,
+        TestForUnnecessaryPoints,
+        TestForStrayPoints,
+        TestForUnevenHandles,
+        TestForUnnecessaryHandles,
+        TestForCrossedHandles,
+        TestForComplexCurves,
+        TestUnsmoothSmooths,
+        TestForSegmentsNearVerticalMetrics,
+        TestForStraightLines,
+        TestForExtremePoints,
+        TestForOpenContours,
+        TestForSmallContours,
+        TestDuplicateContours,
+        TestLigatureMetrics,
+        TestMetricsSymmetry,
+        TestUFOFontFamilyNamingTest,
+        UfoOpenTest,
+        UniqueUnicodeValues
+    ]
+
+    for testcase in testcases:
+
+        testcase.operator = TestCaseOperator(path)
+        testcase.apply_fix = apply_autofix
+
+        if getattr(testcase, 'skipUnless', False):
+            if testcase.skipUnless():
+                continue
+
+        if getattr(testcase, '__generateTests__', None):
+            testcase.__generateTests__()
+
+        for test in unittest.defaultTestLoader.loadTestsFromTestCase(testcase):
+            suite.addTest(test)
+
+    return suite

@@ -19,7 +19,8 @@ from __future__ import print_function
 import argparse
 import sys
 
-from bakery_lint import run_set
+from bakery_lint.fonttests.test_ufo import get_suite
+from bakery_lint.base import run_suite
 
 
 if __name__ == '__main__':
@@ -40,20 +41,19 @@ if __name__ == '__main__':
         sys.exit()
 
     for x in args.file:
-        failures = []
-        success = []
-        error = []
 
         if not x.lower().endswith('.ufo'):
             print('ER: {} is not UFO'.format(x), file=sys.stderr)
             continue
 
-        result = run_set('upstream', test)
-        failures += [(testklass._testMethodName, testklass._err_msg)
+        suite = get_suite(x)
+
+        result = run_suite(suite)
+        failures = [(testklass._testMethodName, testklass._err_msg)
                      for testklass in result.get('failure', [])]
-        error += [(testklass._testMethodName, testklass._err_msg)
+        error = [(testklass._testMethodName, testklass._err_msg)
                   for testklass in result.get('error', [])]
-        success += [(testklass._testMethodName, 'OK')
+        success = [(testklass._testMethodName, 'OK')
                     for testklass in result.get('success', [])]
 
         if not bool(failures + error):

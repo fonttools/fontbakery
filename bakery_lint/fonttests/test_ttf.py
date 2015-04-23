@@ -27,7 +27,8 @@ import unicodedata
 from contextlib import contextmanager
 from fontTools import ttLib
 
-from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
+from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix, \
+    TestCaseOperator
 from bakery_cli.fixers import RenameFileWithSuggestedName
 from bakery_cli.fixers import ReplaceOFLLicenseURL, ReplaceApacheLicenseURL, \
     ReplaceOFLLicenseWithShortLine, ReplaceApacheLicenseWithShortLine
@@ -853,3 +854,32 @@ class TestKerningPairs(TestCase):
         kerningpairs = len(ttf['kern'].kernTables[0].kernTable.keys())
         msg = "Kerning pairs to total glyphs is {0}:{1}"
         self.fail(msg.format(glyphs, kerningpairs))
+
+
+def get_suite(path, apply_autofix=False):
+    import unittest
+    suite = unittest.TestSuite()
+
+    testcases = [
+        TTFTestCase,
+        FontForgeValidateStateTest,
+        CheckFontAgreements,
+        TestKerningPairs
+    ]
+
+    for testcase in testcases:
+
+        testcase.operator = TestCaseOperator(path)
+        testcase.apply_fix = apply_autofix
+
+        if getattr(testcase, 'skipUnless', False):
+            if testcase.skipUnless():
+                continue
+
+        if getattr(testcase, '__generateTests__', None):
+            testcase.__generateTests__()
+        
+        for test in unittest.defaultTestLoader.loadTestsFromTestCase(testcase):
+            suite.addTest(test)
+
+    return suite

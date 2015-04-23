@@ -25,7 +25,8 @@ from fontaine.cmap import Library
 
 from bakery_cli.ttfont import PiFont
 from bakery_cli.utils import UpstreamDirectory
-from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.base import BakeryTestCase as TestCase, tags, \
+    TestCaseOperator
 
 
 COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
@@ -250,3 +251,32 @@ class FontaineTest(TestCase):
 
                 exec 'cls.test_charset_%s = get_test_subset_function(%s)' % (shortname, charmap.coverage)
                 exec 'cls.test_charset_%s.__func__.__doc__ = "Is %s covered 100%%?"' % (shortname, common_name)
+
+
+def get_suite(path, apply_autofix=False):
+    import unittest
+    suite = unittest.TestSuite()
+
+    testcases = [
+        FontTestPrepolation,
+        TestTTFAutoHintHasDeva,
+        TestUpstreamRepo,
+        FontaineTest
+    ]
+
+    for testcase in testcases:
+
+        testcase.operator = TestCaseOperator(path)
+        testcase.apply_fix = apply_autofix
+
+        if getattr(testcase, 'skipUnless', False):
+            if testcase.skipUnless():
+                continue
+
+        if getattr(testcase, '__generateTests__', None):
+            testcase.__generateTests__()
+        
+        for test in unittest.defaultTestLoader.loadTestsFromTestCase(testcase):
+            suite.addTest(test)
+
+    return suite

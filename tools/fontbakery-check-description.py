@@ -48,16 +48,12 @@ if __name__ == '__main__':
         
         suite = get_suite(x)
 
-        failures = []
-        success = []
-        error = []
-
         result = run_suite(suite)
-        failures += [(testklass._testMethodName, testklass._err_msg)
+        failures = [(testklass._testMethodName, testklass._err_msg)
                      for testklass in result.get('failure', [])]
-        error += [(testklass._testMethodName, testklass._err_msg)
+        error = [(testklass._testMethodName, testklass._err_msg)
                   for testklass in result.get('error', [])]
-        success += [(testklass._testMethodName, 'OK')
+        success = [(testklass._testMethodName, 'OK')
                     for testklass in result.get('success', [])]
 
         if not bool(failures + error):
