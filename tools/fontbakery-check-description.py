@@ -17,9 +17,11 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
+import os
 import sys
 
-from bakery_lint import run_set
+from bakery_lint.fonttests.test_description import get_suite
+from bakery_lint.base import run_suite
 
 
 if __name__ == '__main__':
@@ -40,15 +42,17 @@ if __name__ == '__main__':
         sys.exit()
 
     for x in args.file:
-        if not x.lower().endswith('DESCRIPTION.txt'):
-            print('ER: {} is not DESCRIPTION.txt'.format(x), file=sys.stderr)
+        if not os.path.basename(x).startswith('DESCRIPTION.'):
+            print('ER: {} is not DESCRIPTION'.format(x), file=sys.stderr)
             continue
+        
+        suite = get_suite(x)
 
         failures = []
         success = []
         error = []
 
-        result = run_set('description', test)
+        result = run_suite(suite)
         failures += [(testklass._testMethodName, testklass._err_msg)
                      for testklass in result.get('failure', [])]
         error += [(testklass._testMethodName, testklass._err_msg)

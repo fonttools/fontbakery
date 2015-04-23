@@ -14,11 +14,13 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from lxml.html import HTMLParser
+import unittest
 import defusedxml.lxml
 import requests
 
-from bakery_lint.base import BakeryTestCase as TestCase
+from lxml.html import HTMLParser
+
+from bakery_lint.base import BakeryTestCase as TestCase, TestCaseOperator
 
 
 class TestDescription404Links(TestCase):
@@ -28,8 +30,11 @@ class TestDescription404Links(TestCase):
     name = __name__
 
     def test_broken_links(self):
-        """ Check if DESCRIPTION.txt do not have broken links """
-        contents = open(self.operator.path).read()
+        """ Check if DESCRIPTION do not have broken links """
+        try:
+            contents = open(self.operator.path).read()
+        except:
+            self.fail('File {} does not exist'.format(self.operator.path))
         doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
         for link in doc.xpath('//a/@href'):
             try:
@@ -38,3 +43,11 @@ class TestDescription404Links(TestCase):
                                  msg='%s is broken' % link)
             except requests.exceptions.RequestException as ex:
                 self.fail('%s raises exception [%r]' % (link, ex))
+
+
+def get_suite(path):
+    suite = unittest.TestSuite()
+    TestDescription404Links.operator = TestCaseOperator(path)
+    for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestDescription404Links):
+        suite.addTest(test)
+    return suite
