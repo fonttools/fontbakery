@@ -1061,3 +1061,52 @@ class CheckCanonicalFilenames(TestCase):
         if not style_weight:
             style_weight = 'Regular'
         return '%s-%s.ttf' % (familyname, style_weight)
+
+
+def get_suite(path, apply_autofix=False):
+    import unittest
+    suite = unittest.TestSuite()
+
+    testcases = [
+        MetadataSubsetsListTest,
+        MetadataTest,
+        TestFontOnDiskFamilyEqualToMetadataJSON,
+        TestPostScriptNameInMetadataEqualFontOnDisk,
+        CheckMetadataAgreements,
+        CheckMetadataContainsReservedFontName,
+        CheckSubsetsExist,
+        CheckMonospaceAgreement,
+        CheckItalicStyleMatchesMacStyle,
+        CheckNormalStyleMatchesMacStyle,
+        CheckMetadataMatchesNameTable,
+        CheckMetadataFields,
+        CheckMenuSubsetContainsProperGlyphs,
+        CheckGlyphConsistencyInFamily,
+        CheckFontNameNotInCamelCase,
+        CheckFontsMenuAgreements,
+        CheckFamilyNameMatchesFontNames,
+        CheckCanonicalWeights,
+        CheckPostScriptNameMatchesWeight,
+        CheckFontWeightSameAsInMetadata,
+        CheckFullNameEqualCanonicalName,
+        CheckCanonicalStyles,
+        TestSpaceIndentationInMetadata,
+        CheckCanonicalFilenames
+    ]
+
+    for testcase in testcases:
+
+        testcase.operator = TestCaseOperator(path)
+        testcase.apply_fix = apply_autofix
+
+        if getattr(testcase, 'skipUnless', False):
+            if testcase.skipUnless():
+                continue
+
+        if getattr(testcase, '__generateTests__', None):
+            testcase.__generateTests__()
+        
+        for test in unittest.defaultTestLoader.loadTestsFromTestCase(testcase):
+            suite.addTest(test)
+
+    return suite

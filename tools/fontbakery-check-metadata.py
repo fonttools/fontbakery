@@ -19,7 +19,8 @@ from __future__ import print_function
 import argparse
 import sys
 
-from bakery_lint import run_set
+from bakery_lint.fonttests.test_metadata import get_suite
+from bakery_lint.base import run_suite
 
 
 if __name__ == '__main__':
@@ -43,20 +44,18 @@ if __name__ == '__main__':
 
     for x in args.file:
 
-        if not x.lower().endswith('METADATA.json'):
+        if not x.lower().endswith('metadata.json'):
             print('ER: {} is not METADATA.json'.format(x), file=sys.stderr)
             continue
 
-        failures = []
-        success = []
-        error = []
+        suite = get_suite(x, apply_autofix=args.autofix)
 
-        result = run_set('metadata', test, apply_fix=args.autofix)
-        failures += [(testklass._testMethodName, testklass._err_msg)
+        result = run_suite(suite)
+        failures = [(testklass._testMethodName, testklass._err_msg)
                      for testklass in result.get('failure', [])]
-        error += [(testklass._testMethodName, testklass._err_msg)
+        error = [(testklass._testMethodName, testklass._err_msg)
                   for testklass in result.get('error', [])]
-        success += [(testklass._testMethodName, 'OK')
+        success = [(testklass._testMethodName, 'OK')
                     for testklass in result.get('success', [])]
 
         if not bool(failures + error):
