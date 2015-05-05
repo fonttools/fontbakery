@@ -17,6 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License
 import argparse
 import os
+import os.path
 
 from bakery_cli.fixers import FamilyAndStyleNameFixer
 
@@ -30,6 +31,9 @@ parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 args = parser.parse_args()
 
 for path in args.ttf_font:
+
     if not os.path.exists(path):
         continue
+
     FamilyAndStyleNameFixer(None, path).apply()
+

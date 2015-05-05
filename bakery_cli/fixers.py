@@ -83,8 +83,7 @@ class FontItalicStyleFixer(Fixer):
 
     def is_valid(self):
         has_errors = False
-        import pdb; pdb.set_trace()
-        regex = re.compile(r'-(.*?)Italic\.ttf$')
+        regex = re.compile(r'-(.*?)Italic\.ttf')
         match = regex.search(self.fontpath)
         if match:
             ttfont = ttLib.TTFont(self.fontpath)
@@ -467,6 +466,10 @@ class FamilyAndStyleNameFixer(Fixer):
     def getOrCreateNameRecord(self, nameId, val):
         result_namerec = self.font['name'].getName(nameId, 3, 1)
         if result_namerec:
+            if result_namerec.isUnicode():
+                result_namerec.string = (val or '').encode("utf-16-be")
+            else:
+                result_namerec.string = val or ''
             return result_namerec
 
         ot_namerecord = NameRecord()
@@ -521,9 +524,8 @@ class FamilyAndStyleNameFixer(Fixer):
         # import pdb; pdb.set_trace()
 
         for field in fontdata['names']:
-            value = nameTableRead(self.font, field['nameID'])
-            if not value:
-                self.getOrCreateNameRecord(field['nameID'], value)
+            self.getOrCreateNameRecord(field['nameID'], field['string'])
+
         return True
 
 

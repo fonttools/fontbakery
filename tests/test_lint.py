@@ -66,6 +66,9 @@ class TestSuggestNameTestCase(TestCase):
                 # As font is Bold this value is always 700
                 'usWeightClass': 700,
             },
+            'post': {
+                'italicAngle': -13
+            },
             'head': {
                 'macStyle': 0b11,  # Bold & Italic
             },
@@ -97,6 +100,9 @@ class TestSuggestNameTestCase(TestCase):
                 'fsSelection': 0,  # Regular
                 'usWeightClass': 300,  # Light
             },
+            'post': {
+                'italicAngle': -13
+            },
             'head': {
                 'macStyle': 0,  # Regular
             },
@@ -127,6 +133,9 @@ class TestSuggestNameTestCase(TestCase):
             'OS/2': {
                 'fsSelection': 0b00001,  # Regular
                 'usWeightClass': 300,  # Light
+            },
+            'post': {
+                'italicAngle': -13
             },
             'head': {
                 'macStyle': 0b10,  # Italic
@@ -162,6 +171,9 @@ class TestSuggestNameTestCase(TestCase):
             'head': {
                 'macStyle': 0b01,  # Italic
             },
+            'post': {
+                'italicAngle': -13
+            },
             'CFF': {
                 'Weight': 400,  # This value have to be fixed to 300
             }
@@ -192,6 +204,9 @@ class TestSuggestNameTestCase(TestCase):
             },
             'head': {
                 'macStyle': 0b00,  # Italic
+            },
+            'post': {
+                'italicAngle': -13
             },
             'CFF': {
                 'Weight': 400,  # This value have to be fixed to 300
