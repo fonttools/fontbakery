@@ -73,10 +73,13 @@ class PyFtSubset(object):
         for name in pipedata['bin_files']:
             self.run(name, pipedata)
 
-    def run(self, name, pipedata):
+    def run(self, pipedata):
         # create menu subset with glyph for text of family name
         if pipedata.get('pyftsubset') is False:
             return
+
+        from bakery_cli.utils import ProcessedFile
+        name = ProcessedFile()
 
         self.bakery.logging_raw('### Subset TTFs (pyftsubset) {}\n'.format(name))
 

@@ -26,9 +26,12 @@ class TTFAutoHint(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def run(self, filepath, pipedata):
+    def run(self, pipedata):
         if not pipedata.get('ttfautohint', ''):
             return False
+
+        from bakery_cli.utils import ProcessedFile
+        filepath = ProcessedFile()
 
         self.bakery.logging_raw('### Autohint TTFs (ttfautohint) {}\n'.format(filepath))
 

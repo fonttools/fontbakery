@@ -82,12 +82,6 @@ class Build(object):
                 self.execute_ufo_sfd([op.join('sources', x) for x in directory.UFO], pipedata)
             if directory.SFD:
                 self.execute_ufo_sfd([op.join('sources', x) for x in directory.SFD], pipedata)
-
-            # binfiles = self.movebin_to_builddir([op.join('sources', x) for x in directory.ALL_FONTS])
-
-            # self.print_vertical_metrics(binfiles)
-
-            # pipedata['bin_files'] = binfiles
         except:
             raise
 
@@ -125,20 +119,24 @@ class Build(object):
         from bakery_cli.pipe.ttfautohint import TTFAutoHint
         from bakery_cli.pipe.font_crunch import FontCrunch
 
+        from bakery_cli.utils import ProcessedFile
+        processedfile = ProcessedFile()
+        processedfile.filepath = filename
+
         fontlint = FontLint(self.bakery)
-        fontlint.run(filename, pipedata)
+        fontlint.run(pipedata)
 
         optimize = Optimize(self.bakery)
-        optimize.run(filename, pipedata)
+        optimize.run(pipedata)
 
         ttfautohint = TTFAutoHint(self.bakery)
-        ttfautohint.run(filename, pipedata)
+        ttfautohint.run(pipedata)
 
         pyftsubset = PyFtSubset(self.bakery)
-        pyftsubset.run(filename, pipedata)
+        pyftsubset.run(pipedata)
 
         fontcrunch = FontCrunch(self.bakery)
-        fontcrunch.run(filename, pipedata)
+        fontcrunch.run(pipedata)
 
     def execute_ttx(self, files, pipedata):
         paths = []

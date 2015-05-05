@@ -35,9 +35,12 @@ class Optimize(object):
         for filename in UpstreamDirectory(self.builddir).BIN:
             self.run(op.join(self.builddir, filename), pipedata)
 
-    def run(self, filename, pipedata):
+    def run(self, pipedata):
         if 'optimize' in pipedata and not pipedata['optimize']:
             return
+
+        from bakery_cli.utils import ProcessedFile
+        filename = ProcessedFile()
 
         self.bakery.logging_raw('### Optimize TTF {}'.format(filename))
         # copied from https://code.google.com/p/noto/source/browse/nototools/subset.py

@@ -46,17 +46,20 @@ class FontLint(object):
         l.write(yaml.safe_dump(testsresult))
         l.close()
 
-    def run(self, ttf_path, pipedata):
+    def run(self, pipedata):
         if 'downstream' in pipedata and not pipedata['downstream']:
             return
 
-        self.bakery.logging_raw('### Test %s\n' % ttf_path)
+        from bakery_cli.utils import ProcessedFile
+        processedfile = ProcessedFile()
 
-        self.bakery.logging_cmd('fontbakery-check.py result {}'.format(ttf_path))
+        self.bakery.logging_raw('### Test %s\n' % processedfile)
+
+        self.bakery.logging_cmd('fontbakery-check.py result {}'.format(processedfile))
 
         try:
-            data = run_set(op.join(self.builddir, ttf_path), 'result', apply_fix=True)
-            l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
+            data = run_set(op.join(self.builddir, processedfile), 'result', apply_fix=True)
+            l = open(os.path.join(self.builddir, '{}.yaml'.format(processedfile[:-4])), 'w')
             l.write(yaml.safe_dump(data))
             l.close()
         except Exception as ex:

@@ -43,6 +43,7 @@ class Fixer(object):
         self.fontpath = fontpath
         self.fixfont_path = '{}.fix'.format(fontpath)
         self.testcase = testcase
+        self.save_after_fix = True
 
     def fix(self):
         """ Make a concrete fix for the font.
@@ -59,6 +60,9 @@ class Fixer(object):
         if not self.fix(*args, **kwargs):
             return False
 
+        if not self.save_after_fix:
+            return True
+            
         self.font.save(self.fixfont_path)
 
         if override_origin and os.path.exists(self.fixfont_path):
@@ -682,14 +686,22 @@ class RenameFileWithSuggestedName(Fixer):
         return '{0}{1}'.format(expectedname, extension)
 
     def fix(self):
+        newfilename = self.validate()
+
         new_targetpath = os.path.join(os.path.dirname(self.fontpath),
-                                      self.validate())
+                                      newfilename)
         shutil.move(self.fontpath, new_targetpath)
 
         from bakery_cli.logger import logger
         logger.info('$ mv {} {}'.format(self.fontpath, os.path.basename(new_targetpath)))
 
         self.testcase.operator.path = new_targetpath
+        from bakery_cli.utils import ProcessedFile
+        
+        f = ProcessedFile()
+        f.filepath = newfilename
+
+        self.save_after_fix = False
         return True
 
 

@@ -27,33 +27,43 @@ import subprocess
 from bakery_cli.logger import logger
 
 
-class RedisFd(object):
-    """ Redis File Descriptor class, publish writen data to redis channel
-        in parallel to file """
-    def __init__(self, name, mode='a', write_pipeline=None):
-        self.filed = open(name, mode)
-        self.filed.write("Start: Start of log\n")  # end of log
-        self.write_pipeline = write_pipeline
-        if write_pipeline and not isinstance(write_pipeline, list):
-            self.write_pipeline = [write_pipeline]
+class ProcessedFile(object):
 
-    def write(self, data, prefix=''):
-        if self.write_pipeline:
+    class __ProcessedFile:
+    
+        def __init__(self):
+            self.filepath = None
+    
+        def __str__(self):
+            return self.filepath
 
-            for pipeline in self.write_pipeline:
-                data = pipeline(data)
+        def __add__(self, other):
+            return str(self) + other
 
-        if not data.endswith('\n'):
-            data += '\n'
+        def __radd__(self, other):
+            return other + str(self)
 
-        data = re.sub('\n{3,}', '\n\n', data)
-        if data:
-            self.filed.write("%s%s" % (prefix, data))
-            self.filed.flush()
+        def __len__(self):
+            return len(self.filepath)
 
-    def close(self):
-        self.filed.write("End: End of log\n")  # end of log
-        self.filed.close()
+        def __getitem__(self, index):
+            return self.filepath[index]
+
+        def startswith(self, b):
+            return self.filepath[:len(b) - 1] == b
+
+    instance = None
+
+    def __new__(cls):
+        if not ProcessedFile.instance:
+            ProcessedFile.instance = ProcessedFile.__ProcessedFile()
+        return ProcessedFile.instance
+
+    def __getattr__(self, name):
+        return getattr(self.instance, name)
+
+    def __setattr__(self, name):
+        return setattr(self.instance, name)
 
 
 class UpstreamDirectory(object):
@@ -340,20 +350,6 @@ def fix_all_names(fontdata, familyname):
             names.append({'nameID': nameID, 'string': string})
             
     fontdata['names'] = names
-
-    # names = fontdata['names']
-
-    # for nameID in [1, 2, 4, 6, 16, 17, 18]:
-    #     string = rules.apply(nameID)
-    #     for namerecord in names:
-    #         nameRecordExists = False
-    #         if namerecord['nameID'] == nameID:
-    #             namerecord['string'] = string
-    #             nameRecordExists = True
-    #             break
-
-    #     if not nameRecordExists:
-    #         names.append({'nameID': nameID, 'string': string})
 
     return fontdata
 

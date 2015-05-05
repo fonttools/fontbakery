@@ -29,9 +29,13 @@ class FontCrunch(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def run(self, filename, pipedata):
+    def run(self, pipedata):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
+
+        from bakery_cli.utils import ProcessedFile
+        filename = ProcessedFile()
+        
         filename = os.path.join(self.builddir, filename)
         self.bakery.logging_raw('### Fontcrunch {}\n'.format(filename))
 
