@@ -323,21 +323,37 @@ def fix_all_names(fontdata, familyname):
                                  'familyName': familyname,
                                  'weight': weight})
 
-    names = fontdata['names']
+    names = []
+    passedNamesId = []
 
-    for nameID in [1, 2, 4, 6, 16, 17, 18]:
-        string = rules.apply(nameID)
-        for namerecord in names:
-            nameRecordExists = False
-            if namerecord['nameID'] == nameID:
-                namerecord['string'] = string
-                nameRecordExists = True
-                break
+    for rec in fontdata['names']:
+        string = rec['string']
+        if rec['nameID'] in [1, 2, 4, 6, 16, 17, 18]:
+            string = rules.apply(rec['nameID'])
+            passedNamesId.append(rec['nameID'])
+        names.append({'nameID': rec['nameID'], 'string': string})
 
-        if not nameRecordExists:
+    difference = set([1, 2, 4, 6, 16, 17, 18]).difference(set(passedNamesId))
+    if difference:
+        for nameID in difference:
+            string = rules.apply(nameID)
             names.append({'nameID': nameID, 'string': string})
-
+            
     fontdata['names'] = names
+
+    # names = fontdata['names']
+
+    # for nameID in [1, 2, 4, 6, 16, 17, 18]:
+    #     string = rules.apply(nameID)
+    #     for namerecord in names:
+    #         nameRecordExists = False
+    #         if namerecord['nameID'] == nameID:
+    #             namerecord['string'] = string
+    #             nameRecordExists = True
+    #             break
+
+    #     if not nameRecordExists:
+    #         names.append({'nameID': nameID, 'string': string})
 
     return fontdata
 
