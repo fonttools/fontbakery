@@ -323,13 +323,19 @@ def fix_all_names(fontdata, familyname):
                                  'familyName': familyname,
                                  'weight': weight})
 
-    names = []
+    names = fontdata['names']
 
-    for rec in fontdata['names']:
-        string = rec['string']
-        if rec['nameID'] in [1, 2, 4, 6, 16, 17, 18]:
-            string = rules.apply(rec['nameID'])
-        names.append({'nameID': rec['nameID'], 'string': string})
+    for nameID in [1, 2, 4, 6, 16, 17, 18]:
+        string = rules.apply(nameID)
+        for namerecord in names:
+            nameRecordExists = False
+            if namerecord['nameID'] == nameID:
+                namerecord['string'] = string
+                nameRecordExists = True
+                break
+
+        if not nameRecordExists:
+            names.append({'nameID': nameID, 'string': string})
 
     fontdata['names'] = names
 
