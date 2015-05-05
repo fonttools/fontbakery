@@ -322,17 +322,16 @@ def fix_all_names(fontdata, familyname):
                                  'isItalic': isItalic,
                                  'familyName': familyname,
                                  'weight': weight})
-    for nameID in [1, 2, 4, 6, 16, 17, 18]:
-        string = rules.apply(nameID)
-        for namerecord in fontdata['names']:
-            nameRecordExists = False
-            if namerecord['nameID'] == nameID:
-                namerecord['string'] = string
-                nameRecordExists = True
-                break
 
-        if not nameRecordExists:
-            fontdata['names'].append({'nameID': nameID, 'string': string})
+    names = []
+
+    for rec in fontdata['names']:
+        string = rec['string']
+        if rec['nameID'] in [1, 2, 4, 6, 16, 17, 18]:
+            string = rules.apply(rec['nameID'])
+        names.append({'nameID': rec['nameID'], 'string': string})
+
+    fontdata['names'] = names
 
     return fontdata
 
@@ -462,7 +461,6 @@ class NameTableNamingRule(object):
             tsn = 'Regular'
         elif self.fontconfig['isItalic']:
             tsn = 'Italic'
-
         return tsn
 
     def ruleNameID_18(self):

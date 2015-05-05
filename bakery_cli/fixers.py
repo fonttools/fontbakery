@@ -108,10 +108,15 @@ class FontItalicStyleFixer(Fixer):
             for name in ttfont['name'].names:
                 if name.nameID not in [2, 4, 6, 17]:
                     continue
-                if name.string.endswith('Italic'):
-                    logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, name.string))
+
+                if name.isUnicode():
+                    string = name.string.decode('utf-16-be')
                 else:
-                    logger.error('ER: NAME ID{}:\t{}'.format(name.nameID, name.string))
+                    string = name.string
+                if string.endswith('Italic'):
+                    logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
+                else:
+                    logger.error('ER: NAME ID{}:\t{}'.format(name.nameID, string))
         else:
             pass
 
@@ -464,12 +469,15 @@ class FamilyAndStyleNameFixer(Fixer):
         return "fontbakery-fix-opentype-names.py {}".format(self.fontpath)
 
     def getOrCreateNameRecord(self, nameId, val):
-        result_namerec = self.font['name'].getName(nameId, 3, 1)
+        result_namerec = None
+        for k, p in [[1, 0], [3, 1]]:
+            result_namerec = self.font['name'].getName(nameId, k, p)
+            if result_namerec:
+                if result_namerec.isUnicode():
+                    result_namerec.string = (val or '').encode("utf-16-be")
+                else:
+                    result_namerec.string = val or ''
         if result_namerec:
-            if result_namerec.isUnicode():
-                result_namerec.string = (val or '').encode("utf-16-be")
-            else:
-                result_namerec.string = val or ''
             return result_namerec
 
         ot_namerecord = NameRecord()
@@ -521,11 +529,9 @@ class FamilyAndStyleNameFixer(Fixer):
                 familyname = rec['string']
                 break
         fontdata = fix_all_names(fontdata, familyname)
-        # import pdb; pdb.set_trace()
 
         for field in fontdata['names']:
             self.getOrCreateNameRecord(field['nameID'], field['string'])
-
         return True
 
 
