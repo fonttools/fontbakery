@@ -75,6 +75,7 @@ class TTFTestCase(TestCase):
                 self.fail('FontForge prints STDERR')
 
     @tags('info',)
+    @autofix('bakery_cli.fixers.RenameFileWithSuggestedName')
     def test_source_ttf_font_filename_equals_familystyle(self):
         """ Source TTF Font filename equals family style """
         fixer = RenameFileWithSuggestedName(self, self.operator.path)

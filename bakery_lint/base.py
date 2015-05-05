@@ -91,6 +91,7 @@ class BakeryTestResult(unittest.TestResult):
         pkg = '.'.join(methodname.split('.')[:-1])
         mod = importlib.import_module(pkg)
         method = getattr(mod, methodname.split('.')[-1])
+
         if not inspect.isclass(method):
             return method(test)
         klass_instance = method(test, test.operator.path)
@@ -165,12 +166,15 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(test_method, 'autofix'):
             if not self.restart:
                 self.callmethod(test_method.autofix_method, failTest)
-                if hasattr(self.ff, 'append'):
-                    self.ff.append(failTest)
+                if hasattr(self.fl, 'append'):
+                    self.fl.append(failTest)
                     self.restart = True  # mark next test as restarted
                     test.run(result=self)
                     self.restart = False  # reset restart state
                     return
+            else:
+                if hasattr(self.ff, 'append'):
+                    self.ff.append(failTest)
         elif hasattr(self.fl, 'append'):
             self.fl.append(failTest)
 

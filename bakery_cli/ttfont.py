@@ -644,6 +644,12 @@ def getSuggestedFontNameValues(font):
         subfamily_name = 'Black'
     elif subfamily_name == 'Heavy Italic':
         subfamily_name = 'Black Italic'
+
+    if font['post'].italicAngle != 0 or font['head'].macStyle & 0b10:
+        subfamily_name = 'Italic'
+        if font['head'].macStyle & 0b01:
+            subfamily_name = 'Bold{}'.format(subfamily_name)
+
     return {'family': family_name, 'subfamily': subfamily_name}
 
 

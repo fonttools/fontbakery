@@ -308,6 +308,8 @@ def fix_all_names(fontdata, familyname):
         isItalic = True
     if fontdata['head']['macStyle'] & 0b10:
         isItalic = True
+    if fontdata['post']['italicAngle'] != 0:
+        isItalic = True
 
     weight = fontdata['OS/2']['usWeightClass']
 
@@ -399,8 +401,6 @@ class NameTableNamingRule(object):
             return self.ruleNameID_1() + ' Italic'
         elif self.fontconfig['isItalic'] and self.fontconfig['isBold']:
             return self.ruleNameID_1() + ' Bold Italic'
-        elif self.fontconfig['weight'] == 400:
-            return self.ruleNameID_1() + ' Regular'
         return self.ruleNameID_1()
 
     def ruleNameID_6(self):
@@ -429,7 +429,7 @@ class NameTableNamingRule(object):
             return psn + 'Italic'
         elif self.isRegular:
             return psn + 'Regular'
-        return psn.strip('-')
+        return psn.rstrip('-')
 
     def ruleNameID_16(self):
         return self.fontconfig['familyName']

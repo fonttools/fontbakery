@@ -182,7 +182,7 @@ class CopyLicense(Pipe):
             try:
                 shellutil.copy(_in_license, _out_license)
             except:
-                raise
+                pass
         else:
             # In case no license_file in bakery.yaml fontbakery-build will
             #  search for supported licenses and copy first from list.

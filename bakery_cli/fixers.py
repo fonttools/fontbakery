@@ -19,6 +19,7 @@ from __future__ import print_function
 import copy
 import fontTools.ttLib
 import os
+import re
 import shutil
 
 from fontTools import ttLib
@@ -50,7 +51,6 @@ class Fixer(object):
 
         Returns:
             :bool: false if fixes will not be saved into new file
-
         """
         raise NotImplementedError
 
@@ -67,6 +67,54 @@ class Fixer(object):
             shutil.move(self.fixfont_path, self.fontpath)
 
         return True
+
+
+class FontItalicStyleFixer(Fixer):
+
+    def get_shell_command(self):
+        return 'fontbakery-fix-italic.py {}'.format(self.fontpath)
+
+    def is_valid_italicAngle(self):
+        ttfont = ttLib.TTFont(self.fontpath)
+        if ttfont['post'].italicAngle == 0:
+            logger.error('ER: POST italicAngle is 0 should be -13')
+            return False
+        return True
+
+    def is_valid(self):
+        has_errors = False
+        import pdb; pdb.set_trace()
+        regex = re.compile(r'-(.*?)Italic\.ttf$')
+        match = regex.search(self.fontpath)
+        if match:
+            ttfont = ttLib.TTFont(self.fontpath)
+
+            f = '{:#010b}'.format(ttfont['head'].macStyle)
+            if match.group(1) != 'Bold':
+                if not bool(ttfont['head'].macStyle & 0b10):
+                    logger.error('ER: HEAD macStyle is {} should be 00000010'.format(f))
+                    has_errors = True
+            elif not bool(ttfont['head'].macStyle & 0b11):
+                    logger.error('ER: HEAD macStyle is {} should be 00000011'.format(f))
+                    has_errors = True
+
+            if ttfont['post'].italicAngle == 0:
+                logger.error('ER: POST italicAngle is 0 should be -13')
+                has_errors = True
+            # Check NAME table contains correct names for Italic
+            if ttfont['OS/2'].fsSelection & 0b1:
+                logger.info('OK: OS/2 fsSelection')
+            else:
+                logger.error('ER: OS/2 fsSelection')
+            for name in ttfont['name'].names:
+                if name.nameID not in [2, 4, 6, 17]:
+                    continue
+                if name.string.endswith('Italic'):
+                    logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, name.string))
+                else:
+                    logger.error('ER: NAME ID{}:\t{}'.format(name.nameID, name.string))
+        else:
+            pass
 
 
 class CharacterSymbolsFixer(Fixer):
@@ -453,6 +501,9 @@ class FamilyAndStyleNameFixer(Fixer):
             },
             'head': {
                 'macStyle': self.font['head'].macStyle,
+            },
+            'post': {
+                'italicAngle': self.font['post'].italicAngle
             }
         }
         if 'CFF ' in self.font:
@@ -467,6 +518,7 @@ class FamilyAndStyleNameFixer(Fixer):
                 familyname = rec['string']
                 break
         fontdata = fix_all_names(fontdata, familyname)
+        # import pdb; pdb.set_trace()
 
         for field in fontdata['names']:
             value = nameTableRead(self.font, field['nameID'])
@@ -624,7 +676,11 @@ class RenameFileWithSuggestedName(Fixer):
     def fix(self):
         new_targetpath = os.path.join(os.path.dirname(self.fontpath),
                                       self.validate())
-        shutil.move(self.fontpath, new_targetpath, log=logger)
+        shutil.move(self.fontpath, new_targetpath)
+
+        from bakery_cli.logger import logger
+        logger.info('$ mv {} {}'.format(self.fontpath, os.path.basename(new_targetpath)))
+
         self.testcase.operator.path = new_targetpath
         return True
 
