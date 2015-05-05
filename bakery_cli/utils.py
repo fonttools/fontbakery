@@ -405,6 +405,7 @@ class NameTableNamingRule(object):
 
     def ruleNameID_6(self):
         psn = self.fontconfig['familyName'] + '-'
+        # import pdb; pdb.set_trace()
         if self.isBlack:
             psn += 'Black'
             if self.fontconfig['isItalic']:
@@ -429,7 +430,8 @@ class NameTableNamingRule(object):
             return psn + 'Italic'
         elif self.isRegular:
             return psn + 'Regular'
-        return psn.rstrip('-')
+        psn = psn.strip('-')
+        return psn
 
     def ruleNameID_16(self):
         return self.fontconfig['familyName']
@@ -460,6 +462,7 @@ class NameTableNamingRule(object):
             tsn = 'Regular'
         elif self.fontconfig['isItalic']:
             tsn = 'Italic'
+
         return tsn
 
     def ruleNameID_18(self):

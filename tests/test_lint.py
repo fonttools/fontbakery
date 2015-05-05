@@ -101,7 +101,7 @@ class TestSuggestNameTestCase(TestCase):
                 'usWeightClass': 300,  # Light
             },
             'post': {
-                'italicAngle': -13
+                'italicAngle': 0
             },
             'head': {
                 'macStyle': 0,  # Regular
@@ -172,7 +172,7 @@ class TestSuggestNameTestCase(TestCase):
                 'macStyle': 0b01,  # Italic
             },
             'post': {
-                'italicAngle': -13
+                'italicAngle': 0
             },
             'CFF': {
                 'Weight': 400,  # This value have to be fixed to 300
@@ -206,7 +206,7 @@ class TestSuggestNameTestCase(TestCase):
                 'macStyle': 0b00,  # Italic
             },
             'post': {
-                'italicAngle': -13
+                'italicAngle': 0
             },
             'CFF': {
                 'Weight': 400,  # This value have to be fixed to 300
