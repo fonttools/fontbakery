@@ -541,14 +541,20 @@ class TTFTestCase(TestCase):
 
         space = checker.getGlyph(0x0020)
         nbsp = checker.getGlyph(0x00A0)
+        tab = checker.getGlyph(0x0009)
 
         self.assertTrue(space, "Font does not contain a space glyph")
         self.assertTrue(nbsp, "Font does not contain a nbsp glyph")
+        self.assertTrue(tab, "Font does not contain a tab glyph")
 
         spaceWidth = checker.getWidth(space)
         nbspWidth = checker.getWidth(nbsp)
+        tabWidth = checker.getWidth(tab)
         self.assertEqual(spaceWidth, nbspWidth,
                          ("The nbsp advance width does not match "
+                          "the space advance width"))
+        self.assertEqual(spaceWidth, tabWidth,
+                         ("The tab advance width does not match "
                           "the space advance width"))
 
     def test_check_no_problematic_formats(self):
