@@ -43,6 +43,12 @@ if args.verbose:
     logger.setLevel(logging.DEBUG)
 
 
+class FixNotApplied(Exception):
+
+    def __init__(self, message):
+        self.message = message
+
+
 def fontStyleIsBold(fontStyle):
     try:
         fontStyle.index('Bold')
@@ -126,27 +132,75 @@ def setValidNames(font, isBold):
             logger.debug(u'{}: {}'.format(name.nameID, name.string))
 
 
+def italicAngle(font, newvalue):
+    font['post'].italicAngle = newvalue
+
+
+def getPossibleItalicAngle(font):
+    return -10
+
+
 def validate(font, fontStyle):
     errors = []
 
-    f = '{:#010b}'.format(font['head'].macStyle)
-    if not fontStyleIsBold(fontStyle):
-        if not bool(font['head'].macStyle & 0b10):
-            errors.append(('ER: HEAD macStyle is {} should be 00000010'.format(f), 
-                           setMacStyle, [font, font['head'].macStyle | 0b10]))
-    elif not bool(font['head'].macStyle & 0b11):
-        errors.append(('ER: HEAD macStyle is {} should be 00000011'.format(f), 
-                       setMacStyle, [font, font['head'].macStyle | 0b11]))
+    f = '{:#09b}'.format(font['head'].macStyle)
 
-    if font['post'].italicAngle == 0:
-        errors.append(('ER: POST italicAngle is 0 should be -13', None, []))
+    if fontStyle.endswith('Italic'):
+        if not fontStyleIsBold(fontStyle):
+            if not bool(font['head'].macStyle & 0b10):
+                errors.append(('ER: HEAD macStyle is {} should be 00000010'.format(f), 
+                               setMacStyle, [font, font['head'].macStyle | 0b10]))
+        elif not bool(font['head'].macStyle & 0b11):
+            errors.append(('ER: HEAD macStyle is {} should be 00000011'.format(f), 
+                           setMacStyle, [font, font['head'].macStyle | 0b11]))
+    else:
+        if not fontStyleIsBold(fontStyle):
+            if bool(font['head'].macStyle & 0b10):
+                newvalue = font['head'].macStyle | 0b1111111111111100
+                errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue), 
+                               setMacStyle, [font, newvalue]))
+        elif bool(font['head'].macStyle & 0b01):
+            newvalue = font['head'].macStyle | 0b1111111111111101
+            errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue), 
+                           setMacStyle, [font, newvalue]))
+
+    if font['post'].italicAngle != 0 and not fontStyle.endswith('Italic'):
+        errors.append(('ER: POST italicAngle is {} should be 0'.format(font['post'].italicAngle), 
+                       italicAngle, [font, 0]))
+
+    if font['post'].italicAngle == 0 and fontStyle.endswith('Italic'):
+        newvalue = getSuggestItalicAngle(font)
+        errors.append(('ER: POST italicAngle is 0 should be {}'.format(newvalue), 
+                       italicAngle, [font, newvalue]))
 
     # Check NAME table contains correct names for Italic
-    if font['OS/2'].fsSelection & 0b1:
-        logger.info('OK: OS/2 fsSelection')
-    else:
-        errors.append(('ER: OS/2 fsSelection',
-                       setFsSelection, [font, font['OS/2'].fsSelection | 0b1]))
+    if fontStyle.endswith('Italic'):
+
+        if not fontStyleIsBold(fontStyle):
+            if font['OS/2'].fsSelection & 0b000001:
+                logger.info('OK: OS/2 fsSelection')
+            else:
+                newvalue = font['OS/2'].fsSelection | 0b1
+                msg = 'ER: OS/2 fsSelection is {:#06b} should be {:#06b}'
+                errors.append((msg.format(font['OS/2'].fsSelection, newvalue),
+                               setFsSelection, [font, newvalue]))
+        else:
+            if font['OS/2'].fsSelection & 0b100001:
+                logger.info('OK: OS/2 fsSelection')
+            else:
+                newvalue = font['OS/2'].fsSelection | 0b100001
+                msg = 'ER: OS/2 fsSelection is {:#06b} should be {:#06b}'
+                errors.append((msg.format(font['OS/2'].fsSelection, newvalue),
+                               setFsSelection, [font, newvalue]))
+
+    elif fontStyleIsBold(fontStyle):
+        if font['OS/2'].fsSelection & 0b100000:
+            logger.info('OK: OS/2 fsSelection')
+        else:
+            newvalue = font['OS/2'].fsSelection | 0b100000
+            msg = 'ER: OS/2 fsSelection is {:#06b} should be {:#06b}'
+            errors.append((msg.format(font['OS/2'].fsSelection, newvalue),
+                           setFsSelection, [font, newvalue]))
 
     for name in font['name'].names:
         if name.nameID not in [2, 4, 6, 17]:
@@ -156,11 +210,18 @@ def validate(font, fontStyle):
         if name.isUnicode():
             string = string.decode('utf-16-be')
 
-        if string.endswith('Italic'):
-            logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
-        else:
-            errors.append(('ER: NAME ID{}:\t{}'.format(name.nameID, string),
-                           setValidNames, [font, fontStyleIsBold(fontStyle)]))
+        if fontStyle.endswith('Italic'):
+            if string.endswith('Italic'):
+                logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
+            else:
+                errors.append(('ER: NAME ID{}:\t{}'.format(name.nameID, string),
+                               setValidNames, [font, fontStyleIsBold(fontStyle)]))
+        elif fontStyleIsBold(fontStyle):
+            if fontStyleIsBold(string):
+                logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
+            else:
+                errors.append(('ER: NAME ID{}:\t{}'.format(name.nameID, string),
+                               setValidNames, [font, fontStyleIsBold(fontStyle)]))
 
     return errors
 
@@ -180,15 +241,16 @@ for path in args.ttf_font:
     if name.isUnicode():
         fontStyle = fontStyle.decode('utf-16-be')
 
-    if not fontStyle.endswith('Italic'):
-      logger.info('OK: {}'.format(path))
-      continue
-
     errors = validate(font, fontStyle)
     if errors:
         for error, function, arguments in errors:
             logger.error(error)
             if args.autofix and function:
-                function(*arguments)
-                font.save(path + '.fix')
+                try:
+                    function(*arguments)
+                except FixNotApplied as ex:
+                    logger.error('ER: Fix can not be applied. See details below')
+                    logger.error('\t{}'.format(ex.message))
+                    continue
+        font.save(path + '.fix')
 
