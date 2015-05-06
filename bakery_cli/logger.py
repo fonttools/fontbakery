@@ -10,11 +10,11 @@ class WhitespaceRemovingFormatter(logging.Formatter):
 
 
 logger = logging.getLogger('fontbakery')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 
 # create console handler and set level to debug
 ch = logging.StreamHandler(stream=sys.stdout)
-ch.setLevel(logging.DEBUG)
+# ch.setLevel(logging.ERROR)
 
 # create formatter
 formatter = WhitespaceRemovingFormatter('%(message)s')
