@@ -125,6 +125,9 @@ class InsertOrderedDict(dict):
         self.orderedKeys.remove(key)
         return dict.pop(self, key, *args)
 
+    def __getattr__(self, key):
+        return dict.get(self, key)
+
     def popitem(self):
         if self.orderedKeys:
             return self.pop(self.orderedKeys[0])
@@ -352,6 +355,7 @@ def fontToolsGetDesc(ftfont):
 
 
 def createFonts(familydir, familyname):
+    from operator import attrgetter
     fonts = []
     files = listdir(familydir)
     for f in files:
@@ -365,7 +369,7 @@ def createFonts(familydir, familyname):
         fontmetadata["filename"] = os.path.basename(f.lstrip('./'))
         fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
         fonts.append(fontmetadata)
-    return fonts
+    return sorted(fonts, key=attrgetter('weight'))
 
 # DC This should also print the subset filesizes and check they are
 # smaller than the original ttf
