@@ -15,8 +15,13 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
+import sys
 
 from bakery_cli.utils import shutil, run, UpstreamDirectory
+
+if sys.version_info[0] < 3:
+    def unicode(str):
+        return str.decode('utf-8')
 
 
 class Optimize(object):
@@ -76,7 +81,7 @@ class Optimize(object):
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
         self.bakery.logging_cmd(comment)
-        run("ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(op.join(self.builddir, filename)))
+        run(u"ls -la {0} {0}.fix | awk '{{ print $5 \"\t\" $9 }}'".format(unicode(op.join(self.builddir, filename))))
 
         comment = "# copy back optimized ttf to original filename"
         self.bakery.logging_cmd(comment)

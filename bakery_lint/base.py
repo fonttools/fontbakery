@@ -17,9 +17,15 @@
 import importlib
 import logging
 import os
+import sys
 import unittest
 
 from itertools import chain
+from bakery_cli.logger import logger
+
+if sys.version_info[0] < 3:
+    def unicode(str):
+        return str.decode('utf-8')
 
 
 class TestRegistry(object):
@@ -96,7 +102,7 @@ class BakeryTestResult(unittest.TestResult):
             return method(test)
         klass_instance = method(test, test.operator.path)
         if hasattr(klass_instance, 'get_shell_command'):
-            test.operator.logger.info('$ {}'.format(klass_instance.get_shell_command()))
+            logger.info('$ {}'.format(klass_instance.get_shell_command()))
 
         if test.apply_fix:
             klass_instance.apply(override_origin=test.apply_fix)
@@ -118,7 +124,7 @@ class BakeryTestResult(unittest.TestResult):
                                  klass=test.__class__.__name__,
                                  method=test._testMethodName,
                                  description=getattr(test, '_testMethodDoc', '') or '',
-                                 result=result)
+                                 result=unicode(result))
         return message
 
     def startTest(self, test):
@@ -128,7 +134,7 @@ class BakeryTestResult(unittest.TestResult):
         super(BakeryTestResult, self).addSuccess(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug(self._format_test_output(test, 'OK'))
+            logger.info(self._format_test_output(test, 'OK'))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
@@ -147,7 +153,7 @@ class BakeryTestResult(unittest.TestResult):
             self.el.append(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug(self._format_test_output(test, 'ERROR'))
+            logger.error(self._format_test_output(test, 'ERROR'))
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
@@ -158,8 +164,7 @@ class BakeryTestResult(unittest.TestResult):
         failTest._err = err
         failTest._err_msg = _err_exception.message
 
-        if hasattr(failTest, 'operator'):
-            failTest.operator.debug(self._format_test_output(failTest, 'FAIL'))
+        logger.error(self._format_test_output(failTest, 'FAIL'))
 
         test_method = getattr(test, test._testMethodName)
 

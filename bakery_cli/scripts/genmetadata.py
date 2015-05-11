@@ -64,12 +64,17 @@ def check_regular(filename):
 
     return fontdata['OS/2'].usWeightClass == 400 and isRegular
 
+import sys
+if sys.version_info[0] < 3:
+    def unicode(str):
+        return str.decode('utf-8')
+
 
 def listdir(familydir):
     files = []
     for dirpath, dirnames, filenames in os.walk(familydir):
         files += [os.path.join(dirpath, fn)
-                  for fn in filenames if fn.lower().endswith('.ttf')]
+                  for fn in filenames if unicode(fn.lower()).endswith('.ttf')]
     return files
 
 
@@ -366,7 +371,7 @@ def createFonts(familydir, familyname):
         fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
         fontmetadata["style"] = u(inferStyle(ftfont))
         fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
-        fontmetadata["filename"] = os.path.basename(f.lstrip('./'))
+        fontmetadata["filename"] = os.path.basename(unicode(f).lstrip('./'))
         fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
         fonts.append(fontmetadata)
     return sorted(fonts, key=attrgetter('weight'))
@@ -379,9 +384,9 @@ def inferSubsets(familydir):
     subsets = set()
     files = listdir(familydir)
     for f in files:
-        index = f.rfind(".")
+        index = unicode(f).rfind(".")
         if index != -1:
-            extension = f[index + 1:]
+            extension = unicode(f)[index + 1:]
             if extension in SUPPORTED_SUBSETS:
                 subsets.add(extension)
     if len(subsets) == 0:
@@ -412,9 +417,9 @@ def check_monospace(familydir):
     files = listdir(familydir)
     glyphwidths = []
     for f in files:
-        if not f.endswith('.ttf'):
+        if not unicode(f).endswith('.ttf'):
             continue
-        font = fontToolsOpenFont(f)
+        font = fontToolsOpenFont(unicode(f))
         for table in font['cmap'].tables:
             if not (table.platformID == 3 and table.platEncID in [1, 10]):
                 continue
