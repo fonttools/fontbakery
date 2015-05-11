@@ -161,7 +161,6 @@ class Bakery(object):
         return self.config
 
     def normal_run(self, pipes):
-
         self.forcerun = False
         for i, pipe_klass in enumerate(pipes):
             try:

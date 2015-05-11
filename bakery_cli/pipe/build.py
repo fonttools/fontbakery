@@ -181,3 +181,7 @@ class Build(object):
         for p in files:
             if p.endswith('.otf'):
                 self.otf2ttf(p, pipedata)
+            else:
+                shellutil.move(op.join(self.builddir, 'sources', p),
+                               op.join(self.builddir, p))
+                self.run_processes(p, pipedata)
