@@ -677,40 +677,10 @@ class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
 class RenameFileWithSuggestedName(Fixer):
 
     def validate(self):
-        fontdata = fontTools_to_dict(self.font)
-        isBold = isItalic = False
+        suggestedvalues = getSuggestedFontNameValues(self.font)
 
-        if fontdata['OS/2']['fsSelection'] & 0b10000:
-            isBold = True
-        if fontdata['head']['macStyle'] & 0b01:
-            isBold = True
-        if fontdata['OS/2']['fsSelection'] & 0b00001:
-            isItalic = True
-        if fontdata['head']['macStyle'] & 0b10:
-            isItalic = True
-        if fontdata['post']['italicAngle'] != 0:
-            isItalic = True
-
-        weight = fontdata['OS/2']['usWeightClass']
-
-        if isBold:
-            weight = 700
-
-        rules = NameTableNamingRule({'isBold': isBold,
-                                     'isItalic': isItalic,
-                                     'familyName': familyname,
-                                     'weight': weight})
-        fontstyle = rules.apply(2)
-
-        fontdata = clean_name_values(fontdata)
-        familyname = ''
-        for rec in fontdata['names']:
-            if rec['nameID'] == 1:
-                familyname = rec['string']
-                break
-
-        expectedname = '{0}-{1}'.format(familyname.replace(' ', ''),
-                                        fontstyle.replace(' ', ''))
+        expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
+                                        subfamily_name.replace(' ', ''))
         actualname, extension = os.path.splitext(self.fontpath)
 
         return '{0}{1}'.format(expectedname, extension)
