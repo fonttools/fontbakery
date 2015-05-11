@@ -591,10 +591,6 @@ def writeDescHtml(familydir):
     descHtml = u"<p>" + fontDesc.decode('utf-8') + u"</p>"
     with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
         f.write(descHtml)
-    string = "Created " + filename + " with:"
-    color = "green"
-    ansiprint(string, color)
-    ansiprint(descHtml, color)
 
 
 def run(familydir):
