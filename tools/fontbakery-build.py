@@ -17,6 +17,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
+import logging
 import os
 import os.path as op
 import sys
@@ -30,6 +31,7 @@ except ImportError:
     GITPYTHON_INSTALLED = False
 
 from bakery_cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
+from bakery_cli.logger import logger
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -91,8 +93,6 @@ def run_bakery(path, verbose=False):
 
         create_bakery_config(bakery_yml_file, config)
 
-        Bakery.verbose = verbose or config.get('verbose')
-
         b = Bakery('', sourcedir, 'builds', builddir)
         b.addLoggingToFile()
         b.load_config(bakery_yml_file)
@@ -112,6 +112,9 @@ if __name__ == '__main__':
                              " bakery build process on")
     parser.add_argument('--verbose', default=False, action='store_true')
     args = parser.parse_args()
+
+    if args.verbose:
+        logger.setLevel(logging.INFO)
 
     for p in args.path:
         run_bakery(os.path.abspath(p), verbose=args.verbose)

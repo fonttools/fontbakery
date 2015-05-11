@@ -463,6 +463,35 @@ class VmetFixer(Fixer):
         return True
 
 
+def fontTools_to_dict(font):
+    fontdata = {
+        'names': [
+            {'nameID': rec.nameID,
+             'platformID': rec.platformID,
+             'langID': rec.langID,
+             'string': rec.string.decode("utf_16_be")
+             if rec.isUnicode() else rec.string,
+             'platEncID': rec.platEncID} for rec in font['name'].names
+        ],
+        'OS/2': {
+            'fsSelection': font['OS/2'].fsSelection,
+            'usWeightClass': font['OS/2'].usWeightClass,
+        },
+        'head': {
+            'macStyle': font['head'].macStyle,
+        },
+        'post': {
+            'italicAngle': font['post'].italicAngle
+        }
+    }
+    if 'CFF ' in font:
+        fontdata['CFF'] = {
+            'Weight': font['CFF '].cff.topDictIndex[0].Weight
+        }
+    return fontdata
+
+
+
 class FamilyAndStyleNameFixer(Fixer):
 
     def get_shell_command(self):
@@ -495,32 +524,10 @@ class FamilyAndStyleNameFixer(Fixer):
         self.font['name'].names.append(ot_namerecord)
         return ot_namerecord
 
+
     def fix(self):
         # Convert huge and complex fontTools to config python dict
-        fontdata = {
-            'names': [
-                {'nameID': rec.nameID,
-                 'platformID': rec.platformID,
-                 'langID': rec.langID,
-                 'string': rec.string.decode("utf_16_be")
-                 if rec.isUnicode() else rec.string,
-                 'platEncID': rec.platEncID} for rec in self.font['name'].names
-            ],
-            'OS/2': {
-                'fsSelection': self.font['OS/2'].fsSelection,
-                'usWeightClass': self.font['OS/2'].usWeightClass,
-            },
-            'head': {
-                'macStyle': self.font['head'].macStyle,
-            },
-            'post': {
-                'italicAngle': self.font['post'].italicAngle
-            }
-        }
-        if 'CFF ' in self.font:
-            fontdata['CFF'] = {
-                'Weight': self.font['CFF '].cff.topDictIndex[0].Weight
-            }
+        fontdata = fontTools_to_dict(self.font)
 
         fontdata = clean_name_values(fontdata)
         familyname = ''
@@ -670,13 +677,40 @@ class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
 class RenameFileWithSuggestedName(Fixer):
 
     def validate(self):
-        suggestedvalues = getSuggestedFontNameValues(self.font)
+        fontdata = fontTools_to_dict(self.font)
+        isBold = isItalic = False
 
-        family_name = suggestedvalues['family']
-        subfamily_name = suggestedvalues['subfamily']
+        if fontdata['OS/2']['fsSelection'] & 0b10000:
+            isBold = True
+        if fontdata['head']['macStyle'] & 0b01:
+            isBold = True
+        if fontdata['OS/2']['fsSelection'] & 0b00001:
+            isItalic = True
+        if fontdata['head']['macStyle'] & 0b10:
+            isItalic = True
+        if fontdata['post']['italicAngle'] != 0:
+            isItalic = True
 
-        expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
-                                        subfamily_name.replace(' ', ''))
+        weight = fontdata['OS/2']['usWeightClass']
+
+        if isBold:
+            weight = 700
+
+        rules = NameTableNamingRule({'isBold': isBold,
+                                     'isItalic': isItalic,
+                                     'familyName': familyname,
+                                     'weight': weight})
+        fontstyle = rules.apply(2)
+
+        fontdata = clean_name_values(fontdata)
+        familyname = ''
+        for rec in fontdata['names']:
+            if rec['nameID'] == 1:
+                familyname = rec['string']
+                break
+
+        expectedname = '{0}-{1}'.format(familyname.replace(' ', ''),
+                                        fontstyle.replace(' ', ''))
         actualname, extension = os.path.splitext(self.fontpath)
 
         return '{0}{1}'.format(expectedname, extension)
