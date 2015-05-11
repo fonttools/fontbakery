@@ -421,7 +421,7 @@ class NameTableNamingRule(object):
         return self.ruleNameID_1()
 
     def ruleNameID_6(self):
-        psn = self.fontconfig['familyName'] + '-'
+        psn = self.fontconfig['familyName'].replace(' ', '') + '-'
         # import pdb; pdb.set_trace()
         if self.isBlack:
             psn += 'Black'
