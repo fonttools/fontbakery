@@ -17,9 +17,10 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
+import logging
 import os
 
-from bakery_cli.bakery import Bakery
+from bakery_cli.logger import logger
 from bakery_cli.fixers import ResetFSTypeFlagFixer
 
 
@@ -35,7 +36,8 @@ parser.add_argument('--verbose', action='store_true',
 
 args = parser.parse_args()
 
-Bakery.verbose = args.verbose
+if args.verbose:
+    logger.setLevel(logging.INFO)
 
 for path in args.ttf_font:
     if not os.path.exists(path):
