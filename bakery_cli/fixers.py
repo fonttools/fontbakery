@@ -191,14 +191,13 @@ class ResetFSTypeFlagFixer(Fixer):
 
         if val == 0:
             from bakery_cli.bakery import Bakery
-            if Bakery.verbose:
-                logger.info('OK: {}'.format(fontfile))
+            logger.info('OK: {}'.format(fontfile))
             return
 
         if check:
-            logger.info('ER: {} {}: Change to 0'.format(fontfile, val))
+            logger.error('ER: {} {}: Change to 0'.format(fontfile, val))
         else:
-            logger.info('ER: {} {}: Fixed to 0'.format(fontfile, val))
+            logger.error('ER: {} {}: Fixed to 0'.format(fontfile, val))
             self.font['OS/2'].fsType = 0
         return True
 
@@ -333,14 +332,14 @@ class NbspAndSpaceSameWidth(Fixer):
             try:
                 nbsp = self.addGlyph(0x00A0, 'nbsp')
             except Exception as ex:
-                logger.info('ER: {}'.format(ex))
+                logger.error('ER: {}'.format(ex))
                 return False
         if not space:
             isSpaceAdded = True
             try:
                 space = self.addGlyph(0x0020, 'space')
             except Exception as ex:
-                logger.info('ER: {}'.format(ex))
+                logger.error('ER: {}'.format(ex))
                 return False
 
         spaceWidth = self.getWidth(space)
@@ -348,10 +347,9 @@ class NbspAndSpaceSameWidth(Fixer):
 
         fontfile = os.path.basename(self.fontpath)
         if spaceWidth != nbspWidth or nbspWidth < 0:
-            if spaceWidth:
-                self.setWidth(nbsp, spaceWidth)
-            else:
-                self.setWidth(space, nbspWidth)
+
+            self.setWidth(nbsp, max(nbspWidth, spaceWidth))
+            self.setWidth(space, max(nbspWidth, spaceWidth))
 
             args = fontfile, spaceWidth, nbspWidth, spaceWidth
             if isNbspAdded:
@@ -382,12 +380,10 @@ class NbspAndSpaceSameWidth(Fixer):
                 else:
                     msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
                     msg = msg.format(*args)
-            logger.info(msg)
+            logger.error(msg)
             return True
 
-        from bakery_cli.bakery import Bakery
-        if Bakery.verbose:
-            logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
+        logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
         return
 
 
