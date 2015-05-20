@@ -311,24 +311,6 @@ class Font(BaseFont):
             return unicode(record.string, 'unicode_escape')
         return record.string
 
-    def get_glyf_length(self):
-        """ Length of "glyf" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> int(font.get_glyf_length())
-        21804
-        """
-        return self.ttfont.reader.tables['glyf'].length
-
-    def get_loca_length(self):
-        """ Length of "loca" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> int(font.get_loca_length())
-        1006
-        """
-        return self.ttfont.reader.tables['loca'].length
-
     def get_loca_glyph_offset(self, num):
         """ Retrieve offset of glyph in font tables
 

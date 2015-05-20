@@ -407,12 +407,13 @@ class TTFTestCase(TestCase):
 
     def test_check_glyf_table_length(self):
         """ Check if there is unused data at the end of the glyf table """
-        font = Font.get_ttfont(self.operator.path)
+        from fontTools import ttLib
+        font = ttLib.TTFont(self.operator.path)
         # TODO: should this test support CFF as well?
         if 'CFF ' in font: self.skip("No 'glyf' table to check in a CFF font.")
 
-        expected = font.get_loca_length()
-        actual = font.get_glyf_length()
+        expected = font.reader.tables['loca'].length
+        actual = font.reader.tables['glyf'].length
         diff = actual - expected
 
         # allow up to 3 bytes of padding
@@ -559,9 +560,9 @@ class TTFTestCase(TestCase):
 
     def test_check_no_problematic_formats(self):
         """ Check that font contain required tables """
-        tables = set(FontTool.get_tables(self.operator.path))
+        font = ttLib.TTFont(self.operator.path)
+        tables = set(font.reader.tables.keys())
         desc = []
-        font = Font.get_ttfont(self.operator.path)
         glyphs = set(['glyf'] if 'glyf' in font else ['CFF '])
         if REQUIRED_TABLES + glyphs - tables:
             desc += ["Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES + glyphs - tables))]
