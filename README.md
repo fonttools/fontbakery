@@ -14,6 +14,9 @@ Optionally, if you are developing a font project publicly with Github or a simil
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
+Font Bakery has been presented at the following events:
+
+* 2014-04-03: Libre Graphics Meeting 2014 [slides](https://speakerdeck.com/davelab6/lgm-2014-font-bakery)
 
 ## Install
 
