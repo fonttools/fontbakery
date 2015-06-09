@@ -13,3 +13,5 @@ include bakery_lint/tests/upstream/diacritics.txt
 include bakery_cli/bakery.defaults.yaml
 recursive-include bakery_lint/tests/licenses *
 recursive-include Data *
+include LICENSE.txt
+include setup.cfg

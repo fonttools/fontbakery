@@ -71,6 +71,13 @@ class Build(object):
         fonts = [op.join(self.builddir, x) for x in binfiles]
         self.bakery.logging_raw(vmet.metricview(fonts))
 
+    def remove_sourcesdir(self):
+        for root, dirs, files in os.walk(op.join(self.builddir, 'sources'), topdown=True):
+            for f in files:
+                fullpath = op.join(root, f)
+                os.remove(fullpath)
+        os.rmdir(op.join(self.builddir, 'sources'))
+
     def convert(self, pipedata):
         directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
         try:
@@ -84,6 +91,8 @@ class Build(object):
                 self.execute_ufo_sfd([op.join('sources', x) for x in directory.SFD], pipedata)
         except:
             raise
+        finally:
+            self.remove_sourcesdir()
 
     def execute(self, pipedata, prefix=""):
         task = self.bakery.logging_task('Convert sources to TTF')
