@@ -1,5 +1,5 @@
 [![Latest Version](https://img.shields.io/pypi/v/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
-[![License](https://img.shields.io/pypi/l/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
+[![License](https://img.shields.io/github/license/googlefonts/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Python](https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
