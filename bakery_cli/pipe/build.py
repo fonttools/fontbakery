@@ -76,7 +76,10 @@ class Build(object):
             for f in files:
                 fullpath = op.join(root, f)
                 os.remove(fullpath)
-        os.rmdir(op.join(self.builddir, 'sources'))
+        try:
+            os.rmdir(op.join(self.builddir, 'sources'))
+        except OSError:
+            pass
 
     def convert(self, pipedata):
         directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
