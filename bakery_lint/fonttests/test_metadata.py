@@ -108,6 +108,17 @@ class MetadataTest(TestCase):
     def setUp(self):
         self.metadata = json.load(open(self.operator.path))
 
+    @autofix('bakery_cli.fixers.MultipleDesignerFixer')
+    def test_ensure_designer_simple_short_name(self):
+        self.assertTrue(len(self.metadata.get('designer', '').split(' ')) > 4, 
+                        '`designer` key must be simple short name')
+        self.assertFalse(' and ' in self.metadata.get('designer', ''),
+                        '`designer` key must be simple short name')
+        self.assertFalse(',' in self.metadata.get('designer', ''),
+                         '`designer` key must be simple short name')
+        self.assertFalse('.' in self.metadata.get('designer', ''),
+                         '`designer` key must be simple short name')
+
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
         url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')

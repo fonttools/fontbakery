@@ -17,7 +17,10 @@
 from __future__ import print_function
 
 import copy
+import collections
+import json
 import fontTools.ttLib
+import io
 import os
 import re
 import shutil
@@ -55,6 +58,9 @@ class Fixer(object):
         """
         raise NotImplementedError
 
+    def save(self):
+        self.font.save(self.fixfont_path)
+
     def apply(self, *args, **kwargs):
         override_origin = kwargs.pop('override_origin', None)
         if not self.fix(*args, **kwargs):
@@ -63,13 +69,67 @@ class Fixer(object):
         if not self.save_after_fix:
             return True
             
-        self.font.save(self.fixfont_path)
+        self.save()
 
         if override_origin and os.path.exists(self.fixfont_path):
             command = "$ mv {} {}".format(self.fixfont_path, self.fontpath)
             logger.debug(command)
             shutil.move(self.fixfont_path, self.fontpath)
 
+        return True
+
+
+class MultipleDesignerFixer(Fixer):
+
+    def get_shell_command(self):
+        return 'fontbakery-fix-metadata-designer.py {}'.format(self.fontpath)
+
+    def loadfont(self, fontpath):
+        pass
+
+    def save(self):
+        pass
+
+    def is_valid(self):
+        content = {}
+        with io.open(self.fontpath, 'r', encoding="utf-8") as fp:
+            content = json.load(fp, object_pairs_hook=collections.OrderedDict)
+
+        if len(content.get('designer', '').split()) > 4:
+            logger.error('ER: Designer key is too long. Fix to "Multiple Designer"')
+            return False
+        if ' and ' in content.get('designer', ''):
+            logger.error('ER: Several designers in designer key. Fix to "Multiple Designer"')
+            return False
+        if ',' in content.get('designer', ''):
+            logger.error('ER: Several designers in designer key. Fix to "Multiple Designer"')
+            return False
+        if '.' in content.get('designer', ''):
+            logger.error('ER: Several designers in designer key. Fix to "Multiple Designer"')
+            return False
+
+        logger.info(u'OK: Designer "{}"'.format(content.get('designer', '')))
+        return True
+
+    def fix(self, check=True):
+        if check:
+            if not self.is_valid():
+                return False
+            return True
+
+        if self.is_valid():
+            logger.info(u'OK: Designer "{}"'.format(content.get('designer', '')))
+            return True
+
+        from bakery_cli.scripts.genmetadata import striplines
+        content = {}
+        with io.open(self.fontpath, 'r', encoding="utf-8") as fp:
+            content = json.load(fp, object_pairs_hook=collections.OrderedDict)
+
+        content['designer'] = 'Multiple Designers'
+        with io.open(self.fontpath, 'w', encoding='utf-8') as f:
+            contents = json.dumps(content, indent=2, ensure_ascii=False)
+            f.write(striplines(contents))
         return True
 
 
