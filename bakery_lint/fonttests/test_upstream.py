@@ -266,7 +266,7 @@ class FontaineTest(TestCase):
         for fontpath in directory.UFO + directory.TTX:
             font = FontFactory.openfont(os.path.join(cls.operator.path, fontpath))
             for charmap in font.get_orthographies(_library=library):
-                common_name = charmap.charmap.common_name.replace('Subset ', '')
+                common_name = charmap.charset.common_name.replace('Subset ', '')
                 shortname = pattern.sub('', common_name)
                 if shortname not in bakerydata['subset']:
                     continue
