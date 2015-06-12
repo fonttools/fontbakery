@@ -556,6 +556,9 @@ class FamilyAndStyleNameFixer(Fixer):
         return "fontbakery-fix-opentype-names.py {}".format(self.fontpath)
 
     def getOrCreateNameRecord(self, nameId, val):
+        logger.error('NAMEID {}: "{}"'.format(nameId, val))
+        return
+
         result_namerec = None
         for k, p in [[1, 0], [3, 1]]:
             result_namerec = self.font['name'].getName(nameId, k, p)
@@ -595,8 +598,12 @@ class FamilyAndStyleNameFixer(Fixer):
                 break
         fontdata = fix_all_names(fontdata, familyname)
 
+        logger.error('')
+        logger.error('```')
+        logger.error(os.path.basename(self.fontpath))
         for field in fontdata['names']:
             self.getOrCreateNameRecord(field['nameID'], field['string'])
+        logger.error('```')
         return True
 
 
