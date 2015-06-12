@@ -598,9 +598,9 @@ class FamilyAndStyleNameFixer(Fixer):
                 break
         fontdata = fix_all_names(fontdata, familyname)
 
-        logger.error('')
         logger.error('```')
         logger.error(os.path.basename(self.fontpath))
+        logger.error('')
         for field in fontdata['names']:
             self.getOrCreateNameRecord(field['nameID'], field['string'])
         logger.error('```')
