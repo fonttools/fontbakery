@@ -185,13 +185,15 @@ def get_subsets_coverage_data(source_fonts_paths):
     library = Library(collections=['subsets'])
     subsets = {}
     for fontpath in source_fonts_paths:
+        if fontpath.lower().endswith('.sfd'):
+            continue
         try:
             font = FontFactory.openfont(fontpath)
         except AssertionError:
             continue
         for info in font.get_orthographies(_library=library):
 
-            subsetname = info.charmap.common_name.replace('Subset ', '')
+            subsetname = info.charset.common_name.replace('Subset ', '')
             if subsetname not in subsets:
                 subsets[subsetname] = {}
 
