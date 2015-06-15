@@ -226,7 +226,7 @@ args = parser.parse_args()
 
 
 directory = UpstreamDirectory(args.directory)
-process_files = directory.ALL_FONTS
+process_files = [x for x in directory.ALL_FONTS if not x.lower().endswith('.sfd')]
 
 import urwid.curses_display
 import urwid.raw_display
