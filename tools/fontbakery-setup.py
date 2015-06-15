@@ -209,6 +209,8 @@ def generate_subsets_coverage_list():
     # To complete to absolute paths use python os.path.join method
     # on root and path
     for p in directory.ALL_FONTS:
+        if p.lower().endswith('.sfd'):
+            continue
         source_fonts_paths.append(p)
     return get_subsets_coverage_data(source_fonts_paths)
 
