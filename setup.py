@@ -123,7 +123,8 @@ setup(
         'scrapy',
         'urwid',
         'GitPython==0.3.2.RC1',
-        'defusedxml'
+        'defusedxml',
+        'unidecode'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     test_suite='nose.collector'

@@ -185,6 +185,30 @@ class FontItalicStyleFixer(Fixer):
             pass
 
 
+import six
+import unicodedata
+from unidecode import unidecode
+
+
+def smart_text(s, encoding='utf-8', errors='strict'):
+    if isinstance(s, six.text_type):
+        return s
+
+    if not isinstance(s, six.string_types):
+        if six.PY3:
+            if isinstance(s, bytes):
+                s = six.text_type(s, encoding, errors)
+            else:
+                s = six.text_type(s)
+        elif hasattr(s, '__unicode__'):
+            s = six.text_type(s)
+        else:
+            s = six.text_type(bytes(s), encoding, errors)
+    else:
+        s = six.text_type(s)
+    return s
+
+
 class CharacterSymbolsFixer(Fixer):
     """ Converts special characters like copyright, trademark signs to ascii
     name """
@@ -196,7 +220,16 @@ class CharacterSymbolsFixer(Fixer):
     def normalizestr(string):
         for mark, ascii_repl in CharacterSymbolsFixer.unicode_marks(string):
             string = string.replace(mark, ascii_repl)
-        return string
+
+        rv = []
+        for c in unicodedata.normalize('NFKC', smart_text(string)):
+            cat = unicodedata.category(c)[0]
+            #if cat in 'LN' or c in ok:
+            rv.append(c)
+
+        new = ''.join(rv).strip()
+
+        return unidecode(new)
 
     @staticmethod
     def unicode_marks(string):
