@@ -68,6 +68,21 @@ class TTFTestCase(TestCase):
     tool = 'lint'
     name = __name__
 
+    @tags('info',)
+    def test_version_in_name_table_is_in_correct_format(self):
+        """ Version is in correct format in `name` table """
+        ttfont = ttLib.TTFont(self.operator.path)
+
+        def is_valid(value):
+            return re.match(r'Version\s[1-9]+\.\d+', value)
+
+        for name in ttfont['name'].names:
+            value = getNameRecordValue(name)
+            if name.nameID == 5 and not is_valid(value):
+                self.fail(('The NAME id 5 string value must follow '
+                           'the pattern Version X.Y. Current value: {}').format(value))
+
+
     def test_fontforge_openfile_contains_stderr(self):
         with redirect_stdout(StringIO.StringIO()) as std:
             fontforge.open(self.operator.path)
