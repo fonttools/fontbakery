@@ -216,7 +216,7 @@ class TTFTestCase(TestCase):
         """ Check if NAME table does not contain items with platformID = 1 """
         font = ttLib.TTFont(self.operator.path)
         items = [item for item in font['name'].names if item.platformID == 1]
-        self.assertTrue(bool(items))
+        self.assertTrue(bool(items), "`name` table records should not contain platformID='1' records")
 
     @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
     def test_name_id_copyright(self):
