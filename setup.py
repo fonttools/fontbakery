@@ -27,11 +27,11 @@ except ImportError:
     raise Exception(msg)
 
 # require ttfautohint
-msg = ('Command line tool `ttfautohint` is required. Install it with'
-       ' `apt-get install ttfautohint` or `brew install ttfautohint`')
-assert [os.path.join(p, 'ttfautohint')
-        for p in os.environ.get('PATH').split(':')
-        if os.path.exists(os.path.join(p, 'ttfautohint'))], msg
+# msg = ('Command line tool `ttfautohint` is required. Install it with'
+#        ' `apt-get install ttfautohint` or `brew install ttfautohint`')
+# assert [os.path.join(p, 'ttfautohint')
+#         for p in os.environ.get('PATH').split(':')
+#         if os.path.exists(os.path.join(p, 'ttfautohint'))], msg
 
 # require libmagic
 import ctypes
