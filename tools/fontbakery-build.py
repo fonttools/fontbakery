@@ -32,7 +32,7 @@ except ImportError:
 
 from bakery_cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 from bakery_cli.logger import logger
-from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.utils import UpstreamDirectory, ttfautohint_installed
 
 
 def create_bakery_config(bakery_yml_file, data):
@@ -97,6 +97,11 @@ def run_bakery(path, verbose=False):
         b.addLoggingToFile()
         b.load_config(bakery_yml_file)
         b.run()
+
+        if not ttfautohint_installed():
+            msg = ('Command line tool `ttfautohint` is required. Install it with'
+                   ' `apt-get install ttfautohint` or `brew install ttfautohint`')
+            logger.error(msg)
     except:
         if verbose or config.get('verbose'):
             raise

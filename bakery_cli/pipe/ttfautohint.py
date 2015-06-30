@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 
-from bakery_cli.utils import run, shutil
+from bakery_cli.utils import run, shutil, ttfautohint_installed
 
 
 class TTFAutoHint(object):
@@ -27,7 +27,7 @@ class TTFAutoHint(object):
         self.bakery = bakery
 
     def run(self, pipedata):
-        if not pipedata.get('ttfautohint', ''):
+        if not pipedata.get('ttfautohint', '') or not ttfautohint_installed():
             return False
 
         from bakery_cli.utils import ProcessedFile

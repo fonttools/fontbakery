@@ -168,7 +168,13 @@ def nameTableRead(font, NameID, fallbackNameID=False):
     if fallbackNameID:
         return nameTableRead(font, fallbackNameID)
 
-    return None
+    return
+
+
+def ttfautohint_installed():
+    return bool([os.path.join(p, 'ttfautohint')
+                 for p in os.environ.get('PATH').split(':')
+                 if os.path.exists(os.path.join(p, 'ttfautohint'))])
 
 
 def get_data_directory():
