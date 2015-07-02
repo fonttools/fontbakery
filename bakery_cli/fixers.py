@@ -26,7 +26,6 @@ import re
 import shutil
 
 from fontTools import ttLib
-from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 from bakery_cli.logger import logger
@@ -256,6 +255,20 @@ class CreateDSIGFixer(Fixer):
     def fix(self):
         if 'DSIG' in self.font:
             return False
+
+        try:
+            from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
+        except ImportError:
+            error_message = ("The '{}' font does not have an existing"
+                             " digital signature proving its authenticity,"
+                             " so Fontbakery needs to add one. To do this"
+                             " requires version 2.3 or later of Fonttools"
+                             " to be installed. Please upgrade at"
+                             " https://pypi.python.org/pypi/FontTools/2.4")
+            logger.error(msg.format(os.path.basename(self.fontpath)))
+            return False
+
+
         newDSIG = ttLib.newTable("DSIG")
         newDSIG.ulVersion = 1
         newDSIG.usFlag = 1
