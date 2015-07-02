@@ -265,7 +265,7 @@ class CreateDSIGFixer(Fixer):
                              " requires version 2.3 or later of Fonttools"
                              " to be installed. Please upgrade at"
                              " https://pypi.python.org/pypi/FontTools/2.4")
-            logger.error(msg.format(os.path.basename(self.fontpath)))
+            logger.error(error_message.format(os.path.basename(self.fontpath)))
             return False
 
 
