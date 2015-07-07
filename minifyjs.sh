@@ -1,14 +1,14 @@
 #!/bin/bash
 
-type uglifyjs2 >/dev/null 2>&1 || {
-    echo >&2 "uglifyjs2 is not installed. Trying to install it with npm";
+type uglifyjs >/dev/null 2>&1 || {
+    echo >&2 "uglifyjs-js is not installed. Trying to install it with npm";
     type npm >/dev/null 2>&1 || {
         echo >&2 "npm is not installed. Trying to install it.";
         curl -L https://npmjs.org/install.sh | sh;
     }
     npm install uglify-js -g;
 }
-type uglifyjs2 >/dev/null 2>&1 || { echo >&2 "Failed to install uglifyjs2. Aborting."; exit 1; }
+type uglifyjs >/dev/null 2>&1 || { echo >&2 "Failed to install uglifyjs. Aborting."; exit 1; }
 
 source_files=(
     'static/js/angular-queue.js'
@@ -33,7 +33,7 @@ source_files=(
 
 source_files_arg=$(IFS=" ";echo "${source_files[*]}")
 echo "Minifying sources..."
-echo "uglifyjs2 $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true"
+echo "uglifyjs $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true"
 echo ""
 
-uglifyjs2 $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true
+uglifyjs $source_files_arg --output static/js/all.min.js --source-map static/js/all.js.map --stats true

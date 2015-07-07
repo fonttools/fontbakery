@@ -2,7 +2,7 @@
 
 // create module and include dependencies
 var myApp = angular.module(
-    'myApp', ['ngRoute', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable', 'ngSanitize', 'routeStyles', 'angularMoment', 'http-throttler', 'ngStorage', 'ngQueue']
+    'myApp', ['ngRoute', 'ui.bootstrap.tpls', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable', 'ngSanitize', 'routeStyles', 'angularMoment', 'http-throttler', 'ngStorage', 'ngQueue']
 );
 
 // #TODO it would be better to get it from .json conf file once and use later.
