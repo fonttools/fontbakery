@@ -246,7 +246,7 @@ angular.module('myApp').service('reposApi', ['$http', '$q', 'appConfig', functio
 
     this.getCollection = function(access_token) {
         // https://api.github.com/repos/fontdirectory/collection/git/trees/HEAD?access_token=00b736654b0b607a630d457f9ab89acc7293f61b&recursive=1
-        return $http.get('https://api.github.com/repos/google/fonts/git/trees/HEAD', {params: {'access_token': access_token, 'recursive': 1} })
+        return $http.get('https://api.github.com/repos/librefonts/collection/git/trees/HEAD', {params: {'access_token': access_token, 'recursive': 1} })
     };
 }]);
 
