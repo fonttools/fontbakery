@@ -17,8 +17,6 @@
 import fnmatch
 import os
 
-from fontcrunch import fontcrunch
-
 from bakery_cli.utils import shutil
 
 
@@ -30,6 +28,12 @@ class FontCrunch(object):
         self.bakery = bakery
 
     def run(self, pipedata):
+        try:
+            from fontcrunch import fontcrunch
+        except ImportError:
+            self.bakery.logging_raw('Fontcruch is not installed. Please `pip install fontcrunch`')
+            return
+
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
 
@@ -44,6 +48,12 @@ class FontCrunch(object):
         return 1
 
     def execute(self, pipedata):
+        try:
+            from fontcrunch import fontcrunch
+        except ImportError:
+            self.bakery.logging_raw('Fontcruch is not installed. Please `pip install fontcrunch`')
+            return
+            
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
 
