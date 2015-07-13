@@ -28,7 +28,7 @@ Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readt
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" # install homebrew
 brew install python giflib libspiro; # fontforge optional dependencies
 brew install --HEAD --with-x fontforge; # fontforge
-brew install ttfautohint swig; # fontbakery dependencies
+brew install libmagic ttfautohint swig; # fontbakery dependencies
 easy_install pip # install pip
 pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependencies
 pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependencies
