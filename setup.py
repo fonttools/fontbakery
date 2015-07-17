@@ -100,7 +100,8 @@ setup(
              'tools/fontbakery-report.py',
              'tools/fontbakery-setup.py',
              'tools/fontbakery-travis-deploy.py',
-             'tools/fontbakery-travis-init.py'],
+             'tools/fontbakery-travis-init.py',
+             'tools/fontbakery-fix-fsselection.py'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',
