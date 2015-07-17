@@ -7,20 +7,20 @@ from bakery_cli.logger import logger
 from fontTools import ttLib
 
 args = argparse.ArgumentParser(
-	description='Print out fsSelection bitmask of the fonts')
+	description='Print out macStyle bitmask of the fonts')
 args.add_argument('font', nargs="+")
 args.add_argument('--verbose', default=False, action='store_true')
 
 
 def getByte2(ttfont):
-	return ttfont['OS/2'].fsSelection >> 8
+	return ttfont['head'].macStyle >> 8
 
 
 def getByte1(ttfont):
-	return ttfont['OS/2'].fsSelection & 255
+	return ttfont['head'].macStyle & 255
 
 
-def format_str_fsselection(font):
+def format_str_macstyle(font):
 	ttfont = ttLib.TTFont(font)
 	byte_1 = getByte1(ttfont)
 	byte_2 = getByte2(ttfont)
@@ -38,4 +38,4 @@ if __name__ == '__main__':
 	    logger.setLevel(logging.INFO)
 	
 	for font in arg.font:
-		logger.info(format_str_fsselection(font))
+		logger.info(format_str_macstyle(font))
