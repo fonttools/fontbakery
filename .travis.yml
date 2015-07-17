@@ -6,6 +6,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:fontforge/fontforge
   - sudo apt-get update -qq
   - sudo apt-get install python-fontforge ttfautohint swig
+  - pip install --upgrade pip
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.9/lib/python2.7/site-packages
