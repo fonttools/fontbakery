@@ -103,8 +103,10 @@ def run_bakery(path, verbose=False):
                    ' `apt-get install ttfautohint` or `brew install ttfautohint`')
             logger.error(msg)
     except:
+        logger.error('BUILD FAILED')
         if verbose or config.get('verbose'):
             raise
+        logger.error('Run with --verbose to get stacktrace info.')
         sys.exit(1)
 
 

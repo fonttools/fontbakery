@@ -168,7 +168,6 @@ class Bakery(object):
                 p.execute(self.config)
                 self.save_build_state()
             except:
-                self.logging_raw('ERROR: BUILD FAILED')
                 self.save_build_state()
                 raise
 

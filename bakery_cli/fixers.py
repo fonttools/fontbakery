@@ -380,7 +380,7 @@ class NbspAndSpaceSameWidth(Fixer):
                 return table.cmap[uchar]
         return None
 
-    def addCFFGlyph(glyphName=None, program=None, private=None,
+    def addCFFGlyph(self, glyphName=None, program=None, private=None,
           globalSubrs=None, charStringsIndex=None, topDict=None, charStrings=None):
         from fontTools.misc.psCharStrings import T2CharString
         charString = T2CharString(program=program, private=private, globalSubrs=globalSubrs)
@@ -413,11 +413,13 @@ class NbspAndSpaceSameWidth(Fixer):
             self.font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
         else:
             cff = self.font['CFF '].cff
-            addCFFGlyph(
+            # import ipdb; ipdb.set_trace()
+            self.addCFFGlyph(
                 glyphName=glyph,
-                private=cff.topDictIndex[0].topDict.Private,
+                private=cff.topDictIndex[0].Private,
                 globalSubrs=cff.GlobalSubrs,
-                charStringsIndex=cff.topDictIndex[0].topDict.CharStrings.charStrings.charStringsIndex,
+                charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.keys(),
+                # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
                 topDict=cff.topDictIndex[0],
                 charStrings=cff.topDictIndex[0].CharStrings
             )
