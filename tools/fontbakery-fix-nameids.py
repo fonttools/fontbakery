@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import os
+import tabulate
 
 from fontTools import ttLib
 
@@ -52,5 +53,4 @@ if __name__ == '__main__':
     if arg.csv:
         as_csv(rows)
 
-    import tabulate
     print(tabulate.tabulate(rows, header))
