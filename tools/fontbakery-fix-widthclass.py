@@ -18,8 +18,6 @@ if __name__ == '__main__':
 
 	arg = args.parse_args()
 
-	if not arg.verbose:
-	    logger.setLevel(logging.INFO)
 	
 	headers = ['filename', 'usWidthClass']
 	rows = []
