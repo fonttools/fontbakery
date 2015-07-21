@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import argparse
-import logging
 import os
 
-from bakery_cli.logger import logger
 from fontTools import ttLib
 
 args = argparse.ArgumentParser(
@@ -12,7 +10,6 @@ args.add_argument('font', nargs="+")
 args.add_argument('--csv', default=False, action='store_true')
 args.add_argument('--id', '-i', default='all')
 args.add_argument('--platform', '-p', type=int, default=3)
-args.add_argument('--verbose', default=False, action='store_true')
 
 
 if __name__ == '__main__':
@@ -24,9 +21,6 @@ if __name__ == '__main__':
 
     if 'all' not in user_nameids:
         nameids = set(nameids) & set(user_nameids)
-
-    if not arg.verbose:
-        logger.setLevel(logging.INFO)
 
     rows = []
     for font in arg.font:

@@ -1,23 +1,19 @@
 #!/usr/bin/env python
 import argparse
-import logging
 import os
 import tabulate
 
-from bakery_cli.logger import logger
 from fontTools import ttLib
 
 args = argparse.ArgumentParser(
 	description='Print out usWidthClass of the fonts')
 args.add_argument('font', nargs="+")
 args.add_argument('--csv', default=False, action='store_true')
-args.add_argument('--verbose', default=False, action='store_true')
 
 
 if __name__ == '__main__':
 
 	arg = args.parse_args()
-
 	
 	headers = ['filename', 'usWidthClass']
 	rows = []

@@ -4,7 +4,6 @@ import logging
 import os
 import tabulate
 
-from bakery_cli.logger import logger
 from fontTools import ttLib
 
 args = argparse.ArgumentParser(
