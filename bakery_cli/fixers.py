@@ -456,8 +456,8 @@ class NbspAndSpaceSameWidth(Fixer):
         fontfile = os.path.basename(self.fontpath)
         if spaceWidth != nbspWidth or nbspWidth < 0:
 
-            self.setWidth(nbsp, max(nbspWidth, spaceWidth))
-            self.setWidth(space, max(nbspWidth, spaceWidth))
+            self.setWidth(nbsp, min(nbspWidth, spaceWidth))
+            self.setWidth(space, min(nbspWidth, spaceWidth))
 
             if isNbspAdded:
                 if check:
@@ -475,7 +475,7 @@ class NbspAndSpaceSameWidth(Fixer):
                     msg = 'ER: {} space N nbsp {}: Added space {}'
                     logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
                 
-            if nbspWidth < spaceWidth:
+            if nbspWidth > spaceWidth:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change nbsp to {}'
                 else:
