@@ -413,16 +413,16 @@ class NbspAndSpaceSameWidth(Fixer):
             self.font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
         else:
             cff = self.font['CFF '].cff
-            # import ipdb; ipdb.set_trace()
             self.addCFFGlyph(
                 glyphName=glyph,
                 private=cff.topDictIndex[0].Private,
                 globalSubrs=cff.GlobalSubrs,
-                charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.keys(),
+                charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
                 # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
                 topDict=cff.topDictIndex[0],
                 charStrings=cff.topDictIndex[0].CharStrings
             )
+            import ipdb; ipdb.set_trace()
         return glyph
 
     def getWidth(self, glyph):

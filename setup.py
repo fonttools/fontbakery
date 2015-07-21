@@ -102,7 +102,8 @@ setup(
              'tools/fontbakery-travis-deploy.py',
              'tools/fontbakery-travis-init.py',
              'tools/fontbakery-fix-fsselection.py',
-             'tools/fontbakery-fix-macstyle.py'],
+             'tools/fontbakery-fix-macstyle.py',
+             'tools/fontbakery-fix-nameids.py'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',
@@ -126,7 +127,8 @@ setup(
         'urwid',
         'GitPython==0.3.2.RC1',
         'defusedxml',
-        'unidecode'
+        'unidecode',
+        'tabulate'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     test_suite='nose.collector'
