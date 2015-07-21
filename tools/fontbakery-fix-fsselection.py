@@ -5,6 +5,7 @@ import os
 
 from bakery_cli.logger import logger
 from fontTools import ttLib
+import tabulate
 
 args = argparse.ArgumentParser(
 	description='Print out fsSelection bitmask of the fonts')
@@ -20,16 +21,6 @@ def getByte1(ttfont):
 	return ttfont['OS/2'].fsSelection & 255
 
 
-def format_str_fsselection(font):
-	ttfont = ttLib.TTFont(font)
-	byte_1 = getByte1(ttfont)
-	byte_2 = getByte2(ttfont)
-	basename = os.path.basename(font)
-
-	msg = '{}: {:#010b} {:#010b}'.format(basename, byte_2, byte_1)
-	return msg.replace('0b', '')
-
-
 if __name__ == '__main__':
 
 	arg = args.parse_args()
@@ -37,5 +28,13 @@ if __name__ == '__main__':
 	if not arg.verbose:
 	    logger.setLevel(logging.INFO)
 	
+	rows = []
+	headers = ['filename', 'byte_2', 'byte_1']
 	for font in arg.font:
-		logger.info(format_str_fsselection(font))
+		ttfont = ttLib.TTFont(font)
+		row = [os.path.basename(font)]
+		row.append('{:#010b}'.format(getByte2(ttfont)).replace('0b', ''))
+		row.append('{:#010b}'.format(getByte1(ttfont)).replace('0b', ''))
+		rows.append(row)
+
+	print(tabulate.tabulate(rows, headers))

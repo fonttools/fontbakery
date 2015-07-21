@@ -103,7 +103,11 @@ setup(
              'tools/fontbakery-travis-init.py',
              'tools/fontbakery-fix-fsselection.py',
              'tools/fontbakery-fix-macstyle.py',
-             'tools/fontbakery-fix-nameids.py'],
+             'tools/fontbakery-fix-nameids.py',
+             'tools/fontbakery-fix-panose.py',
+             'tools/fontbakery-fix-weightclass.py',
+             'tools/fontbakery-fix-widthclass.py',
+             'tools/fontbakery-fix-italicangle.py'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',

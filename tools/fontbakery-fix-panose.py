@@ -8,17 +8,9 @@ from bakery_cli.logger import logger
 from fontTools import ttLib
 
 args = argparse.ArgumentParser(
-	description='Print out macStyle bitmask of the fonts')
+	description='Print out Panose of the fonts')
 args.add_argument('font', nargs="+")
 args.add_argument('--verbose', default=False, action='store_true')
-
-
-def getByte2(ttfont):
-	return ttfont['head'].macStyle >> 8
-
-
-def getByte1(ttfont):
-	return ttfont['head'].macStyle & 255
 
 
 if __name__ == '__main__':
@@ -28,13 +20,16 @@ if __name__ == '__main__':
 	if not arg.verbose:
 	    logger.setLevel(logging.INFO)
 	
+	headers = ['filename']
 	rows = []
-	headers = ['filename', 'byte_2', 'byte_1']
-	for font in arg.font:
-		ttfont = ttLib.TTFont(font)
+	for i, font in enumerate(arg.font):
 		row = [os.path.basename(font)]
-		row.append('{:#010b}'.format(getByte2(ttfont)).replace('0b', ''))
-		row.append('{:#010b}'.format(getByte1(ttfont)).replace('0b', ''))
-		rows.append(row)
 
+		ttfont = ttLib.TTFont(font)
+
+		for k in sorted(ttfont['OS/2'].panose.__dict__.keys()):
+			if i < 1:
+				headers.append(k)
+			row.append(getattr(ttfont['OS/2'].panose, k, 0))
+		rows.append(row)
 	print(tabulate.tabulate(rows, headers))
