@@ -30,12 +30,11 @@ if __name__ == '__main__':
 	    logger.setLevel(logging.INFO)
 	
 	rows = []
-	headers = ['filename', 'byte_2', 'byte_1']
+	headers = ['filename', 'macStyle']
 	for font in arg.font:
 		ttfont = ttLib.TTFont(font)
 		row = [os.path.basename(font)]
-		row.append('{:#010b}'.format(getByte2(ttfont)).replace('0b', ''))
-		row.append('{:#010b}'.format(getByte1(ttfont)).replace('0b', ''))
+		row.append('{:#010b} {:#010b}'.format(getByte2(ttfont), getByte1(ttfont)).replace('0b', ''))
 		rows.append(row)
 
 	def as_csv(rows):
