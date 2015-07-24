@@ -107,7 +107,8 @@ setup(
              'tools/fontbakery-fix-panose.py',
              'tools/fontbakery-fix-weightclass.py',
              'tools/fontbakery-fix-widthclass.py',
-             'tools/fontbakery-fix-italicangle.py'],
+             'tools/fontbakery-fix-italicangle.py',
+             'tools/fontbakery-fix-familymetadata.py'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',
