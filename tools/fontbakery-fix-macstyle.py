@@ -12,6 +12,8 @@ args = argparse.ArgumentParser(
 	description='Print out macStyle bitmask of the fonts')
 args.add_argument('font', nargs="+")
 args.add_argument('--csv', default=False, action='store_true')
+args.add_argument('--bit-bold', default=False, action='store_true')
+args.add_argument('--bit-italic', default=False, action='store_true')
 args.add_argument('--autofix', default=False, action='store_true')
 
 
@@ -50,10 +52,10 @@ if __name__ == '__main__':
 	if arg.autofix:
 		for font in arg.font:
 			ttfont = ttLib.TTFont(font)
-			if '-Bold' in font:
+			if '-Bold' in font or arg.bit_bold:
 				ttfont['head'].macStyle |= 0b1
-			if 'Italic' in font:
-				ttfont['OS/2'].fsSelection |= 0b10
+			if 'Italic' in font or arg.bit_italic:
+				ttfont['head'].macStyle |= 0b10
 			ttfont.save(font + '.fix')
 		printInfo([f + '.fix' for f in arg.font], print_csv=arg.csv)
 		sys.exit(0)
