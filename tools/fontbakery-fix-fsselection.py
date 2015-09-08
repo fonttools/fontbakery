@@ -55,6 +55,8 @@ if __name__ == '__main__':
 			if 'Italic' in font:
 				ttfont['OS/2'].fsSelection |= 0b1
 			ttfont.save(font + '.fix')
+		printInfo([f + '.fix' for f in arg.font], print_csv=arg.csv)
+		sys.exit(0)
 	printInfo(arg.font, print_csv=arg.csv)
 	
 	
