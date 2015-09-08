@@ -49,7 +49,7 @@ def printInfo(fonts, print_csv=False):
 if __name__ == '__main__':
 
 	arg = args.parse_args()
-	if arg.autofix:
+	if arg.autofix or arg.bit_bold or arg.bit_italic:
 		for font in arg.font:
 			ttfont = ttLib.TTFont(font)
 			if '-Bold' in font or arg.bit_bold:
