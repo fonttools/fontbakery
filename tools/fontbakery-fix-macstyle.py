@@ -43,7 +43,7 @@ def printInfo(fonts, print_csv=False):
 	if print_csv:
 		as_csv(rows)
 
-	print(tabulate.tabulate(rows, headers))
+	print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
 
 def clearBit(int_type, offset):

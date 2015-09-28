@@ -40,7 +40,7 @@ def printInfo(fonts, print_csv=False):
 	if print_csv:
 		as_csv(rows)
 	else:
-		print(tabulate.tabulate(rows, headers))
+		print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
 
 if __name__ == '__main__':
