@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import argparse
 import csv
 import os
@@ -16,9 +17,14 @@ args.add_argument('--csv', default=False, action='store_true')
 def print_info(fonts, print_csv=False):
 	headers = ['filename', 'usWidthClass']
 	rows = []
+	warnings = []
 	for font in fonts:
 		ttfont = ttLib.TTFont(font)
-		rows.append([os.path.basename(font), ttfont['OS/2'].usWidthClass])
+		usWidthClass = ttfont['OS/2'].usWidthClass
+		rows.append([os.path.basename(font), usWidthClass])
+		if usWidthClass != 5:
+			warning = "WARNING: {} is {}, expected 5"
+			warnings.append(warning.format(font, usWidthClass))
 
 	def as_csv(rows):
 		writer = csv.writer(sys.stdout)
@@ -30,7 +36,8 @@ def print_info(fonts, print_csv=False):
 		as_csv(rows)
 		
 	print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
-
+	for warn in warnings:
+		print(warn, file=sys.stderr)
 
 if __name__ == '__main__':
 	arg = args.parse_args()
