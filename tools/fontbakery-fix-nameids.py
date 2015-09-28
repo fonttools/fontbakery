@@ -53,4 +53,4 @@ if __name__ == '__main__':
     if arg.csv:
         as_csv(rows)
 
-    print(tabulate.tabulate(rows, header))
+    print(tabulate.tabulate(rows, header, tablefmt="pipe"))
