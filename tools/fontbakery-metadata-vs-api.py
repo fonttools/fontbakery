@@ -49,12 +49,15 @@ if __name__ == '__main__':
 			print('ER: {} is not in production'.format(family))
 			continue
 
+		webfontStyles = []
 		for style, fonturl in webfontList[index]['files'].items():
 			urlparts = urlparse.urlparse(fonturl)
 			cache_dir = argv.cache
 			cache_dir = os.path.join(cache_dir, urlparts.netloc, os.path.dirname(urlparts.path).strip('/'))
 			if not os.path.exists(cache_dir):
 				os.makedirs(cache_dir)
+
+			webfontStyles.append(style)
 
 			fontname = os.path.basename(fonturl)
 
@@ -74,7 +77,21 @@ if __name__ == '__main__':
 
 		for subset in metadataJson['subsets']:
 			if subset not in webfontList[index]['subsets']:
-				print('ER: {} has {} in Github but not in API'.format(family, subset), file=sys.stderr)		
+				print('ER: {} has {} in Github but not in API'.format(family, subset), file=sys.stderr)
+
+		for style in webfontStyles:
+			try:
+				filenameWeightStyleIndex = [str(item['weight']) + str(item['style']) for item in metadataJson['fonts']].index(style)
+				if argv.verbose:
+					print('OK: {} in Github and in API'.format(metadataJson['fonts'][filenameWeightStyleIndex]['filename']))
+			except ValueError:
+				print('ER: {}-{} in API but not in Github'.format(family, style), file=sys.stderr)
+
+		for font in metadataJson['fonts']:
+			try:
+				webfontStyles.index(str(font['weight']) + str(font['style']))
+			except ValueError:
+				print('ER: {} in Github but not in API'.format(font['filename']), file=sys.stderr)
 
 		metadataJsonList.append(metadataJsonFile)
 
