@@ -25,9 +25,10 @@ Font Bakery has been presented at the following events:
 Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readthedocs.org) and [gem](https://rubygems.org):
 
 ```sh
+xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" # install homebrew
 brew install python giflib libspiro; # fontforge optional dependencies
-brew install --HEAD --with-x fontforge; # fontforge
+brew install --HEAD fontforge; # fontforge
 brew install libmagic ttfautohint swig; # fontbakery dependencies
 easy_install pip # install pip
 pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependencies
