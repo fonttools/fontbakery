@@ -584,8 +584,8 @@ class FontTool:
         """ Retrieves tables names existing in font
 
         >>> FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf")
-        ['GDEF', 'gasp', 'loca', 'name', 'post', 'OS/2', 'maxp', 'head', \
-'kern', 'FFTM', 'GSUB', 'glyf', 'GPOS', 'cmap', 'hhea', 'hmtx', 'DSIG']
+        ['DSIG', 'FFTM', 'GDEF', 'GPOS', 'GSUB', 'OS/2', 'cmap', 'gasp', \
+'glyf', 'head', 'hhea', 'hmtx', 'kern', 'loca', 'maxp', 'name', 'post']
         """
         font = ttLib.TTFont(path)
         return font.reader.tables.keys()
