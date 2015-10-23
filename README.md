@@ -7,10 +7,10 @@
 # Font Bakery
 
 Font Bakery is a set of command-line tools for building and testing font projects, and a web interface for reviewing them.
-It runs checks on source files in UFO, SFD or TTX formats and builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
+It runs checks on source files in UFO, SFD or TTX formats and via FontForge or AFDKO builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
 It runs tests on the build results, and the test logs can be parsed into graphical views by the Font Bakery web app.
 
-Optionally, if you are developing a font project publicly with Github or a similar host, you can set up a Continuous Integration server like Travis to run FontBakery on eah commit, so that with each update your files are built and tested in the CI server and then uploaded to the project's `gh-pages` branch for browsing and testing live.
+Optionally, if you are developing a font project publicly with Github or a similar host, you can set up a Continuous Integration server like Travis to run FontBakery on each commit, so that with each update your files are built and tested in the CI server and then uploaded to the project's `gh-pages` branch for browsing and testing live.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
@@ -28,13 +28,15 @@ Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readt
 xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" # install homebrew
 brew install python giflib libspiro; # fontforge optional dependencies
-brew install --HEAD fontforge; # fontforge
+brew install fontforge --with-extra-tools --HEAD ; # fontforge
 brew install libmagic ttfautohint swig; # fontbakery dependencies
 easy_install pip # install pip
-pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependencies
-pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependencies
+pip install virtualenv; # optional, can be useful
+pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependency
+pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependency
+pip install git+https://github.com/davelab6/pyfontaine.git; # fontbakery dependency
 sudo gem install travis; # fontbakery dependencies
-pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery
+sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
 ```
 
 ### GNU+Linux
