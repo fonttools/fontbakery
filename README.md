@@ -124,6 +124,7 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    - sudo apt-get install -qq g++-4.8
    - export CXX="g++-4.8" CC="gcc-4.8"
    install:
+   - pip install Jinja2
    - pip install git+https://github.com/behdad/fontTools.git
    - pip install git+https://github.com/googlefonts/fontcrunch.git
    - pip install git+https://github.com/googlefonts/fontbakery.git
