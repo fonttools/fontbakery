@@ -115,10 +115,14 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    ```yml
    language: python
    before_install:
+   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
    - sudo add-apt-repository --yes ppa:fontforge/fontforge
    - sudo apt-get update -qq
    - sudo apt-get install python-fontforge ttfautohint swig
    - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/python2.7.9/lib/python2.7/site-packages"
+   # See issue travis-ci/travis-ci#1379
+   - sudo apt-get install -qq g++-4.8
+   - export CXX="g++-4.8" CC="gcc-4.8"
    install:
    - pip install git+https://github.com/behdad/fontTools.git
    - pip install git+https://github.com/googlefonts/fontcrunch.git
