@@ -170,6 +170,15 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
      ]
    }
    ```
+
+  For the next step you'll need to have the travis command-line utility installed.
+  It can be installed with the following commands:
+
+  ```sh
+  sudo apt-get install ruby1.9.1-dev
+  sudo gem install travis -v 1.8.0 --no-rdoc --no-ri
+  ```
+
   Now add the token using the travis command, replacing `yourGithubUserEmail` and `yourGithubRepoToken` with your own:
   ```sh
   travis encrypt GIT_NAME="yourGithubUsername" \
