@@ -28,3 +28,4 @@ Vitaly Volkov <hash.3g@gmail.com>
 Robert Martinez <mail@robertmartinez.de>
 Raph Levien <raph.levien@gmail.com>
 Filip Zembowicz <fil@google.com>
+Felipe Correa da Silva Sanches <juca@members.fsf.org>
