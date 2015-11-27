@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import csv
-import logging
 import os
 import sys
 import tabulate

@@ -45,7 +45,6 @@ from PIL import ImageDraw
 
 import argparse
 import glob
-import os
 import sys
 import BaseHTTPServer
 import SocketServer
