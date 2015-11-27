@@ -136,7 +136,7 @@ def italicAngle(font, newvalue):
     font['post'].italicAngle = newvalue
 
 
-def getPossibleItalicAngle(font):
+def getSuggestedItalicAngle(font):
     return -10
 
 
@@ -169,7 +169,7 @@ def validate(font, fontStyle):
                        italicAngle, [font, 0]))
 
     if font['post'].italicAngle == 0 and fontStyle.endswith('Italic'):
-        newvalue = getSuggestItalicAngle(font)
+        newvalue = getSuggestedItalicAngle(font)
         errors.append(('ER: POST italicAngle is 0 should be {}'.format(newvalue), 
                        italicAngle, [font, newvalue]))
 
