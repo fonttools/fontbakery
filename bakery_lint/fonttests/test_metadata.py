@@ -133,7 +133,7 @@ class MetadataTest(TestCase):
         self.assertTrue(designer, 'Field "designer" MUST NOT be empty')
         import urllib
         import csv
-        fp = urllib.urlopen('https://googlefontdirectory.googlecode.com/hg/designers/profiles.csv')
+        fp = urllib.urlopen('https://raw.githubusercontent.com/google/fonts/master/designers/profiles.csv')
         designers = []
         for row in csv.reader(fp):
             if not row:
