@@ -46,7 +46,7 @@ if __name__ == '__main__':
         import csv
         import sys
         writer = csv.writer(sys.stdout)
-        writer.writerows([headers])
+        writer.writerows([header])
         writer.writerows(rows)
         sys.exit(0)
 
