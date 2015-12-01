@@ -115,22 +115,27 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    ```yml
    language: python
    before_install:
+   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
    - sudo add-apt-repository --yes ppa:fontforge/fontforge
    - sudo apt-get update -qq
    - sudo apt-get install python-fontforge ttfautohint swig
-   - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/python2.7.8/lib/python2.7/site-packages"
+   - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/python2.7.9/lib/python2.7/site-packages"
+   # See issue travis-ci/travis-ci#1379
+   - sudo apt-get install -qq g++-4.8
+   - export CXX="g++-4.8" CC="gcc-4.8"
    install:
+   - pip install Jinja2
    - pip install git+https://github.com/behdad/fontTools.git
    - pip install git+https://github.com/googlefonts/fontcrunch.git
    - pip install git+https://github.com/googlefonts/fontbakery.git
    before_script:
    - mkdir -p builds/$TRAVIS_COMMIT
-   script: (set -o pipefail; PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery-build.py . 2>&1 | tee -a    builds/$TRAVIS_COMMIT/buildlog.txt)
+   script: (set -o pipefail; PATH=/home/travis/virtualenv/python2.7.9/bin/:$PATH fontbakery-build.py . 2>&1 | tee -a    builds/$TRAVIS_COMMIT/buildlog.txt)
    after_script:
-   - PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery-report.py builds/$TRAVIS_COMMIT
+   - PATH=/home/travis/virtualenv/python2.7.9/bin/:$PATH fontbakery-report.py builds/$TRAVIS_COMMIT
    - rm -rf builds/$TRAVIS_COMMIT/sources
    - rm -rf builds/$TRAVIS_COMMIT/build.state.yaml
-   - PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery-travis-deploy.py
+   - PATH=/home/travis/virtualenv/python2.7.9/bin/:$PATH fontbakery-travis-deploy.py
    branches:
      only:
      - master
@@ -165,6 +170,15 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
      ]
    }
    ```
+
+  For the next step you'll need to have the travis command-line utility installed.
+  It can be installed with the following commands:
+
+  ```sh
+  sudo apt-get install ruby1.9.1-dev
+  sudo gem install travis -v 1.8.0 --no-rdoc --no-ri
+  ```
+
   Now add the token using the travis command, replacing `yourGithubUserEmail` and `yourGithubRepoToken` with your own:
   ```sh
   travis encrypt GIT_NAME="yourGithubUsername" \
