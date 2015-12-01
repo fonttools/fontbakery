@@ -53,7 +53,6 @@ class FamilyMetadataTable(object):
 
     def putnameIds(self, ttfont, platform=3):
         nameids = ['1', '2', '4', '6', '16', '17', '18']
-        row = []
         for nameid in nameids:
             value = ''
             for name in ttfont['name'].names:
