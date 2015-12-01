@@ -583,7 +583,7 @@ class FontTool:
     def get_tables(path):
         """ Retrieves tables names existing in font
 
-        >>> FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> sorted(FontTool.get_tables("tests/fixtures/ttf/Font-Regular.ttf"))
         ['DSIG', 'FFTM', 'GDEF', 'GPOS', 'GSUB', 'OS/2', 'cmap', 'gasp', \
 'glyf', 'head', 'hhea', 'hmtx', 'kern', 'loca', 'maxp', 'name', 'post']
         """
