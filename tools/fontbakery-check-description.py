@@ -45,7 +45,7 @@ if __name__ == '__main__':
         if not os.path.basename(x).startswith('DESCRIPTION.'):
             print('ER: {} is not DESCRIPTION'.format(x), file=sys.stderr)
             continue
-        
+
         suite = get_suite(x)
 
         result = run_suite(suite)

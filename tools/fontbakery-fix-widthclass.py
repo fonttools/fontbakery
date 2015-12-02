@@ -36,7 +36,7 @@ def print_info(fonts, print_csv=False):
 
     if print_csv:
         as_csv(rows)
-        
+
     print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
     for warn in warnings:
         print(warn, file=sys.stderr)
@@ -94,5 +94,3 @@ if __name__ == '__main__':
         fix(arg.font, value=int(arg.set))
         sys.exit(0)
     print_info(arg.font, print_csv=arg.csv)
-    
-    

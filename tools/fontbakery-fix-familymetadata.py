@@ -91,7 +91,7 @@ class FamilyMetadataTable(object):
 if __name__ == '__main__':
 
     arg = args.parse_args()
-    
+
     rows = []
     fm = FamilyMetadataTable()
     for i, font in enumerate(arg.font):

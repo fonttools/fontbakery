@@ -58,5 +58,3 @@ if __name__ == '__main__':
 		printInfo([f + '.fix' for f in arg.font], print_csv=arg.csv)
 		sys.exit(0)
 	printInfo(arg.font, print_csv=arg.csv)
-	
-	

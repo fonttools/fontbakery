@@ -12,7 +12,7 @@ import sys
 args = argparse.ArgumentParser()
 args.add_argument('key', help='Key from Google Fonts Developer API')
 args.add_argument('repo', help='Directory tree that contains directories with METADATA.json')
-args.add_argument('--cache', help='Directory to store a copy of the files in the fonts developer api', 
+args.add_argument('--cache', help='Directory to store a copy of the files in the fonts developer api',
                   default="/tmp/fontbakery-compare-github-api")
 args.add_argument('--verbose', help='Print additional information', action="store_true")
 args.add_argument('--ignore-copy-existing-ttf', action="store_true")
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         metadataJsonFile = os.path.join(dirpath, 'METADATA.json')
         if not os.path.exists(metadataJsonFile):
             continue
-            
+
         metadataJson = json.load(open(metadataJsonFile))
         try:
             family = metadataJson['name']
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                     print('OK: {} in Github and in API'.format(metadataJsonFileName))
 
                     import hashlib
-                    github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataJsonFileName),'rb').read()).hexdigest()
+                    github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataJsonFileName), 'rb').read()).hexdigest()
                     fonturl = webfontsItem['files'][style]
                     fontpath = get_cache_font_path(argv.cache, fonturl)
                     google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                         print('ER: {} visibility is "{}" should be "External"'.format(family, metadataJson['visibility']), file=sys.stderr)
                     elif argv.autofix:
                         visibility = metadataJson['visibility']
-                        
+
                         from bakery_cli.scripts.genmetadata import striplines
                         content = {}
                         with io.open(metadataJsonFile, 'r', encoding="utf-8") as fp:

@@ -121,7 +121,7 @@ def setValidNames(font, isBold):
         for nameID in difference:
             string = rules.apply(nameID)
             names.append({'nameID': nameID, 'string': string})
-            
+
     for field in names:
         setValidNameRecord(font, field['nameID'], field['string'])
 
@@ -148,29 +148,29 @@ def validate(font, fontStyle):
     if fontStyle.endswith('Italic'):
         if not fontStyleIsBold(fontStyle):
             if not bool(font['head'].macStyle & 0b10):
-                errors.append(('ER: HEAD macStyle is {} should be 00000010'.format(f), 
+                errors.append(('ER: HEAD macStyle is {} should be 00000010'.format(f),
                                setMacStyle, [font, font['head'].macStyle | 0b10]))
         elif not bool(font['head'].macStyle & 0b11):
-            errors.append(('ER: HEAD macStyle is {} should be 00000011'.format(f), 
+            errors.append(('ER: HEAD macStyle is {} should be 00000011'.format(f),
                            setMacStyle, [font, font['head'].macStyle | 0b11]))
     else:
         if not fontStyleIsBold(fontStyle):
             if bool(font['head'].macStyle & 0b10):
                 newvalue = font['head'].macStyle | 0b1111111111111100
-                errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue), 
+                errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue),
                                setMacStyle, [font, newvalue]))
         elif bool(font['head'].macStyle & 0b01):
             newvalue = font['head'].macStyle | 0b1111111111111101
-            errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue), 
+            errors.append(('ER: HEAD macStyle is {} should be {:#09b}'.format(f, newvalue),
                            setMacStyle, [font, newvalue]))
 
     if font['post'].italicAngle != 0 and not fontStyle.endswith('Italic'):
-        errors.append(('ER: POST italicAngle is {} should be 0'.format(font['post'].italicAngle), 
+        errors.append(('ER: POST italicAngle is {} should be 0'.format(font['post'].italicAngle),
                        italicAngle, [font, 0]))
 
     if font['post'].italicAngle == 0 and fontStyle.endswith('Italic'):
         newvalue = getSuggestedItalicAngle(font)
-        errors.append(('ER: POST italicAngle is 0 should be {}'.format(newvalue), 
+        errors.append(('ER: POST italicAngle is 0 should be {}'.format(newvalue),
                        italicAngle, [font, newvalue]))
 
     # Check NAME table contains correct names for Italic

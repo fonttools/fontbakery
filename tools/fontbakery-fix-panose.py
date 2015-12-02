@@ -14,7 +14,7 @@ args.add_argument('--csv', default=False, action='store_true')
 if __name__ == '__main__':
 
 	arg = args.parse_args()
-	
+
 	headers = ['filename']
 	rows = []
 	for i, font in enumerate(arg.font):
@@ -38,5 +38,5 @@ if __name__ == '__main__':
 
 	if arg.csv:
 		as_csv(rows)
-		
+
 	print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
