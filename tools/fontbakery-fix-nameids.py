@@ -35,7 +35,7 @@ if __name__ == '__main__':
                 value = name.string.decode("utf-16-be") or ''
             else:
                 value = name.string or ''
-            
+
             row.append(value)
 
         rows.append(row)

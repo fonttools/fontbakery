@@ -41,7 +41,6 @@ if __name__ == '__main__':
         sys.exit()
 
     for x in args.file:
-        
         suite = get_suite(x)
 
         result = run_suite(suite)

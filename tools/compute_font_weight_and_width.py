@@ -27,7 +27,7 @@
 # USAGE
 #
 # python compute_font_weight_and_width.py --metric=width --folder="ttfs/*.ttf" --debug=True
-# 
+#
 # - Valid values for the metric are 'width' and 'weight'
 # - If the debug property is set to True, a server will spin up with images for visual inspection.
 #   Otherwise, the values (from 0.0-1.0) will be output to the terminal.
@@ -158,12 +158,12 @@ def start_debug_server(properties):
     metric = font['value']
     filename = font['fontfile']
     base64img = font['base64img']
-  
+
     if metric == 0.0:
       print >> sys.stderr, "%s has no metric." % filename
       continue
     template_contents += ENTRY_TEMPLATE % (metric, filename, base64img)
-  
+
   debug_page_html = DEBUG_TEMPLATE % template_contents
 
   # Handler that responds to all requests with a single file.
@@ -201,7 +201,7 @@ def get_width(fontfile):
   text_width, text_height = font.getsize(TEXT)
   img = Image.new('RGBA', (text_width, text_height))
   draw = ImageDraw.Draw(img)
-  draw.text((0,0), TEXT, font=font, fill=(0,0,0))
+  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
   return {'value': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
 
 
@@ -212,7 +212,7 @@ def get_darkness(fontfile):
   text_width, text_height = font.getsize(TEXT)
   img = Image.new('RGBA', (text_width, text_height))
   draw = ImageDraw.Draw(img)
-  draw.text((0,0), TEXT, font=font, fill=(0,0,0))
+  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
 
   # Calculate the average darkness.
   histogram = img.histogram()
