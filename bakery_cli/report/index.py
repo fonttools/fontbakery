@@ -301,8 +301,11 @@ def generate(config):
 
     fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])
     report_app.summary_page.dump_file(fonts_serialized, 'fontaine_fonts.json')
-    fonts_orthography = get_orthography(fonts)
-    report_app.summary_page.dump_file({'fonts_list': fonts_orthography[0],
+
+    #Temporarily remove this broken piece of code
+    if False:
+        fonts_orthography = get_orthography(fonts)
+        report_app.summary_page.dump_file({'fonts_list': fonts_orthography[0],
                                        'coverage_averages': fonts_orthography[1],
                                        'fonts_info': fonts_orthography[2]},
                                       'fonts_orthography.json')

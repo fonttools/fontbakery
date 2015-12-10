@@ -86,6 +86,9 @@ def generate(config, outfile='review.html'):
                       'meta': f})
 
     report_app = report_utils.BuildInfo(config)
-    fonts_orthography = get_orthography(fonts)
+    
+    #temporarily disable broken orthography code
+    if False:
+        fonts_orthography = get_orthography(fonts)
 
-    report_app.review_page.dump_file(fonts_orthography, 'orthography.json')
+        report_app.review_page.dump_file(fonts_orthography, 'orthography.json')
