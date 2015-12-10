@@ -46,7 +46,7 @@ class Pipe(object):
                 args = [op.join(self.project_root, self.filename),
                         self.builddir]
                 copy_single_file(op.join(self.project_root, self.filename),
-                                 self.builddir)
+                                 op.join(self.builddir, 'sources'))
             except:
                 logger.debug('Unable to copy files')
                 raise
@@ -189,7 +189,7 @@ class CopyLicense(Pipe):
             #  See: CopyLicense.supported_licenses attribute
             for lic in self.supported_licenses:
                 src = op.join(self.project_root, lic)
-                dest = op.join(self.builddir, lic)
+                dest = op.join(self.builddir, 'sources', lic)
                 if os.path.exists(src):
                     shellutil.copy(src, dest)
                     pipedata['license_file'] = lic
