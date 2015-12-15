@@ -25,12 +25,6 @@ from bakery_cli.report import (tests, index, buildlog, checks, metadata,
                                bakery, description, review, utils)
 
 
-try:
-    import jinja2
-except IndexError:
-    print(('Bakery report script uses jinja2 template engine.'
-           ' Please install jinja2 before using'))
-
 desc = 'Generates report files for given project directory'
 parser = argparse.ArgumentParser(description=desc)
 parser.add_argument('directory', help='Place of directory with fonts to make'
