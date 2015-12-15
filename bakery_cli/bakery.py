@@ -87,13 +87,6 @@ class Bakery(object):
     def addLoggingToFile(self):
         if not os.path.exists(self.build_dir):
             os.makedirs(self.build_dir)
-        else:
-            index = 1
-            b = self.build_dir
-            while os.path.exists(b + '.' + str(index)):
-                index += 1
-            self.build_dir = b + '.' + str(index)
-            os.makedirs(self.build_dir)
 
         chf = logging.FileHandler(op.join(self.build_dir, 'buildlog.txt'))
 
