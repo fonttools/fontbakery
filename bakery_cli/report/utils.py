@@ -4,7 +4,6 @@ import os.path as op
 import os
 import shutil
 import six
-from jinja2 import Environment, FileSystemLoader
 from bakery_cli.utils import run
 
 try:
@@ -14,17 +13,7 @@ except ImportError:
 
 
 GH = 'https://github.com'
-GH_RAW = 'https://raw.githubusercontent.com/'
-TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 BUILD_INFO_DIR = op.join(op.dirname(__file__), 'build_info')
-jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR),
-                       extensions=["jinja2.ext.do", ],
-                       autoescape=True)
-
-
-def render_template(templatename, *args, **kwargs):
-    template = jinjaenv.get_template(templatename)
-    return template.render(*args, **kwargs).encode('utf8')
 
 
 def _build_repo_url(base_url, *chunks, **kwargs):
@@ -40,14 +29,6 @@ def build_fontbakery_url(*chunks):
 
 def build_repo_url(*chunks, **kwargs):
     return _build_repo_url(GH, *chunks, **kwargs)
-
-
-def build_raw_repo_url(*chunks, **kwargs):
-    return _build_repo_url(GH_RAW, *chunks, **kwargs)
-
-
-jinjaenv.globals['build_repo_url'] = build_repo_url
-jinjaenv.globals['build_raw_repo_url'] = build_raw_repo_url
 
 
 def git_info(config):
