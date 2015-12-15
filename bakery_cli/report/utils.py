@@ -17,7 +17,7 @@ BUILD_INFO_DIR = op.join(op.dirname(__file__), 'build_info')
 
 
 def _build_repo_url(base_url, *chunks, **kwargs):
-    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
+    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'googlefonts/dummy')
     if kwargs:
         return '{}?{}'.format(op.join(base_url, repo_slug, *chunks), urllib_parse(kwargs))
     return op.join(base_url, repo_slug, *chunks)
@@ -129,7 +129,7 @@ class ReviewPage(ReportPageBase):
 class BuildInfo(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
-        self.repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
+        self.repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'googlefonts/dummy')
         self.source_dir = kwargs.get('source_dir', BUILD_INFO_DIR)
         self.build_dir = kwargs.get('build_dir', self.config['path'])
         self.target_dir = kwargs.get('target_dir', op.join(self.config['path'], 'build_info'))
@@ -233,7 +233,7 @@ class BuildInfo(six.with_metaclass(Singleton, object)):
         <!DOCTYPE html>
         <html>
         <head>
-            <meta http-equiv="refresh" content="0; url=http://fontdirectory.github.io/collection/#/{slug}/" />"
+            <meta http-equiv="refresh" content="0; url=http://googlefonts.github.io/fontbakery/#/{slug}/" />"
             <title>{title}</title>
         </head>
         <body>
@@ -242,7 +242,7 @@ class BuildInfo(six.with_metaclass(Singleton, object)):
         self.write_file(tmpl, op.join(self.build_dir, 'index.html'))
 
     def write_readme_file(self):
-        tmpl = '[{}](http://fontdirectory.github.io/collection/#/{}/)'.format(self.repo_slug, self.repo_slug)
+        tmpl = '[{}](http://googlefonts.github.io/fontbakery/#/{}/)'.format(self.repo_slug, self.repo_slug)
         self.write_file(tmpl, op.join(self.build_dir, 'README.md'))
 
     def copy_ttf_fonts(self):
