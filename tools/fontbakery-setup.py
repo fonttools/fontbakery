@@ -75,14 +75,6 @@ class Widgets(object):
         self.process_files.append(widget)
         return widget
 
-    def create_subset_widget(self, subsetname, coverage):
-        widget = urwid.CheckBox('{0} ({1})'.format(subsetname, coverage),
-                                state=bool(subsetname in app.subset),
-                                user_data={'name': subsetname},
-                                on_state_change=self.on_subset_state_change)
-        self.subset.append(widget)
-        return widget
-
 
 class App(object):
 
@@ -172,48 +164,6 @@ class App(object):
         raise urwid.ExitMainLoop()
 
 
-def get_subsets_coverage_data(source_fonts_paths):
-    """ Return dict mapping key to the corresponding subsets coverage
-
-        {'subsetname':
-            {'fontname-light': 13, 'fontname-bold': 45},
-         'subsetname':
-            {'fontname-light': 9, 'fontname-bold': 100}
-        }
-    """
-    library = Library(collections=['subsets'])
-    subsets = {}
-    for fontpath in source_fonts_paths:
-        if fontpath.lower().endswith('.sfd'):
-            continue
-        try:
-            font = FontFactory.openfont(fontpath)
-        except AssertionError:
-            continue
-        for info in font.get_orthographies(_library=library):
-
-            subsetname = info.charset.common_name.replace('Subset ', '')
-            if subsetname not in subsets:
-                subsets[subsetname] = {}
-
-            subsets[subsetname][fontpath] = info.coverage
-    return subsets
-
-
-def generate_subsets_coverage_list():
-    directory = UpstreamDirectory('.')
-
-    source_fonts_paths = []
-    # `get_sources_list` returns list of paths relative to root.
-    # To complete to absolute paths use python os.path.join method
-    # on root and path
-    for p in directory.ALL_FONTS:
-        if p.lower().endswith('.sfd'):
-            continue
-        source_fonts_paths.append(p)
-    return get_subsets_coverage_data(source_fonts_paths)
-
-
 import argparse
 
 
@@ -267,18 +217,6 @@ for f in ['OFL.txt', 'LICENSE.txt', 'LICENSE']:
     else:
         widgets.append(urwid.RadioButton(app.widgets.licenses, f,
                     state=bool(f == app.license)))
-
-widgets.append(urwid.Divider())
-widgets.append(
-    urwid.AttrMap(
-        urwid.Text('What subsets do you want to create?'), 'key'))
-
-subsets = generate_subsets_coverage_list()
-for s in sorted(subsets):
-    ll = ', '.join(set(['{}%'.format(subsets[s][k])
-                        for k in subsets[s] if subsets[s][k]]))
-    if ll:
-        widgets.append(app.widgets.create_subset_widget(s, ll))
 
 
 widgets.append(urwid.Divider())
