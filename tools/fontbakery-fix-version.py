@@ -18,8 +18,7 @@
 import argparse
 import os
 
-from fontTools import ttLib
-#from bakery_cli.fixers import CreateVersionFixer
+from bakery_cli.fixers import VersionFixer
 
 
 if __name__ == '__main__':
@@ -30,25 +29,18 @@ if __name__ == '__main__':
     parser.add_argument('--increment-major', action='store_true', help='Increment version major values')
     parser.add_argument('--increment-minor', action='store_true', help='Increment version minor values')
 
-    args = parser.parse_args()
+    options = parser.parse_args()
 
-    for path in args.otf_font:
+    for path in options.otf_font:
         if not os.path.exists(path):
             continue
-        
-        font = ttLib.TTFont(path)
-        print("head.fontRevision: {}".format(font['head'].fontRevision))
+        fixer = VersionFixer(None, path)
+        fixer.apply()
 
-        for name in font['name'].names:
-            if name.nameID == 5:
-                print("name.5.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
+        if options.increment_major:
+            fixer.increment_major()
 
-        for name in font['name'].names:
-            if name.nameID == 3:
-                print("name.3.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
-
-        if 'CFF ' in font:
-            cff = font['CFF '].cff
-            print("cff.version: {}.{}".format(cff.major, cff.minor))
-
-        #CreateVersionFixer(None, path).apply()
+        if options.increment_minor:
+            fixer.increment_minor()
+            
+        fixer.save()

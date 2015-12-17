@@ -78,6 +78,36 @@ class Fixer(object):
         return True
 
 
+class VersionFixer(Fixer):
+
+    def get_shell_command(self):
+        return 'fontbakery-fix-version.py {}'.format(self.fontpath)
+
+    def increment_major(self):
+        self.font.tables["CFF "].cff.major += 1
+    
+    def increment_minor(self):
+        self.font.tables["CFF "].cff.minor += 1
+
+    def apply(self):
+        
+        print("head.fontRevision: {}".format(self.font['head'].fontRevision))
+
+        for name in self.font['name'].names:
+            if name.nameID == 5:
+                print("name.5.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
+
+        for name in self.font['name'].names:
+            if name.nameID == 3:
+                print("name.3.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
+
+        if 'CFF ' in self.font:
+            cff = self.font['CFF '].cff
+            print("cff.version: {}.{}".format(cff.major, cff.minor))
+
+        return True
+
+
 class MultipleDesignerFixer(Fixer):
 
     def get_shell_command(self):
