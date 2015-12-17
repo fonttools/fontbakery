@@ -37,5 +37,18 @@ if __name__ == '__main__':
             continue
         
         font = ttLib.TTFont(path)
-        print("head.fontRevision: {}\n".format(font['head'].fontRevision))
+        print("head.fontRevision: {}".format(font['head'].fontRevision))
+
+        for name in font['name'].names:
+            if name.nameID == 5:
+                print("name.5.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
+
+        for name in font['name'].names:
+            if name.nameID == 3:
+                print("name.3.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
+
+        if 'CFF ' in font:
+            cff = font['CFF '].cff
+            print("cff.version: {}.{}".format(cff.major, cff.minor))
+
         #CreateVersionFixer(None, path).apply()
