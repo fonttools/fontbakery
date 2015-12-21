@@ -491,35 +491,33 @@ class NbspAndSpaceSameWidth(Fixer):
 
             if isNbspAdded:
                 if check:
-                    msg = 'ER: {} space {} nbsp N: Add nbsp'
-                    logger.error(msg.format(fontfile, spaceWidth))
+                    msg = 'ER: {} space={} nbsp=None: Add nbsp with advanceWidth={}'
                 else:
-                    msg = 'ER: {} space {} nbsp N: Added nbsp to {}'
-                    logger.error(msg.format(fontfile, spaceWidth, spaceWidth))
+                    msg = 'ER: {} space={} nbsp=None: Added nbsp with advanceWidth={}'
+                logger.error(msg.format(fontfile, spaceWidth, spaceWidth))
 
             if isSpaceAdded:
                 if check:
-                    msg = 'ER: {} space N nbsp {}: Add space'
-                    logger.error(msg.format(fontfile, nbspWidth))
+                    msg = 'ER: {} space=None nbsp={}: Add space with advanceWidth={}'
                 else:
-                    msg = 'ER: {} space N nbsp {}: Added space {}'
-                    logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
+                    msg = 'ER: {} space=None nbsp={}: Added space with advanceWidth={}'
+                logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
                 
             if nbspWidth > spaceWidth:
                 if check:
-                    msg = 'ER: {} space {} nbsp {}: Change nbsp to {}'
+                    msg = 'ER: {} space={} nbsp={}: Change space advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space {} nbsp {}: Fixed nbsp to {}'
-                logger.error(msg.format(fontfile, spaceWidth, nbspWidth, spaceWidth))
+                    msg = 'ER: {} space={} nbsp={}: Fixed space advanceWidth to {}'
+                logger.error(msg.format(fontfile, spaceWidth, nbspWidth, nbspWidth))
             else:
                 if check:
-                    msg = 'ER: {} space {} nbsp {}: Change space to {}'
+                    msg = 'ER: {} space={} nbsp={}: Change nbsp advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space {} nbsp {}: Fixed space to {}'
-                logger.error(msg.format(fontfile, spaceWidth, nbspWidth, nbspWidth))
+                    msg = 'ER: {} space={} nbsp={}: Fixed nbsp advanceWidth to {}'
+                logger.error(msg.format(fontfile, spaceWidth, nbspWidth, spaceWidth))
             return True
 
-        logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
+        logger.info('OK: {} space={} nbsp={}'.format(fontfile, spaceWidth, nbspWidth))
         return
 
 
