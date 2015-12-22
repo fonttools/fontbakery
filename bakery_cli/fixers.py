@@ -491,33 +491,33 @@ class NbspAndSpaceSameWidth(Fixer):
 
             if isNbspAdded:
                 if check:
-                    msg = 'ER: {} space={} nbsp=None: Add nbsp with advanceWidth={}'
+                    msg = 'ER: {} space {} nbsp None: Add nbsp with advanceWidth {}'
                 else:
-                    msg = 'ER: {} space={} nbsp=None: Added nbsp with advanceWidth={}'
+                    msg = 'ER: {} space {} nbsp None: Added nbsp with advanceWidth {}'
                 logger.error(msg.format(fontfile, spaceWidth, spaceWidth))
 
             if isSpaceAdded:
                 if check:
-                    msg = 'ER: {} space=None nbsp={}: Add space with advanceWidth={}'
+                    msg = 'ER: {} space None nbsp {}: Add space with advanceWidth {}'
                 else:
-                    msg = 'ER: {} space=None nbsp={}: Added space with advanceWidth={}'
+                    msg = 'ER: {} space None nbsp {}: Added space with advanceWidth {}'
                 logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
                 
             if nbspWidth > spaceWidth:
                 if check:
-                    msg = 'ER: {} space={} nbsp={}: Change space advanceWidth to {}'
+                    msg = 'ER: {} space {} nbsp {}: Change space advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space={} nbsp={}: Fixed space advanceWidth to {}'
+                    msg = 'ER: {} space {} nbsp {}: Fixed space advanceWidth to {}'
                 logger.error(msg.format(fontfile, spaceWidth, nbspWidth, nbspWidth))
             else:
                 if check:
-                    msg = 'ER: {} space={} nbsp={}: Change nbsp advanceWidth to {}'
+                    msg = 'ER: {} space {} nbsp {}: Change nbsp advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space={} nbsp={}: Fixed nbsp advanceWidth to {}'
+                    msg = 'ER: {} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
                 logger.error(msg.format(fontfile, spaceWidth, nbspWidth, spaceWidth))
             return True
 
-        logger.info('OK: {} space={} nbsp={}'.format(fontfile, spaceWidth, nbspWidth))
+        logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
         return
 
 
