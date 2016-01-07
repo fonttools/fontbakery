@@ -503,7 +503,7 @@ class NbspAndSpaceSameWidth(Fixer):
                     msg = 'ER: {} space None nbsp {}: Added space with advanceWidth {}'
                 logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
                 
-            if nbspWidth > spaceWidth:
+            if nbspWidth > spaceWidth and spaceWidth >= 0:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change space advanceWidth to {}'
                 else:
