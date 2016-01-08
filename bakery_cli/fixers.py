@@ -461,9 +461,44 @@ class NbspAndSpaceSameWidth(Fixer):
     def setWidth(self, glyph, width):
         self.font['hmtx'][glyph] = (width, self.font['hmtx'][glyph][1])
 
+    def glyphHasInk(self, name):
+        """Checks if specified glyph has any ink.
+        That is, that it has at least one defined contour associated. Composites are
+        considered to have ink if any of their components have ink.
+        Args:
+            glyph_name: The name of the glyph to check for ink.
+        Returns:
+            True if the font has at least one contour associated with it.
+        """
+        glyph = self.font['glyf'].glyphs[name]
+        glyph.expand(self.font['glyf'])
+
+        if not glyph.isComposite():
+            if glyph.numberOfContours == 0:
+                return False
+            (coords, _, _) = glyph.getCoordinates(self.font['glyf'])
+            # you need at least 3 points to draw
+            return len(coords) > 2
+
+        # composite is blank if composed of blanks
+        # if you setup a font with cycles you are just a bad person
+        for glyph_name in glyph.getComponentNames(glyph.components):
+            if self.glyphHasInk(glyph_name):
+                return True
+
+        return False
+
     def fix(self, check=False):
+        retval = False
+        fontfile = os.path.basename(self.fontpath)
+
         space = self.getGlyph(0x0020)
         nbsp = self.getGlyph(0x00A0)
+        if space != "space":
+            logger.error('ER: {}: Glyph 0x0020 is called "{}": Change to "space"'.format(fontfile, space))
+        if nbsp != "nbsp":
+            logger.error('ER: {}: Glyph 0x00A0 is called "{}": Change to "nbsp"'.format(fontfile, nbsp))
+
         isNbspAdded = isSpaceAdded = False
         if not nbsp:
             isNbspAdded = True
@@ -480,10 +515,19 @@ class NbspAndSpaceSameWidth(Fixer):
                 logger.error('ER: {}'.format(ex))
                 return False
 
+        for g in [space, nbsp]:
+            if self.glyphHasInk(g):
+                if check:
+                    logger.error('ER: {}: Glyph "{}" has ink. Delete any contours or components'.format(fontfile, g))
+                else:
+                    logger.error('ER: {}: Glyph "{}" has ink. Fixed: Overwritten by an empty glyph'.format(fontfile, g))
+                    #overwrite existing glyph with an empty one
+                    self.font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+                    retval = True
+
         spaceWidth = self.getWidth(space)
         nbspWidth = self.getWidth(nbsp)
 
-        fontfile = os.path.basename(self.fontpath)
         if spaceWidth != nbspWidth or nbspWidth < 0:
 
             self.setWidth(nbsp, min(nbspWidth, spaceWidth))
@@ -518,7 +562,7 @@ class NbspAndSpaceSameWidth(Fixer):
             return True
 
         logger.info('OK: {} space {} nbsp {}'.format(fontfile, spaceWidth, nbspWidth))
-        return
+        return retval
 
 
 class GaspFixer(Fixer):
