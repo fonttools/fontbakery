@@ -494,10 +494,10 @@ class NbspAndSpaceSameWidth(Fixer):
 
         space = self.getGlyph(0x0020)
         nbsp = self.getGlyph(0x00A0)
-        if space != "space":
-            logger.error('ER: {}: Glyph 0x0020 is called "{}": Change to "space"'.format(fontfile, space))
-        if nbsp != "nbsp":
-            logger.error('ER: {}: Glyph 0x00A0 is called "{}": Change to "nbsp"'.format(fontfile, nbsp))
+        if space not in ["space", "uni0020"]:
+            logger.error('ER: {}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(fontfile, space))
+        if nbsp not in ["nbsp", "uni00A0"]:
+            logger.error('ER: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(fontfile, nbsp))
 
         isNbspAdded = isSpaceAdded = False
         if not nbsp:
