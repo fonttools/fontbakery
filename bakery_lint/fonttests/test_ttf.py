@@ -615,7 +615,7 @@ class TTFTestCase(TestCase):
         ttx = ttLib.TTFont(self.operator.path, 0)
         unencoded_glyphs = get_unencoded_glyphs(ttx)
         self.assertIs(unencoded_glyphs, [],
-                      msg='There should not be unencoded glyphs')
+                      msg='There are unencoded glyphs')
 
     def test_check_upm_heigths_less_120(self):
         """ Check if UPM Heights NOT more than 120% """
