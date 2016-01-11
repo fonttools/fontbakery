@@ -136,12 +136,12 @@ class CheckTextFilesExist(TestCase):
         if not exist:
             self.fail('%s does not exist in project' % filename)
 
-    @tags('required')
+    @tags('note')
     def test_copyrighttxt_exists(self):
         """ Font folder should contain COPYRIGHT.txt """
         self.assertExists('COPYRIGHT.txt')
 
-    @tags('required')
+    @tags('note')
     def test_description_exists(self):
         """ Font folder should contain DESCRIPTION.en_us.html """
         self.assertExists('DESCRIPTION.en_us.html')
@@ -151,6 +151,7 @@ class CheckTextFilesExist(TestCase):
         """ Font folder should contain LICENSE.txt """
         self.assertExists(['LICENSE.txt', 'OFL.txt'])
 
+    @tags('note')
     def test_fontlogtxt_exists(self):
         """ Font folder should contain FONTLOG.txt """
         self.assertExists('FONTLOG.txt')
