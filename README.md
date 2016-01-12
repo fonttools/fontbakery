@@ -123,6 +123,13 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    # See issue travis-ci/travis-ci#1379
    - sudo apt-get install -qq g++-4.8
    - export CXX="g++-4.8" CC="gcc-4.8"
+   - git clone https://github.com/khaledhosny/ots
+   - cd ots
+   - ./autogen.sh
+   - ./configure
+   - make
+   - sudo make install
+   - cd ..
    install:
    - pip install pyicu
    - pip install git+https://github.com/behdad/fontTools.git
