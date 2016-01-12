@@ -377,8 +377,7 @@ class TTFTestCase(TestCase):
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome """
         stdout = run('{0} {1}'.format('ot-sanitise', self.operator.path),
-                     os.path.dirname(self.operator.path),
-                     log=self.operator.logger)
+                     os.path.dirname(self.operator.path))
         self.assertEqual('', stdout.strip())
 
     @autofix('bakery_cli.fixers.CreateDSIGFixer')
