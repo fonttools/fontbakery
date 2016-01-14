@@ -264,7 +264,7 @@ class Font(BaseFont):
 
     @property
     def post_script_name(self):
-        """ Returns fullname of fonts
+        """ Returns post script name
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
         >>> font.post_script_name

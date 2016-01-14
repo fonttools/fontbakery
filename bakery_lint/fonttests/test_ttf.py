@@ -297,9 +297,9 @@ class TTFTestCase(TestCase):
         macStyle = font.macStyle
 
         try:
-            fontname_style = font.fullname.split('-')[1]
+            fontname_style = font.post_script_name.split('-')[1]
         except IndexError:
-            fontname_style = ''
+            fontname_style = 'Regular'
 
         expected_style = ''
         if macStyle & 0b01:
