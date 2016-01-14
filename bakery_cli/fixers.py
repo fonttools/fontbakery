@@ -83,23 +83,68 @@ class VersionFixer(Fixer):
     def get_shell_command(self):
         return 'fontbakery-fix-version.py {}'.format(self.fontpath)
 
-    def increment_major(self):
-        self.font.tables["CFF "].cff.major += 1
-    
-    def increment_minor(self):
-        self.font.tables["CFF "].cff.minor += 1
+    def parse_version_string(self, s):
+        try:
+            suffix = ''
+            if ';' in s:
+                fields = s.split(';')
+                s = fields[0]
+                fields.pop(0)
+                suffix = ';'.join(fields)
 
-    def apply(self):
+            substrings = s.split('.')
+            minor = substrings[-1]
+            if ' ' in substrings[-2]:
+                major = int(substrings[-2].split(' ')[-1])
+            else:
+                major = int(substrings[-2])
+            return major, minor, suffix
+        except:
+            print ("ER: failed to detect major and minor version numbers in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+
+    def increment_version_string(self, s, major_inc, minor_inc, head_table=False):
+        v = self.parse_version_string(s)
+        if v is None:
+            return s
+
+        major = int(v[0]) + major_inc
+        minor = int(v[1]) + minor_inc
+        minor_digits = len(v[1])
+        suffix = v[2]
+
+        #preserve the ammount of zeroes:
+        minor = (minor_digits-1)*'0' + str(minor)
         
+        if head_table: #version is represented only by a float value
+            return float("{}.{}".format(major, minor))
+        else: #name table: version format is "Version X.Y[; optional additional info]"
+            return "Version {}.{};{}".format(major, minor, suffix)
+
+    def increment_version_fields(self, major_inc, minor_inc):
+        self.font['head'].fontRevision = self.increment_version_string(str(self.font['head'].fontRevision), major_inc, minor_inc, head_table=True)
+
+        for name in self.font['name'].names:
+            if name.nameID == 5:
+                name.string = self.increment_version_string(name.string, major_inc, minor_inc)
+
+        if 'CFF ' in self.font:
+            self.font.tables["CFF "].cff.major += major_inc
+            self.font.tables["CFF "].cff.minor += minor_inc
+
+    def fix(self, options):
+
+        if options.increment_major:
+            self.increment_version_fields(1, 0)
+
+        if options.increment_minor:
+            self.increment_version_fields(0, 1)
+
+        #we always print the end-result of out operation:
         print("head.fontRevision: {}".format(self.font['head'].fontRevision))
 
         for name in self.font['name'].names:
             if name.nameID == 5:
                 print("name.5.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
-
-        for name in self.font['name'].names:
-            if name.nameID == 3:
-                print("name.3.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
 
         if 'CFF ' in self.font:
             cff = self.font['CFF '].cff

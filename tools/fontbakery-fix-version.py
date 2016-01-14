@@ -35,12 +35,4 @@ if __name__ == '__main__':
         if not os.path.exists(path):
             continue
         fixer = VersionFixer(None, path)
-        fixer.apply()
-
-        if options.increment_major:
-            fixer.increment_major()
-
-        if options.increment_minor:
-            fixer.increment_minor()
-            
-        fixer.save()
+        fixer.apply(options)
