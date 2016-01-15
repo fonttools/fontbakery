@@ -36,4 +36,4 @@ if __name__ == '__main__':
         if args.set is not None:
             GaspFixer(None, path).apply(path, args.set)
         else:
-            GaspFixer(None, path).show()
+            GaspFixer(None, path).show(path)
