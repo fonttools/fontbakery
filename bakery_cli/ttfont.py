@@ -598,10 +598,7 @@ def getName(font, pairs):
         if value:
             break
 
-    if value.isUnicode():
-        value = value.string.decode('utf-16-be')
-    else:
-        value = value.string
+    value = value.string.decode(value.getEncoding())
 
     assert value, u'{} seems to be missed in NAME table'.format(pairs)
     return value

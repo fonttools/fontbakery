@@ -220,16 +220,11 @@ def inferFamilyName(familydir):
             ftfont = fontToolsOpenFont(f)
             for record in ftfont['name'].names:
                 if record.nameID == NAMEID_FAMILYNAME:
-                    if b'\000' in record.string:
-                        familyName = record.string.decode('utf-16-be').encode('utf-8')
-                    else:
-                        familyName = record.string
+                    familyName = record.toUnicode()
+
                 # Some authors creates TTF with wrong family name including styles
                 if record.nameID == NAMEID_STYLE:
-                    if b'\000' in record.string:
-                        styleName = record.string.decode('utf-16-be').encode('utf-8')
-                    else:
-                        styleName = record.string
+                    styleName = record.toUnicode()
 
     familyName = familyName.replace(styleName, '').strip()
 
@@ -257,17 +252,15 @@ def fontToolsGetCopyright(ftfont):
     NAMEID_PSNAME = 0
     copyright = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_PSNAME and not copyright:
-            if b'\000' in record.string:
-                try:
-                    copyright = u(record.string.decode('utf-16-be'))
-                except:
-                    copyright = 'COPYRIGHT'
-            else:
-                copyright = str(record.string)
-        if copyright:
+        if record.nameID == NAMEID_PSNAME:
+            copyright = record.toUnicode()
+        if len(copyright) > 0:
             return copyright
-        # DC What happens if there is no copyright set?
+    print("ER: no copyright string found.")
+    
+    #When no Copyright info is found, we must assume the
+    # implicit 'All Rights Reserved' status
+    return "All rights reserved"
 
 # DC This should check both names match, and stems match across the family
 
@@ -276,14 +269,14 @@ def fontToolsGetPSName(ftfont):
     NAMEID_PSNAME = 6
     psName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_PSNAME and not psName:
-            if b'\000' in record.string:
-                psName = record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                psName = record.string
-        if psName:
+        if record.nameID == NAMEID_PSNAME:
+            psName = record.toUnicode()
+        if len(psName) > 0:
             return psName
         # DC What happens if there is no PSName set?
+
+    print("ER: no PSName string found!")
+    return ""
 
 # DC This should check both names match, and stems match across the
 # family, and italic/bold match other metadata (weight, macstyle,
@@ -294,29 +287,28 @@ def fontToolsGetFullName(ftfont):
     NAMEID_FULLNAME = 4
     fullName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_FULLNAME and not fullName:
-            if b'\000' in record.string:
-                fullName = record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                fullName = record.string
-        if fullName:
+        if record.nameID == NAMEID_FULLNAME:
+            fullName = record.toUnicode()
+        if len(fullName) > 0:
             return fullName
+        
+    print("ER: no fullname string found!")
+    return ""
 
 # DC This should check both names match, and is found in designers.json
 
 
 def fontToolsGetDesignerName(ftfont):
-#  return 'DESIGNER'
     NAMEID_DESIGNERNAME = 9
     desName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_DESIGNERNAME and not desName:
-            if b'\000' in record.string:
-                desName = record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                desName = record.string
-        if desName:
+        if record.nameID == NAMEID_DESIGNERNAME:
+            desName = record.toUnicode()
+        if len(desName) > 0:
             return desName
+
+    print("ER: no DesignerName string found!")
+    return ""
 
 # DC This should check both names match
 
@@ -325,15 +317,13 @@ def fontToolsGetDesc(ftfont):
     NAMEID_DESC = 10
     fontDesc = False
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_DESC and not fontDesc:
-            if b'\000' in record.string:
-                fontDesc = record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                fontDesc = record.string
-            break
-    if not fontDesc:
-        fontDesc = "TODO"
-    return fontDesc
+        if record.nameID == NAMEID_DESC:
+            fontDesc = record.toUnicode()
+        if len(fontDesc) > 0:
+            return fontDesc
+
+    print("ER: no fontDesc string found!")
+    return ""
 
 # DC NameIDs are as follows:
 # required marked *

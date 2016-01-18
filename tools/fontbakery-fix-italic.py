@@ -70,10 +70,7 @@ def setValidNameRecord(font, nameId, val):
     for k, p in [[1, 0], [3, 1]]:
         result_namerec = font['name'].getName(nameId, k, p)
         if result_namerec:
-            if result_namerec.isUnicode():
-                result_namerec.string = (val or '').encode("utf-16-be")
-            else:
-                result_namerec.string = val or ''
+            result_namerec.string = (val or '').encode(result_namerec.getEncoding())
     if result_namerec:
         return
 
@@ -84,10 +81,7 @@ def setValidNameRecord(font, nameId, val):
     # When building a Unicode font for Windows, the platform ID
     # should be 3 and the encoding ID should be 1
     ot_namerecord.platEncID = 1
-    if ot_namerecord.isUnicode():
-        ot_namerecord.string = (val or '').encode("utf-16-be")
-    else:
-        ot_namerecord.string = val or ''
+    ot_namerecord.string = (val or '').encode(ot_namerecord.getEncoding())
 
     font['name'].names.append(ot_namerecord)
     return
@@ -95,9 +89,7 @@ def setValidNameRecord(font, nameId, val):
 
 def setValidNames(font, isBold):
     name = font['name'].getName(1, 3, 1)
-    familyname = name.string
-    if name.isUnicode():
-        familyname = familyname.decode('utf-16-be')
+    familyname = name.string.decode(name.getEncoding())
 
     rules = NameTableNamingRule({'isBold': isBold,
                                  'isItalic': True,
@@ -108,9 +100,8 @@ def setValidNames(font, isBold):
     passedNamesId = []
 
     for rec in font['name'].names:
-        string = rec.string
-        if rec.isUnicode():
-            string = string.decode('utf-16-be')
+        string = rec.string.decode(rec.getEncoding())
+            
         if rec.nameID in [1, 2, 4, 6, 16, 17, 18]:
             string = rules.apply(rec.nameID)
             passedNamesId.append(rec.nameID)
@@ -126,10 +117,7 @@ def setValidNames(font, isBold):
         setValidNameRecord(font, field['nameID'], field['string'])
 
     for name in font['name'].names:
-        if name.isUnicode():
-            logger.debug(u'{}: {}'.format(name.nameID, name.string.decode('utf-16-be')))
-        else:
-            logger.debug(u'{}: {}'.format(name.nameID, name.string))
+        logger.debug(u'{}: {}'.format(name.nameID, name.string.decode(name.getEncoding())))
 
 
 def italicAngle(font, newvalue):
@@ -206,9 +194,7 @@ def validate(font, fontStyle):
         if name.nameID not in [2, 4, 6, 17]:
             continue
 
-        string = name.string
-        if name.isUnicode():
-            string = string.decode('utf-16-be')
+        string = name.string.decode(name.getEncoding())
 
         if fontStyle.endswith('Italic'):
             if string.endswith('Italic'):
@@ -237,9 +223,7 @@ for path in args.ttf_font:
     if not name:
         continue
 
-    fontStyle = name.string
-    if name.isUnicode():
-        fontStyle = fontStyle.decode('utf-16-be')
+    fontStyle = name.string.decode(name.getEncoding())
 
     errors = validate(font, fontStyle)
     if errors:

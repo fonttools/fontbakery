@@ -57,10 +57,7 @@ class FamilyMetadataTable(object):
             value = ''
             for name in ttfont['name'].names:
                 if str(name.nameID) == nameid and platform == name.platformID:
-                    if name.isUnicode():
-                        value = name.string.decode("utf-16-be") or ''
-                    else:
-                        value = name.string or ''
+                    value = name.string.decode(name.getEncoding()) or ''
                     break
 
             self.addToHeader('id{}'.format(nameid))
