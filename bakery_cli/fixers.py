@@ -153,6 +153,21 @@ class VersionFixer(Fixer):
         return True
 
 
+class RemoveNameRecordWithPlatformID_1_Fixer(Fixer):
+
+    def get_shell_command(self):
+        return 'fontbakery-fix-nameids.py {}'.format(self.fontpath)
+
+    def fix(self):
+        new_names = []
+        for name in self.font['name'].names:
+            if name.platformID != 1:
+                new_names.append(name)
+
+        self.font['name'].names = new_names
+        return True
+
+
 class MultipleDesignerFixer(Fixer):
 
     def get_shell_command(self):
