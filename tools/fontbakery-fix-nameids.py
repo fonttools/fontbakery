@@ -4,14 +4,15 @@ import os
 import tabulate
 
 from fontTools import ttLib
+from bakery_cli.fixers import RemoveNameRecordWithPlatformID_1_Fixer
 
 args = argparse.ArgumentParser(
     description='Print out nameIDs strings of the fonts')
 args.add_argument('font', nargs="+")
-args.add_argument('--csv', default=False, action='store_true')
+args.add_argument('--autofix', default=False, action='store_true', help='Apply autofix')
+args.add_argument('--csv', default=False, action='store_true', help='Output data in comma-separate-values (CSV) file format')
 args.add_argument('--id', '-i', default='all')
 args.add_argument('--platform', '-p', type=int, default=3)
-
 
 if __name__ == '__main__':
 
@@ -54,3 +55,8 @@ if __name__ == '__main__':
         as_csv(rows)
 
     print(tabulate.tabulate(rows, header, tablefmt="pipe"))
+
+    for path in arg.font:
+        if arg.autofix:
+            fixer = RemoveNameRecordWithPlatformID_1_Fixer(None, path)
+            fixer.apply()
