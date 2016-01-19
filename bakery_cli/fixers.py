@@ -631,23 +631,26 @@ class GaspFixer(Fixer):
         SCRIPTPATH = 'fontbakery-fix-gasp.py'
         return "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, self.fontpath)
 
-    def fix(self, value=15):
-        if 'gasp' not in self.font.tables:
-            logger.error('no table gasp')
+    def fix(self, path, value=15):
+        try:
+            table = self.font.get('gasp')
+            table.gaspRange[65535] = value
+            return True
+        except:
+            logger.error('ER: {}: no table gasp'.format(path))
             return
 
-        self.font['gasp'].gaspRange[65535] = value
-        return True
-
-    def show(self):
-        if 'gasp' not in self.font.tables:
-            logger.error('no table gasp')
+    def show(self, path):
+        try:
+            table = self.font.get('gasp')
+        except:
+            logger.error('ER: {}: no table gasp'.format(path))
             return
 
         try:
-            logger.info(self.font['gasp'].gaspRange[65535])
+            logger.info(self.font.get('gasp').gaspRange[65535])
         except IndexError:
-            logger.error('no index 65535')
+            logger.error('ER: {}: no index 65535'.format(path))
 
 
 class Vmet(Fixer):
