@@ -125,7 +125,10 @@ class VersionFixer(Fixer):
 
         for name in self.font['name'].names:
             if name.nameID == 5:
-                name.string = self.increment_version_string(name.string, major_inc, minor_inc)
+                encoding = name.getEncoding()
+                s = name.string.decode(encoding)
+                s = self.increment_version_string(s, major_inc, minor_inc)
+                name.string = s.encode(encoding)
 
         if 'CFF ' in self.font:
             self.font.tables["CFF "].cff.major += major_inc
