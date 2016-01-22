@@ -7,7 +7,8 @@ import collections
 import io
 import os
 import sys
-
+import fonts_public_pb2 as fonts_pb2
+from google.protobuf import text_format
 
 args = argparse.ArgumentParser()
 args.add_argument('key', help='Key from Google Fonts Developer API')
@@ -41,17 +42,18 @@ if __name__ == '__main__':
     except (ValueError, KeyError):
         sys.exit(1)
 
-    metadataJsonList = []
     for dirpath, dirnames, filenames in os.walk(argv.repo):
-        metadataJsonFile = os.path.join(dirpath, 'METADATA.json')
-        if not os.path.exists(metadataJsonFile):
+        metadataProtoFile = os.path.join(dirpath, 'METADATA.pb')
+        if not os.path.exists(metadataProtoFile):
             continue
 
-        metadataJson = json.load(open(metadataJsonFile))
+        metadata = fonts_pb2.FamilyProto()
+        text_data = open(metadataProtoFile, "rb").read()
+        text_format.Merge(text_data, metadata)
         try:
-            family = metadataJson['name']
+            family = metadata.name
         except KeyError:
-            print('ER: {} does not contain FamilyName'.format(metadataJsonFile), file=sys.stderr)
+            print('ER: {} does not contain FamilyName'.format(metadataProtoFile), file=sys.stderr)
             continue
 
         try:
@@ -70,62 +72,62 @@ if __name__ == '__main__':
                 continue
 
             with open(cache_font_path, 'w') as fp:
+                if argv.verbose:
+                    print("Downloading '{}' from {}".format(metadata.name, fonturl))
                 fp.write(urllib.urlopen(fonturl).read())
                 if argv.verbose:
                     print('OK: {} from {} copied'.format(os.path.basename(cache_font_path), family))
 
         for subset in webfontsItem['subsets']:
-            if subset not in metadataJson['subsets']:
+            if subset not in metadata.subsets:
                 print('ER: {} has {} in API but not in Github'.format(family, subset), file=sys.stderr)
             elif argv.verbose:
                 print('OK: {} has {} in Github and API'.format(family, subset))
 
-        for subset in metadataJson['subsets']:
+        for subset in metadata.subsets:
             if subset not in webfontsItem['subsets']:
                 print('ER: {} has {} in Github but not in API'.format(family, subset), file=sys.stderr)
 
         for style in webfontStyles:
             try:
-                filenameWeightStyleIndex = [str(item['weight']) + str(item['style']) for item in metadataJson['fonts']].index(style)
-                metadataJsonFileName = metadataJson['fonts'][filenameWeightStyleIndex]['filename']
+                filenameWeightStyleIndex = [str(item.weight) + str(item.style) for item in metadata.fonts].index(style)
+                metadataFileName = metadata.fonts[filenameWeightStyleIndex].filename
                 if argv.verbose:
-                    print('OK: {} in Github and in API'.format(metadataJsonFileName))
+                    print('OK: {} in Github and in API'.format(metadataFileName))
 
                     import hashlib
-                    github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataJsonFileName), 'rb').read()).hexdigest()
+                    github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataFileName), 'rb').read()).hexdigest()
                     fonturl = webfontsItem['files'][style]
                     fontpath = get_cache_font_path(argv.cache, fonturl)
                     google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
 
                     if github_md5 == google_md5 and argv.verbose:
-                        print('OK: {} in production'.format(metadataJsonFileName))
+                        print('OK: {} in production'.format(metadataFileName))
 
-                    if metadataJson['visibility'] == 'External' and argv.verbose:
+                    if metadata.visibility == 'External' and argv.verbose:
                         print('OK: {} visibility'.format(family))
                     elif not argv.autofix:
-                        print('ER: {} visibility is "{}" should be "External"'.format(family, metadataJson['visibility']), file=sys.stderr)
+                        print('ER: {} visibility is "{}" should be "External"'.format(family, metadata.visibility), file=sys.stderr)
                     elif argv.autofix:
-                        visibility = metadataJson['visibility']
+                        visibility = metadata.visibility
 
-                        from bakery_cli.scripts.genmetadata import striplines
-                        content = {}
-                        with io.open(metadataJsonFile, 'r', encoding="utf-8") as fp:
-                            content = json.load(fp, object_pairs_hook=collections.OrderedDict)
+                        #from bakery_cli.scripts.genmetadata import striplines
+                        #content = {}
+                        #with io.open(metadataJsonFile, 'r', encoding="utf-8") as fp:
+                        #    content = json.load(fp, object_pairs_hook=collections.OrderedDict)
 
-                        content['visibility'] == 'External'
-                        with io.open(metadataJsonFile + '.fix', 'w', encoding='utf-8') as f:
-                            contents = json.dumps(content, indent=2, ensure_ascii=False)
-                            f.write(striplines(contents))
+                        #content['visibility'] == 'External'
+                        #with io.open(metadataJsonFile + '.fix', 'w', encoding='utf-8') as f:
+                        #    contents = json.dumps(content, indent=2, ensure_ascii=False)
+                        #    f.write(striplines(contents))
 
-                        print('ER: {} visibility is "{}" is now "External"'.format(family, visibility), file=sys.stderr)
+                        #print('ER: {} visibility is "{}" is now "External"'.format(family, visibility), file=sys.stderr)
             except ValueError:
                 print('ER: {}-{} in API but not in Github'.format(family, style), file=sys.stderr)
 
-        for font in metadataJson['fonts']:
+        for font in metadata.fonts:
             try:
-                webfontStyles.index(str(font['weight']) + str(font['style']))
+                webfontStyles.index(str(font.weight) + str(font.style))
             except ValueError:
-                print('ER: {} in Github but not in API'.format(font['filename']), file=sys.stderr)
-
-        metadataJsonList.append(metadataJsonFile)
+                print('ER: {} in Github but not in API'.format(font.filename), file=sys.stderr)
 

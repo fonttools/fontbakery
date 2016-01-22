@@ -79,6 +79,8 @@ setup(
               "bakery_lint.fonttests",
               "bakery_cli.report"],
     scripts=['tools/collection-management/fontbakery-travis-secure.sh',
+             'tools/fonts_public.proto',
+             'tools/fonts_public_pb2.py',
              'tools/fontbakery-build-font2ttf.py',
              'tools/fontbakery-build-metadata.py',
              'tools/fontbakery-build.py',
