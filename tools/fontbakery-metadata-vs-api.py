@@ -101,27 +101,11 @@ if __name__ == '__main__':
                     fontpath = get_cache_font_path(argv.cache, fonturl)
                     google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
 
-                    if github_md5 == google_md5 and argv.verbose:
-                        print('OK: {} in production'.format(metadataFileName))
-
-                    if metadata.visibility == 'External' and argv.verbose:
-                        print('OK: {} visibility'.format(family))
-                    elif not argv.autofix:
-                        print('ER: {} visibility is "{}" should be "External"'.format(family, metadata.visibility), file=sys.stderr)
-                    elif argv.autofix:
-                        visibility = metadata.visibility
-
-                        #from bakery_cli.scripts.genmetadata import striplines
-                        #content = {}
-                        #with io.open(metadataJsonFile, 'r', encoding="utf-8") as fp:
-                        #    content = json.load(fp, object_pairs_hook=collections.OrderedDict)
-
-                        #content['visibility'] == 'External'
-                        #with io.open(metadataJsonFile + '.fix', 'w', encoding='utf-8') as f:
-                        #    contents = json.dumps(content, indent=2, ensure_ascii=False)
-                        #    f.write(striplines(contents))
-
-                        #print('ER: {} visibility is "{}" is now "External"'.format(family, visibility), file=sys.stderr)
+                    if github_md5 == google_md5:
+                        if argv.verbose:
+                            print('OK: {} in production'.format(metadataFileName))
+                    else:
+                        print('ER: {}: File in API does not match file in production (checksum mismatch)'.format(metadataFileName))
             except ValueError:
                 print('ER: {}-{} in API but not in Github'.format(family, style), file=sys.stderr)
 
