@@ -73,10 +73,10 @@ if __name__ == '__main__':
 
             with open(cache_font_path, 'w') as fp:
                 if argv.verbose:
-                    print("Downloading '{}' from {}".format(metadata.name, fonturl))
+                    print("Downloading '{} {}' from {}".format(family, style, fonturl))
                 fp.write(urllib.urlopen(fonturl).read())
                 if argv.verbose:
-                    print('OK: {} from {} copied'.format(os.path.basename(cache_font_path), family))
+                    print('OK: [{} {}] Saved to {}'.format(family, style, cache_font_path))
 
         for subset in webfontsItem['subsets']:
             if subset not in metadata.subsets:
