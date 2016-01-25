@@ -265,10 +265,8 @@ class FontItalicStyleFixer(Fixer):
                 if name.nameID not in [2, 4, 6, 17]:
                     continue
 
-                if name.isUnicode():
-                    string = name.string.decode('utf-16-be')
-                else:
-                    string = name.string
+                string = name.toUnicode()
+
                 if string.endswith('Italic'):
                     logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
                 else:
@@ -332,10 +330,7 @@ class CharacterSymbolsFixer(Fixer):
         for name in self.font['name'].names:
             title = Font.bin2unistring(name)
             title = CharacterSymbolsFixer.normalizestr(title)
-            if name.platformID == 3 and name.isUnicode():
-                name.string = title.encode('utf-16-be')
-            else:
-                name.string = title
+            name.string = title.encode(name.getEncoding())
         return True
 
 
@@ -749,10 +744,8 @@ class FamilyAndStyleNameFixer(Fixer):
         for k, p in [[1, 0], [3, 1]]:
             result_namerec = self.font['name'].getName(nameId, k, p)
             if result_namerec:
-                if result_namerec.isUnicode():
-                    result_namerec.string = (val or '').encode("utf-16-be")
-                else:
-                    result_namerec.string = val or ''
+                result_namerec.string = (val or '').encode(result_namerec.getEncoding())
+                
         if result_namerec:
             return result_namerec
 
@@ -763,10 +756,7 @@ class FamilyAndStyleNameFixer(Fixer):
         # When building a Unicode font for Windows, the platform ID
         # should be 3 and the encoding ID should be 1
         ot_namerecord.platEncID = 1
-        if ot_namerecord.isUnicode():
-            ot_namerecord.string = (val or '').encode("utf-16-be")
-        else:
-            ot_namerecord.string = val or ''
+        ot_namerecord.string = (val or '').encode(ot_namerecord.getEncoding())
 
         self.font['name'].names.append(ot_namerecord)
         return ot_namerecord
@@ -796,10 +786,7 @@ class FamilyAndStyleNameFixer(Fixer):
 class RemoveNameRecordWithOpyright(Fixer):
 
     def containsSubstr(self, namerecord, substr):
-        if namerecord.isUnicode():
-            string = namerecord.string.decode('utf-16-be')
-        else:
-            string = namerecord.string
+        string = namerecord.string.decode(namerecord.getEncoding())
         return bool(substr in string)
 
     def fix(self):
@@ -845,22 +832,16 @@ class ReplaceLicenseURL(Fixer):
 
         for field in self.font['name'].names:
             if field.nameID == 14:
-                if field.isUnicode():
-                    string = field.string.decode('utf-16-be')
-                else:
-                    string = field.string
+                string = field.string.decode(field.getEncoding())
 
                 if string != placeholder:
                     return placeholder
 
             if field.nameID == 13:
-                if field.isUnicode():
-                    string = field.string.decode('utf-16-be')
-                else:
-                    string = field.string
+                string = field.string.decode(field.getEncoding())
+
                 if licenseText.strip() in string:
                     return placeholder
-
         return
 
     def fix(self):
@@ -870,10 +851,7 @@ class ReplaceLicenseURL(Fixer):
 
         for nameRecord in self.font['name'].names:
             if nameRecord.nameID == 14:
-                if nameRecord.isUnicode():
-                    nameRecord.string = placeholder.encode('utf-16-be')
-                else:
-                    nameRecord.string = placeholder
+                nameRecord.string = placeholder.encode(placeholder.getEncoding())
         return True
 
 
@@ -906,10 +884,7 @@ class ReplaceLicenseWithShortline(Fixer):
         placeholder = self.get_placeholder()
         for nameRecord in self.font['name'].names:
             if nameRecord.nameID == 13:
-                if nameRecord.isUnicode():
-                    nameRecord.string = placeholder.encode('utf-16-be')
-                else:
-                    nameRecord.string = placeholder
+                nameRecord.string = placeholder.encode(placeholder.getEncoding())
         return True
 
 

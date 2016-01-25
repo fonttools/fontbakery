@@ -160,10 +160,7 @@ class UpstreamDirectory(object):
 def nameTableRead(font, NameID, fallbackNameID=False):
     for record in font['name'].names:
         if record.nameID == NameID:
-            if b'\000' in record.string:
-                return record.string.decode('utf-16-be').encode('utf-8')
-            else:
-                return record.string
+            return record.toUnicode()
 
     if fallbackNameID:
         return nameTableRead(font, fallbackNameID)

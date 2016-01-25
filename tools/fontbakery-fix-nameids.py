@@ -32,11 +32,7 @@ if __name__ == '__main__':
             if str(name.nameID) not in nameids or name.platformID != arg.platform:
                 continue
 
-            if name.isUnicode():
-                value = name.string.decode("utf-16-be") or ''
-            else:
-                value = name.string or ''
-
+            value = name.string.decode(name.getEncoding()) or ''
             row.append(value)
 
         rows.append(row)

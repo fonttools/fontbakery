@@ -57,9 +57,7 @@ def redirect_stdout(new_target):
 
 
 def getNameRecordValue(nameRecord):
-    if nameRecord.isUnicode():
-        return nameRecord.string.decode('utf-16-be')
-    return nameRecord.string
+    return nameRecord.string.decode(nameRecord.getEncoding())
 
 
 class TTFTestCase(TestCase):
