@@ -98,20 +98,19 @@ if __name__ == '__main__':
             try:
                 filenameWeightStyleIndex = [str(item.weight) + str(item.style) for item in metadata.fonts].index(style)
                 metadataFileName = metadata.fonts[filenameWeightStyleIndex].filename
-                if argv.verbose:
-                    log_messages.append([metadataFileName, 'OK', '{} in Github and in API'.format(metadataFileName)])
 
-                    import hashlib
-                    github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataFileName), 'rb').read()).hexdigest()
-                    fonturl = webfontsItem['files'][style]
-                    fontpath = get_cache_font_path(argv.cache, fonturl)
-                    google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
+                import hashlib
+                github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataFileName), 'rb').read()).hexdigest()
+                fonturl = webfontsItem['files'][style]
+                fontpath = get_cache_font_path(argv.cache, fonturl)
+                google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
 
-                    if github_md5 == google_md5:
-                        if argv.verbose:
-                            log_messages.append([metadataFileName, 'OK', '{} in production'.format(metadataFileName)])
-                    else:
-                        log_messages.append([metadataFileName, 'ER', '{}: File in API does not match file in production (checksum mismatch)'.format(metadataFileName)])
+                if github_md5 == google_md5:
+                    if argv.verbose:
+                        log_messages.append([metadataFileName, 'OK', '{} in Github and in API'.format(metadataFileName)])
+                else:
+                    log_messages.append([metadataFileName, 'ER', '{}: Checksum mismatch: File in API does not match file on GitHub'.format(metadataFileName)])
+
             except ValueError:
                 name = '{}-{}'.format(family, style)
                 log_messages.append([name, 'ER', '{} in API but not in Github'.format(name)])
