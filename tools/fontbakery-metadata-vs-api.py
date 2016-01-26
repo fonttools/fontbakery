@@ -73,8 +73,9 @@ if __name__ == '__main__':
                 continue
 
             with open(cache_font_path, 'w') as fp:
+                filename = '{}-{}.ttf'.format(family, variant)
                 if argv.verbose:
-                    print("Downloading '{} {}' from {}".format(family, variant, fonturl))
+                    print("Downloading {} as {}".format(fonturl, filename))
 
                 #Saving:
                 fp.write(urllib.urlopen(fonturl).read())
@@ -82,12 +83,9 @@ if __name__ == '__main__':
                 #Symlinking:
                 src = cache_font_path
                 dst_dir = os.path.dirname(cache_font_path)
-                dst = os.path.join(dst_dir, '{}-{}.ttf'.format(family, variant))
+                dst = os.path.join(dst_dir, filename)
                 if not os.path.exists(dst):
                     os.symlink(src, dst)
-
-                #Reporting:
-                log_messages.append([variant, 'OK', 'Saved to {}'.format(dst)])
 
         for subset in webfontsItem['subsets']:
             if subset == "menu":
@@ -96,14 +94,14 @@ if __name__ == '__main__':
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: {} has subset "{}" in API but not in repository'.format(family, subset), file=sys.stderr)
+                print('ER: {} lacks subset "{}" in repository'.format(family, subset), file=sys.stderr)
             else:
                 if argv.verbose:
-                    print('OK: {} has subset {} in repository and API'.format(family, subset))
+                    print('OK: {} subset {} in sync'.format(family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: {} has subset {} in repository but not in API'.format(family, subset), file=sys.stderr)
+                print('ER: {} lacks subset {} in API'.format(family, subset), file=sys.stderr)
 
         def getVariantName(item):
             if item.style == "normal" and item.weight == 400:
@@ -131,7 +129,7 @@ if __name__ == '__main__':
                 repo_md5 = hashlib.md5(open(os.path.join(dirpath, repoFileName), 'rb').read()).hexdigest()
 
                 if repo_md5 == google_md5:
-                    log_messages.append([variant, 'OK', '{} is identical in repository and API'.format(repoFileName)])
+                    log_messages.append([variant, 'OK', '{} in sync'.format(repoFileName)])
                 else:
                     log_messages.append([variant, 'ER', '{}: Checksum mismatch: File in API does not match file in repository'.format(repoFileName)])
 
@@ -150,7 +148,7 @@ if __name__ == '__main__':
             variant, status, text = message
             if status == "OK":
                 if argv.verbose:
-                    print("{}: [{} {}] {}".format(status, family, variant, text))
+                    print("{}: {}".format(status, text))
             else:
-                print("{}: [{} {}] {}".format(status, family, variant, text), file=sys.stderr)
+                print("{}: {}".format(status, text), file=sys.stderr)
 
