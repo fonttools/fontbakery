@@ -75,9 +75,19 @@ if __name__ == '__main__':
             with open(cache_font_path, 'w') as fp:
                 if argv.verbose:
                     print("Downloading '{} {}' from {}".format(family, variant, fonturl))
+
+                #Saving:
                 fp.write(urllib.urlopen(fonturl).read())
-                name = '{} {}'.format(family, variant)
-                log_messages.append([name, 'OK', 'Saved to {}'.format(cache_font_path)])
+
+                #Symlinking:
+                src = cache_font_path
+                dst_dir = os.path.dirname(cache_font_path)
+                dst = os.path.join(dst_dir, '{}-{}.ttf'.format(family, variant))
+                if not os.path.exists(dst):
+                    os.symlink(src, dst)
+
+                #Reporting:
+                log_messages.append([variant, 'OK', 'Saved to {}'.format(dst)])
 
         for subset in webfontsItem['subsets']:
             if subset == "menu":
@@ -86,14 +96,14 @@ if __name__ == '__main__':
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: {} has subset "{}" in API but not in repository'.format(family, subset))
+                print('ER: {} has subset "{}" in API but not in repository'.format(family, subset), file=sys.stderr)
             else:
                 if argv.verbose:
                     print('OK: {} has subset {} in repository and API'.format(family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: {} has subset {} in repository but not in API'.format(family, subset))
+                print('ER: {} has subset {} in repository but not in API'.format(family, subset), file=sys.stderr)
 
         def getVariantName(item):
             if item.style == "normal" and item.weight == 400:
@@ -140,7 +150,7 @@ if __name__ == '__main__':
             variant, status, text = message
             if status == "OK":
                 if argv.verbose:
-                    print("[{} {}] {}: {}".format(family, variant, status, text))
+                    print("{}: [{} {}] {}".format(status, family, variant, text))
             else:
-                print("[{} {}] {}: {}".format(family, variant, status, text), file=sys.stderr)
+                print("{}: [{} {}] {}".format(status, family, variant, text), file=sys.stderr)
 
