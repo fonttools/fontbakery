@@ -30,6 +30,18 @@ def get_cache_font_path(cache_dir, fonturl):
     fontname = os.path.basename(fonturl)
     return os.path.join(cache_dir, fontname)
 
+def getVariantName(item):
+    if item.style == "normal" and item.weight == 400:
+        return "regular"
+
+    name = ""
+    if item.weight != 400:
+        name = str(item.weight)
+
+    if item.style != "normal":
+        name += item.style
+
+    return name
 
 if __name__ == '__main__':
     import urllib
@@ -73,7 +85,8 @@ if __name__ == '__main__':
                 continue
 
             with open(cache_font_path, 'w') as fp:
-                filename = '{}-{}.ttf'.format(family, variant)
+                filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
+                filename = metadata.fonts[filenameWeightStyleIndex].filename
                 if argv.verbose:
                     print("Downloading {} as {}".format(fonturl, filename))
 
@@ -103,18 +116,6 @@ if __name__ == '__main__':
             if subset != "menu" and subset not in webfontsItem['subsets']:
                 print('ER: {} lacks subset {} in API'.format(family, subset), file=sys.stderr)
 
-        def getVariantName(item):
-            if item.style == "normal" and item.weight == 400:
-                return "regular"
-
-            name = ""
-            if item.weight != 400:
-                name = str(item.weight)
-
-            if item.style != "normal":
-                name += item.style
-
-            return name
 
         for variant in webfontVariants:
             try:
