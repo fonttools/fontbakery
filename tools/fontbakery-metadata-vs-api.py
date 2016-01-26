@@ -60,23 +60,24 @@ if __name__ == '__main__':
             index = webfontListFamilyNames.index(family)
             webfontsItem = webfontList[index]
         except ValueError:
-            print('ER: {} is not in production'.format(family))
+            print('ER: Family "{}" could not be found in API'.format(family))
             continue
 
-        webfontStyles = []
-        for style, fonturl in webfontsItem['files'].items():
+        webfontVariants = []
+        log_messages = []
+        for variant, fonturl in webfontsItem['files'].items():
             cache_font_path = get_cache_font_path(argv.cache, fonturl)
-            webfontStyles.append(style)
+            webfontVariants.append(variant)
 
             if argv.ignore_copy_existing_ttf and os.path.exists(cache_font_path):
                 continue
 
             with open(cache_font_path, 'w') as fp:
                 if argv.verbose:
-                    print("Downloading '{} {}' from {}".format(family, style, fonturl))
+                    print("Downloading '{} {}' from {}".format(family, variant, fonturl))
                 fp.write(urllib.urlopen(fonturl).read())
-                if argv.verbose:
-                    print('OK: [{} {}] Saved to {}'.format(family, style, cache_font_path))
+                name = '{} {}'.format(family, variant)
+                log_messages.append([name, 'OK', 'Saved to {}'.format(cache_font_path)])
 
         for subset in webfontsItem['subsets']:
             if subset == "menu":
@@ -85,47 +86,61 @@ if __name__ == '__main__':
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: {} has {} in API but not in repository'.format(family, subset), file=sys.stderr)
-            elif argv.verbose:
-                print('OK: {} has {} in repository and API'.format(family, subset))
+                print('ER: {} has subset "{}" in API but not in repository'.format(family, subset))
+            else:
+                if argv.verbose:
+                    print('OK: {} has subset {} in repository and API'.format(family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: {} has {} in repository but not in API'.format(family, subset), file=sys.stderr)
+                print('ER: {} has subset {} in repository but not in API'.format(family, subset))
 
-        log_messages = []
-        for style in webfontStyles:
+        def getVariantName(item):
+            if item.style == "normal" and item.weight == 400:
+                return "regular"
+
+            name = ""
+            if item.weight != 400:
+                name = str(item.weight)
+
+            if item.style != "normal":
+                name += item.style
+
+            return name
+
+        for variant in webfontVariants:
             try:
-                filenameWeightStyleIndex = [str(item.weight) + str(item.style) for item in metadata.fonts].index(style)
-                metadataFileName = metadata.fonts[filenameWeightStyleIndex].filename
+                filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
+                repoFileName = metadata.fonts[filenameWeightStyleIndex].filename
+
+                fonturl = webfontsItem['files'][variant]
+                fontpath = get_cache_font_path(argv.cache, fonturl)
 
                 import hashlib
-                repo_md5 = hashlib.md5(open(os.path.join(dirpath, metadataFileName), 'rb').read()).hexdigest()
-                fonturl = webfontsItem['files'][style]
-                fontpath = get_cache_font_path(argv.cache, fonturl)
                 google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
+                repo_md5 = hashlib.md5(open(os.path.join(dirpath, repoFileName), 'rb').read()).hexdigest()
 
                 if repo_md5 == google_md5:
-                    if argv.verbose:
-                        log_messages.append([metadataFileName, 'OK', '{} in repository and in API'.format(metadataFileName)])
+                    log_messages.append([variant, 'OK', '{} is identical in repository and API'.format(repoFileName)])
                 else:
-                    log_messages.append([metadataFileName, 'ER', '{}: Checksum mismatch: File in API does not match file in repository'.format(metadataFileName)])
+                    log_messages.append([variant, 'ER', '{}: Checksum mismatch: File in API does not match file in repository'.format(repoFileName)])
 
             except ValueError:
-                name = '{}-{}'.format(family, style)
-                log_messages.append([name, 'ER', '{} in API but not in repository'.format(name)])
+                log_messages.append([variant, 'ER', 'Available in API but not in repository'])
 
         for font in metadata.fonts:
+            variant = getVariantName(font)
             try:
-                webfontStyles.index(str(font.weight) + str(font.style))
+                webfontVariants.index(variant)
             except ValueError:
-                log_messages.append([font.filename, 'ER', '{} in repository but not in API'.format(font.filename)])
+                log_messages.append([variant, 'ER', 'Available in repository but not in API'.format(font.filename)])
 
         #sort all the messages by their respective metadataFileName and print them:
         for message in sorted(log_messages, key=lambda x: x[0].lower()):
-            _, status, text = message
+            variant, status, text = message
             if status == "OK":
-                print("{}: {}".format(status, text))
+                if argv.verbose:
+                    print("[{} {}] {}: {}".format(family, variant, status, text))
             else:
-                print("{}: {}".format(status, text), file=sys.stderr)
+                print("[{} {}] {}: {}".format(family, variant, status, text), file=sys.stderr)
 
