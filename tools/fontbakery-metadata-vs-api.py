@@ -73,27 +73,33 @@ if __name__ == '__main__':
 
             with open(cache_font_path, 'w') as fp:
                 if argv.verbose:
-                    print("Downloading '{}' from {}".format(metadata.name, fonturl))
+                    print("Downloading '{} {}' from {}".format(family, style, fonturl))
                 fp.write(urllib.urlopen(fonturl).read())
                 if argv.verbose:
-                    print('OK: {} from {} copied'.format(os.path.basename(cache_font_path), family))
+                    print('OK: [{} {}] Saved to {}'.format(family, style, cache_font_path))
 
         for subset in webfontsItem['subsets']:
+            if subset == "menu":
+                # note about Google Web Fonts:
+                # Menu subsets are no longer generated offline.
+                continue
+
             if subset not in metadata.subsets:
                 print('ER: {} has {} in API but not in Github'.format(family, subset), file=sys.stderr)
             elif argv.verbose:
                 print('OK: {} has {} in Github and API'.format(family, subset))
 
         for subset in metadata.subsets:
-            if subset not in webfontsItem['subsets']:
+            if subset != "menu" and subset not in webfontsItem['subsets']:
                 print('ER: {} has {} in Github but not in API'.format(family, subset), file=sys.stderr)
 
+        log_messages = []
         for style in webfontStyles:
             try:
                 filenameWeightStyleIndex = [str(item.weight) + str(item.style) for item in metadata.fonts].index(style)
                 metadataFileName = metadata.fonts[filenameWeightStyleIndex].filename
                 if argv.verbose:
-                    print('OK: {} in Github and in API'.format(metadataFileName))
+                    log_messages.append([metadataFileName, 'OK', '{} in Github and in API'.format(metadataFileName)])
 
                     import hashlib
                     github_md5 = hashlib.md5(open(os.path.join(dirpath, metadataFileName), 'rb').read()).hexdigest()
@@ -103,15 +109,24 @@ if __name__ == '__main__':
 
                     if github_md5 == google_md5:
                         if argv.verbose:
-                            print('OK: {} in production'.format(metadataFileName))
+                            log_messages.append([metadataFileName, 'OK', '{} in production'.format(metadataFileName)])
                     else:
-                        print('ER: {}: File in API does not match file in production (checksum mismatch)'.format(metadataFileName))
+                        log_messages.append([metadataFileName, 'ER', '{}: File in API does not match file in production (checksum mismatch)'.format(metadataFileName)])
             except ValueError:
-                print('ER: {}-{} in API but not in Github'.format(family, style), file=sys.stderr)
+                name = '{}-{}'.format(family, style)
+                log_messages.append([name, 'ER', '{} in API but not in Github'.format(name)])
 
         for font in metadata.fonts:
             try:
                 webfontStyles.index(str(font.weight) + str(font.style))
             except ValueError:
-                print('ER: {} in Github but not in API'.format(font.filename), file=sys.stderr)
+                log_messages.append([font.filename, 'ER', '{} in Github but not in API'.format(font.filename)])
+
+        #sort all the messages by their respective metadataFileName and print them:
+        for message in sorted(log_messages, key=lambda x: x[0].lower()):
+            _, status, text = message
+            if status == "OK":
+                print("{}: {}".format(status, text))
+            else:
+                print("{}: {}".format(status, text), file=sys.stderr)
 
