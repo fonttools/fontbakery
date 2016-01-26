@@ -21,6 +21,18 @@ args.add_argument('--autofix', help='Apply automatic fixes to files', action="st
 args.add_argument('--api', help='Domain string to use to request', default="fonts.googleapis.com")
 argv = args.parse_args()
 
+#TODO: move these to an external colors.py file
+END_COLOR = '\033[0m'
+
+def BLUE(text):
+    return '\033[94m' + text + END_COLOR
+
+def GREEN(text):
+    return '\033[92m' + text + END_COLOR
+
+def RED(text):
+    return '\033[93m' + text + END_COLOR
+
 
 def get_cache_font_path(cache_dir, fonturl):
     urlparts = urlparse.urlparse(fonturl)
@@ -53,14 +65,14 @@ if __name__ == '__main__':
         try:
             family = metadata.name
         except KeyError:
-            print('ER: {} does not contain FamilyName'.format(metadataProtoFile), file=sys.stderr)
+            print('{}: {} does not contain FamilyName'.format(RED('ER'), metadataProtoFile), file=sys.stderr)
             continue
 
         try:
             index = webfontListFamilyNames.index(family)
             webfontsItem = webfontList[index]
         except ValueError:
-            print('ER: Family "{}" could not be found in API'.format(family))
+            print('{}: Family "{}" could not be found in API'.format(RED('ER'), family))
             continue
 
         webfontVariants = []
@@ -94,14 +106,14 @@ if __name__ == '__main__':
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: {} lacks subset "{}" in repository'.format(family, subset), file=sys.stderr)
+                print('{}: {} lacks subset "{}" in repository'.format(RED('ER'), family, subset), file=sys.stderr)
             else:
                 if argv.verbose:
-                    print('OK: {} subset {} in sync'.format(family, subset))
+                    print('{}: {} subset {} in sync'.format(GREEN('OK'), family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: {} lacks subset {} in API'.format(family, subset), file=sys.stderr)
+                print('{}: {} lacks subset {} in API'.format(RED('ER'), family, subset), file=sys.stderr)
 
         def getVariantName(item):
             if item.style == "normal" and item.weight == 400:
@@ -148,7 +160,7 @@ if __name__ == '__main__':
             variant, status, text = message
             if status == "OK":
                 if argv.verbose:
-                    print("{}: {}".format(status, text))
+                    print("{}: {}".format(GREEN(status), text))
             else:
-                print("{}: {}".format(status, text), file=sys.stderr)
+                print("{}: {}".format(RED(status), text), file=sys.stderr)
 
