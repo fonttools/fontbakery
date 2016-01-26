@@ -79,13 +79,18 @@ if __name__ == '__main__':
                     print('OK: [{} {}] Saved to {}'.format(family, style, cache_font_path))
 
         for subset in webfontsItem['subsets']:
+            if subset == "menu":
+                # note about Google Web Fonts:
+                # Menu subsets are no longer generated offline.
+                continue
+
             if subset not in metadata.subsets:
                 print('ER: {} has {} in API but not in Github'.format(family, subset), file=sys.stderr)
             elif argv.verbose:
                 print('OK: {} has {} in Github and API'.format(family, subset))
 
         for subset in metadata.subsets:
-            if subset not in webfontsItem['subsets']:
+            if subset != "menu" and subset not in webfontsItem['subsets']:
                 print('ER: {} has {} in Github but not in API'.format(family, subset), file=sys.stderr)
 
         for style in webfontStyles:
