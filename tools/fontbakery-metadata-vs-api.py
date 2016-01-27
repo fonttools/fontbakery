@@ -135,7 +135,7 @@ if __name__ == '__main__':
                     log_messages.append([variant, 'ER', '"{}" checksum mismatch, file in API does not match file in git'.format(repoFileName)])
 
             except ValueError:
-                log_messages.append([variant, 'ER', '"{}" available in git but not in API'.format(font.filename)])
+                log_messages.append([variant, 'ER', '"{}" available in API but not in git'.format(font.filename)])
 
         for font in metadata.fonts:
             variant = getVariantName(font)
