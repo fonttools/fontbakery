@@ -60,25 +60,23 @@ You will have a font project directory with your source files.
 The first step is to add a `bakery.yml` file that contains settings for Font Bakery to follow.
 An interactive terminal application will create one in its current directory:
 
-```sh
-cd ~/src/github.com/davelab6/fontproject/;
-fontbakery-setup.py;
-```
+    cd ~/src/github.com/davelab6/fontproject/;
+    fontbakery-setup.py;
 
 You can then run the build process with this file.
 It is helpful to run in verbose mode.
 
-```sh
-fontbakery-build.py --verbose bakery.yaml;
-```
+
+    fontbakery-build.py --verbose bakery.yaml;
 
 This will run many individual fontbakery tools, such as
 
 * `fontbakery-check.py` to check a font file
 * `fontbakery-build-font2ttf.py` to convert a ufo or otf to a ttf with fontforge
-* `fontbakery-build-metadata.py` to create a METADATA.json file
+* `fontbakery-build-metadata.py` to create a METADATA.pb file
 
 The check tool will fix some problems, and you can run these fixing tools individually also:
+
 * `fontbakery-fix-ascii-fontmetadata.py`
 * `fontbakery-fix-dsig.py`
 * `fontbakery-fix-fstype.py`
@@ -89,11 +87,21 @@ The check tool will fix some problems, and you can run these fixing tools indivi
 * `fontbakery-fix-style-names.py`
 * `fontbakery-fix-vertical-metrics.py`
 
+#### Other tools
+
 There are some fontbakery tools not used in the build process:
 
-`fontbakery-report.py`
+* `fontbakery-report.py` builds reports
+* `fontbakery-travis-deploy.py` and `fontbakery-travis-secure.sh` are used to set up a `.travis.yml` file (see below)
 
-`fontbakery-travis-deploy.py` and `fontbakery-travis-secure.sh` are used to set up a `.travis.yml` file (see below)
+`fontbakery-metadata-vs-api.py` will compare families with a METADATA.json file with those in the production Google Fonts API.
+The output is very long, so its helpful to pipe the output and errors to files:
+
+    fontbakery-metadata-vs-api.py --api=fonts.googleapis.com \
+      --cache=/tmp/fontbakery-compare-github-api --verbose \
+      GoogleFontsDeveloperAPIKey /Users/username/fonts \
+      > fontbakery-metadata-vs-api-stdout.txt \
+      2> fontbakery-metadata-vs-api-stderr.txt ;
 
 ### On Travis
 
@@ -202,15 +210,3 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    ```
 
 5. After each build by Travis you can see a report at <http://yourGithubUsername.github.io/yourRepo>
-
-
-### Tips for working with Github
-
-When working with font projects on Github, it is typical to work with several forks of the same project. To keep things simple, create a folder in your projects director called `github.com`, inside that make a directory for each username you work with, and clone each user's repo inside their correpsonding folder. This way on your harddisk you have a 'mirror' of the github.com site structure.
-
-There are many good guides for Github around the web, including:
-
-* <http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1>
-* <https://try.github.io>
-* <https://guides.github.com>
-* [Articles about Github in Wired.com](https://www.google.com/search?q=github+everything+site:wired.com)
