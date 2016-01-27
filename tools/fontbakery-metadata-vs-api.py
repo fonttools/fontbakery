@@ -30,6 +30,18 @@ def get_cache_font_path(cache_dir, fonturl):
     fontname = os.path.basename(fonturl)
     return os.path.join(cache_dir, fontname)
 
+def getVariantName(item):
+    if item.style == "normal" and item.weight == 400:
+        return "regular"
+
+    name = ""
+    if item.weight != 400:
+        name = str(item.weight)
+
+    if item.style != "normal":
+        name += item.style
+
+    return name
 
 if __name__ == '__main__':
     import urllib
@@ -53,7 +65,7 @@ if __name__ == '__main__':
         try:
             family = metadata.name
         except KeyError:
-            print('ER: {} does not contain FamilyName'.format(metadataProtoFile), file=sys.stderr)
+            print('ER: "{}" does not contain FamilyName'.format(metadataProtoFile), file=sys.stderr)
             continue
 
         try:
@@ -73,9 +85,10 @@ if __name__ == '__main__':
                 continue
 
             with open(cache_font_path, 'w') as fp:
-                filename = '{}-{}.ttf'.format(family, variant)
+                filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
+                filename = metadata.fonts[filenameWeightStyleIndex].filename
                 if argv.verbose:
-                    print("Downloading {} as {}".format(fonturl, filename))
+                    print('Downloading "{}" as "{}"'.format(fonturl, filename))
 
                 #Saving:
                 fp.write(urllib.urlopen(fonturl).read())
@@ -94,27 +107,15 @@ if __name__ == '__main__':
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: {} lacks subset "{}" in repository'.format(family, subset), file=sys.stderr)
+                print('ER: "{}" lacks subset "{}" in git'.format(family, subset), file=sys.stderr)
             else:
                 if argv.verbose:
-                    print('OK: {} subset {} in sync'.format(family, subset))
+                    print('OK: "{}" subset "{}" in sync'.format(family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: {} lacks subset {} in API'.format(family, subset), file=sys.stderr)
+                print('ER: "{}" lacks subset "{}" in API'.format(family, subset), file=sys.stderr)
 
-        def getVariantName(item):
-            if item.style == "normal" and item.weight == 400:
-                return "regular"
-
-            name = ""
-            if item.weight != 400:
-                name = str(item.weight)
-
-            if item.style != "normal":
-                name += item.style
-
-            return name
 
         for variant in webfontVariants:
             try:
@@ -129,26 +130,26 @@ if __name__ == '__main__':
                 repo_md5 = hashlib.md5(open(os.path.join(dirpath, repoFileName), 'rb').read()).hexdigest()
 
                 if repo_md5 == google_md5:
-                    log_messages.append([variant, 'OK', '{} in sync'.format(repoFileName)])
+                    log_messages.append([variant, 'OK', '"{}" in sync'.format(repoFileName)])
                 else:
-                    log_messages.append([variant, 'ER', '{}: Checksum mismatch: File in API does not match file in repository'.format(repoFileName)])
+                    log_messages.append([variant, 'ER', '"{}" checksum mismatch, file in API does not match file in git'.format(repoFileName)])
 
             except ValueError:
-                log_messages.append([variant, 'ER', 'Available in API but not in repository'])
+                log_messages.append([variant, 'ER', '"{}" available in git but not in API'.format(font.filename)])
 
         for font in metadata.fonts:
             variant = getVariantName(font)
             try:
                 webfontVariants.index(variant)
             except ValueError:
-                log_messages.append([variant, 'ER', 'Available in repository but not in API'.format(font.filename)])
+                log_messages.append([variant, 'ER', '"{}" available in git but not in API'.format(font.filename)])
 
         #sort all the messages by their respective metadataFileName and print them:
         for message in sorted(log_messages, key=lambda x: x[0].lower()):
             variant, status, text = message
             if status == "OK":
                 if argv.verbose:
-                    print("{}: {}".format(status, text))
+                    print('{}: {}'.format(status, text))
             else:
-                print("{}: {}".format(status, text), file=sys.stderr)
+                print('{}: {}'.format(status, text), file=sys.stderr)
 
