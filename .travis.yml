@@ -12,6 +12,7 @@ install:
   - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.9/lib/python2.7/site-packages
   - pip install python-coveralls
   - pip install Scrapy
+  - pip install protobuf
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlefonts/fontbakery.git"
 script: LANG="en" python setup.py nosetests
