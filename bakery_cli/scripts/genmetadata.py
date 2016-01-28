@@ -5,7 +5,8 @@
 #
 # Copyright 2012, Google Inc.
 # Author: Jeremie Lenfant-Engelmann (jeremiele a google com)
-# Author: Dave Crossland (dcrossland a google com )
+# Author: Dave Crossland (dcrossland a google com)
+# Author: Felipe Sanches (juca a members.fsf.org)
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -455,30 +456,27 @@ def getSize(familydir):
 
 
 def genmetadata(familydir):
-    if hasMetadata(familydir):
-        metadata = loadMetadata(familydir)
+    metadata = fonts_pb2.FamilyProto()
+    metadata.name = inferFamilyName(familydir)
+    metadata.designer = getDesigner(familydir) # DC Should check it against profiles.json
+    metadata.license = inferLicense(familydir)
+
+    # DC Should get this from the font or prompt?
+    if check_monospace(familydir):
+        metadata.category = 'monospace'
     else:
-        metadata = fonts_pb2.FamilyProto()
-        metadata.name = inferFamilyName(familydir)
-        metadata.designer = getDesigner(familydir) # DC Should check it against profiles.json
-        metadata.license = inferLicense(familydir)
+        metadata.category = ''
 
-        # DC Should get this from the font or prompt?
-        if check_monospace(familydir):
-            metadata.category = 'monospace'
-        else:
-            metadata.category = ''
+    # DC: this should check the filesize got smaller than last time
+    # FS: this field was deprecated in the protobuf messages
+    # metadata.size = getSize(familydir)
 
-        # DC: this should check the filesize got smaller than last time
-        # FS: this field was deprecated in the protobuf messages
-        # metadata.size = getSize(familydir)
+    createFonts(familydir, metadata)
+    inferSubsets(familydir, metadata)
 
-        createFonts(familydir, metadata)
-        inferSubsets(familydir, metadata)
-
-        # DC This is used for the Date Added sort in the GWF
-        # Directory - DC to check all existing values in hg repo are correct
-        metadata.date_added = getToday()
+    # DC This is used for the Date Added sort in the GWF
+    # Directory - DC to check all existing values in hg repo are correct
+    metadata.date_added = getToday()
 
     return metadata
 
@@ -492,6 +490,7 @@ def hasMetadata(familydir):
     return os.path.exists(fn) and (os.path.getsize(fn) > 0)
 
 
+# FS: This is currently an unused function:
 def loadMetadata(familydir):
     metadata = fonts_pb2.FamilyProto()
     text_data = open(METADATA_PB, "rb").read()
