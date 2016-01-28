@@ -22,7 +22,7 @@ import argparse
 from bakery_cli.scripts import genmetadata
 
 
-parser = argparse.ArgumentParser(description='Builds METADATA.json[.new] in'
+parser = argparse.ArgumentParser(description='Builds METADATA.pb[.new] in'
                                              ' and for specified directory(s)')
 parser.add_argument('project_path', type=str)
 
