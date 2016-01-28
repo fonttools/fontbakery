@@ -425,36 +425,6 @@ def check_monospace(familydir):
     # by casting list to python sets.
     return len(set(glyphwidths)) == 1
 
-# FS: This function is now unused
-# It was only used to set the now-deprecated size field in font metadata
-def getSize(familydir):
-    files = listdir(familydir)
-    matchedFiles = []
-    for f in files:
-        if check_regular(f):
-            matchedFiles.append(f)
-    if matchedFiles == []:
-        gzipSize = str(-1)
-        string = "WARNING: No *-Regular.ttf to calculate gzipped filesize!"
-        color = "red"
-    else:
-        filepath = matchedFiles[0]
-        tmpgzip = "/tmp/tempfont.gz"
-        string = "Original size: "
-        string += str(os.path.getsize(filepath))
-        f_in = io.open(filepath, 'rb')
-        f_out = gzip.open(tmpgzip, 'wb')
-        f_out.writelines(f_in)
-        f_out.close()
-        f_in.close()
-        gzipSize = str(os.path.getsize(tmpgzip))
-        string += "\nGzip size: "
-        string += gzipSize
-        color = "green"
-    ansiprint(string, color)
-    return int(gzipSize)
-
-
 def genmetadata(familydir):
     metadata = fonts_pb2.FamilyProto()
     metadata.name = inferFamilyName(familydir)
@@ -466,10 +436,6 @@ def genmetadata(familydir):
         metadata.category = 'monospace'
     else:
         metadata.category = ''
-
-    # DC: this should check the filesize got smaller than last time
-    # FS: this field was deprecated in the protobuf messages
-    # metadata.size = getSize(familydir)
 
     createFonts(familydir, metadata)
     inferSubsets(familydir, metadata)
@@ -488,30 +454,6 @@ def getToday():
 def hasMetadata(familydir):
     fn = os.path.join(familydir, METADATA_PB)
     return os.path.exists(fn) and (os.path.getsize(fn) > 0)
-
-
-# FS: This is currently an unused function:
-def loadMetadata(familydir):
-    metadata = fonts_pb2.FamilyProto()
-    text_data = open(METADATA_PB, "rb").read()
-    text_format.Merge(text_data, metadata)
-    return metadata
-
-
-def sortFont(fonts):
-    sortedfonts = []
-    for font in fonts:
-        fontMetadata = InsertOrderedDict()
-        fontMetadata["name"] = font["name"]
-        fontMetadata["style"] = font["style"]
-        fontMetadata["weight"] = font["weight"]
-        fontMetadata["filename"] = font["filename"]
-        fontMetadata["postScriptName"] = font["postScriptName"]
-        fontMetadata["fullName"] = font["fullName"]
-        fontMetadata["copyright"] = font["copyright"]
-        sortedfonts.append(fontMetadata)
-    return sortedfonts
-
 
 def striplines(jsontext):
     lines = jsontext.split("\n")
