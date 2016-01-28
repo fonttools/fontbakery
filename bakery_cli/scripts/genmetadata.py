@@ -189,7 +189,7 @@ def inferLicense(familydir):
     if not directory.LICENSE:
         return ""
 
-    with io.open(directory.LICENSE[0]) as fp:
+    with open(os.path.join(familydir, directory.LICENSE[0])) as fp:
         content = fp.read()
         if 'Apache License' in content:
             return 'Apache2'
