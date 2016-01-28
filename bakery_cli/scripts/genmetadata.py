@@ -21,7 +21,7 @@
 #
 # Portions Copyright (c) 2003, Michael C. Fletcher, TTFQuery Project
 #
-# A script for generating METADATA.json files, using fontTools.
+# A script for generating METADATA.pb files, using fontTools.
 #
 # Ported to Python 3.x by Mikhail Kashkin
 from __future__ import print_function
@@ -35,6 +35,8 @@ import json
 import os
 import sys
 import gzip
+import fonts_public_pb2 as fonts_pb2
+from google.protobuf import text_format
 
 if sys.version < '3':
     import codecs
@@ -49,8 +51,8 @@ else:
 # This is only here to have the JSON file data written in a predictable way
 # We only care about the the json object being able to iterate over the keys, so
 # other stuff might be broken...
-METADATA_JSON = 'METADATA.json'
-METADATA_JSON_NEW = 'METADATA.json.new'
+METADATA_PB = 'METADATA.pb'
+METADATA_PB_NEW = 'METADATA.pb.new'
 
 
 def check_regular(filename):
@@ -64,7 +66,6 @@ def check_regular(filename):
 
     return fontdata['OS/2'].usWeightClass == 400 and isRegular
 
-import sys
 if sys.version_info[0] < 3:
     def unicode(str):
         return str.decode('utf-8')
@@ -346,31 +347,30 @@ def fontToolsGetDesc(ftfont):
 #    18 Compatible Full (Macintosh only); matches the Full Name
 #    19 Sample text (best sample to display the font in)
 
-# DC This should use fontTools not FontForge for everything
 
-
-def createFonts(familydir, familyname):
-    from operator import attrgetter
+def createFonts(familydir, metadata):
+    familyname = metadata.name
     fonts = []
     files = listdir(familydir)
     for f in files:
-        fontmetadata = InsertOrderedDict()
+        fontmetadata = fonts_pb2.FontProto()
         ftfont = fontToolsOpenFont(f)
-        fontmetadata["name"] = u(familyname)
-        fontmetadata["postScriptName"] = u(fontToolsGetPSName(ftfont))
-        fontmetadata["fullName"] = u(fontToolsGetFullName(ftfont))
-        fontmetadata["style"] = u(inferStyle(ftfont))
-        fontmetadata["weight"] = ftfont['OS/2'].usWeightClass
-        fontmetadata["filename"] = os.path.basename(unicode(f).lstrip('./'))
-        fontmetadata["copyright"] = u(fontToolsGetCopyright(ftfont))
+        fontmetadata.name = u(familyname)
+        fontmetadata.post_script_name = u(fontToolsGetPSName(ftfont))
+        fontmetadata.full_name = u(fontToolsGetFullName(ftfont))
+        fontmetadata.style = u(inferStyle(ftfont))
+        fontmetadata.weight = ftfont['OS/2'].usWeightClass
+        fontmetadata.filename = os.path.basename(unicode(f).lstrip('./'))
+        fontmetadata.copyright = u(fontToolsGetCopyright(ftfont))
         fonts.append(fontmetadata)
-    return sorted(fonts, key=attrgetter('weight'))
+
+    metadata.fonts.extend(sorted(fonts, key = lambda f: f.weight))
+
 
 # DC This should also print the subset filesizes and check they are
 # smaller than the original ttf
 
-
-def inferSubsets(familydir):
+def inferSubsets(familydir, metadata):
     subsets = set()
     files = listdir(familydir)
     for f in files:
@@ -380,12 +380,12 @@ def inferSubsets(familydir):
             if extension in SUPPORTED_SUBSETS:
                 subsets.add(extension)
     if len(subsets) == 0:
-        return ["latin"]
-    return sorted(subsets)
+        subsets = ["latin"]
+
+    metadata.subsets.extend(sorted(subsets))
 
 
 def getDesigner(familydir):
-    # import fontforge
     files = listdir(familydir)
     for f in files:
         if check_regular(f):  # DC should ansiprint red if no Reg exemplar
@@ -424,7 +424,8 @@ def check_monospace(familydir):
     # by casting list to python sets.
     return len(set(glyphwidths)) == 1
 
-
+# FS: This function is now unused
+# It was only used to set the now-deprecated size field in font metadata
 def getSize(familydir):
     files = listdir(familydir)
     matchedFiles = []
@@ -453,47 +454,32 @@ def getSize(familydir):
     return int(gzipSize)
 
 
-def setIfNotPresent(metadata, key, value):
-    if key not in metadata:
-        metadata[key] = value
-
-
 def genmetadata(familydir):
-    metadata = InsertOrderedDict()
     if hasMetadata(familydir):
         metadata = loadMetadata(familydir)
-        print(metadata)
-    familyname = inferFamilyName(familydir)
+    else:
+        metadata = fonts_pb2.FamilyProto()
+        metadata.name = inferFamilyName(familydir)
+        metadata.designer = getDesigner(familydir) # DC Should check it against profiles.json
+        metadata.license = inferLicense(familydir)
 
-    if not metadata.get('name') or metadata.get('name', "UNKNOWN") == "UNKNOWN":
-        metadata["name"] = familyname
+        # DC Should get this from the font or prompt?
+        if check_monospace(familydir):
+            metadata.category = 'monospace'
+        else:
+            metadata.category = ''
 
-    desName = getDesigner(familydir)
-    if not metadata.get('designer'):
-        metadata["designer"] = desName
-                    # DC Should check it against profiles.json
+        # DC: this should check the filesize got smaller than last time
+        # FS: this field was deprecated in the protobuf messages
+        # metadata.size = getSize(familydir)
 
-    if not metadata.get('license'):
-        metadata["license"] = inferLicense(familydir)
+        createFonts(familydir, metadata)
+        inferSubsets(familydir, metadata)
 
-    setIfNotPresent(metadata, "visibility", "Sandbox")
+        # DC This is used for the Date Added sort in the GWF
+        # Directory - DC to check all existing values in hg repo are correct
+        metadata.date_added = getToday()
 
-    category = ''
-    if check_monospace(familydir):
-        category = 'monospace'
-    setIfNotPresent(metadata, "category", category)
-                    # DC Should get this from the font or prompt?
-
-    if not metadata.get('size') or metadata.get('size', -1) == -1:
-        metadata["size"] = getSize(familydir)
-                    # DC: this should check the filesize got smaller than last
-                    # time
-    metadata["fonts"] = createFonts(familydir, familyname)
-    metadata["subsets"] = inferSubsets(familydir)
-    setIfNotPresent(metadata, "dateAdded", getToday())
-                    # DC This is used for the Date Added sort in the GWF
-                    # Directory - DC to check all existing values in hg repo
-                    # are correct
     return metadata
 
 
@@ -502,14 +488,15 @@ def getToday():
 
 
 def hasMetadata(familydir):
-    fn = os.path.join(familydir, METADATA_JSON)
+    fn = os.path.join(familydir, METADATA_PB)
     return os.path.exists(fn) and (os.path.getsize(fn) > 0)
 
 
 def loadMetadata(familydir):
-    import collections
-    with io.open(os.path.join(familydir, METADATA_JSON), 'r', encoding="utf-8") as fp:
-        return json.load(fp, object_pairs_hook=collections.OrderedDict)
+    metadata = fonts_pb2.FamilyProto()
+    text_data = open(METADATA_PB, "rb").read()
+    text_format.Merge(text_data, metadata)
+    return metadata
 
 
 def sortFont(fonts):
@@ -536,15 +523,12 @@ def striplines(jsontext):
 
 
 def writeFile(familydir, metadata):
-    filename = METADATA_JSON
+    filename = METADATA_PB
     if hasMetadata(familydir):
-        filename = METADATA_JSON_NEW
+        filename = METADATA_PB_NEW
 
-    with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
-        contents = json.dumps(metadata, indent=2, ensure_ascii=False)
-        f.write(striplines(contents))
-
-    print(json.dumps(metadata, indent=2, ensure_ascii=False))
+    msg_str = text_format.MessageToString(metadata, as_utf8=True)
+    open(os.path.join(familydir, filename), 'w').write(msg_str)
 
 
 def ansiprint(string, color):
@@ -563,8 +547,9 @@ def ansiprint(string, color):
 
 def writeDescHtml(familydir):
     filename = "DESCRIPTION.en_us.html"
-    if os.path.exists(os.path.join(familydir, filename)):
-        ansiprint('{} exists', 'green')
+    file_path = os.path.join(familydir, filename)
+    if os.path.exists(file_path):
+        ansiprint('File "{}" exists'.format(file_path), "green")
         return
 
     foundRegular = False
@@ -579,8 +564,7 @@ def writeDescHtml(familydir):
 
     if not foundRegular:
         string = "No Regular found! REMEMBER! Create a " + filename
-        color = "red"
-        ansiprint(string, color)
+        ansiprint(string, "red")
         fontDesc = "TODO"
 
     descHtml = u"<p>" + u(fontDesc) + u"</p>"
