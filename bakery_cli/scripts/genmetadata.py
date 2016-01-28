@@ -36,7 +36,7 @@ import json
 import os
 import sys
 import gzip
-import fonts_public_pb2 as fonts_pb2
+from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 from google.protobuf import text_format
 
 if sys.version < '3':
@@ -354,7 +354,7 @@ def createFonts(familydir, metadata):
     fonts = []
     files = listdir(familydir)
     for f in files:
-        fontmetadata = fonts_pb2.FontProto()
+        fontmetadata = FontProto()
         ftfont = fontToolsOpenFont(f)
         fontmetadata.name = u(familyname)
         fontmetadata.post_script_name = u(fontToolsGetPSName(ftfont))
@@ -426,7 +426,7 @@ def check_monospace(familydir):
     return len(set(glyphwidths)) == 1
 
 def genmetadata(familydir):
-    metadata = fonts_pb2.FamilyProto()
+    metadata = FamilyProto()
     metadata.name = inferFamilyName(familydir)
     metadata.designer = getDesigner(familydir) # DC Should check it against profiles.json
     metadata.license = inferLicense(familydir)

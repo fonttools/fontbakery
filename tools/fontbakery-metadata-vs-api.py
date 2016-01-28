@@ -7,7 +7,7 @@ import collections
 import io
 import os
 import sys
-import fonts_public_pb2 as fonts_pb2
+from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 from google.protobuf import text_format
 
 args = argparse.ArgumentParser()
@@ -59,7 +59,7 @@ if __name__ == '__main__':
         if not os.path.exists(metadataProtoFile):
             continue
 
-        metadata = fonts_pb2.FamilyProto()
+        metadata = FamilyProto()
         text_data = open(metadataProtoFile, "rb").read()
         text_format.Merge(text_data, metadata)
         try:
