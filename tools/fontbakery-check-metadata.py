@@ -24,11 +24,11 @@ from bakery_lint.base import run_suite
 
 
 if __name__ == '__main__':
-    description = 'Runs checks or tests on specified METADATA.json file(s)'
+    description = 'Runs checks or tests on specified METADATA.pb file(s)'
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
     parser.add_argument('--autofix', '-f', action='store_true',
-                        help="Autofix METADATA.json if test has been failed", default=False)
+                        help="Autofix METADATA.pb if test has been failed", default=False)
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
 
@@ -44,8 +44,8 @@ if __name__ == '__main__':
 
     for x in args.file:
 
-        if not x.lower().endswith('metadata.json'):
-            print('ER: {} is not METADATA.json'.format(x), file=sys.stderr)
+        if not x.lower().endswith('metadata.pb'):
+            print('ER: {} is not METADATA.pb'.format(x), file=sys.stderr)
             continue
 
         suite = get_suite(x, apply_autofix=args.autofix)

@@ -18,16 +18,18 @@
 
 import html5lib
 from unittest import skip
-import json
 import magic
 import os
 import os.path as op
 import re
 import requests
 
+from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
+from google.protobuf import text_format
+
 from bakery_cli.ttfont import Font
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
-from bakery_lint.metadata import Metadata
+from bakery_lint.base import TestCaseOperator
 
 ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
 SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
@@ -45,23 +47,29 @@ def get_test_subset_function(path):
     function.tags = ['required']
     return function
 
+def get_FamilyProto_Message(path):
+    metadata = FamilyProto()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, metadata)
+    return metadata
 
 class MetadataSubsetsListTest(TestCase):
 
     targets = ['metadata']
-    tool = 'METADATA.json'
+    tool = 'METADATA.pb'
     name = __name__
 
     @classmethod
     def __generateTests__(cls):
         try:
-            metadata = json.load(open(cls.operator.path))
+            metadata = get_FamilyProto_Message(cls.operator.path)
         except:
             return
-        for font in metadata.get('fonts', []):
-            for subset in metadata.get('subsets', []) + ['menu']:
+        for font in metadata.fonts:
+#            for subset in metadata.subsets.extend(['menu']):
+            for subset in metadata.subsets:
                 path = op.join(op.dirname(cls.operator.path),
-                               font.get('filename')[:-3] + subset)
+                               font.filename[:-3] + subset)
 
                 subsetid = re.sub(r'\W', '_', subset)
 
@@ -69,14 +77,14 @@ class MetadataSubsetsListTest(TestCase):
                 # cls.operator.debug('cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.get('filename')[:-3] + subset))
 
                 exec 'cls.test_charset_{0} = get_test_subset_function("{1}")'.format(subsetid, path)
-                exec 'cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.get('filename')[:-3] + subset)
+                exec 'cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.filename[:-3] + subset)
 
 
 
 class MetadataTest(TestCase):
 
     targets = ['metadata']
-    tool = 'METADATA.json'
+    tool = 'METADATA.pb'
     name = __name__
 
     rules = {
@@ -105,32 +113,32 @@ class MetadataTest(TestCase):
         }
     }
 
-    def setUp(self):
-        self.metadata = json.load(open(self.operator.path))
+    @classmethod
+    def setUp(cls):
+        cls.metadata = get_FamilyProto_Message(cls.operator.path)
 
     @autofix('bakery_cli.fixers.MultipleDesignerFixer')
     def test_ensure_designer_simple_short_name(self):
-        self.assertTrue(len(self.metadata.get('designer', '').split(' ')) > 4, 
+        self.assertTrue(len(self.metadata.designer.split(' ')) < 4, 
                         '`designer` key must be simple short name')
-        self.assertFalse(' and ' in self.metadata.get('designer', ''),
+        self.assertFalse(' and ' in self.metadata.designer,
                         '`designer` key must be simple short name')
-        self.assertFalse(',' in self.metadata.get('designer', ''),
+        self.assertFalse(',' in self.metadata.designer,
                          '`designer` key must be simple short name')
-        self.assertFalse('.' in self.metadata.get('designer', ''),
+        self.assertFalse('.' in self.metadata.designer,
                          '`designer` key must be simple short name')
 
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
-        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
+        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata.name.replace(' ', '+')
         fp = requests.get(url)
         self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
-        self.assertEqual(self.metadata.get('visibility'), 'External')
 
     @tags('required')
     def test_metadata_designer_exists_in_profiles_csv(self):
         """ Designer exists in GWF profiles.csv """
-        designer = self.metadata.get('designer', u'')
-        self.assertTrue(designer, 'Field "designer" MUST NOT be empty')
+        designer = self.metadata.designer
+        self.assertTrue(designer != "", 'Field "designer" MUST NOT be empty')
         import urllib
         import csv
         fp = urllib.urlopen('https://raw.githubusercontent.com/google/fonts/master/designers/profiles.csv')
@@ -143,113 +151,49 @@ class MetadataTest(TestCase):
                         msg='Designer %s is not in profiles.csv' % designer)
 
     def test_metadata_fonts_no_dupes(self):
-        """ METADATA.json fonts propery only should have uniq values """
+        """ METADATA.pb fonts field only should have uniq values """
         fonts = {}
-        for x in self.metadata.get('fonts', None):
-            self.assertFalse(x.get('fullName', '') in fonts)
-            fonts[x.get('fullName', '')] = x
+        for x in self.metadata.fonts:
+            self.assertFalse(x.full_name in fonts)
+            fonts[x.full_name] = x
 
         self.assertEqual(len(set(fonts.keys())),
-                         len(self.metadata.get('fonts', None)))
-
-    @tags('required')
-    def test_metadata_keys(self):
-        """ METADATA.json should have top keys: ["name", "designer",
-            "license", "visibility", "category", "size", "dateAdded",
-            "fonts", "subsets"] """
-
-        top_keys = ["name", "designer", "license", "visibility", "category",
-                    "size", "dateAdded", "fonts", "subsets"]
-
-        for key in top_keys:
-            self.assertIn(key, self.metadata, msg="Missing %s key" % key)
-
-    @tags('required')
-    def test_metadata_fonts_key_list(self):
-        """ METADATA.json font key should be list """
-        self.assertEqual(type(self.metadata.get('fonts', '')), type([]))
-
-    @tags('required')
-    def test_metadata_subsets_key_list(self):
-        """ METADATA.json subsets key should be list """
-        self.assertEqual(type(self.metadata.get('subsets', '')), type([]))
-
-    @tags('required')
-    def test_metadata_fonts_items_dicts(self):
-        """ METADATA.json fonts key items are dicts """
-        for x in self.metadata.get('fonts', None):
-            self.assertEqual(type(x), type({}), msg="type(%s) is not dict" % x)
-
-    @tags('required')
-    def test_metadata_top_keys_types(self):
-        """ METADATA.json should have proper top keys types """
-        self.assertEqual(type(self.metadata.get("name", None)),
-                         type(u""), msg="'name' is {0}, but must be {1}".format(type(self.metadata.get("name", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("designer", None)),
-                         type(u""), msg="'designer' is {0}, but must be {1}".format(type(self.metadata.get("designer", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("license", None)),
-                         type(u""), msg="'license' is {0}, but must be {1}".format(type(self.metadata.get("license", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("visibility", None)),
-                         type(u""), msg="'visibility' is {0}, but must be {1}".format(type(self.metadata.get("visibility", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("category", None)),
-                         type(u""), msg="'category' is {0}, but must be {1}".format(type(self.metadata.get("category", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("size", None)),
-                         type(0), msg="'size' is {0}, but must be {1}".format(type(self.metadata.get("size", None)), type(u"")))
-
-        self.assertEqual(type(self.metadata.get("dateAdded", None)),
-                         type(u""), msg="'dateAdded' is {0}, but must be {1}".format(type(self.metadata.get("dateAdded", None)), type(u"")))
-
-    @tags('required')
-    def test_metadata_no_unknown_top_keys(self):
-        """ METADATA.json don't have unknown top keys """
-        top_keys = ["name", "designer", "license", "visibility", "category",
-                    "size", "dateAdded", "fonts", "subsets"]
-        for x in self.metadata.keys():
-            self.assertIn(x, top_keys, msg="%s found unknown top key" % x)
+                         len(self.metadata.fonts))
 
     @tags('required')
     def test_metadata_atleast_latin_menu_subsets_exist(self):
-        """ METADATA.json subsets should have at least 'menu' and 'latin' """
-        self.assertIn('menu', self.metadata.get('subsets', []),
+        """ METADATA.pb subsets should have at least 'menu' and 'latin' """
+        self.assertIn('menu', self.metadata.subsets,
                       msg="Subsets missing menu")
-        self.assertIn('latin', self.metadata.get('subsets', []),
+        self.assertIn('latin', self.metadata.subsets,
                       msg="Subsets missing latin")
 
     @tags('required')
     def test_metadata_license(self):
-        """ METADATA.json license is 'Apache2', 'UFL' or 'OFL' """
+        """ METADATA.pb license is 'Apache2', 'UFL' or 'OFL' """
         licenses = ['Apache2', 'OFL', 'UFL']
-        self.assertIn(self.metadata.get('license', ''), licenses)
+        self.assertIn(self.metadata.license, licenses)
 
     @tags('required')
     def test_metadata_has_unique_style_weight_pairs(self):
-        """ METADATA.json only contains unique style:weight pairs """
+        """ METADATA.pb only contains unique style:weight pairs """
         pairs = []
-        for fontdata in self.metadata.get('fonts', []):
-            styleweight = '%s:%s' % (fontdata['style'],
-                                     fontdata.get('weight', 0))
+        for fontdata in self.metadata.fonts:
+            styleweight = '%s:%s' % (fontdata.style,
+                                     fontdata.weight)
             self.assertNotIn(styleweight, pairs)
             pairs.append(styleweight)
 
-class TestFontOnDiskFamilyEqualToMetadataJSON(TestCase):
+class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
     name = __name__
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     @tags('required',)
-    def test_font_on_disk_family_equal_in_metadata_json(self):
-        """ Font on disk and in METADATA.json have the same family name """
-        contents = self.read_metadata_contents()
-        metadata = Metadata.get_family_metadata(contents)
+    def test_font_on_disk_family_equal_in_metadata_protobuf(self):
+        """ Font on disk and in METADATA.pb have the same family name """
+        metadata = get_FamilyProto_Message(self.operator.path)
 
         unmatched_fonts = []
         for font_metadata in metadata.fonts:
@@ -272,14 +216,10 @@ class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     @tags('required')
     def test_postscriptname_in_metadata_equal_to_font_on_disk(self):
-        """ Checks METADATA.json 'postScriptName' matches TTF 'postScriptName' """
-        contents = self.read_metadata_contents()
-        metadata = Metadata.get_family_metadata(contents)
+        """ Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName' """
+        metadata = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in metadata.fonts:
             try:
@@ -300,11 +240,7 @@ class CheckMetadataAgreements(TestCase):
     tool = 'lint'
 
     def setUp(self):
-        contents = self.read_metadata_contents()
-        self.metadata = Metadata.get_family_metadata(contents)
-
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
+        self.metadata = get_FamilyProto_Message(self.operator.path)
 
     def test_metadata_family_values_are_all_the_same(self):
         """ Check that METADATA family values are all the same """
@@ -332,7 +268,7 @@ class CheckMetadataAgreements(TestCase):
             if i.filename.endswith('Regular.ttf') and i.weight == 400:
                 have = True
         if not have:
-            self.fail(('METADATA.json does not contain Regular font. At least'
+            self.fail(('METADATA.pb does not contain Regular font. At least'
                        ' one font must be Regular and its weight must be 400'))
 
     def test_metadata_regular_is_normal(self):
@@ -408,25 +344,20 @@ class CheckMetadataContainsReservedFontName(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     @tags('info')
     def test_copyright_contains_correct_rfn(self):
-        """ Copyright notice does not contain Reserved File Name """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        """ Copyright notice does not contain Reserved Font Name """
+        fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
             if 'Reserved Font Name' in font_metadata.copyright:
-                msg = '"%s" contains "Reserved File Name"'
+                msg = '"%s" contains "Reserved Font Name"'
                 self.fail(msg % font_metadata.copyright)
 
     @tags('info')
     def test_copyright_matches_pattern(self):
         """ Copyright notice matches canonical pattern """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
             self.assertRegexpMatches(font_metadata.copyright,
@@ -435,8 +366,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
     @tags('info')
     def test_copyright_is_consistent_across_family(self):
         """ Copyright notice is the same in all fonts? """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
 
         copyright = ''
         for font_metadata in fm.fonts:
@@ -447,8 +377,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
     @tags('info')
     def test_metadata_copyright_size(self):
         """ Copyright notice should be less than 500 chars """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
             self.assertLessEqual(len(font_metadata.copyright), 500)
@@ -486,8 +415,8 @@ class CheckSubsetsExist(TestCase):
 
     def test_check_subsets_exists(self):
         """ Check that corresponding subset files exist for fonts """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             for subset in fm.subsets:
                 subset_filename = self.get_subset_filename(font_metadata.filename, subset)
@@ -512,14 +441,11 @@ class CheckMonospaceAgreement(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_monospace_agreement(self):
         """ Monospace font has hhea.advanceWidthMax equal to each
             glyph advanceWidth """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         if fm.category != 'Monospace':
             return
         for font_metadata in fm.fonts:
@@ -544,13 +470,9 @@ class CheckItalicStyleMatchesMacStyle(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_italic_style_matches_names(self):
         """ Check metadata.json font.style `italic` matches font internal """
-        contents = self.read_metadata_contents()
-        family = Metadata.get_family_metadata(contents)
+        family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
             if font_metadata.style != 'italic':
@@ -580,13 +502,9 @@ class CheckNormalStyleMatchesMacStyle(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_normal_style_matches_names(self):
         """ Check metadata.json font.style `italic` matches font internal """
-        contents = self.read_metadata_contents()
-        family = Metadata.get_family_metadata(contents)
+        family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
             if font_metadata.style != 'normal':
@@ -616,13 +534,10 @@ class CheckMetadataMatchesNameTable(TestCase):
     tool = 'lint'
     name = __name__
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_metadata_matches_nametable(self):
         """ Metadata key-value match to table name fields """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
@@ -633,61 +548,16 @@ class CheckMetadataMatchesNameTable(TestCase):
             self.assertEqual(ttfont.fullname, font_metadata.full_name)
 
 
-class CheckMetadataFields(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
-    @tags('required')
-    def test_check_metadata_fields(self):
-        """ Check METADATA.json "fonts" property items have required field """
-        contents = self.read_metadata_contents()
-        family = Metadata.get_family_metadata(contents)
-
-        keys = [("name", str), ("postScriptName", str),
-                ("fullName", str), ("style", str),
-                ("weight", int), ("filename", str),
-                ("copyright", str)]
-
-        missing = set([])
-        unknown = set([])
-
-        for j, itemtype in keys:
-
-            for font_metadata in family.fonts:
-                if j not in font_metadata:
-                    missing.add(j)
-
-                for k in font_metadata:
-                    if k not in map(lambda x: x[0], keys):
-                        unknown.add(k)
-
-        if unknown:
-            msg = 'METADATA.json "fonts" property has unknown items [%s]'
-            self.fail(msg % ', '.join(unknown))
-
-        if missing:
-            msg = 'METADATA.json "fonts" property items missed [%s] items'
-            self.fail(msg % ', '.join(missing))
-
-
 class CheckMenuSubsetContainsProperGlyphs(TestCase):
 
     targets = ['metadata']
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_menu_contains_proper_glyphs(self):
         """ Check menu file contains proper glyphs """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata, is_menu=True)
             self.check_retrieve_glyphs(tf, font_metadata)
@@ -717,12 +587,8 @@ class CheckGlyphConsistencyInFamily(TestCase):
     tool = 'lint'
     name = __name__
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def setUp(self):
-        contents = self.read_metadata_contents()
-        self.familymetadata = Metadata.get_family_metadata(contents)
+        self.familymetadata = get_FamilyProto_Message(self.operator.path)
 
     def test_the_same_number_of_glyphs_across_family(self):
         """ The same number of glyphs across family? """
@@ -766,13 +632,9 @@ class CheckFontNameNotInCamelCase(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_fontname_not_in_camel_case(self):
         """ Check if fontname is not camel cased """
-        contents = self.read_metadata_contents()
-        familymetadata = Metadata.get_family_metadata(contents)
+        familymetadata = get_FamilyProto_Message(self.operator.path)
 
         camelcased_fontnames = []
         for font_metadata in familymetadata.fonts:
@@ -790,17 +652,14 @@ class CheckFontsMenuAgreements(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def menufile(self, font_metadata):
         return '%s.menu' % font_metadata.filename[:-4]
 
     @tags('required')
     def test_menu_file_agreement(self):
         """ Check fonts have corresponding menu files """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             menufile = self.menufile(font_metadata)
             path = op.join(op.dirname(self.operator.path), menufile)
@@ -818,13 +677,10 @@ class CheckFamilyNameMatchesFontNames(TestCase):
     targets = ['metadata']
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_familyname_matches_fontnames(self):
         """ Check font name is the same as family name """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             _ = '%s: Family name "%s" does not match font name: "%s"'
             _ = _ % (font_metadata.filename, fm.name, font_metadata.name)
@@ -859,13 +715,10 @@ class CheckCanonicalWeights(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_canonical_weights(self):
         """ Check that weights have canonical value """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             weight = font_metadata.weight
             first_digit = weight / 100
@@ -878,8 +731,8 @@ class CheckCanonicalWeights(TestCase):
                                               font_metadata.weight))
 
             tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-            _ = ("%s: METADATA.json overwrites the weight. "
-                 " The METADATA.json weight is %d and the font"
+            _ = ("%s: METADATA.pb overwrites the weight. "
+                 " The METADATA.pb weight is %d and the font"
                  " file %s weight is %d")
             _ = _ % (font_metadata.filename, font_metadata.weight,
                      font_metadata.filename, tf.OS2_usWeightClass)
@@ -893,13 +746,9 @@ class CheckPostScriptNameMatchesWeight(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_postscriptname_contains_correct_weight(self):
         """ Metadata weight matches postScriptName """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
             pair = []
@@ -924,19 +773,15 @@ class CheckFontWeightSameAsInMetadata(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_font_weight_same_as_in_metadata(self):
-        """ Font weight matches metadata.json value of key "weight" """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        """ Font weight matches metadata.pb value of key "weight" """
+        fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
 
             font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if font.OS2_usWeightClass != font_metadata.weight:
-                msg = 'METADATA.JSON has weight %s but in TTF it is %s'
+                msg = 'METADATA.pb has weight %s but in TTF it is %s'
                 self.fail(msg % (font_metadata.weight, font.OS2_usWeightClass))
 
 
@@ -946,14 +791,10 @@ class CheckFullNameEqualCanonicalName(TestCase):
     name = __name__
     tool = 'lint'
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_metadata_contains_current_font(self):
         """ METADATA.json should contains testing font, under canonic name"""
 
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
 
         is_canonical = False
         for font_metadata in fm.fonts:
@@ -984,13 +825,10 @@ class CheckCanonicalStyles(TestCase):
     CANONICAL_STYLE_VALUES = ['italic', 'normal']
     ITALIC_MASK = 0b10
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     def test_check_canonical_styles(self):
         """ Test If font styles are canonical """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
+        fm = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in fm.fonts:
             self.assertIn(font_metadata.style, self.CANONICAL_STYLE_VALUES)
             if self.is_italic(font_metadata):
@@ -1015,20 +853,6 @@ class CheckCanonicalStyles(TestCase):
                 return True
 
 
-class TestSpaceIndentationInMetadata(TestCase):
-
-    targets = ['metadata']
-    tool = 'lint'
-    name = __name__
-
-    @autofix('bakery_cli.fixers.SpaceIndentationWriter')
-    def test_space_indentation_in_metadata(self):
-        for line in open(self.operator.path):
-            if line.startswith('\t'):
-                msg = 'METADATA.json contains tabs instead of space indentation'
-                self.fail(msg)
-
-
 class CheckCanonicalFilenames(TestCase):
     weights = {
         100: 'Thin',
@@ -1051,14 +875,11 @@ class CheckCanonicalFilenames(TestCase):
     tool = 'lint'
     targets = ['metadata']
 
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
     @tags('required')
     def test_check_canonical_filenames(self):
         """ Test If filename is canonical """
-        contents = self.read_metadata_contents()
-        family_metadata = Metadata.get_family_metadata(contents)
+        family_metadata = get_FamilyProto_Message(self.operator.path)
+
         for font_metadata in family_metadata.fonts:
             canonical_filename = self.create_canonical_filename(font_metadata)
             if canonical_filename != font_metadata.filename:
@@ -1081,7 +902,7 @@ def get_suite(path, apply_autofix=False):
     testcases = [
         MetadataSubsetsListTest,
         MetadataTest,
-        TestFontOnDiskFamilyEqualToMetadataJSON,
+        TestFontOnDiskFamilyEqualToMetadataProtoBuf,
         TestPostScriptNameInMetadataEqualFontOnDisk,
         CheckMetadataAgreements,
         CheckMetadataContainsReservedFontName,
@@ -1090,7 +911,6 @@ def get_suite(path, apply_autofix=False):
         CheckItalicStyleMatchesMacStyle,
         CheckNormalStyleMatchesMacStyle,
         CheckMetadataMatchesNameTable,
-        CheckMetadataFields,
         CheckMenuSubsetContainsProperGlyphs,
         CheckGlyphConsistencyInFamily,
         CheckFontNameNotInCamelCase,
@@ -1101,7 +921,6 @@ def get_suite(path, apply_autofix=False):
         CheckFontWeightSameAsInMetadata,
         CheckFullNameEqualCanonicalName,
         CheckCanonicalStyles,
-        TestSpaceIndentationInMetadata,
         CheckCanonicalFilenames
     ]
 
