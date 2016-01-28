@@ -1,4 +1,4 @@
-""" Contains TestCase for METADATA.json  """
+""" Contains TestCase for METADATA.pb """
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -16,23 +16,16 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
-import html5lib
-from unittest import skip
 import magic
 import os
 import os.path as op
 import re
 import requests
-
-from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 from google.protobuf import text_format
-
+from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 from bakery_cli.ttfont import Font
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_lint.base import TestCaseOperator
-
-ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
-SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 
 
 def get_test_subset_function(path):
@@ -281,7 +274,7 @@ class CheckMetadataAgreements(TestCase):
 
     @tags('required')
     def test_metadata_filename_matches_postscriptname(self):
-        """ METADATA.json `filename` matches `postScriptName` """
+        """ METADATA.pb `filename` matches `postScriptName` """
         import re
         regex = re.compile(r'\W')
 
@@ -297,7 +290,7 @@ class CheckMetadataAgreements(TestCase):
 
     @tags('required')
     def test_metadata_fullname_matches_postScriptName(self):
-        """ METADATA.json `fullName` matches `postScriptName` """
+        """ METADATA.pb `fullName` matches `postScriptName` """
         import re
         regex = re.compile(r'\W')
 
@@ -309,13 +302,13 @@ class CheckMetadataAgreements(TestCase):
                 self.fail(msg.format(x.full_name, x.post_script_name))
 
     def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
-        """ METADATA.json 'fullname' value matches internal 'fullname' """
+        """ METADATA.pb 'fullname' value matches internal 'fullname' """
         for font_metadata in self.metadata.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             self.assertEqual(font.fullname, font_metadata.full_name)
 
     def test_font_name_matches_family(self):
-        """ METADATA.json fonts 'name' property should be
+        """ METADATA.pb fonts 'name' property should be
             same as font familyname """
 
         for font_metadata in self.metadata.fonts:
@@ -325,7 +318,7 @@ class CheckMetadataAgreements(TestCase):
                 self.fail(msg)
 
     def test_metadata_fonts_fields_have_fontname(self):
-        """ METADATA.json fonts items fields "name", "postScriptName",
+        """ METADATA.pb fonts items fields "name", "postScriptName",
             "fullName", "filename" contains font name right format """
         for x in self.metadata.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, x)
@@ -471,7 +464,7 @@ class CheckItalicStyleMatchesMacStyle(TestCase):
     tool = 'lint'
 
     def test_check_italic_style_matches_names(self):
-        """ Check metadata.json font.style `italic` matches font internal """
+        """ Check metadata.pb font.style `italic` matches font internal """
         family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
@@ -503,7 +496,7 @@ class CheckNormalStyleMatchesMacStyle(TestCase):
     tool = 'lint'
 
     def test_check_normal_style_matches_names(self):
-        """ Check metadata.json font.style `italic` matches font internal """
+        """ Check metadata.pb font.style `italic` matches font internal """
         family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
@@ -792,7 +785,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
     tool = 'lint'
 
     def test_metadata_contains_current_font(self):
-        """ METADATA.json should contains testing font, under canonic name"""
+        """ METADATA.pb should contains testing font, under canonic name"""
 
         fm = get_FamilyProto_Message(self.operator.path)
 
