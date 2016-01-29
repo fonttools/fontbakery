@@ -94,7 +94,7 @@ There are some fontbakery tools not used in the build process:
 * `fontbakery-report.py` builds reports
 * `fontbakery-travis-deploy.py` and `fontbakery-travis-secure.sh` are used to set up a `.travis.yml` file (see below)
 
-`fontbakery-metadata-vs-api.py` will compare families with a METADATA.json file with those in the production Google Fonts API.
+`fontbakery-metadata-vs-api.py` will compare families with a METADATA.pb file with those in the production Google Fonts API.
 The output is very long, so its helpful to pipe the output and errors to files:
 
     fontbakery-metadata-vs-api.py --api=fonts.googleapis.com \

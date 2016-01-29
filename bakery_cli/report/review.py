@@ -14,17 +14,13 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
 
+from __future__ import print_function
 from collections import defaultdict, OrderedDict
 import os.path as op
 from markdown import markdown
-
 from bakery_cli.report import utils as report_utils
 from bakery_cli.utils import UpstreamDirectory
-
-from bakery_lint.metadata import Metadata
-
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
 
@@ -71,13 +67,20 @@ def get_weight_name(value):
     }.get(value, '')
 
 
+def get_FamilyProto_Message(path):
+    metadata = FamilyProto()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, metadata)
+    return metadata
+
+
 def generate(config, outfile='review.html'):
     directory = UpstreamDirectory(config['path'])
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
 
-    metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
-    family_metadata = Metadata.get_family_metadata(metadata_file)
+    metadata_file_path = op.join(config['path'], 'METADATA.pb')
+    family_metadata = get_FamilyProto_Message(metadata_file_path)
     faces = []
     for f in family_metadata.fonts:
         faces.append({'name': f.full_name,

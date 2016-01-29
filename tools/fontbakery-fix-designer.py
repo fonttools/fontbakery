@@ -29,7 +29,7 @@ from bakery_cli.fixers import MultipleDesignerFixer
 description = 'Fixes designer key for Multiple Designer'
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument('metadata', nargs='+',
-                    help='METADATA.json file')
+                    help='METADATA.pb file')
 parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 parser.add_argument('--verbose', action='store_true',
                     help='Print output in verbose')

@@ -14,22 +14,19 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 from __future__ import print_function
 from collections import defaultdict, Counter, namedtuple, OrderedDict
 import os
 import os.path as op
 import yaml
-
 import fontforge
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
-
 from bakery_cli.scripts.vmet import get_metric_view
 from bakery_cli.utils import UpstreamDirectory
-
 from bakery_cli.report import utils as report_utils
 
-from bakery_lint.metadata import Metadata
 
 TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -231,16 +228,24 @@ def get_stem_info(fontfile, glyph='n'):
             'weight': ttf.os2_weight}
 
 
+def get_FamilyProto_Message(path):
+    metadata = FamilyProto()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, metadata)
+    return metadata
+
+
 def generate(config):
     if config.get('failed'):
         return
 
     directory = UpstreamDirectory(config['path'])
-    if op.exists(op.join(config['path'], 'METADATA.json.new')):
-        metadata_file = open(op.join(config['path'], 'METADATA.json.new')).read()
-    else:
-        metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
-    family_metadata = Metadata.get_family_metadata(metadata_file)
+ 
+    metadata_file_path = op.join(config['path'], 'METADATA.pb')
+    if op.exists(metadata_file_path):
+        metadata_file_path += ".new"
+
+    family_metadata = get_FamilyProto_Message(metadata_file_path)
     faces = []
     for f in family_metadata.fonts:
         faces.append({'name': f.full_name,
@@ -296,7 +301,7 @@ def generate(config):
                                        'delta': ftables_data.delta},
                                       'fonts_tables_grouped.json')
     for face in family_metadata.fonts:
-        face_template = "@font-face {{ font-family: {}; src: url(fonts/{});}}\n".format(face.metadata_object['postScriptName'], face.metadata_object['filename'])
+        face_template = "@font-face {{ font-family: {}; src: url(fonts/{});}}\n".format(face.post_script_name, face.filename)
         report_app.write_file(face_template, op.join(report_app.css_dir, 'faces.css'), mode='a')
 
     fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])

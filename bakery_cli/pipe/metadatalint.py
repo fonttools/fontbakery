@@ -14,10 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 import os
 import os.path as op
 import yaml
-
 from bakery_lint import run_set
 from bakery_lint.base import BakeryTestCase
 
@@ -45,20 +45,20 @@ class MetadataLint(object):
         l.close()
 
     def run_metadata_tests(self):
-        path = op.join(self.builddir, 'METADATA.json.new')
+        path = op.join(self.builddir, 'METADATA.pb.new')
         if not os.path.exists(path):
-            path = op.join(self.builddir, 'METADATA.json')
+            path = op.join(self.builddir, 'METADATA.pb')
         return run_set(path, 'metadata')
 
     def execute(self, pipedata, prefix=""):
-        self.bakery.logging_task('Run tests for METADATA.json')
+        self.bakery.logging_task('Run tests for METADATA.pb')
         if self.bakery.forcerun:
             return
 
-        self.bakery.logging_cmd('fontbakery-check.py metadata METADATA.json')
+        self.bakery.logging_cmd('fontbakery-check.py metadata METADATA.pb')
         result = {}
         try:
-            result['METADATA.json'] = self.run_metadata_tests()
+            result['METADATA.pb'] = self.run_metadata_tests()
         except Exception:
             pass
 
