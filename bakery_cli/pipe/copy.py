@@ -14,13 +14,12 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 import glob
 import multiprocessing
 import os
 import os.path as op
 import shutil
-
-
 from bakery_cli.utils import shutil as shellutil
 from bakery_cli.logger import logger
 
@@ -234,4 +233,4 @@ class CopyFontLog(Pipe):
 
 class CopyMetadata(Pipe):
 
-    filename = 'METADATA.json'
+    filename = 'METADATA.pb'

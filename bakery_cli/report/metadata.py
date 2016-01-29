@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 from __future__ import print_function
 import os.path as op
 import yaml
 import json
-
 from bakery_cli.report import utils as report_utils
 
-METADATA_JSON = 'METADATA.json'
+METADATA_PB = 'METADATA.pb'
 
 
 def sort(data):
@@ -42,8 +42,8 @@ def sort(data):
 
 
 def generate(config):
-    matadata_json = op.join(config['path'], METADATA_JSON)
-    if not op.exists(matadata_json):
+
+    if not op.exists(op.join(config['path'], METADATA_PB)):
         return
 
     try:
@@ -57,12 +57,12 @@ def generate(config):
         tests_summary = json.load(open(tests_summary_filepath))
 
     summary = {
-        'success': len(data.get(METADATA_JSON, {}).get('success', [])),
-        'error': len(data.get(METADATA_JSON, {}).get('error', [])),
-        'failure': len(data.get(METADATA_JSON, {}).get('failure', [])),
-        'fixed': len(data.get(METADATA_JSON, {}).get('fixed', []))
+        'success': len(data.get(METADATA_PB, {}).get('success', [])),
+        'error': len(data.get(METADATA_PB, {}).get('error', [])),
+        'failure': len(data.get(METADATA_PB, {}).get('failure', [])),
+        'fixed': len(data.get(METADATA_PB, {}).get('fixed', []))
     }
-    tests_summary.update({METADATA_JSON: summary})
+    tests_summary.update({METADATA_PB: summary})
     json.dump(tests_summary, open(tests_summary_filepath, 'w'))
 
     new_data = []

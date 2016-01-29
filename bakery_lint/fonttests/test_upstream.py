@@ -14,14 +14,13 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 import glob
 import os
 import re
 import yaml
-
 from fontaine.font import FontFactory
 from fontaine.cmap import Library
-
 from bakery_cli.ttfont import PiFont
 from bakery_cli.utils import UpstreamDirectory
 from bakery_lint.base import BakeryTestCase as TestCase, tags, \
@@ -179,10 +178,10 @@ class TestUpstreamRepo(TestCase):
                              'of upstream repository'))
 
     @tags('note')
-    def test_metadata_json_exists(self):
-        """ Repository contains METADATA.json file? """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'METADATA.json')),
-                        msg=('File `METADATA.json` does not exist in root '
+    def test_metadata_pb_exists(self):
+        """ Repository contains METADATA.pb file? """
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'METADATA.pb')),
+                        msg=('File `METADATA.pb` does not exist in root '
                              'of upstream repository'))
 
     def test_copyright_notices_same_across_family(self):

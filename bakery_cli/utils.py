@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
 
+from __future__ import print_function
 import sys
 import defusedxml.lxml
 import os as os_origin
@@ -23,7 +23,6 @@ import shutil as shutil_origin
 import os.path as op
 import re
 import subprocess
-
 from bakery_cli.logger import logger
 
 
@@ -77,7 +76,7 @@ class UpstreamDirectory(object):
     >>> upstream.BIN
     ['Font-SemiBold.ttf']
     >>> upstream.METADATA
-    ['METADATA.json']
+    ['METADATA.pb']
     >>> sorted(upstream.LICENSE)
     ['APACHE.txt', 'LICENSE.txt']
     >>> upstream.SFD
@@ -136,7 +135,7 @@ class UpstreamDirectory(object):
                         continue
                     self.TTX.append(fullpath[l:].strip('/'))
 
-                if op.basename(f).lower() == 'metadata.json':
+                if op.basename(f).lower() == 'metadata.pb':
                     self.METADATA.append(fullpath[l:].strip('/'))
 
                 if f[-4:].lower() in ['.ttf', '.otf']:
@@ -181,7 +180,7 @@ def get_data_directory():
         d = op.join(os.environ["FONTBAKERY_DATA_DIRNAME"],
                     FONTBAKERY_DATA_DIRNAME)
     except KeyError:
-        #Linux and Mac code:
+        #GNU/Linux and Mac code:
         d = op.join(op.expanduser("~"),
                     ".local", "share", FONTBAKERY_DATA_DIRNAME)
     if not op.exists(d):

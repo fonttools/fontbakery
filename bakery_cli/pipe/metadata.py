@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+
 from bakery_cli.scripts import genmetadata
 
 
@@ -25,7 +26,7 @@ class Metadata(object):
         self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        self.bakery.logging_task('Generate METADATA.json (fontbakery-build-metadata.py)')
+        self.bakery.logging_task('Generate METADATA.pb (fontbakery-build-metadata.py)')
         if self.bakery.forcerun:
             return
 
