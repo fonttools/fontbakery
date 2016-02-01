@@ -114,7 +114,7 @@ class VersionFixer(Fixer):
 
         #preserve the ammount of zeroes:
         minor = (minor_digits-1)*'0' + str(minor)
-        
+
         if head_table: #version is represented only by a float value
             return float("{}.{}".format(major, minor))
         else: #name table: version format is "Version X.Y[; optional additional info]"
@@ -134,6 +134,33 @@ class VersionFixer(Fixer):
             self.font.tables["CFF "].cff.major += major_inc
             self.font.tables["CFF "].cff.minor += minor_inc
 
+    def get_version_fields(self, cur_version, new_version, head_table=False):
+        v = self.parse_version_string(cur_version)
+        if v is None:
+            return cur_version
+
+        suffix = v[2]
+        if head_table: #version is represented only by a float value
+            print ("new_version is: {}".format(new_version))
+            return float(new_version)
+        else: #name table: version format is "Version X.Y[; optional additional info]"
+            return "Version {};{}".format(new_version, suffix)
+
+    def set_new_version(self, new_value):
+        self.font['head'].fontRevision = self.get_version_fields(str(self.font['head'].fontRevision), new_value, head_table=True)
+
+        for name in self.font['name'].names:
+            if name.nameID == 5:
+                encoding = name.getEncoding()
+                s = name.string.decode(encoding)
+                s = self.get_version_fields(s, new_value)
+                name.string = s.encode(encoding)
+
+        if 'CFF ' in self.font:
+            major, minor = new_value.split('.')
+            self.font.tables["CFF "].cff.major = int(major)
+            self.font.tables["CFF "].cff.minor = int(minor)
+
     def fix(self, options):
 
         if options.increment_major:
@@ -141,6 +168,9 @@ class VersionFixer(Fixer):
 
         if options.increment_minor:
             self.increment_version_fields(0, 1)
+
+        if options.set:
+            self.set_new_version(options.set[0])
 
         #we always print the end-result of out operation:
         print("head.fontRevision: {}".format(self.font['head'].fontRevision))
