@@ -28,6 +28,7 @@ if __name__ == '__main__':
                         help="Font whose version entries will be read and fixed")
     parser.add_argument('--increment-major', action='store_true', help='Increment version major values')
     parser.add_argument('--increment-minor', action='store_true', help='Increment version minor values')
+    parser.add_argument('--set', nargs=1, help='Set version values')
 
     options = parser.parse_args()
 
