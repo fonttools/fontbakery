@@ -210,3 +210,11 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    ```
 
 5. After each build by Travis you can see a report at <http://yourGithubUsername.github.io/yourRepo>
+
+### `bakery.yaml` files
+
+These files control the bake process. 
+
+Create them with the setup tool, eg `fontbakery-setup.py .`
+
+* `notes` can store notes on the build, and are shown in the web ui.
