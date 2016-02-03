@@ -116,6 +116,12 @@ if __name__ == '__main__':
             if subset != "menu" and subset not in webfontsItem['subsets']:
                 print('ER: "{}" lacks subset "{}" in API'.format(family, subset), file=sys.stderr)
 
+        if metadata.category.lower() != webfontsItem['category']:
+            print('ER: "{}" category "{}" in git does not match category "{}" in API'.format(family, metadata.category, webfontsItem['category']))
+        else:
+            if argv.verbose:
+                print('OK: "{}" category "{}" in sync'.format(family, metadata.category))
+
 
         for variant in webfontVariants:
             try:
