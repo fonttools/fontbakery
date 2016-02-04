@@ -11,8 +11,8 @@ The project achieves this by developing tools for use 'at the coalface,' that sa
 This set of command-line programs should reflect some [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
 
 * Do one thing and do it well, 
-* that work together, and
-* that work in similar/uniform way.
+* work together, and
+* work in similar/uniform way.
 
 They are simple, on the level of shell scripting done with in Python in order to access font internals via fonttools, rather than a large object oriented application.
 
