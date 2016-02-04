@@ -49,24 +49,4 @@ if __name__ == '__main__':
             continue
 
         suite = get_suite(x, apply_autofix=args.autofix)
-
-        result = run_suite(suite)
-        failures = [(testklass._testMethodName, testklass._err_msg)
-                     for testklass in result.get('failure', [])]
-        error = [(testklass._testMethodName, testklass._err_msg)
-                  for testklass in result.get('error', [])]
-        success = [(testklass._testMethodName, 'OK')
-                    for testklass in result.get('success', [])]
-
-        if not bool(failures + error):
-            if args.verbose:
-                for testmethod, dummyvar in success:
-                    print('OK: {}'.format(testmethod))
-        else:
-            for testmethod, errormessage in error:
-                print('ER: {}: {}'.format(testmethod, errormessage))
-            if args.verbose:
-                for testmethod, dummyvar in success:
-                    print('OK: {}'.format(testmethod))
-            for testmethod, errormessage in failures:
-                print('FAIL: {}: {}'.format(testmethod, errormessage))
+        run_suite(suite)

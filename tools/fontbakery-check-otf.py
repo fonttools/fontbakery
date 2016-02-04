@@ -43,27 +43,5 @@ if __name__ == '__main__':
         if not x.lower().endswith('.otf'):
             print('ER: {} is not OTF'.format(x), file=sys.stderr)
             continue
-        failures = []
-        success = []
-        error = []
 
-        result = run_set('upstream', test)
-        failures += [(testklass._testMethodName, testklass._err_msg)
-                     for testklass in result.get('failure', [])]
-        error += [(testklass._testMethodName, testklass._err_msg)
-                  for testklass in result.get('error', [])]
-        success += [(testklass._testMethodName, 'OK')
-                    for testklass in result.get('success', [])]
-
-        if not bool(failures + error):
-            if args.verbose:
-                for testmethod, dummyvar in success:
-                    print('OK: {}'.format(testmethod))
-        else:
-            for testmethod, errormessage in error:
-                print('ER: {}: {}'.format(testmethod, errormessage))
-            if args.verbose:
-                for testmethod, dummyvar in success:
-                    print('OK: {}'.format(testmethod))
-            for testmethod, errormessage in failures:
-                print('FAIL: {}: {}'.format(testmethod, errormessage))
+        run_set('upstream', test)
