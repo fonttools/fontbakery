@@ -26,6 +26,8 @@ In addition to our own checks, this will check the TTFs with other projects such
 
 #### 1.2 checking TTFs as a family
 
+Some checks must be done by comparing all 1 to 18 font files in a family in order to conclude that their data is correct.
+
 #### 1.3 hot-fixing TTFs
 
 Many common issues can be hot-fixed using fontTools.
