@@ -26,7 +26,7 @@ A suite of small command-line tools is preferable to a large object oriented app
 The tools are individually simple, on the level of shell scripting, and written in Python. 
 The use of Python allows direct access to internal font tables using the fonttools package, already popular with the professional font development community. 
 
-We hope that these tool will be useful for font developers who are contributing to the Google Fonts collection, and can avoid them individually duplicating their own technical QA solutions. 
+We hope that these tools will be useful for font developers who are contributing to the Google Fonts collection, and can avoid them individually duplicating their own technical QA solutions.
 Existing font checking tools from other projects and companies are integrated to avoid duplication. 
 We also aim to avoid development distractions. 
 For example, to access internet resources we use [GNU wget](https://en.wikipedia.org/wiki/Wget) and other common utilities.
