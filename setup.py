@@ -132,20 +132,19 @@ setup(
 
 
 # check for ttfautohint
-msg = ('Command line tool `ttfautohint` is recommended. Install it with'
-        ' `apt-get install ttfautohint` or `brew install ttfautohint`')
+found_ttfautohint = False
 for p in os.environ.get('PATH').split(':'):
-       os.path.join(p, 'ttfautohint')
-       if os.path.exists(os.path.join(p, 'ttfautohint')):
-         continue
-       else:
-         print(msg)
+    if os.path.exists(os.path.join(p, 'ttfautohint')):
+        found_ttfautohint = True
+
+if not found_ttfautohint:
+    print ('WARNING: Command line tool `ttfautohint` is recommended. Install it with'
+           ' `apt-get install ttfautohint` or `brew install ttfautohint`')
 
 # check for python fontforge module
-msg = ('Python module `fontforge` is recommended. Install it with'
-       ' `apt-get install python-fontforge`'
-       ' or `brew install python; brew install fontforge --HEAD`')
 try:
     import fontforge
 except ImportError:
-    print(msg)
+    print('WARNING: Python module `fontforge` is recommended. Install it with'
+          ' `apt-get install python-fontforge`'
+          ' or `brew install python; brew install fontforge --HEAD`')
