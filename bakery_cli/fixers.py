@@ -659,13 +659,13 @@ class GaspFixer(Fixer):
         SCRIPTPATH = 'fontbakery-fix-gasp.py'
         return "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, self.fontpath)
 
-    def fix(self, path, value=15):
+    def fix(self, value=15):
         try:
             table = self.font.get('gasp')
             table.gaspRange[65535] = value
             return True
         except:
-            logger.error('ER: {}: no table gasp'.format(path))
+            logger.error('ER: {}: no table gasp'.format(self.fontpath))
             return
 
     def show(self, path):
