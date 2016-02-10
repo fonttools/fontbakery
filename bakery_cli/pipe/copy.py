@@ -95,7 +95,7 @@ class Copy(Pipe):
 
     def copy_helper_files(self, pipedata):
         pipechain = [CopyMetadata, CopyLicense, CopyDescription, CopyFontLog,
-                     CopyTxtFiles, CopyCopyright]
+                     CopyTxtFiles, CopyCopyright, CopyBakeryYaml, CopyBakeryYml]
 
         for klass in pipechain:
             k = klass(self.bakery)
@@ -234,3 +234,14 @@ class CopyFontLog(Pipe):
 class CopyMetadata(Pipe):
 
     filename = 'METADATA.pb'
+
+
+class CopyBakeryYaml(Pipe):
+
+    filename = 'bakery.yaml'
+
+
+class CopyBakeryYml(Pipe):
+
+    filename = 'bakery.yml'
+
