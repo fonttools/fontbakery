@@ -34,6 +34,6 @@ if __name__ == '__main__':
 
     for path in args.ttf_font:
         if args.set is not None:
-            GaspFixer(None, path).apply(path, args.set)
+            GaspFixer(None, path).apply(args.set)
         else:
             GaspFixer(None, path).show(path)
