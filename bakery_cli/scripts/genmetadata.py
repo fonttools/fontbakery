@@ -317,7 +317,7 @@ def fontToolsGetDesignerName(ftfont):
 
 def fontToolsGetDesc(ftfont):
     NAMEID_DESC = 10
-    fontDesc = False
+    fontDesc = ""
     for record in ftfont['name'].names:
         if record.nameID == NAMEID_DESC:
             fontDesc = record.toUnicode()
