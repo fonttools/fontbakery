@@ -42,7 +42,7 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
     };
 
     var getBuildInfo = function(scope) {
-        $http.get('https://api.travis-ci.org/repos/fontdirectory/' + scope.build.repoName, {headers: { 'Accept': 'application/vnd.travis-ci.2+json' }, nointercept: true}).then(function(dataResponse) {
+        $http.get('https://api.travis-ci.org/repos/' + scope.build.repoPath, {headers: { 'Accept': 'application/vnd.travis-ci.2+json' }, nointercept: true}).then(function(dataResponse) {
             //dataResponse.data.repo has attrs
             // description: null
             // github_language: null
@@ -54,7 +54,7 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
             // last_build_number: "11"
             // last_build_started_at: "2014-10-06T12:50:21Z"
             // last_build_state: "passed"
-            // slug: "fontdirectory/arimo"
+            // slug: "felipesanches/CoinyTests" (originally the example was "fontdirectory/arimo")
             scope.build['buildDateOrig'] = dataResponse.data.repo.last_build_finished_at;
             scope.build['buildStatus'] = dataResponse.data.repo.last_build_state;
             scope.build['buildIsResolved'] = true;
@@ -69,7 +69,7 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
     };
 
     var getTestsInfo = function(scope) {
-        $http.get('https://rawgit.com/fontdirectory/' + scope.build.repoName + '/gh-pages/summary.tests.json', {nointercept: true}).then(function(dataResponse) {
+        $http.get('https://rawgit.com/' + scope.build.repoPath + '/gh-pages/summary.tests.json', {nointercept: true}).then(function(dataResponse) {
             var tests_data = dataResponse.data,
                 totalTests = 0,
                 successTests = 0,
@@ -148,10 +148,10 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
 
                             info['repoPath'] = item.path;
                             info['repoName'] = path;
-                            info['repoLink'] = 'https://github.com/fontdirectory/' + path;
-                            info['travisLink'] = 'http://travis-ci.org/fontdirectory/' + path;
-                            info['travisImg'] = 'https://travis-ci.org/fontdirectory/' + path + '.svg';
-                            info['reportLink'] = 'http://googlefonts.github.io/fontbakery/#/fontdirectory/' + path;
+                            info['repoLink'] = 'https://github.com/' + item.path;
+                            info['travisLink'] = 'http://travis-ci.org/' + item.path;
+                            info['travisImg'] = 'https://travis-ci.org/' + item.path + '.svg';
+                            info['reportLink'] = 'http://googlefonts.github.io/fontbakery/#/' + item.path;
                             info['getBuildInfoCallback'] = getBuildInfo;
                             info['getTestsInfoCallback'] = getTestsInfo;
                             data.push(info);

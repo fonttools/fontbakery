@@ -74,13 +74,15 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
         var loc_path = $location.path(),
             hash_tag= '#';
         if (loc_path == '/') {
-            $window.location.href = [hash_tag, 'fontdirectory', $item.submodule].join('/');
+            alert('refactor this horror! item.submodule=', item.submodule);
+            //$window.location.href = [hash_tag, 'fontdirectory', $item.submodule].join('/');
         } else {
             var parts = loc_path.split('/');
             parts[0] = hash_tag;
             parts[1] = 'fontdirectory';
             parts[2] = $item.submodule;
-            $window.location.href = parts.join('/');
+            alert('this really needs to be refactored: item.submodule=', item.submodule);
+            //$window.location.href = parts.join('/');
         }
 //        $route.reload();
         $window.location.reload();
