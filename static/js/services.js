@@ -226,6 +226,7 @@ angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appCon
     };
 
     this.getRepos = function() {
+        alert("Deprecation Error: This seems to be a request to fetch data from a deprecated repository.\n", appConfig.git_modules_url);
         return $http.get(appConfig.git_modules_url);
     };
 
@@ -241,12 +242,15 @@ angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appCon
 
 angular.module('myApp').service('reposApi', ['$http', '$q', 'appConfig', function($http, $q, appConfig) {
     this.getRepos = function() {
+        alert("Deprecation Error [getRepos]: This seems to be a request to fetch data from a deprecated repository.\n", appConfig.git_modules_url);
         return $http.get(appConfig.git_modules_url);
     };
 
     this.getCollection = function(access_token) {
         // https://api.github.com/repos/fontdirectory/collection/git/trees/HEAD?access_token=00b736654b0b607a630d457f9ab89acc7293f61b&recursive=1
-        return $http.get('https://api.github.com/repos/librefonts/collection/git/trees/HEAD', {params: {'access_token': access_token, 'recursive': 1} })
+        var url = 'https://api.github.com/repos/librefonts/collection/git/trees/HEAD';
+        alert("Deprecation Error [getCollection]: This seems to be a request to fetch data from a deprecated repository.\n", url);
+        return $http.get(url, {params: {'access_token': access_token, 'recursive': 1} })
     };
 }]);
 
