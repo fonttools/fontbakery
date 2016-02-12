@@ -10,7 +10,7 @@ var myApp = angular.module(
 myApp.constant("appConfig", {
     base_url: '//rawgit.com',
     base_url_no_cdn: '//rawgit.com',
-    git_modules_url: '//rawgit.com/fontdirectory/collection/master/gitmodules.json',
+    git_modules_url: '//rawgit.com/librefonts/collection/master/gitmodules.json',
     data_dir: 'data',
     pages_dir: 'pages',
 
