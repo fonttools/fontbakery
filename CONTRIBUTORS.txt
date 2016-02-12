@@ -24,3 +24,4 @@
 Dave Crossland <dcrossland@google.com>
 Vitaly Volkov <hash.3g@gmail.com>
 Andriyko Hrytskiv <ahrytskiv@gmail.com>
+Felipe Correa da Silva Sanches <juca@members.fsf.org>
