@@ -54,7 +54,7 @@ angular.module('myApp').controller('reposController', ['$scope', '$rootScope', '
             // last_build_number: "11"
             // last_build_started_at: "2014-10-06T12:50:21Z"
             // last_build_state: "passed"
-            // slug: "felipesanches/CoinyTests" (originally the example was "fontdirectory/arimo")
+            // slug: "felipesanches/CoinyTests" // or "librefonts/arimo" (Originally this example was "fontdirectory/arimo")
             scope.build['buildDateOrig'] = dataResponse.data.repo.last_build_finished_at;
             scope.build['buildStatus'] = dataResponse.data.repo.last_build_state;
             scope.build['buildIsResolved'] = true;
