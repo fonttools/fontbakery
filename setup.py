@@ -50,12 +50,12 @@ if not libmagic or not libmagic._name:
 from setuptools import setup
 setup(
     name="fontbakery",
-    version='0.0.13',
+    version='0.0.14',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools for building'
                 ' and testing font projects',
-    author='Vitaly Volkov',
-    author_email='hash3g@gmail.com',
+    author='Font Bakery Authors',
+    author_email='dave@lab6.com',
     packages=["bakery_cli",
               "bakery_cli.pipe",
               "bakery_cli.scripts",
