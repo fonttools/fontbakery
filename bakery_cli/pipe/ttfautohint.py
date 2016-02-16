@@ -73,8 +73,8 @@ class TTFAutoHint(object):
         For each ttf file in result src folder, outputting them in
         the _out root, or just copy the ttfs there.
         """
-        # $ ttfautohint -l 7 -r 28 -G 0 -x 13 -w "" \
-        #               -W -c original_font.ttf final_font.ttf
+        # $ ttfautohint -l 7 -r 28 -G 50 -x 13 -w "G" \
+        #               -I original_font.ttf final_font.ttf
         params = pipedata.get('ttfautohint', '')
         if not params:
             return pipedata
