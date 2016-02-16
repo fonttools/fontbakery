@@ -8,15 +8,16 @@ This document sets out the product's requirements and design principles, what de
 
 ## 1. Purpose
 
-The primary purpose of the project is to accelerate the on-boarding of new font families into the Google Fonts library. 
+The primary purpose of the project is to accelerate the on-boarding of font families into the Google Fonts library, both new families and updates to exisiting ones. 
 
 To achieve this we develop tools to sanity-check and fix the files that comprise a single Google Fonts family: TTF fonts, an API metadata file, and a description file. 
 
 These tools are used by @davelab6 to onboard both new families and updates to existing families. 
 By making them available to all type designers and font engineers, we hope to empower everyone to get their font projects into a complete and tested state and ready to onboard into Google Fonts. 
-The tools are command-line based to allow work on various platforms in a consistent and reproducible way.
+The tools will act as an educational resource for type designers to learn about technical quality issues, because if font designers do the right early on that reduces the amount of work at project delivery time. 
 
-This set of command-line programs reflect the [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
+The tools are command-line based to allow work on various platforms in a consistent and reproducible way.
+They reflect the [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
 
 * Do one thing and do it well, 
 * work together, and
@@ -26,9 +27,9 @@ A suite of small command-line tools is preferable to a large object oriented app
 The tools are individually simple, on the level of shell scripting, and written in Python. 
 The use of Python allows direct access to internal font tables using the fonttools package, already popular with the professional font development community. 
 
-We hope that these tools will be useful for font developers who are contributing to the Google Fonts collection, and can avoid them individually duplicating their own technical QA solutions.
 Existing font checking tools from other projects and companies are integrated to avoid duplication. 
-We also aim to avoid development distractions. 
+
+While developing font bakery, we aim to avoid development distractions. 
 For example, to access internet resources we use [GNU wget](https://en.wikipedia.org/wiki/Wget) and other common utilities.
 
 #### 1.1 terminology
@@ -118,7 +119,13 @@ The ultimate aim is a single master check script that all families pass.
 
 #### 3.2 Web dashboard
 
-In order to develop the collection to the point all families and fonts pass all tests, we will develop a web dashboard that shows their progress against this goal.
+In order to develop the collection to the point all families and fonts pass all tests, we will develop a web dashboard that shows their progress against this goal. 
+It will allow a set of upcoming projects to measure their quality, and a 'burn down' chart towards their launch in the directory. 
+
+A live report about the quality of a font project will encourage test-driven-development for fonts. 
+Contracts can specify that projects must pass to be considered complete.
+
+The dashboard will integrate with the Github Issues API, to make it convenient to create and track issues based on our reports.
 
 ## 4. Source Management
 
