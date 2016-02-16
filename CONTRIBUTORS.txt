@@ -32,3 +32,4 @@ Mikhail Kashkin <mkashkin@gmail.com>
 Raph Levien <raph.levien@gmail.com>
 Robert Martinez <mail@robertmartinez.de>
 Vitaly Volkov <hash.3g@gmail.com>
+Felipe Sanches <felipe.sanches@gmail.com>
