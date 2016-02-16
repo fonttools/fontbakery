@@ -26,7 +26,7 @@ from fontaine.font import FontFactory
 from bakery_cli.scripts.vmet import get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 from bakery_cli.report import utils as report_utils
-
+from bakery_cli.fonts_public_pb2 import FamilyProto
 
 TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
