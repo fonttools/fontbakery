@@ -21,6 +21,7 @@ import os.path as op
 from markdown import markdown
 from bakery_cli.report import utils as report_utils
 from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.fonts_public_pb2 import FamilyProto
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
 
