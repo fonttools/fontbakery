@@ -23,13 +23,6 @@ import os.path as op
 import sys
 import yaml
 
-try:
-    import git
-    from git import Repo
-    GITPYTHON_INSTALLED = True
-except ImportError:
-    GITPYTHON_INSTALLED = False
-
 from bakery_cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 from bakery_cli.logger import logger
 from bakery_cli.utils import UpstreamDirectory, ttfautohint_installed
@@ -77,14 +70,7 @@ def run_bakery(path, verbose=False):
         config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
     try:
-        builddir = 'build'
-        if GITPYTHON_INSTALLED:
-            try:
-                repo = Repo(sourcedir)
-                builddir = repo.git.rev_parse('HEAD', short=True)
-            except git.exc.InvalidGitRepositoryError:
-                pass
-        builddir = os.environ.get('TRAVIS_COMMIT', builddir)
+        builddir = os.environ.get('TRAVIS_COMMIT', 'build')
 
         if 'process_files' not in config:
             directory = UpstreamDirectory(sourcedir)
