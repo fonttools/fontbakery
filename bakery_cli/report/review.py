@@ -24,7 +24,7 @@ from bakery_cli.utils import UpstreamDirectory
 from bakery_cli.fonts_public_pb2 import FamilyProto
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
-
+from google.protobuf import text_format
 
 TAB = 'Review'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
