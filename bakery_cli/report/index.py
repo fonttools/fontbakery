@@ -230,8 +230,9 @@ def get_stem_info(fontfile, glyph='n'):
 
 def get_FamilyProto_Message(path):
     metadata = FamilyProto()
-    text_data = open(path, "rb").read()
-    text_format.Merge(text_data, metadata)
+    if os.exists(path):
+        text_data = open(path, "rb").read()
+        text_format.Merge(text_data, metadata)
     return metadata
 
 
@@ -242,9 +243,6 @@ def generate(config):
     directory = UpstreamDirectory(config['path'])
  
     metadata_file_path = op.join(config['path'], 'METADATA.pb')
-    if op.exists(metadata_file_path):
-        metadata_file_path += ".new"
-
     family_metadata = get_FamilyProto_Message(metadata_file_path)
     faces = []
     for f in family_metadata.fonts:
