@@ -16,8 +16,8 @@ myApp.constant("appConfig", {
 
     app: 'build_info.json',
     repo: 'repo.json',
-    metadata: 'METADATA.json',
-    metadata_new: 'METADATA.new.json',
+    metadata: 'METADATA.pb',
+    metadata_new: 'METADATA.new.pb',
 
     statusMap: {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'},
     resultMap: {'success': 'success', 'failure': 'danger', 'error': 'warning', 'fixed': 'info'},

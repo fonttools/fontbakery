@@ -109,6 +109,46 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
         return ['https://travis-ci.org',  $scope.repo_current.owner, $scope.repo_current.name + '.svg'].join('/');
     };
 
+    /* This parses a text_format Protocol Buffer
+       message containing Font Family metadata */
+    function parse_FamilyProto_Message(data) {
+        var message = {};
+        message.fonts = Array();
+        var font_message = null;
+        var lines = data.split('\n');
+        for (l in lines) {
+            var line = lines[l];
+            try {
+                var pair = line.split(':');
+                var key = pair[0].strip();
+                var value;
+                if (pair[1].indexOf('"') >= 0) {
+                    value = pair[1].split('"')[1];
+                } else {
+                    value = int(pair[1]);
+                }
+
+                if (font_message == null){
+                    message[key] = value;
+                } else {
+                    font_message[key] = value;
+                }
+            }
+            catch (e) {
+                if (line.indexOf('font {') >= 0) {
+                    font_message = {};
+                }
+
+                if (line.indexOf('}') >= 0) {
+                    message.fonts.push(font_message);
+                    font_message = null;
+                }
+            }
+        }
+
+        return message;
+    }
+
     $scope.mainInit = function() {
         appApi.getRepos().then(function(dataResponse) {
             $scope.repos_list = dataResponse.data;
@@ -138,13 +178,13 @@ angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$
 
                         appApi.getMetadataNew().then(
                             function(dataResponse) {
-                                $rootScope.metadata = dataResponse.data;
+                                $rootScope.metadata = parse_FamilyProto_Message(dataResponse.data);
                                 $rootScope.repo_selected.name = $rootScope.metadata.name;
                                 $scope.getMainFont();
                             },
                             function(error) {
                                 appApi.getMetadata().then(function(dataResponse) {
-                                    $rootScope.metadata = dataResponse.data;
+                                    $rootScope.metadata = parse_FamilyProto_Message(dataResponse.data);
                                     $rootScope.repo_selected.name = $rootScope.metadata.name;
                                     $scope.getMainFont();
                                 });

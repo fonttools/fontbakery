@@ -226,7 +226,6 @@ angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appCon
     };
 
     this.getRepos = function() {
-        alert("Deprecation Error: This seems to be a request to fetch data from a deprecated repository.\n", appConfig.git_modules_url);
         return $http.get(appConfig.git_modules_url);
     };
 
