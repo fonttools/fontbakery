@@ -230,7 +230,7 @@ def get_stem_info(fontfile, glyph='n'):
 
 def get_FamilyProto_Message(path):
     metadata = FamilyProto()
-    if os.exists(path):
+    if op.exists(path):
         text_data = open(path, "rb").read()
         text_format.Merge(text_data, metadata)
     return metadata
