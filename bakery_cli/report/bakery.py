@@ -24,7 +24,9 @@ TAB = 'Bakery'
 
 
 def generate(config):
-    if not op.exists(op.join(config['path'], 'bakery.yaml')):
+    filename = op.join(config['path'], 'bakery.yaml')
+    if not op.exists(filename):
+        print("WARNING: File '{}' not found!".format(filename))
         return
 
     report_app = report_utils.BuildInfo(config)
