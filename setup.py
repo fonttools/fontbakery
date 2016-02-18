@@ -42,9 +42,17 @@ if not libmagic or not libmagic._name:
         except OSError:
             pass
 
+msg = """Failed to find libmagic. Please install it, such as with
+
+    brew install libmagic;
+
+or
+
+    apt-get install libmagic;
+"""
 if not libmagic or not libmagic._name:
     # It is better to raise an ImportError since we are importing magic module
-    raise ImportError('failed to find libmagic.  Check your installation')
+    raise ImportError(msg)
 
 # now installation can begin!
 from setuptools import setup
@@ -124,7 +132,9 @@ setup(
         'GitPython==0.3.2.RC1',
         'defusedxml',
         'unidecode',
-        'tabulate'
+        'tabulate',
+        'pyasn1',
+        'protobuf'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     test_suite='nose.collector'
