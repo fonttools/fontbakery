@@ -27,7 +27,7 @@ A suite of small command-line tools is preferable to a large object oriented app
 The tools are individually simple, on the level of shell scripting, and written in Python. 
 The use of Python allows direct access to internal font tables using the fonttools package, already popular with the professional font development community. 
 
-Existing font checking tools from other projects and companies are integrated to avoid duplication. 
+Existing font checking tools from other projects and companies are integrated to avoid duplication, such as Apple's `ftxvalidator` tool and Microsoft's Font Validator.
 
 While developing font bakery, we aim to avoid development distractions. 
 For example, to access internet resources we use [GNU wget](https://en.wikipedia.org/wiki/Wget) and other common utilities.
