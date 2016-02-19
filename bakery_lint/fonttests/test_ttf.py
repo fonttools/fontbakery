@@ -402,20 +402,25 @@ class TTFTestCase(TestCase):
         for entry in font.names:
             if entry.nameID != 1:
                 continue
+            familyname = entry
             for entry2 in font.names:
                 if entry2.nameID != 4:
                     continue
-                if (entry.platformID == entry2.platformID
-                        and entry.platEncID == entry2.platEncID
-                        and entry.langID == entry2.langID):
+                fullfontname = entry2
 
-                    entry2value = Font.bin2unistring(entry2)
-                    entryvalue = Font.bin2unistring(entry)
-                    if not entry2value.startswith(entryvalue):
-                        _ = ('Full font name does not begin with family'
+                #FIX-ME: I think we should still compare entries
+                # even if they have different encodings
+                if (familyname.platformID == fullfontname.platformID
+                        and familyname.platEncID == fullfontname.platEncID
+                        and familyname.langID == fullfontname.langID):
+
+                    fullfontname_str = Font.bin2unistring(fullfontname)
+                    familyname_str = Font.bin2unistring(familyname)
+                    if not familyname_str.startswith(fullfontname_str):
+                        _ = ('Font family name does not begin with full font'
                              ' name: FontFamilyName = "%s";'
                              ' FullFontName = "%s"')
-                        self.fail(_ % (entryvalue, entry2value))
+                        self.fail(_ % (familyname_str, fullfontname_str))
 
     def test_check_glyf_table_length(self):
         """ Check if there is unused data at the end of the glyf table """
