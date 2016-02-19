@@ -338,7 +338,7 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
     def test_name_id_apache_license(self):
-        """ Is there Apache in nameId (13) ? """
+        """ Is the Apache License declared in name ID 13 ? """
         fixer = ReplaceApacheLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -355,7 +355,7 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
     def test_name_id_apache_license_url(self):
-        """ Is there OFL in nameId (13) ? """
+        """ Is the Apache License URL in name ID 14 ? """
         fixer = ReplaceApacheLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
