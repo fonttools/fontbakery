@@ -224,9 +224,10 @@ class TTFTestCase(TestCase):
                    if self.containsSubstr(f, 'opyright') and f.nameID == 10]
         self.assertFalse(bool(records))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseWithShortLine')
-    def test_name_id_of_license(self):
-        """ Is there OFL in nameId (13) ? """
+    def test_name_id_ofl_license(self):
+        """ Is the Open Font License declared in name ID 13 ? """
         fixer = ReplaceOFLLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -257,8 +258,9 @@ class TTFTestCase(TestCase):
             self.fail("GASP does not have 65535 gaspRange")
 
         # XXX: Needs review
-        if font['gasp'].gaspRange[65535] != 15:
-            self.fail('gaspRange[65535] value is not 15')
+        value = font['gasp'].gaspRange[65535]
+        if value != 15:
+            self.fail('gaspRange[65535] value ({}) is not 15'.format(value))
 
     def test_gpos_table_has_kerning_info(self):
         """ GPOS table has kerning information """
@@ -316,9 +318,10 @@ class TTFTestCase(TestCase):
                 _ += ' but ends with "{2}"'
             self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseURL')
-    def test_name_id_of_license_url(self):
-        """ Is there OFL in nameId (13) ? """
+    def test_name_id_ofl_license_url(self):
+        """ Is the Open Font License URL in name ID 14 ? """
         fixer = ReplaceOFLLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
@@ -335,9 +338,10 @@ class TTFTestCase(TestCase):
 
         self.assertFalse(isLicense and bool(fixer.validate()))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
     def test_name_id_apache_license(self):
-        """ Is there Apache in nameId (13) ? """
+        """ Is the Apache License declared in name ID 13 ? """
         fixer = ReplaceApacheLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -352,9 +356,10 @@ class TTFTestCase(TestCase):
                     self.fail('License file LICENSE.txt exists but NameID'
                               ' value is not specified for that.')
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
     def test_name_id_apache_license_url(self):
-        """ Is there OFL in nameId (13) ? """
+        """ Is the Apache License URL in name ID 14 ? """
         fixer = ReplaceApacheLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
@@ -402,20 +407,25 @@ class TTFTestCase(TestCase):
         for entry in font.names:
             if entry.nameID != 1:
                 continue
+            familyname = entry
             for entry2 in font.names:
                 if entry2.nameID != 4:
                     continue
-                if (entry.platformID == entry2.platformID
-                        and entry.platEncID == entry2.platEncID
-                        and entry.langID == entry2.langID):
+                fullfontname = entry2
 
-                    entry2value = Font.bin2unistring(entry2)
-                    entryvalue = Font.bin2unistring(entry)
-                    if not entry2value.startswith(entryvalue):
-                        _ = ('Full font name does not begin with family'
+                #FIX-ME: I think we should still compare entries
+                # even if they have different encodings
+                if (familyname.platformID == fullfontname.platformID
+                        and familyname.platEncID == fullfontname.platEncID
+                        and familyname.langID == fullfontname.langID):
+
+                    fullfontname_str = Font.bin2unistring(fullfontname)
+                    familyname_str = Font.bin2unistring(familyname)
+                    if not familyname_str.startswith(fullfontname_str):
+                        _ = ('Font family name does not begin with full font'
                              ' name: FontFamilyName = "%s";'
                              ' FullFontName = "%s"')
-                        self.fail(_ % (entryvalue, entry2value))
+                        self.fail(_ % (familyname_str, fullfontname_str))
 
     def test_check_glyf_table_length(self):
         """ Check if there is unused data at the end of the glyf table """
@@ -549,16 +559,16 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
     def test_check_nbsp_width_matches_sp_width(self):
-        """ Check non-breaking space's advancewidth is the same as space """
+        """ Check non-breaking space character (0x00A0) and tab character (0x0009) both have advancewidth equal to space character (0x0020) """
         checker = NbspAndSpaceSameWidth(self, self.operator.path)
 
         space = checker.getGlyph(0x0020)
         nbsp = checker.getGlyph(0x00A0)
         tab = checker.getGlyph(0x0009)
 
-        self.assertTrue(space, "Font does not contain a space glyph")
-        self.assertTrue(nbsp, "Font does not contain a nbsp glyph")
-        self.assertTrue(tab, "Font does not contain a tab glyph")
+        self.assertTrue(space, "Font does not contain a glyph encoded as 0x0020 (space character)")
+        self.assertTrue(nbsp, "Font does not contain a glyph encoded as 0x00A0 (nbsp character)")
+        self.assertTrue(tab, "Font does not contain a glyph encoded as 0x0009 (tab character)")
 
         spaceWidth = checker.getWidth(space)
         nbspWidth = checker.getWidth(nbsp)
