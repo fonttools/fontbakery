@@ -555,16 +555,16 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
     def test_check_nbsp_width_matches_sp_width(self):
-        """ Check non-breaking space's advancewidth is the same as space """
+        """ Check non-breaking space character (0x00A0) and tab character (0x0009) both have advancewidth equal to space character (0x0020) """
         checker = NbspAndSpaceSameWidth(self, self.operator.path)
 
         space = checker.getGlyph(0x0020)
         nbsp = checker.getGlyph(0x00A0)
         tab = checker.getGlyph(0x0009)
 
-        self.assertTrue(space, "Font does not contain a space glyph")
-        self.assertTrue(nbsp, "Font does not contain a nbsp glyph")
-        self.assertTrue(tab, "Font does not contain a tab glyph")
+        self.assertTrue(space, "Font does not contain a glyph encoded as 0x0020 (space character)")
+        self.assertTrue(nbsp, "Font does not contain a glyph encoded as 0x00A0 (nbsp character)")
+        self.assertTrue(tab, "Font does not contain a glyph encoded as 0x0009 (tab character)")
 
         spaceWidth = checker.getWidth(space)
         nbspWidth = checker.getWidth(nbsp)
