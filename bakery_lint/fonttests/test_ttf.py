@@ -257,8 +257,9 @@ class TTFTestCase(TestCase):
             self.fail("GASP does not have 65535 gaspRange")
 
         # XXX: Needs review
-        if font['gasp'].gaspRange[65535] != 15:
-            self.fail('gaspRange[65535] value is not 15')
+        value = font['gasp'].gaspRange[65535]
+        if value != 15:
+            self.fail('gaspRange[65535] value ({}) is not 15'.format(value))
 
     def test_gpos_table_has_kerning_info(self):
         """ GPOS table has kerning information """
