@@ -224,9 +224,10 @@ class TTFTestCase(TestCase):
                    if self.containsSubstr(f, 'opyright') and f.nameID == 10]
         self.assertFalse(bool(records))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseWithShortLine')
-    def test_name_id_of_license(self):
-        """ Is there OFL in nameId (13) ? """
+    def test_name_id_ofl_license(self):
+        """ Is the Open Font License declared in name ID 13 ? """
         fixer = ReplaceOFLLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -317,9 +318,10 @@ class TTFTestCase(TestCase):
                 _ += ' but ends with "{2}"'
             self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseURL')
-    def test_name_id_of_license_url(self):
-        """ Is there OFL in nameId (13) ? """
+    def test_name_id_ofl_license_url(self):
+        """ Is the Open Font License URL in name ID 14 ? """
         fixer = ReplaceOFLLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
@@ -336,6 +338,7 @@ class TTFTestCase(TestCase):
 
         self.assertFalse(isLicense and bool(fixer.validate()))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
     def test_name_id_apache_license(self):
         """ Is the Apache License declared in name ID 13 ? """
@@ -353,6 +356,7 @@ class TTFTestCase(TestCase):
                     self.fail('License file LICENSE.txt exists but NameID'
                               ' value is not specified for that.')
 
+    @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
     def test_name_id_apache_license_url(self):
         """ Is the Apache License URL in name ID 14 ? """
