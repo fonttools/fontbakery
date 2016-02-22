@@ -19,14 +19,14 @@
 # OVERVIEW
 #
 # This script calculates the visual weight and width of fonts.
-# It runs on a folder of TTFs.
+# It runs on a set of TTF files.
 #
 # For width, it just measures the width of how a particular piece of text renders.
 # For weight, it measures the darness of a piece of text.
 #
 # USAGE
 #
-# python compute_font_metrics.py --metric=width --folder="ttfs/*.ttf" --debug=True
+# python compute_font_metrics.py --metric=width --files="ttfs/*.ttf" --debug=True
 #
 # - Valid values for the metric are 'width' and 'weight'
 # - If the debug property is set to True, a server will spin up with images for visual inspection.
@@ -106,13 +106,13 @@ ENTRY_TEMPLATE = """
 
 def main():
   parser = argparse.ArgumentParser(description='Script to calculate font weights and widths')
-  parser.add_argument("-f", "--folder", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
   parser.add_argument("-m", "--metric", default="weight", help="What property to measure; either 'weight' or 'width'.")
   args = parser.parse_args()
 
   properties = []
-  fontfiles = glob.glob(args.folder)
+  fontfiles = glob.glob(args.files)
   for fontfile in fontfiles:
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
