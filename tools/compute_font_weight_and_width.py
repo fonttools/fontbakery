@@ -14,30 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+# Initially authored by Google and contributed by Filip Zembowicz.
 #
-# OVERVIEW
+# OVERVIEW + USAGE
 #
-# This script calculates the visual weight and width of fonts.
-# It runs on a folder of TTFs.
-#
-# For width, it just measures the width of how a particular piece of text renders.
-# For weight, it measures the darness of a piece of text.
-#
-# USAGE
-#
-# python compute_font_weight_and_width.py --metric=width --folder="ttfs/*.ttf" --debug=True
-#
-# - Valid values for the metric are 'width' and 'weight'
-# - If the debug property is set to True, a server will spin up with images for visual inspection.
-#   Otherwise, the values (from 0.0-1.0) will be output to the terminal.
+# python compute_font_weight_and_width.py -h
 #
 # DEPENDENCIES
 #
-# The script depends on the Python Imaging Library (PIL) <http://www.pythonware.com/products/pil/>
+# The script depends on the PIL API (Python Imaging Library)
 # If you have pip <https://pypi.python.org/pypi/pip> installed, run:
-# > sudo pip install pil
 #
+#     $ sudo pip install pillow
 
 from PIL import ImageFont
 from PIL import Image
@@ -105,11 +93,17 @@ ENTRY_TEMPLATE = """
 
 
 def main():
-  parser = argparse.ArgumentParser(description='Script to calculate font weights and widths')
-  parser.add_argument("-f", "--folder", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  description = """Calculates the visual weight and width of fonts.
+  For width, it just measures the width of how a particular piece of text renders.
+  For weight, it measures the darness of a piece of text."""
+  parser = argparse.ArgumentParser(description)
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
   parser.add_argument("-m", "--metric", default="weight", help="What property to measure; either 'weight' or 'width'.")
   args = parser.parse_args()
+
+  if len(sys.argv) <= 1:
+      parser.print_help()
+      sys.exit()
 
   properties = []
   fontfiles = glob.glob(args.folder)
