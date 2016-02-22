@@ -97,6 +97,8 @@ def main():
   For width, it just measures the width of how a particular piece of text renders.
   For weight, it measures the darness of a piece of text."""
   parser = argparse.ArgumentParser(description)
+  parser.add_argument("-r", "--regex", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  parser.add_argument("-l", "--fontlist", default=False, help="A list of paths to fonts, eg 'fonta.ttf fontb.ttf' or '`ls -1 ~/fonts/*/*/*.ttf`'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
   parser.add_argument("-m", "--metric", default="weight", help="What property to measure; either 'weight' or 'width'.")
   args = parser.parse_args()
@@ -106,7 +108,13 @@ def main():
       sys.exit()
 
   properties = []
-  fontfiles = glob.glob(args.folder)
+  if args.regex: 
+      fontfiles = glob.glob(args.regex)
+  elif args.fontlist:
+      fontfiles = args.fontlist.split()
+  else:
+      print >> sys.stderr, "No font files."
+
   for fontfile in fontfiles:
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
@@ -190,6 +198,7 @@ def is_blacklisted(filename):
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
 def get_width(fontfile):
+  print fontfile
   # Render the test text using the font onto an image.
   font = ImageFont.truetype(fontfile, FONT_SIZE)
   print font
