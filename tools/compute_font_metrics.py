@@ -14,25 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+# Initially authored by Google and contributed by Filip Zembowicz.
+# Further improved by Dave Crossland and Felipe Sanches.
 #
-# OVERVIEW
+# OVERVIEW + USAGE
 #
-# This script calculates the visual weight, width and italic angle of fonts.
-# It runs on a set of TTF files.
-#
-# For width, it just measures the width of how a particular piece of text renders.
-# For weight, it measures the darness of a piece of text.
-# For italic angle it defaults to the italicAngle property of the font or
-#  prompts the user for hand-correction of the value.
-# 
-# USAGE
-#
-# python compute_font_metrics.py --metric=width --files="ttfs/*.ttf" --debug=True
-#
-# - Valid values for the metric are 'width', 'weight' and 'angle'
-# - If the debug property is set to True, a server will spin up with images for visual inspection.
-#   Otherwise, the values (from 0.0-1.0) will be output to the terminal.
+# python compute_font_metrics.py -h
 #
 # DEPENDENCIES
 #
@@ -107,11 +94,20 @@ ENTRY_TEMPLATE = """
 
 
 def main():
-  parser = argparse.ArgumentParser(description='Script to calculate font weights and widths')
+  description = """Calculates the visual weight, width or italic angle of fonts.
+  For width, it just measures the width of how a particular piece of text renders.
+  For weight, it measures the darness of a piece of text.
+  For italic angle it defaults to the italicAngle property of the font
+   or prompts the user for hand-correction of the value."""
+  parser = argparse.ArgumentParser(description)
   parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
-  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; either 'weight' or 'width'.")
+  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; ('weight', 'width' or 'angle'.)")
   args = parser.parse_args()
+
+  if len(sys.argv) <= 1:
+    parser.print_help()
+    sys.exit()
 
   properties = []
   fontfiles = glob.glob(args.files)
