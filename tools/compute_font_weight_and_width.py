@@ -198,10 +198,17 @@ def is_blacklisted(filename):
 def get_width(fontfile):
   # Render the test text using the font onto an image.
   font = ImageFont.truetype(fontfile, FONT_SIZE)
-  text_width, text_height = font.getsize(TEXT)
+  print font
+  try:
+      text_width, text_height = font.getsize(TEXT)
+  except:
+      text_width, text_height = 1, 1 
   img = Image.new('RGBA', (text_width, text_height))
   draw = ImageDraw.Draw(img)
-  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
+  try:
+      draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
+  except: 
+      pass
   return {'value': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
 
 
