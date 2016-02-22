@@ -18,17 +18,19 @@
 #
 # OVERVIEW
 #
-# This script calculates the visual weight and width of fonts.
+# This script calculates the visual weight, width and italic angle of fonts.
 # It runs on a set of TTF files.
 #
 # For width, it just measures the width of how a particular piece of text renders.
 # For weight, it measures the darness of a piece of text.
-#
+# For italic angle it defaults to the italicAngle property of the font or
+#  prompts the user for hand-correction of the value.
+# 
 # USAGE
 #
 # python compute_font_metrics.py --metric=width --files="ttfs/*.ttf" --debug=True
 #
-# - Valid values for the metric are 'width' and 'weight'
+# - Valid values for the metric are 'width', 'weight' and 'angle'
 # - If the debug property is set to True, a server will spin up with images for visual inspection.
 #   Otherwise, the values (from 0.0-1.0) will be output to the terminal.
 #
@@ -122,6 +124,8 @@ def main():
       properties.append(get_darkness(fontfile))
     elif args.metric == "width":
       properties.append(get_width(fontfile))
+    elif args.metric == "angle":
+      properties.append(get_angle(fontfile))
     #except:
     #  print >> sys.stderr, "Couldn't calculate darkness of %s." % fontfile
 
@@ -192,6 +196,19 @@ def is_blacklisted(filename):
       return True
   return False
 
+
+# Returns the italic angle, given a filename of a ttf;
+def get_angle(fontfile):
+  #TODO: Implement-me!
+  angle = 0
+
+  # Render the test text using the font onto an image.
+  font = ImageFont.truetype(fontfile, FONT_SIZE)
+  text_width, text_height = font.getsize(TEXT)
+  img = Image.new('RGBA', (text_width, text_height))
+  draw = ImageDraw.Draw(img)
+  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
+  return {'value': angle, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
 
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
