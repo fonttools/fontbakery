@@ -99,7 +99,7 @@ def main():
   For weight, it measures the darness of a piece of text.
   For italic angle it defaults to the italicAngle property of the font
    or prompts the user for hand-correction of the value."""
-  parser = argparse.ArgumentParser(description)
+  parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
   parser.add_argument("-m", "--metric", default="weight", help="What property to measure; ('weight', 'width' or 'angle'.)")
