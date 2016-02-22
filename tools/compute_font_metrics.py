@@ -53,10 +53,22 @@ PORT = 8080
 # will be skipped.
 # TODO: Investigate why these don't work.
 BLACKLIST = [
-  "Angkor",
-  "Fasthand",
-  "Noto",
-  "Droid"
+  #IOError: invalid reference (issue #705)
+  "Corben",
+  #SystemError: tile cannot extend outside image (issue #704)
+  "Suwannaphum",
+  "KarlaTamil",
+  "Khmer",
+  "KdamThmor",
+  "Battambang",
+  "AksaraBaliGalang",
+  "Phetsarath",
+  "Kantumruy",
+  "Nokora",
+  "Droid",
+  #IOError: execution context too long (issue #703)
+  "FiraSans",
+  "FiraMono"
 ]
 
 DEBUG_TEMPLATE = """
