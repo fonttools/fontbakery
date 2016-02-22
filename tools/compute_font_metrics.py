@@ -39,6 +39,8 @@ import BaseHTTPServer
 import SocketServer
 import StringIO
 
+from fontTools.ttLib import TTFont
+
 # The font size used to test for weight and width.
 FONT_SIZE = 30
 
@@ -195,16 +197,11 @@ def is_blacklisted(filename):
 
 # Returns the italic angle, given a filename of a ttf;
 def get_angle(fontfile):
-  #TODO: Implement-me!
-  angle = 0
-
-  # Render the test text using the font onto an image.
-  font = ImageFont.truetype(fontfile, FONT_SIZE)
-  text_width, text_height = font.getsize(TEXT)
-  img = Image.new('RGBA', (text_width, text_height))
-  draw = ImageDraw.Draw(img)
-  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
-  return {'value': angle, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
+  ttfont = TTFont(fontfile)
+  angle = ttfont['post'].italicAngle
+  print fontfile, angle
+  ttfont.close()
+  return {'value': angle, 'fontfile': fontfile, 'base64img': None}
 
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
