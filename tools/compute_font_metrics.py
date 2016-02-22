@@ -26,7 +26,7 @@
 #
 # USAGE
 #
-# python compute_font_weight_and_width.py --metric=width --folder="ttfs/*.ttf" --debug=True
+# python compute_font_metrics.py --metric=width --folder="ttfs/*.ttf" --debug=True
 #
 # - Valid values for the metric are 'width' and 'weight'
 # - If the debug property is set to True, a server will spin up with images for visual inspection.
