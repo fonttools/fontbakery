@@ -15,10 +15,11 @@
 # limitations under the License.
 #
 # Initially authored by Google and contributed by Filip Zembowicz.
+# Further improved by Dave Crossland and Felipe Sanches.
 #
 # OVERVIEW + USAGE
 #
-# python compute_font_weight_and_width.py -h
+# python compute_font_metrics.py -h
 #
 # DEPENDENCIES
 #
@@ -38,6 +39,8 @@ import BaseHTTPServer
 import SocketServer
 import StringIO
 
+from fontTools.ttLib import TTFont
+
 # The font size used to test for weight and width.
 FONT_SIZE = 30
 
@@ -52,10 +55,22 @@ PORT = 8080
 # will be skipped.
 # TODO: Investigate why these don't work.
 BLACKLIST = [
-  "Angkor",
-  "Fasthand",
-  "Noto",
-  "Droid"
+  #IOError: invalid reference (issue #705)
+  "Corben",
+  #SystemError: tile cannot extend outside image (issue #704)
+  "Suwannaphum",
+  "KarlaTamil",
+  "Khmer",
+  "KdamThmor",
+  "Battambang",
+  "AksaraBaliGalang",
+  "Phetsarath",
+  "Kantumruy",
+  "Nokora",
+  "Droid",
+  #IOError: execution context too long (issue #703)
+  "FiraSans",
+  "FiraMono"
 ]
 
 DEBUG_TEMPLATE = """
@@ -120,19 +135,21 @@ def normalize_values(properties):
     properties[i]['value'] /= max_value
 
 def main():
-  description = """Calculates the visual weight and width of fonts.
+  description = """Calculates the visual weight, width or italic angle of fonts.
   For width, it just measures the width of how a particular piece of text renders.
-  For weight, it measures the darness of a piece of text."""
+  For weight, it measures the darness of a piece of text.
+  For italic angle it defaults to the italicAngle property of the font
+   or prompts the user for hand-correction of the value."""
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-r", "--regex", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-l", "--fontlist", default=False, help="A list of paths to fonts, eg 'fonta.ttf fontb.ttf' or '`ls -1 ~/fonts/*/*/*.ttf`'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
-  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; either 'weight' or 'width'.")
+  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; ('weight', 'width' or 'angle'.)")
   args = parser.parse_args()
 
   if len(sys.argv) <= 1:
-      parser.print_help()
-      sys.exit()
+    parser.print_help()
+    sys.exit()
 
   properties = {}
   fontfiles = glob.glob(args.files)
@@ -232,7 +249,7 @@ def get_width(fontfile):
       draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
   except: 
       pass
-  return {'value': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
+  return {'text_width': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
 
 
 # Returns the darkness, given a filename of a ttf.

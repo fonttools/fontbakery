@@ -26,14 +26,18 @@ Install the dependencies with [Homebrew](http://brew.sh), [PIP](http://pip.readt
 ```sh
 xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" # install homebrew
+brew tap davelab6/webfonttools; 
+brew update; 
+brew install sfnt2woff sfnt2woff-zopfli woff2 ttf2eot sfntly; # optional web font tools good to have, from davelab6 tap
+brew install ots --HEAD; # fontbakery dependency, from davelab6 tap
 brew install python giflib libspiro; # fontforge optional dependencies
 brew install fontforge --with-extra-tools --HEAD ; # fontforge
 brew install libmagic ttfautohint swig; # fontbakery dependencies
 easy_install pip # install pip
 pip install virtualenv; # optional, can be useful
-pip install git+https://github.com/behdad/fontTools.git; # fontbakery dependency
-pip install git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependency
-pip install git+https://github.com/davelab6/pyfontaine.git; # fontbakery dependency
+pip install --upgrade git+https://github.com/behdad/fontTools.git; # fontbakery dependency
+pip install --upgrade git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependency
+pip install --upgrade git+https://github.com/davelab6/pyfontaine.git; # fontbakery dependency
 sudo gem install travis; # fontbakery dependencies
 sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
 ```
@@ -43,11 +47,19 @@ sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fo
 ```sh
 sudo add-apt-repository --yes ppa:fontforge/fontforge;
 sudo apt-get update -qq;
-sudo apt-get install python-fontforge ttfautohint swig libicu-dev;
+sudo apt-get install python-fontforge ttfautohint swig libicu-dev git;
 sudo pip install pyicu;
 pip install git+https://github.com/behdad/fontTools.git;
-pip install git+https://github.com/googlefonts/fontcrunch.git;
-pip install git+https://github.com/googlefonts/fontbakery.git;
+pip install git+https://github.com/googlefonts/fontcrunch.git; 
+pip install git+https://github.com/googlefonts/fontbakery.git; 
+git clone https://github.com/khaledhosny/ots.git; # install ots from source
+cd ots; 
+./autogen.sh;
+./configure;
+make CXXFLAGS=-DOTS_DEBUG;
+sudo make install;
+cd ..;
+rm -rf ots;
 ```
 
 ## Usage

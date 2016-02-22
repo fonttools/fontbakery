@@ -60,6 +60,7 @@ class TestDiacritic(TestCase):
                 diacritic_glyphs.append(pifont.get_glyph(glyphname))
         return diacritic_glyphs
 
+    @tags('note')
     def test_diacritic_made_as_own_glyphs(self):
         """ Check that diacritic glyph are made completely with flat method """
         diacritic_glyphs = self.filter_diacritics_glyphs()
@@ -73,6 +74,7 @@ class TestDiacritic(TestCase):
             percentage = flatglyphs * 100. / len(diacritic_glyphs)
             self.fail('%.2f%% are made by Flat' % percentage)
 
+    @tags('note')
     def test_diacritic_made_as_component(self):
         """ Check that diacritic glyph are made completely with composite """
         diacritic_glyphs = self.filter_diacritics_glyphs()
@@ -86,6 +88,7 @@ class TestDiacritic(TestCase):
             percentage = compositeglyphs * 100. / len(diacritic_glyphs)
             self.fail('%.2f%% are made by Composite' % percentage)
 
+    @tags('note')
     def test_diacritic_made_as_mark_to_mark(self):
         """ Check that diacritic glyph are made completely with mark method """
         diacritic_glyphs = self.filter_diacritics_glyphs()
