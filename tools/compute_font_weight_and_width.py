@@ -63,34 +63,61 @@ DEBUG_TEMPLATE = """
 <html>
   <head>
     <style>
-      html, body{
-        font-family:Arial, sans-serif;
+      body {
+        font-family: sans-serif;
       }
-      div.filename, div.darkess{
+      div.filename, div.darkess {
         width:100px;
         color:gray;
         font-size:10px;
       }
-      img{
-        margin-left:150px;
+      img {
+        margin-left:1em;
+      }
+      td {
+        border-left: 1px grey solid;
       }
     </style>
   </head>
   <body>
-    %s
+      <table>
+        <thead>
+          <tr>
+              <td>Filename</td>
+              <td>Weight</td>
+              <td>Italic</td>
+              <td>Width</td>
+              <td>Angle</td>
+              <td>Image</td>
+          </tr>
+        </thead>
+        %s
+      </table>
   </body>
 </html>
 """
 
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
-<div>
-  <div class='darkness'>%s</div>
-  <div class='filename'>%s</div>
-  <img src="data:image/png;base64,%s" />
-</div>
+<tr>
+  <td>%s</td>
+  <td>%s</td>
+  <td>Italic</td>
+  <td>Width</td>
+  <td>Angle</td>
+  <td><img width='50%%' src='data:image/png;base64,%s' /></td>
+</tr>
 """
 
+# Normalizes a set of values from 0 - 1.0
+def normalize_values(properties):
+  max_value = 0.0
+  for i in range(len(properties)):
+    val = float(properties[i]['value'])
+    max_value = max(max_value, val)
+
+  for i in range(len(properties)):
+    properties[i]['value'] /= max_value
 
 def main():
   description = """Calculates the visual weight and width of fonts.
@@ -107,28 +134,21 @@ def main():
       parser.print_help()
       sys.exit()
 
-  properties = []
-  if args.regex: 
-      fontfiles = glob.glob(args.regex)
-  elif args.fontlist:
-      fontfiles = args.fontlist.split()
-  else:
-      print >> sys.stderr, "No font files."
-
+  properties = {}
+  fontfiles = glob.glob(args.files)
   for fontfile in fontfiles:
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
-    #try:
-    if args.metric == "weight":
-      properties.append(get_darkness(fontfile))
-    elif args.metric == "width":
-      properties.append(get_width(fontfile))
-    #except:
-    #  print >> sys.stderr, "Couldn't calculate darkness of %s." % fontfile
+    try:
+      properties['darkness'] = get_darkness(fontfile)
+      properties['width'] = get_width(fontfile)
+      properties['angle'] = get_angle(fontfile)
+    # except:
+    #   print >> sys.stderr, "Couldn't calculate darkness of %s." % fontfile
 
-  if args.metric == "width":
-    normalize_values(properties)
+
+    normalize_values(properties['width'])
 
   if args.debug:
     start_debug_server(properties)
@@ -136,15 +156,7 @@ def main():
     dump_values(properties)
 
 
-# Normalizes a set of values from 0 - 1.0
-def normalize_values(properties):
-  max_value = 0.0
-  for i in range(len(properties)):
-    val = float(properties[i]['value'])
-    max_value = max(max_value, val)
 
-  for i in range(len(properties)):
-    properties[i]['value'] /= max_value
 
 
 # Dump the values to the terminal.
@@ -195,6 +207,14 @@ def is_blacklisted(filename):
   return False
 
 
+# Returns the italic angle, given a filename of a ttf;
+def get_angle(fontfile):
+  ttfont = TTFont(fontfile)
+  angle = ttfont['post'].italicAngle
+  print fontfile, angle
+  ttfont.close()
+  return {'angle': angle, 'fontfile': fontfile, 'base64img': None}
+
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
 def get_width(fontfile):
@@ -239,7 +259,7 @@ def get_darkness(fontfile):
   x_height = get_x_height(fontfile)
   darkness *= (x_height / FONT_SIZE)
 
-  return {'value': darkness, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
+  return {'darkness': darkness, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
 
 
 # Get the base 64 representation of an image, to use for visual testing.
