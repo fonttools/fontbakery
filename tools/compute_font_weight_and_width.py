@@ -96,7 +96,7 @@ def main():
   description = """Calculates the visual weight and width of fonts.
   For width, it just measures the width of how a particular piece of text renders.
   For weight, it measures the darness of a piece of text."""
-  parser = argparse.ArgumentParser(description)
+  parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-r", "--regex", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-l", "--fontlist", default=False, help="A list of paths to fonts, eg 'fonta.ttf fontb.ttf' or '`ls -1 ~/fonts/*/*/*.ttf`'.")
   parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
