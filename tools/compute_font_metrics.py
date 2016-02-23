@@ -23,10 +23,10 @@
 #
 # DEPENDENCIES
 #
-# The script depends on the Python Imaging Library (PIL) <http://www.pythonware.com/products/pil/>
+# The script depends on the PIL API (Python Imaging Library)
 # If you have pip <https://pypi.python.org/pypi/pip> installed, run:
-# > sudo pip install pil
 #
+#     $ sudo pip install pillow
 
 from PIL import ImageFont
 from PIL import Image
@@ -38,6 +38,7 @@ import sys
 import BaseHTTPServer
 import SocketServer
 import StringIO
+import csv
 
 from fontTools.ttLib import TTFont
 
@@ -47,9 +48,6 @@ FONT_SIZE = 30
 # The text used to test weight and width. Note that this could be
 # problematic if a given font doesn't have latin support.
 TEXT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZz"
-
-# The port on which the debug server will be hosted.
-PORT = 8080
 
 # Fonts that cause problems: any filenames containing these letters
 # will be skipped.
@@ -77,78 +75,81 @@ DEBUG_TEMPLATE = """
 <!doctype html>
 <html>
   <head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.4/js/jquery.tablesorter.min.js"></script> 
     <style>
-      html, body{
-        font-family:Arial, sans-serif;
+      body {
+        font-family: sans-serif;
       }
-      div.filename, div.darkess{
+      div.filename, div.darkess {
         width:100px;
-        color:gray;
+        color: lightgrey;
         font-size:10px;
       }
-      img{
-        margin-left:150px;
+      img {
+        margin-left:1em;
+      }
+      thead {
+        background: grey;
+      }
+      td {
+        border-left: 1px lightgrey solid;
+        white-space: nowrap;
+      }
+      tr.old {
+        background: lightgrey;
+      }
+      tr.new {
+        background: white;
       }
     </style>
   </head>
   <body>
-    %s
+      <table id="myTable" class="tablesorter">
+        <thead>
+          <tr>
+              <td>Filename</td>
+              <td>GFN</td>
+              <td>Weight</td>
+              <td>Weight Int</td>
+              <td>Width</td>
+              <td>Width Int</td>
+              <td>Angle</td>
+              <td>Angle Int</td>
+              <td>Usage</td>
+              <td>Image Weight</td>
+              <td>Image Width</td>
+          </tr>
+        </thead>
+        %s
+      </table>
+    <script type="text/javascript">
+      $(document).ready(function() 
+          { 
+              $("#myTable").tablesorter(); 
+          } 
+      ); 
+    </script>
   </body>
 </html>
 """
 
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
-<div>
-  <div class='darkness'>%s</div>
-  <div class='filename'>%s</div>
-  <img src="data:image/png;base64,%s" />
-</div>
+<tr class="%s">
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+</tr>
 """
-
-
-def main():
-  description = """Calculates the visual weight, width or italic angle of fonts.
-  For width, it just measures the width of how a particular piece of text renders.
-  For weight, it measures the darness of a piece of text.
-  For italic angle it defaults to the italicAngle property of the font
-   or prompts the user for hand-correction of the value."""
-  parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-  parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
-  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; ('weight', 'width' or 'angle'.)")
-  args = parser.parse_args()
-
-  if len(sys.argv) <= 1:
-    parser.print_help()
-    sys.exit()
-
-  properties = []
-  fontfiles = glob.glob(args.files)
-  for fontfile in fontfiles:
-    if is_blacklisted(fontfile):
-      print >> sys.stderr, "%s is blacklisted." % fontfile
-      continue
-    #try:
-    if args.metric == "weight":
-      properties.append(get_darkness(fontfile))
-    elif args.metric == "width":
-      properties.append(get_width(fontfile))
-    elif args.metric == "angle":
-      properties.append(get_angle(fontfile))
-    #except:
-    #  print >> sys.stderr, "Couldn't calculate darkness of %s." % fontfile
-
-  if args.metric == "width":
-    normalize_values(properties)
-  elif args.metric == "angle":
-    map_to_int_range(properties, target_min=1, target_max=10)
-
-  if args.debug:
-    start_debug_server(properties)
-  else:
-    dump_values(properties)
-
 
 # Normalizes a set of values from 0 to target_max
 def normalize_values(properties, target_max=1.0):
@@ -156,45 +157,144 @@ def normalize_values(properties, target_max=1.0):
   for i in range(len(properties)):
     val = float(properties[i]['value'])
     max_value = max(max_value, val)
-
   for i in range(len(properties)):
     properties[i]['value'] *= (target_max/max_value)
 
-
-# Maps a set of values into the integer range from target_min to target_max
-def map_to_int_range(properties, target_min=1, target_max=10):
-  min_value = max_value = float(properties[0]['value'])
-  for p in properties:
-    val = float(p['value'])
-    max_value = max(max_value, val)
-    min_value = min(min_value, val)
-
-  float_range = (max_value - min_value)
+# Maps a list into the integer range from target_min to target_max
+# Pass a list of floats, returns the list as ints
+# The 2 lists are zippable
+def map_to_int_range(weights, target_min=1, target_max=10):
+  weights_as_int = []
   target_range = (target_max - target_min)
-  for p in properties:
-    p['value'] = target_min + int(target_range * ((p['value'] - min_value) / float_range))
+  weights_ordered = sorted(weights)
+  min_value = float(weights_ordered[0])
+  max_value = float(weights_ordered[-1])
+  for weight in weights:
+    val = float(weight)
+    min_value = min(min_value, val)
+    max_value = max(max_value, val)
+    float_range = (max_value - min_value)
+    weight = target_min + int(target_range * ((weight - min_value) / float_range))
+    weights_as_int.append(weight)
+  return weights_as_int
 
+def main():
+  description = """Calculates the visual weight, width or italic angle of fonts.
 
-# Dump the values to the terminal.
-def dump_values(properties):
-  for font in sorted(properties, key=lambda x: x['value']):
-    print font['fontfile'] + "," + str(font['value'])
+  For width, it just measures the width of how a particular piece of text renders.
 
+  For weight, it measures the darness of a piece of text.
 
-# Brings up a HTTP server to host a page for visual inspection
-def start_debug_server(properties):
+  For italic angle it defaults to the italicAngle property of the font.
+  
+  Then it starts a HTTP server and shows you the results, or 
+  if you pass --debug then it just prints the values.
+  """
+  parser = argparse.ArgumentParser(description=description)
+  parser.add_argument("-f", "--files", default="*", 
+    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  parser.add_argument("-d", "--debug", default=False, action='store_true',
+    help="Debug mode, just print results")
+  parser.add_argument("-e", "--existing", default=False, 
+    help="Path to existing font-metadata.csv")
+  args = parser.parse_args()
+
+  # show help if no args
+  if len(sys.argv) <= 1:
+    parser.print_help()
+    sys.exit()
+
+  # analyse fonts
+  fontinfo = {}
+  fontinfo = analyse_fonts(glob.glob(args.files), fontinfo)
+
+  # normalise weights
+  weights = []
+  for fontfile in sorted(fontinfo.keys()):
+    weights.append(fontinfo[fontfile]["weight"])
+  ints = map_to_int_range(weights)
+  for count, fontfile in enumerate(sorted(fontinfo.keys())):
+    fontinfo[fontfile]['weight_int'] = ints[count]
+
+  # normalise widths
+  widths = []
+  for fontfile in sorted(fontinfo.keys()):
+    widths.append(fontinfo[fontfile]["width"])
+  ints = map_to_int_range(widths)
+  for count, fontfile in enumerate(sorted(fontinfo.keys())):
+    fontinfo[fontfile]['width_int'] = ints[count]
+
+  # normalise angles
+  angles = []
+  for fontfile in sorted(fontinfo.keys()):
+    angle = abs(fontinfo[fontfile]["angle"])
+    angles.append(angle)
+  ints = map_to_int_range(angles)
+  for count, fontfile in enumerate(sorted(fontinfo.keys())):
+    fontinfo[fontfile]['angle_int'] = ints[count]
+  
+  # include existing values
+  if args.existing:
+    with open(args.existing, 'rb') as csvfile:
+        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
+        next(existing_data) # skip first row as its not data
+        for row in existing_data:
+          d, img_d = row[1], None
+          w, img_w = row[3], None
+          a = row[2]
+          u = row[4]
+          g = row[0]
+          fontfile = "existing " + g
+          fontinfo[fontfile] = {"weight": "None", 
+                                "weight_int": d, 
+                                "width": "None", 
+                                "width_int": w, 
+                                "angle": "None", 
+                                "angle_int": a, 
+                                "img_weight": img_d, 
+                                "img_width": img_w, 
+                                "usage": u, 
+                                "gfn": g
+                               }
+
+  # if we are debugging, just print the stuff
+  if args.debug:
+    items = ["weight", "weight_int", "width", "width_int", 
+             "angle", "angle_int", "usage", "gfn"]
+    for fontfile in sorted(fontinfo.keys()):
+       print fontfile, 
+       for item in items:
+         print fontinfo[fontfile][item],
+       print ""
+    sys.exit()
+
+  # create a string for the web server
   template_contents = ""
-  for font in sorted(properties, key=lambda x: x['value']):
-    metric = font['value']
-    filename = font['fontfile']
-    base64img = font['base64img']
-
-    if metric == 0.0:
-      print >> sys.stderr, "%s has no metric." % filename
-      continue
-    template_contents += ENTRY_TEMPLATE % (metric, filename, base64img)
+  for fontfile in fontinfo:
+    img_weight_html, img_width_html = "", ""
+    if fontinfo[fontfile]["img_weight"] is not None:
+      img_weight_html = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
+      img_width_html  = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
+    old_or_new = "new"
+    if fontfile.startswith("existing"):
+      old_or_new = "old"
+    template_contents += ENTRY_TEMPLATE % (old_or_new,
+                                           fontfile, 
+                                           fontinfo[fontfile]["gfn"],
+                                           fontinfo[fontfile]["weight"],
+                                           fontinfo[fontfile]["weight_int"],
+                                           fontinfo[fontfile]["width"],
+                                           fontinfo[fontfile]["width_int"],
+                                           fontinfo[fontfile]["angle"],
+                                           fontinfo[fontfile]["angle_int"],
+                                           fontinfo[fontfile]["usage"],
+                                           img_weight_html,
+                                           img_width_html)
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
+
+  # The port on which the debug server will be hosted.
+  PORT = 8080
 
   # Handler that responds to all requests with a single file.
   class DebugHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -208,11 +308,39 @@ def start_debug_server(properties):
       s.end_headers()
       s.wfile.write(debug_page_html)
 
-  httpd = SocketServer.TCPServer(("", PORT), DebugHTTPHandler)
+  httpd = None
+  while httpd is None:
+    try:
+      httpd = SocketServer.TCPServer(("", PORT), DebugHTTPHandler)
+    except:
+      print PORT, "is in use, trying", PORT + 1
+      PORT = PORT + 1
 
   print "Debug page can be seen at http://127.0.0.1:" + str(PORT)
   print "Kill the server with Ctrl+C"
   httpd.serve_forever()
+
+# Returns fontinfo dict
+def analyse_fonts(files, fontinfo):
+  # run the analysis for each file, in sorted order
+  for fontfile in sorted(files):
+    # if blacklisted the skip it
+    if is_blacklisted(fontfile):
+      print >> sys.stderr, "%s is blacklisted." % fontfile
+      continue
+    # put metadata in dictionary
+    d, img_d = get_darkness(fontfile)
+    w, img_w = get_width(fontfile)
+    a = get_angle(fontfile)
+    fontinfo[fontfile] = {"weight": d, 
+                          "width": w, 
+                          "angle": a, 
+                          "img_weight": img_d, 
+                          "img_width": img_w, 
+                          "usage": "unknown", 
+                          "gfn": "unknown"
+                         }
+  return fontinfo
 
 
 # Returns whether a font is on the blacklist.
@@ -227,20 +355,25 @@ def is_blacklisted(filename):
 def get_angle(fontfile):
   ttfont = TTFont(fontfile)
   angle = ttfont['post'].italicAngle
-  print fontfile, angle
   ttfont.close()
-  return {'value': angle, 'fontfile': fontfile, 'base64img': None}
+  return angle
 
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
 def get_width(fontfile):
   # Render the test text using the font onto an image.
   font = ImageFont.truetype(fontfile, FONT_SIZE)
-  text_width, text_height = font.getsize(TEXT)
+  try:
+      text_width, text_height = font.getsize(TEXT)
+  except:
+      text_width, text_height = 1, 1 
   img = Image.new('RGBA', (text_width, text_height))
   draw = ImageDraw.Draw(img)
-  draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
-  return {'value': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
+  try:
+      draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
+  except: 
+      pass
+  return text_width, get_base64_image(img)
 
 
 # Returns the darkness, given a filename of a ttf.
@@ -261,14 +394,15 @@ def get_darkness(fontfile):
   try:
     darkness = avg / (text_width * text_height)
   except:
+    raise
     darkness = 0.0
 
+  # NOOP this because it reduces darkness to 0.0 always
   # Weight the darkness by x-height.
-  x_height = get_x_height(fontfile)
-  darkness *= (x_height / FONT_SIZE)
+  # x_height = get_x_height(fontfile)
+  #darkness *= (x_height / FONT_SIZE)
 
-  return {'value': darkness, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
-
+  return darkness, get_base64_image(img)
 
 # Get the base 64 representation of an image, to use for visual testing.
 def get_base64_image(img):
