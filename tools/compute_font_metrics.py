@@ -136,15 +136,26 @@ ENTRY_TEMPLATE = """
 </tr>
 """
 
-# Normalizes a set of values from 0 - 1.0
-def normalize_values(properties):
+# Normalizes a set of values from 0 to target_max
+def normalize_values(properties, target_max=1.0):
   max_value = 0.0
   for i in range(len(properties)):
     val = float(properties[i]['value'])
     max_value = max(max_value, val)
-
   for i in range(len(properties)):
-    properties[i]['value'] /= max_value
+    properties[i]['value'] *= (target_max/max_value)
+
+# Maps a set of values into the integer range from target_min to target_max
+def map_to_int_range(properties, target_min=1, target_max=10):
+  min_value = max_value = float(properties[0]['value'])
+  for p in properties:
+    val = float(p['value'])
+    max_value = max(max_value, val)
+    min_value = min(min_value, val)
+  float_range = (max_value - min_value)
+  target_range = (target_max - target_min)
+  for p in properties:
+    p['value'] = target_min + int(target_range * ((p['value'] - min_value) / float_range))
 
 def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
