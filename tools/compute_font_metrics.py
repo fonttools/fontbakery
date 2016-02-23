@@ -248,11 +248,13 @@ def get_darkness(fontfile):
   try:
     darkness = avg / (text_width * text_height)
   except:
+    raise
     darkness = 0.0
 
+  # NOOP this because it reduces darkness to 0.0 always
   # Weight the darkness by x-height.
-  x_height = get_x_height(fontfile)
-  darkness *= (x_height / FONT_SIZE)
+  # x_height = get_x_height(fontfile)
+  #darkness *= (x_height / FONT_SIZE)
 
   return darkness, get_base64_image(img)
 
