@@ -48,9 +48,6 @@ FONT_SIZE = 30
 # problematic if a given font doesn't have latin support.
 TEXT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZz"
 
-# The port on which the debug server will be hosted.
-PORT = 8080
-
 # Fonts that cause problems: any filenames containing these letters
 # will be skipped.
 # TODO: Investigate why these don't work.
@@ -100,7 +97,6 @@ DEBUG_TEMPLATE = """
           <tr>
               <td>Filename</td>
               <td>Weight</td>
-              <td>Italic</td>
               <td>Width</td>
               <td>Angle</td>
               <td>Image</td>
@@ -117,9 +113,9 @@ ENTRY_TEMPLATE = """
 <tr>
   <td>%s</td>
   <td>%s</td>
-  <td>Italic</td>
-  <td>Width</td>
-  <td>Angle</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td><img width='50%%' src='data:image/png;base64,%s' /></td>
   <td><img width='50%%' src='data:image/png;base64,%s' /></td>
 </tr>
 """
@@ -138,64 +134,44 @@ def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
   For width, it just measures the width of how a particular piece of text renders.
   For weight, it measures the darness of a piece of text.
-  For italic angle it defaults to the italicAngle property of the font
-   or prompts the user for hand-correction of the value."""
+  For italic angle it defaults to the italicAngle property of the font.
+  
+  Then it starts a HTTP server and shows you the results
+  """
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-  parser.add_argument("-l", "--fontlist", default=False, help="A list of paths to fonts, eg 'fonta.ttf fontb.ttf' or '`ls -1 ~/fonts/*/*/*.ttf`'.")
-  parser.add_argument("-d", "--debug", default=False, help="Debug mode, spins up a server to validate results visually.")
-  parser.add_argument("-m", "--metric", default="weight", help="What property to measure; ('weight', 'width' or 'angle'.)")
+  parser.add_argument("-d", "--debug", default=False, help="Debug mode, just print results")
   args = parser.parse_args()
 
+  # show help if no args
   if len(sys.argv) <= 1:
     parser.print_help()
     sys.exit()
 
-  properties = {}
+  # dictionary to be keyed by filename
+  fontinfo = {}
+
+  # create a string for the web server
+  template_contents = ""
+
+  # run the analysis for each file, in sorted order
   fontfiles = glob.glob(args.files)
-  for fontfile in fontfiles:
+  for fontfile in sorted(fontfiles):
+    # if blacklisted the skip it
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
-    try:
-      properties['darkness'] = get_darkness(fontfile)
-      properties['width'] = get_width(fontfile)
-      properties['angle'] = get_angle(fontfile)
-    # except:
-    #   print >> sys.stderr, "Couldn't calculate darkness of %s." % fontfile
-
-
-    normalize_values(properties['width'])
-
-  if args.debug:
-    start_debug_server(properties)
-  else:
-    dump_values(properties)
-
-
-
-
-
-# Dump the values to the terminal.
-def dump_values(properties):
-  for font in sorted(properties, key=lambda x: x['value']):
-    print font['fontfile'] + "," + str(font['value'])
-
-
-# Brings up a HTTP server to host a page for visual inspection
-def start_debug_server(properties):
-  template_contents = ""
-  for font in sorted(properties, key=lambda x: x['value']):
-    metric = font['value']
-    filename = font['fontfile']
-    base64img = font['base64img']
-
-    if metric == 0.0:
-      print >> sys.stderr, "%s has no metric." % filename
-      continue
-    template_contents += ENTRY_TEMPLATE % (metric, filename, base64img)
+    # put metadata in dictionary
+    d, img_d = get_darkness(fontfile)
+    w, img_w = get_width(fontfile)
+    a = get_angle(fontfile)
+    fontinfo[fontfile] = {"weight": d, "width": w, "angle": a, "img_weight": img_d, "img_width": img_w}
+    template_contents += ENTRY_TEMPLATE % (fontfile, d, w, a, img_d, img_w)
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
+
+  # The port on which the debug server will be hosted.
+  PORT = 8080
 
   # Handler that responds to all requests with a single file.
   class DebugHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -209,12 +185,17 @@ def start_debug_server(properties):
       s.end_headers()
       s.wfile.write(debug_page_html)
 
-  httpd = SocketServer.TCPServer(("", PORT), DebugHTTPHandler)
+  httpd = None
+  while httpd is None:
+    try:
+      httpd = SocketServer.TCPServer(("", PORT), DebugHTTPHandler)
+    except:
+      print PORT, "is in use, trying", PORT + 1
+      PORT = PORT + 1
 
   print "Debug page can be seen at http://127.0.0.1:" + str(PORT)
   print "Kill the server with Ctrl+C"
   httpd.serve_forever()
-
 
 # Returns whether a font is on the blacklist.
 def is_blacklisted(filename):
@@ -228,17 +209,14 @@ def is_blacklisted(filename):
 def get_angle(fontfile):
   ttfont = TTFont(fontfile)
   angle = ttfont['post'].italicAngle
-  print fontfile, angle
   ttfont.close()
-  return {'angle': angle, 'fontfile': fontfile, 'base64img': None}
+  return angle
 
 # Returns the width, given a filename of a ttf.
 # This is in pixels so should be normalized.
 def get_width(fontfile):
-  print fontfile
   # Render the test text using the font onto an image.
   font = ImageFont.truetype(fontfile, FONT_SIZE)
-  print font
   try:
       text_width, text_height = font.getsize(TEXT)
   except:
@@ -249,7 +227,7 @@ def get_width(fontfile):
       draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
   except: 
       pass
-  return {'text_width': text_width, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
+  return text_width, get_base64_image(img)
 
 
 # Returns the darkness, given a filename of a ttf.
@@ -276,8 +254,7 @@ def get_darkness(fontfile):
   x_height = get_x_height(fontfile)
   darkness *= (x_height / FONT_SIZE)
 
-  return {'darkness': darkness, 'fontfile': fontfile, 'base64img': get_base64_image(img)}
-
+  return darkness, get_base64_image(img)
 
 # Get the base 64 representation of an image, to use for visual testing.
 def get_base64_image(img):
