@@ -104,6 +104,7 @@ DEBUG_TEMPLATE = """
               <td>Weight</td>
               <td>Weight Int</td>
               <td>Width</td>
+              <td>Width Int</td>
               <td>Angle</td>
               <td>Usage</td>
               <td>Image Weight</td>
@@ -126,6 +127,7 @@ DEBUG_TEMPLATE = """
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
 <tr>
+  <td>%s</td>
   <td>%s</td>
   <td>%s</td>
   <td>%s</td>
@@ -203,6 +205,14 @@ def main():
   for count, fontfile in enumerate(sorted(fontinfo.keys())):
     fontinfo[fontfile]['weight_int'] = ints[count]
 
+  # normalise widths
+  widths = []
+  for fontfile in sorted(fontinfo.keys()):
+    widths.append(fontinfo[fontfile]["width"])
+  ints = map_to_int_range(widths)
+  for count, fontfile in enumerate(sorted(fontinfo.keys())):
+    fontinfo[fontfile]['width_int'] = ints[count]
+
   # include existing values
   if args.existing:
     with open(args.existing, 'rb') as csvfile:
@@ -220,6 +230,8 @@ def main():
                                 "angle": a, 
           fontinfo[fontfile] = {"weight": "None", 
                                 "weight_int": d, 
+                                "width": "None", 
+                                "width_int": w, 
                                 "img_weight": img_d, 
                                 "img_width": img_w, 
                                 "usage": u, 
@@ -250,6 +262,7 @@ def main():
                                            fontinfo[fontfile]["weight"],
                                            fontinfo[fontfile]["weight_int"],
                                            fontinfo[fontfile]["width"],
+                                           fontinfo[fontfile]["width_int"],
                                            fontinfo[fontfile]["angle"],
                                            fontinfo[fontfile]["usage"],
                                            img_weight_html,
