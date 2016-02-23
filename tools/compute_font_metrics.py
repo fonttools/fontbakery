@@ -34,6 +34,7 @@ from PIL import ImageDraw
 
 import argparse
 import glob
+import os
 import sys
 import BaseHTTPServer
 import SocketServer
@@ -41,6 +42,8 @@ import StringIO
 import csv
 
 from fontTools.ttLib import TTFont
+from google.protobuf import text_format
+from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 
 # The font size used to test for weight and width.
 FONT_SIZE = 30
@@ -70,6 +73,12 @@ BLACKLIST = [
   "FiraSans",
   "FiraMono"
 ]
+
+def get_FamilyProto_Message(path):
+    message = FamilyProto()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, message)
+    return message
 
 DEBUG_TEMPLATE = """
 <!doctype html>
@@ -240,22 +249,18 @@ def main():
         existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
         next(existing_data) # skip first row as its not data
         for row in existing_data:
-          d, img_d = row[1], None
-          w, img_w = row[3], None
-          a = row[2]
-          u = row[4]
-          g = row[0]
-          fontfile = "existing " + g
+          gfn = row[0]
+          fontfile = "existing " + gfn
           fontinfo[fontfile] = {"weight": "None", 
-                                "weight_int": d, 
+                                "weight_int": row[1],
                                 "width": "None", 
-                                "width_int": w, 
+                                "width_int": row[3],
                                 "angle": "None", 
-                                "angle_int": a, 
-                                "img_weight": img_d, 
-                                "img_width": img_w, 
-                                "usage": u, 
-                                "gfn": g
+                                "angle_int": row[2],
+                                "img_weight": None,
+                                "img_width": None,
+                                "usage": row[4],
+                                "gfn": gfn
                                }
 
   # if we are debugging, just print the stuff
@@ -321,6 +326,18 @@ def main():
   print "Kill the server with Ctrl+C"
   httpd.serve_forever()
 
+def get_gfn(fontfile):
+  gfn = "unknown"
+  metadata = os.path.join(os.path.dirname(fontfile), "METADATA.pb")
+  if os.path.exists(metadata):
+    family = get_FamilyProto_Message(metadata)
+    for font in family.fonts:
+      if font.filename in fontfile:
+        gfn = "{}:{}:{}".format(family.name, font.style, font.weight)
+        break
+
+  return gfn
+
 # Returns fontinfo dict
 def analyse_fonts(files, fontinfo):
   # run the analysis for each file, in sorted order
@@ -330,16 +347,17 @@ def analyse_fonts(files, fontinfo):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
     # put metadata in dictionary
-    d, img_d = get_darkness(fontfile)
-    w, img_w = get_width(fontfile)
-    a = get_angle(fontfile)
-    fontinfo[fontfile] = {"weight": d, 
-                          "width": w, 
-                          "angle": a, 
+    darkness, img_d = get_darkness(fontfile)
+    width, img_w = get_width(fontfile)
+    angle = get_angle(fontfile)
+    gfn = get_gfn(fontfile)
+    fontinfo[fontfile] = {"weight": darkness,
+                          "width": width,
+                          "angle": angle,
                           "img_weight": img_d, 
                           "img_width": img_w, 
                           "usage": "unknown", 
-                          "gfn": "unknown"
+                          "gfn": gfn
                          }
   return fontinfo
 
