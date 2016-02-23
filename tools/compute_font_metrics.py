@@ -145,17 +145,23 @@ def normalize_values(properties, target_max=1.0):
   for i in range(len(properties)):
     properties[i]['value'] *= (target_max/max_value)
 
-# Maps a set of values into the integer range from target_min to target_max
-def map_to_int_range(properties, target_min=1, target_max=10):
-  min_value = max_value = float(properties[0]['value'])
-  for p in properties:
-    val = float(p['value'])
-    max_value = max(max_value, val)
-    min_value = min(min_value, val)
-  float_range = (max_value - min_value)
+# Maps a list into the integer range from target_min to target_max
+# Pass a list of floats, returns the list as ints
+# The 2 lists are zippable
+def map_to_int_range(weights, target_min=1, target_max=10):
+  weights_as_int = []
   target_range = (target_max - target_min)
-  for p in properties:
-    p['value'] = target_min + int(target_range * ((p['value'] - min_value) / float_range))
+  weights_ordered = sorted(weights)
+  min_value = float(weights_ordered[0])
+  max_value = float(weights_ordered[-1])
+  for weight in weights:
+    val = float(weight)
+    min_value = min(min_value, val)
+    max_value = max(max_value, val)
+    float_range = (max_value - min_value)
+    weight = target_min + int(target_range * ((weight - min_value) / float_range))
+    weights_as_int.append(weight)
+  return weights_as_int
 
 def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
