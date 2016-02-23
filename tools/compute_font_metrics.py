@@ -90,6 +90,7 @@ DEBUG_TEMPLATE = """
       }
       td {
         border-left: 1px grey solid;
+        white-space: nowrap;
       }
     </style>
   </head>
@@ -142,15 +143,21 @@ def normalize_values(properties):
 
 def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
+
   For width, it just measures the width of how a particular piece of text renders.
+
   For weight, it measures the darness of a piece of text.
+
   For italic angle it defaults to the italicAngle property of the font.
   
-  Then it starts a HTTP server and shows you the results, or if you pass --debug then it prints the values
+  Then it starts a HTTP server and shows you the results, or 
+  if you pass --debug then it prints the values.
   """
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-  parser.add_argument("-d", "--debug", default=False, help="Debug mode, just print results")
+  parser.add_argument("-f", "--files", default="*", 
+    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+  parser.add_argument("-d", "--debug", default=False, 
+    help="Debug mode, just print results")
   args = parser.parse_args()
 
   # show help if no args
@@ -158,7 +165,7 @@ def main():
     parser.print_help()
     sys.exit()
 
-  # dictionary to be keyed by filename
+  # analyse fonts
   fontinfo = {}
 
   # create a string for the web server
