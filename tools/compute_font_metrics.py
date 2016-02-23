@@ -156,12 +156,12 @@ def main():
   For italic angle it defaults to the italicAngle property of the font.
   
   Then it starts a HTTP server and shows you the results, or 
-  if you pass --debug then it prints the values.
+  if you pass --debug then it just prints the values.
   """
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-f", "--files", default="*", 
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-  parser.add_argument("-d", "--debug", default=False, 
+  parser.add_argument("-d", "--debug", default=False, action='store_true',
     help="Debug mode, just print results")
   parser.add_argument("-e", "--existing", default=False, 
     help="Path to existing font-metadata.csv")
