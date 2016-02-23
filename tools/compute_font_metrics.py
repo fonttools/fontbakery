@@ -74,6 +74,8 @@ DEBUG_TEMPLATE = """
 <!doctype html>
 <html>
   <head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.4/js/jquery.tablesorter.min.js"></script> 
     <style>
       body {
         font-family: sans-serif;
@@ -92,18 +94,26 @@ DEBUG_TEMPLATE = """
     </style>
   </head>
   <body>
-      <table>
+      <table id="myTable" class="tablesorter">
         <thead>
           <tr>
               <td>Filename</td>
               <td>Weight</td>
               <td>Width</td>
               <td>Angle</td>
-              <td>Image</td>
+              <td>Image Weight</td>
+              <td>Image Width</td>
           </tr>
         </thead>
         %s
       </table>
+    <script type="text/javascript">
+      $(document).ready(function() 
+          { 
+              $("#myTable").tablesorter(); 
+          } 
+      ); 
+    </script>
   </body>
 </html>
 """
