@@ -118,7 +118,7 @@ DEBUG_TEMPLATE = """
               <td class="Angle-Int">Angle Int</td>
               <td class="Usage">Usage</td>
               <td class="Image-Weight">Image Weight</td>
-              <td class="Image-Width">Image Width</td>
+<!--              <td class="Image-Width">Image Width</td> -->
           </tr>
         </thead>
         %s
@@ -147,7 +147,7 @@ ENTRY_TEMPLATE = """
   <td class="Angle-Int">%s</td>
   <td class="Usage">%s</td>
   <td class="Image-Weight">%s</td>
-  <td class="Image-Width">%s</td>
+<!--  <td class="Image-Width"></td> -->
 </tr>
 """
 
@@ -274,8 +274,8 @@ def main():
   for fontfile in fontinfo:
     img_weight_html, img_width_html = "", ""
     if fontinfo[fontfile]["img_weight"] is not None:
-      img_weight_html = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
-      img_width_html  = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
+      img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
+      #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
     old_or_new = "new"
     if fontfile.startswith("existing"):
       old_or_new = "old"
@@ -289,8 +289,8 @@ def main():
                                            fontinfo[fontfile]["angle"],
                                            fontinfo[fontfile]["angle_int"],
                                            fontinfo[fontfile]["usage"],
-                                           img_weight_html,
-                                           img_width_html)
+                                           img_weight_html)
+                                           #img_width_html)
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
 
