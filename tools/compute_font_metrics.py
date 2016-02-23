@@ -189,6 +189,9 @@ def main():
   
   Then it starts a HTTP server and shows you the results, or 
   if you pass --debug then it just prints the values.
+
+  Example (all Google Fonts files, all existing data):
+    compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
   """
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-f", "--files", default="*", 
