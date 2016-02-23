@@ -146,7 +146,7 @@ def main():
   For weight, it measures the darness of a piece of text.
   For italic angle it defaults to the italicAngle property of the font.
   
-  Then it starts a HTTP server and shows you the results
+  Then it starts a HTTP server and shows you the results, or if you pass --debug then it prints the values
   """
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-f", "--files", default="*", help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
@@ -177,6 +177,14 @@ def main():
     a = get_angle(fontfile)
     fontinfo[fontfile] = {"weight": d, "width": w, "angle": a, "img_weight": img_d, "img_width": img_w}
     template_contents += ENTRY_TEMPLATE % (fontfile, d, w, a, img_d, img_w)
+
+    # if we are debugging, just print the stuff
+    if args.debug:
+      print fontfile, d, w, a
+    
+  # if we are debugging, exit
+  if args.debug:
+    sys.exit()
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
 
