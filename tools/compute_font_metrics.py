@@ -38,6 +38,7 @@ import sys
 import BaseHTTPServer
 import SocketServer
 import StringIO
+import csv
 
 from fontTools.ttLib import TTFont
 
@@ -99,9 +100,11 @@ DEBUG_TEMPLATE = """
         <thead>
           <tr>
               <td>Filename</td>
+              <td>GFN</td>
               <td>Weight</td>
               <td>Width</td>
               <td>Angle</td>
+              <td>Usage</td>
               <td>Image Weight</td>
               <td>Image Width</td>
           </tr>
@@ -126,8 +129,10 @@ ENTRY_TEMPLATE = """
   <td>%s</td>
   <td>%s</td>
   <td>%s</td>
-  <td><img width='50%%' src='data:image/png;base64,%s' /></td>
-  <td><img width='50%%' src='data:image/png;base64,%s' /></td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
+  <td>%s</td>
 </tr>
 """
 
@@ -158,6 +163,8 @@ def main():
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, 
     help="Debug mode, just print results")
+  parser.add_argument("-e", "--existing", default=False, 
+    help="Path to existing font-metadata.csv")
   args = parser.parse_args()
 
   # show help if no args
@@ -167,31 +174,54 @@ def main():
 
   # analyse fonts
   fontinfo = {}
+  fontinfo = analyse_fonts(glob.glob(args.files), fontinfo)
+
+  # include existing values
+  if args.existing:
+    with open(args.existing, 'rb') as csvfile:
+        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
+        next(existing_data) # skip first row as its not data
+        for row in existing_data:
+          d, img_d = row[1], None
+          w, img_w = row[3], None
+          a = row[2]
+          u = row[4]
+          g = row[0]
+          fontfile = g
+          fontinfo[fontfile] = {"weight": d, 
+                                "width": w, 
+                                "angle": a, 
+                                "img_weight": img_d, 
+                                "img_width": img_w, 
+                                "usage": u, 
+                                "gfn": g
+                               }
+
+  # if we are debugging, just print the stuff
+  if args.debug:
+    for fontfile in fontinfo:
+       print fontfile, 
+       for item in ["weight", "width", "angle", "usage", "gfn"]:
+         print fontinfo[fontfile][item],
+       print ""
+    sys.exit()
 
   # create a string for the web server
   template_contents = ""
-
-  # run the analysis for each file, in sorted order
-  fontfiles = glob.glob(args.files)
-  for fontfile in sorted(fontfiles):
-    # if blacklisted the skip it
-    if is_blacklisted(fontfile):
-      print >> sys.stderr, "%s is blacklisted." % fontfile
-      continue
-    # put metadata in dictionary
-    d, img_d = get_darkness(fontfile)
-    w, img_w = get_width(fontfile)
-    a = get_angle(fontfile)
-    fontinfo[fontfile] = {"weight": d, "width": w, "angle": a, "img_weight": img_d, "img_width": img_w}
-    template_contents += ENTRY_TEMPLATE % (fontfile, d, w, a, img_d, img_w)
-
-    # if we are debugging, just print the stuff
-    if args.debug:
-      print fontfile, d, w, a
+  for fontfile in fontinfo:
+    img_weight_html, img_width_html = "", ""
+    if fontinfo[fontfile]["img_weight"] is not None:
+      img_weight_html = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
+      img_width_html  = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
     
-  # if we are debugging, exit
-  if args.debug:
-    sys.exit()
+    template_contents += ENTRY_TEMPLATE % (fontfile, 
+                                           fontinfo[fontfile]["gfn"],
+                                           fontinfo[fontfile]["weight"],
+                                           fontinfo[fontfile]["width"],
+                                           fontinfo[fontfile]["angle"],
+                                           fontinfo[fontfile]["usage"],
+                                           img_weight_html,
+                                           img_width_html)
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
 
@@ -221,6 +251,29 @@ def main():
   print "Debug page can be seen at http://127.0.0.1:" + str(PORT)
   print "Kill the server with Ctrl+C"
   httpd.serve_forever()
+
+# Returns fontinfo dict
+def analyse_fonts(files, fontinfo):
+  # run the analysis for each file, in sorted order
+  for fontfile in sorted(files):
+    # if blacklisted the skip it
+    if is_blacklisted(fontfile):
+      print >> sys.stderr, "%s is blacklisted." % fontfile
+      continue
+    # put metadata in dictionary
+    d, img_d = get_darkness(fontfile)
+    w, img_w = get_width(fontfile)
+    a = get_angle(fontfile)
+    fontinfo[fontfile] = {"weight": d, 
+                          "width": w, 
+                          "angle": a, 
+                          "img_weight": img_d, 
+                          "img_width": img_w, 
+                          "usage": "unknown", 
+                          "gfn": "unknown"
+                         }
+  return fontinfo
+
 
 # Returns whether a font is on the blacklist.
 def is_blacklisted(filename):
