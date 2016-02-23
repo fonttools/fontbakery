@@ -83,15 +83,24 @@ DEBUG_TEMPLATE = """
       }
       div.filename, div.darkess {
         width:100px;
-        color:gray;
+        color: lightgrey;
         font-size:10px;
       }
       img {
         margin-left:1em;
       }
+      thead {
+        background: grey;
+      }
       td {
-        border-left: 1px grey solid;
+        border-left: 1px lightgrey solid;
         white-space: nowrap;
+      }
+      tr.old {
+        background: lightgrey;
+      }
+      tr.new {
+        background: white;
       }
     </style>
   </head>
@@ -127,7 +136,7 @@ DEBUG_TEMPLATE = """
 
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
-<tr>
+<tr class="%s">
   <td>%s</td>
   <td>%s</td>
   <td>%s</td>
@@ -235,7 +244,7 @@ def main():
           a = row[2]
           u = row[4]
           g = row[0]
-          fontfile = g
+          fontfile = "existing " + g
           fontinfo[fontfile] = {"weight": "None", 
                                 "weight_int": d, 
                                 "width": "None", 
@@ -266,8 +275,11 @@ def main():
     if fontinfo[fontfile]["img_weight"] is not None:
       img_weight_html = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
       img_width_html  = "<img width='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
-    
-    template_contents += ENTRY_TEMPLATE % (fontfile, 
+    old_or_new = "new"
+    if fontfile.startswith("existing"):
+      old_or_new = "old"
+    template_contents += ENTRY_TEMPLATE % (old_or_new,
+                                           fontfile, 
                                            fontinfo[fontfile]["gfn"],
                                            fontinfo[fontfile]["weight"],
                                            fontinfo[fontfile]["weight_int"],
