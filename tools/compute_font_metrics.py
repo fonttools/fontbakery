@@ -102,6 +102,7 @@ DEBUG_TEMPLATE = """
               <td>Filename</td>
               <td>GFN</td>
               <td>Weight</td>
+              <td>Weight Int</td>
               <td>Width</td>
               <td>Angle</td>
               <td>Usage</td>
@@ -125,6 +126,7 @@ DEBUG_TEMPLATE = """
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
 <tr>
+  <td>%s</td>
   <td>%s</td>
   <td>%s</td>
   <td>%s</td>
@@ -193,6 +195,14 @@ def main():
   fontinfo = {}
   fontinfo = analyse_fonts(glob.glob(args.files), fontinfo)
 
+  # normalise weights
+  weights = []
+  for fontfile in sorted(fontinfo.keys()):
+    weights.append(fontinfo[fontfile]["weight"])
+  ints = map_to_int_range(weights)
+  for count, fontfile in enumerate(sorted(fontinfo.keys())):
+    fontinfo[fontfile]['weight_int'] = ints[count]
+
   # include existing values
   if args.existing:
     with open(args.existing, 'rb') as csvfile:
@@ -208,6 +218,8 @@ def main():
           fontinfo[fontfile] = {"weight": d, 
                                 "width": w, 
                                 "angle": a, 
+          fontinfo[fontfile] = {"weight": "None", 
+                                "weight_int": d, 
                                 "img_weight": img_d, 
                                 "img_width": img_w, 
                                 "usage": u, 
@@ -216,9 +228,11 @@ def main():
 
   # if we are debugging, just print the stuff
   if args.debug:
-    for fontfile in fontinfo:
+    items = ["weight", "weight_int", "width", "width_int", 
+             "angle", "angle_int", "usage", "gfn"]
+    for fontfile in sorted(fontinfo.keys()):
        print fontfile, 
-       for item in ["weight", "width", "angle", "usage", "gfn"]:
+       for item in items:
          print fontinfo[fontfile][item],
        print ""
     sys.exit()
@@ -234,6 +248,7 @@ def main():
     template_contents += ENTRY_TEMPLATE % (fontfile, 
                                            fontinfo[fontfile]["gfn"],
                                            fontinfo[fontfile]["weight"],
+                                           fontinfo[fontfile]["weight_int"],
                                            fontinfo[fontfile]["width"],
                                            fontinfo[fontfile]["angle"],
                                            fontinfo[fontfile]["usage"],
