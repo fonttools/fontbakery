@@ -26,11 +26,7 @@
 # The script depends on the PIL API (Python Imaging Library)
 # If you have pip <https://pypi.python.org/pypi/pip> installed, run:
 #
-#     $ sudo pip install pillow
-
-from PIL import ImageFont
-from PIL import Image
-from PIL import ImageDraw
+#     $ sudo pip install pillow protobuf fontbakery
 
 import argparse
 import glob
@@ -41,9 +37,28 @@ import SocketServer
 import StringIO
 import csv
 
-from fontTools.ttLib import TTFont
-from google.protobuf import text_format
-from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
+try:
+  from PIL import ImageFont
+except:
+  print "Needs pillow.\n\nsudo pip install pillow"
+from PIL import Image
+from PIL import ImageDraw
+
+try:
+  from fontTools.ttLib import TTFont
+except:
+  print "Needs fontTools.\n\nsudo pip install fonttools"
+
+try:
+  from google.protobuf import text_format
+except:
+  print "Needs protobuf.\n\nsudo pip install protobuf"
+
+try:
+  from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
+except:
+  print "Needs fontbakery.\n\nsudo pip install fontbakery"
+
 
 # The font size used to test for weight and width.
 FONT_SIZE = 30
