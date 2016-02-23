@@ -108,17 +108,17 @@ DEBUG_TEMPLATE = """
       <table id="myTable" class="tablesorter">
         <thead>
           <tr>
-              <td>Filename</td>
-              <td>GFN</td>
-              <td>Weight</td>
-              <td>Weight Int</td>
-              <td>Width</td>
-              <td>Width Int</td>
-              <td>Angle</td>
-              <td>Angle Int</td>
-              <td>Usage</td>
-              <td>Image Weight</td>
-              <td>Image Width</td>
+              <td class="Filename">Filename</td>
+              <td class="GFN">GFN</td>
+              <td class="Weight">Weight</td>
+              <td class="Weight-Int">Weight Int</td>
+              <td class="Width">Width</td>
+              <td class="Width-Int">Width Int</td>
+              <td class="Angle">Angle</td>
+              <td class="Angle-Int">Angle Int</td>
+              <td class="Usage">Usage</td>
+              <td class="Image-Weight">Image Weight</td>
+              <td class="Image-Width">Image Width</td>
           </tr>
         </thead>
         %s
@@ -137,17 +137,17 @@ DEBUG_TEMPLATE = """
 # When outputing the debug HTML, this is used to show a single font.
 ENTRY_TEMPLATE = """
 <tr class="%s">
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
-  <td>%s</td>
+  <td class="Filename">%s</td>
+  <td class="GFN">%s</td>
+  <td class="Weight">%s</td>
+  <td class="Weight-Int">%s</td>
+  <td class="Width">%s</td>
+  <td class="Width-Int">%s</td>
+  <td class="Angle">%s</td>
+  <td class="Angle-Int">%s</td>
+  <td class="Usage">%s</td>
+  <td class="Image-Weight">%s</td>
+  <td class="Image-Width">%s</td>
 </tr>
 """
 
