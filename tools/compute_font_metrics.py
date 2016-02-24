@@ -40,24 +40,29 @@ import csv
 try:
   from PIL import ImageFont
 except:
-  print "Needs pillow.\n\nsudo pip install pillow"
+  sys.exit("Needs pillow.\n\nsudo pip install pillow")
 from PIL import Image
 from PIL import ImageDraw
 
 try:
   from fontTools.ttLib import TTFont
 except:
-  print "Needs fontTools.\n\nsudo pip install fonttools"
+  sys.exit("Needs fontTools.\n\nsudo pip install fonttools")
 
 try:
   from google.protobuf import text_format
 except:
-  print "Needs protobuf.\n\nsudo pip install protobuf"
+  sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 try:
   from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 except:
-  print "Needs fontbakery.\n\nsudo pip install fontbakery"
+  sys.exit("Needs fontbakery.\n\nsudo pip install fontbakery")
+
+try:
+  from flask import Flask, jsonify
+except:
+  sys.exit("Needs flask.\n\nsudo pip install flask")
 
 
 # The font size used to test for weight and width.
