@@ -324,12 +324,12 @@ def main():
       s.send_header("Content-type", "text/html")
       s.end_headers()
     def do_GET(s):
-      if s.path.endswith(".js"):
-        if os.path.exists(s.path):
-          s.wfile.write(open(s.path).read())
+      filepath = os.path.join(os.path.dirname(__file__), "tools", s.path)
+      if filepath.endswith(".js"):
+        if os.path.exists(filepath):
+          s.wfile.write(open(filepath).read())
           s.send_response(200)
         else:
-          s.wfile.write("404 Not found: '{}'".format(s.path))
           s.send_response(404)
       else:
         s.wfile.write(debug_page_html)
