@@ -32,8 +32,6 @@ import argparse
 import glob
 import os
 import sys
-import BaseHTTPServer
-import SocketServer
 import StringIO
 import csv
 
@@ -59,6 +57,10 @@ try:
 except:
   print "Needs fontbakery.\n\nsudo pip install fontbakery"
 
+try:
+  from flask import Flask
+except:
+  print "Needs flask.\n\nsudo pip install flask"
 
 # The font size used to test for weight and width.
 FONT_SIZE = 30
@@ -314,41 +316,14 @@ def main():
 
   debug_page_html = DEBUG_TEMPLATE % template_contents
 
-  # The port on which the debug server will be hosted.
-  PORT = 8080
+  app = Flask(__name__)
 
-  # Handler that responds to all requests with a single file.
-  class DebugHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    def do_HEAD(s):
-      s.send_response(200)
-      s.send_header("Content-type", "text/html")
-      s.end_headers()
-    def do_GET(s):
-      filepath = os.path.join(os.path.dirname(__file__), "tools", s.path)
-      if filepath.endswith(".js"):
-        if os.path.exists(filepath):
-          s.wfile.write(open(filepath).read())
-          s.send_response(200)
-        else:
-          s.send_response(404)
-      else:
-        s.wfile.write(debug_page_html)
-        s.send_response(200)
-        s.send_header("Content-type", "text/html")
-      s.end_headers()
+  @app.route('/')
+  def hello_world():
+    return debug_page_html
 
+  app.run()
 
-  httpd = None
-  while httpd is None:
-    try:
-      httpd = SocketServer.TCPServer(("", PORT), DebugHTTPHandler)
-    except:
-      print PORT, "is in use, trying", PORT + 1
-      PORT = PORT + 1
-
-  print "Debug page can be seen at http://127.0.0.1:" + str(PORT)
-  print "Kill the server with Ctrl+C"
-  httpd.serve_forever()
 
 def get_gfn(fontfile):
   gfn = "unknown"
