@@ -58,7 +58,7 @@ except:
   print "Needs fontbakery.\n\nsudo pip install fontbakery"
 
 try:
-  from flask import Flask
+  from flask import Flask, jsonify
 except:
   print "Needs flask.\n\nsudo pip install flask"
 
@@ -96,86 +96,6 @@ def get_FamilyProto_Message(path):
     text_data = open(path, "rb").read()
     text_format.Merge(text_data, message)
     return message
-
-DEBUG_TEMPLATE = """
-<!doctype html>
-<html>
-  <head>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script> 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.4/js/jquery.tablesorter.min.js"></script> 
-    <style>
-      body {
-        font-family: sans-serif;
-      }
-      div.filename, div.darkess {
-        width:100px;
-        color: lightgrey;
-        font-size:10px;
-      }
-      img {
-        margin-left:1em;
-      }
-      thead {
-        background: grey;
-      }
-      td {
-        border-left: 1px lightgrey solid;
-        white-space: nowrap;
-      }
-      tr.old {
-        background: lightgrey;
-      }
-      tr.new {
-        background: white;
-      }
-    </style>
-  </head>
-  <body>
-      <table id="myTable" class="tablesorter">
-        <thead>
-          <tr>
-              <td class="Filename">Filename</td>
-              <td class="GFN">GFN</td>
-              <td class="Weight">Weight</td>
-              <td class="Weight-Int">Weight Int</td>
-              <td class="Width">Width</td>
-              <td class="Width-Int">Width Int</td>
-              <td class="Angle">Angle</td>
-              <td class="Angle-Int">Angle Int</td>
-              <td class="Usage">Usage</td>
-              <td class="Image-Weight">Image Weight</td>
-<!--              <td class="Image-Width">Image Width</td> -->
-          </tr>
-        </thead>
-        %s
-      </table>
-    <script type="text/javascript">
-      $(document).ready(function() 
-          { 
-              $("#myTable").tablesorter(); 
-          } 
-      ); 
-    </script>
-  </body>
-</html>
-"""
-
-# When outputing the debug HTML, this is used to show a single font.
-ENTRY_TEMPLATE = """
-<tr class="%s">
-  <td class="Filename">%s</td>
-  <td class="GFN">%s</td>
-  <td class="Weight">%s</td>
-  <td class="Weight-Int">%s</td>
-  <td class="Width">%s</td>
-  <td class="Width-Int">%s</td>
-  <td class="Angle">%s</td>
-  <td class="Angle-Int">%s</td>
-  <td class="Usage">%s</td>
-  <td class="Image-Weight">%s</td>
-<!--  <td class="Image-Width"></td> -->
-</tr>
-"""
 
 # Normalizes a set of values from 0 to target_max
 def normalize_values(properties, target_max=1.0):
@@ -232,8 +152,7 @@ def main():
     sys.exit()
 
   # analyse fonts
-  fontinfo = {}
-  fontinfo = analyse_fonts(glob.glob(args.files), fontinfo)
+  fontinfo = analyse_fonts(glob.glob(args.files))
 
   # normalise weights
   weights = []
@@ -291,36 +210,40 @@ def main():
        print ""
     sys.exit()
 
-  # create a string for the web server
-  template_contents = ""
+  # generate data for the web server
+
+  grid_data = {
+    "metadata": [
+      {"name":"fontfile","label":"FONTFILE","datatype":"string","editable":True},
+      {"name":"gfn","label":"GFN","datatype":"string","editable":True},
+      {"name":"weight","label":"WEIGHT","datatype":"double(2)","editable":True},
+      {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
+      {"name":"width","label":"HEIGHT","datatype":"double(2)","editable":True},
+      {"name":"width_int","label":"HEIGHT_INT","datatype":"integer","editable":True},
+      {"name":"angle","label":"ANGLE","datatype":"double(2)","editable":True},
+      {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
+      {"name":"usage","label":"USAGE","datatype":"string","editable":True},
+    ],
+    "data": []
+  }
+
+  field_id = 1
   for fontfile in fontinfo:
     img_weight_html, img_width_html = "", ""
     if fontinfo[fontfile]["img_weight"] is not None:
       img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
       #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
-    old_or_new = "new"
-    if fontfile.startswith("existing"):
-      old_or_new = "old"
-    template_contents += ENTRY_TEMPLATE % (old_or_new,
-                                           fontfile, 
-                                           fontinfo[fontfile]["gfn"],
-                                           fontinfo[fontfile]["weight"],
-                                           fontinfo[fontfile]["weight_int"],
-                                           fontinfo[fontfile]["width"],
-                                           fontinfo[fontfile]["width_int"],
-                                           fontinfo[fontfile]["angle"],
-                                           fontinfo[fontfile]["angle_int"],
-                                           fontinfo[fontfile]["usage"],
-                                           img_weight_html)
-                                           #img_width_html)
 
-  debug_page_html = DEBUG_TEMPLATE % template_contents
+    values = fontinfo[fontfile]
+    values["fontfile"] = fontfile
+    grid_data["data"].append({"id": field_id, "values": values})
+    field_id += 1
 
   app = Flask(__name__)
 
-  @app.route('/')
-  def hello_world():
-    return debug_page_html
+  @app.route('/data.json')
+  def json_data():
+    return jsonify(grid_data)
 
   app.run()
 
@@ -338,7 +261,8 @@ def get_gfn(fontfile):
   return gfn
 
 # Returns fontinfo dict
-def analyse_fonts(files, fontinfo):
+def analyse_fonts(files):
+  fontinfo = {}
   # run the analysis for each file, in sorted order
   for fontfile in sorted(files):
     # if blacklisted the skip it
