@@ -223,8 +223,8 @@ def main():
       {"name":"gfn","label":"GFN","datatype":"string","editable":True},
       {"name":"weight","label":"WEIGHT","datatype":"double(2)","editable":True},
       {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
-      {"name":"width","label":"HEIGHT","datatype":"double(2)","editable":True},
-      {"name":"width_int","label":"HEIGHT_INT","datatype":"integer","editable":True},
+      {"name":"width","label":"WIDTH","datatype":"double(2)","editable":True},
+      {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
       {"name":"angle","label":"ANGLE","datatype":"double(2)","editable":True},
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
       {"name":"usage","label":"USAGE","datatype":"string","editable":True},
@@ -250,7 +250,9 @@ def main():
   def json_data():
     return jsonify(grid_data)
 
+  print "Access http://127.0.0.1:5000/static/index.html\n"
   app.run()
+
 
 
 def get_gfn(fontfile):
