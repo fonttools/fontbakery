@@ -105,7 +105,7 @@ def generate_italic_angle_images():
   for i in range(10):
     angle = 30*(float(i)/10) * 3.1415/180
     im = Image.new('RGBA', (200,50), (255,255,255,0))
-    N = 6
+    N = 15
     spacing = 200/N
     draw = ImageDraw.Draw(im)
     for j in range(N):
@@ -145,6 +145,10 @@ def map_to_int_range(weights, target_min=1, target_max=10):
     weights_as_int.append(weight)
   return weights_as_int
 
+ITALIC_ANGLE_TEMPLATE = """
+<img height='50%%' src='data:image/png;base64,%s'
+     style="background:url(images/angle_%d.png) 0 0 no-repeat;" />
+"""
 
 def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
@@ -284,7 +288,8 @@ def main():
     img_angle_html = ""
     if ".ttf" in fontfile:
       print ("will try {} now...".format(fontfile))
-      img_angle_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (render_HMNU_sample(fontfile))
+
+      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_HMNU_sample(fontfile), fontinfo[fontfile]["angle_int"])
 
     values = fontinfo[fontfile]
     values["fontfile"] = fontfile
