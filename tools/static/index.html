@@ -27,6 +27,12 @@ input.invalid { background: red; color: #FDFDFD; }
 <div id="tablecontent"></div>
 <script>
 function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
+
+        if (grid.getColumnName(columnIndex) == "angle_int"){
+            var row = grid.getRow(rowIndex);
+            $(row).find("img:first").css("background-image", "url(images/angle_" + newValue + ".png)")
+        }
+
 	$.ajax({
 	   url: '../update',
 	   type: 'POST',
@@ -49,7 +55,8 @@ function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
 
 	       highlight(row.id, success ? "ok" : "error");
 	   },
-	   error: function(XMLHttpRequest, textStatus, exception) { alert("Ajax failure\n" + errortext); },
+	   //TODO: why are we getting an error even when the ajax call was successful?
+           //error: function(XMLHttpRequest, textStatus, exception) { alert("Ajax failure\n"); },
 	   async: true
 	});
 }

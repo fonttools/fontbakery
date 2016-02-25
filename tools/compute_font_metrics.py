@@ -98,6 +98,25 @@ BLACKLIST = [
   "Redacted"
 ]
 
+
+def generate_italic_angle_images():
+  from PIL import Image, ImageDraw
+  import math
+  for i in range(10):
+    angle = 30*(float(i)/10) * 3.1415/180
+    im = Image.new('RGBA', (200,50), (255,255,255,0))
+    N = 15
+    spacing = 200/N
+    draw = ImageDraw.Draw(im)
+    for j in range(N):
+      draw.line([j*spacing, im.size[1], j*spacing + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
+    del draw
+    filepath = "static/images/angle_{}.png".format(i+1)
+    filepath = os.path.join(os.path.dirname(__file__), filepath)
+    im.save(filepath, "PNG")
+
+generate_italic_angle_images()
+
 def get_FamilyProto_Message(path):
     message = FamilyProto()
     text_data = open(path, "rb").read()
@@ -128,6 +147,10 @@ def map_to_int_range(weights, target_min=1, target_max=10):
     weights_as_int.append(weight)
   return weights_as_int
 
+ITALIC_ANGLE_TEMPLATE = """
+<img height='50%%' src='data:image/png;base64,%s'
+     style="background:url(images/angle_%d.png) 0 0 no-repeat;" />
+"""
 
 def main():
   description = """Calculates the visual weight, width or italic angle of fonts.
@@ -230,6 +253,7 @@ def main():
       {"name":"width","label":"WIDTH","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
       {"name":"angle","label":"ANGLE","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True}, 
+      {"name":"angle_image","label":"ANGLE_IMAGE","datatype":"html","editable":False},
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
@@ -239,6 +263,23 @@ def main():
     "data": []
   }
 
+  #renders a sample of a few glyphs and
+  #returns a PNG image as base64 data
+  def render_HMNU_sample(fontfile):
+    SAMPLE_CHARS = "HMNU"
+    font = ImageFont.truetype(fontfile, FONT_SIZE)
+    try:
+      text_width, text_height = font.getsize(SAMPLE_CHARS)
+    except:
+      text_width, text_height = 1, 1
+    img = Image.new('RGBA', (text_width, 2*text_height))
+    draw = ImageDraw.Draw(img)
+    try:
+      draw.text((0, -text_height/3), SAMPLE_CHARS, font=font, fill=(0, 0, 0)) #the y coordinate positioning is a hack. FIXME!
+    except:
+      pass
+    return get_base64_image(img)
+
   field_id = 1
   for fontfile in fontinfo:
     img_weight_html, img_width_html = "", ""
@@ -246,9 +287,14 @@ def main():
       img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
       #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
 
+    img_angle_html = ""
+    if ".ttf" in fontfile:
+      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_HMNU_sample(fontfile), fontinfo[fontfile]["angle_int"])
+
     values = fontinfo[fontfile]
     values["fontfile"] = fontfile
     values["image"] = img_weight_html
+    values["angle_image"] = img_angle_html
     grid_data["data"].append({"id": field_id, "values": values})
     field_id += 1
 
