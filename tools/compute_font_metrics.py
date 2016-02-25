@@ -143,13 +143,13 @@ def main():
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
   """
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*",
+  parser.add_argument("-f", "--files", default="*", required=True, 
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, action='store_true',
     help="Debug mode, just print results")
   parser.add_argument("-e", "--existing", default=False,
     help="Path to existing font-metadata.csv")
-  parser.add_argument("-o", "--output", default="output.csv",
+  parser.add_argument("-o", "--output", default="output.csv", required=True, 
     help="CSV data output filename")
   args = parser.parse_args()
 
