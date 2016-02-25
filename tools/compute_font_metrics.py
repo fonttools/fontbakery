@@ -98,6 +98,23 @@ BLACKLIST = [
   "Redacted"
 ]
 
+
+def generate_italic_angle_images():
+  from PIL import Image, ImageDraw
+  import math
+  for i in range(10):
+    angle = 30*(float(i)/10) * 3.1415/180
+    im = Image.new('RGBA', (200,50), (255,255,255,0))
+    N = 6
+    spacing = 200/N
+    draw = ImageDraw.Draw(im)
+    for j in range(N):
+      draw.line([j*spacing, im.size[1], j*spacing + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
+    del draw
+    im.save("tools/static/images/angle_{}.png".format(i), "PNG")
+
+generate_italic_angle_images()
+
 def get_FamilyProto_Message(path):
     message = FamilyProto()
     text_data = open(path, "rb").read()
