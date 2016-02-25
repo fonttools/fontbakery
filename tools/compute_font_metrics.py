@@ -301,7 +301,12 @@ def main():
     field_id += 1
 
   def save_csv():
-    with open(args.output, 'wb') as csvfile:
+    filename = args.output
+    #count = 0
+    #while os.isfile(filename):
+    #  print filename, "exists, trying", filename + count
+    #  filename = filename + count
+    with open(filename, 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"')
         writer.writerow(["GFN","FWE","FIA","FWI","USAGE"]) # first row has the headers
         for data in grid_data["data"]:
