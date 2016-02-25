@@ -64,7 +64,56 @@ grid = new EditableGrid("DemoGridJSON", {
 	    tableLoaded: function() { this.renderGrid("tablecontent", "testgrid"); }
 	});
 grid.loadJSON("../data.json");
+
+// the following does not FIXME
+var input = $('input');
+input.bind('mousewheel', function (e) {
+    e.preventDefault(); // prevent the default action (scroll)
+    var n = $(this).val();
+    var x = 1;
+    if (e.shiftKey) {
+        x = 10;
+    }
+    if (e.originalEvent.wheelDelta / 120 > 0) {
+        $(this).val(Math.max(parseInt(n) - x, 1));
+    } else {
+        $(this).val(parseInt(n) + x);
+    }
+});
+input.keydown(function (e) {
+    e.preventDefault(); // prevent the default action (move caret)
+    var n = $(this).val();
+    var x = 1;
+    if (e.shiftKey) {
+        x = 10;
+    }
+    switch (e.which) {
+        // case 37:
+            // left
+        //    $(this).val(Math.max(parseInt(n) - x, 1));
+        //    break;
+        case 38:
+            // up
+            $(this).val(parseInt(n) + x);
+            break;
+        //case 39:
+            // right
+        //    $(this).val(parseInt(n) + x);
+        //    break;
+        case 40:
+            // down
+            $(this).val(Math.max(parseInt(n) - x, 1));
+            break;
+        default:
+            return; // exit this handler for other keys
+    }
+});
 }
+$( document ).ready(function() {
+	console.log( "ready!" ); // this runs
+	$('td:contains("existing")').parent().css({color: "#EDEDED"}); // this does not run, but works when put into console FIXME
+  console.log( "done!" ); // this runs
+});
 </script>
 </body>
 </html>
