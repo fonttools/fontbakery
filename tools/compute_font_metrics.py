@@ -309,7 +309,7 @@ def analyse_fonts(files):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
     else:
-      print count, "of", len(files), fontfile, "..."
+      print("[{}/{}] {}...".format(count+1, len(files), fontfile))
     # put metadata in dictionary
     darkness, img_d = get_darkness(fontfile)
     width, img_w = get_width(fontfile)
