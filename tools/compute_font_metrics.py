@@ -94,6 +94,8 @@ BLACKLIST = [
   #IOError: execution context too long (issue #703)
   "FiraSans",
   "FiraMono"
+  # Its pure black so it throws everything off
+  "Redacted"
 ]
 
 def get_FamilyProto_Message(path):
