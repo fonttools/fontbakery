@@ -111,7 +111,9 @@ def generate_italic_angle_images():
     for j in range(N):
       draw.line([j*spacing, im.size[1], j*spacing + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
     del draw
-    im.save("tools/static/images/angle_{}.png".format(i+1), "PNG")
+    filepath = "static/images/angle_{}.png".format(i+1)
+    filepath = os.path.join(os.path.dirname(__file__), filepath)
+    im.save(filepath, "PNG")
 
 generate_italic_angle_images()
 
