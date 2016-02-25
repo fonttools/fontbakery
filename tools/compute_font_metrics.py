@@ -372,19 +372,20 @@ def get_darkness(fontfile):
   histogram = img.histogram()
   alpha = histogram[768:]
   avg = 0.0
+  darkness = 0.0
   for i, value in enumerate(alpha):
     avg += (i / 255.0) * value
   try:
     darkness = avg / (text_width * text_height)
   except:
     raise
-    darkness = 0.0
 
-  # NOOP this because it reduces darkness to 0.0 always
-  # Weight the darkness by x-height.
-  # x_height = get_x_height(fontfile)
-  #darkness *= (x_height / FONT_SIZE)
-
+  # Weight the darkness by x-height for more accurate results
+  # FIXME Perhaps this should instead *CROP* the image 
+  # to the bbox of the letters, to remove additional 
+  # whitespace created by vertical metrics, even for more accuracy
+  x_height = get_x_height(fontfile)
+  darkness *= (x_height / float(FONT_SIZE))
   return darkness, get_base64_image(img)
 
 # Get the base 64 representation of an image, to use for visual testing.
