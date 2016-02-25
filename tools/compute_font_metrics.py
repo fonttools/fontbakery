@@ -308,7 +308,7 @@ def main():
           values = data["values"]
           gfn = values['gfn']
           fwe = values['weight_int']
-          fia = values['angle']
+          fia = values['angle_int']
           fwi = values['width_int']
           usage = values['usage']
           writer.writerow([gfn, fwe, fia, fwi, usage])
