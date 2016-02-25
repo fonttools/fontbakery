@@ -232,6 +232,7 @@ def main():
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
       },
+      {"name":"image","label":"IMAGE","datatype":"html","editable":False},
     ],
     "data": []
   }
@@ -245,6 +246,7 @@ def main():
 
     values = fontinfo[fontfile]
     values["fontfile"] = fontfile
+    values["image"] = img_weight_html
     grid_data["data"].append({"id": field_id, "values": values})
     field_id += 1
 
