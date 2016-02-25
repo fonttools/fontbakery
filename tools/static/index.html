@@ -25,17 +25,49 @@
 		</style>
 		
 		<script>
+                        function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
+                           $.ajax({
+                               url: 'update',
+                               type: 'POST',
+                               dataType: "json",
+                               data: {
+                                   tablename : grid.name,
+                                   id: grid.getRowId(rowIndex),
+                                   newvalue: grid.getColumnType(columnIndex) == "boolean" ? (newValue ? 1 : 0) : newValue,
+                                   colname: grid.getColumnName(columnIndex),
+                                   coltype: grid.getColumnType(columnIndex)
+                               },
+                               success: function (response) {
+                                   // reset old value if failed then highlight row
+
+                                   // by default, a sucessfull reponse can be "ok" or a database id
+                                   var success = onResponse ? onResponse(response) : (response == "ok" || !isNaN(parseInt(response)));
+
+                                   if (!success)
+                                       editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
+
+                                   highlight(row.id, success ? "ok" : "error");
+                               },
+                               error: function(XMLHttpRequest, textStatus, exception) { alert("Ajax failure\n" + errortext); },
+                               async: true
+                           });
+                        }
+
 			window.onload = function() {
-				editableGrid = new EditableGrid("DemoGridJSON"); 
-				editableGrid.tableLoaded = function() { this.renderGrid("tablecontent", "testgrid"); };
-				editableGrid.loadJSON("../data.json");
-			} 
+                            grid = new EditableGrid("DemoGridJSON", {
+                                modelChanged: function(rowIndex, columnIndex, oldValue, newValue, row) {
+                                    updateCellValue(this, rowIndex, columnIndex, oldValue, newValue, row);
+                                },
+                                tableLoaded: function() { this.renderGrid("tablecontent", "testgrid"); }
+                            });
+                            grid.loadJSON("../data.json");
+			}
 		</script>
 		
 	</head>
 	
 	<body>
-		<!-- <h1>PLACE A HEADER TITLE HERE</h1> -->
+		<h1>Font Classification Editor</h1>
 		<div id="tablecontent"></div>
 	</body>
 
