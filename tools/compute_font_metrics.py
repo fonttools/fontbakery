@@ -93,7 +93,7 @@ BLACKLIST = [
   "Droid",
   #IOError: execution context too long (issue #703)
   "FiraSans",
-  "FiraMono"
+  "FiraMono",
   # Its pure black so it throws everything off
   "Redacted"
 ]
@@ -303,11 +303,13 @@ def get_gfn(fontfile):
 def analyse_fonts(files):
   fontinfo = {}
   # run the analysis for each file, in sorted order
-  for fontfile in sorted(files):
+  for count, fontfile in enumerate(sorted(files)):
     # if blacklisted the skip it
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
+    else:
+      print count, "of", len(files), fontfile, "..."
     # put metadata in dictionary
     darkness, img_d = get_darkness(fontfile)
     width, img_w = get_width(fontfile)
