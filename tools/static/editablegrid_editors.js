@@ -52,9 +52,13 @@ CellEditor.prototype.edit = function(rowIndex, columnIndex, element, value)
 					while (true) {
 
 						// find next cell in grid
-						if (candidateColumnIndex < this.celleditor.editablegrid.getColumnCount() - 1) candidateColumnIndex++;
-						else { candidateRowIndex++; candidateColumnIndex = 0; }
-						if (!this.celleditor.editablegrid.getRow(candidateRowIndex)) candidateRowIndex = 0;
+//						if (candidateColumnIndex < this.celleditor.editablegrid.getColumnCount() - 1) candidateColumnIndex++;
+//						else { candidateRowIndex++; candidateColumnIndex = 0; }
+//						if (!this.celleditor.editablegrid.getRow(candidateRowIndex)) candidateRowIndex = 0;
+
+						// find next cell in grid
+                                                candidateRowIndex++;
+						if (!this.celleditor.editablegrid.getRow(candidateRowIndex)) candidateRowInidex = 0;
 
 						// candidate cell is editable: edit it and break
 						var column = this.celleditor.editablegrid.getColumn(candidateColumnIndex);

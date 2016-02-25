@@ -93,7 +93,9 @@ BLACKLIST = [
   "Droid",
   #IOError: execution context too long (issue #703)
   "FiraSans",
-  "FiraMono"
+  "FiraMono",
+  # Its pure black so it throws everything off
+  "Redacted"
 ]
 
 def get_FamilyProto_Message(path):
@@ -143,13 +145,13 @@ def main():
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
   """
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*",
+  parser.add_argument("-f", "--files", default="*", required=True, 
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, action='store_true',
     help="Debug mode, just print results")
   parser.add_argument("-e", "--existing", default=False,
     help="Path to existing font-metadata.csv")
-  parser.add_argument("-o", "--output", default="output.csv",
+  parser.add_argument("-o", "--output", default="output.csv", required=True, 
     help="CSV data output filename")
   args = parser.parse_args()
 
@@ -218,20 +220,21 @@ def main():
     sys.exit()
 
   # generate data for the web server
-
+  # double(<unit>, <precision>, <decimal_point>, <thousands_separator>, <show_unit_before_number>, <nansymbol>)
   grid_data = {
     "metadata": [
       {"name":"fontfile","label":"FONTFILE","datatype":"string","editable":True},
       {"name":"gfn","label":"GFN","datatype":"string","editable":True},
-      {"name":"weight","label":"WEIGHT","datatype":"double(2)","editable":True},
+      {"name":"weight","label":"WEIGHT","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
-      {"name":"width","label":"WIDTH","datatype":"double(2)","editable":True},
+      {"name":"width","label":"WIDTH","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
-      {"name":"angle","label":"ANGLE","datatype":"double(2)","editable":True},
+      {"name":"angle","label":"ANGLE","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True}, 
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
       },
+      {"name":"image","label":"IMAGE","datatype":"html","editable":False},
     ],
     "data": []
   }
@@ -245,6 +248,7 @@ def main():
 
     values = fontinfo[fontfile]
     values["fontfile"] = fontfile
+    values["image"] = img_weight_html
     grid_data["data"].append({"id": field_id, "values": values})
     field_id += 1
 
@@ -299,11 +303,13 @@ def get_gfn(fontfile):
 def analyse_fonts(files):
   fontinfo = {}
   # run the analysis for each file, in sorted order
-  for fontfile in sorted(files):
+  for count, fontfile in enumerate(sorted(files)):
     # if blacklisted the skip it
     if is_blacklisted(fontfile):
       print >> sys.stderr, "%s is blacklisted." % fontfile
       continue
+    else:
+      print("[{}/{}] {}...".format(count+1, len(files), fontfile))
     # put metadata in dictionary
     darkness, img_d = get_darkness(fontfile)
     width, img_w = get_width(fontfile)
@@ -366,19 +372,20 @@ def get_darkness(fontfile):
   histogram = img.histogram()
   alpha = histogram[768:]
   avg = 0.0
+  darkness = 0.0
   for i, value in enumerate(alpha):
     avg += (i / 255.0) * value
   try:
     darkness = avg / (text_width * text_height)
   except:
     raise
-    darkness = 0.0
 
-  # NOOP this because it reduces darkness to 0.0 always
-  # Weight the darkness by x-height.
-  # x_height = get_x_height(fontfile)
-  #darkness *= (x_height / FONT_SIZE)
-
+  # Weight the darkness by x-height for more accurate results
+  # FIXME Perhaps this should instead *CROP* the image 
+  # to the bbox of the letters, to remove additional 
+  # whitespace created by vertical metrics, even for more accuracy
+  x_height = get_x_height(fontfile)
+  darkness *= (x_height / float(FONT_SIZE))
   return darkness, get_base64_image(img)
 
 # Get the base 64 representation of an image, to use for visual testing.
