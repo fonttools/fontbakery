@@ -218,16 +218,16 @@ def main():
     sys.exit()
 
   # generate data for the web server
-
+  # double(<unit>, <precision>, <decimal_point>, <thousands_separator>, <show_unit_before_number>, <nansymbol>)
   grid_data = {
     "metadata": [
       {"name":"fontfile","label":"FONTFILE","datatype":"string","editable":True},
       {"name":"gfn","label":"GFN","datatype":"string","editable":True},
-      {"name":"weight","label":"WEIGHT","datatype":"double(2)","editable":True},
+      {"name":"weight","label":"WEIGHT","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
-      {"name":"width","label":"WIDTH","datatype":"double(2)","editable":True},
+      {"name":"width","label":"WIDTH","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
-      {"name":"angle","label":"ANGLE","datatype":"double(2)","editable":True},
+      {"name":"angle","label":"ANGLE","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True}, 
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
