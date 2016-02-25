@@ -229,7 +229,9 @@ def main():
       {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
       {"name":"angle","label":"ANGLE","datatype":"double(2)","editable":True},
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
-      {"name":"usage","label":"USAGE","datatype":"string","editable":True},
+      {"name":"usage","label":"USAGE","datatype":"string","editable":True,
+        "values": {"header":"header", "body":"body", "unknown":"unknown"}
+      },
     ],
     "data": []
   }
