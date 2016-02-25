@@ -289,8 +289,6 @@ def main():
 
     img_angle_html = ""
     if ".ttf" in fontfile:
-      print ("will try {} now...".format(fontfile))
-
       img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_HMNU_sample(fontfile), fontinfo[fontfile]["angle_int"])
 
     values = fontinfo[fontfile]
