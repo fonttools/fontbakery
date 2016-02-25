@@ -104,12 +104,14 @@ def generate_italic_angle_images():
   import math
   for i in range(10):
     angle = 30*(float(i)/10) * 3.1415/180
-    im = Image.new('RGBA', (200,50), (255,255,255,0))
-    N = 15
-    spacing = 200/N
+    width = 2000
+    height = 500
+    lines = 250
+    im = Image.new('RGBA', (width,height), (255,255,255,0))
+    spacing = width/lines
     draw = ImageDraw.Draw(im)
-    for j in range(N):
-      draw.line([j*spacing, im.size[1], j*spacing + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
+    for j in range(lines):
+      draw.line([j*spacing - 400, im.size[1], j*spacing - 400 + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
     del draw
     filepath = "static/images/angle_{}.png".format(i+1)
     filepath = os.path.join(os.path.dirname(__file__), filepath)
@@ -148,7 +150,7 @@ def map_to_int_range(weights, target_min=1, target_max=10):
   return weights_as_int
 
 ITALIC_ANGLE_TEMPLATE = """
-<img height='50%%' src='data:image/png;base64,%s'
+<img height='30%%' src='data:image/png;base64,%s'
      style="background:url(images/angle_%d.png) 0 0 no-repeat;" />
 """
 
@@ -265,17 +267,17 @@ def main():
 
   #renders a sample of a few glyphs and
   #returns a PNG image as base64 data
-  def render_HMNU_sample(fontfile):
-    SAMPLE_CHARS = "HMNU"
-    font = ImageFont.truetype(fontfile, FONT_SIZE)
+  def render_slant_chars(fontfile):
+    SAMPLE_CHARS = "HNHNUHNHN"
+    font = ImageFont.truetype(fontfile, FONT_SIZE * 10)
     try:
       text_width, text_height = font.getsize(SAMPLE_CHARS)
     except:
       text_width, text_height = 1, 1
-    img = Image.new('RGBA', (text_width, 2*text_height))
+    img = Image.new('RGBA', (text_width, 20+text_height))
     draw = ImageDraw.Draw(img)
     try:
-      draw.text((0, -text_height/3), SAMPLE_CHARS, font=font, fill=(0, 0, 0)) #the y coordinate positioning is a hack. FIXME!
+      draw.text((0, 0), SAMPLE_CHARS, font=font, fill=(0, 0, 0))
     except:
       pass
     return get_base64_image(img)
@@ -289,7 +291,7 @@ def main():
 
     img_angle_html = ""
     if ".ttf" in fontfile:
-      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_HMNU_sample(fontfile), fontinfo[fontfile]["angle_int"])
+      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_slant_chars(fontfile), fontinfo[fontfile]["angle_int"])
 
     values = fontinfo[fontfile]
     values["fontfile"] = fontfile
