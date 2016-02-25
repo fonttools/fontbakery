@@ -1,76 +1,70 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Font Classification Editor</title>
-		
-                <script src="jquery-1.11.1.min.js" ></script>
-		<script src="editablegrid.js"></script>
-		<!-- [DO NOT DEPLOY] --> <script src="editablegrid_renderers.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="editablegrid_editors.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="editablegrid_validators.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="editablegrid_utils.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="editablegrid_charts.js" ></script>
-		<link rel="stylesheet" href="editablegrid.css" type="text/css" media="screen">
-		
-		<style>
-			body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
-			h1 { font-size: 15px; }
-			a { color: #548dc4; text-decoration: none; }
-			a:hover { text-decoration: underline; }
-			table.testgrid { border-collapse: collapse; border: 1px solid #CCB; width: 100%; }
-			table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
-			table.testgrid th { background: #E5E5E5; text-align: left; }
-			input.invalid { background: red; color: #FDFDFD; }
-		</style>
-		
-		<script>
-                        function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
-                           $.ajax({
-                               url: '../update',
-                               type: 'POST',
-                               dataType: "json",
-                               data: {
-                                   tablename : grid.name,
-                                   id: grid.getRowId(rowIndex),
-                                   newvalue: grid.getColumnType(columnIndex) == "boolean" ? (newValue ? 1 : 0) : newValue,
-                                   colname: grid.getColumnName(columnIndex),
-                                   coltype: grid.getColumnType(columnIndex)
-                               },
-                               success: function (response) {
-                                   // reset old value if failed then highlight row
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Font Classification Editor</title>
+<script type="text/javascript" src="jquery-1.11.1.min.js" ></script>
+<script type="text/javascript" src="editablegrid.js"></script>
+<!-- [DO NOT DEPLOY] --> <script src="editablegrid_renderers.js" ></script>
+<!-- [DO NOT DEPLOY] --> <script src="editablegrid_editors.js" ></script>
+<!-- [DO NOT DEPLOY] --> <script src="editablegrid_validators.js" ></script>
+<!-- [DO NOT DEPLOY] --> <script src="editablegrid_utils.js" ></script>
+<!-- [DO NOT DEPLOY] --> <script src="editablegrid_charts.js" ></script>
+<link rel="stylesheet" href="editablegrid.css" type="text/css" media="screen">
+<style type="text/css">
+body { font-family:sans-serif; font-size:0.7em; }
+h1 { font-size: 1em; }
+a { color: #548dc4; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.testgrid { border-collapse: collapse; border: 1px solid #CCB; width: 100%; }
+table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
+table.testgrid th { background: #E5E5E5; text-align: left; }
+input.invalid { background: red; color: #FDFDFD; }
+</style>
+</head>
+<body>
+<h1>Font Classification Editor</h1>
+<div id="tablecontent"></div>
+<script>
+function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
+	$.ajax({
+	   url: '../update',
+	   type: 'POST',
+	   dataType: "json",
+	   data: {
+	       tablename : grid.name,
+	       id: grid.getRowId(rowIndex),
+	       newvalue: grid.getColumnType(columnIndex) == "boolean" ? (newValue ? 1 : 0) : newValue,
+	       colname: grid.getColumnName(columnIndex),
+	       coltype: grid.getColumnType(columnIndex)
+	   },
+	   success: function (response) {
+	       // reset old value if failed then highlight row
 
-                                   // by default, a sucessfull reponse can be "ok" or a database id
-                                   var success = onResponse ? onResponse(response) : (response == "ok" || !isNaN(parseInt(response)));
+	       // by default, a sucessfull reponse can be "ok" or a database id
+	       var success = onResponse ? onResponse(response) : (response == "ok" || !isNaN(parseInt(response)));
 
-                                   if (!success)
-                                       editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
+	       if (!success)
+	           editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
 
-                                   highlight(row.id, success ? "ok" : "error");
-                               },
-                               error: function(XMLHttpRequest, textStatus, exception) { alert("Ajax failure\n" + errortext); },
-                               async: true
-                           });
-                        }
+	       highlight(row.id, success ? "ok" : "error");
+	   },
+	   error: function(XMLHttpRequest, textStatus, exception) { alert("Ajax failure\n" + errortext); },
+	   async: true
+	});
+}
 
-			window.onload = function() {
-                            grid = new EditableGrid("DemoGridJSON", {
-                                modelChanged: function(rowIndex, columnIndex, oldValue, newValue, row) {
-                                    updateCellValue(this, rowIndex, columnIndex, oldValue, newValue, row);
-                                },
-                                tableLoaded: function() { this.renderGrid("tablecontent", "testgrid"); }
-                            });
-                            grid.loadJSON("../data.json");
-			}
-		</script>
-		
-	</head>
-	
-	<body>
-		<h1>Font Classification Editor</h1>
-		<div id="tablecontent"></div>
-	</body>
+window.onload = function() {
 
+// the following works
+grid = new EditableGrid("DemoGridJSON", {
+	    modelChanged: function(rowIndex, columnIndex, oldValue, newValue, row) {
+	        updateCellValue(this, rowIndex, columnIndex, oldValue, newValue, row);
+	    },
+	    tableLoaded: function() { this.renderGrid("tablecontent", "testgrid"); }
+	});
+grid.loadJSON("../data.json");
+}
+</script>
+</body>
 </html>
-
