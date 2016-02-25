@@ -63,7 +63,7 @@ except:
   sys.exit("Needs flask.\n\nsudo pip install flask")
 
 try:
-  from flask import Flask, jsonify
+  from flask import Flask, jsonify, request
 except:
   print "Needs flask.\n\nsudo pip install flask"
 
@@ -143,12 +143,14 @@ def main():
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
   """
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*", 
+  parser.add_argument("-f", "--files", default="*",
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, action='store_true',
     help="Debug mode, just print results")
-  parser.add_argument("-e", "--existing", default=False, 
+  parser.add_argument("-e", "--existing", default=False,
     help="Path to existing font-metadata.csv")
+  parser.add_argument("-o", "--output", default="output.csv",
+    help="CSV data output filename")
   args = parser.parse_args()
 
   # show help if no args
@@ -244,11 +246,35 @@ def main():
     grid_data["data"].append({"id": field_id, "values": values})
     field_id += 1
 
+  def save_csv():
+    with open(args.output, 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"')
+        writer.writerow(["GFN","FWE","FIA","FWI","USAGE"]) # first row has the headers
+        for data in grid_data["data"]:
+          values = data["values"]
+          gfn = values['gfn']
+          fwe = values['weight_int']
+          fia = values['angle']
+          fwi = values['width_int']
+          usage = values['usage']
+          writer.writerow([gfn, fwe, fia, fwi, usage])
+    return 'ok'
+
   app = Flask(__name__)
 
   @app.route('/data.json')
   def json_data():
     return jsonify(grid_data)
+
+  @app.route('/update', methods=['POST'])
+  def update():
+    rowid = request.form['id']
+    newvalue = request.form['newvalue']
+    colname = request.form['colname']
+    for row in grid_data["data"]:
+      if row['id'] == int(rowid):
+        row['values'][colname] = newvalue
+    return save_csv()
 
   print "Access http://127.0.0.1:5000/static/index.html\n"
   app.run()
