@@ -143,12 +143,14 @@ def main():
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
   """
   parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*", 
+  parser.add_argument("-f", "--files", default="*",
     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
   parser.add_argument("-d", "--debug", default=False, action='store_true',
     help="Debug mode, just print results")
-  parser.add_argument("-e", "--existing", default=False, 
+  parser.add_argument("-e", "--existing", default=False,
     help="Path to existing font-metadata.csv")
+  parser.add_argument("-o", "--output", default="output.csv",
+    help="CSV data output filename")
   args = parser.parse_args()
 
   # show help if no args
@@ -245,7 +247,17 @@ def main():
     field_id += 1
 
   def save_csv():
-    print("save cvs TODO:Implement-me!")
+    with open(args.output, 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"')
+        writer.writerow(["GFN","FWE","FIA","FWI","USAGE"]) # first row has the headers
+        for data in grid_data["data"]:
+          values = data["values"]
+          gfn = values['gfn']
+          fwe = values['weight_int']
+          fia = values['angle']
+          fwi = values['width_int']
+          usage = values['usage']
+          writer.writerow([gfn, fwe, fia, fwi, usage])
     return 'ok'
 
   app = Flask(__name__)
