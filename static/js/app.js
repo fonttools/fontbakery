@@ -65,7 +65,8 @@ myApp.factory('httpInterceptor', ['$q', '$location', 'alertsFactory', function($
         'responseError': function(rejection) {
             // add alert for every error if interceptor is allowed
             if (!_config.nointercept) {
-                alertsFactory.addAlert(rejection.status + " - " + rejection.statusText + ": " + _config.url);
+                //FIX-ME! I'm completely disabling alerts because they are currently unreliable (we get false-positives when alternating tabs inthe webapp)
+                //alertsFactory.addAlert(rejection.status + " - " + rejection.statusText + ": " + _config.url);
             }
             return $q.reject(rejection);
         }
