@@ -222,7 +222,7 @@ angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appCon
     };
 
     this.getMetadataNew = function() {
-        return $http.get(PathBuilder.buildGhPagesUrl(appConfig.metadata_new));
+        return $http.get(PathBuilder.buildGhPagesUrl(appConfig.metadata_new), {nointercept: true});
     };
 
     this.getRepos = function() {
