@@ -355,7 +355,7 @@ angular.module('myApp').service('buildApi', ['$http', '$q', 'PathBuilder', funct
 angular.module('myApp').service('bakeryYamlApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'bakery-yaml';
     this.getYamlFile = function() {
-        return $http.get(PathBuilder.buildPagesUrl(name, 'bakery_yaml.json'), {transformResponse: []});
+        return $http.get(PathBuilder.buildPagesUrl(name, 'bakery_yaml.json'), {nointercept: true, transformResponse: []});
     };
 }]);
 
