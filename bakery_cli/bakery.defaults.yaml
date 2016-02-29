@@ -43,10 +43,6 @@ downstream: True
 optimize: True
 # optimize: False
 
-### pyftsubset defaults parameters
-###    If False, bakery does not run pyftsubset pipe
-pyftsubset: --notdef-outline --name-IDs=* --hinting
-
 ### Which compiler to use? 
 ###    By default, bakery uses fontforge to build fonts from ufo.
 ###    If afdko, ensure that is installed on the system

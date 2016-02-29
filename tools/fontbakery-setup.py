@@ -33,7 +33,6 @@ class Widgets(object):
         self.commit = urwid.Edit(edit_text=app.commit)
         self.ttfautohint = urwid.Edit(edit_text=app.ttfautohint)
         self.newfamily = urwid.Edit(edit_text=app.newfamily)
-        self.pyftsubset = urwid.Edit(edit_text=app.pyftsubset)
         self.notes = urwid.Edit(edit_text=app.notes)
         self.afdko_parameters = urwid.Edit(edit_text=app.afdko)
 
@@ -87,7 +86,6 @@ class App(object):
     downstream = True
     optimize = True
     license = ''
-    pyftsubset = '--notdef-outline --name-IDs=* --hinting'
     notes = ''
     newfamily = ''
     fontcrunch = False
@@ -113,8 +111,6 @@ class App(object):
         self.afdko = self.config.get('afdko', '')
 
         self.license = self.config.get('license', '')
-        self.pyftsubset = self.config.get('pyftsubset',
-                                     '--notdef-outline --name-IDs=* --hinting')
         self.notes = self.config.get('notes', '')
         self.newfamily = self.config.get('newfamily', '')
 
@@ -136,8 +132,6 @@ class App(object):
         self.config['newfamily'] = self.widgets.newfamily.get_edit_text()
         if not self.config['newfamily']:
             del self.config['newfamily']
-
-        self.config['pyftsubset'] = self.widgets.pyftsubset.get_edit_text()
 
         self.config['process_files'] = [w.get_label()
                                         for w in self.widgets.process_files
@@ -246,13 +240,6 @@ widgets.append(urwid.AttrMap(app.widgets.create_checkbox('Run tests?', 'downstre
 widgets.append(urwid.Divider())
 
 widgets.append(urwid.AttrMap(app.widgets.create_checkbox('Run optimize?', 'optimize', app.optimize), 'key'))
-
-widgets.append(urwid.Divider())
-
-widgets.append(urwid.AttrMap(
-    urwid.Text('pyftsubset defaults parameters?'), 'key'))
-
-widgets.append(urwid.LineBox(app.widgets.pyftsubset))
 
 widgets.append(urwid.Divider())
 

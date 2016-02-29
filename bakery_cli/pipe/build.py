@@ -126,7 +126,6 @@ class Build(object):
 
     def run_processes(self, filename, pipedata):
         from bakery_cli.pipe.fontlint import FontLint
-        from bakery_cli.pipe.pyftsubset import PyFtSubset
         from bakery_cli.pipe.optimize import Optimize
         from bakery_cli.pipe.ttfautohint import TTFAutoHint
         from bakery_cli.pipe.font_crunch import FontCrunch
@@ -143,9 +142,6 @@ class Build(object):
 
         ttfautohint = TTFAutoHint(self.bakery)
         ttfautohint.run(pipedata)
-
-        pyftsubset = PyFtSubset(self.bakery)
-        pyftsubset.run(pipedata)
 
         fontcrunch = FontCrunch(self.bakery)
         fontcrunch.run(pipedata)
