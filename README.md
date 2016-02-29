@@ -3,7 +3,7 @@
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
 
-# ![Font Bakery](Data/image.png)
+# ![Font Bakery](Data/logo.png)
 
 Font Bakery is a set of command-line tools for building and testing font projects, and a web interface for reviewing them.
 It runs checks on source files in UFO, SFD or TTX formats and via FontForge or AFDKO builds them into OTF and TTF files (plus the files needed for hosting in Google Fonts.)
