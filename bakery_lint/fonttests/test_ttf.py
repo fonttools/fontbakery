@@ -492,7 +492,7 @@ class TTFTestCase(TestCase):
             self.fail('italicAngle can\'t be larger than 20 degrees')
 
     def test_prep_magic_code(self):
-        """ Font contains in PREP table magic code """
+        """ Font contains magic code in PREP table? """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
         font = Font.get_ttfont(self.operator.path)
         if 'CFF ' in font: self.skip("Not applicable to a CFF font.")
@@ -500,8 +500,7 @@ class TTFTestCase(TestCase):
             bytecode = font.get_program_bytecode()
         except KeyError:
             bytecode = ''
-        self.assertTrue(bytecode == magiccode,
-                        msg='PREP does not contain magic code')
+        self.assertEqual(bytecode, magiccode, msg='No')
 
     @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_check_stylename_is_under_recommendations(self):
