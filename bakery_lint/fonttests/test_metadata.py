@@ -1,4 +1,4 @@
-""" Contains TestCase for METADATA.pb """
+""" Contains TestCases for METADATA.pb """
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -122,14 +122,14 @@ class MetadataTest(TestCase):
                          '`designer` key must be simple short name')
 
     def test_family_is_listed_in_gwf(self):
-        """ Fontfamily is listed in Google Font Directory """
+        """ Fontfamily is listed in Google Font Directory ? """
         url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata.name.replace(' ', '+')
         fp = requests.get(url)
         self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
 
     @tags('required')
     def test_metadata_designer_exists_in_profiles_csv(self):
-        """ Designer exists in GWF profiles.csv """
+        """ Designer exists in GWF profiles.csv ? """
         designer = self.metadata.designer
         self.assertTrue(designer != "", 'Field "designer" MUST NOT be empty')
         import urllib
@@ -144,7 +144,7 @@ class MetadataTest(TestCase):
                         msg='Designer %s is not in profiles.csv' % designer)
 
     def test_metadata_fonts_no_dupes(self):
-        """ METADATA.pb fonts field only should have uniq values """
+        """ METADATA.pb fonts field should only have unique values """
         fonts = {}
         for x in self.metadata.fonts:
             self.assertFalse(x.full_name in fonts)
@@ -163,13 +163,13 @@ class MetadataTest(TestCase):
 
     @tags('required')
     def test_metadata_license(self):
-        """ METADATA.pb license is 'Apache2', 'UFL' or 'OFL' """
+        """ METADATA.pb license is 'Apache2', 'UFL' or 'OFL' ? """
         licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.license, licenses)
 
     @tags('required')
     def test_metadata_has_unique_style_weight_pairs(self):
-        """ METADATA.pb only contains unique style:weight pairs """
+        """ METADATA.pb only contains unique style:weight pairs ? """
         pairs = []
         for fontdata in self.metadata.fonts:
             styleweight = '%s:%s' % (fontdata.style,
@@ -185,7 +185,7 @@ class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
     @tags('required',)
     def test_font_on_disk_family_equal_in_metadata_protobuf(self):
-        """ Font on disk and in METADATA.pb have the same family name """
+        """ Font on disk and in METADATA.pb have the same family name ? """
         metadata = get_FamilyProto_Message(self.operator.path)
 
         unmatched_fonts = []
@@ -274,7 +274,7 @@ class CheckMetadataAgreements(TestCase):
 
     @tags('required')
     def test_metadata_filename_matches_postscriptname(self):
-        """ METADATA.pb `filename` matches `postScriptName` """
+        """ METADATA.pb `filename` matches `postScriptName` ? """
         import re
         regex = re.compile(r'\W')
 
@@ -290,7 +290,7 @@ class CheckMetadataAgreements(TestCase):
 
     @tags('required')
     def test_metadata_fullname_matches_postScriptName(self):
-        """ METADATA.pb `fullName` matches `postScriptName` """
+        """ METADATA.pb `fullName` matches `postScriptName` ? """
         import re
         regex = re.compile(r'\W')
 
@@ -302,14 +302,13 @@ class CheckMetadataAgreements(TestCase):
                 self.fail(msg.format(x.full_name, x.post_script_name))
 
     def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
-        """ METADATA.pb 'fullname' value matches internal 'fullname' """
+        """ METADATA.pb 'fullname' value matches internal 'fullname' ? """
         for font_metadata in self.metadata.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             self.assertEqual(font.fullname, font_metadata.full_name)
 
     def test_font_name_matches_family(self):
-        """ METADATA.pb fonts 'name' property should be
-            same as font familyname """
+        """ METADATA.pb fonts 'name' property should be same as font familyname """
 
         for font_metadata in self.metadata.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
@@ -318,8 +317,7 @@ class CheckMetadataAgreements(TestCase):
                 self.fail(msg)
 
     def test_metadata_fonts_fields_have_fontname(self):
-        """ METADATA.pb fonts items fields "name", "postScriptName",
-            "fullName", "filename" contains font name right format """
+        """ METADATA.pb font item fields "name", "postScriptName", "fullName", "filename" contains font name right format ? """
         for x in self.metadata.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, x)
 
@@ -349,7 +347,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
 
     @tags('info')
     def test_copyright_matches_pattern(self):
-        """ Copyright notice matches canonical pattern """
+        """ Copyright notice matches canonical pattern ? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
@@ -358,7 +356,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
 
     @tags('info')
     def test_copyright_is_consistent_across_family(self):
-        """ Copyright notice is the same in all fonts? """
+        """ Copyright notice is the same in all fonts ? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         copyright = ''
@@ -435,8 +433,7 @@ class CheckMonospaceAgreement(TestCase):
     tool = 'lint'
 
     def test_check_monospace_agreement(self):
-        """ Monospace font has hhea.advanceWidthMax equal to each
-            glyph advanceWidth """
+        """ Monospace font has hhea.advanceWidthMax equal to each glyph advanceWidth ? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         if fm.category != 'Monospace':
@@ -496,7 +493,7 @@ class CheckNormalStyleMatchesMacStyle(TestCase):
     tool = 'lint'
 
     def test_check_normal_style_matches_names(self):
-        """ Check metadata.pb font.style `italic` matches font internal """
+        """ Check METADATA.pb font.style `italic` matches font internal """
         family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
@@ -785,7 +782,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
     tool = 'lint'
 
     def test_metadata_contains_current_font(self):
-        """ METADATA.pb should contains testing font, under canonic name"""
+        """ METADATA.pb should contain testing font under canonic name. """
 
         fm = get_FamilyProto_Message(self.operator.path)
 
@@ -819,7 +816,7 @@ class CheckCanonicalStyles(TestCase):
     ITALIC_MASK = 0b10
 
     def test_check_canonical_styles(self):
-        """ Test If font styles are canonical """
+        """ Test if font styles are canonical """
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
@@ -870,7 +867,7 @@ class CheckCanonicalFilenames(TestCase):
 
     @tags('required')
     def test_check_canonical_filenames(self):
-        """ Test If filename is canonical """
+        """ Test if filename is canonical """
         family_metadata = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family_metadata.fonts:
