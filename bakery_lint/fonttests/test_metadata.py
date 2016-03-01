@@ -389,43 +389,6 @@ class File(object):
         return magic.from_file(op.join(self.rootdir, filename), mime=True)
 
 
-class CheckSubsetsExist(TestCase):
-
-    targets = ['metadata']
-    tool = 'lint'
-    name = __name__
-
-    def setUp(self):
-        self.f = File(op.dirname(self.operator.path))
-
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
-
-    def get_subset_filename(self, font_filename, subset_name):
-        return font_filename.replace('.ttf', '.%s' % subset_name)
-
-    def test_check_subsets_exists(self):
-        """ Check that corresponding subset files exist for fonts """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            for subset in fm.subsets:
-                subset_filename = self.get_subset_filename(font_metadata.filename, subset)
-
-                error = "The subset file for the %s subset does not exist"
-                error = error % subset_filename
-                self.assertTrue(self.f.exists(subset_filename), error)
-
-                error = "The subset file %s is bigger than the original file"
-                error = error % subset_filename
-                self.assertLessEqual(self.f.size(subset_filename),
-                                     self.f.size(font_metadata.filename),
-                                     error)
-
-                self.assertEqual(self.f.mime(subset_filename),
-                                 'application/x-font-ttf')
-
-
 class CheckMonospaceAgreement(TestCase):
 
     name = __name__
@@ -896,7 +859,6 @@ def get_suite(path, apply_autofix=False):
         TestPostScriptNameInMetadataEqualFontOnDisk,
         CheckMetadataAgreements,
         CheckMetadataContainsReservedFontName,
-        CheckSubsetsExist,
         CheckMonospaceAgreement,
         CheckItalicStyleMatchesMacStyle,
         CheckNormalStyleMatchesMacStyle,
