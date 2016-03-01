@@ -504,8 +504,7 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
     def test_check_stylename_is_under_recommendations(self):
-        """ Style name must be equal to one of the following four
-            values: "Regular", "Italic", "Bold" or "Bold Italic" """
+        """ Style name must be equal to one of the following four values: "Regular", "Italic", "Bold" or "Bold Italic" """
         font = Font.get_ttfont(self.operator.path)
         self.assertIn(str(font.ot_style_name), ['Regular', 'Italic',
                                                 'Bold', 'Bold Italic'])
