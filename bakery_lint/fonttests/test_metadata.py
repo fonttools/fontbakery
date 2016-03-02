@@ -347,7 +347,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
 
     @tags('info')
     def test_copyright_matches_pattern(self):
-        """ Copyright notice matches canonical pattern ? """
+        """ Copyright notice matches canonical pattern? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
@@ -396,7 +396,7 @@ class CheckMonospaceAgreement(TestCase):
     tool = 'lint'
 
     def test_check_monospace_agreement(self):
-        """ Monospace font has hhea.advanceWidthMax equal to each glyph advanceWidth ? """
+        """ Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth ? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         if fm.category != 'Monospace':
@@ -424,7 +424,7 @@ class CheckItalicStyleMatchesMacStyle(TestCase):
     tool = 'lint'
 
     def test_check_italic_style_matches_names(self):
-        """ Check metadata.pb font.style `italic` matches font internal """
+        """ METADATA.pb font.style `italic` matches font internals? """
         family = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family.fonts:
@@ -669,7 +669,7 @@ class CheckCanonicalWeights(TestCase):
     tool = 'lint'
 
     def test_check_canonical_weights(self):
-        """ Check that weights have canonical value """
+        """ Weights have canonical value? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
@@ -745,7 +745,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
     tool = 'lint'
 
     def test_metadata_contains_current_font(self):
-        """ METADATA.pb should contain testing font under canonic name. """
+        """ METADATA.pb lists fonts named canonicaly? """
 
         fm = get_FamilyProto_Message(self.operator.path)
 
@@ -779,7 +779,7 @@ class CheckCanonicalStyles(TestCase):
     ITALIC_MASK = 0b10
 
     def test_check_canonical_styles(self):
-        """ Test if font styles are canonical """
+        """ Font styles are named canonically? """
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
@@ -830,7 +830,7 @@ class CheckCanonicalFilenames(TestCase):
 
     @tags('required')
     def test_check_canonical_filenames(self):
-        """ Test if filename is canonical """
+        """ Filename is set canonically? """
         family_metadata = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in family_metadata.fonts:
