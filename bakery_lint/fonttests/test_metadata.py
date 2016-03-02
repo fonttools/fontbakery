@@ -351,8 +351,14 @@ class CheckMetadataContainsReservedFontName(TestCase):
         fm = get_FamilyProto_Message(self.operator.path)
 
         for font_metadata in fm.fonts:
-            self.assertRegexpMatches(font_metadata.copyright,
-                                     r'Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\)')
+            almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)', font_metadata.copyright)
+            does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))', font_metadata.copyright)
+
+            if (does_match == None):
+                if (almost_matches):
+                    self.fail("Copyright notice is okay, but it lacks an email address. Expected pattern is: 'Copyright 2016 Author Name (name@site.com)'")
+                else:
+                    self.fail("Copyright notices should match the folowing pattern: 'Copyright 2016 Author Name (name@site.com)'")
 
     @tags('info')
     def test_copyright_is_consistent_across_family(self):
