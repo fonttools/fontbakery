@@ -555,6 +555,21 @@ class TTFTestCase(TestCase):
                 and name2.platformID == 1 and name2.langID == 0)
 
     @tags('required')
+    def test_check_whitespace_characters(self):
+        """ Font cointains glyphs for whitespace characters ? """
+        checker = NbspAndSpaceSameWidth(self, self.operator.path)
+
+        space = checker.getGlyph(0x0020)
+        nbsp = checker.getGlyph(0x00A0)
+        tab = checker.getGlyph(0x0009)
+
+        missing = []
+        if not space: missing.append("space (0x0020)")
+        if not nbsp: missing.append("nbsp (0x00A0)")
+        if not tab: missing.append("tab (0x0009)")
+        self.assertEquals(missing, [], "Font is missing the following glyphs: {}.".format(", ".join(missing)))
+
+    @tags('required')
     @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check non-breaking space character (0x00A0) and tab character (0x0009) both have advancewidth equal to space character (0x0020) """
@@ -564,19 +579,16 @@ class TTFTestCase(TestCase):
         nbsp = checker.getGlyph(0x00A0)
         tab = checker.getGlyph(0x0009)
 
-        self.assertTrue(space, "Font does not contain a glyph encoded as 0x0020 (space character)")
-        self.assertTrue(nbsp, "Font does not contain a glyph encoded as 0x00A0 (nbsp character)")
-        self.assertTrue(tab, "Font does not contain a glyph encoded as 0x0009 (tab character)")
-
-        spaceWidth = checker.getWidth(space)
-        nbspWidth = checker.getWidth(nbsp)
-        tabWidth = checker.getWidth(tab)
-        self.assertEqual(spaceWidth, nbspWidth,
-                         ("The nbsp advance width does not match "
-                          "the space advance width"))
-        self.assertEqual(spaceWidth, tabWidth,
-                         ("The tab advance width does not match "
-                          "the space advance width"))
+        if space and nbsp and tab:
+            spaceWidth = checker.getWidth(space)
+            nbspWidth = checker.getWidth(nbsp)
+            tabWidth = checker.getWidth(tab)
+            self.assertEqual(spaceWidth, nbspWidth,
+                             ("The nbsp advance width does not match "
+                              "the space advance width"))
+            self.assertEqual(spaceWidth, tabWidth,
+                             ("The tab advance width does not match "
+                              "the space advance width"))
 
     def test_check_no_problematic_formats(self):
         """ Check that font contain required tables """
