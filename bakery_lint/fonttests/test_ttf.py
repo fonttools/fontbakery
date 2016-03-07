@@ -554,6 +554,9 @@ class TTFTestCase(TestCase):
         return (name.platformID == 3 and name.langID == 0x409
                 and name2.platformID == 1 and name2.langID == 0)
 
+    #TODO: Split the NbspAndSpaceSameWidth fixer and creating a
+    #      new one with the strict purpose of fissing missing whitespace glyphs
+    #      See https://github.com/googlefonts/fontbakery/issues/738
     @tags('required')
     def test_check_whitespace_characters(self):
         """ Font cointains glyphs for whitespace characters ? """
@@ -579,15 +582,18 @@ class TTFTestCase(TestCase):
         nbsp = checker.getGlyph(0x00A0)
         tab = checker.getGlyph(0x0009)
 
-        if space and nbsp and tab:
+        if space and tab:
             spaceWidth = checker.getWidth(space)
-            nbspWidth = checker.getWidth(nbsp)
             tabWidth = checker.getWidth(tab)
-            self.assertEqual(spaceWidth, nbspWidth,
-                             ("The nbsp advance width does not match "
-                              "the space advance width"))
             self.assertEqual(spaceWidth, tabWidth,
                              ("The tab advance width does not match "
+                              "the space advance width"))
+
+        if space and nbsp:
+            spaceWidth = checker.getWidth(space)
+            nbspWidth = checker.getWidth(nbsp)
+            self.assertEqual(spaceWidth, nbspWidth,
+                             ("The nbsp advance width does not match "
                               "the space advance width"))
 
     def test_check_no_problematic_formats(self):
