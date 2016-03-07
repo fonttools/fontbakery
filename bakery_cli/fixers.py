@@ -581,10 +581,11 @@ class NbspAndSpaceSameWidth(Fixer):
         fontfile = os.path.basename(self.fontpath)
 
         space = self.getGlyph(0x0020)
-        nbsp = self.getGlyph(0x00A0)
-        if space not in ["space", "uni0020"]:
+        if space != None and space not in ["space", "uni0020"]:
             logger.error('ER: {}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(fontfile, space))
-        if nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
+
+        nbsp = self.getGlyph(0x00A0)
+        if nbsp != None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
             logger.error('ER: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(fontfile, nbsp))
 
         isNbspAdded = isSpaceAdded = False
@@ -608,7 +609,7 @@ class NbspAndSpaceSameWidth(Fixer):
                 if check:
                     logger.error('ER: {}: Glyph "{}" has ink. Delete any contours or components'.format(fontfile, g))
                 else:
-                    logger.error('ER: {}: Glyph "{}" has ink. Fixed: Overwritten by an empty glyph'.format(fontfile, g))
+                    logger.error('OK: {}: Glyph "{}" has ink. Fixed: Overwritten by an empty glyph'.format(fontfile, g))
                     #overwrite existing glyph with an empty one
                     self.font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
                     retval = True
@@ -625,27 +626,27 @@ class NbspAndSpaceSameWidth(Fixer):
                 if check:
                     msg = 'ER: {} space {} nbsp None: Add nbsp with advanceWidth {}'
                 else:
-                    msg = 'ER: {} space {} nbsp None: Added nbsp with advanceWidth {}'
+                    msg = 'OK: {} space {} nbsp None: Added nbsp with advanceWidth {}'
                 logger.error(msg.format(fontfile, spaceWidth, spaceWidth))
 
             if isSpaceAdded:
                 if check:
                     msg = 'ER: {} space None nbsp {}: Add space with advanceWidth {}'
                 else:
-                    msg = 'ER: {} space None nbsp {}: Added space with advanceWidth {}'
+                    msg = 'OK: {} space None nbsp {}: Added space with advanceWidth {}'
                 logger.error(msg.format(fontfile, nbspWidth, nbspWidth))
                 
             if nbspWidth > spaceWidth and spaceWidth >= 0:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change space advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space {} nbsp {}: Fixed space advanceWidth to {}'
+                    msg = 'OK: {} space {} nbsp {}: Fixed space advanceWidth to {}'
                 logger.error(msg.format(fontfile, spaceWidth, nbspWidth, nbspWidth))
             else:
                 if check:
                     msg = 'ER: {} space {} nbsp {}: Change nbsp advanceWidth to {}'
                 else:
-                    msg = 'ER: {} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+                    msg = 'OK: {} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
                 logger.error(msg.format(fontfile, spaceWidth, nbspWidth, spaceWidth))
             return True
 
