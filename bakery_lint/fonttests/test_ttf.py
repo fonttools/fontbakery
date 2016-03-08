@@ -502,26 +502,26 @@ class TTFTestCase(TestCase):
             bytecode = ''
         self.assertEqual(bytecode, magiccode, msg='No')
 
-    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
+    #TODO: @autofix('bakery_cli.fixers.StyleNameRecomendationFixer')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name is one of: 'Regular', 'Italic', 'Bold' or 'Bold Italic'? """
         font = Font.get_ttfont(self.operator.path)
         self.assertIn(str(font.ot_style_name), ['Regular', 'Italic',
                                                 'Bold', 'Bold Italic'])
 
-    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
+    #TODO: @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ OT Family Name for Windows should be equal to Family Name """
         font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_family_name, font.familyname)
 
-    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
+    #TODO: @autofix('bakery_cli.fixers.OpentypeFullnameFixer')
     def test_check_opentype_fullname(self):
         """ Full name matches Windows-only Opentype-specific FullName """
         font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_full_name, font.fullname)
 
-    @autofix('bakery_cli.fixers.FamilyAndStyleNameFixer')
+    #TODO: @autofix('bakery_cli.fixers.SubfamilyNameFixer')
     def test_suggested_subfamily_name(self):
         """ Family does not contain subfamily in `name` table """
         # Currently we just look that family does not contain any spaces
