@@ -275,6 +275,16 @@ class Font(BaseFont):
                 return value
         return ''
 
+    @ot_full_name.setter
+    def ot_full_name(self, value):
+        for entry in self.names:
+            if entry.nameID != 18 or entry.platformID != 3:
+                continue
+            entry.string = value.encode(entry.getEncoding())
+            return
+
+        self.ttfont['name'].setName(value, 18, 3, 1, 0x409)
+
     @property
     def post_script_name(self):
         """ Returns post script name

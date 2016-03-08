@@ -511,13 +511,13 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
-        """ OT Family Name for Windows should be equal to Family Name """
+        """ FamilyName matches Windows-only Opentype-specific FamilyName? """
         font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_family_name, font.familyname)
 
-    #TODO: @autofix('bakery_cli.fixers.OpentypeFullnameFixer')
+    @autofix('bakery_cli.fixers.OpentypeFullnameFixer')
     def test_check_opentype_fullname(self):
-        """ Full name matches Windows-only Opentype-specific FullName """
+        """ Fullname matches Windows-only Opentype-specific Fullname? """
         font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_full_name, font.fullname)
 
