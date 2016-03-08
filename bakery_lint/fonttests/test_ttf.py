@@ -502,7 +502,7 @@ class TTFTestCase(TestCase):
             bytecode = ''
         self.assertEqual(bytecode, magiccode, msg='No')
 
-    #TODO: @autofix('bakery_cli.fixers.StyleNameRecomendationFixer')
+    @autofix('bakery_cli.fixers.StyleNameRecommendationFixer')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name is one of: 'Regular', 'Italic', 'Bold' or 'Bold Italic'? """
         font = Font.get_ttfont(self.operator.path)
