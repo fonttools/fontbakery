@@ -761,6 +761,13 @@ def fontTools_to_dict(font):
     return fontdata
 
 
+class OpentypeFamilyNameFixer(Fixer):
+    def fix(self):
+        fontfile = os.path.basename(self.fontpath)
+        font = Font(ttfont=self.font)
+        font.ot_family_name = font.familyname
+        logger.error('OK: {}: Fixed: Windows-specific family name set to "{}"'.format(fontfile, font.familyname))
+        return True
 
 class FamilyAndStyleNameFixer(Fixer):
 

@@ -509,7 +509,7 @@ class TTFTestCase(TestCase):
         self.assertIn(str(font.ot_style_name), ['Regular', 'Italic',
                                                 'Bold', 'Bold Italic'])
 
-    #TODO: @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
+    @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ OT Family Name for Windows should be equal to Family Name """
         font = Font.get_ttfont(self.operator.path)

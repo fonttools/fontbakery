@@ -37,12 +37,15 @@ class BaseFont(object):
 
 class Font(BaseFont):
 
-    def __init__(self, fontpath):
-        if fontpath[-4:] == '.ttx':
-            self.ttfont = ttLib.TTFont(None)
-            self.ttfont.importXML(fontpath, quiet=True)
+    def __init__(self, fontpath=None, ttfont=None):
+        if ttfont:
+            self.ttfont = ttfont
         else:
-            self.ttfont = ttLib.TTFont(fontpath)
+            if fontpath[-4:] == '.ttx':
+                self.ttfont = ttLib.TTFont(None)
+                self.ttfont.importXML(fontpath, quiet=True)
+            else:
+                self.ttfont = ttLib.TTFont(fontpath)
 
         self.ascents = AscentGroup(self.ttfont)
         self.descents = DescentGroup(self.ttfont)
@@ -233,6 +236,16 @@ class Font(BaseFont):
             if value:
                 return value
         return ''
+
+    @ot_family_name.setter
+    def ot_family_name(self, value):
+        for entry in self.names:
+            if entry.nameID != 16 or entry.platformID != 3:
+                continue
+            entry.string = value.encode(entry.getEncoding())
+            return
+
+        self.ttfont['name'].setName(value, 16, 3, 1, 0x409)
 
     @property
     def ot_style_name(self):
