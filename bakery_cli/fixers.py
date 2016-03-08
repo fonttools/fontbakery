@@ -761,6 +761,21 @@ def fontTools_to_dict(font):
     return fontdata
 
 
+class OpentypeFamilyNameFixer(Fixer):
+    def fix(self):
+        fontfile = os.path.basename(self.fontpath)
+        font = Font(ttfont=self.font)
+        font.ot_family_name = font.familyname
+        logger.error('OK: {}: Fixed: Windows-only Opentype-specific FamilyName set to "{}"'.format(fontfile, font.familyname))
+        return True
+
+class OpentypeFullnameFixer(Fixer):
+    def fix(self):
+        fontfile = os.path.basename(self.fontpath)
+        font = Font(ttfont=self.font)
+        font.ot_full_name = font.fullname
+        logger.error('OK: {}: Fixed: Windows-only Opentype-specific FullName set to "{}"'.format(fontfile, font.fullname))
+        return True
 
 class FamilyAndStyleNameFixer(Fixer):
 
