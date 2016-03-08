@@ -261,6 +261,16 @@ class Font(BaseFont):
                 return value
         return ''
 
+    @ot_style_name.setter
+    def ot_style_name(self, value):
+        for entry in self.names:
+            if entry.nameID != 17 or entry.platformID != 3:
+                continue
+            entry.string = value.encode(entry.getEncoding())
+            return
+
+        self.ttfont['name'].setName(value, 17, 3, 1, 0x409)
+
     @property
     def ot_full_name(self):
         """ Returns Windows-only Opentype-specific FullName """
