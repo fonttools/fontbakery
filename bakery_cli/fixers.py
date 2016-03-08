@@ -797,6 +797,17 @@ class OpentypeFullnameFixer(Fixer):
         return True
 
 
+class SubfamilyNameFixer(Fixer):
+    def fix(self):
+        fontfile = os.path.basename(self.fontpath)
+        suggestedvalues = getSuggestedFontNameValues(self.font)
+        font.familyname = suggestedvalues['family']
+        font.stylename = suggestedvalues['subfamily']
+        logger.error('OK: {}: Fixed: family name set to "{}" and sub-family name set to "{}"'.format(fontfile,
+            suggestedvalues['family'], suggestedvalues['subfamily']))
+        return True
+
+
 class FamilyAndStyleNameFixer(Fixer):
 
     def get_shell_command(self):

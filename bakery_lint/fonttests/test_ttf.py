@@ -521,11 +521,9 @@ class TTFTestCase(TestCase):
         font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_full_name, font.fullname)
 
-    #TODO: @autofix('bakery_cli.fixers.SubfamilyNameFixer')
+    @autofix('bakery_cli.fixers.SubfamilyNameFixer')
     def test_suggested_subfamily_name(self):
-        """ Family does not contain subfamily in `name` table """
-        # Currently we just look that family does not contain any spaces
-        # in its name. This prevent us from incorrect suggestions of names
+        """ Family and style names are set canonically? """
         font = Font.get_ttfont(self.operator.path)
         suggestedvalues = getSuggestedFontNameValues(font.ttfont)
         self.assertEqual(font.familyname, suggestedvalues['family'])
