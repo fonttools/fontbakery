@@ -48,7 +48,7 @@ Font Bakery tools provide two main actions:
 Check operations validate fonts with read-only processes and only output diagnostic information, which in verbose mode includes confirmations.
 They do not modify the input font files in any way because they are intended to provide feedback to font designers and engineers to decide how to resolve them, such as making corrections to source files and rebuilding the fonts.
 
-Autofix operations create new font files, by appending `.fix` to the filename. 
+Hotfix operations create new font files, by appending `.fix` to the filename. 
 
 ## 2. Onboarding New and Updated Families
 
@@ -87,7 +87,7 @@ A hotfix is a modification to a TTF file itself, a last-minute change, or useful
     $ rm *.ttf ;
     $ rename s/ttf.fix/ttf/g ;
 
-#### 2.4 generating others required files
+#### 2.4 generating other required files
 
 A `METADATA.pb` file and `DESCRIPTION.en_us.html` file must be generated:
 
@@ -126,6 +126,8 @@ A live report about the quality of a font project will encourage test-driven-dev
 Contracts can specify that projects must pass to be considered complete.
 
 The dashboard will integrate with the Github Issues API, to make it convenient to create and track issues based on our reports.
+
+A prototype for this is available at <https://googlefonts.github.io/fontbakery>
 
 ## 4. Source Management
 
