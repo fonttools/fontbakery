@@ -287,10 +287,13 @@ class TTFTestCase(TestCase):
         font = Font.get_ttfont(self.operator.path)
 
         for name in font.names:
-            string = Font.bin2unistring(name)
-            marks = CharacterSymbolsFixer.unicode_marks(string)
-            if marks:
-                self.fail('Contains {}'.format(marks))
+            # Items with NameID > 18 are expressly for localising
+            # the ASCII-only IDs into Hindi / Arabic / etc.
+            if name.nameID >= 0 and name.nameID <= 18:
+                string = Font.bin2unistring(name)
+                marks = CharacterSymbolsFixer.unicode_marks(string)
+                if marks:
+                    self.fail('Contains {}'.format(marks))
 
     def test_fontname_is_equal_to_macstyle(self):
         """ Is fontname identical to macstyle flags? """
