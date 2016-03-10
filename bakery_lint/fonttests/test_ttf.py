@@ -164,9 +164,11 @@ class TTFTestCase(TestCase):
     def test_glyphname_does_not_contain_disallowed_chars(self):
         """ Glyph names are all valid? """
         font = Font.get_ttfont(self.operator.path)
+        know_good_names = ['.notdef', '.null']
+        #we should extend this list according to the opentype spec
 
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
-            if glyphName == '.notdef':
+            if glyphName in know_good_names:
                 continue
             if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
                 self.fail(('Glyph "%s" does not comply conventions.'
@@ -174,9 +176,9 @@ class TTFTestCase(TestCase):
                            ' must be entirely comprised of characters from'
                            ' the following set:'
                            ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-                           ' start with a digit or period. The only exception'
-                           ' is the special character ".notdef". "twocents",'
-                           ' "a1", and "_" are valid glyph names. "2cents"'
+                           ' start with a digit or period. There are a few exceptions'
+                           ' such as the special character ".notdef". The glyph names'
+                           ' "twocents", "a1", and "_" are all valid, while "2cents"'
                            ' and ".twocents" are not.') % glyphName)
 
     def test_ttx_duplicate_glyphs(self):
