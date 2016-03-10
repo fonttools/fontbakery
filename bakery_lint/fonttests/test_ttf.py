@@ -667,6 +667,7 @@ class TTFTestCase(TestCase):
             _ = '[%s] have not zero linegaps'
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_ascents_equal_bbox(self):
         """ Ascent values are same as max glyph point? """
