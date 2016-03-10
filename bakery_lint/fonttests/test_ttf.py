@@ -871,24 +871,6 @@ class CheckFontAgreements(TestCase):
         self.assertTrue(magic.from_file(self.operator.path, mime=True),
                         'application/x-font-ttf')
 
-    @tags('required')
-    def test_latin_file_exists(self):
-        """ GF requires a latin subset, so we check that font file exists? """
-        #If I recall correctly, we should not check for subsets anymore, right?
-        #TODO: Maybe delete this test?
-        path = os.path.dirname(self.operator.path)
-        path = os.path.join(path, self.operator.path[:-3] + "latin")
-        self.assertTrue(os.path.exists(path))
-
-    @tags('required')
-    def test_menu_file_exists(self):
-        """ GF requires a menu subset, so we check that font file exists? """
-        #If I recall correctly, we should not check for subsets anymore, right?
-        #TODO: Maybe delete this test?
-        path = os.path.dirname(self.operator.path)
-        path = os.path.join(path, self.operator.path[:-3] + "menu")
-        self.assertTrue(os.path.exists(path))
-
 
 class TestKerningPairs(TestCase):
 
