@@ -164,11 +164,11 @@ class TTFTestCase(TestCase):
     def test_glyphname_does_not_contain_disallowed_chars(self):
         """ Glyph names are all valid? """
         font = Font.get_ttfont(self.operator.path)
-        know_good_names = ['.notdef', '.null']
+        known_good_names = ['.notdef', '.null']
         #we should extend this list according to the opentype spec
 
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
-            if glyphName in know_good_names:
+            if glyphName in known_good_names:
                 continue
             if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
                 self.fail(('Glyph "%s" does not comply conventions.'
@@ -559,7 +559,7 @@ class TTFTestCase(TestCase):
     #      See https://github.com/googlefonts/fontbakery/issues/738
     @tags('required')
     def test_check_whitespace_characters(self):
-        """ Font cointains glyphs for whitespace characters? """
+        """ Font contains glyphs for whitespace characters? """
         checker = NbspAndSpaceSameWidth(self, self.operator.path)
 
         space = checker.getGlyph(0x0020)
