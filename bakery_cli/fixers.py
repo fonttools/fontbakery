@@ -981,8 +981,9 @@ class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
 class RenameFileWithSuggestedName(Fixer):
 
     def validate(self):
-        suggestedvalues = getSuggestedFontNameValues(self.font)
-
+        sugested = getSuggestedFontNameValues(self.font)
+        family_name = sugested['family']
+        subfamily_name = sugested['subfamily']
         expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
                                         subfamily_name.replace(' ', ''))
         actualname, extension = os.path.splitext(self.fontpath)
@@ -997,7 +998,7 @@ class RenameFileWithSuggestedName(Fixer):
         shutil.move(self.fontpath, new_targetpath)
 
         from bakery_cli.logger import logger
-        logger.info('$ mv {} {}'.format(self.fontpath, os.path.basename(new_targetpath)))
+        logger.error('$ mv {} {}'.format(self.fontpath, os.path.basename(new_targetpath)))
 
         self.testcase.operator.path = new_targetpath
         from bakery_cli.utils import ProcessedFile
