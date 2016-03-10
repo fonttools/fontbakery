@@ -68,11 +68,11 @@ class TTFTestCase(TestCase):
 
     @tags('info',)
     def test_version_in_name_table_is_in_correct_format(self):
-        """ Version is in correct format in `name` table """
+        """ Version format is correct in NAME table? """
         ttfont = ttLib.TTFont(self.operator.path)
 
         def is_valid(value):
-            return re.match(r'Version\s[1-9]+\.\d+', value)
+            return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
         for name in ttfont['name'].names:
             value = getNameRecordValue(name)
@@ -90,12 +90,12 @@ class TTFTestCase(TestCase):
     @tags('info',)
     @autofix('bakery_cli.fixers.RenameFileWithSuggestedName')
     def test_source_ttf_font_filename_equals_familystyle(self):
-        """ Source TTF Font filename equals family style """
+        """ Source TTF Font filename equals family style? """
         fixer = RenameFileWithSuggestedName(self, self.operator.path)
         self.assertEqual(fixer.validate(), os.path.basename(self.operator.path))
 
     def test_ttx_family_naming_recommendation(self):
-        "The font follows the font family naming recommendation."
+        """ Font follows the family naming recommendations? """
         # See http://forum.fontlab.com/index.php?topic=313.0
         font = Font.get_ttfont(self.operator.path)
 
@@ -162,11 +162,13 @@ class TTFTestCase(TestCase):
             self.assertLessEqual(font['CFF'].Weight, 900)
 
     def test_glyphname_does_not_contain_disallowed_chars(self):
-        """ GlyphName length < 30 and does contain allowed chars only """
+        """ Glyph names are all valid? """
         font = Font.get_ttfont(self.operator.path)
+        known_good_names = ['.notdef', '.null']
+        #we should extend this list according to the opentype spec
 
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
-            if glyphName == '.notdef':
+            if glyphName in known_good_names:
                 continue
             if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
                 self.fail(('Glyph "%s" does not comply conventions.'
@@ -174,9 +176,9 @@ class TTFTestCase(TestCase):
                            ' must be entirely comprised of characters from'
                            ' the following set:'
                            ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-                           ' start with a digit or period. The only exception'
-                           ' is the special character ".notdef". "twocents",'
-                           ' "a1", and "_" are valid glyph names. "2cents"'
+                           ' start with a digit or period. There are a few exceptions'
+                           ' such as the special character ".notdef". The glyph names'
+                           ' "twocents", "a1", and "_" are all valid, while "2cents"'
                            ' and ".twocents" are not.') % glyphName)
 
     def test_ttx_duplicate_glyphs(self):
@@ -211,14 +213,14 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.RemoveItemsWithPlatformID1')
     def test_platformID_1_exists(self):
-        """ Check if NAME table does not contain items with platformID = 1 """
+        """ Is there any item with platformID=1 on the NAME table? """
         font = ttLib.TTFont(self.operator.path)
         items = [item for item in font['name'].names if item.platformID == 1]
-        self.assertTrue(bool(items), "`name` table records should not contain platformID='1' records")
+        self.assertTrue(bool(items), "NAME table should not contain platformID='1' records")
 
     @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
     def test_name_id_copyright(self):
-        """ Is there `opyright` substring nameID in nameId (10) ? """
+        """ Is there an `opyright` substring declared in name ID 10? """
         font = ttLib.TTFont(self.operator.path)
         records = [f for f in font['name'].names
                    if self.containsSubstr(f, 'opyright') and f.nameID == 10]
@@ -227,7 +229,7 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseWithShortLine')
     def test_name_id_ofl_license(self):
-        """ Is the Open Font License declared in name ID 13 ? """
+        """ Is the Open Font License declared in name ID 13? """
         fixer = ReplaceOFLLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -244,7 +246,7 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
-        """ Font table gasp should be 15 """
+        """ Is GASP table correctly set? """
         font = Font.get_ttfont(self.operator.path)
         try:
             font['gasp']
@@ -263,25 +265,25 @@ class TTFTestCase(TestCase):
             self.fail('gaspRange[65535] value ({}) is not 15'.format(value))
 
     def test_gpos_table_has_kerning_info(self):
-        """ GPOS table has kerning information """
+        """ Does GPOS table have kerning information? """
         font = Font.get_ttfont(self.operator.path)
 
         try:
             font['GPOS']
         except KeyError:
-            self.fail('"GPOS" does not exist in font')
+            self.fail('Font is missing a "GPOS" table')
         flaglookup = False
         for lookup in font['GPOS'].table.LookupList.Lookup:
             if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
                 flaglookup = lookup
                 break  # break for..loop to avoid reading all kerning info
-        self.assertTrue(flaglookup, msg='GPOS doesnt have kerning information')
+        self.assertTrue(flaglookup, msg="GPOS table lacks kerning information")
         self.assertGreater(flaglookup.SubTableCount, 0)
         self.assertGreater(flaglookup.SubTable[0].PairSetCount, 0)
 
     @autofix('bakery_cli.fixers.CharacterSymbolsFixer')
     def test_check_names_are_ascii_only(self):
-        """ NAME and CFF tables must not contain non-ascii characters """
+        """ Is there any non-ascii character in NAME or CFF tables? """
         font = Font.get_ttfont(self.operator.path)
 
         for name in font.names:
@@ -291,7 +293,7 @@ class TTFTestCase(TestCase):
                 self.fail('Contains {}'.format(marks))
 
     def test_fontname_is_equal_to_macstyle(self):
-        """ Check that fontname is equal to macstyle flags """
+        """ Is fontname identical to macstyle flags? """
         font = Font.get_ttfont(self.operator.path)
 
         macStyle = font.macStyle
@@ -321,7 +323,7 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.ReplaceOFLLicenseURL')
     def test_name_id_ofl_license_url(self):
-        """ Is the Open Font License URL in name ID 14 ? """
+        """ Is the Open Font License URL in name ID 14? """
         fixer = ReplaceOFLLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
@@ -341,7 +343,7 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
     def test_name_id_apache_license(self):
-        """ Is the Apache License declared in name ID 13 ? """
+        """ Is the Apache License declared in name ID 13? """
         fixer = ReplaceApacheLicenseWithShortLine(self, self.operator.path)
 
         placeholder = fixer.get_placeholder()
@@ -359,7 +361,7 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
     def test_name_id_apache_license_url(self):
-        """ Is the Apache License URL in name ID 14 ? """
+        """ Is the Apache License URL in name ID 14? """
         fixer = ReplaceApacheLicenseURL(self, self.operator.path)
 
         text = open(fixer.get_licensecontent_filename()).read()
@@ -378,31 +380,31 @@ class TTFTestCase(TestCase):
 
     @tags('required',)
     def test_ots(self):
-        """ Is TTF file correctly sanitized for Firefox and Chrome """
+        """ Is TTF file correctly sanitized for Firefox and Chrome? """
         stdout = run('{0} {1}'.format('ot-sanitise', self.operator.path),
                      os.path.dirname(self.operator.path))
         self.assertEqual('', stdout.strip())
 
     @autofix('bakery_cli.fixers.CreateDSIGFixer')
     def test_check_font_has_dsig_table(self):
-        """ Check that font has DSIG table """
+        """ Font has got a "DSIG" table? """
         font = Font.get_ttfont(self.operator.path)
         try:
             font['DSIG']
         except KeyError:
-            self.fail('Font does not have "DSIG" table')
+            self.fail('DSIG table is missing')
 
     def test_no_kern_table_exists(self):
-        """ Check that no "KERN" table exists """
+        """ Is there a "KERN" table declared in the font? """
         font = Font.get_ttfont(self.operator.path)
         try:
             font['KERN']
-            self.fail('Font does have "KERN" table')
+            self.fail('Font should not have a "KERN" table')
         except KeyError:
             pass
 
     def test_check_full_font_name_begins_with_family_name(self):
-        """ Check if full font name begins with the font family name """
+        """ Does full font name begin with the font family name? """
         font = Font.get_ttfont(self.operator.path)
         for entry in font.names:
             if entry.nameID != 1:
@@ -428,7 +430,7 @@ class TTFTestCase(TestCase):
                         self.fail(_ % (familyname_str, fullfontname_str))
 
     def test_check_glyf_table_length(self):
-        """ Check if there is unused data at the end of the glyf table """
+        """ Is there any unused data at the end of the glyf table? """
         from fontTools import ttLib
         font = ttLib.TTFont(self.operator.path)
         # TODO: should this test support CFF as well?
@@ -458,20 +460,20 @@ class TTFTestCase(TestCase):
 
     @tags('required')
     def test_nbsp(self):
-        """ Check if 'NO-BREAK SPACE' exists"""
+        """ Font has 'NO-BREAK SPACE' character? """
         self.assertExists('NO-BREAK SPACE')
 
     @tags('required',)
     def test_space(self):
-        """ Check if 'SPACE' exists """
+        """ Font has 'SPACE' character? """
         self.assertExists('SPACE')
 
     def test_euro(self):
-        """ Check if 'EURO SIGN' exists """
+        """ Font has 'EURO SIGN' character? """
         self.assertExists('EURO SIGN')
 
     def test_check_hmtx_hhea_max_advance_width_agreement(self):
-        """ Check if MaxAdvanceWidth agree in the Hmtx and Hhea tables """
+        """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
         font = Font.get_ttfont(self.operator.path)
 
         hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
@@ -484,7 +486,7 @@ class TTFTestCase(TestCase):
 
     @tags('required')
     def test_check_italic_angle_agreement(self):
-        """ Check italicangle property zero or negative """
+        """ Italic angle is set within a valid range? """
         font = Font.get_ttfont(self.operator.path)
         if font.italicAngle > 0:
             self.fail('italicAngle must be less or equal zero')
@@ -531,7 +533,7 @@ class TTFTestCase(TestCase):
 
     @tags('required')
     def test_check_names_same_across_platforms(self):
-        """ Font names are same across specific-platforms """
+        """ Font names are consistent across platforms? """
         font = Font.get_ttfont(self.operator.path)
 
         for name in font.names:
@@ -557,7 +559,7 @@ class TTFTestCase(TestCase):
     #      See https://github.com/googlefonts/fontbakery/issues/738
     @tags('required')
     def test_check_whitespace_characters(self):
-        """ Font cointains glyphs for whitespace characters ? """
+        """ Font contains glyphs for whitespace characters? """
         checker = NbspAndSpaceSameWidth(self, self.operator.path)
 
         space = checker.getGlyph(0x0020)
@@ -573,7 +575,7 @@ class TTFTestCase(TestCase):
     @tags('required')
     @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
     def test_check_nbsp_width_matches_sp_width(self):
-        """ Check non-breaking space character (0x00A0) and tab character (0x0009) both have advancewidth equal to space character (0x0020) """
+        """ White-space characters have identical advanceWidth value? """
         checker = NbspAndSpaceSameWidth(self, self.operator.path)
 
         space = checker.getGlyph(0x0020)
@@ -584,18 +586,16 @@ class TTFTestCase(TestCase):
             spaceWidth = checker.getWidth(space)
             tabWidth = checker.getWidth(tab)
             self.assertEqual(spaceWidth, tabWidth,
-                             ("The tab advance width does not match "
-                              "the space advance width"))
+                             "Advance width mismatch for tab (0x0009) and space (0x0020) characters.")
 
         if space and nbsp:
             spaceWidth = checker.getWidth(space)
             nbspWidth = checker.getWidth(nbsp)
             self.assertEqual(spaceWidth, nbspWidth,
-                             ("The nbsp advance width does not match "
-                              "the space advance width"))
+                             "Advance width mismatch for nbsp (0x00A0) and space (0x0020) characters.")
 
     def test_check_no_problematic_formats(self):
-        """ Check that font contain required tables """
+        """ Font contains all required tables? """
         font = ttLib.TTFont(self.operator.path)
         tables = set(font.reader.tables.keys())
         desc = []
@@ -608,14 +608,16 @@ class TTFTestCase(TestCase):
             self.fail(' but '.join(desc))
 
     def test_check_os2_width_class(self):
+        """ OS/2 width class is correctly set? """
         font = Font.get_ttfont(self.operator.path)
         error = "OS/2 widthClass must be [1..9] inclusive, was %s IE9 fail"
         error = error % font.OS2_usWidthClass
         self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
 
     def test_check_panose_identification(self):
-        """ Check if Panose is not set to monospaced if advancewidth of
-            all glyphs is not equal to each others """
+        """ Is Panose value set correctly? """
+        # Check if Panose is not set to monospaced if advancewidth of
+        # all glyphs is not equal to each others
         font = Font.get_ttfont(self.operator.path)
 
         if font['OS/2'].panose.bProportion == 9:
@@ -632,14 +634,16 @@ class TTFTestCase(TestCase):
     @tags('note')
     @autofix('bakery_cli.fixers.AddSPUAByGlyphIDToCmap')
     def test_font_unencoded_glyphs(self):
-        """ Font does not have unencoded glyphs """
+        """ Is there any unencoded glyph? """
         ttx = ttLib.TTFont(self.operator.path, 0)
         unencoded_glyphs = get_unencoded_glyphs(ttx)
+        #TODO: Shouldn't we explicitely mention here
+        #      which ones are the unencoded glyphs ?
         self.assertIs(unencoded_glyphs, [],
                       msg='There are unencoded glyphs')
 
     def test_check_upm_heigths_less_120(self):
-        """ Check if UPM Heights NOT more than 120% """
+        """ UPM Heights are NOT greater than 120%? """
         ttfont = Font.get_ttfont(self.operator.path)
         value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
         value = value * 100 / float(ttfont.get_upm_height())
@@ -649,9 +653,8 @@ class TTFTestCase(TestCase):
 
     @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_linegaps_are_zero(self):
-        """ Check that linegaps in tables are zero """
+        """ Linegaps in tables are zero? """
         dirname = os.path.dirname(self.operator.path)
-
         directory = UpstreamDirectory(dirname)
 
         fonts_gaps_are_not_zero = []
@@ -664,9 +667,10 @@ class TTFTestCase(TestCase):
             _ = '[%s] have not zero linegaps'
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
+    @tags('required')
     @autofix('bakery_cli.fixers.Vmet')
     def test_metrics_ascents_equal_bbox(self):
-        """ Check that ascents values are same as max glyph point """
+        """ Ascent values are same as max glyph point? """
         dirname = os.path.dirname(self.operator.path)
 
         ymax, fonts_ascents_not_bbox = self.get_fonts(dirname)
@@ -832,16 +836,16 @@ class FontForgeValidateStateTest(TestCase):
         self.assertFalse(bool(self.validation_state & 0x100000))
 
     def test_duplicate_glyphs(self):
-        """ Glyph names are unique. """
-        self.assertFalse(bool(self.validation_state & 0x200000))
+        """ Glyph names are unique? """
+        self.assertFalse(bool(self.validation_state & 0x200000), 'No. But they should.')
 
     def test_duplicate_unicode_codepoints(self):
-        """ Unicode code points are unique. """
-        self.assertFalse(bool(self.validation_state & 0x400000))
+        """ Unicode code points are unique? """
+        self.assertFalse(bool(self.validation_state & 0x400000), 'No. But they should.')
 
     def test_overlapped_hints(self):
-        """ Hints do not overlap """
-        self.assertFalse(bool(self.validation_state & 0x800000))
+        """ Do hints overlap? """
+        self.assertFalse(bool(self.validation_state & 0x800000), "Yes. Hints should NOT overlap.")
 
 
 class CheckFontAgreements(TestCase):
@@ -855,25 +859,29 @@ class CheckFontAgreements(TestCase):
 
     @tags('note')
     def test_em_is_1000(self):
-        """ Font em size should be 1000, but doesn't have to be """
-        self.assertEqual(self.font.get_upm_height(), 1000)
+        """ Is font em size (ideally) equal to 1000? """
+        self.assertEqual(self.font.get_upm_height(), 1000, 'No')
 
     @tags('required')
     def test_font_is_font(self):
-        """ File provided as parameter is TTF font file """
+        """ Is this a valid TTF file? """
         self.assertTrue(magic.from_file(self.operator.path, mime=True),
                         'application/x-font-ttf')
 
     @tags('required')
     def test_latin_file_exists(self):
-        """ GF requires a latin subset, so we check that font file exists """
+        """ GF requires a latin subset, so we check that font file exists? """
+        #If I recall correctly, we should not check for subsets anymore, right?
+        #TODO: Maybe delete this test?
         path = os.path.dirname(self.operator.path)
         path = os.path.join(path, self.operator.path[:-3] + "latin")
         self.assertTrue(os.path.exists(path))
 
     @tags('required')
     def test_menu_file_exists(self):
-        """ GF requires a menu subset, so we check that font file exists """
+        """ GF requires a menu subset, so we check that font file exists? """
+        #If I recall correctly, we should not check for subsets anymore, right?
+        #TODO: Maybe delete this test?
         path = os.path.dirname(self.operator.path)
         path = os.path.join(path, self.operator.path[:-3] + "menu")
         self.assertTrue(os.path.exists(path))
