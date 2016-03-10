@@ -72,7 +72,7 @@ class TTFTestCase(TestCase):
         ttfont = ttLib.TTFont(self.operator.path)
 
         def is_valid(value):
-            return re.match(r'Version\s[1-9]+\.\d+', value)
+            return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
         for name in ttfont['name'].names:
             value = getNameRecordValue(name)
