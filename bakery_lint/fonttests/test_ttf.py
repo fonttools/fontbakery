@@ -654,7 +654,7 @@ class TTFTestCase(TestCase):
             _ = "UPM:Height is %d%%, consider redesigning to 120%% or less"
             self.fail(_ % value)
 
-    @autofix('bakery_cli.fixers.Vmet')
+    @autofix('bakery_cli.fixers.VmetFixer')
     def test_metrics_linegaps_are_zero(self):
         """ Linegaps in tables are zero? """
         dirname = os.path.dirname(self.operator.path)
@@ -671,7 +671,7 @@ class TTFTestCase(TestCase):
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
     @tags('required')
-    @autofix('bakery_cli.fixers.Vmet')
+    @autofix('bakery_cli.fixers.VmetFixer')
     def test_metrics_ascents_equal_bbox(self):
         """ Ascent values are same as max glyph point? """
         dirname = os.path.dirname(self.operator.path)
@@ -706,7 +706,7 @@ class TTFTestCase(TestCase):
                 fonts_ascents_not_bbox.append(filename)
         return ymax, fonts_ascents_not_bbox
 
-    @autofix('bakery_cli.fixers.Vmet')
+    @autofix('bakery_cli.fixers.VmetFixer')
     def test_metrics_descents_equal_bbox(self):
         """ Check that descents values are same as min glyph point """
         dirname = os.path.dirname(self.operator.path)
