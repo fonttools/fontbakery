@@ -899,7 +899,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
 DATA_DIR = os.path.abspath(DATA_DIR)
 
 
-class ReplaceLicenseURL(Fixer):
+class LicenseInfoURLFixer(Fixer):
 
     def get_licenseurl_filename(self):
         return None
@@ -907,10 +907,12 @@ class ReplaceLicenseURL(Fixer):
     def get_licensecontent_filename(self):
         return None
 
-    def validate(self):
+    def get_licensecontent(self):
         path = os.path.join(DATA_DIR, self.get_licensecontent_filename())
-        licenseText = open(path).read()
+        return open(path).read()
 
+    def validate(self):
+        licenseText = self.get_licensecontent()
         path = os.path.join(DATA_DIR, self.get_licenseurl_filename())
         placeholder = open(path).read().strip()
 
@@ -939,7 +941,7 @@ class ReplaceLicenseURL(Fixer):
         return True
 
 
-class ReplaceOFLLicenseURL(ReplaceLicenseURL):
+class OFLLicenseInfoURLFixer(LicenseInfoURLFixer):
 
     def get_licenseurl_filename(self):
         return 'OFL.url'
@@ -948,7 +950,7 @@ class ReplaceOFLLicenseURL(ReplaceLicenseURL):
         return 'OFL.license'
 
 
-class ReplaceApacheLicenseURL(ReplaceLicenseURL):
+class ApacheLicenseInfoURLFixer(LicenseInfoURLFixer):
 
     def get_licenseurl_filename(self):
         return 'APACHE.url'
@@ -957,7 +959,7 @@ class ReplaceApacheLicenseURL(ReplaceLicenseURL):
         return 'APACHE.license'
 
 
-class ReplaceLicenseWithShortline(Fixer):
+class LicenseDescriptionFixer(Fixer):
 
     def get_placeholder(self):
         path = self.get_placeholder_filename()
@@ -972,13 +974,13 @@ class ReplaceLicenseWithShortline(Fixer):
         return True
 
 
-class ReplaceOFLLicenseWithShortLine(ReplaceLicenseWithShortline):
+class OFLLicenseDescriptionFixer(LicenseDescriptionFixer):
 
     def get_placeholder_filename(self):
         return 'OFL.placeholder'
 
 
-class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
+class ApacheLicenseDescriptionFixer(LicenseDescriptionFixer):
 
     def get_placeholder_filename(self):
         return 'APACHE.placeholder'
