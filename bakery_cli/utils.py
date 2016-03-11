@@ -24,7 +24,7 @@ import os.path as op
 import re
 import subprocess
 from bakery_cli.logger import logger
-
+from bakery_cli.nameid_values import *
 
 class ProcessedFile(object):
 
@@ -304,7 +304,13 @@ def clean_name_values(fontdata):
     for style in styles:
         fontdata['names'] = [{'nameID': x['nameID'],
                              'string': x['string'].replace(style, '').strip()}
-                             for x in fontdata['names'] if x['nameID'] in [1, 2, 4, 6, 16, 17, 18]]
+                             for x in fontdata['names'] if x['nameID'] in [NAMEID_FONT_FAMILY_NAME,\
+                                                                           NAMEID_FONT_SUBFAMILY_NAME,\
+                                                                           NAMEID_FULL_FONT_NAME,\
+                                                                           NAMEID_POSTSCRIPT_NAME,\
+                                                                           NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                                                                           NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                                                                           NAMEID_COMPATIBLE_FULL_MACONLY]]
     return fontdata
 
 
@@ -340,12 +346,24 @@ def fix_all_names(fontdata, familyname):
 
     for rec in fontdata['names']:
         string = rec['string']
-        if rec['nameID'] in [1, 2, 4, 6, 16, 17, 18]:
+        if rec['nameID'] in [NAMEID_FONT_FAMILY_NAME,\
+                             NAMEID_FONT_SUBFAMILY_NAME,\
+                             NAMEID_FULL_FONT_NAME,\
+                             NAMEID_POSTSCRIPT_NAME,\
+                             NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                             NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                             NAMEID_COMPATIBLE_FULL_MACONLY]:
             string = rules.apply(rec['nameID'])
             passedNamesId.append(rec['nameID'])
         names.append({'nameID': rec['nameID'], 'string': string})
 
-    difference = set([1, 2, 4, 6, 16, 17, 18]).difference(set(passedNamesId))
+    difference = set([NAMEID_FONT_FAMILY_NAME,\
+                      NAMEID_FONT_SUBFAMILY_NAME,\
+                      NAMEID_FULL_FONT_NAME,\
+                      NAMEID_POSTSCRIPT_NAME,\
+                      NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                      NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                      NAMEID_COMPATIBLE_FULL_MACONLY]).difference(set(passedNamesId))
     if difference:
         for nameID in difference:
             string = rules.apply(nameID)

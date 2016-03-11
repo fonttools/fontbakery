@@ -38,6 +38,7 @@ import sys
 import gzip
 from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
 from google.protobuf import text_format
+from bakery_cli.nameid_values import *
 
 if sys.version < '3':
     import codecs
@@ -212,8 +213,6 @@ def inferStyle(ftfont):
 
 
 def inferFamilyName(familydir):
-    NAMEID_FAMILYNAME = 1
-    NAMEID_STYLE = 2
     files = listdir(familydir)
     familyName = ""
     styleName = ""
@@ -221,11 +220,11 @@ def inferFamilyName(familydir):
         if check_regular(f):
             ftfont = fontToolsOpenFont(f)
             for record in ftfont['name'].names:
-                if record.nameID == NAMEID_FAMILYNAME:
+                if record.nameID == NAMEID_FONT_FAMILY_NAME:
                     familyName = record.toUnicode()
 
                 # Some authors creates TTF with wrong family name including styles
-                if record.nameID == NAMEID_STYLE:
+                if record.nameID == NAMEID_FONT_SUBFAMILY_NAME:
                     styleName = record.toUnicode()
 
     familyName = familyName.replace(styleName, '').strip()
@@ -250,11 +249,9 @@ def fontToolsOpenFont(filepath):
 
 # DC This should check both copyright strings match
 def fontToolsGetCopyright(ftfont):
-    # return 'COPYRIGHT'
-    NAMEID_PSNAME = 0
     copyright = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_PSNAME:
+        if record.nameID == NAMEID_COPYRIGHT_NOTICE:
             copyright = record.toUnicode()
         if len(copyright) > 0:
             return copyright
@@ -268,10 +265,9 @@ def fontToolsGetCopyright(ftfont):
 
 
 def fontToolsGetPSName(ftfont):
-    NAMEID_PSNAME = 6
     psName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_PSNAME:
+        if record.nameID == NAMEID_POSTSCRIPT_NAME:
             psName = record.toUnicode()
         if len(psName) > 0:
             return psName
@@ -286,10 +282,9 @@ def fontToolsGetPSName(ftfont):
 
 
 def fontToolsGetFullName(ftfont):
-    NAMEID_FULLNAME = 4
     fullName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_FULLNAME:
+        if record.nameID == NAMEID_FULL_FONT_NAME:
             fullName = record.toUnicode()
         if len(fullName) > 0:
             return fullName
@@ -301,13 +296,12 @@ def fontToolsGetFullName(ftfont):
 
 
 def fontToolsGetDesignerName(ftfont):
-    NAMEID_DESIGNERNAME = 9
-    desName = ""
+    designerName = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_DESIGNERNAME:
-            desName = record.toUnicode()
-        if len(desName) > 0:
-            return desName
+        if record.nameID == NAMEID_DESIGNER:
+            designerName = record.toUnicode()
+        if len(designerName) > 0:
+            return designerName
 
     print("ER: no DesignerName string found!")
     return ""
@@ -316,10 +310,9 @@ def fontToolsGetDesignerName(ftfont):
 
 
 def fontToolsGetDesc(ftfont):
-    NAMEID_DESC = 10
     fontDesc = ""
     for record in ftfont['name'].names:
-        if record.nameID == NAMEID_DESC:
+        if record.nameID == NAMEID_DESCRIPTION:
             fontDesc = record.toUnicode()
         if len(fontDesc) > 0:
             return fontDesc

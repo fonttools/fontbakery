@@ -24,7 +24,7 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 from bakery_cli.logger import logger
 from bakery_cli.utils import NameTableNamingRule
-
+from bakery_cli.nameid_values import *
 
 description = ''
 
@@ -102,12 +102,24 @@ def setValidNames(font, isBold):
     for rec in font['name'].names:
         string = rec.string.decode(rec.getEncoding())
             
-        if rec.nameID in [1, 2, 4, 6, 16, 17, 18]:
+        if rec.nameID in [NAMEID_FONT_FAMILY_NAME,\
+                          NAMEID_FONT_SUBFAMILY_NAME,\
+                          NAMEID_FULL_FONT_NAME,\
+                          NAMEID_POSTSCRIPT_NAME,\
+                          NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                          NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                          NAMEID_COMPATIBLE_FULL_MACONLY]:
             string = rules.apply(rec.nameID)
             passedNamesId.append(rec.nameID)
         names.append({'nameID': rec.nameID, 'string': string})
 
-    difference = set([1, 2, 4, 6, 16, 17, 18]).difference(set(passedNamesId))
+    difference = set([NAMEID_FONT_FAMILY_NAME,\
+                      NAMEID_FONT_SUBFAMILY_NAME,\
+                      NAMEID_FULL_FONT_NAME,\
+                      NAMEID_POSTSCRIPT_NAME,\
+                      NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                      NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                      NAMEID_COMPATIBLE_FULL_MACONLY]).difference(set(passedNamesId))
     if difference:
         for nameID in difference:
             string = rules.apply(nameID)
@@ -191,7 +203,10 @@ def validate(font, fontStyle):
                            setFsSelection, [font, newvalue]))
 
     for name in font['name'].names:
-        if name.nameID not in [2, 4, 6, 17]:
+        if name.nameID not in [NAMEID_FONT_SUBFAMILY_NAME,\
+                               NAMEID_FULL_FONT_NAME,\
+                               NAMEID_POSTSCRIPT_NAME,\
+                               NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
             continue
 
         string = name.string.decode(name.getEncoding())

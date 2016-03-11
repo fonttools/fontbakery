@@ -35,9 +35,8 @@ from bakery_cli.fixers import ReplaceOFLLicenseURL, ReplaceApacheLicenseURL, \
 from bakery_cli.fixers import NbspAndSpaceSameWidth, CharacterSymbolsFixer
 from bakery_cli.fixers import get_unencoded_glyphs
 from bakery_cli.ttfont import Font, FontTool, getSuggestedFontNameValues
-from bakery_cli.utils import run
-from bakery_cli.utils import UpstreamDirectory
-
+from bakery_cli.utils import run, UpstreamDirectory
+from bakery_cli.nameid_values import *
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
                        'OS/2', 'post'])
@@ -76,7 +75,7 @@ class TTFTestCase(TestCase):
 
         for name in ttfont['name'].names:
             value = getNameRecordValue(name)
-            if name.nameID == 5 and not is_valid(value):
+            if name.nameID == NAMEID_VERSION_STRING and not is_valid(value):
                 self.fail(('The NAME id 5 string value must follow '
                            'the pattern Version X.Y. Current value: {}').format(value))
 
@@ -337,7 +336,7 @@ class TTFTestCase(TestCase):
         isLicense = False
 
         for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:  # check license nameID only
+            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
                 value = getNameRecordValue(nameRecord)
                 isLicense = os.path.exists(fontLicensePath) or text in value
 
@@ -355,7 +354,7 @@ class TTFTestCase(TestCase):
         licenseexists = os.path.exists(path)
 
         for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:
+            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
                 value = getNameRecordValue(nameRecord)
                 if value != placeholder and licenseexists:
                     self.fail('License file LICENSE.txt exists but NameID'

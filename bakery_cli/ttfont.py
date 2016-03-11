@@ -19,7 +19,7 @@ import os.path as op
 import robofab.world
 
 from fontTools import ttLib
-
+from bakery_cli.nameid_values import *
 
 class BaseFont(object):
 
@@ -105,7 +105,7 @@ class Font(BaseFont):
         u'http://scripts.sil.org/OFL'
         """
         for name in self.names:
-            if name.nameID == 14:
+            if name.nameID == NAMEID_LICENSE_INFO_URL:
                 return Font.bin2unistring(name)
 
     @property
@@ -175,7 +175,7 @@ class Font(BaseFont):
         u'Monda Regular'
         """
         for entry in self.names:
-            if entry.nameID != 4:
+            if entry.nameID != NAMEID_FULL_FONT_NAME:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -185,7 +185,7 @@ class Font(BaseFont):
     @property
     def _style_name(self):
         for entry in self.names:
-            if entry.nameID != 2:
+            if entry.nameID != NAMEID_FONT_SUBFAMILY_NAME:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -206,7 +206,7 @@ class Font(BaseFont):
     def _family_name(self):
 
         for entry in self.names:
-            if entry.nameID != 1:
+            if entry.nameID != NAMEID_FONT_FAMILY_NAME:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -230,7 +230,7 @@ class Font(BaseFont):
             # This value must be only for windows platform as in
             # mac it addresses some problems with installing fonts with
             # that ids
-            if entry.nameID != 16 or entry.platformID != 3:
+            if entry.nameID != NAMEID_TYPOGRAPHIC_FAMILY_NAME or entry.platformID != 3:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -240,12 +240,12 @@ class Font(BaseFont):
     @ot_family_name.setter
     def ot_family_name(self, value):
         for entry in self.names:
-            if entry.nameID != 16 or entry.platformID != 3:
+            if entry.nameID != NAMEID_TYPOGRAPHIC_FAMILY_NAME or entry.platformID != 3:
                 continue
             entry.string = value.encode(entry.getEncoding())
             return
 
-        self.ttfont['name'].setName(value, 16, 3, 1, 0x409)
+        self.ttfont['name'].setName(value, NAMEID_TYPOGRAPHIC_FAMILY_NAME, 3, 1, 0x409)
 
     @property
     def ot_style_name(self):
@@ -254,7 +254,7 @@ class Font(BaseFont):
             # This value must be only for windows platform as in
             # mac it addresses some problems with installing fonts with
             # that ids
-            if entry.nameID != 17 or entry.platformID != 3:
+            if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME or entry.platformID != 3:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -264,12 +264,12 @@ class Font(BaseFont):
     @ot_style_name.setter
     def ot_style_name(self, value):
         for entry in self.names:
-            if entry.nameID != 17 or entry.platformID != 3:
+            if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME or entry.platformID != 3:
                 continue
             entry.string = value.encode(entry.getEncoding())
             return
 
-        self.ttfont['name'].setName(value, 17, 3, 1, 0x409)
+        self.ttfont['name'].setName(value, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME, 3, 1, 0x409)
 
     @property
     def ot_full_name(self):
@@ -278,7 +278,7 @@ class Font(BaseFont):
             # This value must be only for windows platform as in
             # mac it addresses some problems with installing fonts with
             # that ids
-            if entry.nameID != 18 or entry.platformID != 3:
+            if entry.nameID != NAMEID_COMPATIBLE_FULL_MACONLY or entry.platformID != 3:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -288,12 +288,12 @@ class Font(BaseFont):
     @ot_full_name.setter
     def ot_full_name(self, value):
         for entry in self.names:
-            if entry.nameID != 18 or entry.platformID != 3:
+            if entry.nameID != NAMEID_COMPATIBLE_FULL_MACONLY or entry.platformID != 3:
                 continue
             entry.string = value.encode(entry.getEncoding())
             return
 
-        self.ttfont['name'].setName(value, 18, 3, 1, 0x409)
+        self.ttfont['name'].setName(value, NAMEID_COMPATIBLE_FULL_MACONLY, 3, 1, 0x409)
 
     @property
     def post_script_name(self):
@@ -304,7 +304,7 @@ class Font(BaseFont):
         u'Font-Bold'
         """
         for entry in self.names:
-            if entry.nameID != 6:
+            if entry.nameID != NAMEID_POSTSCRIPT_NAME:
                 continue
             value = self.platform_entry(entry)
             if value:
