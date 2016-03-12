@@ -1,4 +1,4 @@
-    # coding: utf-8
+# coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -638,11 +638,9 @@ def getName(font, pairs):
 
 
 def getSuggestedFontNameValues(font):
-    family_name = getName(font, [[1, 3, 1]])
-
-    subfamily_name = getName(font, [[2, 3, 1]])
-
-    full_name = getName(font, [[4, 3, 1]])
+    family_name = getName(font, [[NAMEID_FONT_FAMILY_NAME, 3, 1]])
+    subfamily_name = getName(font, [[NAMEID_FONT_SUBFAMILY_NAME, 3, 1]])
+    full_name = getName(font, [[NAMEID_FULL_FONT_NAME, 3, 1]])
 
     if full_name == family_name:
         try:
