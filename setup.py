@@ -117,7 +117,12 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7'
     ],
-    include_package_data=True,
+    data_files=[('Data', ['Data/APACHE.url',
+                          'Data/APACHE.license',
+                          'Data/APACHE.placeholder',
+                          'Data/OFL.url',
+                          'Data/OFL.license',
+                          'Data/OFL.placeholder'])],
     install_requires=[
         'lxml',
         'requests',

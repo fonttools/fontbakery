@@ -17,7 +17,7 @@
 import unittest
 
 from bakery_cli import utils
-
+from bakery_cli.nameid_values import *
 
 class TestCase(unittest.TestCase):
 
@@ -59,7 +59,7 @@ class TestSuggestNameTestCase(TestCase):
     def test_suggest_name_testcase_bold_italic(self):
         fontdata = {
             'names': [
-                {'nameID': 1, 'string': 'Roboto'},
+                {'nameID': NAMEID_FONT_FAMILY_NAME, 'string': 'Roboto'},
             ],
             'OS/2': {
                 'fsSelection': 0b10001,  # Bold & Italic
@@ -94,7 +94,7 @@ class TestSuggestNameTestCase(TestCase):
 
         fontdata = {
             'names': [
-                {'nameID': 1, 'string': 'Roboto'},
+                {'nameID': NAMEID_FONT_FAMILY_NAME, 'string': 'Roboto'},
             ],
             'OS/2': {
                 'fsSelection': 0,  # Regular
@@ -128,7 +128,7 @@ class TestSuggestNameTestCase(TestCase):
 
         fontdata = {
             'names': [
-                {'nameID': 1, 'string': 'Roboto'},
+                {'nameID': NAMEID_FONT_FAMILY_NAME, 'string': 'Roboto'},
             ],
             'OS/2': {
                 'fsSelection': 0b00001,  # Regular
@@ -162,7 +162,7 @@ class TestSuggestNameTestCase(TestCase):
 
         fontdata = {
             'names': [
-                {'nameID': 1, 'string': 'Roboto'},
+                {'nameID': NAMEID_FONT_FAMILY_NAME, 'string': 'Roboto'},
             ],
             'OS/2': {
                 'fsSelection': 0b10000,  # Regular
@@ -196,7 +196,7 @@ class TestSuggestNameTestCase(TestCase):
 
         fontdata = {
             'names': [
-                {'nameID': 1, 'string': 'Family'},
+                {'nameID': NAMEID_FONT_FAMILY_NAME, 'string': 'Family'},
             ],
             'OS/2': {
                 'fsSelection': 0b00000,  # Regular

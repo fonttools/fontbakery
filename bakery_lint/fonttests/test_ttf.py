@@ -30,14 +30,13 @@ from fontTools import ttLib
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix, \
     TestCaseOperator
 from bakery_cli.fixers import RenameFileWithSuggestedName
-from bakery_cli.fixers import ReplaceOFLLicenseURL, ReplaceApacheLicenseURL, \
-    ReplaceOFLLicenseWithShortLine, ReplaceApacheLicenseWithShortLine
+from bakery_cli.fixers import OFLLicenseInfoURLFixer, ApacheLicenseInfoURLFixer, \
+    OFLLicenseDescriptionFixer, ApacheLicenseDescriptionFixer
 from bakery_cli.fixers import NbspAndSpaceSameWidth, CharacterSymbolsFixer
 from bakery_cli.fixers import get_unencoded_glyphs
 from bakery_cli.ttfont import Font, FontTool, getSuggestedFontNameValues
-from bakery_cli.utils import run
-from bakery_cli.utils import UpstreamDirectory
-
+from bakery_cli.utils import run, UpstreamDirectory
+from bakery_cli.nameid_values import *
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
                        'OS/2', 'post'])
@@ -45,7 +44,6 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
                        'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
                        'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
                        'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-
 
 @contextmanager
 def redirect_stdout(new_target):
@@ -76,7 +74,7 @@ class TTFTestCase(TestCase):
 
         for name in ttfont['name'].names:
             value = getNameRecordValue(name)
-            if name.nameID == 5 and not is_valid(value):
+            if name.nameID == NAMEID_VERSION_STRING and not is_valid(value):
                 self.fail(('The NAME id 5 string value must follow '
                            'the pattern Version X.Y. Current value: {}').format(value))
 
@@ -223,26 +221,8 @@ class TTFTestCase(TestCase):
         """ Is there an `opyright` substring declared in name ID 10? """
         font = ttLib.TTFont(self.operator.path)
         records = [f for f in font['name'].names
-                   if self.containsSubstr(f, 'opyright') and f.nameID == 10]
+                   if self.containsSubstr(f, 'opyright') and f.nameID == NAMEID_DESCRIPTION]
         self.assertFalse(bool(records))
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ReplaceOFLLicenseWithShortLine')
-    def test_name_id_ofl_license(self):
-        """ Is the Open Font License declared in name ID 13? """
-        fixer = ReplaceOFLLicenseWithShortLine(self, self.operator.path)
-
-        placeholder = fixer.get_placeholder()
-
-        path = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
-        licenseexists = os.path.exists(path)
-
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:
-                value = getNameRecordValue(nameRecord)
-                if value != placeholder and licenseexists:
-                    self.fail('License file OFL.txt exists but NameID'
-                              ' value is not specified for that.')
 
     @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
@@ -323,62 +303,67 @@ class TTFTestCase(TestCase):
                 _ += ' but ends with "{2}"'
             self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
 
-    @tags('required')
-    @autofix('bakery_cli.fixers.ReplaceOFLLicenseURL')
-    def test_name_id_ofl_license_url(self):
-        """ Is the Open Font License URL in name ID 14? """
-        fixer = ReplaceOFLLicenseURL(self, self.operator.path)
-
-        text = open(fixer.get_licensecontent_filename()).read()
-
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
-                                       'OFL.txt')
-
-        isLicense = False
+    def validate_license_description(self, license_filename):
+        fixer = OFLLicenseDescriptionFixer(self, self.operator.path)
+        placeholder = fixer.get_placeholder()
+        license_path = os.path.join(os.path.dirname(self.operator.path), license_filename)
+        license_exists = os.path.exists(license_path)
 
         for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:  # check license nameID only
+            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+                value = getNameRecordValue(nameRecord)
+                if value != placeholder and license_exists:
+                    self.fail('License file {} exists but NameID'
+                              ' value is not specified for that.'.format(license_filename))
+                    return False
+                if value == placeholder and license_exists==False:
+                    self.fail('Valid licensing specified on NameID 13 but'
+                              ' a corresponding {} file was not found.'.format(license_filename))
+                    return False
+        return True
+
+    @tags('required')
+    @autofix('bakery_cli.fixers.ApacheLicenseDescriptionFixer')
+    def test_name_id_apache_license(self):
+        """ Is the Apache License specified in name ID 13 (License description)? """
+        result = self.validate_license_description('LICENSE.txt')
+        self.assertTrue(result, 'No')
+
+    @tags('required')
+    @autofix('bakery_cli.fixers.OFLLicenseDescriptionFixer')
+    def test_name_id_ofl_license(self):
+        """ Is the Open Font License specified in name ID 13 (License description)? """
+        result = self.validate_license_description('OFL.txt')
+        self.assertTrue(result, 'No')
+
+    @tags('required')
+    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
+    def test_name_id_ofl_license_url(self):
+        """ Is the Open Font License specified in name ID 14 (License info URL)? """
+        fixer = OFLLicenseInfoURLFixer(self, self.operator.path)
+        text = fixer.get_licensecontent()
+        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
+
+        isLicense = False
+        for nameRecord in fixer.font['name'].names:
+            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
                 value = getNameRecordValue(nameRecord)
                 isLicense = os.path.exists(fontLicensePath) or text in value
-
         self.assertFalse(isLicense and bool(fixer.validate()))
 
     @tags('required')
-    @autofix('bakery_cli.fixers.ReplaceApacheLicenseWithShortLine')
-    def test_name_id_apache_license(self):
-        """ Is the Apache License declared in name ID 13? """
-        fixer = ReplaceApacheLicenseWithShortLine(self, self.operator.path)
-
-        placeholder = fixer.get_placeholder()
-
-        path = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
-        licenseexists = os.path.exists(path)
-
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:
-                value = getNameRecordValue(nameRecord)
-                if value != placeholder and licenseexists:
-                    self.fail('License file LICENSE.txt exists but NameID'
-                              ' value is not specified for that.')
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ReplaceApacheLicenseURL')
+    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer')
     def test_name_id_apache_license_url(self):
-        """ Is the Apache License URL in name ID 14? """
-        fixer = ReplaceApacheLicenseURL(self, self.operator.path)
-
-        text = open(fixer.get_licensecontent_filename()).read()
-
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
-                                       'LICENSE.txt')
+        """ Is the Apache License specified in name ID 14 (License info URL)? """
+        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path)
+        text = fixer.get_licensecontent()
+        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
 
         isLicense = False
-
         for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == 13:  # check license nameID only
+            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
                 value = getNameRecordValue(nameRecord)
                 isLicense = os.path.exists(fontLicensePath) or text in value
-
         self.assertFalse(isLicense and bool(fixer.validate()))
 
     @tags('required',)
@@ -410,11 +395,11 @@ class TTFTestCase(TestCase):
         """ Does full font name begin with the font family name? """
         font = Font.get_ttfont(self.operator.path)
         for entry in font.names:
-            if entry.nameID != 1:
+            if entry.nameID != NAMEID_FONT_FAMILY_NAME:
                 continue
             familyname = entry
             for entry2 in font.names:
-                if entry2.nameID != 4:
+                if entry2.nameID != NAMEID_FULL_FONT_NAME:
                     continue
                 fullfontname = entry2
 

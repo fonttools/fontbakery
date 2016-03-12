@@ -33,6 +33,7 @@ from bakery_cli.scripts.vmet import metricview
 from bakery_cli.ttfont import Font, getSuggestedFontNameValues
 from bakery_cli.utils import UpstreamDirectory, fix_all_names, \
     clean_name_values, nameTableRead
+from bakery_cli.nameid_values import *
 
 
 class Fixer(object):
@@ -124,7 +125,7 @@ class VersionFixer(Fixer):
         self.font['head'].fontRevision = self.increment_version_string(str(self.font['head'].fontRevision), major_inc, minor_inc, head_table=True)
 
         for name in self.font['name'].names:
-            if name.nameID == 5:
+            if name.nameID == NAMEID_VERSION_STRING:
                 encoding = name.getEncoding()
                 s = name.string.decode(encoding)
                 s = self.increment_version_string(s, major_inc, minor_inc)
@@ -150,7 +151,7 @@ class VersionFixer(Fixer):
         self.font['head'].fontRevision = self.get_version_fields(str(self.font['head'].fontRevision), new_value, head_table=True)
 
         for name in self.font['name'].names:
-            if name.nameID == 5:
+            if name.nameID == NAMEID_VERSION_STRING:
                 encoding = name.getEncoding()
                 s = name.string.decode(encoding)
                 s = self.get_version_fields(s, new_value)
@@ -176,7 +177,7 @@ class VersionFixer(Fixer):
         print("head.fontRevision: {}".format(self.font['head'].fontRevision))
 
         for name in self.font['name'].names:
-            if name.nameID == 5:
+            if name.nameID == NAMEID_VERSION_STRING:
                 print("name.5.{}.{}.{}: {}".format(name.platformID, name.platEncID, name.langID, name.string))
 
         if 'CFF ' in self.font:
@@ -286,13 +287,18 @@ class FontItalicStyleFixer(Fixer):
             if ttfont['post'].italicAngle == 0:
                 logger.error('ER: POST italicAngle is 0 should be -13')
                 has_errors = True
+
             # Check NAME table contains correct names for Italic
             if ttfont['OS/2'].fsSelection & 0b1:
                 logger.info('OK: OS/2 fsSelection')
             else:
                 logger.error('ER: OS/2 fsSelection')
+
             for name in ttfont['name'].names:
-                if name.nameID not in [2, 4, 6, 17]:
+                if name.nameID not in [NAMEID_FONT_SUBFAMILY_NAME, \
+                                       NAMEID_FULL_FONT_NAME,\
+                                       NAMEID_POSTSCRIPT_NAME,\
+                                       NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
                     continue
 
                 string = name.toUnicode()
@@ -849,7 +855,7 @@ class FamilyAndStyleNameFixer(Fixer):
         fontdata = clean_name_values(fontdata)
         familyname = ''
         for rec in fontdata['names']:
-            if rec['nameID'] == 1:
+            if rec['nameID'] == NAMEID_FONT_FAMILY_NAME:
                 familyname = rec['string']
                 break
         fontdata = fix_all_names(fontdata, familyname)
@@ -870,7 +876,7 @@ class RemoveNameRecordWithOpyright(Fixer):
     def fix(self):
         records = []
         for record in self.font['name'].names:
-            if self.containsSubstr(record, 'opyright') and record.nameID == 10:
+            if self.containsSubstr(record, 'opyright') and record.nameID == NAMEID_DESCRIPTION:
                 continue
             records.append(record)
         self.font['name'].names = records
@@ -893,7 +899,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
 DATA_DIR = os.path.abspath(DATA_DIR)
 
 
-class ReplaceLicenseURL(Fixer):
+class LicenseInfoURLFixer(Fixer):
 
     def get_licenseurl_filename(self):
         return None
@@ -901,21 +907,23 @@ class ReplaceLicenseURL(Fixer):
     def get_licensecontent_filename(self):
         return None
 
-    def validate(self):
+    def get_licensecontent(self):
         path = os.path.join(DATA_DIR, self.get_licensecontent_filename())
-        licenseText = open(path).read()
+        return open(path).read()
 
+    def validate(self):
+        licenseText = self.get_licensecontent()
         path = os.path.join(DATA_DIR, self.get_licenseurl_filename())
         placeholder = open(path).read().strip()
 
         for field in self.font['name'].names:
-            if field.nameID == 14:
+            if field.nameID == NAMEID_LICENSE_INFO_URL:
                 string = field.string.decode(field.getEncoding())
 
                 if string != placeholder:
                     return placeholder
 
-            if field.nameID == 13:
+            if field.nameID == NAMEID_LICENSE_DESCRIPTION:
                 string = field.string.decode(field.getEncoding())
 
                 if licenseText.strip() in string:
@@ -928,12 +936,12 @@ class ReplaceLicenseURL(Fixer):
             return
 
         for nameRecord in self.font['name'].names:
-            if nameRecord.nameID == 14:
+            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
                 nameRecord.string = placeholder.encode(placeholder.getEncoding())
         return True
 
 
-class ReplaceOFLLicenseURL(ReplaceLicenseURL):
+class OFLLicenseInfoURLFixer(LicenseInfoURLFixer):
 
     def get_licenseurl_filename(self):
         return 'OFL.url'
@@ -942,7 +950,7 @@ class ReplaceOFLLicenseURL(ReplaceLicenseURL):
         return 'OFL.license'
 
 
-class ReplaceApacheLicenseURL(ReplaceLicenseURL):
+class ApacheLicenseInfoURLFixer(LicenseInfoURLFixer):
 
     def get_licenseurl_filename(self):
         return 'APACHE.url'
@@ -951,7 +959,7 @@ class ReplaceApacheLicenseURL(ReplaceLicenseURL):
         return 'APACHE.license'
 
 
-class ReplaceLicenseWithShortline(Fixer):
+class LicenseDescriptionFixer(Fixer):
 
     def get_placeholder(self):
         path = self.get_placeholder_filename()
@@ -961,18 +969,18 @@ class ReplaceLicenseWithShortline(Fixer):
     def fix(self):
         placeholder = self.get_placeholder()
         for nameRecord in self.font['name'].names:
-            if nameRecord.nameID == 13:
+            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
                 nameRecord.string = placeholder.encode(placeholder.getEncoding())
         return True
 
 
-class ReplaceOFLLicenseWithShortLine(ReplaceLicenseWithShortline):
+class OFLLicenseDescriptionFixer(LicenseDescriptionFixer):
 
     def get_placeholder_filename(self):
         return 'OFL.placeholder'
 
 
-class ReplaceApacheLicenseWithShortLine(ReplaceLicenseWithShortline):
+class ApacheLicenseDescriptionFixer(LicenseDescriptionFixer):
 
     def get_placeholder_filename(self):
         return 'APACHE.placeholder'
