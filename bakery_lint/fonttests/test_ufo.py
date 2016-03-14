@@ -39,6 +39,10 @@ class TestDiacritic(TestCase):
     targets = ['upstream-repo']
     tool = 'lint'
 
+    @classmethod
+    def skipUnless(cls):
+        return not cls.operator.path.endswith('.ufo')
+
     def setUp(self):
         path = os.path.join(os.path.dirname(__file__), '..', '..', 'Data')
         content = open(os.path.join(path, 'Diacritics.txt')).read()
