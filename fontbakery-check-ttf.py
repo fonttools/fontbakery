@@ -11,8 +11,17 @@ from fontTools import ttLib
 
 def main():
     # set up a basic logging config
-    log_format = '%(levelname)s %(message)s'
-    logging.basicConfig(format=log_format, level=logging.DEBUG)
+    # to include timestamps
+    # log_format = '%(asctime)s %(levelname)-8s %(message)s'
+    log_format = '%(levelname)-8s %(message)s'
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(log_format)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    # to show all log events
+    # logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     
     # set up some command line argument processing
     parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
