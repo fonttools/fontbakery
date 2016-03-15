@@ -410,28 +410,6 @@ class CreateDSIGFixer(Fixer):
         return True
 
 
-class ResetFSTypeFlagFixer(Fixer):
-
-    def get_shell_command(self):
-        return "fontbakery-fix-fstype.py --autofix {}".format(self.fontpath)
-
-    def fix(self, check=False):
-        val = self.font['OS/2'].fsType
-        fontfile = os.path.basename(self.fontpath)
-
-        if val == 0:
-            from bakery_cli.bakery import Bakery
-            logger.info('OK: {}'.format(fontfile))
-            return
-
-        if check:
-            logger.error('ER: {} {}: Change to 0'.format(fontfile, val))
-        else:
-            logger.error('ER: {} {}: Fixed to 0'.format(fontfile, val))
-            self.font['OS/2'].fsType = 0
-        return True
-
-
 class AddSPUAByGlyphIDToCmap(Fixer):
 
     def get_shell_command(self):
