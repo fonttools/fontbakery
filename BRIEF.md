@@ -188,19 +188,16 @@ Each file in the repo was reviewed and irrelevant files deleted (PR #TODO link t
 
 ## Considerations 
 
-* The most simple form for `fontbakery-check-ttf.py` is a linear, imperative programming style. 
-* It should be structured table by table, and operate on a single ttLib font object.
-* Use Python version 3
-* Use Python standard library logging module, Eg,
+The most simple form for `fontbakery-check-ttf.py` is a linear, imperative programming style. 
 
-```py
-import logging
-log = logging.getLogger(__name__)
-...
-log.warning("Something bad")
-```
+It should be structured table by table, and operate on a single ttLib font object.
 
-* Only interact with TTF or OTF files with fontTools
-* Only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
-* Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be the best sophisticated approach. 
+Use Python standard library logging module. 
+Use log calls instead of code comments in the body of the checker
+
+Only interact with TTF or OTF files with fontTools
+
+Only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
+
+Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be the best sophisticated approach. 
 
