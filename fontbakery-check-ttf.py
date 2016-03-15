@@ -46,7 +46,7 @@ def check(font_file):
     if font['OS/2'].fsType != 0:
       logging.warning("fsType is not 0")
       font['OS/2'].fsType = 0
-      logging.info("fsType is now 0, hotfixed")
+      logging.info("HOTFIX: fsType is now 0")
     else:
       logging.info("fsType is 0")
       
@@ -63,7 +63,7 @@ def check(font_file):
     if non_pid1:
       logging.error("name table for items without platformID=1 exist")
       font['name'].names = new_names
-      logging.error("Hotfixed: name table items with platformID=1 removed")
+      logging.error("HOTFIX: name table items with platformID=1 removed")
     else:
       logging.info("No name table for items without platformID=1")
 
