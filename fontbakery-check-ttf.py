@@ -56,7 +56,7 @@ def check(font_file):
     
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
-    for name in self.font['name'].names:
+    for name in font['name'].names:
       if name.platformID != 1:
         non_pid1 = True
         new_names.append(name)
