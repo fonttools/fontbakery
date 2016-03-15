@@ -31,7 +31,7 @@ def main():
     # open each file and if it is a ttf, check it
     for filename in args.filenames:
         for font_file in glob.glob(filename):
-            if file_file[:3] == "ttf":
+            if font_file[-3:] == "ttf":
                 check(font_file)
             else:
                 logging.error(font_file + "is not a ttf, skipping")
