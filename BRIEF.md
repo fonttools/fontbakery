@@ -190,6 +190,13 @@ Each file in the repo was reviewed and irrelevant files deleted (PR #TODO link t
 
 * Use Python 3
 * Use Python standard library logging module
+
+    import logging
+    log = logging.getLogger(__name__)
+    ...
+    log.warning("Something bad")
+
+
 * Use fontTools only for TTF checks/fixes
 * Use the version of defcon that TruFont uses for checking UFOs
 * Use the glyphs2ufo `.glyphs` file parser for checking UFOs? Or make a Glyphs extension that runs inside its python, and can thus use its internal Glyphs API to autocorrect things? 
