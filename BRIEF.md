@@ -172,7 +172,7 @@ Each file in the repo was reviewed and irrelevant files deleted (PR #TODO link t
 * bakery_cli/fixers.py has some fixing methods to rescue
 * bakery_cli/fonts_public.proto and its child fonts_public_pb2.py are useful
 * bakery_cli/nameid_values.py is useful, I expect to just put that at the top of fontbakery-check-ttf.py (and perhaps later go upstream to fontTools)
-* bakery_cli/ttfont.py has a crazy big class that bundles data from different tables into a single fontbakery-unique Font object. Instead fontbakery-check-ttf.py will be structured table by table and operate on a ttLib font object itself in a linear, imperative programming style.
+* bakery_cli/ttfont.py has a crazy big class that bundles data from different tables into a single fontbakery-unique Font object, and is a very useful reference
 * bakery_cli/utils.py has some family checks, some installation checks (like if ttfautohint is available), some `fontbakery-check-family.py` checks...
 * bakery_cli/pipe/build.py has things used to build TTFs that should be split out into their own little tools, which can then be used in a setup.py or build.sh or Makefile
 * bakery_cli/pipe/copy.py has things for creating a build output directory, and that should be used in a setup.py API
@@ -188,16 +188,19 @@ Each file in the repo was reviewed and irrelevant files deleted (PR #TODO link t
 
 ## Considerations 
 
-* Use Python 3
-* Use Python standard library logging module
+* The most simple form for `fontbakery-check-ttf.py` is a linear, imperative programming style. 
+* It should be structured table by table, and operate on a single ttLib font object.
+* Use Python version 3
+* Use Python standard library logging module, Eg,
 
-    import logging
-    log = logging.getLogger(__name__)
-    ...
-    log.warning("Something bad")
+```py
+import logging
+log = logging.getLogger(__name__)
+...
+log.warning("Something bad")
+```
 
-
-* Use fontTools only for TTF checks/fixes
-* Use the version of defcon that TruFont uses for checking UFOs
-* Use the glyphs2ufo `.glyphs` file parser for checking UFOs? Or make a Glyphs extension that runs inside its python, and can thus use its internal Glyphs API to autocorrect things? 
+* Only interact with TTF or OTF files with fontTools
+* Only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
+* Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be the best sophisticated approach. 
 
