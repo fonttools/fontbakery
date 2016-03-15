@@ -44,6 +44,19 @@ def check(font_file):
     logging.info("TODO: Check fsSelection")
     logging.info("TODO: Check head table")
     logging.info("TODO: Check name table")
+    
+    logging.debug("Checking name table for items without platformID=1")
+    new_names = []
+    for name in self.font['name'].names:
+      if name.platformID != 1:
+        non_pid1 = True
+        new_names.append(name)
+    if non_pid1:
+      logging.error("name table for items without platformID=1 exist")
+      font['name'].names = new_names
+      logging.error("Hotfixed: name table items with platformID=1 removed")
+    else:
+      logging.info("No name table for items without platformID=1")
 
     # more checks go above this line
 
