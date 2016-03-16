@@ -98,7 +98,7 @@ def main():
     font_file_output = font_file + '.fix'
     font.save(font_file_output)
     font.close()
-    logging.info(font_file_output + " saved")
+    logging.info(font_file_output + " saved\n")
 
 if __name__=='__main__':
     main()
