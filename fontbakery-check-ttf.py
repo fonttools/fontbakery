@@ -71,8 +71,7 @@ def check(font_file):
     font = ttLib.TTFont(font_file)
     logging.info(font_file + " opened")
 
-    # OS/2 Table Checks
-    logging.debug("Checking OS/2 fsType")
+    logging.debug("Checking OS/2 table")
     if font['OS/2'].fsType != 0:
       logging.warning("fsType is not 0")
       font['OS/2'].fsType = 0
