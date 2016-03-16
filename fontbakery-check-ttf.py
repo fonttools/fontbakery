@@ -2,7 +2,8 @@
 
 __author__="The Font Bakery Authors"
 
-import os, sys, argparse, glob, logging
+import os, sys, argparse, glob, logging, requests
+from bs4 import BeautifulSoup
 
 from fontTools import ttLib
 
@@ -71,6 +72,20 @@ def main():
     sys.exit(1)
 
   #------------------------------------------------------
+  # TODO: cache this in /tmp so its only requested once per boot
+  logging.info("Fetching Microsoft's vendorID list")
+  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
+  req = requests.get(url, auth=('user', 'pass'))
+  soup = BeautifulSoup(req.content, 'html.parser')
+  table = soup.find(id="VendorList")
+  registered_vendor_ids = {}
+  for row in table.findAll('tr'):
+    cells = row.findAll('td')
+    code = cells[0].string
+    labels = [label for label in cells[1].stripped_strings]
+    registered_vendor_ids[code] = labels[0]
+
+  #------------------------------------------------------
   for font_file in fonts_to_check:
     logging.debug("Opening " + font_file)
     font = ttLib.TTFont(font_file)
@@ -84,6 +99,25 @@ def main():
       logging.info("HOTFIX: fsType is now 0")
     else:
       logging.info("fsType is 0")
+
+    #----------------------------------------------------
+    vid = font['OS/2'].achVendID
+    vid = "ABBo"
+    bad_vids = ['UKWN', 'ukwn']
+    registered_vendor_ids_list_lower = [item.lower() for item in registered_vendor_ids.keys()]
+    if vid is None:
+      logging.warning("OS/2 VendorID is not set. You should set it.")
+    elif vid in bad_vids:
+      logging.warning("OS/2 VendorID is '{}'. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
+    elif vid in registered_vendor_ids.keys():
+      msg = "OS/2 VendorID '{}' is registered to '{}', is that you?".format(vid, registered_vendor_ids[vid])
+      logging.warning(msg)
+    elif vid.lower() in registered_vendor_ids_list_lower:
+        msg = "OS/2 VendorID '{}' is registered with another case. You should check the case.".format(vid)
+        logging.warning(msg)
+    else:
+      msg = "OS/2 VendorID '{}' is not registered with Microsoft, register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
+      logging.warning(msg)
       
     #----------------------------------------------------
     logging.info("TODO: Check fsSelection")
