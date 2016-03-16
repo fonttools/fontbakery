@@ -26,6 +26,7 @@ def main():
     help='file name(s) of fonts to check. Wildcards like *.ttf are allowed.')
   args = parser.parse_args()
 
+  #------------------------------------------------------
   logging.debug("Checking each file is a ttfs")
   fonts_to_check = []
   for filename in sorted(args.filenames):
@@ -38,6 +39,7 @@ def main():
         logging.error("Skipping " + filename + " as not a ttf") 
   fonts_to_check.sort()
 
+  #------------------------------------------------------
   logging.debug("Checking files are named canonically")
   not_canonical = []
   for font_file in fonts_to_check:
@@ -63,11 +65,13 @@ def main():
     print 'https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#instance-and-file-naming'
     sys.exit(1)
 
+  #------------------------------------------------------
   for font_file in fonts_to_check:
     logging.debug("Opening " + font_file)
     font = ttLib.TTFont(font_file)
     logging.info(font_file + " opened")
 
+    #----------------------------------------------------
     logging.debug("Checking OS/2 table")
     if font['OS/2'].fsType != 0:
       logging.warning("fsType is not 0")
@@ -76,10 +80,16 @@ def main():
     else:
       logging.info("fsType is 0")
       
+    #----------------------------------------------------
     logging.info("TODO: Check fsSelection")
+
+    #----------------------------------------------------
     logging.info("TODO: Check head table")
+
+    #----------------------------------------------------
     logging.info("TODO: Check name table")
     
+    #----------------------------------------------------
     # TODO Fix https://github.com/googlefonts/fontbakery/issues/748 here
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
@@ -94,8 +104,11 @@ def main():
     else:
       logging.info("No name table for items without platformID=1")
 
-    # more checks go above this line
+    #----------------------------------------------------
+    # more checks go here
 
+
+    #----------------------------------------------------
     font_file_output = font_file + '.fix'
     font.save(font_file_output)
     font.close()
