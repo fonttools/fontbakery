@@ -13,7 +13,7 @@ def main():
     # set up a basic logging config
     # to include timestamps
     # log_format = '%(asctime)s %(levelname)-8s %(message)s'
-    log_format = '%(levelname)-8s %(message)s'
+    log_format = '%(levelname)-8s %(message)s  '
     logger = logging.getLogger()
     handler = logging.StreamHandler()
     formatter = logging.Formatter(log_format)
