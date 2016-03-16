@@ -80,6 +80,7 @@ def main():
     logging.info("TODO: Check head table")
     logging.info("TODO: Check name table")
     
+    # TODO Fix https://github.com/googlefonts/fontbakery/issues/748 here
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
     for name in font['name'].names:
