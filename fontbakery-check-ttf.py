@@ -2,10 +2,7 @@
 
 __author__="The Font Bakery Authors"
 
-import argparse
-import glob
-import os
-import logging
+import os, sys, argparse, glob, logging
 
 from fontTools import ttLib
 
@@ -40,6 +37,31 @@ def main():
           file_path, filename = os.path.split(font_file)
           logging.error("Skipping " + filename + " as not a ttf") 
     fonts_to_check.sort()
+
+    logging.debug("Checking files are named canonically")
+    not_canonical = []
+    for font_file in fonts_to_check:
+      file_path, filename = os.path.split(font_file)
+      filename_base, filename_extention = os.path.splitext(filename)
+      family, style = filename_base.split('-')
+      style_names = ["Thin", "ExtraLight", "Light", "Regular", "Medium", 
+               "SemiBold", "Bold", "ExtraBold", "Black", 
+               "Thin Italic", "ExtraLight Italic", "Light Italic", 
+               "Italic", "Medium Italic", "SemiBold Italic", 
+               "Bold Italic", "ExtraBold Italic", "Black Italic"]
+      # remove spaces
+      style_file_names = [name.replace(' ', '') for name in style_names]
+      if style in style_file_names:
+        logging.info(font_file + " is named canonically")
+      else:
+          logging.critical(font_file + " is not named canonically")
+          not_canonical.append(font_file)
+    if not_canonical:
+      print '\nAborted, critical errors. Please rename these files canonically and try again:\n ',
+      print '\n  '.join(not_canonical)
+      print '\nCanonical names are defined in',
+      print 'https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#instance-and-file-naming'
+      sys.exit(1)
 
     for font_file in fonts_to_check:
       check(font_file)
