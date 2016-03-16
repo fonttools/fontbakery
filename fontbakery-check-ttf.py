@@ -97,9 +97,8 @@ def main():
         non_pid1 = True
         new_names.append(name)
     if non_pid1:
-      logging.error("name table for items without platformID=1 exist")
       font['name'].names = new_names
-      logging.error("HOTFIX: name table items with platformID=1 removed")
+      logging.info("HOTFIX: name table items with platformID=1 were removed")
     else:
       logging.info("No name table for items without platformID=1")
 
