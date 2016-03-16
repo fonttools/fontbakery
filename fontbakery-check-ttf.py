@@ -90,11 +90,10 @@ def main():
     logging.info("TODO: Check name table")
     
     #----------------------------------------------------
-    # TODO Fix https://github.com/googlefonts/fontbakery/issues/748 here
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
     for name in font['name'].names:
-      if name.platformID != 1:
+      if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]:
         non_pid1 = True
         new_names.append(name)
     if non_pid1:
