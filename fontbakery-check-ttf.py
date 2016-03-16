@@ -142,6 +142,25 @@ def main():
       logging.info("No name table for items without platformID=1")
 
     #----------------------------------------------------
+    logging.debug("TODO: Checking monospace aspects")
+    # There are 2 tables in the OpenType spec that specify whether 
+    # or not a font is monospaced. When a font is monospaced, the 
+    # follow conditions must be met:
+    # 
+    # * Explicitely, the isFixedWidth value in the "post" table is set to 0
+    # * Implicitely, the advanceWidthMax value in the "hhea" table 
+    #      must be equal to each glyph's advanceWidth value
+    # A fixer must check the advanceWidth values of all glyphs and 
+    # if 90% of glyphs have the same width, it is truly a monospace.
+    # Then 
+    # * ['post'].isFixedWidth shoudl be set
+    # * advanceWidthMax on "hhea" table should match
+    # * panose monospace value hsould be set
+    # * any glyphs not with that width should be an error
+    # also if the glyphs are less than 90% the same width,
+    # these thigns should NOT be set (sometimes they mistakenly are)
+
+    #----------------------------------------------------
     # more checks go here
 
 
