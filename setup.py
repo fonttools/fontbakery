@@ -139,7 +139,8 @@ setup(
         'unidecode',
         'tabulate',
         'pyasn1',
-        'protobuf'
+        'protobuf',
+        'flake8'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     test_suite='nose.collector'
