@@ -25,16 +25,24 @@ def main():
     
     # set up some command line argument processing
     parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
-    parser.add_argument('filenames', nargs='+', help='file name(s) of fonts to check')
+    parser.add_argument('filenames', nargs='+', 
+      help='file name(s) of fonts to check. Wildcards like *.ttf are allowed.')
     args = parser.parse_args()
 
-    # open each file and if it is a ttf, check it
-    for filename in args.filenames:
-        for font_file in glob.glob(filename):
-            if font_file[-3:] == "ttf":
-                check(font_file)
-            else:
-                logging.error(font_file + "is not a ttf, skipping")
+    logging.debug("Checking each file is a ttfs")
+    fonts_to_check = []
+    for filename in sorted(args.filenames):
+      # use glob.glob to accept *.ttf
+      for font_file in glob.glob(filename):
+        if font_file.endswith('.ttf'):
+          fonts_to_check.append(font_file)
+        else:
+          file_path, filename = os.path.split(font_file)
+          logging.error("Skipping " + filename + " as not a ttf") 
+    fonts_to_check.sort()
+
+    for font_file in fonts_to_check:
+      check(font_file)
 
 def check(font_file):
     logging.debug("Opening " + font_file)
