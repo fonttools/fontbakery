@@ -142,6 +142,39 @@ def main():
       logging.error("OS/2 VendorID is not set. You should set it.")
     else:
       logging.info("OK: OS/2 VendorID is '{}'".format(vid))
+
+    #----------------------------------------------------
+    logging.debug("Checking OS/2 usWeightClass")
+    file_path, filename = os.path.split(font_file)
+    filename_base, filename_extention = os.path.splitext(filename)
+    family, style = filename_base.split('-')
+    weight_class = font['OS/2'].usWeightClass
+    # FIXME There has got to be a smarter way than these 4 lines, but they work
+    weight_name = style
+    if style.endswith("Italic"): 
+      weight_name = style.replace("Italic","")
+    if weight_name == "": 
+      weight = "Italic"
+    weights = {"Thin": 250, 
+                "ExtraLight": 275,
+                "Light": 300,
+                "Regular": 400,
+                "Italic": 400,
+                "Medium": 500,
+                "SemiBold": 600,
+                "Bold": 700,
+                "ExtraBold": 800,
+                "Black": 900
+               }
+    if weight_class != weights[weight_name]:
+      msg = "{} usWeightClass is {}".format(style, weight_class)
+      logging.error(msg)
+      font['OS/2'].usWeightClass = weights[weight_name]
+      msg = "HOTFIX: {} usWeightClass is now {}".format(style, weights[weight_name])
+      logging.info(msg)
+    else:
+      msg = "{} usWeightClass is {}".format(style, weight_class)
+      logging.info(msg)
       
     #----------------------------------------------------
     logging.info("TODO: Check fsSelection")
