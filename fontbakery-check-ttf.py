@@ -88,15 +88,21 @@ def main():
   # TODO: cache this in /tmp so its only requested once per boot
   logging.debug("Fetching Microsoft's vendorID list")
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
-  req = requests.get(url, auth=('user', 'pass'))
-  soup = BeautifulSoup(req.content, 'html.parser')
-  table = soup.find(id="VendorList")
   registered_vendor_ids = {}
-  for row in table.findAll('tr'):
-    cells = row.findAll('td')
-    code = cells[0].string
-    labels = [label for label in cells[1].stripped_strings]
-    registered_vendor_ids[code] = labels[0]
+  try:
+    req = requests.get(url, auth=('user', 'pass'))
+    soup = BeautifulSoup(req.content, 'html.parser')
+    table = soup.find(id="VendorList")
+    try:
+      for row in table.findAll('tr'):
+        cells = row.findAll('td')
+        code = cells[0].string
+        labels = [label for label in cells[1].stripped_strings]
+        registered_vendor_ids[code] = labels[0]
+    except:
+      logging.warning("Failed to parse Microsoft's vendorID list.")
+  except:
+    logging.warning("Failed to fetch Microsoft's vendorID list.")
 
   #------------------------------------------------------
   for font_file in fonts_to_check:
@@ -116,21 +122,27 @@ def main():
     logging.debug("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
     vid = "ABBo"
-    bad_vids = ['UKWN', 'ukwn']
-    registered_vendor_ids_list_lower = [item.lower() for item in registered_vendor_ids.keys()]
-    if vid is None:
-      logging.warning("OS/2 VendorID is not set. You should set it.")
-    elif vid in bad_vids:
-      logging.warning("OS/2 VendorID is '{}'. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
-    elif vid in registered_vendor_ids.keys():
-      msg = "OS/2 VendorID '{}' is registered to '{}', is that you?".format(vid, registered_vendor_ids[vid])
-      logging.warning(msg)
-    elif vid.lower() in registered_vendor_ids_list_lower:
-        msg = "OS/2 VendorID '{}' is registered with another case. You should check the case.".format(vid)
+    if len(registered_vendor_ids.keys()) > 0:
+      if vid in registered_vendor_ids.keys():
+        # TODO check registered_vendor_ids[vid] against name table values
+        msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that you?".format(vid, registered_vendor_ids[vid])
+        logging.info(msg)
+      elif vid.lower() in [item.lower() for item in registered_vendor_ids.keys()]:
+        msg = "OS/2 VendorID '{}' is registered with different casing. You should check the case.".format(vid)
+        logging.error(msg)
+      else:
+        msg = "OS/2 VendorID '{}' is not registered with Microsoft. You should register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
         logging.warning(msg)
     else:
-      msg = "OS/2 VendorID '{}' is not registered with Microsoft, register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
-      logging.warning(msg)
+      msg = "OS/2 VendorID '{}' could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
+      logging.error(msg)
+    bad_vids = ['UKWN', 'ukwn']
+    if vid in bad_vids:
+      logging.error("OS/2 VendorID is '{}'. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
+    elif vid is None:
+      logging.error("OS/2 VendorID is not set. You should set it.")
+    else:
+      logging.info("OK: OS/2 VendorID is '{}'".format(vid))
       
     #----------------------------------------------------
     logging.info("TODO: Check fsSelection")
