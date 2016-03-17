@@ -37,35 +37,48 @@ def main():
         fonts_to_check.append(font_file)
       else:
         file_path, filename = os.path.split(font_file)
-        logging.error("Skipping " + filename + " as not a ttf") 
+        logging.warning("Skipping " + filename + " as not a ttf") 
   fonts_to_check.sort()
 
   #------------------------------------------------------
   logging.debug("Checking files are named canonically")
   not_canonical = []
+  style_names = ["Thin", 
+                 "ExtraLight", 
+                 "Light", 
+                 "Regular", 
+                 "Medium", 
+                 "SemiBold", 
+                 "Bold", 
+                 "ExtraBold", 
+                 "Black", 
+                 "Thin Italic", 
+                 "ExtraLight Italic", 
+                 "Light Italic", 
+                 "Italic", 
+                 "Medium Italic", 
+                 "SemiBold Italic", 
+                 "Bold Italic", 
+                 "ExtraBold Italic", 
+                 "Black Italic"
+                ]
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
     filename_base, filename_extention = os.path.splitext(filename)
-    style_names = ["Thin", "ExtraLight", "Light", "Regular", "Medium", 
-             "SemiBold", "Bold", "ExtraBold", "Black", 
-             "Thin Italic", "ExtraLight Italic", "Light Italic", 
-             "Italic", "Medium Italic", "SemiBold Italic", 
-             "Bold Italic", "ExtraBold Italic", "Black Italic"]
     # remove spaces
     style_file_names = [name.replace(' ', '') for name in style_names]
     try: 
       family, style = filename_base.split('-')
       if style in style_file_names:
-        logging.info(font_file + " is named canonically")
+        logging.info("OK: {} is named canonically".format(font_file))
       else:
-        logging.critical(font_file + " is not named canonically")
+        logging.critical("{} is not named canonically".format(font_file))
         not_canonical.append(font_file)
     except:
-        logging.critical(font_file + " is not named canonically")
+        logging.critical("{} is not named canonically".format(font_file))
         not_canonical.append(font_file)
-
   if not_canonical:
-    print '\nAborted, critical errors. Please rename these files canonically and try again:\n ',
+    print '\nAborted, critical errors with filenames. Please rename these files canonically and try again:\n ',
     print '\n  '.join(not_canonical)
     print '\nCanonical names are defined in',
     print 'https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#instance-and-file-naming'
@@ -73,7 +86,7 @@ def main():
 
   #------------------------------------------------------
   # TODO: cache this in /tmp so its only requested once per boot
-  logging.info("Fetching Microsoft's vendorID list")
+  logging.debug("Fetching Microsoft's vendorID list")
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   req = requests.get(url, auth=('user', 'pass'))
   soup = BeautifulSoup(req.content, 'html.parser')
@@ -89,18 +102,18 @@ def main():
   for font_file in fonts_to_check:
     logging.debug("Opening " + font_file)
     font = ttLib.TTFont(font_file)
-    logging.info(font_file + " opened")
 
     #----------------------------------------------------
-    logging.debug("Checking OS/2 table")
+    logging.debug("Checking OS/2 fsType")
     if font['OS/2'].fsType != 0:
-      logging.warning("fsType is not 0")
+      logging.error("OS/2 fsType is not 0")
       font['OS/2'].fsType = 0
-      logging.info("HOTFIX: fsType is now 0")
+      logging.info("HOTFIX: OS/2 fsType is now 0")
     else:
-      logging.info("fsType is 0")
+      logging.info("OK: fsType is 0")
 
     #----------------------------------------------------
+    logging.debug("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
     vid = "ABBo"
     bad_vids = ['UKWN', 'ukwn']
@@ -131,6 +144,7 @@ def main():
     #----------------------------------------------------
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
+    non_pid1 = False
     for name in font['name'].names:
       if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]:
         non_pid1 = True
@@ -139,7 +153,7 @@ def main():
       font['name'].names = new_names
       logging.info("HOTFIX: name table items with platformID=1 were removed")
     else:
-      logging.info("No name table for items without platformID=1")
+      logging.info("OK: name table has no records with platformID=1")
 
     #----------------------------------------------------
     logging.debug("TODO: Checking monospace aspects")
@@ -177,10 +191,13 @@ def main():
 
 
     #----------------------------------------------------
-    font_file_output = font_file + '.fix'
+    # TODO each fix line should set a fix flag, and 
+    # if that flag is True by this point, only then write the file
+    # and then re-run OTS as above
+    font_file_output = '{}.fix'.format(font_file)
     font.save(font_file_output)
     font.close()
-    logging.info(font_file_output + " saved\n")
+    logging.info("{} saved\n".format(font_file_output))
 
 if __name__=='__main__':
     main()
