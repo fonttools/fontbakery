@@ -231,6 +231,19 @@ def main():
       pass
 
     #----------------------------------------------------
+    logging.debug("Checking with fontforge")
+    try:
+        import fontforge
+    except ImportError:
+        logging.warning("fontforge python module is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fontforge")
+        pass
+    try:
+      fontforge_font = fontforge.open(font_file)
+      # TODO: port fontforge validation check from 0.0.15 to here
+    except:
+      logging.warning('fontforge python module could not open {}'.format(font_file))
+
+    #----------------------------------------------------
     # more checks go here
 
 
