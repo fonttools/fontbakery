@@ -2,7 +2,7 @@
 
 __author__="The Font Bakery Authors"
 
-import os, sys, argparse, glob, logging, requests
+import os, sys, argparse, glob, logging, requests, subprocess
 from bs4 import BeautifulSoup
 
 from fontTools import ttLib
@@ -159,6 +159,18 @@ def main():
     # * any glyphs not with that width should be an error
     # also if the glyphs are less than 90% the same width,
     # these thigns should NOT be set (sometimes they mistakenly are)
+
+    #----------------------------------------------------
+    logging.debug("Checking with ot-sanitise")
+    try:
+      ots_output = subprocess.check_output(["ot-sanitise", font_file], stderr=subprocess.STDOUT)
+      if ots_output != "":
+        logging.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+      else:
+        logging.info("OK: ot-sanitise passed this file.")
+    except OSError:
+      logging.warning("ot-santise is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#ots")
+      pass
 
     #----------------------------------------------------
     # more checks go here
