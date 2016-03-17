@@ -200,7 +200,7 @@ def main():
       logging.info("OK: name table has no records with platformID=1")
 
     #----------------------------------------------------
-    logging.debug("TODO: Checking monospace aspects")
+    logging.debug("Checking monospace aspects")
     # There are 2 tables in the OpenType spec that specify whether 
     # or not a font is monospaced. When a font is monospaced, the 
     # follow conditions must be met:
@@ -211,12 +211,47 @@ def main():
     # A fixer must check the advanceWidth values of all glyphs and 
     # if 90% of glyphs have the same width, it is truly a monospace.
     # Then 
-    # * ['post'].isFixedWidth shoudl be set
-    # * advanceWidthMax on "hhea" table should match
-    # * panose monospace value hsould be set
+    # * ['post'].isFixedWidth is set
+    # * advanceWidthMax on "hhea" table is set accordingly
+    # * panose monospace value must not be set
     # * any glyphs not with that width should be an error
     # also if the glyphs are less than 90% the same width,
-    # these thigns should NOT be set (sometimes they mistakenly are)
+    # these things should NOT be set (sometimes they mistakenly are)
+
+    glyphs = font['glyf'].glyphs
+    glyphWidths = {}
+    max_advance = 0
+    for glyph_id in glyphs:
+        value = font['hmtx'].metrics[glyph_id][0] #advanceWidth
+        max_advance = max(value, max_advance)
+        try:
+            glyphWidths[value] += 1
+        except KeyError:
+            glyphWidths[value] = 1
+
+    most_common_width = 0
+    for width in glyphWidths.keys():
+        most_common_width = max(width, most_common_width)
+
+    detected_monospace = False
+    if glyphWidths[most_common_width] > 0.90 * len(glyphs):
+        detected_monospace = True
+
+    if detected_monospace:
+        font['post'].isFixedPitch = 0
+        font['hhea'].advanceWidthMax = most_common_width
+        num_outliers = len(glyphs) - glyphWidths[most_common_width]
+        if num_outliers == 0:
+            logging.info("Font is monospace")
+        else:
+            logging.warn("Font is monospace but " + \
+                         "there are {} outliers. ".format(num_outliers) + \
+                         "Glyph widths must be fixed.")
+    else:
+        #spec says 'non-zero' value means it is not a monospaced font.
+        font['post'].isFixedPitch = 1
+        font['hhea'].advanceWidthMax = max_advance
+        logging.info("Font is not monospaced.")
 
     #----------------------------------------------------
     logging.debug("Checking with ot-sanitise")
