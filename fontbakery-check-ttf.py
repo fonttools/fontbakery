@@ -121,7 +121,6 @@ def main():
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
-    vid = "ABBo"
     if len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
