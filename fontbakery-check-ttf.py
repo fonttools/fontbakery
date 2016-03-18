@@ -224,8 +224,10 @@ def main():
 
     #----------------------------------------------------
     logging.info("TODO: Check name table")
+    # TODO: Check that OFL.txt or LICENSE.txt exists in the same directory as font_file, if not then warn that there should be one. If exists, then check its first line matches the copyright namerecord, and that each namerecord is identical
     
     #----------------------------------------------------
+    # TODO this needs work, see https://github.com/behdad/fonttools/issues/146#issuecomment-176761350 and https://github.com/googlefonts/fontbakery/issues/631
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
     non_pid1 = False
@@ -324,6 +326,12 @@ def main():
       pass
 
     #----------------------------------------------------
+    # TODO FontForge will sometimes say stuff on STDERR like
+    #
+    #   The glyph named circumflex is mapped to U+F031F.
+    #   But its name indicates it should be mapped to U+02C6.
+    #
+    # We should detect this and if found, warn with it
     logging.debug("Checking with fontforge")
     try:
         import fontforge
@@ -339,6 +347,21 @@ def main():
     #----------------------------------------------------
     # more checks go here
 
+    #------------------------------------------------------
+    # TODO Run pyfontaine checks for subset coverage, using the thresholds in add_font.py. See https://github.com/googlefonts/fontbakery/issues/594
+
+    #----------------------------------------------------    
+    # TODO check for required tables, was test_check_no_problematic_formats(). See https://github.com/googlefonts/fontbakery/issues/617
+
+    #----------------------------------------------------
+    # TODO Fonts have old ttfautohint applied, so port 
+    # fontbakery-fix-version.py here and:
+    #
+    # 1. find which version was used, grepping the name table or reading the ttfa table (which are created if the `-I` or `-t` args respectively were passed to ttfautohint, to record its args in the ttf file) (there is a pypi package https://pypi.python.org/pypi/font-ttfa for reading the ttfa table, although per https://github.com/source-foundry/font-ttfa/issues/1 it might be better to inline the code... :) 
+    #
+    # 2. find which version of ttfautohint is installed (and warn if not available, similar to ots check above
+    #
+    # 3. rehint the font with the latest version of ttfautohint using the same options
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
