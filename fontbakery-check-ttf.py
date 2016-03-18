@@ -286,10 +286,9 @@ def main():
             logging.info("Font is monospace. " + fixes_str())
         else:
             list_of_unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
-            logging.warn("Font is monospace but there are {} outliers." +\
+            logging.warn("Font is monospace but there are {} outliers.".format(num_outliers) +\
                          " You should check the widths of these" +\
-                         " glyphs: {}".format(num_outliers,
-                                       list_of_unusually_spaced_glyphs))
+                         " glyphs: {}".format(list_of_unusually_spaced_glyphs))
 
     else:
         #spec says zero means it is not a monospaced font.
