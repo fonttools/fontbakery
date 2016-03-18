@@ -7,10 +7,49 @@ from bs4 import BeautifulSoup
 
 from fontTools import ttLib
 
+font = None
+fixes = []
+def assert_table_entry(tableName, fieldName, expectedValue):
+    """ This is a helper function to accumulate
+    all fixes that a test performs so that we can
+    print them all in a single line by invoking
+    the fixes_str() function.
+
+    Usage example:
+    assert_table_entry('post', 'isFixedPitch', 1)
+    assert_table_entry('', 'panose', None)
+    logger.info("Monospace test " + fixes_str())
+    """
+
+    value = getattr(font[tableName], fieldName)
+    if value != expectedValue:
+        setattr(font[tableName], fieldName, expectedValue)
+        fixes.append("{}: {} => {}".format(tableName,
+                                             value,
+                                             expectedValue))
+
+def fixes_str():
+    """ Concatenate all fixes that happened up to now
+    in a good and regular syntax """
+    global fixes
+
+    if fixes == []:
+        return ""
+
+    fixes_log_message = "Fixes: " + " | ".join(fixes)
+
+    # empty the buffer of fixes,
+    # in preparation for the next test
+    fixes = []
+
+    return fixes_log_message
+
 def main():
   # set up a basic logging config
   # to include timestamps
   # log_format = '%(asctime)s %(levelname)-8s %(message)s'
+  global font
+
   log_format = '%(levelname)-8s %(message)s  '
   logger = logging.getLogger()
   handler = logging.StreamHandler()
@@ -219,39 +258,44 @@ def main():
     # these things should NOT be set (sometimes they mistakenly are)
 
     glyphs = font['glyf'].glyphs
-    glyphWidths = {}
+    width_occurrences = {}
     max_advance = 0
     for glyph_id in glyphs:
         value = font['hmtx'].metrics[glyph_id][0] #advanceWidth
         max_advance = max(value, max_advance)
         try:
-            glyphWidths[value] += 1
+            width_occurrences[value] += 1
         except KeyError:
-            glyphWidths[value] = 1
+            width_occurrences[value] = 1
 
-    most_common_width = 0
-    for width in glyphWidths.keys():
-        most_common_width = max(width, most_common_width)
+    occurrences = 0
+    for k in width_occurrences.keys():
+        if width_occurrences[k] > occurrences:
+            occurrences = width_occurrences[k]
+            most_common_width = k
 
-    detected_monospace = False
-    if glyphWidths[most_common_width] > 0.90 * len(glyphs):
-        detected_monospace = True
+    detected_monospace = occurrences > 0.90 * len(glyphs)
 
     if detected_monospace:
-        font['post'].isFixedPitch = 0
-        font['hhea'].advanceWidthMax = most_common_width
-        num_outliers = len(glyphs) - glyphWidths[most_common_width]
+        #spec says a non-zero value means it is a monospaced font.
+        assert_table_entry('post', 'isFixedPitch', 1)
+        assert_table_entry('hhea', 'advanceWidthMax', most_common_width)
+
+        num_outliers = len(glyphs) - occurrences
         if num_outliers == 0:
-            logging.info("Font is monospace")
+            logging.info("Font is monospace. " + fixes_str())
         else:
-            logging.warn("Font is monospace but " + \
-                         "there are {} outliers. ".format(num_outliers) + \
-                         "Glyph widths must be fixed.")
+            list_of_unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
+            logging.warn("Font is monospace but there are {} outliers." +\
+                         " You should check the widths of these" +\
+                         " glyphs: {}".format(num_outliers,
+                                       list_of_unusually_spaced_glyphs))
+
     else:
-        #spec says 'non-zero' value means it is not a monospaced font.
-        font['post'].isFixedPitch = 1
-        font['hhea'].advanceWidthMax = max_advance
-        logging.info("OK: Font is not monospaced")
+        #spec says zero means it is not a monospaced font.
+        assert_table_value('post', 'isFixedPitch', 0)
+        assert_table_value('hhea', 'advanceWidthMax', max_advance)
+        logging.info("OK: Font is not monospaced. " + fixes_str())
 
     #----------------------------------------------------
     logging.debug("Checking with ot-sanitise")
