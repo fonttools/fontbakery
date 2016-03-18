@@ -146,9 +146,9 @@ def main():
 
   #------------------------------------------------------
   for font_file in fonts_to_check:
-    logging.debug("Opening " + font_file)
     font = ttLib.TTFont(font_file)
-
+    logging.info("OK: {} opened with fontTools".format(font_file))
+    
     #----------------------------------------------------
     logging.debug("Checking OS/2 fsType")
     if font['OS/2'].fsType != 0:
