@@ -292,8 +292,8 @@ def main():
 
     else:
         #spec says zero means it is not a monospaced font.
-        assert_table_value('post', 'isFixedPitch', 0)
-        assert_table_value('hhea', 'advanceWidthMax', max_advance)
+        assert_table_entry('post', 'isFixedPitch', 0)
+        assert_table_entry('hhea', 'advanceWidthMax', max_advance)
         logging.info("OK: Font is not monospaced. " + fixes_str())
 
     #----------------------------------------------------
