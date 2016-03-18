@@ -175,9 +175,9 @@ def main():
     else:
       msg = "OS/2 VendorID '{}' could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
       logging.error(msg)
-    bad_vids = ['UKWN', 'ukwn']
+    bad_vids = ['UKWN', 'ukwn', 'PfEd']
     if vid in bad_vids:
-      logging.error("OS/2 VendorID is '{}'. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
+      logging.error("OS/2 VendorID is '{}', a font editor default. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
     elif vid is None:
       logging.error("OS/2 VendorID is not set. You should set it.")
     else:
