@@ -173,7 +173,7 @@ def main():
       msg = "HOTFIX: {} usWeightClass is now {}".format(style, weights[weight_name])
       logging.info(msg)
     else:
-      msg = "{} usWeightClass is {}".format(style, weight_class)
+      msg = "OK: {} usWeightClass is {}".format(style, weight_class)
       logging.info(msg)
       
     #----------------------------------------------------
@@ -251,7 +251,7 @@ def main():
         #spec says 'non-zero' value means it is not a monospaced font.
         font['post'].isFixedPitch = 1
         font['hhea'].advanceWidthMax = max_advance
-        logging.info("Font is not monospaced.")
+        logging.info("OK: Font is not monospaced")
 
     #----------------------------------------------------
     logging.debug("Checking with ot-sanitise")
@@ -260,7 +260,7 @@ def main():
       if ots_output != "":
         logging.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
       else:
-        logging.info("OK: ot-sanitise passed this file.")
+        logging.info("OK: ot-sanitise passed this file")
     except OSError:
       logging.warning("ot-santise is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#ots")
       pass
