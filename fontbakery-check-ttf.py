@@ -24,9 +24,10 @@ def assert_table_entry(tableName, fieldName, expectedValue):
     value = getattr(font[tableName], fieldName)
     if value != expectedValue:
         setattr(font[tableName], fieldName, expectedValue)
-        fixes.append("{}: {} => {}".format(tableName,
-                                             value,
-                                             expectedValue))
+        fixes.append("{} {} from {} to {}".format(tableName, 
+                                                  fieldName,
+                                                  value,
+                                                  expectedValue))
 
 def fixes_str():
     """ Concatenate all fixes that happened up to now
@@ -36,7 +37,7 @@ def fixes_str():
     if fixes == []:
         return ""
 
-    fixes_log_message = "Fixes: " + " | ".join(fixes)
+    fixes_log_message = "HOTFIXED: " + " | ".join(fixes)
 
     # empty the buffer of fixes,
     # in preparation for the next test
@@ -239,61 +240,75 @@ def main():
       logging.info("OK: name table has no records with platformID=1")
 
     #----------------------------------------------------
-    logging.debug("Checking monospace aspects")
-    # There are 2 tables in the OpenType spec that specify whether 
-    # or not a font is monospaced. When a font is monospaced, the 
-    # follow conditions must be met:
+    # There are various metadata in the OpenType spec to specify if 
+    # a font is monospaced or not. 
+    #
+    # The source of truth for if a font is monospaced is if 90% of all
+    # glyphs have the same width. If this is true then these metadata
+    # must be set.
     # 
-    # * Explicitely, the isFixedWidth value in the "post" table is set to 0
-    # * Implicitely, the advanceWidthMax value in the "hhea" table 
-    #      must be equal to each glyph's advanceWidth value
-    # A fixer must check the advanceWidth values of all glyphs and 
-    # if 90% of glyphs have the same width, it is truly a monospace.
-    # Then 
-    # * ['post'].isFixedWidth is set
-    # * advanceWidthMax on "hhea" table is set accordingly
-    # * panose monospace value must not be set
-    # * any glyphs not with that width should be an error
-    # also if the glyphs are less than 90% the same width,
-    # these things should NOT be set (sometimes they mistakenly are)
-
+    # If not true, no monospaced metadata should be set (as sometimes 
+    # they mistakenly are...)
+    #
+    # Monospace fonts must:
+    #
+    # * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
+    #   non-zero if the font is not proportionally spaced (monospaced)"  
+    #   www.microsoft.com/typography/otspec/post.htm
+    #
+    # * hhea.advanceWidthMax must be correct, meaning no glyph's 
+    #   width value is greater.
+    #   www.microsoft.com/typography/otspec/hhea.htm
+    #
+    # * panose monospace value must be set. Spec says:
+    #   "The PANOSE definition contains ten digits each of which currently
+    #   describes up to sixteen variations. Windows uses bFamilyType,
+    #   bSerifStyle and bProportion in the font mapper to determine 
+    #   family type. It also uses bProportion to determine if the font 
+    #   is monospaced." 
+    #   www.microsoft.com/typography/otspec/os2.htm#pan
+    #
+    # Also we should report an error for glyphs not of typical width
+    logging.debug("Checking if the font is truly monospaced")
     glyphs = font['glyf'].glyphs
     width_occurrences = {}
-    max_advance = 0
+    width_max = 0
+    # count how many times a width occurs
     for glyph_id in glyphs:
-        value = font['hmtx'].metrics[glyph_id][0] #advanceWidth
-        max_advance = max(value, max_advance)
+        width = font['hmtx'].metrics[glyph_id][0]
+        width_max = max(width, width_max)
         try:
-            width_occurrences[value] += 1
+            width_occurrences[width] += 1
         except KeyError:
-            width_occurrences[value] = 1
-
+            width_occurrences[width] = 1
+    # find the most_common_width
     occurrences = 0
-    for k in width_occurrences.keys():
-        if width_occurrences[k] > occurrences:
-            occurrences = width_occurrences[k]
-            most_common_width = k
-
-    detected_monospace = occurrences > 0.90 * len(glyphs)
-
-    if detected_monospace:
-        #spec says a non-zero value means it is a monospaced font.
+    for width in width_occurrences.keys():
+        if width_occurrences[width] > occurrences:
+            occurrences = width_occurrences[width]
+            most_common_width = width
+    # if more than 90% of glyphs have the same width, set monospaced metadata
+    monospace_detected = occurrences > 0.90 * len(glyphs)
+    if monospace_detected:
+        # TODO confirm that the previous values for these 3 are correct
+        # spec says post.isFixedPitch non-zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 1)
-        assert_table_entry('hhea', 'advanceWidthMax', most_common_width)
-
-        num_outliers = len(glyphs) - occurrences
-        if num_outliers == 0:
-            logging.info("Font is monospace. " + fixes_str())
+        assert_table_entry('hhea', 'advanceWidthMax', width_max)
+        # FIXME set panose value here
+        # if any glyphs 
+        outliers = len(glyphs) - occurrences
+        if outliers == 0:
+            logging.info("OK: Font is monospaced. " + fixes_str())
         else:
-            list_of_unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
-            logging.warn("Font is monospace but there are {} outliers.".format(num_outliers) +\
-                         " You should check the widths of these" +\
-                         " glyphs: {}".format(list_of_unusually_spaced_glyphs))
-
+            unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
+            logging.warn("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
+                         " You should check the widths of: {}".format(unusually_spaced_glyphs))
+    # else it is not monospaced, so unset monospaced metadata
     else:
-        #spec says zero means it is not a monospaced font.
+        # spec says post.isFixedPitch zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 0)
-        assert_table_entry('hhea', 'advanceWidthMax', max_advance)
+        assert_table_entry('hhea', 'advanceWidthMax', width_max)
+        # FIXME set panose value here
         logging.info("OK: Font is not monospaced. " + fixes_str())
 
     #----------------------------------------------------
