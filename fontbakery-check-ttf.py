@@ -17,8 +17,8 @@ def assert_table_entry(tableName, fieldName, expectedValue):
 
     Usage example:
     assert_table_entry('post', 'isFixedPitch', 1)
-    assert_table_entry('', 'panose', None)
-    logger.info("Monospace test " + fixes_str())
+    assert_table_entry('OS/2', 'fsType', 0)
+    logger.info("Something test " + fixes_str())
     """
 
     value = getattr(font[tableName], fieldName)
