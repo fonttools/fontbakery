@@ -132,8 +132,10 @@ def main():
     try:
       for row in table.findAll('tr'):
         cells = row.findAll('td')
-        # FIXME this should be padded to make it a 4 char string, with 1/2/3 spaces, otherwise eg "CF  " will not be matched to "CF"
-        code = cells[0].string
+        # pad the code to make sure it is a 4 char string,
+        # otherwise eg "CF  " will not be matched to "CF"
+        code = cells[0].string.strip()
+        code = code + (4 - len(code)) * ' '
         labels = [label for label in cells[1].stripped_strings]
         registered_vendor_ids[code] = labels[0]
     except:
