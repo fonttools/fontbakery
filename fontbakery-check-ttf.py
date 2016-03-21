@@ -151,12 +151,8 @@ def main():
     
     #----------------------------------------------------
     logging.debug("Checking OS/2 fsType")
-    if font['OS/2'].fsType != 0:
-      logging.error("OS/2 fsType is not 0")
-      font['OS/2'].fsType = 0
-      logging.info("HOTFIX: OS/2 fsType is now 0")
-    else:
-      logging.info("OK: fsType is 0")
+    assert_table_value('OS/2', 'fsType', 0)
+    logging.info("OK: fsType is 0" + fixes_str())
 
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
