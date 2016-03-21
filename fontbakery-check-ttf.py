@@ -68,6 +68,7 @@ def main():
   for filename in sorted(args.filenames):
     # use glob.glob to accept *.ttf
     for font_file in glob.glob(filename):
+      # FIXME use mime type magic to check the file is really a TTF
       if font_file.endswith('.ttf'):
         fonts_to_check.append(font_file)
       else:
@@ -189,6 +190,7 @@ def main():
     weight_name = style
     if style.endswith("Italic"): 
       weight_name = style.replace("Italic","")
+      # FIXME add checks for fsSelection, italicAngle
     if weight_name == "": 
       weight = "Italic"
     weights = {"Thin": 250, 
@@ -202,6 +204,16 @@ def main():
                 "ExtraBold": 800,
                 "Black": 900
                }
+    if weight_name == "Regular":
+      # FIXME add checks for fsSelection
+      pass
+    elif weight_name == "Bold":
+      # FIXME add checks for macStyle, fsSelection
+      pass
+    else:
+      # FIXME add checks for macStyle, fsSelection NOT set
+      pass
+
     if weight_class != weights[weight_name]:
       msg = "{} usWeightClass is {}".format(style, weight_class)
       logging.error(msg)
@@ -221,6 +233,9 @@ def main():
     #----------------------------------------------------
     logging.info("TODO: Check name table")
     # TODO: Check that OFL.txt or LICENSE.txt exists in the same directory as font_file, if not then warn that there should be one. If exists, then check its first line matches the copyright namerecord, and that each namerecord is identical
+    # TODO Check license and license URL are correct, hotfix them if not
+    # TODO Check namerecord 9 ("description") is not there, drop it if so
+    
     
     #----------------------------------------------------
     # TODO this needs work, see https://github.com/behdad/fonttools/issues/146#issuecomment-176761350 and https://github.com/googlefonts/fontbakery/issues/631
@@ -299,6 +314,7 @@ def main():
             logging.info("OK: Font is monospaced. " + fixes_str())
         else:
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
+            # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
             logging.warn("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
                          " You should check the widths of: {}".format(unusually_spaced_glyphs))
     # else it is not monospaced, so unset monospaced metadata
