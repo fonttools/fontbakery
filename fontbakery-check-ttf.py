@@ -33,12 +33,9 @@ def fixes_str():
     """ Concatenate all fixes that happened up to now
     in a good and regular syntax """
     global fixes
-
     if fixes == []:
         return ""
-
     fixes_log_message = "HOTFIXED: " + " | ".join(fixes)
-
     # empty the buffer of fixes,
     # in preparation for the next test
     fixes = []
@@ -50,7 +47,6 @@ def main():
   # to include timestamps
   # log_format = '%(asctime)s %(levelname)-8s %(message)s'
   global font
-
   log_format = '%(levelname)-8s %(message)s  '
   logger = logging.getLogger()
   handler = logging.StreamHandler()
@@ -60,7 +56,6 @@ def main():
   # to show all log events
   # logger.setLevel(logging.DEBUG)
   logger.setLevel(logging.INFO)
-  
   # set up some command line argument processing
   parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
   parser.add_argument('filenames', nargs='+', 
@@ -68,7 +63,7 @@ def main():
   args = parser.parse_args()
 
   #------------------------------------------------------
-  logging.debug("Checking each file is a ttfs")
+  logging.debug("Checking each file is a ttf")
   fonts_to_check = []
   for filename in sorted(args.filenames):
     # use glob.glob to accept *.ttf
@@ -77,7 +72,7 @@ def main():
         fonts_to_check.append(font_file)
       else:
         file_path, filename = os.path.split(font_file)
-        logging.warning("Skipping " + filename + " as not a ttf") 
+        logging.warning("Skipping {}".format(filename))
   fonts_to_check.sort()
 
   #------------------------------------------------------
@@ -105,17 +100,17 @@ def main():
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
     filename_base, filename_extention = os.path.splitext(filename)
-    # remove spaces
+    # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in style_names]
     try: 
       family, style = filename_base.split('-')
       if style in style_file_names:
         logging.info("OK: {} is named canonically".format(font_file))
       else:
-        logging.critical("{} is not named canonically".format(font_file))
+        logging.critical("{} is named Family-Style.ttf but Style is not canonical. You should rebuild it with a canonical style name".format(font_file))
         not_canonical.append(font_file)
     except:
-        logging.critical("{} is not named canonically".format(font_file))
+        logging.critical("{} is not named canonically, as Family-Style.ttf".format(font_file))
         not_canonical.append(font_file)
   if not_canonical:
     print '\nAborted, critical errors with filenames. Please rename these files canonically and try again:\n ',
