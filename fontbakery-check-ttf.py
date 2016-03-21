@@ -63,13 +63,14 @@ def main():
   args = parser.parse_args()
 
   #------------------------------------------------------
+  import magic
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
   for filename in sorted(args.filenames):
     # use glob.glob to accept *.ttf
     for font_file in glob.glob(filename):
-      # FIXME use mime type magic to check the file is really a TTF
-      if font_file.endswith('.ttf'):
+      mime = magic.Magic(mime=True)
+      if mime.from_file(font_file) == 'application/font-ttf':
         fonts_to_check.append(font_file)
       else:
         file_path, filename = os.path.split(font_file)
