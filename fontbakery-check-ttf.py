@@ -177,7 +177,7 @@ def main():
     if len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
-        msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that you?".format(vid, registered_vendor_ids[vid])
+        msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
         logging.info(msg)
       elif vid.lower() in [item.lower() for item in registered_vendor_ids.keys()]:
         msg = "OS/2 VendorID '{}' is registered with different casing. You should check the case.".format(vid)
