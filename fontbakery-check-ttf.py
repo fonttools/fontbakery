@@ -13,12 +13,12 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     """ This is a helper function to accumulate
     all fixes that a test performs so that we can
     print them all in a single line by invoking
-    the fixes_str() function.
+    the log_results() function.
 
     Usage example:
     assert_table_entry('post', 'isFixedPitch', 1)
     assert_table_entry('OS/2', 'fsType', 0)
-    logger.info("Something test " + fixes_str())
+    log_results("Something test.")
     """
 
     value = getattr(font[tableName], fieldName)
@@ -42,20 +42,18 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #      Create a helper function to format binary values
             #      highlighting the bits that are selected by a bitmask
 
-def fixes_str():
+def log_results(message):
     """ Concatenate all fixes that happened up to now
     in a good and regular syntax """
     global fixes
     if fixes == []:
-        return ""
-    fixes_log_message = "HOTFIXED: " + " | ".join(fixes)
-    # empty the buffer of fixes,
-    # in preparation for the next test
-    fixes = []
-
-    # Dave says that
-    # HOTFIX fix strings should result in logging.error
-    return fixes_log_message
+        logging.info("OK: " + message)
+    else:
+        logging.error("HOTFIXED: {} Fixes: {}".format(message,
+                                                      " | ".join(fixes)))
+        # empty the buffer of fixes,
+        # in preparation for the next test
+        fixes = []
 
 def main():
   # set up a basic logging config
@@ -170,7 +168,7 @@ def main():
     # It should be disabled in all fonts.
     logging.debug("Checking OS/2 fsType")
     assert_table_entry('OS/2', 'fsType', 0)
-    logging.info("OK: fsType is 0. " + fixes_str())
+    log_results("fsType is zero.")
 
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
@@ -237,15 +235,15 @@ def main():
     #----------------------------------------------------
     logging.debug("Checking OS/2 usWeightClass")
     assert_table_entry('OS/2', 'usWeightClass', WEIGHTS[weight_name])
-    logging.info("OK. " + fixes_str())
+    log_results("OS/2 usWeightClass")
 
     #----------------------------------------------------
-    logging.info("Checking fsSelection REGULAR bit")
+    logging.debug("Checking fsSelection REGULAR bit")
     expected = 0
     if "Regular" in style:
         expected = FSSEL_REGULAR
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_REGULAR)
-    logging.info("OK. " + fixes_str())
+    log_results("fsSelection REGULAR bit")
 
     #----------------------------------------------------
     #TODO: italicAngle checker
@@ -254,39 +252,39 @@ def main():
     #TODO: checker for proper italic names in name table
 
     #----------------------------------------------------
-    logging.info("Checking fsSelection ITALIC bit")
+    logging.debug("Checking fsSelection ITALIC bit")
     expected = 0
     if "Italic" in style:
         expected = FSSEL_ITALIC
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_ITALIC)
-    logging.info("OK. " + fixes_str())
+    log_results("fsSelection ITALIC bit")
 
     #----------------------------------------------------
-    logging.info("Checking macStyle ITALIC bit")
+    logging.debug("Checking macStyle ITALIC bit")
     expected = 0
     if "Italic" in style:
         expected = MACSTYLE_ITALIC
     assert_table_entry('head', 'macStyle', expected, bitmask=FSSEL_ITALIC)
-    logging.info("OK. " + fixes_str())
+    log_results("macStyle ITALIC bit")
 
     #----------------------------------------------------
-    logging.info("Checking fsSelection BOLD bit")
+    logging.debug("Checking fsSelection BOLD bit")
     expected = 0
     if style in ["Bold", "BoldItalic"]:
         expected = FSSEL_BOLD
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_BOLD)
-    logging.info("OK. " + fixes_str())
+    log_results("fsSelection BOLD bit")
 
     #----------------------------------------------------
-    logging.info("Checking macStyle BOLD bit")
+    logging.debug("Checking macStyle BOLD bit")
     expected = 0
     if style in ["Bold", "BoldItalic"]:
         expected = MACSTYLE_BOLD
     assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_BOLD)
-    logging.info("OK. " + fixes_str())
+    log_results("macStyle BOLD bit")
 
     #----------------------------------------------------
-    logging.info("TODO: Check name table")
+    logging.debug("TODO: Check name table")
     # TODO: Check that OFL.txt or LICENSE.txt exists in the same directory as font_file, if not then warn that there should be one. If exists, then check its first line matches the copyright namerecord, and that each namerecord is identical
     # TODO Check license and license URL are correct, hotfix them if not
     # TODO Check namerecord 9 ("description") is not there, drop it if so
@@ -366,7 +364,7 @@ def main():
         # if any glyphs 
         outliers = len(glyphs) - occurrences
         if outliers == 0:
-            logging.info("OK: Font is monospaced. " + fixes_str())
+            log_results("Font is monospaced.")
         else:
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
@@ -378,7 +376,7 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 0)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         # FIXME set panose value here
-        logging.info("OK: Font is not monospaced. " + fixes_str())
+        log_results("Font is not monospaced.")
 
     #----------------------------------------------------
     logging.debug("Checking with ot-sanitise")
