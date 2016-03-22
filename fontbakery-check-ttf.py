@@ -281,6 +281,7 @@ def main():
     #   family type. It also uses bProportion to determine if the font 
     #   is monospaced." 
     #   www.microsoft.com/typography/otspec/os2.htm#pan
+    #   monotypecom-test.monotype.de/services/pan2
     #
     # Also we should report an error for glyphs not of typical width
     logging.debug("Checking if the font is truly monospaced")
@@ -309,8 +310,9 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         # FIXME set panose value here
-        # if any glyphs 
+        # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
+        # FIXME this if/else should be swapped, so the if evaluates the condition we look for, and else handles the OK case
         if outliers == 0:
             logging.info("OK: Font is monospaced. " + fixes_str())
         else:
@@ -379,8 +381,10 @@ def main():
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
     # if that flag is True by this point, only then write the file
-    # and then re-run OTS as above
     font_file_output = '{}.fix'.format(font_file)
+    # and then say any further output regards fixed files, and 
+    # re-run the script on each fixed file with logging level = error
+    # so no info-level log items are shown
     font.save(font_file_output)
     font.close()
     logging.info("{} saved\n".format(font_file_output))
