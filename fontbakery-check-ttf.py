@@ -58,23 +58,24 @@ def main():
   logger.setLevel(logging.INFO)
   # set up some command line argument processing
   parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
-  parser.add_argument('filenames', nargs='+', 
-    help='file name(s) of fonts to check. Wildcards like *.ttf are allowed.')
+  parser.add_argument('arg_filepaths', nargs='+', 
+    help='font file path(s) to check. Wildcards like *.ttf are allowed.')
   args = parser.parse_args()
 
   #------------------------------------------------------
   import magic
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
-  for filename in sorted(args.filenames):
+  for arg_filepath in sorted(args.arg_filepaths):
     # use glob.glob to accept *.ttf
-    for font_file in glob.glob(filename):
+    for fullpath in glob.glob(arg_filepath):
+      file_path, file_name = os.path.split(fullpath)
       mime = magic.Magic(mime=True)
-      if mime.from_file(font_file) == 'application/font-ttf':
-        fonts_to_check.append(font_file)
+      if mime.from_file(fullpath) == 'application/font-ttf':
+        logging.debug("{} has a ttf mimetype".format(file_name))
+        fonts_to_check.append(fullpath)
       else:
-        file_path, filename = os.path.split(font_file)
-        logging.warning("Skipping {}".format(filename))
+        logging.warning("Skipping {}".format(file_name))
   fonts_to_check.sort()
 
   #------------------------------------------------------
