@@ -247,7 +247,25 @@ def main():
     log_results("fsSelection REGULAR bit")
 
     #----------------------------------------------------
-    #TODO: italicAngle checker
+    logging.debug("Checking that italicAngle <= 0")
+
+    value = font['post'].italicAngle
+    if value > 0:
+        font['post'].italicAngle = -value
+        logging.error("HOTFIXED: italicAngle from {} to {}".format(value, -value))
+    else:
+        logging.info("OK: italicAngle <= 0")
+    #----------------------------------------------------
+    logging.debug("Checking if italicAngle matches font style")
+
+    if "Italic" in style:
+       if font['post'].italicAngle == 0:
+           logging.error("Font is italic, so italicAngle should be non-zero.")
+       else:
+           loggin.info("OK: italicAngle matches font style")
+    else:
+       assert_table_entry('post', 'italicAngle', 0)
+       log_results("matching of fontstyle and italicAngle value")
 
     #----------------------------------------------------
     #TODO: checker for proper italic names in name table
