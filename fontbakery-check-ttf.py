@@ -9,7 +9,7 @@ from fontTools import ttLib
 
 font = None
 fixes = []
-def assert_table_entry(tableName, fieldName, expectedValue):
+def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     """ This is a helper function to accumulate
     all fixes that a test performs so that we can
     print them all in a single line by invoking
@@ -22,12 +22,25 @@ def assert_table_entry(tableName, fieldName, expectedValue):
     """
 
     value = getattr(font[tableName], fieldName)
-    if value != expectedValue:
-        setattr(font[tableName], fieldName, expectedValue)
-        fixes.append("{} {} from {} to {}".format(tableName, 
-                                                  fieldName,
-                                                  value,
-                                                  expectedValue))
+
+    if bitmask==None:
+        if value != expectedValue:
+            setattr(font[tableName], fieldName, expectedValue)
+            fixes.append("{} {} from {} to {}".format(tableName,
+                                                      fieldName,
+                                                      value,
+                                                      expectedValue))
+    else:
+        if value & bitmask != expectedValue:
+            expectedValue = (value & (~bitmask)) | expectedValue
+            setattr(font[tableName], fieldName, expectedValue)
+            fixes.append("{} {} from {} to {}".format(tableName,
+                                                      fieldName,
+                                                      value,
+                                                      expectedValue))
+            #TODO: Aestethical improvement:
+            #      Create a helper function to format binary values
+            #      highlighting the bits that are selected by a bitmask
 
 def fixes_str():
     """ Concatenate all fixes that happened up to now
@@ -40,6 +53,8 @@ def fixes_str():
     # in preparation for the next test
     fixes = []
 
+    # Dave says that
+    # HOTFIX fix strings should result in logging.error
     return fixes_log_message
 
 def main():
@@ -70,11 +85,12 @@ def main():
     # use glob.glob to accept *.ttf
     for font_file in glob.glob(filename):
       mime = magic.Magic(mime=True)
-      if mime.from_file(font_file) == 'application/font-ttf':
+      if mime.from_file(font_file) == 'application/x-font-ttf':
         fonts_to_check.append(font_file)
       else:
         file_path, filename = os.path.split(font_file)
-        logging.warning("Skipping {}".format(filename))
+        logging.warning("Skipping {} (mime '{}' is not 'application/x-font-ttf')".format(
+           filename, mime.from_file(font_file)))
   fonts_to_check.sort()
 
   #------------------------------------------------------
@@ -101,7 +117,7 @@ def main():
                 ]
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    filename_base, filename_extention = os.path.splitext(filename)
+    filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in style_names]
     try: 
@@ -153,7 +169,7 @@ def main():
     # OS/2 fsType is a legacy DRM-related field from the 80's
     # It should be disabled in all fonts.
     logging.debug("Checking OS/2 fsType")
-    assert_table_value('OS/2', 'fsType', 0)
+    assert_table_entry('OS/2', 'fsType', 0)
     logging.info("OK: fsType is 0. " + fixes_str())
 
     #----------------------------------------------------
@@ -182,54 +198,92 @@ def main():
       logging.info("OK: OS/2 VendorID is '{}'".format(vid))
 
     #----------------------------------------------------
-    logging.debug("Checking OS/2 usWeightClass")
+    # fsSelection bit definitions:
+    FSSEL_ITALIC         = (1 << 0)
+    FSSEL_UNDERSCORE     = (1 << 1)
+    FSSEL_NEGATIVE       = (1 << 2)
+    FSSEL_OUTLINED       = (1 << 3)
+    FSSEL_STRIKEOUT      = (1 << 4)
+    FSSEL_BOLD           = (1 << 5)
+    FSSEL_REGULAR        = (1 << 6)
+    FSSEL_USETYPOMETRICS = (1 << 7)
+    FSSEL_WWS            = (1 << 8)
+    FSSEL_OBLIQUE        = (1 << 9)
+
+    #macStyle bit definitions:
+    MACSTYLE_BOLD   = (1 << 0)
+    MACSTYLE_ITALIC = (1 << 1)
+
+    #weight name to value mapping:
+    WEIGHTS = {"Thin": 250,
+               "ExtraLight": 275,
+               "Light": 300,
+               "Regular": 400,
+               "Italic": 400,
+               "Medium": 500,
+               "SemiBold": 600,
+               "Bold": 700,
+               "ExtraBold": 800,
+               "Black": 900
+              }
+    #----------------------------------------------------
     file_path, filename = os.path.split(font_file)
-    filename_base, filename_extention = os.path.splitext(filename)
-    family, style = filename_base.split('-')
-    weight_class = font['OS/2'].usWeightClass
-    # FIXME There has got to be a smarter way than these 4 lines, but they work
-    weight_name = style
-    if style.endswith("Italic"): 
-      weight_name = style.replace("Italic","")
-      # FIXME add checks for fsSelection, italicAngle
-    if weight_name == "": 
-      weight = "Italic"
-    weights = {"Thin": 250, 
-                "ExtraLight": 275,
-                "Light": 300,
-                "Regular": 400,
-                "Italic": 400,
-                "Medium": 500,
-                "SemiBold": 600,
-                "Bold": 700,
-                "ExtraBold": 800,
-                "Black": 900
-               }
-    if weight_name == "Regular":
-      # FIXME add checks for fsSelection
-      pass
-    elif weight_name == "Bold":
-      # FIXME add checks for macStyle, fsSelection
-      pass
+    family, style = os.path.splitext(filename)[0].split('-')
+    if style.endswith("Italic") and style != "Italic":
+        weight_name = style.replace("Italic","")
     else:
-      # FIXME add checks for macStyle, fsSelection NOT set
-      pass
-
-    if weight_class != weights[weight_name]:
-      msg = "{} usWeightClass is {}".format(style, weight_class)
-      logging.error(msg)
-      font['OS/2'].usWeightClass = weights[weight_name]
-      msg = "HOTFIX: {} usWeightClass is now {}".format(style, weights[weight_name])
-      logging.info(msg)
-    else:
-      msg = "OK: {} usWeightClass is {}".format(style, weight_class)
-      logging.info(msg)
-      
-    #----------------------------------------------------
-    logging.info("TODO: Check fsSelection")
+        weight_name = style
 
     #----------------------------------------------------
-    logging.info("TODO: Check head table")
+    logging.debug("Checking OS/2 usWeightClass")
+    assert_table_entry('OS/2', 'usWeightClass', WEIGHTS[weight_name])
+    logging.info("OK. " + fixes_str())
+
+    #----------------------------------------------------
+    logging.info("Checking fsSelection REGULAR bit")
+    expected = 0
+    if "Regular" in style:
+        expected = FSSEL_REGULAR
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_REGULAR)
+    logging.info("OK. " + fixes_str())
+
+    #----------------------------------------------------
+    #TODO: italicAngle checker
+
+    #----------------------------------------------------
+    #TODO: checker for proper italic names in name table
+
+    #----------------------------------------------------
+    logging.info("Checking fsSelection ITALIC bit")
+    expected = 0
+    if "Italic" in style:
+        expected = FSSEL_ITALIC
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_ITALIC)
+    logging.info("OK. " + fixes_str())
+
+    #----------------------------------------------------
+    logging.info("Checking macStyle ITALIC bit")
+    expected = 0
+    if "Italic" in style:
+        expected = MACSTYLE_ITALIC
+    assert_table_entry('head', 'macStyle', expected, bitmask=FSSEL_ITALIC)
+    logging.info("OK. " + fixes_str())
+
+    #----------------------------------------------------
+    logging.info("Checking fsSelection BOLD bit")
+    expected = 0
+    if style in ["Bold", "BoldItalic"]:
+        expected = FSSEL_BOLD
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_BOLD)
+    logging.info("OK. " + fixes_str())
+
+    #----------------------------------------------------
+    logging.info("Checking macStyle BOLD bit")
+    expected = 0
+    if style in ["Bold", "BoldItalic"]:
+        expected = MACSTYLE_BOLD
+    assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_BOLD)
+    logging.info("OK. " + fixes_str())
 
     #----------------------------------------------------
     logging.info("TODO: Check name table")
