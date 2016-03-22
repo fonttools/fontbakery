@@ -150,9 +150,11 @@ def main():
     logging.info("OK: {} opened with fontTools".format(font_file))
     
     #----------------------------------------------------
+    # OS/2 fsType is a legacy DRM-related field from the 80's
+    # It should be disabled in all fonts.
     logging.debug("Checking OS/2 fsType")
     assert_table_value('OS/2', 'fsType', 0)
-    logging.info("OK: fsType is 0" + fixes_str())
+    logging.info("OK: fsType is 0. " + fixes_str())
 
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
