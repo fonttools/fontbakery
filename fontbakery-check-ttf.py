@@ -382,10 +382,11 @@ def main():
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
     # if that flag is True by this point, only then write the file
-    font_file_output = '{}.fix'.format(font_file)
     # and then say any further output regards fixed files, and 
     # re-run the script on each fixed file with logging level = error
     # so no info-level log items are shown
+    font_file_output = font_file.replace('ttf','fix')
+    os.path.join(directory
     font.save(font_file_output)
     font.close()
     logging.info("{} saved\n".format(font_file_output))
