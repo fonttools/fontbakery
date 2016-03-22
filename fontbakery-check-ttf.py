@@ -9,38 +9,51 @@ from fontTools import ttLib
 
 font = None
 fixes = []
-def assert_table_entry(tableName, fieldName, expectedValue):
+def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     """ This is a helper function to accumulate
     all fixes that a test performs so that we can
     print them all in a single line by invoking
-    the fixes_str() function.
+    the log_results() function.
 
     Usage example:
     assert_table_entry('post', 'isFixedPitch', 1)
     assert_table_entry('OS/2', 'fsType', 0)
-    logger.info("Something test " + fixes_str())
+    log_results("Something test.")
     """
 
     value = getattr(font[tableName], fieldName)
-    if value != expectedValue:
-        setattr(font[tableName], fieldName, expectedValue)
-        fixes.append("{} {} from {} to {}".format(tableName, 
-                                                  fieldName,
-                                                  value,
-                                                  expectedValue))
 
-def fixes_str():
+    if bitmask==None:
+        if value != expectedValue:
+            setattr(font[tableName], fieldName, expectedValue)
+            fixes.append("{} {} from {} to {}".format(tableName,
+                                                      fieldName,
+                                                      value,
+                                                      expectedValue))
+    else:
+        if value & bitmask != expectedValue:
+            expectedValue = (value & (~bitmask)) | expectedValue
+            setattr(font[tableName], fieldName, expectedValue)
+            fixes.append("{} {} from {} to {}".format(tableName,
+                                                      fieldName,
+                                                      value,
+                                                      expectedValue))
+            #TODO: Aestethical improvement:
+            #      Create a helper function to format binary values
+            #      highlighting the bits that are selected by a bitmask
+
+def log_results(message):
     """ Concatenate all fixes that happened up to now
     in a good and regular syntax """
     global fixes
     if fixes == []:
-        return ""
-    fixes_log_message = "HOTFIXED: " + " | ".join(fixes)
-    # empty the buffer of fixes,
-    # in preparation for the next test
-    fixes = []
-
-    return fixes_log_message
+        logging.info("OK: " + message)
+    else:
+        logging.error("HOTFIXED: {} Fixes: {}".format(message,
+                                                      " | ".join(fixes)))
+        # empty the buffer of fixes,
+        # in preparation for the next test
+        fixes = []
 
 def main():
   # set up a basic logging config
@@ -71,11 +84,12 @@ def main():
     for fullpath in glob.glob(arg_filepath):
       file_path, file_name = os.path.split(fullpath)
       mime = magic.Magic(mime=True)
-      if mime.from_file(fullpath) == 'application/font-ttf':
-        logging.debug("{} has a ttf mimetype".format(file_name))
+      mimetype = mime.from_file(fullpath)
+      if mimetype == 'application/x-font-ttf':
+        logging.debug("'{}' has a ttf mimetype".format(file_name))
         fonts_to_check.append(fullpath)
       else:
-        logging.warning("Skipping {}".format(file_name))
+        logging.warning("Skipping '{}' as mime was '{}', should be 'application/x-font-ttf')".format(filename, mimetype))
   fonts_to_check.sort()
 
   #------------------------------------------------------
@@ -102,7 +116,7 @@ def main():
                 ]
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    filename_base, filename_extention = os.path.splitext(filename)
+    filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in style_names]
     try: 
@@ -154,8 +168,8 @@ def main():
     # OS/2 fsType is a legacy DRM-related field from the 80's
     # It should be disabled in all fonts.
     logging.debug("Checking OS/2 fsType")
-    assert_table_value('OS/2', 'fsType', 0)
-    logging.info("OK: fsType is 0. " + fixes_str())
+    assert_table_entry('OS/2', 'fsType', 0)
+    log_results("fsType is zero.")
 
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
@@ -183,76 +197,115 @@ def main():
       logging.info("OK: OS/2 VendorID is '{}'".format(vid))
 
     #----------------------------------------------------
-    logging.debug("Checking OS/2 usWeightClass")
+    # fsSelection bit definitions:
+    FSSEL_ITALIC         = (1 << 0)
+    FSSEL_UNDERSCORE     = (1 << 1)
+    FSSEL_NEGATIVE       = (1 << 2)
+    FSSEL_OUTLINED       = (1 << 3)
+    FSSEL_STRIKEOUT      = (1 << 4)
+    FSSEL_BOLD           = (1 << 5)
+    FSSEL_REGULAR        = (1 << 6)
+    FSSEL_USETYPOMETRICS = (1 << 7)
+    FSSEL_WWS            = (1 << 8)
+    FSSEL_OBLIQUE        = (1 << 9)
+
+    #macStyle bit definitions:
+    MACSTYLE_BOLD   = (1 << 0)
+    MACSTYLE_ITALIC = (1 << 1)
+
+    #weight name to value mapping:
+    WEIGHTS = {"Thin": 250,
+               "ExtraLight": 275,
+               "Light": 300,
+               "Regular": 400,
+               "Italic": 400,
+               "Medium": 500,
+               "SemiBold": 600,
+               "Bold": 700,
+               "ExtraBold": 800,
+               "Black": 900
+              }
+    #----------------------------------------------------
     file_path, filename = os.path.split(font_file)
-    filename_base, filename_extention = os.path.splitext(filename)
-    family, style = filename_base.split('-')
-    weight_class = font['OS/2'].usWeightClass
-    # FIXME There has got to be a smarter way than these 4 lines, but they work
-    weight_name = style
-    if style.endswith("Italic"): 
-      weight_name = style.replace("Italic","")
-      # FIXME add checks for fsSelection, italicAngle
-    if weight_name == "": 
-      weight = "Italic"
-    weights = {"Thin": 250, 
-                "ExtraLight": 275,
-                "Light": 300,
-                "Regular": 400,
-                "Italic": 400,
-                "Medium": 500,
-                "SemiBold": 600,
-                "Bold": 700,
-                "ExtraBold": 800,
-                "Black": 900
-               }
-    if weight_name == "Regular":
-      # FIXME add checks for fsSelection
-      pass
-    elif weight_name == "Bold":
-      # FIXME add checks for macStyle, fsSelection
-      pass
+    family, style = os.path.splitext(filename)[0].split('-')
+    if style.endswith("Italic") and style != "Italic":
+        weight_name = style.replace("Italic","")
     else:
-      # FIXME add checks for macStyle, fsSelection NOT set
-      pass
-
-    if weight_class != weights[weight_name]:
-      msg = "{} usWeightClass is {}".format(style, weight_class)
-      logging.error(msg)
-      font['OS/2'].usWeightClass = weights[weight_name]
-      msg = "HOTFIX: {} usWeightClass is now {}".format(style, weights[weight_name])
-      logging.info(msg)
-    else:
-      msg = "OK: {} usWeightClass is {}".format(style, weight_class)
-      logging.info(msg)
-      
-    #----------------------------------------------------
-    logging.info("TODO: Check fsSelection")
+        weight_name = style
 
     #----------------------------------------------------
-    logging.info("TODO: Check head table")
+    logging.debug("Checking OS/2 usWeightClass")
+    assert_table_entry('OS/2', 'usWeightClass', WEIGHTS[weight_name])
+    log_results("OS/2 usWeightClass")
 
     #----------------------------------------------------
-    logging.info("TODO: Check name table")
+    logging.debug("Checking fsSelection REGULAR bit")
+    expected = 0
+    if "Regular" in style:
+        expected = FSSEL_REGULAR
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_REGULAR)
+    log_results("fsSelection REGULAR bit")
+
+    #----------------------------------------------------
+    #TODO: italicAngle checker
+
+    #----------------------------------------------------
+    #TODO: checker for proper italic names in name table
+
+    #----------------------------------------------------
+    logging.debug("Checking fsSelection ITALIC bit")
+    expected = 0
+    if "Italic" in style:
+        expected = FSSEL_ITALIC
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_ITALIC)
+    log_results("fsSelection ITALIC bit")
+
+    #----------------------------------------------------
+    logging.debug("Checking macStyle ITALIC bit")
+    expected = 0
+    if "Italic" in style:
+        expected = MACSTYLE_ITALIC
+    assert_table_entry('head', 'macStyle', expected, bitmask=FSSEL_ITALIC)
+    log_results("macStyle ITALIC bit")
+
+    #----------------------------------------------------
+    logging.debug("Checking fsSelection BOLD bit")
+    expected = 0
+    if style in ["Bold", "BoldItalic"]:
+        expected = FSSEL_BOLD
+    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_BOLD)
+    log_results("fsSelection BOLD bit")
+
+    #----------------------------------------------------
+    logging.debug("Checking macStyle BOLD bit")
+    expected = 0
+    if style in ["Bold", "BoldItalic"]:
+        expected = MACSTYLE_BOLD
+    assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_BOLD)
+    log_results("macStyle BOLD bit")
+
+    #----------------------------------------------------
+    logging.debug("TODO: Check name table")
     # TODO: Check that OFL.txt or LICENSE.txt exists in the same directory as font_file, if not then warn that there should be one. If exists, then check its first line matches the copyright namerecord, and that each namerecord is identical
     # TODO Check license and license URL are correct, hotfix them if not
     # TODO Check namerecord 9 ("description") is not there, drop it if so
     
     
     #----------------------------------------------------
-    # TODO this needs work, see https://github.com/behdad/fonttools/issues/146#issuecomment-176761350 and https://github.com/googlefonts/fontbakery/issues/631
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
-    non_pid1 = False
+    changed = False
     for name in font['name'].names:
-      if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]:
-        non_pid1 = True
+      if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]\
+         or name.platformID == 1 and name.nameID in [1,2,4,6]: #see https://github.com/googlefonts/fontbakery/issues/649
         new_names.append(name)
-    if non_pid1:
+      else:
+        changed = True
+    if changed:
       font['name'].names = new_names
-      logging.info("HOTFIX: name table items with platformID=1 were removed")
+      logging.error("HOTFIXED: some name table items with platformID=1 were removed")
     else:
-      logging.info("OK: name table has no records with platformID=1")
+      logging.info("OK: name table has only the bare-minimum records with platformID=1")
 
     #----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if 
@@ -315,7 +368,7 @@ def main():
         outliers = len(glyphs) - occurrences
         # FIXME this if/else should be swapped, so the if evaluates the condition we look for, and else handles the OK case
         if outliers == 0:
-            logging.info("OK: Font is monospaced. " + fixes_str())
+            log_results("Font is monospaced.")
         else:
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
@@ -327,7 +380,7 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 0)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         # FIXME set panose value here
-        logging.info("OK: Font is not monospaced. " + fixes_str())
+        log_results("Font is not monospaced.")
 
     #----------------------------------------------------
     logging.debug("Checking with ot-sanitise")
