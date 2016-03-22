@@ -309,7 +309,7 @@ def main():
         # spec says post.isFixedPitch non-zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        # FIXME set panose value here
+        assert_table_entry('OS/2', 'panose.bProportion', 9)
         # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
         # FIXME this if/else should be swapped, so the if evaluates the condition we look for, and else handles the OK case
