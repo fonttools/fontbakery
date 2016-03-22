@@ -178,6 +178,7 @@ def main():
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
         msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
+        vendor_id_ok = True
         logging.info(msg)
       elif vid.lower() in [item.lower() for item in registered_vendor_ids.keys()]:
         msg = "OS/2 VendorID '{}' is registered with different casing. You should check the case.".format(vid)
@@ -194,7 +195,8 @@ def main():
     elif vid is None:
       logging.error("OS/2 VendorID is not set. You should set it.")
     else:
-      logging.info("OK: OS/2 VendorID is '{}'".format(vid))
+      if not vendor_id_ok:
+        logging.info("OK: OS/2 VendorID is '{}'".format(vid))
 
     #----------------------------------------------------
     # fsSelection bit definitions:
