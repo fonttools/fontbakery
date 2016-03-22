@@ -291,19 +291,20 @@ def main():
     
     
     #----------------------------------------------------
-    # TODO this needs work, see https://github.com/behdad/fonttools/issues/146#issuecomment-176761350 and https://github.com/googlefonts/fontbakery/issues/631
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
-    non_pid1 = False
+    changed = False
     for name in font['name'].names:
-      if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]:
-        non_pid1 = True
+      if name.platformID != 1 and name.nameID not in [0, 1, 2, 3, 4, 5, 6, 18]\
+         or name.platformID == 1 and name.nameID in [1,2,4,6]: #see https://github.com/googlefonts/fontbakery/issues/649
         new_names.append(name)
-    if non_pid1:
+      else:
+        changed = True
+    if changed:
       font['name'].names = new_names
-      logging.info("HOTFIX: name table items with platformID=1 were removed")
+      logging.error("HOTFIXED: some name table items with platformID=1 were removed")
     else:
-      logging.info("OK: name table has no records with platformID=1")
+      logging.info("OK: name table has only the bare-minimum records with platformID=1")
 
     #----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if 
