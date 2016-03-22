@@ -439,7 +439,6 @@ def main():
     # re-run the script on each fixed file with logging level = error
     # so no info-level log items are shown
     font_file_output = font_file.replace('ttf','fix')
-    os.path.join(directory
     font.save(font_file_output)
     font.close()
     logging.info("{} saved\n".format(font_file_output))
