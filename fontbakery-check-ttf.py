@@ -4,8 +4,74 @@ __author__="The Font Bakery Authors"
 
 import os, sys, argparse, glob, logging, requests, subprocess
 from bs4 import BeautifulSoup
-
 from fontTools import ttLib
+
+#=====================================
+# GLOBAL CONSTANTS DEFINITIONS
+
+STYLE_NAMES = ["Thin",
+               "ExtraLight",
+               "Light",
+               "Regular",
+               "Medium",
+               "SemiBold",
+               "Bold",
+               "ExtraBold",
+               "Black",
+               "Thin Italic",
+               "ExtraLight Italic",
+               "Light Italic",
+               "Italic",
+               "Medium Italic",
+               "SemiBold Italic",
+               "Bold Italic",
+               "ExtraBold Italic",
+               "Black Italic"
+              ]
+
+# Weight name to value mapping:
+WEIGHTS = {"Thin": 250,
+           "ExtraLight": 275,
+           "Light": 300,
+           "Regular": 400,
+           "Italic": 400,
+           "Medium": 500,
+           "SemiBold": 600,
+           "Bold": 700,
+           "ExtraBold": 800,
+           "Black": 900
+          }
+
+# fsSelection bit definitions:
+FSSEL_ITALIC         = (1 << 0)
+FSSEL_UNDERSCORE     = (1 << 1)
+FSSEL_NEGATIVE       = (1 << 2)
+FSSEL_OUTLINED       = (1 << 3)
+FSSEL_STRIKEOUT      = (1 << 4)
+FSSEL_BOLD           = (1 << 5)
+FSSEL_REGULAR        = (1 << 6)
+FSSEL_USETYPOMETRICS = (1 << 7)
+FSSEL_WWS            = (1 << 8)
+FSSEL_OBLIQUE        = (1 << 9)
+
+# macStyle bit definitions:
+MACSTYLE_BOLD   = (1 << 0)
+MACSTYLE_ITALIC = (1 << 1)
+
+# Panose definitions:
+PANOSE_PROPORTION_ANY = 0
+PANOSE_PROPORTION_NO_FIT = 1
+PANOSE_PROPORTION_OLD_STYLE = 2
+PANOSE_PROPORTION_MODERN = 3
+PANOSE_PROPORTION_EVEN_WIDTH = 4
+PANOSE_PROPORTION_EXTENDED = 5
+PANOSE_PROPORTION_CONDENSED = 6
+PANOSE_PROPORTION_VERY_EXTENDED = 7
+PANOSE_PROPORTION_VERY_CONDENSED = 8
+PANOSE_PROPORTION_MONOSPACED = 9
+
+#=====================================
+# HELPER FUNCTIONS
 
 font = None
 fixes = []
@@ -49,7 +115,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #      highlighting the bits that are selected by a bitmask
 
 def log_results(message):
-    """ Concatenate all fixes that happened up to now
+    """ Concatenate and log all fixes that happened up to now
     in a good and regular syntax """
     global fixes
     if fixes == []:
@@ -60,6 +126,9 @@ def log_results(message):
         # empty the buffer of fixes,
         # in preparation for the next test
         fixes = []
+
+#=====================================
+# Main sequence of checkers & fixers
 
 def main():
   # set up a basic logging config
@@ -101,30 +170,12 @@ def main():
   #------------------------------------------------------
   logging.debug("Checking files are named canonically")
   not_canonical = []
-  style_names = ["Thin", 
-                 "ExtraLight", 
-                 "Light", 
-                 "Regular", 
-                 "Medium", 
-                 "SemiBold", 
-                 "Bold", 
-                 "ExtraBold", 
-                 "Black", 
-                 "Thin Italic", 
-                 "ExtraLight Italic", 
-                 "Light Italic", 
-                 "Italic", 
-                 "Medium Italic", 
-                 "SemiBold Italic", 
-                 "Bold Italic", 
-                 "ExtraBold Italic", 
-                 "Black Italic"
-                ]
+
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
-    style_file_names = [name.replace(' ', '') for name in style_names]
+    style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
     try: 
       family, style = filename_base.split('-')
       if style in style_file_names:
@@ -198,48 +249,6 @@ def main():
         logging.warning(msg)
     else:
       msg = "OK: OS/2 VendorID is '{}' but could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
-
-    #----------------------------------------------------
-    # fsSelection bit definitions:
-    FSSEL_ITALIC         = (1 << 0)
-    FSSEL_UNDERSCORE     = (1 << 1)
-    FSSEL_NEGATIVE       = (1 << 2)
-    FSSEL_OUTLINED       = (1 << 3)
-    FSSEL_STRIKEOUT      = (1 << 4)
-    FSSEL_BOLD           = (1 << 5)
-    FSSEL_REGULAR        = (1 << 6)
-    FSSEL_USETYPOMETRICS = (1 << 7)
-    FSSEL_WWS            = (1 << 8)
-    FSSEL_OBLIQUE        = (1 << 9)
-
-    # macStyle bit definitions:
-    MACSTYLE_BOLD   = (1 << 0)
-    MACSTYLE_ITALIC = (1 << 1)
-
-    # weight name to value mapping:
-    WEIGHTS = {"Thin": 250,
-               "ExtraLight": 275,
-               "Light": 300,
-               "Regular": 400,
-               "Italic": 400,
-               "Medium": 500,
-               "SemiBold": 600,
-               "Bold": 700,
-               "ExtraBold": 800,
-               "Black": 900
-              }
-
-    # Panose definitions:
-    PANOSE_PROPORTION_ANY = 0
-    PANOSE_PROPORTION_NO_FIT = 1
-    PANOSE_PROPORTION_OLD_STYLE = 2
-    PANOSE_PROPORTION_MODERN = 3
-    PANOSE_PROPORTION_EVEN_WIDTH = 4
-    PANOSE_PROPORTION_EXTENDED = 5
-    PANOSE_PROPORTION_CONDENSED = 6
-    PANOSE_PROPORTION_VERY_EXTENDED = 7
-    PANOSE_PROPORTION_VERY_CONDENSED = 8
-    PANOSE_PROPORTION_MONOSPACED = 9
 
     #----------------------------------------------------
     file_path, filename = os.path.split(font_file)
