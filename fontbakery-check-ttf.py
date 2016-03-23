@@ -428,7 +428,6 @@ def main():
         # spec says post.isFixedPitch zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 0)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        # FIXME set panose value to anything except 9
         assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_ANY) #FIXEME: Dave, is it the correct value here?
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
         log_results("Font is not monospaced.")
