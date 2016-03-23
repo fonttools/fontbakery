@@ -212,11 +212,11 @@ def main():
     FSSEL_WWS            = (1 << 8)
     FSSEL_OBLIQUE        = (1 << 9)
 
-    #macStyle bit definitions:
+    # macStyle bit definitions:
     MACSTYLE_BOLD   = (1 << 0)
     MACSTYLE_ITALIC = (1 << 1)
 
-    #weight name to value mapping:
+    # weight name to value mapping:
     WEIGHTS = {"Thin": 250,
                "ExtraLight": 275,
                "Light": 300,
@@ -228,6 +228,19 @@ def main():
                "ExtraBold": 800,
                "Black": 900
               }
+
+    # Panose definitions:
+    PANOSE_PROPORTION_ANY = 0
+    PANOSE_PROPORTION_NO_FIT = 1
+    PANOSE_PROPORTION_OLD_STYLE = 2
+    PANOSE_PROPORTION_MODERN = 3
+    PANOSE_PROPORTION_EVEN_WIDTH = 4
+    PANOSE_PROPORTION_EXTENDED = 5
+    PANOSE_PROPORTION_CONDENSED = 6
+    PANOSE_PROPORTION_VERY_EXTENDED = 7
+    PANOSE_PROPORTION_VERY_CONDENSED = 8
+    PANOSE_PROPORTION_MONOSPACED = 9
+
     #----------------------------------------------------
     file_path, filename = os.path.split(font_file)
     family, style = os.path.splitext(filename)[0].split('-')
@@ -388,7 +401,7 @@ def main():
         # spec says post.isFixedPitch non-zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        assert_table_entry('OS/2', 'panose.bProportion', 9)
+        assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_MONOSPACED)
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
         # TODO 
         # If any glyphs are outliers, note them
@@ -407,7 +420,7 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 0)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         # FIXME set panose value to anything except 9
-        assert_table_entry('OS/2', 'panose.bProportion', 9)
+        assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_ANY) #FIXEME: Dave, is it the correct value here?
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
         log_results("Font is not monospaced.")
 
