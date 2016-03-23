@@ -174,7 +174,12 @@ def main():
     #----------------------------------------------------
     logging.debug("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
-    if len(registered_vendor_ids.keys()) > 0:
+    bad_vids = ['UKWN', 'ukwn', 'PfEd']
+    if vid is None:
+      logging.error("OS/2 VendorID is not set. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx")
+    elif vid in bad_vids:
+      logging.error("OS/2 VendorID is '{}', a font editor default. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
+    elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
         msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
@@ -187,16 +192,8 @@ def main():
         msg = "OS/2 VendorID '{}' is not registered with Microsoft. You should register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
         logging.warning(msg)
     else:
-      msg = "OS/2 VendorID '{}' could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
-      logging.error(msg)
-    bad_vids = ['UKWN', 'ukwn', 'PfEd']
-    if vid in bad_vids:
-      logging.error("OS/2 VendorID is '{}', a font editor default. You should set it to your own 4 character code, and register that code with Microsoft at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid))
-    elif vid is None:
-      logging.error("OS/2 VendorID is not set. You should set it.")
-    else:
-      if not vendor_id_ok:
-        logging.info("OK: OS/2 VendorID is '{}'".format(vid))
+      msg = "OK: OS/2 VendorID is '{}' but could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
+
 
     #----------------------------------------------------
     # fsSelection bit definitions:
