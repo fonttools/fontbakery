@@ -352,7 +352,12 @@ def main():
     #   www.microsoft.com/typography/otspec/os2.htm#pan
     #   monotypecom-test.monotype.de/services/pan2
     #
-    # Also we should report an error for glyphs not of typical width
+    # * OS/2.xAverageWidth must be set accurately. 
+    #   "OS/2.xAverageWidth IS used when rendering monospaced fonts, 
+    #   at least by Windows GDI"
+    #   http://typedrawers.com/discussion/comment/15397/#Comment_15397
+    #
+    # Also we should report an error for glyphs not of average width
     logging.debug("Checking if the font is truly monospaced")
     glyphs = font['glyf'].glyphs
     width_occurrences = {}
@@ -374,11 +379,12 @@ def main():
     # if more than 90% of glyphs have the same width, set monospaced metadata
     monospace_detected = occurrences > 0.90 * len(glyphs)
     if monospace_detected:
-        # TODO confirm that the previous values for these 3 are correct
         # spec says post.isFixedPitch non-zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         assert_table_entry('OS/2', 'panose.bProportion', 9)
+        assert_table_entry('OS/2', 'xAverageWidth', most_common_width)
+        # TODO 
         # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
         # FIXME this if/else should be swapped, so the if evaluates the condition we look for, and else handles the OK case
@@ -394,7 +400,9 @@ def main():
         # spec says post.isFixedPitch zero value means monospaced
         assert_table_entry('post', 'isFixedPitch', 0)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        # FIXME set panose value here
+        # FIXME set panose value to anything except 9
+        assert_table_entry('OS/2', 'panose.bProportion', 9)
+        assert_table_entry('OS/2', 'xAverageWidth', most_common_width)
         log_results("Font is not monospaced.")
 
     #----------------------------------------------------
