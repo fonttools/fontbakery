@@ -193,7 +193,6 @@ def main():
     else:
       msg = "OK: OS/2 VendorID is '{}' but could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
 
-
     #----------------------------------------------------
     # fsSelection bit definitions:
     FSSEL_ITALIC         = (1 << 0)
@@ -344,7 +343,7 @@ def main():
     #   width value is greater.
     #   www.microsoft.com/typography/otspec/hhea.htm
     #
-    # * panose monospace value must be set. Spec says:
+    # * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
     #   "The PANOSE definition contains ten digits each of which currently
     #   describes up to sixteen variations. Windows uses bFamilyType,
     #   bSerifStyle and bProportion in the font mapper to determine 
@@ -412,7 +411,9 @@ def main():
 
     #----------------------------------------------------
     # TODO FontForge will sometimes say stuff on STDERR like
-    #
+    # fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf 
+    #   The following table(s) in the font have been ignored by FontForge
+    #     Ignoring 'VDMX' vertical device metrics table
     #   The glyph named circumflex is mapped to U+F031F.
     #   But its name indicates it should be mapped to U+02C6.
     #
