@@ -21,11 +21,17 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     log_results("Something test.")
     """
 
-    value = getattr(font[tableName], fieldName)
+    #This is meant to support multi-level field hierarchy
+    fields = fieldName.split('.')
+    obj = font[tableName]
+    for f in range(len(fields)-1):
+        obj = getattr(obj, fields[f])
+    field = fields[-1]
+    value = getattr(obj, field)
 
     if bitmask==None:
         if value != expectedValue:
-            setattr(font[tableName], fieldName, expectedValue)
+            setattr(obj, field, expectedValue)
             fixes.append("{} {} from {} to {}".format(tableName,
                                                       fieldName,
                                                       value,
@@ -33,7 +39,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     else:
         if value & bitmask != expectedValue:
             expectedValue = (value & (~bitmask)) | expectedValue
-            setattr(font[tableName], fieldName, expectedValue)
+            setattr(obj, field, expectedValue)
             fixes.append("{} {} from {} to {}".format(tableName,
                                                       fieldName,
                                                       value,
@@ -383,7 +389,7 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         assert_table_entry('OS/2', 'panose.bProportion', 9)
-        assert_table_entry('OS/2', 'xAverageWidth', width_max)
+        assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
         # TODO 
         # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
@@ -402,7 +408,7 @@ def main():
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         # FIXME set panose value to anything except 9
         assert_table_entry('OS/2', 'panose.bProportion', 9)
-        assert_table_entry('OS/2', 'xAverageWidth', most_common_width)
+        assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
         log_results("Font is not monospaced.")
 
     #----------------------------------------------------
