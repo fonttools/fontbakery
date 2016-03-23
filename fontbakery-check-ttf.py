@@ -383,7 +383,7 @@ def main():
         assert_table_entry('post', 'isFixedPitch', 1)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         assert_table_entry('OS/2', 'panose.bProportion', 9)
-        assert_table_entry('OS/2', 'xAverageWidth', most_common_width)
+        assert_table_entry('OS/2', 'xAverageWidth', width_max)
         # TODO 
         # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
