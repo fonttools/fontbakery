@@ -5,6 +5,7 @@ __author__="The Font Bakery Authors"
 import os, sys, argparse, glob, logging, requests, subprocess
 from bs4 import BeautifulSoup
 from fontTools import ttLib
+from bakery_cli.nameid_values import *
 
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
@@ -73,6 +74,15 @@ PANOSE_PROPORTION_MONOSPACED = 9
 # 'post' table / isFixedWidth definitions:
 IS_FIXED_WIDTH_NOT_MONOSPACED = 0
 IS_FIXED_WIDTH_MONOSPACED = 1 # any non-zero value means monospaced
+
+PLATFORM_ID_UNICODE = 0
+PLATFORM_ID_MACHINTOSH = 1
+PLATFORM_ID_ISO = 2
+PLATFORM_ID_WINDOWS = 3
+PLATFORM_ID_CUSTOM = 4
+
+PLAT_ENC_ID_UCS2 = 1
+LANG_ID_ENGLISH_USA = 0x0409
 
 #=====================================
 # HELPER FUNCTIONS
@@ -359,23 +369,59 @@ def main():
         'LICENSE.txt': 'Data/APACHE.placeholder'
     }
 
+    from fontTools.ttLib.tables._n_a_m_e import NameRecord
+
+    def makeNameRecord(text, nameID, platformID, platEncID, langID):
+        name = NameRecord()
+        name.nameID, name.platformID, name.platEncID, name.langID = (
+            nameID, platformID, platEncID, langID)
+        name.string = text.encode(name.getEncoding())
+        return name
+
     for license in ['OFL.txt', 'LICENSE.txt']:
         placeholder = open(placeholder_filename[license]).read().strip()
         license_path = os.path.join(file_path, license)
         license_exists = os.path.exists(license_path)
-
-        for nameRecord in font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+#        print("license exists = " + str(license_exists))
+#        print("license_path = " + license_path)
+        new_names = []
+        names_changed = False
+        entry_found = False
+        for i, nameRecord in enumerate(font['name'].names):
+            if nameRecord.nameID != NAMEID_LICENSE_DESCRIPTION:
+                new_names.append(nameRecord)
+            else:
+                entry_found = True
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
-                    logging.error('License file {} exists but NameID'
+                    logging.error('HOTFIXED: License file {} exists but NameID'
                                   ' value is not specified for that.'.format(license))
-                    return
+                    #logging.info('value is "{}"'.format(value))
+                    #logging.info('placeholder is "{}"'.format(placeholder))
+                    new_name = makeNameRecord(placeholder,
+                                              NAMEID_LICENSE_DESCRIPTION,
+                                              font['name'].names[i].platformID,
+                                              font['name'].names[i].platEncID,
+                                              font['name'].names[i].langID)
+                    new_names.append(new_name)
+                    names_changed = True
                 if value == placeholder and license_exists==False:
                     logging.error('Valid licensing specified on NameID 13 but'
                                   ' a corresponding {} file was not found.'.format(license))
-                    return
+        if not entry_found:
+            new_name = makeNameRecord(placeholder,
+                                      NAMEID_LICENSE_DESCRIPTION,
+                                      PLATFORM_ID_WINDOWS,
+                                      PLAT_ENC_ID_UCS2,
+                                      LANG_ID_ENGLISH_USA)
+            new_names.append(new_name)
+            names_changed = True
+            logging.error("HOTFIXED: Font lacks NameID 13. A proper licensing entry was set.")
 
+        if names_changed:
+            font['name'].names = new_names
+        else:
+            logging.info("OK: licensing entry on name table is correctly set.")
     #----------------------------------------------------
     logging.debug("Check license and license URL entries")
     # TODO Check license and license URL are correct, hotfix them if not
