@@ -182,14 +182,13 @@ def main():
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
-        msg = "OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
-        vendor_id_ok = True
+        msg = "OK: OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
         logging.info(msg)
       elif vid.lower() in [item.lower() for item in registered_vendor_ids.keys()]:
-        msg = "OS/2 VendorID '{}' is registered with different casing. You should check the case.".format(vid)
+        msg = "OS/2 VendorID is '{}' but this is registered with different casing. You should check the case.".format(vid)
         logging.error(msg)
       else:
-        msg = "OS/2 VendorID '{}' is not registered with Microsoft. You should register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
+        msg = "OS/2 VendorID is '{}' but this is not registered with Microsoft. You should register it at https://www.microsoft.com/typography/links/vendorlist.aspx".format(vid)
         logging.warning(msg)
     else:
       msg = "OK: OS/2 VendorID is '{}' but could not be checked against Microsoft's list. You should check your internet connection and try again.".format(vid)
