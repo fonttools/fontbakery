@@ -70,6 +70,10 @@ PANOSE_PROPORTION_VERY_EXTENDED = 7
 PANOSE_PROPORTION_VERY_CONDENSED = 8
 PANOSE_PROPORTION_MONOSPACED = 9
 
+# 'post' table / isFixedWidth definitions:
+IS_FIXED_WIDTH_NOT_MONOSPACED = 0
+IS_FIXED_WIDTH_MONOSPACED = 1 # any non-zero value means monospaced
+
 #=====================================
 # HELPER FUNCTIONS
 
@@ -407,26 +411,22 @@ def main():
     # if more than 90% of glyphs have the same width, set monospaced metadata
     monospace_detected = occurrences > 0.90 * len(glyphs)
     if monospace_detected:
-        # spec says post.isFixedPitch non-zero value means monospaced
-        assert_table_entry('post', 'isFixedPitch', 1)
+        assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_MONOSPACED)
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
-        # TODO 
-        # If any glyphs are outliers, note them
         outliers = len(glyphs) - occurrences
-        # FIXME this if/else should be swapped, so the if evaluates the condition we look for, and else handles the OK case
-        if outliers == 0:
-            log_results("Font is monospaced.")
-        else:
+        if outliers > 0:
+            # If any glyphs are outliers, note them
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
             logging.warn("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
                          " You should check the widths of: {}".format(unusually_spaced_glyphs))
-    # else it is not monospaced, so unset monospaced metadata
+        else:
+            log_results("Font is monospaced.")
     else:
-        # spec says post.isFixedPitch zero value means monospaced
-        assert_table_entry('post', 'isFixedPitch', 0)
+        # it is not monospaced, so unset monospaced metadata
+        assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_NOT_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
         assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_ANY) #FIXEME: Dave, is it the correct value here?
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
