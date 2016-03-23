@@ -303,69 +303,6 @@ class TTFTestCase(TestCase):
                 _ += ' but ends with "{2}"'
             self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
 
-    def validate_license_description(self, license_filename):
-        fixer = OFLLicenseDescriptionFixer(self, self.operator.path)
-        placeholder = fixer.get_placeholder()
-        license_path = os.path.join(os.path.dirname(self.operator.path), license_filename)
-        license_exists = os.path.exists(license_path)
-
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
-                value = getNameRecordValue(nameRecord)
-                if value != placeholder and license_exists:
-                    self.fail('License file {} exists but NameID'
-                              ' value is not specified for that.'.format(license_filename))
-                    return False
-                if value == placeholder and license_exists==False:
-                    self.fail('Valid licensing specified on NameID 13 but'
-                              ' a corresponding {} file was not found.'.format(license_filename))
-                    return False
-        return True
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ApacheLicenseDescriptionFixer')
-    def test_name_id_apache_license(self):
-        """ Is the Apache License specified in name ID 13 (License description)? """
-        result = self.validate_license_description('LICENSE.txt')
-        self.assertTrue(result, 'No')
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.OFLLicenseDescriptionFixer')
-    def test_name_id_ofl_license(self):
-        """ Is the Open Font License specified in name ID 13 (License description)? """
-        result = self.validate_license_description('OFL.txt')
-        self.assertTrue(result, 'No')
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
-    def test_name_id_ofl_license_url(self):
-        """ Is the Open Font License specified in name ID 14 (License info URL)? """
-        fixer = OFLLicenseInfoURLFixer(self, self.operator.path)
-        text = fixer.get_licensecontent()
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
-
-        isLicense = False
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-                value = getNameRecordValue(nameRecord)
-                isLicense = os.path.exists(fontLicensePath) or text in value
-        self.assertFalse(isLicense and bool(fixer.validate()))
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer')
-    def test_name_id_apache_license_url(self):
-        """ Is the Apache License specified in name ID 14 (License info URL)? """
-        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path)
-        text = fixer.get_licensecontent()
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
-
-        isLicense = False
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-                value = getNameRecordValue(nameRecord)
-                isLicense = os.path.exists(fontLicensePath) or text in value
-        self.assertFalse(isLicense and bool(fixer.validate()))
-
     @tags('required',)
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome? """

@@ -332,13 +332,92 @@ def main():
     log_results("macStyle BOLD bit")
 
     #----------------------------------------------------
-    logging.debug("TODO: Check name table")
-    # TODO: Check that OFL.txt or LICENSE.txt exists in the same directory as font_file, if not then warn that there should be one. If exists, then check its first line matches the copyright namerecord, and that each namerecord is identical
-    # TODO Check license and license URL are correct, hotfix them if not
-    # TODO Check namerecord 9 ("description") is not there, drop it if so
-    
-    
+    logging.debug("Check font has a license")
+    # Check that OFL.txt or LICENSE.txt exists in the same
+    # directory as font_file, if not then warn that there should be one.
+    found = False
+    for license in ['OFL.txt', 'LICENSE.txt']:
+      license_path = os.path.join(file_path, license)
+      if os.path.exists(license_path):
+          if found != False:
+             logger.error("More than a single license file found. Please review.")
+             found = "multiple"
+          else:
+             found = license_path
+
+    if found != "multiple":
+        if found == False:
+            logger.error("No license file was found. Please add an OFL.txt or a LICENSE.txt file.")
+        else:
+            logger.info("OK: Found license at '{}'".format(found))
+
     #----------------------------------------------------
+    logging.debug("Check copyright namerecords match license file")
+
+    placeholder_filename = {
+        'OFL.txt': 'Data/OFL.placeholder',
+        'LICENSE.txt': 'Data/APACHE.placeholder'
+    }
+
+    for license in ['OFL.txt', 'LICENSE.txt']:
+        placeholder = open(placeholder_filename[license]).read().strip()
+        license_path = os.path.join(file_path, license)
+        license_exists = os.path.exists(license_path)
+
+        for nameRecord in font['name'].names:
+            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+                value = nameRecord.string.decode(nameRecord.getEncoding())
+                if value != placeholder and license_exists:
+                    logging.error('License file {} exists but NameID'
+                                  ' value is not specified for that.'.format(license))
+                    return
+                if value == placeholder and license_exists==False:
+                    logging.error('Valid licensing specified on NameID 13 but'
+                                  ' a corresponding {} file was not found.'.format(license))
+                    return
+
+    #----------------------------------------------------
+    logging.debug("Check license and license URL entries")
+    # TODO Check license and license URL are correct, hotfix them if not
+
+    #----------------------------------------------------
+    logging.debug("Assure theres no 'description' namerecord")
+    # TODO Check namerecord 9 ("description") is not there, drop it if so
+
+# TODO: Port these here as well:
+#
+#    @tags('required') 
+#    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer') 
+#    def test_name_id_ofl_license_url(self): 
+#        """ Is the Open Font License specified in name ID 14 (License info URL)? """ 
+#        fixer = OFLLicenseInfoURLFixer(self, self.operator.path) 
+#        text = fixer.get_licensecontent() 
+#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt') 
+# 
+#        isLicense = False 
+#        for nameRecord in fixer.font['name'].names: 
+#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL: 
+#                value = getNameRecordValue(nameRecord) 
+#                isLicense = os.path.exists(fontLicensePath) or text in value 
+#        self.assertFalse(isLicense and bool(fixer.validate())) 
+# 
+#    @tags('required') 
+#    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer') 
+#    def test_name_id_apache_license_url(self): 
+#        """ Is the Apache License specified in name ID 14 (License info URL)? """ 
+#        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path) 
+#        text = fixer.get_licensecontent() 
+#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt') 
+# 
+#        isLicense = False 
+#        for nameRecord in fixer.font['name'].names: 
+#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL: 
+#                value = getNameRecordValue(nameRecord) 
+#                isLicense = os.path.exists(fontLicensePath) or text in value 
+#        self.assertFalse(isLicense and bool(fixer.validate()))
+ 
+    #----------------------------------------------------
+    # TODO: Add a description/rationale to this check here
     logging.debug("Checking name table for items without platformID=1")
     new_names = []
     changed = False
