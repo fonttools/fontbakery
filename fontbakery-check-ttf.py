@@ -6,6 +6,7 @@ import os, sys, argparse, glob, logging, requests, subprocess
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from bakery_cli.nameid_values import *
+from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
@@ -84,6 +85,11 @@ PLATFORM_ID_CUSTOM = 4
 PLAT_ENC_ID_UCS2 = 1
 LANG_ID_ENGLISH_USA = 0x0409
 
+PLACEHOLDER_FILENAMES = {
+    'OFL.txt': 'Data/OFL.placeholder',
+    'LICENSE.txt': 'Data/APACHE.placeholder'
+}
+
 #=====================================
 # HELPER FUNCTIONS
 
@@ -140,6 +146,17 @@ def log_results(message):
         # empty the buffer of fixes,
         # in preparation for the next test
         fixes = []
+
+# Maybe fonttools should provide us a helper method like this one...
+#TODO: verify if fonttools doesn't really provide that and then
+#      possibily contribute something equivalent to this upstream.
+def makeNameRecord(text, nameID, platformID, platEncID, langID):
+    """ Helper function to create a new NameRecord entry """
+    name = NameRecord()
+    name.nameID, name.platformID, name.platEncID, name.langID = (
+        nameID, platformID, platEncID, langID)
+    name.string = text.encode(name.getEncoding())
+    return name
 
 #=====================================
 # Main sequence of checkers & fixers
@@ -294,6 +311,7 @@ def main():
         logging.error("HOTFIXED: italicAngle from {} to {}".format(value, -value))
     else:
         logging.info("OK: italicAngle <= 0")
+
     #----------------------------------------------------
     logging.debug("Checking if italicAngle matches font style")
 
@@ -363,29 +381,12 @@ def main():
 
     #----------------------------------------------------
     logging.debug("Check copyright namerecords match license file")
-
-    placeholder_filename = {
-        'OFL.txt': 'Data/OFL.placeholder',
-        'LICENSE.txt': 'Data/APACHE.placeholder'
-    }
-
-    from fontTools.ttLib.tables._n_a_m_e import NameRecord
-
-    def makeNameRecord(text, nameID, platformID, platEncID, langID):
-        name = NameRecord()
-        name.nameID, name.platformID, name.platEncID, name.langID = (
-            nameID, platformID, platEncID, langID)
-        name.string = text.encode(name.getEncoding())
-        return name
-
+    new_names = []
+    names_changed = False
     for license in ['OFL.txt', 'LICENSE.txt']:
-        placeholder = open(placeholder_filename[license]).read().strip()
+        placeholder = open(PLACEHOLDER_FILENAMES[license]).read().strip()
         license_path = os.path.join(file_path, license)
         license_exists = os.path.exists(license_path)
-#        print("license exists = " + str(license_exists))
-#        print("license_path = " + license_path)
-        new_names = []
-        names_changed = False
         entry_found = False
         for i, nameRecord in enumerate(font['name'].names):
             if nameRecord.nameID != NAMEID_LICENSE_DESCRIPTION:
@@ -396,8 +397,6 @@ def main():
                 if value != placeholder and license_exists:
                     logging.error('HOTFIXED: License file {} exists but NameID'
                                   ' value is not specified for that.'.format(license))
-                    #logging.info('value is "{}"'.format(value))
-                    #logging.info('placeholder is "{}"'.format(placeholder))
                     new_name = makeNameRecord(placeholder,
                                               NAMEID_LICENSE_DESCRIPTION,
                                               font['name'].names[i].platformID,
@@ -408,7 +407,7 @@ def main():
                 if value == placeholder and license_exists==False:
                     logging.error('Valid licensing specified on NameID 13 but'
                                   ' a corresponding {} file was not found.'.format(license))
-        if not entry_found:
+        if not entry_found and license_exists:
             new_name = makeNameRecord(placeholder,
                                       NAMEID_LICENSE_DESCRIPTION,
                                       PLATFORM_ID_WINDOWS,
@@ -418,10 +417,11 @@ def main():
             names_changed = True
             logging.error("HOTFIXED: Font lacks NameID 13. A proper licensing entry was set.")
 
-        if names_changed:
-            font['name'].names = new_names
-        else:
-            logging.info("OK: licensing entry on name table is correctly set.")
+    if names_changed:
+        font['name'].names = new_names
+    else:
+        logging.info("OK: licensing entry on name table is correctly set.")
+
     #----------------------------------------------------
     logging.debug("Check license and license URL entries")
     # TODO Check license and license URL are correct, hotfix them if not
