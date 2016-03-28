@@ -533,8 +533,10 @@ def main():
         if width_occurrences[width] > occurrences:
             occurrences = width_occurrences[width]
             most_common_width = width
-    # if more than 90% of glyphs have the same width, set monospaced metadata
-    monospace_detected = occurrences > 0.90 * len(glyphs)
+    # if more than 80% of glyphs have the same width, set monospaced metadata
+    monospace_detected = occurrences > 0.80 * len(glyphs)
+    logging.info("occurrences: {} ({}%)".format(occurrences, int(10000.0 * occurrences/len(glyphs))/100.0))
+    logging.info("total number of glyphs: {}".format(len(glyphs)))
     if monospace_detected:
         assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
