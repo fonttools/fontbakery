@@ -573,57 +573,6 @@ class GaspFixer(Fixer):
             logger.error('ER: {}: no index 65535'.format(path))
 
 
-class Vmet(Fixer):
-
-    SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
-
-    def loadfont(self, fontpath):
-        return ttLib.TTFont()  # return for this fixer empty TTFont
-
-    def __init__(self, testcase, fontpath):
-        super(Vmet, self).__init__(testcase, fontpath)
-        d = os.path.dirname(fontpath)
-        directory = UpstreamDirectory(d)
-        self.fonts = [os.path.join(d, f) for f in directory.BIN]
-
-    def get_shell_command(self):
-        return "{} --autofix {}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
-
-    def apply(self, override_origin=False):
-        from bakery_cli.ttfont import Font
-        ymin = 0
-        ymax = 0
-
-        for f in self.fonts:
-            metrics = Font(f)
-            font_ymin, font_ymax = metrics.get_bounding()
-            ymin = min(font_ymin, ymin)
-            ymax = max(font_ymax, ymax)
-
-        for f in self.fonts:
-            fixer = VmetFixer(self.testcase, f)
-            fixer.apply(ymin, ymax, override_origin=override_origin)
-
-        command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
-
-        logger.debug(command)
-
-        import StringIO
-        for l in StringIO.StringIO(metricview(self.fonts)):
-            logger.debug(l)
-
-
-class VmetFixer(Fixer):
-
-    def fix(self, ymin, ymax):
-        from bakery_cli.ttfont import AscentGroup, DescentGroup, LineGapGroup
-        AscentGroup(self.font).set(ymax)
-        DescentGroup(self.font).set(ymin)
-        LineGapGroup(self.font).set(0)
-        # self.font['head'].unitsPerEm = ymax
-        return True
-
-
 def fontTools_to_dict(font):
     fontdata = {
         'names': [

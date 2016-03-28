@@ -158,6 +158,22 @@ def makeNameRecord(text, nameID, platformID, platEncID, langID):
     name.string = text.encode(name.getEncoding())
     return name
 
+def get_bounding_box(font):
+    """ Returns max and min bbox of given truetype font """
+    ymin = 0
+    ymax = 0
+    if font.sfntVersion == 'OTTO':
+        ymin = font['head'].yMin
+        ymax = font['head'].yMax
+    else:
+        for g in font['glyf'].glyphs:
+            char = font['glyf'][g]
+            if hasattr(char, 'yMin') and ymin > char.yMin:
+                ymin = char.yMin
+            if hasattr(char, 'yMax') and ymax < char.yMax:
+                ymax = char.yMax
+    return ymin, ymax
+
 #=====================================
 # Main sequence of checkers & fixers
 
@@ -547,7 +563,7 @@ def main():
             # If any glyphs are outliers, note them
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
-            logging.warn("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
+            log_results("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
                          " You should check the widths of: {}".format(unusually_spaced_glyphs))
         else:
             log_results("Font is monospaced.")
@@ -591,6 +607,25 @@ def main():
       # TODO: port fontforge validation check from 0.0.15 to here
     except:
       logging.warning('fontforge python module could not open {}'.format(font_file))
+
+    #----------------------------------------------------
+    logging.debug("Checking vertical metrics")
+    ymin, ymax = get_bounding_box(font)
+    # Ascent:
+    assert_table_entry('hhea', 'ascent', ymax)
+    assert_table_entry('OS/2', 'sTypoAscender', ymax)
+    assert_table_entry('OS/2', 'usWinAscent', ymax) # FIXME: This should take only Windows ANSI chars
+    # Descent:
+    assert_table_entry('hhea', 'descent', ymin)
+    assert_table_entry('OS/2', 'sTypoDescender', ymin)
+    assert_table_entry('OS/2', 'usWinDescent', -ymin) # FIXME: This should take only Windows ANSI chars
+    # LineGap:
+    assert_table_entry('hhea', 'lineGap', 0)
+    assert_table_entry('OS/2', 'sTypoLineGap', 0)
+    # unitsPerEm:
+    # Felipe: Dave, should we do it here?
+    # assert_table_entry('head', 'unitsPerEm', ymax)
+    log_results("Vertical metrics.")
 
     #----------------------------------------------------
     # more checks go here
