@@ -263,7 +263,17 @@ def main():
   except:
     logging.warning("Failed to fetch Microsoft's vendorID list.")
 
-  #------------------------------------------------------
+
+ #------------------------------------------------------
+  vmetrics_ymin = 0
+  vmetrics_ymax = 0
+  for font_file in fonts_to_check:
+    font = ttLib.TTFont(font_file)
+    font_ymin, font_ymax = get_bounding_box(font)
+    vmetrics_ymin = min(font_ymin, vmetrics_ymin)
+    vmetrics_ymax = max(font_ymax, vmetrics_ymax)
+
+ #------------------------------------------------------
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     logging.info("OK: {} opened with fontTools".format(font_file))
@@ -335,7 +345,7 @@ def main():
        if font['post'].italicAngle == 0:
            logging.error("Font is italic, so italicAngle should be non-zero.")
        else:
-           loggin.info("OK: italicAngle matches font style")
+           logging.info("OK: italicAngle matches font style")
     else:
        assert_table_entry('post', 'italicAngle', 0)
        log_results("matching of fontstyle and italicAngle value")
@@ -610,15 +620,14 @@ def main():
 
     #----------------------------------------------------
     logging.debug("Checking vertical metrics")
-    ymin, ymax = get_bounding_box(font)
     # Ascent:
-    assert_table_entry('hhea', 'ascent', ymax)
-    assert_table_entry('OS/2', 'sTypoAscender', ymax)
-    assert_table_entry('OS/2', 'usWinAscent', ymax) # FIXME: This should take only Windows ANSI chars
+    assert_table_entry('hhea', 'ascent', vmetrics_ymax)
+    assert_table_entry('OS/2', 'sTypoAscender', vmetrics_ymax)
+    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax) # FIXME: This should take only Windows ANSI chars
     # Descent:
-    assert_table_entry('hhea', 'descent', ymin)
-    assert_table_entry('OS/2', 'sTypoDescender', ymin)
-    assert_table_entry('OS/2', 'usWinDescent', -ymin) # FIXME: This should take only Windows ANSI chars
+    assert_table_entry('hhea', 'descent', vmetrics_ymin)
+    assert_table_entry('OS/2', 'sTypoDescender', vmetrics_ymin)
+    assert_table_entry('OS/2', 'usWinDescent', -vmetrics_ymin) # FIXME: This should take only Windows ANSI chars
     # LineGap:
     assert_table_entry('hhea', 'lineGap', 0)
     assert_table_entry('OS/2', 'sTypoLineGap', 0)
