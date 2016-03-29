@@ -1,3 +1,4 @@
+
 class VersionFixer(Fixer):
 
     def get_shell_command(self):

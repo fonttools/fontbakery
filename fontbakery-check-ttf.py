@@ -174,6 +174,30 @@ def get_bounding_box(font):
                 ymax = char.yMax
     return ymin, ymax
 
+def parse_version_string(s):
+    """ Tries to parse a version string as used
+        in ttf versioning metadata fields.
+        Example of expected format is:
+          'Version 01.003; Comments'
+    """
+    try:
+        suffix = ''
+        if ';' in s:
+            fields = s.split(';')
+            s = fields[0]
+            fields.pop(0)
+            suffix = ';'.join(fields)
+        substrings = s.split('.')
+        minor = substrings[-1]
+        if ' ' in substrings[-2]:
+            major = int(substrings[-2].split(' ')[-1])
+        else:
+            major = int(substrings[-2])
+        return major, minor, suffix
+    except:
+        print ("ER: failed to detect major and minor version numbers" +\
+               " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+
 #=====================================
 # Main sequence of checkers & fixers
 
@@ -635,6 +659,31 @@ def main():
     # Felipe: Dave, should we do it here?
     # assert_table_entry('head', 'unitsPerEm', ymax)
     log_results("Vertical metrics.")
+
+    #----------------------------------------------------
+    logging.debug("Checking font version fields")
+    #FIXME: do we want all fonts a the same family to have the same major and minor version numbers?
+    # If so, then we should calculate the max of each major and minor fields in an external "for font" loop
+    ttf_version = parse_version_string(str(font['head'].fontRevision))
+    if ttf_version == None:
+        fixes.append("Could not parse TTF version string on the 'head' table."+\
+                     " Please fix it. Current value is '{}'".format(str(font['head'].fontRevision)))
+    else:
+        for name in font['name'].names:
+            if name.nameID == NAMEID_VERSION_STRING:
+                encoding = name.getEncoding()
+                s = name.string.decode(encoding)
+                #TODO: create an assert_ helper for name table entries of specific name IDs ?
+                s = "Version {}.{};{}".format(ttf_version[0], ttf_version[1], ttf_version[2])
+                new_string = s.encode(encoding)
+                if name.string != new_string:
+                    fixes.append("NAMEID_VERSION_STRING from {} to {}".format(name.string, new_string))
+                    name.string = new_string
+        if 'CFF ' in font.keys():
+            major, minor, _ = version
+            assert_table_entry("CFF ", 'cff.major', int(major))
+            assert_table_entry("CFF ", 'cff.minor', int(minor))
+    log_results("Font version fields.")
 
     #----------------------------------------------------
     # more checks go here
