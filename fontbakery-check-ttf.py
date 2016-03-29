@@ -141,15 +141,19 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #      Create a helper function to format binary values
             #      highlighting the bits that are selected by a bitmask
 
-def log_results(message):
+def log_results(message, hotfix=True):
     """ Concatenate and log all fixes that happened up to now
     in a good and regular syntax """
     global fixes
     if fixes == []:
         logging.info("OK: " + message)
     else:
-        logging.error("HOTFIXED: {} Fixes: {}".format(message,
-                                                      " | ".join(fixes)))
+        if hotfix:
+            msg = "HOTFIXED: {} Fixes: {}"
+        else:
+            msg = "CRITICAL FAILURE: {} {}"
+        logging.error(msg.format(message,
+                                 " | ".join(fixes)))
         # empty the buffer of fixes,
         # in preparation for the next test
         fixes = []
@@ -702,14 +706,13 @@ def main():
     logging.debug("Check no problematic formats") # See https://github.com/googlefonts/fontbakery/issues/617
     # Font contains all required tables?
     tables = set(font.reader.tables.keys())
-    desc = []
     glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
     if REQUIRED_TABLES | glyphs - tables:
-        desc += "Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))
+        desc = "Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))
         if OPTIONAL_TABLES & tables:
             desc += " but includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))
         fixes.append(desc)
-    log_results("Check no problematic formats. ")
+    log_results("Check no problematic formats. ", hotfix=False)
 
     #----------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port 
