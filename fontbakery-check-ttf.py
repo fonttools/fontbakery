@@ -90,6 +90,13 @@ PLACEHOLDER_FILENAMES = {
     'LICENSE.txt': 'Data/APACHE.placeholder'
 }
 
+REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
+                       'OS/2', 'post'])
+OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
+                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
+                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
+                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
+
 #=====================================
 # HELPER FUNCTIONS
 
@@ -692,7 +699,17 @@ def main():
     # TODO Run pyfontaine checks for subset coverage, using the thresholds in add_font.py. See https://github.com/googlefonts/fontbakery/issues/594
 
     #----------------------------------------------------    
-    # TODO check for required tables, was test_check_no_problematic_formats(). See https://github.com/googlefonts/fontbakery/issues/617
+    logging.debug("Check no problematic formats") # See https://github.com/googlefonts/fontbakery/issues/617
+    # Font contains all required tables?
+    tables = set(font.reader.tables.keys())
+    desc = []
+    glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
+    if REQUIRED_TABLES | glyphs - tables:
+        desc += "Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))
+        if OPTIONAL_TABLES & tables:
+            desc += " but includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))
+        fixes.append(desc)
+    log_results("Check no problematic formats. ")
 
     #----------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port 

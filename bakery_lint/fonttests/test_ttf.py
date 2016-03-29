@@ -38,13 +38,6 @@ from bakery_cli.ttfont import Font, FontTool, getSuggestedFontNameValues
 from bakery_cli.utils import run, UpstreamDirectory
 from bakery_cli.nameid_values import *
 
-REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
-                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
-                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
-                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-
 @contextmanager
 def redirect_stdout(new_target):
     old_target, sys.stdout = sys.stdout, new_target  # replace sys.stdout
@@ -518,19 +511,6 @@ class TTFTestCase(TestCase):
             nbspWidth = checker.getWidth(nbsp)
             self.assertEqual(spaceWidth, nbspWidth,
                              "Advance width mismatch for nbsp (0x00A0) and space (0x0020) characters.")
-
-    def test_check_no_problematic_formats(self):
-        """ Font contains all required tables? """
-        font = ttLib.TTFont(self.operator.path)
-        tables = set(font.reader.tables.keys())
-        desc = []
-        glyphs = set(['glyf'] if 'glyf' in font else ['CFF '])
-        if REQUIRED_TABLES | glyphs - tables:
-            desc += ["Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))]
-            if OPTIONAL_TABLES & tables:
-                desc += ["includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))]
-        if desc:
-            self.fail(' but '.join(desc))
 
     def test_check_os2_width_class(self):
         """ OS/2 width class is correctly set? """
