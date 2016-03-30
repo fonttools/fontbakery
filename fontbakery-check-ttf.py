@@ -85,9 +85,9 @@ PLATFORM_ID_CUSTOM = 4
 PLAT_ENC_ID_UCS2 = 1
 LANG_ID_ENGLISH_USA = 0x0409
 
-PLACEHOLDER_FILENAMES = {
-    'OFL.txt': 'Data/OFL.placeholder',
-    'LICENSE.txt': 'Data/APACHE.placeholder'
+PLACEHOLDER_LICENSING_TEXT = {
+    'OFL.txt': 'This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at http://scripts.sil.org/OFL',
+    'LICENSE.txt': 'This Font Software is licensed under the Apache License, Version 2.0. This license is available with a FAQ at www.apache.org/foundation/license-faq.html'
 }
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
@@ -460,7 +460,7 @@ def main():
     new_names = []
     names_changed = False
     for license in ['OFL.txt', 'LICENSE.txt']:
-        placeholder = open(PLACEHOLDER_FILENAMES[license]).read().strip()
+        placeholder = PLACEHOLDER_LICENSING_TEXT[license]
         license_path = os.path.join(file_path, license)
         license_exists = os.path.exists(license_path)
         entry_found = False
