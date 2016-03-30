@@ -600,8 +600,6 @@ def main():
             most_common_width = width
     # if more than 80% of glyphs have the same width, set monospaced metadata
     monospace_detected = occurrences > 0.80 * len(glyphs)
-    logging.info("occurrences: {} ({}%)".format(occurrences, int(10000.0 * occurrences/len(glyphs))/100.0))
-    logging.info("total number of glyphs: {}".format(len(glyphs)))
     if monospace_detected:
         assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
@@ -611,9 +609,11 @@ def main():
         if outliers > 0:
             # If any glyphs are outliers, note them
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
+            outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
-            log_results("Font is monospaced but {} glyphs have a different width.".format(outliers) +\
-                         " You should check the widths of: {}".format(unusually_spaced_glyphs))
+            log_results("Font is monospaced but {} glyphs".format(outliers) +\
+                        " ({0:.2f}%) have a different width.".format(outliers_percentage) +\
+                        " You should check the widths of: {}".format(unusually_spaced_glyphs))
         else:
             log_results("Font is monospaced.")
     else:
