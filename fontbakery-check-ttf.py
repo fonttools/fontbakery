@@ -707,7 +707,7 @@ def main():
     # Font contains all required tables?
     tables = set(font.reader.tables.keys())
     glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
-    if REQUIRED_TABLES | glyphs - tables:
+    if (REQUIRED_TABLES | glyphs) - tables:
         desc = "Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))
         if OPTIONAL_TABLES & tables:
             desc += " but includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))
