@@ -229,7 +229,9 @@ def main():
     help='font file path(s) to check. Wildcards like *.ttf are allowed.')
   parser.add_argument('-v', '--verbose', action='count', default=0)
   args = parser.parse_args()
-  if args.verbose:
+  if args.verbose == 1:
+    logger.setLevel(logging.INFO)
+  elif args.verbose >= 2:
     logger.setLevel(logging.DEBUG)
   else:
     logger.setLevel(logging.ERROR)
