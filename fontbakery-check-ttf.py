@@ -223,14 +223,16 @@ def main():
   formatter = logging.Formatter(log_format)
   handler.setFormatter(formatter)
   logger.addHandler(handler)
-  # to show all log events
-  # logger.setLevel(logging.DEBUG)
-  logger.setLevel(logging.INFO)
   # set up some command line argument processing
   parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
   parser.add_argument('arg_filepaths', nargs='+', 
     help='font file path(s) to check. Wildcards like *.ttf are allowed.')
+  parser.add_argument('-v', '--verbose', action='count', default=0)
   args = parser.parse_args()
+  if args.verbose:
+    logger.setLevel(logging.DEBUG)
+  else:
+    logger.setLevel(logging.ERROR)
 
   #------------------------------------------------------
   import magic
