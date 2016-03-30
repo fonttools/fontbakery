@@ -280,13 +280,17 @@ def main():
     sys.exit(1)
 
   #------------------------------------------------------
-  # TODO: cache this in /tmp so its only requested once per boot
   logging.debug("Fetching Microsoft's vendorID list")
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   registered_vendor_ids = {}
   try:
-    req = requests.get(url, auth=('user', 'pass'))
-    soup = BeautifulSoup(req.content, 'html.parser')
+    CACHE_VENDOR_LIST = '/tmp/fontbakery-microsoft-vendorlist.cache'
+    if os.path.exists(CACHE_VENDOR_LIST):
+      content = open(CACHE_VENDOR_LIST).read()
+    else:
+      content = requests.get(url, auth=('user', 'pass')).content
+      open(CACHE_VENDOR_LIST, 'w').write(content)
+    soup = BeautifulSoup(content, 'html.parser')
     table = soup.find(id="VendorList")
     try:
       for row in table.findAll('tr'):
