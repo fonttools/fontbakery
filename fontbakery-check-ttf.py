@@ -18,7 +18,6 @@ __author__="The Font Bakery Authors"
 import os, sys, argparse, glob, logging, requests, subprocess
 from bs4 import BeautifulSoup
 from fontTools import ttLib
-from bakery_cli.nameid_values import *
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 #=====================================
@@ -56,6 +55,33 @@ WEIGHTS = {"Thin": 250,
            "ExtraBold": 800,
            "Black": 900
           }
+
+# nameID definitions for the name table:
+NAMEID_COPYRIGHT_NOTICE = 0
+NAMEID_FONT_FAMILY_NAME = 1
+NAMEID_FONT_SUBFAMILY_NAME = 2
+NAMEID_UNIQUE_FONT_IDENTIFIER = 3
+NAMEID_FULL_FONT_NAME = 4
+NAMEID_VERSION_STRING = 5
+NAMEID_POSTSCRIPT_NAME = 6
+NAMEID_TRADEMARK = 7
+NAMEID_MANUFACTURER_NAME = 8
+NAMEID_DESIGNER = 9
+NAMEID_DESCRIPTION = 10
+NAMEID_VENDOR_URL = 11
+NAMEID_DESIGNER_URL = 12
+NAMEID_LICENSE_DESCRIPTION = 13
+NAMEID_LICENSE_INFO_URL = 14
+# Name ID 15 is RESERVED
+NAMEID_TYPOGRAPHIC_FAMILY_NAME = 16
+NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME = 17
+NAMEID_COMPATIBLE_FULL_MACONLY = 18
+NAMEID_SAMPLE_TEXT = 19
+NAMEID_POSTSCRIPT_CID_NAME = 20
+NAMEID_WWS_FAMILY_NAME = 21
+NAMEID_WWS_SUBFAMILY_NAME = 22
+NAMEID_LIGHT_BACKGROUND_PALETTE = 23
+NAMEID_DARK_BACKGROUD_PALETTE = 24
 
 # fsSelection bit definitions:
 FSSEL_ITALIC         = (1 << 0)
