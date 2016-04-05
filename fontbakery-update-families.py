@@ -22,6 +22,8 @@ from fontTools.ttLib.tables._n_a_m_e import NameRecord
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
+NAMEID_VERSION_STRING = 5
+
 def parse_version_string(s):
     """ Tries to parse a version string as used
         in ttf versioning metadata fields.
@@ -107,33 +109,45 @@ def main():
     else:
       logging.info("New font file '{}' preserves filesize.".format(new_file))
 
-    font = ttLib.TTFont(new_file)
-    # logging.info("OK: {} opened with fontTools".format(new_file))
-    
+    new_font = ttLib.TTFont(new_file)
+    old_font = ttLib.TTFont(old_file)
+
     #----------------------------------------------------
     #logging.debug("Checking font version fields")
-    #ttf_version = parse_version_string(str(font['head'].fontRevision))
-    #if ttf_version == None:
-    #    fixes.append("Could not parse TTF version string on the 'head' table."+\
-    #                 " Please fix it. Current value is '{}'".format(str(font['head'].fontRevision)))
-    #else:
-    #    for name in font['name'].names:
-    #        if name.nameID == NAMEID_VERSION_STRING:
-    #            encoding = name.getEncoding()
-    #            s = name.string.decode(encoding)
-    #            #TODO: create an assert_ helper for name table entries of specific name IDs ?
-    #            s = "Version {}.{};{}".format(ttf_version[0], ttf_version[1], ttf_version[2])
-    #            new_string = s.encode(encoding)
-    #            if name.string != new_string:
-    #                fixes.append("NAMEID_VERSION_STRING from {} to {}".format(name.string, new_string))
-    #                name.string = new_string
-    #    if 'CFF ' in font.keys():
-    #        major, minor, _ = version
-    #        assert_table_entry("CFF ", 'cff.major', int(major))
-    #        assert_table_entry("CFF ", 'cff.minor', int(minor))
-    #log_results("Font version fields.")
+    old_version = parse_version_string(str(old_font['head'].fontRevision))
+    if old_version == None:
+        logging.error("Could not parse TTF version string on the 'head' table."+\
+                      " Please fix it. Current value is '{}'".format(str(old_font['head'].fontRevision)))
+    else:
+        incremented_version = [old_version[0]+1, old_version[1], old_version[2]]
+        new_version = parse_version_string(str(new_font['head'].fontRevision))
+        if new_version != incremented_version:
+            logging.warning("Auto-incrementing fontRevision from {}.{} to {}.{}".format(new_version[0], new_version[1],
+                                                                                        incremented_version[0], incremented_version[1]))
+            new_font['head'].fontRevision = "{}.{}".format(incremented_version[0], incremented_version[1])
+        else:
+            logging.info("OK: fontRevision is {}.{}".format(new_version[0], new_version[1]))
 
-    font.close()
+        for name in new_font['name'].names:
+            if name.nameID == NAMEID_VERSION_STRING:
+                encoding = name.getEncoding()
+                s = name.string.decode(encoding)
+                s = "Version {}.{};{}".format(incremented_version[0],
+                                              incremented_version[1],
+                                              incremented_version[2])
+                new_string = s.encode(encoding)
+                if name.string != new_string:
+                    logging.info("NAMEID_VERSION_STRING from {} to {}".format(name.string, new_string))
+                    name.string = new_string
+        if 'CFF ' in new_font.keys():
+            major, minor, _ = incremented_version
+            if new_font["CFF "].cff.major != major:
+                new_font["CFF "].cff.major = major
+            if new_font["CFF "].cff.minor != minor:
+                new_font["CFF "].cff.minor = minor
+
+    new_font.close()
+    old_font.close()
 
 if __name__=='__main__':
     main()
