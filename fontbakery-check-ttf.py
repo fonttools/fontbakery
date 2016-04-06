@@ -292,6 +292,9 @@ def main():
         logging.warning("Skipping '{}' as mime was '{}', should be 'application/x-font-ttf')".format(filename, mimetype))
   fonts_to_check.sort()
 
+  if fonts_to_check == []:
+    logging.error("None of the fonts are valid TrueType files!")
+
   #------------------------------------------------------
   logging.debug("Checking files are named canonically")
   not_canonical = []
