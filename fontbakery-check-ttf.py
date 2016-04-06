@@ -15,7 +15,7 @@
 #
 __author__="The Font Bakery Authors"
 
-import os, sys, argparse, glob, logging, requests, subprocess
+import os, sys, argparse, glob, logging, subprocess
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
@@ -323,10 +323,13 @@ def main():
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   registered_vendor_ids = {}
   try:
-    CACHE_VENDOR_LIST = '/tmp/fontbakery-microsoft-vendorlist.cache'
+    import tempfile
+    CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(), 'fontbakery-microsoft-vendorlist.cache')
     if os.path.exists(CACHE_VENDOR_LIST):
       content = open(CACHE_VENDOR_LIST).read()
     else:
+      logging.error("Did not find cached vendor list at: " + CACHE_VENDOR_LIST)
+      import requests
       content = requests.get(url, auth=('user', 'pass')).content
       open(CACHE_VENDOR_LIST, 'w').write(content)
     soup = BeautifulSoup(content, 'html.parser')
