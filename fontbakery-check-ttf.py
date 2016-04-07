@@ -169,7 +169,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
                                                       value,
                                                       expectedValue))
     else:
-        if value & bitmask != expectedValue:
+        if (value & bitmask) != expectedValue:
             expectedValue = (value & (~bitmask)) | expectedValue
             setattr(obj, field, expectedValue)
             fixes.append("{} {} from {} to {}".format(tableName,
@@ -461,7 +461,7 @@ def main():
     expected = 0
     if "Italic" in style:
         expected = MACSTYLE_ITALIC
-    assert_table_entry('head', 'macStyle', expected, bitmask=FSSEL_ITALIC)
+    assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_ITALIC)
     log_results("macStyle ITALIC bit")
 
     #----------------------------------------------------
