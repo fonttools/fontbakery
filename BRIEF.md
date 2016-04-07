@@ -70,7 +70,7 @@ For example:
 
 A family of TTFs can be validated using:
 
-  ~/fonts/ofl/family$ fontbakery-check-ttf-family *.ttf ;
+    ~/fonts/ofl/family$ fontbakery-check-ttf-family *.ttf ;
 
 Some checks must be done by comparing all 1 to 18 font files in a family in order to conclude that their data is correct.
 
@@ -136,7 +136,69 @@ Our ultimate aim is that all fonts in the Google Fonts catalog have source repos
 This can be achieved with [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) services like [Travis](https://www.travis-ci.org)) that alert designers about issues and regressions as they happen.
 
 To support this way of developing fonts, we will develop tools for checking font source files.
-
+These source-file focused tools supplement the TTF tools. 
 Some font project upstreams do not provide binaries, or only provide OTF fonts, so we will also develop example "build scripts" that automate the compilation of TTF fonts from source files.
 
-These source-file focused tools supplement the TTF tools. 
+#### 4.1 Checking source files individually
+
+These scripts likely need to be run inside font editors, and thus should be packaged as extension for the editors in the normal way. 
+However, should it be possible to run them similar to the above TTF check tools, they would work like this:
+
+    ~/fonts/ofl/family $ fontbakery-check-source [*.glyphs, .ufo, .sfd, .vfb, .xfo]
+
+#### 4.2 Building source files into binaries
+
+TODO: Link to SFNTMAKE discussion on fonttools issue tracker
+
+#### 4.3 Setting up Travis
+
+Travis setup is complicated. 
+Deployment typically requires the user to copy/paste/tweak a rather complex setup file. 
+It could be made simpler by providing scripts to set it up, and we have 3 already:
+
+    ~/fonts/ofl/family $ fontbakery-travis-deploy.py
+    ~/fonts/ofl/family $ fontbakery-travis-init.py
+    ~/fonts/ofl/family $ fontbakery-travis-secure.sh
+
+We could also add a `fontbakery-travis-check.py` script that checks that it is configured correctly, a build badge is in README, etc.
+
+# v0.1.0 Planning
+
+## Code Review
+
+Each file in the repo was reviewed and irrelevant files deleted (PR #TODO link to it) and the relevant files were as follows:
+
+* bakery_lint/fonttests/* this is where the tests are
+* bakery_cli/fixers.py has some fixing methods to rescue
+* bakery_cli/fonts_public.proto and its child fonts_public_pb2.py are useful
+* bakery_cli/nameid_values.py is useful, I expect to just put that at the top of fontbakery-check-ttf.py (and perhaps later go upstream to fontTools)
+* bakery_cli/ttfont.py has a crazy big class that bundles data from different tables into a single fontbakery-unique Font object, and is a very useful reference
+* bakery_cli/utils.py has some family checks, some installation checks (like if ttfautohint is available), some `fontbakery-check-family.py` checks...
+* bakery_cli/pipe/build.py has things used to build TTFs that should be split out into their own little tools, which can then be used in a setup.py or build.sh or Makefile
+* bakery_cli/pipe/copy.py has things for creating a build output directory, and that should be used in a setup.py API
+* bakery_cli/pipe/fontcrunch.py is a wrapper for https://github.com/googlefonts/fontcrunch that seems superfluous
+* bakery_cli/pipe/optimize.py has things to optimize fonts that should be split into a check to see if the font file is optimized, and if not, run this optimization as an autofix
+* bakery_cli/pipe/pyfontaine.py just runs `pyfontaine --collection subsets --text $font >> fontaine.txt` 
+* bakery_cli/pipe/ttfautohint.py just runs ttfautohint with the default args and then offers a comparison of the filesize.
+* bakery_cli/scripts/font2ttf.py should be its own little standalone tool
+* bakery_cli/scripts/genmetadata.py should be its own little standalone tool
+* bakery_cli/scripts/stemcalc.py should be part of the fontbakery-check-ttf-family.py
+* bakery_cli/scripts/vmet.py should be part of the fontbakery-check-ttf-family.py
+* no bakery.yaml file, we will create a standard distutils setup.py for each font repo that builds it and installs it with the standard 'python setup.py install' command, and packages font source projects in the PyPI
+
+## Considerations 
+
+The most simple form for `fontbakery-check-ttf.py` is a linear, imperative programming style. 
+
+It should be structured table by table, and operate on a single ttLib font object.
+
+Use Python standard library logging module. 
+
+* Only have a single log entry for each test
+
+Only interact with TTF or OTF files with fontTools
+
+Only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
+
+Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be the best sophisticated approach. 
+

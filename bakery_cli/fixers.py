@@ -1,83 +1,3 @@
-# coding: utf-8
-# Copyright 2013 The Font Bakery Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
-
-import copy
-import collections
-import json
-import fontTools.ttLib
-import io
-import os
-import re
-import shutil
-
-from fontTools import ttLib
-from fontTools.ttLib.tables._n_a_m_e import NameRecord
-
-from bakery_cli.logger import logger
-from bakery_cli.scripts.vmet import metricview
-from bakery_cli.ttfont import Font, getSuggestedFontNameValues
-from bakery_cli.utils import UpstreamDirectory, fix_all_names, \
-    clean_name_values, nameTableRead
-from bakery_cli.nameid_values import *
-
-
-class Fixer(object):
-
-    def loadfont(self, fontpath):
-        return ttLib.TTFont(fontpath)
-
-    def __init__(self, testcase, fontpath):
-        self.font = self.loadfont(fontpath)
-        self.fontpath = fontpath
-        self.fixfont_path = '{}.fix'.format(fontpath)
-        self.testcase = testcase
-        self.save_after_fix = True
-
-    def fix(self):
-        """ Make a concrete fix for the font.
-
-        Implemented in inherited classes.
-
-        Returns:
-            :bool: false if fixes will not be saved into new file
-        """
-        raise NotImplementedError
-
-    def save(self):
-        self.font.save(self.fixfont_path)
-
-    def apply(self, *args, **kwargs):
-        override_origin = kwargs.pop('override_origin', None)
-        if not self.fix(*args, **kwargs):
-            return False
-
-        if not self.save_after_fix:
-            return True
-            
-        self.save()
-
-        if override_origin and os.path.exists(self.fixfont_path):
-            command = "$ mv {} {}".format(self.fixfont_path, self.fontpath)
-            logger.debug(command)
-            shutil.move(self.fixfont_path, self.fontpath)
-
-        return True
-
 
 class VersionFixer(Fixer):
 
@@ -187,19 +107,7 @@ class VersionFixer(Fixer):
         return True
 
 
-class RemoveNameRecordWithPlatformID_1_Fixer(Fixer):
 
-    def get_shell_command(self):
-        return 'fontbakery-fix-nameids.py {}'.format(self.fontpath)
-
-    def fix(self):
-        new_names = []
-        for name in self.font['name'].names:
-            if name.platformID != 1:
-                new_names.append(name)
-
-        self.font['name'].names = new_names
-        return True
 
 
 class MultipleDesignerFixer(Fixer):
@@ -407,28 +315,6 @@ class CreateDSIGFixer(Fixer):
         sig.ulOffset = 20
         newDSIG.signatureRecords = [sig]
         self.font.tables["DSIG"] = newDSIG
-        return True
-
-
-class ResetFSTypeFlagFixer(Fixer):
-
-    def get_shell_command(self):
-        return "fontbakery-fix-fstype.py --autofix {}".format(self.fontpath)
-
-    def fix(self, check=False):
-        val = self.font['OS/2'].fsType
-        fontfile = os.path.basename(self.fontpath)
-
-        if val == 0:
-            from bakery_cli.bakery import Bakery
-            logger.info('OK: {}'.format(fontfile))
-            return
-
-        if check:
-            logger.error('ER: {} {}: Change to 0'.format(fontfile, val))
-        else:
-            logger.error('ER: {} {}: Fixed to 0'.format(fontfile, val))
-            self.font['OS/2'].fsType = 0
         return True
 
 
@@ -686,57 +572,6 @@ class GaspFixer(Fixer):
             logger.info(self.font.get('gasp').gaspRange[65535])
         except IndexError:
             logger.error('ER: {}: no index 65535'.format(path))
-
-
-class Vmet(Fixer):
-
-    SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
-
-    def loadfont(self, fontpath):
-        return ttLib.TTFont()  # return for this fixer empty TTFont
-
-    def __init__(self, testcase, fontpath):
-        super(Vmet, self).__init__(testcase, fontpath)
-        d = os.path.dirname(fontpath)
-        directory = UpstreamDirectory(d)
-        self.fonts = [os.path.join(d, f) for f in directory.BIN]
-
-    def get_shell_command(self):
-        return "{} --autofix {}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
-
-    def apply(self, override_origin=False):
-        from bakery_cli.ttfont import Font
-        ymin = 0
-        ymax = 0
-
-        for f in self.fonts:
-            metrics = Font(f)
-            font_ymin, font_ymax = metrics.get_bounding()
-            ymin = min(font_ymin, ymin)
-            ymax = max(font_ymax, ymax)
-
-        for f in self.fonts:
-            fixer = VmetFixer(self.testcase, f)
-            fixer.apply(ymin, ymax, override_origin=override_origin)
-
-        command = "$ {0} {1}".format(Vmet.SCRIPTPATH, ' '.join(self.fonts))
-
-        logger.debug(command)
-
-        import StringIO
-        for l in StringIO.StringIO(metricview(self.fonts)):
-            logger.debug(l)
-
-
-class VmetFixer(Fixer):
-
-    def fix(self, ymin, ymax):
-        from bakery_cli.ttfont import AscentGroup, DescentGroup, LineGapGroup
-        AscentGroup(self.font).set(ymax)
-        DescentGroup(self.font).set(ymin)
-        LineGapGroup(self.font).set(0)
-        # self.font['head'].unitsPerEm = ymax
-        return True
 
 
 def fontTools_to_dict(font):

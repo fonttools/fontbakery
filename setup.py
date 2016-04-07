@@ -140,7 +140,8 @@ setup(
         'tabulate',
         'pyasn1',
         'protobuf',
-        'flake8'
+        'flake8',
+        'coveralls'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     test_suite='nose.collector'
@@ -157,10 +158,3 @@ if not found_ttfautohint:
     print ('WARNING: Command line tool `ttfautohint` is recommended. Install it with'
            ' `apt-get install ttfautohint` or `brew install ttfautohint`')
 
-# check for python fontforge module
-try:
-    import fontforge
-except ImportError:
-    print('WARNING: Python module `fontforge` is recommended. Install it with'
-          ' `apt-get install python-fontforge`'
-          ' or `brew install python; brew install fontforge --HEAD`')

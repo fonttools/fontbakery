@@ -38,13 +38,6 @@ from bakery_cli.ttfont import Font, FontTool, getSuggestedFontNameValues
 from bakery_cli.utils import run, UpstreamDirectory
 from bakery_cli.nameid_values import *
 
-REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
-                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
-                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
-                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-
 @contextmanager
 def redirect_stdout(new_target):
     old_target, sys.stdout = sys.stdout, new_target  # replace sys.stdout
@@ -303,69 +296,6 @@ class TTFTestCase(TestCase):
                 _ += ' but ends with "{2}"'
             self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
 
-    def validate_license_description(self, license_filename):
-        fixer = OFLLicenseDescriptionFixer(self, self.operator.path)
-        placeholder = fixer.get_placeholder()
-        license_path = os.path.join(os.path.dirname(self.operator.path), license_filename)
-        license_exists = os.path.exists(license_path)
-
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
-                value = getNameRecordValue(nameRecord)
-                if value != placeholder and license_exists:
-                    self.fail('License file {} exists but NameID'
-                              ' value is not specified for that.'.format(license_filename))
-                    return False
-                if value == placeholder and license_exists==False:
-                    self.fail('Valid licensing specified on NameID 13 but'
-                              ' a corresponding {} file was not found.'.format(license_filename))
-                    return False
-        return True
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ApacheLicenseDescriptionFixer')
-    def test_name_id_apache_license(self):
-        """ Is the Apache License specified in name ID 13 (License description)? """
-        result = self.validate_license_description('LICENSE.txt')
-        self.assertTrue(result, 'No')
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.OFLLicenseDescriptionFixer')
-    def test_name_id_ofl_license(self):
-        """ Is the Open Font License specified in name ID 13 (License description)? """
-        result = self.validate_license_description('OFL.txt')
-        self.assertTrue(result, 'No')
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
-    def test_name_id_ofl_license_url(self):
-        """ Is the Open Font License specified in name ID 14 (License info URL)? """
-        fixer = OFLLicenseInfoURLFixer(self, self.operator.path)
-        text = fixer.get_licensecontent()
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
-
-        isLicense = False
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-                value = getNameRecordValue(nameRecord)
-                isLicense = os.path.exists(fontLicensePath) or text in value
-        self.assertFalse(isLicense and bool(fixer.validate()))
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer')
-    def test_name_id_apache_license_url(self):
-        """ Is the Apache License specified in name ID 14 (License info URL)? """
-        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path)
-        text = fixer.get_licensecontent()
-        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
-
-        isLicense = False
-        for nameRecord in fixer.font['name'].names:
-            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-                value = getNameRecordValue(nameRecord)
-                isLicense = os.path.exists(fontLicensePath) or text in value
-        self.assertFalse(isLicense and bool(fixer.validate()))
-
     @tags('required',)
     def test_ots(self):
         """ Is TTF file correctly sanitized for Firefox and Chrome? """
@@ -582,19 +512,6 @@ class TTFTestCase(TestCase):
             self.assertEqual(spaceWidth, nbspWidth,
                              "Advance width mismatch for nbsp (0x00A0) and space (0x0020) characters.")
 
-    def test_check_no_problematic_formats(self):
-        """ Font contains all required tables? """
-        font = ttLib.TTFont(self.operator.path)
-        tables = set(font.reader.tables.keys())
-        desc = []
-        glyphs = set(['glyf'] if 'glyf' in font else ['CFF '])
-        if REQUIRED_TABLES | glyphs - tables:
-            desc += ["Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))]
-            if OPTIONAL_TABLES & tables:
-                desc += ["includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))]
-        if desc:
-            self.fail(' but '.join(desc))
-
     def test_check_os2_width_class(self):
         """ OS/2 width class is correctly set? """
         font = Font.get_ttfont(self.operator.path)
@@ -638,90 +555,6 @@ class TTFTestCase(TestCase):
         if value > 120:
             _ = "UPM:Height is %d%%, consider redesigning to 120%% or less"
             self.fail(_ % value)
-
-    #@autofix('bakery_cli.fixers.VmetFixer')
-    def test_metrics_linegaps_are_zero(self):
-        """ Linegaps in tables are zero? """
-        dirname = os.path.dirname(self.operator.path)
-        directory = UpstreamDirectory(dirname)
-
-        fonts_gaps_are_not_zero = []
-        for filename in directory.BIN:
-            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
-            if bool(ttfont.linegaps.os2typo) or bool(ttfont.linegaps.hhea):
-                fonts_gaps_are_not_zero.append(filename)
-
-        if fonts_gaps_are_not_zero:
-            _ = '[%s] have not zero linegaps'
-            self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
-
-    @tags('required')
-    #@autofix('bakery_cli.fixers.VmetFixer')
-    def test_metrics_ascents_equal_bbox(self):
-        """ Ascent values are same as max glyph point? """
-        dirname = os.path.dirname(self.operator.path)
-
-        ymax, fonts_ascents_not_bbox = self.get_fonts(dirname)
-
-        if fonts_ascents_not_bbox:
-            _ = '[%s] ascents differ to maximum value: %s'
-            self.fail(_ % (', '.join(fonts_ascents_not_bbox), ymax))
-
-    def get_fonts(self, dirname):
-        directory = UpstreamDirectory(dirname)
-
-        fonts_ascents_not_bbox = []
-        ymax = 0
-
-        _cache = {}
-        for filename in directory.get_binaries():
-            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
-
-            _, ymax_ = ttfont.get_bounding()
-            ymax = max(ymax, ymax_)
-
-            _cache[filename] = {
-                'os2typo': ttfont.ascents.os2typo,
-                'os2win': ttfont.ascents.os2win,
-                'hhea': ttfont.ascents.hhea
-            }
-
-        for filename, data in _cache.items():
-            if [data['os2typo'], data['os2win'], data['hhea']] != [ymax] * 3:
-                fonts_ascents_not_bbox.append(filename)
-        return ymax, fonts_ascents_not_bbox
-
-    #@autofix('bakery_cli.fixers.VmetFixer')
-    def test_metrics_descents_equal_bbox(self):
-        """ Check that descents values are same as min glyph point """
-        dirname = os.path.dirname(self.operator.path)
-
-        directory = UpstreamDirectory(dirname)
-
-        fonts_descents_not_bbox = []
-        ymin = 0
-
-        _cache = {}
-        for filename in directory.get_binaries():
-            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
-
-            ymin_, _ = ttfont.get_bounding()
-            ymin = min(ymin, ymin_)
-
-            _cache[filename] = {
-                'os2typo': abs(ttfont.descents.os2typo),
-                'os2win': abs(ttfont.descents.os2win),
-                'hhea': abs(ttfont.descents.hhea)
-            }
-
-        for filename, data in _cache.items():
-            datas = [data['os2typo'], data['os2win'], data['hhea']]
-            if datas != [abs(ymin)] * 3:
-                fonts_descents_not_bbox.append(filename)
-
-        if fonts_descents_not_bbox:
-            _ = '[%s] ascents differ to minimum value: %s'
-            self.fail(_ % (', '.join(fonts_descents_not_bbox), ymin))
 
     @tags('required')
     def test_license_included_in_font_names(self):
