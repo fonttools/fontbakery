@@ -676,8 +676,9 @@ def main():
         # it is not monospaced, so unset monospaced metadata
         assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_NOT_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_ANY) #FIXEME: Dave, is it the correct value here?
         assert_table_entry('OS/2', 'xAvgCharWidth', width_max) #FIXME: Felipe: This needs to be discussed with Dave
+        if font['OS/2'].panose.bProportion != PANOSE_PROPORTION_MODERN: #FIXME: Dave, is this correct now?
+            assert_table_entry('OS/2', 'panose.bProportion', PANOSE_PROPORTION_ANY)
         log_results("Font is not monospaced.")
 
     #----------------------------------------------------
