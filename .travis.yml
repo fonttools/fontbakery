@@ -13,6 +13,7 @@ install:
   - pip install python-coveralls
   - pip install Scrapy
   - pip install protobuf
+  - pip install BeautifulSoup4
   - "pip install git+https://github.com/behdad/fonttools.git"
 script: python fontbakery-check-ttf.py Data/TestFont/cousine/Cousine-Bold.ttf
 after_success:
