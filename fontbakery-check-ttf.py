@@ -283,13 +283,12 @@ def main():
     # use glob.glob to accept *.ttf
     for fullpath in glob.glob(arg_filepath):
       file_path, file_name = os.path.split(fullpath)
-      mime = magic.Magic(mime=True)
-      mimetype = mime.from_file(fullpath)
-      if mimetype == 'application/x-font-ttf':
+      data_type = magic.Magic().from_file(fullpath)
+      if data_type == 'TrueType font data':
         logging.debug("'{}' has a ttf mimetype".format(file_name))
         fonts_to_check.append(fullpath)
       else:
-        logging.warning("Skipping '{}' as mime was '{}', should be 'application/x-font-ttf')".format(filename, mimetype))
+        logging.warning("Skipping '{}' as mime was '{}', should be 'TrueType font data')".format(file_name, data_type))
   fonts_to_check.sort()
 
   if fonts_to_check == []:
