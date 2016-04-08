@@ -11,11 +11,11 @@ install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.9/lib/python2.7/site-packages
   - pip install BeautifulSoup4
-  - pip install python-libmagic
-  - pip install python-coveralls
-  - pip install Scrapy
-  - pip install protobuf
+  - pip install filemagic
+#  - pip install python-coveralls
+#  - pip install Scrapy
+#  - pip install protobuf
   - "pip install git+https://github.com/behdad/fonttools.git"
 script: python fontbakery-check-ttf.py Data/TestFont/cousine/Cousine-Bold.ttf
 after_success:
-  coveralls
+#  coveralls
