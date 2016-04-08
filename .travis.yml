@@ -15,6 +15,6 @@ install:
   - pip install protobuf
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlefonts/fontbakery.git"
-script: LANG="en" python setup.py nosetests
+script: python fontbakery-check-ttf.py Data/TestFont/cousine/Cousine-Bold.ttf
 after_success:
   coveralls
