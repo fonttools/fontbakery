@@ -14,7 +14,6 @@ install:
   - pip install Scrapy
   - pip install protobuf
   - "pip install git+https://github.com/behdad/fonttools.git"
-  - "pip install git+https://github.com/googlefonts/fontbakery.git"
 script: python fontbakery-check-ttf.py Data/TestFont/cousine/Cousine-Bold.ttf
 after_success:
   coveralls
