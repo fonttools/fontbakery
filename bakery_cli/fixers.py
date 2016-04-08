@@ -52,62 +52,6 @@ class MultipleDesignerFixer(Fixer):
             f.write(striplines(contents))
         return True
 
-
-class FontItalicStyleFixer(Fixer):
-
-    def get_shell_command(self):
-        return 'fontbakery-fix-italic.py {}'.format(self.fontpath)
-
-    def is_valid_italicAngle(self):
-        ttfont = ttLib.TTFont(self.fontpath)
-        if ttfont['post'].italicAngle == 0:
-            logger.error('ER: POST italicAngle is 0 should be -13')
-            return False
-        return True
-
-    def is_valid(self):
-        has_errors = False
-        regex = re.compile(r'-(.*?)Italic\.ttf')
-        match = regex.search(self.fontpath)
-        if match:
-            ttfont = ttLib.TTFont(self.fontpath)
-
-            f = '{:#010b}'.format(ttfont['head'].macStyle)
-            if match.group(1) != 'Bold':
-                if not bool(ttfont['head'].macStyle & 0b10):
-                    logger.error('ER: HEAD macStyle is {} should be 00000010'.format(f))
-                    has_errors = True
-            elif not bool(ttfont['head'].macStyle & 0b11):
-                    logger.error('ER: HEAD macStyle is {} should be 00000011'.format(f))
-                    has_errors = True
-
-            if ttfont['post'].italicAngle == 0:
-                logger.error('ER: POST italicAngle is 0 should be -13')
-                has_errors = True
-
-            # Check NAME table contains correct names for Italic
-            if ttfont['OS/2'].fsSelection & 0b1:
-                logger.info('OK: OS/2 fsSelection')
-            else:
-                logger.error('ER: OS/2 fsSelection')
-
-            for name in ttfont['name'].names:
-                if name.nameID not in [NAMEID_FONT_SUBFAMILY_NAME, \
-                                       NAMEID_FULL_FONT_NAME,\
-                                       NAMEID_POSTSCRIPT_NAME,\
-                                       NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
-                    continue
-
-                string = name.toUnicode()
-
-                if string.endswith('Italic'):
-                    logger.info('OK: NAME ID{}:\t{}'.format(name.nameID, string))
-                else:
-                    logger.error('ER: NAME ID{}:\t{}'.format(name.nameID, string))
-        else:
-            pass
-
-
 import six
 import unicodedata
 from unidecode import unidecode
