@@ -774,6 +774,36 @@ def main():
     log_results("Font version fields.")
 
     #----------------------------------------------------
+    logging.debug("Digital Signature")
+    if "DSIG" in font:
+        logging.info("OK: Digital Signature")
+    else:
+        try:
+            from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
+            newDSIG = ttLib.newTable("DSIG")
+            newDSIG.ulVersion = 1
+            newDSIG.usFlag = 1
+            newDSIG.usNumSigs = 1
+            sig = SignatureRecord()
+            sig.ulLength = 20
+            sig.cbSignature = 12
+            sig.usReserved2 = 0
+            sig.usReserved1 = 0
+            sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
+            sig.ulFormat = 1
+            sig.ulOffset = 20
+            newDSIG.signatureRecords = [sig]
+            font.tables["DSIG"] = newDSIG
+        except ImportError:
+            error_message = ("The '{}' font does not have an existing"
+                             " digital signature proving its authenticity,"
+                             " so Fontbakery needs to add one. To do this"
+                             " requires version 2.3 or later of Fonttools"
+                             " to be installed. Please upgrade at"
+                             " https://pypi.python.org/pypi/FontTools/2.4")
+            logging.error(error_message.format(file_path))
+
+    #----------------------------------------------------
     # more checks go here
 
     #------------------------------------------------------
