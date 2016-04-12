@@ -202,14 +202,6 @@ class TTFTestCase(TestCase):
     def containsSubstr(self, nameRecord, substr):
         return substr in getNameRecordValue(nameRecord)
 
-    @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
-    def test_name_id_copyright(self):
-        """ Is there an `opyright` substring declared in name ID 10? """
-        font = ttLib.TTFont(self.operator.path)
-        records = [f for f in font['name'].names
-                   if self.containsSubstr(f, 'opyright') and f.nameID == NAMEID_DESCRIPTION]
-        self.assertFalse(bool(records))
-
     @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
         """ Is GASP table correctly set? """

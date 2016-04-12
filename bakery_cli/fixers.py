@@ -436,23 +436,6 @@ class FamilyAndStyleNameFixer(Fixer):
             self.getOrCreateNameRecord(field['nameID'], field['string'])
         return True
 
-
-class RemoveNameRecordWithOpyright(Fixer):
-
-    def containsSubstr(self, namerecord, substr):
-        string = namerecord.string.decode(namerecord.getEncoding())
-        return bool(substr in string)
-
-    def fix(self):
-        records = []
-        for record in self.font['name'].names:
-            if self.containsSubstr(record, 'opyright') and record.nameID == NAMEID_DESCRIPTION:
-                continue
-            records.append(record)
-        self.font['name'].names = records
-        return True
-
-
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
 DATA_DIR = os.path.abspath(DATA_DIR)
 

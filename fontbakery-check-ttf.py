@@ -617,6 +617,22 @@ def main():
       logging.info("OK: name table has only the bare-minimum records with platformID=1")
 
     #----------------------------------------------------
+    logging.debug("Removing name table entries with 'opyright' substring")
+    new_names = []
+    changed = False
+    for name in font['name'].names:
+      if 'opyright' in name.string.decode(name.getEncoding())\
+         and record.nameID == NAMEID_DESCRIPTION:
+        changed = True
+        continue
+      new_names.append(name)
+    if changed:
+      font['name'].names = new_names
+      logging.error("HOTFIXED: some name table items with 'opyright' substring were removed")
+    else:
+      logging.info("OK: No 'opyright' substring found on name table entries.")
+
+    #----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if 
     # a font is monospaced or not. 
     #
