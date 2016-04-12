@@ -337,24 +337,6 @@ def fontTools_to_dict(font):
     return fontdata
 
 
-class StyleNameRecommendationFixer(Fixer):
-    def fix(self):
-        fontfile = os.path.basename(self.fontpath)
-        font = Font(ttfont=self.font)
-
-        if font.stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
-            font.ot_style_name = font.stylename
-            logger.error('OK: {}: Fixed: Windows-only Opentype-specific StyleName set'
-                         ' to "{}".'.format(fontfile, font.stylename))
-        else:
-            logger.error('OK: {}: Warning: Windows-only Opentype-specific StyleName set to "Regular"'
-                         ' as a default value. Please verify if this is correct.'.format(fontfile))
-            font.ot_style_name = 'Regular'
-
-        logger.error('OK: {}: Fixed: Windows-only Opentype-specific FamilyName set to "{}"'.format(fontfile, font.familyname))
-        return True
-
-
 class OpentypeFamilyNameFixer(Fixer):
     def fix(self):
         fontfile = os.path.basename(self.fontpath)

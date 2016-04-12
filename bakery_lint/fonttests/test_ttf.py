@@ -399,13 +399,6 @@ class TTFTestCase(TestCase):
             bytecode = ''
         self.assertEqual(bytecode, magiccode, msg='No')
 
-    @autofix('bakery_cli.fixers.StyleNameRecommendationFixer')
-    def test_check_stylename_is_under_recommendations(self):
-        """ Style name is one of: 'Regular', 'Italic', 'Bold' or 'Bold Italic'? """
-        font = Font.get_ttfont(self.operator.path)
-        self.assertIn(str(font.ot_style_name), ['Regular', 'Italic',
-                                                'Bold', 'Bold Italic'])
-
     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ FamilyName matches Windows-only Opentype-specific FamilyName? """

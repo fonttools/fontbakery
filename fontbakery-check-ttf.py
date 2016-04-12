@@ -633,6 +633,35 @@ def main():
       logging.info("OK: No 'opyright' substring found on name table entries.")
 
     #----------------------------------------------------
+    logging.debug("StyleName recomendadion")
+    font_style_name = ""
+    for entry in font['name'].names:
+        if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+            font_style_name = entry.string
+            break
+
+    if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
+        new_value = font_style_name
+        logger.error('OK: {}: Fixed: Windows-only Opentype-specific StyleName set'
+                     ' to "{}".'.format(font_file, font_style_name))
+    else:
+        logger.error('OK: {}: Warning: Windows-only Opentype-specific StyleName set to "Regular"'
+                     ' as a default value. Please verify if this is correct.'.format(font_file))
+        new_value = 'Regular'
+
+    found = False
+    for entry in font['name'].names:
+        if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME or entry.platformID != 3:
+            new_names.append(entry)
+            continue
+        found = True
+        entry.string = new_value.encode(entry.getEncoding())
+        new_names.append(entry)
+    font['name'].names = new_names
+    if not found:
+        font['name'].setName(new_value, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME, 3, 1, 0x409)
+
+    #----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if 
     # a font is monospaced or not. 
     #
