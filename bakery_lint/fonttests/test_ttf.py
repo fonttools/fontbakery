@@ -202,13 +202,6 @@ class TTFTestCase(TestCase):
     def containsSubstr(self, nameRecord, substr):
         return substr in getNameRecordValue(nameRecord)
 
-    @autofix('bakery_cli.fixers.RemoveItemsWithPlatformID1')
-    def test_platformID_1_exists(self):
-        """ Is there any item with platformID=1 on the NAME table? """
-        font = ttLib.TTFont(self.operator.path)
-        items = [item for item in font['name'].names if item.platformID == 1]
-        self.assertTrue(bool(items), "NAME table should not contain platformID='1' records")
-
     @autofix('bakery_cli.fixers.RemoveNameRecordWithOpyright')
     def test_name_id_copyright(self):
         """ Is there an `opyright` substring declared in name ID 10? """

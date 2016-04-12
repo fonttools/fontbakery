@@ -453,18 +453,6 @@ class RemoveNameRecordWithOpyright(Fixer):
         return True
 
 
-class RemoveItemsWithPlatformID1(Fixer):
-
-    def fix(self):
-        records = []
-        for record in self.font['name'].names:
-            if record.platformID == 1:
-                continue
-            records.append(record)
-        self.font['name'].names = records
-        return True
-
-
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
 DATA_DIR = os.path.abspath(DATA_DIR)
 
