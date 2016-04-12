@@ -381,7 +381,7 @@ def main():
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
         for name in font['name'].names:
-          if name.nameID == 8:
+          if name.nameID == NAMEID_MANUFACTURER_NAME:
             manufacturer = name.string.decode(name.getEncoding()).strip()
             if manufacturer != registered_vendor_ids[vid].strip():
               logging.warning("VendorID string '{}' does not match nameID 8 (Manufacturer Name): '{}'".format(\
