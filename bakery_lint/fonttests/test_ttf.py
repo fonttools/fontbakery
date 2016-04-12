@@ -29,7 +29,6 @@ from fontTools import ttLib
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix, \
     TestCaseOperator
-from bakery_cli.fixers import RenameFileWithSuggestedName
 from bakery_cli.fixers import OFLLicenseInfoURLFixer, ApacheLicenseInfoURLFixer, \
     OFLLicenseDescriptionFixer, ApacheLicenseDescriptionFixer
 from bakery_cli.fixers import NbspAndSpaceSameWidth, CharacterSymbolsFixer
@@ -77,13 +76,6 @@ class TTFTestCase(TestCase):
             fontforge.open(self.operator.path)
             if std.getvalue():
                 self.fail('FontForge prints STDERR')
-
-    @tags('info',)
-    @autofix('bakery_cli.fixers.RenameFileWithSuggestedName')
-    def test_source_ttf_font_filename_equals_familystyle(self):
-        """ Source TTF Font filename equals family style? """
-        fixer = RenameFileWithSuggestedName(self, self.operator.path)
-        self.assertEqual(fixer.validate(), os.path.basename(self.operator.path))
 
     def test_ttx_family_naming_recommendation(self):
         """ Font follows the family naming recommendations? """

@@ -527,38 +527,6 @@ class ApacheLicenseDescriptionFixer(LicenseDescriptionFixer):
         return 'APACHE.placeholder'
 
 
-class RenameFileWithSuggestedName(Fixer):
-
-    def validate(self):
-        sugested = getSuggestedFontNameValues(self.font)
-        family_name = sugested['family']
-        subfamily_name = sugested['subfamily']
-        expectedname = '{0}-{1}'.format(family_name.replace(' ', ''),
-                                        subfamily_name.replace(' ', ''))
-        actualname, extension = os.path.splitext(self.fontpath)
-
-        return '{0}{1}'.format(expectedname, extension)
-
-    def fix(self):
-        newfilename = self.validate()
-
-        new_targetpath = os.path.join(os.path.dirname(self.fontpath),
-                                      newfilename)
-        shutil.move(self.fontpath, new_targetpath)
-
-        from bakery_cli.logger import logger
-        logger.error('$ mv {} {}'.format(self.fontpath, os.path.basename(new_targetpath)))
-
-        self.testcase.operator.path = new_targetpath
-        from bakery_cli.utils import ProcessedFile
-        
-        f = ProcessedFile()
-        f.filepath = newfilename
-
-        self.save_after_fix = False
-        return True
-
-
 class SpaceIndentationWriter(Fixer):
 
     def loadfont(self, path):
