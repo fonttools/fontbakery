@@ -526,16 +526,3 @@ class ApacheLicenseDescriptionFixer(LicenseDescriptionFixer):
     def get_placeholder_filename(self):
         return 'APACHE.placeholder'
 
-
-class SpaceIndentationWriter(Fixer):
-
-    def loadfont(self, path):
-        return  # this fixer does not operate with font
-
-    def apply(self, *args, **kwargs):
-        string = ''
-        for line in open(self.fontpath):
-            string += line.expandtabs(2)
-        fp = open(self.fontpath, 'w')
-        fp.write(string)
-        return True
