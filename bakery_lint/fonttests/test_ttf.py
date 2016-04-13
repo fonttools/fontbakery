@@ -31,7 +31,7 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix, \
     TestCaseOperator
 from bakery_cli.fixers import OFLLicenseInfoURLFixer, ApacheLicenseInfoURLFixer, \
     OFLLicenseDescriptionFixer, ApacheLicenseDescriptionFixer
-from bakery_cli.fixers import NbspAndSpaceSameWidth, CharacterSymbolsFixer
+from bakery_cli.fixers import CharacterSymbolsFixer
 from bakery_cli.fixers import get_unencoded_glyphs
 from bakery_cli.ttfont import Font, FontTool, getSuggestedFontNameValues
 from bakery_cli.utils import run, UpstreamDirectory
@@ -441,46 +441,6 @@ class TTFTestCase(TestCase):
     def diff_platform(self, name, name2):
         return (name.platformID == 3 and name.langID == 0x409
                 and name2.platformID == 1 and name2.langID == 0)
-
-    #TODO: Split the NbspAndSpaceSameWidth fixer and creating a
-    #      new one with the strict purpose of fissing missing whitespace glyphs
-    #      See https://github.com/googlefonts/fontbakery/issues/738
-    @tags('required')
-    def test_check_whitespace_characters(self):
-        """ Font contains glyphs for whitespace characters? """
-        checker = NbspAndSpaceSameWidth(self, self.operator.path)
-
-        space = checker.getGlyph(0x0020)
-        nbsp = checker.getGlyph(0x00A0)
-        tab = checker.getGlyph(0x0009)
-
-        missing = []
-        if not space: missing.append("space (0x0020)")
-        if not nbsp: missing.append("nbsp (0x00A0)")
-        if not tab: missing.append("tab (0x0009)")
-        self.assertEquals(missing, [], "Font is missing the following glyphs: {}.".format(", ".join(missing)))
-
-    @tags('required')
-    @autofix('bakery_cli.fixers.NbspAndSpaceSameWidth')
-    def test_check_nbsp_width_matches_sp_width(self):
-        """ White-space characters have identical advanceWidth value? """
-        checker = NbspAndSpaceSameWidth(self, self.operator.path)
-
-        space = checker.getGlyph(0x0020)
-        nbsp = checker.getGlyph(0x00A0)
-        tab = checker.getGlyph(0x0009)
-
-        if space and tab:
-            spaceWidth = checker.getWidth(space)
-            tabWidth = checker.getWidth(tab)
-            self.assertEqual(spaceWidth, tabWidth,
-                             "Advance width mismatch for tab (0x0009) and space (0x0020) characters.")
-
-        if space and nbsp:
-            spaceWidth = checker.getWidth(space)
-            nbspWidth = checker.getWidth(nbsp)
-            self.assertEqual(spaceWidth, nbspWidth,
-                             "Advance width mismatch for nbsp (0x00A0) and space (0x0020) characters.")
 
     def test_check_os2_width_class(self):
         """ OS/2 width class is correctly set? """

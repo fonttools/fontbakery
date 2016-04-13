@@ -929,15 +929,17 @@ def main():
     # more checks go here
 
     #----------------------------------------------------
-    logging.debug("")
- 
+    logging.debug("Font contains glyphs for whitespace characters?")
     space = getGlyph(font, 0x0020)
-    if space != None and space not in ["space", "uni0020"]:
-        logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
-
     nbsp = getGlyph(font, 0x00A0)
-    if nbsp != None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
-        logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
+    tab = getGlyph(font, 0x0009)
+
+    missing = []
+    if not space: missing.append("space (0x0020)")
+    if not nbsp: missing.append("nbsp (0x00A0)")
+    if not tab: missing.append("tab (0x0009)")
+    if missing != []:
+        logging.error("Font is missing the following glyphs: {}.".format(", ".join(missing)))
 
     isNbspAdded = False
     isSpaceAdded = False
@@ -950,6 +952,18 @@ def main():
             isSpaceAdded = True
     except Exception as ex:
         logging.error(ex)
+
+    #----------------------------------------------------
+    logging.debug("Font has got propper whitespace glyph names?")
+ 
+    if space != None and space not in ["space", "uni0020"]:
+        logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
+
+    if nbsp != None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
+        logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
+
+    #----------------------------------------------------
+    logging.debug("Whitespace glyphs have ink?")
 
     for g in [space, nbsp]:
         if glyphHasInk(font, g):
