@@ -309,34 +309,6 @@ class GaspFixer(Fixer):
             logger.error('ER: {}: no index 65535'.format(path))
 
 
-def fontTools_to_dict(font):
-    fontdata = {
-        'names': [
-            {'nameID': rec.nameID,
-             'platformID': rec.platformID,
-             'langID': rec.langID,
-             'string': rec.string.decode("utf_16_be")
-             if rec.isUnicode() else rec.string,
-             'platEncID': rec.platEncID} for rec in font['name'].names
-        ],
-        'OS/2': {
-            'fsSelection': font['OS/2'].fsSelection,
-            'usWeightClass': font['OS/2'].usWeightClass,
-        },
-        'head': {
-            'macStyle': font['head'].macStyle,
-        },
-        'post': {
-            'italicAngle': font['post'].italicAngle
-        }
-    }
-    if 'CFF ' in font:
-        fontdata['CFF'] = {
-            'Weight': font['CFF '].cff.topDictIndex[0].Weight
-        }
-    return fontdata
-
-
 class OpentypeFamilyNameFixer(Fixer):
     def fix(self):
         fontfile = os.path.basename(self.fontpath)
@@ -365,58 +337,6 @@ class SubfamilyNameFixer(Fixer):
             suggestedvalues['family'], suggestedvalues['subfamily']))
         return True
 
-
-class FamilyAndStyleNameFixer(Fixer):
-
-    def get_shell_command(self):
-        return "fontbakery-fix-opentype-names.py {}".format(self.fontpath)
-
-    def getOrCreateNameRecord(self, nameId, val):
-        if nameId < 10:
-            nameId = " " + str(nameId)
-
-        logger.error('NAMEID {}: "{}"'.format(nameId, val))
-        return
-
-        result_namerec = None
-        for k, p in [[1, 0], [3, 1]]:
-            result_namerec = self.font['name'].getName(nameId, k, p)
-            if result_namerec:
-                result_namerec.string = (val or '').encode(result_namerec.getEncoding())
-                
-        if result_namerec:
-            return result_namerec
-
-        ot_namerecord = NameRecord()
-        ot_namerecord.nameID = nameId
-        ot_namerecord.platformID = 3
-        ot_namerecord.langID = 0x409
-        # When building a Unicode font for Windows, the platform ID
-        # should be 3 and the encoding ID should be 1
-        ot_namerecord.platEncID = 1
-        ot_namerecord.string = (val or '').encode(ot_namerecord.getEncoding())
-
-        self.font['name'].names.append(ot_namerecord)
-        return ot_namerecord
-
-
-    def fix(self):
-        # Convert huge and complex fontTools to config python dict
-        fontdata = fontTools_to_dict(self.font)
-
-        fontdata = clean_name_values(fontdata)
-        familyname = ''
-        for rec in fontdata['names']:
-            if rec['nameID'] == NAMEID_FONT_FAMILY_NAME:
-                familyname = rec['string']
-                break
-        fontdata = fix_all_names(fontdata, familyname)
-
-        logger.error(os.path.basename(self.fontpath))
-        logger.error('')
-        for field in fontdata['names']:
-            self.getOrCreateNameRecord(field['nameID'], field['string'])
-        return True
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'Data')
 DATA_DIR = os.path.abspath(DATA_DIR)
