@@ -245,8 +245,84 @@ def parse_version_string(s):
             major = int(substrings[-2])
         return major, minor, suffix
     except:
-        print ("ER: failed to detect major and minor version numbers" +\
+        logging.error("Failed to detect major and minor version numbers" +\
                " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+
+def getGlyph(font, uchar):
+    for table in font['cmap'].tables:
+        if not (table.platformID == 3 and table.platEncID in [1, 10]):
+            continue
+        if uchar in table.cmap:
+            return table.cmap[uchar]
+    return None
+
+def addGlyph(font, uchar, glyph):
+    # Add to glyph list
+    glyphOrder = font.getGlyphOrder()
+    # assert glyph not in glyphOrder
+    glyphOrder.append(glyph)
+    font.setGlyphOrder(glyphOrder)
+
+    # Add horizontal metrics (to zero)
+    font['hmtx'][glyph] = [0, 0]
+
+    # Add to cmap
+    for table in font['cmap'].tables:
+        if not (table.platformID == 3 and table.platEncID in [1, 10]):
+            continue
+        if not table.cmap:  # Skip UVS cmaps
+            continue
+        assert uchar not in table.cmap
+        table.cmap[uchar] = glyph
+
+    # Add empty glyph outline
+    if 'glyf' in font:
+        font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
+    else:
+        cff = font['CFF '].cff
+        self.addCFFGlyph(
+            glyphName=glyph,
+            private=cff.topDictIndex[0].Private,
+            globalSubrs=cff.GlobalSubrs,
+            charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
+            # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
+            topDict=cff.topDictIndex[0],
+            charStrings=cff.topDictIndex[0].CharStrings
+        )
+        import ipdb; ipdb.set_trace()
+    return glyph
+
+def getWidth(font, glyph):
+    return font['hmtx'][glyph][0]
+
+def setWidth(font, glyph, width):
+    font['hmtx'][glyph] = (width, font['hmtx'][glyph][1])
+
+def glyphHasInk(font, name):
+    """Checks if specified glyph has any ink.
+    That is, that it has at least one defined contour associated. Composites are
+    considered to have ink if any of their components have ink.
+    Args:
+        font:       the font
+        glyph_name: The name of the glyph to check for ink.
+    Returns:
+        True if the font has at least one contour associated with it.
+    """
+    glyph = font['glyf'].glyphs[name]
+    glyph.expand(font['glyf'])
+    if not glyph.isComposite():
+        if glyph.numberOfContours == 0:
+            return False
+        (coords, _, _) = glyph.getCoordinates(font['glyf'])
+        # you need at least 3 points to draw
+        return len(coords) > 2
+
+    # composite is blank if composed of blanks
+    # if you setup a font with cycles you are just a bad person
+    for glyph_name in glyph.getComponentNames(glyph.components):
+        if glyphHasInk(font, glyph_name):
+            return True
+    return False
 
 #=====================================
 # Main sequence of checkers & fixers
@@ -848,8 +924,63 @@ def main():
                              " https://pypi.python.org/pypi/FontTools/2.4")
             logging.error(error_message.format(file_path))
 
+
     #----------------------------------------------------
     # more checks go here
+
+    #----------------------------------------------------
+    logging.debug("")
+ 
+    space = getGlyph(font, 0x0020)
+    if space != None and space not in ["space", "uni0020"]:
+        logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
+
+    nbsp = getGlyph(font, 0x00A0)
+    if nbsp != None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
+        logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
+
+    isNbspAdded = False
+    isSpaceAdded = False
+    try:
+        if not nbsp:
+            nbsp = addGlyph(font, 0x00A0, 'nbsp')
+            isNbspAdded = True
+        if not space:
+            space = addGlyph(font, 0x0020, 'space')
+            isSpaceAdded = True
+    except Exception as ex:
+        logging.error(ex)
+
+    for g in [space, nbsp]:
+        if glyphHasInk(font, g):
+            logging.error('HOTFIXED: {}: Glyph "{}" has ink. Fixed: Overwritten by an empty glyph'.format(file_path, g))
+            #overwrite existing glyph with an empty one
+            font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+
+    spaceWidth = getWidth(font, space)
+    nbspWidth = getWidth(font, nbsp)
+
+    if spaceWidth != nbspWidth or nbspWidth < 0:
+        setWidth(font, nbsp, min(nbspWidth, spaceWidth))
+        setWidth(font, space, min(nbspWidth, spaceWidth))
+
+        if isNbspAdded:
+            msg = 'OK: {} space {} nbsp None: Added nbsp with advanceWidth {}'
+            logging.error(msg.format(file_path, spaceWidth, spaceWidth))
+
+        if isSpaceAdded:
+            msg = 'OK: {} space None nbsp {}: Added space with advanceWidth {}'
+            logging.error(msg.format(file_path, nbspWidth, nbspWidth))
+
+        if nbspWidth > spaceWidth and spaceWidth >= 0:
+            msg = 'OK: {} space {} nbsp {}: Fixed space advanceWidth to {}'
+            logging.error(msg.format(file_path, spaceWidth, nbspWidth, nbspWidth))
+        else:
+            msg = 'OK: {} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+            logging.error(msg.format(file_path, spaceWidth, nbspWidth, spaceWidth))
+    else:
+        logger.info('OK: {} space {} nbsp {}'.format(file_path, spaceWidth, nbspWidth))
+
 
     #------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage, using the thresholds in add_font.py. See https://github.com/googlefonts/fontbakery/issues/594
