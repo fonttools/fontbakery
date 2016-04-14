@@ -58,14 +58,9 @@ except:
   sys.exit("Needs fontbakery.\n\nsudo pip install fontbakery")
 
 try:
-  from flask import Flask, jsonify
-except:
-  sys.exit("Needs flask.\n\nsudo pip install flask")
-
-try:
   from flask import Flask, jsonify, request
 except:
-  print "Needs flask.\n\nsudo pip install flask"
+  sys.exit("Needs flask.\n\nsudo pip install flask")
 
 # The font size used to test for weight and width.
 FONT_SIZE = 30
@@ -98,8 +93,8 @@ BLACKLIST = [
   "Kolar",
   "KumarOne",
   "Mogra",
-  # Its pure black so it throws everything off
-  "Redacted"
+  "Redacted",  # Its pure black so it throws everything off
+  "AdobeBlank", # Testing font, gives ZeroDivisionError: float division by zero
 ]
 
 
