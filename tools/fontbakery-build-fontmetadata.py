@@ -175,6 +175,8 @@ def main():
     help="Debug mode, just print results")
   parser.add_argument("-e", "--existing", default=False,
     help="Path to existing font-metadata.csv")
+  parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
+    help="Only process fonts for which metadata is not available yet")
   parser.add_argument("-o", "--output", default="output.csv", required=True, 
     help="CSV data output filename")
   args = parser.parse_args()
@@ -188,8 +190,28 @@ def main():
     print("No font files were found!")
     sys.exit()
 
+  files_to_process = glob.glob(args.files)
+  if args.missingmetadata:
+    if args.existing is None:
+      sys.exit("you must use the --existing attribute in conjunction with --missingmetadata")
+    else:
+      rejected = []
+      with open(args.existing, 'rb') as csvfile:
+        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
+        next(existing_data) # skip first row as its not data
+        for row in existing_data:
+          name = row[0].split(':')[0]
+          if ' ' in name:
+            name = ''.join(name.split(' '))
+          for f, fname in enumerate(files_to_process):
+            if name in fname:
+              files_to_process.pop(f)
+              rejected.append(row[0])
+
+      print("These files were removed from the list: " + str(rejected))
+
   # analyse fonts
-  fontinfo = analyse_fonts(glob.glob(args.files))
+  fontinfo = analyse_fonts(files_to_process)
 
   # normalise weights
   weights = []
