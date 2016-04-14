@@ -189,6 +189,10 @@ def main():
     parser.print_help()
     sys.exit()
 
+  if len(glob.glob(args.files)) == 0:
+    print("No font files were found!")
+    sys.exit()
+
   # analyse fonts
   fontinfo = analyse_fonts(glob.glob(args.files))
 
