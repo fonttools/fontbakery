@@ -192,7 +192,7 @@ def main():
 
   files_to_process = glob.glob(args.files)
   if args.missingmetadata:
-    if args.existing is None:
+    if args.existing == False:
       sys.exit("you must use the --existing attribute in conjunction with --missingmetadata")
     else:
       rejected = []
@@ -239,7 +239,7 @@ def main():
     fontinfo[fontfile]['angle_int'] = ints[count]
   
   # include existing values
-  if args.existing:
+  if args.existing and args.missingmetadata == False:
     with open(args.existing, 'rb') as csvfile:
         existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
         next(existing_data) # skip first row as its not data
