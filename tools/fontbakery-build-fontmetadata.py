@@ -19,7 +19,7 @@
 #
 # OVERVIEW + USAGE
 #
-# python compute_font_metrics.py -h
+# python tools/fontbakery-build-fontmetadata.py -h
 #
 # DEPENDENCIES
 #
@@ -94,6 +94,10 @@ BLACKLIST = [
   #IOError: execution context too long (issue #703)
   "FiraSans",
   "FiraMono",
+  "Benne",
+  "Kolar",
+  "KumarOne",
+  "Mogra",
   # Its pure black so it throws everything off
   "Redacted"
 ]
