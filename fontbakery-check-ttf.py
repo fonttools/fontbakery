@@ -839,6 +839,15 @@ def main():
     #   But its name indicates it should be mapped to U+02C6.
     #
     # We should detect this and if found, warn with it
+    #
+    # Felipe Sanches:
+    # I've been inspecting the fontforge python module source code
+    # and it seems that the leakage of stderr messages results from
+    # an API design flaw in the module implementation.
+    # I am not sure if we can hijack those prints. Maybe we would
+    # actually need to modify fontforge code itself to achieve that.
+    # I'll have to investigate it further in order to provide a
+    # better informed analysis.
     logging.debug("Checking with fontforge")
     try:
         import fontforge
