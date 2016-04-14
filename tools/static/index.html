@@ -69,7 +69,18 @@ grid = new EditableGrid("DemoGridJSON", {
 	    modelChanged: function(rowIndex, columnIndex, oldValue, newValue, row) {
 	        updateCellValue(this, rowIndex, columnIndex, oldValue, newValue, row);
 	    },
-	    tableLoaded: function() { this.renderGrid("tablecontent", "testgrid"); }
+	    tableLoaded: function() {
+              this.renderGrid("tablecontent", "testgrid");
+
+              var columnIndex;
+              for (columnIndex=0; columnIndex < 20; columnIndex ++){
+                if (this.getColumnName(columnIndex) == "angle_int") break;
+              }
+              for (var rowIndex=0; rowIndex < this.getRowCount(); rowIndex ++){
+                var row = this.getRow(rowIndex);
+                $(row).find("img:first").css("background-image", "url(images/angle_" + this.getValueAt(rowIndex, columnIndex) + ".png)");
+              }
+            }
 	});
 grid.loadJSON("../data.json");
 

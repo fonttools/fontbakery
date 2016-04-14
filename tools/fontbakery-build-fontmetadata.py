@@ -282,10 +282,9 @@ def main():
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
       },
-      {"name":"image","label":"image","datatype":"html","editable":False},
       {"name":"angle","label":"angle","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True}, 
-      {"name":"angle_image","label":"angle image","datatype":"html","editable":False},
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
+      {"name":"image","label":"image","datatype":"html","editable":False},
     ],
     "data": []
   }
