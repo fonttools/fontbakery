@@ -208,7 +208,7 @@ def main():
               files_to_process.pop(f)
               rejected.append(row[0])
 
-      print("These files were removed from the list: " + str(rejected))
+      print("These files were removed from the list:\n\t" + '\n\t'.join(rejected))
 
   # analyse fonts
   fontinfo = analyse_fonts(files_to_process)
