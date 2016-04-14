@@ -206,9 +206,9 @@ def main():
           for f, fname in enumerate(files_to_process):
             if name in fname:
               files_to_process.pop(f)
-              rejected.append(row[0])
+              rejected.append(fname + ":" + row[0])
 
-      print("These files were removed from the list:\n\t" + '\n\t'.join(rejected))
+      print("These files were removed from the list:\n" + '\n'.join(rejected))
 
   # analyse fonts
   fontinfo = analyse_fonts(files_to_process)
