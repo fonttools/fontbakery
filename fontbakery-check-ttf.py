@@ -727,7 +727,8 @@ def main():
 
     found = False
     for entry in font['name'].names:
-        if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME or entry.platformID != 3:
+        if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME\
+           or entry.platformID != PLATFORM_ID_WINDOWS:
             new_names.append(entry)
             continue
         found = True
@@ -735,7 +736,10 @@ def main():
         new_names.append(entry)
     font['name'].names = new_names
     if not found:
-        font['name'].setName(new_value, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME, 3, 1, 0x409)
+        font['name'].setName(new_value, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                             PLATFORM_ID_WINDOWS,
+                             PLAT_ENC_ID_UCS2,
+                             LANG_ID_ENGLISH_USA)
 
     #----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if 
