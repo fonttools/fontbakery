@@ -26,18 +26,23 @@ td.editablegrid-image { overflow: scroll;}
 <body>
 <h1>Font Classification Editor</h1>
 <ul>
-<li><a href="#" onclick="$('.editablegrid-fontfile').toggle();">filename</a></li>
-<li><a href="#" onclick="$('.editablegrid-gfn').toggle();">GFN</a></li>
-<li><a href="#" onclick="$('.editablegrid-weight').toggle();">weight</a></li>
-<li><a href="#" onclick="$('.editablegrid-weight_int').toggle();">WEIGHT_INT</a></li>
-<li><a href="#" onclick="$('.editablegrid-usage').toggle();">USAGE</a></li>
-<li><a href="#" onclick="$('.editablegrid-angle').toggle();">angle</a></li>
-<li><a href="#" onclick="$('.editablegrid-angle_int').toggle();">ANGLE_INT</a></li>
-<li><a href="#" onclick="$('.editablegrid-image').toggle();">image</a></li>
+<li><a href="#" onclick="toggle_column(this, 'fontfile');">filename</a></li>
+<li><a href="#" onclick="toggle_column(this, 'gfn');">GFN</a></li>
+<li><a href="#" onclick="toggle_column(this, 'weight');">weight</a></li>
+<li><a href="#" onclick="toggle_column(this, 'weight_int');">WEIGHT_INT</a></li>
+<li><a href="#" onclick="toggle_column(this, 'usage');">USAGE</a></li>
+<li><a href="#" onclick="toggle_column(this, 'angle');">angle</a></li>
+<li><a href="#" onclick="toggle_column(this, 'angle_int');">ANGLE_INT</a></li>
+<li><a href="#" onclick="toggle_column(this, 'image');">image</a></li>
 </ul>
 
 <div id="tablecontent"></div>
 <script>
+
+function toggle_column(checkbox, column_id){
+	$('.editablegrid-' + column_id).toggle();
+}
+
 function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
 
         if (grid.getColumnName(columnIndex) == "angle_int"){
