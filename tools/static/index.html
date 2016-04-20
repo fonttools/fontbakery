@@ -25,6 +25,17 @@ td.editablegrid-image { overflow: scroll;}
 </head>
 <body>
 <h1>Font Classification Editor</h1>
+<ul>
+<li><a href="#" onclick="$('.editablegrid-fontfile').toggle();">filename</a></li>
+<li><a href="#" onclick="$('.editablegrid-gfn').toggle();">GFN</a></li>
+<li><a href="#" onclick="$('.editablegrid-weight').toggle();">weight</a></li>
+<li><a href="#" onclick="$('.editablegrid-weight_int').toggle();">WEIGHT_INT</a></li>
+<li><a href="#" onclick="$('.editablegrid-usage').toggle();">USAGE</a></li>
+<li><a href="#" onclick="$('.editablegrid-angle').toggle();">angle</a></li>
+<li><a href="#" onclick="$('.editablegrid-angle_int').toggle();">ANGLE_INT</a></li>
+<li><a href="#" onclick="$('.editablegrid-image').toggle();">image</a></li>
+</ul>
+
 <div id="tablecontent"></div>
 <script>
 function updateCellValue(grid, rowIndex, columnIndex, oldValue, newValue, row){
