@@ -34,6 +34,8 @@ import os
 import sys
 import StringIO
 import csv
+import collections
+import re
 
 try:
   from PIL import ImageFont
@@ -362,17 +364,139 @@ def main():
   print "Access http://127.0.0.1:5000/static/index.html\n"
   app.run()
 
+#====================================================================
+# Here we copy/paste and adapt a bunch of code
+# from https://github.com/google/fonts/blob/master/tools/add_font.py
+# following the policy of keeping this script standalone.
+#====================================================================
 
+class Error(Exception):
+  """Base for Google Fonts errors."""
+
+class ParseError(Error):
+  """Exception used when parse failed."""
+
+_FAMILY_WEIGHT_REGEX = r'([^/-]+)-(\w+)\.ttf$'
+
+# The canonical [to Google Fonts] name comes before any aliases
+_KNOWN_WEIGHTS = collections.OrderedDict([
+    ('Thin', 100),
+    ('Hairline', 100),
+    ('ExtraLight', 200),
+    ('Light', 300),
+    ('Regular', 400),
+    ('', 400),  # Family-Italic resolves to this
+    ('Medium', 500),
+    ('SemiBold', 600),
+    ('Bold', 700),
+    ('ExtraBold', 800),
+    ('Black', 900)
+])
+
+FileFamilyStyleWeightTuple = collections.namedtuple(
+    'FileFamilyStyleWeightTuple', ['file', 'family', 'style', 'weight'])
+
+def StyleWeight(styleweight):
+  """Breaks apart a style/weight specifier into a 2-tuple of (style, weight).
+
+  Args:
+    styleweight: style/weight string, e.g. Bold, Regular, or ExtraLightItalic.
+  Returns:
+    2-tuple of style (normal or italic) and weight.
+  """
+  if styleweight.endswith('Italic'):
+    return ('italic', _KNOWN_WEIGHTS[styleweight[:-6]])
+
+  return ('normal', _KNOWN_WEIGHTS[styleweight])
+
+def FamilyName(fontname):
+  """Attempts to build family name from font name.
+
+  For example, HPSimplifiedSans => HP Simplified Sans.
+
+  Args:
+    fontname: The name of a font.
+  Returns:
+    The name of the family that should be in this font.
+  """
+  # SomethingUpper => Something Upper
+  fontname = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', fontname)
+  # Font3 => Font 3
+  fontname = re.sub('([a-z])([0-9]+)', r'\1 \2', fontname)
+  # lookHere => look Here
+  return re.sub('([a-z0-9])([A-Z])', r'\1 \2', fontname)
+
+def FileFamilyStyleWeight(filename):
+  """Extracts family, style, and weight from Google Fonts standard filename.
+
+  Args:
+    filename: Font filename, eg Lobster-Regular.ttf.
+  Returns:
+    FileFamilyStyleWeightTuple for file.
+  Raises:
+    ParseError: if file can't be parsed.
+  """
+  m = re.search(_FAMILY_WEIGHT_REGEX, filename)
+  if not m:
+    raise ParseError('Could not parse %s' % filename)
+  sw = StyleWeight(m.group(2))
+  return FileFamilyStyleWeightTuple(filename, FamilyName(m.group(1)), sw[0],
+                                    sw[1])
+
+def _FileFamilyStyleWeights(fontdir):
+  """Extracts file, family, style, weight 4-tuples for each font in dir.
+
+  Args:
+    fontdir: Directory that supposedly contains font files for a family.
+  Returns:
+    List of FileFamilyStyleWeightTuple ordered by weight, style
+    (normal first).
+  Raises:
+    OSError: If the font directory doesn't exist (errno.ENOTDIR) or has no font
+    files (errno.ENOENT) in it.
+    RuntimeError: If the font directory appears to contain files from multiple
+    families.
+  """
+  if not os.path.isdir(fontdir):
+    raise OSError(errno.ENOTDIR, 'No such directory', fontdir)
+
+  files = glob.glob(os.path.join(fontdir, '*.ttf'))
+  if not files:
+    raise OSError(errno.ENOENT, 'no font files found')
+
+  result = [FileFamilyStyleWeight(f) for f in files]
+  def _Cmp(r1, r2):
+    return cmp(r1.weight, r2.weight) or -cmp(r1.style, r2.style)
+  result = sorted(result, _Cmp)
+
+  family_names = {i.family for i in result}
+  if len(family_names) > 1:
+    raise RuntimeError('Ambiguous family name; possibilities: %s'
+                       % family_names)
+
+  return result
 
 def get_gfn(fontfile):
   gfn = "unknown"
-  metadata = os.path.join(os.path.dirname(fontfile), "METADATA.pb")
+  fontdir = os.path.dirname(fontfile)
+  metadata = os.path.join(fontdir, "METADATA.pb")
   if os.path.exists(metadata):
     family = get_FamilyProto_Message(metadata)
     for font in family.fonts:
       if font.filename in fontfile:
         gfn = "{}:{}:{}".format(family.name, font.style, font.weight)
         break
+  else:
+    try:
+      attributes = _FileFamilyStyleWeights(fontdir)
+      for (fontfname, family, style, weight) in attributes:
+        if fontfname in fontfile:
+          gfn = "{}:{}:{}".format(family, style, weight)
+          break
+    #except ParseError, KeyError:
+    except:
+      print ("Failed to detect GFN value for '{}'. Defaults to 'unknown'.".format(fontfile))
+      pass
 
   return gfn
 
