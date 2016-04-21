@@ -99,6 +99,32 @@ BLACKLIST = [
   "AdobeBlank", # Testing font, gives ZeroDivisionError: float division by zero
 ]
 
+# nameID definitions for the name table:
+NAMEID_COPYRIGHT_NOTICE = 0
+NAMEID_FONT_FAMILY_NAME = 1
+NAMEID_FONT_SUBFAMILY_NAME = 2
+NAMEID_UNIQUE_FONT_IDENTIFIER = 3
+NAMEID_FULL_FONT_NAME = 4
+NAMEID_VERSION_STRING = 5
+NAMEID_POSTSCRIPT_NAME = 6
+NAMEID_TRADEMARK = 7
+NAMEID_MANUFACTURER_NAME = 8
+NAMEID_DESIGNER = 9
+NAMEID_DESCRIPTION = 10
+NAMEID_VENDOR_URL = 11
+NAMEID_DESIGNER_URL = 12
+NAMEID_LICENSE_DESCRIPTION = 13
+NAMEID_LICENSE_INFO_URL = 14
+# Name ID 15 is RESERVED
+NAMEID_TYPOGRAPHIC_FAMILY_NAME = 16
+NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME = 17
+NAMEID_COMPATIBLE_FULL_MACONLY = 18
+NAMEID_SAMPLE_TEXT = 19
+NAMEID_POSTSCRIPT_CID_NAME = 20
+NAMEID_WWS_FAMILY_NAME = 21
+NAMEID_WWS_SUBFAMILY_NAME = 22
+NAMEID_LIGHT_BACKGROUND_PALETTE = 23
+NAMEID_DARK_BACKGROUD_PALETTE = 24
 
 def generate_italic_angle_images():
   from PIL import Image, ImageDraw
@@ -493,10 +519,30 @@ def get_gfn(fontfile):
         if fontfname in fontfile:
           gfn = "{}:{}:{}".format(family, style, weight)
           break
-    #except ParseError, KeyError:
     except:
-      print ("Failed to detect GFN value for '{}'. Defaults to 'unknown'.".format(fontfile))
       pass
+
+  if gfn == 'unknown':
+    #This font lacks a METADATA.pb file and also failed
+    # to auto-detect the GFN value. As a last resort
+    # we'll try to extract the info from the NAME table entries.
+    try:
+      ttfont = TTFont(fontfile)
+      for entry in ttfont['name'].names:
+        if entry.nameID == NAMEID_FONT_FAMILY_NAME:
+          family = entry.string.decode(entry.getEncoding()).encode('ascii', 'ignore').strip()
+        if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+          style, weight = StyleWeight(entry.string.decode(entry.getEncoding()).encode('ascii', 'ignore').strip())
+      ttfont.close()
+      if family != "": #avoid empty string in cases of misbehaved family names in the name table
+        gfn = "{}:{}:{}".format(family, style, weight)
+        print ("Detected GFN from name table entries: '{}' (file='{}')".format(gfn, fontfile))
+    except:
+      #This seems to be a really bad font file...
+      pass
+
+  if gfn == 'unknown':
+    print ("Failed to detect GFN value for '{}'. Defaults to 'unknown'.".format(fontfile))
 
   return gfn
 
