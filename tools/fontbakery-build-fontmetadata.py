@@ -243,19 +243,19 @@ def main():
 
   # normalise weights
   weights = []
-  for fontfile in sorted(fontinfo.keys()):
-    weights.append(fontinfo[fontfile]["weight"])
+  for key in sorted(fontinfo.keys()):
+    weights.append(fontinfo[key]["weight"])
   ints = map_to_int_range(weights)
-  for count, fontfile in enumerate(sorted(fontinfo.keys())):
-    fontinfo[fontfile]['weight_int'] = ints[count]
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['weight_int'] = ints[count]
 
   # normalise widths
   widths = []
-  for fontfile in sorted(fontinfo.keys()):
-    widths.append(fontinfo[fontfile]["width"])
+  for key in sorted(fontinfo.keys()):
+    widths.append(fontinfo[key]["width"])
   ints = map_to_int_range(widths)
-  for count, fontfile in enumerate(sorted(fontinfo.keys())):
-    fontinfo[fontfile]['width_int'] = ints[count]
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['width_int'] = ints[count]
 
   # normalise angles
   angles = []
@@ -263,8 +263,8 @@ def main():
     angle = abs(fontinfo[fontfile]["angle"])
     angles.append(angle)
   ints = map_to_int_range(angles)
-  for count, fontfile in enumerate(sorted(fontinfo.keys())):
-    fontinfo[fontfile]['angle_int'] = ints[count]
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['angle_int'] = ints[count]
   
   # include existing values
   if args.existing and args.missingmetadata == False:
@@ -273,27 +273,26 @@ def main():
         next(existing_data) # skip first row as its not data
         for row in existing_data:
           gfn = row[0]
-          fontfile = "existing " + gfn
-          fontinfo[fontfile] = {"weight": "None", 
-                                "weight_int": row[1],
-                                "width": "None", 
-                                "width_int": row[3],
-                                "angle": "None", 
-                                "angle_int": row[2],
-                                "img_weight": None,
-                                "img_width": None,
-                                "usage": row[4],
-                                "gfn": gfn
-                               }
+          fontinfo[gfn] = {"weight": "None",
+                           "weight_int": row[1],
+                           "width": "None",
+                           "width_int": row[3],
+                           "angle": "None",
+                           "angle_int": row[2],
+                           "img_weight": None,
+                           "img_width": None,
+                           "usage": row[4],
+                           "gfn": gfn
+                          }
 
   # if we are debugging, just print the stuff
   if args.debug:
-    items = ["weight", "weight_int", "width", "width_int", 
+    items = ["weight", "weight_int", "width", "width_int",
              "angle", "angle_int", "usage", "gfn"]
-    for fontfile in sorted(fontinfo.keys()):
-       print fontfile, 
+    for key in sorted(fontinfo.keys()):
+       print fontinfo[key]["fontfile"], 
        for item in items:
-         print fontinfo[fontfile][item],
+         print fontinfo[key][item],
        print ""
     sys.exit()
 
@@ -335,18 +334,17 @@ def main():
     return get_base64_image(img)
 
   field_id = 1
-  for fontfile in fontinfo:
+  for key in fontinfo:
+    values = fontinfo[key]
     img_weight_html, img_width_html = "", ""
-    if fontinfo[fontfile]["img_weight"] is not None:
-      img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_weight"])
-      #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (fontinfo[fontfile]["img_width"])
+    if values["img_weight"] is not None:
+      img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_weight"])
+      #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_width"])
 
     img_angle_html = ""
-    if ".ttf" in fontfile:
-      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_slant_chars(fontfile), fontinfo[fontfile]["angle_int"])
+    if ".ttf" in values["fontfile"]:
+      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_slant_chars(values["fontfile"]), values["angle_int"])
 
-    values = fontinfo[fontfile]
-    values["fontfile"] = fontfile
     values["image"] = img_weight_html
     values["angle_image"] = img_angle_html
     grid_data["data"].append({"id": field_id, "values": values})
@@ -562,14 +560,15 @@ def analyse_fonts(files):
     width, img_w = get_width(fontfile)
     angle = get_angle(fontfile)
     gfn = get_gfn(fontfile)
-    fontinfo[fontfile] = {"weight": darkness,
-                          "width": width,
-                          "angle": angle,
-                          "img_weight": img_d, 
-                          "img_width": img_w, 
-                          "usage": "unknown", 
-                          "gfn": gfn
-                         }
+    fontinfo[gfn] = {"weight": darkness,
+                     "width": width,
+                     "angle": angle,
+                     "img_weight": img_d,
+                     "img_width": img_w,
+                     "usage": "unknown",
+                     "gfn": gfn,
+                     "fontfile": fontfile
+                    }
   return fontinfo
 
 
