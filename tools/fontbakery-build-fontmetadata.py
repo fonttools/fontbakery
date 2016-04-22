@@ -336,6 +336,8 @@ def main():
   field_id = 1
   for key in fontinfo:
     values = fontinfo[key]
+    if values["gfn"] == "unknown":
+      continue
     img_weight_html, img_width_html = "", ""
     if values["img_weight"] is not None:
       img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_weight"])
