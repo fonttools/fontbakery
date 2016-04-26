@@ -1048,6 +1048,13 @@ def main():
     #
     # 3. rehint the font with the latest version of ttfautohint using the same options
 
+
+    #----------------------------------------------------
+    # Metadata related checks:
+    # TODO: load and parse METADATA.pb protobuffer files
+    # for the current font here and perform some checks such as
+    # MultipleDesignerFixer from bakery_cli/fixers.py
+
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
     # if that flag is True by this point, only then write the file
