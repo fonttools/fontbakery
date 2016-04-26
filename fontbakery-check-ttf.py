@@ -20,6 +20,16 @@ from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
+try:
+  from google.protobuf import text_format
+except:
+  sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
+
+try:
+  from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
+except:
+  sys.exit("Needs fontbakery.\n\nsudo pip install fontbakery")
+
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
@@ -323,6 +333,12 @@ def glyphHasInk(font, name):
         if glyphHasInk(font, glyph_name):
             return True
     return False
+
+def get_FamilyProto_Message(path):
+    message = FamilyProto()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, message)
+    return message
 
 #=====================================
 # Main sequence of checkers & fixers
@@ -1051,9 +1067,22 @@ def main():
 
     #----------------------------------------------------
     # Metadata related checks:
-    # TODO: load and parse METADATA.pb protobuffer files
-    # for the current font here and perform some checks such as
-    # MultipleDesignerFixer from bakery_cli/fixers.py
+
+    fontdir = os.path.dirname(file_path)
+    metadata = os.path.join(fontdir, "METADATA.pb")
+    if os.path.exists(metadata):
+      family = get_FamilyProto_Message(metadata)
+      for font in family.fonts:
+        logging.debug("METADATA.pb: Ensure designer simple short name.")
+
+        if len(family.designer.split(' ')) >= 4:
+          logging.error('`designer` key must be simple short name')
+        elif ' and ' in family.designer or\
+           '.' in family.designer or\
+           ',' in family.designer:
+          logging.error('`designer` key must be simple short name')
+        else:
+          logging.info('OK: designer is a simple short name')
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
