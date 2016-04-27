@@ -1065,21 +1065,23 @@ def main():
     #----------------------------------------------------
     # Metadata related checks:
 
-    fontdir = os.path.dirname(file_path)
+    fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
+
     if os.path.exists(metadata):
       family = get_FamilyProto_Message(metadata)
-      for font in family.fonts:
-        logging.debug("METADATA.pb: Ensure designer simple short name.")
+      logging.debug("METADATA.pb: Ensure designer simple short name.")
 
-        if len(family.designer.split(' ')) >= 4:
-          logging.error('`designer` key must be simple short name')
-        elif ' and ' in family.designer or\
-           '.' in family.designer or\
-           ',' in family.designer:
-          logging.error('`designer` key must be simple short name')
-        else:
-          logging.info('OK: designer is a simple short name')
+      if len(family.designer.split(' ')) >= 4:
+        logging.error('`designer` key must be simple short name')
+      elif ' and ' in family.designer or\
+         '.' in family.designer or\
+         ',' in family.designer:
+        logging.error('`designer` key must be simple short name')
+      else:
+        logging.info('OK: designer is a simple short name')
+    else:
+      logging.error("{} is missing a METADATA.pb file!".format(file_path))
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
