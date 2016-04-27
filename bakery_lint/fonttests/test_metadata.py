@@ -110,12 +110,6 @@ class MetadataTest(TestCase):
     def setUp(cls):
         cls.metadata = get_FamilyProto_Message(cls.operator.path)
 
-    def test_family_is_listed_in_gwf(self):
-        """ Fontfamily is listed in Google Font Directory ? """
-        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata.name.replace(' ', '+')
-        fp = requests.get(url)
-        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
-
     @tags('required')
     def test_metadata_designer_exists_in_profiles_csv(self):
         """ Designer exists in GWF profiles.csv ? """

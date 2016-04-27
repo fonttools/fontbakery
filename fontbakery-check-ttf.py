@@ -15,7 +15,13 @@
 #
 __author__="The Font Bakery Authors"
 
-import os, sys, argparse, glob, logging, subprocess
+import os
+import sys
+import argparse
+import glob
+import logging
+import subprocess
+import requests
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
@@ -417,7 +423,6 @@ def main():
       content = open(CACHE_VENDOR_LIST).read()
     else:
       logging.error("Did not find cached vendor list at: " + CACHE_VENDOR_LIST)
-      import requests
       content = requests.get(url, auth=('user', 'pass')).content
       open(CACHE_VENDOR_LIST, 'w').write(content)
     soup = BeautifulSoup(content, 'html.parser')
@@ -1070,6 +1075,7 @@ def main():
 
     if os.path.exists(metadata):
       family = get_FamilyProto_Message(metadata)
+    #-----------------------------------------------------
       logging.debug("METADATA.pb: Ensure designer simple short name.")
 
       if len(family.designer.split(' ')) >= 4:
@@ -1080,8 +1086,19 @@ def main():
         logging.error('`designer` key must be simple short name')
       else:
         logging.info('OK: designer is a simple short name')
+
+    #-----------------------------------------------------
+      logging.debug("METADATA.pb: Fontfamily is listed in Google Font Directory ?")
+      url = 'http://fonts.googleapis.com/css?family=%s' % family.name.replace(' ', '+')
+      fp = requests.get(url)
+      if fp.status_code != 200:
+        logging.error('No family found in GWF in %s' % url)
+      else:
+        logging.info('OK: Font is properly listed in Google Font Directory.')
+    #-----------------------------------------------------
     else:
       logging.error("{} is missing a METADATA.pb file!".format(file_path))
+
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
