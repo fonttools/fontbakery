@@ -25,10 +25,7 @@ try:
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
-try:
-  from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
-except:
-  sys.exit("Needs fontbakery.\n\nsudo pip install fontbakery")
+from fonts_public_pb2 import FontProto, FamilyProto
 
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
