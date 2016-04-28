@@ -1096,6 +1096,16 @@ def main():
       else:
         logging.info('OK: Font is properly listed in Google Font Directory.')
     #-----------------------------------------------------
+      logging.debug("METADATA.pb: check if fonts field only have unique values")
+      fonts = {}
+      for x in family.fonts:
+        fonts[x.full_name] = x
+
+      if len(set(fonts.keys())) != len(family.fonts):
+        logging.error("Found duplicated values in METADATA.pb fonts field")
+      else:
+        logging.info("OK: fonts field only have unique values")
+    #-----------------------------------------------------
     else:
       logging.error("{} is missing a METADATA.pb file!".format(file_path))
 

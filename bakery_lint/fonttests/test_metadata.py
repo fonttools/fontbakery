@@ -126,16 +126,6 @@ class MetadataTest(TestCase):
         self.assertTrue(designer in designers,
                         msg='Designer %s is not in profiles.csv' % designer)
 
-    def test_metadata_fonts_no_dupes(self):
-        """ METADATA.pb fonts field should only have unique values """
-        fonts = {}
-        for x in self.metadata.fonts:
-            self.assertFalse(x.full_name in fonts)
-            fonts[x.full_name] = x
-
-        self.assertEqual(len(set(fonts.keys())),
-                         len(self.metadata.fonts))
-
     @tags('required')
     def test_metadata_atleast_latin_menu_subsets_exist(self):
         """ METADATA.pb subsets should have at least 'menu' and 'latin' """
