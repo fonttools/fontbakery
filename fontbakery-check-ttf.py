@@ -1132,7 +1132,7 @@ def main():
       if 'latin' not in family.subsets:
         logging.error("METADATA.pb subsets ({}) missing 'latin'".format(family.subsets))
       else:
-        logging.info("OK: METADATA.pb subsets ({}) contains 'latin'".format(family.subsets))
+        logging.info("OK: METADATA.pb subsets contains at least 'latin'")
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
