@@ -1072,12 +1072,13 @@ def main():
 
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
-
-    if os.path.exists(metadata):
+    if not os.path.exists(metadata):
+      logging.error("{} is missing a METADATA.pb file!".format(file_path))
+    else:
       family = get_FamilyProto_Message(metadata)
-    #-----------------------------------------------------
-      logging.debug("METADATA.pb: Ensure designer simple short name.")
 
+      #-----------------------------------------------------
+      logging.debug("METADATA.pb: Ensure designer simple short name.")
       if len(family.designer.split(' ')) >= 4:
         logging.error('`designer` key must be simple short name')
       elif ' and ' in family.designer or\
@@ -1087,7 +1088,7 @@ def main():
       else:
         logging.info('OK: designer is a simple short name')
 
-    #-----------------------------------------------------
+      #-----------------------------------------------------
       logging.debug("METADATA.pb: Fontfamily is listed in Google Font Directory ?")
       url = 'http://fonts.googleapis.com/css?family=%s' % family.name.replace(' ', '+')
       fp = requests.get(url)
@@ -1095,19 +1096,16 @@ def main():
         logging.error('No family found in GWF in %s' % url)
       else:
         logging.info('OK: Font is properly listed in Google Font Directory.')
-    #-----------------------------------------------------
+
+      #-----------------------------------------------------
       logging.debug("METADATA.pb: check if fonts field only have unique values")
       fonts = {}
       for x in family.fonts:
         fonts[x.full_name] = x
-
       if len(set(fonts.keys())) != len(family.fonts):
         logging.error("Found duplicated values in METADATA.pb fonts field")
       else:
         logging.info("OK: fonts field only have unique values")
-    #-----------------------------------------------------
-    else:
-      logging.error("{} is missing a METADATA.pb file!".format(file_path))
 
 
     #----------------------------------------------------
