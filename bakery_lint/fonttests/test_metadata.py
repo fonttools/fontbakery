@@ -73,44 +73,6 @@ class MetadataSubsetsListTest(TestCase):
                 exec 'cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.filename[:-3] + subset)
 
 
-
-class MetadataTest(TestCase):
-
-    targets = ['metadata']
-    tool = 'METADATA.pb'
-    name = __name__
-
-    rules = {
-        'myfonts.com': {
-            'url': 'http://www.myfonts.com/search/name:{}/fonts/',
-            'checkText': 'I&rsquo;ve got nothing'
-        },
-        'daltonmaag.com': {
-            'url': 'http://www.daltonmaag.com/search.html?term={}',
-            'checkText': 'No product families matched your search term'
-        },
-        'fontsmith.com': {
-            'url': 'http://www.fontsmith.com/support/search-results.cfm',
-            'checkText': "Showing no search results for",
-            'method': 'post',
-            'keywordParam': 'search'
-        },
-        'fontbureau.com': {
-            'url': 'http://www.fontbureau.com/search/?q={}',
-            'checkText': '<h5>Font results</h5> <div class="rule"></div> '
-                         '<span class="note">(No results)</span>'
-        },
-        'houseind.com': {
-            'url': 'http://www.houseind.com/search/?search=Oswald',
-            'checkText': '<ul id="related-fonts"> <li class="first">No results.</li> </ul>'
-        }
-    }
-
-    @classmethod
-    def setUp(cls):
-        cls.metadata = get_FamilyProto_Message(cls.operator.path)
-
-
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
     name = __name__
