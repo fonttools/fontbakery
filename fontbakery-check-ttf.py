@@ -1127,6 +1127,12 @@ def main():
         logging.error("METADATA.pb license field ('{}') must be one of the following: {}".format(family.license,
                                                                                                  licenses))
 
+      #-----------------------------------------------------
+      logging.debug("METADATA.pb subsets should have at least 'latin'")
+      if 'latin' not in family.subsets:
+        logging.error("METADATA.pb subsets ({}) missing 'latin'".format(family.subsets))
+      else:
+        logging.info("OK: METADATA.pb subsets ({}) contains 'latin'".format(family.subsets))
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 

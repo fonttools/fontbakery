@@ -126,14 +126,6 @@ class MetadataTest(TestCase):
         self.assertTrue(designer in designers,
                         msg='Designer %s is not in profiles.csv' % designer)
 
-    @tags('required')
-    def test_metadata_atleast_latin_menu_subsets_exist(self):
-        """ METADATA.pb subsets should have at least 'menu' and 'latin' """
-        self.assertIn('menu', self.metadata.subsets,
-                      msg="Subsets missing menu")
-        self.assertIn('latin', self.metadata.subsets,
-                      msg="Subsets missing latin")
-
 
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
