@@ -140,16 +140,6 @@ class MetadataTest(TestCase):
         licenses = ['Apache2', 'OFL', 'UFL']
         self.assertIn(self.metadata.license, licenses)
 
-    @tags('required')
-    def test_metadata_has_unique_style_weight_pairs(self):
-        """ METADATA.pb only contains unique style:weight pairs ? """
-        pairs = []
-        for fontdata in self.metadata.fonts:
-            styleweight = '%s:%s' % (fontdata.style,
-                                     fontdata.weight)
-            self.assertNotIn(styleweight, pairs)
-            pairs.append(styleweight)
-
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
     name = __name__

@@ -1098,15 +1098,26 @@ def main():
         logging.info('OK: Font is properly listed in Google Font Directory.')
 
       #-----------------------------------------------------
-      logging.debug("METADATA.pb: check if fonts field only have unique values")
+      logging.debug("METADATA.pb: check if fonts field only have unique 'full_name' values")
       fonts = {}
       for x in family.fonts:
         fonts[x.full_name] = x
       if len(set(fonts.keys())) != len(family.fonts):
-        logging.error("Found duplicated values in METADATA.pb fonts field")
+        logging.error("Found duplicated 'full_name' values in METADATA.pb fonts field")
       else:
-        logging.info("OK: fonts field only have unique values")
+        logging.info("OK: fonts field only have unique 'full_name' values")
 
+      #-----------------------------------------------------
+      logging.debug("METADATA.pb: check if fonts field only contains unique style:weight pairs")
+      pairs = {}
+      for f in family.fonts:
+        styleweight = '%s:%s' % (f.style, f.weight)
+        pairs[styleweight] = 1
+
+      if len(set(pairs.keys())) != len(family.fonts):
+        logging.error("Found duplicated style:weight pair in METADATA.pb fonts field")
+      else:
+        logging.info("OK: fonts field only have unique style:weight pairs")
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
