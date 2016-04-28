@@ -1113,11 +1113,20 @@ def main():
       for f in family.fonts:
         styleweight = '%s:%s' % (f.style, f.weight)
         pairs[styleweight] = 1
-
       if len(set(pairs.keys())) != len(family.fonts):
         logging.error("Found duplicated style:weight pair in METADATA.pb fonts field")
       else:
         logging.info("OK: fonts field only have unique style:weight pairs")
+
+      #-----------------------------------------------------
+      logging.debug("METADATA.pb license is 'Apache2', 'UFL' or 'OFL' ?")
+      licenses = ['Apache2', 'OFL', 'UFL']
+      if family.license in licenses:
+        logging.info("OK: Font license is declares in METADATA.pb as '{}'".format(family.license))
+      else:
+        logging.error("METADATA.pb license field ('{}') must be one of the following: {}".format(family.license,
+                                                                                                 licenses))
+
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 

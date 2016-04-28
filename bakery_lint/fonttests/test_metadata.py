@@ -134,11 +134,6 @@ class MetadataTest(TestCase):
         self.assertIn('latin', self.metadata.subsets,
                       msg="Subsets missing latin")
 
-    @tags('required')
-    def test_metadata_license(self):
-        """ METADATA.pb license is 'Apache2', 'UFL' or 'OFL' ? """
-        licenses = ['Apache2', 'OFL', 'UFL']
-        self.assertIn(self.metadata.license, licenses)
 
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 
