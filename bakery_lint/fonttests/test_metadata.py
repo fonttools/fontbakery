@@ -110,22 +110,6 @@ class MetadataTest(TestCase):
     def setUp(cls):
         cls.metadata = get_FamilyProto_Message(cls.operator.path)
 
-    @tags('required')
-    def test_metadata_designer_exists_in_profiles_csv(self):
-        """ Designer exists in GWF profiles.csv ? """
-        designer = self.metadata.designer
-        self.assertTrue(designer != "", 'Field "designer" MUST NOT be empty')
-        import urllib
-        import csv
-        fp = urllib.urlopen('https://raw.githubusercontent.com/google/fonts/master/designers/profiles.csv')
-        designers = []
-        for row in csv.reader(fp):
-            if not row:
-                continue
-            designers.append(row[0].decode('utf-8'))
-        self.assertTrue(designer in designers,
-                        msg='Designer %s is not in profiles.csv' % designer)
-
 
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
 

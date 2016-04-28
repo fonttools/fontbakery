@@ -22,6 +22,8 @@ import glob
 import logging
 import subprocess
 import requests
+import urllib
+import csv
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
@@ -35,6 +37,9 @@ from fonts_public_pb2 import FontProto, FamilyProto
 
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
+
+PROFILES_GIT_URL = 'https://github.com/google/fonts/blob/master/designers/profiles.csv'
+PROFILES_RAW_URL = 'https://raw.githubusercontent.com/google/fonts/master/designers/profiles.csv'
 
 STYLE_NAMES = ["Thin",
                "ExtraLight",
@@ -1096,6 +1101,23 @@ def main():
         logging.error('No family found in GWF in %s' % url)
       else:
         logging.info('OK: Font is properly listed in Google Font Directory.')
+
+      #-----------------------------------------------------
+      logging.debug("METADATA.pb: Designer exists in GWF profiles.csv ?")
+      if family.designer == "":
+        logging.error('METADATA.pb field "designer" MUST NOT be empty!')
+      else:
+        fp = urllib.urlopen(PROFILES_RAW_URL)
+        designers = []
+        for row in csv.reader(fp):
+          if not row:
+            continue
+          designers.append(row[0].decode('utf-8'))
+      if family.designer not in designers:
+        logging.error("METADATA.pb: Designer '{}' is not listed in profiles.csv (at '{}')".format(family.designer,
+                                                                                                  PROFILES_GIT_URL))
+      else:
+        logging.info("OK: Found designer '{}' at profiles.csv".format(family.designer))
 
       #-----------------------------------------------------
       logging.debug("METADATA.pb: check if fonts field only have unique 'full_name' values")
