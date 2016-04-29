@@ -1178,10 +1178,22 @@ def main():
       if found:
         logging.info("OK: Font has a Regular style.")
       else:
-        logging.error("This font lacks a Regular style as required by GWF standards.")
+        logging.error("This font lacks a Regular (style: normal and weight: 400) as required by GWF standards.")
 
       #-----------------------------------------------------
+      # This test will only run if the previous has not failed.
+      if found:
+        logging.debug("Regular should be 400")
+        badfonts = []
+        for f in family.fonts:
+          if f.full_name.endswith('Regular') and f.weight != 400:
+            badfonts.append("{} (weight: {})".format(f.filename, f.weight))
+        if len(badfonts) > 0:
+          logging.error('METADATA.pb: Regular font weight must be 400. Please fix: {}'.format(', '.join(badfonts)))
+        else:
+          logging.info('OK: Regular has weight=400')
 
+      #-----------------------------------------------------
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 

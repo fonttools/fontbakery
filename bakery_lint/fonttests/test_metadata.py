@@ -132,25 +132,6 @@ class CheckMetadataAgreements(TestCase):
         self.metadata = get_FamilyProto_Message(self.operator.path)
 
     @tags('required')
-    def test_metadata_regular_is_400(self):
-        """ Regular should be 400 """
-        have = False
-        for i in self.metadata.fonts:
-            if i.filename.endswith('Regular.ttf') and i.weight == 400:
-                have = True
-        if not have:
-            self.fail(('METADATA.pb does not contain Regular font. At least'
-                       ' one font must be Regular and its weight must be 400'))
-
-    def test_metadata_regular_is_normal(self):
-        """ Usually Regular should be normal style """
-        have = False
-        for x in self.metadata.fonts:
-            if x.full_name.endswith('Regular') and x.style == 'normal':
-                have = True
-        self.assertTrue(have)
-
-    @tags('required')
     def test_metadata_filename_matches_postscriptname(self):
         """ METADATA.pb `filename` matches `postScriptName` ? """
         import re
