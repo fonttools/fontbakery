@@ -1194,6 +1194,36 @@ def main():
           logging.info('OK: Regular has weight=400')
 
       #-----------------------------------------------------
+      # a few more checks still go here... see bakery_lint/fonttests/test_metadata.py
+
+      #-----------------------------------------------------
+      # This test only makes sense for monospace fonts:
+      if family.category not in ['Monospace', 'MONOSPACE']:
+        logging.debug("Skipping monospace-only test. 'Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth ?'")
+      else:
+        logging.debug("Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth ?")
+
+        advw = 0
+        fail = False
+        for glyph_id in font['glyf'].glyphs:
+          width = font['hmtx'].metrics[glyph_id][0]
+          if advw and width != advw:
+            fail = True
+          advw = width
+
+        if fail:
+          logging.error('Glyph advanceWidth must be same across all glyphs')
+        elif advw != font['hhea'].advanceWidthMax:
+          msg = ('"hhea" table advanceWidthMax property differs'
+                 ' to glyphs advanceWidth [%s, %s]')
+          logging.error(msg % (advw, font['hhea'].advanceWidthMax))
+          #TODO: compute the percentage of glyphs that do not comply
+          #      with the advanceWidth value declared in the hhea table
+          #      and report it in the error message.
+        else:
+          logging.info("OK: hhea.advanceWidthMax is equal to all glyphs' advanceWidth.")
+
+      #----------------------------------------------------
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
