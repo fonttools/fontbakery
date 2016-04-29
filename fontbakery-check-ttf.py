@@ -1170,6 +1170,18 @@ def main():
         logging.info("OK: METADATA.pb: Family name is the same in all metadata 'fonts' items.")
 
       #-----------------------------------------------------
+      logging.debug("According GWF standards font should have Regular style.")
+      found = False
+      for f in family.fonts:
+        if f.weight == 400 and f.style == 'normal':
+          found = True
+      if found:
+        logging.info("OK: Font has a Regular style.")
+      else:
+        logging.error("This font lacks a Regular style as required by GWF standards.")
+
+      #-----------------------------------------------------
+
 
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 

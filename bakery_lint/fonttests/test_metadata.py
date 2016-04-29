@@ -131,16 +131,6 @@ class CheckMetadataAgreements(TestCase):
     def setUp(self):
         self.metadata = get_FamilyProto_Message(self.operator.path)
 
-    def test_metadata_font_have_regular(self):
-        """ According GWF standarts font should have Regular style. """
-        # this tests will appear in each font
-        have = False
-        for i in self.metadata.fonts:
-            if i.weight == 400 and i.style == 'normal':
-                have = True
-
-        self.assertTrue(have)
-
     @tags('required')
     def test_metadata_regular_is_400(self):
         """ Regular should be 400 """
