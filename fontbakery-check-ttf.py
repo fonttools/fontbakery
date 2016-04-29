@@ -1156,6 +1156,21 @@ def main():
       else:
         logging.info("OK: METADATA.pb subsets contains at least 'latin'")
 
+      #-----------------------------------------------------
+      logging.debug("Check that METADATA family values are all the same")
+      name = ''
+      fail = False
+      for font_metadata in family.fonts:
+        if name and font_metadata.name != name:
+          fail = True
+        name = font_metadata.name
+      if fail:
+        logging.error("METADATA.pb: Family name is not the same in all metadata 'fonts' items.")
+      else:
+        logging.info("OK: METADATA.pb: Family name is the same in all metadata 'fonts' items.")
+
+      #-----------------------------------------------------
+
     #----------------------------------------------------
     # TODO each fix line should set a fix flag, and 
     # if that flag is True by this point, only then write the file

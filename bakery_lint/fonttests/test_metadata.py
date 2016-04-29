@@ -131,14 +131,6 @@ class CheckMetadataAgreements(TestCase):
     def setUp(self):
         self.metadata = get_FamilyProto_Message(self.operator.path)
 
-    def test_metadata_family_values_are_all_the_same(self):
-        """ Check that METADATA family values are all the same """
-        name = ''
-        for font_metadata in self.metadata.fonts:
-            if name and font_metadata.name != name:
-                self.fail('Family name in metadata fonts items not the same')
-            name = font_metadata.name
-
     def test_metadata_font_have_regular(self):
         """ According GWF standarts font should have Regular style. """
         # this tests will appear in each font
