@@ -28,49 +28,11 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_lint.base import TestCaseOperator
 
 
-def get_test_subset_function(path):
-    def function(self):
-
-        if not op.exists(path):
-            self.fail('%s subset does not exist' % op.basename(path))
-
-        if magic.from_file(path) != 'TrueType font data':
-            _ = '%s does not seem to be truetype font'
-            self.fail(_ % op.basename(path))
-    function.tags = ['required']
-    return function
-
 def get_FamilyProto_Message(path):
     metadata = FamilyProto()
     text_data = open(path, "rb").read()
     text_format.Merge(text_data, metadata)
     return metadata
-
-class MetadataSubsetsListTest(TestCase):
-
-    targets = ['metadata']
-    tool = 'METADATA.pb'
-    name = __name__
-
-    @classmethod
-    def __generateTests__(cls):
-        try:
-            metadata = get_FamilyProto_Message(cls.operator.path)
-        except:
-            return
-        for font in metadata.fonts:
-#            for subset in metadata.subsets.extend(['menu']):
-            for subset in metadata.subsets:
-                path = op.join(op.dirname(cls.operator.path),
-                               font.filename[:-3] + subset)
-
-                subsetid = re.sub(r'\W', '_', subset)
-
-                # cls.operator.debug('cls.test_charset_{0} = get_test_subset_function("{1}")'.format(subsetid, path))
-                # cls.operator.debug('cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.get('filename')[:-3] + subset))
-
-                exec 'cls.test_charset_{0} = get_test_subset_function("{1}")'.format(subsetid, path)
-                exec 'cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.filename[:-3] + subset)
 
 
 class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
@@ -690,7 +652,6 @@ def get_suite(path, apply_autofix=False):
     suite = unittest.TestSuite()
 
     testcases = [
-        MetadataSubsetsListTest,
         TestFontOnDiskFamilyEqualToMetadataProtoBuf,
         TestPostScriptNameInMetadataEqualFontOnDisk,
         CheckMetadataAgreements,
