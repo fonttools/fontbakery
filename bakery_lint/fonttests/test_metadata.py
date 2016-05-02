@@ -691,12 +691,10 @@ def get_suite(path, apply_autofix=False):
 
     testcases = [
         MetadataSubsetsListTest,
-        MetadataTest,
         TestFontOnDiskFamilyEqualToMetadataProtoBuf,
         TestPostScriptNameInMetadataEqualFontOnDisk,
         CheckMetadataAgreements,
         CheckMetadataContainsReservedFontName,
-        CheckMonospaceAgreement,
         CheckItalicStyleMatchesMacStyle,
         CheckNormalStyleMatchesMacStyle,
         CheckMetadataMatchesNameTable,

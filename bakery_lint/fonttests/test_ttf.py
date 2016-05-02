@@ -184,16 +184,6 @@ class TTFTestCase(TestCase):
         font = Font.get_ttfont(self.operator.path)
         self.assertIn('EPAR', font.ttfont.keys(), 'No')
 
-    @tags('required')
-    @autofix('bakery_cli.fixers.ResetFSTypeFlagFixer')
-    def test_is_fstype_not_set(self):
-        """ Is the OS/2 table fsType set to 0? """
-        font = Font.get_ttfont(self.operator.path)
-        self.assertEqual(font.OS2_fsType, 0)
-
-    def containsSubstr(self, nameRecord, substr):
-        return substr in getNameRecordValue(nameRecord)
-
     @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
         """ Is GASP table correctly set? """
@@ -244,50 +234,6 @@ class TTFTestCase(TestCase):
                 marks = CharacterSymbolsFixer.unicode_marks(string)
                 if marks:
                     self.fail('Contains {}'.format(marks))
-
-    def test_fontname_is_equal_to_macstyle(self):
-        """ Is fontname identical to macstyle flags? """
-        font = Font.get_ttfont(self.operator.path)
-
-        macStyle = font.macStyle
-
-        try:
-            fontname_style = font.post_script_name.split('-')[1]
-        except IndexError:
-            fontname_style = 'Regular'
-
-        expected_style = ''
-        if macStyle & 0b01:
-            expected_style += 'Bold'
-
-        if macStyle & 0b10:
-            expected_style += 'Italic'
-
-        if not bool(macStyle & 0b11):
-            expected_style = 'Regular'
-
-        if fontname_style != expected_style:
-            _ = 'macStyle ({0}) supposed style ended with "{1}"'
-
-            if fontname_style:
-                _ += ' but ends with "{2}"'
-            self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
-
-    @tags('required',)
-    def test_ots(self):
-        """ Is TTF file correctly sanitized for Firefox and Chrome? """
-        stdout = run('{0} {1}'.format('ot-sanitise', self.operator.path),
-                     os.path.dirname(self.operator.path))
-        self.assertEqual('', stdout.strip())
-
-    @autofix('bakery_cli.fixers.CreateDSIGFixer')
-    def test_check_font_has_dsig_table(self):
-        """ Font has got a "DSIG" table? """
-        font = Font.get_ttfont(self.operator.path)
-        try:
-            font['DSIG']
-        except KeyError:
-            self.fail('DSIG table is missing')
 
     def test_no_kern_table_exists(self):
         """ Is there a "KERN" table declared in the font? """
@@ -353,16 +299,6 @@ class TTFTestCase(TestCase):
         if not bool(ord(unicodedata.lookup(d)) in glyphs):
             self.fail('%s does not exist in font' % d)
 
-    @tags('required')
-    def test_nbsp(self):
-        """ Font has 'NO-BREAK SPACE' character? """
-        self.assertExists('NO-BREAK SPACE')
-
-    @tags('required',)
-    def test_space(self):
-        """ Font has 'SPACE' character? """
-        self.assertExists('SPACE')
-
     def test_euro(self):
         """ Font has 'EURO SIGN' character? """
         self.assertExists('EURO SIGN')
@@ -378,15 +314,6 @@ class TTFTestCase(TestCase):
                                            hhea_advance_width_max)
         self.assertEqual(hmtx_advance_width_max,
                          hhea_advance_width_max, error)
-
-    @tags('required')
-    def test_check_italic_angle_agreement(self):
-        """ Italic angle is set within a valid range? """
-        font = Font.get_ttfont(self.operator.path)
-        if font.italicAngle > 0:
-            self.fail('italicAngle must be less or equal zero')
-        if abs(font.italicAngle) > 20:
-            self.fail('italicAngle can\'t be larger than 20 degrees')
 
     def test_prep_magic_code(self):
         """ Font contains magic code in PREP table? """
@@ -613,34 +540,6 @@ class CheckFontAgreements(TestCase):
         """ Is font em size (ideally) equal to 1000? """
         self.assertEqual(self.font.get_upm_height(), 1000, 'No')
 
-    @tags('required')
-    def test_font_is_font(self):
-        """ Is this a valid TTF file? """
-        self.assertTrue(magic.from_file(self.operator.path, mime=True),
-                        'application/x-font-ttf')
-
-
-class TestKerningPairs(TestCase):
-
-    targets = 'result'
-    name = __name__
-    tool = 'lint'
-
-    @classmethod
-    def skipUnless(cls):
-        ttf = ttLib.TTFont(cls.operator.path)
-        return 'kern' not in ttf
-
-    @tags("info")
-    def test_kerning_pairs(self):
-        """ Number of kerning pairs? """
-        ttf = ttLib.TTFont(self.operator.path)
-        glyphs = len(ttf['glyf'].glyphs)
-        kerningpairs = len(ttf['kern'].kernTables[0].kernTable.keys())
-        msg = "Kerning pairs to total glyphs is {0}:{1}"
-        self.fail(msg.format(glyphs, kerningpairs))
-
-
 def get_suite(path, apply_autofix=False):
     import unittest
     suite = unittest.TestSuite()
@@ -649,7 +548,6 @@ def get_suite(path, apply_autofix=False):
         TTFTestCase,
         FontForgeValidateStateTest,
         CheckFontAgreements,
-        TestKerningPairs
     ]
 
     for testcase in testcases:

@@ -549,6 +549,16 @@ def main():
         logging.info("OK: italicAngle <= 0")
 
     #----------------------------------------------------
+    logging.debug("Checking that italicAngle is less than 20 degrees")
+
+    value = font['post'].italicAngle
+    if abs(value) > 20:
+        font['post'].italicAngle = -20
+        logging.error("HOTFIXED: italicAngle from {} to -20 (italicAngle can\'t be larger than 20 degrees)".format(value))
+    else:
+        logging.info("OK: italicAngle is less than 20 degrees.")
+
+    #----------------------------------------------------
     logging.debug("Checking if italicAngle matches font style")
 
     if "Italic" in style:
