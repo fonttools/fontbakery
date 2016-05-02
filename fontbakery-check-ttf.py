@@ -1141,8 +1141,8 @@ def main():
         logging.info("OK: fonts field only have unique style:weight pairs")
 
       #-----------------------------------------------------
-      logging.debug("METADATA.pb license is 'Apache2', 'UFL' or 'OFL' ?")
-      licenses = ['Apache2', 'OFL', 'UFL']
+      logging.debug("METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
+      licenses = ['APACHE2', 'OFL', 'UFL']
       if family.license in licenses:
         logging.info("OK: Font license is declares in METADATA.pb as '{}'".format(family.license))
       else:
