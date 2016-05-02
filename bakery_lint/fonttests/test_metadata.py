@@ -35,32 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class TestFontOnDiskFamilyEqualToMetadataProtoBuf(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    @tags('required',)
-    def test_font_on_disk_family_equal_in_metadata_protobuf(self):
-        """ Font on disk and in METADATA.pb have the same family name ? """
-        metadata = get_FamilyProto_Message(self.operator.path)
-
-        unmatched_fonts = []
-        for font_metadata in metadata.fonts:
-            try:
-                font = Font.get_ttfont_from_metadata(self.operator.path,
-                                                     font_metadata)
-            except IOError:
-                continue
-            if font.familyname != font_metadata.name:
-                unmatched_fonts.append(font_metadata.filename)
-
-        if unmatched_fonts:
-            msg = 'Unmatched family name are in fonts: {}'
-            self.fail(msg.format(', '.join(unmatched_fonts)))
-
-
 class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
 
     name = __name__

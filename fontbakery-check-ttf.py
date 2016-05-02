@@ -1203,6 +1203,20 @@ def main():
           logging.info('OK: Regular has weight=400')
 
       #-----------------------------------------------------
+
+      for f in family.fonts:
+        if filename == f.filename:
+          ###### Here go single-TTF metadata tests #######
+          #-----------------------------------------------
+          logging.debug("Font on disk and in METADATA.pb have the same family name ?")
+          if font.familyname != f.name:
+            msg = 'Unmatched family name in font: TTF has "{}" while METADATA.pb has "{}"'
+            logging.error(msg.format(font.familyname, f.name))
+          else:
+            logging.error("OK: Family name '{}' is identical in METADATA.pb and on the TTF file.".format(f.name))
+
+          #-----------------------------------------------
+
       # a few more checks still go here... see bakery_lint/fonttests/test_metadata.py
 
       #-----------------------------------------------------
