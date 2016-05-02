@@ -242,6 +242,12 @@ def get_bounding_box(font):
                 ymax = char.yMax
     return ymin, ymax
 
+def get_family_name(font):
+    for entry in font['name'].names:
+        if entry.nameID == NAMEID_FONT_FAMILY_NAME:
+            return entry.string.decode(entry.getEncoding())
+    return False
+
 def parse_version_string(s):
     """ Tries to parse a version string as used
         in ttf versioning metadata fields.
@@ -1209,11 +1215,15 @@ def main():
           ###### Here go single-TTF metadata tests #######
           #-----------------------------------------------
           logging.debug("Font on disk and in METADATA.pb have the same family name ?")
-          if font.familyname != f.name:
-            msg = 'Unmatched family name in font: TTF has "{}" while METADATA.pb has "{}"'
-            logging.error(msg.format(font.familyname, f.name))
+          familyname = get_family_name(font)
+          if familyname == False:
+            logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID=1) in the name table.")
           else:
-            logging.error("OK: Family name '{}' is identical in METADATA.pb and on the TTF file.".format(f.name))
+            if familyname != f.name:
+              msg = 'Unmatched family name in font: TTF has "{}" while METADATA.pb has "{}"'
+              logging.error(msg.format(familyname, f.name))
+            else:
+              logging.info("OK: Family name '{}' is identical in METADATA.pb and on the TTF file.".format(f.name))
 
           #-----------------------------------------------
 
