@@ -1084,9 +1084,8 @@ def main():
 
       #-----------------------------------------------------
       logging.debug("METADATA.pb: Ensure designer simple short name.")
-      if len(family.designer.split(' ')) >= 4:
-        logging.error('`designer` key must be simple short name')
-      elif ' and ' in family.designer or\
+      if len(family.designer.split(' ')) >= 4 or\
+         ' and ' in family.designer or\
          '.' in family.designer or\
          ',' in family.designer:
         logging.error('`designer` key must be simple short name')
