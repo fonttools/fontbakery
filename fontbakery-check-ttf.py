@@ -1143,7 +1143,7 @@ def main():
       logging.debug("METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
       licenses = ['APACHE2', 'OFL', 'UFL']
       if family.license in licenses:
-        logging.info("OK: Font license is declares in METADATA.pb as '{}'".format(family.license))
+        logging.info("OK: Font license is declared in METADATA.pb as '{}'".format(family.license))
       else:
         logging.error("METADATA.pb license field ('{}') must be one of the following: {}".format(family.license,
                                                                                                  licenses))
