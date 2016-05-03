@@ -248,6 +248,12 @@ def get_family_name(font):
             return entry.string.decode(entry.getEncoding())
     return False
 
+def get_postscript_name(font):
+    for entry in font['name'].names:
+        if entry.nameID == NAMEID_POSTSCRIPT_NAME:
+            return entry.string.decode(entry.getEncoding())
+    return False
+
 def parse_version_string(s):
     """ Tries to parse a version string as used
         in ttf versioning metadata fields.
@@ -1217,7 +1223,7 @@ def main():
           logging.debug("Font on disk and in METADATA.pb have the same family name ?")
           familyname = get_family_name(font)
           if familyname == False:
-            logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID=1) in the name table.")
+            logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
           else:
             if familyname != f.name:
               msg = 'Unmatched family name in font: TTF has "{}" while METADATA.pb has "{}"'
@@ -1226,8 +1232,20 @@ def main():
               logging.info("OK: Family name '{}' is identical in METADATA.pb and on the TTF file.".format(f.name))
 
           #-----------------------------------------------
+          logging.debug("Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'")
+          postscript_name = get_postscript_name(font)
+          if postscript_name == False:
+            logging.error("This font lacks a NAMEID_POSTSCRIPT_NAME entry (nameID={}) in the name table.".format(NAMEID_POSTSCRIPT_NAME))
+          else:
+            if postscript_name != f.post_script_name:
+              msg = 'Unmatched postscript name in font: TTF has "{}" while METADATA.pb has "{}"'
+              logging.error(msg.format(postscript_name,
+                                       f.post_script_name))
+            else:
+              logging.info("OK: Postscript name '{}' is identical in METADATA.pb and on the TTF file.".format(f.post_script_name))
 
-      # a few more checks still go here... see bakery_lint/fonttests/test_metadata.py
+          #-----------------------------------------------
+          ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
       # This test only makes sense for monospace fonts:

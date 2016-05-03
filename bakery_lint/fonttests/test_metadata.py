@@ -35,29 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    @tags('required')
-    def test_postscriptname_in_metadata_equal_to_font_on_disk(self):
-        """ Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName' """
-        metadata = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in metadata.fonts:
-            try:
-                font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-            except IOError:
-                continue
-            if font.post_script_name != font_metadata.post_script_name:
-
-                msg = 'In METADATA postScriptName="{0}", but in TTF "{1}"'
-                self.fail(msg.format(font.post_script_name,
-                                     font_metadata.post_script_name))
-
-
 class CheckMetadataAgreements(TestCase):
 
     name = __name__
