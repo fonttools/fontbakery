@@ -73,12 +73,6 @@ class CheckMetadataAgreements(TestCase):
                 msg = '"{0}" does not match "{1}"'
                 self.fail(msg.format(x.full_name, x.post_script_name))
 
-    def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
-        """ METADATA.pb 'fullname' value matches internal 'fullname' ? """
-        for font_metadata in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-            self.assertEqual(font.fullname, font_metadata.full_name)
-
     def test_font_name_matches_family(self):
         """ METADATA.pb fonts 'name' property should be same as font familyname """
 

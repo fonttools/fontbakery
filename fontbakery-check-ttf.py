@@ -1233,10 +1233,22 @@ def main():
           else:
             if postscript_name != f.post_script_name:
               msg = 'Unmatched postscript name in font: TTF has "{}" while METADATA.pb has "{}"'
-              logging.error(msg.format(postscript_name,
-                                       f.post_script_name))
+              logging.error(msg.format(postscript_name, f.post_script_name))
             else:
               logging.info("OK: Postscript name '{}' is identical in METADATA.pb and on the TTF file.".format(f.post_script_name))
+
+
+          #-----------------------------------------------
+          logging.debug("METADATA.pb 'fullname' value matches internal 'fullname' ?")
+          fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
+          if fullname == False:
+            logging.error("This font lacks a NAMEID_FULL_FONT_NAME entry (nameID={}) in the name table.".format(NAMEID_FULL_FONT_NAME))
+          else:
+            if fullname != f.full_name:
+              msg = 'Unmatched fullname in font: TTF has "{}" while METADATA.pb has "{}"'
+              logging.error(msg.format(fullname, f.full_name))
+            else:
+              logging.info("OK: Fullname '{}' is identical in METADATA.pb and on the TTF file.".format(fullname))
 
           #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
