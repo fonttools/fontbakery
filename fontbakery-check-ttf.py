@@ -242,15 +242,9 @@ def get_bounding_box(font):
                 ymax = char.yMax
     return ymin, ymax
 
-def get_family_name(font):
+def get_name_string(font, nameID):
     for entry in font['name'].names:
-        if entry.nameID == NAMEID_FONT_FAMILY_NAME:
-            return entry.string.decode(entry.getEncoding())
-    return False
-
-def get_postscript_name(font):
-    for entry in font['name'].names:
-        if entry.nameID == NAMEID_POSTSCRIPT_NAME:
+        if entry.nameID == nameID:
             return entry.string.decode(entry.getEncoding())
     return False
 
@@ -1221,7 +1215,7 @@ def main():
           ###### Here go single-TTF metadata tests #######
           #-----------------------------------------------
           logging.debug("Font on disk and in METADATA.pb have the same family name ?")
-          familyname = get_family_name(font)
+          familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if familyname == False:
             logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
           else:
@@ -1233,7 +1227,7 @@ def main():
 
           #-----------------------------------------------
           logging.debug("Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'")
-          postscript_name = get_postscript_name(font)
+          postscript_name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
           if postscript_name == False:
             logging.error("This font lacks a NAMEID_POSTSCRIPT_NAME entry (nameID={}) in the name table.".format(NAMEID_POSTSCRIPT_NAME))
           else:
