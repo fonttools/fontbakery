@@ -44,22 +44,6 @@ class CheckMetadataAgreements(TestCase):
     def setUp(self):
         self.metadata = get_FamilyProto_Message(self.operator.path)
 
-    @tags('required')
-    def test_metadata_filename_matches_postscriptname(self):
-        """ METADATA.pb `filename` matches `postScriptName` ? """
-        import re
-        regex = re.compile(r'\W')
-
-        fonts = [font for font in self.metadata.fonts
-                 if not font.post_script_name.endswith('-Regular')]
-
-        for x in fonts:
-            post_script_name = regex.sub('', x.post_script_name)
-            filename = regex.sub('', os.path.splitext(x.filename)[0])
-            if filename != post_script_name:
-                msg = '"{0}" does not match "{1}"'
-                self.fail(msg.format(x.filename, x.post_script_name))
-
     def test_metadata_fonts_fields_have_fontname(self):
         """ METADATA.pb font item fields "name", "postScriptName", "fullName", "filename" contains font name right format ? """
         for x in self.metadata.fonts:

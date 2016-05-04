@@ -1275,6 +1275,22 @@ def main():
             logging.info("OK: METADATA.pb fields `fullName` and `postScriptName` have the same value.")
 
           #-----------------------------------------------
+          logging.debug("METADATA.pb `filename` matches `postScriptName` ?")
+          regex = re.compile(r'\W')
+          if f.post_script_name.endswith('-Regular'):
+            logging.error("METADATA.pb postScriptName field ends with '-Regular'")
+          else:
+            post_script_name = regex.sub('', f.post_script_name)
+            filename = regex.sub('', os.path.splitext(f.filename)[0])
+            if filename != post_script_name:
+              msg = 'METADATA.pb filename="{0}" does not match post_script_name="{1}."'
+              if "-Regular" in f.filename:
+                msg += " (Consider removing the '-Regular' suffix from the filename.)"
+              logging.error(msg.format(f.filename, f.post_script_name))
+            else:
+              logging.info("OK: METADATA.pb fields `filename` and `postScriptName` have matching values.")
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
