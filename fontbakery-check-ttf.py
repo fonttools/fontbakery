@@ -1229,7 +1229,7 @@ def main():
           logging.debug("Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'")
           postscript_name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
           if postscript_name == False:
-            logging.error("This font lacks a NAMEID_POSTSCRIPT_NAME entry (nameID={}) in the name table.".format(NAMEID_POSTSCRIPT_NAME))
+            logging.error("This font lacks a POSTSCRIPT_NAME entry (nameID={}) in the name table.".format(NAMEID_POSTSCRIPT_NAME))
           else:
             if postscript_name != f.post_script_name:
               msg = 'Unmatched postscript name in font: TTF has "{}" while METADATA.pb has "{}"'
@@ -1242,11 +1242,23 @@ def main():
           logging.debug("METADATA.pb 'fullname' value matches internal 'fullname' ?")
           fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
           if fullname == False:
-            logging.error("This font lacks a NAMEID_FULL_FONT_NAME entry (nameID={}) in the name table.".format(NAMEID_FULL_FONT_NAME))
+            logging.error("This font lacks a FULL_FONT_NAME entry (nameID={}) in the name table.".format(NAMEID_FULL_FONT_NAME))
           else:
             if fullname != f.full_name:
               msg = 'Unmatched fullname in font: TTF has "{}" while METADATA.pb has "{}"'
               logging.error(msg.format(fullname, f.full_name))
+            else:
+              logging.info("OK: Fullname '{}' is identical in METADATA.pb and on the TTF file.".format(fullname))
+
+          #-----------------------------------------------
+          logging.debug("METADATA.pb fonts 'name' property should be same as font familyname")
+          font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+          if fullname == False:
+            logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
+          else:
+            if font_familyname != f.name:
+              msg = 'Unmatched familyname in font: TTF has "{}" while METADATA.pb has name="{}"'
+              logging.error(msg.format(familyname, f.name))
             else:
               logging.info("OK: Fullname '{}' is identical in METADATA.pb and on the TTF file.".format(fullname))
 
