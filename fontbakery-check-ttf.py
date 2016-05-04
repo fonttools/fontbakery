@@ -24,6 +24,7 @@ import subprocess
 import requests
 import urllib
 import csv
+import re
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
@@ -1261,6 +1262,17 @@ def main():
               logging.error(msg.format(familyname, f.name))
             else:
               logging.info("OK: Fullname '{}' is identical in METADATA.pb and on the TTF file.".format(fullname))
+
+          #-----------------------------------------------
+          logging.debug("METADATA.pb `fullName` matches `postScriptName` ?")
+          regex = re.compile(r'\W')
+          post_script_name = regex.sub('', f.post_script_name)
+          fullname = regex.sub('', f.full_name)
+          if fullname != post_script_name:
+            msg = 'METADATA.pb full_name="{0}" does not match post_script_name="{1}"'
+            logging.error(msg.format(f.full_name, f.post_script_name))
+          else:
+            logging.info("OK: METADATA.pb fields `fullName` and `postScriptName` have the same value.")
 
           #-----------------------------------------------
           ###### End of single-TTF metadata tests #######

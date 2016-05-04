@@ -60,19 +60,6 @@ class CheckMetadataAgreements(TestCase):
                 msg = '"{0}" does not match "{1}"'
                 self.fail(msg.format(x.filename, x.post_script_name))
 
-    @tags('required')
-    def test_metadata_fullname_matches_postScriptName(self):
-        """ METADATA.pb `fullName` matches `postScriptName` ? """
-        import re
-        regex = re.compile(r'\W')
-
-        for x in self.metadata.fonts:
-            post_script_name = regex.sub('', x.post_script_name)
-            fullname = regex.sub('', x.full_name)
-            if fullname != post_script_name:
-                msg = '"{0}" does not match "{1}"'
-                self.fail(msg.format(x.full_name, x.post_script_name))
-
     def test_metadata_fonts_fields_have_fontname(self):
         """ METADATA.pb font item fields "name", "postScriptName", "fullName", "filename" contains font name right format ? """
         for x in self.metadata.fonts:
