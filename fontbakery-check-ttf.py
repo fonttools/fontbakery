@@ -1321,6 +1321,18 @@ def main():
               logging.err("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
 
           #-----------------------------------------------
+          logging.debug("Copyright notice matches canonical pattern?")
+          almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)', f.copyright)
+          does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))', f.copyright)
+          if (does_match != None):
+            logging.info("OK: METADATA.pb copyright field matches canonical pattern.")
+          else:
+            if (almost_matches):
+              logging.error("METADATA.pb: Copyright notice is okay, but it lacks an email address. Expected pattern is: 'Copyright 2016 Author Name (name@site.com)'")
+            else:
+              logging.error("METADATA.pb: Copyright notices should match the folowing pattern: 'Copyright 2016 Author Name (name@site.com)'")
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
