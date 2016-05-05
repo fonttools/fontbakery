@@ -42,16 +42,6 @@ class CheckMetadataContainsReservedFontName(TestCase):
     tool = 'lint'
 
     @tags('info')
-    def test_copyright_contains_correct_rfn(self):
-        """ Copyright notice does not contain Reserved Font Name """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            if 'Reserved Font Name' in font_metadata.copyright:
-                msg = '"%s" contains "Reserved Font Name"'
-                self.fail(msg % font_metadata.copyright)
-
-    @tags('info')
     def test_copyright_is_consistent_across_family(self):
         """ Copyright notice is the same in all fonts ? """
         fm = get_FamilyProto_Message(self.operator.path)

@@ -1333,6 +1333,14 @@ def main():
               logging.error("METADATA.pb: Copyright notices should match the folowing pattern: 'Copyright 2016 Author Name (name@site.com)'")
 
           #-----------------------------------------------
+          logging.debug("Copyright notice does not contain Reserved Font Name")
+          if 'Reserved Font Name' in f.copyright:
+            msg = 'METADATA.pb: copyright field ("%s") contains "Reserved Font Name"'
+            logging.error(msg % f.copyright)
+          else:
+            logging.info('OK: METADATA.pb copyright field does not contain "Reserved Font Name"')
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
