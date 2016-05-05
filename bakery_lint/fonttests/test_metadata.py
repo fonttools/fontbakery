@@ -35,28 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class CheckMetadataAgreements(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    def setUp(self):
-        self.metadata = get_FamilyProto_Message(self.operator.path)
-
-    def test_metadata_fonts_fields_have_fontname(self):
-        """ METADATA.pb font item fields "name", "postScriptName", "fullName", "filename" contains font name right format ? """
-        for x in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.operator.path, x)
-
-            self.assertIn(font.familyname, x.name)
-            self.assertIn(font.familyname, x.full_name)
-            self.assertIn("".join(str(font.familyname).split()),
-                          x.filename)
-            self.assertIn("".join(str(font.familyname).split()),
-                          x.post_script_name)
-
-
 class CheckMetadataContainsReservedFontName(TestCase):
 
     targets = ['metadata']
