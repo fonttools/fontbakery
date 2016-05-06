@@ -1173,6 +1173,19 @@ def main():
         logging.info("OK: METADATA.pb subsets contains at least 'latin'")
 
       #-----------------------------------------------------
+      logging.debug("Copyright notice is the same in all fonts ?")
+      copyright = ''
+      fail = False
+      for font_metadata in family.fonts:
+        if copyright and font_metadata.copyright != copyright:
+          fail = True
+        copyright = font_metadata.copyright
+      if fail:
+        logging.error('METADATA.pb: Copyright field value is inconsistent across family')
+      else:
+        logging.info('OK: Copyright is consistent across family')
+
+      #-----------------------------------------------------
       logging.debug("Check that METADATA family values are all the same")
       name = ''
       fail = False

@@ -35,24 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class CheckMetadataContainsReservedFontName(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    @tags('info')
-    def test_copyright_is_consistent_across_family(self):
-        """ Copyright notice is the same in all fonts ? """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        copyright = ''
-        for font_metadata in fm.fonts:
-            if copyright and font_metadata.copyright != copyright:
-                self.fail('Copyright is inconsistent across family')
-            copyright = font_metadata.copyright
-
-
 class File(object):
 
     def __init__(self, rootdir):
