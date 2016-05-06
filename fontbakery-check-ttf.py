@@ -1361,6 +1361,37 @@ def main():
             logging.info("OK: Copyright notice string is shorter than 500 chars.")
 
           #-----------------------------------------------
+          logging.debug("Filename is set canonically?")
+          def create_canonical_filename(font_metadata):
+            weights = {
+              100: 'Thin',
+              200: 'ExtraLight',
+              300: 'Light',
+              400: '',
+              500: 'Medium',
+              600: 'SemiBold',
+              700: 'Bold',
+              800: 'ExtraBold',
+              900: 'Black'
+            }
+            style_names = {
+             'normal': '',
+             'italic': 'Italic'
+            }
+            familyname = font_metadata.name.replace(' ', '')
+            style_weight = '%s%s' % (weights.get(font_metadata.weight),
+                                     style_names.get(font_metadata.style))
+            if not style_weight:
+                style_weight = 'Regular'
+            return '%s-%s.ttf' % (familyname, style_weight)
+
+          canonical_filename = create_canonical_filename(f)
+          if canonical_filename != f.filename:
+            logging.error("METADATA.pb: filename field ('{}') does not match canonical name '{}'".format(f.filename, canonical_filename))
+          else:
+            logging.info('OK. Filename is set canonically.')
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------

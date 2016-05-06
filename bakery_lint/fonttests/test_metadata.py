@@ -423,49 +423,6 @@ class CheckCanonicalStyles(TestCase):
             if 'italic' in Font.bin2unistring(entry).lower():
                 return True
 
-
-class CheckCanonicalFilenames(TestCase):
-    weights = {
-        100: 'Thin',
-        200: 'ExtraLight',
-        300: 'Light',
-        400: '',
-        500: 'Medium',
-        600: 'SemiBold',
-        700: 'Bold',
-        800: 'ExtraBold',
-        900: 'Black'
-    }
-
-    style_names = {
-        'normal': '',
-        'italic': 'Italic'
-    }
-
-    name = __name__
-    tool = 'lint'
-    targets = ['metadata']
-
-    @tags('required')
-    def test_check_canonical_filenames(self):
-        """ Filename is set canonically? """
-        family_metadata = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in family_metadata.fonts:
-            canonical_filename = self.create_canonical_filename(font_metadata)
-            if canonical_filename != font_metadata.filename:
-                self.fail('{} != {}'.format(canonical_filename,
-                                            font_metadata.filename))
-
-    def create_canonical_filename(self, font_metadata):
-        familyname = font_metadata.name.replace(' ', '')
-        style_weight = '%s%s' % (self.weights.get(font_metadata.weight),
-                                 self.style_names.get(font_metadata.style))
-        if not style_weight:
-            style_weight = 'Regular'
-        return '%s-%s.ttf' % (familyname, style_weight)
-
-
 def get_suite(path, apply_autofix=False):
     import unittest
     suite = unittest.TestSuite()
@@ -488,7 +445,6 @@ def get_suite(path, apply_autofix=False):
         CheckFontWeightSameAsInMetadata,
         CheckFullNameEqualCanonicalName,
         CheckCanonicalStyles,
-        CheckCanonicalFilenames
     ]
 
     for testcase in testcases:
