@@ -52,14 +52,6 @@ class CheckMetadataContainsReservedFontName(TestCase):
                 self.fail('Copyright is inconsistent across family')
             copyright = font_metadata.copyright
 
-    @tags('info')
-    def test_metadata_copyright_size(self):
-        """ Copyright notice should be less than 500 chars """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            self.assertLessEqual(len(font_metadata.copyright), 500)
-
 
 class File(object):
 

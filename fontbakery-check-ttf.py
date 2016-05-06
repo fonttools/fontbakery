@@ -1341,6 +1341,13 @@ def main():
             logging.info('OK: METADATA.pb copyright field does not contain "Reserved Font Name"')
 
           #-----------------------------------------------
+          logging.debug("Copyright notice shouldn't exceed 500 chars")
+          if len(f.copyright) > 500:
+            logging.error("METADATA.pb: Copyright notice exceeds maximum allowed lengh of 500 characteres.")
+          else:
+            logging.info("OK: Copyright notice string is shorter than 500 chars.")
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
