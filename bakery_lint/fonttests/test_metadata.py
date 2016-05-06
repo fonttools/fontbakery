@@ -35,21 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class File(object):
-
-    def __init__(self, rootdir):
-        self.rootdir = rootdir
-
-    def exists(self, filename):
-        return op.exists(op.join(self.rootdir, filename))
-
-    def size(self, filename):
-        return op.getsize(op.join(self.rootdir, filename))
-
-    def mime(self, filename):
-        return magic.from_file(op.join(self.rootdir, filename), mime=True)
-
-
 class CheckItalicStyleMatchesMacStyle(TestCase):
 
     name = __name__
