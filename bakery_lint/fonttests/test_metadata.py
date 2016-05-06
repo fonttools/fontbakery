@@ -428,10 +428,6 @@ def get_suite(path, apply_autofix=False):
     suite = unittest.TestSuite()
 
     testcases = [
-        TestFontOnDiskFamilyEqualToMetadataProtoBuf,
-        TestPostScriptNameInMetadataEqualFontOnDisk,
-        CheckMetadataAgreements,
-        CheckMetadataContainsReservedFontName,
         CheckItalicStyleMatchesMacStyle,
         CheckNormalStyleMatchesMacStyle,
         CheckMetadataMatchesNameTable,
