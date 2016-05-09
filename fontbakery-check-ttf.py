@@ -1392,6 +1392,24 @@ def main():
             logging.info('OK. Filename is set canonically.')
 
           #-----------------------------------------------
+          if f.style == 'italic':
+            #this test only applies to italic fonts
+            logging.debug("METADATA.pb font.style `italic` matches font internals?")
+            font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+            font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
+            if not bool(font['head'].macStyle & 0b10):
+                logging.error('METADATA.pb style has been set to italic'
+                               ' but font macStyle is improperly set')
+            elif not font_familyname.split('-')[-1].endswith('Italic'):
+                logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
+                               ' is not ended with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+            elif not font_fullname.split('-')[-1].endswith('Italic'):
+                logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
+                               ' is not ended with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+            else:
+              logging.info('OK: METADATA.pb font.style `italic` matches font internals.')
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
