@@ -39,8 +39,12 @@ pip install --upgrade git+https://github.com/behdad/fontTools.git; # fontbakery 
 pip install --upgrade git+https://github.com/googlefonts/fontcrunch.git; # fontbakery dependency
 pip install --upgrade git+https://github.com/davelab6/pyfontaine.git; # fontbakery dependency
 sudo gem install travis; # fontbakery dependencies
-sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
+sudo pip install fontbakery; # fontbakery's latest release
 ```
+
+Alternatively you can install the current development version with
+
+    sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
 
 ### GNU+Linux
 
@@ -60,7 +64,12 @@ make CXXFLAGS=-DOTS_DEBUG;
 sudo make install;
 cd ..;
 rm -rf ots;
+sudo pip install fontbakery; # fontbakery's latest release
 ```
+
+Alternatively you can install the current development version with
+
+    sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
 
 ## Usage
 
