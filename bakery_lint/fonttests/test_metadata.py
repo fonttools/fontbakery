@@ -35,26 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class CheckMetadataMatchesNameTable(TestCase):
-
-    targets = ['metadata']
-    tool = 'lint'
-    name = __name__
-
-    def test_check_metadata_matches_nametable(self):
-        """ Metadata key-value match to table name fields """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-
-            report = '%s: Family name was supposed to be "%s" but is "%s"'
-            report = report % (font_metadata.name, fm.name,
-                               ttfont.familyname)
-            self.assertEqual(ttfont.familyname, fm.name, report)
-            self.assertEqual(ttfont.fullname, font_metadata.full_name)
-
-
 class CheckMenuSubsetContainsProperGlyphs(TestCase):
 
     targets = ['metadata']

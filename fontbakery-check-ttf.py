@@ -1433,6 +1433,15 @@ def main():
               else:
                 logging.info('OK: METADATA.pb font.style `normal` matches font internals.')
 
+              #----------
+              logging.debug("Metadata key-value match to table name fields?")
+              if font_familyname != f.name:
+                logging.error("METADATA.pb Family name '{}') dos not match name table entry '{}'!".format(f.name, font_familyname))
+              elif font_fullname != f.full_name:
+                logging.error("METADATA.pb: Fullname ('{}') does not match name table entry '{}'!".format(f.fullname, font_fullname))
+              else:
+                logging.info("OK: METADATA.pb familyname and fullName fields match corresponding name table entries.")
+
           #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
