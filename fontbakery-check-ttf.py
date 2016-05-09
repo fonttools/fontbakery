@@ -1413,6 +1413,27 @@ def main():
                 logging.info('OK: METADATA.pb font.style `italic` matches font internals.')
 
           #-----------------------------------------------
+          if f.style == 'normal': #this test only applies to normal fonts
+            font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+            font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
+            if not font_familyname or not font_fullname:
+              pass #these fail scenarios were already tested above
+                   #(passing those previous tests is a prerequisite for this one)
+            else:
+              logging.debug("METADATA.pb font.style `normal` matches font internals?")
+              if bool(font['head'].macStyle & 0b10):
+                  logging.error('METADATA.pb style has been set to normal'
+                                 ' but font macStyle is improperly set')
+              elif font_familyname.split('-')[-1].endswith('Italic'):
+                  logging.error('Font macStyle indicates a non-Italic font, but nameID %d ("%s")'
+                                 ' ends with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+              elif not font_fullname.split('-')[-1].endswith('Italic'):
+                  logging.error('Font macStyle indicates a non-Italic font but nameID %d ("%s")'
+                                 ' ends with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+              else:
+                logging.info('OK: METADATA.pb font.style `normal` matches font internals.')
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
