@@ -102,33 +102,6 @@ weights = {
 }
 
 
-class CheckPostScriptNameMatchesWeight(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_postscriptname_contains_correct_weight(self):
-        """ Metadata weight matches postScriptName """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            pair = []
-            for k, weight in weights.items():
-                if weight == font_metadata.weight:
-                    pair.append((k, weight))
-
-            if not pair:
-                self.fail('Font weight does not match for "postScriptName"')
-
-            if not (font_metadata.post_script_name.endswith('-%s' % pair[0][0])
-                    or font_metadata.post_script_name.endswith('-%s' % pair[1][0])):
-
-                _ = ('postScriptName with weight %s must be '
-                     'ended with "%s" or "%s"')
-                self.fail(_ % (pair[0][1], pair[0][0], pair[1][0]))
-
-
 class CheckFontWeightSameAsInMetadata(TestCase):
 
     targets = ['metadata']

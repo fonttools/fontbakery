@@ -1472,6 +1472,42 @@ def main():
           log_results("OS/2 usWeightClass matches weight specified at METADATA.pb")
 
           #-----------------------------------------------
+          weights = {
+            'Thin': 100,
+            'ThinItalic': 100,
+            'ExtraLight': 200,
+            'ExtraLightItalic': 200,
+            'Light': 300,
+            'LightItalic': 300,
+            'Regular': 400,
+            'Italic': 400,
+            'Medium': 500,
+            'MediumItalic': 500,
+            'SemiBold': 600,
+            'SemiBoldItalic': 600,
+            'Bold': 700,
+            'BoldItalic': 700,
+            'ExtraBold': 800,
+            'ExtraBoldItalic': 800,
+            'Black': 900,
+            'BlackItalic': 900,
+          }
+          #-----------------------------------------------
+          logging.debug("Metadata weight matches postScriptName")
+          pair = []
+          for k, weight in weights.items():
+            if weight == f.weight:
+              pair.append((k, weight))
+
+          if not pair:
+            logging.error('METADATA.pb: Font weight does not match postScriptName')
+          elif not (f.post_script_name.endswith('-' + pair[0][0])
+                    or f.post_script_name.endswith('-%s' % pair[1][0])):
+            logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +\
+                          'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
+          else:
+            logging.info("OK: Weight value matches postScriptName.")
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
