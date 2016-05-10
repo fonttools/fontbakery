@@ -1451,6 +1451,13 @@ def main():
             logging.info("OK: font name is not camel-cased.")
 
           #-----------------------------------------------
+          logging.debug("Check font name is the same as family name.")
+          if f.name != family.name:
+            logging.error('METADATA.pb: %s: Family name "%s" does not match font name: "%s"'.format(f.filename, family.name, f.name))
+          else:
+            logging.info('OK: font name is the same as family name.')
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------

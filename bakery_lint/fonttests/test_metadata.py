@@ -80,22 +80,6 @@ class CheckGlyphConsistencyInFamily(TestCase):
                 self.fail('Family has different encoding across fonts')
 
 
-class CheckFamilyNameMatchesFontNames(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    def test_check_familyname_matches_fontnames(self):
-        """ Check font name is the same as family name """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            _ = '%s: Family name "%s" does not match font name: "%s"'
-            _ = _ % (font_metadata.filename, fm.name, font_metadata.name)
-            self.assertEqual(font_metadata.name, fm.name, _)
-
-
 weights = {
     'Thin': 100,
     'ThinItalic': 100,
