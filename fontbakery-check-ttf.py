@@ -1443,6 +1443,9 @@ def main():
                 logging.info("OK: METADATA.pb familyname and fullName fields match corresponding name table entries.")
 
           #-----------------------------------------------
+          #logging.debug("")
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------

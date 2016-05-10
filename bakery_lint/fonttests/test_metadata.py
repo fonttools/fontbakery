@@ -35,39 +35,6 @@ def get_FamilyProto_Message(path):
     return metadata
 
 
-class CheckMenuSubsetContainsProperGlyphs(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_check_menu_contains_proper_glyphs(self):
-        """ Check menu file contains proper glyphs """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata, is_menu=True)
-            self.check_retrieve_glyphs(tf, font_metadata)
-
-    def check_retrieve_glyphs(self, ttfont, font_metadata):
-        cmap = ttfont.retrieve_cmap_format_4()
-
-        glyphs = cmap.cmap
-
-        missing_glyphs = set()
-        if ord(' ') not in glyphs:
-            missing_glyphs.add(' ')
-
-        for g in font_metadata.name:
-            if ord(g) not in glyphs:
-                missing_glyphs.add(g)
-
-        if missing_glyphs:
-            _ = '%s: Menu is missing glyphs: "%s"'
-            report = _ % (font_metadata.filename, ''.join(missing_glyphs))
-            self.fail(report)
-
-
 class CheckGlyphConsistencyInFamily(TestCase):
 
     targets = ['metadata']
