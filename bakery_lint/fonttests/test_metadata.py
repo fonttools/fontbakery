@@ -80,31 +80,6 @@ class CheckGlyphConsistencyInFamily(TestCase):
                 self.fail('Family has different encoding across fonts')
 
 
-class CheckFontsMenuAgreements(TestCase):
-
-    name = __name__
-    targets = ['metadata']
-    tool = 'lint'
-
-    def menufile(self, font_metadata):
-        return '%s.menu' % font_metadata.filename[:-4]
-
-    @tags('required')
-    def test_menu_file_agreement(self):
-        """ Check fonts have corresponding menu files """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            menufile = self.menufile(font_metadata)
-            path = op.join(op.dirname(self.operator.path), menufile)
-
-            if not op.exists(path):
-                self.fail('%s does not exist' % menufile)
-
-            if magic.from_file(path) != 'TrueType font data':
-                self.fail('%s is not actual TTF file' % menufile)
-
-
 class CheckFamilyNameMatchesFontNames(TestCase):
 
     name = __name__
