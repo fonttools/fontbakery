@@ -102,37 +102,6 @@ weights = {
 }
 
 
-class CheckCanonicalWeights(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_check_canonical_weights(self):
-        """ Weights have canonical value? """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-            weight = font_metadata.weight
-            first_digit = weight / 100
-            is_invalid = (weight % 100) != 0 or (first_digit < 1
-                                                 or first_digit > 9)
-            _ = ("%s: The weight is %d which is not a "
-                 "multiple of 100 between 1 and 9")
-
-            self.assertFalse(is_invalid, _ % (op.basename(self.operator.path),
-                                              font_metadata.weight))
-
-            tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-            _ = ("%s: METADATA.pb overwrites the weight. "
-                 " The METADATA.pb weight is %d and the font"
-                 " file %s weight is %d")
-            _ = _ % (font_metadata.filename, font_metadata.weight,
-                     font_metadata.filename, tf.OS2_usWeightClass)
-
-            self.assertEqual(tf.OS2_usWeightClass, font_metadata.weight)
-
-
 class CheckPostScriptNameMatchesWeight(TestCase):
 
     targets = ['metadata']

@@ -1458,6 +1458,20 @@ def main():
             logging.info('OK: font name is the same as family name.')
 
           #-----------------------------------------------
+          logging.debug("Check that font weight has a canonical value")
+          first_digit = f.weight / 100
+          if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
+            logging.error("METADATA.pb: The weight is declared as %d which is not a " +\
+                          "multiple of 100 between 100 and 900.".format(f.weight))
+          else:
+            logging.info("OK: font weight has a canonical value.")
+
+          #-----------------------------------------------
+          logging.debug("Checking OS/2 usWeightClass matches weight specified at METADATA.pb")
+          assert_table_entry('OS/2', 'usWeightClass', f.weight)
+          log_results("OS/2 usWeightClass matches weight specified at METADATA.pb")
+
+          #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
