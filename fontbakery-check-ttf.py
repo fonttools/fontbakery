@@ -1443,7 +1443,12 @@ def main():
                 logging.info("OK: METADATA.pb familyname and fullName fields match corresponding name table entries.")
 
           #-----------------------------------------------
-          #logging.debug("")
+          logging.debug("Check if fontname is not camel cased.")
+          if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
+            logging.error("METADATA.pb: '%s' is a CamelCased name.".format(f.name) +\
+                          " To solve this, simply use spaces instead in the font name.")
+          else:
+            logging.info("OK: font name is not camel-cased.")
 
           #-----------------------------------------------
           ###### End of single-TTF metadata tests #######

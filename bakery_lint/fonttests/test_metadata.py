@@ -80,26 +80,6 @@ class CheckGlyphConsistencyInFamily(TestCase):
                 self.fail('Family has different encoding across fonts')
 
 
-class CheckFontNameNotInCamelCase(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_fontname_not_in_camel_case(self):
-        """ Check if fontname is not camel cased """
-        familymetadata = get_FamilyProto_Message(self.operator.path)
-
-        camelcased_fontnames = []
-        for font_metadata in familymetadata.fonts:
-            if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
-                camelcased_fontnames.append(font_metadata.name)
-
-        if camelcased_fontnames:
-            self.fail(('%s are camel cased names. To solve this check just '
-                       'use spaces in names.'))
-
-
 class CheckFontsMenuAgreements(TestCase):
 
     name = __name__
