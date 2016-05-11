@@ -102,37 +102,6 @@ weights = {
 }
 
 
-class CheckFullNameEqualCanonicalName(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_metadata_contains_current_font(self):
-        """ METADATA.pb lists fonts named canonicaly? """
-
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        is_canonical = False
-        for font_metadata in fm.fonts:
-            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-
-            _weights = []
-            for value, intvalue in weights.items():
-                if intvalue == font.OS2_usWeightClass:
-                    _weights.append(value)
-
-            for w in _weights:
-                current_font = "%s %s" % (font.familyname, w)
-                if font_metadata.full_name != current_font:
-                    is_canonical = True
-
-            if not is_canonical:
-                v = map(lambda x: font.familyname + ' ' + x, _weights)
-                msg = 'Canonical name in font expected: [%s] but %s'
-                self.fail(msg % (v, font_metadata.full_name))
-
-
 class CheckCanonicalStyles(TestCase):
 
     name = __name__

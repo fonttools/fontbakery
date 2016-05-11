@@ -1507,6 +1507,26 @@ def main():
                           'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
           else:
             logging.info("OK: Weight value matches postScriptName.")
+
+          #-----------------------------------------------
+          logging.debug("METADATA.pb lists fonts named canonicaly?")
+          is_canonical = False
+          _weights = []
+          for value, intvalue in weights.items():
+            if intvalue == font['OS2'].usWeightClass:
+              _weights.append(value)
+
+          for w in _weights:
+            canonical_name = "%s %s" % (font_familyname, w)
+            if f.full_name == canonical_name:
+              is_canonical = True
+
+          if is_canonical:
+            logging.info("OK: METADATA.pb lists fonts named canonicaly.")
+          else:
+            v = map(lambda x: font.familyname + ' ' + x, _weights)
+            logging.error('Canonical name in font expected: [%s] but %s' % (v, font_metadata.full_name))
+
           #-----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
