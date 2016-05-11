@@ -102,24 +102,6 @@ weights = {
 }
 
 
-class CheckFontWeightSameAsInMetadata(TestCase):
-
-    targets = ['metadata']
-    name = __name__
-    tool = 'lint'
-
-    def test_font_weight_same_as_in_metadata(self):
-        """ Font weight matches metadata.pb value of key "weight" """
-        fm = get_FamilyProto_Message(self.operator.path)
-
-        for font_metadata in fm.fonts:
-
-            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
-            if font.OS2_usWeightClass != font_metadata.weight:
-                msg = 'METADATA.pb has weight %s but in TTF it is %s'
-                self.fail(msg % (font_metadata.weight, font.OS2_usWeightClass))
-
-
 class CheckFullNameEqualCanonicalName(TestCase):
 
     targets = ['metadata']
