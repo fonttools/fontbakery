@@ -1267,7 +1267,7 @@ def main():
           #-----------------------------------------------
           logging.debug("METADATA.pb fonts 'name' property should be same as font familyname")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if fullname == False:
+          if font_familyname == False:
             logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
           else:
             if font_familyname != f.name:
