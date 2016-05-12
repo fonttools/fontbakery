@@ -453,7 +453,57 @@ def main():
   except:
     logging.warning("Failed to fetch Microsoft's vendorID list.")
 
+###########################################################################
+## Step 1: Cross-family tests
+##         * Validates consistency of data throughout all TTF files
+##           in a given family
+##         * The list of TTF files in infered from the METADATA.pb file
+##         * We avoid testing the same fmaily twice by deduplicating the
+##           list of METADATA.pb files first
+###########################################################################
+      #-----------------------------------------------------
+      # TODO: fix these tests:
+      #-----------------------------------------------------
+      #
+      #logging.debug("The same number of glyphs across family?")
+      #glyphs_count = 0
+      #for f in family.fonts:
+      #  ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+      #  if not glyphs_count:
+      #    glyphs_count = len(ttfont.glyphs)
+      #
+      #  if glyphs_count != len(ttfont.glyphs):
+      #    self.fail('Family has a different glyphs\'s count in fonts')
+      #
+      #-----------------------------------------------------
+      #logging.debug("The same names of glyphs across family?")
+      #glyphs = None
+      #for font_metadata in self.familymetadata.fonts:
+      #  ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+      #  if not glyphs:
+      #    glyphs = len(ttfont.glyphs)
+      #
+      #  if glyphs != len(ttfont.glyphs):
+      #    self.fail('Family has a different glyphs\'s names in fonts')
+      #
+      #-----------------------------------------------------
+      #logging.debug("The same unicode encodings of glyphs across family?")
+      #encoding = None
+      #for font_metadata in self.familymetadata.fonts:
+      #  ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+      #  cmap = ttfont.retrieve_cmap_format_4()
+      #
+      #  if not encoding:
+      #    encoding = cmap.platEncID
+      #
+      #  if encoding != cmap.platEncID:
+      #    self.fail('Family has different encoding across fonts')
 
+###########################################################################
+## Step 2: Single TTF tests
+##         * Tests that only check data of the specific TTF file, but not 
+##           the other fonts in the same family
+###########################################################################
  #------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
@@ -1221,7 +1271,6 @@ def main():
           logging.error('METADATA.pb: Regular font weight must be 400. Please fix: {}'.format(', '.join(badfonts)))
         else:
           logging.info('OK: Regular has weight=400')
-
       #-----------------------------------------------------
 
       for f in family.fonts:
