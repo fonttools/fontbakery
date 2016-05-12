@@ -1400,7 +1400,7 @@ def main():
                    #(passing those previous tests is a prerequisite for this one)
             else:
               logging.debug("METADATA.pb font.style `italic` matches font internals?")
-              if not bool(font['head'].macStyle & 0b10):
+              if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to italic'
                                  ' but font macStyle is improperly set')
               elif not font_familyname.split('-')[-1].endswith('Italic'):
@@ -1421,7 +1421,7 @@ def main():
                    #(passing those previous tests is a prerequisite for this one)
             else:
               logging.debug("METADATA.pb font.style `normal` matches font internals?")
-              if bool(font['head'].macStyle & 0b10):
+              if bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to normal'
                                  ' but font macStyle is improperly set')
               elif font_familyname.split('-')[-1].endswith('Italic'):
@@ -1531,7 +1531,28 @@ def main():
               v = map(lambda x: font_familyname + ' ' + x, _weights)
               logging.error('Canonical name in font expected: [%s] but %s' % (v, f.full_name))
 
-          #-----------------------------------------------
+          #----------------------------------------------
+          def find_italic_in_name_table():
+            for entry in font['name'].names:
+              if 'italic' in entry.string.decode(entry.getEncoding()).lower():
+                return True
+            return False
+
+          def is_italic():
+            return (font['head'].macStyle & MACSTYLE_ITALIC
+                    or font['post'].italicAngle
+                    or find_italic_in_name_table())
+
+          if f.style in ['italic', 'normal']:
+            logging.debug("Font styles are named canonically?")
+            if is_italic() and f.style != 'italic':
+              logging.error("%s: The font style is %s but it should be italic" % (f.filename, f.style))
+            elif not is_italic() and f.style != 'normal':
+              logging.error("%s: The font style is %s but it should be normal" % (f.filename, f.style))
+            else:
+              logging.info("OK: Font styles are named canonically")
+
+          #----------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       #-----------------------------------------------------
