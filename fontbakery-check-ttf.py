@@ -473,6 +473,10 @@ def main():
       if family not in metadata_to_check:
         metadata_to_check.append([fontdir, family])
 
+  def ttf_file(f):
+    simplehash = f.filename #this may collide. Perhaps we need something better here.
+    return ttf[simplehash]
+
   for dirname, family in metadata_to_check:
     ttf = {}
     for f in family.fonts:
@@ -486,7 +490,7 @@ def main():
     glyphs_count = 0
     fail = False
     for f in family.fonts:
-      ttfont = ttf[f.filename]
+      ttfont = ttf_file(f)
       if not glyphs_count:
         glyphs_count = len(ttfont['glyf'].glyphs)
 
@@ -503,7 +507,7 @@ def main():
     glyphs = None
     fail = False
     for f in family.fonts:
-      ttfont = ttf[f.filename]
+      ttfont = ttf_file(f)
       if not glyphs:
         glyphs = ttfont['glyf'].glyphs
     
@@ -520,7 +524,7 @@ def main():
     encoding = None
     fail = False
     for f in family.fonts:
-      ttfont = ttf[f.filename]
+      ttfont = ttf_file(f)
       cmap = None
       for table in ttfont['cmap'].tables:
         if table.format == 4:
