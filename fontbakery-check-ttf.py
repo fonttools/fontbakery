@@ -476,8 +476,10 @@ def main():
   for dirname, family in metadata_to_check:
     ttf = {}
     for f in family.fonts:
-      #logging.error("dirname: '{}' f.filename: '{}'".format(dirname, f.filename))
-      ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
+      if f.filename in ttf.keys():
+        logging.error("This is a fontbakery bug. Please contact us. We may need to figure out a better hash-function for the font ProtocolBuffer message...")
+      else:
+        ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
     #-----------------------------------------------------
     logging.debug("The same number of glyphs across family?")
