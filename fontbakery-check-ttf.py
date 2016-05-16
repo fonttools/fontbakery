@@ -1084,10 +1084,6 @@ def main():
                              " https://pypi.python.org/pypi/FontTools/2.4")
             logging.error(error_message.format(file_path))
 
-
-    #----------------------------------------------------
-    # more checks go here
-
     #----------------------------------------------------
     logging.debug("Font contains glyphs for whitespace characters?")
     space = getGlyph(font, 0x0020)
@@ -1181,9 +1177,23 @@ def main():
     #
     # 3. rehint the font with the latest version of ttfautohint using the same options
 
+    #----------------------------------------------------
+    logging.debug("Version format is correct in NAME table?")
+    def is_valid_version_format(value):
+      return re.match(r'Version\s0*[1-9]+\.\d+', value)
+
+    version_string = get_name_string(font, NAMEID_VERSION_STRING)
+    if version_string and is_valid_version_format(version_string):
+      logging.info('OK: Version format in NAME table is correct.')
+    else:
+      logging.error(('The NAMEID_VERSION_STRING (nameID={}) value must follow '
+                     'the pattern Version X.Y. Current value: {}').format(NAMEID_VERSION_STRING, version_string))
 
     #----------------------------------------------------
-    # Metadata related checks:
+
+##########################################################
+## Metadata related checks:
+##########################################################
 
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
