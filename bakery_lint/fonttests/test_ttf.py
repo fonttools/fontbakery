@@ -129,26 +129,6 @@ class TTFTestCase(TestCase):
             self.assertGreaterEqual(font['CFF'].Weight, 250)
             self.assertLessEqual(font['CFF'].Weight, 900)
 
-    def test_glyphname_does_not_contain_disallowed_chars(self):
-        """ Glyph names are all valid? """
-        font = Font.get_ttfont(self.operator.path)
-        known_good_names = ['.notdef', '.null']
-        #we should extend this list according to the opentype spec
-
-        for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
-            if glyphName in known_good_names:
-                continue
-            if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
-                self.fail(('Glyph "%s" does not comply conventions.'
-                           ' A glyph name may be up to 31 characters in length,'
-                           ' must be entirely comprised of characters from'
-                           ' the following set:'
-                           ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-                           ' start with a digit or period. There are a few exceptions'
-                           ' such as the special character ".notdef". The glyph names'
-                           ' "twocents", "a1", and "_" are all valid, while "2cents"'
-                           ' and ".twocents" are not.') % glyphName)
-
     def test_ttx_duplicate_glyphs(self):
         """ Font contains unique glyph names? """
         # (Duplicate glyph names prevent font installation on Mac OS X.)

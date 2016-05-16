@@ -1190,6 +1190,30 @@ def main():
                      'the pattern Version X.Y. Current value: {}').format(NAMEID_VERSION_STRING, version_string))
 
     #----------------------------------------------------
+    logging.debug("Glyph names are all valid?")
+    known_good_names = ['.notdef', '.null']
+    bad_names = []
+    #we should extend this list according to the opentype spec
+    for _, glyphName in enumerate(font.getGlyphOrder()):
+      if glyphName in known_good_names:
+        continue
+      if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
+        bad_names.append(glyphName)
+
+    if len(bad_names) == 0:
+      logging.info('OK: Glyph names are all valid.')
+    else:
+      logging.error(('The following glyph names do not comply with naming conventions: {}'
+                     ' A glyph name may be up to 31 characters in length,'
+                     ' must be entirely comprised of characters from'
+                     ' the following set:'
+                     ' A-Z a-z 0-9 .(period) _(underscore). and must not'
+                     ' start with a digit or period. There are a few exceptions'
+                     ' such as the special character ".notdef". The glyph names'
+                     ' "twocents", "a1", and "_" are all valid, while "2cents"'
+                     ' and ".twocents" are not.').format(bad_names))
+    #----------------------------------------------------
+
 
 ##########################################################
 ## Metadata related checks:
