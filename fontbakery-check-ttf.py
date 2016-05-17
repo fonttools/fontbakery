@@ -1212,6 +1212,36 @@ def main():
                      ' such as the special character ".notdef". The glyph names'
                      ' "twocents", "a1", and "_" are all valid, while "2cents"'
                      ' and ".twocents" are not.').format(bad_names))
+
+    #----------------------------------------------------
+    logging.debug("Font contains unique glyph names?")
+    # (Duplicate glyph names prevent font installation on Mac OS X.)
+    glyphs = []
+    duplicated_glyphIDs = []
+    for _, g in enumerate(font.getGlyphOrder()):
+      glyphID = re.sub(r'#\w+', '', g)
+      if glyphID in glyphs:
+        duplicated_glyphIDs.append(glyphID)
+      else:
+        glyphs.append(glyphID)
+
+    if len(duplicated_glyphIDs) == 0:
+      logging.info("OK: Font contains unique glyph names.")
+    else:
+      logging.error("The following glyph IDs occur twice: " % duplicated_glyphIDs)
+
+    #----------------------------------------------------
+    logging.debug("No glyph is incorrectly named?")
+    bad_glyphIDs = []
+    for _, g in enumerate(font.getGlyphOrder()):
+      if re.search(r'#\w+$', g):
+        bad_glyphIDs.append(glyphID)
+
+    if len(bad_glyphIDs) == 0:
+      logging.info("OK: Font does not have any incorrectly named glyph.")
+    else:
+      logging.error("The following glyph IDs are incorrectly named: " % bad_glyphIDs)
+
     #----------------------------------------------------
 
 

@@ -129,21 +129,6 @@ class TTFTestCase(TestCase):
             self.assertGreaterEqual(font['CFF'].Weight, 250)
             self.assertLessEqual(font['CFF'].Weight, 900)
 
-    def test_ttx_duplicate_glyphs(self):
-        """ Font contains unique glyph names? """
-        # (Duplicate glyph names prevent font installation on Mac OS X.)
-        font = Font.get_ttfont(self.operator.path)
-        glyphs = []
-        for _, g in enumerate(font.ttfont.getGlyphOrder()):
-            self.assertFalse(re.search(r'#\w+$', g),
-                             msg="Font contains incorrectly named glyph %s" % g)
-            glyphID = re.sub(r'#\w+', '', g)
-
-            # Each GlyphID has to be unique in TTX
-            self.assertFalse(glyphID in glyphs,
-                             msg="GlyphID %s occurs twice in TTX" % g)
-            glyphs.append(glyphs)
-
     def test_epar_in_keys(self):
         """ EPAR table present in font? """
         font = Font.get_ttfont(self.operator.path)
