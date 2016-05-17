@@ -1243,7 +1243,13 @@ def main():
       logging.error("The following glyph IDs are incorrectly named: " % bad_glyphIDs)
 
     #----------------------------------------------------
+    logging.debug("EPAR table present in font?")
+    if not 'EPAR' in font:
+      logging.error('Font is missing EPAR table.')
+    else:
+      logging.info("OK: EPAR table present in font.")
 
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:

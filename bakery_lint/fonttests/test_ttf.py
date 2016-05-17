@@ -129,11 +129,6 @@ class TTFTestCase(TestCase):
             self.assertGreaterEqual(font['CFF'].Weight, 250)
             self.assertLessEqual(font['CFF'].Weight, 900)
 
-    def test_epar_in_keys(self):
-        """ EPAR table present in font? """
-        font = Font.get_ttfont(self.operator.path)
-        self.assertIn('EPAR', font.ttfont.keys(), 'No')
-
     @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
     def test_check_gasp_table_type(self):
         """ Is GASP table correctly set? """
