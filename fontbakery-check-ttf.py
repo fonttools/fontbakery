@@ -1262,7 +1262,8 @@ def main():
           # XXX: Needs review
           value = font['gasp'].gaspRange[65535]
           if value != 15:
-            logging.error('gaspRange[65535] value ({}) is not 15'.format(value))
+            font['gasp'].gaspRange[65535] = 15
+            logging.error('HOTFIXED: gaspRange[65535] value ({}) is not 15'.format(value))
           else:
             logging.info('OK: GASP table is correctly set.')
     except KeyError:
