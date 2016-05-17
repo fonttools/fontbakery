@@ -129,26 +129,6 @@ class TTFTestCase(TestCase):
             self.assertGreaterEqual(font['CFF'].Weight, 250)
             self.assertLessEqual(font['CFF'].Weight, 900)
 
-    @autofix('bakery_cli.fixers.GaspFixer', always_run=True)
-    def test_check_gasp_table_type(self):
-        """ Is GASP table correctly set? """
-        font = Font.get_ttfont(self.operator.path)
-        try:
-            font['gasp']
-        except KeyError:
-            self.fail('"GASP" table not found')
-
-        if not isinstance(font['gasp'].gaspRange, dict):
-            self.fail('GASP.gaspRange method value have wrong type')
-
-        if 65535 not in font['gasp'].gaspRange:
-            self.fail("GASP does not have 65535 gaspRange")
-
-        # XXX: Needs review
-        value = font['gasp'].gaspRange[65535]
-        if value != 15:
-            self.fail('gaspRange[65535] value ({}) is not 15'.format(value))
-
     def test_gpos_table_has_kerning_info(self):
         """ Does GPOS table have kerning information? """
         font = Font.get_ttfont(self.operator.path)

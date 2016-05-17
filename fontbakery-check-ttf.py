@@ -1249,6 +1249,25 @@ def main():
     else:
       logging.info("OK: EPAR table present in font.")
 
+
+    #----------------------------------------------------
+    logging.debug("Is GASP table correctly set?")
+    try:
+      if not isinstance(font['gasp'].gaspRange, dict):
+        logging.error('GASP.gaspRange method value have wrong type')
+      else:
+        if 65535 not in font['gasp'].gaspRange:
+          logging.error("GASP does not have 65535 gaspRange")
+        else:
+          # XXX: Needs review
+          value = font['gasp'].gaspRange[65535]
+          if value != 15:
+            logging.error('gaspRange[65535] value ({}) is not 15'.format(value))
+          else:
+            logging.info('OK: GASP table is correctly set.')
+    except KeyError:
+      logging.error('Font is missing the GASP table.')
+
     #----------------------------------------------------
 
 ##########################################################
