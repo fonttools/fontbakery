@@ -1288,6 +1288,14 @@ def main():
       logging.error('Font is missing a "GPOS" table')
 
     #----------------------------------------------------
+    logging.debug("Is there a 'KERN' table declared in the font?")
+    try:
+      font['KERN']
+      logging.error("Font should not have a 'KERN' table")
+    except KeyError:
+      logging.info("OK: Font does not declare a 'KERN' table.")
+
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:

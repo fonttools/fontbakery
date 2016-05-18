@@ -143,15 +143,6 @@ class TTFTestCase(TestCase):
                 if marks:
                     self.fail('Contains {}'.format(marks))
 
-    def test_no_kern_table_exists(self):
-        """ Is there a "KERN" table declared in the font? """
-        font = Font.get_ttfont(self.operator.path)
-        try:
-            font['KERN']
-            self.fail('Font should not have a "KERN" table')
-        except KeyError:
-            pass
-
     def test_check_full_font_name_begins_with_family_name(self):
         """ Does full font name begin with the font family name? """
         font = Font.get_ttfont(self.operator.path)
