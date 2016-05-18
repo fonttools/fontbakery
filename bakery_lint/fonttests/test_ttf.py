@@ -143,29 +143,6 @@ class TTFTestCase(TestCase):
                 if marks:
                     self.fail('Contains {}'.format(marks))
 
-    def test_check_glyf_table_length(self):
-        """ Is there any unused data at the end of the glyf table? """
-        from fontTools import ttLib
-        font = ttLib.TTFont(self.operator.path)
-        # TODO: should this test support CFF as well?
-        if 'CFF ' in font: self.skip("No 'glyf' table to check in a CFF font.")
-
-        expected = font.reader.tables['loca'].length
-        actual = font.reader.tables['glyf'].length
-        diff = actual - expected
-
-        # allow up to 3 bytes of padding
-        if diff > 3:
-            _ = ("Glyf table has unreachable data at the end of the table."
-                 " Expected glyf table length %s (from loca table), got length"
-                 " %s (difference: %s)") % (expected, actual, diff)
-            self.fail(_)
-        elif diff < 0:
-            _ = ("Loca table references data beyond the end of the glyf table."
-                 " Expected glyf table length %s (from loca table), got length"
-                 " %s (difference: %s)") % (expected, actual, diff)
-            self.fail(_)
-
     def assertExists(self, d):
         font = Font.get_ttfont(self.operator.path)
         glyphs = font.retrieve_cmap_format_4().cmap

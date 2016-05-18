@@ -1320,6 +1320,28 @@ def main():
       logging.error('Encoding mismatch between NAMEID_FONT_FAMILY_NAME and NAMEID_FULL_FONT_NAME entries.')
 
     #----------------------------------------------------
+    # TODO: should this test support CFF as well?
+    logging.debug("Is there any unused data at the end of the glyf table?")
+    if 'CFF ' not in font:
+      logging.info("Skipping test. Not a CFF font.")
+    else:
+      expected = font['loca'].length
+      actual = font['glyf'].length
+      diff = actual - expected
+
+      # allow up to 3 bytes of padding
+      if diff > 3:
+        logging.error(("Glyf table has unreachable data at the end of the table." +\
+                       " Expected glyf table length %s (from loca table), got length" +\
+                       " %s (difference: %s)") % (expected, actual, diff))
+      elif diff < 0:
+        logging.error(("Loca table references data beyond the end of the glyf table." +\
+                       " Expected glyf table length %s (from loca table), got length" +\
+                       " %s (difference: %s)") % (expected, actual, diff))
+      else:
+        logging.info("OK: There is no unused data at the end of the glyf table.")
+
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
