@@ -1296,6 +1296,30 @@ def main():
       logging.info("OK: Font does not declare a 'KERN' table.")
 
     #----------------------------------------------------
+    logging.debug("Does full font name begin with the font family name?")
+    familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+    fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
+
+    if not familyname:
+      logging.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry in the name table.')
+    elif not fullfamilyname:
+      logging.error('Font lacks a NAMEID_FULL_FONT_NAME entry in the name table.')
+    #FIX-ME: I think we should still compare entries
+    # even if they have different encodings
+    elif (familyname.platformID == fullfontname.platformID
+        and familyname.platEncID == fullfontname.platEncID
+        and familyname.langID == fullfontname.langID):
+
+      fullfontname_str = Font.bin2unistring(fullfontname)
+      familyname_str = Font.bin2unistring(familyname)
+      if not familyname_str.startswith(fullfontname_str):
+        logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname_str, fullfontname_str))
+      else:
+        logging.info('OK: Full font name begins with the font family name.')
+    else:
+      logging.error('Encoding mismatch between NAMEID_FONT_FAMILY_NAME and NAMEID_FULL_FONT_NAME entries.')
+
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:

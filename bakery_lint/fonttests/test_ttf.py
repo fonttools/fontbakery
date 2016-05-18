@@ -143,32 +143,6 @@ class TTFTestCase(TestCase):
                 if marks:
                     self.fail('Contains {}'.format(marks))
 
-    def test_check_full_font_name_begins_with_family_name(self):
-        """ Does full font name begin with the font family name? """
-        font = Font.get_ttfont(self.operator.path)
-        for entry in font.names:
-            if entry.nameID != NAMEID_FONT_FAMILY_NAME:
-                continue
-            familyname = entry
-            for entry2 in font.names:
-                if entry2.nameID != NAMEID_FULL_FONT_NAME:
-                    continue
-                fullfontname = entry2
-
-                #FIX-ME: I think we should still compare entries
-                # even if they have different encodings
-                if (familyname.platformID == fullfontname.platformID
-                        and familyname.platEncID == fullfontname.platEncID
-                        and familyname.langID == fullfontname.langID):
-
-                    fullfontname_str = Font.bin2unistring(fullfontname)
-                    familyname_str = Font.bin2unistring(familyname)
-                    if not familyname_str.startswith(fullfontname_str):
-                        _ = ('Font family name does not begin with full font'
-                             ' name: FontFamilyName = "%s";'
-                             ' FullFontName = "%s"')
-                        self.fail(_ % (familyname_str, fullfontname_str))
-
     def test_check_glyf_table_length(self):
         """ Is there any unused data at the end of the glyf table? """
         from fontTools import ttLib
