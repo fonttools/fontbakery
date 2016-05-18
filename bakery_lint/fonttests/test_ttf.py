@@ -129,23 +129,6 @@ class TTFTestCase(TestCase):
             self.assertGreaterEqual(font['CFF'].Weight, 250)
             self.assertLessEqual(font['CFF'].Weight, 900)
 
-    def test_gpos_table_has_kerning_info(self):
-        """ Does GPOS table have kerning information? """
-        font = Font.get_ttfont(self.operator.path)
-
-        try:
-            font['GPOS']
-        except KeyError:
-            self.fail('Font is missing a "GPOS" table')
-        flaglookup = False
-        for lookup in font['GPOS'].table.LookupList.Lookup:
-            if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
-                flaglookup = lookup
-                break  # break for..loop to avoid reading all kerning info
-        self.assertTrue(flaglookup, msg="GPOS table lacks kerning information")
-        self.assertGreater(flaglookup.SubTableCount, 0)
-        self.assertGreater(flaglookup.SubTable[0].PairSetCount, 0)
-
     @autofix('bakery_cli.fixers.CharacterSymbolsFixer')
     def test_check_names_are_ascii_only(self):
         """ Is there any non-ascii character in NAME or CFF tables? """

@@ -1249,7 +1249,6 @@ def main():
     else:
       logging.info("OK: EPAR table present in font.")
 
-
     #----------------------------------------------------
     logging.debug("Is GASP table correctly set?")
     try:
@@ -1268,6 +1267,25 @@ def main():
             logging.info('OK: GASP table is correctly set.')
     except KeyError:
       logging.error('Font is missing the GASP table.')
+
+    #----------------------------------------------------
+    logging.debug("Does GPOS table have kerning information?")
+    try:
+      flaglookup = False
+      for lookup in font['GPOS'].table.LookupList.Lookup:
+        if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
+          flaglookup = lookup
+          break  # break for..loop to avoid reading all kerning info
+      if not flaglookup:
+        logging.error("GPOS table lacks kerning information")
+      elif flaglookup.SubTableCount == 0:
+        logging.error("GPOS LookupType 2 SubTableCount is zero.")
+      elif flaglookup.SubTable[0].PairSetCount == 0:
+        logging.error("GPOS flaglookup.SubTable[0].PairSetCount is zero!")
+      else:
+        logging.info("OK: GPOS table has got kerning information.")
+    except KeyError:
+      logging.error('Font is missing a "GPOS" table')
 
     #----------------------------------------------------
 
