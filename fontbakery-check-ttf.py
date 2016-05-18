@@ -1309,11 +1309,8 @@ def main():
     elif (familyname.platformID == fullfontname.platformID
         and familyname.platEncID == fullfontname.platEncID
         and familyname.langID == fullfontname.langID):
-
-      fullfontname_str = Font.bin2unistring(fullfontname)
-      familyname_str = Font.bin2unistring(familyname)
-      if not familyname_str.startswith(fullfontname_str):
-        logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname_str, fullfontname_str))
+      if not familyname.startswith(fullfontname):
+        logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname, fullfontname))
       else:
         logging.info('OK: Full font name begins with the font family name.')
     else:
