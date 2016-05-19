@@ -143,16 +143,6 @@ class TTFTestCase(TestCase):
                 if marks:
                     self.fail('Contains {}'.format(marks))
 
-    def assertExists(self, d):
-        font = Font.get_ttfont(self.operator.path)
-        glyphs = font.retrieve_cmap_format_4().cmap
-        if not bool(ord(unicodedata.lookup(d)) in glyphs):
-            self.fail('%s does not exist in font' % d)
-
-    def test_euro(self):
-        """ Font has 'EURO SIGN' character? """
-        self.assertExists('EURO SIGN')
-
     def test_check_hmtx_hhea_max_advance_width_agreement(self):
         """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
         font = Font.get_ttfont(self.operator.path)
