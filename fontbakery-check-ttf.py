@@ -1362,6 +1362,72 @@ def main():
     else:
       logging.error("Font lacks the '%s' character." % 'EURO SIGN')
 
+
+    #----------------------------------------------------
+    logging.debug("Font follows the family naming recommendations?")
+    # See http://forum.fontlab.com/index.php?topic=313.0
+    bad_entries = []
+
+    # <Postscript name> may contain only a-zA-Z0-9
+    # and one hyphen
+    name = font['name'].getName(6, 3, 1, 1033)
+    if not regex_match(name, r'[a-zA-Z0-9-]+'):
+      bad_entries.append({'field': 'PostScript Name',
+                          'error': 'May contain only a-zA-Z0-9 characters and an hyphen'})
+
+    if name.count('-') > 1:
+      bad_entries.append({'field': 'Postscript Name',
+                          'error': 'May contain not more than a single hyphen'})
+
+    if len(font['name'].getName(4, 3, 1, 1033)) >= 64:
+      bad_entries.append({'field': 'Full Font Name',
+                          'error': 'exceeds max length (64)'})
+
+    if len(font['name'].getName(6, 3, 1, 1033)) >= 30:
+      bad_entries.append({'field': 'PostScript Name',
+                          'error': 'exceeds max length (30)'})
+
+    if len(font['name'].getName(1, 3, 1, 1033)) >= 32:
+      bad_entries.append({'field': 'Family Name',
+                          'error': 'exceeds max length (32)'})
+
+    if len(font['name'].getName(2, 3, 1, 1033)) >= 32:
+      bad_entries.append({'field': 'Style Name',
+                          'error': 'exceeds max length (32)'})
+
+    if len(font['name'].getName(16, 3, 1, 1033)) >= 32:
+      bad_entries.append({'field': 'OT Family Name',
+                          'error': 'exceeds max length (32)'})
+
+    if len(font['name'].getName(17, 3, 1, 1033)) >= 32:
+      bad_entries.append({'field': 'OT Style Name',
+                          'error': 'exceeds max length (32)'})
+
+    weight_value = None
+    if 'OS/2' in font:
+      field = 'OS/2 usWeightClass'
+      weight_value = font['OS/2'].usWeightClass
+    if 'CFF' in font:
+      field = 'CFF Weight'
+      weight_value = font['CFF'].Weight
+
+    if weight_value != None:
+      # <Weight> value >= 250 and <= 900 in steps of 50
+      if weight_value % 50 != 0:
+        bad_entries.append({'field': field,
+                            'error': 'Value has to be in steps of 50.'})
+      if weight_value < 250:
+        bad_entries.append({'field': field,
+                            'error': 'Value can\'t be less than 250.'})
+      if weight_value > 900:
+        bad_entries.append({'field': field,
+                            'error': 'Value can\'t be more than 900.'})
+
+    if len(bad_entries) > 0:
+      logging.error('Font fails to follow some family naming recommendations: {}'.format(bad_entries))
+    else:
+      logging.info('OK: Font follows the family naming recommendations.')
+
     #----------------------------------------------------
 
 ##########################################################
