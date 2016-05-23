@@ -76,18 +76,6 @@ class TTFTestCase(TestCase):
                 if marks:
                     self.fail('Contains {}'.format(marks))
 
-    def test_check_hmtx_hhea_max_advance_width_agreement(self):
-        """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
-        font = Font.get_ttfont(self.operator.path)
-
-        hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
-        hhea_advance_width_max = font.advance_width_max
-        error = ("AdvanceWidthMax mismatch: expected %s (from hmtx);"
-                 " got %s (from hhea)") % (hmtx_advance_width_max,
-                                           hhea_advance_width_max)
-        self.assertEqual(hmtx_advance_width_max,
-                         hhea_advance_width_max, error)
-
     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ FamilyName matches Windows-only Opentype-specific FamilyName? """

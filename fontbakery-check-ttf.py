@@ -1452,6 +1452,17 @@ def main():
         logging.error("Failed to find correct magic code in PREP table.")
 
     #----------------------------------------------------
+    logging.debug("MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?")
+    hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
+    hhea_advance_width_max = font.advance_width_max
+    if hmtx_advance_width_max != hhea_advance_width_max:
+      logging.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
+                    " got %s (from hhea)") % (hmtx_advance_width_max,
+                                              hhea_advance_width_max)
+    else:
+      logging.info("OK: MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables.")
+
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
