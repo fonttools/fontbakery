@@ -88,17 +88,6 @@ class TTFTestCase(TestCase):
         self.assertEqual(hmtx_advance_width_max,
                          hhea_advance_width_max, error)
 
-    def test_prep_magic_code(self):
-        """ Font contains magic code in PREP table? """
-        magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
-        font = Font.get_ttfont(self.operator.path)
-        if 'CFF ' in font: self.skip("Not applicable to a CFF font.")
-        try:
-            bytecode = font.get_program_bytecode()
-        except KeyError:
-            bytecode = ''
-        self.assertEqual(bytecode, magiccode, msg='No')
-
     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ FamilyName matches Windows-only Opentype-specific FamilyName? """

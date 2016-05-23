@@ -1436,6 +1436,22 @@ def main():
       logging.info('OK: Font follows the family naming recommendations.')
 
     #----------------------------------------------------
+    logging.debug("Font contains magic code in PREP table?")
+    magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
+    if 'CFF ' in font:
+      logging.info("Not applicable to a CFF font.")
+    else:
+      try:
+        bytecode = font['prep'].program.getBytecode()
+      except KeyError:
+        bytecode = ''
+
+      if bytecode == magiccode:
+        logging.info("OK: Font contains magic code in PREP table.")
+      else:
+        logging.error("Failed to find correct magic code in PREP table.")
+
+    #----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
