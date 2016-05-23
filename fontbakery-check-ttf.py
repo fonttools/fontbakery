@@ -1453,9 +1453,17 @@ def main():
 
     #----------------------------------------------------
     logging.debug("MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?")
-    hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
-    hhea_advance_width_max = font.advance_width_max
-    if hmtx_advance_width_max != hhea_advance_width_max:
+    hhea_advance_width_max = font['hhea'].advanceWidthMax
+    hmtx_advance_width_max = None
+    for g in font['hmtx'].metrics.values():
+      if hmtx_advance_width_max == None:
+        hmtx_advance_width_max = max(0, g[0])
+      else:
+        hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
+
+    if hmtx_advance_width_max == None:
+      logging.error("Failed to find advance width data in HMTX table!")
+    elif hmtx_advance_width_max != hhea_advance_width_max:
       logging.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
                     " got %s (from hhea)") % (hmtx_advance_width_max,
                                               hhea_advance_width_max)

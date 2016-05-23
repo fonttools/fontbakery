@@ -310,20 +310,6 @@ class Font(BaseFont):
             if cmap.format == 4:
                 return cmap
 
-    def advance_width(self, glyph_id=None):
-        """ AdvanceWidth of glyph from "hmtx" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> int(font.advance_width("a"))
-        572
-        """
-        if not glyph_id:
-            return self['hhea'].advanceWidthMax
-        try:
-            return self['hmtx'].metrics[glyph_id][0]
-        except KeyError:
-            return None
-
     @staticmethod
     def bin2unistring(record):
         if b'\000' in record.string:
@@ -360,28 +346,6 @@ class Font(BaseFont):
         503
         """
         return len(self['loca'].locations)
-
-    def get_hmtx_max_advanced_width(self):
-        """ AdvanceWidthMax from "hmtx" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.get_hmtx_max_advanced_width()
-        1409
-        """
-        advance_width_max = 0
-        for g in self['hmtx'].metrics.values():
-            advance_width_max = max(g[0], advance_width_max)
-        return advance_width_max
-
-    @property
-    def advance_width_max(self):
-        """ AdvanceWidthMax from "hhea" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.advance_width_max
-        1409
-        """
-        return self.advance_width()
 
     def get_upm_height(self):
         return self['head'].unitsPerEm
