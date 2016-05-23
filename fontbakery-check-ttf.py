@@ -1370,36 +1370,43 @@ def main():
 
     # <Postscript name> may contain only a-zA-Z0-9
     # and one hyphen
-    name = font['name'].getName(6, 3, 1, 1033)
-    if not regex_match(name, r'[a-zA-Z0-9-]+'):
+    name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
+    regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
+    if name and not regex.match(name):
       bad_entries.append({'field': 'PostScript Name',
                           'error': 'May contain only a-zA-Z0-9 characters and an hyphen'})
 
-    if name.count('-') > 1:
+    if name and name.count('-') > 1:
       bad_entries.append({'field': 'Postscript Name',
                           'error': 'May contain not more than a single hyphen'})
 
-    if len(font['name'].getName(4, 3, 1, 1033)) >= 64:
+    name = get_name_string(font, NAMEID_FULL_FONT_NAME)
+    if name and len(name) >= 64:
       bad_entries.append({'field': 'Full Font Name',
                           'error': 'exceeds max length (64)'})
 
-    if len(font['name'].getName(6, 3, 1, 1033)) >= 30:
+    name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
+    if name and len(name) >= 30:
       bad_entries.append({'field': 'PostScript Name',
                           'error': 'exceeds max length (30)'})
 
-    if len(font['name'].getName(1, 3, 1, 1033)) >= 32:
+    name = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+    if name and len(name) >= 32:
       bad_entries.append({'field': 'Family Name',
                           'error': 'exceeds max length (32)'})
 
-    if len(font['name'].getName(2, 3, 1, 1033)) >= 32:
+    name = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
+    if name and len(name) >= 32:
       bad_entries.append({'field': 'Style Name',
                           'error': 'exceeds max length (32)'})
 
-    if len(font['name'].getName(16, 3, 1, 1033)) >= 32:
+    name = get_name_string(font, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+    if name and len(name) >= 32:
       bad_entries.append({'field': 'OT Family Name',
                           'error': 'exceeds max length (32)'})
 
-    if len(font['name'].getName(17, 3, 1, 1033)) >= 32:
+    name = get_name_string(font, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
+    if name and len(name) >= 32:
       bad_entries.append({'field': 'OT Style Name',
                           'error': 'exceeds max length (32)'})
 
