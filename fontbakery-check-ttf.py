@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-__author__="The Font Bakery Authors"
+__author__ = "The Font Bakery Authors"
 
 import os
 import sys
@@ -34,7 +34,7 @@ try:
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
-from fonts_public_pb2 import FontProto, FamilyProto
+from fonts_public_pb2 import FamilyProto
 
 #=====================================
 # GLOBAL CONSTANTS DEFINITIONS
@@ -59,8 +59,7 @@ STYLE_NAMES = ["Thin",
                "SemiBold Italic",
                "Bold Italic",
                "ExtraBold Italic",
-               "Black Italic"
-              ]
+               "Black Italic"]
 
 # Weight name to value mapping:
 WEIGHTS = {"Thin": 250,
@@ -72,8 +71,7 @@ WEIGHTS = {"Thin": 250,
            "SemiBold": 600,
            "Bold": 700,
            "ExtraBold": 800,
-           "Black": 900
-          }
+           "Black": 900}
 
 # nameID definitions for the name table:
 NAMEID_COPYRIGHT_NOTICE = 0
@@ -132,7 +130,7 @@ PANOSE_PROPORTION_MONOSPACED = 9
 
 # 'post' table / isFixedWidth definitions:
 IS_FIXED_WIDTH_NOT_MONOSPACED = 0
-IS_FIXED_WIDTH_MONOSPACED = 1 # any non-zero value means monospaced
+IS_FIXED_WIDTH_MONOSPACED = 1  # any non-zero value means monospaced
 
 PLATFORM_ID_UNICODE = 0
 PLATFORM_ID_MACHINTOSH = 1
@@ -160,6 +158,8 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
 
 font = None
 fixes = []
+
+
 def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     """ This is a helper function to accumulate
     all fixes that a test performs so that we can
@@ -180,7 +180,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     field = fields[-1]
     value = getattr(obj, field)
 
-    if bitmask==None:
+    if bitmask == None:
         if value != expectedValue:
             setattr(obj, field, expectedValue)
             fixes.append("{} {} from {} to {}".format(tableName,
@@ -199,6 +199,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #      Create a helper function to format binary values
             #      highlighting the bits that are selected by a bitmask
 
+
 def log_results(message, hotfix=True):
     """ Concatenate and log all fixes that happened up to now
     in a good and regular syntax """
@@ -216,6 +217,7 @@ def log_results(message, hotfix=True):
         # in preparation for the next test
         fixes = []
 
+
 # Maybe fonttools should provide us a helper method like this one...
 #TODO: verify if fonttools doesn't really provide that and then
 #      possibily contribute something equivalent to this upstream.
@@ -226,6 +228,7 @@ def makeNameRecord(text, nameID, platformID, platEncID, langID):
         nameID, platformID, platEncID, langID)
     name.string = text.encode(name.getEncoding())
     return name
+
 
 def get_bounding_box(font):
     """ Returns max and min bbox of given truetype font """
@@ -243,11 +246,13 @@ def get_bounding_box(font):
                 ymax = char.yMax
     return ymin, ymax
 
+
 def get_name_string(font, nameID):
     for entry in font['name'].names:
         if entry.nameID == nameID:
             return entry.string.decode(entry.getEncoding())
     return False
+
 
 def parse_version_string(s):
     """ Tries to parse a version string as used
@@ -270,8 +275,9 @@ def parse_version_string(s):
             major = int(substrings[-2])
         return major, minor, suffix
     except:
-        logging.error("Failed to detect major and minor version numbers" +\
-               " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+        logging.error("Failed to detect major and minor version numbers" +
+                      " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+
 
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
@@ -280,6 +286,7 @@ def getGlyph(font, uchar):
         if uchar in table.cmap:
             return table.cmap[uchar]
     return None
+
 
 def addGlyph(font, uchar, glyph):
     # Add to glyph list
@@ -314,14 +321,18 @@ def addGlyph(font, uchar, glyph):
             topDict=cff.topDictIndex[0],
             charStrings=cff.topDictIndex[0].CharStrings
         )
-        import ipdb; ipdb.set_trace()
+        import ipdb
+        ipdb.set_trace()
     return glyph
+
 
 def getWidth(font, glyph):
     return font['hmtx'][glyph][0]
 
+
 def setWidth(font, glyph, width):
     font['hmtx'][glyph] = (width, font['hmtx'][glyph][1])
+
 
 def glyphHasInk(font, name):
     """Checks if specified glyph has any ink.
@@ -349,15 +360,16 @@ def glyphHasInk(font, name):
             return True
     return False
 
+
 def get_FamilyProto_Message(path):
     message = FamilyProto()
     text_data = open(path, "rb").read()
     text_format.Merge(text_data, message)
     return message
 
+
 #=====================================
 # Main sequence of checkers & fixers
-
 def main():
   # set up a basic logging config
   # to include timestamps
@@ -371,8 +383,8 @@ def main():
   logger.addHandler(handler)
   # set up some command line argument processing
   parser = argparse.ArgumentParser(description="Check TTF files for common issues.")
-  parser.add_argument('arg_filepaths', nargs='+', 
-    help='font file path(s) to check. Wildcards like *.ttf are allowed.')
+  parser.add_argument('arg_filepaths', nargs='+',
+                      help='font file path(s) to check. Wildcards like *.ttf are allowed.')
   parser.add_argument('-v', '--verbose', action='count', default=0)
   args = parser.parse_args()
   if args.verbose == 1:
@@ -407,7 +419,7 @@ def main():
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-    try: 
+    try:
       family, style = filename_base.split('-')
       if style in style_file_names:
         logging.info("OK: {} is named canonically".format(font_file))
@@ -474,7 +486,7 @@ def main():
         metadata_to_check.append([fontdir, family])
 
   def ttf_file(f):
-    simplehash = f.filename #this may collide. Perhaps we need something better here.
+    simplehash = f.filename  # this may collide. Perhaps we need something better here.
     return ttf[simplehash]
 
   for dirname, family in metadata_to_check:
@@ -501,7 +513,7 @@ def main():
       logging.error('Family has a different glyphs\'s count in fonts')
     else:
       logging.info("OK: same number of glyphs across family.")
-      
+
     #-----------------------------------------------------
     logging.debug("The same names of glyphs across family?")
     glyphs = None
@@ -510,7 +522,7 @@ def main():
       ttfont = ttf_file(f)
       if not glyphs:
         glyphs = ttfont['glyf'].glyphs
-    
+
       if glyphs != ttfont['glyf'].glyphs:
         fail = True
 
@@ -518,7 +530,7 @@ def main():
       logging.error('Family has a different glyphs\'s names in fonts')
     else:
       logging.info("OK: same names of glyphs across family.")
-    
+
     #-----------------------------------------------------
     logging.debug("The same unicode encodings of glyphs across family?")
     encoding = None
@@ -533,9 +545,9 @@ def main():
 
       if not encoding:
          encoding = cmap.platEncID
-    
+
       if encoding != cmap.platEncID:
-        fail=True
+        fail = True
 
     if fail:
       logging.error('Family has different encoding across fonts')
@@ -544,7 +556,7 @@ def main():
 
 ###########################################################################
 ## Step 2: Single TTF tests
-##         * Tests that only check data of the specific TTF file, but not 
+##         * Tests that only check data of the specific TTF file, but not
 ##           the other fonts in the same family
 ###########################################################################
  #------------------------------------------------------
@@ -560,7 +572,7 @@ def main():
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     logging.info("OK: {} opened with fontTools".format(font_file))
-    
+
     #----------------------------------------------------
     # OS/2 fsType is a legacy DRM-related field from the 80's
     # It should be disabled in all fonts.
@@ -583,8 +595,8 @@ def main():
           if name.nameID == NAMEID_MANUFACTURER_NAME:
             manufacturer = name.string.decode(name.getEncoding()).strip()
             if manufacturer != registered_vendor_ids[vid].strip():
-              logging.warning("VendorID string '{}' does not match nameID 8 (Manufacturer Name): '{}'".format(\
-                  registered_vendor_ids[vid].strip(), manufacturer))
+              logging.warning("VendorID string '{}' does not match nameID 8 (Manufacturer Name): '{}'".format(
+                registered_vendor_ids[vid].strip(), manufacturer))
         msg = "OK: OS/2 VendorID is '{}' and registered to '{}'. Is that legit?".format(vid, registered_vendor_ids[vid])
         logging.info(msg)
       elif vid.lower() in [item.lower() for item in registered_vendor_ids.keys()]:
@@ -621,7 +633,7 @@ def main():
     file_path, filename = os.path.split(font_file)
     family, style = os.path.splitext(filename)[0].split('-')
     if style.endswith("Italic") and style != "Italic":
-        weight_name = style.replace("Italic","")
+        weight_name = style.replace("Italic", "")
     else:
         weight_name = style
 
@@ -750,7 +762,7 @@ def main():
                                               font['name'].names[i].langID)
                     new_names.append(new_name)
                     names_changed = True
-                if value == placeholder and license_exists==False:
+                if value == placeholder and license_exists == False:
                     logging.error('Valid licensing specified on NameID 13 but'
                                   ' a corresponding {} file was not found.'.format(license))
         if not entry_found and license_exists:
@@ -778,36 +790,36 @@ def main():
 
 # TODO: Port these here as well:
 #
-#    @tags('required') 
-#    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer') 
-#    def test_name_id_ofl_license_url(self): 
-#        """ Is the Open Font License specified in name ID 14 (License info URL)? """ 
-#        fixer = OFLLicenseInfoURLFixer(self, self.operator.path) 
-#        text = fixer.get_licensecontent() 
-#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt') 
-# 
-#        isLicense = False 
-#        for nameRecord in fixer.font['name'].names: 
-#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL: 
-#                value = getNameRecordValue(nameRecord) 
-#                isLicense = os.path.exists(fontLicensePath) or text in value 
-#        self.assertFalse(isLicense and bool(fixer.validate())) 
-# 
-#    @tags('required') 
-#    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer') 
-#    def test_name_id_apache_license_url(self): 
-#        """ Is the Apache License specified in name ID 14 (License info URL)? """ 
-#        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path) 
-#        text = fixer.get_licensecontent() 
-#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt') 
-# 
-#        isLicense = False 
-#        for nameRecord in fixer.font['name'].names: 
-#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL: 
-#                value = getNameRecordValue(nameRecord) 
-#                isLicense = os.path.exists(fontLicensePath) or text in value 
+#    @tags('required')
+#    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
+#    def test_name_id_ofl_license_url(self):
+#        """ Is the Open Font License specified in name ID 14 (License info URL)? """
+#        fixer = OFLLicenseInfoURLFixer(self, self.operator.path)
+#        text = fixer.get_licensecontent()
+#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'OFL.txt')
+#
+#        isLicense = False
+#        for nameRecord in fixer.font['name'].names:
+#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
+#                value = getNameRecordValue(nameRecord)
+#                isLicense = os.path.exists(fontLicensePath) or text in value
 #        self.assertFalse(isLicense and bool(fixer.validate()))
- 
+#
+#    @tags('required')
+#    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer')
+#    def test_name_id_apache_license_url(self):
+#        """ Is the Apache License specified in name ID 14 (License info URL)? """
+#        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path)
+#        text = fixer.get_licensecontent()
+#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path), 'LICENSE.txt')
+#
+#        isLicense = False
+#        for nameRecord in fixer.font['name'].names:
+#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
+#                value = getNameRecordValue(nameRecord)
+#                isLicense = os.path.exists(fontLicensePath) or text in value
+#        self.assertFalse(isLicense and bool(fixer.validate()))
+
     #----------------------------------------------------
     # TODO: Add a description/rationale to this check here
     logging.debug("Checking name table for items without platformID = 1 (MACHINTOSH)")
@@ -823,13 +835,13 @@ def main():
                               NAMEID_VERSION_STRING,
                               NAMEID_POSTSCRIPT_NAME,
                               NAMEID_COMPATIBLE_FULL_MACONLY
-                             ]) or \
+                              ]) or \
          (name.platformID == PLATFORM_ID_MACHINTOSH and
           name.nameID in [NAMEID_FONT_FAMILY_NAME,
                           NAMEID_FONT_SUBFAMILY_NAME,
                           NAMEID_FULL_FONT_NAME,
                           NAMEID_POSTSCRIPT_NAME
-                         ]): #see https://github.com/googlefonts/fontbakery/issues/649
+                          ]):  # see https://github.com/googlefonts/fontbakery/issues/649
         new_names.append(name)
       else:
         changed = True
@@ -889,37 +901,37 @@ def main():
                              LANG_ID_ENGLISH_USA)
 
     #----------------------------------------------------
-    # There are various metadata in the OpenType spec to specify if 
-    # a font is monospaced or not. 
+    # There are various metadata in the OpenType spec to specify if
+    # a font is monospaced or not.
     #
     # The source of truth for if a font is monospaced is if 90% of all
     # glyphs have the same width. If this is true then these metadata
     # must be set.
-    # 
-    # If not true, no monospaced metadata should be set (as sometimes 
+    #
+    # If not true, no monospaced metadata should be set (as sometimes
     # they mistakenly are...)
     #
     # Monospace fonts must:
     #
     # * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
-    #   non-zero if the font is not proportionally spaced (monospaced)"  
+    #   non-zero if the font is not proportionally spaced (monospaced)"
     #   www.microsoft.com/typography/otspec/post.htm
     #
-    # * hhea.advanceWidthMax must be correct, meaning no glyph's 
+    # * hhea.advanceWidthMax must be correct, meaning no glyph's
     #   width value is greater.
     #   www.microsoft.com/typography/otspec/hhea.htm
     #
     # * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
     #   "The PANOSE definition contains ten digits each of which currently
     #   describes up to sixteen variations. Windows uses bFamilyType,
-    #   bSerifStyle and bProportion in the font mapper to determine 
-    #   family type. It also uses bProportion to determine if the font 
-    #   is monospaced." 
+    #   bSerifStyle and bProportion in the font mapper to determine
+    #   family type. It also uses bProportion to determine if the font
+    #   is monospaced."
     #   www.microsoft.com/typography/otspec/os2.htm#pan
     #   monotypecom-test.monotype.de/services/pan2
     #
-    # * OS/2.xAverageWidth must be set accurately. 
-    #   "OS/2.xAverageWidth IS used when rendering monospaced fonts, 
+    # * OS/2.xAverageWidth must be set accurately.
+    #   "OS/2.xAverageWidth IS used when rendering monospaced fonts,
     #   at least by Windows GDI"
     #   http://typedrawers.com/discussion/comment/15397/#Comment_15397
     #
@@ -955,8 +967,8 @@ def main():
             unusually_spaced_glyphs = [g for g in glyphs if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
             # FIXME strip glyphs named .notdef .null etc from the unusually_spaced_glyphs list
-            log_results("Font is monospaced but {} glyphs".format(outliers) +\
-                        " ({0:.2f}%) have a different width.".format(outliers_percentage) +\
+            log_results("Font is monospaced but {} glyphs".format(outliers) +
+                        " ({0:.2f}%) have a different width.".format(outliers_percentage) +
                         " You should check the widths of: {}".format(unusually_spaced_glyphs))
         else:
             log_results("Font is monospaced.")
@@ -983,7 +995,7 @@ def main():
 
     #----------------------------------------------------
     # TODO FontForge will sometimes say stuff on STDERR like
-    # fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf 
+    # fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
     #   The following table(s) in the font have been ignored by FontForge
     #     Ignoring 'VDMX' vertical device metrics table
     #   The glyph named circumflex is mapped to U+F031F.
@@ -1001,12 +1013,12 @@ def main():
     # better informed analysis.
     logging.debug("Checking with fontforge")
     try:
-        import fontforge
+      pass  # import fontforge
     except ImportError:
-        logging.warning("fontforge python module is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fontforge")
-        pass
+      logging.warning("fontforge python module is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fontforge")
+      pass
     try:
-      fontforge_font = fontforge.open(font_file)
+      pass  # fontforge_font = fontforge.open(font_file)
       # TODO: port fontforge validation check from 0.0.15 to here
     except:
       logging.warning('fontforge python module could not open {}'.format(font_file))
@@ -1016,11 +1028,11 @@ def main():
     # Ascent:
     assert_table_entry('hhea', 'ascent', vmetrics_ymax)
     assert_table_entry('OS/2', 'sTypoAscender', vmetrics_ymax)
-    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax) # FIXME: This should take only Windows ANSI chars
+    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)  # FIXME: This should take only Windows ANSI chars
     # Descent:
     assert_table_entry('hhea', 'descent', vmetrics_ymin)
     assert_table_entry('OS/2', 'sTypoDescender', vmetrics_ymin)
-    assert_table_entry('OS/2', 'usWinDescent', -vmetrics_ymin) # FIXME: This should take only Windows ANSI chars
+    assert_table_entry('OS/2', 'usWinDescent', -vmetrics_ymin)  # FIXME: This should take only Windows ANSI chars
     # LineGap:
     assert_table_entry('hhea', 'lineGap', 0)
     assert_table_entry('OS/2', 'sTypoLineGap', 0)
@@ -1035,7 +1047,7 @@ def main():
     # If so, then we should calculate the max of each major and minor fields in an external "for font" loop
     ttf_version = parse_version_string(str(font['head'].fontRevision))
     if ttf_version == None:
-        fixes.append("Could not parse TTF version string on the 'head' table."+\
+        fixes.append("Could not parse TTF version string on the 'head' table." +
                      " Please fix it. Current value is '{}'".format(str(font['head'].fontRevision)))
     else:
         for name in font['name'].names:
@@ -1111,7 +1123,7 @@ def main():
 
     #----------------------------------------------------
     logging.debug("Font has got propper whitespace glyph names?")
- 
+
     if space != None and space not in ["space", "uni0020"]:
         logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
 
@@ -1151,12 +1163,11 @@ def main():
     else:
         logger.info('OK: {} space {} nbsp {}'.format(file_path, spaceWidth, nbspWidth))
 
-
     #------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage, using the thresholds in add_font.py. See https://github.com/googlefonts/fontbakery/issues/594
 
-    #----------------------------------------------------    
-    logging.debug("Check no problematic formats") # See https://github.com/googlefonts/fontbakery/issues/617
+    #------------------------------------------------------
+    logging.debug("Check no problematic formats")  # See https://github.com/googlefonts/fontbakery/issues/617
     # Font contains all required tables?
     tables = set(font.reader.tables.keys())
     glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
@@ -1167,11 +1178,11 @@ def main():
         fixes.append(desc)
     log_results("Check no problematic formats. ", hotfix=False)
 
-    #----------------------------------------------------
-    # TODO Fonts have old ttfautohint applied, so port 
+    #------------------------------------------------------
+    # TODO Fonts have old ttfautohint applied, so port
     # fontbakery-fix-version.py here and:
     #
-    # 1. find which version was used, grepping the name table or reading the ttfa table (which are created if the `-I` or `-t` args respectively were passed to ttfautohint, to record its args in the ttf file) (there is a pypi package https://pypi.python.org/pypi/font-ttfa for reading the ttfa table, although per https://github.com/source-foundry/font-ttfa/issues/1 it might be better to inline the code... :) 
+    # 1. find which version was used, grepping the name table or reading the ttfa table (which are created if the `-I` or `-t` args respectively were passed to ttfautohint, to record its args in the ttf file) (there is a pypi package https://pypi.python.org/pypi/font-ttfa for reading the ttfa table, although per https://github.com/source-foundry/font-ttfa/issues/1 it might be better to inline the code... :)
     #
     # 2. find which version of ttfautohint is installed (and warn if not available, similar to ots check above
     #
@@ -1179,6 +1190,7 @@ def main():
 
     #----------------------------------------------------
     logging.debug("Version format is correct in NAME table?")
+
     def is_valid_version_format(value):
       return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
@@ -1307,8 +1319,8 @@ def main():
     #FIX-ME: I think we should still compare entries
     # even if they have different encodings
     elif (familyname.platformID == fullfontname.platformID
-        and familyname.platEncID == fullfontname.platEncID
-        and familyname.langID == fullfontname.langID):
+          and familyname.platEncID == fullfontname.platEncID
+          and familyname.langID == fullfontname.langID):
       if not familyname.startswith(fullfontname):
         logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname, fullfontname))
       else:
@@ -1328,18 +1340,19 @@ def main():
 
       # allow up to 3 bytes of padding
       if diff > 3:
-        logging.error(("Glyf table has unreachable data at the end of the table." +\
-                       " Expected glyf table length %s (from loca table), got length" +\
+        logging.error(("Glyf table has unreachable data at the end of the table." +
+                       " Expected glyf table length %s (from loca table), got length" +
                        " %s (difference: %s)") % (expected, actual, diff))
       elif diff < 0:
-        logging.error(("Loca table references data beyond the end of the glyf table." +\
-                       " Expected glyf table length %s (from loca table), got length" +\
+        logging.error(("Loca table references data beyond the end of the glyf table." +
+                       " Expected glyf table length %s (from loca table), got length" +
                        " %s (difference: %s)") % (expected, actual, diff))
       else:
         logging.info("OK: There is no unused data at the end of the glyf table.")
 
     #----------------------------------------------------
     import unicodedata
+
     def font_has_char(font, c):
       cmap = None
       for table in font['cmap'].tables:
@@ -1361,7 +1374,6 @@ def main():
       logging.info("OK: Font has 'EURO SIGN' character.")
     else:
       logging.error("Font lacks the '%s' character." % 'EURO SIGN')
-
 
     #----------------------------------------------------
     logging.debug("Font follows the family naming recommendations?")
@@ -1634,7 +1646,6 @@ def main():
             else:
               logging.info("OK: Postscript name '{}' is identical in METADATA.pb and on the TTF file.".format(f.post_script_name))
 
-
           #-----------------------------------------------
           logging.debug("METADATA.pb 'fullname' value matches internal 'fullname' ?")
           fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
@@ -1745,6 +1756,7 @@ def main():
 
           #-----------------------------------------------
           logging.debug("Filename is set canonically?")
+
           def create_canonical_filename(font_metadata):
             weights = {
               100: 'Thin',
@@ -1775,44 +1787,44 @@ def main():
             logging.info('OK. Filename is set canonically.')
 
           #-----------------------------------------------
-          if f.style == 'italic': #this test only applies to italic fonts
+          if f.style == 'italic':  # this test only applies to italic fonts
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              pass #these fail scenarios were already tested above
-                   #(passing those previous tests is a prerequisite for this one)
+              pass  # these fail scenarios were already tested above
+                    # (passing those previous tests is a prerequisite for this one)
             else:
               logging.debug("METADATA.pb font.style `italic` matches font internals?")
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to italic'
-                                 ' but font macStyle is improperly set')
+                                ' but font macStyle is improperly set')
               elif not font_familyname.split('-')[-1].endswith('Italic'):
                   logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
-                                 ' is not ended with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+                                ' is not ended with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
                   logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
-                                 ' is not ended with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+                                ' is not ended with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
               else:
                 logging.info('OK: METADATA.pb font.style `italic` matches font internals.')
 
           #-----------------------------------------------
-          if f.style == 'normal': #this test only applies to normal fonts
+          if f.style == 'normal':  # this test only applies to normal fonts
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              pass #these fail scenarios were already tested above
-                   #(passing those previous tests is a prerequisite for this one)
+              pass  # these fail scenarios were already tested above
+                    # (passing those previous tests is a prerequisite for this one)
             else:
               logging.debug("METADATA.pb font.style `normal` matches font internals?")
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to normal'
-                                 ' but font macStyle is improperly set')
+                                ' but font macStyle is improperly set')
               elif font_familyname.split('-')[-1].endswith('Italic'):
                   logging.error('Font macStyle indicates a non-Italic font, but nameID %d ("%s")'
-                                 ' ends with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+                                ' ends with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
                   logging.error('Font macStyle indicates a non-Italic font but nameID %d ("%s")'
-                                 ' ends with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+                                ' ends with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
               else:
                 logging.info('OK: METADATA.pb font.style `normal` matches font internals.')
 
@@ -1828,7 +1840,7 @@ def main():
           #-----------------------------------------------
           logging.debug("Check if fontname is not camel cased.")
           if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
-            logging.error("METADATA.pb: '%s' is a CamelCased name.".format(f.name) +\
+            logging.error("METADATA.pb: '%s' is a CamelCased name.".format(f.name) +
                           " To solve this, simply use spaces instead in the font name.")
           else:
             logging.info("OK: font name is not camel-cased.")
@@ -1844,7 +1856,7 @@ def main():
           logging.debug("Check that font weight has a canonical value")
           first_digit = f.weight / 100
           if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
-            logging.error("METADATA.pb: The weight is declared as %d which is not a " +\
+            logging.error("METADATA.pb: The weight is declared as %d which is not a " +
                           "multiple of 100 between 100 and 900.".format(f.weight))
           else:
             logging.info("OK: font weight has a canonical value.")
@@ -1886,7 +1898,7 @@ def main():
             logging.error('METADATA.pb: Font weight does not match postScriptName')
           elif not (f.post_script_name.endswith('-' + pair[0][0])
                     or f.post_script_name.endswith('-%s' % pair[1][0])):
-            logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +\
+            logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +
                           'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
           else:
             logging.info("OK: Weight value matches postScriptName.")
@@ -1894,7 +1906,7 @@ def main():
           #-----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname == False:
-            pass #skip this test
+            pass  # skip this test
           else:
             logging.debug("METADATA.pb lists fonts named canonicaly?")
             is_canonical = False
@@ -1968,15 +1980,15 @@ def main():
       #----------------------------------------------------
 
     #----------------------------------------------------
-    # TODO each fix line should set a fix flag, and 
+    # TODO each fix line should set a fix flag, and
     # if that flag is True by this point, only then write the file
-    # and then say any further output regards fixed files, and 
+    # and then say any further output regards fixed files, and
     # re-run the script on each fixed file with logging level = error
     # so no info-level log items are shown
-    font_file_output = font_file.replace('ttf','fix')
+    font_file_output = font_file.replace('ttf', 'fix')
     font.save(font_file_output)
     font.close()
     logging.info("{} saved\n".format(font_file_output))
 
-if __name__=='__main__':
-    main()
+if __name__ == '__main__':
+  main()
