@@ -139,6 +139,7 @@ PLATFORM_ID_WINDOWS = 3
 PLATFORM_ID_CUSTOM = 4
 
 PLAT_ENC_ID_UCS2 = 1
+PLAT_ENC_ID_UCS4 = 10
 LANG_ID_ENGLISH_USA = 0x0409
 
 PLACEHOLDER_LICENSING_TEXT = {
@@ -281,7 +282,9 @@ def parse_version_string(s):
 
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
-        if not (table.platformID == 3 and table.platEncID in [1, 10]):
+        if not (table.platformID == PLATFORM_ID_WINDOWS
+           and table.platEncID in [PLAT_ENC_ID_UCS2,
+                                   PLAT_ENC_ID_UCS4]):
             continue
         if uchar in table.cmap:
             return table.cmap[uchar]
@@ -300,7 +303,9 @@ def addGlyph(font, uchar, glyph):
 
     # Add to cmap
     for table in font['cmap'].tables:
-        if not (table.platformID == 3 and table.platEncID in [1, 10]):
+        if not (table.platformID == PLATFORM_ID_WINDOWS
+           and table.platEncID in [PLAT_ENC_ID_UCS2,
+                                   PLAT_ENC_ID_UCS4]):
             continue
         if not table.cmap:  # Skip UVS cmaps
             continue
