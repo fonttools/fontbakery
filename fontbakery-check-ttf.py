@@ -1066,7 +1066,7 @@ def main():
                     fixes.append("NAMEID_VERSION_STRING from {} to {}".format(name.string, new_string))
                     name.string = new_string
         if 'CFF ' in font.keys():
-            major, minor, _ = version
+            major, minor, _ = ttf_version
             assert_table_entry("CFF ", 'cff.major', int(major))
             assert_table_entry("CFF ", 'cff.minor', int(minor))
     log_results("Font version fields.")
