@@ -598,24 +598,25 @@ def main():
       logging.warning(msg)
 
     #----------------------------------------------------
-    logging.debug("substitute copyright, registered and trademark symbols in name table entries")
-    new_names = []
-    nametable_updated = False
-    replacement_map = [(u"\u00a9", '(c)'), (u"\u00ae", '(r)'), (u"\u2122", '(tm)')]
-    for name in font['name'].names:
-        new_name = name
-        original = name.string
-        string = name.string
-        for mark, ascii_repl in replacement_map:
-            string = string.replace(mark, ascii_repl)
-        new_name.string = string.encode(name.getEncoding())
-        if string != original:
-            logging.error("HOTFIXED: Name entry fixed to '{}'.".format(string))
-            nametable_updated = True
-        new_names.append(new_name)
-    if nametable_updated:
-        logging.error("HOTFIXED: Name table entries were modified to replace unicode symbols such as (c), (r) and TM.")
-        font['name'].names = new_names
+#TODO: Fix this! See issue: https://github.com/googlefonts/fontbakery/issues/789
+#    logging.debug("substitute copyright, registered and trademark symbols in name table entries")
+#    new_names = []
+#    nametable_updated = False
+#    replacement_map = [(u"\u00a9", '(c)'), (u"\u00ae", '(r)'), (u"\u2122", '(tm)')]
+#    for name in font['name'].names:
+#        new_name = name
+#        original = name.string
+#        string = name.string
+#        for mark, ascii_repl in replacement_map:
+#            string = string.replace(mark, ascii_repl)
+#        new_name.string = string.encode(name.getEncoding())
+#        if string != original:
+#            logging.error("HOTFIXED: Name entry fixed to '{}'.".format(string))
+#            nametable_updated = True
+#        new_names.append(new_name)
+#    if nametable_updated:
+#        logging.error("HOTFIXED: Name table entries were modified to replace unicode symbols such as (c), (r) and TM.")
+#        font['name'].names = new_names
 
     #----------------------------------------------------
     file_path, filename = os.path.split(font_file)
