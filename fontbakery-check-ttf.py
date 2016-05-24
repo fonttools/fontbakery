@@ -1302,7 +1302,7 @@ def main():
 
     if not familyname:
       logging.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry in the name table.')
-    elif not fullfamilyname:
+    elif not fullfontname:
       logging.error('Font lacks a NAMEID_FULL_FONT_NAME entry in the name table.')
     #FIX-ME: I think we should still compare entries
     # even if they have different encodings
