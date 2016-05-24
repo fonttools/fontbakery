@@ -180,7 +180,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     field = fields[-1]
     value = getattr(obj, field)
 
-    if bitmask == None:
+    if bitmask is None:
         if value != expectedValue:
             setattr(obj, field, expectedValue)
             fixes.append("{} {} from {} to {}".format(tableName,
@@ -725,14 +725,14 @@ def main():
     for license in ['OFL.txt', 'LICENSE.txt']:
       license_path = os.path.join(file_path, license)
       if os.path.exists(license_path):
-          if found != False:
+          if found is not False:
              logger.error("More than a single license file found. Please review.")
              found = "multiple"
           else:
              found = license_path
 
     if found != "multiple":
-        if found == False:
+        if found is False:
             logger.error("No license file was found. Please add an OFL.txt or a LICENSE.txt file.")
         else:
             logger.info("OK: Found license at '{}'".format(found))
@@ -762,7 +762,7 @@ def main():
                                               font['name'].names[i].langID)
                     new_names.append(new_name)
                     names_changed = True
-                if value == placeholder and license_exists == False:
+                if value == placeholder and license_exists is False:
                     logging.error('Valid licensing specified on NameID 13 but'
                                   ' a corresponding {} file was not found.'.format(license))
         if not entry_found and license_exists:
@@ -1046,7 +1046,7 @@ def main():
     #FIXME: do we want all fonts a the same family to have the same major and minor version numbers?
     # If so, then we should calculate the max of each major and minor fields in an external "for font" loop
     ttf_version = parse_version_string(str(font['head'].fontRevision))
-    if ttf_version == None:
+    if ttf_version is None:
         fixes.append("Could not parse TTF version string on the 'head' table." +
                      " Please fix it. Current value is '{}'".format(str(font['head'].fontRevision)))
     else:
@@ -1124,10 +1124,10 @@ def main():
     #----------------------------------------------------
     logging.debug("Font has got propper whitespace glyph names?")
 
-    if space != None and space not in ["space", "uni0020"]:
+    if space is not None and space not in ["space", "uni0020"]:
         logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
 
-    if nbsp != None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
+    if nbsp is not None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
         logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
 
     #----------------------------------------------------
@@ -1430,7 +1430,7 @@ def main():
       field = 'CFF Weight'
       weight_value = font['CFF'].Weight
 
-    if weight_value != None:
+    if weight_value is not None:
       # <Weight> value >= 250 and <= 900 in steps of 50
       if weight_value % 50 != 0:
         bad_entries.append({'field': field,
@@ -1468,12 +1468,12 @@ def main():
     hhea_advance_width_max = font['hhea'].advanceWidthMax
     hmtx_advance_width_max = None
     for g in font['hmtx'].metrics.values():
-      if hmtx_advance_width_max == None:
+      if hmtx_advance_width_max is None:
         hmtx_advance_width_max = max(0, g[0])
       else:
         hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
 
-    if hmtx_advance_width_max == None:
+    if hmtx_advance_width_max is None:
       logging.error("Failed to find advance width data in HMTX table!")
     elif hmtx_advance_width_max != hhea_advance_width_max:
       logging.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
@@ -1625,7 +1625,7 @@ def main():
           #-----------------------------------------------
           logging.debug("Font on disk and in METADATA.pb have the same family name ?")
           familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if familyname == False:
+          if familyname is False:
             logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
           else:
             if familyname != f.name:
@@ -1637,7 +1637,7 @@ def main():
           #-----------------------------------------------
           logging.debug("Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'")
           postscript_name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
-          if postscript_name == False:
+          if postscript_name is False:
             logging.error("This font lacks a POSTSCRIPT_NAME entry (nameID={}) in the name table.".format(NAMEID_POSTSCRIPT_NAME))
           else:
             if postscript_name != f.post_script_name:
@@ -1649,7 +1649,7 @@ def main():
           #-----------------------------------------------
           logging.debug("METADATA.pb 'fullname' value matches internal 'fullname' ?")
           fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-          if fullname == False:
+          if fullname is False:
             logging.error("This font lacks a FULL_FONT_NAME entry (nameID={}) in the name table.".format(NAMEID_FULL_FONT_NAME))
           else:
             if fullname != f.full_name:
@@ -1661,7 +1661,7 @@ def main():
           #-----------------------------------------------
           logging.debug("METADATA.pb fonts 'name' property should be same as font familyname")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname == False:
+          if font_familyname is False:
             logging.error("This font lacks a FONT_FAMILY_NAME entry (nameID={}) in the name table.".format(NAMEID_FONT_FAMILY_NAME))
           else:
             if font_familyname != f.name:
@@ -1699,7 +1699,7 @@ def main():
 
           #-----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname != False:
+          if font_familyname is not False:
             logging.debug("METADATA.pb 'name' contains font name in right format ?")
             if font_familyname in f.name:
               logging.info("OK: METADATA.pb 'name' contains font name in right format ?")
@@ -1731,7 +1731,7 @@ def main():
           logging.debug("Copyright notice matches canonical pattern?")
           almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)', f.copyright)
           does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))', f.copyright)
-          if (does_match != None):
+          if (does_match is not None):
             logging.info("OK: METADATA.pb copyright field matches canonical pattern.")
           else:
             if (almost_matches):
@@ -1905,7 +1905,7 @@ def main():
 
           #-----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname == False:
+          if font_familyname is False:
             pass  # skip this test
           else:
             logging.debug("METADATA.pb lists fonts named canonicaly?")
