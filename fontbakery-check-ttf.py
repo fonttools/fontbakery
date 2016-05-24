@@ -862,7 +862,7 @@ def main():
     changed = False
     for name in font['name'].names:
       if 'opyright' in name.string.decode(name.getEncoding())\
-         and record.nameID == NAMEID_DESCRIPTION:
+         and name.nameID == NAMEID_DESCRIPTION:
         changed = True
         continue
       new_names.append(name)
