@@ -1709,28 +1709,28 @@ def main():
             if font_familyname in f.name:
               logging.info("OK: METADATA.pb 'name' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb name='{}' does not match correct font name format.".format(f.name))
+              logging.error("METADATA.pb name='{}' does not match correct font name format.".format(f.name))
             #-----------
 
             logging.debug("METADATA.pb 'full_name' contains font name in right format ?")
             if font_familyname in f.name:
               logging.info("OK: METADATA.pb 'full_name' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb full_name='{}' does not match correct font name format.".format(f.full_name))
+              logging.error("METADATA.pb full_name='{}' does not match correct font name format.".format(f.full_name))
             #-----------
 
             logging.debug("METADATA.pb 'filename' contains font name in right format ?")
             if "".join(str(font_familyname).split()) in f.filename:
               logging.info("OK: METADATA.pb 'filename' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb filename='{}' does not match correct font name format.".format(f.filename))
+              logging.error("METADATA.pb filename='{}' does not match correct font name format.".format(f.filename))
             #-----------
 
             logging.debug("METADATA.pb 'postScriptName' contains font name in right format ?")
             if "".join(str(font_familyname).split()) in f.post_script_name:
               logging.info("OK: METADATA.pb 'postScriptName' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
+              logging.error("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
 
           #-----------------------------------------------
           logging.debug("Copyright notice matches canonical pattern?")
