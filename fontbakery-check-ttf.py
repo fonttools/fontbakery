@@ -484,7 +484,7 @@ def main():
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
     if not os.path.exists(metadata):
-      logging.error("{} is missing a METADATA.pb file!".format(file_path))
+      logging.error("'{}' is missing a METADATA.pb file!".format(font_file))
     else:
       family = get_FamilyProto_Message(metadata)
       if family not in metadata_to_check:
