@@ -1355,23 +1355,10 @@ def main():
     import unicodedata
 
     def font_has_char(font, c):
-      cmap = None
-      for table in font['cmap'].tables:
-        if table.format == 4:
-          cmap = table
-          break
-      if cmap:
-        try:
-          x = cmap[ord(unicodedata.lookup(c))]
-          logging.info("x={}".format(x))
-          return True
-        except:
-          return False
-      else:
-        return False
+        return len(font['cmap'].buildReversed()[c]) > 0
 
     logging.debug("Font has 'EURO SIGN' character?")
-    if font_has_char(font, 'EURO SIGN'):
+    if font_has_char(font, 'Euro'):
       logging.info("OK: Font has 'EURO SIGN' character.")
     else:
       logging.error("Font lacks the '%s' character." % 'EURO SIGN')
