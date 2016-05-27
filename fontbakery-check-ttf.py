@@ -1340,13 +1340,13 @@ def main():
       logging.error('Font lacks a NAMEID_FULL_FONT_NAME entry in the name table.')
     #FIX-ME: I think we should still compare entries
     # even if they have different encodings
-    elif (familyname.platformID == fullfontname.platformID
-          and familyname.platEncID == fullfontname.platEncID
-          and familyname.langID == fullfontname.langID):
-      if not familyname.startswith(fullfontname):
-        logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname, fullfontname))
-      else:
-        logging.info('OK: Full font name begins with the font family name.')
+#    elif (familyname.platformID == fullfontname.platformID
+#          and familyname.platEncID == fullfontname.platEncID
+#          and familyname.langID == fullfontname.langID):
+#      if not familyname.startswith(fullfontname):
+#        logging.error("Font family name '{}' does not begin with full font name '{}'".format(familyname, fullfontname))
+#      else:
+#        logging.info('OK: Full font name begins with the font family name.')
     else:
       logging.error('Encoding mismatch between NAMEID_FONT_FAMILY_NAME and NAMEID_FULL_FONT_NAME entries.')
 
