@@ -96,29 +96,6 @@ class TTFTestCase(TestCase):
         self.assertEqual(font.familyname, suggestedvalues['family'])
         self.assertEqual(font.stylename, suggestedvalues['subfamily'])
 
-    @tags('required')
-    def test_check_names_same_across_platforms(self):
-        """ Font names are consistent across platforms? """
-        font = Font.get_ttfont(self.operator.path)
-
-        for name in font.names:
-            for name2 in font.names:
-                if name.nameID != name2.nameID:
-                    continue
-
-                if self.diff_platform(name, name2) \
-                        or self.diff_platform(name2, name):
-                    _name = Font.bin2unistring(name)
-                    _name2 = Font.bin2unistring(name2)
-                    if _name != _name2:
-                        msg = ('Names in "name" table are not the same'
-                               ' across specific-platforms')
-                        self.fail(msg)
-
-    def diff_platform(self, name, name2):
-        return (name.platformID == 3 and name.langID == 0x409
-                and name2.platformID == 1 and name2.langID == 0)
-
     def test_check_os2_width_class(self):
         """ OS/2 width class is correctly set? """
         font = Font.get_ttfont(self.operator.path)

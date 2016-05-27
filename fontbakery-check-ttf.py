@@ -139,6 +139,7 @@ PLATFORM_ID_CUSTOM = 4
 PLAT_ENC_ID_UCS2 = 1
 PLAT_ENC_ID_UCS4 = 10
 LANG_ID_ENGLISH_USA = 0x0409
+LANG_ID_MACHINTOSH_ENGLISH = 0
 
 PLACEHOLDER_LICENSING_TEXT = {
     'OFL.txt': 'This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at http://scripts.sil.org/OFL',
@@ -1466,6 +1467,24 @@ def main():
                                               hhea_advance_width_max)
     else:
       logging.info("OK: MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables.")
+
+    # ----------------------------------------------------
+    logging.debug("Font names are consistent across platforms?")
+    fail = False
+    for name1 in font['name'].names:
+      if (name1.platformID == PLATFORM_ID_WINDOWS and
+          name1.langID == LANG_ID_ENGLISH_USA):
+        for name2 in font['name'].names:
+          if (name2.platformID == PLATFORM_ID_MACHINTOSH and
+              name2.langID == LANG_ID_MACHINTOSH_ENGLISH):
+             n1 = get_name(font, name1.nameID)
+             n2 = get_name(font, name2.nameID)
+             if n1 != n2:
+               fail = True
+    if fail:
+      logging.error('Entries in "name" table are not the same across specific platforms.')
+    else:
+      logging.info('OK: Font names are consistent across platforms.')
 
     # ----------------------------------------------------
 
