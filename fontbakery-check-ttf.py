@@ -207,6 +207,7 @@ def log_results(message, hotfix=True):
     """ Concatenate and log all fixes that happened up to now
     in a good and regular syntax """
     global fixes
+    # DC QUESTION: should hotfix be global too?
     if fixes == []:
         logging.info("OK: " + message)
     else:
@@ -250,6 +251,7 @@ def get_bounding_box(font):
     return ymin, ymax
 
 
+# DC is this really working? what about NAME tables with several namerecords with the same nameIDs and different platformIDs/etc?
 def get_name_string(font, nameID):
     for entry in font['name'].names:
         if entry.nameID == nameID:
@@ -265,6 +267,7 @@ def parse_version_string(s):
     """
     try:
         suffix = ''
+        # DC: I think this may be wrong, the ; isnt the only separator, anything not an int is ok
         if ';' in s:
             fields = s.split(';')
             s = fields[0]
@@ -283,6 +286,7 @@ def parse_version_string(s):
 
 
 def getGlyph(font, uchar):
+    # DC This 'if not / continue' structure seems weird to me. why not just "if" and thats it?
     for table in font['cmap'].tables:
         if not (table.platformID == PLATFORM_ID_WINDOWS and
            table.platEncID in [PLAT_ENC_ID_UCS2,
@@ -361,6 +365,7 @@ def glyphHasInk(font, name):
 
     # composite is blank if composed of blanks
     # if you setup a font with cycles you are just a bad person
+    # DC lol, bad people exist, so put a recursion in this recursion
     for glyph_name in glyph.getComponentNames(glyph.components):
         if glyphHasInk(font, glyph_name):
             return True
@@ -471,6 +476,7 @@ def main():
   except:
     logging.warning("Failed to fetch Microsoft's vendorID list.")
 
+# DC This is definitely not step 1, cross-family comes after individual in order that individual hotfixes can enable cross-family checks to pass
 ###########################################################################
 ## Step 1: Cross-family tests
 ##         * Validates consistency of data throughout all TTF files
@@ -499,46 +505,45 @@ def main():
     ttf = {}
     for f in family.fonts:
       if f.filename in ttf.keys():
-        logging.error("This is a fontbakery bug. Please contact us. We may need to figure out a better hash-function for the font ProtocolBuffer message...")
+        logging.error("This is a fontbakery bug. We need to figure out a better hash-function for the font ProtocolBuffer message. Please file an issue on https://github.com/googlefonts/fontbakery/issues/new")
       else:
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
     # -----------------------------------------------------
-    logging.debug("The same number of glyphs across family?")
+    logging.debug("Fonts have equal numbers of glyphs?")
     glyphs_count = 0
     fail = False
     for f in family.fonts:
       ttfont = ttf_file(f)
       if not glyphs_count:
         glyphs_count = len(ttfont['glyf'].glyphs)
-
       if glyphs_count != len(ttfont['glyf'].glyphs):
         fail = True
 
     if fail:
-      logging.error('Family has a different glyphs\'s count in fonts')
+      #TODO make this print a table of the files + counts
+      logging.error('Fonts have different numbers of glyphs.')
     else:
-      logging.info("OK: same number of glyphs across family.")
+      logging.info("OK: Fonts have equal numbers of glyphs.")
 
     # -----------------------------------------------------
-    logging.debug("The same names of glyphs across family?")
+    logging.debug("Fonts have equal glyph names?")
     glyphs = None
     fail = False
     for f in family.fonts:
       ttfont = ttf_file(f)
       if not glyphs:
         glyphs = ttfont['glyf'].glyphs
-
       if glyphs != ttfont['glyf'].glyphs:
         fail = True
 
     if fail:
-      logging.error('Family has a different glyphs\'s names in fonts')
+      logging.error('Fonts have different glyph names.')
     else:
-      logging.info("OK: same names of glyphs across family.")
+      logging.info("OK: Fonts have equal glyph names.")
 
     # -----------------------------------------------------
-    logging.debug("The same unicode encodings of glyphs across family?")
+    logging.debug("Fonts have equal unicode encodings?")
     encoding = None
     fail = False
     for f in family.fonts:
@@ -556,14 +561,14 @@ def main():
         fail = True
 
     if fail:
-      logging.error('Family has different encoding across fonts')
+      logging.error('Fonts have different unicode encodings.')
     else:
-      logging.info("OK: same unicode encodings of glyphs across family.")
+      logging.info("OK: Fonts have equal unicode encodings.")
 
 ##########################################################################
 # Step 2: Single TTF tests
-#         * Tests that only check data of the specific TTF file, but not
-#           the other fonts in the same family
+#         * Tests that only check data of each TTF file, but not cross-
+#           referencing with other fonts in the family
 ##########################################################################
  # ------------------------------------------------------
   vmetrics_ymin = 0
@@ -628,20 +633,24 @@ def main():
             string = string.replace(mark, ascii_repl)
         new_name.string = string.encode(name.getEncoding())
         if string != original:
+            # DC this must specify WHICH symbol was sub'd
             logging.error("HOTFIXED: Symbol substituted in name entry.")
             nametable_updated = True
         new_names.append(new_name)
     if nametable_updated:
+        # DC this must specify WHICH symbol was sub'd
         logging.error("HOTFIXED: Name table entries were modified to replace unicode symbols such as (c), (r) and TM.")
         font['name'].names = new_names
 
     # ----------------------------------------------------
+    # Determine weight from canonical filename
     file_path, filename = os.path.split(font_file)
     family, style = os.path.splitext(filename)[0].split('-')
     if style.endswith("Italic") and style != "Italic":
         weight_name = style.replace("Italic", "")
     else:
         weight_name = style
+    # DC what happens with "Italic" styles, weight_name = "Italic"?
 
     # ----------------------------------------------------
     logging.debug("Checking OS/2 usWeightClass")
@@ -658,38 +667,37 @@ def main():
 
     # ----------------------------------------------------
     logging.debug("Checking that italicAngle <= 0")
-
     value = font['post'].italicAngle
     if value > 0:
         font['post'].italicAngle = -value
-        logging.error("HOTFIXED: italicAngle from {} to {}".format(value, -value))
+        logging.error("HOTFIXED: post table italicAngle from {} to {}".format(value, -value))
     else:
-        logging.info("OK: italicAngle <= 0")
+        logging.info("OK: post table italicAngle is {}".format(value))
 
     # ----------------------------------------------------
     logging.debug("Checking that italicAngle is less than 20 degrees")
-
     value = font['post'].italicAngle
     if abs(value) > 20:
         font['post'].italicAngle = -20
-        logging.error("HOTFIXED: italicAngle from {} to -20 (italicAngle can\'t be larger than 20 degrees)".format(value))
+        logging.error("HOTFIXED: post table italicAngle changed from {} to -20".format(value))
     else:
-        logging.info("OK: italicAngle is less than 20 degrees.")
+        logging.info("OK: post table italicAngle is less than 20 degrees.")
 
     # ----------------------------------------------------
     logging.debug("Checking if italicAngle matches font style")
-
+    # DC all the italic style checks should be wrapped in this if statement? There are lots of "if italic in style" but there should only be one, and there are lots that do NOT have this but perhaps should. Overall these italicAngle checks seem bogus to me, need rethinking to be more logically consistent and not forgetting to check all possible states
     if "Italic" in style:
        if font['post'].italicAngle == 0:
-           logging.error("Font is italic, so italicAngle should be non-zero.")
+           logging.error("Font is italic, so post table italicAngle should be non-zero.")
        else:
-           logging.info("OK: italicAngle matches font style")
+           logging.info("OK: post table italicAngle matches style name")
     else:
        assert_table_entry('post', 'italicAngle', 0)
-       log_results("matching of fontstyle and italicAngle value")
+       log_results("post table italicAngle matches style name")
 
     # ----------------------------------------------------
     # TODO: checker for proper italic names in name table
+    # DC THIS IS URGENT!
 
     # ----------------------------------------------------
     logging.debug("Checking fsSelection ITALIC bit")
@@ -789,13 +797,15 @@ def main():
     # ----------------------------------------------------
     logging.debug("Check license and license URL entries")
     # TODO Check license and license URL are correct, hotfix them if not
+    # DC URGENT!
 
     # ----------------------------------------------------
     logging.debug("Assure theres no 'description' namerecord")
     # TODO Check namerecord 9 ("description") is not there, drop it if so
+    # DC URGENT!
 
 # TODO: Port these here as well:
-#
+# DC these seem to be ported already?
 #    @tags('required')
 #    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
 #    def test_name_id_ofl_license_url(self):
@@ -828,6 +838,7 @@ def main():
 
     # ----------------------------------------------------
     # TODO: Add a description/rationale to this check here
+    # DC I need to carefully review how this works
     logging.debug("Checking name table for items without platformID = 1 (MACHINTOSH)")
     new_names = []
     changed = False
@@ -858,7 +869,7 @@ def main():
       logging.info("OK: name table has only the bare-minimum records with platformID=1")
 
     # ----------------------------------------------------
-    logging.debug("Removing name table entries with 'opyright' substring")
+    logging.debug("Namerecord 10s (descriptions) exist?")
     new_names = []
     changed = False
     for name in font['name'].names:
@@ -869,22 +880,23 @@ def main():
       new_names.append(name)
     if changed:
       font['name'].names = new_names
-      logging.error("HOTFIXED: some name table items with 'opyright' substring were removed")
+      logging.error("HOTFIXED: Namerecord 10s (descriptions) were removed (perhaps added by a longstanding FontLab Studio 5.x bug.)")
     else:
-      logging.info("OK: No 'opyright' substring found on name table entries.")
+      logging.info("OK: Namerecord 10s (descriptions) do not exist.")
 
     # ----------------------------------------------------
-    logging.debug("StyleName recomendadion")
+    logging.debug("StyleName recommendation")
     font_style_name = ""
     for entry in font['name'].names:
         if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
             font_style_name = entry.string
             break
-
+    # DC this seems unreliable
     if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
         new_value = font_style_name
         logger.error('OK: {}: Fixed: Windows-only Opentype-specific StyleName set'
                      ' to "{}".'.format(font_file, font_style_name))
+    # DC for example, R/I/B/BI should _not_ have any OT style name
     else:
         logger.error('OK: {}: Warning: Windows-only Opentype-specific StyleName set to "Regular"'
                      ' as a default value. Please verify if this is correct.'.format(font_file))
@@ -996,18 +1008,20 @@ def main():
       else:
         logging.info("OK: ot-sanitise passed this file")
     except OSError:
-      logging.warning("ot-santise is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#ots")
+      # This is made very prominent with additional line breaks
+      logging.warning("\n\n\not-santise is not available! You really MUST check the fonts with this tool. To install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
       pass
 
     # ----------------------------------------------------
     # TODO FontForge will sometimes say stuff on STDERR like
-    # fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
+    # $ fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
     #   The following table(s) in the font have been ignored by FontForge
     #     Ignoring 'VDMX' vertical device metrics table
     #   The glyph named circumflex is mapped to U+F031F.
     #   But its name indicates it should be mapped to U+02C6.
+    # $
     #
-    # We should detect this and if found, warn with it
+    # We should detect this and if found, warn about that output.
     #
     # Felipe Sanches:
     # I've been inspecting the fontforge python module source code
@@ -1017,11 +1031,14 @@ def main():
     # actually need to modify fontforge code itself to achieve that.
     # I'll have to investigate it further in order to provide a
     # better informed analysis.
+    #
+    # DC: Then we can load the font via the command line instead of
+    # with the python module, and grab the stderr that way
     logging.debug("Checking with fontforge")
     try:
       pass  # import fontforge
     except ImportError:
-      logging.warning("fontforge python module is not available. Install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fontforge")
+      logging.warning("fontforge python module is not available. To install it, see https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fontforge")
       pass
     try:
       pass  # fontforge_font = fontforge.open(font_file)
@@ -1049,8 +1066,9 @@ def main():
 
     # ----------------------------------------------------
     logging.debug("Checking font version fields")
-    # FIXME: do we want all fonts a the same family to have the same major and minor version numbers?
-    #        If so, then we should calculate the max of each major and minor fields in an external "for font" loop
+    # FIXME: do we want all fonts in the same family to have the same major and minor version numbers?
+    # If so, then we should calculate the max of each major and minor fields in an external "for font" loop
+    # DC yes we should check this and warn about it but it is not fatal.
     ttf_version = parse_version_string(str(font['head'].fontRevision))
     if ttf_version is None:
         fixes.append("Could not parse TTF version string on the 'head' table." +
@@ -1073,9 +1091,9 @@ def main():
     log_results("Font version fields.")
 
     # ----------------------------------------------------
-    logging.debug("Digital Signature")
+    logging.debug("Digital Signature exists?")
     if "DSIG" in font:
-        logging.info("OK: Digital Signature")
+        logging.info("OK: Digital Signature (DSIG) exists.")
     else:
         try:
             from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
@@ -1095,23 +1113,26 @@ def main():
             font.tables["DSIG"] = newDSIG
         except ImportError:
             error_message = ("The '{}' font does not have an existing"
-                             " digital signature proving its authenticity,"
-                             " so Fontbakery needs to add one. To do this"
-                             " requires version 2.3 or later of Fonttools"
-                             " to be installed. Please upgrade at"
-                             " https://pypi.python.org/pypi/FontTools/2.4")
+                             " digital signature (DSIG), so OpenType features"
+                             " will not be available in some applications that"
+                             " use its presense as a (stupid) heuristic."
+                             " So we add one (which requires Fonttools v2.3+"
+                             " so you need to upgrade. Try:"
+                             " $ pip install --upgrade fontTools; or see"
+                             " https://pypi.python.org/pypi/FontTools")
             logging.error(error_message.format(file_path))
 
     # ----------------------------------------------------
     logging.debug("Font contains glyphs for whitespace characters?")
     space = getGlyph(font, 0x0020)
     nbsp = getGlyph(font, 0x00A0)
-    tab = getGlyph(font, 0x0009)
+    # tab = getGlyph(font, 0x0009)
 
     missing = []
     if not space: missing.append("space (0x0020)")
     if not nbsp: missing.append("nbsp (0x00A0)")
-    if not tab: missing.append("tab (0x0009)")
+    # fonts probably don't need an actual tab char
+    # if not tab: missing.append("tab (0x0009)")
     if missing != []:
         logging.error("Font is missing the following glyphs: {}.".format(", ".join(missing)))
 
@@ -1128,13 +1149,19 @@ def main():
         logging.error(ex)
 
     # ----------------------------------------------------
-    logging.debug("Font has got propper whitespace glyph names?")
-
+    logging.debug("Font has **proper** whitespace glyph names?")
+    # TODO: This check can error more than once in a single run. We better compile a single-string error message.
+    failed = False
     if space is not None and space not in ["space", "uni0020"]:
-        logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
+      failed = True
+      logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
 
     if nbsp is not None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
-        logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
+      failed = True
+      logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
+
+    if failed is False:
+      logging.info('OK: Font has **proper** whitespace glyph names.')
 
     # ----------------------------------------------------
     logging.debug("Whitespace glyphs have ink?")
