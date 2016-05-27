@@ -280,9 +280,9 @@ def parse_version_string(s):
 
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
-        if not (table.platformID == PLATFORM_ID_WINDOWS
-           and table.platEncID in [PLAT_ENC_ID_UCS2,
-                                   PLAT_ENC_ID_UCS4]):
+        if not (table.platformID == PLATFORM_ID_WINDOWS and
+           table.platEncID in [PLAT_ENC_ID_UCS2,
+                               PLAT_ENC_ID_UCS4]):
             continue
         if uchar in table.cmap:
             return table.cmap[uchar]
@@ -1798,8 +1798,9 @@ def main():
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              pass  # these fail scenarios were already tested above
-                    # (passing those previous tests is a prerequisite for this one)
+              # these fail scenarios were already tested above
+              # (passing those previous tests is a prerequisite for this one)
+              pass
             else:
               logging.debug("METADATA.pb font.style `normal` matches font internals?")
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
@@ -1882,8 +1883,8 @@ def main():
 
           if not pair:
             logging.error('METADATA.pb: Font weight does not match postScriptName')
-          elif not (f.post_script_name.endswith('-' + pair[0][0])
-                    or f.post_script_name.endswith('-%s' % pair[1][0])):
+          elif not (f.post_script_name.endswith('-' + pair[0][0]) or
+               f.post_script_name.endswith('-%s' % pair[1][0])):
             logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +
                           'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
           else:
@@ -1920,9 +1921,9 @@ def main():
             return False
 
           def is_italic():
-            return (font['head'].macStyle & MACSTYLE_ITALIC
-                    or font['post'].italicAngle
-                    or find_italic_in_name_table())
+            return (font['head'].macStyle & MACSTYLE_ITALIC or
+                    font['post'].italicAngle or
+                    find_italic_in_name_table())
 
           if f.style in ['italic', 'normal']:
             logging.debug("Font styles are named canonically?")
