@@ -292,43 +292,44 @@ def getGlyph(font, uchar):
 
 
 def addGlyph(font, uchar, glyph):
-    # Add to glyph list
-    glyphOrder = font.getGlyphOrder()
-    # assert glyph not in glyphOrder
-    glyphOrder.append(glyph)
-    font.setGlyphOrder(glyphOrder)
+  # Add to glyph list
+  glyphOrder = font.getGlyphOrder()
+  # assert glyph not in glyphOrder
+  glyphOrder.append(glyph)
+  font.setGlyphOrder(glyphOrder)
 
-    # Add horizontal metrics (to zero)
-    font['hmtx'][glyph] = [0, 0]
+  # Add horizontal metrics (to zero)
+  font['hmtx'][glyph] = [0, 0]
 
-    # Add to cmap
-    for table in font['cmap'].tables:
-        if not (table.platformID == PLATFORM_ID_WINDOWS
-           and table.platEncID in [PLAT_ENC_ID_UCS2,
-                                   PLAT_ENC_ID_UCS4]):
-            continue
-        if not table.cmap:  # Skip UVS cmaps
-            continue
-        assert uchar not in table.cmap
-        table.cmap[uchar] = glyph
+  # Add to cmap
+  for table in font['cmap'].tables:
+    if not (table.platformID == PLATFORM_ID_WINDOWS and
+       table.platEncID in [PLAT_ENC_ID_UCS2,
+                           PLAT_ENC_ID_UCS4]):
+      continue
+    if not table.cmap:  # Skip UVS cmaps
+      continue
+    assert uchar not in table.cmap
+    table.cmap[uchar] = glyph
 
-    # Add empty glyph outline
-    if 'glyf' in font:
-        font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
-    else:
-        cff = font['CFF '].cff
-        self.addCFFGlyph(
-            glyphName=glyph,
-            private=cff.topDictIndex[0].Private,
-            globalSubrs=cff.GlobalSubrs,
-            charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
-            # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
-            topDict=cff.topDictIndex[0],
-            charStrings=cff.topDictIndex[0].CharStrings
-        )
-        import ipdb
-        ipdb.set_trace()
-    return glyph
+  # Add empty glyph outline
+  if 'glyf' in font:
+    font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
+  else:
+    cff = font['CFF '].cff
+    logging.error("CRITICAL: This is a fontbakery bug. Implement-me: addGlyph to CFF fonts.")
+#   self.addCFFGlyph(
+#     glyphName=glyph,
+#     private=cff.topDictIndex[0].Private,
+#     globalSubrs=cff.GlobalSubrs,
+#     charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
+#      # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
+#    topDict=cff.topDictIndex[0],
+#     charStrings=cff.topDictIndex[0].CharStrings
+#   )
+#   import ipdb
+#    ipdb.set_trace()
+  return glyph
 
 
 def getWidth(font, glyph):
@@ -564,7 +565,7 @@ def main():
 #         * Tests that only check data of the specific TTF file, but not
 #           the other fonts in the same family
 ##########################################################################
- #------------------------------------------------------
+ # ------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
   for font_file in fonts_to_check:
@@ -1059,7 +1060,7 @@ def main():
             if name.nameID == NAMEID_VERSION_STRING:
                 encoding = name.getEncoding()
                 s = name.string.decode(encoding)
-                #TODO: create an assert_ helper for name table entries of specific name IDs ?
+                # TODO: create an assert_ helper for name table entries of specific name IDs ?
                 s = "Version {}.{};{}".format(ttf_version[0], ttf_version[1], ttf_version[2])
                 new_string = s.encode(encoding)
                 if name.string != new_string:
@@ -1141,7 +1142,7 @@ def main():
     for g in [space, nbsp]:
         if glyphHasInk(font, g):
             logging.error('HOTFIXED: {}: Glyph "{}" has ink. Fixed: Overwritten by an empty glyph'.format(file_path, g))
-            #overwrite existing glyph with an empty one
+            # overwrite existing glyph with an empty one
             font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
 
     spaceWidth = getWidth(font, space)
@@ -1261,7 +1262,7 @@ def main():
 
     # ----------------------------------------------------
     logging.debug("EPAR table present in font?")
-    if not 'EPAR' in font:
+    if 'EPAR' not in font:
       logging.error('Font is missing EPAR table.')
     else:
       logging.info("OK: EPAR table present in font.")
@@ -1777,8 +1778,9 @@ def main():
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              pass  # these fail scenarios were already tested above
-                    # (passing those previous tests is a prerequisite for this one)
+              # these fail scenarios were already tested above
+              # (passing those previous tests is a prerequisite for this one)
+              pass
             else:
               logging.debug("METADATA.pb font.style `italic` matches font internals?")
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
