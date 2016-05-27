@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-__author__ = "The Font Bakery Authors"
-
 import os
 import sys
 import argparse
@@ -28,13 +26,13 @@ import re
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
+from fonts_public_pb2 import FamilyProto
 
 try:
   from google.protobuf import text_format
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
-from fonts_public_pb2 import FamilyProto
 
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
@@ -173,7 +171,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     log_results("Something test.")
     """
 
-    #This is meant to support multi-level field hierarchy
+    # This is meant to support multi-level field hierarchy
     fields = fieldName.split('.')
     obj = font[tableName]
     for f in range(len(fields)-1):
@@ -196,9 +194,9 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
                                                       fieldName,
                                                       value,
                                                       expectedValue))
-            #TODO: Aestethical improvement:
-            #      Create a helper function to format binary values
-            #      highlighting the bits that are selected by a bitmask
+            # TODO: Aestethical improvement:
+            #       Create a helper function to format binary values
+            #       highlighting the bits that are selected by a bitmask
 
 
 def log_results(message, hotfix=True):
@@ -316,8 +314,8 @@ def addGlyph(font, uchar, glyph):
   if 'glyf' in font:
     font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
   else:
-    cff = font['CFF '].cff
     logging.error("CRITICAL: This is a fontbakery bug. Implement-me: addGlyph to CFF fonts.")
+    # cff = font['CFF '].cff
 #   self.addCFFGlyph(
 #     glyphName=glyph,
 #     private=cff.topDictIndex[0].Private,
@@ -1978,5 +1976,6 @@ def main():
     font.close()
     logging.info("{} saved\n".format(font_file_output))
 
+__author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
   main()
