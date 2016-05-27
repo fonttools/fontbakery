@@ -1149,7 +1149,6 @@ def main():
     logging.debug("Font has **proper** whitespace glyph names?")
     if space is not None and space not in ["space", "uni0020"]:
         logging.error('{}: Glyph 0x0020 is called "{}": Change to "space" or "uni0020"'.format(file_path, space))
-
     if nbsp is not None and nbsp not in ["nbsp", "uni00A0", "nonbreakingspace", "nbspace"]:
         logging.error('HOTFIXED: {}: Glyph 0x00A0 is called "{}": Change to "nbsp" or "uni00A0"'.format(file_path, nbsp))
 
@@ -1734,28 +1733,28 @@ def main():
             if font_familyname in f.name:
               logging.info("OK: METADATA.pb 'name' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb name='{}' does not match correct font name format.".format(f.name))
+              logging.error("METADATA.pb name='{}' does not match correct font name format.".format(f.name))
             #-----------
 
             logging.debug("METADATA.pb 'full_name' contains font name in right format ?")
             if font_familyname in f.name:
               logging.info("OK: METADATA.pb 'full_name' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb full_name='{}' does not match correct font name format.".format(f.full_name))
+              logging.error("METADATA.pb full_name='{}' does not match correct font name format.".format(f.full_name))
             #-----------
 
             logging.debug("METADATA.pb 'filename' contains font name in right format ?")
             if "".join(str(font_familyname).split()) in f.filename:
               logging.info("OK: METADATA.pb 'filename' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb filename='{}' does not match correct font name format.".format(f.filename))
+              logging.error("METADATA.pb filename='{}' does not match correct font name format.".format(f.filename))
             #-----------
 
             logging.debug("METADATA.pb 'postScriptName' contains font name in right format ?")
             if "".join(str(font_familyname).split()) in f.post_script_name:
               logging.info("OK: METADATA.pb 'postScriptName' contains font name in right format ?")
             else:
-              logging.err("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
+              logging.error("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
 
           #-----------------------------------------------
           logging.debug("Copyright notice matches canonical pattern?")
