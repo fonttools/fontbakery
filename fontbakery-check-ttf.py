@@ -1472,13 +1472,11 @@ def main():
     logging.debug("Font names are consistent across platforms?")
     fail = False
     for name1 in font['name'].names:
-      if (name1.platformID == PLATFORM_ID_WINDOWS and
-          name1.langID == LANG_ID_ENGLISH_USA):
+      if (name1.platformID == PLATFORM_ID_WINDOWS and name1.langID == LANG_ID_ENGLISH_USA):
         for name2 in font['name'].names:
-          if (name2.platformID == PLATFORM_ID_MACHINTOSH and
-              name2.langID == LANG_ID_MACHINTOSH_ENGLISH):
-             n1 = get_name(font, name1.nameID)
-             n2 = get_name(font, name2.nameID)
+          if (name2.platformID == PLATFORM_ID_MACHINTOSH and name2.langID == LANG_ID_MACHINTOSH_ENGLISH):
+             n1 = get_name_string(font, name1.nameID)
+             n2 = get_name_string(font, name2.nameID)
              if n1 != n2:
                fail = True
     if fail:
@@ -1903,7 +1901,7 @@ def main():
           if not pair:
             logging.error('METADATA.pb: Font weight does not match postScriptName')
           elif not (f.post_script_name.endswith('-' + pair[0][0]) or
-               f.post_script_name.endswith('-%s' % pair[1][0])):
+                    f.post_script_name.endswith('-%s' % pair[1][0])):
             logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +
                           'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
           else:
