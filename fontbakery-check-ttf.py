@@ -1352,8 +1352,6 @@ def main():
         logging.info("OK: There is no unused data at the end of the glyf table.")
 
     #----------------------------------------------------
-    import unicodedata
-
     def font_has_char(font, c):
         return len(font['cmap'].buildReversed()[c]) > 0
 
