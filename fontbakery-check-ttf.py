@@ -236,23 +236,6 @@ def makeNameRecord(text, nameID, platformID, platEncID, langID):
     return name
 
 
-def get_bounding_box(font):
-    """ Returns max and min bbox of given truetype font """
-    ymin = 0
-    ymax = 0
-    if font.sfntVersion == 'OTTO':
-        ymin = font['head'].yMin
-        ymax = font['head'].yMax
-    else:
-        for g in font['glyf'].glyphs:
-            char = font['glyf'][g]
-            if hasattr(char, 'yMin') and ymin > char.yMin:
-                ymin = char.yMin
-            if hasattr(char, 'yMax') and ymax < char.yMax:
-                ymax = char.yMax
-    return ymin, ymax
-
-
 # DC is this really working? what about NAME tables with several namerecords with the same nameIDs and different platformIDs/etc?
 def get_name_string(font, nameID):
     for entry in font['name'].names:
@@ -572,18 +555,31 @@ def main():
 ##           referencing with other fonts in the family
 ###########################################################################
  #------------------------------------------------------
-  vmetrics_ymin = 0
-  vmetrics_ymax = 0
-  for font_file in fonts_to_check:
-    font = ttLib.TTFont(font_file)
-    font_ymin, font_ymax = get_bounding_box(font)
-    vmetrics_ymin = min(font_ymin, vmetrics_ymin)
-    vmetrics_ymax = max(font_ymax, vmetrics_ymax)
-
- #------------------------------------------------------
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     logging.info("OK: {} opened with fontTools".format(font_file))
+
+    #------------------------------------------------------
+    # Set the bounding box
+    # DC why are these created here? seems unneccesary 
+    vmetrics_ymin = 0
+    vmetrics_ymax = 0
+    font = ttLib.TTFont(font_file)
+    ymin = 0
+    ymax = 0
+    if font.sfntVersion == 'OTTO':
+        ymin = font['head'].yMin
+        ymax = font['head'].yMax
+    else:
+        for g in font['glyf'].glyphs:
+            char = font['glyf'][g]
+            if hasattr(char, 'yMin') and ymin > char.yMin:
+                ymin = char.yMin
+            if hasattr(char, 'yMax') and ymax < char.yMax:
+                ymax = char.yMax
+    font_ymin, font_ymax = ymin, ymax
+    vmetrics_ymin = min(font_ymin, vmetrics_ymin)
+    vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
     #----------------------------------------------------
     # OS/2 fsType is a legacy DRM-related field from the 80's
