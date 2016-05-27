@@ -1531,28 +1531,35 @@ def main():
       #-----------------------------------------------------
       logging.debug("METADATA.pb: Fontfamily is listed in Google Font Directory ?")
       url = 'http://fonts.googleapis.com/css?family=%s' % family.name.replace(' ', '+')
-      fp = requests.get(url)
-      if fp.status_code != 200:
-        logging.error('No family found in GWF in %s' % url)
-      else:
-        logging.info('OK: Font is properly listed in Google Font Directory.')
+      try:
+        fp = requests.get(url)
+        if fp.status_code != 200:
+          logging.error('No family found in GWF in %s' % url)
+        else:
+          logging.info('OK: Font is properly listed in Google Font Directory.')
+      except:
+        logging.warning("Failed to fetch Microsoft's vendorID list.")
 
       #-----------------------------------------------------
       logging.debug("METADATA.pb: Designer exists in GWF profiles.csv ?")
       if family.designer == "":
         logging.error('METADATA.pb field "designer" MUST NOT be empty!')
       else:
-        fp = urllib.urlopen(PROFILES_RAW_URL)
-        designers = []
-        for row in csv.reader(fp):
-          if not row:
-            continue
-          designers.append(row[0].decode('utf-8'))
-      if family.designer not in designers:
-        logging.error("METADATA.pb: Designer '{}' is not listed in profiles.csv (at '{}')".format(family.designer,
-                                                                                                  PROFILES_GIT_URL))
-      else:
-        logging.info("OK: Found designer '{}' at profiles.csv".format(family.designer))
+        try:
+          fp = urllib.urlopen(PROFILES_RAW_URL)
+          designers = []
+          for row in csv.reader(fp):
+            if not row:
+              continue
+            designers.append(row[0].decode('utf-8'))
+          if family.designer not in designers:
+            logging.error("METADATA.pb: Designer '{}' is not listed in profiles.csv (at '{}')".format(family.designer,
+                                                                                                    PROFILES_GIT_URL))
+          else:
+            logging.info("OK: Found designer '{}' at profiles.csv".format(family.designer))
+        except:
+          logging.warning("Failed to fetch '{}'".format(PROFILES_RAW_URL))
+            
 
       #-----------------------------------------------------
       logging.debug("METADATA.pb: check if fonts field only have unique 'full_name' values")
