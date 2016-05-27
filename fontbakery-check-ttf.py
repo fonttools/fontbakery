@@ -15,6 +15,10 @@
 #
 __author__ = "The Font Bakery Authors"
 
+# handy debugging lines:
+# import ipdb
+# ipdb.set_trace()
+
 import os
 import sys
 import argparse
@@ -326,8 +330,6 @@ def addGlyph(font, uchar, glyph):
             topDict=cff.topDictIndex[0],
             charStrings=cff.topDictIndex[0].CharStrings
         )
-        import ipdb
-        ipdb.set_trace()
     return glyph
 
 
