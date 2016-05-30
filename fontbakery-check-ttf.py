@@ -33,6 +33,9 @@ try:
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
+# handy debugging lines:
+# import ipdb
+# ipdb.set_trace()
 
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
@@ -326,8 +329,6 @@ def addGlyph(font, uchar, glyph):
 #    topDict=cff.topDictIndex[0],
 #     charStrings=cff.topDictIndex[0].CharStrings
 #   )
-#   import ipdb
-#    ipdb.set_trace()
   return glyph
 
 
@@ -475,7 +476,7 @@ def main():
 ##         * Validates consistency of data throughout all TTF files
 ##           in a given family
 ##         * The list of TTF files in infered from the METADATA.pb file
-##         * We avoid testing the same fmaily twice by deduplicating the
+##         * We avoid testing the same family twice by deduplicating the
 ##           list of METADATA.pb files first
 ###########################################################################
 
@@ -491,7 +492,7 @@ def main():
         metadata_to_check.append([fontdir, family])
 
   def ttf_file(f):
-    simplehash = f.filename  # this may collide. Perhaps we need something better here.
+    simplehash = f.filename  # TODO: This may collide. We need something better here.
     return ttf[simplehash]
 
   for dirname, family in metadata_to_check:
