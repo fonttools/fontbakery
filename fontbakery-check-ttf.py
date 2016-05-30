@@ -521,7 +521,7 @@ def main():
         fail = True
 
     if fail:
-      #TODO make this print a table of the files + counts
+      # TODO make this print a table of the files + counts
       logging.error('Fonts have different numbers of glyphs.')
     else:
       logging.info("OK: Fonts have equal numbers of glyphs.")
@@ -1560,13 +1560,12 @@ def main():
               continue
             designers.append(row[0].decode('utf-8'))
           if family.designer not in designers:
-            logging.error("METADATA.pb: Designer '{}' is not listed in profiles.csv (at '{}')".format(family.designer,
-                                                                                                    PROFILES_GIT_URL))
+            logging.error(("METADATA.pb: Designer '{}' is not listed in profiles.csv" +\
+                           " (at '{}')").format(family.designer, PROFILES_GIT_URL))
           else:
             logging.info("OK: Found designer '{}' at profiles.csv".format(family.designer))
         except:
           logging.warning("Failed to fetch '{}'".format(PROFILES_RAW_URL))
-            
 
       # -----------------------------------------------------
       logging.debug("METADATA.pb: check if fonts field only have unique 'full_name' values")
