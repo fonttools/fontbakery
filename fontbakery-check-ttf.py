@@ -152,7 +152,7 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
                        'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
                        'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
                        'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-UNWANTED_TABLES = set(['FFTM'])
+UNWANTED_TABLES = set(['FFTM', 'TTFA'])
 
 # =====================================
 # HELPER FUNCTIONS
