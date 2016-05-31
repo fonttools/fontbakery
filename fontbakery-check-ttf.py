@@ -169,6 +169,7 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
                        'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
                        'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
                        'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
+UNWANTED_TABLES = set(['FFTM'])
 
 # =====================================
 # HELPER FUNCTIONS
@@ -1360,6 +1361,7 @@ def main():
                      "optional tables [{}]").format(', '.join(optional_tables))
         fixes.append(desc)
     log_results("Check no problematic formats. ", hotfix=False)
+    # TODO remove UNWANTED_TABLES here
 
     # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
