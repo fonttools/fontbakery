@@ -62,20 +62,6 @@ class TTFTestCase(TestCase):
             if std.getvalue():
                 self.fail('FontForge prints STDERR')
 
-    @autofix('bakery_cli.fixers.CharacterSymbolsFixer')
-    def test_check_names_are_ascii_only(self):
-        """ Is there any non-ascii character in NAME or CFF tables? """
-        font = Font.get_ttfont(self.operator.path)
-
-        for name in font.names:
-            # Items with NameID > 18 are expressly for localising
-            # the ASCII-only IDs into Hindi / Arabic / etc.
-            if name.nameID >= 0 and name.nameID <= 18:
-                string = Font.bin2unistring(name)
-                marks = CharacterSymbolsFixer.unicode_marks(string)
-                if marks:
-                    self.fail('Contains {}'.format(marks))
-
     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
     def test_check_opentype_familyname(self):
         """ FamilyName matches Windows-only Opentype-specific FamilyName? """
