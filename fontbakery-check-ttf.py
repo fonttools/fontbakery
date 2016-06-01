@@ -40,8 +40,10 @@ except:
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
-PROFILES_GIT_URL = 'https://github.com/google/fonts/blob/master/designers/profiles.csv'
-PROFILES_RAW_URL = 'https://raw.githubusercontent.com/google/fonts/master/designers/profiles.csv'
+PROFILES_GIT_URL = ('https://github.com/google/'
+                    'fonts/blob/master/designers/profiles.csv')
+PROFILES_RAW_URL = ('https://raw.githubusercontent.com/google/'
+                    'fonts/master/designers/profiles.csv')
 
 STYLE_NAMES = ["Thin",
                "ExtraLight",
@@ -337,7 +339,8 @@ def addGlyph(font, uchar, glyph):
 #     private=cff.topDictIndex[0].Private,
 #     globalSubrs=cff.GlobalSubrs,
 #     charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
-#      # charStringsIndex=cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
+#     # charStringsIndex=\
+#         cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
 #    topDict=cff.topDictIndex[0],
 #     charStrings=cff.topDictIndex[0].CharStrings
 #   )
@@ -641,8 +644,9 @@ def main():
                               " nameID 8 (Manufacturer Name): '{}'".format(
                                 registered_vendor_ids[vid].strip(),
                                 manufacturer))
-        logging.info("OK: OS/2 VendorID is '{}' and registered to '{}'."
-                     " Is that legit?").format(vid, registered_vendor_ids[vid])
+        logging.info(("OK: OS/2 VendorID is '{}' and registered to '{}'."
+                      " Is that legit?").format(vid,
+                                                registered_vendor_ids[vid]))
       elif vid.lower() in [i.lower() for i in registered_vendor_ids.keys()]:
         logging.error(("OS/2 VendorID is '{}' but this is registered"
                        " with different casing."
@@ -1061,7 +1065,7 @@ def main():
             # FIXME strip glyphs named .notdef .null etc
             # from the unusually_spaced_glyphs list
             log_results(("Font is monospaced but {} glyphs"
-                         " ({0:.2f}%) have a different width."
+                         " ({}%) have a different width."
                          " You should check the widths of: {}").format(
                            outliers,
                            outliers_percentage,
@@ -1331,9 +1335,13 @@ def main():
     tables = set(font.reader.tables.keys())
     glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
     if (REQUIRED_TABLES | glyphs) - tables:
-        desc = "Font is missing required tables: [%s]" % ', '.join(str(t) for t in (REQUIRED_TABLES | glyphs - tables))
+        missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
+        desc = (("Font is missing required "
+                 "tables: [{}]").format(', '.join(missing_tables)))
         if OPTIONAL_TABLES & tables:
-            desc += " but includes optional tables %s" % ', '.join(str(t) for t in (OPTIONAL_TABLES & tables))
+            optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+            desc += (" but includes "
+                     "optional tables [{}]").format(', '.join(optional_tables))
         fixes.append(desc)
     log_results("Check no problematic formats. ", hotfix=False)
 
@@ -1949,88 +1957,119 @@ def main():
                             " TTF file.").format(fullname))
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb `fullName` matches `postScriptName` ?")
+          logging.debug("METADATA.pb 'fullName' matches 'postScriptName' ?")
           regex = re.compile(r'\W')
           post_script_name = regex.sub('', f.post_script_name)
           fullname = regex.sub('', f.full_name)
           if fullname != post_script_name:
-            msg = 'METADATA.pb full_name="{0}" does not match post_script_name="{1}"'
-            logging.error(msg.format(f.full_name, f.post_script_name))
+            logging.error(('METADATA.pb full_name="{0}"'
+                           ' does not match post_script_name ='
+                           ' "{1}"').format(f.full_name,
+                                            f.post_script_name))
           else:
-            logging.info("OK: METADATA.pb fields `fullName` and `postScriptName` have the same value.")
+            logging.info("OK: METADATA.pb fields 'fullName' and"
+                         " 'postScriptName' have the same value.")
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb `filename` matches `postScriptName` ?")
+          logging.debug("METADATA.pb 'filename' matches 'postScriptName' ?")
           regex = re.compile(r'\W')
           if f.post_script_name.endswith('-Regular'):
-            logging.error("METADATA.pb postScriptName field ends with '-Regular'")
+            logging.error("METADATA.pb postScriptName field"
+                          " ends with '-Regular'")
           else:
             post_script_name = regex.sub('', f.post_script_name)
             filename = regex.sub('', os.path.splitext(f.filename)[0])
             if filename != post_script_name:
-              msg = 'METADATA.pb filename="{0}" does not match post_script_name="{1}."'
+              msg = ('METADATA.pb filename="{0}" does not match '
+                     'post_script_name="{1}."')
               if "-Regular" in f.filename:
-                msg += " (Consider removing the '-Regular' suffix from the filename.)"
+                msg += (" (Consider removing the '-Regular' suffix"
+                        " from the filename.)")
               logging.error(msg.format(f.filename, f.post_script_name))
             else:
-              logging.info("OK: METADATA.pb fields `filename` and `postScriptName` have matching values.")
+              logging.info("OK: METADATA.pb fields 'filename' and"
+                           " 'postScriptName' have matching values.")
 
           # -----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname is not False:
-            logging.debug("METADATA.pb 'name' contains font name in right format ?")
+            logging.debug("METADATA.pb 'name' contains font name"
+                          " in right format ?")
             if font_familyname in f.name:
-              logging.info("OK: METADATA.pb 'name' contains font name in right format ?")
+              logging.info("OK: METADATA.pb 'name' contains font name"
+                           " in right format.")
             else:
-              logging.error("METADATA.pb name='{}' does not match correct font name format.".format(f.name))
+              logging.error(("METADATA.pb name='{}' does not match"
+                             " correct font name format.").format(f.name))
             # -----------
 
-            logging.debug("METADATA.pb 'full_name' contains font name in right format ?")
+            logging.debug("METADATA.pb 'full_name' contains"
+                          " font name in right format ?")
             if font_familyname in f.name:
-              logging.info("OK: METADATA.pb 'full_name' contains font name in right format ?")
+              logging.info("OK: METADATA.pb 'full_name' contains"
+                           " font name in right format.")
             else:
-              logging.error("METADATA.pb full_name='{}' does not match correct font name format.".format(f.full_name))
+              logging.error(("METADATA.pb full_name='{}' does not match"
+                             " correct font name format.").format(f.full_name))
             # -----------
 
-            logging.debug("METADATA.pb 'filename' contains font name in right format ?")
+            logging.debug("METADATA.pb 'filename' contains"
+                          " font name in right format ?")
             if "".join(str(font_familyname).split()) in f.filename:
-              logging.info("OK: METADATA.pb 'filename' contains font name in right format ?")
+              logging.info("OK: METADATA.pb 'filename' contains"
+                           " font name in right format.")
             else:
-              logging.error("METADATA.pb filename='{}' does not match correct font name format.".format(f.filename))
+              logging.error(("METADATA.pb filename='{}' does not match"
+                             " correct font name format.").format(f.filename))
             # -----------
 
-            logging.debug("METADATA.pb 'postScriptName' contains font name in right format ?")
+            logging.debug("METADATA.pb 'postScriptName' contains"
+                          " font name in right format ?")
             if "".join(str(font_familyname).split()) in f.post_script_name:
-              logging.info("OK: METADATA.pb 'postScriptName' contains font name in right format ?")
+              logging.info("OK: METADATA.pb 'postScriptName' contains"
+                           " font name in right format ?")
             else:
-              logging.error("METADATA.pb postScriptName='{}' does not match correct font name format.".format(f.post_script_name))
+              logging.error(("METADATA.pb postScriptName='{}'"
+                             " does not match correct"
+                             " font name format.").format(f.post_script_name))
 
           # -----------------------------------------------
           logging.debug("Copyright notice matches canonical pattern?")
-          almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)', f.copyright)
-          does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))', f.copyright)
+          almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)',
+                                     f.copyright)
+          does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))',
+                                 f.copyright)
           if (does_match is not None):
-            logging.info("OK: METADATA.pb copyright field matches canonical pattern.")
+            logging.info("OK: METADATA.pb copyright field matches"
+                         " canonical pattern.")
           else:
             if (almost_matches):
-              logging.error("METADATA.pb: Copyright notice is okay, but it lacks an email address. Expected pattern is: 'Copyright 2016 Author Name (name@site.com)'")
+              logging.error("METADATA.pb: Copyright notice is okay,"
+                            " but it lacks an email address."
+                            " Expected pattern is:"
+                            " 'Copyright 2016 Author Name (name@site.com)'")
             else:
-              logging.error("METADATA.pb: Copyright notices should match the folowing pattern: 'Copyright 2016 Author Name (name@site.com)'")
+              logging.error("METADATA.pb: Copyright notices should match"
+                            " the folowing pattern:"
+                            " 'Copyright 2016 Author Name (name@site.com)'")
 
           # -----------------------------------------------
           logging.debug("Copyright notice does not contain Reserved Font Name")
           if 'Reserved Font Name' in f.copyright:
-            msg = 'METADATA.pb: copyright field ("%s") contains "Reserved Font Name"'
-            logging.error(msg % f.copyright)
+            logging.error(('METADATA.pb: copyright field ("%s")'
+                           ' contains "Reserved Font Name"') % f.copyright)
           else:
-            logging.info('OK: METADATA.pb copyright field does not contain "Reserved Font Name"')
+            logging.info('OK: METADATA.pb copyright field'
+                         ' does not contain "Reserved Font Name"')
 
           # -----------------------------------------------
           logging.debug("Copyright notice shouldn't exceed 500 chars")
           if len(f.copyright) > 500:
-            logging.error("METADATA.pb: Copyright notice exceeds maximum allowed lengh of 500 characteres.")
+            logging.error("METADATA.pb: Copyright notice exceeds"
+                          " maximum allowed lengh of 500 characteres.")
           else:
-            logging.info("OK: Copyright notice string is shorter than 500 chars.")
+            logging.info("OK: Copyright notice string is"
+                         " shorter than 500 chars.")
 
           # -----------------------------------------------
           logging.debug("Filename is set canonically?")
@@ -2060,7 +2099,10 @@ def main():
 
           canonical_filename = create_canonical_filename(f)
           if canonical_filename != f.filename:
-            logging.error("METADATA.pb: filename field ('{}') does not match canonical name '{}'".format(f.filename, canonical_filename))
+            logging.error("METADATA.pb: filename field ('{}')"
+                          " does not match"
+                          " canonical name '{}'".format(f.filename,
+                                                        canonical_filename))
           else:
             logging.info('OK. Filename is set canonically.')
 
@@ -2073,18 +2115,26 @@ def main():
               # (passing those previous tests is a prerequisite for this one)
               pass
             else:
-              logging.debug("METADATA.pb font.style `italic` matches font internals?")
+              logging.debug("METADATA.pb font.style `italic`"
+                            " matches font internals?")
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to italic'
                                 ' but font macStyle is improperly set')
               elif not font_familyname.split('-')[-1].endswith('Italic'):
-                  logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
-                                ' is not ended with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+                  logging.error(('Font macStyle Italic bit is set'
+                                 ' but nameID %d ("%s")'
+                                 ' is not ended '
+                                 'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
+                                                     font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
-                  logging.error('Font macStyle Italic bit is set but nameID %d ("%s")'
-                                ' is not ended with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+                  logging.error(('Font macStyle Italic bit is set'
+                                 ' but nameID %d ("%s")'
+                                 ' is not ended'
+                                 ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
+                                                      font_fullname))
               else:
-                logging.info('OK: METADATA.pb font.style `italic` matches font internals.')
+                logging.info("OK: METADATA.pb font.style 'italic'"
+                             " matches font internals.")
 
           # -----------------------------------------------
           if f.style == 'normal':  # this test only applies to normal fonts
@@ -2095,40 +2145,58 @@ def main():
               # (passing those previous tests is a prerequisite for this one)
               pass
             else:
-              logging.debug("METADATA.pb font.style `normal` matches font internals?")
+              logging.debug("METADATA.pb font.style `normal`"
+                            " matches font internals?")
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   logging.error('METADATA.pb style has been set to normal'
                                 ' but font macStyle is improperly set')
               elif font_familyname.split('-')[-1].endswith('Italic'):
-                  logging.error('Font macStyle indicates a non-Italic font, but nameID %d ("%s")'
-                                ' ends with "Italic"' % (NAMEID_FONT_FAMILY_NAME, font_familyname))
+                  logging.error(('Font macStyle indicates a non-Italic font,'
+                                 ' but nameID %d ("%s") ends'
+                                 ' with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
+                                                      font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
-                  logging.error('Font macStyle indicates a non-Italic font but nameID %d ("%s")'
-                                ' ends with "Italic"' % (NAMEID_FULL_FONT_NAME, font_fullname))
+                  logging.error('Font macStyle indicates a non-Italic font'
+                                ' but nameID %d ("%s") ends'
+                                ' with "Italic"' % (NAMEID_FULL_FONT_NAME,
+                                                    font_fullname))
               else:
-                logging.info('OK: METADATA.pb font.style `normal` matches font internals.')
+                logging.info("OK: METADATA.pb font.style 'normal'"
+                             " matches font internals.")
 
               # ----------
               logging.debug("Metadata key-value match to table name fields?")
               if font_familyname != f.name:
-                logging.error("METADATA.pb Family name '{}') dos not match name table entry '{}'!".format(f.name, font_familyname))
+                logging.error(("METADATA.pb Family name '{}')"
+                               " does not match name table"
+                               " entry '{}' !").format(f.name,
+                                                       font_familyname))
               elif font_fullname != f.full_name:
-                logging.error("METADATA.pb: Fullname ('{}') does not match name table entry '{}'!".format(f.fullname, font_fullname))
+                logging.error(("METADATA.pb: Fullname ('{}')"
+                               " does not match name table"
+                               " entry '{}' !").format(f.fullname,
+                                                       font_fullname))
               else:
-                logging.info("OK: METADATA.pb familyname and fullName fields match corresponding name table entries.")
+                logging.info("OK: METADATA.pb familyname and fullName fields"
+                             " match corresponding name table entries.")
 
           # -----------------------------------------------
           logging.debug("Check if fontname is not camel cased.")
           if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
-            logging.error("METADATA.pb: '%s' is a CamelCased name.".format(f.name) +
-                          " To solve this, simply use spaces instead in the font name.")
+            logging.error(("METADATA.pb: '%s' is a CamelCased name."
+                           " To solve this, simply use spaces"
+                           " instead in the font name.").format(f.name))
           else:
             logging.info("OK: font name is not camel-cased.")
 
           # -----------------------------------------------
           logging.debug("Check font name is the same as family name.")
           if f.name != family.name:
-            logging.error('METADATA.pb: %s: Family name "%s" does not match font name: "%s"'.format(f.filename, family.name, f.name))
+            logging.error(('METADATA.pb: %s: Family name "%s"'
+                           ' does not match'
+                           ' font name: "%s"').format(f.filename,
+                                                      family.name,
+                                                      f.name))
           else:
             logging.info('OK: font name is the same as family name.')
 
@@ -2136,15 +2204,19 @@ def main():
           logging.debug("Check that font weight has a canonical value")
           first_digit = f.weight / 100
           if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
-            logging.error("METADATA.pb: The weight is declared as %d which is not a " +
-                          "multiple of 100 between 100 and 900.".format(f.weight))
+            logging.error(("METADATA.pb: The weight is declared"
+                           " as {} which is not a "
+                           "multiple of 100"
+                           " between 100 and 900.").format(f.weight))
           else:
             logging.info("OK: font weight has a canonical value.")
 
           # -----------------------------------------------
-          logging.debug("Checking OS/2 usWeightClass matches weight specified at METADATA.pb")
+          logging.debug("Checking OS/2 usWeightClass"
+                        " matches weight specified at METADATA.pb")
           assert_table_entry('OS/2', 'usWeightClass', f.weight)
-          log_results("OS/2 usWeightClass matches weight specified at METADATA.pb")
+          log_results("OS/2 usWeightClass matches "
+                      "weight specified at METADATA.pb")
 
           # -----------------------------------------------
           weights = {
@@ -2175,11 +2247,15 @@ def main():
               pair.append((k, weight))
 
           if not pair:
-            logging.error('METADATA.pb: Font weight does not match postScriptName')
+            logging.error('METADATA.pb: Font weight'
+                          ' does not match postScriptName')
           elif not (f.post_script_name.endswith('-' + pair[0][0]) or
                     f.post_script_name.endswith('-%s' % pair[1][0])):
-            logging.error('METADATA.pb: postScriptName ("{}") with weight {} must be '.format(f.post_script_name, pair[0][1]) +
-                          'ended with "{}" or "{}"'.format(pair[0][0], pair[1][0]))
+            logging.error('METADATA.pb: postScriptName ("{}")'
+                          ' with weight {} must be '.format(f.post_script_name,
+                                                            pair[0][1]) +
+                          'ended with "{}" or "{}"'.format(pair[0][0],
+                                                           pair[1][0]))
           else:
             logging.info("OK: Weight value matches postScriptName.")
 
@@ -2204,7 +2280,8 @@ def main():
               logging.info("OK: METADATA.pb lists fonts named canonicaly.")
             else:
               v = map(lambda x: font_familyname + ' ' + x, _weights)
-              logging.error('Canonical name in font expected: [%s] but %s' % (v, f.full_name))
+              logging.error('Canonical name in font expected:'
+                            ' [%s] but %s' % (v, f.full_name))
 
           # ----------------------------------------------
           def find_italic_in_name_table():
@@ -2221,9 +2298,12 @@ def main():
           if f.style in ['italic', 'normal']:
             logging.debug("Font styles are named canonically?")
             if is_italic() and f.style != 'italic':
-              logging.error("%s: The font style is %s but it should be italic" % (f.filename, f.style))
+              logging.error("%s: The font style is %s"
+                            " but it should be italic" % (f.filename, f.style))
             elif not is_italic() and f.style != 'normal':
-              logging.error("%s: The font style is %s but it should be normal" % (f.filename, f.style))
+              logging.error(("%s: The font style is %s"
+                             " but it should be normal") % (f.filename,
+                                                            f.style))
             else:
               logging.info("OK: Font styles are named canonically")
 
@@ -2233,9 +2313,12 @@ def main():
       # -----------------------------------------------------
       # This test only makes sense for monospace fonts:
       if family.category not in ['Monospace', 'MONOSPACE']:
-        logging.debug("Skipping monospace-only test. 'Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth ?'")
+        logging.debug("Skipping monospace-only test."
+                      " 'Monospace font has hhea.advanceWidthMax equal"
+                      " to each glyph's advanceWidth ?'")
       else:
-        logging.debug("Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth ?")
+        logging.debug("Monospace font has hhea.advanceWidthMax"
+                      " equal to each glyph's advanceWidth ?")
 
         advw = 0
         fail = False
@@ -2255,7 +2338,8 @@ def main():
           #       with the advanceWidth value declared in the hhea table
           #       and report it in the error message.
         else:
-          logging.info("OK: hhea.advanceWidthMax is equal to all glyphs' advanceWidth.")
+          logging.info("OK: hhea.advanceWidthMax is equal"
+                       " to all glyphs' advanceWidth.")
 
       # ----------------------------------------------------
 
