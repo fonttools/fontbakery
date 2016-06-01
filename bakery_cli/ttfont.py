@@ -85,18 +85,6 @@ class Font(BaseFont):
         return ymin, ymax
 
     @property
-    def license_url(self):
-        """ Return LicenseURL from "name" table
-
-        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.license_url
-        u'http://scripts.sil.org/OFL'
-        """
-        for name in self.names:
-            if name.nameID == NAMEID_LICENSE_INFO_URL:
-                return Font.bin2unistring(name)
-
-    @property
     def macStyle(self):
         return self['head'].macStyle
 
