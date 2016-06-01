@@ -1513,6 +1513,23 @@ def main():
       logging.info('OK: Font names are consistent across platforms.')
 
     # ----------------------------------------------------
+    logging.debug("Are there non-ASCII characters in ASCII-only NAME table entries ?")
+    bad_entries = []
+    for name in font['name'].names:
+      # Items with NameID > 18 are expressly for localising
+      # the ASCII-only IDs into Hindi / Arabic / etc.
+      if name.nameID >= 0 and name.nameID <= 18:
+        string = name.string.decode(name.getEncoding())
+        try:
+          string.encode('ascii')
+        except:
+          bad_entries.append(name)
+    if len(bad_entries) > 0:
+      logging.error('There are {} strings containing non-ASCII characters in the ASCII-only NAME table entries.'.format(len(bad_entries)))
+    else:
+      logging.info('OK: None of the ASCII-only NAME table entries contain non-ASCII characteres.')
+
+    # ----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
