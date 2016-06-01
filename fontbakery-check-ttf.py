@@ -1530,6 +1530,22 @@ def main():
       logging.info('OK: None of the ASCII-only NAME table entries contain non-ASCII characteres.')
 
     # ----------------------------------------------------
+    logging.debug("Font has a valid license url ?")
+    regex = re.compile(
+      r'^(?:http|ftp)s?://'  # http:// or https://
+      r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+'
+      r'(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+      r'localhost|'  # localhost...
+      r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+      r'(?::\d+)?'  # optional port
+      r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    license_url = get_name_string(font, NAMEID_LICENSE_INFO_URL)
+    if not regex.match(license_url):
+      logging.error("LicenseUrl is required and must be a valid URL. Got {} instead.".format(license_url))
+    else:
+      logging.info("OK: Font has a valid license URL.")
+
+    # ----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
