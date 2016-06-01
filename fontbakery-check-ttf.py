@@ -1593,7 +1593,7 @@ def main():
               continue
             designers.append(row[0].decode('utf-8'))
           if family.designer not in designers:
-            logging.error(("METADATA.pb: Designer '{}' is not listed in profiles.csv" +\
+            logging.error(("METADATA.pb: Designer '{}' is not listed in profiles.csv" +
                            " (at '{}')").format(family.designer, PROFILES_GIT_URL))
           else:
             logging.info("OK: Found designer '{}' at profiles.csv".format(family.designer))
