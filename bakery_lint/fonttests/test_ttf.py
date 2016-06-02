@@ -89,23 +89,6 @@ class TTFTestCase(TestCase):
         error = error % font.OS2_usWidthClass
         self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
 
-    def test_check_panose_identification(self):
-        """ Is Panose value set correctly? """
-        # Check if Panose is not set to monospaced if advancewidth of
-        # all glyphs is not equal to each others
-        font = Font.get_ttfont(self.operator.path)
-
-        if font['OS/2'].panose.bProportion == 9:
-            prev = 0
-            for g in font.glyphs():
-                if prev and font.advance_width(g) != prev:
-                    link = ('http://www.thomasphinney.com/2013/01'
-                            '/obscure-panose-issues-for-font-makers/')
-                    self.fail(('Your font does not seem monospaced but PANOSE'
-                               ' bProportion set to monospace. It may have '
-                               ' a bug in windows. Details: %s' % link))
-                prev = font.advance_width(g)
-
     @tags('note')
     @autofix('bakery_cli.fixers.AddSPUAByGlyphIDToCmap')
     def test_font_unencoded_glyphs(self):
