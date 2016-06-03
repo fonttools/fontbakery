@@ -1371,7 +1371,7 @@ def main():
         del font[table]
 
     if len(unwanted_tables_found) > 0:
-      logging.error(("HOFTIXED: Unwanted tables were present"
+      logging.error(("HOTFIXED: Unwanted tables were present"
                      " in the font and were removed:"
                      " {}").format(', '.join(unwanted_tables_found)))
     else:
