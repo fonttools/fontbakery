@@ -548,7 +548,8 @@ def main():
     if family.designer.lower() == 'unknown':
       logging.error("Font designer field is '{}'.".format(family.designer))
     else:
-      logging.info("OK: Font designer field ('{}') is not 'unknown'.".format(family.designer))
+      logging.info(("OK: Font designer field ('{}')"
+                    " is not 'unknown'.").format(family.designer))
 
     # -----------------------------------------------------
     logging.debug("Fonts have equal numbers of glyphs?")
