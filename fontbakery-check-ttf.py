@@ -544,6 +544,13 @@ def main():
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
     # -----------------------------------------------------
+    logging.debug("Font designer field is 'unknown' ?")
+    if family.designer.lower() == 'unknown':
+      logging.error("Font designer field is '{}'.".format(family.designer))
+    else:
+      logging.info("OK: Font designer field ('{}') is not 'unknown'.".format(family.designer))
+
+    # -----------------------------------------------------
     logging.debug("Fonts have equal numbers of glyphs?")
     glyphs_count = 0
     fail = False
