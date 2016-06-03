@@ -135,14 +135,22 @@ PANOSE_PROPORTION_MONOSPACED = 9
 IS_FIXED_WIDTH_NOT_MONOSPACED = 0
 IS_FIXED_WIDTH_MONOSPACED = 1  # any non-zero value means monospaced
 
+#Platform IDs:
 PLATFORM_ID_UNICODE = 0
 PLATFORM_ID_MACHINTOSH = 1
 PLATFORM_ID_ISO = 2
 PLATFORM_ID_WINDOWS = 3
 PLATFORM_ID_CUSTOM = 4
 
+# Unicode platform-specific encoding IDs (when platID == 0):
+PLAT_ENC_ID_UNICODE_BMP_ONLY = 3
+
+# Windows platform-specific encoding IDs (when platID == 3):
+PLAT_ENC_ID_SYMBOL = 0
 PLAT_ENC_ID_UCS2 = 1
 PLAT_ENC_ID_UCS4 = 10
+
+# Windows-specific langIDs:
 LANG_ID_ENGLISH_USA = 0x0409
 LANG_ID_MACHINTOSH_ENGLISH = 0
 
@@ -1724,7 +1732,9 @@ def main():
     cmap = font['cmap']
     new_cmap = cmap.getcmap(3, 10)
     if not new_cmap:
-      for ucs2cmapid in ((3, 1), (0, 3), (3, 0)):
+      for ucs2cmapid in ((PLATFORM_ID_WINDOWS, PLAT_ENC_ID_UCS2),
+                         (PLATFORM_ID_UNICODE, PLAT_ENC_ID_UNICODE_BMP_ONLY),
+                         (PLATFORM_ID_WINDOWS, PLAT_ENC_ID_SYMBOL)):
         new_cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
         if new_cmap:
           break
