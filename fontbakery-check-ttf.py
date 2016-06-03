@@ -169,7 +169,7 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
                        'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
                        'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
                        'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-UNWANTED_TABLES = set(['FFTM', 'TTFA'])
+UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
 # HELPER FUNCTIONS
@@ -1361,7 +1361,21 @@ def main():
                      "optional tables [{}]").format(', '.join(optional_tables))
         fixes.append(desc)
     log_results("Check no problematic formats. ", hotfix=False)
-    # TODO remove UNWANTED_TABLES here
+
+    # ------------------------------------------------------
+    logging.debug("Are there unwanted tables?")
+    unwanted_tables_found = []
+    for table in font.keys():
+      if table in UNWANTED_TABLES:
+        unwanted_tables_found.append(table)
+        del font[table]
+
+    if len(unwanted_tables_found) > 0:
+      logging.error(("HOFTIXED: Unwanted tables were present"
+                     " in the font and were removed:"
+                     " {}").format(', '.join(unwanted_tables_found)))
+    else:
+      logging.info("OK: There are no unwanted tables.")
 
     # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
