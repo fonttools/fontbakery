@@ -1730,8 +1730,8 @@ def main():
           break
     unencoded_list = []
     if new_cmap:
-      diff = list(set(font.glyphOrder) -\
-       set(new_cmap.cmap.values()) - {'.notdef'})
+      diff = list(set(font.glyphOrder) -
+                  set(new_cmap.cmap.values()) - {'.notdef'})
       unencoded_list = [g for g in diff[:] if g != '.notdef']
 
     if len(unencoded_list) > 0:
