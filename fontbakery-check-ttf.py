@@ -1719,6 +1719,28 @@ def main():
       logging.info("OK: Font has a valid license URL.")
 
     # ----------------------------------------------------
+    logging.debug("Are there unencoded glyphs ?")
+    # fixer at: bakery_cli.fixers.AddSPUAByGlyphIDToCmap
+    cmap = font['cmap']
+    new_cmap = cmap.getcmap(3, 10)
+    if not new_cmap:
+      for ucs2cmapid in ((3, 1), (0, 3), (3, 0)):
+        new_cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
+        if new_cmap:
+          break
+    unencoded_list = []
+    if new_cmap:
+      diff = list(set(font.glyphOrder) -\
+       set(new_cmap.cmap.values()) - {'.notdef'})
+      unencoded_list = [g for g in diff[:] if g != '.notdef']
+
+    if len(unencoded_list) > 0:
+      logging.error(("There are unencoded glyphs: "
+                     "[{}]").format(', '.join(unencoded_list)))
+    else:
+      logging.info("OK: There are no unencoded glyphs.")
+
+    # ----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:

@@ -89,17 +89,6 @@ class TTFTestCase(TestCase):
         error = error % font.OS2_usWidthClass
         self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
 
-    @tags('note')
-    @autofix('bakery_cli.fixers.AddSPUAByGlyphIDToCmap')
-    def test_font_unencoded_glyphs(self):
-        """ Is there any unencoded glyph? """
-        ttx = ttLib.TTFont(self.operator.path, 0)
-        unencoded_glyphs = get_unencoded_glyphs(ttx)
-        #TODO: Shouldn't we explicitely mention here
-        #      which ones are the unencoded glyphs ?
-        self.assertIs(unencoded_glyphs, [],
-                      msg='There are unencoded glyphs')
-
     def test_check_upm_heigths_less_120(self):
         """ UPM Heights are NOT greater than 120%? """
         ttfont = Font.get_ttfont(self.operator.path)
