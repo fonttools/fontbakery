@@ -20,6 +20,6 @@ install:
   - "pip install git+https://github.com/behdad/fonttools.git"
 script:
   - python fontbakery-check-ttf.py Data/TestFont/cousine/Cousine-Bold.ttf
-  - flake8 --statistics fontbakery-check-ttf.py | grep -v "indentation is not a multiple of four" | grep -v "continuation line indentation is not a multiple of four" | grep -v "multiple spaces before operator" | grep -v "multiple statements on one line" | grep -v "too many leading '#' for block comment" ; exit ${PIPESTATUS[0]}
+  - flake8 --statistics fontbakery-check-ttf.py | grep -v "indentation is not a multiple of four" | grep -v "continuation line indentation is not a multiple of four" | grep -v "multiple spaces before operator" | grep -v "multiple statements on one line" | grep -v "too many leading '#' for block comment" || exit ${PIPESTATUS[0]}
 after_success:
 #  coveralls
