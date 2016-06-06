@@ -1902,6 +1902,68 @@ def main():
       logging.info("OK: Font em size is equal to 1000.")
 
     # ----------------------------------------------------
+# TODO: These were the last remaining tests in the old codebase,
+#       but I'm unsure whether we really need to port them here.
+#
+# @contextmanager
+# def redirect_stdout(new_target):
+#     old_target, sys.stdout = sys.stdout, new_target  # replace sys.stdout
+#     try:
+#         yield new_target  # run some code with the replaced stdout
+#     finally:
+#         sys.stdout = old_target  # restore to the previous value
+#
+# def getNameRecordValue(nameRecord):
+#     return nameRecord.string.decode(nameRecord.getEncoding())
+#
+#
+# class TTFTestCase(TestCase):
+#
+#     targets = ['result']
+#     tool = 'lint'
+#     name = __name__
+#
+#     def test_fontforge_openfile_contains_stderr(self):
+#         with redirect_stdout(StringIO.StringIO()) as std:
+#             fontforge.open(self.operator.path)
+#             if std.getvalue():
+#                 self.fail('FontForge prints STDERR')
+#
+#     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
+#     def test_check_opentype_familyname(self):
+#        """ FamilyName matches Windows-only Opentype-specific FamilyName? """
+#        font = Font.get_ttfont(self.operator.path)
+#        self.assertEqual(font.ot_family_name, font.familyname)
+#
+#    @autofix('bakery_cli.fixers.OpentypeFullnameFixer')
+#    def test_check_opentype_fullname(self):
+#        """ Fullname matches Windows-only Opentype-specific Fullname? """
+#        font = Font.get_ttfont(self.operator.path)
+#        self.assertEqual(font.ot_full_name, font.fullname)
+#
+#    @autofix('bakery_cli.fixers.SubfamilyNameFixer')
+#    def test_suggested_subfamily_name(self):
+#        """ Family and style names are set canonically? """
+#        font = Font.get_ttfont(self.operator.path)
+#        suggestedvalues = getSuggestedFontNameValues(font.ttfont)
+#        self.assertEqual(font.familyname, suggestedvalues['family'])
+#        self.assertEqual(font.stylename, suggestedvalues['subfamily'])
+#
+#    def test_check_os2_width_class(self):
+#        """ OS/2 width class is correctly set? """
+#        font = Font.get_ttfont(self.operator.path)
+#        error = "OS/2 widthClass must be [1..9] inclusive, was %s IE9 fail"
+#        error = error % font.OS2_usWidthClass
+#        self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
+#
+#    def test_check_upm_heigths_less_120(self):
+#        """ UPM Heights are NOT greater than 120%? """
+#        ttfont = Font.get_ttfont(self.operator.path)
+#        value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
+#        value = value * 100 / float(ttfont.get_upm_height())
+#        if value > 120:
+#            _ = "UPM:Height is %d%%, consider redesigning to 120%% or less"
+#            self.fail(_ % value)
 
 ##########################################################
 ## Metadata related checks:
