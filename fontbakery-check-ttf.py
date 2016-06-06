@@ -1775,6 +1775,14 @@ def main():
       logging.info("OK: There are no unencoded glyphs.")
 
     # ----------------------------------------------------
+    logging.debug("Is font em size (ideally) equal to 1000?")
+    upm_height = font['head'].unitsPerEm
+    if upm_height != 1000:
+      logging.error("font em size ({}) is not equal to 1000.".format(upm_height))
+    else:
+      logging.info("OK: Font em size is equal to 1000.")
+
+    # ----------------------------------------------------
 
 ##########################################################
 ## Metadata related checks:
