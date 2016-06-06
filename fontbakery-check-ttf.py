@@ -1869,28 +1869,33 @@ def main():
       logging.info("OK: Font has a valid license URL.")
 
     # ----------------------------------------------------
-    logging.debug("Are there unencoded glyphs ?")
-    # fixer at: bakery_cli.fixers.AddSPUAByGlyphIDToCmap
-    cmap = font['cmap']
-    new_cmap = cmap.getcmap(3, 10)
-    if not new_cmap:
-      for ucs2cmapid in ((PLATFORM_ID_WINDOWS, PLAT_ENC_ID_UCS2),
-                         (PLATFORM_ID_UNICODE, PLAT_ENC_ID_UNICODE_BMP_ONLY),
-                         (PLATFORM_ID_WINDOWS, PLAT_ENC_ID_SYMBOL)):
-        new_cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
-        if new_cmap:
-          break
-    unencoded_list = []
-    if new_cmap:
-      diff = list(set(font.glyphOrder) -
-                  set(new_cmap.cmap.values()) - {'.notdef'})
-      unencoded_list = [g for g in diff[:] if g != '.notdef']
-
-    if len(unencoded_list) > 0:
-      logging.error(("There are unencoded glyphs: "
-                     "[{}]").format(', '.join(unencoded_list)))
-    else:
-      logging.info("OK: There are no unencoded glyphs.")
+    # This check is temporarily disabled
+    # based on the request at:
+    # https://github.com/googlefonts/fontbakery/commit/
+    #  23ab884f839d715a664a02d9f9b6c5c6a38bbc45#commitcomment-17761459
+    #
+    # logging.debug("Are there unencoded glyphs ?")
+    # # fixer at: bakery_cli.fixers.AddSPUAByGlyphIDToCmap
+    # cmap = font['cmap']
+    # new_cmap = cmap.getcmap(3, 10)
+    # if not new_cmap:
+    #   for ucs2cmapid in ((PLATFORM_ID_WINDOWS, PLAT_ENC_ID_UCS2),
+    #                      (PLATFORM_ID_UNICODE, PLAT_ENC_ID_UNICODE_BMP_ONLY),
+    #                      (PLATFORM_ID_WINDOWS, PLAT_ENC_ID_SYMBOL)):
+    #     new_cmap = cmap.getcmap(ucs2cmapid[0], ucs2cmapid[1])
+    #     if new_cmap:
+    #       break
+    # unencoded_list = []
+    # if new_cmap:
+    #   diff = list(set(font.glyphOrder) -
+    #               set(new_cmap.cmap.values()) - {'.notdef'})
+    #   unencoded_list = [g for g in diff[:] if g != '.notdef']
+    #
+    # if len(unencoded_list) > 0:
+    #   logging.error(("There are unencoded glyphs: "
+    #                  "[{}]").format(', '.join(unencoded_list)))
+    # else:
+    #   logging.info("OK: There are no unencoded glyphs.")
 
     # ----------------------------------------------------
     logging.debug("Is font em size (ideally) equal to 1000?")
