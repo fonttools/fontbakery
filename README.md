@@ -1,9 +1,8 @@
 [![Latest PyPI Version](https://img.shields.io/pypi/v/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Python](https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
-[![Coveralls.io Test Coverage Status](https://img.shields.io/coveralls/googlefonts/fontbakery.svg)](https://coveralls.io/r/googlefonts/fontbakery)
 
-# ![Font Bakery](Data/logo.png)
+# ![Font Bakery](data/logo.png)
 
 Font Bakery is a set of command-line tools for testing font projects, and a web interface for reviewing them.
 It runs checks on TrueType files and the test logs can be parsed into graphical views by the Font Bakery web app.
@@ -71,8 +70,6 @@ Alternatively you can install the current development version with
     sudo pip install git+https://github.com/googlefonts/fontbakery.git; # install fontbakery as root to ensure it uses system python
 
 ## Usage
-
-All fontbakery commands begin with `fontbakery-`
 
     cd ~/src/github.com/davelab6/fontproject/
     fontbakery-check-ttf.py *.ttf
