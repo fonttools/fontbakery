@@ -1157,7 +1157,7 @@ def main():
 
       def ff_check(condition, description, err_msg, ok_msg):
         logging.debug("fontforge-check: {}".format(description))
-        if condition:
+        if condition is False:
           logging.error("fontforge-check: {}".format(err_msg))
         else:
           logging.info("OK: fontforge-check: {}".format(ok_msg))
