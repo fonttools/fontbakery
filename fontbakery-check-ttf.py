@@ -172,6 +172,65 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
 UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
+# Helper logging class
+
+
+class FontBakeryCheckLogger():
+  all_checks = []
+  current_check = None
+
+  def save_json_report(self, filename="fontbakery-check-results.json"):
+    import json
+    self.flush()
+    json_data = json.dumps(self.all_checks,
+                           sort_keys=True,
+                           indent=4,
+                           separators=(',', ': '))
+    open(filename, 'w').write(json_data)
+    logging.debug(("Saved check results in "
+                   "JSON format to '{}'").format(filename))
+
+  def flush(self):
+    if self.current_check is not None:
+      self.all_checks.append(self.current_check)
+
+  def new_check(self, desc):
+    self.flush()
+    logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
+    self.current_check = {"description": desc,
+                          "log_messages": [],
+                          "result": "unknown"}
+
+  def skip(self, msg):
+    logging.info("SKIP: " + msg)
+    self.current_check["log_messages"].append(msg)
+    self.current_check["result"] = "SKIP"
+
+  def ok(self, msg):
+    logging.info("OK: " + msg)
+    self.current_check["log_messages"].append(msg)
+    if self.current_check["result"] != "FAIL":
+      self.current_check["result"] = "OK"
+
+  def warning(self, msg):
+    logging.warning(msg)
+    self.current_check["log_messages"].append("Warning: " + msg)
+    if self.current_check["result"] == "unknown":
+      self.current_check["result"] = "WARNING"
+
+  def error(self, msg):
+    logging.error(msg)
+    self.current_check["log_messages"].append("ERROR: " + msg)
+    self.current_check["result"] = "ERROR"
+
+  def hotfix(self, msg):
+    logging.info('HOTFIXED: ' + msg)
+    self.current_check['log_messages'].append('HOTFIX: ' + msg)
+    self.current_check['result'] = "HOTFIX"
+
+fb = FontBakeryCheckLogger()
+
+# =====================================
 # HELPER FUNCTIONS
 
 font = None
@@ -219,22 +278,20 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
 
 
 def log_results(message, hotfix=True):
-    """ Concatenate and log all fixes that happened up to now
-    in a good and regular syntax """
-    global fixes
-    # DC QUESTION: should hotfix be global too?
-    if fixes == []:
-        logging.info("OK: " + message)
+  """ Concatenate and log all fixes that happened up to now
+  in a good and regular syntax """
+  global fixes
+  if fixes == []:
+    fb.ok(message)
+  else:
+    if hotfix:
+      fb.hotfix("{} Fixes: {}".format(message, " | ".join(fixes)))
     else:
-        if hotfix:
-            msg = "HOTFIXED: {} Fixes: {}"
-        else:
-            msg = "CRITICAL FAILURE: {} {}"
-        logging.error(msg.format(message,
-                                 " | ".join(fixes)))
-        # empty the buffer of fixes,
-        # in preparation for the next test
-        fixes = []
+      fb.error("{} {}".format(message, " | ".join(fixes)))
+
+    # empty the buffer of fixes,
+    # in preparation for the next test
+    fixes = []
 
 
 # Maybe fonttools should provide us a helper method like this one...
@@ -298,8 +355,8 @@ def parse_version_string(s):
             major = int(substrings[-2])
         return major, minor, suffix
     except:
-        logging.error("Failed to detect major and minor version numbers in" +
-                      " '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+        fb.error("Failed to detect major and minor version numbers in" +
+                 " '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
 
 
 def getGlyph(font, uchar):
@@ -340,8 +397,8 @@ def addGlyph(font, uchar, glyph):
   if 'glyf' in font:
     font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
   else:
-    logging.error("CRITICAL: This is a fontbakery bug."
-                  "Implement-me: addGlyph to CFF fonts.")
+    fb.error("CRITICAL: This is a fontbakery bug."
+             "Implement-me: addGlyph to CFF fonts.")
     # cff = font['CFF '].cff
 #   self.addCFFGlyph(
 #     glyphName=glyph,
@@ -545,15 +602,15 @@ def main():
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
     # -----------------------------------------------------
-    logging.debug("Font designer field is 'unknown' ?")
+    fb.new_check("Font designer field is 'unknown' ?")
     if family.designer.lower() == 'unknown':
-      logging.error("Font designer field is '{}'.".format(family.designer))
+      fb.error("Font designer field is '{}'.".format(family.designer))
     else:
-      logging.info(("OK: Font designer field ('{}')"
-                    " is not 'unknown'.").format(family.designer))
+      fb.ok(("Font designer field ('{}')"
+             " is not 'unknown'.").format(family.designer))
 
     # -----------------------------------------------------
-    logging.debug("Fonts have equal numbers of glyphs?")
+    fb.new_check("Fonts have equal numbers of glyphs?")
     glyphs_count = 0
     fail = False
     for f in family.fonts:
@@ -565,12 +622,12 @@ def main():
 
     if fail:
       # TODO make this print a table of the files + counts
-      logging.error('Fonts have different numbers of glyphs.')
+      fb.error('Fonts have different numbers of glyphs.')
     else:
-      logging.info("OK: Fonts have equal numbers of glyphs.")
+      fb.ok("Fonts have equal numbers of glyphs.")
 
     # -----------------------------------------------------
-    logging.debug("Fonts have equal glyph names?")
+    fb.new_check("Fonts have equal glyph names?")
     glyphs = None
     fail = False
     for f in family.fonts:
@@ -581,12 +638,12 @@ def main():
         fail = True
 
     if fail:
-      logging.error('Fonts have different glyph names.')
+      fb.error('Fonts have different glyph names.')
     else:
-      logging.info("OK: Fonts have equal glyph names.")
+      fb.ok("Fonts have equal glyph names.")
 
     # -----------------------------------------------------
-    logging.debug("Fonts have equal unicode encodings?")
+    fb.new_check("Fonts have equal unicode encodings?")
     encoding = None
     fail = False
     for f in family.fonts:
@@ -604,9 +661,9 @@ def main():
         fail = True
 
     if fail:
-      logging.error('Fonts have different unicode encodings.')
+      fb.error('Fonts have different unicode encodings.')
     else:
-      logging.info("OK: Fonts have equal unicode encodings.")
+      fb.ok("Fonts have equal unicode encodings.")
 
 ##########################################################################
 # Step 2: Single TTF tests
@@ -630,26 +687,26 @@ def main():
     # ----------------------------------------------------
     # OS/2 fsType is a legacy DRM-related field from the 80's
     # It should be disabled in all fonts.
-    logging.debug("Checking OS/2 fsType")
+    fb.new_check("Checking OS/2 fsType")
     assert_table_entry('OS/2', 'fsType', 0)
     log_results("fsType is zero.")
 
     # ----------------------------------------------------
-    logging.debug("Checking OS/2 achVendID")
+    fb.new_check("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
     bad_vids = ['UKWN', 'ukwn', 'PfEd']
     if vid is None:
-      logging.error("OS/2 VendorID is not set."
-                    " You should set it to your own 4 character code,"
-                    " and register that code with Microsoft at"
-                    " https://www.microsoft.com"
-                    "/typography/links/vendorlist.aspx")
+      fb.error("OS/2 VendorID is not set."
+               " You should set it to your own 4 character code,"
+               " and register that code with Microsoft at"
+               " https://www.microsoft.com"
+               "/typography/links/vendorlist.aspx")
     elif vid in bad_vids:
-      logging.error(("OS/2 VendorID is '{}', a font editor default."
-                     " You should set it to your own 4 character code,"
-                     " and register that code with Microsoft at"
-                     " https://www.microsoft.com"
-                     "/typography/links/vendorlist.aspx").format(vid))
+      fb.error(("OS/2 VendorID is '{}', a font editor default."
+                " You should set it to your own 4 character code,"
+                " and register that code with Microsoft at"
+                " https://www.microsoft.com"
+                "/typography/links/vendorlist.aspx").format(vid))
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
@@ -657,101 +714,102 @@ def main():
           if name.nameID == NAMEID_MANUFACTURER_NAME:
             manufacturer = name.string.decode(name.getEncoding()).strip()
             if manufacturer != registered_vendor_ids[vid].strip():
-              logging.warning("VendorID string '{}' does not match"
-                              " nameID 8 (Manufacturer Name): '{}'".format(
-                                registered_vendor_ids[vid].strip(),
-                                manufacturer))
-        logging.info(("OK: OS/2 VendorID is '{}' and registered to '{}'."
-                      " Is that legit?").format(vid,
-                                                registered_vendor_ids[vid]))
+              fb.warning("VendorID string '{}' does not match"
+                         " nameID 8 (Manufacturer Name): '{}'".format(
+                           registered_vendor_ids[vid].strip(),
+                           manufacturer))
+        fb.ok(("OS/2 VendorID is '{}' and registered to '{}'."
+               " Is that legit?").format(vid,
+                                         registered_vendor_ids[vid]))
       elif vid.lower() in [i.lower() for i in registered_vendor_ids.keys()]:
-        logging.error(("OS/2 VendorID is '{}' but this is registered"
-                       " with different casing."
-                       " You should check the case.").format(vid))
+        fb.error(("OS/2 VendorID is '{}' but this is registered"
+                  " with different casing."
+                  " You should check the case.").format(vid))
       else:
-        logging.warning(("OS/2 VendorID is '{}' but"
-                         " this is not registered with Microsoft."
-                         " You should register it at"
-                         " https://www.microsoft.com"
-                         "/typography/links/vendorlist.aspx").format(vid))
+        fb.warning(("OS/2 VendorID is '{}' but"
+                    " this is not registered with Microsoft."
+                    " You should register it at"
+                    " https://www.microsoft.com"
+                    "/typography/links/vendorlist.aspx").format(vid))
     else:
-      logging.warning(("OK: OS/2 VendorID is '{}'"
-                       " but could not be checked against Microsoft's list."
-                       " You should check your internet connection"
-                       " and try again.").format(vid))
+      fb.warning(("OS/2 VendorID is '{}'"
+                  " but could not be checked against Microsoft's list."
+                  " You should check your internet connection"
+                  " and try again.").format(vid))
 
     # ----------------------------------------------------
-    logging.debug("substitute copyright, registered and trademark symbols"
-                  " in name table entries")
+    fb.new_check("substitute copyright, registered and trademark symbols"
+                 " in name table entries")
     new_names = []
     nametable_updated = False
     replacement_map = [(u"\u00a9", '(c)'),
                        (u"\u00ae", '(r)'),
                        (u"\u2122", '(tm)')]
     for name in font['name'].names:
-        new_name = name
-        original = unicode(name.string, encoding=name.getEncoding())
-        string = unicode(name.string, encoding=name.getEncoding())
-        for mark, ascii_repl in replacement_map:
-            string = string.replace(mark, ascii_repl)
-        new_name.string = string.encode(name.getEncoding())
-        if string != original:
-            # DC this must specify WHICH symbol was sub'd
-            logging.error("HOTFIXED: Symbol substituted in name entry.")
-            nametable_updated = True
-        new_names.append(new_name)
+      new_name = name
+      original = unicode(name.string, encoding=name.getEncoding())
+      string = unicode(name.string, encoding=name.getEncoding())
+      for mark, ascii_repl in replacement_map:
+        string = string.replace(mark, ascii_repl)
+      new_name.string = string.encode(name.getEncoding())
+      if string != original:
+        nametable_updated = True
+      new_names.append(new_name)
     if nametable_updated:
-        # DC this must specify WHICH symbol was sub'd
-        logging.error("HOTFIXED: Name table entries were modified"
-                      " to replace unicode symbols"
-                      " such as (c), (r) and TM.")
-        font['name'].names = new_names
+      # DC this must specify WHICH symbol was sub'd
+      fb.hotfix("Name table entries were modified"
+                " to replace unicode symbols"
+                " such as (c), (r) and TM.")
+      font['name'].names = new_names
+    else:
+      fb.ok("No need to substitute copyright, registered and"
+            " trademark symbols in name table entries of this font.")
 
     # ----------------------------------------------------
     # Determine weight from canonical filename
     file_path, filename = os.path.split(font_file)
     family, style = os.path.splitext(filename)[0].split('-')
     if style.endswith("Italic") and style != "Italic":
-        weight_name = style.replace("Italic", "")
+      weight_name = style.replace("Italic", "")
     else:
-        weight_name = style
+      weight_name = style
     # DC what happens with "Italic" styles, weight_name = "Italic"?
 
     # ----------------------------------------------------
-    logging.debug("Checking OS/2 usWeightClass")
+    fb.new_check("Checking OS/2 usWeightClass")
     assert_table_entry('OS/2', 'usWeightClass', WEIGHTS[weight_name])
     log_results("OS/2 usWeightClass")
 
     # ----------------------------------------------------
-    logging.debug("Checking fsSelection REGULAR bit")
+    fb.new_check("Checking fsSelection REGULAR bit")
     expected = 0
     if "Regular" in style:
-        expected = FSSEL_REGULAR
+      expected = FSSEL_REGULAR
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_REGULAR)
     log_results("fsSelection REGULAR bit")
 
     # ----------------------------------------------------
-    logging.debug("Checking that italicAngle <= 0")
+    fb.new_check("Checking that italicAngle <= 0")
     value = font['post'].italicAngle
     if value > 0:
-        font['post'].italicAngle = -value
-        logging.error(("HOTFIXED: post table italicAngle"
-                       " from {} to {}").format(value, -value))
+      font['post'].italicAngle = -value
+      fb.hotfix(("post table italicAngle"
+                 " from {} to {}").format(value, -value))
     else:
-        logging.info("OK: post table italicAngle is {}".format(value))
+      fb.ok("post table italicAngle is {}".format(value))
 
     # ----------------------------------------------------
-    logging.debug("Checking that italicAngle is less than 20 degrees")
+    fb.new_check("Checking that italicAngle is less than 20 degrees")
     value = font['post'].italicAngle
     if abs(value) > 20:
-        font['post'].italicAngle = -20
-        logging.error(("HOTFIXED: post table italicAngle"
-                       " changed from {} to -20").format(value))
+      font['post'].italicAngle = -20
+      fb.hotfix(("post table italicAngle"
+                 " changed from {} to -20").format(value))
     else:
-        logging.info("OK: post table italicAngle is less than 20 degrees.")
+      fb.ok("OK: post table italicAngle is less than 20 degrees.")
 
     # ----------------------------------------------------
-    logging.debug("Checking if italicAngle matches font style")
+    fb.new_check("Checking if italicAngle matches font style")
     # DC all the italic style checks should be wrapped in this if statement?
     # There are lots of "if italic in style" but there should only be one,
     # and there are lots that do NOT have this but perhaps should.
@@ -759,75 +817,75 @@ def main():
     # need rethinking to be more logically consistent and not forgetting
     # to check all possible states
     if "Italic" in style:
-       if font['post'].italicAngle == 0:
-           logging.error("Font is italic, so post table italicAngle"
-                         " should be non-zero.")
-       else:
-           logging.info("OK: post table italicAngle matches style name")
+      if font['post'].italicAngle == 0:
+        fb.error("Font is italic, so post table italicAngle"
+                 " should be non-zero.")
+      else:
+        fb.info("OK: post table italicAngle matches style name")
     else:
-       assert_table_entry('post', 'italicAngle', 0)
-       log_results("post table italicAngle matches style name")
+      assert_table_entry('post', 'italicAngle', 0)
+      log_results("post table italicAngle matches style name")
 
     # ----------------------------------------------------
     # TODO: checker for proper italic names in name table
     # DC THIS IS URGENT!
 
     # ----------------------------------------------------
-    logging.debug("Checking fsSelection ITALIC bit")
+    fb.new_check("Checking fsSelection ITALIC bit")
     expected = 0
     if "Italic" in style:
-        expected = FSSEL_ITALIC
+      expected = FSSEL_ITALIC
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_ITALIC)
     log_results("fsSelection ITALIC bit")
 
     # ----------------------------------------------------
-    logging.debug("Checking macStyle ITALIC bit")
+    fb.new_check("Checking macStyle ITALIC bit")
     expected = 0
     if "Italic" in style:
-        expected = MACSTYLE_ITALIC
+      expected = MACSTYLE_ITALIC
     assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_ITALIC)
     log_results("macStyle ITALIC bit")
 
     # ----------------------------------------------------
-    logging.debug("Checking fsSelection BOLD bit")
+    fb.new_check("Checking fsSelection BOLD bit")
     expected = 0
     if style in ["Bold", "BoldItalic"]:
-        expected = FSSEL_BOLD
+      expected = FSSEL_BOLD
     assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_BOLD)
     log_results("fsSelection BOLD bit")
 
     # ----------------------------------------------------
-    logging.debug("Checking macStyle BOLD bit")
+    fb.new_check("Checking macStyle BOLD bit")
     expected = 0
     if style in ["Bold", "BoldItalic"]:
-        expected = MACSTYLE_BOLD
+      expected = MACSTYLE_BOLD
     assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_BOLD)
     log_results("macStyle BOLD bit")
 
     # ----------------------------------------------------
-    logging.debug("Check font has a license")
+    fb.new_check("Check font has a license")
     # Check that OFL.txt or LICENSE.txt exists in the same
     # directory as font_file, if not then warn that there should be one.
     found = False
     for license in ['OFL.txt', 'LICENSE.txt']:
       license_path = os.path.join(file_path, license)
       if os.path.exists(license_path):
-          if found is not False:
-             logger.error("More than a single license file found."
-                          " Please review.")
-             found = "multiple"
-          else:
-             found = license_path
+        if found is not False:
+          fb.error("More than a single license file found."
+                   " Please review.")
+          found = "multiple"
+        else:
+          found = license_path
 
     if found != "multiple":
-        if found is False:
-            logger.error("No license file was found."
-                         " Please add an OFL.txt or a LICENSE.txt file.")
-        else:
-            logger.info("OK: Found license at '{}'".format(found))
+      if found is False:
+        fb.error("No license file was found."
+                 " Please add an OFL.txt or a LICENSE.txt file.")
+      else:
+        fb.ok("Found license at '{}'".format(found))
 
     # ----------------------------------------------------
-    logging.debug("Check copyright namerecords match license file")
+    fb.new_check("Check copyright namerecords match license file")
     new_names = []
     names_changed = False
     for license in ['OFL.txt', 'LICENSE.txt']:
@@ -842,9 +900,9 @@ def main():
                 entry_found = True
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
-                    logging.error(('HOTFIXED: License file {} exists but'
-                                   ' NameID value is not specified'
-                                   ' for that.').format(license))
+                    fb.hotfix(('License file {} exists but'
+                               ' NameID value is not specified'
+                               ' for that.').format(license))
                     new_name = makeNameRecord(placeholder,
                                               NAMEID_LICENSE_DESCRIPTION,
                                               font['name'].names[i].platformID,
@@ -853,9 +911,9 @@ def main():
                     new_names.append(new_name)
                     names_changed = True
                 if value == placeholder and license_exists is False:
-                    logging.error(('Valid licensing specified'
-                                   ' on NameID 13 but a corresponding'
-                                   ' {} file was not found.').format(license))
+                    fb.error(('Valid licensing specified'
+                              ' on NameID 13 but a corresponding'
+                              ' {} file was not found.').format(license))
         if not entry_found and license_exists:
             new_name = makeNameRecord(placeholder,
                                       NAMEID_LICENSE_DESCRIPTION,
@@ -864,21 +922,21 @@ def main():
                                       LANG_ID_ENGLISH_USA)
             new_names.append(new_name)
             names_changed = True
-            logging.error("HOTFIXED: Font lacks NameID 13."
-                          " A proper licensing entry was set.")
+            fb.hotfix("Font lacks NameID 13."
+                      " A proper licensing entry was set.")
 
     if names_changed:
         font['name'].names = new_names
     else:
-        logging.info("OK: licensing entry on name table is correctly set.")
+        fb.ok("licensing entry on name table is correctly set.")
 
     # ----------------------------------------------------
-    logging.debug("Check license and license URL entries")
+    fb.new_check("Check license and license URL entries")
     # TODO Check license and license URL are correct, hotfix them if not
     # DC URGENT!
 
     # ----------------------------------------------------
-    logging.debug("Assure theres no 'description' namerecord")
+    fb.new_check("Assure theres no 'description' namerecord")
     # TODO Check namerecord 9 ("description") is not there, drop it if so
     # DC URGENT!
 
@@ -921,8 +979,8 @@ def main():
     # ----------------------------------------------------
     # TODO: Add a description/rationale to this check here
     # DC I need to carefully review how this works
-    logging.debug("Checking name table for items without"
-                  " platformID = 1 (MACHINTOSH)")
+    fb.new_check("Checking name table for items without"
+                 " platformID = 1 (MACHINTOSH)")
     new_names = []
     changed = False
     for name in font['name'].names:
@@ -948,11 +1006,11 @@ def main():
         changed = True
     if changed:
       font['name'].names = new_names
-      logging.error("HOTFIXED: some name table items"
-                    " with platformID=1 were removed")
+      fb.hotfix("some name table items"
+                " with platformID=1 were removed")
     else:
-      logging.info("OK: name table has only the bare-minimum"
-                   " records with platformID=1")
+      fb.ok("name table has only the bare-minimum"
+            " records with platformID=1")
 
     # ----------------------------------------------------
     logging.debug("Namerecord 10s (descriptions) exist?")
@@ -966,14 +1024,14 @@ def main():
       new_names.append(name)
     if changed:
       font['name'].names = new_names
-      logging.error("HOTFIXED: Namerecord 10s (descriptions)"
-                    " were removed (perhaps added by"
-                    " a longstanding FontLab Studio 5.x bug.)")
+      fb.hotfix("Namerecord 10s (descriptions)"
+                " were removed (perhaps added by"
+                " a longstanding FontLab Studio 5.x bug.)")
     else:
-      logging.info("OK: Namerecord 10s (descriptions) do not exist.")
+      fb.ok("Namerecord 10s (descriptions) do not exist.")
 
     # ----------------------------------------------------
-    logging.debug("StyleName recommendation")
+    fb.new_check("StyleName recommendation")
     font_style_name = ""
     for entry in font['name'].names:
         if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
@@ -982,14 +1040,14 @@ def main():
     # DC this seems unreliable
     if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
         new_value = font_style_name
-        logger.error(('OK: {}: Fixed: Windows-only Opentype-specific'
-                      ' StyleName set to "{}".').format(font_file,
-                                                        font_style_name))
+        fb.hotfix(('{}: Windows-only Opentype-specific'
+                   ' StyleName set to "{}".').format(font_file,
+                                                     font_style_name))
     # DC for example, R/I/B/BI should _not_ have any OT style name
     else:
-        logger.error(('OK: {}: Warning: Windows-only Opentype-specific'
-                      ' StyleName set to "Regular" as a default value.'
-                      ' Please verify if this is correct.').format(font_file))
+        fb.hotfix(('{}: Warning: Windows-only Opentype-specific'
+                   ' StyleName set to "Regular" as a default value.'
+                   ' Please verify if this is correct.').format(font_file))
         new_value = 'Regular'
 
     found = False
@@ -1044,7 +1102,7 @@ def main():
     #   http://typedrawers.com/discussion/comment/15397/#Comment_15397
     #
     # Also we should report an error for glyphs not of average width
-    logging.debug("Checking if the font is truly monospaced")
+    fb.new_check("Checking if the font is truly monospaced")
     glyphs = font['glyf'].glyphs
     width_occurrences = {}
     width_max = 0
@@ -1104,21 +1162,21 @@ def main():
         log_results("Font is not monospaced.")
 
     # ----------------------------------------------------
-    logging.debug("Checking with ot-sanitise")
+    fb.new_check("Checking with ot-sanitise")
     try:
       ots_output = subprocess.check_output(["ot-sanitise", font_file],
                                            stderr=subprocess.STDOUT)
       if ots_output != "":
-        logging.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+        fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
       else:
-        logging.info("OK: ot-sanitise passed this file")
+        fb.ok("ot-sanitise passed this file")
     except OSError:
       # This is made very prominent with additional line breaks
-      logging.warning("\n\n\not-santise is not available!"
-                      " You really MUST check the fonts with this tool."
-                      " To install it, see"
-                      " https://github.com/googlefonts"
-                      "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
+      fb.warning("\n\n\not-santise is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
       pass
 
     # ----------------------------------------------------
@@ -1156,11 +1214,11 @@ def main():
       validation_state = fontforge_font.validate()
 
       def ff_check(condition, description, err_msg, ok_msg):
-        logging.debug("fontforge-check: {}".format(description))
+        fb.new_check("fontforge-check: {}".format(description))
         if condition is False:
-          logging.error("fontforge-check: {}".format(err_msg))
+          fb.error("fontforge-check: {}".format(err_msg))
         else:
-          logging.info("OK: fontforge-check: {}".format(ok_msg))
+          fb.ok("fontforge-check: {}".format(ok_msg))
 
       ff_check("Contours are closed?",
                bool(validation_state & 0x2) is False,
@@ -1278,7 +1336,7 @@ def main():
                        ' not open {}').format(font_file))
 
     # ----------------------------------------------------
-    logging.debug("Checking vertical metrics")
+    fb.new_check("Checking vertical metrics")
     # Ascent:
     assert_table_entry('hhea', 'ascent', vmetrics_ymax)
     assert_table_entry('OS/2', 'sTypoAscender', vmetrics_ymax)
@@ -1298,7 +1356,7 @@ def main():
     log_results("Vertical metrics.")
 
     # ----------------------------------------------------
-    logging.debug("Checking font version fields")
+    fb.new_check("Checking font version fields")
     # FIXME: do we want all fonts in the same family to have
     # the same major and minor version numbers?
     # If so, then we should calculate the max of each major and minor fields
@@ -1332,9 +1390,9 @@ def main():
     log_results("Font version fields.")
 
     # ----------------------------------------------------
-    logging.debug("Digital Signature exists?")
+    fb.new_check("Digital Signature exists?")
     if "DSIG" in font:
-        logging.info("OK: Digital Signature (DSIG) exists.")
+        fb.ok("Digital Signature (DSIG) exists.")
     else:
         try:
             from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
@@ -1352,19 +1410,21 @@ def main():
             sig.ulOffset = 20
             newDSIG.signatureRecords = [sig]
             font.tables["DSIG"] = newDSIG
+            fb.hotfix("The '{}' font does not have an existing digital"
+                      " signature (DSIG), so we just added one.")
         except ImportError:
             error_message = ("The '{}' font does not have an existing"
                              " digital signature (DSIG), so OpenType features"
                              " will not be available in some applications that"
                              " use its presense as a (stupid) heuristic."
-                             " So we add one (which requires Fonttools v2.3+"
-                             " so you need to upgrade. Try:"
+                             " So we need to add one. But for that we'll need "
+                             "Fonttools v2.3+ so you need to upgrade it. Try:"
                              " $ pip install --upgrade fontTools; or see"
                              " https://pypi.python.org/pypi/FontTools")
-            logging.error(error_message.format(file_path))
+            fb.error(error_message.format(file_path))
 
     # ----------------------------------------------------
-    logging.debug("Font contains glyphs for whitespace characters?")
+    fb.new_check("Font contains glyphs for whitespace characters?")
     space = getGlyph(font, 0x0020)
     nbsp = getGlyph(font, 0x00A0)
     # tab = getGlyph(font, 0x0009)
@@ -1375,8 +1435,8 @@ def main():
     # fonts probably don't need an actual tab char
     # if not tab: missing.append("tab (0x0009)")
     if missing != []:
-        logging.error("Font is missing"
-                      " the following glyphs: {}.".format(", ".join(missing)))
+        fb.error("Font is missing"
+                 " the following glyphs: {}.".format(", ".join(missing)))
 
     isNbspAdded = False
     isSpaceAdded = False
@@ -1388,39 +1448,39 @@ def main():
             space = addGlyph(font, 0x0020, 'space')
             isSpaceAdded = True
     except Exception as ex:
-        logging.error(ex)
+        fb.error(ex)
 
     # ----------------------------------------------------
-    logging.debug("Font has **proper** whitespace glyph names?")
+    fb.new_check("Font has **proper** whitespace glyph names?")
     # TODO: This check can error more than once in a single run.
     # We better compile a single-string error message.
     failed = False
     if space is not None and space not in ["space", "uni0020"]:
       failed = True
-      logging.error(('{}: Glyph 0x0020 is called "{}":'
-                     ' Change to "space"'
-                     ' or "uni0020"').format(file_path, space))
+      fb.error(('{}: Glyph 0x0020 is called "{}":'
+                ' Change to "space"'
+                ' or "uni0020"').format(file_path, space))
 
     if nbsp is not None and nbsp not in ["nbsp",
                                          "uni00A0",
                                          "nonbreakingspace",
                                          "nbspace"]:
       failed = True
-      logging.error(('HOTFIXED: {}: Glyph 0x00A0 is called "{}":'
-                     ' Change to "nbsp"'
-                     ' or "uni00A0"').format(file_path, nbsp))
+      fb.hotfix(('{}: Glyph 0x00A0 is called "{}":'
+                 ' Change to "nbsp"'
+                 ' or "uni00A0"').format(file_path, nbsp))
 
     if failed is False:
-      logging.info('OK: Font has **proper** whitespace glyph names.')
+      fb.ok('Font has **proper** whitespace glyph names.')
 
     # ----------------------------------------------------
-    logging.debug("Whitespace glyphs have ink?")
+    fb.new_check("Whitespace glyphs have ink?")
 
     for g in [space, nbsp]:
         if glyphHasInk(font, g):
-            logging.error(('HOTFIXED: {}: Glyph "{}" has ink.'
-                           ' Fixed: Overwritten by'
-                           ' an empty glyph').format(file_path, g))
+            fb.hotfix(('{}: Glyph "{}" has ink.'
+                       ' Fixed: Overwritten by'
+                       ' an empty glyph').format(file_path, g))
             # overwrite existing glyph with an empty one
             font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
 
@@ -1432,31 +1492,31 @@ def main():
         setWidth(font, space, min(nbspWidth, spaceWidth))
 
         if isNbspAdded:
-            msg = 'OK: {} space {} nbsp None: Added nbsp with advanceWidth {}'
-            logging.error(msg.format(file_path,
-                                     spaceWidth,
-                                     spaceWidth))
+            msg = '{} space {} nbsp None: Added nbsp with advanceWidth {}'
+            fb.hotfix(msg.format(file_path,
+                                 spaceWidth,
+                                 spaceWidth))
 
         if isSpaceAdded:
-            msg = 'OK: {} space None nbsp {}: Added space with advanceWidth {}'
-            logging.error(msg.format(file_path, nbspWidth, nbspWidth))
+            msg = '{} space None nbsp {}: Added space with advanceWidth {}'
+            fb.hotfix(msg.format(file_path, nbspWidth, nbspWidth))
 
         if nbspWidth > spaceWidth and spaceWidth >= 0:
-            msg = 'OK: {} space {} nbsp {}: Fixed space advanceWidth to {}'
-            logging.error(msg.format(file_path,
-                                     spaceWidth,
-                                     nbspWidth,
-                                     nbspWidth))
+            msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
+            fb.hotfix(msg.format(file_path,
+                                 spaceWidth,
+                                 nbspWidth,
+                                 nbspWidth))
         else:
-            msg = 'OK: {} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-            logging.error(msg.format(file_path,
-                                     spaceWidth,
-                                     nbspWidth,
-                                     spaceWidth))
+            msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+            fb.hotfix(msg.format(file_path,
+                                 spaceWidth,
+                                 nbspWidth,
+                                 spaceWidth))
     else:
-        logger.info('OK: {} space {} nbsp {}'.format(file_path,
-                                                     spaceWidth,
-                                                     nbspWidth))
+        fb.ok('{} space {} nbsp {}'.format(file_path,
+                                           spaceWidth,
+                                           nbspWidth))
 
     # ------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage,
@@ -1464,7 +1524,7 @@ def main():
     # See https://github.com/googlefonts/fontbakery/issues/594
 
     # ------------------------------------------------------
-    logging.debug("Check no problematic formats")
+    fb.new_check("Check no problematic formats")
     # See https://github.com/googlefonts/fontbakery/issues/617
     # Font contains all required tables?
     tables = set(font.reader.tables.keys())
@@ -1481,7 +1541,7 @@ def main():
     log_results("Check no problematic formats. ", hotfix=False)
 
     # ------------------------------------------------------
-    logging.debug("Are there unwanted tables?")
+    fb.new_check("Are there unwanted tables?")
     unwanted_tables_found = []
     for table in font.keys():
       if table in UNWANTED_TABLES:
@@ -1489,11 +1549,11 @@ def main():
         del font[table]
 
     if len(unwanted_tables_found) > 0:
-      logging.error(("HOTFIXED: Unwanted tables were present"
-                     " in the font and were removed:"
-                     " {}").format(', '.join(unwanted_tables_found)))
+      fb.hotfix(("Unwanted tables were present"
+                 " in the font and were removed:"
+                 " {}").format(', '.join(unwanted_tables_found)))
     else:
-      logging.info("OK: There are no unwanted tables.")
+      fb.ok("There are no unwanted tables.")
 
     # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
@@ -1514,22 +1574,22 @@ def main():
     #    using the same options
 
     # ----------------------------------------------------
-    logging.debug("Version format is correct in NAME table?")
+    fb.new_check("Version format is correct in NAME table?")
 
     def is_valid_version_format(value):
       return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
     version_string = get_name_string(font, NAMEID_VERSION_STRING)
     if version_string and is_valid_version_format(version_string):
-      logging.info('OK: Version format in NAME table is correct.')
+      fb.ok('Version format in NAME table is correct.')
     else:
-      logging.error(('The NAMEID_VERSION_STRING (nameID={}) value must follow '
-                     'the pattern Version X.Y.'
-                     ' Current value: {}').format(NAMEID_VERSION_STRING,
-                                                  version_string))
+      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must follow '
+                'the pattern Version X.Y.'
+                ' Current value: {}').format(NAMEID_VERSION_STRING,
+                                             version_string))
 
     # ----------------------------------------------------
-    logging.debug("Glyph names are all valid?")
+    fb.new_check("Glyph names are all valid?")
     known_good_names = ['.notdef', '.null']
     bad_names = []
     # we should extend this list according to the opentype spec
@@ -1540,23 +1600,23 @@ def main():
         bad_names.append(glyphName)
 
     if len(bad_names) == 0:
-      logging.info('OK: Glyph names are all valid.')
+      fb.ok('Glyph names are all valid.')
     else:
-      logging.error(('The following glyph names do not comply'
-                     ' with naming conventions: {}'
-                     ' A glyph name may be up to 31 characters in length,'
-                     ' must be entirely comprised of characters from'
-                     ' the following set:'
-                     ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-                     ' start with a digit or period.'
-                     ' There are a few exceptions'
-                     ' such as the special character ".notdef".'
-                     ' The glyph names "twocents", "a1", and "_"'
-                     ' are all valid, while'
-                     ' "2cents" and ".twocents" are not.').format(bad_names))
+      fb.error(('The following glyph names do not comply'
+                ' with naming conventions: {}'
+                ' A glyph name may be up to 31 characters in length,'
+                ' must be entirely comprised of characters from'
+                ' the following set:'
+                ' A-Z a-z 0-9 .(period) _(underscore). and must not'
+                ' start with a digit or period.'
+                ' There are a few exceptions'
+                ' such as the special character ".notdef".'
+                ' The glyph names "twocents", "a1", and "_"'
+                ' are all valid, while'
+                ' "2cents" and ".twocents" are not.').format(bad_names))
 
     # ----------------------------------------------------
-    logging.debug("Font contains unique glyph names?")
+    fb.new_check("Font contains unique glyph names?")
     # (Duplicate glyph names prevent font installation on Mac OS X.)
     glyphs = []
     duplicated_glyphIDs = []
@@ -1568,104 +1628,104 @@ def main():
         glyphs.append(glyphID)
 
     if len(duplicated_glyphIDs) == 0:
-      logging.info("OK: Font contains unique glyph names.")
+      fb.ok("Font contains unique glyph names.")
     else:
-      logging.error(("The following glyph IDs"
-                     " occur twice: {}").format(duplicated_glyphIDs))
+      fb.error(("The following glyph IDs"
+                " occur twice: {}").format(duplicated_glyphIDs))
 
     # ----------------------------------------------------
-    logging.debug("No glyph is incorrectly named?")
+    fb.new_check("No glyph is incorrectly named?")
     bad_glyphIDs = []
     for _, g in enumerate(font.getGlyphOrder()):
       if re.search(r'#\w+$', g):
         bad_glyphIDs.append(glyphID)
 
     if len(bad_glyphIDs) == 0:
-      logging.info("OK: Font does not have any incorrectly named glyph.")
+      fb.ok("Font does not have any incorrectly named glyph.")
     else:
-      logging.error(("The following glyph IDs"
-                     " are incorrectly named: {}").format(bad_glyphIDs))
+      fb.error(("The following glyph IDs"
+                " are incorrectly named: {}").format(bad_glyphIDs))
 
     # ----------------------------------------------------
-    logging.debug("EPAR table present in font?")
+    fb.new_check("EPAR table present in font?")
     if 'EPAR' not in font:
-      logging.error('Font is missing EPAR table.')
+      fb.error('Font is missing EPAR table.')
     else:
-      logging.info("OK: EPAR table present in font.")
+      fb.ok("EPAR table present in font.")
 
     # ----------------------------------------------------
-    logging.debug("Is GASP table correctly set?")
+    fb.new_check("Is GASP table correctly set?")
     try:
-      if not isinstance(font['gasp'].gaspRange, dict):
-        logging.error('GASP.gaspRange method value have wrong type')
+      if not isinstance(font["gasp"].gaspRange, dict):
+        fb.error("GASP.gaspRange method value have wrong type")
       else:
-        if 65535 not in font['gasp'].gaspRange:
-          logging.error("GASP does not have 65535 gaspRange")
+        if 65535 not in font["gasp"].gaspRange:
+          fb.error("GASP does not have 65535 gaspRange")
         else:
           # XXX: Needs review
-          value = font['gasp'].gaspRange[65535]
+          value = font["gasp"].gaspRange[65535]
           if value != 15:
-            font['gasp'].gaspRange[65535] = 15
-            logging.error('HOTFIXED: gaspRange[65535]'
-                          ' value ({}) is not 15'.format(value))
+            font["gasp"].gaspRange[65535] = 15
+            fb.hotfix("gaspRange[65535]"
+                      " value ({}) is not 15".format(value))
           else:
-            logging.info('OK: GASP table is correctly set.')
+            fb.ok("GASP table is correctly set.")
     except KeyError:
-      logging.error('Font is missing the GASP table.')
+      fb.error("Font is missing the GASP table.")
 
     # ----------------------------------------------------
-    logging.debug("Does GPOS table have kerning information?")
+    fb.new_check("Does GPOS table have kerning information?")
     try:
       flaglookup = False
-      for lookup in font['GPOS'].table.LookupList.Lookup:
+      for lookup in font["GPOS"].table.LookupList.Lookup:
         if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
           flaglookup = lookup
           break  # break for..loop to avoid reading all kerning info
       if not flaglookup:
-        logging.error("GPOS table lacks kerning information")
+        fb.error("GPOS table lacks kerning information")
       elif flaglookup.SubTableCount == 0:
-        logging.error("GPOS LookupType 2 SubTableCount is zero.")
+        fb.error("GPOS LookupType 2 SubTableCount is zero.")
       elif flaglookup.SubTable[0].PairSetCount == 0:
-        logging.error("GPOS flaglookup.SubTable[0].PairSetCount is zero!")
+        fb.error("GPOS flaglookup.SubTable[0].PairSetCount is zero!")
       else:
-        logging.info("OK: GPOS table has got kerning information.")
+        fb.ok("GPOS table has got kerning information.")
     except KeyError:
-      logging.error('Font is missing a "GPOS" table')
+      fb.error('Font is missing a "GPOS" table')
 
     # ----------------------------------------------------
-    logging.debug("Is there a 'KERN' table declared in the font?")
+    fb.new_check("Is there a 'KERN' table declared in the font?")
     try:
-      font['KERN']
-      logging.error("Font should not have a 'KERN' table")
+      font["KERN"]
+      fb.error("Font should not have a 'KERN' table")
     except KeyError:
-      logging.info("OK: Font does not declare a 'KERN' table.")
+      fb.ok("Font does not declare a 'KERN' table.")
 
     # ----------------------------------------------------
-    logging.debug("Does full font name begin with the font family name?")
+    fb.new_check("Does full font name begin with the font family name?")
     familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
     fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
 
     if not familyname:
-      logging.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
-                    ' in the name table.')
+      fb.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
+               ' in the name table.')
     elif not fullfontname:
-      logging.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
-                    ' in the name table.')
+      fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
+               ' in the name table.')
     # FIX-ME: I think we should still compare entries
     #         even if they have different encodings
     else:
       if not familyname.startswith(fullfontname):
-        logging.error("Font family name '{}' does not begin"
-                      " with full font name '{}'".format(familyname,
-                                                         fullfontname))
+        fb.error("Font family name '{}' does not begin"
+                 " with full font name '{}'".format(familyname,
+                                                    fullfontname))
       else:
-        logging.info('OK: Full font name begins with the font family name.')
+        fb.ok('Full font name begins with the font family name.')
 
     # ----------------------------------------------------
     # TODO: should this test support CFF as well?
-    logging.debug("Is there any unused data at the end of the glyf table?")
+    fb.new_check("Is there any unused data at the end of the glyf table?")
     if 'CFF ' not in font:
-      logging.info("Skipping test. Not a CFF font.")
+      fb.skip("Not a CFF font.")
     else:
       expected = font['loca'].length
       actual = font['glyf'].length
@@ -1673,33 +1733,33 @@ def main():
 
       # allow up to 3 bytes of padding
       if diff > 3:
-        logging.error(("Glyf table has unreachable data at"
-                       " the end of the table."
-                       " Expected glyf table length %s"
-                       " (from loca table), got length"
-                       " %s (difference: %s)").format(expected, actual, diff))
+        fb.error(("Glyf table has unreachable data at"
+                  " the end of the table."
+                  " Expected glyf table length %s"
+                  " (from loca table), got length"
+                  " %s (difference: %s)").format(expected, actual, diff))
       elif diff < 0:
-        logging.error(("Loca table references data beyond"
-                       " the end of the glyf table."
-                       " Expected glyf table length %s"
-                       " (from loca table), got length"
-                       " %s (difference: %s)").format(expected, actual, diff))
+        fb.error(("Loca table references data beyond"
+                  " the end of the glyf table."
+                  " Expected glyf table length %s"
+                  " (from loca table), got length"
+                  " %s (difference: %s)").format(expected, actual, diff))
       else:
-        logging.info("OK: There is no unused data at"
-                     " the end of the glyf table.")
+        fb.ok("There is no unused data at"
+              " the end of the glyf table.")
 
     # ----------------------------------------------------
     def font_has_char(font, c):
         return len(font['cmap'].buildReversed()[c]) > 0
 
-    logging.debug("Font has 'EURO SIGN' character?")
+    fb.new_check("Font has 'EURO SIGN' character?")
     if font_has_char(font, 'Euro'):
-      logging.info("OK: Font has 'EURO SIGN' character.")
+      fb.ok("Font has 'EURO SIGN' character.")
     else:
-      logging.error("Font lacks the '%s' character." % 'EURO SIGN')
+      fb.error("Font lacks the '%s' character." % 'EURO SIGN')
 
     # ----------------------------------------------------
-    logging.debug("Font follows the family naming recommendations?")
+    fb.new_check("Font follows the family naming recommendations?")
     # See http://forum.fontlab.com/index.php?topic=313.0
     bad_entries = []
 
@@ -1758,27 +1818,27 @@ def main():
     if weight_value is not None:
       # <Weight> value >= 250 and <= 900 in steps of 50
       if weight_value % 50 != 0:
-        bad_entries.append({'field': field,
-                            'error': 'Value has to be in steps of 50.'})
+        bad_entries.append({"field": field,
+                            "error": "Value has to be in steps of 50."})
       if weight_value < 250:
-        bad_entries.append({'field': field,
-                            'error': 'Value can\'t be less than 250.'})
+        bad_entries.append({"field": field,
+                            "error": "Value can't be less than 250."})
       if weight_value > 900:
-        bad_entries.append({'field': field,
-                            'error': 'Value can\'t be more than 900.'})
+        bad_entries.append({"field": field,
+                            "error": "Value can't be more than 900."})
 
     if len(bad_entries) > 0:
-      logging.error(('Font fails to follow '
-                     'some family naming recommendations:'
-                     ' {}').format(bad_entries))
+      fb.error(("Font fails to follow "
+                "some family naming recommendations:"
+                " {}").format(bad_entries))
     else:
-      logging.info('OK: Font follows the family naming recommendations.')
+      fb.ok("Font follows the family naming recommendations.")
 
     # ----------------------------------------------------
-    logging.debug("Font contains magic code in PREP table?")
-    magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
-    if 'CFF ' in font:
-      logging.info("Not applicable to a CFF font.")
+    fb.new_check("Font contains magic code in PREP table?")
+    magiccode = "\xb8\x01\xff\x85\xb0\x04\x8d"
+    if "CFF " in font:
+      fb.skip("Not applicable to a CFF font.")
     else:
       try:
         bytecode = font['prep'].program.getBytecode()
@@ -1786,13 +1846,13 @@ def main():
         bytecode = ''
 
       if bytecode == magiccode:
-        logging.info("OK: Font contains magic code in PREP table.")
+        fb.ok("Font contains magic code in PREP table.")
       else:
-        logging.error("Failed to find correct magic code in PREP table.")
+        fb.error("Failed to find correct magic code in PREP table.")
 
     # ----------------------------------------------------
-    logging.debug("MaxAdvanceWidth is consistent with values"
-                  " in the Hmtx and Hhea tables?")
+    fb.new_check("MaxAdvanceWidth is consistent with values"
+                 " in the Hmtx and Hhea tables?")
     hhea_advance_width_max = font['hhea'].advanceWidthMax
     hmtx_advance_width_max = None
     for g in font['hmtx'].metrics.values():
@@ -1802,17 +1862,17 @@ def main():
         hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
 
     if hmtx_advance_width_max is None:
-      logging.error("Failed to find advance width data in HMTX table!")
+      fb.error("Failed to find advance width data in HMTX table!")
     elif hmtx_advance_width_max != hhea_advance_width_max:
-      logging.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
-                    " got %s (from hhea)") % (hmtx_advance_width_max,
-                                              hhea_advance_width_max)
+      fb.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
+               " got %s (from hhea)") % (hmtx_advance_width_max,
+                                         hhea_advance_width_max)
     else:
-      logging.info("OK: MaxAdvanceWidth is consistent"
-                   " with values in the Hmtx and Hhea tables.")
+      fb.ok("MaxAdvanceWidth is consistent"
+            " with values in the Hmtx and Hhea tables.")
 
     # ----------------------------------------------------
-    logging.debug("Font names are consistent across platforms?")
+    fb.new_check("Font names are consistent across platforms?")
     fail = False
     for name1 in font['name'].names:
       if ((name1.platformID == PLATFORM_ID_WINDOWS) and
@@ -1825,14 +1885,14 @@ def main():
              if n1 != n2:
                fail = True
     if fail:
-      logging.error('Entries in "name" table are not'
-                    ' the same across specific platforms.')
+      fb.error('Entries in "name" table are not'
+               ' the same across specific platforms.')
     else:
-      logging.info('OK: Font names are consistent across platforms.')
+      fb.ok('Font names are consistent across platforms.')
 
     # ----------------------------------------------------
-    logging.debug("Are there non-ASCII characters"
-                  " in ASCII-only NAME table entries ?")
+    fb.new_check("Are there non-ASCII characters"
+                 " in ASCII-only NAME table entries ?")
     bad_entries = []
     for name in font['name'].names:
       # Items with NameID > 18 are expressly for localising
@@ -1844,15 +1904,15 @@ def main():
         except:
           bad_entries.append(name)
     if len(bad_entries) > 0:
-      logging.error(('There are {} strings containing'
-                     ' non-ASCII characters in the ASCII-only'
-                     ' NAME table entries.').format(len(bad_entries)))
+      fb.error(('There are {} strings containing'
+                ' non-ASCII characters in the ASCII-only'
+                ' NAME table entries.').format(len(bad_entries)))
     else:
-      logging.info('OK: None of the ASCII-only NAME table entries'
-                   ' contain non-ASCII characteres.')
+      fb.ok('None of the ASCII-only NAME table entries'
+            ' contain non-ASCII characteres.')
 
     # ----------------------------------------------------
-    logging.debug("Font has a valid license url ?")
+    fb.new_check("Font has a valid license url ?")
     regex = re.compile(
       r'^(?:http|ftp)s?://'  # http:// or https://
       r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+'
@@ -1863,10 +1923,10 @@ def main():
       r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     license_url = get_name_string(font, NAMEID_LICENSE_INFO_URL)
     if not regex.match(license_url):
-      logging.error(("LicenseUrl is required and must be a valid URL."
-                     " Got {} instead.").format(license_url))
+      fb.error(("LicenseUrl is required and must be a valid URL."
+                " Got {} instead.").format(license_url))
     else:
-      logging.info("OK: Font has a valid license URL.")
+      fb.ok("Font has a valid license URL.")
 
     # ----------------------------------------------------
     # This check is temporarily disabled
@@ -1874,7 +1934,7 @@ def main():
     # https://github.com/googlefonts/fontbakery/commit/
     #  23ab884f839d715a664a02d9f9b6c5c6a38bbc45#commitcomment-17761459
     #
-    # logging.debug("Are there unencoded glyphs ?")
+    # fb.new_check("Are there unencoded glyphs ?")
     # # fixer at: bakery_cli.fixers.AddSPUAByGlyphIDToCmap
     # cmap = font['cmap']
     # new_cmap = cmap.getcmap(3, 10)
@@ -1892,19 +1952,19 @@ def main():
     #   unencoded_list = [g for g in diff[:] if g != '.notdef']
     #
     # if len(unencoded_list) > 0:
-    #   logging.error(("There are unencoded glyphs: "
-    #                  "[{}]").format(', '.join(unencoded_list)))
+    #   fb.error(("There are unencoded glyphs: "
+    #             "[{}]").format(', '.join(unencoded_list)))
     # else:
-    #   logging.info("OK: There are no unencoded glyphs.")
+    #   fb.ok("There are no unencoded glyphs.")
 
     # ----------------------------------------------------
-    logging.debug("Is font em size (ideally) equal to 1000?")
+    fb.new_check("Is font em size (ideally) equal to 1000?")
     upm_height = font['head'].unitsPerEm
     if upm_height != 1000:
-      logging.error(("font em size ({}) is not"
-                     " equal to 1000.").format(upm_height))
+      fb.error(("font em size ({}) is not"
+                " equal to 1000.").format(upm_height))
     else:
-      logging.info("OK: Font em size is equal to 1000.")
+      fb.ok("Font em size is equal to 1000.")
 
     # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
@@ -1982,33 +2042,33 @@ def main():
       family = get_FamilyProto_Message(metadata)
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb: Ensure designer simple short name.")
+      fb.new_check("METADATA.pb: Ensure designer simple short name.")
       if len(family.designer.split(' ')) >= 4 or\
          ' and ' in family.designer or\
          '.' in family.designer or\
          ',' in family.designer:
-        logging.error('`designer` key must be simple short name')
+        fb.error('`designer` key must be simple short name')
       else:
-        logging.info('OK: designer is a simple short name')
+        fb.ok('Designer is a simple short name')
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb: Fontfamily is listed"
-                    " in Google Font Directory ?")
+      fb.new_check("METADATA.pb: Fontfamily is listed"
+                   " in Google Font Directory ?")
       url = ('http://fonts.googleapis.com'
              '/css?family=%s') % family.name.replace(' ', '+')
       try:
         fp = requests.get(url)
         if fp.status_code != 200:
-          logging.error('No family found in GWF in %s' % url)
+          fb.error('No family found in GWF in %s' % url)
         else:
-          logging.info('OK: Font is properly listed in Google Font Directory.')
+          fb.ok('Font is properly listed in Google Font Directory.')
       except:
-        logging.warning("Failed to query GWF at {}".format(url))
+        fb.warning("Failed to query GWF at {}".format(url))
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb: Designer exists in GWF profiles.csv ?")
+      fb.new_check("METADATA.pb: Designer exists in GWF profiles.csv ?")
       if family.designer == "":
-        logging.error('METADATA.pb field "designer" MUST NOT be empty!')
+        fb.error('METADATA.pb field "designer" MUST NOT be empty!')
       else:
         try:
           fp = urllib.urlopen(PROFILES_RAW_URL)
@@ -2018,31 +2078,31 @@ def main():
               continue
             designers.append(row[0].decode('utf-8'))
           if family.designer not in designers:
-            logging.error(("METADATA.pb: Designer '{}' is not listed"
-                           " in profiles.csv"
-                           " (at '{}')").format(family.designer,
-                                                PROFILES_GIT_URL))
+            fb.error(("METADATA.pb: Designer '{}' is not listed"
+                      " in profiles.csv"
+                      " (at '{}')").format(family.designer,
+                                           PROFILES_GIT_URL))
           else:
-            logging.info(("OK: Found designer '{}'"
-                          " at profiles.csv").format(family.designer))
+            fb.ok(("Found designer '{}'"
+                   " at profiles.csv").format(family.designer))
         except:
-          logging.warning("Failed to fetch '{}'".format(PROFILES_RAW_URL))
+          fb.warning("Failed to fetch '{}'".format(PROFILES_RAW_URL))
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb: check if fonts field"
-                    " only have unique 'full_name' values")
+      fb.new_check("METADATA.pb: check if fonts field"
+                   " only has unique 'full_name' values")
       fonts = {}
       for x in family.fonts:
         fonts[x.full_name] = x
       if len(set(fonts.keys())) != len(family.fonts):
-        logging.error("Found duplicated 'full_name' values"
-                      " in METADATA.pb fonts field")
+        fb.error("Found duplicated 'full_name' values"
+                 " in METADATA.pb fonts field")
       else:
-        logging.info("OK: fonts field only have unique 'full_name' values")
+        fb.ok("METADATA.pb 'fonts' field only has unique 'full_name' values")
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb: check if fonts field"
-                    " only contains unique style:weight pairs")
+      fb.new_check("METADATA.pb: check if fonts field"
+                   " only contains unique style:weight pairs")
       pairs = {}
       for f in family.fonts:
         styleweight = '%s:%s' % (f.style, f.weight)
@@ -2051,30 +2111,30 @@ def main():
         logging.error("Found duplicated style:weight pair"
                       " in METADATA.pb fonts field")
       else:
-        logging.info("OK: fonts field only have unique style:weight pairs")
+        fb.ok("METADATA.pb 'fonts' field only has unique style:weight pairs")
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
+      fb.new_check("METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
       licenses = ['APACHE2', 'OFL', 'UFL']
       if family.license in licenses:
-        logging.info(("OK: Font license is declared"
-                      " in METADATA.pb as '{}'").format(family.license))
+        fb.ok(("Font license is declared"
+               " in METADATA.pb as '{}'").format(family.license))
       else:
-        logging.error(("METADATA.pb license field ('{}')"
-                       " must be one of the following: {}").format(
-                         family.license,
-                         licenses))
+        fb.error(("METADATA.pb license field ('{}')"
+                  " must be one of the following: {}").format(
+                    family.license,
+                    licenses))
 
       # -----------------------------------------------------
-      logging.debug("METADATA.pb subsets should have at least 'latin'")
+      fb.new_check("METADATA.pb subsets should have at least 'latin'")
       if 'latin' not in family.subsets:
-        logging.error(("METADATA.pb subsets ({})"
-                       " missing 'latin'").format(family.subsets))
+        fb.error(("METADATA.pb subsets ({})"
+                  " missing 'latin'").format(family.subsets))
       else:
-        logging.info("OK: METADATA.pb subsets contains at least 'latin'")
+        fb.ok("METADATA.pb subsets contains at least 'latin'")
 
       # -----------------------------------------------------
-      logging.debug("Copyright notice is the same in all fonts ?")
+      fb.new_check("Copyright notice is the same in all fonts ?")
       copyright = ''
       fail = False
       for font_metadata in family.fonts:
@@ -2082,13 +2142,13 @@ def main():
           fail = True
         copyright = font_metadata.copyright
       if fail:
-        logging.error('METADATA.pb: Copyright field value'
-                      ' is inconsistent across family')
+        fb.error('METADATA.pb: Copyright field value'
+                 ' is inconsistent across family')
       else:
-        logging.info('OK: Copyright is consistent across family')
+        fb.ok('Copyright is consistent across family')
 
       # -----------------------------------------------------
-      logging.debug("Check that METADATA family values are all the same")
+      fb.new_check("Check that METADATA family values are all the same")
       name = ''
       fail = False
       for font_metadata in family.fonts:
@@ -2096,136 +2156,137 @@ def main():
           fail = True
         name = font_metadata.name
       if fail:
-        logging.error("METADATA.pb: Family name is not the same"
-                      " in all metadata 'fonts' items.")
+        fb.error("METADATA.pb: Family name is not the same"
+                 " in all metadata 'fonts' items.")
       else:
-        logging.info("OK: METADATA.pb: Family name is the same"
-                     " in all metadata 'fonts' items.")
+        fb.ok("METADATA.pb: Family name is the same"
+              " in all metadata 'fonts' items.")
 
       # -----------------------------------------------------
-      logging.debug("According GWF standards font should have Regular style.")
+      fb.new_check("According GWF standards font should have Regular style.")
       found = False
       for f in family.fonts:
         if f.weight == 400 and f.style == 'normal':
           found = True
       if found:
-        logging.info("OK: Font has a Regular style.")
+        fb.ok("Font has a Regular style.")
       else:
-        logging.error("This font lacks a Regular"
-                      " (style: normal and weight: 400)"
-                      " as required by GWF standards.")
+        fb.error("This font lacks a Regular"
+                 " (style: normal and weight: 400)"
+                 " as required by GWF standards.")
 
       # -------------------------------------------------------
-      # This test will only run if the previous has not failed.
-      if found:
-        logging.debug("Regular should be 400")
+      fb.new_check("Regular should be 400")
+      if not found:
+        fb.skip("This test will only run if font has a Regular style")
+      else:
         badfonts = []
         for f in family.fonts:
           if f.full_name.endswith('Regular') and f.weight != 400:
             badfonts.append("{} (weight: {})".format(f.filename, f.weight))
         if len(badfonts) > 0:
-          logging.error(('METADATA.pb: Regular font weight must be 400.'
-                         ' Please fix: {}').format(', '.join(badfonts)))
+          fb.error(('METADATA.pb: Regular font weight must be 400.'
+                    ' Please fix: {}').format(', '.join(badfonts)))
         else:
-          logging.info('OK: Regular has weight=400')
+          fb.ok('Regular has weight=400')
       # -----------------------------------------------------
 
       for f in family.fonts:
         if filename == f.filename:
           ###### Here go single-TTF metadata tests #######
           # ----------------------------------------------
-          logging.debug("Font on disk and in METADATA.pb"
-                        " have the same family name ?")
+          fb.new_check("Font on disk and in METADATA.pb"
+                       " have the same family name ?")
           familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if familyname is False:
-            logging.error(("This font lacks a FONT_FAMILY_NAME entry"
-                           " (nameID={}) in the name"
-                           " table.").format(NAMEID_FONT_FAMILY_NAME))
+            fb.error(("This font lacks a FONT_FAMILY_NAME entry"
+                      " (nameID={}) in the name"
+                      " table.").format(NAMEID_FONT_FAMILY_NAME))
           else:
             if familyname != f.name:
-              logging.error(('Unmatched family name in font:'
-                             ' TTF has "{}" while METADATA.pb'
-                             ' has "{}"').format(familyname, f.name))
+              fb.error(('Unmatched family name in font:'
+                        ' TTF has "{}" while METADATA.pb'
+                        ' has "{}"').format(familyname, f.name))
             else:
-              logging.info(("OK: Family name '{}' is identical"
-                            " in METADATA.pb and on the"
-                            " TTF file.").format(f.name))
+              fb.ok(("Family name '{}' is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(f.name))
 
           # -----------------------------------------------
-          logging.debug("Checks METADATA.pb 'postScriptName'"
-                        " matches TTF 'postScriptName'")
+          fb.new_check("Checks METADATA.pb 'postScriptName'"
+                       " matches TTF 'postScriptName'")
           postscript_name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
           if postscript_name is False:
-            logging.error(("This font lacks a POSTSCRIPT_NAME"
-                           " entry (nameID={}) in the "
-                           "name table.").format(NAMEID_POSTSCRIPT_NAME))
+            fb.error(("This font lacks a POSTSCRIPT_NAME"
+                      " entry (nameID={}) in the "
+                      "name table.").format(NAMEID_POSTSCRIPT_NAME))
           else:
             if postscript_name != f.post_script_name:
-              logging.error(('Unmatched postscript name in font:'
-                             ' TTF has "{}" while METADATA.pb has'
-                             ' "{}"').format(postscript_name,
-                                             f.post_script_name))
+              fb.error(('Unmatched postscript name in font:'
+                        ' TTF has "{}" while METADATA.pb has'
+                        ' "{}"').format(postscript_name,
+                                        f.post_script_name))
             else:
-              logging.info(("OK: Postscript name '{}' is identical"
-                            " in METADATA.pb and on the"
-                            " TTF file.").format(f.post_script_name))
+              fb.ok(("Postscript name '{}' is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(f.post_script_name))
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb 'fullname' value"
-                        " matches internal 'fullname' ?")
+          fb.new_check("METADATA.pb 'fullname' value"
+                       " matches internal 'fullname' ?")
           fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
           if fullname is False:
-            logging.error(("This font lacks a FULL_FONT_NAME"
-                           " entry (nameID={}) in the "
-                           "name table.").format(NAMEID_FULL_FONT_NAME))
+            fb.error(("This font lacks a FULL_FONT_NAME"
+                      " entry (nameID={}) in the "
+                      "name table.").format(NAMEID_FULL_FONT_NAME))
           else:
             if fullname != f.full_name:
-              logging.error(('Unmatched fullname in font:'
-                             ' TTF has "{}" while METADATA.pb'
-                             ' has "{}"').format(fullname, f.full_name))
+              fb.error(('Unmatched fullname in font:'
+                        ' TTF has "{}" while METADATA.pb'
+                        ' has "{}"').format(fullname, f.full_name))
             else:
-              logging.info(("OK: Fullname '{}' is identical"
-                            " in METADATA.pb and on the "
-                            "TTF file.").format(fullname))
+              fb.ok(("Fullname '{}' is identical"
+                     " in METADATA.pb and on the "
+                     "TTF file.").format(fullname))
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb fonts 'name' property"
-                        " should be same as font familyname")
+          fb.new_check("METADATA.pb fonts 'name' property"
+                       " should be same as font familyname")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname is False:
-            logging.error(("This font lacks a FONT_FAMILY_NAME entry"
-                           " (nameID={}) in the "
-                           "name table.").format(NAMEID_FONT_FAMILY_NAME))
+            fb.error(("This font lacks a FONT_FAMILY_NAME entry"
+                      " (nameID={}) in the "
+                      "name table.").format(NAMEID_FONT_FAMILY_NAME))
           else:
             if font_familyname != f.name:
-              logging.error(('Unmatched familyname in font:'
-                             ' TTF has "{}" while METADATA.pb has'
-                             ' name="{}"').format(familyname, f.name))
+              fb.error(('Unmatched familyname in font:'
+                        ' TTF has "{}" while METADATA.pb has'
+                        ' name="{}"').format(familyname, f.name))
             else:
-              logging.info(("OK: Fullname '{}' is identical"
-                            " in METADATA.pb and on the"
-                            " TTF file.").format(fullname))
+              fb.ok(("OK: Fullname '{}' is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(fullname))
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb 'fullName' matches 'postScriptName' ?")
+          fb.new_check("METADATA.pb 'fullName' matches 'postScriptName' ?")
           regex = re.compile(r'\W')
           post_script_name = regex.sub('', f.post_script_name)
           fullname = regex.sub('', f.full_name)
           if fullname != post_script_name:
-            logging.error(('METADATA.pb full_name="{0}"'
-                           ' does not match post_script_name ='
-                           ' "{1}"').format(f.full_name,
-                                            f.post_script_name))
+            fb.error(('METADATA.pb full_name="{0}"'
+                      ' does not match post_script_name ='
+                      ' "{1}"').format(f.full_name,
+                                       f.post_script_name))
           else:
-            logging.info("OK: METADATA.pb fields 'fullName' and"
-                         " 'postScriptName' have the same value.")
+            fb.ok("METADATA.pb fields 'fullName' and"
+                  " 'postScriptName' have the same value.")
 
           # -----------------------------------------------
-          logging.debug("METADATA.pb 'filename' matches 'postScriptName' ?")
+          fb.new_check("METADATA.pb 'filename' matches 'postScriptName' ?")
           regex = re.compile(r'\W')
           if f.post_script_name.endswith('-Regular'):
-            logging.error("METADATA.pb postScriptName field"
-                          " ends with '-Regular'")
+            fb.error("METADATA.pb postScriptName field"
+                     " ends with '-Regular'")
           else:
             post_script_name = regex.sub('', f.post_script_name)
             filename = regex.sub('', os.path.splitext(f.filename)[0])
@@ -2235,94 +2296,98 @@ def main():
               if "-Regular" in f.filename:
                 msg += (" (Consider removing the '-Regular' suffix"
                         " from the filename.)")
-              logging.error(msg.format(f.filename, f.post_script_name))
+              fb.error(msg.format(f.filename, f.post_script_name))
             else:
-              logging.info("OK: METADATA.pb fields 'filename' and"
-                           " 'postScriptName' have matching values.")
+              fb.ok("METADATA.pb fields 'filename' and"
+                    " 'postScriptName' have matching values.")
 
           # -----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname is not False:
-            logging.debug("METADATA.pb 'name' contains font name"
-                          " in right format ?")
+          if font_familyname is False:
+            logging.info("WARNING: A corrupt font that lacks a font_family"
+                         " nameID entry caused a whole sequence"
+                         " of tests to be skipped.")
+          else:
+            fb.new_check("METADATA.pb 'name' contains font name"
+                         " in right format ?")
             if font_familyname in f.name:
-              logging.info("OK: METADATA.pb 'name' contains font name"
-                           " in right format.")
+              fb.ok("METADATA.pb 'name' contains font name"
+                    " in right format.")
             else:
-              logging.error(("METADATA.pb name='{}' does not match"
-                             " correct font name format.").format(f.name))
+              fb.error(("METADATA.pb name='{}' does not match"
+                        " correct font name format.").format(f.name))
             # -----------
 
-            logging.debug("METADATA.pb 'full_name' contains"
-                          " font name in right format ?")
+            fb.new_check("METADATA.pb 'full_name' contains"
+                         " font name in right format ?")
             if font_familyname in f.name:
-              logging.info("OK: METADATA.pb 'full_name' contains"
-                           " font name in right format.")
+              fb.ok("METADATA.pb 'full_name' contains"
+                    " font name in right format.")
             else:
-              logging.error(("METADATA.pb full_name='{}' does not match"
-                             " correct font name format.").format(f.full_name))
+              fb.error(("METADATA.pb full_name='{}' does not match"
+                        " correct font name format.").format(f.full_name))
             # -----------
 
-            logging.debug("METADATA.pb 'filename' contains"
-                          " font name in right format ?")
+            fb.new_check("METADATA.pb 'filename' contains"
+                         " font name in right format ?")
             if "".join(str(font_familyname).split()) in f.filename:
-              logging.info("OK: METADATA.pb 'filename' contains"
-                           " font name in right format.")
+              fb.ok("METADATA.pb 'filename' contains"
+                    " font name in right format.")
             else:
-              logging.error(("METADATA.pb filename='{}' does not match"
-                             " correct font name format.").format(f.filename))
+              fb.error(("METADATA.pb filename='{}' does not match"
+                        " correct font name format.").format(f.filename))
             # -----------
 
-            logging.debug("METADATA.pb 'postScriptName' contains"
-                          " font name in right format ?")
+            fb.new_check("METADATA.pb 'postScriptName' contains"
+                         " font name in right format ?")
             if "".join(str(font_familyname).split()) in f.post_script_name:
-              logging.info("OK: METADATA.pb 'postScriptName' contains"
-                           " font name in right format ?")
+              fb.ok("METADATA.pb 'postScriptName' contains"
+                    " font name in right format ?")
             else:
-              logging.error(("METADATA.pb postScriptName='{}'"
-                             " does not match correct"
-                             " font name format.").format(f.post_script_name))
+              fb.error(("METADATA.pb postScriptName='{}'"
+                        " does not match correct"
+                        " font name format.").format(f.post_script_name))
 
           # -----------------------------------------------
-          logging.debug("Copyright notice matches canonical pattern?")
+          fb.new_check("Copyright notice matches canonical pattern?")
           almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)',
                                      f.copyright)
           does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))',
                                  f.copyright)
           if (does_match is not None):
-            logging.info("OK: METADATA.pb copyright field matches"
-                         " canonical pattern.")
+            fb.ok("METADATA.pb copyright field matches"
+                  " canonical pattern.")
           else:
             if (almost_matches):
-              logging.error("METADATA.pb: Copyright notice is okay,"
-                            " but it lacks an email address."
-                            " Expected pattern is:"
-                            " 'Copyright 2016 Author Name (name@site.com)'")
+              fb.error("METADATA.pb: Copyright notice is okay,"
+                       " but it lacks an email address."
+                       " Expected pattern is:"
+                       " 'Copyright 2016 Author Name (name@site.com)'")
             else:
-              logging.error("METADATA.pb: Copyright notices should match"
-                            " the folowing pattern:"
-                            " 'Copyright 2016 Author Name (name@site.com)'")
+              fb.error("METADATA.pb: Copyright notices should match"
+                       " the folowing pattern:"
+                       " 'Copyright 2016 Author Name (name@site.com)'")
 
           # -----------------------------------------------
-          logging.debug("Copyright notice does not contain Reserved Font Name")
+          fb.new_check("Copyright notice does not contain Reserved Font Name")
           if 'Reserved Font Name' in f.copyright:
-            logging.error(('METADATA.pb: copyright field ("%s")'
-                           ' contains "Reserved Font Name"') % f.copyright)
+            fb.error(('METADATA.pb: copyright field ("%s")'
+                      ' contains "Reserved Font Name"') % f.copyright)
           else:
-            logging.info('OK: METADATA.pb copyright field'
-                         ' does not contain "Reserved Font Name"')
+            fb.ok('METADATA.pb copyright field'
+                  ' does not contain "Reserved Font Name"')
 
           # -----------------------------------------------
-          logging.debug("Copyright notice shouldn't exceed 500 chars")
+          fb.new_check("Copyright notice shouldn't exceed 500 chars")
           if len(f.copyright) > 500:
-            logging.error("METADATA.pb: Copyright notice exceeds"
-                          " maximum allowed lengh of 500 characteres.")
+            fb.error("METADATA.pb: Copyright notice exceeds"
+                     " maximum allowed lengh of 500 characteres.")
           else:
-            logging.info("OK: Copyright notice string is"
-                         " shorter than 500 chars.")
+            fb.ok("Copyright notice string is"
+                  " shorter than 500 chars.")
 
           # -----------------------------------------------
-          logging.debug("Filename is set canonically?")
+          fb.new_check("Filename is set canonically?")
 
           def create_canonical_filename(font_metadata):
             weights = {
@@ -2349,12 +2414,12 @@ def main():
 
           canonical_filename = create_canonical_filename(f)
           if canonical_filename != f.filename:
-            logging.error("METADATA.pb: filename field ('{}')"
-                          " does not match"
-                          " canonical name '{}'".format(f.filename,
-                                                        canonical_filename))
+            fb.error("METADATA.pb: filename field ('{}')"
+                     " does not match"
+                     " canonical name '{}'".format(f.filename,
+                                                   canonical_filename))
           else:
-            logging.info('OK. Filename is set canonically.')
+            fb.ok('Filename is set canonically.')
 
           # -----------------------------------------------
           if f.style == 'italic':  # this test only applies to italic fonts
@@ -2365,26 +2430,26 @@ def main():
               # (passing those previous tests is a prerequisite for this one)
               pass
             else:
-              logging.debug("METADATA.pb font.style `italic`"
-                            " matches font internals?")
+              fb.new_check("METADATA.pb font.style `italic`"
+                           " matches font internals?")
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
-                  logging.error('METADATA.pb style has been set to italic'
-                                ' but font macStyle is improperly set')
+                  fb.error('METADATA.pb style has been set to italic'
+                           ' but font macStyle is improperly set')
               elif not font_familyname.split('-')[-1].endswith('Italic'):
-                  logging.error(('Font macStyle Italic bit is set'
-                                 ' but nameID %d ("%s")'
-                                 ' is not ended '
-                                 'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
-                                                     font_familyname))
+                  fb.error(('Font macStyle Italic bit is set'
+                            ' but nameID %d ("%s")'
+                            ' is not ended '
+                            'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
+                                                font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
-                  logging.error(('Font macStyle Italic bit is set'
-                                 ' but nameID %d ("%s")'
-                                 ' is not ended'
-                                 ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
-                                                      font_fullname))
+                  fb.error(('Font macStyle Italic bit is set'
+                            ' but nameID %d ("%s")'
+                            ' is not ended'
+                            ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
+                                                 font_fullname))
               else:
-                logging.info("OK: METADATA.pb font.style 'italic'"
-                             " matches font internals.")
+                fb.ok("OK: METADATA.pb font.style 'italic'"
+                      " matches font internals.")
 
           # -----------------------------------------------
           if f.style == 'normal':  # this test only applies to normal fonts
@@ -2395,75 +2460,75 @@ def main():
               # (passing those previous tests is a prerequisite for this one)
               pass
             else:
-              logging.debug("METADATA.pb font.style `normal`"
-                            " matches font internals?")
+              fb.new_check("METADATA.pb font.style `normal`"
+                           " matches font internals?")
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
-                  logging.error('METADATA.pb style has been set to normal'
-                                ' but font macStyle is improperly set')
+                  fb.error('METADATA.pb style has been set to normal'
+                           ' but font macStyle is improperly set')
               elif font_familyname.split('-')[-1].endswith('Italic'):
-                  logging.error(('Font macStyle indicates a non-Italic font,'
-                                 ' but nameID %d ("%s") ends'
-                                 ' with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
-                                                      font_familyname))
+                  fb.error(('Font macStyle indicates a non-Italic font,'
+                            ' but nameID %d ("%s") ends'
+                            ' with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
+                                                 font_familyname))
               elif not font_fullname.split('-')[-1].endswith('Italic'):
-                  logging.error('Font macStyle indicates a non-Italic font'
-                                ' but nameID %d ("%s") ends'
-                                ' with "Italic"' % (NAMEID_FULL_FONT_NAME,
-                                                    font_fullname))
+                  fb.error('Font macStyle indicates a non-Italic font'
+                           ' but nameID %d ("%s") ends'
+                           ' with "Italic"' % (NAMEID_FULL_FONT_NAME,
+                                               font_fullname))
               else:
-                logging.info("OK: METADATA.pb font.style 'normal'"
-                             " matches font internals.")
+                fb.ok("METADATA.pb font.style 'normal'"
+                      " matches font internals.")
 
               # ----------
-              logging.debug("Metadata key-value match to table name fields?")
+              fb.new_check("Metadata key-value match to table name fields?")
               if font_familyname != f.name:
-                logging.error(("METADATA.pb Family name '{}')"
-                               " does not match name table"
-                               " entry '{}' !").format(f.name,
-                                                       font_familyname))
+                fb.error(("METADATA.pb Family name '{}')"
+                          " does not match name table"
+                          " entry '{}' !").format(f.name,
+                                                  font_familyname))
               elif font_fullname != f.full_name:
-                logging.error(("METADATA.pb: Fullname ('{}')"
-                               " does not match name table"
-                               " entry '{}' !").format(f.fullname,
-                                                       font_fullname))
+                fb.error(("METADATA.pb: Fullname ('{}')"
+                          " does not match name table"
+                          " entry '{}' !").format(f.fullname,
+                                                  font_fullname))
               else:
-                logging.info("OK: METADATA.pb familyname and fullName fields"
-                             " match corresponding name table entries.")
+                fb.ok("METADATA.pb familyname and fullName fields"
+                      " match corresponding name table entries.")
 
           # -----------------------------------------------
-          logging.debug("Check if fontname is not camel cased.")
+          fb.new_check("Check if fontname is not camel cased.")
           if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
-            logging.error(("METADATA.pb: '%s' is a CamelCased name."
-                           " To solve this, simply use spaces"
-                           " instead in the font name.").format(f.name))
+            fb.error(("METADATA.pb: '%s' is a CamelCased name."
+                      " To solve this, simply use spaces"
+                      " instead in the font name.").format(f.name))
           else:
-            logging.info("OK: font name is not camel-cased.")
+            fb.ok("Font name is not camel-cased.")
 
           # -----------------------------------------------
-          logging.debug("Check font name is the same as family name.")
+          fb.new_check("Check font name is the same as family name.")
           if f.name != family.name:
-            logging.error(('METADATA.pb: %s: Family name "%s"'
-                           ' does not match'
-                           ' font name: "%s"').format(f.filename,
-                                                      family.name,
-                                                      f.name))
+            fb.error(('METADATA.pb: %s: Family name "%s"'
+                      ' does not match'
+                      ' font name: "%s"').format(f.filename,
+                                                 family.name,
+                                                 f.name))
           else:
-            logging.info('OK: font name is the same as family name.')
+            fb.ok('Font name is the same as family name.')
 
           # -----------------------------------------------
-          logging.debug("Check that font weight has a canonical value")
+          fb.new_check("Check that font weight has a canonical value")
           first_digit = f.weight / 100
           if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
-            logging.error(("METADATA.pb: The weight is declared"
-                           " as {} which is not a "
-                           "multiple of 100"
-                           " between 100 and 900.").format(f.weight))
+            fb.error(("METADATA.pb: The weight is declared"
+                      " as {} which is not a "
+                      "multiple of 100"
+                      " between 100 and 900.").format(f.weight))
           else:
-            logging.info("OK: font weight has a canonical value.")
+            fb.ok("Font weight has a canonical value.")
 
           # -----------------------------------------------
-          logging.debug("Checking OS/2 usWeightClass"
-                        " matches weight specified at METADATA.pb")
+          fb.new_check("Checking OS/2 usWeightClass"
+                       " matches weight specified at METADATA.pb")
           assert_table_entry('OS/2', 'usWeightClass', f.weight)
           log_results("OS/2 usWeightClass matches "
                       "weight specified at METADATA.pb")
@@ -2490,31 +2555,31 @@ def main():
             'BlackItalic': 900,
           }
           # -----------------------------------------------
-          logging.debug("Metadata weight matches postScriptName")
+          fb.new_check("Metadata weight matches postScriptName")
           pair = []
           for k, weight in weights.items():
             if weight == f.weight:
               pair.append((k, weight))
 
           if not pair:
-            logging.error('METADATA.pb: Font weight'
-                          ' does not match postScriptName')
+            fb.error('METADATA.pb: Font weight'
+                     ' does not match postScriptName')
           elif not (f.post_script_name.endswith('-' + pair[0][0]) or
                     f.post_script_name.endswith('-%s' % pair[1][0])):
-            logging.error('METADATA.pb: postScriptName ("{}")'
-                          ' with weight {} must be '.format(f.post_script_name,
-                                                            pair[0][1]) +
-                          'ended with "{}" or "{}"'.format(pair[0][0],
-                                                           pair[1][0]))
+            fb.error('METADATA.pb: postScriptName ("{}")'
+                     ' with weight {} must be '.format(f.post_script_name,
+                                                       pair[0][1]) +
+                     'ended with "{}" or "{}"'.format(pair[0][0],
+                                                      pair[1][0]))
           else:
-            logging.info("OK: Weight value matches postScriptName.")
+            fb.ok("Weight value matches postScriptName.")
 
           # -----------------------------------------------
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname is False:
             pass  # skip this test
           else:
-            logging.debug("METADATA.pb lists fonts named canonicaly?")
+            fb.new_check("METADATA.pb lists fonts named canonicaly?")
             is_canonical = False
             _weights = []
             for value, intvalue in weights.items():
@@ -2527,11 +2592,11 @@ def main():
                 is_canonical = True
 
             if is_canonical:
-              logging.info("OK: METADATA.pb lists fonts named canonicaly.")
+              fb.ok("METADATA.pb lists fonts named canonicaly.")
             else:
               v = map(lambda x: font_familyname + ' ' + x, _weights)
-              logging.error('Canonical name in font expected:'
-                            ' [%s] but %s' % (v, f.full_name))
+              fb.error('Canonical name in font expected:'
+                       ' [%s] but %s' % (v, f.full_name))
 
           # ----------------------------------------------
           def find_italic_in_name_table():
@@ -2546,30 +2611,26 @@ def main():
                     find_italic_in_name_table())
 
           if f.style in ['italic', 'normal']:
-            logging.debug("Font styles are named canonically?")
+            fb.new_check("Font styles are named canonically?")
             if is_italic() and f.style != 'italic':
-              logging.error("%s: The font style is %s"
-                            " but it should be italic" % (f.filename, f.style))
+              fb.error("%s: The font style is %s"
+                       " but it should be italic" % (f.filename, f.style))
             elif not is_italic() and f.style != 'normal':
-              logging.error(("%s: The font style is %s"
-                             " but it should be normal") % (f.filename,
-                                                            f.style))
+              fb.error(("%s: The font style is %s"
+                        " but it should be normal") % (f.filename,
+                                                       f.style))
             else:
-              logging.info("OK: Font styles are named canonically")
+              fb.ok("Font styles are named canonically")
 
           # ---------------------------------------------
           ###### End of single-TTF metadata tests #######
 
       # -----------------------------------------------------
-      # This test only makes sense for monospace fonts:
+      fb.new_check("Monospace font has hhea.advanceWidthMax"
+                   " equal to each glyph's advanceWidth ?")
       if family.category not in ['Monospace', 'MONOSPACE']:
-        logging.debug("Skipping monospace-only test."
-                      " 'Monospace font has hhea.advanceWidthMax equal"
-                      " to each glyph's advanceWidth ?'")
+        fb.skip("Skipping monospace-only check.")
       else:
-        logging.debug("Monospace font has hhea.advanceWidthMax"
-                      " equal to each glyph's advanceWidth ?")
-
         advw = 0
         fail = False
         for glyph_id in font['glyf'].glyphs:
@@ -2579,17 +2640,17 @@ def main():
           advw = width
 
         if fail:
-          logging.error('Glyph advanceWidth must be same across all glyphs')
+          fb.error('Glyph advanceWidth must be same across all glyphs')
         elif advw != font['hhea'].advanceWidthMax:
           msg = ('"hhea" table advanceWidthMax property differs'
                  ' to glyphs advanceWidth [%s, %s]')
-          logging.error(msg % (advw, font['hhea'].advanceWidthMax))
+          fb.error(msg % (advw, font['hhea'].advanceWidthMax))
           # TODO: compute the percentage of glyphs that do not comply
           #       with the advanceWidth value declared in the hhea table
           #       and report it in the error message.
         else:
-          logging.info("OK: hhea.advanceWidthMax is equal"
-                       " to all glyphs' advanceWidth.")
+          fb.ok("hhea.advanceWidthMax is equal"
+                " to all glyphs' advanceWidth.")
 
       # ----------------------------------------------------
 
@@ -2603,6 +2664,8 @@ def main():
     font.save(font_file_output)
     font.close()
     logging.info("{} saved\n".format(font_file_output))
+
+    fb.save_json_report()
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
