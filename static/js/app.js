@@ -1,10 +1,10 @@
 (function() {
-  var app = angular.module('FBReport', ['googlechart']);
+  var app = angular.module('FBReport', ['googlechart', 'ngTable']);
 
-  app.controller('CheckTTFResultsController', ['$http', function($http){
-    var checks = this;
-    checks.results = [];
-    checks.dataLoaded = false;
+  app.controller('CheckTTFResultsController', ['$http', '$filter', 'ngTableParams', function($http, $filter, ngTableParams){
+    var checkCtrl = this;
+    this.results = [];
+    this.dataLoaded = false;
     $http.get('/fontbakery-check-results.json').success(function(data){
       var resultMap = {'OK': 'success',
                        'WARNING': 'danger',
@@ -23,8 +23,33 @@
         results_count[data[item].result] ++;
       }
 
-      checks.results = data;
-      checks.dataLoaded = true;
+      checkCtrl.results = data;
+      checkCtrl.dataLoaded = true;
+
+      checkCtrl.testsTableParams = new ngTableParams({
+            // show first page
+            page: 1,
+            // count per page
+            count: data.length,
+            // initial sorting
+            sorting: {
+                result_status: 'asc'
+            }
+        }, {
+            // hide page counts control
+            counts: [],
+            // length of data
+            total: data.length,
+            getData: function($defer, params) {
+                // use build-in angular filter
+                var orderedData = params.sorting() ?
+                    $filter('orderBy')(data, params.orderBy()) :
+                    data;
+                params.total(orderedData.length);
+                $defer.resolve(orderedData);
+            }
+        });
+
 
       var gdata = google.visualization.arrayToDataTable([
                ['Tests', '#'],
@@ -39,7 +64,7 @@
                chartArea: {'width': '100%'},
                colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
            };
-       checks.chart = {data: gdata, options: options, type: "PieChart", displayed: true};
+       checkCtrl.chart = {data: gdata, options: options, type: "PieChart", displayed: true};
     });
   }]);
 

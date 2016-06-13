@@ -13,6 +13,7 @@
   <script type="text/javascript" src="//www.google.com/jsapi"></script>
   <script type="text/javascript" src="static/js/libs/gchart/gchart.js"></script>
   <script type="text/javascript" src="static/js/app.js"></script>
+  <script type="text/javascript" src="static/bower_components/ng-table/ng-table.min.js"></script>
 </head>
 <body>
 
@@ -62,7 +63,7 @@
       </div>
 
       <div class="flex-container">
-        <table id="testsTable" ng-table="testsTableParams" class="table table-striped table-hover table-bordered table-condensed">
+        <table id="testsTable" ng-table="check.testsTableParams" class="table table-striped table-hover table-bordered table-condensed">
           <tr ng-repeat="test in check.results" class="{{ test.result_class }}">
 <!--
             <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
