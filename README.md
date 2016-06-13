@@ -22,6 +22,13 @@ For more detailed output, run in verbose mode:
 
 It may fix some problems, and save `*.ttf.fix` files in the same directory as the original `.ttf` files.
 
+The check results will be saved to a file called fontbakery-check-results.json.
+You can view a summary report by running:
+
+    python -m SimpleHTTPServer
+
+And then opening http://0.0.0.0:8000/ in a web-browser.
+
 ## Install
 
 ### Mac OS X
