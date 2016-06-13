@@ -1,5 +1,6 @@
 (function() {
-  var app = angular.module('FBReport', []);
+  var app = angular.module('FBReport', ['googlechart']);
+
   app.controller('CheckTTFResultsController', ['$http', function($http){
     var checks = this;
     checks.results = [];
@@ -9,11 +10,36 @@
                        'WARNING': 'danger',
                        'ERROR': 'warning',
                        'HOTFIX': 'info'};
+
+      var results_count = {
+        "OK":  0,
+        "WARNING": 0,
+        "ERROR" : 0,
+        "HOTFIX": 0
+      };
+
       for (item in data){
         data[item].result_class = resultMap[data[item].result];
+        results_count[data[item].result] ++;
       }
+
       checks.results = data;
       checks.dataLoaded = true;
+
+      var gdata = google.visualization.arrayToDataTable([
+               ['Tests', '#'],
+               ['OK', results_count["OK"]],
+               ['WARNING', results_count["WARNING"]],
+               ['ERROR', results_count["ERROR"]],
+               ['HOTFIX', results_count["HOTFIX"]]
+           ]),
+           options = {
+               title: "Check Results Stats",
+               is3D: true,
+               chartArea: {'width': '100%'},
+               colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
+           };
+       checks.chart = {data: gdata, options: options, type: "PieChart", displayed: true};
     });
   }]);
 
@@ -44,3 +70,5 @@
   }]); */
 
 })();
+
+google.load('visualization', '1', { packages: ['corechart'] });
