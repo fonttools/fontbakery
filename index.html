@@ -1,0 +1,96 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html ng-app="FBReport">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title "Font Bakery test results report"></title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="static/css/app.css" />
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  <script type="text/javascript" src="static/js/app.js"></script>
+</head>
+<body>
+
+<!-- HEADER AND NAVBAR -->
+<!--
+<header>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li ng-class="{'active': activetab == 'summary'}">
+            <a href="#summary">Summary</a>
+          </li>
+          <li ng-class="{'active': activetab == 'checks'}">
+            <a href="#checks">Checks</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+</header>
+-->
+
+<div id="main" class="container-fluid">
+  <div ng-controller='CheckTTFResultsController as check'>
+
+    <p class="text-center" ng-hide="check.dataLoaded">
+      <i class="fa fa-spinner fa-spin fa-5x"></i>
+    </p>
+
+    <div ng-show="check.dataLoaded">
+      <h3>FontBakery Check Results</h3>
+<!--
+      <div class="row">
+        <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" ng-if="average_chart">
+          <div google-chart chart="average_chart" on-ready="mixins.updateChartTitle('Average')" style="{{cssStyle}}"></div>
+        </div>
+        <div class="col-xs-6 col-sm-5 col-md-4 col-lg-2" ng-repeat="chart in charts">
+          <div google-chart chart="chart" on-ready="mixins.updateChartTitle(chart.options.title)" style="{{cssStyle}}"></div>
+        </div>
+      </div>
+-->
+      <div class="flex-container">
+        <table id="testsTable" ng-table="testsTableParams" class="table table-striped table-hover table-bordered table-condensed">
+          <tr ng-repeat="test in check.results" class="{{ test.result_class }}">
+<!--
+            <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
+-->
+            <!-- <td data-title="'Description'" sortable="'description'"><span popover-title="{{ test.orig_data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test.orig_data.methodName }}()">{{ test.description }}</span></td> -->
+            <td data-title="'Description'" sortable="'description'"><span>{{ test.description }}</span></td>
+<!--
+            <td data-title="'Code'" sortable="'gh_link'"><a href="{{ test.gh_link }}">{{ test.orig_data.methodName }}</a></td>
+            <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
+-->
+            <td data-title="'Result'" sortable="'result_msg'">{{ test.log_messages[0] }}</td>
+            <td data-title="'Status'" sortable="'result_status'">{{ test.result }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Footer-->
+<footer class="footer">
+  <div class="container-fluid">
+    <ul class="footer-links">
+      <li><a href='https://github.com/googlefonts/fontbakery/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
+      <li>Please <a href='https://github.com/googlefonts/fontbakery/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery/'>GitHub <i class='icon-github'></i></a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>
