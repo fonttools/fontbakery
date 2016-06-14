@@ -140,7 +140,7 @@ def generate_italic_angle_images():
     for j in range(lines):
       draw.line([j*spacing - 400, im.size[1], j*spacing - 400 + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
     del draw
-    filepath = "static/images/angle_{}.png".format(i+1)
+    filepath = "fontmetadata_tool/images/angle_{}.png".format(i+1)
     filepath = os.path.join(os.path.dirname(__file__), filepath)
     im.save(filepath, "PNG")
 
@@ -387,7 +387,7 @@ def main():
         row['values'][colname] = newvalue
     return save_csv()
 
-  print "Access http://127.0.0.1:5000/static/index.html\n"
+  print "Access http://127.0.0.1:5000/fontmetadata_tool/index.html\n"
   app.run()
 
 #====================================================================
