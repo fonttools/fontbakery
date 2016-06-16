@@ -135,12 +135,12 @@ def description_checks():
                 if response.status_code != requests.codes.ok:
                     broken_links.append(link)
             except requests.exceptions.RequestException:
-                bad_links.append(link)
+                broken_links.append(link)
 
-        if len(bad_links) > 0:
+        if len(broken_links) > 0:
             fb.error(("The following links are broken"
                       " in the DESCRIPTION file:"
-                      " '{}'").format("', '".join(bad_links)))
+                      " '{}'").format("', '".join(broken_links)))
         else:
             fb.ok("All links in the DESCRIPTION file look good!")
 
