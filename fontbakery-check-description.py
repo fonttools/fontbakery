@@ -25,50 +25,68 @@ import sys
 import unittest
 from lxml.html import HTMLParser
 
-print ("This will very soon be a small tool for running"
-       " a few checks on DESCRIPTION.txt files.\n")
-exit(0)
-#TODO: refactor this code:
+# =====================================
+# Helper logging class
+#TODO: This code is copied from fontbakery-check-ttf.py
+#TODO: Deduplicate it by placing it in a shared external file.
 
-class TestDescriptionHtmlEnUs():
 
-    targets = ['description']
-    tool = 'FontBakery'
-    name = __name__
+class FontBakeryCheckLogger():
+  all_checks = []
+  current_check = None
 
-    def test_broken_links(self):
-        """ Check if DESCRIPTION do not have broken links """
-        try:
-            contents = open(self.operator.path).read()
-        except:
-            self.fail('File {} does not exist'.format(self.operator.path))
-        doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
-        for link in doc.xpath('//a/@href'):
-            try:
-                response = requests.head(link)
-                self.assertEqual(response.status_code, requests.codes.ok,
-                                 msg='%s is broken' % link)
-            except requests.exceptions.RequestException as ex:
-                self.fail('%s raises exception [%r]' % (link, ex))
+  def save_json_report(self, filename="fontbakery-check-description-results.json"):
+    import json
+    self.flush()
+    json_data = json.dumps(self.all_checks,
+                           sort_keys=True,
+                           indent=4,
+                           separators=(',', ': '))
+    open(filename, 'w').write(json_data)
+    logging.debug(("Saved check results in "
+                   "JSON format to '{}'").format(filename))
 
-    def test_description_is_valid_html(self):
-        """ DESCRIPTION.en_us.html is not real html file """
-        msg = 'DESCRIPTION.en_us.html is not real html file'
-        if not os.path.exists(self.operator.path):
-            self.fail('File {} does not exist'.format(self.operator.path))
-        self.assertEqual(magic.from_file(self.operator.path, mime=True), 'text/html', msg)
+  def flush(self):
+    if self.current_check is not None:
+      self.all_checks.append(self.current_check)
 
-    def test_description_is_more_than_500b(self):
-        """ DESCRIPTION.en_us.html is more than 500 bytes """
-        msg = 'DESCRIPTION.en_us.html is not real html file'
-        try:
-            statinfo = os.stat(self.operator.path)
-        except:
-            self.fail('File {} does not exist'.format(self.operator.path))
-        msg = 'DESCRIPTION.en_us.html must have size larger than 500 bytes'
-        self.assertGreater(statinfo.st_size, 500, msg)
+  def new_check(self, desc):
+    self.flush()
+    logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
+    self.current_check = {"description": desc,
+                          "log_messages": [],
+                          "result": "unknown"}
 
-if __name__ == '__main__':
+  def skip(self, msg):
+    logging.info("SKIP: " + msg)
+    self.current_check["log_messages"].append(msg)
+    self.current_check["result"] = "SKIP"
+
+  def ok(self, msg):
+    logging.info("OK: " + msg)
+    self.current_check["log_messages"].append(msg)
+    if self.current_check["result"] != "FAIL":
+      self.current_check["result"] = "OK"
+
+  def warning(self, msg):
+    logging.warning(msg)
+    self.current_check["log_messages"].append("Warning: " + msg)
+    if self.current_check["result"] == "unknown":
+      self.current_check["result"] = "WARNING"
+
+  def error(self, msg):
+    logging.error(msg)
+    self.current_check["log_messages"].append("ERROR: " + msg)
+    self.current_check["result"] = "ERROR"
+
+  def hotfix(self, msg):
+    logging.info('HOTFIXED: ' + msg)
+    self.current_check['log_messages'].append('HOTFIX: ' + msg)
+    self.current_check['result'] = "HOTFIX"
+
+fb = FontBakeryCheckLogger()
+
+def description_checks():
     description = 'Runs checks or tests on specified DESCRIPTION.txt file(s)'
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
@@ -77,9 +95,62 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    for x in args.file:
-        if not os.path.basename(x).startswith('DESCRIPTION.'):
-            print('ER: {} is not DESCRIPTION'.format(x), file=sys.stderr)
+    files_to_check = []
+    for f in args.file:
+        if os.path.basename(f).startswith('DESCRIPTION.'):
+            files_to_check.append(f)
+        else:
+            fb.error("'{}' is not a DESCRIPTION file.".format(f))
             continue
 
-        #TODO: open the 'x' file and run the tests here.
+    if len(files_to_check) == 0:
+        fb.error("None of the specified files "
+                 "seem to be valid DESCRIPTION files.")
+        exit(-1)
+
+    for f in files_to_check:
+        try:
+            contents = open(f).read()
+        except:
+            fb.error("File '{}' does not exist.".format(f))
+            continue
+
+# ---------------------------------------------------------------------
+        fb.new_check("Does DESCRIPTION file contain broken links ?")
+        doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
+        broken_links = []
+        for link in doc.xpath('//a/@href'):
+            try:
+                response = requests.head(link)
+                if response.status_code != requests.codes.ok:
+                    broken_links.append(link)
+            except requests.exceptions.RequestException:
+                bad_links.append(link)
+
+        if len(bad_links) > 0:
+            fb.error(("The following links are broken"
+                      " in the DESCRIPTION file:"
+                      " '{}'").format("', '".join(bad_links)))
+        else:
+            fb.ok("All links in the DESCRIPTION file look good!")
+
+# ---------------------------------------------------------------------
+        fb.new_check("Is this a propper HTML file")
+        if magic.from_file(f, mime=True) != 'text/html':
+            fb.error("{} is not a propper HTML file.".format(f))
+        else:
+            fb.ok("{} is a propper HTML file.".format(f))
+
+# ---------------------------------------------------------------------
+        fb.new_check("DESCRIPTION.en_us.html is more than 500 bytes")
+        statinfo = os.stat(f)
+        if statinfo.st_size < 500:
+            fb.error("{} must have size larger than 500 bytes".format(f))
+        else:
+            fb.ok("{} is larger than 500 bytes".format(f))
+
+# ---------------------------------------------------------------------
+        fb.save_json_report()
+
+if __name__ == '__main__':
+    description_checks()
