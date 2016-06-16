@@ -18,6 +18,7 @@
 from __future__ import print_function
 import argparse
 import defusedxml.lxml
+import logging
 import magic
 import os
 import requests
@@ -87,13 +88,22 @@ class FontBakeryCheckLogger():
 fb = FontBakeryCheckLogger()
 
 def description_checks():
+    # set up some command line argument processing
     description = 'Runs checks or tests on specified DESCRIPTION.txt file(s)'
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
-
     args = parser.parse_args()
+
+    # set up a basic logging config
+    logger = logging.getLogger()
+    if args.verbose == 1:
+        logger.setLevel(logging.INFO)
+    elif args.verbose >= 2:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.ERROR)
 
     files_to_check = []
     for f in args.file:
