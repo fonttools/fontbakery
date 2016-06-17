@@ -81,6 +81,97 @@ class FontBakeryCheckLogger():
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
 
+
+class UpstreamDirectory(object):
+    """ Describes structure of upstream directory
+
+    >>> upstream = UpstreamDirectory("tests/fixtures/upstream-example")
+    >>> upstream.UFO
+    ['Font-Regular.ufo']
+    >>> upstream.TTX
+    ['Font-Light.ttx']
+    >>> upstream.BIN
+    ['Font-SemiBold.ttf']
+    >>> upstream.METADATA
+    ['METADATA.pb']
+    >>> sorted(upstream.LICENSE)
+    ['APACHE.txt', 'LICENSE.txt']
+    >>> upstream.SFD
+    ['Font-Bold.sfd']
+    >>> sorted(upstream.TXT)
+    ['APACHE.txt', 'LICENSE.txt']
+    """
+
+    OFL = ['open font license.markdown', 'ofl.txt', 'ofl.md']
+    LICENSE = ['license.txt', 'license.md', 'copyright.txt']
+    APACHE = ['apache.txt', 'apache.md']
+    UFL = ['ufl.txt', 'ufl.md']
+
+    ALL_LICENSES = OFL + LICENSE + APACHE + UFL
+
+    def __init__(self, upstream_path):
+        self.upstream_path = upstream_path
+
+        self.UFO = []
+        self.TTX = []
+        self.BIN = []
+        self.LICENSE = []
+        self.METADATA = []
+        self.SFD = []
+        self.TXT = []
+
+        self.walk()
+
+    def get_ttx(self):
+        return self.TTX
+
+    def get_binaries(self):
+        return self.BIN
+
+    def get_fonts(self):
+        return self.UFO + self.TTX + self.BIN + self.SFD
+    ALL_FONTS = property(get_fonts)
+
+    def walk(self):
+        l = len(self.upstream_path)
+        exclude = ['build_info', ]
+        for root, dirs, files in os_origin.walk(self.upstream_path, topdown=True):
+            dirs[:] = [d for d in dirs if d not in exclude]
+            for f in files:
+                fullpath = op.join(root, f)
+
+                if f[-4:].lower() == '.ttx':
+                    try:
+                        doc = defusedxml.lxml.parse(fullpath)
+                        el = doc.xpath('//ttFont[@sfntVersion]')
+                        if not el:
+                            continue
+                    except Exception as exc:
+                        msg = 'Failed to parse "{}". Error: {}'
+                        logger.error(msg.format(fullpath, exc))
+                        continue
+                    self.TTX.append(fullpath[l:].strip('/'))
+
+                if op.basename(f).lower() == 'metadata.pb':
+                    self.METADATA.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() in ['.ttf', '.otf']:
+                    self.BIN.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() == '.sfd':
+                    self.SFD.append(fullpath[l:].strip('/'))
+
+                if f[-4:].lower() in ['.txt', '.markdown', '.md', '.LICENSE']:
+                    self.TXT.append(fullpath[l:].strip('/'))
+
+                if op.basename(f).lower() in UpstreamDirectory.ALL_LICENSES:
+                    self.LICENSE.append(fullpath[l:].strip('/'))
+
+            for d in dirs:
+                fullpath = op.join(root, d)
+                if op.splitext(fullpath)[1].lower() == '.ufo':
+                    self.UFO.append(fullpath[l:].strip('/'))
+
 fb = FontBakeryCheckLogger()
 
 def upstream_checks():
