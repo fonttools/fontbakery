@@ -109,7 +109,7 @@ def upstream_checks():
             fb.error("'{}' is not a valid existing folder.".format(f))
             continue
 
-    if len(files_to_check) == 0:
+    if len(folders_to_check) == 0:
         fb.error("None of the specified paths "
                  "seem to be existing folders.")
         exit(-1)
@@ -117,92 +117,90 @@ def upstream_checks():
     for f in folders_to_check:
 
 # ---------------------------------------------------------------------
-        fb.new_check("Each font in family has matching glyph names?")
-        directory = UpstreamDirectory(f)
-        # TODO does this glyphs list object get populated?
-        glyphs = []
-        for f in directory.get_fonts():
-            font = PiFont(os.path.join(self.operator.path, f))
-            glyphs_ = font.get_glyphs()
-
-            if glyphs and glyphs != glyphs_:
-                # TODO report which font
-                self.fail('Family has different glyphs across fonts')
-
-# ---------------------------------------------------------------------
-        fb.new_check("Check that glyphs has same number of contours across family")
-        directory = UpstreamDirectory(f)
-
-        glyphs = {}
-        for f in directory.get_fonts():
-            font = PiFont(os.path.join(self.operator.path, f))
-            glyphs_ = font.get_glyphs()
-
-            for glyphcode, glyphname in glyphs_:
-                contours = font.get_contours_count(glyphname)
-                if glyphcode in glyphs and glyphs[glyphcode] != contours:
-                    msg = ('Number of contours of glyph "%s" does not match.'
-                           ' Expected %s contours, but actual is %s contours')
-                    self.fail(msg % (glyphname, glyphs[glyphcode], contours))
-                glyphs[glyphcode] = contours
+#        fb.new_check("Each font in family has matching glyph names?")
+#        directory = UpstreamDirectory(f)
+#        # TODO does this glyphs list object get populated?
+#        glyphs = []
+#        for f in directory.get_fonts():
+#            font = PiFont(os.path.join(self.operator.path, f))
+#            glyphs_ = font.get_glyphs()
+#
+#            if glyphs and glyphs != glyphs_:
+#                # TODO report which font
+#                self.fail('Family has different glyphs across fonts')
 
 # ---------------------------------------------------------------------
-        fb.new_check("Check that glyphs has same number of points across family")
-        directory = UpstreamDirectory(f)
+#        fb.new_check("Check that glyphs has same number of contours across family")
+#        directory = UpstreamDirectory(f)
+#
+#        glyphs = {}
+#        for f in directory.get_fonts():
+#            font = PiFont(os.path.join(self.operator.path, f))
+#            glyphs_ = font.get_glyphs()
+#
+#            for glyphcode, glyphname in glyphs_:
+#                contours = font.get_contours_count(glyphname)
+#                if glyphcode in glyphs and glyphs[glyphcode] != contours:
+#                    msg = ('Number of contours of glyph "%s" does not match.'
+#                           ' Expected %s contours, but actual is %s contours')
+#                    self.fail(msg % (glyphname, glyphs[glyphcode], contours))
+#                glyphs[glyphcode] = contours
 
-        glyphs = {}
-        for f in directory.get_fonts():
-            font = PiFont(os.path.join(self.operator.path, f))
-            glyphs_ = font.get_glyphs()
-
-            for g, glyphname in glyphs_:
-                points = font.get_points_count(glyphname)
-                if g in glyphs and glyphs[g] != points:
-                    msg = ('Number of points of glyph "%s" does not match.'
-                           ' Expected %s points, but actual is %s points')
-                    self.fail(msg % (glyphname, glyphs[g], points))
-                glyphs[g] = points
-
-
+# ---------------------------------------------------------------------
+#        fb.new_check("Check that glyphs has same number of points across family")
+#        directory = UpstreamDirectory(f)
+#
+#        glyphs = {}
+#        for f in directory.get_fonts():
+#            font = PiFont(os.path.join(self.operator.path, f))
+#            glyphs_ = font.get_glyphs()
+#
+#            for g, glyphname in glyphs_:
+#                points = font.get_points_count(glyphname)
+#                if g in glyphs and glyphs[g] != points:
+#                    msg = ('Number of points of glyph "%s" does not match.'
+#                           ' Expected %s points, but actual is %s points')
+#                    self.fail(msg % (glyphname, glyphs[g], points))
+#                glyphs[g] = points
 
 # ======================================================================
-        def assertExists(filenames, err_msg, ok_msg):
+        def assertExists(folderpath, filenames, err_msg, ok_msg):
             if not isinstance(filenames, list):
                 filenames = [filenames]
 
             missing = []
             for filename in filenames:
-                fullpath = os.path.join(path, filename)
+                fullpath = os.path.join(folderpath, filename)
                 if os.path.exists(fullpath):
                     missing.append(fullpath)
             if len(missing) > 0:
-                pb.error(err_msg.format(", ".join(missing)))
+                fb.error(err_msg.format(", ".join(missing)))
             else:
-                pb.ok(ok_msg)
+                fb.ok(ok_msg)
 
 # ---------------------------------------------------------------------
-        pb.new_check("Does this font folder contain COPYRIGHT file ?")
-        assertExists("COPYRIGHT.txt",
-                     "Font folder lacks a copyright file at '{}'",
-                     "Font folder contains COPYRIGHT.txt")
+        fb.new_check("Does this font folder contain COPYRIGHT file ?")
+        assertExists(f, "COPYRIGHT.txt",
+                        "Font folder lacks a copyright file at '{}'",
+                        "Font folder contains COPYRIGHT.txt")
 
 # ---------------------------------------------------------------------
-        pb.new_check("Does this font folder contain a DESCRIPTION file ?")
-        assertExists("DESCRIPTION.en_us.html",
-                     "Font folder lacks a description file at '{}'",
-                     "Font folder should contain DESCRIPTION.en_us.html.")
+        fb.new_check("Does this font folder contain a DESCRIPTION file ?")
+        assertExists(f, "DESCRIPTION.en_us.html",
+                        "Font folder lacks a description file at '{}'",
+                        "Font folder should contain DESCRIPTION.en_us.html.")
 
 # ---------------------------------------------------------------------
-        pb.new_check("Does this font folder contain licensing files?")
-        assertExists(["LICENSE.txt", "OFL.txt"],
-                     "Font folder lacks licencing files at '{}'",
-                     "Font folder should contain licensing files.")
+        fb.new_check("Does this font folder contain licensing files?")
+        assertExists(f, ["LICENSE.txt", "OFL.txt"],
+                        "Font folder lacks licencing files at '{}'",
+                        "Font folder should contain licensing files.")
 
 # ---------------------------------------------------------------------
-        pb.new_check("Font folder should contain FONTLOG.txt")
-        assertExists("FONTLOG.txt"
-                     "Font folder lacks a fontlog file at '{}'",
-                     "Font folder should contain a 'FONTLOG.txt' file.")
+        fb.new_check("Font folder should contain FONTLOG.txt")
+        assertExists(f, "FONTLOG.txt",
+                        "Font folder lacks a fontlog file at '{}'",
+                        "Font folder should contain a 'FONTLOG.txt' file.")
 
 # =======================================================================
 # Tests for common upstream repository files.
@@ -212,7 +210,7 @@ def upstream_checks():
 # =======================================================================
 
 # ---------------------------------------------------------------------
-        pb.new_check("Repository contains METADATA.pb file?")
+        fb.new_check("Repository contains METADATA.pb file?")
         fullpath = os.path.join(f, 'METADATA.pb')
         if not os.path.exists(fullpath):
             fb.error("File 'METADATA.pb' does not exist"
@@ -221,57 +219,57 @@ def upstream_checks():
             fb.ok("Repository contains METADATA.pb file.")
 
 # ---------------------------------------------------------------------
-        pb.new_check("Copyright notice consistent "
-                     "across all fonts in this family?")
-        ufo_dirs = []
-        for root, dirs, files in os.walk(self.operator.path):
-            for d in dirs:
-                fullpath = os.path.join(root, d)
-                if os.path.splitext(fullpath)[1].lower() == '.ufo':
-                    ufo_dirs.append(fullpath)
-
-        copyright = None
-        for ufo_folder in ufo_dirs:
-            current_notice = self.lookup_copyright_notice(ufo_folder)
-            if current_notice is None:
-                continue
-            if copyright is not None and current_notice != copyright:
-                self.fail('"%s" != "%s"' % (current_notice, copyright))
-                break
-            copyright = current_notice
-
-    COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
-    def grep_copyright_notice(self, contents):
-        match = COPYRIGHT_REGEX.search(contents)
-        if match:
-            return match.group(0).strip(',\r\n')
-        return
-
-    def lookup_copyright_notice(self, ufo_folder):
-        current_path = ufo_folder
-        try:
-            contents = open(os.path.join(ufo_folder, 'fontinfo.plist')).read()
-            copyright = self.grep_copyright_notice(contents)
-            if copyright:
-                return copyright
-        except (IOError, OSError):
-            pass
-
-        while os.path.realpath(self.operator.path) != current_path:
-            # look for all text files inside folder
-            # read contents from them and compare with copyright notice
-            # pattern
-            files = glob.glob(os.path.join(current_path, '*.txt'))
-            files += glob.glob(os.path.join(current_path, '*.ttx'))
-            for filename in files:
-                with open(os.path.join(current_path, filename)) as fp:
-                    match = COPYRIGHT_REGEX.search(fp.read())
-                    if not match:
-                        continue
-                    return match.group(0).strip(',\r\n')
-            current_path = os.path.join(current_path, '..')  # go up
-            current_path = os.path.realpath(current_path)
-        return
+#        fb.new_check("Copyright notice consistent "
+#                     "across all fonts in this family?")
+#        ufo_dirs = []
+#        for root, dirs, files in os.walk(self.operator.path):
+#            for d in dirs:
+#                fullpath = os.path.join(root, d)
+#                if os.path.splitext(fullpath)[1].lower() == '.ufo':
+#                    ufo_dirs.append(fullpath)
+#
+#        copyright = None
+#        for ufo_folder in ufo_dirs:
+#            current_notice = self.lookup_copyright_notice(ufo_folder)
+#            if current_notice is None:
+#                continue
+#            if copyright is not None and current_notice != copyright:
+#                self.fail('"%s" != "%s"' % (current_notice, copyright))
+#                break
+#            copyright = current_notice
+#
+#        COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+#        def grep_copyright_notice(self, contents):
+#            match = COPYRIGHT_REGEX.search(contents)
+#            if match:
+#                return match.group(0).strip(',\r\n')
+#            return
+#
+#        def lookup_copyright_notice(self, ufo_folder):
+#            current_path = ufo_folder
+#            try:
+#                contents = open(os.path.join(ufo_folder, 'fontinfo.plist')).read()
+#                copyright = self.grep_copyright_notice(contents)
+#                if copyright:
+#                    return copyright
+#            except (IOError, OSError):
+#                pass
+#
+#            while os.path.realpath(self.operator.path) != current_path:
+#                # look for all text files inside folder
+#                # read contents from them and compare with copyright notice
+#                # pattern
+#                files = glob.glob(os.path.join(current_path, '*.txt'))
+#                files += glob.glob(os.path.join(current_path, '*.ttx'))
+#                for filename in files:
+#                    with open(os.path.join(current_path, filename)) as fp:
+#                        match = COPYRIGHT_REGEX.search(fp.read())
+#                        if not match:
+#                           continue
+#                        return match.group(0).strip(',\r\n')
+#                current_path = os.path.join(current_path, '..')  # go up
+#                current_path = os.path.realpath(current_path)
+#            return
 
         fb.save_json_report("fontbakery-check-upstream-results.json")
 
