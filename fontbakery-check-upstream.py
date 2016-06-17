@@ -21,6 +21,7 @@ import glob
 import logging
 import os
 import re
+from fontTools import ttLib
 
 # =====================================
 # Helper logging class
@@ -81,6 +82,191 @@ class FontBakeryCheckLogger():
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
 
+# I think that this PiFont and its related classes can be 
+# refactored into something a bit less verbose and convoluted
+class PiFont(object):
+
+    def __init__(self, path):
+        """ Supplies common API interface to several font formats """
+        self.font = PiFont.open(path)
+
+    @staticmethod
+    def open(path):
+        """ Return file instance depending on font format
+
+        >>> PiFont.open('tests/fixtures/src/Font-Italic.ufo')
+        [PiFontUfo "tests/fixtures/src/Font-Italic.ufo"]
+        >>> PiFont.open('tests/fixtures/ttf/Font-Italic.ttf')
+        [PiFontFontTools "tests/fixtures/ttf/Font-Italic.ttf"]
+        >>> PiFont.open('tests/fixtures/src/Font-Light.sfd')
+        [PiFontSFD "tests/fixtures/src/Font-Light.sfd"]
+         """
+        if path[-4:] == '.ufo':
+            return PiFontUfo(path)
+        if path[-4:] in ['.ttf', '.otf', '.ttx']:
+            return PiFontFontTools(path)
+        if path[-4:] == '.sfd':
+            return PiFontSFD(path)
+
+
+    def get_glyph(self, glyphname):
+        """ Return glyph instance """
+        return self.font.get_glyph(glyphname)
+
+    def get_glyphs(self):
+        """ Retrieves glyphs list with their names
+
+        Returns:
+            :list: List of tuples describing glyphs sorted by glyph code
+        """
+        return self.font.get_glyphs()
+
+    def get_contours_count(self, glyphname):
+        """ Retrieves count of contours, including composites glyphs like "AE"
+
+        Arguments:
+
+            :glyphname string: glyph unicode name
+
+        Returns:
+            :int: count of contours
+        """
+        return self.font.get_contours_count(glyphname)
+
+    def get_points_count(self, glyphname):
+        """ Retrieves count of points, including composites glyphs like "AE"
+
+        Arguments:
+            :glyphname string: glyph unicode name
+
+        Returns:
+            :int: count of points
+        """
+        return self.font.get_points_count(glyphname)
+
+
+class PiFontSFD:
+    """ Supplies methods used by PiFont class to access SFD """
+
+    def __init__(self, path):
+        self.path = path
+        self.font = fontforge.open(path)
+
+    def __repr__(self):
+        return '[PiFontSFD "%s"]' % self.path
+
+    def get_glyphs(self):
+        """ Retrieves glyphs list with their names
+
+        >>> f = PiFont('tests/fixtures/src/Font-Light.sfd')
+        >>> f.get_glyphs()[:3]
+        [(-1, 'caron.alt'), (-1, 'foundryicon'), (2, 'uni0002')]
+        """
+        ll = self.font.glyphs()
+        return sorted(map(lambda x: (x.unicode, x.glyphname), ll))
+
+    def get_contours_count(self, glyphname):
+        return 0
+
+    def get_points_count(self, glyphname):
+        return 0
+
+
+class PiFontUfo:
+    """ Supplies methods used by PiFont class to access UFO """
+
+    def __init__(self, path):
+        self.path = path
+        self.font = robofab.world.OpenFont(path)
+
+    def __repr__(self):
+        return '[PiFontUfo "%s"]' % self.path
+
+    def get_glyphs(self):
+        """ Retrieves glyphs list with their names
+
+        >>> f = PiFont('tests/fixtures/src/Font-Italic.ufo')
+        >>> f.get_glyphs()[:3]
+        [(2, 'uni0002'), (9, 'uni0009'), (10, 'uni000A')]
+        """
+        ll = zip(self.font.getCharacterMapping(),
+                 map(lambda x: x[0],
+                     self.font.getCharacterMapping().values()))
+        return sorted(ll)
+
+    def get_glyph(self, glyphname):
+        return self.font[glyphname]
+
+    def get_contours_count(self, glyphname):
+        """ Retrieves count of glyph contours
+
+        >>> f = PiFont('tests/fixtures/src/Font-Italic.ufo')
+        >>> f.get_contours_count('AEacute')
+        3
+        """
+        value = 0
+        components = self.font[glyphname].getComponents()
+        if components:
+            for component in components:
+                value += self.get_contours_count(component.baseGlyph)
+
+        contours = self.font[glyphname].contours
+        if contours:
+            value += len(contours)
+        return value
+
+    def get_points_count(self, glyphname):
+        """ Retrieves count of glyph points in contours
+
+        >>> f = PiFont('tests/fixtures/src/Font-Italic.ufo')
+        >>> f.get_points_count('AEacute')
+        24
+        """
+        value = 0
+        components = self.font[glyphname].getComponents()
+        if components:
+            for component in components:
+                value += self.get_points_count(component.baseGlyph)
+
+        contours = self.font[glyphname].contours
+        if contours:
+            for contour in contours:
+                value += len(contour.segments)
+        return value
+
+
+class PiFontFontTools:
+    """ Supplies methods used by PiFont class to access TTF """
+
+    def __init__(self, path):
+        logging.info('loading font from path = "{}"...'.format(path))
+        self.path = path
+        if path[-4:] == '.ttx':
+            self.font = ttLib.TTFont(None)
+            self.font.importXML(path, quiet=True)
+        else:
+            self.font = ttLib.TTFont(path)
+
+    def __repr__(self):
+        return '[PiFontFontTools "%s"]' % self.path
+
+    def get_glyphs(self):
+        """ Retrieves glyphs list with their names
+
+        >>> f = PiFont('tests/fixtures/ttf/Font-Italic.ttf')
+        >>> f.get_glyphs()[:3]
+        [(32, 'space'), (33, 'exclam'), (34, 'quotedbl')]
+        """
+        cmap4 = self.font.retrieve_cmap_format_4().cmap
+        ll = zip(cmap4, cmap4.values())
+        return sorted(ll)
+
+    def get_contours_count(self, glyphname):
+        return 0
+
+    def get_points_count(self, glyphname):
+        return 0
+
 
 class UpstreamDirectory(object):
     """ Describes structure of upstream directory
@@ -135,10 +321,10 @@ class UpstreamDirectory(object):
     def walk(self):
         l = len(self.upstream_path)
         exclude = ['build_info', ]
-        for root, dirs, files in os_origin.walk(self.upstream_path, topdown=True):
+        for root, dirs, files in os.walk(self.upstream_path, topdown=True):
             dirs[:] = [d for d in dirs if d not in exclude]
             for f in files:
-                fullpath = op.join(root, f)
+                fullpath = os.path.join(root, f)
 
                 if f[-4:].lower() == '.ttx':
                     try:
@@ -152,7 +338,7 @@ class UpstreamDirectory(object):
                         continue
                     self.TTX.append(fullpath[l:].strip('/'))
 
-                if op.basename(f).lower() == 'metadata.pb':
+                if os.path.basename(f).lower() == 'metadata.pb':
                     self.METADATA.append(fullpath[l:].strip('/'))
 
                 if f[-4:].lower() in ['.ttf', '.otf']:
@@ -164,12 +350,12 @@ class UpstreamDirectory(object):
                 if f[-4:].lower() in ['.txt', '.markdown', '.md', '.LICENSE']:
                     self.TXT.append(fullpath[l:].strip('/'))
 
-                if op.basename(f).lower() in UpstreamDirectory.ALL_LICENSES:
+                if os.path.basename(f).lower() in UpstreamDirectory.ALL_LICENSES:
                     self.LICENSE.append(fullpath[l:].strip('/'))
 
             for d in dirs:
-                fullpath = op.join(root, d)
-                if op.splitext(fullpath)[1].lower() == '.ufo':
+                fullpath = os.path.join(root, d)
+                if os.path.splitext(fullpath)[1].lower() == '.ufo':
                     self.UFO.append(fullpath[l:].strip('/'))
 
 fb = FontBakeryCheckLogger()
@@ -208,17 +394,25 @@ def upstream_checks():
     for f in folders_to_check:
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Each font in family has matching glyph names?")
-#        directory = UpstreamDirectory(f)
-#        # TODO does this glyphs list object get populated?
-#        glyphs = []
-#        for f in directory.get_fonts():
-#            font = PiFont(os.path.join(self.operator.path, f))
-#            glyphs_ = font.get_glyphs()
-#
-#            if glyphs and glyphs != glyphs_:
-#                # TODO report which font
-#                self.fail('Family has different glyphs across fonts')
+        fb.new_check("Each font in family has matching glyph names?")
+        directory = UpstreamDirectory(f)
+        # TODO does this glyphs list object get populated?
+        glyphs = []
+        failed = False
+        for f in directory.get_fonts():
+            try:
+                font = PiFont(f)
+                glyphs_ = font.get_glyphs()
+                if glyphs and glyphs != glyphs_:
+                    # TODO report which font
+                    failed = True
+                    fb.error('Family has different glyphs across fonts')
+            except IOError:
+                failed = True
+                fb.error("Failed to load font file: '{}'".format(f))
+
+        if failed is False:
+            fb.ok("All fonts in family have matching glyph names.")
 
 # ---------------------------------------------------------------------
 #        fb.new_check("Check that glyphs has same number of contours across family")
