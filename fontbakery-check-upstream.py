@@ -17,72 +17,73 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 import defusedxml.lxml
-import glob
+# import glob
 import logging
 import os
-import re
+# import re
 from fontTools import ttLib
 
 # =====================================
 # Helper logging class
-#TODO: This code is copied from fontbakery-check-ttf.py
-#TODO: Deduplicate it by placing it in a shared external file.
+# TODO: This code is copied from fontbakery-check-ttf.py
+# TODO: Deduplicate it by placing it in a shared external file.
 
 
 class FontBakeryCheckLogger():
-  all_checks = []
-  current_check = None
+    all_checks = []
+    current_check = None
 
-  def save_json_report(self, filename="fontbakery-check-results.json"):
-    import json
-    self.flush()
-    json_data = json.dumps(self.all_checks,
-                           sort_keys=True,
-                           indent=4,
-                           separators=(',', ': '))
-    open(filename, 'w').write(json_data)
-    logging.debug(("Saved check results in "
-                   "JSON format to '{}'").format(filename))
+    def save_json_report(self, filename="fontbakery-check-results.json"):
+        import json
+        self.flush()
+        json_data = json.dumps(self.all_checks,
+                               sort_keys=True,
+                               indent=4,
+                               separators=(',', ': '))
+        open(filename, 'w').write(json_data)
+        logging.debug(("Saved check results in "
+                       "JSON format to '{}'").format(filename))
 
-  def flush(self):
-    if self.current_check is not None:
-      self.all_checks.append(self.current_check)
+    def flush(self):
+        if self.current_check is not None:
+            self.all_checks.append(self.current_check)
 
-  def new_check(self, desc):
-    self.flush()
-    logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
-    self.current_check = {"description": desc,
-                          "log_messages": [],
-                          "result": "unknown"}
+    def new_check(self, desc):
+        self.flush()
+        logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
+        self.current_check = {"description": desc,
+                              "log_messages": [],
+                              "result": "unknown"}
 
-  def skip(self, msg):
-    logging.info("SKIP: " + msg)
-    self.current_check["log_messages"].append(msg)
-    self.current_check["result"] = "SKIP"
+    def skip(self, msg):
+        logging.info("SKIP: " + msg)
+        self.current_check["log_messages"].append(msg)
+        self.current_check["result"] = "SKIP"
 
-  def ok(self, msg):
-    logging.info("OK: " + msg)
-    self.current_check["log_messages"].append(msg)
-    if self.current_check["result"] != "FAIL":
-      self.current_check["result"] = "OK"
+    def ok(self, msg):
+        logging.info("OK: " + msg)
+        self.current_check["log_messages"].append(msg)
+        if self.current_check["result"] != "FAIL":
+            self.current_check["result"] = "OK"
 
-  def warning(self, msg):
-    logging.warning(msg)
-    self.current_check["log_messages"].append("Warning: " + msg)
-    if self.current_check["result"] == "unknown":
-      self.current_check["result"] = "WARNING"
+    def warning(self, msg):
+        logging.warning(msg)
+        self.current_check["log_messages"].append("Warning: " + msg)
+        if self.current_check["result"] == "unknown":
+            self.current_check["result"] = "WARNING"
 
-  def error(self, msg):
-    logging.error(msg)
-    self.current_check["log_messages"].append("ERROR: " + msg)
-    self.current_check["result"] = "ERROR"
+    def error(self, msg):
+        logging.error(msg)
+        self.current_check["log_messages"].append("ERROR: " + msg)
+        self.current_check["result"] = "ERROR"
 
-  def hotfix(self, msg):
-    logging.info('HOTFIXED: ' + msg)
-    self.current_check['log_messages'].append('HOTFIX: ' + msg)
-    self.current_check['result'] = "HOTFIX"
+    def hotfix(self, msg):
+        logging.info('HOTFIXED: ' + msg)
+        self.current_check['log_messages'].append('HOTFIX: ' + msg)
+        self.current_check['result'] = "HOTFIX"
 
-# I think that this PiFont and its related classes can be 
+
+# I think that this PiFont and its related classes can be
 # refactored into something a bit less verbose and convoluted
 class PiFont(object):
 
@@ -107,7 +108,6 @@ class PiFont(object):
             return PiFontFontTools(path)
         if path[-4:] == '.sfd':
             return PiFontSFD(path)
-
 
     def get_glyph(self, glyphname):
         """ Return glyph instance """
@@ -177,6 +177,7 @@ class PiFontUfo:
     """ Supplies methods used by PiFont class to access UFO """
 
     def __init__(self, path):
+        import robofab
         self.path = path
         self.font = robofab.world.OpenFont(path)
 
@@ -335,7 +336,7 @@ class UpstreamDirectory(object):
                             continue
                     except Exception as exc:
                         msg = 'Failed to parse "{}". Error: {}'
-                        logger.error(msg.format(fullpath, exc))
+                        logging.error(msg.format(fullpath, exc))
                         continue
                     self.TTX.append(fullpath[l:].strip('/'))
 
@@ -351,7 +352,8 @@ class UpstreamDirectory(object):
                 if f[-4:].lower() in ['.txt', '.markdown', '.md', '.LICENSE']:
                     self.TXT.append(fullpath[l:].strip('/'))
 
-                if os.path.basename(f).lower() in UpstreamDirectory.ALL_LICENSES:
+                if os.path.basename(f).lower()\
+                   in UpstreamDirectory.ALL_LICENSES:
                     self.LICENSE.append(fullpath[l:].strip('/'))
 
             for d in dirs:
@@ -361,11 +363,13 @@ class UpstreamDirectory(object):
 
 fb = FontBakeryCheckLogger()
 
+
 def upstream_checks():
     # set up some command line argument processing
     description = 'Runs checks or tests on specified upstream folder(s)'
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('folders', nargs="+", help="Test folder(s), can be a list")
+    parser.add_argument('folders', nargs="+",
+                        help="Test folder(s), can be a list")
     parser.add_argument('--verbose', '-v', action='count',
                         help="Verbosity level", default=False)
     args = parser.parse_args()
@@ -393,8 +397,6 @@ def upstream_checks():
         exit(-1)
 
     for f in folders_to_check:
-
-# ---------------------------------------------------------------------
         fb.new_check("Each font in family has matching glyph names?")
         directory = UpstreamDirectory(f)
         # TODO does this glyphs list object get populated?
@@ -416,7 +418,8 @@ def upstream_checks():
             fb.ok("All fonts in family have matching glyph names.")
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Check that glyphs has same number of contours across family")
+#        fb.new_check("Check that glyphs has same"
+#                     " number of contours across family")
 #        directory = UpstreamDirectory(f)
 #
 #        glyphs = {}
@@ -433,7 +436,8 @@ def upstream_checks():
 #                glyphs[glyphcode] = contours
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Check that glyphs has same number of points across family")
+#        fb.new_check("Check that glyphs has same"
+#                     " number of points across family")
 #        directory = UpstreamDirectory(f)
 #
 #        glyphs = {}
@@ -467,26 +471,26 @@ def upstream_checks():
 # ---------------------------------------------------------------------
         fb.new_check("Does this font folder contain COPYRIGHT file ?")
         assertExists(f, "COPYRIGHT.txt",
-                        "Font folder lacks a copyright file at '{}'",
-                        "Font folder contains COPYRIGHT.txt")
+                     "Font folder lacks a copyright file at '{}'",
+                     "Font folder contains COPYRIGHT.txt")
 
 # ---------------------------------------------------------------------
         fb.new_check("Does this font folder contain a DESCRIPTION file ?")
         assertExists(f, "DESCRIPTION.en_us.html",
-                        "Font folder lacks a description file at '{}'",
-                        "Font folder should contain DESCRIPTION.en_us.html.")
+                     "Font folder lacks a description file at '{}'",
+                     "Font folder should contain DESCRIPTION.en_us.html.")
 
 # ---------------------------------------------------------------------
         fb.new_check("Does this font folder contain licensing files?")
         assertExists(f, ["LICENSE.txt", "OFL.txt"],
-                        "Font folder lacks licensing files at '{}'",
-                        "Font folder should contain licensing files.")
+                     "Font folder lacks licensing files at '{}'",
+                     "Font folder should contain licensing files.")
 
 # ---------------------------------------------------------------------
         fb.new_check("Font folder should contain FONTLOG.txt")
         assertExists(f, "FONTLOG.txt",
-                        "Font folder lacks a fontlog file at '{}'",
-                        "Font folder should contain a 'FONTLOG.txt' file.")
+                     "Font folder lacks a fontlog file at '{}'",
+                     "Font folder should contain a 'FONTLOG.txt' file.")
 
 # =======================================================================
 # Tests for common upstream repository files.
@@ -534,7 +538,8 @@ def upstream_checks():
 #        def lookup_copyright_notice(self, ufo_folder):
 #            current_path = ufo_folder
 #            try:
-#                contents = open(os.path.join(ufo_folder, 'fontinfo.plist')).read()
+#                contents = open(os.path.join(ufo_folder,
+#                                             'fontinfo.plist')).read()
 #                copyright = self.grep_copyright_notice(contents)
 #                if copyright:
 #                    return copyright
@@ -561,9 +566,3 @@ def upstream_checks():
 
 if __name__ == '__main__':
     upstream_checks()
-
-
-
-
-
-
