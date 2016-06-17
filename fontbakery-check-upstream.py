@@ -149,6 +149,7 @@ class PiFontSFD:
     """ Supplies methods used by PiFont class to access SFD """
 
     def __init__(self, path):
+        import fontforge
         self.path = path
         self.font = fontforge.open(path)
 
@@ -407,7 +408,7 @@ def upstream_checks():
                     # TODO report which font
                     failed = True
                     fb.error('Family has different glyphs across fonts')
-            except IOError:
+            except:
                 failed = True
                 fb.error("Failed to load font file: '{}'".format(f))
 
