@@ -81,7 +81,7 @@ class FontBakeryCheckLogger():
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
 
-fb = FontBakeryCheckLogger("fontbakery-check-upstream-results.json")
+fb = FontBakeryCheckLogger()
 
 def upstream_checks():
     # set up some command line argument processing
@@ -216,7 +216,7 @@ def upstream_checks():
         fullpath = os.path.join(f, 'METADATA.pb')
         if not os.path.exists(fullpath):
             fb.error("File 'METADATA.pb' does not exist"
-                     " in root of upstream repository"))
+                     " in root of upstream repository")
         else:
             fb.ok("Repository contains METADATA.pb file.")
 
@@ -273,7 +273,7 @@ def upstream_checks():
             current_path = os.path.realpath(current_path)
         return
 
-        fb.save_json_report()
+        fb.save_json_report("fontbakery-check-upstream-results.json")
 
 if __name__ == '__main__':
     upstream_checks()
