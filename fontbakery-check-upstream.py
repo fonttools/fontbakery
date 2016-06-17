@@ -284,7 +284,7 @@ def upstream_checks():
 # ---------------------------------------------------------------------
         fb.new_check("Does this font folder contain licensing files?")
         assertExists(f, ["LICENSE.txt", "OFL.txt"],
-                        "Font folder lacks licencing files at '{}'",
+                        "Font folder lacks licensing files at '{}'",
                         "Font folder should contain licensing files.")
 
 # ---------------------------------------------------------------------
