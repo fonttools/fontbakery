@@ -15,25 +15,12 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
 import argparse
 import defusedxml.lxml
-import logging
-import magic
-import os
-import requests
-import sys
-import unittest
-from lxml.html import HTMLParser
-
-
 import glob
+import logging
 import os
 import re
-import yaml
-from fontaine.font import FontFactory
-from fontaine.cmap import Library
-
 
 # =====================================
 # Helper logging class
