@@ -101,20 +101,20 @@ def upstream_checks():
     else:
         logger.setLevel(logging.ERROR)
 
-#    files_to_check = []
-#    for f in args.file:
-#        if os.path.basename(f).startswith('DESCRIPTION.'):
-#            files_to_check.append(f)
-#        else:
-#            fb.error("'{}' is not a DESCRIPTION file.".format(f))
-#            continue
-#
-#    if len(files_to_check) == 0:
-#        fb.error("None of the specified files "
-#                 "seem to be valid DESCRIPTION files.")
-#        exit(-1)
+    folders_to_check = []
+    for f in args.folders:
+        if os.path.isdir(f):
+            folders_to_check.append(f)
+        else:
+            fb.error("'{}' is not a valid existing folder.".format(f))
+            continue
 
-    for f in folders:
+    if len(files_to_check) == 0:
+        fb.error("None of the specified paths "
+                 "seem to be existing folders.")
+        exit(-1)
+
+    for f in folders_to_check:
 
 # ---------------------------------------------------------------------
         fb.new_check("Each font in family has matching glyph names?")
