@@ -383,7 +383,13 @@ def upstream_checks():
     args = parser.parse_args()
 
     # set up a basic logging config
+    log_format = '%(levelname)-8s %(message)s'
     logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(log_format)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
     if args.verbose == 1:
         logger.setLevel(logging.INFO)
     elif args.verbose >= 2:
