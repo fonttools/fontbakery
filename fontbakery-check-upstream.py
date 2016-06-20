@@ -259,9 +259,17 @@ class PiFontFontTools:
         >>> f.get_glyphs()[:3]
         [(32, 'space'), (33, 'exclam'), (34, 'quotedbl')]
         """
-        cmap4 = self.font.retrieve_cmap_format_4().cmap
-        ll = zip(cmap4, cmap4.values())
-        return sorted(ll)
+
+        cmap4 = None
+        for table in self.font['cmap'].tables:
+            if table.format == 4:
+                cmap4 = table.cmap
+
+        if cmap4 is not None:
+            ll = zip(cmap4, cmap4.values())
+            return sorted(ll)
+        else:
+            return None
 
     def get_contours_count(self, glyphname):
         return 0
@@ -397,14 +405,16 @@ def upstream_checks():
         exit(-1)
 
     for folder in folders_to_check:
-        fb.new_check("Each font in family has matching glyph names?")
         directory = UpstreamDirectory(folder)
+
+# ---------------------------------------------------------------------
+        fb.new_check("Each font in family has matching glyph names?")
         # TODO does this glyphs list object get populated?
         glyphs = []
         failed = False
         for f in directory.get_fonts():
             try:
-                font = PiFont(f)
+                font = PiFont(os.path.join(folder, f))
                 glyphs_ = font.get_glyphs()
                 if glyphs and glyphs != glyphs_:
                     # TODO report which font
@@ -420,12 +430,10 @@ def upstream_checks():
 # ---------------------------------------------------------------------
         fb.new_check("Glyphs have same number"
                      " of contours across family ?")
-        directory = UpstreamDirectory(f)
-
         glyphs = {}
         failed = False
         for f in directory.get_fonts():
-            font = PiFont(f)
+            font = PiFont(os.path.join(folder, f))
             glyphs_ = font.get_glyphs()
 
             for glyphcode, glyphname in glyphs_:
@@ -443,13 +451,12 @@ def upstream_checks():
             fb.ok("Glyphs have same number of contours across family.")
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Check that glyphs has same"
-#                     " number of points across family")
-#        directory = UpstreamDirectory(f)
+        fb.new_check("Glyphs have same"
+                     " number of points across family ?")
 #
 #        glyphs = {}
 #        for f in directory.get_fonts():
-#            font = PiFont(os.path.join(self.operator.path, f))
+#            font = PiFont(os.path.join(folder, f))
 #            glyphs_ = font.get_glyphs()
 #
 #            for g, glyphname in glyphs_:
