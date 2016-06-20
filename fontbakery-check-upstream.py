@@ -451,17 +451,23 @@ def upstream_checks():
 # ---------------------------------------------------------------------
         fb.new_check("Glyphs have same"
                      " number of points across family ?")
-#
-#        glyphs = {}
-#        for f in directory.get_fonts():
-#            font = PiFont(os.path.join(folder, f))
-#            for g, glyphname in font.get_glyphs():
-#                points = font.get_points_count(glyphname)
-#                if g in glyphs and glyphs[g] != points:
-#                    msg = ('Number of points of glyph "%s" does not match.'
-#                           ' Expected %s points, but actual is %s points')
-#                    self.fail(msg % (glyphname, glyphs[g], points))
-#                glyphs[g] = points
+        glyphs = {}
+        failed = False
+        for f in directory.get_fonts():
+            font = PiFont(os.path.join(folder, f))
+            for g, glyphname in font.get_glyphs():
+                points = font.get_points_count(glyphname)
+                if g in glyphs and glyphs[g] != points:
+                    failed = True
+                    fb.error(("Number of points of glyph '{}' does not match."
+                              " Expected {} points, but actual is "
+                              "{} points").format(glyphname,
+                                                  glyphs[g],
+                                                  points))
+                glyphs[g] = points
+        if failed is False:
+            fb.ok("Glyphs have same"
+                  " number of points across family.")
 
 # ======================================================================
         def assertExists(folderpath, filenames, err_msg, ok_msg):
