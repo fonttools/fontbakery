@@ -416,8 +416,7 @@ def upstream_checks():
 #        for f in directory.get_fonts():
 #            try:
 #                font = PiFont(os.path.join(folder, f))
-#                glyphs_ = font.get_glyphs()
-#                if glyphs and glyphs != glyphs_:
+#                if glyphs and glyphs != font.get_glyphs():
 #                    # TODO report which font
 #                    failed = True
 #                    fb.error('Family has different glyphs across fonts')
@@ -435,9 +434,7 @@ def upstream_checks():
         failed = False
         for f in directory.get_fonts():
             font = PiFont(os.path.join(folder, f))
-            glyphs_ = font.get_glyphs()
-
-            for glyphcode, glyphname in glyphs_:
+            for glyphcode, glyphname in font.get_glyphs():
                 contours = font.get_contours_count(glyphname)
                 if glyphcode in glyphs and glyphs[glyphcode] != contours:
                     failed = True
@@ -458,9 +455,7 @@ def upstream_checks():
 #        glyphs = {}
 #        for f in directory.get_fonts():
 #            font = PiFont(os.path.join(folder, f))
-#            glyphs_ = font.get_glyphs()
-#
-#            for g, glyphname in glyphs_:
+#            for g, glyphname in font.get_glyphs():
 #                points = font.get_points_count(glyphname)
 #                if g in glyphs and glyphs[g] != points:
 #                    msg = ('Number of points of glyph "%s" does not match.'
