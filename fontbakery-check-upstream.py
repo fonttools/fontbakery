@@ -241,7 +241,7 @@ class PiFontFontTools:
     """ Supplies methods used by PiFont class to access TTF """
 
     def __init__(self, path):
-        logging.info('loading font from path = "{}"...'.format(path))
+        logging.debug('loading font from path = "{}"...'.format(path))
         self.path = path
         if path[-4:] == '.ttx':
             self.font = ttLib.TTFont(None)
