@@ -408,24 +408,25 @@ def upstream_checks():
         directory = UpstreamDirectory(folder)
 
 # ---------------------------------------------------------------------
-        fb.new_check("Each font in family has matching glyph names?")
-        # TODO does this glyphs list object get populated?
-        glyphs = []
-        failed = False
-        for f in directory.get_fonts():
-            try:
-                font = PiFont(os.path.join(folder, f))
-                glyphs_ = font.get_glyphs()
-                if glyphs and glyphs != glyphs_:
-                    # TODO report which font
-                    failed = True
-                    fb.error('Family has different glyphs across fonts')
-            except:
-                failed = True
-                fb.error("Failed to load font file: '{}'".format(f))
-
-        if failed is False:
-            fb.ok("All fonts in family have matching glyph names.")
+#        fb.new_check("Each font in family has matching glyph names?")
+#        # TODO: This check seems broken. Must be revied!
+#        # TODO:  does this glyphs list object get populated?
+#        glyphs = []
+#        failed = False
+#        for f in directory.get_fonts():
+#            try:
+#                font = PiFont(os.path.join(folder, f))
+#                glyphs_ = font.get_glyphs()
+#                if glyphs and glyphs != glyphs_:
+#                    # TODO report which font
+#                    failed = True
+#                    fb.error('Family has different glyphs across fonts')
+#            except:
+#                failed = True
+#                fb.error("Failed to load font file: '{}'".format(f))
+#
+#        if failed is False:
+#            fb.ok("All fonts in family have matching glyph names.")
 
 # ---------------------------------------------------------------------
         fb.new_check("Glyphs have same number"
