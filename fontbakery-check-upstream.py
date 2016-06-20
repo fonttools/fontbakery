@@ -17,10 +17,10 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
 import defusedxml.lxml
-# import glob
+import glob
 import logging
 import os
-# import re
+import re
 from fontTools import ttLib
 
 # =====================================
@@ -533,58 +533,67 @@ def upstream_checks():
             fb.ok("Repository contains METADATA.pb file.")
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Copyright notice consistent "
-#                     "across all fonts in this family?")
-#        ufo_dirs = []
-#        for root, dirs, files in os.walk(self.operator.path):
-#            for d in dirs:
-#                fullpath = os.path.join(root, d)
-#                if os.path.splitext(fullpath)[1].lower() == '.ufo':
-#                    ufo_dirs.append(fullpath)
-#
-#        copyright = None
-#        for ufo_folder in ufo_dirs:
-#            current_notice = self.lookup_copyright_notice(ufo_folder)
-#            if current_notice is None:
-#                continue
-#            if copyright is not None and current_notice != copyright:
-#                self.fail('"%s" != "%s"' % (current_notice, copyright))
-#                break
-#            copyright = current_notice
-#
-#        COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
-#        def grep_copyright_notice(self, contents):
-#            match = COPYRIGHT_REGEX.search(contents)
-#            if match:
-#                return match.group(0).strip(',\r\n')
-#            return
-#
-#        def lookup_copyright_notice(self, ufo_folder):
-#            current_path = ufo_folder
-#            try:
-#                contents = open(os.path.join(ufo_folder,
-#                                             'fontinfo.plist')).read()
-#                copyright = self.grep_copyright_notice(contents)
-#                if copyright:
-#                    return copyright
-#            except (IOError, OSError):
-#                pass
-#
-#            while os.path.realpath(self.operator.path) != current_path:
-#                # look for all text files inside folder
-#                # read contents from them and compare with copyright notice
-#                # pattern
-#                files = glob.glob(os.path.join(current_path, '*.txt'))
-#                files += glob.glob(os.path.join(current_path, '*.ttx'))
-#                for filename in files:
-#                    with open(os.path.join(current_path, filename)) as fp:
-#                        match = COPYRIGHT_REGEX.search(fp.read())
-#                        if not match:
-#                           continue
-#                        return match.group(0).strip(',\r\n')
-#                current_path = os.path.join(current_path, '..')  # go up
-#                current_path = os.path.realpath(current_path)
-#            return
+        fb.new_check("Copyright notice is consistent"
+                     " across all fonts in this family ?")
+
+        COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+        def grep_copyright_notice(contents):
+            match = COPYRIGHT_REGEX.search(contents)
+            if match:
+                return match.group(0).strip(',\r\n')
+            return
+
+        def lookup_copyright_notice(ufo_folder):
+            current_path = ufo_folder
+            try:
+                contents = open(os.path.join(ufo_folder,
+                                             'fontinfo.plist')).read()
+                copyright = grep_copyright_notice(contents)
+                if copyright:
+                    return copyright
+            except (IOError, OSError):
+                pass
+
+            while os.path.realpath(self.operator.path) != current_path:
+                # look for all text files inside folder
+                # read contents from them and compare with copyright notice
+                # pattern
+                files = glob.glob(os.path.join(current_path, '*.txt'))
+                files += glob.glob(os.path.join(current_path, '*.ttx'))
+                for filename in files:
+                    with open(os.path.join(current_path, filename)) as fp:
+                        match = COPYRIGHT_REGEX.search(fp.read())
+                        if not match:
+                           continue
+                        return match.group(0).strip(',\r\n')
+                current_path = os.path.join(current_path, '..')  # go up
+                current_path = os.path.realpath(current_path)
+            return
+
+        ufo_dirs = []
+        for root, dirs, files in os.walk(folder):
+            for d in dirs:
+                fullpath = os.path.join(root, d)
+                if os.path.splitext(fullpath)[1].lower() == '.ufo':
+                    ufo_dirs.append(fullpath)
+        if len(ufo_dirs) == 0:
+            fb.skip("No UFO font file found.")
+        else:
+            failed = False
+            copyright = None
+            for ufo_folder in ufo_dirs:
+                current_notice = lookup_copyright_notice(ufo_folder)
+                if current_notice is None:
+                    continue
+                if copyright is not None and current_notice != copyright:
+                    failed = True
+                    fb.error('"{}" != "{}"'.format(current_notice,
+                                                   copyright))
+                    break
+                copyright = current_notice
+            if failed is False:
+                fb.ok("Copyright notice is consistent"
+                      " across all fonts in this family.")
 
         fb.save_json_report("fontbakery-check-upstream-results.json")
 
