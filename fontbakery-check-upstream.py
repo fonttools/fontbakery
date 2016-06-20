@@ -396,9 +396,9 @@ def upstream_checks():
                  "seem to be existing folders.")
         exit(-1)
 
-    for f in folders_to_check:
+    for folder in folders_to_check:
         fb.new_check("Each font in family has matching glyph names?")
-        directory = UpstreamDirectory(f)
+        directory = UpstreamDirectory(folder)
         # TODO does this glyphs list object get populated?
         glyphs = []
         failed = False
@@ -418,22 +418,29 @@ def upstream_checks():
             fb.ok("All fonts in family have matching glyph names.")
 
 # ---------------------------------------------------------------------
-#        fb.new_check("Check that glyphs has same"
-#                     " number of contours across family")
-#        directory = UpstreamDirectory(f)
-#
-#        glyphs = {}
-#        for f in directory.get_fonts():
-#            font = PiFont(os.path.join(self.operator.path, f))
-#            glyphs_ = font.get_glyphs()
-#
-#            for glyphcode, glyphname in glyphs_:
-#                contours = font.get_contours_count(glyphname)
-#                if glyphcode in glyphs and glyphs[glyphcode] != contours:
-#                    msg = ('Number of contours of glyph "%s" does not match.'
-#                           ' Expected %s contours, but actual is %s contours')
-#                    self.fail(msg % (glyphname, glyphs[glyphcode], contours))
-#                glyphs[glyphcode] = contours
+        fb.new_check("Glyphs have same number"
+                     " of contours across family ?")
+        directory = UpstreamDirectory(f)
+
+        glyphs = {}
+        failed = False
+        for f in directory.get_fonts():
+            font = PiFont(f)
+            glyphs_ = font.get_glyphs()
+
+            for glyphcode, glyphname in glyphs_:
+                contours = font.get_contours_count(glyphname)
+                if glyphcode in glyphs and glyphs[glyphcode] != contours:
+                    failed = True
+                    fb.error(("Number of contours of glyph '{}'"
+                              " does not match."
+                              " Expected {} contours, but actual is"
+                              " {} contours").format(glyphname,
+                                                     glyphs[glyphcode],
+                                                     contours))
+                glyphs[glyphcode] = contours
+        if failed is False:
+            fb.ok("Glyphs have same number of contours across family.")
 
 # ---------------------------------------------------------------------
 #        fb.new_check("Check that glyphs has same"
