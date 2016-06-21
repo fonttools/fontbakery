@@ -1,31 +1,24 @@
 #!/usr/bin/env python
 import argparse
 import os
-
-from fontTools import ttLib
 import tabulate
+from fontTools import ttLib
 
-args = argparse.ArgumentParser(
-    description='Print out family metadata of the fonts')
+args = argparse.ArgumentParser(description="Print out family"
+                                           " metadata of the fonts")
 args.add_argument('font', nargs="+")
 args.add_argument('--csv', default=False, action='store_true')
 
-
 def getByte2(i_value):
     return i_value >> 8
-
 
 def getByte1(i_value):
     return i_value & 255
 
 
-
 class FamilyMetadataTable(object):
-
     headers = ['filename']
-
     rows = []
-
     current_row = []
 
     def addToHeader(self, value):
@@ -86,9 +79,7 @@ class FamilyMetadataTable(object):
 
 
 if __name__ == '__main__':
-
     arg = args.parse_args()
-
     rows = []
     fm = FamilyMetadataTable()
     for i, font in enumerate(arg.font):
