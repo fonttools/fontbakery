@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #
-# The magic is in two places: 
+# The magic is in two places:
 #
 # 1. The GASP table. Vern Adams <vern@newtypography.co.uk>
-#    suggests it should have value 15 for all sizes. 
+#    suggests it should have value 15 for all sizes.
 #
 # 2. The PREP table. Raph Levien <firstname.lastname@gmail.com>
 #    suggests using his code to turn on 'drop out control'
@@ -16,7 +16,7 @@
 # SCANTYPE
 #
 # This script depends on fontTools Python library, available
-# in most packaging systems and sf.net/projects/fonttools/ 
+# in most packaging systems and sf.net/projects/fonttools/
 #
 # Usage:
 #
@@ -38,16 +38,16 @@ font.save(backupfont)
 print backupfont, "saved."
 
 # Print the Gasp table
-if font.has_key('gasp') == 1:
-  print "GASP was: ", font["gasp"].gaspRange
+if "gasp" in font:
+    print ("GASP was: ", font["gasp"].gaspRange)
 else:
-  print "GASP wasn't there"
+    print ("GASP wasn't there")
 
 # Print the PREP table
-if font.has_key('prep') == 1:
-  print "PREP was: ", ttProgram.Program.getAssembly(font["prep"].program)
+if "prep" in font:
+    print ("PREP was: ", ttProgram.Program.getAssembly(font["prep"].program))
 else:
-  print "PREP wasn't there"
+    print ("PREP wasn't there")
 
 # Create a new GASP table
 gasp = ttLib.newTable("gasp")
