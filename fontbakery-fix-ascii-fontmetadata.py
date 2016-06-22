@@ -20,14 +20,16 @@ import unicodedata
 from unidecode import unidecode
 from fontTools import ttLib
 
+
 def unicode_marks(string):
     unicodemap = [(u'©', '(c)'), (u'®', '(r)'), (u'™', '(tm)')]
     return filter(lambda char: char[0] in string, unicodemap)
 
+
 def normalizestr(string):
     """ Converts special characters like copyright,
         trademark signs to ascii name """
-    #print("input: '{}'".format(string))
+    # print("input: '{}'".format(string))
     input_string = string
     for mark, ascii_repl in unicode_marks(string):
         string = string.replace(mark, ascii_repl)
@@ -35,8 +37,8 @@ def normalizestr(string):
     rv = []
 #    for c in unicodedata.normalize('NFKC', smart_text(string)):
     for c in unicodedata.normalize('NFKC', string):
-        #cat = unicodedata.category(c)[0]
-        #if cat in 'LN' or c in ok:
+        # cat = unicodedata.category(c)[0]
+        # if cat in 'LN' or c in ok:
         rv.append(c)
 
     new = ''.join(rv).strip()
@@ -57,4 +59,3 @@ for path in args.ttf_font:
         title = name.string.decode(name.getEncoding())
         title = normalizestr(title)
         name.string = title.encode(name.getEncoding())
-
