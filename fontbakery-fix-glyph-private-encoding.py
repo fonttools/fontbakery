@@ -15,13 +15,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
 import argparse
+import copy
 import os
-
-import fontTools.ttLib
-from bakery_cli.fixers import AddSPUAByGlyphIDToCmap, get_unencoded_glyphs
-
+from fontTools import ttLib
 
 description = 'Fixes TTF unencoded glyphs to have Private Use Area encodings'
 
@@ -31,6 +28,7 @@ parser.add_argument('ttf_font', nargs='+',
 parser.add_argument('--autofix', action="store_true",
                     help='Apply autofix. '
                          'Otherwise just check if there are unencoded glyphs')
+
 
 def get_unencoded_glyphs(font):
     """ Check if font has unencoded glyphs """
@@ -46,7 +44,8 @@ def get_unencoded_glyphs(font):
     if not new_cmap:
         return []
 
-    diff = list(set(font.getGlyphOrder()) - set(new_cmap.cmap.values()) - {'.notdef'})
+    diff = list(set(font.getGlyphOrder()) -
+                set(new_cmap.cmap.values()) - {'.notdef'})
     return [g for g in diff[:] if g != '.notdef']
 
 
@@ -58,8 +57,8 @@ class AddSPUAByGlyphIDToCmap(object):
         self.saveit = False
 
     def __del__(self):
-       if self.saveit:
-           self.font.save(self.path + ".fix")
+        if self.saveit:
+            self.font.save(self.path + ".fix")
 
     def fix(self):
         unencoded_glyphs = get_unencoded_glyphs(self.font)
@@ -78,7 +77,7 @@ class AddSPUAByGlyphIDToCmap(object):
         # unless UCS 4 cmap already exists
         ucs4cmap = cmap.getcmap(3, 10)
         if not ucs4cmap:
-            cmapModule = fontTools.ttLib.getTableModule('cmap')
+            cmapModule = ttLib.getTableModule('cmap')
             ucs4cmap = cmapModule.cmap_format_12(12)
             ucs4cmap.platformID = 3
             ucs4cmap.platEncID = 10
@@ -96,9 +95,7 @@ class AddSPUAByGlyphIDToCmap(object):
         return True
 
 
-
 args = parser.parse_args()
-
 for path in args.ttf_font:
     if not os.path.exists(path):
         continue
@@ -106,5 +103,6 @@ for path in args.ttf_font:
     if args.autofix:
         AddSPUAByGlyphIDToCmap(path).fix()
     else:
-        font = fontTools.ttLib.TTFont(path, 0)
-        print("\nThese are the unencoded glyphs in font file '{0}':\n{1}".format(path, '\n'.join(get_unencoded_glyphs(font))))
+        font = ttLib.TTFont(path, 0)
+        print(("\nThese are the unencoded glyphs in font file '{0}':\n"
+               "{1}").format(path, '\n'.join(get_unencoded_glyphs(font))))
