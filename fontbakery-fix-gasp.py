@@ -18,6 +18,7 @@
 import argparse
 from fontTools import ttLib
 
+
 class GaspFixer():
 
     def __init__(self, path):
@@ -26,8 +27,8 @@ class GaspFixer():
         self.saveit = False
 
     def __del__(self):
-       if self.saveit:
-           self.font.save(self.path + ".fix")
+        if self.saveit:
+            self.font.save(self.path + ".fix")
 
     def fix(self, value=15):
         try:
@@ -39,7 +40,7 @@ class GaspFixer():
 
     def show(self):
         try:
-            table = self.font.get('gasp')
+            self.font.get('gasp')
         except:
             print('ER: {}: no table gasp'.format(self.path))
             return
