@@ -32,9 +32,9 @@ parser.add_argument('--autofix', action="store_true",
                     help='Apply autofix. '
                          'Otherwise just check if there are unencoded glyphs')
 
-def get_unencoded_glyphs(ttx):
+def get_unencoded_glyphs(font):
     """ Check if font has unencoded glyphs """
-    cmap = ttx['cmap']
+    cmap = font['cmap']
 
     new_cmap = cmap.getcmap(3, 10)
     if not new_cmap:
@@ -46,7 +46,7 @@ def get_unencoded_glyphs(ttx):
     if not new_cmap:
         return []
 
-    diff = list(set(ttx.glyphOrder) - set(new_cmap.cmap.values()) - {'.notdef'})
+    diff = list(set(font.getGlyphOrder()) - set(new_cmap.cmap.values()) - {'.notdef'})
     return [g for g in diff[:] if g != '.notdef']
 
 
@@ -106,5 +106,5 @@ for path in args.ttf_font:
     if args.autofix:
         AddSPUAByGlyphIDToCmap(path).fix()
     else:
-        ttx = fontTools.ttLib.TTFont(path, 0)
-        print('{0}: {1}'.format(path, get_unencoded_glyphs(ttx)))
+        font = fontTools.ttLib.TTFont(path, 0)
+        print("\nThese are the unencoded glyphs in font file '{0}':\n{1}".format(path, '\n'.join(get_unencoded_glyphs(font))))
