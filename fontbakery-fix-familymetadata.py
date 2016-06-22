@@ -9,8 +9,10 @@ args = argparse.ArgumentParser(description="Print out family"
 args.add_argument('font', nargs="+")
 args.add_argument('--csv', default=False, action='store_true')
 
+
 def getByte2(i_value):
     return i_value >> 8
+
 
 def getByte1(i_value):
     return i_value & 255
@@ -35,14 +37,17 @@ class FamilyMetadataTable(object):
 
     def putfsSelection(self, ttfont):
         self.addToHeader('fsSelection')
-        args = getByte2(ttfont['OS/2'].fsSelection), getByte1(ttfont['OS/2'].fsSelection)
-        self.current_row.append('{:#010b} {:#010b}'.format(*args).replace('0b', ''))
+        args = (getByte2(ttfont['OS/2'].fsSelection),
+                getByte1(ttfont['OS/2'].fsSelection))
+        self.current_row.append(("{:#010b}"
+                                 " {:#010b}").format(*args).replace('0b', ''))
 
     def putmacStyle(self, ttfont):
         self.addToHeader('macStyle')
         value = ttfont['head'].macStyle
         args = getByte2(value), getByte1(value)
-        self.current_row.append('{:#010b} {:#010b}'.format(*args).replace('0b', ''))
+        self.current_row.append(("{:#010b}"
+                                 " {:#010b}").format(*args).replace('0b', ''))
 
     def putnameIds(self, ttfont, platform=3):
         nameids = ['1', '2', '4', '6', '16', '17', '18']
