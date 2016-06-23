@@ -25,14 +25,12 @@ import sys
 
 
 def main():
-    """
-    Script to list font views per day of devanagari families
-
-    Usage: $ ./fontbakery-stats-deva-per-day.py 'http://www.google.com/fonts'
-    """
+    """Script to list font views per day of devanagari families."""
 
     if len(sys.argv) < 2:
-        print(__doc__)
+        example_url = 'http://www.google.com/fonts'
+        print(main.__doc__)
+        print("usage: {} '{}'\n".format(sys.argv[0], example_url))
         sys.exit()
 
     families = [
