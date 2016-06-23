@@ -821,7 +821,7 @@ def main():
         fb.error("Font is italic, so post table italicAngle"
                  " should be non-zero.")
       else:
-        fb.info("OK: post table italicAngle matches style name")
+        fb.ok("post table italicAngle matches style name")
     else:
       assert_table_entry('post', 'italicAngle', 0)
       log_results("post table italicAngle matches style name")
