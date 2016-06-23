@@ -1051,6 +1051,7 @@ def main():
         new_value = 'Regular'
 
     found = False
+    new_names = []
     for entry in font['name'].names:
         if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME\
            or entry.platformID != PLATFORM_ID_WINDOWS:
