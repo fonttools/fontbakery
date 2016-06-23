@@ -606,8 +606,7 @@ def main():
     if family.designer.lower() == 'unknown':
       fb.error("Font designer field is '{}'.".format(family.designer))
     else:
-      fb.ok(("Font designer field ('{}')"
-             " is not 'unknown'.").format(family.designer))
+      fb.ok("Font designer field is not 'unknown'.")
 
     # -----------------------------------------------------
     fb.new_check("Fonts have equal numbers of glyphs?")
