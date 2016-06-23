@@ -2490,7 +2490,7 @@ def main():
               elif font_fullname != f.full_name:
                 fb.error(("METADATA.pb: Fullname ('{}')"
                           " does not match name table"
-                          " entry '{}' !").format(f.fullname,
+                          " entry '{}' !").format(f.full_name,
                                                   font_fullname))
               else:
                 fb.ok("METADATA.pb familyname and fullName fields"
