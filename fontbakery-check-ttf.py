@@ -1210,6 +1210,9 @@ def main():
                       "gf-docs/blob/master/ProjectChecklist.md#fontforge")
       pass
     try:
+      if "adobeblank" in font_file:
+        fb.skip("Skipping AdobeBlank. This is a Fontbakery bug!")
+        break
       fontforge_font = fontforge.open(font_file)
       validation_state = fontforge_font.validate()
 
