@@ -27,6 +27,7 @@ from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 from fonts_public_pb2 import FamilyProto
+from unidecode import unidecode
 
 try:
   from google.protobuf import text_format
@@ -715,11 +716,13 @@ def main():
             if manufacturer != registered_vendor_ids[vid].strip():
               fb.warning("VendorID string '{}' does not match"
                          " nameID 8 (Manufacturer Name): '{}'".format(
-                           registered_vendor_ids[vid].strip(),
+                           unidecode(registered_vendor_ids[vid]).strip(),
                            manufacturer))
+
         fb.ok(("OS/2 VendorID is '{}' and registered to '{}'."
-               " Is that legit?").format(vid,
-                                         registered_vendor_ids[vid]))
+               " Is that legit?"
+               ).format(vid,
+                        unidecode(registered_vendor_ids[vid])))
       elif vid.lower() in [i.lower() for i in registered_vendor_ids.keys()]:
         fb.error(("OS/2 VendorID is '{}' but this is registered"
                   " with different casing."
