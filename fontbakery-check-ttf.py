@@ -717,7 +717,7 @@ def main():
               fb.warning("VendorID string '{}' does not match"
                          " nameID 8 (Manufacturer Name): '{}'".format(
                            unidecode(registered_vendor_ids[vid]).strip(),
-                           manufacturer))
+                           unidecode(manufacturer)))
 
         fb.ok(("OS/2 VendorID is '{}' and registered to '{}'."
                " Is that legit?"
