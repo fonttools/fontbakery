@@ -1688,6 +1688,8 @@ def main():
         fb.error("GPOS table lacks kerning information")
       elif flaglookup.SubTableCount == 0:
         fb.error("GPOS LookupType 2 SubTableCount is zero.")
+      elif not hasattr(flaglookup.SubTable[0], 'PairSetCount'):
+        fb.error("GPOS table seems to be corrupted.")
       elif flaglookup.SubTable[0].PairSetCount == 0:
         fb.error("GPOS flaglookup.SubTable[0].PairSetCount is zero!")
       else:
