@@ -1928,7 +1928,8 @@ def main():
       r'(?::\d+)?'  # optional port
       r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     license_url = get_name_string(font, NAMEID_LICENSE_INFO_URL)
-    if not regex.match(license_url):
+    if license_url is False or\
+       not regex.match(license_url):
       fb.error(("LicenseUrl is required and must be a valid URL."
                 " Got {} instead.").format(license_url))
     else:
