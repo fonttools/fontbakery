@@ -1753,7 +1753,10 @@ def main():
 
     # ----------------------------------------------------
     def font_has_char(font, c):
-        return len(font['cmap'].buildReversed()[c]) > 0
+        if c in font['cmap'].buildReversed():
+          return len(font['cmap'].buildReversed()[c]) > 0
+        else:
+          return False
 
     fb.new_check("Font has 'EURO SIGN' character?")
     if font_has_char(font, 'Euro'):
