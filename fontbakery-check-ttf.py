@@ -1167,21 +1167,31 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ot-sanitise")
-    try:
-      ots_output = subprocess.check_output(["ot-sanitise", font_file],
-                                           stderr=subprocess.STDOUT)
-      if ots_output != "":
-        fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
-      else:
-        fb.ok("ot-sanitise passed this file")
-    except OSError:
-      # This is made very prominent with additional line breaks
-      fb.warning("\n\n\not-santise is not available!"
-                 " You really MUST check the fonts with this tool."
-                 " To install it, see"
-                 " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
-      pass
+    BUG_MESSAGE = ("Skipping '%s'. This is a Fontbakery bug!"
+                   " See https://github.com/"
+                   "googlefonts/fontbakery/issues/817")
+    if "NATS-" in font_file:
+      fb.skip(BUG_MESSAGE % "NATS")
+    elif "SeoulHangang" in font_file:
+      fb.skip(BUG_MESSAGE % "SeoulHangang")
+    elif "SeoulNamsan" in font_file:
+      fb.skip(BUG_MESSAGE % "SeoulNamsan")
+    else:
+      try:
+        ots_output = subprocess.check_output(["ot-sanitise", font_file],
+                                             stderr=subprocess.STDOUT)
+        if ots_output != "":
+          fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+        else:
+          fb.ok("ot-sanitise passed this file")
+      except OSError:
+        # This is made very prominent with additional line breaks
+        fb.warning("\n\n\not-santise is not available!"
+                   " You really MUST check the fonts with this tool."
+                   " To install it, see"
+                   " https://github.com/googlefonts"
+                   "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
+        pass
 
     # ----------------------------------------------------
     # TODO FontForge will sometimes say stuff on STDERR like
@@ -1459,71 +1469,74 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Font has **proper** whitespace glyph names?")
-    # TODO: This check can error more than once in a single run.
-    # We better compile a single-string error message.
-    failed = False
-    if space is not None and space not in ["space", "uni0020"]:
-      failed = True
-      fb.error(('{}: Glyph 0x0020 is called "{}":'
-                ' Change to "space"'
-                ' or "uni0020"').format(file_path, space))
+    if missing != []:
+      fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+    else:
+      failed = False
+      if space is not None and space not in ["space", "uni0020"]:
+        failed = True
+        fb.error(('{}: Glyph 0x0020 is called "{}":'
+                  ' Change to "space"'
+                  ' or "uni0020"').format(file_path, space))
 
-    if nbsp is not None and nbsp not in ["nbsp",
-                                         "uni00A0",
-                                         "nonbreakingspace",
-                                         "nbspace"]:
-      failed = True
-      fb.hotfix(('{}: Glyph 0x00A0 is called "{}":'
-                 ' Change to "nbsp"'
-                 ' or "uni00A0"').format(file_path, nbsp))
+      if nbsp is not None and nbsp not in ["nbsp",
+                                           "uni00A0",
+                                           "nonbreakingspace",
+                                           "nbspace"]:
+        failed = True
+        fb.hotfix(('{}: Glyph 0x00A0 is called "{}":'
+                   ' Change to "nbsp"'
+                   ' or "uni00A0"').format(file_path, nbsp))
 
-    if failed is False:
-      fb.ok('Font has **proper** whitespace glyph names.')
+      if failed is False:
+        fb.ok('Font has **proper** whitespace glyph names.')
 
     # ----------------------------------------------------
     fb.new_check("Whitespace glyphs have ink?")
-
-    for g in [space, nbsp]:
-        if glyphHasInk(font, g):
-            fb.hotfix(('{}: Glyph "{}" has ink.'
-                       ' Fixed: Overwritten by'
-                       ' an empty glyph').format(file_path, g))
-            # overwrite existing glyph with an empty one
-            font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
-
-    spaceWidth = getWidth(font, space)
-    nbspWidth = getWidth(font, nbsp)
-
-    if spaceWidth != nbspWidth or nbspWidth < 0:
-        setWidth(font, nbsp, min(nbspWidth, spaceWidth))
-        setWidth(font, space, min(nbspWidth, spaceWidth))
-
-        if isNbspAdded:
-            msg = '{} space {} nbsp None: Added nbsp with advanceWidth {}'
-            fb.hotfix(msg.format(file_path,
-                                 spaceWidth,
-                                 spaceWidth))
-
-        if isSpaceAdded:
-            msg = '{} space None nbsp {}: Added space with advanceWidth {}'
-            fb.hotfix(msg.format(file_path, nbspWidth, nbspWidth))
-
-        if nbspWidth > spaceWidth and spaceWidth >= 0:
-            msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
-            fb.hotfix(msg.format(file_path,
-                                 spaceWidth,
-                                 nbspWidth,
-                                 nbspWidth))
-        else:
-            msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-            fb.hotfix(msg.format(file_path,
-                                 spaceWidth,
-                                 nbspWidth,
-                                 spaceWidth))
+    if missing != []:
+      fb.skip("Because some whitespace glyphs are missing. Fix that before!")
     else:
-        fb.ok('{} space {} nbsp {}'.format(file_path,
-                                           spaceWidth,
-                                           nbspWidth))
+      for g in [space, nbsp]:
+          if glyphHasInk(font, g):
+              fb.hotfix(('{}: Glyph "{}" has ink.'
+                         ' Fixed: Overwritten by'
+                         ' an empty glyph').format(file_path, g))
+              # overwrite existing glyph with an empty one
+              font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+
+      spaceWidth = getWidth(font, space)
+      nbspWidth = getWidth(font, nbsp)
+
+      if spaceWidth != nbspWidth or nbspWidth < 0:
+          setWidth(font, nbsp, min(nbspWidth, spaceWidth))
+          setWidth(font, space, min(nbspWidth, spaceWidth))
+
+          if isNbspAdded:
+              msg = '{} space {} nbsp None: Added nbsp with advanceWidth {}'
+              fb.hotfix(msg.format(file_path,
+                                   spaceWidth,
+                                   spaceWidth))
+
+          if isSpaceAdded:
+              msg = '{} space None nbsp {}: Added space with advanceWidth {}'
+              fb.hotfix(msg.format(file_path, nbspWidth, nbspWidth))
+
+          if nbspWidth > spaceWidth and spaceWidth >= 0:
+              msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
+              fb.hotfix(msg.format(file_path,
+                                   spaceWidth,
+                                   nbspWidth,
+                                   nbspWidth))
+          else:
+              msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+              fb.hotfix(msg.format(file_path,
+                                   spaceWidth,
+                                   nbspWidth,
+                                   spaceWidth))
+      else:
+          fb.ok('{} space {} nbsp {}'.format(file_path,
+                                             spaceWidth,
+                                             nbspWidth))
 
     # ------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage,
