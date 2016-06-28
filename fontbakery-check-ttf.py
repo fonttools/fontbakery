@@ -503,7 +503,7 @@ def main():
     logging.error("None of the fonts are valid TrueType files!")
 
   # ------------------------------------------------------
-  logging.debug("Checking files are named canonically")
+  fb.new_check("Checking files are named canonically")
   not_canonical = []
 
   for font_file in fonts_to_check:
@@ -514,15 +514,15 @@ def main():
     try:
       family, style = filename_base.split('-')
       if style in style_file_names:
-        logging.info("OK: {} is named canonically".format(font_file))
+        fb.ok("{} is named canonically".format(font_file))
       else:
-        logging.critical(("{} is named Family-Style.ttf but "
-                          "Style is not canonical. You should rebuild it"
-                          " with a canonical style name").format(font_file))
+        fb.error(("{} is named Family-Style.ttf but "
+                  "Style is not canonical. You should rebuild it"
+                  " with a canonical style name").format(font_file))
         not_canonical.append(font_file)
     except:
-        logging.critical(("{} is not named canonically,"
-                          " as Family-Style.ttf").format(font_file))
+        fb.error(("{} is not named canonically,"
+                  " as Family-Style.ttf").format(font_file))
         not_canonical.append(font_file)
   if not_canonical:
     print('\nAborted, critical errors with filenames.'
@@ -531,6 +531,7 @@ def main():
     print('\nCanonical names are defined in '
           'https://github.com/googlefonts/gf-docs/blob'
           '/master/ProjectChecklist.md#instance-and-file-naming')
+    fb.save_json_report()
     sys.exit(1)
 
   # ------------------------------------------------------
