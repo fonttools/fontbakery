@@ -1167,31 +1167,24 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ot-sanitise")
-    BUG_MESSAGE = ("Skipping '%s'. This is a Fontbakery bug!"
-                   " See https://github.com/"
-                   "googlefonts/fontbakery/issues/817")
-    if "NATS-" in font_file:
-      fb.skip(BUG_MESSAGE % "NATS")
-    elif "SeoulHangang" in font_file:
-      fb.skip(BUG_MESSAGE % "SeoulHangang")
-    elif "SeoulNamsan" in font_file:
-      fb.skip(BUG_MESSAGE % "SeoulNamsan")
-    else:
-      try:
-        ots_output = subprocess.check_output(["ot-sanitise", font_file],
-                                             stderr=subprocess.STDOUT)
-        if ots_output != "":
-          fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
-        else:
-          fb.ok("ot-sanitise passed this file")
-      except OSError:
-        # This is made very prominent with additional line breaks
-        fb.warning("\n\n\not-santise is not available!"
-                   " You really MUST check the fonts with this tool."
-                   " To install it, see"
-                   " https://github.com/googlefonts"
-                   "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
-        pass
+    try:
+      ots_output = subprocess.check_output(["ot-sanitise", font_file],
+                                           stderr=subprocess.STDOUT)
+      if ots_output != "":
+        fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+      else:
+        fb.ok("ot-sanitise passed this file")
+    except subprocess.CalledProcessError, e:
+        fb.error(("ot-sanitize returned an error code. Output follows :"
+                  "\n\n{}\n").format(e.output))
+    except OSError:
+      # This is made very prominent with additional line breaks
+      fb.warning("\n\n\not-santise is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
+      pass
 
     # ----------------------------------------------------
     # TODO FontForge will sometimes say stuff on STDERR like
