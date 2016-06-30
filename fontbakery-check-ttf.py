@@ -1447,18 +1447,8 @@ def main():
     if missing != []:
         fb.error("Font is missing"
                  " the following glyphs: {}.".format(", ".join(missing)))
-
-    isNbspAdded = False
-    isSpaceAdded = False
-    try:
-        if not nbsp:
-            nbsp = addGlyph(font, 0x00A0, 'nbsp')
-            isNbspAdded = True
-        if not space:
-            space = addGlyph(font, 0x0020, 'space')
-            isSpaceAdded = True
-    except Exception as ex:
-        fb.error(ex)
+    else:
+        fb.ok("Font contains glyphs for whitespace characters.")
 
     # ----------------------------------------------------
     fb.new_check("Font has **proper** whitespace glyph names?")
@@ -1477,9 +1467,9 @@ def main():
                                            "nonbreakingspace",
                                            "nbspace"]:
         failed = True
-        fb.hotfix(('{}: Glyph 0x00A0 is called "{}":'
-                   ' Change to "nbsp"'
-                   ' or "uni00A0"').format(file_path, nbsp))
+        fb.error(('{}: Glyph 0x00A0 is called "{}":'
+                  ' Change to "nbsp"'
+                  ' or "uni00A0"').format(file_path, nbsp))
 
       if failed is False:
         fb.ok('Font has **proper** whitespace glyph names.')
