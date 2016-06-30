@@ -1453,16 +1453,6 @@ def main():
           setWidth(font, nbsp, min(nbspWidth, spaceWidth))
           setWidth(font, space, min(nbspWidth, spaceWidth))
 
-          if isNbspAdded:
-              msg = '{} space {} nbsp None: Added nbsp with advanceWidth {}'
-              fb.hotfix(msg.format(file_path,
-                                   spaceWidth,
-                                   spaceWidth))
-
-          if isSpaceAdded:
-              msg = '{} space None nbsp {}: Added space with advanceWidth {}'
-              fb.hotfix(msg.format(file_path, nbspWidth, nbspWidth))
-
           if nbspWidth > spaceWidth and spaceWidth >= 0:
               msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
               fb.hotfix(msg.format(file_path,
