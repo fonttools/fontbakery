@@ -373,47 +373,6 @@ def getGlyph(font, uchar):
     return None
 
 
-def addGlyph(font, uchar, glyph):
-  # Add to glyph list
-  glyphOrder = font.getGlyphOrder()
-  # assert glyph not in glyphOrder
-  glyphOrder.append(glyph)
-  font.setGlyphOrder(glyphOrder)
-
-  # Add horizontal metrics (to zero)
-  font['hmtx'][glyph] = [0, 0]
-
-  # Add to cmap
-  for table in font['cmap'].tables:
-    if not (table.platformID == PLATFORM_ID_WINDOWS and
-       table.platEncID in [PLAT_ENC_ID_UCS2,
-                           PLAT_ENC_ID_UCS4]):
-      continue
-    if not table.cmap:  # Skip UVS cmaps
-      continue
-    assert uchar not in table.cmap
-    table.cmap[uchar] = glyph
-
-  # Add empty glyph outline
-  if 'glyf' in font:
-    font['glyf'].glyphs[glyph] = ttLib.getTableModule('glyf').Glyph()
-  else:
-    fb.error("CRITICAL: This is a fontbakery bug."
-             "Implement-me: addGlyph to CFF fonts.")
-    # cff = font['CFF '].cff
-#   self.addCFFGlyph(
-#     glyphName=glyph,
-#     private=cff.topDictIndex[0].Private,
-#     globalSubrs=cff.GlobalSubrs,
-#     charStringsIndex=cff.topDictIndex[0].CharStrings.charStringsIndex,
-#     # charStringsIndex=\
-#         cff.topDictIndex[0].CharStrings.charStrings.charStringsIndex,
-#    topDict=cff.topDictIndex[0],
-#     charStrings=cff.topDictIndex[0].CharStrings
-#   )
-  return glyph
-
-
 def getWidth(font, glyph):
     return font['hmtx'][glyph][0]
 
