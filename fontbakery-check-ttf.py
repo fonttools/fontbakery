@@ -645,6 +645,15 @@ def main():
     logging.info("OK: {} opened with fontTools".format(font_file))
 
     # ----------------------------------------------------
+    fb.new_check("Font has post table version 2 ?")
+    if font['post'].formatType != 2:
+      fb.error(("Post table should be version 2 instead of {}."
+                "More info at https://github.com/google/fonts/"
+                "issues/215").format(font['post'].formatType))
+    else:
+      fb.ok("Font has post table version 2.")
+
+    # ----------------------------------------------------
     # OS/2 fsType is a legacy DRM-related field from the 80's
     # It should be disabled in all fonts.
     fb.new_check("Checking OS/2 fsType")
