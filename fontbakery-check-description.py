@@ -89,7 +89,7 @@ fb = FontBakeryCheckLogger()
 
 def description_checks():
     # set up some command line argument processing
-    description = 'Runs checks or tests on specified DESCRIPTION.txt file(s)'
+    description = 'Runs checks on specified DESCRIPTION file(s)'
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('file', nargs="+", help="Test files, can be a list")
     parser.add_argument('--verbose', '-v', action='count',
