@@ -190,10 +190,22 @@ class FontBakeryCheckLogger():
     open(filename, 'w').write(json_data)
     logging.debug(("Saved check results in "
                    "JSON format to '{}'").format(filename))
+  def output_github_markdown_report(self, filename='fontbakery-check-results.md'):
+    self.flush()
+    markdown_data = "# Fontbakery check results\n"
+    for check in self.all_checks:
+      if check['result'] in ['ERROR', 'WARNING', 'HOTFIX']:
+        markdown_data += "## {}\n* {}\n\n".format(check['description'],
+                                                  '\n* '.join(check['log_messages']))
+
+    open(filename, 'w').write(markdown_data)
+    logging.debug(("Saved check results in "
+                   "GitHub Markdown format to '{}'").format(filename))
 
   def flush(self):
     if self.current_check is not None:
       self.all_checks.append(self.current_check)
+      self.current_check = None
 
   def new_check(self, desc):
     self.flush()
@@ -210,7 +222,7 @@ class FontBakeryCheckLogger():
   def ok(self, msg):
     logging.info("OK: " + msg)
     self.current_check["log_messages"].append(msg)
-    if self.current_check["result"] != "FAIL":
+    if self.current_check["result"] != "ERROR":
       self.current_check["result"] = "OK"
 
   def warning(self, msg):
@@ -436,6 +448,9 @@ def main():
                       help='font file path(s) to check.'
                            ' Wildcards like *.ttf are allowed.')
   parser.add_argument('-v', '--verbose', action='count', default=0)
+  parser.add_argument('-m', '--ghm', action='store_true',
+                      help='Output check results in GitHub Markdown format')
+
   args = parser.parse_args()
   if args.verbose == 1:
     logger.setLevel(logging.INFO)
@@ -1388,7 +1403,7 @@ def main():
             sig.ulOffset = 20
             newDSIG.signatureRecords = [sig]
             font.tables["DSIG"] = newDSIG
-            fb.hotfix("The '{}' font does not have an existing digital"
+            fb.hotfix("The font does not have an existing digital"
                       " signature (DSIG), so we just added one.")
         except ImportError:
             error_message = ("The '{}' font does not have an existing"
@@ -2632,7 +2647,10 @@ def main():
     font.close()
     logging.info("{} saved\n".format(font_file_output))
 
-    fb.save_json_report()
+    output_folder = os.path.dirname(font_file)
+    fb.save_json_report(os.path.join(output_folder, "fontbakery_check_results.json"))
+    if args.ghm:
+      fb.output_github_markdown_report(os.path.join(output_folder, "fontbakery_check_results.md"))
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
