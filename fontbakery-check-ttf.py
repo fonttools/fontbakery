@@ -1027,13 +1027,13 @@ def main():
     if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
         new_value = font_style_name
         fb.hotfix(('{}: Windows-only Opentype-specific'
-                   ' StyleName set to "{}".').format(font_file,
+                   ' StyleName set to "{}".').format(filename,
                                                      font_style_name))
     # DC for example, R/I/B/BI should _not_ have any OT style name
     else:
         fb.hotfix(('{}: Warning: Windows-only Opentype-specific'
                    ' StyleName set to "Regular" as a default value.'
-                   ' Please verify if this is correct.').format(font_file))
+                   ' Please verify if this is correct.').format(filename))
         new_value = 'Regular'
 
     found = False
@@ -1414,7 +1414,7 @@ def main():
                              "Fonttools v2.3+ so you need to upgrade it. Try:"
                              " $ pip install --upgrade fontTools; or see"
                              " https://pypi.python.org/pypi/FontTools")
-            fb.error(error_message.format(file_path))
+            fb.error(error_message.format(font_file))
 
     # ----------------------------------------------------
     fb.new_check("Font contains glyphs for whitespace characters?")
@@ -1443,7 +1443,7 @@ def main():
         failed = True
         fb.error(('{}: Glyph 0x0020 is called "{}":'
                   ' Change to "space"'
-                  ' or "uni0020"').format(file_path, space))
+                  ' or "uni0020"').format(filename, space))
 
       if nbsp is not None and nbsp not in ["nbsp",
                                            "uni00A0",
@@ -1452,7 +1452,7 @@ def main():
         failed = True
         fb.error(('{}: Glyph 0x00A0 is called "{}":'
                   ' Change to "nbsp"'
-                  ' or "uni00A0"').format(file_path, nbsp))
+                  ' or "uni00A0"').format(filename, nbsp))
 
       if failed is False:
         fb.ok('Font has **proper** whitespace glyph names.')
@@ -1466,7 +1466,7 @@ def main():
           if glyphHasInk(font, g):
               fb.hotfix(('{}: Glyph "{}" has ink.'
                          ' Fixed: Overwritten by'
-                         ' an empty glyph').format(file_path, g))
+                         ' an empty glyph').format(filename, g))
               # overwrite existing glyph with an empty one
               font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
 
@@ -1479,18 +1479,18 @@ def main():
 
           if nbspWidth > spaceWidth and spaceWidth >= 0:
               msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
-              fb.hotfix(msg.format(file_path,
+              fb.hotfix(msg.format(filename,
                                    spaceWidth,
                                    nbspWidth,
                                    nbspWidth))
           else:
               msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-              fb.hotfix(msg.format(file_path,
+              fb.hotfix(msg.format(filename,
                                    spaceWidth,
                                    nbspWidth,
                                    spaceWidth))
       else:
-          fb.ok('{} space {} nbsp {}'.format(file_path,
+          fb.ok('{} space {} nbsp {}'.format(filename,
                                              spaceWidth,
                                              nbspWidth))
 
@@ -2019,7 +2019,7 @@ def main():
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
     if not os.path.exists(metadata):
-      logging.error("{} is missing a METADATA.pb file!".format(file_path))
+      logging.error("{} is missing a METADATA.pb file!".format(filename))
     else:
       family = get_FamilyProto_Message(metadata)
 
