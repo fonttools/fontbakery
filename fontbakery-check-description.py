@@ -66,7 +66,7 @@ class FontBakeryCheckLogger():
   def ok(self, msg):
     logging.info("OK: " + msg)
     self.current_check["log_messages"].append(msg)
-    if self.current_check["result"] != "FAIL":
+    if self.current_check["result"] != "ERROR":
       self.current_check["result"] = "OK"
 
   def warning(self, msg):
