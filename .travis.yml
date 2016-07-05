@@ -15,6 +15,7 @@ install:
   - pip install requests
   - pip install flake8
   - pip install protobuf
+  - pip install unidecode
   - "pip install git+https://github.com/behdad/fonttools.git"
 script:
   - python fontbakery-check-ttf.py data/test/cousine/Cousine-Bold.ttf
