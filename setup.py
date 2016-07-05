@@ -65,7 +65,6 @@ setup(
              'fontbakery-build-fontmetadata.py',
              'fontbakery-build-metadata.py',
              'fontbakery-check-description.py',
-             'fontbakery-check-results.json',
              'fontbakery-check-ttf.py',
              'fontbakery-check-upstream.py',
              'fontbakery-crawl.py',
