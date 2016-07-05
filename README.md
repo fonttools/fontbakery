@@ -13,8 +13,8 @@ Font Bakery is not an official Google project, and Google provides no support fo
 
 ## Usage
 
-    cd ~/path/to/fontproject/;
-    fontbakery-check-ttf.py *.ttf;
+    cd ~/path/to/fontproject/
+    fontbakery-check-ttf.py *.ttf
 
 For more detailed output, run in verbose mode:
 
@@ -23,11 +23,19 @@ For more detailed output, run in verbose mode:
 It may fix some problems, and save `*.ttf.fix` files in the same directory as the original `.ttf` files.
 
 The check results will be saved to a file called fontbakery-check-results.json.
-You can view a summary report by running:
+
+For check results in GitHub Markdown syntax you can use --ghm:
+
+    fontbakery-check-ttf.py --verbose *.ttf --ghm
+
+Optionaly, a web-based visualization of the summary report can be viewed by running:
 
     python -m SimpleHTTPServer
 
 And then opening http://0.0.0.0:8000/ in a web-browser.
+
+But beware that in order to run the webserver the command above must be executed from the fontbakery project folder and the json file must be available in that same root folder.
+
 
 ## Install
 

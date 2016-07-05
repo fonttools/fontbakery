@@ -2654,8 +2654,7 @@ def main():
     logging.info("{} saved\n".format(font_file_output))
 
     output_folder = os.path.dirname(font_file)
-    fb.save_json_report(os.path.join(output_folder,
-                                     "fontbakery_check_results.json"))
+    fb.save_json_report()
     if args.ghm:
       md_path = os.path.join(output_folder, "fontbakery_check_results.md")
       fb.output_github_markdown_report(md_path)
