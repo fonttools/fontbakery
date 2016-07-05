@@ -962,41 +962,45 @@ def main():
 #                isLicense = os.path.exists(fontLicensePath) or text in value
 #        self.assertFalse(isLicense and bool(fixer.validate()))
 
-    # ----------------------------------------------------
-    # TODO: Add a description/rationale to this check here
-    # DC I need to carefully review how this works
-    fb.new_check("Checking name table for items without"
-                 " platformID = 1 (MACHINTOSH)")
-    new_names = []
-    changed = False
-    for name in font['name'].names:
-      if (name.platformID != PLATFORM_ID_MACHINTOSH and
-          name.nameID not in [NAMEID_COPYRIGHT_NOTICE,
-                              NAMEID_FONT_FAMILY_NAME,
-                              NAMEID_FONT_SUBFAMILY_NAME,
-                              NAMEID_UNIQUE_FONT_IDENTIFIER,
-                              NAMEID_FULL_FONT_NAME,
-                              NAMEID_VERSION_STRING,
-                              NAMEID_POSTSCRIPT_NAME,
-                              NAMEID_COMPATIBLE_FULL_MACONLY
-                              ]) or \
-         (name.platformID == PLATFORM_ID_MACHINTOSH and
-          name.nameID in [NAMEID_FONT_FAMILY_NAME,
-                          NAMEID_FONT_SUBFAMILY_NAME,
-                          NAMEID_FULL_FONT_NAME,
-                          NAMEID_POSTSCRIPT_NAME
-                          ]):
-        # see https://github.com/googlefonts/fontbakery/issues/649
-        new_names.append(name)
-      else:
-        changed = True
-    if changed:
-      font['name'].names = new_names
-      fb.hotfix("some name table items"
-                " with platformID=1 were removed")
-    else:
-      fb.ok("name table has only the bare-minimum"
-            " records with platformID=1")
+# The following test was disabled due to
+# the concerns pointed out at:
+# https://github.com/googlefonts/fontbakery/issues/797
+#
+#    # ----------------------------------------------------
+#    # TODO: Add a description/rationale to this check here
+#    # DC I need to carefully review how this works
+#    fb.new_check("Checking name table for items without"
+#                 " platformID = 1 (MACHINTOSH)")
+#    new_names = []
+#    changed = False
+#    for name in font['name'].names:
+#      if (name.platformID != PLATFORM_ID_MACHINTOSH and
+#          name.nameID not in [NAMEID_COPYRIGHT_NOTICE,
+#                              NAMEID_FONT_FAMILY_NAME,
+#                              NAMEID_FONT_SUBFAMILY_NAME,
+#                              NAMEID_UNIQUE_FONT_IDENTIFIER,
+#                              NAMEID_FULL_FONT_NAME,
+#                              NAMEID_VERSION_STRING,
+#                              NAMEID_POSTSCRIPT_NAME,
+#                              NAMEID_COMPATIBLE_FULL_MACONLY
+#                              ]) or \
+#         (name.platformID == PLATFORM_ID_MACHINTOSH and
+#          name.nameID in [NAMEID_FONT_FAMILY_NAME,
+#                          NAMEID_FONT_SUBFAMILY_NAME,
+#                          NAMEID_FULL_FONT_NAME,
+#                          NAMEID_POSTSCRIPT_NAME
+#                          ]):
+#        # see https://github.com/googlefonts/fontbakery/issues/649
+#        new_names.append(name)
+#      else:
+#        changed = True
+#    if changed:
+#      font['name'].names = new_names
+#      fb.hotfix("some name table items"
+#                " with platformID=1 were removed")
+#    else:
+#      fb.ok("name table has only the bare-minimum"
+#            " records with platformID=1")
 
     # ----------------------------------------------------
     logging.debug("Namerecord 10s (descriptions) exist?")
