@@ -190,13 +190,15 @@ class FontBakeryCheckLogger():
     open(filename, 'w').write(json_data)
     logging.debug(("Saved check results in "
                    "JSON format to '{}'").format(filename))
-  def output_github_markdown_report(self, filename='fontbakery-check-results.md'):
+
+  def output_github_markdown_report(self,
+                                    filename='fontbakery-check-results.md'):
     self.flush()
     markdown_data = "# Fontbakery check results\n"
     for check in self.all_checks:
       if check['result'] in ['ERROR', 'WARNING', 'HOTFIX']:
-        markdown_data += "## {}\n* {}\n\n".format(check['description'],
-                                                  '\n* '.join(check['log_messages']))
+        msgs = '\n* '.join(check['log_messages'])
+        markdown_data += "## {}\n* {}\n\n".format(check['description'], msgs)
 
     open(filename, 'w').write(markdown_data)
     logging.debug(("Saved check results in "
@@ -2652,9 +2654,11 @@ def main():
     logging.info("{} saved\n".format(font_file_output))
 
     output_folder = os.path.dirname(font_file)
-    fb.save_json_report(os.path.join(output_folder, "fontbakery_check_results.json"))
+    fb.save_json_report(os.path.join(output_folder,
+                                     "fontbakery_check_results.json"))
     if args.ghm:
-      fb.output_github_markdown_report(os.path.join(output_folder, "fontbakery_check_results.md"))
+      md_path = os.path.join(output_folder, "fontbakery_check_results.md")
+      fb.output_github_markdown_report(md_path)
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
