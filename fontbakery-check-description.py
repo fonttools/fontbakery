@@ -145,22 +145,38 @@ def description_checks():
             fb.ok("All links in the DESCRIPTION file look good!")
 
 # ---------------------------------------------------------------------
-        fb.new_check("Is this a propper HTML file")
-        if magic.from_file(f, mime=True) != 'text/html':
-            fb.error("{} is not a propper HTML file.".format(f))
+        fb.new_check("Is this a propper HTML snippet ?")
+        contenttype = magic.from_file(f)
+        if "HTML" not in contenttype:
+            data = open(f).read()
+            if "ASCII" in contenttype and\
+               "<p>" in data and "</p>" in data:
+              fb.ok(("{} is a propper"
+                     " HTML snippet.").format(f))
+            else:
+              fb.error(("{} is not a propper"
+                        " HTML snippet.").format(f))
         else:
             fb.ok("{} is a propper HTML file.".format(f))
 
 # ---------------------------------------------------------------------
-        fb.new_check("DESCRIPTION.en_us.html is more than 500 bytes")
+        fb.new_check("DESCRIPTION.en_us.html is more than 200 bytes ?")
         statinfo = os.stat(f)
-        if statinfo.st_size < 500:
-            fb.error("{} must have size larger than 500 bytes".format(f))
+        if statinfo.st_size <= 200:
+            fb.error("{} must have size larger than 200 bytes".format(f))
         else:
-            fb.ok("{} is larger than 500 bytes".format(f))
+            fb.ok("{} is larger than 200 bytes".format(f))
 
 # ---------------------------------------------------------------------
+        fb.new_check("DESCRIPTION.en_us.html is less than 1000 bytes ?")
+        statinfo = os.stat(f)
+        if statinfo.st_size >= 1000:
+            fb.error("{} must have size smaller than 1000 bytes".format(f))
+        else:
+            fb.ok("{} is smaller than 1000 bytes".format(f))
         fb.save_json_report()
+
+# ---------------------------------------------------------------------
 
 if __name__ == '__main__':
     description_checks()
