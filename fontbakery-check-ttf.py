@@ -1538,6 +1538,50 @@ def main():
       fb.ok("There are no unwanted tables.")
 
     # ------------------------------------------------------
+    fb.new_check("Show hinting filesize impact")
+    # current implementation simply logs useful info
+    # but there's no fail scenario for this checker.
+    import tempfile
+    statinfo = os.stat(font_file)
+    hinted_size = statinfo.st_size
+
+    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
+                                           delete=False)
+    subprocess.call(["ttfautohint",
+                     "--dehint",
+                     font_file,
+                     dehinted.name])
+    statinfo = os.stat(dehinted.name)
+    dehinted_size = statinfo.st_size
+    os.unlink(dehinted.name)
+
+    increase = hinted_size - dehinted_size
+    change = float(hinted_size)/dehinted_size - 1
+    change = int(change*10000)/100.0 # round to 2 decimal
+                                     # points percentage
+
+    def filesize_formatting(s):
+        if s < 1024:
+            return "{} bytes".format(s)
+        elif s < 1024*1024:
+            return "{}kb".format(s/1024)
+        else:
+            return "{}Mb".format(s/(1024*1024))
+
+    hinted_size = filesize_formatting(hinted_size)
+    dehinted_size = filesize_formatting(dehinted_size)
+    increase = filesize_formatting(increase)
+
+    results_table = "Hinting filesize impact:\n"
+    results_table += "|  | {} |\n".format(filename)
+    results_table += "|----------|----------|----------|\n"
+    results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+    results_table += "| Hinted Size | {} |\n".format(hinted_size)
+    results_table += "| Increase | {} |\n".format(increase)
+    results_table += "| Change   | {} % |\n".format(change)
+    fb.ok(results_table)
+
+    # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
     # fontbakery-fix-version.py here and:
     #
