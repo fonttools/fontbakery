@@ -196,7 +196,7 @@ class FontBakeryCheckLogger():
     self.flush()
     markdown_data = "# Fontbakery check results\n"
     for check in self.all_checks:
-      if check['result'] in ['ERROR', 'WARNING', 'HOTFIX']:
+      if check['result'] in ['INFO', 'ERROR', 'WARNING', 'HOTFIX']:
         msgs = '\n* '.join(check['log_messages'])
         markdown_data += "## {}\n* {}\n\n".format(check['description'], msgs)
 
@@ -226,6 +226,13 @@ class FontBakeryCheckLogger():
     self.current_check["log_messages"].append(msg)
     if self.current_check["result"] != "ERROR":
       self.current_check["result"] = "OK"
+
+  def info(self, msg): # This is just a way for us to keep merely
+                       # informative messages on the markdown output
+    logging.info("INFO: " + msg)
+    self.current_check["log_messages"].append(msg)
+    if self.current_check["result"] != "ERROR":
+      self.current_check["result"] = "INFO"
 
   def warning(self, msg):
     logging.warning(msg)
@@ -1572,14 +1579,14 @@ def main():
     dehinted_size = filesize_formatting(dehinted_size)
     increase = filesize_formatting(increase)
 
-    results_table = "Hinting filesize impact:\n"
+    results_table = "Hinting filesize impact:\n\n"
     results_table += "|  | {} |\n".format(filename)
     results_table += "|----------|----------|----------|\n"
     results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
     results_table += "| Hinted Size | {} |\n".format(hinted_size)
     results_table += "| Increase | {} |\n".format(increase)
     results_table += "| Change   | {} % |\n".format(change)
-    fb.ok(results_table)
+    fb.info(results_table)
 
     # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
