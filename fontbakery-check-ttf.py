@@ -749,10 +749,10 @@ def main():
       original = unicode(name.string, encoding=name.getEncoding())
       string = unicode(name.string, encoding=name.getEncoding())
       for mark, ascii_repl in replacement_map:
-        newstring = string.replace(mark, ascii_repl)
+        new_string = string.replace(mark, ascii_repl)
         if string != new_string:
           fb.hotfix(("NAMEID {} contains synbol that was"
-                     " replaced by '{}'").format(name.nameid,
+                     " replaced by '{}'").format(name.nameID,
                                                  ascii_repl))
         string = new_string
       new_name.string = string.encode(name.getEncoding())
