@@ -1563,8 +1563,7 @@ def main():
 
     increase = hinted_size - dehinted_size
     change = float(hinted_size)/dehinted_size - 1
-    change = int(change*10000)/100.0  # round to 2 decimal
-                                      # points percentage
+    change = int(change*10000)/100.0  # round to 2 decimal points percentage
 
     def filesize_formatting(s):
         if s < 1024:
