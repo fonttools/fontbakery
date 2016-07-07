@@ -703,13 +703,17 @@ def main():
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # TODO check registered_vendor_ids[vid] against name table values
+        # FSanches:
+        #      We do check against NAMEID_MANUFACTURER_NAME below
+        #      Do we want to check against other nameid entries as well ?
         for name in font['name'].names:
           if name.nameID == NAMEID_MANUFACTURER_NAME:
             manufacturer = name.string.decode(name.getEncoding()).strip()
             if manufacturer != registered_vendor_ids[vid].strip():
               fb.warning("VendorID string '{}' does not match"
-                         " nameID 8 (Manufacturer Name): '{}'".format(
+                         " nameID {} (Manufacturer Name): '{}'".format(
                            unidecode(registered_vendor_ids[vid]).strip(),
+                           NAMEID_MANUFACTURER_NAME,
                            unidecode(manufacturer)))
 
         fb.ok(("OS/2 VendorID is '{}' and registered to '{}'."
