@@ -938,8 +938,18 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Assure theres no 'description' namerecord")
-    # TODO Check namerecord 9 ("description") is not there, drop it if so
-    # DC URGENT!
+    failed = False
+    for name in font['name'].names:
+      if name.nameID == NAMEID_DESCRIPTION:
+        failed = True
+        del name
+    if failed:
+      fb.hotfix(("A 'description' namerecord (nameID={})"
+                 " was found and removed.").format(NAMEID_DESCRIPTION))
+    else:
+      fb.ok("There's no 'description' namerecord in the NAME table.")
+
+    # ----------------------------------------------------
 
 # TODO: Port these here as well:
 # DC these seem to be ported already?
