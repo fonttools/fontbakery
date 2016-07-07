@@ -749,16 +749,18 @@ def main():
       original = unicode(name.string, encoding=name.getEncoding())
       string = unicode(name.string, encoding=name.getEncoding())
       for mark, ascii_repl in replacement_map:
-        string = string.replace(mark, ascii_repl)
+        newstring = string.replace(mark, ascii_repl)
+        if string != new_string:
+          fb.hotfix(("NAMEID {} contains synbol that was"
+                     " replaced by '{}'").format(name.nameid,
+                                                 ascii_repl))
+        string = new_string
       new_name.string = string.encode(name.getEncoding())
       if string != original:
         nametable_updated = True
       new_names.append(new_name)
+
     if nametable_updated:
-      # DC this must specify WHICH symbol was sub'd
-      fb.hotfix("Name table entries were modified"
-                " to replace unicode symbols"
-                " such as (c), (r) and TM.")
       font['name'].names = new_names
     else:
       fb.ok("No need to substitute copyright, registered and"
