@@ -1682,7 +1682,8 @@ def main():
     # ----------------------------------------------------
     fb.new_check("EPAR table present in font?")
     if 'EPAR' not in font:
-      fb.error('Font is missing EPAR table.')
+      fb.ok('EPAR table not present in font. To learn more see '
+      'https://github.com/googlefonts/fontbakery/issues/818')
     else:
       fb.ok("EPAR table present in font.")
 
