@@ -1617,7 +1617,7 @@ def main():
       fb.ok('Version format in NAME table is correct.')
     else:
       fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must follow '
-                'the pattern Version X.Y.'
+                'the pattern Version X.Y between 1.000 and 9.999.'
                 ' Current value: {}').format(NAMEID_VERSION_STRING,
                                              version_string))
 
