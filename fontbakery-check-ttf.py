@@ -751,7 +751,7 @@ def main():
       for mark, ascii_repl in replacement_map:
         new_string = string.replace(mark, ascii_repl)
         if string != new_string:
-          fb.hotfix(("NAMEID {} contains synbol that was"
+          fb.hotfix(("NAMEID #{} contains symbol that was"
                      " replaced by '{}'").format(name.nameID,
                                                  ascii_repl))
         string = new_string
