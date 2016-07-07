@@ -15,6 +15,7 @@
 #
 import os
 import sys
+import tempfile
 import argparse
 import glob
 import logging
@@ -227,8 +228,8 @@ class FontBakeryCheckLogger():
     if self.current_check["result"] != "ERROR":
       self.current_check["result"] = "OK"
 
-  def info(self, msg): # This is just a way for us to keep merely
-                       # informative messages on the markdown output
+  def info(self, msg):  # This is just a way for us to keep merely
+                        # informative messages on the markdown output
     logging.info("INFO: " + msg)
     self.current_check["log_messages"].append(msg)
     if self.current_check["result"] != "ERROR":
@@ -522,7 +523,6 @@ def main():
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   registered_vendor_ids = {}
   try:
-    import tempfile
     CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
                                      'fontbakery-microsoft-vendorlist.cache')
     if os.path.exists(CACHE_VENDOR_LIST):
@@ -1548,7 +1548,6 @@ def main():
     fb.new_check("Show hinting filesize impact")
     # current implementation simply logs useful info
     # but there's no fail scenario for this checker.
-    import tempfile
     statinfo = os.stat(font_file)
     hinted_size = statinfo.st_size
 
@@ -1564,8 +1563,8 @@ def main():
 
     increase = hinted_size - dehinted_size
     change = float(hinted_size)/dehinted_size - 1
-    change = int(change*10000)/100.0 # round to 2 decimal
-                                     # points percentage
+    change = int(change*10000)/100.0  # round to 2 decimal
+                                      # points percentage
 
     def filesize_formatting(s):
         if s < 1024:
@@ -1682,8 +1681,10 @@ def main():
     # ----------------------------------------------------
     fb.new_check("EPAR table present in font?")
     if 'EPAR' not in font:
-      fb.ok('EPAR table not present in font. To learn more see '
-      'https://github.com/googlefonts/fontbakery/issues/818')
+      fb.ok('EPAR table not present in font.'
+            ' To learn more see'
+            ' https://github.com/googlefonts/'
+            'fontbakery/issues/818')
     else:
       fb.ok("EPAR table present in font.")
 
