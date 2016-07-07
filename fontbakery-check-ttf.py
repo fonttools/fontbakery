@@ -937,19 +937,6 @@ def main():
     # DC URGENT!
 
     # ----------------------------------------------------
-    fb.new_check("Assure theres no 'description' namerecord")
-    failed = False
-    for name in font['name'].names:
-      if name.nameID == NAMEID_DESCRIPTION:
-        failed = True
-        del name
-    if failed:
-      fb.hotfix(("A 'description' namerecord (nameID={})"
-                 " was found and removed.").format(NAMEID_DESCRIPTION))
-    else:
-      fb.ok("There's no 'description' namerecord in the NAME table.")
-
-    # ----------------------------------------------------
 
 # TODO: Port these here as well:
 # DC these seem to be ported already?
@@ -1028,7 +1015,7 @@ def main():
 #            " records with platformID=1")
 
     # ----------------------------------------------------
-    logging.debug("Namerecord 10s (descriptions) exist?")
+    fb.new_check("name record 10s (descriptions) are reasonable?")
     new_names = []
     changed = False
     for name in font['name'].names:
@@ -1041,7 +1028,21 @@ def main():
       font['name'].names = new_names
       fb.hotfix("Namerecord 10s (descriptions)"
                 " were removed (perhaps added by"
-                " a longstanding FontLab Studio 5.x bug.)")
+                " a longstanding FontLab Studio 5.x bug that"
+                " copied copyright notices to them.)")
+    changed = False
+    for name in font['name'].names:
+      if len(name.string.decode(name.getEncoding())) > 100 \
+        and name.nameID == NAMEID_DESCRIPTION:
+        del name
+        changed = True
+    if changed:
+      fb.hotfix(("Namerecord 10s (descriptions)"
+                 " were longer than 100 characters"
+                 " and removed.").format(NAMEID_DESCRIPTION))
+    else:
+      fb.ok("Namerecord 10s (descriptions) do not exist.")
+
     else:
       fb.ok("Namerecord 10s (descriptions) do not exist.")
 
