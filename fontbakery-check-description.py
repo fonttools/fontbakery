@@ -149,8 +149,7 @@ def description_checks():
         contenttype = magic.from_file(f)
         if "HTML" not in contenttype:
             data = open(f).read()
-            if "ASCII" in contenttype and\
-               "<p>" in data and "</p>" in data:
+            if "<p>" in data and "</p>" in data:
               fb.ok(("{} is a propper"
                      " HTML snippet.").format(f))
             else:
