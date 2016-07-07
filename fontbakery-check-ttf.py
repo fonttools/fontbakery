@@ -1043,9 +1043,6 @@ def main():
     else:
       fb.ok("Namerecord 10s (descriptions) do not exist.")
 
-    else:
-      fb.ok("Namerecord 10s (descriptions) do not exist.")
-
     # ----------------------------------------------------
     fb.new_check("StyleName recommendation")
     font_style_name = ""
@@ -1145,8 +1142,6 @@ def main():
         assert_table_entry('OS/2',
                            'panose.bProportion',
                            PANOSE_PROPORTION_MONOSPACED)
-        # assert_table_entry('OS/2', 'xAvgCharWidth', width_max)
-        # FIXME: Felipe: The above needs to be discussed with Dave
         outliers = len(glyphs) - occurrences
         if outliers > 0:
             # If any glyphs are outliers, note them
@@ -1170,13 +1165,35 @@ def main():
                            'isFixedPitch',
                            IS_FIXED_WIDTH_NOT_MONOSPACED)
         assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        # assert_table_entry('OS/2', 'xAvgCharWidth', width_max)
-        # FIXME: Felipe: The above needs to be discussed with Dave
         if font['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
             assert_table_entry('OS/2',
                                'panose.bProportion',
                                PANOSE_PROPORTION_ANY)
         log_results("Font is not monospaced.")
+
+
+    # ----------------------------------------------------
+    fb.new_check("Check if xAvgCharWidth is correct.")
+    if font['OS/2'].version >= 3:
+      width_sum = 0
+      count = 0
+      for glyph_id in font['glyf'].glyphs:
+        width = font['hmtx'].metrics[glyph_id][0]
+        if width > 0:
+          count +=1
+          width_sum += width
+      if count == 0:
+        fb.error("CRITICAL: Found no glyph width data!")
+      else:
+        expected_value = width_sum/count
+        if font['OS/2'].xAvgCharWidth == expected_value:
+          fb.ok("xAvgCharWidth is correct.")
+        else:
+          fb.error(("xAvgCharWidth should be "
+                    "{}").format(expected_value))
+    else:
+      fb.skip("This check currently only supports"
+              " OS/2 tables with version >= 3")
 
     # ----------------------------------------------------
     fb.new_check("Checking with ot-sanitise")
