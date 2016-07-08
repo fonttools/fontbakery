@@ -30,7 +30,7 @@ The use of Python allows direct access to internal font tables using the fonttoo
 Existing font checking tools from other projects and companies are integrated to avoid duplication, such as Apple's `ftxvalidator` tool and Microsoft's Font Validator.
 
 While developing font bakery, we aim to avoid development distractions. 
-For example, to access internet resources we use [GNU wget](https://en.wikipedia.org/wiki/Wget) and other common utilities.
+For example, to access internet resources we may use our own native Python utility methods for simple cases, and [GNU wget](https://en.wikipedia.org/wiki/Wget) or other common system utilities for more complex cases (such as resuming large files.)
 
 #### 1.1 terminology
 
