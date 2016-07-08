@@ -38,17 +38,19 @@ An individual user-ready font file is normally referred to as a 'TTF' file, beca
 
 A font family consists of 1 to 18 font files that belong together because they are designed to work together and share common visual traits. 
 Familiar examples are Regular, Bold, Italic, and Bold Italic files.
-The Google Fonts API presents these with the same family name, and some Font Bakery tools process the files as a single family group. 
+The Google Fonts API presents these with the same family name. 
+Some typeface projects are developed with other platforms in mind (such as Adobe CC Suite tools) that support many more than 18 styles in a family, and in those cases we must adjust the files to work as a set of families of 1–18 styles. 
+Some Font Bakery tools process a set of files that make up a family that include both font files as well as metadata files. 
 
 Font Bakery tools provide two main actions:
 
 1. 'check' operations
 2. 'hotfix' operations
 
-Check operations validate fonts with read-only processes and only output diagnostic information, which in verbose mode includes confirmations.
-They do not modify the input font files in any way because they are intended to provide feedback to font designers and engineers to decide how to resolve them, such as making corrections to source files and rebuilding the fonts.
+Check operations validate fonts with read-only processes and only output diagnostic information, which in verbose mode includes confirmations; without passing a verbose argument to a tool, if everything is correct then there will be no output. 
 
-Hotfix operations create new font files, by appending `.fix` to the filename. 
+Check operations do not modify the input font files in any way, because they are intended to provide feedback to font designers and engineers to decide how to resolve them, such as making corrections to source files and rebuilding the fonts.
+Hotfix operations do create new font files, by copying the file and modifying that copy, which is saved on disk with the same filename plus `.fix` appended. 
 
 ## 2. Onboarding New and Updated Families
 
