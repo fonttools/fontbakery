@@ -14,7 +14,7 @@ To achieve this we develop tools to sanity-check and fix the files that comprise
 
 These tools are used by @davelab6 to onboard both new families and updates to existing families. 
 By making them available to all type designers and font engineers, we hope to empower everyone to get their font projects into a complete and tested state and ready to onboard into Google Fonts. 
-The tools will act as an educational resource for type designers to learn about technical quality issues, because if font designers do the right early on that reduces the amount of work at project delivery time. 
+The tools will act as an educational resource for type designers to learn about technical quality issues, because if font designers do the right thing early on that reduces the amount of work at project delivery time. 
 
 The tools are command-line based to allow work on various platforms in a consistent and reproducible way.
 They reflect the [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
@@ -135,7 +135,7 @@ A prototype for this is available at <https://googlefonts.github.io/fontbakery>
 
 Last minute hotfixing of TTFs is ideally unnecessary. 
 Our ultimate aim is that all fonts in the Google Fonts catalog have source repositories in [github.com/googlefonts](https://github.com/googlefonts) that are error-free. 
-This can be achieved with [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) services like [Travis](https://www.travis-ci.org)) that alert designers about issues and regressions as they happen.
+This can be achieved with [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) services (like [Travis](https://www.travis-ci.org)) that alert designers about issues and regressions as they happen.
 
 To support this way of developing fonts, we will develop tools for checking font source files.
 These source-file focused tools supplement the TTF tools. 
@@ -202,5 +202,5 @@ Only interact with TTF or OTF files with fontTools
 
 Only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
 
-Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be the best sophisticated approach. 
+Interacting with `.glyphs` files can most simply be done by treating them as plain text files and using standard text processing methods (grep, etc.) The next level of sophistication is using the glyphs2ufo parser; but perhaps a Glyphs extension that runs inside the application's python, and can thus use its internal Glyphs API to autocorrect things, would be a more sophisticated approach. 
 
