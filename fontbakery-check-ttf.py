@@ -1171,7 +1171,6 @@ def main():
                                PANOSE_PROPORTION_ANY)
         log_results("Font is not monospaced.")
 
-
     # ----------------------------------------------------
     fb.new_check("Check if xAvgCharWidth is correct.")
     if font['OS/2'].version >= 3:
@@ -1180,7 +1179,7 @@ def main():
       for glyph_id in font['glyf'].glyphs:
         width = font['hmtx'].metrics[glyph_id][0]
         if width > 0:
-          count +=1
+          count += 1
           width_sum += width
       if count == 0:
         fb.error("CRITICAL: Found no glyph width data!")
@@ -1195,13 +1194,13 @@ def main():
                     "int the font").format(font['OS/2'].xAvgCharWidth,
                                            expected_value))
     else:
-      weightFactors = {'a':64, 'b':14, 'c':27, 'd':35,
-                       'e':100, 'f':20, 'g':14, 'h':42,
-                       'i':63, 'j':3, 'k':6, 'l':35,
-                       'm':20, 'n':56, 'o':56, 'p':17,
-                       'q':4, 'r':49, 's':56, 't':71,
-                       'u':31, 'v':10, 'w':18, 'x':3,
-                       'y':18, 'z':2, 'space':166}
+      weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
+                       'e': 100, 'f': 20, 'g': 14, 'h': 42,
+                       'i': 63, 'j': 3, 'k': 6, 'l': 35,
+                       'm': 20, 'n': 56, 'o': 56, 'p': 17,
+                       'q': 4, 'r': 49, 's': 56, 't': 71,
+                       'u': 31, 'v': 10, 'w': 18, 'x': 3,
+                       'y': 18, 'z': 2, 'space': 166}
       width_sum = 0
       for glyph_id in font['glyf'].glyphs:
         width = font['hmtx'].metrics[glyph_id][0]
@@ -2527,7 +2526,8 @@ def main():
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              fb.skip("Font lacks familyname and/or fullname entries in name table.")
+              fb.skip("Font lacks familyname and/or"
+                      " fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
             else:
@@ -2559,7 +2559,8 @@ def main():
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
-              fb.skip("Font lacks familyname and/or fullname entries in name table.")
+              fb.skip("Font lacks familyname and/or"
+                      " fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
             else:
