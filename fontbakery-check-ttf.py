@@ -2399,14 +2399,14 @@ def main():
                     " 'postScriptName' have matching values.")
 
           # -----------------------------------------------
+          fb.new_check("METADATA.pb 'name' contains font name"
+                       " in right format ?")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname is False:
-            logging.info("WARNING: A corrupt font that lacks a font_family"
+            logging.skip("A corrupt font that lacks a font_family"
                          " nameID entry caused a whole sequence"
                          " of tests to be skipped.")
           else:
-            fb.new_check("METADATA.pb 'name' contains font name"
-                         " in right format ?")
             if font_familyname in f.name:
               fb.ok("METADATA.pb 'name' contains font name"
                     " in right format.")
