@@ -2519,16 +2519,18 @@ def main():
             fb.ok('Filename is set canonically.')
 
           # -----------------------------------------------
-          if f.style == 'italic':  # this test only applies to italic fonts
+          fb.new_check("METADATA.pb font.style `italic`"
+                       " matches font internals?")
+          if f.style != 'italic':
+            fb.skip("This test only applies to italic fonts.")
+          else:
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
+              fb.skip("Font lacks familyname and/or fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
-              pass
             else:
-              fb.new_check("METADATA.pb font.style `italic`"
-                           " matches font internals?")
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   fb.error('METADATA.pb style has been set to italic'
                            ' but font macStyle is improperly set')
@@ -2549,16 +2551,18 @@ def main():
                       " matches font internals.")
 
           # -----------------------------------------------
-          if f.style == 'normal':  # this test only applies to normal fonts
+          fb.new_check("METADATA.pb font.style `normal`"
+                       " matches font internals?")
+          if f.style != 'normal':
+            fb.skip("This test only applies to normal fonts.")
+          else:
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
             if not font_familyname or not font_fullname:
+              fb.skip("Font lacks familyname and/or fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
-              pass
             else:
-              fb.new_check("METADATA.pb font.style `normal`"
-                           " matches font internals?")
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   fb.error('METADATA.pb style has been set to normal'
                            ' but font macStyle is improperly set')
@@ -2672,11 +2676,12 @@ def main():
             fb.ok("Weight value matches postScriptName.")
 
           # -----------------------------------------------
+          fb.new_check("METADATA.pb lists fonts named canonicaly?")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
           if font_familyname is False:
-            pass  # skip this test
+            fb.skip("Skipping this test due to the lack"
+                    " of a FONT_FAMILY_NAME in the name table.")
           else:
-            fb.new_check("METADATA.pb lists fonts named canonicaly?")
             is_canonical = False
             _weights = []
             for value, intvalue in weights.items():
@@ -2696,6 +2701,8 @@ def main():
                        ' [%s] but %s' % (v, f.full_name))
 
           # ----------------------------------------------
+          fb.new_check("Font styles are named canonically?")
+
           def find_italic_in_name_table():
             for entry in font['name'].names:
               if 'italic' in entry.string.decode(entry.getEncoding()).lower():
@@ -2707,8 +2714,10 @@ def main():
                     font['post'].italicAngle or
                     find_italic_in_name_table())
 
-          if f.style in ['italic', 'normal']:
-            fb.new_check("Font styles are named canonically?")
+          if f.style not in ['italic', 'normal']:
+            fb.skip("This check only applies to font styles declared"
+                    " as 'italic' or 'regular' on METADATA.pb")
+          else:
             if is_italic() and f.style != 'italic':
               fb.error("%s: The font style is %s"
                        " but it should be italic" % (f.filename, f.style))
