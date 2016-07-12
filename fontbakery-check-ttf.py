@@ -784,6 +784,7 @@ def main():
       nameid = name.nameID
       plat = name.platformID
       expected_value = ""
+      expected_values = None
 
       if nameid == NAMEID_FONT_FAMILY_NAME:
         if plat == PLATFORM_ID_MACHINTOSH:
@@ -822,33 +823,38 @@ def main():
             else:
               expected_value = "Regular"
 
+      elif name.nameID == NAMEID_FULL_FONT_NAME:
+        if plat == PLATFORM_ID_MACHINTOSH:
+          if style == "Regular":
+            expected_value = fname_with_spaces
+          else:
+            expected_value = "{} {}".format(fname_with_spaces,
+                                            style_with_spaces)
+        elif plat == PLATFORM_ID_WINDOWS:
+          expected_values = ["{}-{}".format(fname,
+                                        style),
+                             "{} {}".format(fname_with_spaces,
+                                            style_with_spaces)]
+
       else:
         # We'll implement support for
         # more name entries later today :-)
         continue
 
-      if string != expected_value:
+      # This is to allow us to handle more than one choice:
+      if expected_values is None:
+        expected_values = [expected_value]
+
+      if string not in expected_values:
         failed = True
         fb.error(("[{}:{}] entry:"
                   " expected '{}'"
                   " but got '{}'").format(NAMEID_STR[nameid],
                                           PLATID_STR[plat],
-                                          expected_value,
+                                          "' or '".join(expected_values),
                                           string))
 
-      if name.nameID == NAMEID_FULL_FONT_NAME:
-        fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-        sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
-        expected_value = "{} {}".format(fname, sfname)
-        if (fname is not None and
-            sfname is not None and
-            string != expected_value):
-          failed = True
-          fb.error(("{} entry was expected to be:"
-                    " {}".format(NAMEID_STR[name.nameID],
-                                 expected_value)))
-
-      elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+      if name.nameID == NAMEID_POSTSCRIPT_NAME:
         fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
         sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
         expected_value = "{}-{}".format(''.join(fname.split()),
