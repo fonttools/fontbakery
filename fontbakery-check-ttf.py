@@ -106,30 +106,30 @@ NAMEID_LIGHT_BACKGROUND_PALETTE = 23
 NAMEID_DARK_BACKGROUD_PALETTE = 24
 
 NAMEID_STR = {
-  NAMEID_COPYRIGHT_NOTICE: "COPYRIGHT NOTICE",
-  NAMEID_FONT_FAMILY_NAME: "FONT FAMILY NAME",
-  NAMEID_FONT_SUBFAMILY_NAME: "FONT SUBFAMILY NAME",
-  NAMEID_UNIQUE_FONT_IDENTIFIER: "UNIQUE FONT IDENTIFIER",
-  NAMEID_FULL_FONT_NAME: "FULL FONT NAME",
-  NAMEID_VERSION_STRING: "VERSION STRING",
-  NAMEID_POSTSCRIPT_NAME: "POSTSCRIPT NAME",
+  NAMEID_COPYRIGHT_NOTICE: "COPYRIGHT_NOTICE",
+  NAMEID_FONT_FAMILY_NAME: "FONT_FAMILY_NAME",
+  NAMEID_FONT_SUBFAMILY_NAME: "FONT_SUBFAMILY_NAME",
+  NAMEID_UNIQUE_FONT_IDENTIFIER: "UNIQUE_FONT_IDENTIFIER",
+  NAMEID_FULL_FONT_NAME: "FULL_FONT_NAME",
+  NAMEID_VERSION_STRING: "VERSION_STRING",
+  NAMEID_POSTSCRIPT_NAME: "POSTSCRIPT_NAME",
   NAMEID_TRADEMARK: "TRADEMARK",
-  NAMEID_MANUFACTURER_NAME: "MANUFACTURER NAME",
+  NAMEID_MANUFACTURER_NAME: "MANUFACTURER_NAME",
   NAMEID_DESIGNER: "DESIGNER",
   NAMEID_DESCRIPTION: "DESCRIPTION",
-  NAMEID_VENDOR_URL: "VENDOR URL",
-  NAMEID_DESIGNER_URL: "DESIGNER URL",
-  NAMEID_LICENSE_DESCRIPTION: "LICENSE DESCRIPTION",
-  NAMEID_LICENSE_INFO_URL: "LICENSE INFO URL",
-  NAMEID_TYPOGRAPHIC_FAMILY_NAME: "TYPOGRAPHIC FAMILY NAME",
-  NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME: "TYPOGRAPHIC SUBFAMILY NAME",
-  NAMEID_COMPATIBLE_FULL_MACONLY: "COMPATIBLE FULL MACONLY",
-  NAMEID_SAMPLE_TEXT: "SAMPLE TEXT",
-  NAMEID_POSTSCRIPT_CID_NAME: "POSTSCRIPT CID NAME",
-  NAMEID_WWS_FAMILY_NAME: "WWS FAMILY NAME",
-  NAMEID_WWS_SUBFAMILY_NAME: "WWS SUBFAMILY NAME",
-  NAMEID_LIGHT_BACKGROUND_PALETTE: "LIGHT BACKGROUND PALETTE",
-  NAMEID_DARK_BACKGROUD_PALETTE: "DARK BACKGROUD PALETTE"
+  NAMEID_VENDOR_URL: "VENDOR_URL",
+  NAMEID_DESIGNER_URL: "DESIGNER_URL",
+  NAMEID_LICENSE_DESCRIPTION: "LICENSE_DESCRIPTION",
+  NAMEID_LICENSE_INFO_URL: "LICENSE_INFO_URL",
+  NAMEID_TYPOGRAPHIC_FAMILY_NAME: "TYPOGRAPHIC_FAMILY_NAME",
+  NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME: "TYPOGRAPHIC_SUBFAMILY_NAME",
+  NAMEID_COMPATIBLE_FULL_MACONLY: "COMPATIBLE_FULL_MACONLY",
+  NAMEID_SAMPLE_TEXT: "SAMPLE_TEXT",
+  NAMEID_POSTSCRIPT_CID_NAME: "POSTSCRIPT_CID_NAME",
+  NAMEID_WWS_FAMILY_NAME: "WWS_FAMILY_NAME",
+  NAMEID_WWS_SUBFAMILY_NAME: "WWS_SUBFAMILY_NAME",
+  NAMEID_LIGHT_BACKGROUND_PALETTE: "LIGHT_BACKGROUND_PALETTE",
+  NAMEID_DARK_BACKGROUD_PALETTE: "DARK_BACKGROUD_PALETTE"
 }
 
 # fsSelection bit definitions:
@@ -170,6 +170,14 @@ PLATFORM_ID_MACHINTOSH = 1
 PLATFORM_ID_ISO = 2
 PLATFORM_ID_WINDOWS = 3
 PLATFORM_ID_CUSTOM = 4
+
+PLATID_STR = {
+  PLATFORM_ID_UNICODE: "UNICODE",
+  PLATFORM_ID_MACHINTOSH: "MACHINTOSH",
+  PLATFORM_ID_ISO: "ISO",
+  PLATFORM_ID_WINDOWS: "WINDOWS",
+  PLATFORM_ID_CUSTOM: "CUSTOM"
+}
 
 # Unicode platform-specific encoding IDs (when platID == 0):
 PLAT_ENC_ID_UNICODE_BMP_ONLY = 3
@@ -727,32 +735,88 @@ def main():
                    NAMEID_FULL_FONT_NAME,
                    NAMEID_POSTSCRIPT_NAME,
                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                   NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
-                   NAMEID_COMPATIBLE_FULL_MACONLY]:
+                   NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
       if get_name_string(font, nameId) == None:
         failed = True
         fb.error(("Font lacks entry with"
                   " nameId={} ({})").format(nameId,
                                             NAMEID_STR[nameId]))
 
+    def with_spaces(value):
+      result = ''
+      for c in value:
+        if c.isupper():
+          result += " "
+        result += c
+      return result.strip()
+
+    def get_only_weigth(value):
+      onlyWeight = {"Black": "Black",
+                    "BlackItalic": "Black",
+                    "BoldItalic": "", # <-- This one seems a bit weird
+                    "Bold": "Bold",
+                    "ExtraBold": "ExtraBold",
+                    "ExtraBoldItalic": "ExtraBold",
+                    "ExtraLight": "ExtraLight",
+                    "ExtraLightItalic": "ExtraLight",
+                    "Light": "Light",
+                    "LightItalic": "Light",
+                    "Medium": "Medium",
+                    "MediumItalic": "Medium",
+                    "SemiBold": "SemiBold",
+                    "SemiBoldItalic": "SemiBold",
+                    "Thin": "Thin",
+                    "ThinItalic": "Thin"}
+
+      if value in onlyWeight.keys():
+        return onlyWeight[value]
+      else:
+        return value
+
+    filename = os.path.split(font_file)[1]
+    filename_base = os.path.splitext(filename)[0]
+    fname, style = filename_base.split('-')
+    fname_with_spaces = with_spaces(fname)
+    only_weight = get_only_weigth(style)
+
     for name in font['name'].names:
       string = name.string.decode(name.getEncoding()).strip()
-      if name.nameID in [NAMEID_FONT_FAMILY_NAME,
-                         NAMEID_TYPOGRAPHIC_FAMILY_NAME]:
-        if ' ' not in string:
-          failed = True
-          fb.error(("{} entry must contain"
-                    " at least 2 words separated by a space"
-                    " character").format(NAMEID_STR[name.nameID]))
-        else:
-          for word in string.split():
-            if is_lower(word[0]):
-              failed = True
-              fb.error(("Each word in {} entry"
-                        "must start with an uppercase"
-                        " letter.").format(NAMEID_STR[name.nameID]))
+      nameid = name.nameID
+      plat = name.platformID
+      expected_value = ""
 
-      elif name.nameID in [NAMEID_FONT_SUBFAMILY_NAME,
+      if nameid == NAMEID_FONT_FAMILY_NAME:
+        if plat == PLATFORM_ID_MACHINTOSH:
+          expected_value = fname_with_spaces
+        elif plat == PLATFORM_ID_WINDOWS:
+          if style in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+            expected_value = fname_with_spaces
+          else:
+            expected_value = " ".join([fname_with_spaces,
+                                       only_weight]).strip()
+        else:
+          fb.error(("Font should not have a "
+                    "[{}:{}] entry!").format(NAMEID_STR[nameid],
+                                             PLATID_STR[plat]))
+          continue
+      else:
+        # We'll implement support for
+        # more name entries later today :-)
+        continue
+
+      if string != expected_value:
+        failed = True
+        fb.error(("[{}:{}] entry:"
+                  " expected '{}'"
+                  " but got '{}'").format(NAMEID_STR[nameid],
+                                          PLATID_STR[plat],
+                                          expected_value,
+                                          string))
+
+      if name.nameID in [NAMEID_FONT_SUBFAMILY_NAME,
                            NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
         weights = ['Thin',
                    'ExtraLight',
