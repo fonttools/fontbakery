@@ -742,13 +742,19 @@ def main():
                   " nameId={} ({})").format(nameId,
                                             NAMEID_STR[nameId]))
 
-    def with_spaces(value):
+    def family_with_spaces(value):
       result = ''
       for c in value:
         if c.isupper():
           result += " "
         result += c
       return result.strip()
+
+    def stylename_with_spaces(stylename):
+      if "Italic" in stylename:
+        return " Italic".join(stylename.split("Italic")).strip()
+      else:
+        return stylename
 
     def get_only_weight(value):
       onlyWeight = {"BlackItalic": "Black",
@@ -769,7 +775,8 @@ def main():
     filename = os.path.split(font_file)[1]
     filename_base = os.path.splitext(filename)[0]
     fname, style = filename_base.split('-')
-    fname_with_spaces = with_spaces(fname)
+    fname_with_spaces = family_with_spaces(fname)
+    style_with_spaces = stylename_with_spaces(style)
     only_weight = get_only_weight(style)
 
     for name in font['name'].names:
@@ -795,6 +802,26 @@ def main():
                     "[{}:{}] entry!").format(NAMEID_STR[nameid],
                                              PLATID_STR[plat]))
           continue
+      elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
+        if style_with_spaces not in STYLE_NAMES:
+          fb.error(("Style name '{}' inferred from filename"
+                    " is not canonical."
+                    " Valid options are: {}").format(style_with_spaces,
+                                                     STYLE_NAMES))
+          continue
+
+        if plat == PLATFORM_ID_MACHINTOSH:
+          expected_value = style_with_spaces
+
+        elif plat == PLATFORM_ID_WINDOWS:
+          if style_with_spaces in ["Bold", "Bold Italic"]:
+            expected_value = style_with_spaces
+          else:
+            if "Italic" in style:
+              expected_value = "Italic"
+            else:
+              expected_value = "Regular"
+
       else:
         # We'll implement support for
         # more name entries later today :-)
@@ -809,24 +836,7 @@ def main():
                                           expected_value,
                                           string))
 
-      if name.nameID in [NAMEID_FONT_SUBFAMILY_NAME,
-                           NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
-        weights = ['Thin',
-                   'ExtraLight',
-                   'Light',
-                   '',
-                   'Medium',
-                   'SemiBold',
-                   'Bold',
-                   'ExtraBold',
-                   'Black']
-        if string not in weights:
-          failed = True
-          fb.error(("{} entry must be one of the following values: "
-                    "{}".format(NAMEID_STR[name.nameID],
-                                           weights)))
-
-      elif name.nameID == NAMEID_FULL_FONT_NAME:
+      if name.nameID == NAMEID_FULL_FONT_NAME:
         fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
         sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
         expected_value = "{} {}".format(fname, sfname)
