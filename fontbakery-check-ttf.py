@@ -750,7 +750,7 @@ def main():
         result += c
       return result.strip()
 
-    def get_only_weigth(value):
+    def get_only_weight(value):
       onlyWeight = {"BlackItalic": "Black",
                     "BoldItalic": "",
                     "ExtraBold": "ExtraBold",
@@ -770,7 +770,7 @@ def main():
     filename_base = os.path.splitext(filename)[0]
     fname, style = filename_base.split('-')
     fname_with_spaces = with_spaces(fname)
-    only_weight = get_only_weigth(style)
+    only_weight = get_only_weight(style)
 
     for name in font['name'].names:
       string = name.string.decode(name.getEncoding()).strip()
@@ -1385,7 +1385,7 @@ def main():
         fb.ok("xAvgCharWidth value is correct.")
       else:
         fb.error(("xAvgCharWidth is {} but it should be "
-                  "{} which corresponds to the weigthed "
+                  "{} which corresponds to the weighted "
                   "average of the widths of the latin "
                   "lowercase glyphs in "
                   "the font").format(font['OS/2'].xAvgCharWidth,
@@ -2291,7 +2291,7 @@ def main():
 #        error = error % font.OS2_usWidthClass
 #        self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
 #
-#    def test_check_upm_heigths_less_120(self):
+#    def test_check_upm_heights_less_120(self):
 #        """ UPM Heights are NOT greater than 120%? """
 #        ttfont = Font.get_ttfont(self.operator.path)
 #        value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
