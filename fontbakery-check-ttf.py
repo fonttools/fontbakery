@@ -751,21 +751,14 @@ def main():
       return result.strip()
 
     def get_only_weigth(value):
-      onlyWeight = {"Black": "Black",
-                    "BlackItalic": "Black",
-                    "BoldItalic": "", # <-- This one seems a bit weird
-                    "Bold": "Bold",
+      onlyWeight = {"BlackItalic": "Black",
+                    "BoldItalic": "",
                     "ExtraBold": "ExtraBold",
                     "ExtraBoldItalic": "ExtraBold",
-                    "ExtraLight": "ExtraLight",
                     "ExtraLightItalic": "ExtraLight",
-                    "Light": "Light",
                     "LightItalic": "Light",
-                    "Medium": "Medium",
                     "MediumItalic": "Medium",
-                    "SemiBold": "SemiBold",
                     "SemiBoldItalic": "SemiBold",
-                    "Thin": "Thin",
                     "ThinItalic": "Thin"}
 
       if value in onlyWeight.keys():
