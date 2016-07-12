@@ -105,6 +105,33 @@ NAMEID_WWS_SUBFAMILY_NAME = 22
 NAMEID_LIGHT_BACKGROUND_PALETTE = 23
 NAMEID_DARK_BACKGROUD_PALETTE = 24
 
+NAMEID_STR = {
+  NAMEID_COPYRIGHT_NOTICE: "COPYRIGHT NOTICE",
+  NAMEID_FONT_FAMILY_NAME: "FONT FAMILY NAME",
+  NAMEID_FONT_SUBFAMILY_NAME: "FONT SUBFAMILY NAME",
+  NAMEID_UNIQUE_FONT_IDENTIFIER: "UNIQUE FONT IDENTIFIER",
+  NAMEID_FULL_FONT_NAME: "FULL FONT NAME",
+  NAMEID_VERSION_STRING: "VERSION STRING",
+  NAMEID_POSTSCRIPT_NAME: "POSTSCRIPT NAME",
+  NAMEID_TRADEMARK: "TRADEMARK",
+  NAMEID_MANUFACTURER_NAME: "MANUFACTURER NAME",
+  NAMEID_DESIGNER: "DESIGNER",
+  NAMEID_DESCRIPTION: "DESCRIPTION",
+  NAMEID_VENDOR_URL: "VENDOR URL",
+  NAMEID_DESIGNER_URL: "DESIGNER URL",
+  NAMEID_LICENSE_DESCRIPTION: "LICENSE DESCRIPTION",
+  NAMEID_LICENSE_INFO_URL: "LICENSE INFO URL",
+  NAMEID_TYPOGRAPHIC_FAMILY_NAME: "TYPOGRAPHIC FAMILY NAME",
+  NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME: "TYPOGRAPHIC SUBFAMILY NAME",
+  NAMEID_COMPATIBLE_FULL_MACONLY: "COMPATIBLE FULL MACONLY",
+  NAMEID_SAMPLE_TEXT: "SAMPLE TEXT",
+  NAMEID_POSTSCRIPT_CID_NAME: "POSTSCRIPT CID NAME",
+  NAMEID_WWS_FAMILY_NAME: "WWS FAMILY NAME",
+  NAMEID_WWS_SUBFAMILY_NAME: "WWS SUBFAMILY NAME",
+  NAMEID_LIGHT_BACKGROUND_PALETTE: "LIGHT BACKGROUND PALETTE",
+  NAMEID_DARK_BACKGROUD_PALETTE: "DARK BACKGROUD PALETTE"
+}
+
 # fsSelection bit definitions:
 FSSEL_ITALIC         = (1 << 0)
 FSSEL_UNDERSCORE     = (1 << 1)
@@ -683,6 +710,96 @@ def main():
     fb.new_check("Checking OS/2 fsType")
     assert_table_entry('OS/2', 'fsType', 0)
     log_results("fsType is zero.")
+
+    # ----------------------------------------------------
+    fb.new_check("Assure valid format for the"
+                 " main entries in the name table.")
+    # Each entry in the name table has a criteria for validity and
+    # this check tests if all entries in the name table are
+    # in conformance with that. This check applies only
+    # to name IDs 1, 2, 4, 6, 16, 17, 18.
+    # It must run before any of the other name table related checks.
+
+    failed = False
+    # The font must have at least these name IDs:
+    for nameId in [NAMEID_FONT_FAMILY_NAME,
+                   NAMEID_FONT_SUBFAMILY_NAME,
+                   NAMEID_FULL_FONT_NAME,
+                   NAMEID_POSTSCRIPT_NAME,
+                   NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                   NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                   NAMEID_COMPATIBLE_FULL_MACONLY]:
+      if get_name_string(font, nameId) == None:
+        failed = True
+        fb.error(("Font lacks entry with"
+                  " nameId={} ({})").format(nameId,
+                                            NAMEID_STR[nameId]))
+
+    for name in font['name'].names:
+      string = name.string.decode(name.getEncoding()).strip()
+      if name.nameID in [NAMEID_FONT_FAMILY_NAME,
+                         NAMEID_TYPOGRAPHIC_FAMILY_NAME]:
+        if ' ' not in string:
+          failed = True
+          fb.error(("{} entry must contain"
+                    " at least 2 words separated by a space"
+                    " character").format(NAMEID_STR[name.nameID]))
+        else:
+          for word in string.split():
+            if is_lower(word[0]):
+              failed = True
+              fb.error(("Each word in {} entry"
+                        "must start with an uppercase"
+                        " letter.").format(NAMEID_STR[name.nameID]))
+
+      elif name.nameID in [NAMEID_FONT_SUBFAMILY_NAME,
+                           NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
+        weights = ['Thin',
+                   'ExtraLight',
+                   'Light',
+                   '',
+                   'Medium',
+                   'SemiBold',
+                   'Bold',
+                   'ExtraBold',
+                   'Black']
+        if string not in weights:
+          failed = True
+          fb.error(("{} entry must be one of the following values: "
+                    "{}".format(NAMEID_STR[name.nameID],
+                                           weights)))
+
+      elif name.nameID == NAMEID_FULL_FONT_NAME:
+        fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+        sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
+        expected_value = "{} {}".format(fname, sfname)
+        if (fname is not None and
+            sfname is not None and
+            string != expected_value):
+          failed = True
+          fb.error(("{} entry was expected to be:"
+                    " {}".format(NAMEID_STR[name.nameID],
+                                 expected_value)))
+
+      elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+        fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+        sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
+        expected_value = "{}-{}".format(''.join(fname.split()),
+                                        sfname)
+        if (fname is not None and
+            sfname is not None and
+            string != expected_value):
+          failed = True
+          fb.error(("{} entry was expected to be:"
+                    " {}".format(NAMEID_STR[name.nameID],
+                                 expected_value)))
+
+      elif name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
+        pass # FSanches: not sure yet which rule to use here...
+
+    if failed is False:
+      fb.ok("Main entries in the name table"
+            " conform to expected format.")
 
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 achVendID")
