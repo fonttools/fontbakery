@@ -803,6 +803,7 @@ def main():
                     "[{}:{}] entry!").format(NAMEID_STR[nameid],
                                              PLATID_STR[plat]))
           continue
+
       elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
         if style_with_spaces not in STYLE_NAMES:
           fb.error(("Style name '{}' inferred from filename"
@@ -839,6 +840,12 @@ def main():
       elif name.nameID == NAMEID_POSTSCRIPT_NAME:
         expected_value = "{}-{}".format(fname,
                                         style)
+
+      elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+        expected_value = fname_with_spaces
+
+      elif nameid == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+        expected_value = style_with_spaces
 
       else:
         # This ignores any other nameID that might
