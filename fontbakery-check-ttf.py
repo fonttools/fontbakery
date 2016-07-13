@@ -751,10 +751,7 @@ def main():
       return result.strip()
 
     def stylename_with_spaces(stylename):
-      if "Italic" in stylename:
-        return " Italic".join(stylename.split("Italic")).strip()
-      else:
-        return stylename
+      return stylename.replace('Italic', ' Italic').strip()
 
     def get_only_weight(value):
       onlyWeight = {"BlackItalic": "Black",
