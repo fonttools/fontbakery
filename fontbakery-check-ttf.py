@@ -750,9 +750,6 @@ def main():
         result += c
       return result.strip()
 
-    def stylename_with_spaces(stylename):
-      return stylename.replace('Italic', ' Italic').strip()
-
     def get_only_weight(value):
       onlyWeight = {"BlackItalic": "Black",
                     "BoldItalic": "",
@@ -773,7 +770,8 @@ def main():
     filename_base = os.path.splitext(filename)[0]
     fname, style = filename_base.split('-')
     fname_with_spaces = family_with_spaces(fname)
-    style_with_spaces = stylename_with_spaces(style)
+    style_with_spaces = style.replace('Italic',
+                                      ' Italic').strip()
     only_weight = get_only_weight(style)
 
     for name in font['name'].names:
