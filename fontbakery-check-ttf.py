@@ -840,11 +840,6 @@ def main():
         expected_value = "{}-{}".format(fname,
                                         style)
 
-      # TODO: Figure out if we really need to handle these entries
-      #       and what would be the expected format for them.
-#      elif name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
-#        expected_value = "some-rule-here"
-
       else:
         # This ignores any other nameID that might
         # be declared in the name table
