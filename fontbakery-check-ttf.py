@@ -774,7 +774,7 @@ def main():
     failed = False
     # The font must have at least these name IDs:
     for nameId in required_nameIDs:
-      if get_name_string(font, nameId) == None:
+      if get_name_string(font, nameId) is None:
         failed = True
         fb.error(("Font lacks entry with"
                   " nameId={} ({})").format(nameId,
@@ -833,7 +833,7 @@ def main():
                                             style_with_spaces)
         elif plat == PLATFORM_ID_WINDOWS:
           expected_values = ["{}-{}".format(fname,
-                                        style),
+                                            style),
                              "{} {}".format(fname_with_spaces,
                                             style_with_spaces)]
 
