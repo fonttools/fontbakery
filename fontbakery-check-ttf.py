@@ -66,6 +66,11 @@ STYLE_NAMES = ["Thin",
                "ExtraBold Italic",
                "Black Italic"]
 
+RIBBI_STYLE_NAMES = ["Regular",
+                     "Italic",
+                     "Bold",
+                     "Bold Italic"]
+
 # Weight name to value mapping:
 WEIGHTS = {"Thin": 250,
            "ExtraLight": 275,
@@ -728,20 +733,6 @@ def main():
     # to name IDs 1, 2, 4, 6, 16, 17, 18.
     # It must run before any of the other name table related checks.
 
-    failed = False
-    # The font must have at least these name IDs:
-    for nameId in [NAMEID_FONT_FAMILY_NAME,
-                   NAMEID_FONT_SUBFAMILY_NAME,
-                   NAMEID_FULL_FONT_NAME,
-                   NAMEID_POSTSCRIPT_NAME,
-                   NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                   NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]:
-      if get_name_string(font, nameId) == None:
-        failed = True
-        fb.error(("Font lacks entry with"
-                  " nameId={} ({})").format(nameId,
-                                            NAMEID_STR[nameId]))
-
     def family_with_spaces(value):
       result = ''
       for c in value:
@@ -760,7 +751,6 @@ def main():
                     "MediumItalic": "Medium",
                     "SemiBoldItalic": "SemiBold",
                     "ThinItalic": "Thin"}
-
       if value in onlyWeight.keys():
         return onlyWeight[value]
       else:
@@ -773,7 +763,22 @@ def main():
     style_with_spaces = style.replace('Italic',
                                       ' Italic').strip()
     only_weight = get_only_weight(style)
+    required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
+                        NAMEID_FONT_SUBFAMILY_NAME,
+                        NAMEID_FULL_FONT_NAME,
+                        NAMEID_POSTSCRIPT_NAME]
 
+    if style not in RIBBI_STYLE_NAMES:
+      required_nameIDs += [NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                           NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+    failed = False
+    # The font must have at least these name IDs:
+    for nameId in required_nameIDs:
+      if get_name_string(font, nameId) == None:
+        failed = True
+        fb.error(("Font lacks entry with"
+                  " nameId={} ({})").format(nameId,
+                                            NAMEID_STR[nameId]))
     for name in font['name'].names:
       string = name.string.decode(name.getEncoding()).strip()
       nameid = name.nameID
