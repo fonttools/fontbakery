@@ -840,9 +840,14 @@ def main():
         expected_value = "{}-{}".format(fname,
                                         style)
 
+      # TODO: Figure out if we really need to handle these entries
+      #       and what would be the expected format for them.
+#      elif name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
+#        expected_value = "some-rule-here"
+
       else:
-        # We'll implement support for
-        # more name entries later today :-)
+        # This ignores any other nameID that might
+        # be declared in the name table
         continue
 
       # This is to allow us to handle more than one choice:
@@ -857,9 +862,6 @@ def main():
                                           PLATID_STR[plat],
                                           "' or '".join(expected_values),
                                           string))
-
-      if name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
-        pass # FSanches: not sure yet which rule to use here...
 
     if failed is False:
       fb.ok("Main entries in the name table"
