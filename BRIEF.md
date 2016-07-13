@@ -32,6 +32,8 @@ Existing font checking tools from other projects and companies are integrated to
 While developing font bakery, we aim to avoid development distractions. 
 For example, to access internet resources we may use our own native Python utility methods for simple cases, and [GNU wget](https://en.wikipedia.org/wiki/Wget) or other common system utilities for more complex cases (such as resuming large files.)
 
+For Python code style, we conform to [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
+
 #### 1.1 terminology
 
 An individual user-ready font file is normally referred to as a 'TTF' file, because it uses the `.ttf` extension and is in the TrueType flavour of the OpenType font standard.
