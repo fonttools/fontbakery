@@ -836,6 +836,10 @@ def main():
                              "{} {}".format(fname_with_spaces,
                                             style_with_spaces)]
 
+      elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+        expected_value = "{}-{}".format(fname,
+                                        style)
+
       else:
         # We'll implement support for
         # more name entries later today :-)
@@ -854,20 +858,7 @@ def main():
                                           "' or '".join(expected_values),
                                           string))
 
-      if name.nameID == NAMEID_POSTSCRIPT_NAME:
-        fname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-        sfname = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
-        expected_value = "{}-{}".format(''.join(fname.split()),
-                                        sfname)
-        if (fname is not None and
-            sfname is not None and
-            string != expected_value):
-          failed = True
-          fb.error(("{} entry was expected to be:"
-                    " {}".format(NAMEID_STR[name.nameID],
-                                 expected_value)))
-
-      elif name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
+      if name.nameID == NAMEID_COMPATIBLE_FULL_MACONLY:
         pass # FSanches: not sure yet which rule to use here...
 
     if failed is False:
