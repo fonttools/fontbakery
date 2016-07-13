@@ -1403,6 +1403,26 @@ def main():
                                      expected_value))
 
     # ----------------------------------------------------
+    fb.new_check("Checking with ftxvalidator")
+    try:
+      ftx_cmd = ["ftxvalidator",
+                 "-r", # Generate a full report
+                 "-t", "all", # execute all tests
+                 font_file]
+      ftx_output = subprocess.check_output(ftx_cmd,
+                                           stderr=subprocess.STDOUT)
+      if ftx_output != "":
+        fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+      else:
+        fb.ok("ftxvalidator passed this file")
+    except subprocess.CalledProcessError, e:
+        fb.info(("ftxvalidator returned an error code. Output follows :"
+                 "\n\n{}\n").format(e.output))
+    except OSError:
+      fb.warning("ftxvalidator is not available.")
+      pass
+
+    # ----------------------------------------------------
     fb.new_check("Checking with ot-sanitise")
     try:
       ots_output = subprocess.check_output(["ot-sanitise", font_file],
