@@ -66,6 +66,11 @@ STYLE_NAMES = ["Thin",
                "ExtraBold Italic",
                "Black Italic"]
 
+RIBBI_STYLE_NAMES = ["Regular",
+                     "Italic",
+                     "Bold",
+                     "Bold Italic"]
+
 # Weight name to value mapping:
 WEIGHTS = {"Thin": 250,
            "ExtraLight": 275,
@@ -105,6 +110,33 @@ NAMEID_WWS_SUBFAMILY_NAME = 22
 NAMEID_LIGHT_BACKGROUND_PALETTE = 23
 NAMEID_DARK_BACKGROUD_PALETTE = 24
 
+NAMEID_STR = {
+  NAMEID_COPYRIGHT_NOTICE: "COPYRIGHT_NOTICE",
+  NAMEID_FONT_FAMILY_NAME: "FONT_FAMILY_NAME",
+  NAMEID_FONT_SUBFAMILY_NAME: "FONT_SUBFAMILY_NAME",
+  NAMEID_UNIQUE_FONT_IDENTIFIER: "UNIQUE_FONT_IDENTIFIER",
+  NAMEID_FULL_FONT_NAME: "FULL_FONT_NAME",
+  NAMEID_VERSION_STRING: "VERSION_STRING",
+  NAMEID_POSTSCRIPT_NAME: "POSTSCRIPT_NAME",
+  NAMEID_TRADEMARK: "TRADEMARK",
+  NAMEID_MANUFACTURER_NAME: "MANUFACTURER_NAME",
+  NAMEID_DESIGNER: "DESIGNER",
+  NAMEID_DESCRIPTION: "DESCRIPTION",
+  NAMEID_VENDOR_URL: "VENDOR_URL",
+  NAMEID_DESIGNER_URL: "DESIGNER_URL",
+  NAMEID_LICENSE_DESCRIPTION: "LICENSE_DESCRIPTION",
+  NAMEID_LICENSE_INFO_URL: "LICENSE_INFO_URL",
+  NAMEID_TYPOGRAPHIC_FAMILY_NAME: "TYPOGRAPHIC_FAMILY_NAME",
+  NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME: "TYPOGRAPHIC_SUBFAMILY_NAME",
+  NAMEID_COMPATIBLE_FULL_MACONLY: "COMPATIBLE_FULL_MACONLY",
+  NAMEID_SAMPLE_TEXT: "SAMPLE_TEXT",
+  NAMEID_POSTSCRIPT_CID_NAME: "POSTSCRIPT_CID_NAME",
+  NAMEID_WWS_FAMILY_NAME: "WWS_FAMILY_NAME",
+  NAMEID_WWS_SUBFAMILY_NAME: "WWS_SUBFAMILY_NAME",
+  NAMEID_LIGHT_BACKGROUND_PALETTE: "LIGHT_BACKGROUND_PALETTE",
+  NAMEID_DARK_BACKGROUD_PALETTE: "DARK_BACKGROUD_PALETTE"
+}
+
 # fsSelection bit definitions:
 FSSEL_ITALIC         = (1 << 0)
 FSSEL_UNDERSCORE     = (1 << 1)
@@ -143,6 +175,14 @@ PLATFORM_ID_MACHINTOSH = 1
 PLATFORM_ID_ISO = 2
 PLATFORM_ID_WINDOWS = 3
 PLATFORM_ID_CUSTOM = 4
+
+PLATID_STR = {
+  PLATFORM_ID_UNICODE: "UNICODE",
+  PLATFORM_ID_MACHINTOSH: "MACHINTOSH",
+  PLATFORM_ID_ISO: "ISO",
+  PLATFORM_ID_WINDOWS: "WINDOWS",
+  PLATFORM_ID_CUSTOM: "CUSTOM"
+}
 
 # Unicode platform-specific encoding IDs (when platID == 0):
 PLAT_ENC_ID_UNICODE_BMP_ONLY = 3
@@ -685,6 +725,151 @@ def main():
     log_results("fsType is zero.")
 
     # ----------------------------------------------------
+    fb.new_check("Assure valid format for the"
+                 " main entries in the name table.")
+    # Each entry in the name table has a criteria for validity and
+    # this check tests if all entries in the name table are
+    # in conformance with that. This check applies only
+    # to name IDs 1, 2, 4, 6, 16, 17, 18.
+    # It must run before any of the other name table related checks.
+
+    def family_with_spaces(value):
+      result = ''
+      for c in value:
+        if c.isupper():
+          result += " "
+        result += c
+      return result.strip()
+
+    def get_only_weight(value):
+      onlyWeight = {"BlackItalic": "Black",
+                    "BoldItalic": "",
+                    "ExtraBold": "ExtraBold",
+                    "ExtraBoldItalic": "ExtraBold",
+                    "ExtraLightItalic": "ExtraLight",
+                    "LightItalic": "Light",
+                    "MediumItalic": "Medium",
+                    "SemiBoldItalic": "SemiBold",
+                    "ThinItalic": "Thin"}
+      if value in onlyWeight.keys():
+        return onlyWeight[value]
+      else:
+        return value
+
+    filename = os.path.split(font_file)[1]
+    filename_base = os.path.splitext(filename)[0]
+    fname, style = filename_base.split('-')
+    fname_with_spaces = family_with_spaces(fname)
+    style_with_spaces = style.replace('Italic',
+                                      ' Italic').strip()
+    only_weight = get_only_weight(style)
+    required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
+                        NAMEID_FONT_SUBFAMILY_NAME,
+                        NAMEID_FULL_FONT_NAME,
+                        NAMEID_POSTSCRIPT_NAME]
+
+    if style not in RIBBI_STYLE_NAMES:
+      required_nameIDs += [NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                           NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+    failed = False
+    # The font must have at least these name IDs:
+    for nameId in required_nameIDs:
+      if get_name_string(font, nameId) == None:
+        failed = True
+        fb.error(("Font lacks entry with"
+                  " nameId={} ({})").format(nameId,
+                                            NAMEID_STR[nameId]))
+    for name in font['name'].names:
+      string = name.string.decode(name.getEncoding()).strip()
+      nameid = name.nameID
+      plat = name.platformID
+      expected_value = ""
+      expected_values = None
+
+      if nameid == NAMEID_FONT_FAMILY_NAME:
+        if plat == PLATFORM_ID_MACHINTOSH:
+          expected_value = fname_with_spaces
+        elif plat == PLATFORM_ID_WINDOWS:
+          if style in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+            expected_value = fname_with_spaces
+          else:
+            expected_value = " ".join([fname_with_spaces,
+                                       only_weight]).strip()
+        else:
+          fb.error(("Font should not have a "
+                    "[{}:{}] entry!").format(NAMEID_STR[nameid],
+                                             PLATID_STR[plat]))
+          continue
+
+      elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
+        if style_with_spaces not in STYLE_NAMES:
+          fb.error(("Style name '{}' inferred from filename"
+                    " is not canonical."
+                    " Valid options are: {}").format(style_with_spaces,
+                                                     STYLE_NAMES))
+          continue
+
+        if plat == PLATFORM_ID_MACHINTOSH:
+          expected_value = style_with_spaces
+
+        elif plat == PLATFORM_ID_WINDOWS:
+          if style_with_spaces in ["Bold", "Bold Italic"]:
+            expected_value = style_with_spaces
+          else:
+            if "Italic" in style:
+              expected_value = "Italic"
+            else:
+              expected_value = "Regular"
+
+      elif name.nameID == NAMEID_FULL_FONT_NAME:
+        if plat == PLATFORM_ID_MACHINTOSH:
+          if style == "Regular":
+            expected_value = fname_with_spaces
+          else:
+            expected_value = "{} {}".format(fname_with_spaces,
+                                            style_with_spaces)
+        elif plat == PLATFORM_ID_WINDOWS:
+          expected_values = ["{}-{}".format(fname,
+                                        style),
+                             "{} {}".format(fname_with_spaces,
+                                            style_with_spaces)]
+
+      elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+        expected_value = "{}-{}".format(fname,
+                                        style)
+
+      elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+        expected_value = fname_with_spaces
+
+      elif nameid == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+        expected_value = style_with_spaces
+
+      else:
+        # This ignores any other nameID that might
+        # be declared in the name table
+        continue
+
+      # This is to allow us to handle more than one choice:
+      if expected_values is None:
+        expected_values = [expected_value]
+
+      if string not in expected_values:
+        failed = True
+        fb.error(("[{}:{}] entry:"
+                  " expected '{}'"
+                  " but got '{}'").format(NAMEID_STR[nameid],
+                                          PLATID_STR[plat],
+                                          "' or '".join(expected_values),
+                                          string))
+
+    if failed is False:
+      fb.ok("Main entries in the name table"
+            " conform to expected format.")
+
+    # ----------------------------------------------------
     fb.new_check("Checking OS/2 achVendID")
     vid = font['OS/2'].achVendID
     bad_vids = ['UKWN', 'ukwn', 'PfEd']
@@ -1211,7 +1396,7 @@ def main():
         fb.ok("xAvgCharWidth value is correct.")
       else:
         fb.error(("xAvgCharWidth is {} but it should be "
-                  "{} which corresponds to the weigthed "
+                  "{} which corresponds to the weighted "
                   "average of the widths of the latin "
                   "lowercase glyphs in "
                   "the font").format(font['OS/2'].xAvgCharWidth,
@@ -2117,7 +2302,7 @@ def main():
 #        error = error % font.OS2_usWidthClass
 #        self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
 #
-#    def test_check_upm_heigths_less_120(self):
+#    def test_check_upm_heights_less_120(self):
 #        """ UPM Heights are NOT greater than 120%? """
 #        ttfont = Font.get_ttfont(self.operator.path)
 #        value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
