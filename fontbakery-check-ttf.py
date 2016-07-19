@@ -423,17 +423,21 @@ def parse_version_string(s):
 
 
 def getGlyph(font, uchar):
-    # DC This 'if not / continue' structure seems weird to me.
-    # why not just "if" and thats it?
     for table in font['cmap'].tables:
-        if not (table.platformID == PLATFORM_ID_WINDOWS and
+        if table.platformID == PLATFORM_ID_WINDOWS and\
            table.platEncID in [PLAT_ENC_ID_UCS2,
-                               PLAT_ENC_ID_UCS4]):
-            continue
-        if uchar in table.cmap:
-            return table.cmap[uchar]
-    return None
+                               PLAT_ENC_ID_UCS4]:
+          if uchar in table.cmap:
+              return table.cmap[uchar]
 
+def getGlyphEncodings(font, names):
+    result = set()
+    for subtable in font['cmap'].tables:
+        if subtable.isUnicode():
+            for codepoint, name in subtable.cmap.items():
+                if name in names:
+                    result.add(codepoint)
+    return result
 
 def getWidth(font, glyph):
     return font['hmtx'][glyph][0]
@@ -1697,10 +1701,10 @@ def main():
     # tab = getGlyph(font, 0x0009)
 
     missing = []
-    if not space: missing.append("space (0x0020)")
-    if not nbsp: missing.append("nbsp (0x00A0)")
+    if space is None: missing.append("space (0x0020)")
+    if nbsp is None: missing.append("nbsp (0x00A0)")
     # fonts probably don't need an actual tab char
-    # if not tab: missing.append("tab (0x0009)")
+    # if tab is None: missing.append("tab (0x0009)")
     if missing != []:
         fb.error("Font is missing"
                  " the following glyphs: {}.".format(", ".join(missing)))
@@ -1713,20 +1717,27 @@ def main():
       fb.skip("Because some whitespace glyphs are missing. Fix that before!")
     else:
       failed = False
-      if space is not None and space not in ["space", "uni0020"]:
+      space_enc = getGlyphEncodings(font, ["uni0020", "space"])
+      nbsp_enc = getGlyphEncodings(font, ["uni00A0",
+                                          "nonbreakingspace",
+                                          "nbspace",
+                                          "nbsp"])
+      if 0x0020 not in space_enc:
         failed = True
         fb.error(('{}: Glyph 0x0020 is called "{}":'
                   ' Change to "space"'
                   ' or "uni0020"').format(filename, space))
 
-      if nbsp is not None and nbsp not in ["nbsp",
-                                           "uni00A0",
-                                           "nonbreakingspace",
-                                           "nbspace"]:
-        failed = True
-        fb.error(('{}: Glyph 0x00A0 is called "{}":'
-                  ' Change to "nbsp"'
-                  ' or "uni00A0"').format(filename, nbsp))
+      if 0x00A0 not in nbsp_enc:
+        if 0x00A0 in space_enc:
+          # This is OK.
+          # Some fonts use the same glyph for both space and nbsp.
+          pass
+        else:
+          failed = True
+          fb.error(('{}: Glyph 0x00A0 is called "{}":'
+                    ' Change to "nbsp"'
+                    ' or "uni00A0"').format(filename, nbsp))
 
       if failed is False:
         fb.ok('Font has **proper** whitespace glyph names.')
