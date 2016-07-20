@@ -430,6 +430,7 @@ def getGlyph(font, uchar):
           if uchar in table.cmap:
               return table.cmap[uchar]
 
+
 def getGlyphEncodings(font, names):
     result = set()
     for subtable in font['cmap'].tables:
@@ -438,6 +439,7 @@ def getGlyphEncodings(font, names):
                 if name in names:
                     result.add(codepoint)
     return result
+
 
 def getWidth(font, glyph):
     return font['hmtx'][glyph][0]
@@ -1410,8 +1412,8 @@ def main():
     fb.new_check("Checking with ftxvalidator")
     try:
       ftx_cmd = ["ftxvalidator",
-                 "-r", # Generate a full report
-                 "-t", "all", # execute all tests
+                 "-r",  # Generate a full report
+                 "-t", "all",  # execute all tests
                  font_file]
       ftx_output = subprocess.check_output(ftx_cmd,
                                            stderr=subprocess.STDOUT)
