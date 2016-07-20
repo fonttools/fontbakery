@@ -1643,18 +1643,16 @@ def main():
     else:
         for name in font['name'].names:
             if name.nameID == NAMEID_VERSION_STRING:
-                encoding = name.getEncoding()
-                s = name.string.decode(encoding)
-                # TODO: create an assert_ helper for name table entries
-                # of specific name IDs ?
                 s = "Version {}.{};{}".format(ttf_version[0],
                                               ttf_version[1],
                                               ttf_version[2])
+                encoding = name.getEncoding()
                 new_string = s.encode(encoding)
                 if name.string != new_string:
-                    fixes.append("NAMEID_VERSION_STRING "
-                                 "from {} to {}".format(name.string,
-                                                        new_string))
+                    fixes.append(("NAMEID_VERSION_STRING "
+                                  "from '{}' to '{}'"
+                                  "").format(name.string.decode(encoding),
+                                             new_string.decode(encoding)))
                     name.string = new_string
         if 'CFF ' in font.keys():
             major, minor, _ = ttf_version
