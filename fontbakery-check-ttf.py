@@ -640,6 +640,23 @@ def main():
       fb.ok("Font designer field is not 'unknown'.")
 
     # -----------------------------------------------------
+    fb.new_check("Fonts have consistent underline thickness?")
+    fail = False
+    uWeight = None
+    for f in family.fonts:
+      ttfont = ttf_file(f)
+      if uWeight is None:
+        uWeight = ttfont['post'].underlineThickness
+      if uWeight != ttfont['post'].underlineThickness:
+        fail = True
+
+    if fail:
+      fb.error("Thickness of the underline is not"
+               " the same accross this family.")
+    else:
+      fb.ok("Fonts have consistent underline thickness.")
+
+    # -----------------------------------------------------
     fb.new_check("Fonts have equal numbers of glyphs?")
     glyphs_count = 0
     fail = False
