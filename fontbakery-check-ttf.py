@@ -657,6 +657,40 @@ def main():
       fb.ok("Fonts have consistent underline thickness.")
 
     # -----------------------------------------------------
+    fb.new_check("Fonts have consistent PANOSE proportion?")
+    fail = False
+    proportion = None
+    for f in family.fonts:
+      ttfont = ttf_file(f)
+      if proportion is None:
+        proportion = ttfont['OS/2'].panose.bProportion
+      if proportion != ttfont['OS/2'].panose.bProportion:
+        fail = True
+
+    if fail:
+      fb.error("PANOSE proportion is not"
+               " the same accross this family.")
+    else:
+      fb.ok("Fonts have consistent PANOSE proportion.")
+
+    # -----------------------------------------------------
+    fb.new_check("Fonts have consistent PANOSE family type?")
+    fail = False
+    familytype = None
+    for f in family.fonts:
+      ttfont = ttf_file(f)
+      if familytype is None:
+        familytype = ttfont['OS/2'].panose.bFamilyType
+      if familytype != ttfont['OS/2'].panose.bFamilyType:
+        fail = True
+
+    if fail:
+      fb.error("PANOSE family type is not"
+               " the same accross this family.")
+    else:
+      fb.ok("Fonts have consistent PANOSE family type.")
+
+    # -----------------------------------------------------
     fb.new_check("Fonts have equal numbers of glyphs?")
     glyphs_count = 0
     fail = False
