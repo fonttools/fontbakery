@@ -220,6 +220,7 @@ UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 class FontBakeryCheckLogger():
   all_checks = []
   current_check = None
+  default_target = None  # All new checks have this target by default
 
   def save_json_report(self, filename="fontbakery-check-results.json"):
     import json
@@ -255,7 +256,15 @@ class FontBakeryCheckLogger():
     logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
     self.current_check = {"description": desc,
                           "log_messages": [],
-                          "result": "unknown"}
+                          "result": "unknown",
+                          "target": self.default_target}
+
+  def set_target(self, value):
+    '''sets target of the current check.
+       This can be a folder, or a specific TTF file
+       or a METADATA.pb file'''
+    if self.current_check:
+      self.current_check["target"] = value
 
   def skip(self, msg):
     logging.info("SKIP: " + msg)
@@ -517,6 +526,15 @@ def main():
   else:
     logger.setLevel(logging.ERROR)
 
+  # TODO:
+  # If the set of font files passed in the command line
+  # are not all in the same directory, then I think we should
+  # warn the user, since the tool will interpret the set of files
+  # as belonging to a single family (and I think it is unlikely
+  # that the user would store the files from a single family
+  # spreaded in several separate directories).
+  # -- FSanches
+
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
@@ -540,6 +558,7 @@ def main():
 
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
+    fb.set_target(file_path)  # all font files are in the same directory, right?
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -634,6 +653,8 @@ def main():
       else:
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
+
+    fb.default_target = dirname
     # -----------------------------------------------------
     fb.new_check("Font designer field is 'unknown' ?")
     if family.designer.lower() == 'unknown':
@@ -765,6 +786,7 @@ def main():
  # ------------------------------------------------------
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
+    fb.default_target = font_file
     logging.info("OK: {} opened with fontTools".format(font_file))
 
     # ----------------------------------------------------
@@ -2413,6 +2435,7 @@ def main():
       logging.error("{} is missing a METADATA.pb file!".format(filename))
     else:
       family = get_FamilyProto_Message(metadata)
+      fb.default_target = metadata
 
       # -----------------------------------------------------
       fb.new_check("METADATA.pb: Ensure designer simple short name.")
