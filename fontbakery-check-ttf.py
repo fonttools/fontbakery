@@ -506,6 +506,8 @@ def main():
   parser.add_argument('-v', '--verbose', action='count', default=0)
   parser.add_argument('-m', '--ghm', action='store_true',
                       help='Output check results in GitHub Markdown format')
+  parser.add_argument('-s', '--skip', action='store_true',
+                      help='Skip checks specific to github.com/google/fonts')
 
   args = parser.parse_args()
   if args.verbose == 1:
@@ -2404,7 +2406,10 @@ def main():
 
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
-    if not os.path.exists(metadata):
+    if args.skip:
+      pass  # ignore METADATA.pb checks since user has requested that
+            # we do not run googlefonts-specific checks
+    elif not os.path.exists(metadata):
       logging.error("{} is missing a METADATA.pb file!".format(filename))
     else:
       family = get_FamilyProto_Message(metadata)
