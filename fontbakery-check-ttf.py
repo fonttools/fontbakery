@@ -506,6 +506,8 @@ def main():
   parser.add_argument('-v', '--verbose', action='count', default=0)
   parser.add_argument('-m', '--ghm', action='store_true',
                       help='Output check results in GitHub Markdown format')
+  parser.add_argument('-s', '--skip', action='store_true',
+                      help='Skip checks specific to github.com/google/fonts')
 
   args = parser.parse_args()
   if args.verbose == 1:
