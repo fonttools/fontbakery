@@ -2406,7 +2406,10 @@ def main():
 
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
-    if not os.path.exists(metadata):
+    if args.skip:
+      pass  # ignore METADATA.pb checks since user has requested that
+            # we do not run googlefonts-specific checks
+    elif not os.path.exists(metadata):
       logging.error("{} is missing a METADATA.pb file!".format(filename))
     else:
       family = get_FamilyProto_Message(metadata)
