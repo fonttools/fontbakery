@@ -1168,8 +1168,11 @@ def main():
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
                     fb.hotfix(('License file {} exists but'
-                               ' NameID value is not specified'
-                               ' for that.').format(license))
+                               ' NameID {} (LICENSE DESCRIPTION) value is not specified'
+                               ' for that.'
+                               ' Value was: "{}"').format(license,
+                                                          NAMEID_LICENSE_DESCRIPTION,
+                                                          value))
                     new_name = makeNameRecord(placeholder,
                                               NAMEID_LICENSE_DESCRIPTION,
                                               font['name'].names[i].platformID,
@@ -1179,8 +1182,10 @@ def main():
                     names_changed = True
                 if value == placeholder and license_exists is False:
                     fb.error(('Valid licensing specified'
-                              ' on NameID 13 but a corresponding'
-                              ' {} file was not found.').format(license))
+                              ' on NameID {} (LICENSE DESCRIPTION)'
+                              ' but a corresponding "{}" file was'
+                              ' not found.').format(NAMEID_LICENSE_DESCRIPTION,
+                                                    license))
         if not entry_found and license_exists:
             new_name = makeNameRecord(placeholder,
                                       NAMEID_LICENSE_DESCRIPTION,
@@ -1189,56 +1194,14 @@ def main():
                                       LANG_ID_ENGLISH_USA)
             new_names.append(new_name)
             names_changed = True
-            fb.hotfix("Font lacks NameID 13."
-                      " A proper licensing entry was set.")
+            fb.hotfix(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                       " A proper licensing entry was set."
+                       "").format(NAMEID_LICENSE_DESCRIPTION))
 
     if names_changed:
         font['name'].names = new_names
     else:
         fb.ok("licensing entry on name table is correctly set.")
-
-    # ----------------------------------------------------
-    fb.new_check("Check license and license URL entries")
-    # TODO Check license and license URL are correct, hotfix them if not
-    # DC URGENT!
-
-    # ----------------------------------------------------
-
-# TODO: Port these here as well:
-# DC these seem to be ported already?
-#    @tags('required')
-#    @autofix('bakery_cli.fixers.OFLLicenseInfoURLFixer')
-#    def test_name_id_ofl_license_url(self):
-#        """ Is the Open Font License specified
-#            in name ID 14 (License info URL)? """
-#        fixer = OFLLicenseInfoURLFixer(self, self.operator.path)
-#        text = fixer.get_licensecontent()
-#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
-#                                                       'OFL.txt')
-#
-#        isLicense = False
-#        for nameRecord in fixer.font['name'].names:
-#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-#                value = getNameRecordValue(nameRecord)
-#                isLicense = os.path.exists(fontLicensePath) or text in value
-#        self.assertFalse(isLicense and bool(fixer.validate()))
-#
-#    @tags('required')
-#    @autofix('bakery_cli.fixers.ApacheLicenseInfoURLFixer')
-#    def test_name_id_apache_license_url(self):
-#        """ Is the Apache License specified
-#            in name ID 14 (License info URL)? """
-#        fixer = ApacheLicenseInfoURLFixer(self, self.operator.path)
-#        text = fixer.get_licensecontent()
-#        fontLicensePath = os.path.join(os.path.dirname(self.operator.path),
-#                                                       'LICENSE.txt')
-#
-#        isLicense = False
-#        for nameRecord in fixer.font['name'].names:
-#            if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-#                value = getNameRecordValue(nameRecord)
-#                isLicense = os.path.exists(fontLicensePath) or text in value
-#        self.assertFalse(isLicense and bool(fixer.validate()))
 
 # The following test was disabled due to
 # the concerns pointed out at:
@@ -2315,8 +2278,10 @@ def main():
     license_url = get_name_string(font, NAMEID_LICENSE_INFO_URL)
     if license_url is False or\
        not regex.match(license_url):
-      fb.error(("LicenseUrl is required and must be a valid URL."
-                " Got {} instead.").format(license_url))
+      fb.error(("A License URL must be provided in the "
+                "NAMEID_LICENSE_INFO_URL entry in the "
+                "NAME table and it must be a valid URL."
+                " Got '{}' instead.").format(license_url))
     else:
       fb.ok("Font has a valid license URL.")
 
