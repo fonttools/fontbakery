@@ -558,8 +558,7 @@ def main():
 
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    fb.set_target(file_path)  # all font files are in
-                              # the same directory, right?
+    fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
