@@ -558,7 +558,8 @@ def main():
 
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    fb.set_target(file_path)  # all font files are in the same directory, right?
+    fb.set_target(file_path)  # all font files are in
+                              # the same directory, right?
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -652,7 +653,6 @@ def main():
                       " https://github.com/googlefonts/fontbakery/issues/new")
       else:
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
-
 
     fb.default_target = dirname
     # -----------------------------------------------------
@@ -1168,11 +1168,12 @@ def main():
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
                     fb.hotfix(('License file {} exists but'
-                               ' NameID {} (LICENSE DESCRIPTION) value is not specified'
-                               ' for that.'
-                               ' Value was: "{}"').format(license,
-                                                          NAMEID_LICENSE_DESCRIPTION,
-                                                          value))
+                               ' NameID {} (LICENSE DESCRIPTION)'
+                               ' value is not specified for that.'
+                               ' Value was:'
+                               ' "{}"').format(license,
+                                               NAMEID_LICENSE_DESCRIPTION,
+                                               value))
                     new_name = makeNameRecord(placeholder,
                                               NAMEID_LICENSE_DESCRIPTION,
                                               font['name'].names[i].platformID,
@@ -2394,8 +2395,9 @@ def main():
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
     if args.skip:
-      pass  # ignore METADATA.pb checks since user has requested that
-            # we do not run googlefonts-specific checks
+      # ignore METADATA.pb checks since user has requested that
+      # we do not run googlefonts-specific checks
+      pass
     elif not os.path.exists(metadata):
       logging.error("{} is missing a METADATA.pb file!".format(filename))
     else:
