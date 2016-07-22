@@ -2488,6 +2488,21 @@ def main():
                     licenses))
 
       # -----------------------------------------------------
+      fb.new_check("METADATA.pb subsets should be alphabetically ordered.")
+      expected = list(sorted(family.subsets))
+      if "menu" in expected:
+        expected.remove("menu")
+        expected = ["menu"] + expected
+
+      if list(family.subsets) != expected:
+        fb.error(("METADATA.pb subsets are not sorted "
+                  "in alphabetical order: Got ['{}']"
+                  " and expected ['{}']").format("', '".join(family.subsets),
+                                                 "', '".join(expected)))
+      else:
+        fb.ok("METADATA.pb subsets are sorted in alphabetical order")
+
+      # -----------------------------------------------------
       fb.new_check("METADATA.pb subsets should have at least 'latin'")
       if 'latin' not in family.subsets:
         fb.error(("METADATA.pb subsets ({})"
