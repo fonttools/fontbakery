@@ -427,8 +427,8 @@ def parse_version_string(s):
             major = int(substrings[-2])
         return major, minor, suffix
     except:
-        fb.error("Failed to detect major and minor version numbers in" +
-                 " '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+        fb.error("Failed to detect major and minor"
+                 " version numbers in '{}'".format(s))
 
 
 def getGlyph(font, uchar):
@@ -567,21 +567,23 @@ def main():
       if style in style_file_names:
         fb.ok("{} is named canonically".format(font_file))
       else:
-        fb.error(("{} is named Family-Style.ttf but "
-                  "Style is not canonical. You should rebuild it"
-                  " with a canonical style name").format(font_file))
+        fb.error(('Style name used in "{}" is not canonical.'
+                  ' You should rebuild the font using'
+                  ' any of the following'
+                  ' style names: "{}".').format(font_file,
+                                                '", "'.join(STYLE_NAMES)))
         not_canonical.append(font_file)
     except:
-        fb.error(("{} is not named canonically,"
-                  " as Family-Style.ttf").format(font_file))
+        fb.error(("{} is not named canonically.").format(font_file))
         not_canonical.append(font_file)
   if not_canonical:
-    print('\nAborted, critical errors with filenames.'
-          ' Please rename these files canonically and try again:\n ')
-    print('\n  '.join(not_canonical))
-    print('\nCanonical names are defined in '
-          'https://github.com/googlefonts/gf-docs/blob'
-          '/master/ProjectChecklist.md#instance-and-file-naming')
+    print('\nAborted, critical errors with filenames.')
+    fb.error(('Please rename these files canonically and try again:\n'
+              '{}\n'
+              'Canonical names are defined in '
+              'https://github.com/googlefonts/gf-docs/blob'
+              '/master/ProjectChecklist.md#instance-and-file-naming'
+              '').format('\n  '.join(not_canonical)))
     fb.save_json_report()
     sys.exit(1)
 
@@ -674,7 +676,10 @@ def main():
 
     if fail:
       fb.error("Thickness of the underline is not"
-               " the same accross this family.")
+               " the same accross this family. In order to fix this,"
+               " please make sure that the underlineThickness value"
+               " is the same in the POST table of all of this family"
+               " font files.")
     else:
       fb.ok("Fonts have consistent underline thickness.")
 
@@ -691,7 +696,11 @@ def main():
 
     if fail:
       fb.error("PANOSE proportion is not"
-               " the same accross this family.")
+               " the same accross this family."
+               " In order to fix this,"
+               " please make sure that the panose.bProportion value"
+               " is the same in the OS/2 table of all of this family"
+               " font files.")
     else:
       fb.ok("Fonts have consistent PANOSE proportion.")
 
@@ -708,12 +717,17 @@ def main():
 
     if fail:
       fb.error("PANOSE family type is not"
-               " the same accross this family.")
+               " the same accross this family."
+               " In order to fix this,"
+               " please make sure that the panose.bFamilyType value"
+               " is the same in the OS/2 table of all of this family"
+               " font files.")
     else:
       fb.ok("Fonts have consistent PANOSE family type.")
 
     # -----------------------------------------------------
     fb.new_check("Fonts have equal numbers of glyphs?")
+    counts = {}
     glyphs_count = 0
     fail = False
     for f in family.fonts:
@@ -722,10 +736,16 @@ def main():
         glyphs_count = len(ttfont['glyf'].glyphs)
       if glyphs_count != len(ttfont['glyf'].glyphs):
         fail = True
+      counts[f.filename] = glyphs_count
 
     if fail:
-      # TODO make this print a table of the files + counts
-      fb.error('Fonts have different numbers of glyphs.')
+      results_table = ""
+      for key in counts.keys():
+        results_table += "| {} | {} |\n".format(key,
+                                                counts[key])
+
+      fb.error('Fonts have different numbers of glyphs:\n\n'
+               '{}\n'.format(restuls_table))
     else:
       fb.ok("Fonts have equal numbers of glyphs.")
 
