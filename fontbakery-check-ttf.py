@@ -2850,14 +2850,14 @@ def main():
                            ' but font macStyle is improperly set')
               elif font_familyname.split('-')[-1].endswith('Italic'):
                   fb.error(('Font macStyle indicates a non-Italic font,'
-                            ' but nameID %d ("%s") ends'
-                            ' with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
-                                                 font_familyname))
-              elif not font_fullname.split('-')[-1].endswith('Italic'):
+                            ' but nameID %d (FONT_FAMILY_NAME: "%s") ends'
+                            ' with "Italic"').format(NAMEID_FONT_FAMILY_NAME,
+                                                     font_familyname))
+              elif font_fullname.split('-')[-1].endswith('Italic'):
                   fb.error('Font macStyle indicates a non-Italic font'
-                           ' but nameID %d ("%s") ends'
-                           ' with "Italic"' % (NAMEID_FULL_FONT_NAME,
-                                               font_fullname))
+                           ' but nameID %d (FULL_FONT_NAME: "%s") ends'
+                           ' with "Italic"'.format(NAMEID_FULL_FONT_NAME,
+                                                   font_fullname))
               else:
                 fb.ok("METADATA.pb font.style 'normal'"
                       " matches font internals.")
