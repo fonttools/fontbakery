@@ -1433,15 +1433,17 @@ def main():
       if count == 0:
         fb.error("CRITICAL: Found no glyph width data!")
       else:
-        expected_value = width_sum/count
+        # we add 0.5 in order to round the
+        # expected_value to the closest integer:
+        expected_value = int(float(width_sum)/count + 0.5)
         if font['OS/2'].xAvgCharWidth == expected_value:
           fb.ok("xAvgCharWidth is correct.")
         else:
           fb.error(("xAvgCharWidth is {} but should be "
                     "{} which corresponds to the "
                     "average of all glyph widths "
-                    "int the font").format(font['OS/2'].xAvgCharWidth,
-                                           expected_value))
+                    "in the font").format(font['OS/2'].xAvgCharWidth,
+                                          expected_value))
     else:
       weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
                        'e': 100, 'f': 20, 'g': 14, 'h': 42,
@@ -1455,7 +1457,7 @@ def main():
         width = font['hmtx'].metrics[glyph_id][0]
         if glyph_id in weightFactors.keys():
           width_sum += (width*weightFactors[glyph_id])
-      expected_value = width_sum/1000
+      expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
       if font['OS/2'].xAvgCharWidth == expected_value:
         fb.ok("xAvgCharWidth value is correct.")
       else:
