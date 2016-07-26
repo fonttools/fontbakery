@@ -2088,10 +2088,15 @@ def main():
     # FIX-ME: I think we should still compare entries
     #         even if they have different encodings
     else:
-      if not familyname.startswith(fullfontname):
-        fb.error("Font family name '{}' does not begin"
-                 " with full font name '{}'".format(familyname,
-                                                    fullfontname))
+      if not fullfontname.startswith(familyname):
+        fb.error(" On the NAME table, the full font name"
+                 " (NameID {} - FULL_FONT_NAME: '{}')"
+                 " does not begin with font family name"
+                 " (NameID {} - FONT_FAMILY_NAME:"
+                 " '{}')".format(NAMEID_FULL_FONT_NAME,
+                                 familyname,
+                                 NAMEID_FONT_FAMILY_NAME,
+                                 fullfontname))
       else:
         fb.ok('Full font name begins with the font family name.')
 
