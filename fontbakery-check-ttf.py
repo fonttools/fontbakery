@@ -1886,43 +1886,53 @@ def main():
     fb.new_check("Show hinting filesize impact")
     # current implementation simply logs useful info
     # but there's no fail scenario for this checker.
-    statinfo = os.stat(font_file)
-    hinted_size = statinfo.st_size
+    try:
+      statinfo = os.stat(font_file)
+      hinted_size = statinfo.st_size
 
-    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
+      dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
                                            delete=False)
-    subprocess.call(["ttfautohint",
-                     "--dehint",
-                     font_file,
-                     dehinted.name])
-    statinfo = os.stat(dehinted.name)
-    dehinted_size = statinfo.st_size
-    os.unlink(dehinted.name)
+      subprocess.call(["ttfautohint",
+                       "--dehint",
+                       font_file,
+                       dehinted.name])
+      statinfo = os.stat(dehinted.name)
+      dehinted_size = statinfo.st_size
+      os.unlink(dehinted.name)
 
-    increase = hinted_size - dehinted_size
-    change = float(hinted_size)/dehinted_size - 1
-    change = int(change*10000)/100.0  # round to 2 decimal points percentage
+      increase = hinted_size - dehinted_size
+      change = float(hinted_size)/dehinted_size - 1
+      change = int(change*10000)/100.0  # round to 2 decimal pts percentage
 
-    def filesize_formatting(s):
-        if s < 1024:
-            return "{} bytes".format(s)
-        elif s < 1024*1024:
-            return "{}kb".format(s/1024)
-        else:
-            return "{}Mb".format(s/(1024*1024))
+      def filesize_formatting(s):
+          if s < 1024:
+              return "{} bytes".format(s)
+          elif s < 1024*1024:
+              return "{}kb".format(s/1024)
+          else:
+              return "{}Mb".format(s/(1024*1024))
 
-    hinted_size = filesize_formatting(hinted_size)
-    dehinted_size = filesize_formatting(dehinted_size)
-    increase = filesize_formatting(increase)
+      hinted_size = filesize_formatting(hinted_size)
+      dehinted_size = filesize_formatting(dehinted_size)
+      increase = filesize_formatting(increase)
 
-    results_table = "Hinting filesize impact:\n\n"
-    results_table += "|  | {} |\n".format(filename)
-    results_table += "|----------|----------|----------|\n"
-    results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
-    results_table += "| Hinted Size | {} |\n".format(hinted_size)
-    results_table += "| Increase | {} |\n".format(increase)
-    results_table += "| Change   | {} % |\n".format(change)
-    fb.info(results_table)
+      results_table = "Hinting filesize impact:\n\n"
+      results_table += "|  | {} |\n".format(filename)
+      results_table += "|----------|----------|----------|\n"
+      results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+      results_table += "| Hinted Size | {} |\n".format(hinted_size)
+      results_table += "| Increase | {} |\n".format(increase)
+      results_table += "| Change   | {} % |\n".format(change)
+      fb.info(results_table)
+
+    except OSError:
+      # This is made very prominent with additional line breaks
+      fb.warning("\n\n\nttfautohint is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#ttfautohint\n\n\n")
+      pass
 
     # ------------------------------------------------------
     # TODO Fonts have old ttfautohint applied, so port
