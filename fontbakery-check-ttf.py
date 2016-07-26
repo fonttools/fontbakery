@@ -1703,9 +1703,10 @@ def main():
     else:
         for name in font['name'].names:
             if name.nameID == NAMEID_VERSION_STRING:
-                s = "Version {}.{};{}".format(ttf_version[0],
-                                              ttf_version[1],
-                                              ttf_version[2])
+                s = "Version {}.{}".format(ttf_version[0],
+                                           ttf_version[1])
+                if ttf_version[2] != "":
+                    s = "{};{}".format(s, ttf_version[2])
                 encoding = name.getEncoding()
                 new_string = s.encode(encoding)
                 if name.string != new_string:
