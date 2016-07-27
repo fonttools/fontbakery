@@ -1161,6 +1161,7 @@ def main():
     fb.new_check("Check copyright namerecords match license file")
     new_names = []
     names_changed = False
+    hotfix_counter = 0
     for license in ['OFL.txt', 'LICENSE.txt']:
         placeholder = PLACEHOLDER_LICENSING_TEXT[license]
         license_path = os.path.join(file_path, license)
@@ -1173,6 +1174,7 @@ def main():
                 entry_found = True
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
+                    hotfix_counter += 1
                     fb.hotfix(('License file {} exists but'
                                ' NameID {} (LICENSE DESCRIPTION)'
                                ' value is not specified for that.'
@@ -1188,6 +1190,7 @@ def main():
                     new_names.append(new_name)
                     names_changed = True
                 if value == placeholder and license_exists is False:
+                    hotfix_counter += 1
                     fb.error(('Valid licensing specified'
                               ' on NameID {} (LICENSE DESCRIPTION)'
                               ' but a corresponding "{}" file was'
@@ -1207,6 +1210,10 @@ def main():
 
     if names_changed:
         font['name'].names = new_names
+        if hotfix_counter > 1:
+          fb.info("There were multiple NAME table entries hotfixed,"
+                  " corresponding to each of the previous"
+                  " log messages in this check.")
     else:
         fb.ok("licensing entry on name table is correctly set.")
 
