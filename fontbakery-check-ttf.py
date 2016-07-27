@@ -923,7 +923,8 @@ def main():
               expected_value = "Regular"
 
       elif name.nameID == NAMEID_FULL_FONT_NAME:
-        expected_value = "{}-{}".format(fname, style)
+        expected_value = "{} {}".format(fname_with_spaces,
+                                        style_with_spaces)
 
       elif name.nameID == NAMEID_POSTSCRIPT_NAME:
         expected_value = "{}-{}".format(fname, style)
