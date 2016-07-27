@@ -923,21 +923,10 @@ def main():
               expected_value = "Regular"
 
       elif name.nameID == NAMEID_FULL_FONT_NAME:
-        if plat == PLATFORM_ID_MACHINTOSH:
-          if style == "Regular":
-            expected_value = fname_with_spaces
-          else:
-            expected_value = "{} {}".format(fname_with_spaces,
-                                            style_with_spaces)
-        elif plat == PLATFORM_ID_WINDOWS:
-          expected_values = ["{}-{}".format(fname,
-                                            style),
-                             "{} {}".format(fname_with_spaces,
-                                            style_with_spaces)]
+        expected_value = "{}-{}".format(fname, style)
 
       elif name.nameID == NAMEID_POSTSCRIPT_NAME:
-        expected_value = "{}-{}".format(fname,
-                                        style)
+        expected_value = "{}-{}".format(fname, style)
 
       elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
         expected_value = fname_with_spaces
