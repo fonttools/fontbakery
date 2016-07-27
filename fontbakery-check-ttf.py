@@ -2056,19 +2056,17 @@ def main():
     # ----------------------------------------------------
     fb.new_check("Does GPOS table have kerning information?")
     try:
-      flaglookup = False
+      has_kerning_info = False
       for lookup in font["GPOS"].table.LookupList.Lookup:
-        if lookup.LookupType == 2:  # Adjust position of a pair of glyphs
-          flaglookup = lookup
-          break  # break for..loop to avoid reading all kerning info
-      if not flaglookup:
+        if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+          has_kerning_info = True
+          break  # avoid reading all kerning info
+        elif lookup.LookupType == 9:
+          if lookup.SubTable[0].ExtensionLookupType == 2:
+            has_kerning_info = True
+            break
+      if not has_kerning_info:
         fb.error("GPOS table lacks kerning information")
-      elif flaglookup.SubTableCount == 0:
-        fb.error("GPOS LookupType 2 SubTableCount is zero.")
-      elif not hasattr(flaglookup.SubTable[0], 'PairSetCount'):
-        fb.error("GPOS table seems to be corrupted.")
-      elif flaglookup.SubTable[0].PairSetCount == 0:
-        fb.error("GPOS flaglookup.SubTable[0].PairSetCount is zero!")
       else:
         fb.ok("GPOS table has got kerning information.")
     except KeyError:
