@@ -743,7 +743,7 @@ def main():
                                                 counts[key])
 
       fb.error('Fonts have different numbers of glyphs:\n\n'
-               '{}\n'.format(restuls_table))
+               '{}\n'.format(results_table))
     else:
       fb.ok("Fonts have equal numbers of glyphs.")
 
@@ -1889,7 +1889,7 @@ def main():
       hinted_size = statinfo.st_size
 
       dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
-                                           delete=False)
+                                             delete=False)
       subprocess.call(["ttfautohint",
                        "--dehint",
                        font_file,
