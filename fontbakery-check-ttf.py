@@ -1076,8 +1076,20 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 usWeightClass")
-    assert_table_entry('OS/2', 'usWeightClass', WEIGHTS[weight_name])
-    log_results("OS/2 usWeightClass")
+    value = font['OS/2'].usWeightClass
+    expected = WEIGHTS[weight_name]
+    if value != expected:
+      if args.autofix:
+        font['OS/2'].usWeightClass = expected
+        fb.hotfix(("OS/2 usWeightClass value was"
+                   " fixed from {} to {} ({})."
+                   "").format(value, expected, weight_name))
+      else:
+        fb.info(("OS/2 usWeightClass recommended value for"
+                 " '{}' is {} but this font has"
+                 " {}.").format(expected, weight_name, expected))
+    else:
+      fb.ok("OS/2 usWeightClass value looks good!")
 
     # ----------------------------------------------------
     fb.new_check("Checking fsSelection REGULAR bit")
