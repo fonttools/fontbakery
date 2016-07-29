@@ -317,6 +317,7 @@ fb = FontBakeryCheckLogger()
 # =====================================
 # HELPER FUNCTIONS
 
+args = None
 font = None
 fixes = []
 
@@ -361,7 +362,6 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #       highlighting the bits that are selected by a bitmask
 
 
-args = None
 def log_results(message, hotfix=True):
   """ Concatenate and log all fixes that happened up to now
   in a good and regular syntax """
