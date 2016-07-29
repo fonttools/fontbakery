@@ -346,7 +346,7 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
             #       Create a helper function to format binary values
             #       highlighting the bits that are selected by a bitmask
 
-
+args = None
 def log_results(message, hotfix=True):
   """ Concatenate and log all fixes that happened up to now
   in a good and regular syntax """
@@ -355,7 +355,11 @@ def log_results(message, hotfix=True):
     fb.ok(message)
   else:
     if hotfix:
-      fb.hotfix("{} Fixes: {}".format(message, " | ".join(fixes)))
+      if args.autofix:
+        fb.hotfix("{} Fixes: {}".format(message, " | ".join(fixes)))
+      else:
+        fb.error(("{} Changes that must be applied to this font:"
+                  " {}").format(message, " | ".join(fixes)))
     else:
       fb.error("{} {}".format(message, " | ".join(fixes)))
 
@@ -511,6 +515,7 @@ def main():
                       help='font file path(s) to check.'
                            ' Wildcards like *.ttf are allowed.')
   parser.add_argument('-v', '--verbose', action='count', default=0)
+  parser.add_argument('-a', '--autofix', action='store_true', default=0)
   parser.add_argument('-m', '--ghm', action='store_true',
                       help='Output check results in GitHub Markdown format')
   parser.add_argument('-s', '--skip', action='store_true',
@@ -1024,10 +1029,15 @@ def main():
       for mark, ascii_repl in replacement_map:
         new_string = string.replace(mark, ascii_repl)
         if string != new_string:
-          fb.hotfix(("NAMEID #{} contains symbol that was"
-                     " replaced by '{}'").format(name.nameID,
-                                                 ascii_repl))
-        string = new_string
+          if args.autofix:
+            fb.hotfix(("NAMEID #{} contains symbol that was"
+                       " replaced by '{}'").format(name.nameID,
+                                                   ascii_repl))
+            string = new_string
+          else:
+            fb.error(("NAMEID #{} contains symbol that should be"
+                       " replaced by '{}'").format(name.nameID,
+                                                   ascii_repl))
       new_name.string = string.encode(name.getEncoding())
       if string != original:
         nametable_updated = True
@@ -1066,9 +1076,13 @@ def main():
     fb.new_check("Checking that italicAngle <= 0")
     value = font['post'].italicAngle
     if value > 0:
-      font['post'].italicAngle = -value
-      fb.hotfix(("post table italicAngle"
-                 " from {} to {}").format(value, -value))
+      if args.autofix:
+        font['post'].italicAngle = -value
+        fb.hotfix(("post table italicAngle"
+                   " from {} to {}").format(value, -value))
+      else:
+        fb.error(("post table italicAngle value must be changed"
+                  " from {} to {}").format(value, -value))
     else:
       fb.ok("post table italicAngle is {}".format(value))
 
@@ -1076,9 +1090,13 @@ def main():
     fb.new_check("Checking that italicAngle is less than 20 degrees")
     value = font['post'].italicAngle
     if abs(value) > 20:
-      font['post'].italicAngle = -20
-      fb.hotfix(("post table italicAngle"
-                 " changed from {} to -20").format(value))
+      if args.autofix:
+        font['post'].italicAngle = -20
+        fb.hotfix(("post table italicAngle"
+                   " changed from {} to -20").format(value))
+      else:
+        fb.error(("post table italicAngle value must be"
+                  " changed from {} to -20").format(value))
     else:
       fb.ok("OK: post table italicAngle is less than 20 degrees.")
 
@@ -1174,23 +1192,40 @@ def main():
                 entry_found = True
                 value = nameRecord.string.decode(nameRecord.getEncoding())
                 if value != placeholder and license_exists:
-                    fb.hotfix(('License file {} exists but'
-                               ' NameID {} (LICENSE DESCRIPTION) value'
-                               ' on platform {} ({})'
-                               ' is not specified for that.'
-                               ' Value was: "{}"'
-                               '').format(license,
-                                          NAMEID_LICENSE_DESCRIPTION,
-                                          nameRecord.platformID,
-                                          PLATID_STR[nameRecord.platformID],
-                                          value))
-                    new_name = makeNameRecord(placeholder,
-                                              NAMEID_LICENSE_DESCRIPTION,
-                                              font['name'].names[i].platformID,
-                                              font['name'].names[i].platEncID,
-                                              font['name'].names[i].langID)
-                    new_names.append(new_name)
-                    names_changed = True
+                    if args.autofix:
+                      fb.hotfix(('License file {} exists but'
+                                 ' NameID {} (LICENSE DESCRIPTION) value'
+                                 ' on platform {} ({})'
+                                 ' is not specified for that.'
+                                 ' Value was: "{}"'
+                                 ' Expected: "{}"'
+                                 '').format(license,
+                                            NAMEID_LICENSE_DESCRIPTION,
+                                            nameRecord.platformID,
+                                            PLATID_STR[nameRecord.platformID],
+                                            value,
+                                            placeholder))
+                      new_name = makeNameRecord(placeholder,
+                                                NAMEID_LICENSE_DESCRIPTION,
+                                                font['name'].names[i].platformID,
+                                                font['name'].names[i].platEncID,
+                                                font['name'].names[i].langID)
+                      new_names.append(new_name)
+                      names_changed = True
+                    else:
+                      fb.error(('License file {} exists but'
+                                ' NameID {} (LICENSE DESCRIPTION) value'
+                                ' on platform {} ({})'
+                                ' is not specified for that.'
+                                ' Value was: "{}"'
+                                ' Must be changed to "{}"'
+                                '').format(license,
+                                            NAMEID_LICENSE_DESCRIPTION,
+                                            nameRecord.platformID,
+                                            PLATID_STR[nameRecord.platformID],
+                                            value,
+                                            placeholder))
+
                 if value == placeholder and license_exists is False:
                     fb.error(('Valid licensing specified'
                               ' on NameID {} (LICENSE DESCRIPTION)'
@@ -1209,9 +1244,14 @@ def main():
                                       LANG_ID_ENGLISH_USA)
             new_names.append(new_name)
             names_changed = True
-            fb.hotfix(("Font lacks NameID {} (LICENSE DESCRIPTION)."
-                       " A proper licensing entry was set."
-                       "").format(NAMEID_LICENSE_DESCRIPTION))
+            if args.autofix:
+              fb.hotfix(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                         " A proper licensing entry was set."
+                         "").format(NAMEID_LICENSE_DESCRIPTION))
+            else:
+              fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                        " A proper licensing entry must be set."
+                        "").format(NAMEID_LICENSE_DESCRIPTION))
 
     if names_changed:
         font['name'].names = new_names
@@ -1269,21 +1309,36 @@ def main():
         continue
       new_names.append(name)
     if changed:
-      font['name'].names = new_names
-      fb.hotfix("Namerecord 10s (descriptions)"
-                " were removed (perhaps added by"
-                " a longstanding FontLab Studio 5.x bug that"
-                " copied copyright notices to them.)")
+      if args.autofix:
+        font['name'].names = new_names
+        fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                   " were removed (perhaps added by"
+                   " a longstanding FontLab Studio 5.x bug that"
+                   " copied copyright notices to them.)"
+                   "").format(NAMEID_DESCRIPTION))
+      else:
+        fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                  " should be removed (perhaps these were added by"
+                  " a longstanding FontLab Studio 5.x bug that"
+                  " copied copyright notices to them.)"
+                  "").format(NAMEID_DESCRIPTION))
     changed = False
     for name in font['name'].names:
       if len(name.string.decode(name.getEncoding())) > 100 \
         and name.nameID == NAMEID_DESCRIPTION:
-        del name
+        if args.autofix:
+          del name
         changed = True
     if changed:
-      fb.hotfix(("Namerecord 10s (descriptions)"
-                 " were longer than 100 characters"
-                 " and removed.").format(NAMEID_DESCRIPTION))
+      if args.autofix:
+        fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                   " were removed because they"
+                   " were longer than 100 characters"
+                   ".").format(NAMEID_DESCRIPTION))
+      else:
+        fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                  " are longer than 100 characters"
+                  " and should be removed.").format(NAMEID_DESCRIPTION))
     else:
       fb.ok("Namerecord 10s (descriptions) do not exist.")
 
@@ -1297,32 +1352,49 @@ def main():
     # DC this seems unreliable
     if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
         new_value = font_style_name
-        fb.hotfix(('{}: Windows-only Opentype-specific'
-                   ' StyleName set to "{}".').format(filename,
-                                                     font_style_name))
+        if args.autofix:
+          fb.hotfix(('{}: Windows-only Opentype-specific'
+                     ' StyleName set to "{}".').format(filename,
+                                                       font_style_name))
+        else:
+          fb.error(('{}: Windows-only Opentype-specific'
+                    ' StyleName should be'
+                    ' set to "{}".').format(filename,
+                                            font_style_name))
+
     # DC for example, R/I/B/BI should _not_ have any OT style name
     else:
-        fb.hotfix(('{}: Warning: Windows-only Opentype-specific'
-                   ' StyleName set to "Regular" as a default value.'
-                   ' Please verify if this is correct.').format(filename))
         new_value = 'Regular'
+        if args.autofix:
+          fb.hotfix(('{}: Warning: Windows-only Opentype-specific'
+                     ' StyleName set to "Regular" as a default value.'
+                     ' Please verify if this is correct.'
+                     '').format(filename))
+        else:
+          # FIXME: based on Dave's comment, perhaps
+          # this message is wrong as well:
+          fb.error(('{}: Warning: Windows-only Opentype-specific'
+                    ' StyleName should be set to "Regular".'
+                    '').format(filename))
 
-    found = False
-    new_names = []
-    for entry in font['name'].names:
-        if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME\
-           or entry.platformID != PLATFORM_ID_WINDOWS:
-            new_names.append(entry)
-            continue
-        found = True
-        entry.string = new_value.encode(entry.getEncoding())
-        new_names.append(entry)
-    font['name'].names = new_names
-    if not found:
-        font['name'].setName(new_value, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
-                             PLATFORM_ID_WINDOWS,
-                             PLAT_ENC_ID_UCS2,
-                             LANG_ID_ENGLISH_USA)
+    if args.autofix:
+      found = False
+      new_names = []
+      for entry in font['name'].names:
+          if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME\
+             or entry.platformID != PLATFORM_ID_WINDOWS:
+              new_names.append(entry)
+              continue
+          found = True
+          entry.string = new_value.encode(entry.getEncoding())
+          new_names.append(entry)
+      font['name'].names = new_names
+      if not found:
+          font['name'].setName(new_value,
+                               NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                               PLATFORM_ID_WINDOWS,
+                               PLAT_ENC_ID_UCS2,
+                               LANG_ID_ENGLISH_USA)
 
     # ----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if
@@ -1722,23 +1794,32 @@ def main():
         fb.ok("Digital Signature (DSIG) exists.")
     else:
         try:
-            from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
-            newDSIG = ttLib.newTable("DSIG")
-            newDSIG.ulVersion = 1
-            newDSIG.usFlag = 1
-            newDSIG.usNumSigs = 1
-            sig = SignatureRecord()
-            sig.ulLength = 20
-            sig.cbSignature = 12
-            sig.usReserved2 = 0
-            sig.usReserved1 = 0
-            sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
-            sig.ulFormat = 1
-            sig.ulOffset = 20
-            newDSIG.signatureRecords = [sig]
-            font.tables["DSIG"] = newDSIG
-            fb.hotfix("The font does not have an existing digital"
-                      " signature (DSIG), so we just added one.")
+            if args.autofix:
+                from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
+                newDSIG = ttLib.newTable("DSIG")
+                newDSIG.ulVersion = 1
+                newDSIG.usFlag = 1
+                newDSIG.usNumSigs = 1
+                sig = SignatureRecord()
+                sig.ulLength = 20
+                sig.cbSignature = 12
+                sig.usReserved2 = 0
+                sig.usReserved1 = 0
+                sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
+                sig.ulFormat = 1
+                sig.ulOffset = 20
+                newDSIG.signatureRecords = [sig]
+                font.tables["DSIG"] = newDSIG
+                fb.hotfix("The font does not have an existing digital"
+                          " signature (DSIG), so we just added a dummy"
+                          " placeholder that should be enough for the"
+                          " applications that require its presence in"
+                          " order to work properly.")
+            else:
+                fb.error("This font lacks a digital signature (DSIG table)"
+                         "Some applications may required on (even if only a"
+                         " dummy placeholder) in order to work properly.")
+
         except ImportError:
             error_message = ("The '{}' font does not have an existing"
                              " digital signature (DSIG), so OpenType features"
@@ -1809,36 +1890,49 @@ def main():
       fb.skip("Because some whitespace glyphs are missing. Fix that before!")
     else:
       for g in [space, nbsp]:
-          if glyphHasInk(font, g):
-              fb.hotfix(('{}: Glyph "{}" has ink.'
-                         ' Fixed: Overwritten by'
-                         ' an empty glyph').format(filename, g))
-              # overwrite existing glyph with an empty one
-              font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+        if glyphHasInk(font, g):
+          if args.autofix:
+            fb.hotfix(('{}: Glyph "{}" has ink.'
+                       ' Fixed: Overwritten by'
+                       ' an empty glyph').format(filename, g))
+            # overwrite existing glyph with an empty one
+            font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+          else:
+            fb.error(('{}: Glyph "{}" has ink.'
+                      ' It needs to be replaced by'
+                      ' an empty glyph').format(filename, g))
 
       spaceWidth = getWidth(font, space)
       nbspWidth = getWidth(font, nbsp)
 
       if spaceWidth != nbspWidth or nbspWidth < 0:
-          setWidth(font, nbsp, min(nbspWidth, spaceWidth))
-          setWidth(font, space, min(nbspWidth, spaceWidth))
+        setWidth(font, nbsp, min(nbspWidth, spaceWidth))
+        setWidth(font, space, min(nbspWidth, spaceWidth))
 
-          if nbspWidth > spaceWidth and spaceWidth >= 0:
-              msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
-              fb.hotfix(msg.format(filename,
-                                   spaceWidth,
-                                   nbspWidth,
-                                   nbspWidth))
+        if nbspWidth > spaceWidth and spaceWidth >= 0:
+          if args.autofix:
+            msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
+            fb.hotfix(msg.format(filename, spaceWidth,
+                                 nbspWidth, nbspWidth))
           else:
-              msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-              fb.hotfix(msg.format(filename,
-                                   spaceWidth,
-                                   nbspWidth,
-                                   spaceWidth))
+            msg = ('{} space {} nbsp {}: Space advanceWidth'
+                   ' needs to be fixed to {}')
+            fb.error(msg.format(filename, spaceWidth,
+                                nbspWidth, nbspWidth))
+        else:
+          if args.autofix:
+            msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+            fb.hotfix(msg.format(filename, spaceWidth,
+                                 nbspWidth, spaceWidth))
+          else:
+            msg = ('{} space {} nbsp {}: Nbsp advanceWidth'
+                   ' needs to be fixed to {}')
+            fb.error(msg.format(filename, spaceWidth,
+                                nbspWidth, spaceWidth))
       else:
-          fb.ok('{} space {} nbsp {}'.format(filename,
-                                             spaceWidth,
-                                             nbspWidth))
+        fb.ok('{} space {} nbsp {}'.format(filename,
+                                           spaceWidth,
+                                           nbspWidth))
 
     # ------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage,
@@ -1871,9 +1965,14 @@ def main():
         del font[table]
 
     if len(unwanted_tables_found) > 0:
-      fb.hotfix(("Unwanted tables were present"
-                 " in the font and were removed:"
-                 " {}").format(', '.join(unwanted_tables_found)))
+      if args.autofix:
+        fb.hotfix(("Unwanted tables were present"
+                   " in the font and were removed:"
+                   " {}").format(', '.join(unwanted_tables_found)))
+      else:
+        fb.error(("Unwanted tables were found"
+                  " in the font and should be removed:"
+                  " {}").format(', '.join(unwanted_tables_found)))
     else:
       fb.ok("There are no unwanted tables.")
 
@@ -2042,9 +2141,14 @@ def main():
           # XXX: Needs review
           value = font["gasp"].gaspRange[65535]
           if value != 15:
-            font["gasp"].gaspRange[65535] = 15
-            fb.hotfix("gaspRange[65535]"
-                      " value ({}) is not 15".format(value))
+            if args.autofix:
+              font["gasp"].gaspRange[65535] = 15
+              fb.hotfix("gaspRange[65535]"
+                        " value ({}) is not 15".format(value))
+            else:
+              fb.error("gaspRange[65535]"
+                       " value ({}) must be set to 15".format(value))
+              # TODO: explain to the user why that's the case...
           else:
             fb.ok("GASP table is correctly set.")
     except KeyError:
@@ -3080,9 +3184,10 @@ def main():
     # re-run the script on each fixed file with logging level = error
     # so no info-level log items are shown
     font_file_output = os.path.splitext(filename)[0] + ".fix"
-    font.save(font_file_output)
+    if args.autofix:
+      font.save(font_file_output)
+      logging.info("{} saved\n".format(font_file_output))
     font.close()
-    logging.info("{} saved\n".format(font_file_output))
 
     output_folder = os.path.dirname(font_file)
     fb.save_json_report()
