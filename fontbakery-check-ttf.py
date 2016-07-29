@@ -1374,7 +1374,7 @@ def main():
     font_style_name = ""
     for entry in font['name'].names:
         if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
-            font_style_name = entry.string
+            font_style_name = entry.string.decode(entry.getEncoding())
             break
     # DC this seems unreliable
     if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
@@ -1403,9 +1403,10 @@ def main():
           # FIXME: based on Dave's comment above
           # this message is probably wrong as well:
           fb.error(('Warning: Name entry with ID={} (FONT_SUBFAMILY_NAME)'
-                    ' in the name table should be set to "Regular".'
-                    '').format(NAMEID_FONT_SUBFAMILY_NAME))
-
+                    ' in the name table is "{}" but'
+                    ' should be set to "Regular".'
+                    '').format(NAMEID_FONT_SUBFAMILY_NAME,
+                               font_style_name))
     if args.autofix:
       found = False
       new_names = []
