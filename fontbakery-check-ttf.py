@@ -235,10 +235,24 @@ class FontBakeryCheckLogger():
                                     filename='fontbakery-check-results.md'):
     self.flush()
     markdown_data = "# Fontbakery check results\n"
+    all_checks = {}
     for check in self.all_checks:
-      if check['result'] in ['INFO', 'ERROR', 'WARNING', 'HOTFIX']:
-        msgs = '\n* '.join(check['log_messages'])
-        markdown_data += "## {}\n* {}\n\n".format(check['description'], msgs)
+      target = check["target"]
+      if target == "":
+        continue  # FIX-ME: Why do we have this empty entry here?
+      if target in all_checks.keys():
+        all_checks[target].append(check)
+      else:
+        all_checks[target] = [check]
+
+    for target in all_checks.keys():
+      markdown_data += "## {}\n".format(target)
+      checks = all_checks[target]
+      for check in checks:
+        if check['result'] in ['INFO', 'ERROR', 'WARNING', 'HOTFIX']:
+          msgs = '\n* '.join(check['log_messages'])
+          markdown_data += ("### {}\n"
+                            "* {}\n\n").format(check['description'], msgs)
 
     open(filename, 'w').write(markdown_data)
     logging.debug(("Saved check results in "
