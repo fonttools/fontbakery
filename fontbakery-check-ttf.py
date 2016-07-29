@@ -1085,9 +1085,9 @@ def main():
                    " fixed from {} to {} ({})."
                    "").format(value, expected, weight_name))
       else:
-        fb.info(("OS/2 usWeightClass recommended value for"
-                 " '{}' is {} but this font has"
-                 " {}.").format(expected, weight_name, expected))
+        fb.error(("OS/2 usWeightClass expected value for"
+                  " '{}' is {} but this font has"
+                  " {}.").format(weight_name, expected, value))
     else:
       fb.ok("OS/2 usWeightClass value looks good!")
 
@@ -2285,43 +2285,43 @@ def main():
     regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
     if name and not regex.match(name):
       bad_entries.append({'field': 'PostScript Name',
-                          'error': 'May contain only a-zA-Z0-9'
-                                   ' characters and an hyphen'})
+                          'rec': 'May contain only a-zA-Z0-9'
+                                 ' characters and an hyphen'})
 
     if name and name.count('-') > 1:
       bad_entries.append({'field': 'Postscript Name',
-                          'error': 'May contain not more'
-                                   ' than a single hyphen'})
+                          'rec': 'May contain not more'
+                                 ' than a single hyphen'})
 
     name = get_name_string(font, NAMEID_FULL_FONT_NAME)
     if name and len(name) >= 64:
       bad_entries.append({'field': 'Full Font Name',
-                          'error': 'exceeds max length (64)'})
+                          'rec': 'exceeds max length (64)'})
 
     name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
     if name and len(name) >= 30:
       bad_entries.append({'field': 'PostScript Name',
-                          'error': 'exceeds max length (30)'})
+                          'rec': 'exceeds max length (30)'})
 
     name = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
     if name and len(name) >= 32:
       bad_entries.append({'field': 'Family Name',
-                          'error': 'exceeds max length (32)'})
+                          'rec': 'exceeds max length (32)'})
 
     name = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
     if name and len(name) >= 32:
       bad_entries.append({'field': 'Style Name',
-                          'error': 'exceeds max length (32)'})
+                          'rec': 'exceeds max length (32)'})
 
     name = get_name_string(font, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
     if name and len(name) >= 32:
       bad_entries.append({'field': 'OT Family Name',
-                          'error': 'exceeds max length (32)'})
+                          'rec': 'exceeds max length (32)'})
 
     name = get_name_string(font, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
     if name and len(name) >= 32:
       bad_entries.append({'field': 'OT Style Name',
-                          'error': 'exceeds max length (32)'})
+                          'rec': 'exceeds max length (32)'})
 
     weight_value = None
     if 'OS/2' in font:
@@ -2335,18 +2335,23 @@ def main():
       # <Weight> value >= 250 and <= 900 in steps of 50
       if weight_value % 50 != 0:
         bad_entries.append({"field": field,
-                            "error": "Value has to be in steps of 50."})
+                            "rec": "Value should idealy be a multiple of 50."})
       if weight_value < 250:
         bad_entries.append({"field": field,
-                            "error": "Value can't be less than 250."})
+                            "rec": "Value should idealy be 250 or more."})
       if weight_value > 900:
         bad_entries.append({"field": field,
-                            "error": "Value can't be more than 900."})
+                            "rec": "Value should idealy be 900 or less."})
 
     if len(bad_entries) > 0:
-      fb.error(("Font fails to follow "
-                "some family naming recommendations:"
-                " {}").format(bad_entries))
+      table = "| Field | Recommendation |\n"
+      table += "|----------|----------|\n"
+
+      for bad in bad_entries:
+        table += "| {} | {} |\n".format(bad["field"], bad["rec"])
+      fb.info(("Font does not follow "
+               "some family naming recommendations:\n\n"
+               "{}").format(table))
     else:
       fb.ok("Font follows the family naming recommendations.")
 
