@@ -1370,62 +1370,6 @@ def main():
       fb.ok("Namerecord 10s (descriptions) do not exist.")
 
     # ----------------------------------------------------
-    fb.new_check("StyleName recommendation")
-    font_style_name = ""
-    for entry in font['name'].names:
-        if entry.nameID == NAMEID_FONT_SUBFAMILY_NAME:
-            font_style_name = entry.string
-            break
-    # DC this seems unreliable
-    if font_style_name in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
-        new_value = font_style_name
-        if args.autofix:
-          fb.hotfix(('Name entry with ID={} (FONT_SUBFAMILY_NAME)'
-                     ' in the name table was set to'
-                     ' "{}".').format(NAMEID_FONT_SUBFAMILY_NAME,
-                                      font_style_name))
-        else:
-          fb.error(('Name entry with ID={} (FONT_SUBFAMILY_NAME)'
-                    ' in the name table should be set to'
-                    ' "{}".').format(NAMEID_FONT_SUBFAMILY_NAME,
-                                     font_style_name))
-
-    # DC for example, R/I/B/BI should _not_ have any OT style name
-    else:
-        new_value = 'Regular'
-        if args.autofix:
-          fb.hotfix(('Warning: Name entry with ID={} (FONT_SUBFAMILY_NAME)'
-                     ' in the name table was set to "Regular"'
-                     ' as a default value.'
-                     ' Please verify if this is correct.'
-                     '').format(NAMEID_FONT_SUBFAMILY_NAME))
-        else:
-          # FIXME: based on Dave's comment above
-          # this message is probably wrong as well:
-          fb.error(('Warning: Name entry with ID={} (FONT_SUBFAMILY_NAME)'
-                    ' in the name table should be set to "Regular".'
-                    '').format(NAMEID_FONT_SUBFAMILY_NAME))
-
-    if args.autofix:
-      found = False
-      new_names = []
-      for entry in font['name'].names:
-          if entry.nameID != NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME\
-             or entry.platformID != PLATFORM_ID_WINDOWS:
-              new_names.append(entry)
-              continue
-          found = True
-          entry.string = new_value.encode(entry.getEncoding())
-          new_names.append(entry)
-      font['name'].names = new_names
-      if not found:
-          font['name'].setName(new_value,
-                               NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
-                               PLATFORM_ID_WINDOWS,
-                               PLAT_ENC_ID_UCS2,
-                               LANG_ID_ENGLISH_USA)
-
-    # ----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if
     # a font is monospaced or not.
     #
