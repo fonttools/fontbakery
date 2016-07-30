@@ -1096,8 +1096,24 @@ def main():
     expected = 0
     if "Regular" in style:
       expected = FSSEL_REGULAR
-    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_REGULAR)
-    log_results("fsSelection REGULAR bit")
+
+    if font['OS/2'].fsSelection & FSSEL_REGULAR == expected:
+      fb.ok("fsSelection REGULAR bit is properly set.")
+    else:
+      if expected:
+        expected_str = "set"
+      else:
+        expected_str = "reset"
+      if args.autofix:
+        fb.hotfix(("fsSelection REGULAR bit has been"
+                   " {}.").format(expected_str))
+        if expected:
+          font['OS/2'].fsSelection |= FSSEL_REGULAR
+        else:
+          font['OS/2'].fsSelection &= ~FSSEL_REGULAR
+      else:
+        fb.error(("fsSelection REGULAR bit should be"
+                  " {}.").format(expected_str))
 
     # ----------------------------------------------------
     fb.new_check("Checking that italicAngle <= 0")
