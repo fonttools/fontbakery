@@ -322,7 +322,7 @@ font = None
 fixes = []
 
 
-def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
+def assert_table_entry(tableName, fieldName, expectedValue):
     """ This is a helper function to accumulate
     all fixes that a test performs so that we can
     print them all in a single line by invoking
@@ -342,24 +342,12 @@ def assert_table_entry(tableName, fieldName, expectedValue, bitmask=None):
     field = fields[-1]
     value = getattr(obj, field)
 
-    if bitmask is None:
-        if value != expectedValue:
-            setattr(obj, field, expectedValue)
-            fixes.append("{} {} from {} to {}".format(tableName,
-                                                      fieldName,
-                                                      value,
-                                                      expectedValue))
-    else:
-        if (value & bitmask) != expectedValue:
-            expectedValue = (value & (~bitmask)) | expectedValue
-            setattr(obj, field, expectedValue)
-            fixes.append("{} {} from {} to {}".format(tableName,
-                                                      fieldName,
-                                                      value,
-                                                      expectedValue))
-            # TODO: Aestethical improvement:
-            #       Create a helper function to format binary values
-            #       highlighting the bits that are selected by a bitmask
+    if value != expectedValue:
+        setattr(obj, field, expectedValue)
+        fixes.append("{} {} from {} to {}".format(tableName,
+                                                  fieldName,
+                                                  value,
+                                                  expectedValue))
 
 
 def log_results(message, hotfix=True):
@@ -1092,28 +1080,31 @@ def main():
       fb.ok("OS/2 usWeightClass value looks good!")
 
     # ----------------------------------------------------
-    fb.new_check("Checking fsSelection REGULAR bit")
-    expected = 0
-    if "Regular" in style:
-      expected = FSSEL_REGULAR
-
-    if font['OS/2'].fsSelection & FSSEL_REGULAR == expected:
-      fb.ok("fsSelection REGULAR bit is properly set.")
-    else:
-      if expected:
-        expected_str = "set"
+    def check_bit_entry(font, table, attr, expected, bitmask, bitname):
+      value = getattr(font[table], attr)
+      name_str = "{} {} {} bit".format(table, attr, bitname)
+      if value & bitmask == expected:
+        fb.ok("{} is properly set.".format(name_str))
       else:
-        expected_str = "reset"
-      if args.autofix:
-        fb.hotfix(("fsSelection REGULAR bit has been"
-                   " {}.").format(expected_str))
         if expected:
-          font['OS/2'].fsSelection |= FSSEL_REGULAR
+          expected_str = "set"
         else:
-          font['OS/2'].fsSelection &= ~FSSEL_REGULAR
-      else:
-        fb.error(("fsSelection REGULAR bit should be"
-                  " {}.").format(expected_str))
+          expected_str = "reset"
+        if args.autofix:
+          fb.hotfix("{} has been {}.".format(name_str, expected_str))
+          if expected:
+            setattr(font[table], attr, value | bitmask)
+          else:
+            setattr(font[table], attr, value & ~bitmask)
+        else:
+          fb.error("{} should be {}.".format(name_str, expected_str))
+
+    # ----------------------------------------------------
+    fb.new_check("Checking fsSelection REGULAR bit")
+    check_bit_entry(font, "OS/2", "fsSelection",
+                    "Regular" in style,
+                    bitmask=FSSEL_REGULAR,
+                    bitname="REGULAR")
 
     # ----------------------------------------------------
     fb.new_check("Checking that italicAngle <= 0")
@@ -1167,35 +1158,31 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking fsSelection ITALIC bit")
-    expected = 0
-    if "Italic" in style:
-      expected = FSSEL_ITALIC
-    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_ITALIC)
-    log_results("fsSelection ITALIC bit")
+    check_bit_entry(font, "OS/2", "fsSelection",
+                    "Italic" in style,
+                    bitmask=FSSEL_ITALIC,
+                    bitname="ITALIC")
 
     # ----------------------------------------------------
     fb.new_check("Checking macStyle ITALIC bit")
-    expected = 0
-    if "Italic" in style:
-      expected = MACSTYLE_ITALIC
-    assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_ITALIC)
-    log_results("macStyle ITALIC bit")
+    check_bit_entry(font, "head", "macStyle",
+                    "Italic" in style,
+                    bitmask=MACSTYLE_ITALIC,
+                    bitname="ITALIC")
 
     # ----------------------------------------------------
     fb.new_check("Checking fsSelection BOLD bit")
-    expected = 0
-    if style in ["Bold", "BoldItalic"]:
-      expected = FSSEL_BOLD
-    assert_table_entry('OS/2', 'fsSelection', expected, bitmask=FSSEL_BOLD)
-    log_results("fsSelection BOLD bit")
+    check_bit_entry(font, "OS/2", "fsSelection",
+                    style in ["Bold", "BoldItalic"],
+                    bitmask=FSSEL_BOLD,
+                    bitname="BOLD")
 
     # ----------------------------------------------------
     fb.new_check("Checking macStyle BOLD bit")
-    expected = 0
-    if style in ["Bold", "BoldItalic"]:
-      expected = MACSTYLE_BOLD
-    assert_table_entry('head', 'macStyle', expected, bitmask=MACSTYLE_BOLD)
-    log_results("macStyle BOLD bit")
+    check_bit_entry(font, "head", "macStyle",
+                    style in ["Bold", "BoldItalic"],
+                    bitmask=MACSTYLE_BOLD,
+                    bitname="BOLD")
 
     # ----------------------------------------------------
     fb.new_check("Check font has a license")
