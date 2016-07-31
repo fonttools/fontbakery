@@ -171,14 +171,14 @@ IS_FIXED_WIDTH_MONOSPACED = 1  # any non-zero value means monospaced
 
 # Platform IDs:
 PLATFORM_ID_UNICODE = 0
-PLATFORM_ID_MACHINTOSH = 1
+PLATFORM_ID_MACINTOSH = 1
 PLATFORM_ID_ISO = 2
 PLATFORM_ID_WINDOWS = 3
 PLATFORM_ID_CUSTOM = 4
 
 PLATID_STR = {
   PLATFORM_ID_UNICODE: "UNICODE",
-  PLATFORM_ID_MACHINTOSH: "MACHINTOSH",
+  PLATFORM_ID_MACINTOSH: "MACINTOSH",
   PLATFORM_ID_ISO: "ISO",
   PLATFORM_ID_WINDOWS: "WINDOWS",
   PLATFORM_ID_CUSTOM: "CUSTOM"
@@ -194,7 +194,7 @@ PLAT_ENC_ID_UCS4 = 10
 
 # Windows-specific langIDs:
 LANG_ID_ENGLISH_USA = 0x0409
-LANG_ID_MACHINTOSH_ENGLISH = 0
+LANG_ID_MACINTOSH_ENGLISH = 0
 
 PLACEHOLDER_LICENSING_TEXT = {
     'OFL.txt': 'This Font Software is licensed under the SIL Open Font License'
@@ -893,7 +893,7 @@ def main():
       expected_values = None
 
       if nameid == NAMEID_FONT_FAMILY_NAME:
-        if plat == PLATFORM_ID_MACHINTOSH:
+        if plat == PLATFORM_ID_MACINTOSH:
           expected_value = fname_with_spaces
         elif plat == PLATFORM_ID_WINDOWS:
           if style in ['Regular',
@@ -918,7 +918,7 @@ def main():
                                                      STYLE_NAMES))
           continue
 
-        if plat == PLATFORM_ID_MACHINTOSH:
+        if plat == PLATFORM_ID_MACINTOSH:
           expected_value = style_with_spaces
 
         elif plat == PLATFORM_ID_WINDOWS:
@@ -1296,11 +1296,11 @@ def main():
 #    # TODO: Add a description/rationale to this check here
 #    # DC I need to carefully review how this works
 #    fb.new_check("Checking name table for items without"
-#                 " platformID = 1 (MACHINTOSH)")
+#                 " platformID = 1 (MACINTOSH)")
 #    new_names = []
 #    changed = False
 #    for name in font['name'].names:
-#      if (name.platformID != PLATFORM_ID_MACHINTOSH and
+#      if (name.platformID != PLATFORM_ID_MACINTOSH and
 #          name.nameID not in [NAMEID_COPYRIGHT_NOTICE,
 #                              NAMEID_FONT_FAMILY_NAME,
 #                              NAMEID_FONT_SUBFAMILY_NAME,
@@ -1310,7 +1310,7 @@ def main():
 #                              NAMEID_POSTSCRIPT_NAME,
 #                              NAMEID_COMPATIBLE_FULL_MACONLY
 #                              ]) or \
-#         (name.platformID == PLATFORM_ID_MACHINTOSH and
+#         (name.platformID == PLATFORM_ID_MACINTOSH and
 #          name.nameID in [NAMEID_FONT_FAMILY_NAME,
 #                          NAMEID_FONT_SUBFAMILY_NAME,
 #                          NAMEID_FULL_FONT_NAME,
@@ -2348,8 +2348,8 @@ def main():
       if ((name1.platformID == PLATFORM_ID_WINDOWS) and
          (name1.langID == LANG_ID_ENGLISH_USA)):
         for name2 in font['name'].names:
-          if ((name2.platformID == PLATFORM_ID_MACHINTOSH) and
-             (name2.langID == LANG_ID_MACHINTOSH_ENGLISH)):
+          if ((name2.platformID == PLATFORM_ID_MACINTOSH) and
+             (name2.langID == LANG_ID_MACINTOSH_ENGLISH)):
              n1 = get_name_string(font, name1.nameID)
              n2 = get_name_string(font, name2.nameID)
              if n1 != n2:
