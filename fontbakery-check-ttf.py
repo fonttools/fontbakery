@@ -577,7 +577,10 @@ def main():
 
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    fb.set_target(file_path)  # all font files are in the same dir, right?
+    if file_path == "":
+      fb.set_target("Current Folder")
+    else:
+      fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -675,7 +678,10 @@ def main():
       else:
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
-    fb.default_target = dirname
+    if dirname == "":
+      fb.default_target = "Current Folder"
+    else:
+      fb.default_target = dirname
     # -----------------------------------------------------
     fb.new_check("Font designer field is 'unknown' ?")
     if family.designer.lower() == 'unknown':
