@@ -220,26 +220,38 @@ class FontBakeryCheckLogger():
   current_check = None
   default_target = None  # All new checks have this target by default
 
-  def save_json_report(self, filename="fontbakery-check-results.json"):
-    import json
+  def output_report(self, path):
     self.flush()
+
+    if not args.verbose:
+      filtered = []
+      for check in self.all_checks:
+        if check["result"] != "OK":
+          filtered.append(check)
+      self.all_checks = filtered
+
+    if args.json:
+      json_path = os.path.join(path, "fontbakery-check-results.json")
+      fb.output_json_report(json_path)
+    if args.ghm:
+      md_path = os.path.join(path, "fontbakery-check-results.md")
+      fb.output_github_markdown_report(md_path)
+
+  def output_json_report(self, filename):
+    import json
     json_data = json.dumps(self.all_checks,
                            sort_keys=True,
                            indent=4,
                            separators=(',', ': '))
     open(filename, 'w').write(json_data)
-    logging.debug(("Saved check results in "
-                   "JSON format to '{}'").format(filename))
+    print(("Saved check results in "
+           "JSON format to '{}'").format(filename))
 
-  def output_github_markdown_report(self,
-                                    filename='fontbakery-check-results.md'):
-    self.flush()
+  def output_github_markdown_report(self, filename):
     markdown_data = "# Fontbakery check results\n"
     all_checks = {}
     for check in self.all_checks:
       target = check["target"]
-      if target == "":
-        continue  # FIX-ME: Why do we have this empty entry here?
       if target in all_checks.keys():
         all_checks[target].append(check)
       else:
@@ -249,14 +261,13 @@ class FontBakeryCheckLogger():
       markdown_data += "## {}\n".format(target)
       checks = all_checks[target]
       for check in checks:
-        if check['result'] in ['INFO', 'ERROR', 'WARNING', 'HOTFIX']:
-          msgs = '\n* '.join(check['log_messages'])
-          markdown_data += ("### {}\n"
-                            "* {}\n\n").format(check['description'], msgs)
+        msgs = '\n* '.join(check['log_messages'])
+        markdown_data += ("### {}\n"
+                          "* {}\n\n").format(check['description'], msgs)
 
     open(filename, 'w').write(markdown_data)
-    logging.debug(("Saved check results in "
-                   "GitHub Markdown format to '{}'").format(filename))
+    print(("Saved check results in "
+           "GitHub Markdown format to '{}'").format(filename))
 
   def flush(self):
     if self.current_check is not None:
@@ -519,6 +530,8 @@ def main():
                            ' Wildcards like *.ttf are allowed.')
   parser.add_argument('-v', '--verbose', action='count', default=0)
   parser.add_argument('-a', '--autofix', action='store_true', default=0)
+  parser.add_argument('-j', '--json', action='store_true',
+                      help='Output check results in JSON format')
   parser.add_argument('-m', '--ghm', action='store_true',
                       help='Output check results in GitHub Markdown format')
   parser.add_argument('-s', '--skip', action='store_true',
@@ -564,7 +577,10 @@ def main():
 
   for font_file in fonts_to_check:
     file_path, filename = os.path.split(font_file)
-    fb.set_target(file_path)  # all font files are in the same dir, right?
+    if file_path == "":
+      fb.set_target("Current Folder")
+    else:
+      fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base, filename_extension = os.path.splitext(filename)
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -590,7 +606,8 @@ def main():
               'https://github.com/googlefonts/gf-docs/blob'
               '/master/ProjectChecklist.md#instance-and-file-naming'
               '').format('\n  '.join(not_canonical)))
-    fb.save_json_report()
+    output_folder = os.path.dirname(font_file)
+    fb.output_report(output_folder)
     sys.exit(1)
 
   # ------------------------------------------------------
@@ -661,7 +678,10 @@ def main():
       else:
         ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
-    fb.default_target = dirname
+    if dirname == "":
+      fb.default_target = "Current Folder"
+    else:
+      fb.default_target = dirname
     # -----------------------------------------------------
     fb.new_check("Font designer field is 'unknown' ?")
     if family.designer.lower() == 'unknown':
@@ -3183,10 +3203,7 @@ def main():
     font.close()
 
     output_folder = os.path.dirname(font_file)
-    fb.save_json_report()
-    if args.ghm:
-      md_path = os.path.join(output_folder, "fontbakery_check_results.md")
-      fb.output_github_markdown_report(md_path)
+    fb.output_report(output_folder)
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
