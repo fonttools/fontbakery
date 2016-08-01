@@ -901,8 +901,7 @@ def main():
       string = name.string.decode(name.getEncoding()).strip()
       nameid = name.nameID
       plat = name.platformID
-      expected_value = ""
-      expected_values = None
+      expected_value = None
 
       if nameid == NAMEID_FONT_FAMILY_NAME:
         if plat == PLATFORM_ID_MACHINTOSH:
@@ -918,8 +917,10 @@ def main():
                                        only_weight]).strip()
         else:
           fb.error(("Font should not have a "
-                    "[{}:{}] entry!").format(NAMEID_STR[nameid],
-                                             PLATID_STR[plat]))
+                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                     nameid,
+                                                     PLATID_STR[plat],
+                                                     plat))
           continue
 
       elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
@@ -950,29 +951,40 @@ def main():
         expected_value = "{}-{}".format(fname, style)
 
       elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
-        expected_value = fname_with_spaces
+        if style not in ['Regular',
+                         'Italic',
+                         'Bold',
+                         'Bold Italic']:
+          expected_value = fname_with_spaces
 
       elif nameid == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
-        expected_value = style_with_spaces
+        if style not in ['Regular',
+                         'Italic',
+                         'Bold',
+                         'Bold Italic']:
+          expected_value = style_with_spaces
 
       else:
         # This ignores any other nameID that might
         # be declared in the name table
         continue
 
-      # This is to allow us to handle more than one choice:
-      if expected_values is None:
-        expected_values = [expected_value]
-
-      if string not in expected_values:
+      if expected_value is None:
+          fb.warning(("Font is not expected to have a "
+                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                     nameid,
+                                                     PLATID_STR[plat],
+                                                     plat))
+      elif string != expected_value:
         failed = True
-        fb.error(("[{}:{}] entry:"
+        fb.error(("[{}({}):{}({})] entry:"
                   " expected '{}'"
                   " but got '{}'").format(NAMEID_STR[nameid],
+                                          nameid,
                                           PLATID_STR[plat],
-                                          "' or '".join(expected_values),
+                                          plat,
+                                          expected_value,
                                           string))
-
     if failed is False:
       fb.ok("Main entries in the name table"
             " conform to expected format.")
