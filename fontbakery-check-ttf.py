@@ -1240,65 +1240,69 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Check copyright namerecords match license file")
-    new_names = []
-    names_changed = False
-    for license in ['OFL.txt', 'LICENSE.txt']:
-      placeholder = PLACEHOLDER_LICENSING_TEXT[license]
-      license_path = os.path.join(file_path, license)
-      license_exists = os.path.exists(license_path)
-      entry_found = False
-      for i, nameRecord in enumerate(font['name'].names):
+    if found == "multiple":
+      fb.skip("This check will only run after the"
+              " multiple-licensing file issue is fixed.")
+    else:
+      new_names = []
+      names_changed = False
+      for license in ['OFL.txt', 'LICENSE.txt']:
+        placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+        license_path = os.path.join(file_path, license)
+        license_exists = os.path.exists(license_path)
+        entry_found = False
+        for i, nameRecord in enumerate(font['name'].names):
           if nameRecord.nameID != NAMEID_LICENSE_DESCRIPTION:
-              new_names.append(nameRecord)
+            new_names.append(nameRecord)
           else:
-              entry_found = True
-              value = nameRecord.string.decode(nameRecord.getEncoding())
-              if value != placeholder and license_exists:
-                  if args.autofix:
-                    fb.hotfix(('License file {} exists but'
-                               ' NameID {} (LICENSE DESCRIPTION) value'
-                               ' on platform {} ({})'
-                               ' is not specified for that.'
-                               ' Value was: "{}"'
-                               ' Expected: "{}"'
-                               '').format(license,
+            entry_found = True
+            value = nameRecord.string.decode(nameRecord.getEncoding())
+            if value != placeholder and license_exists:
+              if args.autofix:
+                fb.hotfix(('License file {} exists but'
+                           ' NameID {} (LICENSE DESCRIPTION) value'
+                           ' on platform {} ({})'
+                           ' is not specified for that.'
+                           ' Value was: "{}"'
+                           ' Expected: "{}"'
+                           '').format(license,
+                                      NAMEID_LICENSE_DESCRIPTION,
+                                      nameRecord.platformID,
+                                      PLATID_STR[nameRecord.platformID],
+                                      value,
+                                      placeholder))
+                new_name = makeNameRecord(placeholder,
                                           NAMEID_LICENSE_DESCRIPTION,
-                                          nameRecord.platformID,
-                                          PLATID_STR[nameRecord.platformID],
-                                          value,
-                                          placeholder))
-                    new_name = makeNameRecord(placeholder,
-                                              NAMEID_LICENSE_DESCRIPTION,
-                                              font['name'].names[i].platformID,
-                                              font['name'].names[i].platEncID,
-                                              font['name'].names[i].langID)
-                    new_names.append(new_name)
-                    names_changed = True
-                  else:
-                    fb.error(('License file {} exists but'
-                              ' NameID {} (LICENSE DESCRIPTION) value'
-                              ' on platform {} ({})'
-                              ' is not specified for that.'
-                              ' Value was: "{}"'
-                              ' Must be changed to "{}"'
-                              '').format(license,
-                                         NAMEID_LICENSE_DESCRIPTION,
-                                         nameRecord.platformID,
-                                         PLATID_STR[nameRecord.platformID],
-                                         value,
-                                         placeholder))
+                                          font['name'].names[i].platformID,
+                                          font['name'].names[i].platEncID,
+                                          font['name'].names[i].langID)
+                new_names.append(new_name)
+                names_changed = True
+              else:
+                fb.error(('License file {} exists but'
+                          ' NameID {} (LICENSE DESCRIPTION) value'
+                          ' on platform {} ({})'
+                          ' is not specified for that.'
+                          ' Value was: "{}"'
+                          ' Must be changed to "{}"'
+                          '').format(license,
+                                     NAMEID_LICENSE_DESCRIPTION,
+                                     nameRecord.platformID,
+                                     PLATID_STR[nameRecord.platformID],
+                                     value,
+                                     placeholder))
 
-              if value == placeholder and license_exists is False:
-                  fb.error(('Valid licensing specified'
-                            ' on NameID {} (LICENSE DESCRIPTION)'
-                            ' on platform {} ({})'
-                            ' but a corresponding "{}" file was'
-                            ' not found.'
-                            '').format(NAMEID_LICENSE_DESCRIPTION,
-                                       nameRecord.platformID,
-                                       PLATID_STR[nameRecord.platformID],
-                                       license))
-      if not entry_found and license_exists:
+            if value == placeholder and license_exists is False:
+              fb.error(('Valid licensing specified'
+                        ' on NameID {} (LICENSE DESCRIPTION)'
+                        ' on platform {} ({})'
+                        ' but a corresponding "{}" file was'
+                        ' not found.'
+                        '').format(NAMEID_LICENSE_DESCRIPTION,
+                                   nameRecord.platformID,
+                                   PLATID_STR[nameRecord.platformID],
+                                   license))
+        if not entry_found and license_exists:
           new_name = makeNameRecord(placeholder,
                                     NAMEID_LICENSE_DESCRIPTION,
                                     PLATFORM_ID_WINDOWS,
@@ -1314,11 +1318,10 @@ def main():
             fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
                       " A proper licensing entry must be set."
                       "").format(NAMEID_LICENSE_DESCRIPTION))
-
-    if names_changed:
-      font['name'].names = new_names
-    else:
-      fb.ok("licensing entry on name table is correctly set.")
+      if names_changed:
+        font['name'].names = new_names
+      else:
+        fb.ok("licensing entry on name table is correctly set.")
 
 # The following test was disabled due to
 # the concerns pointed out at:
