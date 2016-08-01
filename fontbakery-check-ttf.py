@@ -979,10 +979,10 @@ def main():
 
       if expected_value is None:
           fb.warning(("Font is not expected to have a "
-                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
-                                                     nameid,
-                                                     PLATID_STR[plat],
-                                                     plat))
+                      "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                       nameid,
+                                                       PLATID_STR[plat],
+                                                       plat))
       elif string != expected_value:
         failed = True
         fb.error(("[{}({}):{}({})] entry:"
