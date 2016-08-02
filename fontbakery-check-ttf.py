@@ -1348,8 +1348,9 @@ def main():
       for license in ['OFL.txt', 'LICENSE.txt']:
         placeholder = PLACEHOLDER_LICENSING_TEXT[license]
         for nameRecord in font['name'].names:
+          string = nameRecord.string.decode(nameRecord.getEncoding())
           if (nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION and
-            nameRecord.string.decode(nameRecord.getEncoding()) == placeholder):
+              string == placeholder):
             detected_license = license
             break
 
