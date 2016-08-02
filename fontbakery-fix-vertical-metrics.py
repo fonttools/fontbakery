@@ -17,19 +17,13 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
-
+from fontTools import ttLib
 from fontTools.ttLib import TTLibError
-
-from bakery_cli.ttfont import Font
-from bakery_cli.scripts import vmet
-from bakery_cli.fixers import VmetFixer
-
 
 parser = argparse.ArgumentParser()
 # ascent parameters
 parser.add_argument('-a', '--ascents', type=int,
-                    help=("Set new ascents value in 'Horizontal Header'"
-                          " table"))
+                    help=("Set new ascents value."))
 
 parser.add_argument('-ah', '--ascents-hhea', type=int,
                     help=("Set new ascents value in 'Horizontal Header'"
@@ -46,8 +40,7 @@ parser.add_argument('-aw', '--ascents-win', type=int,
 
 # descent parameters
 parser.add_argument('-d', '--descents', type=int,
-                    help=("Set new descents value in 'Horizontal Header'"
-                          " table"))
+                    help=("Set new descents value."))
 parser.add_argument('-dh', '--descents-hhea', type=int,
                     help=("Set new descents value in 'Horizontal Header'"
                           " table ('hhea'). This argument"
@@ -63,8 +56,7 @@ parser.add_argument('-dw', '--descents-win', type=int,
 
 # linegaps parameters
 parser.add_argument('-l', '--linegaps', type=int,
-                    help=("Set new linegaps value in 'Horizontal Header'"
-                          " table"))
+                    help=("Set new linegaps value."))
 parser.add_argument('-lh', '--linegaps-hhea', type=int,
                     help=("Set new linegaps value in 'Horizontal Header'"
                           " table ('hhea')"))
@@ -72,60 +64,66 @@ parser.add_argument('-lt', '--linegaps-typo', type=int,
                     help=("Set new linegaps value in 'Horizontal Header'"
                           " table ('OS/2')"))
 
-parser.add_argument('--autofix', action="store_true",
-                    help="Autofix font metrics")
+# parser.add_argument('--autofix', action="store_true",
+#                     help="Autofix font metrics")
 parser.add_argument('ttf_font', nargs='+', metavar='ttf_font',
                     help="Font file in OpenType (TTF/OTF) format")
 
 options = parser.parse_args()
-
 fonts = options.ttf_font
+if options.ascents or \
+   options.descents or \
+   options.linegaps or \
+   options.ascents_hhea or \
+   options.ascents_typo or \
+   options.ascents_win or \
+   options.descents_hhea or \
+   options.descents_typo or \
+   options.descents_win or \
+   options.linegaps_hhea or \
+   options.linegaps_typo:
+  for f in fonts:
+    try:
+      ttfont = ttLib.TTFont(f)
+    except TTLibError as ex:
+      print('Error: {0}: {1}'.format(f, ex))
+      continue
 
-if (options.ascents or options.descents or options.linegaps
-        or options.ascents_hhea or options.ascents_typo
-        or options.ascents_win or options.descents_hhea
-        or options.descents_typo or options.descents_win
-        or options.linegaps_hhea or options.linegaps_typo):
-    for f in fonts:
-        try:
-            metrics = Font(f)
-        except TTLibError as ex:
-            print('Error: {0}: {1}'.format(f, ex))
-            continue
+    if options.ascents:
+      ttfont['hhea'].ascent = options.ascents
+      ttfont['OS/2'].sTypoAscender = options.ascents
+      ttfont['OS/2'].usWinAscent = options.ascents
 
-        # set ascents, descents and linegaps. FontVerticalMetrics will
-        # not set those values if None, and overwrite them if concrete
-        # argument has been passed
-        metrics.ascents.set(options.ascents)
-        metrics.descents.set(options.descents)
-        metrics.linegaps.set(options.linegaps)
+    if options.descents:
+      ttfont['hhea'].descent = options.descents
+      ttfont['OS/2'].sTypoDescender = options.descents
+      ttfont['OS/2'].usWinDescent = abs(options.descents)
 
-        metrics.ascents.hhea = options.ascents_hhea
-        metrics.ascents.os2typo = options.ascents_typo
-        metrics.ascents.os2win = options.ascents_win
+    if options.linegaps:
+      ttfont['hhea'].lineGap = options.linegaps
+      ttfont['OS/2'].sTypoLineGap = options.linegaps
 
-        metrics.descents.hhea = options.descents_hhea
-        metrics.descents.os2typo = options.descents_typo
-        metrics.descents.os2win = options.descents_win
+    if options.ascents_hhea:
+      ttfont['hhea'].ascent = options.ascents_hhea
+    if options.ascents_typo:
+      ttfont['OS/2'].sTypoAscender = options.ascents_typo
+    if options.ascents_win:
+      ttfont['OS/2'].usWinAscent = options.ascents_win
 
-        metrics.linegaps.hhea = options.linegaps_hhea
-        metrics.linegaps.os2typo = options.linegaps_typo
-        metrics.save(f + '.fix')
+    if options.descents_hhea:
+      ttfont['hhea'].descent = options.descents_hhea
+    if options.descents_typo:
+      ttfont['OS/2'].sTypoDescender = options.descents_typo
+    if options.descents_win:
+      ttfont['OS/2'].usWinDescent = abs(options.descents_win)
 
-elif options.autofix:
-    from bakery_cli.ttfont import Font
-    ymin = 0
-    ymax = 0
+    if options.linegaps_hhea:
+      ttfont['hhea'].lineGap = options.linegaps_hhea
+    if options.linegaps_typo:
+      ttfont['OS/2'].sTypoLineGap = options.linegaps_typo
 
-    for f in fonts:
-        metrics = Font(f)
-        font_ymin, font_ymax = metrics.get_bounding()
-        ymin = min(font_ymin, ymin)
-        ymax = max(font_ymax, ymax)
+    ttfont.save(f + '.fix')
 
-    for f in fonts:
-        fixer = VmetFixer(None, f)
-        fixer.apply(ymin, ymax)
-else:
-    print(vmet.metricview(fonts))
+# else:
+#   print(vmet.metricview(fonts))
 
