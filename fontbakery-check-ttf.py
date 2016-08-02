@@ -203,6 +203,16 @@ PLACEHOLDER_LICENSING_TEXT = {
     'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
 }
 
+LICENSE_URL = {
+    'OFL.txt': 'http://scripts.sil.org/OFL',
+    'LICENSE.txt': 'http://www.apache.org/licenses/LICENSE-2.0'
+}
+
+LICENSE_NAME = {
+    'OFL.txt': 'Open Font',
+    'LICENSE.txt': 'Apache'
+}
+
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
                        'OS/2', 'post'])
 OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
@@ -1245,7 +1255,7 @@ def main():
               " multiple-licensing file issue is fixed.")
     else:
       new_names = []
-      names_changed = False
+      failed = False
       for license in ['OFL.txt', 'LICENSE.txt']:
         placeholder = PLACEHOLDER_LICENSING_TEXT[license]
         license_path = os.path.join(file_path, license)
@@ -1258,6 +1268,7 @@ def main():
             entry_found = True
             value = nameRecord.string.decode(nameRecord.getEncoding())
             if value != placeholder and license_exists:
+              failed = True
               if args.autofix:
                 fb.hotfix(('License file {} exists but'
                            ' NameID {} (LICENSE DESCRIPTION) value'
@@ -1277,7 +1288,6 @@ def main():
                                           font['name'].names[i].platEncID,
                                           font['name'].names[i].langID)
                 new_names.append(new_name)
-                names_changed = True
               else:
                 fb.error(('License file {} exists but'
                           ' NameID {} (LICENSE DESCRIPTION) value'
@@ -1303,14 +1313,14 @@ def main():
                                    PLATID_STR[nameRecord.platformID],
                                    license))
         if not entry_found and license_exists:
-          new_name = makeNameRecord(placeholder,
-                                    NAMEID_LICENSE_DESCRIPTION,
-                                    PLATFORM_ID_WINDOWS,
-                                    PLAT_ENC_ID_UCS2,
-                                    LANG_ID_ENGLISH_USA)
-          new_names.append(new_name)
-          names_changed = True
+          failed = True
           if args.autofix:
+            new_name = makeNameRecord(placeholder,
+                                      NAMEID_LICENSE_DESCRIPTION,
+                                      PLATFORM_ID_WINDOWS,
+                                      PLAT_ENC_ID_UCS2,
+                                      LANG_ID_ENGLISH_USA)
+            new_names.append(new_name)
             fb.hotfix(("Font lacks NameID {} (LICENSE DESCRIPTION)."
                        " A proper licensing entry was set."
                        "").format(NAMEID_LICENSE_DESCRIPTION))
@@ -1318,10 +1328,66 @@ def main():
             fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
                       " A proper licensing entry must be set."
                       "").format(NAMEID_LICENSE_DESCRIPTION))
-      if names_changed:
-        font['name'].names = new_names
+      if failed:
+        if args.autofix:
+          font['name'].names = new_names
       else:
         fb.ok("licensing entry on name table is correctly set.")
+
+    # ----------------------------------------------------
+    fb.new_check("Font has a valid license url ?")
+    if found == "multiple":
+      fb.skip("This check will only run after the"
+              " multiple-licensing file issue is fixed.")
+      # in case there's no font licensing file
+      # we can still run this check for verifying
+      # that LICENSE_DESCRIPTION and LICENSE_INFO_URL
+      # values are coherent
+    else:
+      detected_license = False
+      for license in ['OFL.txt', 'LICENSE.txt']:
+        placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+        for nameRecord in font['name'].names:
+          if (nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION and
+            nameRecord.string.decode(nameRecord.getEncoding()) == placeholder):
+            detected_license = license
+            break
+
+      found_good_entry = False
+      if detected_license:
+        failed = False
+        expected = LICENSE_URL[detected_license]
+        for nameRecord in font['name'].names:
+          if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
+            string = nameRecord.string.decode(nameRecord.getEncoding())
+            if string == expected:
+              found_good_entry = True
+            else:
+              if args.autofix:
+                pass  # TODO: implement-me!
+              else:
+                failed = True
+                fb.error(("Licensing inconsistency in name table entries!"
+                          " NameID={} (LICENSE DESCRIPTION) indicates"
+                          " {} licensing, but NameID={} (LICENSE URL) has"
+                          " '{}'. Expected:"
+                          " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
+                                          LICENSE_NAME[detected_license],
+                                          NAMEID_LICENSE_INFO_URL,
+                                          string, expected))
+      if not found_good_entry:
+        fb.error(("A License URL must be provided in the "
+                  "NameID {} (LICENSE INFO URL) entry."
+                  "").format(NAMEID_LICENSE_INFO_URL))
+      else:
+        if failed:
+          fb.error(("Even though a valid license URL was seen in NAME table,"
+                    " there were also bad entries. Please review"
+                    " NameIDs {} (LICENSE DESCRIPTION) and {}"
+                    " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
+                                                   NAMEID_LICENSE_INFO_URL))
+        else:
+          fb.ok("Font has a valid license URL in NAME table.")
 
 # The following test was disabled due to
 # the concerns pointed out at:
@@ -2415,26 +2481,6 @@ def main():
     else:
       fb.ok('None of the ASCII-only NAME table entries'
             ' contain non-ASCII characteres.')
-
-    # ----------------------------------------------------
-    fb.new_check("Font has a valid license url ?")
-    regex = re.compile(
-      r'^(?:http|ftp)s?://'  # http:// or https://
-      r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+'
-      r'(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-      r'localhost|'  # localhost...
-      r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-      r'(?::\d+)?'  # optional port
-      r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-    license_url = get_name_string(font, NAMEID_LICENSE_INFO_URL)
-    if license_url is False or\
-       not regex.match(license_url):
-      fb.error(("A License URL must be provided in the "
-                "NAMEID_LICENSE_INFO_URL entry in the "
-                "NAME table and it must be a valid URL."
-                " Got '{}' instead.").format(license_url))
-    else:
-      fb.ok("Font has a valid license URL.")
 
     # ----------------------------------------------------
     # This check is temporarily disabled
