@@ -1855,6 +1855,18 @@ def main():
                 encoding = name.getEncoding()
                 new_string = s.encode(encoding)
                 if name.string != new_string:
+                  # maybe the version strings differ only
+                  # on floating-point error, so let's
+                  # also give it a change by rounding and re-checking...
+                  v = "{}.{}".format(ttf_version[0], ttf_version[1])
+                  rounded_string = round(float(v), 3)
+
+                  name_version = name.string.decode(name.getEncoding())
+                  if " " in name_version:
+                    name_version = name_version.split(" ")[1]
+                  name_version = round(float(name_version), 3)
+
+                  if name_version != rounded_string:
                     fixes.append(("NAMEID_VERSION_STRING "
                                   "from '{}' to '{}'"
                                   "").format(name.string.decode(encoding),
