@@ -2225,21 +2225,30 @@ def main():
       if not isinstance(font["gasp"].gaspRange, dict):
         fb.error("GASP.gaspRange method value have wrong type")
       else:
+        failed = False
         if 65535 not in font["gasp"].gaspRange:
           fb.error("GASP does not have 65535 gaspRange")
         else:
-          # XXX: Needs review
-          value = font["gasp"].gaspRange[65535]
-          if value != 15:
-            if args.autofix:
-              font["gasp"].gaspRange[65535] = 15
-              fb.hotfix("gaspRange[65535]"
-                        " value ({}) is not 15".format(value))
+          for key in font["gasp"].gaspRange.keys():
+            if key != 65535:
+              fb.hotfix(("GASP shuld only have 65535 gaspRange,"
+                         " but {} gaspRange was also found"
+                         " and has been removed.").format(key))
+              del font["gasp"].gaspRange[key]
+              failed = True
             else:
-              fb.error("gaspRange[65535]"
-                       " value ({}) must be set to 15".format(value))
-              # TODO: explain to the user why that's the case...
-          else:
+              value = font["gasp"].gaspRange[key]
+              if value != 15:
+                failed = True
+                if args.autofix:
+                  font["gasp"].gaspRange[65535] = 15
+                  fb.hotfix("gaspRange[65535]"
+                            " value ({}) is not 15".format(value))
+                else:
+                  fb.error("gaspRange[65535]"
+                           " value ({}) must be set to 15".format(value))
+                  # TODO: explain to the user why that's the case...
+          if not failed:
             fb.ok("GASP table is correctly set.")
     except KeyError:
       fb.error("Font is missing the GASP table.")
