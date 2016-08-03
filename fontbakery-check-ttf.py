@@ -1144,7 +1144,9 @@ def main():
     # ----------------------------------------------------
     fb.new_check("Checking fsSelection REGULAR bit")
     check_bit_entry(font, "OS/2", "fsSelection",
-                    "Regular" in style,
+                    "Regular" in style or \
+                    (style in STYLE_NAMES and
+                     style not in RIBBI_STYLE_NAMES),
                     bitmask=FSSEL_REGULAR,
                     bitname="REGULAR")
 
