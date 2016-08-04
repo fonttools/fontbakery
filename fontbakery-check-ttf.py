@@ -2042,10 +2042,29 @@ def main():
       else:
         fb.ok("Whitespace glyphs have coherent widths.")
 
-    # ------------------------------------------------------
-    # TODO Run pyfontaine checks for subset coverage,
-    # using the thresholds in add_font.py.
-    # See https://github.com/googlefonts/fontbakery/issues/594
+    # ----------------------------------------------------
+    fb.new_check("Checking with pyfontaine")
+    try:
+      fontaine_output = subprocess.check_output(["pyfontaine",
+                                                 "--missing",
+                                                 "--set", "gwf_latin",
+                                                 font_file],
+                                                stderr=subprocess.STDOUT)
+      if "Support level: full" not in fontaine_output:
+        fb.error("pyfontaine output follows:\n\n{}\n".format(fontaine_output))
+      else:
+        fb.ok("pyfontaine passed this file")
+    except subprocess.CalledProcessError, e:
+        fb.error(("pyfontaine returned an error code. Output follows :"
+                  "\n\n{}\n").format(e.output))
+    except OSError:
+      # This is made very prominent with additional line breaks
+      fb.warning("\n\n\npyfontaine is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine\n\n\n")
+      pass
 
     # ------------------------------------------------------
     fb.new_check("Check no problematic formats")
