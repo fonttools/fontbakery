@@ -1135,7 +1135,7 @@ def main():
     def check_bit_entry(font, table, attr, expected, bitmask, bitname):
       value = getattr(font[table], attr)
       name_str = "{} {} {} bit".format(table, attr, bitname)
-      if value & bitmask == expected:
+      if bool(value & bitmask) == expected:
         fb.ok("{} is properly set.".format(name_str))
       else:
         if expected:
@@ -1156,7 +1156,8 @@ def main():
     check_bit_entry(font, "OS/2", "fsSelection",
                     "Regular" in style or \
                     (style in STYLE_NAMES and
-                     style not in RIBBI_STYLE_NAMES),
+                     style not in RIBBI_STYLE_NAMES and
+                     "Italic" not in style),
                     bitmask=FSSEL_REGULAR,
                     bitname="REGULAR")
 
