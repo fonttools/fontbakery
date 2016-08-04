@@ -1991,9 +1991,11 @@ def main():
     if missing != []:
       fb.skip("Because some whitespace glyphs are missing. Fix that before!")
     else:
+      failed = False
       for codepoint in WHITESPACE_CHARACTERS:
         g = getGlyph(font, codepoint)
         if g is not None and glyphHasInk(font, g):
+          failed = True
           if args.autofix:
             fb.hotfix(('{}: Glyph "{}" has ink.'
                        ' Fixed: Overwritten by'
@@ -2004,7 +2006,15 @@ def main():
             fb.error(('{}: Glyph "{}" has ink.'
                       ' It needs to be replaced by'
                       ' an empty glyph').format(filename, g))
+      if not failed:
+        fb.ok("There is no whitespace glyph with ink.")
 
+    # ----------------------------------------------------
+    fb.new_check("Whitespace glyphs have coherent widths?")
+    if missing != []:
+      fb.skip("Because some mandatory whitespace glyphs"
+              " are missing. Fix that before!")
+    else:
       spaceWidth = getWidth(font, space)
       nbspWidth = getWidth(font, nbsp)
 
@@ -2033,9 +2043,7 @@ def main():
             fb.error(msg.format(filename, spaceWidth,
                                 nbspWidth, spaceWidth))
       else:
-        fb.ok('{} space {} nbsp {}'.format(filename,
-                                           spaceWidth,
-                                           nbspWidth))
+        fb.ok("Whitespace glyphs have coherent widths.")
 
     # ------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage,
