@@ -1875,9 +1875,12 @@ def main():
                   rounded_string = round(float(v), 3)
 
                   name_version = name.string.decode(name.getEncoding())
-                  if " " in name_version:
-                    name_version = name_version.split(" ")[1]
-                  name_version = round(float(name_version), 3)
+                  try:
+                    if " " in name_version:
+                      name_version = name_version.split(" ")[1]
+                    name_version = round(float(name_version), 3)
+                  except:
+                    pass  # give up. it's definitely bad :(
 
                   if name_version != rounded_string:
                     fixes.append(("NAMEID_VERSION_STRING "
