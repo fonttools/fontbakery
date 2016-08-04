@@ -1968,9 +1968,9 @@ def main():
                                           "nbsp"])
       if 0x0020 not in space_enc:
         failed = True
-        fb.error(('{}: Glyph 0x0020 is called "{}":'
+        fb.error(('Glyph 0x0020 is called "{}":'
                   ' Change to "space"'
-                  ' or "uni0020"').format(filename, space))
+                  ' or "uni0020"').format(space))
 
       if 0x00A0 not in nbsp_enc:
         if 0x00A0 in space_enc:
@@ -1979,9 +1979,9 @@ def main():
           pass
         else:
           failed = True
-          fb.error(('{}: Glyph 0x00A0 is called "{}":'
+          fb.error(('Glyph 0x00A0 is called "{}":'
                     ' Change to "nbsp"'
-                    ' or "uni00A0"').format(filename, nbsp))
+                    ' or "uni00A0"').format(nbsp))
 
       if failed is False:
         fb.ok('Font has **proper** whitespace glyph names.')
@@ -1997,15 +1997,15 @@ def main():
         if g is not None and glyphHasInk(font, g):
           failed = True
           if args.autofix:
-            fb.hotfix(('{}: Glyph "{}" has ink.'
+            fb.hotfix(('Glyph "{}" has ink.'
                        ' Fixed: Overwritten by'
-                       ' an empty glyph').format(filename, g))
+                       ' an empty glyph').format(g))
             # overwrite existing glyph with an empty one
             font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
           else:
-            fb.error(('{}: Glyph "{}" has ink.'
+            fb.error(('Glyph "{}" has ink.'
                       ' It needs to be replaced by'
-                      ' an empty glyph').format(filename, g))
+                      ' an empty glyph').format(g))
       if not failed:
         fb.ok("There is no whitespace glyph with ink.")
 
@@ -2024,24 +2024,20 @@ def main():
 
         if nbspWidth > spaceWidth and spaceWidth >= 0:
           if args.autofix:
-            msg = '{} space {} nbsp {}: Fixed space advanceWidth to {}'
-            fb.hotfix(msg.format(filename, spaceWidth,
-                                 nbspWidth, nbspWidth))
+            msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
+            fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
           else:
-            msg = ('{} space {} nbsp {}: Space advanceWidth'
+            msg = ('space {} nbsp {}: Space advanceWidth'
                    ' needs to be fixed to {}')
-            fb.error(msg.format(filename, spaceWidth,
-                                nbspWidth, nbspWidth))
+            fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
         else:
           if args.autofix:
-            msg = '{} space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-            fb.hotfix(msg.format(filename, spaceWidth,
-                                 nbspWidth, spaceWidth))
+            msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+            fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
           else:
-            msg = ('{} space {} nbsp {}: Nbsp advanceWidth'
+            msg = ('space {} nbsp {}: Nbsp advanceWidth'
                    ' needs to be fixed to {}')
-            fb.error(msg.format(filename, spaceWidth,
-                                nbspWidth, spaceWidth))
+            fb.error(msg.format(spaceWidth, nbspWidth, spaceWidth))
       else:
         fb.ok("Whitespace glyphs have coherent widths.")
 
@@ -3241,12 +3237,11 @@ def main():
                     " as 'italic' or 'regular' on METADATA.pb")
           else:
             if is_italic() and f.style != 'italic':
-              fb.error("%s: The font style is %s"
-                       " but it should be italic" % (f.filename, f.style))
+              fb.error("The font style is %s"
+                       " but it should be italic" % (f.style))
             elif not is_italic() and f.style != 'normal':
-              fb.error(("%s: The font style is %s"
-                        " but it should be normal") % (f.filename,
-                                                       f.style))
+              fb.error(("The font style is %s"
+                        " but it should be normal") % (f.style))
             else:
               fb.ok("Font styles are named canonically")
 
