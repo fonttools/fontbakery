@@ -1146,7 +1146,8 @@ def main():
     check_bit_entry(font, "OS/2", "fsSelection",
                     "Regular" in style or \
                     (style in STYLE_NAMES and
-                     style not in RIBBI_STYLE_NAMES),
+                     style not in RIBBI_STYLE_NAMES and
+                     "Italic" not in style),
                     bitmask=FSSEL_REGULAR,
                     bitname="REGULAR")
 
