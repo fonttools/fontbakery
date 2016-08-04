@@ -1125,7 +1125,7 @@ def main():
     def check_bit_entry(font, table, attr, expected, bitmask, bitname):
       value = getattr(font[table], attr)
       name_str = "{} {} {} bit".format(table, attr, bitname)
-      if value & bitmask == expected:
+      if bool(value & bitmask) == expected:
         fb.ok("{} is properly set.".format(name_str))
       else:
         if expected:
