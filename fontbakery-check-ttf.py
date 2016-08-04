@@ -83,6 +83,16 @@ WEIGHTS = {"Thin": 250,
            "ExtraBold": 800,
            "Black": 900}
 
+# code-points for all "whitespace" chars:
+WHITESPACE_CHARACTERS = [
+  0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
+  0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002,
+  0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+  0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F,
+  0x3000, 0x180E, 0x200B, 0x200C, 0x200D, 0x2060,
+  0xFEFF
+]
+
 # nameID definitions for the name table:
 NAMEID_COPYRIGHT_NOTICE = 0
 NAMEID_FONT_FAMILY_NAME = 1
@@ -1981,8 +1991,11 @@ def main():
     if missing != []:
       fb.skip("Because some whitespace glyphs are missing. Fix that before!")
     else:
-      for g in [space, nbsp]:
-        if glyphHasInk(font, g):
+      failed = False
+      for codepoint in WHITESPACE_CHARACTERS:
+        g = getGlyph(font, codepoint)
+        if g is not None and glyphHasInk(font, g):
+          failed = True
           if args.autofix:
             fb.hotfix(('{}: Glyph "{}" has ink.'
                        ' Fixed: Overwritten by'
@@ -1993,7 +2006,15 @@ def main():
             fb.error(('{}: Glyph "{}" has ink.'
                       ' It needs to be replaced by'
                       ' an empty glyph').format(filename, g))
+      if not failed:
+        fb.ok("There is no whitespace glyph with ink.")
 
+    # ----------------------------------------------------
+    fb.new_check("Whitespace glyphs have coherent widths?")
+    if missing != []:
+      fb.skip("Because some mandatory whitespace glyphs"
+              " are missing. Fix that before!")
+    else:
       spaceWidth = getWidth(font, space)
       nbspWidth = getWidth(font, nbsp)
 
@@ -2022,9 +2043,7 @@ def main():
             fb.error(msg.format(filename, spaceWidth,
                                 nbspWidth, spaceWidth))
       else:
-        fb.ok('{} space {} nbsp {}'.format(filename,
-                                           spaceWidth,
-                                           nbspWidth))
+        fb.ok("Whitespace glyphs have coherent widths.")
 
     # ------------------------------------------------------
     # TODO Run pyfontaine checks for subset coverage,
