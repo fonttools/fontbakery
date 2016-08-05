@@ -612,7 +612,7 @@ def main():
     broken_links = []
     for link in doc.xpath('//a/@href'):
       try:
-        response = requests.head(link, allow_redirects = True)
+        response = requests.head(link, allow_redirects=True)
         code = response.status_code
         if code != requests.codes.ok:
           broken_links.append(("url: '{}' "
