@@ -2824,6 +2824,23 @@ def main():
                     family.license,
                     licenses))
 
+
+      # -----------------------------------------------------
+      fb.new_check("METADATA.pb should contain at least"
+                   " 'menu' and 'latin' subsets.")
+      expected = list(sorted(family.subsets))
+
+      missing = []
+      for s in ["menu", "latin"]:
+        if s not in list(family.subsets):
+          missing.append(s)
+
+      if missing != []:
+        fb.error(("Subsets 'menu' and 'latin' are mandatory, but METADATA.pb"
+                  " is missing '{}'").format(' and '.join(missing)))
+      else:
+        fb.ok("METADATA.pb contains 'menu' and 'latin' subsets.")
+
       # -----------------------------------------------------
       fb.new_check("METADATA.pb subsets should be alphabetically ordered.")
       expected = list(sorted(family.subsets))
@@ -2835,14 +2852,6 @@ def main():
                                                  "', '".join(expected)))
       else:
         fb.ok("METADATA.pb subsets are sorted in alphabetical order")
-
-      # -----------------------------------------------------
-      fb.new_check("METADATA.pb subsets should have at least 'latin'")
-      if 'latin' not in family.subsets:
-        fb.error(("METADATA.pb subsets ({})"
-                  " missing 'latin'").format(family.subsets))
-      else:
-        fb.ok("METADATA.pb subsets contains at least 'latin'")
 
       # -----------------------------------------------------
       fb.new_check("Copyright notice is the same in all fonts ?")
