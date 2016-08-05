@@ -630,17 +630,24 @@ def main():
 
 # ---------------------------------------------------------------------
     fb.new_check("Is this a propper HTML snippet ?")
-    contenttype = magic.from_file(descfile)
-    if "HTML" not in contenttype:
-      data = open(descfile).read()
-      if "<p>" in data and "</p>" in data:
-        fb.ok(("{} is a propper"
-               " HTML snippet.").format(descfile))
+    try:
+      contenttype = magic.from_file(descfile)
+      if "HTML" not in contenttype:
+        data = open(descfile).read()
+        if "<p>" in data and "</p>" in data:
+          fb.ok(("{} is a propper"
+                 " HTML snippet.").format(descfile))
+        else:
+          fb.error(("{} is not a propper"
+                    " HTML snippet.").format(descfile))
       else:
-        fb.error(("{} is not a propper"
-                  " HTML snippet.").format(descfile))
-    else:
-      fb.ok("{} is a propper HTML file.".format(descfile))
+        fb.ok("{} is a propper HTML file.".format(descfile))
+    except AttributeError:
+       fb.skip("pythom magic version mismatch: "
+               "This check was skipped because the API of the python"
+               " magic module version installed in your system does not"
+               " provide the from_file method used in"
+               " the check implementation.")
 
 # ---------------------------------------------------------------------
     fb.new_check("DESCRIPTION.en_us.html is more than 200 bytes ?")
