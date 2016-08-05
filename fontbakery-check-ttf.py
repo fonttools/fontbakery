@@ -2827,9 +2827,6 @@ def main():
       # -----------------------------------------------------
       fb.new_check("METADATA.pb subsets should be alphabetically ordered.")
       expected = list(sorted(family.subsets))
-      if "menu" in expected:
-        expected.remove("menu")
-        expected = ["menu"] + expected
 
       if list(family.subsets) != expected:
         fb.error(("METADATA.pb subsets are not sorted "
