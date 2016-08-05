@@ -24,11 +24,15 @@ import requests
 import urllib
 import csv
 import re
+import defusedxml.lxml
+import magic
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
+from lxml.html import HTMLParser
+
 
 try:
   from google.protobuf import text_format
@@ -590,6 +594,73 @@ def main():
 
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
+
+# ---------------------------------------------------------------------
+# Perform a few checks on DESCRIPTION files
+# ---------------------------------------------------------------------
+
+  fullpath = fonts_to_check[0]  # assuming all fonts are in the same directory
+  file_name = os.path.split(fullpath)[0]
+  descfile = os.path.join(file_name, "DESCRIPTION.en_us.html")
+  if os.path.exists(descfile):
+    fb.default_target = descfile
+    contents = open(descfile).read()
+
+# ---------------------------------------------------------------------
+    fb.new_check("Does DESCRIPTION file contain broken links ?")
+    doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
+    broken_links = []
+    for link in doc.xpath('//a/@href'):
+      try:
+        response = requests.head(link, allow_redirects = True)
+        code = response.status_code
+        if code != requests.codes.ok:
+          broken_links.append(("url: '{}' "
+                               "status code: '{}'").format(link,
+                                                           code))
+      except requests.exceptions.RequestException:
+        broken_links.append(link)
+
+    if len(broken_links) > 0:
+      fb.error(("The following links are broken"
+                " in the DESCRIPTION file:"
+                " '{}'").format("', '".join(broken_links)))
+    else:
+      fb.ok("All links in the DESCRIPTION file look good!")
+
+# ---------------------------------------------------------------------
+    fb.new_check("Is this a propper HTML snippet ?")
+    contenttype = magic.from_file(descfile)
+    if "HTML" not in contenttype:
+      data = open(descfile).read()
+      if "<p>" in data and "</p>" in data:
+        fb.ok(("{} is a propper"
+               " HTML snippet.").format(descfile))
+      else:
+        fb.error(("{} is not a propper"
+                  " HTML snippet.").format(descfile))
+    else:
+      fb.ok("{} is a propper HTML file.".format(descfile))
+
+# ---------------------------------------------------------------------
+    fb.new_check("DESCRIPTION.en_us.html is more than 200 bytes ?")
+    statinfo = os.stat(descfile)
+    if statinfo.st_size <= 200:
+      fb.error("{} must have size larger than 200 bytes".format(descfile))
+    else:
+      fb.ok("{} is larger than 200 bytes".format(descfile))
+
+# ---------------------------------------------------------------------
+    fb.new_check("DESCRIPTION.en_us.html is less than 1000 bytes ?")
+    statinfo = os.stat(descfile)
+    if statinfo.st_size >= 1000:
+      fb.error("{} must have size smaller than 1000 bytes".format(descfile))
+    else:
+      fb.ok("{} is smaller than 1000 bytes".format(descfile))
+
+# ---------------------------------------------------------------------
+# End of DESCRIPTION checks
+# ---------------------------------------------------------------------
 
   # ------------------------------------------------------
   fb.new_check("Checking files are named canonically")
