@@ -20,5 +20,5 @@ install:
   - pip install defusedxml
   - "pip install git+https://github.com/behdad/fonttools.git"
 script:
-  - python fontbakery-check-ttf.py data/test/cousine/Cousine-Bold.ttf
+  - python fontbakery-check-ttf.py data/test/cousine/*.ttf
   - flake8 --statistics fontbakery-check-ttf.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126
