@@ -95,14 +95,19 @@ class AddSPUAByGlyphIDToCmap(object):
         return True
 
 
-args = parser.parse_args()
-for path in args.ttf_font:
+def main():
+  args = parser.parse_args()
+  for path in args.ttf_font:
     if not os.path.exists(path):
-        continue
+      continue
 
     if args.autofix:
-        AddSPUAByGlyphIDToCmap(path).fix()
+      AddSPUAByGlyphIDToCmap(path).fix()
     else:
-        font = ttLib.TTFont(path, 0)
-        print(("\nThese are the unencoded glyphs in font file '{0}':\n"
-               "{1}").format(path, '\n'.join(get_unencoded_glyphs(font))))
+      font = ttLib.TTFont(path, 0)
+      print(("\nThese are the unencoded glyphs in font file '{0}':\n"
+             "{1}").format(path, '\n'.join(get_unencoded_glyphs(font))))
+
+if __name__ == '__main__':
+  main()
+

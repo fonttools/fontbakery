@@ -8,19 +8,21 @@ import collections
 import io
 import os
 import sys
-from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
+import urllib
+import urlparse
+import json
+from fonts_public_pb2 import FontProto, FamilyProto
 from google.protobuf import text_format
 
-args = argparse.ArgumentParser()
-args.add_argument('key', help='Key from Google Fonts Developer API')
-args.add_argument('repo', help='Directory tree that contains directories with METADATA.pb files')
-args.add_argument('--cache', help='Directory to store a copy of the files in the fonts developer api',
-                  default="/tmp/fontbakery-compare-git-api")
-args.add_argument('--verbose', help='Print additional information', action="store_true")
-args.add_argument('--ignore-copy-existing-ttf', action="store_true")
-args.add_argument('--autofix', help='Apply automatic fixes to files', action="store_true")
-args.add_argument('--api', help='Domain string to use to request', default="fonts.googleapis.com")
-argv = args.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('key', help='Key from Google Fonts Developer API')
+parser.add_argument('repo', help='Directory tree that contains directories with METADATA.pb files')
+parser.add_argument('--cache', help='Directory to store a copy of the files in the fonts developer api',
+                    default="/tmp/fontbakery-compare-git-api")
+parser.add_argument('--verbose', help='Print additional information', action="store_true")
+parser.add_argument('--ignore-copy-existing-ttf', action="store_true")
+parser.add_argument('--autofix', help='Apply automatic fixes to files', action="store_true")
+parser.add_argument('--api', help='Domain string to use to request', default="fonts.googleapis.com")
 
 
 def get_cache_font_path(cache_dir, fonturl):
@@ -44,18 +46,17 @@ def getVariantName(item):
 
     return name
 
-if __name__ == '__main__':
-    import urllib
-    import urlparse
-    import json
-    response = urllib.urlopen('https://www.googleapis.com/webfonts/v1/webfonts?key={}'.format(argv.key))
+
+def main():
+    args = parser.parse_args()
+    response = urllib.urlopen('https://www.googleapis.com/webfonts/v1/webfonts?key={}'.format(args.key))
     try:
         webfontList = json.loads(response.read())['items']
         webfontListFamilyNames = [item['family'] for item in webfontList]
     except (ValueError, KeyError):
         sys.exit(1)
 
-    for dirpath, dirnames, filenames in os.walk(argv.repo):
+    for dirpath, dirnames, filenames in os.walk(args.repo):
         metadataProtoFile = os.path.join(dirpath, 'METADATA.pb')
         if not os.path.exists(metadataProtoFile):
             continue
@@ -79,16 +80,16 @@ if __name__ == '__main__':
         webfontVariants = []
         log_messages = []
         for variant, fonturl in webfontsItem['files'].items():
-            cache_font_path = get_cache_font_path(argv.cache, fonturl)
+            cache_font_path = get_cache_font_path(args.cache, fonturl)
             webfontVariants.append(variant)
 
-            if argv.ignore_copy_existing_ttf and os.path.exists(cache_font_path):
+            if args.ignore_copy_existing_ttf and os.path.exists(cache_font_path):
                 continue
 
             with open(cache_font_path, 'w') as fp:
                 filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
                 filename = metadata.fonts[filenameWeightStyleIndex].filename
-                if argv.verbose:
+                if args.verbose:
                     print('Downloading "{}" as "{}"'.format(fonturl, filename))
 
                 #Saving:
@@ -110,7 +111,7 @@ if __name__ == '__main__':
             if subset not in metadata.subsets:
                 print('ER: "{}" lacks subset "{}" in git'.format(family, subset), file=sys.stderr)
             else:
-                if argv.verbose:
+                if args.verbose:
                     print('OK: "{}" subset "{}" in sync'.format(family, subset))
 
         for subset in metadata.subsets:
@@ -120,7 +121,7 @@ if __name__ == '__main__':
         if metadata.category.lower() != webfontsItem['category']:
             print('ER: "{}" category "{}" in git does not match category "{}" in API'.format(family, metadata.category, webfontsItem['category']))
         else:
-            if argv.verbose:
+            if args.verbose:
                 print('OK: "{}" category "{}" in sync'.format(family, metadata.category))
 
 
@@ -130,7 +131,7 @@ if __name__ == '__main__':
                 repoFileName = metadata.fonts[filenameWeightStyleIndex].filename
 
                 fonturl = webfontsItem['files'][variant]
-                fontpath = get_cache_font_path(argv.cache, fonturl)
+                fontpath = get_cache_font_path(args.cache, fonturl)
 
                 import hashlib
                 google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
@@ -155,8 +156,11 @@ if __name__ == '__main__':
         for message in sorted(log_messages, key=lambda x: x[0].lower()):
             variant, status, text = message
             if status == "OK":
-                if argv.verbose:
+                if args.verbose:
                     print('{}: {}'.format(status, text))
             else:
                 print('{}: {}'.format(status, text), file=sys.stderr)
+
+if __name__ == '__main__':
+  main()
 

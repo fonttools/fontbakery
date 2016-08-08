@@ -181,8 +181,8 @@ ITALIC_ANGLE_TEMPLATE = """
      style="background:url(images/angle_%d.png) 0 0 no-repeat;" />
 """
 
-def main():
-  description = """Calculates the visual weight, width or italic angle of fonts.
+
+description = """Calculates the visual weight, width or italic angle of fonts.
 
   For width, it just measures the width of how a particular piece of text renders.
 
@@ -195,18 +195,21 @@ def main():
 
   Example (all Google Fonts files, all existing data):
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
-  """
-  parser = argparse.ArgumentParser(description=description)
-  parser.add_argument("-f", "--files", default="*", required=True, 
-    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-  parser.add_argument("-d", "--debug", default=False, action='store_true',
-    help="Debug mode, just print results")
-  parser.add_argument("-e", "--existing", default=False,
-    help="Path to existing font-metadata.csv")
-  parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
-    help="Only process fonts for which metadata is not available yet")
-  parser.add_argument("-o", "--output", default="output.csv", required=True, 
-    help="CSV data output filename")
+"""
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument("-f", "--files", default="*", required=True, 
+                    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+parser.add_argument("-d", "--debug", default=False, action='store_true',
+                    help="Debug mode, just print results")
+parser.add_argument("-e", "--existing", default=False,
+                    help="Path to existing font-metadata.csv")
+parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
+                    help="Only process fonts for which metadata is not available yet")
+parser.add_argument("-o", "--output", default="output.csv", required=True, 
+                    help="CSV data output filename")
+
+
+def main():
   args = parser.parse_args()
 
   # show help if no args

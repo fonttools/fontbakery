@@ -28,9 +28,9 @@
 # Ported to Python 3.x by Mikhail Kashkin
 from __future__ import print_function
 from __future__ import unicode_literals
-from bakery_cli.scripts import genmetadata
-from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
-from bakery_cli.nameid_values import *
+#from bakery_cli.scripts import genmetadata
+from fonts_public_pb2 import FontProto, FamilyProto
+#from bakery_cli.nameid_values import *
 from datetime import date
 from fontTools import ttLib
 from google.protobuf import text_format

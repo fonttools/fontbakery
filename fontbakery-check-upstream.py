@@ -371,15 +371,16 @@ class UpstreamDirectory(object):
 
 fb = FontBakeryCheckLogger()
 
+# set up some command line argument processing
+description = 'Runs checks or tests on specified upstream folder(s)'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('folders', nargs="+",
+                    help="Test folder(s), can be a list")
+parser.add_argument('--verbose', '-v', action='count',
+                    help="Verbosity level", default=False)
+
 
 def upstream_checks():
-    # set up some command line argument processing
-    description = 'Runs checks or tests on specified upstream folder(s)'
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('folders', nargs="+",
-                        help="Test folder(s), can be a list")
-    parser.add_argument('--verbose', '-v', action='count',
-                        help="Verbosity level", default=False)
     args = parser.parse_args()
 
     # set up a basic logging config

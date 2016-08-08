@@ -48,6 +48,14 @@ def parse_version_string(s):
         print ("ER: failed to detect major and minor version numbers" +\
                " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
 
+# set up some command line argument processing
+parser = argparse.ArgumentParser(description="Compare TTF files when upgrading families.")
+parser.add_argument('arg_filepaths', nargs='+', 
+                    help='font file path(s) to check.'
+                         ' Wildcards like *.ttf are allowed.')
+parser.add_argument('-v', '--verbose', action='count', default=0, help="increase output verbosity")
+parser.add_argument('-b', '--versionbump', action="store_true", help="increment font files' minor version number")
+
 #=====================================
 # Main sequence of checkers & fixers
 
@@ -62,12 +70,7 @@ def main():
   formatter = logging.Formatter(log_format)
   handler.setFormatter(formatter)
   logger.addHandler(handler)
-  # set up some command line argument processing
-  parser = argparse.ArgumentParser(description="Compare TTF files when upgrading families.")
-  parser.add_argument('arg_filepaths', nargs='+', 
-    help='font file path(s) to check. Wildcards like *.ttf are allowed.')
-  parser.add_argument('-v', '--verbose', action='count', default=0, help="increase output verbosity")
-  parser.add_argument('-b', '--versionbump', action="store_true", help="increment font files' minor version number")
+
   args = parser.parse_args()
   if args.verbose == 1:
     logger.setLevel(logging.INFO)
@@ -158,3 +161,4 @@ def main():
 
 if __name__=='__main__':
     main()
+

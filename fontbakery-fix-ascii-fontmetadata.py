@@ -52,10 +52,14 @@ parser = argparse.ArgumentParser(description=description)
 parser.add_argument('ttf_font', nargs='+',
                     help="Font in OpenType (TTF/OTF) format")
 
-args = parser.parse_args()
-for path in args.ttf_font:
-    font = ttLib.TTFont(path)
-    for name in font['name'].names:
-        title = name.string.decode(name.getEncoding())
-        title = normalizestr(title)
-        name.string = title.encode(name.getEncoding())
+def main():
+  args = parser.parse_args()
+  for path in args.ttf_font:
+      font = ttLib.TTFont(path)
+      for name in font['name'].names:
+          title = name.string.decode(name.getEncoding())
+          title = normalizestr(title)
+          name.string = title.encode(name.getEncoding())
+
+if __name__ == "__main__":
+  main()

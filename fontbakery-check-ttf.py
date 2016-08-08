@@ -532,6 +532,20 @@ def get_FamilyProto_Message(path):
     text_format.Merge(text_data, message)
     return message
 
+# set up some command line argument processing
+parser = argparse.ArgumentParser(description="Check TTF files"
+                                             " for common issues.")
+parser.add_argument('arg_filepaths', nargs='+',
+                    help='font file path(s) to check.'
+                         ' Wildcards like *.ttf are allowed.')
+parser.add_argument('-v', '--verbose', action='count', default=0)
+parser.add_argument('-a', '--autofix', action='store_true', default=0)
+parser.add_argument('-j', '--json', action='store_true',
+                    help='Output check results in JSON format')
+parser.add_argument('-m', '--ghm', action='store_true',
+                    help='Output check results in GitHub Markdown format')
+parser.add_argument('-s', '--skip', action='store_true',
+                    help='Skip checks specific to github.com/google/fonts')
 
 # =====================================
 # Main sequence of checkers & fixers
@@ -546,20 +560,6 @@ def main():
   formatter = logging.Formatter(log_format)
   handler.setFormatter(formatter)
   logger.addHandler(handler)
-  # set up some command line argument processing
-  parser = argparse.ArgumentParser(description="Check TTF files"
-                                               " for common issues.")
-  parser.add_argument('arg_filepaths', nargs='+',
-                      help='font file path(s) to check.'
-                           ' Wildcards like *.ttf are allowed.')
-  parser.add_argument('-v', '--verbose', action='count', default=0)
-  parser.add_argument('-a', '--autofix', action='store_true', default=0)
-  parser.add_argument('-j', '--json', action='store_true',
-                      help='Output check results in JSON format')
-  parser.add_argument('-m', '--ghm', action='store_true',
-                      help='Output check results in GitHub Markdown format')
-  parser.add_argument('-s', '--skip', action='store_true',
-                      help='Skip checks specific to github.com/google/fonts')
 
   args = parser.parse_args()
   if args.verbose == 1:

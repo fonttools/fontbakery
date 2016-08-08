@@ -20,6 +20,14 @@ import logging
 from fontTools import ttLib
 
 
+# set up some command line argument processing
+parser = argparse.ArgumentParser(description="Print vendorID"
+                                             " of TTF files")
+parser.add_argument('arg_filepaths', nargs='+',
+                    help='font file path(s) to check.'
+                         ' Wildcards like *.ttf are allowed.')
+
+
 def main():
   # set up a basic logging config
   # to include timestamps
@@ -31,13 +39,6 @@ def main():
   formatter = logging.Formatter(log_format)
   handler.setFormatter(formatter)
   logger.addHandler(handler)
-  # set up some command line argument processing
-  parser = argparse.ArgumentParser(description="Print vendorID"
-                                               " of TTF files")
-  parser.add_argument('arg_filepaths', nargs='+',
-                      help='font file path(s) to check.'
-                           ' Wildcards like *.ttf are allowed.')
-
   args = parser.parse_args()
 
   # ------------------------------------------------------
@@ -70,3 +71,4 @@ def main():
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
   main()
+

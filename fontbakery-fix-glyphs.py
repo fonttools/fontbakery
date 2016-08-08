@@ -17,21 +17,22 @@ from __future__ import unicode_literals
 import argparse
 import glyphsLib
 
-args = argparse.ArgumentParser(
-    description='Report issues on .glyphs font files')
-args.add_argument('font', nargs="+")
-#args.add_argument('--autofix', default=False,
-#                  action='store_true', help='Apply autofix')
+parser = argparse.ArgumentParser(description='Report issues'
+                                             ' on .glyphs font files')
+parser.add_argument('font', nargs="+")
+#parser.add_argument('--autofix', default=False,
+#                    action='store_true', help='Apply autofix')
 
 def customparam(data, name):
   for param in data['customParameters']:
     if param['name'] == name:
       return param['value']
 
-if __name__ == '__main__':
-  arg = args.parse_args()
 
-  for font in arg.font:
+def main():
+  args = parser.parse_args()
+
+  for font in args.font:
     with open(font, 'rb') as glyphs_file:
       data = glyphsLib.load(glyphs_file)
       print('Copyright: "{}"'.format(data["copyright"]))
@@ -49,7 +50,6 @@ if __name__ == '__main__':
   # Instance named Regular (400) for families with a single instance
   # Instance Bold style linking set for families with a 400 and 700 instance
 
-
-
-
+if __name__ == '__main__':
+  main()
 

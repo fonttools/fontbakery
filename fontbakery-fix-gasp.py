@@ -50,19 +50,23 @@ class GaspFixer():
         except IndexError:
             print('ER: {}: no index 65535'.format(path))
 
-if __name__ == '__main__':
-    description = 'Fixes TTF GASP table'
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('ttf_font', nargs='+',
-                        help="Font in OpenType (TTF/OTF) format")
-    parser.add_argument('--autofix', action='store_true', help='Apply autofix')
-    parser.add_argument('--set', type=int,
-                        help=('Change gasprange value of key 65535'
-                              ' to new value'), default=None)
+description = 'Fixes TTF GASP table'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
+                    help="Font in OpenType (TTF/OTF) format")
+parser.add_argument('--autofix', action='store_true', help='Apply autofix')
+parser.add_argument('--set', type=int,
+                    help=('Change gasprange value of key 65535'
+                          ' to new value'), default=None)
 
+
+def main():
     args = parser.parse_args()
     for path in args.ttf_font:
         if args.set is not None:
             GaspFixer(path).fix(args.set)
         else:
             GaspFixer(path).show()
+
+if __name__ == '__main__':
+  main()

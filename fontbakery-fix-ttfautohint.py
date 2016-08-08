@@ -18,13 +18,15 @@
 import argparse
 from fontTools import ttLib
 
-if __name__ == '__main__':
-    description = 'Fixes TTF Autohint table'
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('ttf_font', nargs='+',
-                        help="Font in OpenType (TTF/OTF) format")
-# TODO:    parser.add_argument('--autofix', action='store_true', help='Apply autofix')
+description = 'Fixes TTF Autohint table'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('ttf_font', nargs='+',
+                    help="Font in OpenType (TTF/OTF) format")
+# TODO:
+# parser.add_argument('--autofix', action='store_true', help='Apply autofix')
 
+
+def main():
     args = parser.parse_args()
     for path in args.ttf_font:
         font = ttLib.TTFont(path)
@@ -37,3 +39,7 @@ if __name__ == '__main__':
             print("TTFA table values for '{}':\n{}".format(path, ttfa_data))
         else:
             print("'{}' lacks a TTFA table.".format(path))
+
+if __name__ == '__main__':
+  main()
+
