@@ -1,7 +1,6 @@
 target_modules = [
 # "fontbakery-build-font2ttf",
-# "fontbakery-build-fontmetadata",
-# "fontbakery-build-metadata", # these 1st ones rely on old codebase modules
+# "fontbakery-build-fontmetadata", # these 1st ones rely on old codebase modules
   "fontbakery-check-description",
   "fontbakery-check-ttf",
   "fontbakery-check-upstream",
