@@ -59,7 +59,8 @@ optional_args = [
   "[--platform PLATFORM]",
   "[--id ID]",
   "[--ignore-copy-existing-ttf]",
-  "[--with-otf]"
+  "[--with-otf]",
+  "[-e EXISTING]"
 ]
 
 failed = False
