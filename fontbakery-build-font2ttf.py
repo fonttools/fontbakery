@@ -96,17 +96,20 @@ parser.add_argument('--with-otf', action="store_true",
                     help='Generate otf file')
 parser.add_argument('source', nargs='+', type=str)
 
-args = parser.parse_args()
-
-for src in args.source:
+def main():
+  args = parser.parse_args()
+  for src in args.source:
     if not os.path.exists(src):
-        print('\nError: {} does not exists\n'.format(src), file=sys.stderr)
-        continue
+      print('\nError: {} does not exists\n'.format(src), file=sys.stderr)
+      continue
 
     basename, _ = os.path.splitext(src)
-
     otffile = None
     if args.with_otf:
         otffile = '{}.otf'.format(basename)
 
     convert(src, '{}.ttf'.format(basename), otffile)
+
+if __name__ == '__main__':
+  main()
+

@@ -1,5 +1,5 @@
 target_modules = [
-# "fontbakery-build-font2ttf",
+ "fontbakery-build-font2ttf",
 # "fontbakery-build-fontmetadata", # these 1st ones rely on old codebase modules
   "fontbakery-check-description",
   "fontbakery-check-ttf",
@@ -58,7 +58,8 @@ optional_args = [
   "[--set SET]",
   "[--platform PLATFORM]",
   "[--id ID]",
-  "[--ignore-copy-existing-ttf]"
+  "[--ignore-copy-existing-ttf]",
+  "[--with-otf]"
 ]
 
 failed = False
