@@ -547,6 +547,7 @@ parser.add_argument('-m', '--ghm', action='store_true',
 parser.add_argument('-s', '--skip', action='store_true',
                     help='Skip checks specific to github.com/google/fonts')
 
+
 # =====================================
 # Main sequence of checkers & fixers
 def main():
@@ -2823,7 +2824,6 @@ def main():
                   " must be one of the following: {}").format(
                     family.license,
                     licenses))
-
 
       # -----------------------------------------------------
       fb.new_check("METADATA.pb should contain at least"
