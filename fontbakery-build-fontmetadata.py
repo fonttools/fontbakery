@@ -136,8 +136,11 @@ def generate_italic_angle_images():
     for j in range(lines):
       draw.line([j*spacing - 400, im.size[1], j*spacing - 400 + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
     del draw
-    filepath = "fontmetadata_tool/images/angle_{}.png".format(i+1)
-    filepath = os.path.join(os.path.dirname(__file__), filepath)
+
+    imagesdir = os.path.join(os.path.dirname(__file__), "images")
+    if not os.path.isdir(imagesdir):
+      os.mkdir(imagesdir)
+    filepath = os.path.join(imagesdir, "angle_{}.png".format(i+1))
     im.save(filepath, "PNG")
 
 generate_italic_angle_images()
