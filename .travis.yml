@@ -24,3 +24,4 @@ script:
   - python fontbakery-check-ttf.py data/test/mada/*.ttf
   - python fontbakery-check-ttf.py data/test/merriweather/*.ttf
   - flake8 --statistics fontbakery-check-ttf.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126
+  - python test_args.py
