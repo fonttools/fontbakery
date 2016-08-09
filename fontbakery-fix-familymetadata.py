@@ -4,10 +4,10 @@ import os
 import tabulate
 from fontTools import ttLib
 
-args = argparse.ArgumentParser(description="Print out family"
-                                           " metadata of the fonts")
-args.add_argument('font', nargs="+")
-args.add_argument('--csv', default=False, action='store_true')
+parser = argparse.ArgumentParser(description=("Print out family"
+                                              " metadata of the fonts"))
+parser.add_argument('font', nargs="+")
+parser.add_argument('--csv', default=False, action='store_true')
 
 
 def getByte2(i_value):
@@ -84,10 +84,10 @@ class FamilyMetadataTable(object):
 
 
 if __name__ == '__main__':
-    arg = args.parse_args()
+    options = parser.parse_args()
     rows = []
     fm = FamilyMetadataTable()
-    for i, font in enumerate(arg.font):
+    for i, font in enumerate(options.font):
         ttfont = ttLib.TTFont(font)
         fm.putnewRow(os.path.basename(font))
         fm.putnameIds(ttfont)
@@ -108,7 +108,8 @@ if __name__ == '__main__':
         writer.writerows(rows)
         sys.exit(0)
 
-    if arg.csv:
+    if options.csv:
         as_csv(fm.rows)
 
     print(tabulate.tabulate(fm.rows, fm.headers))
+

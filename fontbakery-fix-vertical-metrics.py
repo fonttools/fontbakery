@@ -259,76 +259,81 @@ parser.add_argument('-lt', '--linegaps-typo', type=int,
 parser.add_argument('ttf_font', nargs='+', metavar='ttf_font',
                     help="Font file in OpenType (TTF/OTF) format")
 
-options = parser.parse_args()
-fonts = options.ttf_font
-if options.ascents or \
-   options.descents or \
-   options.linegaps or \
-   options.ascents_hhea or \
-   options.ascents_typo or \
-   options.ascents_win or \
-   options.descents_hhea or \
-   options.descents_typo or \
-   options.descents_win or \
-   options.linegaps_hhea or \
-   options.linegaps_typo:
-  for f in fonts:
-    try:
+def main():
+  options = parser.parse_args()
+  fonts = options.ttf_font
+  if options.ascents or \
+     options.descents or \
+     options.linegaps or \
+     options.ascents_hhea or \
+     options.ascents_typo or \
+     options.ascents_win or \
+     options.descents_hhea or \
+     options.descents_typo or \
+     options.descents_win or \
+     options.linegaps_hhea or \
+     options.linegaps_typo:
+    for f in fonts:
+      try:
+        ttfont = ttLib.TTFont(f)
+      except TTLibError as ex:
+        print('Error: {0}: {1}'.format(f, ex))
+        continue
+
+      if options.ascents:
+        ttfont['hhea'].ascent = options.ascents
+        ttfont['OS/2'].sTypoAscender = options.ascents
+        ttfont['OS/2'].usWinAscent = options.ascents
+
+      if options.descents:
+        ttfont['hhea'].descent = options.descents
+        ttfont['OS/2'].sTypoDescender = options.descents
+        ttfont['OS/2'].usWinDescent = abs(options.descents)
+
+      if options.linegaps:
+        ttfont['hhea'].lineGap = options.linegaps
+        ttfont['OS/2'].sTypoLineGap = options.linegaps
+
+      if options.ascents_hhea:
+        ttfont['hhea'].ascent = options.ascents_hhea
+      if options.ascents_typo:
+        ttfont['OS/2'].sTypoAscender = options.ascents_typo
+      if options.ascents_win:
+        ttfont['OS/2'].usWinAscent = options.ascents_win
+
+      if options.descents_hhea:
+        ttfont['hhea'].descent = options.descents_hhea
+      if options.descents_typo:
+        ttfont['OS/2'].sTypoDescender = options.descents_typo
+      if options.descents_win:
+        ttfont['OS/2'].usWinDescent = abs(options.descents_win)
+
+      if options.linegaps_hhea:
+        ttfont['hhea'].lineGap = options.linegaps_hhea
+      if options.linegaps_typo:
+        ttfont['OS/2'].sTypoLineGap = options.linegaps_typo
+
+      ttfont.save(f + '.fix')
+
+  else:
+    entries = [
+      ('hhea', 'ascent'),
+      ('OS/2', 'sTypoAscender'),
+      ('OS/2', 'usWinAscent'),
+      ('hhea', 'descent'),
+      ('OS/2', 'sTypoDescender'),
+      ('OS/2', 'usWinDescent'),
+      ('hhea', 'lineGap'),
+      ('OS/2', 'sTypoLineGap')
+    ]
+
+    for f in fonts:
       ttfont = ttLib.TTFont(f)
-    except TTLibError as ex:
-      print('Error: {0}: {1}'.format(f, ex))
-      continue
+      print ("## {}".format(f))
+      for table, field in entries:
+        print ("{} {}: {}".format(table, field, getattr(ttfont[table], field)))
+      print()
 
-    if options.ascents:
-      ttfont['hhea'].ascent = options.ascents
-      ttfont['OS/2'].sTypoAscender = options.ascents
-      ttfont['OS/2'].usWinAscent = options.ascents
+if __name__ == '__main__':
+  main()
 
-    if options.descents:
-      ttfont['hhea'].descent = options.descents
-      ttfont['OS/2'].sTypoDescender = options.descents
-      ttfont['OS/2'].usWinDescent = abs(options.descents)
-
-    if options.linegaps:
-      ttfont['hhea'].lineGap = options.linegaps
-      ttfont['OS/2'].sTypoLineGap = options.linegaps
-
-    if options.ascents_hhea:
-      ttfont['hhea'].ascent = options.ascents_hhea
-    if options.ascents_typo:
-      ttfont['OS/2'].sTypoAscender = options.ascents_typo
-    if options.ascents_win:
-      ttfont['OS/2'].usWinAscent = options.ascents_win
-
-    if options.descents_hhea:
-      ttfont['hhea'].descent = options.descents_hhea
-    if options.descents_typo:
-      ttfont['OS/2'].sTypoDescender = options.descents_typo
-    if options.descents_win:
-      ttfont['OS/2'].usWinDescent = abs(options.descents_win)
-
-    if options.linegaps_hhea:
-      ttfont['hhea'].lineGap = options.linegaps_hhea
-    if options.linegaps_typo:
-      ttfont['OS/2'].sTypoLineGap = options.linegaps_typo
-
-    ttfont.save(f + '.fix')
-
-else:
-  entries = [
-    ('hhea', 'ascent'),
-    ('OS/2', 'sTypoAscender'),
-    ('OS/2', 'usWinAscent'),
-    ('hhea', 'descent'),
-    ('OS/2', 'sTypoDescender'),
-    ('OS/2', 'usWinDescent'),
-    ('hhea', 'lineGap'),
-    ('OS/2', 'sTypoLineGap')
-  ]
-
-  for f in fonts:
-    ttfont = ttLib.TTFont(f)
-    print ("## {}".format(f))
-    for table, field in entries:
-      print ("{} {}: {}".format(table, field, getattr(ttfont[table], field)))
-    print()

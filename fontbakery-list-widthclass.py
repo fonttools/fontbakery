@@ -7,12 +7,12 @@ import sys
 import tabulate
 from fontTools import ttLib
 
-args = argparse.ArgumentParser(
-    description='Print out usWidthClass of the fonts')
-args.add_argument('font', nargs="+")
-args.add_argument('--csv', default=False, action='store_true')
-args.add_argument('--set', type=int, default=0)
-args.add_argument('--autofix', default=False, action='store_true')
+parser = argparse.ArgumentParser(description='Print out'
+                                             ' usWidthClass of the fonts')
+parser.add_argument('font', nargs="+")
+parser.add_argument('--csv', default=False, action='store_true')
+parser.add_argument('--set', type=int, default=0)
+parser.add_argument('--autofix', default=False, action='store_true')
 
 def print_info(fonts, print_csv=False):
     headers = ['filename', 'usWidthClass']
@@ -83,12 +83,16 @@ def fix(fonts, value=None):
         print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
 
+def main():
+    args = parser.parse_args()
+    if args.autofix:
+        fix(args.font)
+        sys.exit(0)
+    if args.set:
+        fix(args.font, value=int(args.set))
+        sys.exit(0)
+    print_info(args.font, print_csv=args.csv)
+
 if __name__ == '__main__':
-    arg = args.parse_args()
-    if arg.autofix:
-        fix(arg.font)
-        sys.exit(0)
-    if arg.set:
-        fix(arg.font, value=int(arg.set))
-        sys.exit(0)
-    print_info(arg.font, print_csv=arg.csv)
+  main()
+
