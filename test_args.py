@@ -16,7 +16,6 @@ target_modules = [
   "fontbakery-fix-ttfautohint",
   "fontbakery-fix-vendorid",
   "fontbakery-fix-vertical-metrics",
-  "fontbakery-list-os2version",
   "fontbakery-list-panose",
   "fontbakery-list-weightclass",
   "fontbakery-list-widthclass",
