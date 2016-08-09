@@ -36,6 +36,7 @@ import StringIO
 import csv
 import collections
 import re
+from fonts_public_pb2 import FontProto, FamilyProto
 
 try:
   from PIL import ImageFont
@@ -53,11 +54,6 @@ try:
   from google.protobuf import text_format
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
-
-try:
-  from bakery_cli.fonts_public_pb2 import FontProto, FamilyProto
-except:
-  sys.exit("Needs fontbakery.\n\nsudo pip install fontbakery")
 
 try:
   from flask import Flask, jsonify, request
