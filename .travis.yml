@@ -20,6 +20,7 @@ install:
   - pip install defusedxml
   - pip install tabulate
   - pip install pillow
+  - pip install flask
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
