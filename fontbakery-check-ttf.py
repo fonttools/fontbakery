@@ -407,6 +407,7 @@ def log_results(message, hotfix=True):
 
 
 # Maybe fonttools should provide us a helper method like this one...
+# https://github.com/googlefonts/fontbakery/issues/926
 # TODO: verify if fonttools doesn't really provide that and then
 #       possibily contribute something equivalent to this upstream.
 def makeNameRecord(text, nameID, platformID, platEncID, langID):
@@ -570,6 +571,7 @@ def main():
   else:
     logger.setLevel(logging.ERROR)
 
+  # https://github.com/googlefonts/fontbakery/issues/927
   # TODO:
   # If the set of font files passed in the command line
   # are not all in the same directory, then I think we should
@@ -762,7 +764,8 @@ def main():
 
   def ttf_file(f):
     simplehash = f.filename
-    # TODO: This may collide. We need something better here.
+    # https://github.com/googlefonts/fontbakery/issues/928
+    # TODO: This may collide. We may need something better here.
     return ttf[simplehash]
 
   for dirname, family in metadata_to_check:
@@ -1114,6 +1117,7 @@ def main():
                 "/typography/links/vendorlist.aspx").format(vid))
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
+        # https://github.com/googlefonts/fontbakery/issues/929
         # TODO check registered_vendor_ids[vid] against name table values
         # FSanches:
         #      We do check against NAMEID_MANUFACTURER_NAME below
@@ -1191,6 +1195,7 @@ def main():
       weight_name = style.replace("Italic", "")
     else:
       weight_name = style
+    # https://github.com/googlefonts/fontbakery/issues/930
     # DC what happens with "Italic" styles, weight_name = "Italic"?
 
     # ----------------------------------------------------
@@ -1270,6 +1275,7 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking if italicAngle matches font style")
+    # https://github.com/googlefonts/fontbakery/issues/931
     # DC all the italic style checks should be wrapped in this if statement?
     # There are lots of "if italic in style" but there should only be one,
     # and there are lots that do NOT have this but perhaps should.
@@ -1287,6 +1293,7 @@ def main():
       log_results("post table italicAngle matches style name")
 
     # ----------------------------------------------------
+    # https://github.com/googlefonts/fontbakery/issues/932
     # TODO: checker for proper italic names in name table
     # DC THIS IS URGENT!
 
@@ -1635,6 +1642,7 @@ def main():
               [g for g in glyphs
                if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
+            # https://github.com/googlefonts/fontbakery/issues/933
             # FIXME strip glyphs named .notdef .null etc
             # from the unusually_spaced_glyphs list
             log_results(("Font is monospaced but {} glyphs"
@@ -1747,6 +1755,8 @@ def main():
       pass
 
     # ----------------------------------------------------
+    # https://github.com/googlefonts/fontbakery/issues/934
+    #
     # TODO FontForge will sometimes say stuff on STDERR like
     # $ fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
     #   The following table(s) in the font have been ignored by FontForge
@@ -1906,6 +1916,7 @@ def main():
                        ' not open {}').format(font_file))
 
     # ----------------------------------------------------
+    # https://github.com/googlefonts/fontbakery/issues/936
     fb.new_check("Checking vertical metrics")
     # Ascent:
     assert_table_entry('hhea', 'ascent', vmetrics_ymax)
@@ -1920,6 +1931,7 @@ def main():
     # LineGap:
     assert_table_entry('hhea', 'lineGap', 0)
     assert_table_entry('OS/2', 'sTypoLineGap', 0)
+    # https://github.com/googlefonts/fontbakery/issues/935
     # unitsPerEm:
     # Felipe: Dave, should we do it here?
     # assert_table_entry('head', 'unitsPerEm', ymax)
@@ -2238,6 +2250,8 @@ def main():
       pass
 
     # ------------------------------------------------------
+    # https://github.com/googlefonts/fontbakery/issues/937
+    #
     # TODO Fonts have old ttfautohint applied, so port
     # fontbakery-fix-version.py here and:
     #
@@ -2274,6 +2288,7 @@ def main():
     fb.new_check("Glyph names are all valid?")
     known_good_names = ['.notdef', '.null']
     bad_names = []
+    # https://github.com/googlefonts/fontbakery/issues/938
     # we should extend this list according to the opentype spec
     for _, glyphName in enumerate(font.getGlyphOrder()):
       if glyphName in known_good_names:
@@ -2410,6 +2425,7 @@ def main():
     elif not fullfontname:
       fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
                ' in the name table.')
+    # https://github.com/googlefonts/fontbakery/issues/939
     # FIX-ME: I think we should still compare entries
     #         even if they have different encodings
     else:
