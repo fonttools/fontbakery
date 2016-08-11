@@ -2287,8 +2287,6 @@ def main():
     # ----------------------------------------------------
     fb.new_check("Glyph names are all valid?")
     bad_names = []
-    # https://github.com/googlefonts/fontbakery/issues/938
-    # we should extend this list according to the opentype spec
     for _, glyphName in enumerate(font.getGlyphOrder()):
       if glyphName == '.notdef':
         # This is an explicit exception in the glyph naming rules
