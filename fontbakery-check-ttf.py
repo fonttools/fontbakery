@@ -571,16 +571,6 @@ def main():
   else:
     logger.setLevel(logging.ERROR)
 
-  # https://github.com/googlefonts/fontbakery/issues/927
-  # TODO:
-  # If the set of font files passed in the command line
-  # are not all in the same directory, then I think we should
-  # warn the user, since the tool will interpret the set of files
-  # as belonging to a single family (and I think it is unlikely
-  # that the user would store the files from a single family
-  # spreaded in several separate directories).
-  # -- FSanches
-
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
@@ -597,6 +587,31 @@ def main():
 
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
+
+  # ------------------------------------------------------
+  fb.new_check("Checking all files are in the same directory")
+  # If the set of font files passed in the command line
+  # is not all in the same directory, then we warn the user
+  # since the tool will interpret the set of files
+  # as belonging to a single family (and it is unlikely
+  # that the user would store the files from a single family
+  # spreaded in several separate directories).
+  failed = False
+  target_dir = None
+  for target_file in fonts_to_check:
+    if target_dir is None:
+      target_dir = os.path.split(target_file)[0]
+    else:
+      if target_dir != os.path.split(target_file)[0]:
+        failed = True
+        fb.warning("Not all fonts passed in the command line"
+                   "are in the same directory. This may lead to"
+                   "bad results as the tool will interpret all"
+                   "font files as belonging to a single font family.")
+        break
+
+  if not failed:
+    fb.ok("All files are in the same directory.")
 
 # ---------------------------------------------------------------------
 # Perform a few checks on DESCRIPTION files
