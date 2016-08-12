@@ -2044,6 +2044,27 @@ def main():
             fb.error(error_message.format(font_file))
 
     # ----------------------------------------------------
+    fb.new_check("Font contains the first few mandatory glyphs"
+                 " (.null, CR, space)?")
+    # It would be good to also check
+    # for .notdef (codepoint = unspecified)
+    null = getGlyph(font, 0x0000)
+    CR = getGlyph(font, 0x000D)
+    space = getGlyph(font, 0x0020)
+
+    missing = []
+    if null is None: missing.append(".null (0x0000)")
+    if CR is None: missing.append("CR (0x00D)")
+    if space is None: missing.append("space (0x0020)")
+    if missing != []:
+        fb.error(("Font is missing"
+                  " the following mandatory glyphs:"
+                  " {}.").format(", ".join(missing)))
+    else:
+        fb.ok("Font contains the first few mandatory glyphs"
+              " (.null, CR, space).")
+
+    # ----------------------------------------------------
     fb.new_check("Font contains glyphs for whitespace characters?")
     space = getGlyph(font, 0x0020)
     nbsp = getGlyph(font, 0x00A0)
@@ -2055,8 +2076,8 @@ def main():
     # fonts probably don't need an actual tab char
     # if tab is None: missing.append("tab (0x0009)")
     if missing != []:
-        fb.error("Font is missing"
-                 " the following glyphs: {}.".format(", ".join(missing)))
+        fb.error(("Whitespace glyphs missing:"
+                  " {}.").format(", ".join(missing)))
     else:
         fb.ok("Font contains glyphs for whitespace characters.")
 
