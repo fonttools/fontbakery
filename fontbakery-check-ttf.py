@@ -2303,8 +2303,9 @@ def main():
     fb.new_check("Glyph names are all valid?")
     bad_names = []
     for _, glyphName in enumerate(font.getGlyphOrder()):
-      if glyphName == '.notdef':
-        # This is an explicit exception in the glyph naming rules
+      if glyphName in ['.null', '.notdef']:
+        # These 2 names are explicit exceptions
+        # in the glyph naming rules
         continue
       if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
         bad_names.append(glyphName)
