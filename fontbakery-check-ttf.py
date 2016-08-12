@@ -1657,9 +1657,11 @@ def main():
               [g for g in glyphs
                if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
-            # https://github.com/googlefonts/fontbakery/issues/933
-            # FIXME strip glyphs named .notdef .null etc
-            # from the unusually_spaced_glyphs list
+
+            for glyphname in ['.notdef', '.null']:
+              if glyphname in unusually_spaced_glyphs:
+                unusually_spaced_glyphs.remove(glyphname)
+
             log_results(("Font is monospaced but {} glyphs"
                          " ({}%) have a different width."
                          " You should check the widths of: {}").format(
