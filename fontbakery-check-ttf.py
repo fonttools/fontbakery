@@ -2325,7 +2325,7 @@ def main():
                                              version_string))
 
     # ----------------------------------------------------
-    fb.new_check("Font had old ttfautohint applied?")
+    fb.new_check("Font has old ttfautohint applied?")
 
     def ttfautohint_version(value):
       return re.match(r'ttfautohint \(v(.*)\)', value)
