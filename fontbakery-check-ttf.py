@@ -2331,6 +2331,9 @@ def main():
     def ttfautohint_version(value):
       return re.search(r'ttfautohint \(v(.*)\)', value).group(1)
 
+    def installed_ttfa_version(value):
+      return re.search(r'ttfautohint (.*)\n', value).group(1)
+
     if ttfautohint_missing:
       fb.skip("This check requires ttfautohint"
               " to be available in the system.")
@@ -2342,7 +2345,14 @@ def main():
                  " ttfautohint was used in this font.\n"
                  "Version string is: '{}'").format(version_str))
       else:
-        fb.info("TTFAUTOHINT version = {}".format(ttfa_version))
+        ttfa_cmd = ["ttfautohint",
+                    "-V"]  # print version info
+        ttfa_output = subprocess.check_output(ttfa_cmd,
+                                              stderr=subprocess.STDOUT)
+        installed_ttfa = installed_ttfa_version(ttfa_output)
+        fb.info(("TTFAUTOHINT use in font = {}\n"
+                 "            installed = {}").format(ttfa_version,
+                                                      installed_ttfa))
 
     # ----------------------------------------------------
     fb.new_check("Glyph names are all valid?")
