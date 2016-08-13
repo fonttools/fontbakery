@@ -1995,7 +1995,8 @@ def main():
                                   "from '{}' to '{}'"
                                   "").format(name.string.decode(encoding),
                                              new_string.decode(encoding)))
-                    name.string = new_string
+                    if args.autofix:
+                      name.string = new_string
         if 'CFF ' in font.keys():
             major, minor, _ = ttf_version
             assert_table_entry("CFF ", 'cff.major', int(major))
@@ -2328,7 +2329,7 @@ def main():
     fb.new_check("Font has old ttfautohint applied?")
 
     def ttfautohint_version(value):
-      return re.match(r'ttfautohint \(v(.*)\)', value)
+      return re.search(r'ttfautohint \(v(.*)\)', value).group(1)
 
     if ttfautohint_missing:
       fb.skip("This check requires ttfautohint"
@@ -2337,8 +2338,9 @@ def main():
       version_str = get_name_string(font, NAMEID_VERSION_STRING)
       ttfa_version = ttfautohint_version(version_str)
       if ttfa_version is None:
-        fb.info("Could not detect which version of"
-                " ttfautohint was used in this font.")
+        fb.info(("Could not detect which version of"
+                 " ttfautohint was used in this font.\n"
+                 "Version string is: '{}'").format(version_str))
       else:
         fb.info("TTFAUTOHINT version = {}".format(ttfa_version))
 
