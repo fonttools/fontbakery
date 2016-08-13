@@ -1995,7 +1995,8 @@ def main():
                                   "from '{}' to '{}'"
                                   "").format(name.string.decode(encoding),
                                              new_string.decode(encoding)))
-                    name.string = new_string
+                    if args.autofix:
+                      name.string = new_string
         if 'CFF ' in font.keys():
             major, minor, _ = ttf_version
             assert_table_entry("CFF ", 'cff.major', int(major))
@@ -2239,6 +2240,7 @@ def main():
     fb.new_check("Show hinting filesize impact")
     # current implementation simply logs useful info
     # but there's no fail scenario for this checker.
+    ttfautohint_missing = False
     try:
       statinfo = os.stat(font_file)
       hinted_size = statinfo.st_size
@@ -2280,6 +2282,7 @@ def main():
 
     except OSError:
       # This is made very prominent with additional line breaks
+      ttfautohint_missing = True
       fb.warning("\n\n\nttfautohint is not available!"
                  " You really MUST check the fonts with this tool."
                  " To install it, see"
@@ -2321,6 +2324,47 @@ def main():
                 'the pattern Version X.Y between 1.000 and 9.999.'
                 ' Current value: {}').format(NAMEID_VERSION_STRING,
                                              version_string))
+
+    # ----------------------------------------------------
+    fb.new_check("Font has old ttfautohint applied?")
+
+    def ttfautohint_version(value):
+      return re.search(r'ttfautohint \(v(.*)\)', value).group(1)
+
+    def installed_ttfa_version(value):
+      return re.search(r'ttfautohint ([^-]*)(-.*)?\n', value).group(1)
+
+    def installed_version_is_newer(installed, used):
+      installed = map(int, installed.split("."))
+      used = map(int, used.split("."))
+      return installed > used
+
+    if ttfautohint_missing:
+      fb.skip("This check requires ttfautohint"
+              " to be available in the system.")
+    else:
+      version_str = get_name_string(font, NAMEID_VERSION_STRING)
+      ttfa_version = ttfautohint_version(version_str)
+      if ttfa_version is None:
+        fb.info(("Could not detect which version of"
+                 " ttfautohint was used in this font.\n"
+                 "Version string is: '{}'").format(version_str))
+      else:
+        ttfa_cmd = ["ttfautohint",
+                    "-V"]  # print version info
+        ttfa_output = subprocess.check_output(ttfa_cmd,
+                                              stderr=subprocess.STDOUT)
+        installed_ttfa = installed_ttfa_version(ttfa_output)
+        if installed_version_is_newer(installed_ttfa,
+                                      ttfa_version):
+          fb.info(("TTFAUTOHINT used in font = {};"
+                   " installed = {}; Need to re-run"
+                   " with the newer version!").format(ttfa_version,
+                                                      installed_ttfa))
+        else:
+          fb.ok("ttfautohint available in the system is older"
+                " than the one used in the font.")
+
 
     # ----------------------------------------------------
     fb.new_check("Glyph names are all valid?")
