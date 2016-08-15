@@ -1961,42 +1961,56 @@ def main():
     # If so, then we should calculate the max of each major and minor fields
     # in an external "for font" loop
     # DC yes we should check this and warn about it but it is not fatal.
-    ttf_version = parse_version_string(str(font['head'].fontRevision))
-    if ttf_version is None:
+    head_version = parse_version_string(str(font['head'].fontRevision))
+    if head_version is None:
         fixes.append(("Could not parse TTF version string on the 'head' table."
                       " Please fix it. Current value is"
                       " '{}'").format(str(font['head'].fontRevision)))
     else:
+        expected = "Version {}.{}".format(head_version[0],
+                                          head_version[1])
         for name in font['name'].names:
             if name.nameID == NAMEID_VERSION_STRING:
-                s = "Version {}.{}".format(ttf_version[0],
-                                           ttf_version[1])
-                if ttf_version[2] != "":
-                    s = "{};{}".format(s, ttf_version[2])
-                encoding = name.getEncoding()
-                new_string = s.encode(encoding)
-                if name.string != new_string:
+                name_version = name.string.decode(name.getEncoding())
+
+                # for the purpose of comparison we ignore any comments that
+                # may be present in the versino name entries
+                if ";" in name_version:
+                  version_without_comment, comments = name_version.split(";")
+                else:
+                  version_without_comment = name_version
+                  comments = False
+
+                if version_without_comment != expected:
                   # maybe the version strings differ only
                   # on floating-point error, so let's
                   # also give it a change by rounding and re-checking...
-                  v = "{}.{}".format(ttf_version[0], ttf_version[1])
+                  if " " in name_version:
+                    version = name_version.split(" ")[1]
+                  else:
+                    version = name_version
+
+                  v = "{}.{}".format(head_version[0], head_version[1])
                   rounded_string = round(float(v), 3)
 
-                  name_version = name.string.decode(name.getEncoding())
                   try:
-                    if " " in name_version:
-                      name_version = name_version.split(" ")[1]
-                    name_version = round(float(name_version), 3)
+                    version = round(float(version), 3)
                   except:
                     pass  # give up. it's definitely bad :(
 
-                  if name_version != rounded_string:
+                  if rounded_string != version:
                     fixes.append(("NAMEID_VERSION_STRING "
                                   "from '{}' to '{}'"
-                                  "").format(name.string.decode(encoding),
-                                             new_string.decode(encoding)))
+                                  "").format(name_version,
+                                             expected))
                     if args.autofix:
-                      name.string = new_string
+                      if comments:
+                        fix = "{};{}".format(expected,
+                                             comments)
+                      else:
+                        fix = expected
+                      name.string = fix.encode(name.getEncoding())
+
         if 'CFF ' in font.keys():
             major, minor, _ = ttf_version
             assert_table_entry("CFF ", 'cff.major', int(major))
