@@ -1976,7 +1976,11 @@ def main():
                 # for the purpose of comparison we ignore any comments that
                 # may be present in the versino name entries
                 if ";" in name_version:
-                  version_without_comment, comments = name_version.split(";")
+                  version_with_comment = name_version.split(";")
+                  version_without_comment = version_with_comment[0]
+                  comments = ""
+                  for comment in [str(x) for x in version_with_comment[1:]]:
+                      comments = comments + " " + comment
                 else:
                   version_without_comment = name_version
                   comments = False
