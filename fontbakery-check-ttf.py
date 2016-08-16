@@ -2343,7 +2343,9 @@ def main():
     fb.new_check("Font has old ttfautohint applied?")
 
     def ttfautohint_version(value):
-      return re.search(r'ttfautohint \(v(.*)\)', value).group(1)
+      results = re.search(r'ttfautohint \(v(.*)\)', value)
+      if results:
+        return results.group(1)
 
     def installed_ttfa_version(value):
       return re.search(r'ttfautohint ([^-]*)(-.*)?\n', value).group(1)
@@ -2361,8 +2363,10 @@ def main():
       ttfa_version = ttfautohint_version(version_str)
       if ttfa_version is None:
         fb.info(("Could not detect which version of"
-                 " ttfautohint was used in this font.\n"
-                 "Version string is: '{}'").format(version_str))
+                 " ttfautohint was used in this font."
+                 " It is typically specified as a comment"
+                 " in the font version entry of the 'name' table."
+                 " Font version string is: '{}'").format(version_str))
       else:
         ttfa_cmd = ["ttfautohint",
                     "-V"]  # print version info
@@ -2371,7 +2375,7 @@ def main():
         installed_ttfa = installed_ttfa_version(ttfa_output)
         if installed_version_is_newer(installed_ttfa,
                                       ttfa_version):
-          fb.info(("TTFAUTOHINT used in font = {};"
+          fb.info(("Ttfautohint used in font = {};"
                    " installed = {}; Need to re-run"
                    " with the newer version!").format(ttfa_version,
                                                       installed_ttfa))
