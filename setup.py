@@ -63,7 +63,7 @@ setup(
     author_email='dave@lab6.com',
     scripts=['fontbakery-build-font2ttf.py',
              'fontbakery-build-fontmetadata.py',
-             'fontbakery-build-metadata.py',
+#             'fontbakery-build-metadata.py',
              'fontbakery-check-description.py',
              'fontbakery-check-ttf.py',
              'fontbakery-check-upstream.py',
