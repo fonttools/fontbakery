@@ -1976,12 +1976,14 @@ def main():
                 # for the purpose of comparison we ignore any comments that
                 # may be present in the versino name entries
                 if ";" in name_version:
-                  version_without_comment, comments = name_version.split(";")
+                  version_with_comments = name_version.split(";")
+                  version_without_comments = version_with_comments.pop(0)
+                  comments = ";".join(version_with_comments)
                 else:
-                  version_without_comment = name_version
+                  version_without_comments = name_version
                   comments = False
 
-                if version_without_comment != expected:
+                if version_without_comments != expected:
                   # maybe the version strings differ only
                   # on floating-point error, so let's
                   # also give it a change by rounding and re-checking...
