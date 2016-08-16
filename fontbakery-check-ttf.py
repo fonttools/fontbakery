@@ -2343,7 +2343,9 @@ def main():
     fb.new_check("Font has old ttfautohint applied?")
 
     def ttfautohint_version(value):
-      return re.search(r'ttfautohint \(v(.*)\)', value).group(1)
+      results = re.search(r'ttfautohint \(v(.*)\)', value)
+      if results:
+        return results.group(1)
 
     def installed_ttfa_version(value):
       return re.search(r'ttfautohint ([^-]*)(-.*)?\n', value).group(1)
