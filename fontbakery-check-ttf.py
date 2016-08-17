@@ -2354,8 +2354,10 @@ def main():
 
     def installed_version_is_newer(installed, used):
       if "\n" in installed:
-        installed = installed.split("\n")
-        installed = installed[0]
+        installed = installed.split("\n")[0]
+        fb.warning("Version string contains a line-break."
+                   " Only the first line is being read."
+                   " This may be a malformed version string entry.")
 
       installed = map(int, installed.split("."))
       used = map(int, used.split("."))
