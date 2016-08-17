@@ -2353,6 +2353,10 @@ def main():
       return re.search(r'ttfautohint ([^-]*)(-.*)?\n', value).group(1)
 
     def installed_version_is_newer(installed, used):
+      if "\n" in installed:
+        installed = installed.split("\n")
+        installed = installed[0]
+
       installed = map(int, installed.split("."))
       used = map(int, used.split("."))
       return installed > used
