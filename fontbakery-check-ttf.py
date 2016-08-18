@@ -1308,11 +1308,6 @@ def main():
       log_results("post table italicAngle matches style name")
 
     # ----------------------------------------------------
-    # https://github.com/googlefonts/fontbakery/issues/932
-    # TODO: checker for proper italic names in name table
-    # DC THIS IS URGENT!
-
-    # ----------------------------------------------------
     fb.new_check("Checking fsSelection ITALIC bit")
     check_bit_entry(font, "OS/2", "fsSelection",
                     "Italic" in style,
