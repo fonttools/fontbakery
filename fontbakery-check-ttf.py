@@ -2387,9 +2387,9 @@ def main():
       string = name.string.decode(name.getEncoding())
       if "\n" in string:
         failed = True
-        fb.error(("Name entry {} on platform {} "
-                  "contains a line-break.").format(NAMEID_STR[name.nameID],
-                                                   PLATID_STR[name.platformID]))
+        fb.error(("Name entry {} on platform {} contains"
+                  " a line-break.").format(NAMEID_STR[name.nameID],
+                                           PLATID_STR[name.platformID]))
 
     if not failed:
       fb.ok("Name table entries are all single-line (no line-breaks found).")
