@@ -2014,7 +2014,7 @@ def main():
                       name.string = fix.encode(name.getEncoding())
 
         if 'CFF ' in font.keys():
-            major, minor, _ = ttf_version
+            major, minor, _ = head_version
             assert_table_entry("CFF ", 'cff.major', int(major))
             assert_table_entry("CFF ", 'cff.minor', int(minor))
     log_results("Font version fields.")
