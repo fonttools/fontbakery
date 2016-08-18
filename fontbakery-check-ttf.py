@@ -2391,6 +2391,19 @@ def main():
           fb.ok("ttfautohint available in the system is older"
                 " than the one used in the font.")
 
+    # ----------------------------------------------------
+    fb.new_check("Name table entries should not contain line-breaks")
+    failed = False
+    for name in font['name'].names:
+      string = name.string.decode(name.getEncoding())
+      if "\n" in string:
+        failed = True
+        fb.error(("Name entry {} on platform {} "
+                  "contains a line-break.").format(NAMEID_STR[name.nameID],
+                                                   PLATIF[name.platformID]))
+
+    if not failed:
+      fb.ok("Name table entries are all single-line (no line-breaks found).")
 
     # ----------------------------------------------------
     fb.new_check("Glyph names are all valid?")
