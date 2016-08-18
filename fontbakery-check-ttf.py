@@ -2350,15 +2350,9 @@ def main():
         return results.group(1)
 
     def installed_ttfa_version(value):
-      return re.search(r'ttfautohint ([^-]*)(-.*)?\n', value).group(1)
+      return re.search(r'ttfautohint ([^-\n]*)(-.*)?\n', value).group(1)
 
     def installed_version_is_newer(installed, used):
-      if "\n" in installed:
-        installed = installed.split("\n")[0]
-        fb.warning("Version string contains a line-break."
-                   " Only the first line is being read."
-                   " This may be a malformed version string entry.")
-
       installed = map(int, installed.split("."))
       used = map(int, used.split("."))
       return installed > used
@@ -2391,6 +2385,19 @@ def main():
           fb.ok("ttfautohint available in the system is older"
                 " than the one used in the font.")
 
+    # ----------------------------------------------------
+    fb.new_check("Name table entries should not contain line-breaks")
+    failed = False
+    for name in font['name'].names:
+      string = name.string.decode(name.getEncoding())
+      if "\n" in string:
+        failed = True
+        fb.error(("Name entry {} on platform {} "
+                  "contains a line-break.").format(NAMEID_STR[name.nameID],
+                                                   PLATIF[name.platformID]))
+
+    if not failed:
+      fb.ok("Name table entries are all single-line (no line-breaks found).")
 
     # ----------------------------------------------------
     fb.new_check("Glyph names are all valid?")
