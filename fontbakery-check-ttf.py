@@ -2020,24 +2020,24 @@ def main():
 
             try:
               rounded_string = round(float(version_without_comments), 3)
-              version = round(float(version), 3)
+              version = round(float(".".join(expected)), 3)
               if rounded_string != version:
                 failed = True
                 if comments:
-                  fix = "{};{}".format(expected, comments)
+                  fix = "{};{}".format(expected_str, comments)
                 else:
-                  fix = expected
+                  fix = expected_str
                 if args.autofix:
                   fb.hotfix(("NAMEID_VERSION_STRING "
                              "from '{}' to '{}'"
                              "").format(name_version,
-                                        expected))
+                                        fix))
                   name.string = fix.encode(name.getEncoding())
                 else:
                   fb.error(("NAMEID_VERSION_STRING value '{}'"
                              " does not match expected '{}'"
                              "").format(name_version,
-                                        expected))
+                                        fix))
             except:
               failed = True  # give up. it's definitely bad :(
               fb.error("Unable to parse font version info"
