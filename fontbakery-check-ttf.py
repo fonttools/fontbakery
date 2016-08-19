@@ -1949,12 +1949,10 @@ def main():
     # assert_table_entry('head', 'unitsPerEm', ymax)
     log_results("Vertical metrics.")
 
-
     def version_is_newer(a, b):
       a = map(int, a.split("."))
       # b = map(int, b.split("."))
       return a > b
-
 
     def get_version_from_name_entry(name):
       string = name.string.decode(name.getEncoding())
@@ -1967,7 +1965,6 @@ def main():
       if "Version " in string:
         string = string.split("Version ")[1]
       return string
-
 
     def get_expected_version(f):
       expected_version = parse_version_string(str(f['head'].fontRevision))
@@ -2030,14 +2027,12 @@ def main():
                 if args.autofix:
                   fb.hotfix(("NAMEID_VERSION_STRING "
                              "from '{}' to '{}'"
-                             "").format(name_version,
-                                        fix))
+                             "").format(name_version, fix))
                   name.string = fix.encode(name.getEncoding())
                 else:
                   fb.error(("NAMEID_VERSION_STRING value '{}'"
-                             " does not match expected '{}'"
-                             "").format(name_version,
-                                        fix))
+                            " does not match expected '{}'"
+                            "").format(name_version, fix))
             except:
               failed = True  # give up. it's definitely bad :(
               fb.error("Unable to parse font version info"
