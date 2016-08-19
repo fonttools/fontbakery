@@ -1949,6 +1949,38 @@ def main():
     # assert_table_entry('head', 'unitsPerEm', ymax)
     log_results("Vertical metrics.")
 
+
+    def version_is_newer(a, b):
+      a = map(int, a.split("."))
+      # b = map(int, b.split("."))
+      return a > b
+
+
+    def get_version_from_name_entry(name):
+      string = name.string.decode(name.getEncoding())
+      # we ignore any comments that
+      # may be present in the version name entries
+      if ";" in string:
+        string = string.split(";")[0]
+      # and we also ignore
+      # the 'Version ' prefix
+      if "Version " in string:
+        string = string.split("Version ")[1]
+      return string
+
+
+    def get_expected_version(f):
+      expected_version = parse_version_string(str(f['head'].fontRevision))
+      for name in f['name'].names:
+        if name.nameID == NAMEID_VERSION_STRING:
+          name_version = get_version_from_name_entry(name)
+          if expected_version is None:
+            expected_version = name_version
+          else:
+            if version_is_newer(name_version, expected_version):
+              expected_version = name_version
+      return expected_version
+
     # ----------------------------------------------------
     fb.new_check("Checking font version fields")
     # FIXME: do we want all fonts in the same family to have
@@ -1956,63 +1988,62 @@ def main():
     # If so, then we should calculate the max of each major and minor fields
     # in an external "for font" loop
     # DC yes we should check this and warn about it but it is not fatal.
-    head_version = parse_version_string(str(font['head'].fontRevision))
-    if head_version is None:
-        fixes.append(("Could not parse TTF version string on the 'head' table."
-                      " Please fix it. Current value is"
-                      " '{}'").format(str(font['head'].fontRevision)))
+    failed = False
+    expected = get_expected_version(font)
+    if expected is None:
+      failed = True
+      fb.error("Could not find any font versioning info on the head table"
+               " or in the name table entries.")
     else:
-        expected = "Version {}.{}".format(head_version[0],
-                                          head_version[1])
-        for name in font['name'].names:
-            if name.nameID == NAMEID_VERSION_STRING:
-                name_version = name.string.decode(name.getEncoding())
+      font_revision = str(font['head'].fontRevision)
+      expected_str = "{}.{}".format(expected[0],
+                                    expected[1])
+      if font_revision != expected_str:
+        failed = True
+        fb.error(("Font revision on the head table ({})"
+                  " differs from the expected value ({})"
+                  "").format(font_revision, expected))
 
-                # for the purpose of comparison we ignore any comments that
-                # may be present in the versino name entries
-                if ";" in name_version:
-                  version_with_comments = name_version.split(";")
-                  version_without_comments = version_with_comments.pop(0)
-                  comments = ";".join(version_with_comments)
+      expected_str = "Version {}.{}".format(expected[0],
+                                            expected[1])
+      for name in font['name'].names:
+        if name.nameID == NAMEID_VERSION_STRING:
+          name_version = name.string.decode(name.getEncoding())
+          regex = re.search(r'(Version [^\s;]*)(\s*;)?(.*)?', name_version)
+          version_without_comments = regex.group(1)
+          comments = regex.group(3)
+
+          if version_without_comments != expected_str:
+            # maybe the version strings differ only
+            # on floating-point error, so let's
+            # also give it a change by rounding and re-checking...
+
+            try:
+              rounded_string = round(float(version_without_comments), 3)
+              version = round(float(version), 3)
+              if rounded_string != version:
+                failed = True
+                if comments:
+                  fix = "{};{}".format(expected, comments)
                 else:
-                  version_without_comments = name_version
-                  comments = False
-
-                if version_without_comments != expected:
-                  # maybe the version strings differ only
-                  # on floating-point error, so let's
-                  # also give it a change by rounding and re-checking...
-                  if " " in name_version:
-                    version = name_version.split(" ")[1]
-                  else:
-                    version = name_version
-
-                  v = "{}.{}".format(head_version[0], head_version[1])
-                  rounded_string = round(float(v), 3)
-
-                  try:
-                    version = round(float(version), 3)
-                  except:
-                    pass  # give up. it's definitely bad :(
-
-                  if rounded_string != version:
-                    fixes.append(("NAMEID_VERSION_STRING "
-                                  "from '{}' to '{}'"
-                                  "").format(name_version,
-                                             expected))
-                    if args.autofix:
-                      if comments:
-                        fix = "{};{}".format(expected,
-                                             comments)
-                      else:
-                        fix = expected
-                      name.string = fix.encode(name.getEncoding())
-
-        if 'CFF ' in font.keys():
-            major, minor, _ = head_version
-            assert_table_entry("CFF ", 'cff.major', int(major))
-            assert_table_entry("CFF ", 'cff.minor', int(minor))
-    log_results("Font version fields.")
+                  fix = expected
+                if args.autofix:
+                  fb.hotfix(("NAMEID_VERSION_STRING "
+                             "from '{}' to '{}'"
+                             "").format(name_version,
+                                        expected))
+                  name.string = fix.encode(name.getEncoding())
+                else:
+                  fb.error(("NAMEID_VERSION_STRING value '{}'"
+                             " does not match expected '{}'"
+                             "").format(name_version,
+                                        expected))
+            except:
+              failed = True  # give up. it's definitely bad :(
+              fb.error("Unable to parse font version info"
+                       " from name table entries.")
+    if not failed:
+      fb.ok("All font version fields look good.")
 
     # ----------------------------------------------------
     fb.new_check("Digital Signature exists?")
@@ -2387,9 +2418,9 @@ def main():
       string = name.string.decode(name.getEncoding())
       if "\n" in string:
         failed = True
-        fb.error(("Name entry {} on platform {} "
-                  "contains a line-break.").format(NAMEID_STR[name.nameID],
-                                                   PLATID_STR[name.platformID]))
+        fb.error(("Name entry {} on platform {} contains"
+                  " a line-break.").format(NAMEID_STR[name.nameID],
+                                           PLATID_STR[name.platformID]))
 
     if not failed:
       fb.ok("Name table entries are all single-line (no line-breaks found).")
