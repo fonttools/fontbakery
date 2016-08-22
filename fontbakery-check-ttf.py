@@ -2822,7 +2822,7 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("check for correct path direction")
-    # cohetent path directions are inferred indirectly
+    # coherent path directions are inferred indirectly
     # by calculating the total glyph ink area.
     # Wrong directions lead to an inversion in the
     # numerical sign of the total area.
@@ -2836,6 +2836,22 @@ def main():
         fb.error("bad path direction in '{}'".format(glyphName))
     if not failed:
       fb.ok("All glyph paths have correct directions!")
+
+    # ----------------------------------------------------
+    fb.new_check("check for points out of bounds")
+    failed = False
+    for glyphName in font['glyf'].keys():
+      glyph = font['glyf'][glyphName]
+      coords, endpts, flags = glyph.getCoordinates(font['glyf'])
+      for x, y in coords:
+        if (x < glyph.xMin or x > glyph.xMax or
+            y < glyph.yMin or y > glyph.yMax or
+            abs(x) > 32766 or abs(y) > 32766):
+          failed = True
+          fb.error(("Glyph '{}' coordinates ({},{})"
+                    " out of bounds!").format(glyphName, x, y))
+    if not failed:
+      fb.ok("All glyph paths have coordinates within bounds!")
 
     # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
