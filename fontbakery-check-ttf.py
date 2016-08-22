@@ -2821,60 +2821,21 @@ def main():
 ##########################################################
 
     # ----------------------------------------------------
-    fb.new_check("check for open paths")
-    for glyphName in font['glyf'].glyphs.keys():
-      glyph = font['glyf'].glyphs[glyphName]
-      glyph.expand(font['glyf'])
-#      fb.info("glyph numberOfContours is {}".format(glyph.numberOfContours))
-#      fb.info("glyph coords are {}".format(glyph.coordinates)
-#      fb.info("glyphName is {}".format(glyphName))
-      coords, endpts, flags = glyph.getCoordinates(font['glyf'])
-      if len(coords) == 0:
-        fb.info("glyph has no points ?!")
-        continue
-
-      fb.info("glyphName is {}".format(glyphName))
-      fb.info("| coords = {}".format(coords))
-      fb.info("| endpts = {}".format(endpts))
-      fb.info("| flags = {}".format(flags))
-
-      points = coords[:endpts[0]]  # only the 1st contour for now...
-      if points == []:
-        fb.info("first contour has zero points?!")
-        continue
-
-      fb.info(">> points = {}".format(points))
-
-      failed = False
-      pen = AreaPen(None)
-      for p in xrange(len(points)):
-        if p==0:
-          pen.moveTo(points[p])
-          curve_pts = []
-        else:
-          if flags[p] == 0:
-            curve_pts.append(points[p])
-          else:
-            if len(curve_pts)==0:
-              pen.lineTo(points[p])
-            elif len(curve_pts)==1:
-              pen.qCurveTo(curve_pts[0], points[p])
-            elif len(curve_pts)==2:
-              pen.curveTo(curve_pts[0], curve_pts[1], points[p])
-            elif len(curve_pts)==3:
-              pass
-#              pen.curveTo(curve_pts[0], curve_pts[1], points[p])
-            else:
-              failed = True
-              fb.error("Too much ({}) points: {}".format(len(curve_pts), curve_pts))
-            curve_pts = []
-      pen.closePath()
-      if pen.value >= 0:
+    fb.new_check("check for correct path direction")
+    # cohetent path directions are inferred indirectly
+    # by calculating the total glyph ink area.
+    # Wrong directions lead to an inversion in the
+    # numerical sign of the total area.
+    failed = False
+    for glyphName in font['glyf'].keys():
+      glyph = font['glyf'][glyphName]
+      pen = AreaPen(font.getGlyphSet())
+      glyph.draw(pen, font['glyf'])
+      if pen.value > 0:
         failed = True
-        fb.error("bad path direction")
-
-      if not failed:
-        fb.ok("looks good!")
+        fb.error("bad path direction in '{}'".format(glyphName))
+    if not failed:
+      fb.ok("All glyph paths have correct directions!")
 
     # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
