@@ -2854,6 +2854,24 @@ def main():
       fb.ok("All glyph paths have coordinates within bounds!")
 
     # ----------------------------------------------------
+    fb.new_check("check glyphs have unique unicode codepoints")
+    failed = False
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        codepoints = {}
+        for codepoint, name in subtable.cmap.items():
+          codepoints.setdefault(codepoint, set()).add(name)
+        for value in codepoints.keys():
+          if len(codepoints[value]) >= 2:
+            failed = True
+            fb.error(("These glyphs carry the same"
+                      " unicode value {}:"
+                      " {}").format(value,
+                                    ", ".join(codepoints[value])))
+    if not failed:
+      fb.ok("All glyphs have unique unicode codepoint assignments.")
+
+    # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
 #       but I'm unsure whether we really need to port them here.
 #
