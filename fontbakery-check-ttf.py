@@ -2821,7 +2821,7 @@ def main():
 ##########################################################
 
     # ----------------------------------------------------
-    fb.new_check("check for correct path direction")
+    fb.new_check("Check for correct path direction")
     # coherent path directions are inferred indirectly
     # by calculating the total glyph ink area.
     # Wrong directions lead to an inversion in the
@@ -2833,12 +2833,12 @@ def main():
       glyph.draw(pen, font['glyf'])
       if pen.value > 0:
         failed = True
-        fb.error("bad path direction in '{}'".format(glyphName))
+        fb.error("Bad path direction in '{}'".format(glyphName))
     if not failed:
       fb.ok("All glyph paths have correct directions!")
 
     # ----------------------------------------------------
-    fb.new_check("check for points out of bounds")
+    fb.new_check("Check for points out of bounds")
     failed = False
     for glyphName in font['glyf'].keys():
       glyph = font['glyf'][glyphName]
@@ -2854,7 +2854,7 @@ def main():
       fb.ok("All glyph paths have coordinates within bounds!")
 
     # ----------------------------------------------------
-    fb.new_check("check glyphs have unique unicode codepoints")
+    fb.new_check("Check glyphs have unique unicode codepoints")
     failed = False
     for subtable in font['cmap'].tables:
       if subtable.isUnicode():
@@ -2870,6 +2870,19 @@ def main():
                                     ", ".join(codepoints[value])))
     if not failed:
       fb.ok("All glyphs have unique unicode codepoint assignments.")
+
+    # ----------------------------------------------------
+    fb.new_check("Check all glyphs have codepoints assigned")
+    failed = False
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        for codepoint, name in subtable.cmap.items():
+          if codepoint is None:
+            failed = True
+            fb.error(("Glyph {} lacks a unicode"
+                      " codepoint assignment").format(codepoint))
+    if not failed:
+      fb.ok("All glyphs have a codepoint value assigned.")
 
     # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
