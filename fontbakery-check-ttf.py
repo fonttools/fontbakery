@@ -2872,6 +2872,24 @@ def main():
       fb.ok("All glyphs have unique unicode codepoint assignments.")
 
     # ----------------------------------------------------
+    fb.new_check("Check glyphs have unique names")
+    failed = False
+    for subtable in font['cmap'].tables:
+      codepoints = {}
+      for codepoint, name in subtable.cmap.items():
+        if name != '.notdef':
+          codepoints.setdefault(name, set()).add(hex(codepoint))
+      for name in codepoints.keys():
+        if len(codepoints[name]) >= 2:
+          failed = True
+          fb.error(("Glyph name '{}' is attributed to more than"
+                    " a single codepoint:"
+                    " ({})").format(name,
+                                    ", ".join(codepoints[name])))
+    if not failed:
+      fb.ok("All glyphs have unique names.")
+
+    # ----------------------------------------------------
     fb.new_check("Check all glyphs have codepoints assigned")
     failed = False
     for subtable in font['cmap'].tables:
