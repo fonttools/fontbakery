@@ -2821,23 +2821,6 @@ def main():
 ##########################################################
 
     # ----------------------------------------------------
-    fb.new_check("Check for correct path direction")
-    # coherent path directions are inferred indirectly
-    # by calculating the total glyph ink area.
-    # Wrong directions lead to an inversion in the
-    # numerical sign of the total area.
-    failed = False
-    for glyphName in font['glyf'].keys():
-      glyph = font['glyf'][glyphName]
-      pen = AreaPen(font.getGlyphSet())
-      glyph.draw(pen, font['glyf'])
-      if pen.value > 0:
-        failed = True
-        fb.error("Bad path direction in '{}'".format(glyphName))
-    if not failed:
-      fb.ok("All glyph paths have correct directions!")
-
-    # ----------------------------------------------------
     fb.new_check("Check for points out of bounds")
     failed = False
     for glyphName in font['glyf'].keys():
