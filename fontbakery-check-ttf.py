@@ -2844,9 +2844,9 @@ def main():
       glyph = font['glyf'][glyphName]
       coords, endpts, flags = glyph.getCoordinates(font['glyf'])
       for x, y in coords:
-        if (x < glyph.xMin or x > glyph.xMax or
-            y < glyph.yMin or y > glyph.yMax or
-            abs(x) > 32766 or abs(y) > 32766):
+        if x < glyph.xMin or x > glyph.xMax or \
+           y < glyph.yMin or y > glyph.yMax or \
+           abs(x) > 32766 or abs(y) > 32766:
           failed = True
           fb.error(("Glyph '{}' coordinates ({},{})"
                     " out of bounds!").format(glyphName, x, y))
