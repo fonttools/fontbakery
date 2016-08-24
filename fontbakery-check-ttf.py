@@ -2885,6 +2885,18 @@ def main():
       fb.ok("All glyphs have a codepoint value assigned.")
 
     # ----------------------------------------------------
+    fb.new_check("Check that glyph names do not exceed max length")
+    failed = False
+    for subtable in font['cmap'].tables:
+      for codepoint, name in subtable.cmap.items():
+        if len(name) > 109:
+          failed = True
+          fb.error(("Glyph name is too long:"
+                    " '{}'").format(name))
+    if not failed:
+      fb.ok("No glyph names exceed max allowed length.")
+
+    # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
 #       but I'm unsure whether we really need to port them here.
 #
