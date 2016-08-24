@@ -29,6 +29,7 @@ import magic
 from bs4 import BeautifulSoup
 from fontTools import ttLib
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
+from fontTools.pens.areaPen import AreaPen
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
 from lxml.html import HTMLParser
@@ -2811,6 +2812,107 @@ def main():
                 " equal to 1000.").format(upm_height))
     else:
       fb.ok("Font em size is equal to 1000.")
+
+##########################################################
+##  Checks ported from:                                 ##
+##  https://github.com/mekkablue/Glyphs-Scripts/        ##
+##  blob/447270c7a82fa272acc312e120abb20f82716d08/      ##
+##  Test/Preflight%20Font.py                            ##
+##########################################################
+
+    # ----------------------------------------------------
+    fb.new_check("Check for correct path direction")
+    # coherent path directions are inferred indirectly
+    # by calculating the total glyph ink area.
+    # Wrong directions lead to an inversion in the
+    # numerical sign of the total area.
+    failed = False
+    for glyphName in font['glyf'].keys():
+      glyph = font['glyf'][glyphName]
+      pen = AreaPen(font.getGlyphSet())
+      glyph.draw(pen, font['glyf'])
+      if pen.value > 0:
+        failed = True
+        fb.error("Bad path direction in '{}'".format(glyphName))
+    if not failed:
+      fb.ok("All glyph paths have correct directions!")
+
+    # ----------------------------------------------------
+    fb.new_check("Check for points out of bounds")
+    failed = False
+    for glyphName in font['glyf'].keys():
+      glyph = font['glyf'][glyphName]
+      coords, endpts, flags = glyph.getCoordinates(font['glyf'])
+      for x, y in coords:
+        if (x < glyph.xMin or x > glyph.xMax or
+            y < glyph.yMin or y > glyph.yMax or
+            abs(x) > 32766 or abs(y) > 32766):
+          failed = True
+          fb.error(("Glyph '{}' coordinates ({},{})"
+                    " out of bounds!").format(glyphName, x, y))
+    if not failed:
+      fb.ok("All glyph paths have coordinates within bounds!")
+
+    # ----------------------------------------------------
+    fb.new_check("Check glyphs have unique unicode codepoints")
+    failed = False
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        codepoints = {}
+        for codepoint, name in subtable.cmap.items():
+          codepoints.setdefault(codepoint, set()).add(name)
+        for value in codepoints.keys():
+          if len(codepoints[value]) >= 2:
+            failed = True
+            fb.error(("These glyphs carry the same"
+                      " unicode value {}:"
+                      " {}").format(value,
+                                    ", ".join(codepoints[value])))
+    if not failed:
+      fb.ok("All glyphs have unique unicode codepoint assignments.")
+
+    # ----------------------------------------------------
+    fb.new_check("Check glyphs have unique names")
+    failed = False
+    for subtable in font['cmap'].tables:
+      codepoints = {}
+      for codepoint, name in subtable.cmap.items():
+        if name != '.notdef':
+          codepoints.setdefault(name, set()).add(hex(codepoint))
+      for name in codepoints.keys():
+        if len(codepoints[name]) >= 2:
+          failed = True
+          fb.error(("Glyph name '{}' is attributed to more than"
+                    " a single codepoint:"
+                    " ({})").format(name,
+                                    ", ".join(codepoints[name])))
+    if not failed:
+      fb.ok("All glyphs have unique names.")
+
+    # ----------------------------------------------------
+    fb.new_check("Check all glyphs have codepoints assigned")
+    failed = False
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        for codepoint, name in subtable.cmap.items():
+          if codepoint is None:
+            failed = True
+            fb.error(("Glyph {} lacks a unicode"
+                      " codepoint assignment").format(codepoint))
+    if not failed:
+      fb.ok("All glyphs have a codepoint value assigned.")
+
+    # ----------------------------------------------------
+    fb.new_check("Check that glyph names do not exceed max length")
+    failed = False
+    for subtable in font['cmap'].tables:
+      for codepoint, name in subtable.cmap.items():
+        if len(name) > 109:
+          failed = True
+          fb.error(("Glyph name is too long:"
+                    " '{}'").format(name))
+    if not failed:
+      fb.ok("No glyph names exceed max allowed length.")
 
     # ----------------------------------------------------
 # TODO: These were the last remaining tests in the old codebase,
