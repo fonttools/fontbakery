@@ -1727,6 +1727,19 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ftxvalidator")
+    KNOWN_GOOD_OUTPUT = \
+'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>kATSFontTestResultKey</key>
+    <array>
+        <string>kATSFontTestSeverityInformation</string>
+        <string>kATSFontTestSeverityMinorError</string>
+    </array>
+</dict>
+</plist>'''
+
     try:
       ftx_cmd = ["ftxvalidator",
                  "-r",  # Generate a full report
@@ -1734,10 +1747,18 @@ def main():
                  font_file]
       ftx_output = subprocess.check_output(ftx_cmd,
                                            stderr=subprocess.STDOUT)
-      if ftx_output != "":
-        fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
-      else:
+      if ftx_output.strip() == KNOWN_GOOD_OUTPUT:
         fb.ok("ftxvalidator passed this file")
+      else:
+        ftx_cmd = ["ftxvalidator",
+                   "-T", # Human-readable output
+                   "-r", # Generate a full report
+                   "-t", "all", # execute all tests
+                   font_file]
+        ftx_output = subprocess.check_output(ftx_cmd,
+                                             stderr=subprocess.STDOUT)
+        fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+
     except subprocess.CalledProcessError, e:
         fb.info(("ftxvalidator returned an error code. Output follows :"
                  "\n\n{}\n").format(e.output))
