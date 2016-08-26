@@ -2553,28 +2553,27 @@ def main():
         fb.ok('Full font name begins with the font family name.')
 
     # ----------------------------------------------------
-    # Should this test support CFF as well?
     fb.new_check("Is there any unused data at the end of the glyf table?")
-    if 'CFF ' not in font:
-      fb.skip("Not a CFF font.")
+    if 'CFF ' in font:
+      fb.skip("This check does not support CFF fonts.")
     else:
-      expected = font['loca'].length
-      actual = font['glyf'].length
+      expected = len(font['loca'])
+      actual = len(font['glyf'])
       diff = actual - expected
 
       # allow up to 3 bytes of padding
       if diff > 3:
         fb.error(("Glyf table has unreachable data at"
                   " the end of the table."
-                  " Expected glyf table length %s"
+                  " Expected glyf table length {}"
                   " (from loca table), got length"
-                  " %s (difference: %s)").format(expected, actual, diff))
+                  " {} (difference: {})").format(expected, actual, diff))
       elif diff < 0:
         fb.error(("Loca table references data beyond"
                   " the end of the glyf table."
-                  " Expected glyf table length %s"
+                  " Expected glyf table length {}"
                   " (from loca table), got length"
-                  " %s (difference: %s)").format(expected, actual, diff))
+                  " {} (difference: {})").format(expected, actual, diff))
       else:
         fb.ok("There is no unused data at"
               " the end of the glyf table.")
