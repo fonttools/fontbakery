@@ -408,8 +408,8 @@ def log_results(message, hotfix=True):
 
 # Maybe fonttools should provide us a helper method like this one...
 # https://github.com/googlefonts/fontbakery/issues/926
-# TODO: verify if fonttools doesn't really provide that and then
-#       possibily contribute something equivalent to this upstream.
+# Verify if fonttools doesn't really provide that and then
+# possibily contribute something equivalent to this upstream.
 def makeNameRecord(text, nameID, platformID, platEncID, langID):
     """ Helper function to create a new NameRecord entry """
     name = NameRecord()
@@ -780,7 +780,7 @@ def main():
   def ttf_file(f):
     simplehash = f.filename
     # https://github.com/googlefonts/fontbakery/issues/928
-    # TODO: This may collide. We may need something better here.
+    # This may collide. We may need something better here.
     return ttf[simplehash]
 
   for dirname, family in metadata_to_check:
@@ -1133,7 +1133,7 @@ def main():
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
         # https://github.com/googlefonts/fontbakery/issues/929
-        # TODO check registered_vendor_ids[vid] against name table values
+        # Check registered_vendor_ids[vid] against name table values
         # FSanches:
         #      We do check against NAMEID_MANUFACTURER_NAME below
         #      Do we want to check against other nameid entries as well ?
@@ -1474,7 +1474,7 @@ def main():
               found_good_entry = True
             else:
               if args.autofix:
-                pass  # TODO: implement-me!
+                pass  # implement-me!
               else:
                 failed = True
                 fb.error(("Licensing inconsistency in name table entries!"
@@ -1498,46 +1498,6 @@ def main():
                                                    NAMEID_LICENSE_INFO_URL))
         else:
           fb.ok("Font has a valid license URL in NAME table.")
-
-# The following test was disabled due to
-# the concerns pointed out at:
-# https://github.com/googlefonts/fontbakery/issues/797
-#
-#    # ----------------------------------------------------
-#    # TODO: Add a description/rationale to this check here
-#    # DC I need to carefully review how this works
-#    fb.new_check("Checking name table for items without"
-#                 " platformID = 1 (MACINTOSH)")
-#    new_names = []
-#    changed = False
-#    for name in font['name'].names:
-#      if (name.platformID != PLATFORM_ID_MACINTOSH and
-#          name.nameID not in [NAMEID_COPYRIGHT_NOTICE,
-#                              NAMEID_FONT_FAMILY_NAME,
-#                              NAMEID_FONT_SUBFAMILY_NAME,
-#                              NAMEID_UNIQUE_FONT_IDENTIFIER,
-#                              NAMEID_FULL_FONT_NAME,
-#                              NAMEID_VERSION_STRING,
-#                              NAMEID_POSTSCRIPT_NAME,
-#                              NAMEID_COMPATIBLE_FULL_MACONLY
-#                              ]) or \
-#         (name.platformID == PLATFORM_ID_MACINTOSH and
-#          name.nameID in [NAMEID_FONT_FAMILY_NAME,
-#                          NAMEID_FONT_SUBFAMILY_NAME,
-#                          NAMEID_FULL_FONT_NAME,
-#                          NAMEID_POSTSCRIPT_NAME
-#                          ]):
-#        # see https://github.com/googlefonts/fontbakery/issues/649
-#        new_names.append(name)
-#      else:
-#        changed = True
-#    if changed:
-#      font['name'].names = new_names
-#      fb.hotfix("some name table items"
-#                " with platformID=1 were removed")
-#    else:
-#      fb.ok("name table has only the bare-minimum"
-#            " records with platformID=1")
 
     # ----------------------------------------------------
     fb.new_check("name record 10s (descriptions) are reasonable?")
@@ -1790,7 +1750,7 @@ def main():
     # ----------------------------------------------------
     # https://github.com/googlefonts/fontbakery/issues/934
     #
-    # TODO FontForge will sometimes say stuff on STDERR like
+    # FontForge will sometimes say stuff on STDERR like
     # $ fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
     #   The following table(s) in the font have been ignored by FontForge
     #     Ignoring 'VDMX' vertical device metrics table
@@ -1874,11 +1834,10 @@ def main():
                "Exceeds a PostScript limit.",
                "Not more than 1,500 points in any glyph (a PostScript limit).")
 
-      ff_check("PostScript hasnt a limit of 96 hints in glyphs",
+      ff_check("PostScript has a limit of 96 hints in glyphs",
                bool(validation_state & 0x100) is False,
-               "Failed: PostScript hasnt a limit of 96 hints in glyphs",
-               # TODO: review this message
-               "PostScript hasnt a limit of 96 hints in glyphs")
+               "Exceeds PostScript limit of 96 hints per glyph",
+               "Font respects PostScript limit of 96 hints per glyph")
 
       ff_check("Font doesn't have invalid glyph names",
                bool(validation_state & 0x200) is False,
@@ -2348,26 +2307,6 @@ def main():
                  "/gf-docs/blob/master/ProjectChecklist.md#ttfautohint\n\n\n")
       pass
 
-    # ------------------------------------------------------
-    # https://github.com/googlefonts/fontbakery/issues/937
-    #
-    # TODO Fonts have old ttfautohint applied, so port
-    # fontbakery-fix-version.py here and:
-    #
-    # 1. find which version was used, grepping the name table or reading
-    #    the ttfa table (which are created if the `-I` or `-t` args
-    #    respectively were passed to ttfautohint, to record its args in
-    #    the ttf file) (there is a pypi package
-    #    https://pypi.python.org/pypi/font-ttfa for reading the ttfa table,
-    #    although per https://github.com/source-foundry/font-ttfa/issues/1
-    #    it might be better to inline the code... :)
-    #
-    # 2. find which version of ttfautohint is installed
-    #    and warn if not available, similar to ots check above
-    #
-    # 3. rehint the font with the latest version of ttfautohint
-    #    using the same options
-
     # ----------------------------------------------------
     fb.new_check("Version format is correct in NAME table?")
 
@@ -2384,6 +2323,21 @@ def main():
                                              version_string))
 
     # ----------------------------------------------------
+    # Font has old ttfautohint applied ?
+    #
+    # 1. find which version was used, grepping the name table or reading
+    #    the ttfa table (which are created if the `-I` or `-t` args
+    #    respectively were passed to ttfautohint, to record its args in
+    #    the ttf file) (there is a pypi package
+    #    https://pypi.python.org/pypi/font-ttfa for reading the ttfa table,
+    #    although per https://github.com/source-foundry/font-ttfa/issues/1
+    #    it might be better to inline the code... :)
+    #
+    # 2. find which version of ttfautohint is installed
+    #    and warn if not available, similar to ots check above
+    #
+    # 3. rehint the font with the latest version of ttfautohint
+    #    using the same options
     fb.new_check("Font has old ttfautohint applied?")
 
     def ttfautohint_version(value):
@@ -2537,7 +2491,8 @@ def main():
                 else:
                   fb.error("gaspRange[65535]"
                            " value ({}) must be set to 15".format(value))
-                  # TODO: explain to the user why that's the case...
+                  # https://github.com/googlefonts/fontbakery/issues/968
+                  # Explain to the user why that's the case...
           if not failed:
             fb.ok("GASP table is correctly set.")
     except KeyError:
@@ -2598,7 +2553,7 @@ def main():
         fb.ok('Full font name begins with the font family name.')
 
     # ----------------------------------------------------
-    # TODO: should this test support CFF as well?
+    # Should this test support CFF as well?
     fb.new_check("Is there any unused data at the end of the glyf table?")
     if 'CFF ' not in font:
       fb.skip("Not a CFF font.")
@@ -2916,70 +2871,6 @@ def main():
                     " '{}'").format(name))
     if not failed:
       fb.ok("No glyph names exceed max allowed length.")
-
-    # ----------------------------------------------------
-# TODO: These were the last remaining tests in the old codebase,
-#       but I'm unsure whether we really need to port them here.
-#
-# @contextmanager
-# def redirect_stdout(new_target):
-#     old_target, sys.stdout = sys.stdout, new_target  # replace sys.stdout
-#     try:
-#         yield new_target  # run some code with the replaced stdout
-#     finally:
-#         sys.stdout = old_target  # restore to the previous value
-#
-# def getNameRecordValue(nameRecord):
-#     return nameRecord.string.decode(nameRecord.getEncoding())
-#
-#
-# class TTFTestCase(TestCase):
-#
-#     targets = ['result']
-#     tool = 'lint'
-#     name = __name__
-#
-#     def test_fontforge_openfile_contains_stderr(self):
-#         with redirect_stdout(StringIO.StringIO()) as std:
-#             fontforge.open(self.operator.path)
-#             if std.getvalue():
-#                 self.fail('FontForge prints STDERR')
-#
-#     @autofix('bakery_cli.fixers.OpentypeFamilyNameFixer')
-#     def test_check_opentype_familyname(self):
-#        """ FamilyName matches Windows-only Opentype-specific FamilyName? """
-#        font = Font.get_ttfont(self.operator.path)
-#        self.assertEqual(font.ot_family_name, font.familyname)
-#
-#    @autofix('bakery_cli.fixers.OpentypeFullnameFixer')
-#    def test_check_opentype_fullname(self):
-#        """ Fullname matches Windows-only Opentype-specific Fullname? """
-#        font = Font.get_ttfont(self.operator.path)
-#        self.assertEqual(font.ot_full_name, font.fullname)
-#
-#    @autofix('bakery_cli.fixers.SubfamilyNameFixer')
-#    def test_suggested_subfamily_name(self):
-#        """ Family and style names are set canonically? """
-#        font = Font.get_ttfont(self.operator.path)
-#        suggestedvalues = getSuggestedFontNameValues(font.ttfont)
-#        self.assertEqual(font.familyname, suggestedvalues['family'])
-#        self.assertEqual(font.stylename, suggestedvalues['subfamily'])
-#
-#    def test_check_os2_width_class(self):
-#        """ OS/2 width class is correctly set? """
-#        font = Font.get_ttfont(self.operator.path)
-#        error = "OS/2 widthClass must be [1..9] inclusive, was %s IE9 fail"
-#        error = error % font.OS2_usWidthClass
-#        self.assertIn(font.OS2_usWidthClass, range(1, 10), error)
-#
-#    def test_check_upm_heights_less_120(self):
-#        """ UPM Heights are NOT greater than 120%? """
-#        ttfont = Font.get_ttfont(self.operator.path)
-#        value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
-#        value = value * 100 / float(ttfont.get_upm_height())
-#        if value > 120:
-#            _ = "UPM:Height is %d%%, consider redesigning to 120%% or less"
-#            self.fail(_ % value)
 
 ##########################################################
 ## Metadata related checks:
@@ -3631,9 +3522,11 @@ def main():
           msg = ('"hhea" table advanceWidthMax property differs'
                  ' to glyphs advanceWidth [%s, %s]')
           fb.error(msg % (advw, font['hhea'].advanceWidthMax))
-          # TODO: compute the percentage of glyphs that do not comply
-          #       with the advanceWidth value declared in the hhea table
-          #       and report it in the error message.
+
+          # https://github.com/googlefonts/fontbakery/issues/970
+          # FSanches: compute the percentage of glyphs that do not comply
+          # with the advanceWidth value declared in the hhea table
+          # and report it in the error message.
         else:
           fb.ok("hhea.advanceWidthMax is equal"
                 " to all glyphs' advanceWidth.")
@@ -3641,7 +3534,8 @@ def main():
       # ----------------------------------------------------
 
     # ----------------------------------------------------
-    # TODO each fix line should set a fix flag, and
+    # https://github.com/googlefonts/fontbakery/issues/971
+    # DC: Each fix line should set a fix flag, and
     # if that flag is True by this point, only then write the file
     # and then say any further output regards fixed files, and
     # re-run the script on each fixed file with logging level = error
