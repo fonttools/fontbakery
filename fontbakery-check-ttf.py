@@ -1688,17 +1688,18 @@ def main():
     # ----------------------------------------------------
     fb.new_check("Checking with ftxvalidator")
     KNOWN_GOOD_OUTPUT = \
-'''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>kATSFontTestResultKey</key>
-    <array>
-        <string>kATSFontTestSeverityInformation</string>
-        <string>kATSFontTestSeverityMinorError</string>
-    </array>
-</dict>
-</plist>'''
+    '<?xml version="1.0" encoding="UTF-8"?>\n' \
+    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"' \
+    ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' \
+    '<plist version="1.0">\n' \
+    '<dict>\n' \
+    '    <key>kATSFontTestResultKey</key>\n' \
+    '    <array>\n' \
+    '        <string>kATSFontTestSeverityInformation</string>\n' \
+    '        <string>kATSFontTestSeverityMinorError</string>\n' \
+    '    </array>\n' \
+    '</dict>\n' \
+    '</plist>'
 
     try:
       ftx_cmd = ["ftxvalidator",
