@@ -1687,18 +1687,21 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ftxvalidator")
-    KNOWN_GOOD_OUTPUT = \
-'''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>kATSFontTestResultKey</key>
-    <array>
-        <string>kATSFontTestSeverityInformation</string>
-        <string>kATSFontTestSeverityMinorError</string>
-    </array>
-</dict>
-</plist>'''
+    KNOWN_GOOD_OUTPUT = ''\
+                        '<?xml version="1.0" encoding="UTF-8"?>\n'\
+                        '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'\
+                        ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'\
+                        '<plist version="1.0">\n'\
+                        '<dict>\n'\
+                        '    <key>kATSFontTestResultKey</key>\n'\
+                        '    <array>\n'\
+                        '        <string>'\
+                        'kATSFontTestSeverityInformation</string>\n'\
+                        '        <string>'\
+                        'kATSFontTestSeverityMinorError</string>\n'\
+                        '    </array>\n'\
+                        '</dict>\n'\
+                        '</plist>'
 
     try:
       ftx_cmd = ["ftxvalidator",
@@ -1711,9 +1714,9 @@ def main():
         fb.ok("ftxvalidator passed this file")
       else:
         ftx_cmd = ["ftxvalidator",
-                   "-T", # Human-readable output
-                   "-r", # Generate a full report
-                   "-t", "all", # execute all tests
+                   "-T",  # Human-readable output
+                   "-r",  # Generate a full report
+                   "-t", "all",  # execute all tests
                    font_file]
         ftx_output = subprocess.check_output(ftx_cmd,
                                              stderr=subprocess.STDOUT)
@@ -2871,10 +2874,33 @@ def main():
     if not failed:
       fb.ok("No glyph names exceed max allowed length.")
 
+    # -----------------------------------------------------
+    fb.new_check("Monospace font has hhea.advanceWidthMax"
+                 " equal to each glyph's advanceWidth ?")
+    if monospace_detected:
+      fb.skip("Skipping monospace-only check.")
+    else:
+     # hhea:advanceWidthMax is treated as source of truth here.
+      max_advw = font['hhea'].advanceWidthMax
+      outliers = 0
+      for glyph_id in font['glyf'].glyphs:
+        width = font['hmtx'].metrics[glyph_id][0]
+        if width != max_advw:
+          outliers += 1
+
+      if outliers > 0:
+        outliers_percentage = float(outliers) / len(font['glyf'].glyphs)
+        fb.error(("This is a monospaced font, so advanceWidth"
+                  " value should be the same across all glyphs,"
+                  " but {} % of them have a different "
+                  "value.").format(round(100 * outliers_percentage, 2)))
+      else:
+        fb.ok("hhea.advanceWidthMax is equal"
+              " to all glyphs' advanceWidth in this monospaced font.")
+
 ##########################################################
 ## Metadata related checks:
 ##########################################################
-
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
     if args.skip:
@@ -3500,37 +3526,6 @@ def main():
 
           # ---------------------------------------------
           ###### End of single-TTF metadata tests #######
-
-      # -----------------------------------------------------
-      fb.new_check("Monospace font has hhea.advanceWidthMax"
-                   " equal to each glyph's advanceWidth ?")
-      if family.category not in ['Monospace', 'MONOSPACE']:
-        fb.skip("Skipping monospace-only check.")
-      else:
-        advw = 0
-        fail = False
-        for glyph_id in font['glyf'].glyphs:
-          width = font['hmtx'].metrics[glyph_id][0]
-          if advw and width != advw:
-            fail = True
-          advw = width
-
-        if fail:
-          fb.error('Glyph advanceWidth must be same across all glyphs')
-        elif advw != font['hhea'].advanceWidthMax:
-          msg = ('"hhea" table advanceWidthMax property differs'
-                 ' to glyphs advanceWidth [%s, %s]')
-          fb.error(msg % (advw, font['hhea'].advanceWidthMax))
-
-          # https://github.com/googlefonts/fontbakery/issues/970
-          # FSanches: compute the percentage of glyphs that do not comply
-          # with the advanceWidth value declared in the hhea table
-          # and report it in the error message.
-        else:
-          fb.ok("hhea.advanceWidthMax is equal"
-                " to all glyphs' advanceWidth.")
-
-      # ----------------------------------------------------
 
     # ----------------------------------------------------
     # https://github.com/googlefonts/fontbakery/issues/971
