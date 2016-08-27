@@ -1687,19 +1687,21 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ftxvalidator")
-    KNOWN_GOOD_OUTPUT = \
-    '<?xml version="1.0" encoding="UTF-8"?>\n' \
-    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"' \
-    ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' \
-    '<plist version="1.0">\n' \
-    '<dict>\n' \
-    '    <key>kATSFontTestResultKey</key>\n' \
-    '    <array>\n' \
-    '        <string>kATSFontTestSeverityInformation</string>\n' \
-    '        <string>kATSFontTestSeverityMinorError</string>\n' \
-    '    </array>\n' \
-    '</dict>\n' \
-    '</plist>'
+    KNOWN_GOOD_OUTPUT = ''\
+                        '<?xml version="1.0" encoding="UTF-8"?>\n'\
+                        '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'\
+                        ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'\
+                        '<plist version="1.0">\n'\
+                        '<dict>\n'\
+                        '    <key>kATSFontTestResultKey</key>\n'\
+                        '    <array>\n'\
+                        '        <string>'\
+                        'kATSFontTestSeverityInformation</string>\n'\
+                        '        <string>'\
+                        'kATSFontTestSeverityMinorError</string>\n'\
+                        '    </array>\n'\
+                        '</dict>\n'\
+                        '</plist>'
 
     try:
       ftx_cmd = ["ftxvalidator",
@@ -1712,9 +1714,9 @@ def main():
         fb.ok("ftxvalidator passed this file")
       else:
         ftx_cmd = ["ftxvalidator",
-                   "-T", # Human-readable output
-                   "-r", # Generate a full report
-                   "-t", "all", # execute all tests
+                   "-T",  # Human-readable output
+                   "-r",  # Generate a full report
+                   "-t", "all",  # execute all tests
                    font_file]
         ftx_output = subprocess.check_output(ftx_cmd,
                                              stderr=subprocess.STDOUT)
@@ -2872,7 +2874,6 @@ def main():
     if not failed:
       fb.ok("No glyph names exceed max allowed length.")
 
-
     # -----------------------------------------------------
     fb.new_check("Monospace font has hhea.advanceWidthMax"
                  " equal to each glyph's advanceWidth ?")
@@ -3525,8 +3526,6 @@ def main():
 
           # ---------------------------------------------
           ###### End of single-TTF metadata tests #######
-
-
 
     # ----------------------------------------------------
     # https://github.com/googlefonts/fontbakery/issues/971
