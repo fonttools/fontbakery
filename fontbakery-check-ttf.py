@@ -2470,29 +2470,40 @@ def main():
         fb.error("GASP.gaspRange method value have wrong type")
       else:
         failed = False
-        if 65535 not in font["gasp"].gaspRange:
-          fb.error("GASP does not have 65535 gaspRange")
+        if 0xFFFF not in font["gasp"].gaspRange:
+          fb.error("GASP does not have 0xFFFF gaspRange")
         else:
           for key in font["gasp"].gaspRange.keys():
-            if key != 65535:
-              fb.hotfix(("GASP shuld only have 65535 gaspRange,"
+            if key != 0xFFFF:
+              fb.hotfix(("GASP shuld only have 0xFFFF gaspRange,"
                          " but {} gaspRange was also found"
-                         " and has been removed.").format(key))
+                         " and has been removed.").format(hex(key)))
               del font["gasp"].gaspRange[key]
               failed = True
             else:
               value = font["gasp"].gaspRange[key]
-              if value != 15:
+              if value != 0x0F:
                 failed = True
                 if args.autofix:
-                  font["gasp"].gaspRange[65535] = 15
-                  fb.hotfix("gaspRange[65535]"
-                            " value ({}) is not 15".format(value))
+                  font["gasp"].gaspRange[0xFFFF] = 0x0F
+                  fb.hotfix("gaspRange[0xFFFF]"
+                            " value ({}) is not 0x0F".format(hex(value)))
                 else:
-                  fb.error("gaspRange[65535]"
-                           " value ({}) must be set to 15".format(value))
-                  # https://github.com/googlefonts/fontbakery/issues/968
-                  # Explain to the user why that's the case...
+                  fb.error(" All flags in GASP range 0xFFFF (i.e. all font"
+                           " sizes) must be set to 1.\n"
+                           " Rationale:\n"
+                           " Traditionally version 0 GASP tables were set"
+                           " so that font sizes below 8 ppem had no grid"
+                           " fitting but did have antialiasing. From 9-16"
+                           " ppem, just grid fitting. And fonts above"
+                           " 17ppem had both antialiasing and grid fitting"
+                           " toggled on. The use of accelerated graphics"
+                           " cards and higher resolution screens make this"
+                           " appraoch obsolete. Microsoft's DirectWrite"
+                           " pushed this even further with much improved"
+                           " rendering built into the OS and apps. In this"
+                           " scenario it makes sense to simply toggle all"
+                           " 4 flags ON for all font sizes.")
           if not failed:
             fb.ok("GASP table is correctly set.")
     except KeyError:
