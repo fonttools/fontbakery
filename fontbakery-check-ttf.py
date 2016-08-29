@@ -1156,8 +1156,7 @@ def main():
     # ----------------------------------------------------
     fb.new_check("substitute copyright, registered and trademark symbols"
                  " in name table entries")
-    new_names = []
-    nametable_updated = False
+    failed = False
     replacement_map = [(u"\u00a9", '(c)'),
                        (u"\u00ae", '(r)'),
                        (u"\u2122", '(tm)')]
@@ -1179,12 +1178,9 @@ def main():
                                                   ascii_repl))
       new_name.string = string.encode(name.getEncoding())
       if string != original:
-        nametable_updated = True
-      new_names.append(new_name)
+        failed = True
 
-    if nametable_updated:
-      font['name'].names = new_names
-    else:
+    if not failed:
       fb.ok("No need to substitute copyright, registered and"
             " trademark symbols in name table entries of this font.")
 
