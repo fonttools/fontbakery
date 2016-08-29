@@ -1478,18 +1478,16 @@ def main():
           fb.ok("Font has a valid license URL in NAME table.")
 
     # ----------------------------------------------------
-    fb.new_check("name record 10s (descriptions) are reasonable?")
-    new_names = []
-    changed = False
+    fb.new_check(("Description strings in the name table (nameID = {}) must"
+                  " not contain copyright info.").format(NAMEID_DESCRIPTION))
+    failed = False
     for name in font['name'].names:
       if 'opyright' in name.string.decode(name.getEncoding())\
          and name.nameID == NAMEID_DESCRIPTION:
-        changed = True
-        continue
-      new_names.append(name)
-    if changed:
+        failed = True
+        del name
+    if failed:
       if args.autofix:
-        font['name'].names = new_names
         fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                    " were removed (perhaps added by"
                    " a longstanding FontLab Studio 5.x bug that"
@@ -1501,14 +1499,21 @@ def main():
                   " a longstanding FontLab Studio 5.x bug that"
                   " copied copyright notices to them.)"
                   "").format(NAMEID_DESCRIPTION))
-    changed = False
+    else:
+      fb.ok("Description strings in the name table"
+            " do not contain any copyright string.")
+
+    # ----------------------------------------------------
+    fb.new_check(("Description strings in the name table (nameID = {}) must"
+                  " not exceed 100 characters").format(NAMEID_DESCRIPTION))
+    failed = False
     for name in font['name'].names:
       if len(name.string.decode(name.getEncoding())) > 100 \
         and name.nameID == NAMEID_DESCRIPTION:
         if args.autofix:
           del name
-        changed = True
-    if changed:
+        failed = True
+    if failed:
       if args.autofix:
         fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                    " were removed because they"
@@ -1519,7 +1524,7 @@ def main():
                   " are longer than 100 characters"
                   " and should be removed.").format(NAMEID_DESCRIPTION))
     else:
-      fb.ok("Namerecord 10s (descriptions) do not exist.")
+      fb.ok("Description name records do not exceed 100 characters.")
 
     # ----------------------------------------------------
     # There are various metadata in the OpenType spec to specify if
