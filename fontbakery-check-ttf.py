@@ -28,7 +28,6 @@ import defusedxml.lxml
 import magic
 from bs4 import BeautifulSoup
 from fontTools import ttLib
-from fontTools.ttLib.tables._n_a_m_e import NameRecord
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
 from lxml.html import HTMLParser
@@ -404,19 +403,6 @@ def log_results(message, hotfix=True):
     # empty the buffer of fixes,
     # in preparation for the next test
     fixes = []
-
-
-# Maybe fonttools should provide us a helper method like this one...
-# https://github.com/googlefonts/fontbakery/issues/926
-# Verify if fonttools doesn't really provide that and then
-# possibily contribute something equivalent to this upstream.
-def makeNameRecord(text, nameID, platformID, platEncID, langID):
-    """ Helper function to create a new NameRecord entry """
-    name = NameRecord()
-    name.nameID, name.platformID, name.platEncID, name.langID = (
-        nameID, platformID, platEncID, langID)
-    name.string = text.encode(name.getEncoding())
-    return name
 
 
 def get_bounding_box(font):
@@ -1363,7 +1349,6 @@ def main():
       fb.skip("This check will only run after the"
               " multiple-licensing file issue is fixed.")
     else:
-      new_names = []
       failed = False
       for license in ['OFL.txt', 'LICENSE.txt']:
         placeholder = PLACEHOLDER_LICENSING_TEXT[license]
@@ -1371,9 +1356,7 @@ def main():
         license_exists = os.path.exists(license_path)
         entry_found = False
         for i, nameRecord in enumerate(font['name'].names):
-          if nameRecord.nameID != NAMEID_LICENSE_DESCRIPTION:
-            new_names.append(nameRecord)
-          else:
+          if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
             entry_found = True
             value = nameRecord.string.decode(nameRecord.getEncoding())
             if value != placeholder and license_exists:
@@ -1391,12 +1374,11 @@ def main():
                                       PLATID_STR[nameRecord.platformID],
                                       value,
                                       placeholder))
-                new_name = makeNameRecord(placeholder,
-                                          NAMEID_LICENSE_DESCRIPTION,
-                                          font['name'].names[i].platformID,
-                                          font['name'].names[i].platEncID,
-                                          font['name'].names[i].langID)
-                new_names.append(new_name)
+                font['name'].setName(placeholder,
+                                     NAMEID_LICENSE_DESCRIPTION,
+                                     font['name'].names[i].platformID,
+                                     font['name'].names[i].platEncID,
+                                     font['name'].names[i].langID)
               else:
                 fb.error(('License file {} exists but'
                           ' NameID {} (LICENSE DESCRIPTION) value'
@@ -1424,12 +1406,11 @@ def main():
         if not entry_found and license_exists:
           failed = True
           if args.autofix:
-            new_name = makeNameRecord(placeholder,
-                                      NAMEID_LICENSE_DESCRIPTION,
-                                      PLATFORM_ID_WINDOWS,
-                                      PLAT_ENC_ID_UCS2,
-                                      LANG_ID_ENGLISH_USA)
-            new_names.append(new_name)
+            font['name'].setName(placeholder,
+                                 NAMEID_LICENSE_DESCRIPTION,
+                                 PLATFORM_ID_WINDOWS,
+                                 PLAT_ENC_ID_UCS2,
+                                 LANG_ID_ENGLISH_USA)
             fb.hotfix(("Font lacks NameID {} (LICENSE DESCRIPTION)."
                        " A proper licensing entry was set."
                        "").format(NAMEID_LICENSE_DESCRIPTION))
@@ -1437,10 +1418,7 @@ def main():
             fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
                       " A proper licensing entry must be set."
                       "").format(NAMEID_LICENSE_DESCRIPTION))
-      if failed:
-        if args.autofix:
-          font['name'].names = new_names
-      else:
+      if not failed:
         fb.ok("licensing entry on name table is correctly set.")
 
     # ----------------------------------------------------
