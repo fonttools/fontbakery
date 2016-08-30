@@ -79,7 +79,6 @@ WEIGHTS = {"Thin": 250,
            "ExtraLight": 275,
            "Light": 300,
            "Regular": 400,
-           "Italic": 400,
            "Medium": 500,
            "SemiBold": 600,
            "Bold": 700,
@@ -1188,12 +1187,12 @@ def main():
     # Determine weight from canonical filename
     file_path, filename = os.path.split(font_file)
     family, style = os.path.splitext(filename)[0].split('-')
-    if style.endswith("Italic") and style != "Italic":
+    if style == "Italic":
+      weight_name = "Regular"
+    elif style.endswith("Italic"):
       weight_name = style.replace("Italic", "")
     else:
       weight_name = style
-    # https://github.com/googlefonts/fontbakery/issues/930
-    # DC what happens with "Italic" styles, weight_name = "Italic"?
 
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 usWeightClass")
