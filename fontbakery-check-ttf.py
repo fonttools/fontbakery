@@ -1902,12 +1902,19 @@ def main():
     # LineGap:
     assert_table_entry('hhea', 'lineGap', 0)
     assert_table_entry('OS/2', 'sTypoLineGap', 0)
-    # https://github.com/googlefonts/fontbakery/issues/935
-    # unitsPerEm:
-    # Felipe: Dave, should we do it here?
-    # assert_table_entry('head', 'unitsPerEm', ymax)
     log_results("Vertical metrics.")
 
+    # ----------------------------------------------------
+    fb.new_check("Checking unitsPerEm value is reasonable.")
+    upem = font['head'].unitsPerEm
+    if upem not in [2**i for i in range(4, 15)]:
+      fb.error(("The value of unitsPerEm at the head table"
+                " must be a power of 2 between 16 to 16384."
+                " Got '{}' instead.").format(upem))
+    else:
+      fb.ok("unitsPerEm value on the 'head' table is reasonable.")
+
+    # ----------------------------------------------------
     def version_is_newer(a, b):
       a = map(int, a.split("."))
       # b = map(int, b.split("."))
