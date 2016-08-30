@@ -1271,13 +1271,6 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking if italicAngle matches font style")
-    # https://github.com/googlefonts/fontbakery/issues/931
-    # DC all the italic style checks should be wrapped in this if statement?
-    # There are lots of "if italic in style" but there should only be one,
-    # and there are lots that do NOT have this but perhaps should.
-    # Overall these italicAngle checks seem bogus to me,
-    # need rethinking to be more logically consistent and not forgetting
-    # to check all possible states
     if "Italic" in style:
       if font['post'].italicAngle == 0:
         fb.error("Font is italic, so post table italicAngle"
@@ -1285,6 +1278,9 @@ def main():
       else:
         fb.ok("post table italicAngle matches style name")
     else:
+      # Given that the font style is not "Italic",
+      # the following call potentially hotfixes
+      # the value of italicAngle to zero:
       assert_table_entry('post', 'italicAngle', 0)
       log_results("post table italicAngle matches style name")
 
