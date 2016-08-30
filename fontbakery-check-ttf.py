@@ -916,19 +916,24 @@ def main():
     else:
       fb.ok("Fonts have equal unicode encodings.")
 
-##########################################################################
-# Step 2: Single TTF tests
-#         * Tests that only check data of each TTF file, but not cross-
-#           referencing with other fonts in the family
-##########################################################################
- # ------------------------------------------------------
+  # ------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
+  min_usWinDescent = 0
+  max_usWinAscent = 0
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     font_ymin, font_ymax = get_bounding_box(font)
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
+    min_usWinDescent = min(min_usWinDescent, font['OS/2'].usWinDescent)
+    max_usWinAscent = max(max_usWinAscent, font['OS/2'].usWinAscent)
+
+##########################################################################
+# Step 2: Single TTF tests
+#         * Tests that only check data of each TTF file, but not cross-
+#           referencing with other fonts in the family
+##########################################################################
 
  # ------------------------------------------------------
   for font_file in fonts_to_check:
@@ -1522,6 +1527,7 @@ def main():
       fb.ok("Description name records do not exceed 100 characters.")
 
     # ----------------------------------------------------
+    fb.new_check("Checking if the font is truly monospaced")
     # There are various metadata in the OpenType spec to specify if
     # a font is monospaced or not.
     #
@@ -1557,7 +1563,6 @@ def main():
     #   http://typedrawers.com/discussion/comment/15397/#Comment_15397
     #
     # Also we should report an error for glyphs not of average width
-    fb.new_check("Checking if the font is truly monospaced")
     glyphs = font['glyf'].glyphs
     width_occurrences = {}
     width_max = 0
@@ -1889,18 +1894,15 @@ def main():
                        ' not open {}').format(font_file))
 
     # ----------------------------------------------------
-    # https://github.com/googlefonts/fontbakery/issues/936
     fb.new_check("Checking vertical metrics")
     # Ascent:
     assert_table_entry('hhea', 'ascent', vmetrics_ymax)
     assert_table_entry('OS/2', 'sTypoAscender', vmetrics_ymax)
-    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
-    # FIXME: The above should take only Windows ANSI chars
+    assert_table_entry('OS/2', 'usWinAscent', max_usWinAscent)
     # Descent:
     assert_table_entry('hhea', 'descent', vmetrics_ymin)
     assert_table_entry('OS/2', 'sTypoDescender', vmetrics_ymin)
-    assert_table_entry('OS/2', 'usWinDescent', -vmetrics_ymin)
-    # FIXME: The above should take only Windows ANSI chars
+    assert_table_entry('OS/2', 'usWinDescent', min_usWinDescent)
     # LineGap:
     assert_table_entry('hhea', 'lineGap', 0)
     assert_table_entry('OS/2', 'sTypoLineGap', 0)
