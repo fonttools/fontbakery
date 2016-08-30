@@ -421,13 +421,19 @@ def get_bounding_box(font):
     return ymin, ymax
 
 
-# DC is this really working? what about NAME tables with several namerecords
-# with the same nameIDs and different platformIDs/etc?
-def get_name_string(font, nameID):
-    for entry in font['name'].names:
-        if entry.nameID == nameID:
-            return entry.string.decode(entry.getEncoding())
-    return False
+def get_name_string(font,
+                    nameID,
+                    platformID=None,
+                    encodingID=None,
+                    langID=None):
+  results = []
+  for entry in font['name'].names:
+    if entry.nameID == nameID and \
+       (platformID is None or entry.platformID == platformID) and \
+       (encodingID is None or entry.platEncID == encodingID) and \
+       (langID is None or entry.langID == langID):
+      results.append(entry.string.decode(entry.getEncoding()))
+  return results
 
 
 def parse_version_string(s):
@@ -1007,7 +1013,7 @@ def main():
     failed = False
     # The font must have at least these name IDs:
     for nameId in required_nameIDs:
-      if get_name_string(font, nameId) is None:
+      if len(get_name_string(font, nameId)) == 0:
         failed = True
         fb.error(("Font lacks entry with"
                   " nameId={} ({})").format(nameId,
@@ -2299,14 +2305,21 @@ def main():
     def is_valid_version_format(value):
       return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
-    version_string = get_name_string(font, NAMEID_VERSION_STRING)
-    if version_string and is_valid_version_format(version_string):
-      fb.ok('Version format in NAME table is correct.')
-    else:
-      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must follow '
-                'the pattern Version X.Y between 1.000 and 9.999.'
-                ' Current value: {}').format(NAMEID_VERSION_STRING,
-                                             version_string))
+    failed = False
+    version_entries = get_name_string(font, NAMEID_VERSION_STRING)
+    if len(version_entries) == 0:
+      failed = True
+      fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+                " entry").format(NAMEID_VERSION_STRING))
+    for ventry in version_entries:
+      if not is_valid_version_format(ventry):
+        failed = True
+        fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
+                  'follow the pattern Version X.Y between 1.000 and 9.999.'
+                  ' Current value: {}').format(NAMEID_VERSION_STRING,
+                                               ventry))
+    if not failed:
+      fb.ok('Version format in NAME table entries is correct.')
 
     # ----------------------------------------------------
     # Font has old ttfautohint applied ?
@@ -2326,10 +2339,11 @@ def main():
     #    using the same options
     fb.new_check("Font has old ttfautohint applied?")
 
-    def ttfautohint_version(value):
-      results = re.search(r'ttfautohint \(v(.*)\)', value)
-      if results:
-        return results.group(1)
+    def ttfautohint_version(values):
+      for value in values:
+        results = re.search(r'ttfautohint \(v(.*)\)', value)
+        if results:
+          return results.group(1)
 
     def installed_ttfa_version(value):
       return re.search(r'ttfautohint ([^-\n]*)(-.*)?\n', value).group(1)
@@ -2343,14 +2357,14 @@ def main():
       fb.skip("This check requires ttfautohint"
               " to be available in the system.")
     else:
-      version_str = get_name_string(font, NAMEID_VERSION_STRING)
-      ttfa_version = ttfautohint_version(version_str)
+      version_strings = get_name_string(font, NAMEID_VERSION_STRING)
+      ttfa_version = ttfautohint_version(version_strings)
       if ttfa_version is None:
         fb.info(("Could not detect which version of"
                  " ttfautohint was used in this font."
                  " It is typically specified as a comment"
                  " in the font version entry of the 'name' table."
-                 " Font version string is: '{}'").format(version_str))
+                 " Font version string is: '{}'").format(version_strings[0]))
       else:
         ttfa_cmd = ["ttfautohint",
                     "-V"]  # print version info
@@ -2527,16 +2541,20 @@ def main():
     familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
     fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
 
-    if not familyname:
+    if len(familyname) == 0:
       fb.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
                ' in the name table.')
-    elif not fullfontname:
+    elif len(fullfontname) == 0:
       fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
                ' in the name table.')
-    # https://github.com/googlefonts/fontbakery/issues/939
-    # FIX-ME: I think we should still compare entries
-    #         even if they have different encodings
     else:
+      # we probably should check all found values are equivalent.
+      # and, in that case, then performing the rest of the check
+      # with only the first occurences of the name entries
+      # will suffice:
+      fullfontname = fullfontname[0]
+      familyname = familyname[0]
+
       if not fullfontname.startswith(familyname):
         fb.error(" On the NAME table, the full font name"
                  " (NameID {} - FULL_FONT_NAME: '{}')"
@@ -2595,47 +2613,46 @@ def main():
 
     # <Postscript name> may contain only a-zA-Z0-9
     # and one hyphen
-    name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
     regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
-    if name and not regex.match(name):
-      bad_entries.append({'field': 'PostScript Name',
-                          'rec': 'May contain only a-zA-Z0-9'
-                                 ' characters and an hyphen'})
+    for name in get_name_string(font, NAMEID_POSTSCRIPT_NAME):
+      if not regex.match(name):
+        bad_entries.append({'field': 'PostScript Name',
+                            'rec': 'May contain only a-zA-Z0-9'
+                                   ' characters and an hyphen'})
+      if name.count('-') > 1:
+        bad_entries.append({'field': 'Postscript Name',
+                            'rec': 'May contain not more'
+                                   ' than a single hyphen'})
 
-    if name and name.count('-') > 1:
-      bad_entries.append({'field': 'Postscript Name',
-                          'rec': 'May contain not more'
-                                 ' than a single hyphen'})
+    for name in get_name_string(font, NAMEID_FULL_FONT_NAME):
+      if len(name) >= 64:
+        bad_entries.append({'field': 'Full Font Name',
+                            'rec': 'exceeds max length (64)'})
 
-    name = get_name_string(font, NAMEID_FULL_FONT_NAME)
-    if name and len(name) >= 64:
-      bad_entries.append({'field': 'Full Font Name',
-                          'rec': 'exceeds max length (64)'})
+    for name in get_name_string(font, NAMEID_POSTSCRIPT_NAME):
+      if len(name) >= 30:
+        bad_entries.append({'field': 'PostScript Name',
+                            'rec': 'exceeds max length (30)'})
 
-    name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
-    if name and len(name) >= 30:
-      bad_entries.append({'field': 'PostScript Name',
-                          'rec': 'exceeds max length (30)'})
+    for name in get_name_string(font, NAMEID_FONT_FAMILY_NAME):
+      if len(name) >= 32:
+        bad_entries.append({'field': 'Family Name',
+                            'rec': 'exceeds max length (32)'})
 
-    name = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-    if name and len(name) >= 32:
-      bad_entries.append({'field': 'Family Name',
-                          'rec': 'exceeds max length (32)'})
+    for name in get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME):
+      if len(name) >= 32:
+        bad_entries.append({'field': 'Style Name',
+                            'rec': 'exceeds max length (32)'})
 
-    name = get_name_string(font, NAMEID_FONT_SUBFAMILY_NAME)
-    if name and len(name) >= 32:
-      bad_entries.append({'field': 'Style Name',
-                          'rec': 'exceeds max length (32)'})
+    for name in get_name_string(font, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
+      if len(name) >= 32:
+        bad_entries.append({'field': 'OT Family Name',
+                            'rec': 'exceeds max length (32)'})
 
-    name = get_name_string(font, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
-    if name and len(name) >= 32:
-      bad_entries.append({'field': 'OT Family Name',
-                          'rec': 'exceeds max length (32)'})
-
-    name = get_name_string(font, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
-    if name and len(name) >= 32:
-      bad_entries.append({'field': 'OT Style Name',
-                          'rec': 'exceeds max length (32)'})
+    for name in get_name_string(font, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
+      if len(name) >= 32:
+        bad_entries.append({'field': 'OT Style Name',
+                            'rec': 'exceeds max length (32)'})
 
     weight_value = None
     if 'OS/2' in font:
@@ -2708,18 +2725,24 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Font names are consistent across platforms?")
-    fail = False
+    failed = False
     for name1 in font['name'].names:
       if ((name1.platformID == PLATFORM_ID_WINDOWS) and
          (name1.langID == LANG_ID_ENGLISH_USA)):
         for name2 in font['name'].names:
           if ((name2.platformID == PLATFORM_ID_MACINTOSH) and
              (name2.langID == LANG_ID_MACINTOSH_ENGLISH)):
-             n1 = get_name_string(font, name1.nameID)
-             n2 = get_name_string(font, name2.nameID)
-             if n1 != n2:
-               fail = True
-    if fail:
+             n1 = get_name_string(font,
+                                  name1.nameID,
+                                  name1.platformID,
+                                  name1.langID)
+             n2 = get_name_string(font,
+                                  name2.nameID,
+                                  name2.platformID,
+                                  name2.langID)
+             if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
+               failed = True
+    if failed:
       fb.error('Entries in "name" table are not'
                ' the same across specific platforms.')
     else:
@@ -3083,16 +3106,16 @@ def main():
           # ----------------------------------------------
           fb.new_check("Font on disk and in METADATA.pb"
                        " have the same family name ?")
-          familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if familyname is False:
+          familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+          if len(familynames) == 0:
             fb.error(("This font lacks a FONT_FAMILY_NAME entry"
                       " (nameID={}) in the name"
                       " table.").format(NAMEID_FONT_FAMILY_NAME))
           else:
-            if familyname != f.name:
+            if f.name not in familynames:
               fb.error(('Unmatched family name in font:'
                         ' TTF has "{}" while METADATA.pb'
-                        ' has "{}"').format(familyname, f.name))
+                        ' has "{}"').format(familynames, f.name))
             else:
               fb.ok(("Family name '{}' is identical"
                      " in METADATA.pb and on the"
@@ -3101,12 +3124,14 @@ def main():
           # -----------------------------------------------
           fb.new_check("Checks METADATA.pb 'postScriptName'"
                        " matches TTF 'postScriptName'")
-          postscript_name = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
-          if postscript_name is False:
+          postscript_names = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
+          if len(postscript_names) == 0:
             fb.error(("This font lacks a POSTSCRIPT_NAME"
                       " entry (nameID={}) in the "
                       "name table.").format(NAMEID_POSTSCRIPT_NAME))
           else:
+            postscript_name = postscript_names[0]
+
             if postscript_name != f.post_script_name:
               fb.error(('Unmatched postscript name in font:'
                         ' TTF has "{}" while METADATA.pb has'
@@ -3120,38 +3145,42 @@ def main():
           # -----------------------------------------------
           fb.new_check("METADATA.pb 'fullname' value"
                        " matches internal 'fullname' ?")
-          fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-          if fullname is False:
+          full_fontnames = get_name_string(font, NAMEID_FULL_FONT_NAME)
+          if len(full_fontnames) == 0:
             fb.error(("This font lacks a FULL_FONT_NAME"
                       " entry (nameID={}) in the "
                       "name table.").format(NAMEID_FULL_FONT_NAME))
           else:
-            if fullname != f.full_name:
+            full_fontname = full_fontnames[0]
+
+            if full_fontname != f.full_name:
               fb.error(('Unmatched fullname in font:'
                         ' TTF has "{}" while METADATA.pb'
-                        ' has "{}"').format(fullname, f.full_name))
+                        ' has "{}"').format(full_fontname, f.full_name))
             else:
-              fb.ok(("Fullname '{}' is identical"
+              fb.ok(("Full fontname '{}' is identical"
                      " in METADATA.pb and on the "
-                     "TTF file.").format(fullname))
+                     "TTF file.").format(full_fontname))
 
           # -----------------------------------------------
           fb.new_check("METADATA.pb fonts 'name' property"
                        " should be same as font familyname")
-          font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname is False:
+          font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+          if len(font_familynames) == 0:
             fb.error(("This font lacks a FONT_FAMILY_NAME entry"
                       " (nameID={}) in the "
                       "name table.").format(NAMEID_FONT_FAMILY_NAME))
           else:
-            if font_familyname != f.name:
+            font_familyname = font_familynames[0]
+
+            if font_familyname not in f.name:
               fb.error(('Unmatched familyname in font:'
                         ' TTF has "{}" while METADATA.pb has'
                         ' name="{}"').format(familyname, f.name))
             else:
-              fb.ok(("OK: Fullname '{}' is identical"
+              fb.ok(("OK: Family name '{}' is identical"
                      " in METADATA.pb and on the"
-                     " TTF file.").format(fullname))
+                     " TTF file.").format(f.name))
 
           # -----------------------------------------------
           fb.new_check("METADATA.pb 'fullName' matches 'postScriptName' ?")
@@ -3190,12 +3219,14 @@ def main():
           # -----------------------------------------------
           fb.new_check("METADATA.pb 'name' contains font name"
                        " in right format ?")
-          font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname is False:
+          font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+          if len(font_familynames) == 0:
             logging.skip("A corrupt font that lacks a font_family"
                          " nameID entry caused a whole sequence"
                          " of tests to be skipped.")
           else:
+            font_familyname = font_familynames[0]
+
             if font_familyname in f.name:
               fb.ok("METADATA.pb 'name' contains font name"
                     " in right format.")
@@ -3315,12 +3346,15 @@ def main():
           else:
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-            if not font_familyname or not font_fullname:
+            if len(font_familyname) == 0 or len(font_fullname) == 0:
               fb.skip("Font lacks familyname and/or"
                       " fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
             else:
+              font_familyname = font_familyname[0]
+              font_fullname = font_fullname[0]
+
               if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   fb.error('METADATA.pb style has been set to italic'
                            ' but font macStyle is improperly set')
@@ -3348,12 +3382,15 @@ def main():
           else:
             font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
             font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-            if not font_familyname or not font_fullname:
+            if len(font_familyname) == 0 or len(font_fullname) == 0:
               fb.skip("Font lacks familyname and/or"
                       " fullname entries in name table.")
               # these fail scenarios were already tested above
               # (passing those previous tests is a prerequisite for this one)
             else:
+              font_familyname = font_familyname[0]
+              font_fullname = font_fullname[0]
+
               if bool(font['head'].macStyle & MACSTYLE_ITALIC):
                   fb.error('METADATA.pb style has been set to normal'
                            ' but font macStyle is improperly set')
@@ -3469,10 +3506,12 @@ def main():
           # -----------------------------------------------
           fb.new_check("METADATA.pb lists fonts named canonicaly?")
           font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-          if font_familyname is False:
+          if len(font_familyname) == 0:
             fb.skip("Skipping this test due to the lack"
                     " of a FONT_FAMILY_NAME in the name table.")
           else:
+            font_familyname = font_familyname[0]
+
             is_canonical = False
             _weights = []
             for value, intvalue in weights.items():
