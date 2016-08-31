@@ -1128,11 +1128,6 @@ def main():
                 "/typography/links/vendorlist.aspx").format(vid))
     elif len(registered_vendor_ids.keys()) > 0:
       if vid in registered_vendor_ids.keys():
-        # https://github.com/googlefonts/fontbakery/issues/929
-        # Check registered_vendor_ids[vid] against name table values
-        # FSanches:
-        #      We do check against NAMEID_MANUFACTURER_NAME below
-        #      Do we want to check against other nameid entries as well ?
         for name in font['name'].names:
           if name.nameID == NAMEID_MANUFACTURER_NAME:
             manufacturer = name.string.decode(name.getEncoding()).strip()
