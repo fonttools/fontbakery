@@ -271,6 +271,19 @@ class FontBakeryCheckLogger():
                                   round(percent, 2)))
     print ("  Total: {} checks.\n".format(total))
 
+    if not args.verbose and \
+       not args.json and \
+       not args.ghm:
+      # in this specific case, the user would have no way to see
+      # the actual check results. So here we inform the user
+      # that at least one of these command line parameters
+      # needs to be used in order to see the details.
+      print ("In order to see the actual check result messages,\n"
+             "use one of the following command-line parameters:\n"
+             "  --verbose\tOutput results to stdout.\n"
+             "  --json \tSave results to a file in JSON format.\n"
+             "  --ghm  \tSave results to a file in GitHub Markdown format.\n")
+
     if not args.verbose:
       filtered = []
       for check in self.all_checks:
