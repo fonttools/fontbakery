@@ -242,26 +242,34 @@ BLUE_STR = '\033[1;34;40m{}\033[0m'
 CYAN_STR = '\033[1;36;40m{}\033[0m'
 WHITE_STR = '\033[1;37;40m{}\033[0m'
 
+json_report_files = []
+ghm_report_files = []
+
 
 class FontBakeryCheckLogger():
-  all_checks = []
-  current_check = None
-  default_target = None  # All new checks have this target by default
   progressbar = False
-  summary = {"Passed": 0,
-             "Hotfixed": 0,
-             "Skipped": 0,
-             "Errors": 0,
-             "Warnings": 0}
 
-  def output_report(self, path):
+  def __init__(self):
+    self.reset_report()
+
+  def reset_report(self):
+    self.all_checks = []
+    self.current_check = None
+    self.default_target = None  # All new checks have this target by default
+    self.summary = {"Passed": 0,
+                    "Hotfixed": 0,
+                    "Skipped": 0,
+                    "Errors": 0,
+                    "Warnings": 0}
+
+  def output_report(self, font_file):
     self.flush()
 
     total = 0
     for key in self.summary.keys():
       total += self.summary[key]
 
-    print ("\nCheck results summary:")
+    print ("\nCheck results summary for '{}':".format(font_file))
     for key in self.summary.keys():
       occurrences = self.summary[key]
       percent = float(100*occurrences)/total
@@ -271,19 +279,6 @@ class FontBakeryCheckLogger():
                                   round(percent, 2)))
     print ("  Total: {} checks.\n".format(total))
 
-    if not args.verbose and \
-       not args.json and \
-       not args.ghm:
-      # in this specific case, the user would have no way to see
-      # the actual check results. So here we inform the user
-      # that at least one of these command line parameters
-      # needs to be used in order to see the details.
-      print ("In order to see the actual check result messages,\n"
-             "use one of the following command-line parameters:\n"
-             "  --verbose\tOutput results to stdout.\n"
-             "  --json \tSave results to a file in JSON format.\n"
-             "  --ghm  \tSave results to a file in GitHub Markdown format.\n")
-
     if not args.verbose:
       filtered = []
       for check in self.all_checks:
@@ -292,10 +287,10 @@ class FontBakeryCheckLogger():
       self.all_checks = filtered
 
     if args.json:
-      json_path = os.path.join(path, "fontbakery-check-results.json")
+      json_path = font_file + ".fontbakery.json"
       fb.output_json_report(json_path)
     if args.ghm:
-      md_path = os.path.join(path, "fontbakery-check-results.md")
+      md_path = font_file + ".fontbakery.md"
       fb.output_github_markdown_report(md_path)
 
   def output_json_report(self, filename):
@@ -305,8 +300,7 @@ class FontBakeryCheckLogger():
                            indent=4,
                            separators=(',', ': '))
     open(filename, 'w').write(json_data)
-    print(("Saved check results in "
-           "JSON format to '{}'").format(filename))
+    json_report_files.append(filename)
 
   def output_github_markdown_report(self, filename):
     markdown_data = "# Fontbakery check results\n"
@@ -327,8 +321,7 @@ class FontBakeryCheckLogger():
                           "* {}\n\n").format(check['description'], msgs)
 
     open(filename, 'w').write(markdown_data)
-    print(("Saved check results in "
-           "GitHub Markdown format to '{}'").format(filename))
+    ghm_report_files.append(filename)
 
   def update_progressbar(self):
     tick = {
@@ -3628,8 +3621,31 @@ def main():
       logging.info("{} saved\n".format(font_file_output))
     font.close()
 
-    output_folder = os.path.dirname(font_file)
-    fb.output_report(output_folder)
+    fb.output_report(font_file)
+    fb.reset_report()
+
+  # -------------------------------------------------------
+  if not args.verbose and \
+     not args.json and \
+     not args.ghm:
+    # in this specific case, the user would have no way to see
+    # the actual check results. So here we inform the user
+    # that at least one of these command line parameters
+    # needs to be used in order to see the details.
+    print ("In order to see the actual check result messages,\n"
+           "use one of the following command-line parameters:\n"
+           "  --verbose\tOutput results to stdout.\n"
+           "  --json \tSave results to a file in JSON format.\n"
+           "  --ghm  \tSave results to a file in GitHub Markdown format.\n")
+
+  if len(json_report_files) > 0:
+    print(("Saved check results in "
+           "JSON format to:\n\t{}"
+           "").format('\n\t'.join(json_report_files)))
+  if len(ghm_report_files) > 0:
+    print(("Saved check results in "
+           "GitHub Markdown format to:\n\t{}"
+           "").format('\n\t'.join(ghm_report_files)))
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
