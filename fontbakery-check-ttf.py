@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import print_function
 import os
 import sys
 import tempfile
@@ -31,7 +32,6 @@ from fontTools import ttLib
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
 from lxml.html import HTMLParser
-
 
 try:
   from google.protobuf import text_format
@@ -241,9 +241,12 @@ class FontBakeryCheckLogger():
   all_checks = []
   current_check = None
   default_target = None  # All new checks have this target by default
+  progressbar = False
+  progress_string = ""
 
   def output_report(self, path):
     self.flush()
+    print (self.progress_string)
 
     if not args.verbose:
       filtered = []
@@ -291,8 +294,24 @@ class FontBakeryCheckLogger():
     print(("Saved check results in "
            "GitHub Markdown format to '{}'").format(filename))
 
+  def update_progressbar(self):
+    tick = {
+      "OK": '\033[1;32;40m.\033[0m',
+      "HOTFIX": '\033[1;34;40mH\033[0m',
+      "ERROR": '\033[1;31;40mE\033[0m',
+      "WARNING": '\033[1;33;40mW\033[0m',
+      "SKIP": '\033[1;37;40mS\033[0m',
+      "INFO": '\033[1;36;40mI\033[0m',
+    }
+    if self.progressbar is False:
+      return
+    else:
+      self.progress_string += tick[self.current_check["result"]]
+      print('{}'.format(self.progress_string), end='\r')
+
   def flush(self):
     if self.current_check is not None:
+      self.update_progressbar()
       self.all_checks.append(self.current_check)
       self.current_check = None
 
@@ -349,7 +368,6 @@ fb = FontBakeryCheckLogger()
 
 # =====================================
 # HELPER FUNCTIONS
-
 args = None
 font = None
 fixes = []
@@ -560,7 +578,8 @@ def main():
   elif args.verbose >= 2:
     logger.setLevel(logging.DEBUG)
   else:
-    logger.setLevel(logging.ERROR)
+    fb.progressbar = True
+    logger.setLevel(logging.CRITICAL)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
