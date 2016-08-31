@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import print_function
 import os
 import sys
 import tempfile
@@ -31,7 +32,6 @@ from fontTools import ttLib
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
 from lxml.html import HTMLParser
-
 
 try:
   from google.protobuf import text_format
@@ -235,15 +235,41 @@ UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
 # Helper logging class
+RED_STR = '\033[1;31;40m{}\033[0m'
+GREEN_STR = '\033[1;32;40m{}\033[0m'
+YELLOW_STR = '\033[1;33;40m{}\033[0m'
+BLUE_STR = '\033[1;34;40m{}\033[0m'
+CYAN_STR = '\033[1;36;40m{}\033[0m'
+WHITE_STR = '\033[1;37;40m{}\033[0m'
 
 
 class FontBakeryCheckLogger():
   all_checks = []
   current_check = None
   default_target = None  # All new checks have this target by default
+  progressbar = False
+  summary = {"Passed": 0,
+             "Hotfixed": 0,
+             "Skipped": 0,
+             "Errors": 0,
+             "Warnings": 0}
 
   def output_report(self, path):
     self.flush()
+
+    total = 0
+    for key in self.summary.keys():
+      total += self.summary[key]
+
+    print ("\nCheck results summary:")
+    for key in self.summary.keys():
+      occurrences = self.summary[key]
+      percent = float(100*occurrences)/total
+      print ("  {}:"
+             "\t{}\t({}%)".format(YELLOW_STR.format(key),
+                                  occurrences,
+                                  round(percent, 2)))
+    print ("  Total: {} checks.\n".format(total))
 
     if not args.verbose:
       filtered = []
@@ -291,8 +317,24 @@ class FontBakeryCheckLogger():
     print(("Saved check results in "
            "GitHub Markdown format to '{}'").format(filename))
 
+  def update_progressbar(self):
+    tick = {
+      "OK": GREEN_STR.format('.'),
+      "HOTFIX": BLUE_STR.format('H'),
+      "ERROR": RED_STR.format('E'),
+      "WARNING": YELLOW_STR.format('W'),
+      "SKIP": WHITE_STR.format('S'),
+      "INFO": CYAN_STR.format('I')
+    }
+    if self.progressbar is False:
+      return
+    else:
+      print(tick[self.current_check["result"]], end='')
+      sys.stdout.flush()
+
   def flush(self):
     if self.current_check is not None:
+      self.update_progressbar()
       self.all_checks.append(self.current_check)
       self.current_check = None
 
@@ -312,11 +354,13 @@ class FontBakeryCheckLogger():
       self.current_check["target"] = value
 
   def skip(self, msg):
+    self.summary["Skipped"] += 1
     logging.info("SKIP: " + msg)
     self.current_check["log_messages"].append(msg)
     self.current_check["result"] = "SKIP"
 
   def ok(self, msg):
+    self.summary["Passed"] += 1
     logging.info("OK: " + msg)
     self.current_check["log_messages"].append(msg)
     if self.current_check["result"] != "ERROR":
@@ -330,17 +374,20 @@ class FontBakeryCheckLogger():
       self.current_check["result"] = "INFO"
 
   def warning(self, msg):
+    self.summary["Warnings"] += 1
     logging.warning(msg)
     self.current_check["log_messages"].append("Warning: " + msg)
     if self.current_check["result"] == "unknown":
       self.current_check["result"] = "WARNING"
 
   def error(self, msg):
+    self.summary["Errors"] += 1
     logging.error(msg)
     self.current_check["log_messages"].append("ERROR: " + msg)
     self.current_check["result"] = "ERROR"
 
   def hotfix(self, msg):
+    self.summary["Hotfixes"] += 1
     logging.info('HOTFIXED: ' + msg)
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
@@ -349,7 +396,6 @@ fb = FontBakeryCheckLogger()
 
 # =====================================
 # HELPER FUNCTIONS
-
 args = None
 font = None
 fixes = []
@@ -560,7 +606,8 @@ def main():
   elif args.verbose >= 2:
     logger.setLevel(logging.DEBUG)
   else:
-    logger.setLevel(logging.ERROR)
+    fb.progressbar = True
+    logger.setLevel(logging.CRITICAL)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
