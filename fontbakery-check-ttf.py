@@ -235,6 +235,12 @@ UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
 # Helper logging class
+RED_STR = '\033[1;31;40m{}\033[0m'
+GREEN_STR = '\033[1;32;40m{}\033[0m'
+YELLOW_STR = '\033[1;33;40m{}\033[0m'
+BLUE_STR = '\033[1;34;40m{}\033[0m'
+CYAN_STR = '\033[1;36;40m{}\033[0m'
+WHITE_STR = '\033[1;37;40m{}\033[0m'
 
 
 class FontBakeryCheckLogger():
@@ -260,9 +266,9 @@ class FontBakeryCheckLogger():
       occurrences = self.summary[key]
       percent = float(100*occurrences)/total
       print ("  {}:"
-             "\t{}\t({}%)".format(key,
-                                   occurrences,
-                                   round(percent, 2)))
+             "\t{}\t({}%)".format(YELLOW_STR.format(key),
+                                  occurrences,
+                                  round(percent, 2)))
     print ("  Total: {} checks.\n".format(total))
 
     if not args.verbose:
@@ -313,12 +319,12 @@ class FontBakeryCheckLogger():
 
   def update_progressbar(self):
     tick = {
-      "OK": '\033[1;32;40m.\033[0m',
-      "HOTFIX": '\033[1;34;40mH\033[0m',
-      "ERROR": '\033[1;31;40mE\033[0m',
-      "WARNING": '\033[1;33;40mW\033[0m',
-      "SKIP": '\033[1;37;40mS\033[0m',
-      "INFO": '\033[1;36;40mI\033[0m',
+      "OK": GREEN_STR.format('.'),
+      "HOTFIX": BLUE_STR.format('H'),
+      "ERROR": RED_STR.format('E'),
+      "WARNING": YELLOW_STR.format('W'),
+      "SKIP": WHITE_STR.format('S'),
+      "INFO": CYAN_STR.format('I')
     }
     if self.progressbar is False:
       return
