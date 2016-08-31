@@ -243,10 +243,29 @@ class FontBakeryCheckLogger():
   default_target = None  # All new checks have this target by default
   progressbar = False
   progress_string = ""
+  summary = {"Passed": 0,
+             "Hotfixed": 0,
+             "Skipped": 0,
+             "Errors": 0,
+             "Warnings": 0}
 
   def output_report(self, path):
     self.flush()
     print (self.progress_string)
+
+    total = 0
+    for key in self.summary.keys():
+      total += self.summary[key]
+
+    print ("\nCheck results summary:")
+    for key in self.summary.keys():
+      occurrences = self.summary[key]
+      percent = float(100*occurrences)/total
+      print ("  {}:"
+             "\t{}\t({}%)".format(key,
+                                   occurrences,
+                                   round(percent, 2)))
+    print ("  Total: {} checks.\n".format(total))
 
     if not args.verbose:
       filtered = []
@@ -331,11 +350,13 @@ class FontBakeryCheckLogger():
       self.current_check["target"] = value
 
   def skip(self, msg):
+    self.summary["Skipped"] += 1
     logging.info("SKIP: " + msg)
     self.current_check["log_messages"].append(msg)
     self.current_check["result"] = "SKIP"
 
   def ok(self, msg):
+    self.summary["Passed"] += 1
     logging.info("OK: " + msg)
     self.current_check["log_messages"].append(msg)
     if self.current_check["result"] != "ERROR":
@@ -349,17 +370,20 @@ class FontBakeryCheckLogger():
       self.current_check["result"] = "INFO"
 
   def warning(self, msg):
+    self.summary["Warnings"] += 1
     logging.warning(msg)
     self.current_check["log_messages"].append("Warning: " + msg)
     if self.current_check["result"] == "unknown":
       self.current_check["result"] = "WARNING"
 
   def error(self, msg):
+    self.summary["Errors"] += 1
     logging.error(msg)
     self.current_check["log_messages"].append("ERROR: " + msg)
     self.current_check["result"] = "ERROR"
 
   def hotfix(self, msg):
+    self.summary["Hotfixes"] += 1
     logging.info('HOTFIXED: ' + msg)
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
