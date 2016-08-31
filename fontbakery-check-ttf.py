@@ -242,7 +242,6 @@ class FontBakeryCheckLogger():
   current_check = None
   default_target = None  # All new checks have this target by default
   progressbar = False
-  progress_string = ""
   summary = {"Passed": 0,
              "Hotfixed": 0,
              "Skipped": 0,
@@ -251,7 +250,6 @@ class FontBakeryCheckLogger():
 
   def output_report(self, path):
     self.flush()
-    print (self.progress_string)
 
     total = 0
     for key in self.summary.keys():
@@ -325,8 +323,8 @@ class FontBakeryCheckLogger():
     if self.progressbar is False:
       return
     else:
-      self.progress_string += tick[self.current_check["result"]]
-      print('{}'.format(self.progress_string), end='\r')
+      print(tick[self.current_check["result"]], end='')
+      sys.stdout.flush()
 
   def flush(self):
     if self.current_check is not None:
