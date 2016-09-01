@@ -1784,29 +1784,6 @@ def main():
       pass
 
     # ----------------------------------------------------
-    # https://github.com/googlefonts/fontbakery/issues/934
-    #
-    # FontForge will sometimes say stuff on STDERR like
-    # $ fontbakery-check-ttf.py ~/fonts/apache/cousine/Cousine-Regular.ttf
-    #   The following table(s) in the font have been ignored by FontForge
-    #     Ignoring 'VDMX' vertical device metrics table
-    #   The glyph named circumflex is mapped to U+F031F.
-    #   But its name indicates it should be mapped to U+02C6.
-    # $
-    #
-    # We should detect this and if found, warn about that output.
-    #
-    # Felipe Sanches:
-    # I've been inspecting the fontforge python module source code
-    # and it seems that the leakage of stderr messages results from
-    # an API design flaw in the module implementation.
-    # I am not sure if we can hijack those prints. Maybe we would
-    # actually need to modify fontforge code itself to achieve that.
-    # I'll have to investigate it further in order to provide a
-    # better informed analysis.
-    #
-    # DC: Then we can load the font via the command line instead of
-    # with the python module, and grab the stderr that way
     try:
       import fontforge
     except ImportError:
@@ -1815,12 +1792,46 @@ def main():
                       " https://github.com/googlefonts/"
                       "gf-docs/blob/master/ProjectChecklist.md#fontforge")
       pass
+
     try:
+      fb.new_check("fontforge validation outputs error messages?")
       if "adobeblank" in font_file:
         fb.skip("Skipping AdobeBlank. This is a Fontbakery bug!")
         break
+
+      # temporary stderr redirection:
+      ff_err = os.tmpfile()
+
+      # we do not redirect stderr on Travis because
+      # it's making it think the build failed.
+      # I'm not exactly why does it happen, but for now we'll
+      # workaround the issue by not capturing stderr messages
+      # when running on Travis.
+      if 'TRAVIS' not in os.environ:
+        stderr_backup = os.dup(2)
+        os.close(2)
+        os.dup2(ff_err.fileno(), 2)
+
+      # invoke font validation
+      # via fontforge python module:
       fontforge_font = fontforge.open(font_file)
       validation_state = fontforge_font.validate()
+
+      if 'TRAVIS' not in os.environ:
+        # restore default stderr:
+        os.dup2(stderr_backup, 2)
+        sys.stderr = os.fdopen(2, 'w', 0)
+
+      # handle captured stderr messages:
+      ff_err.flush()
+      ff_err.seek(0, os.SEEK_SET)
+      ff_err_messages = ff_err.read()
+      if ff_err_messages != '':
+        fb.error(("fontforge did print these messages to stderr:\n"
+                  "{}").format(ff_err_messages))
+      else:
+        fb.ok("fontforge validation did not output any error message.")
+      ff_err.close()
 
       def ff_check(condition, description, err_msg, ok_msg):
         fb.new_check("fontforge-check: {}".format(description))
