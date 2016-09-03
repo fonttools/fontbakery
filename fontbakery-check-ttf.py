@@ -821,23 +821,23 @@ def main():
       if family not in metadata_to_check:
         metadata_to_check.append([fontdir, family])
 
-  def ttf_file(f):
-    simplehash = f.filename
-    # https://github.com/googlefonts/fontbakery/issues/928
-    # This may collide. We may need something better here.
-    return ttf[simplehash]
+  def font_key(f):
+    return "{}-{}-{}".format(f.filename,
+                             f.post_script_name,
+                             f.weight)
 
   for dirname, family in metadata_to_check:
     ttf = {}
     for f in family.fonts:
-      if f.filename in ttf.keys():
+      if font_key(f) in ttf.keys():
+        # I think this will likely never happen. But just in case...
         logging.error("This is a fontbakery bug."
                       " We need to figure out a better hash-function"
                       " for the font ProtocolBuffer message."
                       " Please file an issue on"
                       " https://github.com/googlefonts/fontbakery/issues/new")
       else:
-        ttf[f.filename] = ttLib.TTFont(os.path.join(dirname, f.filename))
+        ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
     if dirname == "":
       fb.default_target = "Current Folder"
@@ -855,7 +855,7 @@ def main():
     fail = False
     uWeight = None
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       if uWeight is None:
         uWeight = ttfont['post'].underlineThickness
       if uWeight != ttfont['post'].underlineThickness:
@@ -875,7 +875,7 @@ def main():
     fail = False
     proportion = None
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       if proportion is None:
         proportion = ttfont['OS/2'].panose.bProportion
       if proportion != ttfont['OS/2'].panose.bProportion:
@@ -896,7 +896,7 @@ def main():
     fail = False
     familytype = None
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       if familytype is None:
         familytype = ttfont['OS/2'].panose.bFamilyType
       if familytype != ttfont['OS/2'].panose.bFamilyType:
@@ -918,7 +918,7 @@ def main():
     glyphs_count = 0
     fail = False
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       if not glyphs_count:
         glyphs_count = len(ttfont['glyf'].glyphs)
       if glyphs_count != len(ttfont['glyf'].glyphs):
@@ -941,7 +941,7 @@ def main():
     glyphs = None
     fail = False
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       if not glyphs:
         glyphs = ttfont['glyf'].glyphs
       if glyphs != ttfont['glyf'].glyphs:
@@ -957,7 +957,7 @@ def main():
     encoding = None
     fail = False
     for f in family.fonts:
-      ttfont = ttf_file(f)
+      ttfont = ttf[font_key(f)]
       cmap = None
       for table in ttfont['cmap'].tables:
         if table.format == 4:
