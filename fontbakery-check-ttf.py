@@ -506,10 +506,13 @@ def parse_version_string(s):
         substrings = s.split('.')
         minor = substrings[-1]
         if ' ' in substrings[-2]:
-            major = int(substrings[-2].split(' ')[-1])
+            major = substrings[-2].split(' ')[-1]
         else:
-            major = int(substrings[-2])
-        return major, minor, suffix
+            major = substrings[-2]
+        if suffix:
+          return major, minor, suffix
+        else:
+          return major, minor
     except:
         fb.error("Failed to detect major and minor"
                  " version numbers in '{}'".format(s))
@@ -2035,10 +2038,10 @@ def main():
       for name in font['name'].names:
         if name.nameID == NAMEID_VERSION_STRING:
           name_version = name.string.decode(name.getEncoding())
-          regex = re.search(r'(Version [^\s;]*)(\s*;)?(.*)?', name_version)
-          version_without_comments = regex.group(1)
-          comments = regex.group(3)
-
+          # change Version 1.007 -> 1.007
+          version_stripped = r'(?<=[V|v]ersion )([0-9]{1,4}\.[0-9]{1,5})'
+          version_without_comments = re.search(version_stripped, name_version).group(0)
+          comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
           if version_without_comments != expected_str:
             # maybe the version strings differ only
             # on floating-point error, so let's
