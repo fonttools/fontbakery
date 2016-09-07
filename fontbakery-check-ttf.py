@@ -1683,9 +1683,7 @@ def main():
       if count == 0:
         fb.error("CRITICAL: Found no glyph width data!")
       else:
-        # we add 0.5 in order to round the
-        # expected_value to the closest integer:
-        expected_value = int(float(width_sum)/count + 0.5)
+        expected_value = int(round(width_sum) / count)
         if font['OS/2'].xAvgCharWidth == expected_value:
           fb.ok("xAvgCharWidth is correct.")
         else:
