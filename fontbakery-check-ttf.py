@@ -2954,9 +2954,7 @@ def main():
     fb.new_check("Monospace font has hhea.advanceWidthMax"
                  " equal to each glyph's advanceWidth ?")
     if monospace_detected:
-      fb.skip("Skipping monospace-only check.")
-    else:
-     # hhea:advanceWidthMax is treated as source of truth here.
+      # hhea:advanceWidthMax is treated as source of truth here.
       max_advw = font['hhea'].advanceWidthMax
       outliers = 0
       for glyph_id in font['glyf'].glyphs:
@@ -2973,6 +2971,8 @@ def main():
       else:
         fb.ok("hhea.advanceWidthMax is equal"
               " to all glyphs' advanceWidth in this monospaced font.")
+    else:
+      fb.skip("Skipping monospace-only check.")
 
 ##########################################################
 ## Metadata related checks:
