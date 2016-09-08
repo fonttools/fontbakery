@@ -2747,8 +2747,26 @@ def main():
       fb.ok("Font follows the family naming recommendations.")
 
     # ----------------------------------------------------
-    fb.new_check("Font contains magic code in PREP table?")
+    fb.new_check("Font contains magic code in 'prep' table?")
     magiccode = "\xb8\x01\xff\x85\xb0\x04\x8d"
+    # B8 01 FF    PUSHW 0x01FF
+    # 85          SCANCTRL (unconditinally turn on
+    #                       dropout control mode)
+    # B0 04       PUSHB 0x04
+    # 8D          SCANTYPE (enable smart dropout control)
+    #
+    # Smart dropout control means activating rules 1, 2 and 5:
+    # Rule 1: If a pixel's center falls within the glyph outline,
+    #         that pixel is turned on.
+    # Rule 2: If a contour falls exactly on a pixel's center,
+    #         that pixel is turned on.
+    # Rule 5: If a scan line between two adjacent pixel centers
+    #         (either vertical or horizontal) is intersected
+    #         by both an on-Transition contour and an off-Transition
+    #         contour and neither of the pixels was already turned on
+    #         by rules 1 and 2, turn on the pixel which is closer to
+    #         the midpoint between the on-Transition contour and
+    #         off-Transition contour. This is "Smart" dropout control.
     if "CFF " in font:
       fb.skip("Not applicable to a CFF font.")
     else:
@@ -2757,10 +2775,10 @@ def main():
       except KeyError:
         bytecode = ''
 
-      if bytecode == magiccode:
-        fb.ok("Font contains magic code in PREP table.")
+      if magiccode in bytecode:
+        fb.ok("Font contains magic code in 'prep' table.")
       else:
-        fb.error("Failed to find correct magic code in PREP table.")
+        fb.error("Failed to find correct magic code in 'prep' table.")
 
     # ----------------------------------------------------
     fb.new_check("MaxAdvanceWidth is consistent with values"
