@@ -2810,16 +2810,19 @@ def main():
         for name2 in font['name'].names:
           if ((name2.platformID == PLATFORM_ID_MACINTOSH) and
              (name2.langID == LANG_ID_MACINTOSH_ENGLISH)):
-             n1 = get_name_string(font,
-                                  name1.nameID,
-                                  name1.platformID,
-                                  name1.langID)
-             n2 = get_name_string(font,
-                                  name2.nameID,
-                                  name2.platformID,
-                                  name2.langID)
-             if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
-               failed = True
+            if name1.nameID == name2.nameID:
+              n1 = get_name_string(font,
+                                   name1.nameID,
+                                   name1.platformID,
+                                   name1.platEncID,
+                                   name1.langID)
+              n2 = get_name_string(font,
+                                   name2.nameID,
+                                   name2.platformID,
+                                   name2.platEncID,
+                                   name2.langID)
+            if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
+              failed = True
     if failed:
       fb.error('Entries in "name" table are not'
                ' the same across specific platforms.')
