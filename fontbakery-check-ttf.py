@@ -2632,7 +2632,8 @@ def main():
     if 'CFF ' in font:
       fb.skip("This check does not support CFF fonts.")
     else:
-      expected = len(font['loca'])
+      # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+      expected = len(font['loca']) - 1
       actual = len(font['glyf'])
       diff = actual - expected
 
