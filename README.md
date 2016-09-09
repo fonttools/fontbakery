@@ -59,6 +59,9 @@ brew install fontforge --with-extra-tools --HEAD ;
 easy_install pip;
 pip install --upgrade git+https://github.com/behdad/fontTools.git; 
 
+# install python dependencies
+pip install -r requirements.txt
+
 # install pyfontaine
 CFLAGS=-I/usr/local/opt/icu4c/include LDFLAGS=-L/usr/local/opt/icu4c/lib pip install pyicu;
 pip install --upgrade git+https://github.com/davelab6/pyfontaine.git; 
@@ -95,6 +98,9 @@ rm -rf ots;
 
 # install fonttools
 pip install --upgrade git+https://github.com/behdad/fontTools.git;
+
+# install python dependencies
+pip install -r requirements.txt
 
 # install fontbakery
 pip install --upgrade git+https://github.com/googlefonts/fontbakery.git; 

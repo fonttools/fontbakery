@@ -506,10 +506,13 @@ def parse_version_string(s):
         substrings = s.split('.')
         minor = substrings[-1]
         if ' ' in substrings[-2]:
-            major = int(substrings[-2].split(' ')[-1])
+            major = substrings[-2].split(' ')[-1]
         else:
-            major = int(substrings[-2])
-        return major, minor, suffix
+            major = substrings[-2]
+        if suffix:
+          return major, minor, suffix
+        else:
+          return major, minor
     except:
         fb.error("Failed to detect major and minor"
                  " version numbers in '{}'".format(s))
@@ -2035,10 +2038,10 @@ def main():
       for name in font['name'].names:
         if name.nameID == NAMEID_VERSION_STRING:
           name_version = name.string.decode(name.getEncoding())
-          regex = re.search(r'(Version [^\s;]*)(\s*;)?(.*)?', name_version)
-          version_without_comments = regex.group(1)
-          comments = regex.group(3)
-
+          # change Version 1.007 -> 1.007
+          version_stripped = r'(?<=[V|v]ersion )([0-9]{1,4}\.[0-9]{1,5})'
+          version_without_comments = re.search(version_stripped, name_version).group(0)
+          comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
           if version_without_comments != expected_str:
             # maybe the version strings differ only
             # on floating-point error, so let's
@@ -2629,7 +2632,8 @@ def main():
     if 'CFF ' in font:
       fb.skip("This check does not support CFF fonts.")
     else:
-      expected = len(font['loca'])
+      # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+      expected = len(font['loca']) - 1
       actual = len(font['glyf'])
       diff = actual - expected
 
@@ -2807,16 +2811,19 @@ def main():
         for name2 in font['name'].names:
           if ((name2.platformID == PLATFORM_ID_MACINTOSH) and
              (name2.langID == LANG_ID_MACINTOSH_ENGLISH)):
-             n1 = get_name_string(font,
-                                  name1.nameID,
-                                  name1.platformID,
-                                  name1.langID)
-             n2 = get_name_string(font,
-                                  name2.nameID,
-                                  name2.platformID,
-                                  name2.langID)
-             if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
-               failed = True
+            if name1.nameID == name2.nameID:
+              n1 = get_name_string(font,
+                                   name1.nameID,
+                                   name1.platformID,
+                                   name1.platEncID,
+                                   name1.langID)
+              n2 = get_name_string(font,
+                                   name2.nameID,
+                                   name2.platformID,
+                                   name2.platEncID,
+                                   name2.langID)
+            if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
+              failed = True
     if failed:
       fb.error('Entries in "name" table are not'
                ' the same across specific platforms.')
