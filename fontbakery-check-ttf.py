@@ -1973,7 +1973,9 @@ def main():
     # ----------------------------------------------------
     fb.new_check("Checking unitsPerEm value is reasonable.")
     upem = font['head'].unitsPerEm
-    if upem not in [2**i for i in range(4, 15)]:
+    target_upem = [2**i for i in range(4, 15)]
+    target_upem.insert(0, 1000)
+    if upem not in target_upem:
       fb.error(("The value of unitsPerEm at the head table"
                 " must be a power of 2 between 16 to 16384."
                 " Got '{}' instead.").format(upem))
