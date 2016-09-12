@@ -2882,12 +2882,15 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Is font em size (ideally) equal to 1000?")
-    upm_height = font['head'].unitsPerEm
-    if upm_height != 1000:
-      fb.error(("font em size ({}) is not"
-                " equal to 1000.").format(upm_height))
+    if args.skip:
+      fb.skip("Skipping this Google-Fonts specific check.")
     else:
-      fb.ok("Font em size is equal to 1000.")
+      upm_height = font['head'].unitsPerEm
+      if upm_height != 1000:
+        fb.warning(("font em size ({}) is not"
+                    " equal to 1000.").format(upm_height))
+      else:
+        fb.ok("Font em size is equal to 1000.")
 
 ##########################################################
 ##  Checks ported from:                                 ##
