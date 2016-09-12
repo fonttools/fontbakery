@@ -1977,7 +1977,8 @@ def main():
     target_upem.insert(0, 1000)
     if upem not in target_upem:
       fb.error(("The value of unitsPerEm at the head table"
-                " must be a power of 2 between 16 to 16384."
+                " must be either 1000 or a power of "
+                "2 between 16 to 16384."
                 " Got '{}' instead.").format(upem))
     else:
       fb.ok("unitsPerEm value on the 'head' table is reasonable.")
