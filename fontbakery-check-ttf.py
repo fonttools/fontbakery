@@ -981,15 +981,11 @@ def main():
   # ------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
-  min_usWinDescent = 0
-  max_usWinAscent = 0
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     font_ymin, font_ymax = get_bounding_box(font)
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
-    min_usWinDescent = min(min_usWinDescent, font['OS/2'].usWinDescent)
-    max_usWinAscent = max(max_usWinAscent, font['OS/2'].usWinAscent)
 
 ##########################################################################
 # Step 2: Single TTF tests
@@ -1956,19 +1952,34 @@ def main():
                        ' not open {}').format(font_file))
 
     # ----------------------------------------------------
-    fb.new_check("Checking vertical metrics")
-    # Ascent:
-    assert_table_entry('hhea', 'ascent', vmetrics_ymax)
-    assert_table_entry('OS/2', 'sTypoAscender', vmetrics_ymax)
-    assert_table_entry('OS/2', 'usWinAscent', max_usWinAscent)
-    # Descent:
-    assert_table_entry('hhea', 'descent', vmetrics_ymin)
-    assert_table_entry('OS/2', 'sTypoDescender', vmetrics_ymin)
-    assert_table_entry('OS/2', 'usWinDescent', min_usWinDescent)
-    # LineGap:
-    assert_table_entry('hhea', 'lineGap', 0)
-    assert_table_entry('OS/2', 'sTypoLineGap', 0)
-    log_results("Vertical metrics.")
+    fb.new_check("Checking OS/2 usWinAscent & usWinDescent")
+    # OS/2 usWinAscent:
+    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
+    # OS/2 usWinDescent:
+    assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
+    log_results("OS/2 usWinAscent & usWinDescent")
+
+    # ----------------------------------------------------
+    fb.new_check("Checking Vertical Metric Linegaps")
+    if font['hhea'].lineGap != 0:
+      fb.warning(("hhea lineGap is not equal to 0"))
+    elif font['OS/2'].sTypoLineGap != 0:
+      fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
+    elif font['OS/2'].sTypoLineGap != font['hhea'].lineGap:
+      fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
+    else:
+      fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
+
+   # ----------------------------------------------------
+    fb.new_check("Checking OS/2 Metrics match hhea Metrics")
+    # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+    if font['OS/2'].sTypoAscender != font['hhea'].ascent:
+      fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
+    elif font['OS/2'].sTypoDescender != font['hhea'].descent:
+      fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
+    else:
+      fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
+            "and descent")
 
     # ----------------------------------------------------
     fb.new_check("Checking unitsPerEm value is reasonable.")
