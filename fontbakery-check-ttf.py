@@ -3349,23 +3349,25 @@ def main():
 
           # -----------------------------------------------
           fb.new_check("Copyright notice matches canonical pattern?")
-          almost_matches = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*)',
+          almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
                                      f.copyright)
-          does_match = re.search(r'(Copyright\s+\(c\)\s+20\d{2}.*\(.*@.*.*\))',
+          does_match = re.search(r'(Copyright\s+20\d{2}\s+.*\(.+@.+\..+\))',
                                  f.copyright)
           if (does_match is not None):
-            fb.ok("METADATA.pb copyright field matches"
-                  " canonical pattern.")
+            fb.ok("METADATA.pb copyright field matches canonical pattern.")
           else:
             if (almost_matches):
-              fb.error("METADATA.pb: Copyright notice is okay,"
-                       " but it lacks an email address."
-                       " Expected pattern is:"
-                       " 'Copyright 2016 Author Name (name@site.com)'")
+              fb.warning(("METADATA.pb: Copyright notice is okay,"
+                          " but it lacks an email address."
+                          " Expected pattern is:"
+                          " 'Copyright 2016 Author Name (name@site.com)'\n"
+                          "But detected copyright string is:"
+                          " '{}'").format(f.copyright))
             else:
-              fb.error("METADATA.pb: Copyright notices should match"
-                       " the folowing pattern:"
-                       " 'Copyright 2016 Author Name (name@site.com)'")
+              fb.error(("METADATA.pb: Copyright notices should match"
+                        " the folowing pattern:"
+                        " 'Copyright 2016 Author Name (name@site.com)'\n"
+                        "But instead we have got: '{}'").format(f.copyright))
 
           # -----------------------------------------------
           fb.new_check("Copyright notice does not contain Reserved Font Name")
