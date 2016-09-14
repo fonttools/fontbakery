@@ -243,6 +243,10 @@ def main():
   # analyse fonts
   fontinfo = analyse_fonts(files_to_process)
 
+  if fontinfo == {}:
+    print("All specified fonts are blacklisted!")
+    sys.exit()
+
   # normalise weights
   weights = []
   for key in sorted(fontinfo.keys()):
