@@ -71,8 +71,6 @@ TEXT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZz"
 # will be skipped.
 # TODO: Investigate why these don't work.
 BLACKLIST = [
-  #IOError: invalid reference (issue #705)
-  "Corben",
   #SystemError: tile cannot extend outside image (issue #704)
   "Suwannaphum",
   "KarlaTamil",
@@ -582,10 +580,31 @@ def analyse_fonts(files):
 
 # Returns whether a font is on the blacklist.
 def is_blacklisted(filename):
+  # first check for explicit blacklisting:
   for name in BLACKLIST:
     if name in filename:
       return True
-  return False
+
+  # otherwise, blacklist fonts with a bad set of hinting tables:
+  ttfont = TTFont(filename)
+  hinting_tables = ["fpgm", "prep", "cvt"]
+
+  found = []
+  for table in hinting_tables:
+    if table in ttfont:
+      found.append(table)
+
+  no_hinting_table_found = (found == [])
+  all_hinting_tables_found = (found == hinting_tables)
+
+  # we're looking for all or nothing here:
+  good_font = all_hinting_tables_found or no_hinting_table_found
+  if not good_font:
+    print >> sys.stderr, "Found the following instruction tables: %s" % found
+    print >> sys.stderr, "Expected %s or no table at all." % hinting_tables
+    return True
+  else:
+    return False  # not blacklisted
 
 
 # Returns the italic angle, given a filename of a ttf;
