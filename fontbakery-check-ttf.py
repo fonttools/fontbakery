@@ -3281,22 +3281,15 @@ def main():
           # -----------------------------------------------
           fb.new_check("METADATA.pb 'filename' matches 'postScriptName' ?")
           regex = re.compile(r'\W')
-          if f.post_script_name.endswith('-Regular'):
-            fb.error("METADATA.pb postScriptName field"
-                     " ends with '-Regular'")
+          post_script_name = regex.sub('', f.post_script_name)
+          filename = regex.sub('', os.path.splitext(f.filename)[0])
+          if filename != post_script_name:
+            msg = ('METADATA.pb filename="{0}" does not match '
+                   'post_script_name="{1}."')
+            fb.error(msg.format(f.filename, f.post_script_name))
           else:
-            post_script_name = regex.sub('', f.post_script_name)
-            filename = regex.sub('', os.path.splitext(f.filename)[0])
-            if filename != post_script_name:
-              msg = ('METADATA.pb filename="{0}" does not match '
-                     'post_script_name="{1}."')
-              if "-Regular" in f.filename:
-                msg += (" (Consider removing the '-Regular' suffix"
-                        " from the filename.)")
-              fb.error(msg.format(f.filename, f.post_script_name))
-            else:
-              fb.ok("METADATA.pb fields 'filename' and"
-                    " 'postScriptName' have matching values.")
+            fb.ok("METADATA.pb fields 'filename' and"
+                  " 'postScriptName' have matching values.")
 
           # -----------------------------------------------
           fb.new_check("METADATA.pb 'name' contains font name"
