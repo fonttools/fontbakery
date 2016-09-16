@@ -3663,7 +3663,7 @@ def main():
   if not args.verbose and \
      not args.json and \
      not args.ghm and \
-     not args.errors:
+     not args.error:
     # in this specific case, the user would have no way to see
     # the actual check results. So here we inform the user
     # that at least one of these command line parameters
