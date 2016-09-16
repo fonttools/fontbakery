@@ -3672,7 +3672,8 @@ def main():
            "use one of the following command-line parameters:\n"
            "  --verbose\tOutput results to stdout.\n"
            "  --json \tSave results to a file in JSON format.\n"
-           "  --ghm  \tSave results to a file in GitHub Markdown format.\n")
+           "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
+           "  --error\tPrint only the error messages (outputs to stderr).\n")
 
   if len(json_report_files) > 0:
     print(("Saved check results in "
