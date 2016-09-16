@@ -2003,7 +2003,7 @@ def main():
     # ----------------------------------------------------
     def version_is_newer(a, b):
       a = map(int, a.split("."))
-      # b = map(int, b.split("."))
+      b = map(int, b.split("."))
       return a > b
 
     def get_version_from_name_entry(name):
@@ -2038,7 +2038,12 @@ def main():
     # in an external "for font" loop
     # DC yes we should check this and warn about it but it is not fatal.
     failed = False
-    expected = get_expected_version(font)
+    try:
+      expected = get_expected_version(font)
+    except:
+      expected = None
+      fb.error("failed to parse font version entries in the name table.")
+
     if expected is None:
       failed = True
       fb.error("Could not find any font versioning info on the head table"
