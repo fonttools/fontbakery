@@ -586,6 +586,8 @@ parser.add_argument('arg_filepaths', nargs='+',
                     help='font file path(s) to check.'
                          ' Wildcards like *.ttf are allowed.')
 parser.add_argument('-v', '--verbose', action='count', default=0)
+parser.add_argument('-e', '--error', action='store_true',
+                    help='Output only errors')
 parser.add_argument('-a', '--autofix', action='store_true', default=0)
 parser.add_argument('-j', '--json', action='store_true',
                     help='Output check results in JSON format')
@@ -617,6 +619,10 @@ def main():
   else:
     fb.progressbar = True
     logger.setLevel(logging.CRITICAL)
+
+  if args.error:
+    fb.progressbar = False
+    logger.setLevel(logging.ERROR)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
@@ -3656,7 +3662,8 @@ def main():
   # -------------------------------------------------------
   if not args.verbose and \
      not args.json and \
-     not args.ghm:
+     not args.ghm and \
+     not args.errors:
     # in this specific case, the user would have no way to see
     # the actual check results. So here we inform the user
     # that at least one of these command line parameters
