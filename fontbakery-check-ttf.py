@@ -3663,7 +3663,7 @@ def main():
   if not args.verbose and \
      not args.json and \
      not args.ghm and \
-     not args.errors:
+     not args.error:
     # in this specific case, the user would have no way to see
     # the actual check results. So here we inform the user
     # that at least one of these command line parameters
@@ -3672,7 +3672,8 @@ def main():
            "use one of the following command-line parameters:\n"
            "  --verbose\tOutput results to stdout.\n"
            "  --json \tSave results to a file in JSON format.\n"
-           "  --ghm  \tSave results to a file in GitHub Markdown format.\n")
+           "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
+           "  --error\tPrint only the error messages (outputs to stderr).\n")
 
   if len(json_report_files) > 0:
     print(("Saved check results in "
