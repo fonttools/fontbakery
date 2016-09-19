@@ -62,7 +62,9 @@ def main():
           print("ERROR: This font lacks a digital signature"
                 " (DSIG table). Some applications may required"
                 " one (even if only a dummy placeholder)"
-                " in order to work properly.")
+                " in order to work properly. Re-run this script"
+                " passing --autofix in order to hotfix the font"
+                " with a dummy signature.")
 
       except ImportError:
         error_message = ("The '{}' font does not have an existing"
