@@ -214,11 +214,14 @@ def main():
     parser.print_help()
     sys.exit()
 
-  if len(glob.glob(args.files)) == 0:
+  files_to_process = []
+  for arg_files in args.files:
+    files_to_process.extend(glob.glob(arg_files))
+
+  if len(files_to_process) == 0:
     print("No font files were found!")
     sys.exit()
 
-  files_to_process = glob.glob(args.files)
   if args.missingmetadata:
     if args.existing == False:
       sys.exit("you must use the --existing attribute in conjunction with --missingmetadata")
