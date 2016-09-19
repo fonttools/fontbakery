@@ -38,7 +38,7 @@ def main():
     if "DSIG" not in font:
       try:
         if args.autofix:
-          from ttLib.tables.D_S_I_G_ import SignatureRecord
+          from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
           newDSIG = ttLib.newTable("DSIG")
           newDSIG.ulVersion = 1
           newDSIG.usFlag = 1
@@ -53,21 +53,22 @@ def main():
           sig.ulOffset = 20
           newDSIG.signatureRecords = [sig]
           font.tables["DSIG"] = newDSIG
-          print("The font does not have an existing digital"
-                " signature (DSIG), so we just added a dummy"
-                " placeholder that should be enough for the"
-                " applications that require its presence in"
-                " order to work properly.")
+          font.save(path)
+          print(("HOTFIX: '{}': The font lacks a digital"
+                 " signature (DSIG), so we just added a dummy"
+                 " placeholder that should be enough for the"
+                 " applications that require its presence in"
+                 " order to work properly.").format(path))
         else:
-          print("ERROR: This font lacks a digital signature"
-                " (DSIG table). Some applications may required"
-                " one (even if only a dummy placeholder)"
-                " in order to work properly. Re-run this script"
-                " passing --autofix in order to hotfix the font"
-                " with a dummy signature.")
+          print(("ERROR: '{}': This font lacks a digital signature"
+                 " (DSIG table). Some applications may required"
+                 " one (even if only a dummy placeholder)"
+                 " in order to work properly. Re-run this script"
+                 " passing --autofix in order to hotfix the font"
+                 " with a dummy signature.").format(path))
 
       except ImportError:
-        error_message = ("The '{}' font does not have an existing"
+        error_message = ("ERROR '{}': The font lacks a"
                          " digital signature (DSIG), so OpenType features"
                          " will not be available in some applications that"
                          " use its presense as a (stupid) heuristic."
@@ -75,7 +76,7 @@ def main():
                          "Fonttools v2.3+ so you need to upgrade it. Try:"
                          " $ pip install --upgrade fontTools; or see"
                          " https://pypi.python.org/pypi/FontTools")
-        print ("ERROR: " + error_message.format(font_file))
+        print (error_message.format(path))
 
 if __name__ == '__main__':
   main()
