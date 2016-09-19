@@ -3059,7 +3059,9 @@ def main():
             if not row:
               continue
             designers.append(row[0].decode('utf-8'))
-          if family.designer not in designers:
+          if family.designer == "Multiple Designers":
+            fb.ok("Found 'Multiple Designers' at METADATA.pb")
+          elif family.designer not in designers:
             fb.error(("METADATA.pb: Designer '{}' is not listed"
                       " in profiles.csv"
                       " (at '{}')").format(family.designer,
