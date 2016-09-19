@@ -3051,6 +3051,9 @@ def main():
       fb.new_check("METADATA.pb: Designer exists in GWF profiles.csv ?")
       if family.designer == "":
         fb.error('METADATA.pb field "designer" MUST NOT be empty!')
+      elif family.designer == "Multiple Designers":
+        fb.skip("Found 'Multiple Designers' at METADATA.pb, which is OK,"
+                "so we won't look for it at profiles.cvs")
       else:
         try:
           fp = urllib.urlopen(PROFILES_RAW_URL)
