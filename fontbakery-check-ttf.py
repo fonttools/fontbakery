@@ -2457,15 +2457,21 @@ def main():
         ttfa_output = subprocess.check_output(ttfa_cmd,
                                               stderr=subprocess.STDOUT)
         installed_ttfa = installed_ttfa_version(ttfa_output)
-        if installed_version_is_newer(installed_ttfa,
-                                      ttfa_version):
-          fb.info(("Ttfautohint used in font = {};"
-                   " installed = {}; Need to re-run"
-                   " with the newer version!").format(ttfa_version,
-                                                      installed_ttfa))
-        else:
-          fb.ok("ttfautohint available in the system is older"
-                " than the one used in the font.")
+        try:
+          if installed_version_is_newer(installed_ttfa,
+                                        ttfa_version):
+            fb.info(("Ttfautohint used in font = {};"
+                     " installed = {}; Need to re-run"
+                     " with the newer version!").format(ttfa_version,
+                                                        installed_ttfa))
+          else:
+            fb.ok("ttfautohint available in the system is older"
+                  " than the one used in the font.")
+        except:
+          fb.error(("failed to parse ttfautohint version strings:\n"
+                    "  * installed = '{}'\n"
+                    "  * used = '{}'").format(installed_ttfa,
+                                              ttfa_version))
 
     # ----------------------------------------------------
     fb.new_check("Name table entries should not contain line-breaks")
