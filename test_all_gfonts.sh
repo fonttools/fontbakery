@@ -1,16 +1,24 @@
 #!/bin/bash
 FOLDERS=~/devel/github_google/fonts/*/*/
+
+mkdir ./check_results/ -p
+#rm ./check_results/issues.txt -f
+
 for f in $FOLDERS
 do
-  JSON_LOG=./check_results/$(basename $f).json
+  LOGDIR=./check_results/$(basename $f)
+  echo $LOGDIR
 
-  if [ -f $JSON_LOG ]
+  if [ -d $LOGDIR ]
   then
-    echo "$JSON_LOG found. Skipping."
+    echo "$LOGDIR found. Skipping."
   else
     echo "Processing '$f'..."
-    ./fontbakery-check-ttf.py "$f/*.ttf" --ghm -vv
-    #mv ./fontbakery-check-results.json ./check_results/$(basename $f).json || exit 1
+    ./fontbakery-check-ttf.py "$f*.ttf" --json --ghm -vv
+    mkdir -p $LOGDIR
+    cp $f*fontbakery.* $LOGDIR || echo "$LOGDIR" >> ./check_results/issues.txt
   fi
 done
+
+cat ./check_results/issues.txt
 
