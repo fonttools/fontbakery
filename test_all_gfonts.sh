@@ -2,16 +2,16 @@
 FOLDERS=~/devel/github_google/fonts/*/*/
 
 mkdir ./check_results/ -p
-#rm ./check_results/issues.txt -f
+rm ./check_results/issues.txt -f
 
 for f in $FOLDERS
 do
   LOGDIR=./check_results/$(basename $f)
   echo $LOGDIR
 
-  if [ -d $LOGDIR ]
+  if [ "$(ls -A $LOGDIR)" ]
   then
-    echo "$LOGDIR found. Skipping."
+    echo "Skipping '$LOGDIR'"
   else
     echo "Processing '$f'..."
     ./fontbakery-check-ttf.py "$f*.ttf" --json --ghm -vv
