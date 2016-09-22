@@ -2351,30 +2351,36 @@ def main():
       dehinted_size = statinfo.st_size
       os.unlink(dehinted.name)
 
-      increase = hinted_size - dehinted_size
-      change = float(hinted_size)/dehinted_size - 1
-      change = int(change*10000)/100.0  # round to 2 decimal pts percentage
+      if dehinted_size == 0:
+        fb.skip("ttfautohint --dehint reports that "
+                "'This font has already been processed with ttfautohint'."
+                " See https://github.com/googlefonts/fontbakery/"
+                "issues/1043#issuecomment-249035069")
+      else:
+        increase = hinted_size - dehinted_size
+        change = float(hinted_size)/dehinted_size - 1
+        change = int(change*10000)/100.0  # round to 2 decimal pts percentage
 
-      def filesize_formatting(s):
-          if s < 1024:
-              return "{} bytes".format(s)
-          elif s < 1024*1024:
-              return "{}kb".format(s/1024)
-          else:
-              return "{}Mb".format(s/(1024*1024))
+        def filesize_formatting(s):
+            if s < 1024:
+                return "{} bytes".format(s)
+            elif s < 1024*1024:
+                return "{}kb".format(s/1024)
+            else:
+                return "{}Mb".format(s/(1024*1024))
 
-      hinted_size = filesize_formatting(hinted_size)
-      dehinted_size = filesize_formatting(dehinted_size)
-      increase = filesize_formatting(increase)
+        hinted_size = filesize_formatting(hinted_size)
+        dehinted_size = filesize_formatting(dehinted_size)
+        increase = filesize_formatting(increase)
 
-      results_table = "Hinting filesize impact:\n\n"
-      results_table += "|  | {} |\n".format(filename)
-      results_table += "|----------|----------|----------|\n"
-      results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
-      results_table += "| Hinted Size | {} |\n".format(hinted_size)
-      results_table += "| Increase | {} |\n".format(increase)
-      results_table += "| Change   | {} % |\n".format(change)
-      fb.info(results_table)
+        results_table = "Hinting filesize impact:\n\n"
+        results_table += "|  | {} |\n".format(filename)
+        results_table += "|----------|----------|----------|\n"
+        results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+        results_table += "| Hinted Size | {} |\n".format(hinted_size)
+        results_table += "| Increase | {} |\n".format(increase)
+        results_table += "| Change   | {} % |\n".format(change)
+        fb.info(results_table)
 
     except OSError:
       # This is made very prominent with additional line breaks
