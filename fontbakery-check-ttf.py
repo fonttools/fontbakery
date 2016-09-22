@@ -3376,18 +3376,20 @@ def main():
                           " Expected pattern is:"
                           " 'Copyright 2016 Author Name (name@site.com)'\n"
                           "But detected copyright string is:"
-                          " '{}'").format(f.copyright))
+                          " '{}'").format(unidecode(f.copyright)))
             else:
               fb.error(("METADATA.pb: Copyright notices should match"
                         " the folowing pattern:"
                         " 'Copyright 2016 Author Name (name@site.com)'\n"
-                        "But instead we have got: '{}'").format(f.copyright))
+                        "But instead we have got:"
+                        " '{}'").format(unidecode(f.copyright)))
 
           # -----------------------------------------------
           fb.new_check("Copyright notice does not contain Reserved Font Name")
           if 'Reserved Font Name' in f.copyright:
-            fb.error(('METADATA.pb: copyright field ("%s")'
-                      ' contains "Reserved Font Name"') % f.copyright)
+            fb.error(("METADATA.pb: copyright field ('{}')"
+                      " contains 'Reserved Font Name'"
+                      "").format(unidecode(f.copyright)))
           else:
             fb.ok('METADATA.pb copyright field'
                   ' does not contain "Reserved Font Name"')
