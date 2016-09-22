@@ -765,20 +765,20 @@ def main():
                                                 '", "'.join(STYLE_NAMES)))
         not_canonical.append(font_file)
         fonts_to_check.remove(font_file)
+        fb.output_report(font_file)
     except:
         fb.error(("{} is not named canonically.").format(font_file))
         not_canonical.append(font_file)
         fonts_to_check.remove(font_file)
+        fb.output_report(font_file)
   if not_canonical:
     print('\nAborted, critical errors with filenames.')
-    fb.error(('Please rename these files canonically and try again:'
-              '\n  {}\n'
-              'Canonical names are defined in '
-              'https://github.com/googlefonts/gf-docs/blob'
-              '/master/ProjectChecklist.md#instance-and-file-naming'
-              '').format('\n  '.join(not_canonical)))
-    output_folder = os.path.dirname(font_file)
-    fb.output_report(output_folder)
+    print(('Please rename these files canonically and try again:'
+           '\n  {}\n'
+           'Canonical names are defined in '
+           'https://github.com/googlefonts/gf-docs/blob'
+           '/master/ProjectChecklist.md#instance-and-file-naming'
+           '').format('\n  '.join(not_canonical)))
 
   # ------------------------------------------------------
   logging.debug("Fetching Microsoft's vendorID list")
