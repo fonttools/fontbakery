@@ -1164,7 +1164,7 @@ def main():
                                           PLATID_STR[plat],
                                           plat,
                                           expected_value,
-                                          string))
+                                          unidecode(string)))
     if failed is False:
       fb.ok("Main entries in the name table"
             " conform to expected format.")
