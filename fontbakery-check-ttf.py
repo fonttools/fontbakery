@@ -1428,8 +1428,8 @@ def main():
                                       NAMEID_LICENSE_DESCRIPTION,
                                       nameRecord.platformID,
                                       PLATID_STR[nameRecord.platformID],
-                                      value,
-                                      placeholder))
+                                      unidecode(value),
+                                      unidecode(placeholder)))
                 font['name'].setName(placeholder,
                                      NAMEID_LICENSE_DESCRIPTION,
                                      font['name'].names[i].platformID,
@@ -1446,8 +1446,8 @@ def main():
                                      NAMEID_LICENSE_DESCRIPTION,
                                      nameRecord.platformID,
                                      PLATID_STR[nameRecord.platformID],
-                                     value,
-                                     placeholder))
+                                     unidecode(value),
+                                     unidecode(placeholder)))
 
             if value == placeholder and license_exists is False:
               fb.error(('Valid licensing specified'
