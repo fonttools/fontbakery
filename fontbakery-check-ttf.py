@@ -2861,8 +2861,8 @@ def main():
                                    name2.platformID,
                                    name2.platEncID,
                                    name2.langID)
-            if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
-              failed = True
+              if len(n1) == 0 or len(n2) == 0 or n1[0] != n2[0]:
+                failed = True
     if failed:
       fb.error('Entries in "name" table are not'
                ' the same across specific platforms.')
