@@ -1,11 +1,13 @@
 #!/bin/bash
-FOLDERS=~/devel/github_google/fonts/*/*/
+APACHE_FOLDERS=~/devel/github_google/fonts/apache/*/
+OFL_FOLDERS=~/devel/github_google/fonts/ofl/*/
+UFL_FOLDERS=~/devel/github_google/fonts/ufl/*/
 
 mkdir ./check_results/ -p
 rm ./check_results/issues.txt -f
 rm ./check_results/all_fonts.txt -f
 
-for f in $FOLDERS
+for f in $APACHE_FOLDERS $OFL_FOLDERS $UFL_FOLDERS
 do
   LOGDIR=./check_results/$(basename $f)
   echo "$f" >> ./check_results/all_fonts.txt
