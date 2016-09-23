@@ -2452,7 +2452,10 @@ def main():
     else:
       version_strings = get_name_string(font, NAMEID_VERSION_STRING)
       ttfa_version = ttfautohint_version(version_strings)
-      if ttfa_version is None:
+      if len(version_strings) == 0:
+        fb.error("This font file lacks mandatory "
+                 "version strings in its name table.")
+      elif ttfa_version is None:
         fb.info(("Could not detect which version of"
                  " ttfautohint was used in this font."
                  " It is typically specified as a comment"
