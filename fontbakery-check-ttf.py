@@ -1800,160 +1800,164 @@ def main():
     try:
       fb.new_check("fontforge validation outputs error messages?")
       if "adobeblank" in font_file:
-        fb.skip("Skipping AdobeBlank. This is a Fontbakery bug!")
-        break
-
-      # temporary stderr redirection:
-      ff_err = os.tmpfile()
-
-      # we do not redirect stderr on Travis because
-      # it's making it think the build failed.
-      # I'm not exactly why does it happen, but for now we'll
-      # workaround the issue by not capturing stderr messages
-      # when running on Travis.
-      if 'TRAVIS' not in os.environ:
-        stderr_backup = os.dup(2)
-        os.close(2)
-        os.dup2(ff_err.fileno(), 2)
-
-      # invoke font validation
-      # via fontforge python module:
-      fontforge_font = fontforge.open(font_file)
-      validation_state = fontforge_font.validate()
-
-      if 'TRAVIS' not in os.environ:
-        # restore default stderr:
-        os.dup2(stderr_backup, 2)
-        sys.stderr = os.fdopen(2, 'w', 0)
-
-      # handle captured stderr messages:
-      ff_err.flush()
-      ff_err.seek(0, os.SEEK_SET)
-      ff_err_messages = ff_err.read()
-      if ff_err_messages != '':
-        fb.error(("fontforge did print these messages to stderr:\n"
-                  "{}").format(ff_err_messages))
+        fb.skip("Skipping AdobeBlank since"
+                " this font is a very peculiar hack.")
       else:
-        fb.ok("fontforge validation did not output any error message.")
-      ff_err.close()
+        # temporary stderr redirection:
+        ff_err = os.tmpfile()
 
-      def ff_check(condition, description, err_msg, ok_msg):
-        fb.new_check("fontforge-check: {}".format(description))
-        if condition is False:
-          fb.error("fontforge-check: {}".format(err_msg))
+        # we do not redirect stderr on Travis because
+        # it's making it think the build failed.
+        # I'm not exactly why does it happen, but for now we'll
+        # workaround the issue by not capturing stderr messages
+        # when running on Travis.
+        if 'TRAVIS' not in os.environ:
+          stderr_backup = os.dup(2)
+          os.close(2)
+          os.dup2(ff_err.fileno(), 2)
+
+        # invoke font validation
+        # via fontforge python module:
+        fontforge_font = fontforge.open(font_file)
+        validation_state = fontforge_font.validate()
+
+        if 'TRAVIS' not in os.environ:
+          # restore default stderr:
+          os.dup2(stderr_backup, 2)
+          sys.stderr = os.fdopen(2, 'w', 0)
+
+        # handle captured stderr messages:
+        ff_err.flush()
+        ff_err.seek(0, os.SEEK_SET)
+        ff_err_messages = ff_err.read()
+        if ff_err_messages != '':
+          fb.error(("fontforge did print these messages to stderr:\n"
+                    "{}").format(ff_err_messages))
         else:
-          fb.ok("fontforge-check: {}".format(ok_msg))
+          fb.ok("fontforge validation did not output any error message.")
+        ff_err.close()
 
-      ff_check("Contours are closed?",
-               bool(validation_state & 0x2) is False,
-               "Contours are not closed!",
-               "Contours are closed.")
+        def ff_check(condition, description, err_msg, ok_msg):
+          fb.new_check("fontforge-check: {}".format(description))
+          if condition is False:
+            fb.error("fontforge-check: {}".format(err_msg))
+          else:
+            fb.ok("fontforge-check: {}".format(ok_msg))
 
-      ff_check("Contours do not intersect",
-               bool(validation_state & 0x4) is False,
-               "There are countour intersections!",
-               "Contours do not intersect.")
+        ff_check("Contours are closed?",
+                 bool(validation_state & 0x2) is False,
+                 "Contours are not closed!",
+                 "Contours are closed.")
 
-      ff_check("Contours have correct directions",
-               bool(validation_state & 0x8) is False,
-               "Contours have incorrect directions!",
-               "Contours have correct directions.")
+        ff_check("Contours do not intersect",
+                 bool(validation_state & 0x4) is False,
+                 "There are countour intersections!",
+                 "Contours do not intersect.")
 
-      ff_check("References in the glyph haven't been flipped",
-               bool(validation_state & 0x10) is False,
-               "References in the glyph have been flipped!",
-               "References in the glyph haven't been flipped.")
+        ff_check("Contours have correct directions",
+                 bool(validation_state & 0x8) is False,
+                 "Contours have incorrect directions!",
+                 "Contours have correct directions.")
 
-      ff_check("Glyphs have points at extremas",
-               bool(validation_state & 0x20) is False,
-               "Glyphs do not have points at extremas!",
-               "Glyphs have points at extremas.")
+        ff_check("References in the glyph haven't been flipped",
+                 bool(validation_state & 0x10) is False,
+                 "References in the glyph have been flipped!",
+                 "References in the glyph haven't been flipped.")
 
-      ff_check("Glyph names referred to from glyphs present in the font",
-               bool(validation_state & 0x40) is False,
-               "Glyph names referred to from glyphs not present in the font!",
-               "Glyph names referred to from glyphs present in the font.")
+        ff_check("Glyphs have points at extremas",
+                 bool(validation_state & 0x20) is False,
+                 "Glyphs do not have points at extremas!",
+                 "Glyphs have points at extremas.")
 
-      ff_check("Points (or control points) are not too far apart",
-               bool(validation_state & 0x40000) is False,
-               "Points (or control points) are too far apart!",
-               "Points (or control points) are not too far apart.")
+        ff_check("Glyph names referred to from glyphs present in the font",
+                 bool(validation_state & 0x40) is False,
+                 "Glyph names referred to from glyphs"
+                 " not present in the font!",
+                 "Glyph names referred to from glyphs"
+                 " present in the font.")
 
-      ff_check("Not more than 1,500 points in any glyph (a PostScript limit)",
-               bool(validation_state & 0x80) is False,
-               "There are glyphs with more than 1,500 points!"
-               "Exceeds a PostScript limit.",
-               "Not more than 1,500 points in any glyph (a PostScript limit).")
+        ff_check("Points (or control points) are not too far apart",
+                 bool(validation_state & 0x40000) is False,
+                 "Points (or control points) are too far apart!",
+                 "Points (or control points) are not too far apart.")
 
-      ff_check("PostScript has a limit of 96 hints in glyphs",
-               bool(validation_state & 0x100) is False,
-               "Exceeds PostScript limit of 96 hints per glyph",
-               "Font respects PostScript limit of 96 hints per glyph")
+        ff_check("Not more than 1,500 points in any glyph"
+                 " (a PostScript limit)",
+                 bool(validation_state & 0x80) is False,
+                 "There are glyphs with more than 1,500 points!"
+                 "Exceeds a PostScript limit.",
+                 "Not more than 1,500 points in any glyph"
+                 " (a PostScript limit).")
 
-      ff_check("Font doesn't have invalid glyph names",
-               bool(validation_state & 0x200) is False,
-               "Font has invalid glyph names!",
-               "Font doesn't have invalid glyph names.")
+        ff_check("PostScript has a limit of 96 hints in glyphs",
+                 bool(validation_state & 0x100) is False,
+                 "Exceeds PostScript limit of 96 hints per glyph",
+                 "Font respects PostScript limit of 96 hints per glyph")
 
-      ff_check("Glyphs have allowed numbers of points defined in maxp",
-               bool(validation_state & 0x400) is False,
-               "Glyphs exceed allowed numbers of points defined in maxp",
-               "Glyphs have allowed numbers of points defined in maxp.")
+        ff_check("Font doesn't have invalid glyph names",
+                 bool(validation_state & 0x200) is False,
+                 "Font has invalid glyph names!",
+                 "Font doesn't have invalid glyph names.")
 
-      ff_check("Glyphs have allowed numbers of paths defined in maxp",
-               bool(validation_state & 0x800) is False,
-               "Glyphs exceed allowed numbers of paths defined in maxp!",
-               "Glyphs have allowed numbers of paths defined in maxp.")
+        ff_check("Glyphs have allowed numbers of points defined in maxp",
+                 bool(validation_state & 0x400) is False,
+                 "Glyphs exceed allowed numbers of points defined in maxp",
+                 "Glyphs have allowed numbers of points defined in maxp.")
 
-      ff_check("Composite glyphs have allowed numbers"
-               " of points defined in maxp?",
-               bool(validation_state & 0x1000) is False,
-               "Composite glyphs exceed allowed numbers"
-               " of points defined in maxp!",
-               "Composite glyphs have allowed numbers"
-               " of points defined in maxp.")
+        ff_check("Glyphs have allowed numbers of paths defined in maxp",
+                 bool(validation_state & 0x800) is False,
+                 "Glyphs exceed allowed numbers of paths defined in maxp!",
+                 "Glyphs have allowed numbers of paths defined in maxp.")
 
-      ff_check("Composite glyphs have allowed numbers"
-               " of paths defined in maxp",
-               bool(validation_state & 0x2000) is False,
-               "Composite glyphs exceed"
-               " allowed numbers of paths defined in maxp!",
-               "Composite glyphs have"
-               " allowed numbers of paths defined in maxp.")
+        ff_check("Composite glyphs have allowed numbers"
+                 " of points defined in maxp?",
+                 bool(validation_state & 0x1000) is False,
+                 "Composite glyphs exceed allowed numbers"
+                 " of points defined in maxp!",
+                 "Composite glyphs have allowed numbers"
+                 " of points defined in maxp.")
 
-      ff_check("Glyphs instructions have valid lengths",
-               bool(validation_state & 0x4000) is False,
-               "Glyphs instructions have invalid lengths!",
-               "Glyphs instructions have valid lengths.")
+        ff_check("Composite glyphs have allowed numbers"
+                 " of paths defined in maxp",
+                 bool(validation_state & 0x2000) is False,
+                 "Composite glyphs exceed"
+                 " allowed numbers of paths defined in maxp!",
+                 "Composite glyphs have"
+                 " allowed numbers of paths defined in maxp.")
 
-      ff_check("Points in glyphs are integer aligned",
-               bool(validation_state & 0x80000) is False,
-               "Points in glyphs are not integer aligned!",
-               "Points in glyphs are integer aligned.")
+        ff_check("Glyphs instructions have valid lengths",
+                 bool(validation_state & 0x4000) is False,
+                 "Glyphs instructions have invalid lengths!",
+                 "Glyphs instructions have valid lengths.")
 
-      # According to the opentype spec, if a glyph contains an anchor point
-      # for one anchor class in a subtable, it must contain anchor points
-      # for all anchor classes in the subtable. Even it, logically,
-      # they do not apply and are unnecessary.
-      ff_check("Glyphs have all required anchors.",
-               bool(validation_state & 0x100000) is False,
-               "Glyphs do not have all required anchors!",
-               "Glyphs have all required anchors.")
+        ff_check("Points in glyphs are integer aligned",
+                 bool(validation_state & 0x80000) is False,
+                 "Points in glyphs are not integer aligned!",
+                 "Points in glyphs are integer aligned.")
 
-      ff_check("Glyph names are unique?",
-               bool(validation_state & 0x200000) is False,
-               "Glyph names are not unique!",
-               "Glyph names are unique.")
+        # According to the opentype spec, if a glyph contains an anchor point
+        # for one anchor class in a subtable, it must contain anchor points
+        # for all anchor classes in the subtable. Even it, logically,
+        # they do not apply and are unnecessary.
+        ff_check("Glyphs have all required anchors.",
+                 bool(validation_state & 0x100000) is False,
+                 "Glyphs do not have all required anchors!",
+                 "Glyphs have all required anchors.")
 
-      ff_check("Unicode code points are unique?",
-               bool(validation_state & 0x400000) is False,
-               "Unicode code points are not unique!",
-               "Unicode code points are unique.")
+        ff_check("Glyph names are unique?",
+                 bool(validation_state & 0x200000) is False,
+                 "Glyph names are not unique!",
+                 "Glyph names are unique.")
 
-      ff_check("Do hints overlap?",
-               bool(validation_state & 0x800000) is False,
-               "Hints should NOT overlap!",
-               "Hinds do not overlap.")
+        ff_check("Unicode code points are unique?",
+                 bool(validation_state & 0x400000) is False,
+                 "Unicode code points are not unique!",
+                 "Unicode code points are unique.")
+
+        ff_check("Do hints overlap?",
+                 bool(validation_state & 0x800000) is False,
+                 "Hints should NOT overlap!",
+                 "Hinds do not overlap.")
     except:
       logging.warning(('fontforge python module could'
                        ' not open {}').format(font_file))
