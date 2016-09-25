@@ -32,6 +32,7 @@ from fontTools import ttLib
 from fonts_public_pb2 import FamilyProto
 from unidecode import unidecode
 from lxml.html import HTMLParser
+import plistlib
 
 try:
   from google.protobuf import text_format
@@ -1724,30 +1725,18 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Checking with ftxvalidator")
-    KNOWN_GOOD_OUTPUT = ''\
-                        '<?xml version="1.0" encoding="UTF-8"?>\n'\
-                        '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'\
-                        ' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'\
-                        '<plist version="1.0">\n'\
-                        '<dict>\n'\
-                        '    <key>kATSFontTestResultKey</key>\n'\
-                        '    <array>\n'\
-                        '        <string>'\
-                        'kATSFontTestSeverityInformation</string>\n'\
-                        '        <string>'\
-                        'kATSFontTestSeverityMinorError</string>\n'\
-                        '    </array>\n'\
-                        '</dict>\n'\
-                        '</plist>'
-
     try:
       ftx_cmd = ["ftxvalidator",
-                 "-r",  # Generate a full report
                  "-t", "all",  # execute all tests
                  font_file]
       ftx_output = subprocess.check_output(ftx_cmd,
                                            stderr=subprocess.STDOUT)
-      if ftx_output.strip() == KNOWN_GOOD_OUTPUT:
+
+      ftx_data = plistlib.readPlistFromString(ftx_output)
+      # we accept kATSFontTestSeverityInformation
+      # and kATSFontTestSeverityMinorError
+      if 'kATSFontTestSeverityFatalError' not in \
+                                      ftx_data['kATSFontTestResultKey']:
         fb.ok("ftxvalidator passed this file")
       else:
         ftx_cmd = ["ftxvalidator",
