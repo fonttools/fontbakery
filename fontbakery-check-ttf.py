@@ -1735,8 +1735,8 @@ def main():
       ftx_data = plistlib.readPlistFromString(ftx_output)
       # we accept kATSFontTestSeverityInformation
       # and kATSFontTestSeverityMinorError
-      if 'kATSFontTestSeverityFatalError' not in \
-                                      ftx_data['kATSFontTestResultKey']:
+      if 'kATSFontTestSeverityFatalError' \
+         not in ftx_data['kATSFontTestResultKey']:
         fb.ok("ftxvalidator passed this file")
       else:
         ftx_cmd = ["ftxvalidator",
