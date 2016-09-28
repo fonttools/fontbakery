@@ -926,15 +926,16 @@ def main():
     # -----------------------------------------------------
     fb.new_check("Fonts have equal numbers of glyphs?")
     counts = {}
-    glyphs_count = 0
+    glyphs_count = None
     fail = False
     for f in family.fonts:
       ttfont = ttf[font_key(f)]
-      if not glyphs_count:
-        glyphs_count = len(ttfont['glyf'].glyphs)
-      if glyphs_count != len(ttfont['glyf'].glyphs):
+      this_count = len(ttfont['glyf'].glyphs)
+      if glyphs_count is None:
+        glyphs_count = this_count
+      if glyphs_count != this_count:
         fail = True
-      counts[f.filename] = glyphs_count
+      counts[f.filename] = this_count
 
     if fail:
       results_table = ""
