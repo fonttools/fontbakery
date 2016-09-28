@@ -36,6 +36,31 @@ And then opening http://0.0.0.0:8000/ in a web-browser.
 
 But beware that in order to run the webserver the command above must be executed from the fontbakery project folder and the json file must be available in that same root folder.
 
+### Automated testing of all Google Fonts
+
+If you need to generate a list of all issues in the Google Fonts, you have to have a full checkout of the Google Fonts git repo, and then you can run:
+
+```
+sh test_all_gfonts.sh
+```
+
+(you'll probably have to edit the first 3 lines in the test_all_gfonts.sh script though, as for now the gfonts repo path is hardcoded in there. I may later make it into a command line parameter)
+
+This will create a folder called check_results and it will run fontbakery on every family from the gfonts git repo, thus generating individual per-font-file reports both in json and in ghmarkdown format. The reports are saved in subdirectories that have names of the families.
+
+It took me 80 minutes to run the full test on the repo. And the resulting check_results folder has got 105Mbytes of json & markdown files. To squeeze it all into a unified report you can run:
+
+```
+./fb_summary_report.py
+```
+
+and it will write to stdout.
+
+If you rather prefer to save it to a file you can do something like:
+
+```
+./fb_summary_report.py > gfonts_check_summary.md
+```
 
 ## Install
 
