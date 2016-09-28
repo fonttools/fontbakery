@@ -60,7 +60,6 @@ STYLE_NAMES = ["Thin",
                "Bold",
                "ExtraBold",
                "Black",
-               "Heavy",
                "Thin Italic",
                "ExtraLight Italic",
                "Light Italic",
@@ -69,8 +68,7 @@ STYLE_NAMES = ["Thin",
                "SemiBold Italic",
                "Bold Italic",
                "ExtraBold Italic",
-               "Black Italic",
-               "Heavy Italic"]
+               "Black Italic"]
 
 RIBBI_STYLE_NAMES = ["Regular",
                      "Italic",
@@ -86,8 +84,7 @@ WEIGHTS = {"Thin": 250,
            "SemiBold": 600,
            "Bold": 700,
            "ExtraBold": 800,
-           "Black": 900,
-           "Heavy": 950}
+           "Black": 900}
 
 # code-points for all "whitespace" chars:
 WHITESPACE_CHARACTERS = [
