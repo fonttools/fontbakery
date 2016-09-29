@@ -3003,7 +3003,7 @@ def main():
       outliers = 0
       for glyph_id in font['glyf'].glyphs:
         width = font['hmtx'].metrics[glyph_id][0]
-        if width != max_advw:
+        if width != 0 and width != max_advw:
           outliers += 1
 
       if outliers > 0:
