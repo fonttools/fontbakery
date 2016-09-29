@@ -24,6 +24,7 @@
 
 # Import our system library and fontTools ttLib
 import argparse
+import os
 import sys
 from fontTools import ttLib
 from fontTools.ttLib.tables import ttProgram
@@ -42,11 +43,12 @@ def main():
   args = parser.parse_args()
 
   # Open the font file supplied as the first argument on the command line
-  font = ttLib.TTFont(args.fontfile_in)
+  fontfile_in = os.path.abspath(args.fontfile_in[0])
+  font = ttLib.TTFont(fontfile_in)
 
   # Save a backup
-  backupfont = '{}-backup-fonttools-prep-gasp{}'.format(fontfile[0:-4],
-                                                        fontfile[-4:])
+  backupfont = '{}-backup-fonttools-prep-gasp{}'.format(fontfile_in[0:-4],
+                                                        fontfile_in[-4:])
   # print "Saving to ", backupfont
   font.save(backupfont)
   print backupfont, " saved."
@@ -59,9 +61,10 @@ def main():
 
   # Print the PREP table
   if "prep" in font:
-      print ("PREP was: ", ttProgram.Program.getAssembly(font["prep"].program))
+    old_program = ttProgram.Program.getAssembly(font["prep"].program)
+    print ("PREP was:\n\t" + "\n\t".join(old_program))
   else:
-      print ("PREP wasn't there")
+    print ("PREP wasn't there")
 
   # Create a new GASP table
   gasp = ttLib.newTable("gasp")
@@ -94,11 +97,13 @@ def main():
   print "GASP now: ", font["gasp"].gaspRange
 
   # Print the PREP table
-  print "PREP now: ", ttProgram.Program.getAssembly(font["prep"].program)
+  current_program = ttProgram.Program.getAssembly(font["prep"].program)
+  print ("PREP now:\n\t" + "\n\t".join(current_program))
 
   # Save the new file with the name of the input file
-  font.save(args.fontfile_out)
-  print args.fontfile_out, " saved."
+  fontfile_out = os.path.abspath(args.fontfile_out[0])
+  font.save(fontfile_out)
+  print fontfile_out, " saved."
 
 if __name__ == "__main__":
   main()
