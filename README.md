@@ -258,8 +258,17 @@ optional arguments:
 
 ### fontbakery-fix-nonhinting.py
 
+Fixes TTF GASP table so that its program contains the minimal recommended instructions
+
 ```
-TODO: usage.
+usage: fontbakery-fix-nonhinting.py [-h] fontfile_in fontfile_out
+
+positional arguments:
+  fontfile_in   Font in OpenType (TTF/OTF) format
+  fontfile_out  Filename for the output
+
+optional arguments:
+  -h, --help    show this help message and exit
 ```
 
 ### fontbakery-fix-ttfautohint.py
