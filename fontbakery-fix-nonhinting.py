@@ -23,61 +23,83 @@
 # $ ./fontbakery-fix-nonhinting.py FontIn.ttf FontOut.ttf
 
 # Import our system library and fontTools ttLib
+import argparse
 import sys
 from fontTools import ttLib
 from fontTools.ttLib.tables import ttProgram
 
-# Open the font file supplied as the first argument on the command line
-fontfile = sys.argv[1]
-font = ttLib.TTFont(fontfile)
+description = 'Fixes TTF GASP table so that its program ' \
+              'contains the minimal recommended instructions'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('fontfile_in',
+                     nargs=1,
+                    help="Font in OpenType (TTF/OTF) format")
+parser.add_argument('fontfile_out',
+                    nargs=1,
+                    help="Filename for the output")
 
-# Save a backup
-backupfont = fontfile[0:-4] + '-backup-fonttools-prep-gasp' + fontfile[-4:]
-# print "Saving to ", backupfont
-font.save(backupfont)
-print backupfont, "saved."
+def main():
+  args = parser.parse_args()
 
-# Print the Gasp table
-if "gasp" in font:
-    print ("GASP was: ", font["gasp"].gaspRange)
-else:
-    print ("GASP wasn't there")
+  # Open the font file supplied as the first argument on the command line
+  font = ttLib.TTFont(args.fontfile_in)
 
-# Print the PREP table
-if "prep" in font:
-    print ("PREP was: ", ttProgram.Program.getAssembly(font["prep"].program))
-else:
-    print ("PREP wasn't there")
+  # Save a backup
+  backupfont = '{}-backup-fonttools-prep-gasp{}'.format(fontfile[0:-4],
+                                                        fontfile[-4:])
+  # print "Saving to ", backupfont
+  font.save(backupfont)
+  print backupfont, " saved."
 
-# Create a new GASP table
-gasp = ttLib.newTable("gasp")
+  # Print the Gasp table
+  if "gasp" in font:
+      print ("GASP was: ", font["gasp"].gaspRange)
+  else:
+      print ("GASP wasn't there")
 
-# Set GASP to the magic number
-gasp.gaspRange = {65535: 15}
+  # Print the PREP table
+  if "prep" in font:
+      print ("PREP was: ", ttProgram.Program.getAssembly(font["prep"].program))
+  else:
+      print ("PREP wasn't there")
 
-# Create a new hinting program
-program = ttProgram.Program()
+  # Create a new GASP table
+  gasp = ttLib.newTable("gasp")
 
-assembly = ['PUSHW[]', '511', 'SCANCTRL[]', 'PUSHB[]', '4', 'SCANTYPE[]']
-program.fromAssembly(assembly)
+  # Set GASP to the magic number
+  gasp.gaspRange = {0xFFFF: 15}
 
-# Create a new PREP table
-prep = ttLib.newTable("prep")
+  # Create a new hinting program
+  program = ttProgram.Program()
 
-# Insert the magic program into it
-prep.program = program
+  assembly = ['PUSHW[]',
+              '511',
+              'SCANCTRL[]',
+              'PUSHB[]',
+              '4',
+              'SCANTYPE[]']
+  program.fromAssembly(assembly)
 
-# Add the tables to the font, replacing existing ones
-font["gasp"] = gasp
-font["prep"] = prep
+  # Create a new PREP table
+  prep = ttLib.newTable("prep")
 
-# Print the Gasp table
-print "GASP now: ", font["gasp"].gaspRange
+  # Insert the magic program into it
+  prep.program = program
 
-# Print the PREP table
-print "PREP now: ", ttProgram.Program.getAssembly(font["prep"].program)
+  # Add the tables to the font, replacing existing ones
+  font["gasp"] = gasp
+  font["prep"] = prep
 
-# Save the new file with the name of the input file
-newfont = fontfile[0:-4] + '-after-fonttools-prep-gasp' + fontfile[-4:]
-font.save(newfont)
-print newfont, "saved."
+  # Print the Gasp table
+  print "GASP now: ", font["gasp"].gaspRange
+
+  # Print the PREP table
+  print "PREP now: ", ttProgram.Program.getAssembly(font["prep"].program)
+
+  # Save the new file with the name of the input file
+  font.save(args.fontfile_out)
+  print args.fontfile_out, " saved."
+
+if __name__ == "__main__":
+  main()
+
