@@ -3074,9 +3074,9 @@ def main():
             designers.append(row[0].decode('utf-8'))
           if family.designer not in designers:
             fb.warning(("METADATA.pb: Designer '{}' is not listed"
-                      " in profiles.csv"
-                      " (at '{}')").format(family.designer,
-                                           PROFILES_GIT_URL))
+                        " in profiles.csv"
+                        " (at '{}')").format(family.designer,
+                                             PROFILES_GIT_URL))
           else:
             fb.ok(("Found designer '{}'"
                    " at profiles.csv").format(family.designer))
