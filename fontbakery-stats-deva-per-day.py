@@ -17,21 +17,25 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
+import argparse
 from lxml.html import HTMLParser
 import defusedxml.lxml
 from StringIO import StringIO
 import requests
 import sys
 
+default_url = "http://www.google.com/fonts"
+description = "Script to list font views per day of devanagari families."
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('url',
+                    nargs='?',
+                    default=default_url,
+                    help=('font repository url'
+                          ' (default = "{}")').format(default_url))
+
 
 def main():
-    """Script to list font views per day of devanagari families."""
-
-    if len(sys.argv) < 2:
-        example_url = 'http://www.google.com/fonts'
-        print(main.__doc__)
-        print("usage: {} '{}'\n".format(sys.argv[0], example_url))
-        sys.exit()
+    args = parser.parse_args()
 
     families = [
       'Ek Mukta',
@@ -51,9 +55,7 @@ def main():
       'Sarpanch'
       ]
 
-    url = sys.argv[1]
-
-    r = requests.get(url)
+    r = requests.get(args.url)
     if r.status_code != 200:
         print("Wrong download code", file=sys.stderr)
         sys.exit(1)
@@ -68,7 +70,7 @@ def main():
             families[i] = (family, value)
             total += value
         except IndexError:
-            print('ERROR: %s could not be found in stat' % family, sys.stderr)
+            print('ERROR: %s could not be found in stat' % family, file=sys.stderr)
 
     families.append(('TOTAL', total))
     return families
