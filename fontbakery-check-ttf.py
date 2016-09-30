@@ -1399,7 +1399,10 @@ def main():
     if found != "multiple":
       if found is False:
         fb.error("No license file was found."
-                 " Please add an OFL.txt or a LICENSE.txt file.")
+                 " Please add an OFL.txt or a LICENSE.txt file."
+                 " If you are running fontbakery on a Google Fonts"
+                 " upstream repo, which is fine, just make sure"
+                 " there is a temporary license file in the same folder.")
       else:
         fb.ok("Found license at '{}'".format(found))
 
