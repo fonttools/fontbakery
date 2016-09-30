@@ -120,8 +120,16 @@ optional arguments:
 
 ### fontbakery-check-bbox.py
 
+A FontForge python script for printing bounding boxes to stdout.
+
 ```
-TODO: usage.
+usage: fontbakery-check-bbox.py [-h] font
+
+positional arguments:
+  font        Font in OpenType (TTF/OTF) format
+
+optional arguments:
+  -h, --help  show this help message and exit
 ```
 
 ### fontbakery-check-description.py
