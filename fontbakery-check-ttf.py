@@ -1018,11 +1018,10 @@ def main():
       fb.ok("Font has post table version 2.")
 
     # ----------------------------------------------------
-    # OS/2 fsType is a legacy DRM-related field from the 80's
-    # It should be disabled in all fonts.
     fb.new_check("Checking OS/2 fsType")
     assert_table_entry('OS/2', 'fsType', 0)
-    log_results("fsType is zero.")
+    log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
+                " and must be zero (disabled) in all fonts.")
 
     # ----------------------------------------------------
     fb.new_check("Assure valid format for the"
