@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+#
 # Copyright 2010, Google Inc.
 # Author: Dave Crossland (dave@understandinglimited.com)
 #
@@ -28,10 +28,19 @@
 #   C 53.0 -26.0 821.0 1442.0
 #   D 77.0 -26.0 773.0 1442.0
 
+import argparse
 import fontforge, sys
 
-def main(argv):
-    font_in = argv[0]
+description = "A FontForge python script for printing bounding boxes to stdout"
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('font',
+                    nargs=1,
+                    help="Font in OpenType (TTF/OTF) format")
+
+
+def main():
+    args = parser.parse_args()
+    font_in = args.font[0]
     font = fontforge.open(font_in)
     for g in fontforge.activeFont().glyphs():
         bbox = g.boundingBox()
@@ -42,4 +51,4 @@ def main(argv):
         print str(bbox[3])
 
 if __name__ == '__main__':
-    main(sys.argv[1:2])
+    main()
