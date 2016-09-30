@@ -1034,6 +1034,9 @@ def main():
     # It must run before any of the other name table related checks.
 
     def family_with_spaces(value):
+      FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323'}
+      if value in FAMILY_WITH_SPACES_EXCEPTIONS:
+        return FAMILY_WITH_SPACES_EXCEPTIONS[value]
       result = ''
       for c in value:
         if c.isupper():
