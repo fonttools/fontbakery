@@ -2608,7 +2608,8 @@ def main():
           if not failed:
             fb.ok("GASP table is correctly set.")
     except KeyError:
-      fb.error("Font is missing the GASP table.")
+      fb.error("Font is missing the GASP table."
+               " Try exporting the font with autohinting enabled.")
 
     # ----------------------------------------------------
     fb.new_check("Does GPOS table have kerning information?")
