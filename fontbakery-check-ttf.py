@@ -1018,11 +1018,10 @@ def main():
       fb.ok("Font has post table version 2.")
 
     # ----------------------------------------------------
-    # OS/2 fsType is a legacy DRM-related field from the 80's
-    # It should be disabled in all fonts.
     fb.new_check("Checking OS/2 fsType")
     assert_table_entry('OS/2', 'fsType', 0)
-    log_results("fsType is zero.")
+    log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
+                " and must be zero (disabled) in all fonts.")
 
     # ----------------------------------------------------
     fb.new_check("Assure valid format for the"
@@ -1400,7 +1399,10 @@ def main():
     if found != "multiple":
       if found is False:
         fb.error("No license file was found."
-                 " Please add an OFL.txt or a LICENSE.txt file.")
+                 " Please add an OFL.txt or a LICENSE.txt file."
+                 " If you are running fontbakery on a Google Fonts"
+                 " upstream repo, which is fine, just make sure"
+                 " there is a temporary license file in the same folder.")
       else:
         fb.ok("Found license at '{}'".format(found))
 
@@ -1657,7 +1659,7 @@ def main():
                if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
 
-            for glyphname in ['.notdef', '.null']:
+            for glyphname in ['.notdef', '.null', 'NULL']:
               if glyphname in unusually_spaced_glyphs:
                 unusually_spaced_glyphs.remove(glyphname)
 
@@ -2149,7 +2151,7 @@ def main():
     space = getGlyph(font, 0x0020)
 
     missing = []
-    if null is None: missing.append(".null (0x0000)")
+    if null is None: missing.append(".null or NULL (0x0000)")
     if CR is None: missing.append("CR (0x00D)")
     if space is None: missing.append("space (0x0020)")
     if missing != []:
@@ -2606,7 +2608,8 @@ def main():
           if not failed:
             fb.ok("GASP table is correctly set.")
     except KeyError:
-      fb.error("Font is missing the GASP table.")
+      fb.error("Font is missing the GASP table."
+               " Try exporting the font with autohinting enabled.")
 
     # ----------------------------------------------------
     fb.new_check("Does GPOS table have kerning information?")
@@ -2787,8 +2790,9 @@ def main():
       fb.ok("Font follows the family naming recommendations.")
 
     # ----------------------------------------------------
-    fb.new_check("Font contains magic code in 'prep' table?")
-    magiccode = "\xb8\x01\xff\x85\xb0\x04\x8d"
+    fb.new_check("Font enables smart dropout control"
+                 " in 'prep' table instructions?")
+    instructions = "\xb8\x01\xff\x85\xb0\x04\x8d"
     # B8 01 FF    PUSHW 0x01FF
     # 85          SCANCTRL (unconditinally turn on
     #                       dropout control mode)
@@ -2815,10 +2819,13 @@ def main():
       except KeyError:
         bytecode = ''
 
-      if magiccode in bytecode:
-        fb.ok("Font contains magic code in 'prep' table.")
+      if instructions in bytecode:
+        fb.ok("Program at 'prep' table contains instructions"
+              " enabling smart dropout control.")
       else:
-        fb.error("Failed to find correct magic code in 'prep' table.")
+        fb.error("Font does not contain TrueType instructions enabling"
+                 " smart dropout control in the 'prep' table program."
+                 " Please try exporting the font with autohinting enabled.")
 
     # ----------------------------------------------------
     fb.new_check("MaxAdvanceWidth is consistent with values"
@@ -2949,8 +2956,17 @@ def main():
            y < glyph.yMin or y > glyph.yMax or \
            abs(x) > 32766 or abs(y) > 32766:
           failed = True
-          fb.error(("Glyph '{}' coordinates ({},{})"
-                    " out of bounds!").format(glyphName, x, y))
+          if style == "Italic":
+            fb.warning(("Glyph '{}' coordinates ({},{})"
+                        " out of bounds."
+                        " This happens a lot when points are not extremes."
+                        " Beware though that placing points on extremes"
+                        " in the Italics does more harm than good,"
+                        " especially with rounded fonts."
+                        "").format(glyphName, x, y))
+          else:
+            fb.error(("Glyph '{}' coordinates ({},{})"
+                      " out of bounds!").format(glyphName, x, y))
     if not failed:
       fb.ok("All glyph paths have coordinates within bounds!")
 
