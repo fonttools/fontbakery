@@ -66,7 +66,17 @@ If you rather prefer to save it to a file you can do something like:
 
 ### fontbakery-build-contributors.py
 
-This is a project maintainence tool. It automatically generates a list of code contributors based on git repo commits.
+This is a project maintainence tool that generate a CONTRIBUTORS.txt file from a repository's git history.
+
+```
+usage: fontbakery-build-contributors.py [-h] folder
+
+positional arguments:
+  folder      source folder which contains git commits
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
 
 ### fontbakery-build-font2ttf.py
 
