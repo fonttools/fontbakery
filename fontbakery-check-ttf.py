@@ -3649,8 +3649,9 @@ def main():
               fb.ok("METADATA.pb lists fonts named canonicaly.")
             else:
               v = map(lambda x: font_familyname + ' ' + x, _weights)
-              fb.error('Canonical name in font expected:'
-                       ' [%s] but %s' % (v, f.full_name))
+              fb.error('Canonical name in font: Expected "%s"'
+                       ' but got "%s" instead.' % ('" or "'.join(v),
+                                                   f.full_name))
 
           # ----------------------------------------------
           fb.new_check("Font styles are named canonically?")
