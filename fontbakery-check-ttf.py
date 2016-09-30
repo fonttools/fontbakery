@@ -1656,7 +1656,7 @@ def main():
                if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
 
-            for glyphname in ['.notdef', '.null']:
+            for glyphname in ['.notdef', '.null', 'NULL']:
               if glyphname in unusually_spaced_glyphs:
                 unusually_spaced_glyphs.remove(glyphname)
 
@@ -2148,7 +2148,7 @@ def main():
     space = getGlyph(font, 0x0020)
 
     missing = []
-    if null is None: missing.append(".null (0x0000)")
+    if null is None: missing.append(".null or NULL (0x0000)")
     if CR is None: missing.append("CR (0x00D)")
     if space is None: missing.append("space (0x0020)")
     if missing != []:
