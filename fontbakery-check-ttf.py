@@ -2789,8 +2789,9 @@ def main():
       fb.ok("Font follows the family naming recommendations.")
 
     # ----------------------------------------------------
-    fb.new_check("Font contains magic code in 'prep' table?")
-    magiccode = "\xb8\x01\xff\x85\xb0\x04\x8d"
+    fb.new_check("Font enables smart dropout control"
+                 " in 'prep' table instructions?")
+    instructions = "\xb8\x01\xff\x85\xb0\x04\x8d"
     # B8 01 FF    PUSHW 0x01FF
     # 85          SCANCTRL (unconditinally turn on
     #                       dropout control mode)
@@ -2817,10 +2818,13 @@ def main():
       except KeyError:
         bytecode = ''
 
-      if magiccode in bytecode:
-        fb.ok("Font contains magic code in 'prep' table.")
+      if instructions in bytecode:
+        fb.ok("Program at 'prep' table contains instructions"
+              " enabling smart dropout control.")
       else:
-        fb.error("Failed to find correct magic code in 'prep' table.")
+        fb.error("Font does not contain TrueType instructions enabling"
+                 " smart dropout control in the 'prep' table program."
+                 " Please try exporting the font with autohinting enabled.")
 
     # ----------------------------------------------------
     fb.new_check("MaxAdvanceWidth is consistent with values"
