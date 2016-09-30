@@ -19,7 +19,6 @@ target_modules = [
   "fontbakery-list-weightclass",
   "fontbakery-list-widthclass",
   "fontbakery-metadata-vs-api",
-# "fontbakery-stats-deva-per-day", #this one do not even use argparse module
   "fontbakery-update-families"
 ]
 

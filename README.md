@@ -437,20 +437,6 @@ optional arguments:
   --api API             Domain string to use to request
 ```
 
-### fontbakery-stats-deva-per-day.py
-
-Script to list font views per day of devanagari families.
-
-```
-usage: fontbakery-stats-deva-per-day.py [-h] [url]
-
-positional arguments:
-  url         font repository url (default = "http://www.google.com/fonts")
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
 ### fontbakery-update-families.py
 
 Compare TTF files when upgrading families.

@@ -77,7 +77,6 @@ setup(
              'fontbakery-list-weightclass.py',
              'fontbakery-list-widthclass.py',
              'fontbakery-metadata-vs-api.py',
-             'fontbakery-stats-deva-per-day.py',
 #             'fontbakery-travis-deploy.py',
 #             'fontbakery-travis-init.py',
 #             'fontbakery-travis-secure.sh',
