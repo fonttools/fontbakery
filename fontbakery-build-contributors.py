@@ -1,9 +1,9 @@
-'''Generate a CONTRIBUTORS.txt document from a repository's git history.'''
+#!/usr/bin/env python
+import argparse
 import git
 import sys
 import os
 import re
-
 
 CONTRIBUTORS_HEAD = \
 '''# This is the list of people who have contributed to this project,
@@ -19,8 +19,17 @@ CONTRIBUTORS_HEAD = \
 
 '''
 
+description = "Generate a CONTRIBUTORS.txt document" \
+              " from a repository's git history."
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('folder',
+                    nargs=1,
+                    help="source folder which contains git commits")
 
-def main(folder):
+
+def main():
+    args = parser.parse_args()
+    folder = args.folder[0]
     log = git.Git(folder).log()
     commit_list = re.findall(r'(?<=Author: ).*', log)
     contributors = []
@@ -31,18 +40,15 @@ def main(folder):
 
     contrib_file = os.path.join(folder, 'CONTRIBUTORS.txt')
     if os.path.isfile(contrib_file):
-        print "CONTRIBUTORS.txt already exists, adding '_copy' suffix\n"
+        print("CONTRIBUTORS.txt already exists, adding '_copy' suffix.")
         contrib_file = os.path.join(folder, 'CONTRIBUTORS_copy.txt')
 
     with open(os.path.join(folder, contrib_file), 'w') as doc:
         doc.write(CONTRIBUTORS_HEAD)
         doc.write('\n'.join(contributors))
-    print 'Finished generating CONTRIBUTORS.txts. File saved at %s' % (folder)
+    print(('Finished generating CONTRIBUTORS.txts.'
+           ' File saved at {}').format(folder))
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print 'ERROR: please add one source folder which contains git commits'
-    else:
-        folder = sys.argv[-1]
-        main(folder)
+    main()
