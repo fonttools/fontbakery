@@ -2016,7 +2016,7 @@ def main():
       # the 'Version ' prefix
       if "Version " in string:
         string = string.split("Version ")[1]
-      return string
+      return string.split('.')
 
     def get_expected_version(f):
       expected_version = parse_version_string(str(f['head'].fontRevision))
@@ -2026,7 +2026,7 @@ def main():
           if expected_version is None:
             expected_version = name_version
           else:
-            if version_is_newer(name_version, expected_version):
+            if name_version > expected_version:
               expected_version = name_version
       return expected_version
 
