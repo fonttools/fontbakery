@@ -2625,7 +2625,7 @@ def main():
             has_kerning_info = True
             break
       if not has_kerning_info:
-        fb.error("GPOS table lacks kerning information")
+        fb.warning("GPOS table lacks kerning information")
       else:
         fb.ok("GPOS table has got kerning information.")
     except KeyError:
