@@ -2143,7 +2143,7 @@ def main():
 
     # ----------------------------------------------------
     fb.new_check("Font contains the first few mandatory glyphs"
-                 " (.null, CR, space)?")
+                 " (.null or NULL, CR and space)?")
     # It would be good to also check
     # for .notdef (codepoint = unspecified)
     null = getGlyph(font, 0x0000)
@@ -2151,16 +2151,16 @@ def main():
     space = getGlyph(font, 0x0020)
 
     missing = []
-    if null is None: missing.append(".null or NULL (0x0000)")
-    if CR is None: missing.append("CR (0x00D)")
-    if space is None: missing.append("space (0x0020)")
+    if null is None: missing.append("0x0000")
+    if CR is None: missing.append("0x000D")
+    if space is None: missing.append("0x0020")
     if missing != []:
-        fb.error(("Font is missing"
-                  " the following mandatory glyphs:"
+        fb.error(("Font is missing glyphs for"
+                  " the following mandatory codepoints:"
                   " {}.").format(", ".join(missing)))
     else:
         fb.ok("Font contains the first few mandatory glyphs"
-              " (.null, CR, space).")
+              " (.null or NULL, CR and space).")
 
     # ----------------------------------------------------
     fb.new_check("Font contains glyphs for whitespace characters?")
@@ -2169,12 +2169,13 @@ def main():
     # tab = getGlyph(font, 0x0009)
 
     missing = []
-    if space is None: missing.append("space (0x0020)")
-    if nbsp is None: missing.append("nbsp (0x00A0)")
+    if space is None: missing.append("0x0020")
+    if nbsp is None: missing.append("0x00A0")
     # fonts probably don't need an actual tab char
-    # if tab is None: missing.append("tab (0x0009)")
+    # if tab is None: missing.append("0x0009")
     if missing != []:
-        fb.error(("Whitespace glyphs missing:"
+        fb.error(("Whitespace glyphs missing for"
+                  " the following codepoints:"
                   " {}.").format(", ".join(missing)))
     else:
         fb.ok("Font contains glyphs for whitespace characters.")
