@@ -956,7 +956,7 @@ def main():
       ttfont = ttf[font_key(f)]
       if not glyphs:
         glyphs = ttfont['glyf'].glyphs
-      if glyphs != ttfont['glyf'].glyphs:
+      if glyphs.keys() != ttfont['glyf'].glyphs.keys():
         fail = True
 
     if fail:
