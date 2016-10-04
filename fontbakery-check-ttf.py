@@ -1825,9 +1825,18 @@ def main():
         ff_err.flush()
         ff_err.seek(0, os.SEEK_SET)
         ff_err_messages = ff_err.read()
-        if ff_err_messages != '':
+        filtered_err_msgs = ""
+        for line in ff_err_messages.split('\n'):
+          if 'The following table(s) in the font' \
+             ' have been ignored by FontForge' in line:
+            continue
+          if "Ignoring 'DSIG' digital signature table" in line:
+            continue
+          filtered_err_msgs += line + '\n'
+
+        if len(filtered_err_msgs.strip()) > 0:
           fb.error(("fontforge did print these messages to stderr:\n"
-                    "{}").format(ff_err_messages))
+                    "{}").format(filtered_err_msgs))
         else:
           fb.ok("fontforge validation did not output any error message.")
         ff_err.close()
