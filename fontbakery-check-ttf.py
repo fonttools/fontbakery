@@ -1457,15 +1457,15 @@ def main():
                                      unidecode(placeholder)))
 
             if value == placeholder and license_exists is False:
-              fb.error(('Valid licensing specified'
-                        ' on NameID {} (LICENSE DESCRIPTION)'
-                        ' on platform {} ({})'
-                        ' but a corresponding "{}" file was'
-                        ' not found.'
-                        '').format(NAMEID_LICENSE_DESCRIPTION,
-                                   nameRecord.platformID,
-                                   PLATID_STR[nameRecord.platformID],
-                                   license))
+              fb.info(('Valid licensing specified'
+                       ' on NameID {} (LICENSE DESCRIPTION)'
+                       ' on platform {} ({})'
+                       ' but a corresponding "{}" file was'
+                       ' not found.'
+                       '').format(NAMEID_LICENSE_DESCRIPTION,
+                                  nameRecord.platformID,
+                                  PLATID_STR[nameRecord.platformID],
+                                  license))
         if not entry_found and license_exists:
           failed = True
           if args.autofix:
