@@ -3021,17 +3021,26 @@ def main():
       # hhea:advanceWidthMax is treated as source of truth here.
       max_advw = font['hhea'].advanceWidthMax
       outliers = 0
+      zero_or_double_detected = False
       for glyph_id in font['glyf'].glyphs:
         width = font['hmtx'].metrics[glyph_id][0]
         if width != max_advw:
           outliers += 1
+        if width == 0 or width == 2*max_advw:
+          zero_or_double_detected = True
 
       if outliers > 0:
         outliers_percentage = float(outliers) / len(font['glyf'].glyphs)
-        fb.error(("This is a monospaced font, so advanceWidth"
-                  " value should be the same across all glyphs,"
-                  " but {} % of them have a different "
-                  "value.").format(round(100 * outliers_percentage, 2)))
+        msg = ('This is a monospaced font, so advanceWidth'
+               ' value should be the same across all glyphs,'
+               ' but {} % of them have a different'
+               ' value.').format(round(100 * outliers_percentage, 2))
+        if zero_or_double_detected:
+          msg += (' Double-width and/or zero-width glyphs were detected.'
+                  ' These glyphs should be set to the same width as all'
+                  ' others and then add GPOS single pos lookups that'
+                  ' zeros/doubles the widths as needed.')
+        fb.warning(msg)
       else:
         fb.ok("hhea.advanceWidthMax is equal"
               " to all glyphs' advanceWidth in this monospaced font.")
