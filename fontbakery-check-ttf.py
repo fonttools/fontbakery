@@ -2649,6 +2649,19 @@ def main():
       fb.ok("Font does not declare a 'KERN' table.")
 
     # ----------------------------------------------------
+    fb.new_check("Make sure family name"
+                 " does not begin with a digit.")
+    familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+    for name in familyname:
+      digits = map(str, range(0, 10))
+      if name[0] in digits:
+        fb.error(("Font family name '{}'"
+                  " begins with a digit!").format(name))
+        failed = True
+    if failed is False:
+      fb.ok("Font family name first character is not a digit.")
+
+    # ----------------------------------------------------
     fb.new_check("Does full font name begin with the font family name?")
     familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
     fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
