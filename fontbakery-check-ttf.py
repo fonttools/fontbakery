@@ -73,7 +73,8 @@ STYLE_NAMES = ["Thin",
 RIBBI_STYLE_NAMES = ["Regular",
                      "Italic",
                      "Bold",
-                     "Bold Italic"]
+                     "BoldItalic",
+                     "Bold Italic"]  # <-- Do we really need this one?
 
 # Weight name to value mapping:
 WEIGHTS = {"Thin": 250,
