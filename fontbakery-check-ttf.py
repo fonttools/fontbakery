@@ -2982,11 +2982,13 @@ def main():
           failed = True
           fb.warning(("Glyph '{}' coordinates ({},{})"
                       " out of bounds."
-                      " This happens a lot when points are not extremes."
-                      " Beware though that placing points on extremes"
-                      " in the Italics does more harm than good,"
-                      " especially with rounded fonts."
-                      "").format(glyphName, x, y))
+                      " This happens a lot when points are not extremes,"
+                      " which is usually bad. However, fixing this alert"
+                      " by adding points on extremes may do more harm"
+                      " than good, especially with italics,"
+                      " calligraphic-script, handwriting, rounded and"
+                      " other fonts. So it is common to"
+                      " ignore this message.").format(glyphName, x, y))
     if not failed:
       fb.ok("All glyph paths have coordinates within bounds!")
 
