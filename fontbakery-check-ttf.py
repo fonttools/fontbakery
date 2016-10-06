@@ -211,20 +211,20 @@ LANG_ID_ENGLISH_USA = 0x0409
 LANG_ID_MACINTOSH_ENGLISH = 0
 
 PLACEHOLDER_LICENSING_TEXT = {
-    'OFL.txt': 'This Font Software is licensed under the SIL Open Font License'
-               ', Version 1.1. This license is available with a FAQ at: '
-               'http://scripts.sil.org/OFL',
-    'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
+    'OFL.txt': u'This Font Software is licensed under the SIL Open Font '
+               'License, Version 1.1. This license is available with a FAQ '
+               'at: http://scripts.sil.org/OFL',
+    'LICENSE.txt': u'Licensed under the Apache License, Version 2.0'
 }
 
 LICENSE_URL = {
-    'OFL.txt': 'http://scripts.sil.org/OFL',
-    'LICENSE.txt': 'http://www.apache.org/licenses/LICENSE-2.0'
+    'OFL.txt': u'http://scripts.sil.org/OFL',
+    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
 }
 
 LICENSE_NAME = {
-    'OFL.txt': 'Open Font',
-    'LICENSE.txt': 'Apache'
+    'OFL.txt': u'Open Font',
+    'LICENSE.txt': u'Apache'
 }
 
 REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
