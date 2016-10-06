@@ -595,8 +595,6 @@ parser.add_argument('-j', '--json', action='store_true',
                     help='Output check results in JSON format')
 parser.add_argument('-m', '--ghm', action='store_true',
                     help='Output check results in GitHub Markdown format')
-parser.add_argument('-s', '--skip', action='store_true',
-                    help='Skip checks specific to github.com/google/fonts')
 
 
 # =====================================
@@ -2950,18 +2948,6 @@ def main():
     # else:
     #   fb.ok("There are no unencoded glyphs.")
 
-    # ----------------------------------------------------
-    fb.new_check("Is font em size (ideally) equal to 1000?")
-    if args.skip:
-      fb.skip("Skipping this Google-Fonts specific check.")
-    else:
-      upm_height = font['head'].unitsPerEm
-      if upm_height != 1000:
-        fb.warning(("font em size ({}) is not"
-                    " equal to 1000.").format(upm_height))
-      else:
-        fb.ok("Font em size is equal to 1000.")
-
 ##########################################################
 ##  Checks ported from:                                 ##
 ##  https://github.com/mekkablue/Glyphs-Scripts/        ##
@@ -3071,14 +3057,15 @@ def main():
 ##########################################################
 ## Metadata related checks:
 ##########################################################
+    skip_gfonts = False
     fontdir = os.path.dirname(font_file)
     metadata = os.path.join(fontdir, "METADATA.pb")
-    if args.skip:
-      # ignore METADATA.pb checks since user has requested that
-      # we do not run googlefonts-specific checks
-      pass
-    elif not os.path.exists(metadata):
-      logging.error("{} is missing a METADATA.pb file!".format(filename))
+    if not os.path.exists(metadata):
+      logging.warning(("{} is missing a METADATA.pb file!"
+                       " This will disable all Google-Fonts-specific checks."
+                       " Please considering adding a METADATA.pb file to the"
+                       " same folder as the font files.").format(filename))
+      skip_gfonts = True
     else:
       family = get_FamilyProto_Message(metadata)
       fb.default_target = metadata
@@ -3710,9 +3697,21 @@ def main():
                         " but it should be normal") % (f.style))
             else:
               fb.ok("Font styles are named canonically")
-
           # ---------------------------------------------
           ###### End of single-TTF metadata tests #######
+
+    # ----------------------------------------------------
+    ######      Google-Fonts specific checks       #######
+    fb.new_check("Is font em size (ideally) equal to 1000?")
+    if skip_gfonts:
+      fb.skip("Skipping this Google-Fonts specific check.")
+    else:
+      upm_height = font['head'].unitsPerEm
+      if upm_height != 1000:
+        fb.warning(("font em size ({}) is not"
+                    " equal to 1000.").format(upm_height))
+      else:
+        fb.ok("Font em size is equal to 1000.")
 
     # ----------------------------------------------------
     # https://github.com/googlefonts/fontbakery/issues/971
