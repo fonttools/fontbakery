@@ -211,9 +211,9 @@ LANG_ID_ENGLISH_USA = 0x0409
 LANG_ID_MACINTOSH_ENGLISH = 0
 
 PLACEHOLDER_LICENSING_TEXT = {
-    'OFL.txt': u'This Font Software is licensed under the SIL Open Font License'
-               ', Version 1.1. This license is available with a FAQ at: '
-               'http://scripts.sil.org/OFL',
+    'OFL.txt': u'This Font Software is licensed under the SIL Open Font '
+               'License, Version 1.1. This license is available with a FAQ '
+               'at: http://scripts.sil.org/OFL',
     'LICENSE.txt': u'Licensed under the Apache License, Version 2.0'
 }
 
