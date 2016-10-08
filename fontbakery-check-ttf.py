@@ -2356,8 +2356,10 @@ def main():
       os.unlink(dehinted.name)
 
       if dehinted_size == 0:
-        fb.skip("ttfautohint --dehint reports that "
-                "'This font has already been processed with ttfautohint'."
+        fb.skip("ttfautohint --dehint reports that"
+                " 'This font has already been processed with ttfautohint'."
+                " This is a bug in an old version of ttfautohint."
+                " You'll need to upgrade it."
                 " See https://github.com/googlefonts/fontbakery/"
                 "issues/1043#issuecomment-249035069")
       else:
