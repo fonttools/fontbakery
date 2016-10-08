@@ -39,10 +39,6 @@ try:
 except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
-# handy debugging lines:
-# import ipdb
-# ipdb.set_trace()
-
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
@@ -1802,7 +1798,7 @@ def main():
 
         # we do not redirect stderr on Travis because
         # it's making it think the build failed.
-        # I'm not exactly why does it happen, but for now we'll
+        # I'm not exactly sure why does it happen, but for now we'll
         # workaround the issue by not capturing stderr messages
         # when running on Travis.
         if 'TRAVIS' not in os.environ:
