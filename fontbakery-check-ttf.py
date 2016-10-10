@@ -991,6 +991,50 @@ def main():
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
+  def get_version_from_name_entry(name):
+    string = name.string.decode(name.getEncoding())
+    # we ignore any comments that
+    # may be present in the version name entries
+    if ";" in string:
+      string = string.split(";")[0]
+    # and we also ignore
+    # the 'Version ' prefix
+    if "Version " in string:
+      string = string.split("Version ")[1]
+    return string.split('.')
+
+  def get_expected_version(f):
+    expected_version = parse_version_string(str(f['head'].fontRevision))
+    for name in f['name'].names:
+      if name.nameID == NAMEID_VERSION_STRING:
+        name_version = get_version_from_name_entry(name)
+        if expected_version is None:
+          expected_version = name_version
+        else:
+          if name_version > expected_version:
+            expected_version = name_version
+    return expected_version
+
+  fb.new_check("Make sure all font files have the same version value.")
+  all_detected_versions = []
+  fontfile_versions = {}
+  for font_file in fonts_to_check:
+    font = ttLib.TTFont(font_file)
+    v = font['head'].fontRevision
+    fontfile_versions[font_file] = v
+    if v not in all_detected_versions:
+      all_detected_versions.append(v)
+  if len(all_detected_versions) != 1:
+    versions_list = ""
+    for v in fontfile_versions.keys():
+      versions_list += "* {}: {}\n".format(v, fontfile_versions[v])
+    fb.warning(("version info differs among font"
+                " files of the same font project.\n"
+                "These were the version values found:\n"
+                "{}").format(versions_list))
+  else:
+    fb.ok("All font files have the same version.")
+
 ##########################################################################
 # Step 2: Single TTF tests
 #         * Tests that only check data of each TTF file, but not cross-
@@ -2010,37 +2054,8 @@ def main():
       b = map(int, b.split("."))
       return a > b
 
-    def get_version_from_name_entry(name):
-      string = name.string.decode(name.getEncoding())
-      # we ignore any comments that
-      # may be present in the version name entries
-      if ";" in string:
-        string = string.split(";")[0]
-      # and we also ignore
-      # the 'Version ' prefix
-      if "Version " in string:
-        string = string.split("Version ")[1]
-      return string.split('.')
-
-    def get_expected_version(f):
-      expected_version = parse_version_string(str(f['head'].fontRevision))
-      for name in f['name'].names:
-        if name.nameID == NAMEID_VERSION_STRING:
-          name_version = get_version_from_name_entry(name)
-          if expected_version is None:
-            expected_version = name_version
-          else:
-            if name_version > expected_version:
-              expected_version = name_version
-      return expected_version
-
     # ----------------------------------------------------
     fb.new_check("Checking font version fields")
-    # FIXME: do we want all fonts in the same family to have
-    # the same major and minor version numbers?
-    # If so, then we should calculate the max of each major and minor fields
-    # in an external "for font" loop
-    # DC yes we should check this and warn about it but it is not fatal.
     failed = False
     try:
       expected = get_expected_version(font)
