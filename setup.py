@@ -112,7 +112,6 @@ setup(
                  'data/test/merriweather/FONTLOG.txt',
                  'data/test/merriweather/Merriweather-BlackItalic.ttf',
                  'data/test/merriweather/Merriweather-Black.ttf',
-                 'data/test/merriweather/Merriweather-Black.ttx',
                  'data/test/merriweather/Merriweather-BoldItalic.ttf',
                  'data/test/merriweather/Merriweather-Bold.ttf',
                  'data/test/merriweather/Merriweather-Italic.ttf',
