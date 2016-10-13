@@ -1797,7 +1797,7 @@ def main():
         fb.info(("ftxvalidator returned an error code. Output follows :"
                  "\n\n{}\n").format(e.output))
     except OSError:
-      fb.warning("ftxvalidator is not available.")
+      fb.warning("ftxvalidator is not available!")
       pass
 
     # ----------------------------------------------------
@@ -1810,7 +1810,7 @@ def main():
       else:
         fb.ok("ot-sanitise passed this file")
     except subprocess.CalledProcessError, e:
-        fb.error(("ot-sanitize returned an error code. Output follows :"
+        fb.error(("ot-sanitise returned an error code. Output follows :"
                   "\n\n{}\n").format(e.output))
     except OSError:
       # This is made very prominent with additional line breaks
@@ -1825,7 +1825,7 @@ def main():
     try:
       import fontforge
     except ImportError:
-      logging.warning("fontforge python module is not available."
+      logging.warning("fontforge python module is not available!"
                       " To install it, see"
                       " https://github.com/googlefonts/"
                       "gf-docs/blob/master/ProjectChecklist.md#fontforge")
