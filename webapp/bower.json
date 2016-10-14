@@ -19,6 +19,8 @@
     "tests"
   ],
   "dependencies": {
-    "requirejs": "~2.3.2"
+    "requirejs": "~2.3.2",
+    "opentype.js": "~0.6.5",
+    "marked": "~0.3.4"
   }
 }
