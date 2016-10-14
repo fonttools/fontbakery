@@ -1,3 +1,7 @@
+data/test/*/*.md
+data/test/*/*.ttx
+webapp/app/static/js/bower_components/*
+webapp/app/lib/*
 *pyc
 .*
 *~
