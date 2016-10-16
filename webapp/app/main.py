@@ -21,7 +21,7 @@ def _unpack(stream):
         font = TTFont(BytesIO(stream.read(fontlen)))
         yield (desc, font)
 
-def checkfont(desc, font):
+def check_font(desc, font):
     #familyName = desc['familyName']
     #weightName = desc['weightName']
     #isItalic = desc['isItalic']
