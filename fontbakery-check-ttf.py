@@ -247,7 +247,8 @@ ghm_report_files = []
 class FontBakeryCheckLogger():
   progressbar = False
 
-  def __init__(self):
+  def __init__(self, config):
+    self.config = config
     self.reset_report()
 
   def reset_report(self):
@@ -277,17 +278,18 @@ class FontBakeryCheckLogger():
                                   round(percent, 2)))
     print ("  Total: {} checks.\n".format(total))
 
-    if not args.verbose:
+    if not self.config['verbose']:
       filtered = []
       for check in self.all_checks:
         if check["result"] != "OK":
           filtered.append(check)
       self.all_checks = filtered
 
-    if args.json:
+    if self.config['json']:
       json_path = font_file + ".fontbakery.json"
       fb.output_json_report(json_path)
-    if args.ghm:
+
+    if self.config['ghm']:
       md_path = font_file + ".fontbakery.md"
       fb.output_github_markdown_report(md_path)
 
@@ -396,12 +398,10 @@ class FontBakeryCheckLogger():
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
 
-fb = FontBakeryCheckLogger()
-
 # =====================================
 # HELPER FUNCTIONS
-args = None
 font = None
+fb = None
 fixes = []
 
 
@@ -595,7 +595,7 @@ parser.add_argument('-m', '--ghm', action='store_true',
 # =====================================
 # Main sequence of checkers & fixers
 def fontbakery_check_ttf(config):
-  global font
+  global font, fb
 
   # set up a basic logging config
   handler = logging.StreamHandler()
@@ -616,6 +616,8 @@ def fontbakery_check_ttf(config):
   if config['error']:
     fb.progressbar = False
     logger.setLevel(logging.ERROR)
+
+  fb = FontBakeryCheckLogger(config)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
