@@ -592,38 +592,35 @@ parser.add_argument('-j', '--json', action='store_true',
 parser.add_argument('-m', '--ghm', action='store_true',
                     help='Output check results in GitHub Markdown format')
 
-
 # =====================================
 # Main sequence of checkers & fixers
-def main():
+def fontbakery_check_ttf(config):
+  global font
+
   # set up a basic logging config
-  # to include timestamps
-  # log_format = '%(asctime)s %(levelname)-8s %(message)s'
-  global font, args
-  log_format = '%(levelname)-8s %(message)s  '
-  logger = logging.getLogger()
   handler = logging.StreamHandler()
-  formatter = logging.Formatter(log_format)
+  formatter = logging.Formatter('%(levelname)-8s %(message)s  ')
   handler.setFormatter(formatter)
+
+  logger = logging.getLogger()
   logger.addHandler(handler)
 
-  args = parser.parse_args()
-  if args.verbose == 1:
+  if config['verbose'] == 1:
     logger.setLevel(logging.INFO)
-  elif args.verbose >= 2:
+  elif config['verbose'] >= 2:
     logger.setLevel(logging.DEBUG)
   else:
     fb.progressbar = True
     logger.setLevel(logging.CRITICAL)
 
-  if args.error:
+  if config['error']:
     fb.progressbar = False
     logger.setLevel(logging.ERROR)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
-  for arg_filepath in sorted(args.arg_filepaths):
+  for arg_filepath in sorted(config['filepaths']):
     # use glob.glob to accept *.ttf
     for fullpath in glob.glob(arg_filepath):
       file_path, file_name = os.path.split(fullpath)
@@ -1276,7 +1273,7 @@ def main():
       for mark, ascii_repl in replacement_map:
         new_string = string.replace(mark, ascii_repl)
         if string != new_string:
-          if args.autofix:
+          if config['autofix']:
             fb.hotfix(("NAMEID #{} contains symbol that was"
                        " replaced by '{}'").format(name.nameID,
                                                    ascii_repl))
@@ -1309,7 +1306,7 @@ def main():
     value = font['OS/2'].usWeightClass
     expected = WEIGHTS[weight_name]
     if value != expected:
-      if args.autofix:
+      if config['autofix']:
         font['OS/2'].usWeightClass = expected
         fb.hotfix(("OS/2 usWeightClass value was"
                    " fixed from {} to {} ({})."
@@ -1332,7 +1329,7 @@ def main():
           expected_str = "set"
         else:
           expected_str = "reset"
-        if args.autofix:
+        if config['autofix']:
           fb.hotfix("{} has been {}.".format(name_str, expected_str))
           if expected:
             setattr(font[table], attr, value | bitmask)
@@ -1355,7 +1352,7 @@ def main():
     fb.new_check("Checking that italicAngle <= 0")
     value = font['post'].italicAngle
     if value > 0:
-      if args.autofix:
+      if config['autofix']:
         font['post'].italicAngle = -value
         fb.hotfix(("post table italicAngle"
                    " from {} to {}").format(value, -value))
@@ -1369,7 +1366,7 @@ def main():
     fb.new_check("Checking that italicAngle is less than 20 degrees")
     value = font['post'].italicAngle
     if abs(value) > 20:
-      if args.autofix:
+      if config['autofix']:
         font['post'].italicAngle = -20
         fb.hotfix(("post table italicAngle"
                    " changed from {} to -20").format(value))
@@ -1465,7 +1462,7 @@ def main():
             value = nameRecord.string.decode(nameRecord.getEncoding())
             if value != placeholder and license_exists:
               failed = True
-              if args.autofix:
+              if config['autofix']:
                 fb.hotfix(('License file {} exists but'
                            ' NameID {} (LICENSE DESCRIPTION) value'
                            ' on platform {} ({})'
@@ -1509,7 +1506,7 @@ def main():
                                   license))
         if not entry_found and license_exists:
           failed = True
-          if args.autofix:
+          if config['autofix']:
             font['name'].setName(placeholder,
                                  NAMEID_LICENSE_DESCRIPTION,
                                  PLATFORM_ID_WINDOWS,
@@ -1555,7 +1552,7 @@ def main():
             if string == expected:
               found_good_entry = True
             else:
-              if args.autofix:
+              if config['autofix']:
                 pass  # implement-me!
               else:
                 failed = True
@@ -1591,7 +1588,7 @@ def main():
         failed = True
         del name
     if failed:
-      if args.autofix:
+      if config['autofix']:
         fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                    " were removed (perhaps added by"
                    " a longstanding FontLab Studio 5.x bug that"
@@ -1614,11 +1611,11 @@ def main():
     for name in font['name'].names:
       if len(name.string.decode(name.getEncoding())) > 100 \
         and name.nameID == NAMEID_DESCRIPTION:
-        if args.autofix:
+        if config['autofix']:
           del name
         failed = True
     if failed:
-      if args.autofix:
+      if config['autofix']:
         fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                    " were removed because they"
                    " were longer than 100 characters"
@@ -2103,7 +2100,7 @@ def main():
                   fix = "{};{}".format(expected_str, comments)
                 else:
                   fix = expected_str
-                if args.autofix:
+                if config['autofix']:
                   fb.hotfix(("NAMEID_VERSION_STRING "
                              "from '{}' to '{}'"
                              "").format(name_version, fix))
@@ -2125,7 +2122,7 @@ def main():
         fb.ok("Digital Signature (DSIG) exists.")
     else:
         try:
-            if args.autofix:
+            if config['autofix']:
                 from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
                 newDSIG = ttLib.newTable("DSIG")
                 newDSIG.ulVersion = 1
@@ -2247,7 +2244,7 @@ def main():
         g = getGlyph(font, codepoint)
         if g is not None and glyphHasInk(font, g):
           failed = True
-          if args.autofix:
+          if config['autofix']:
             fb.hotfix(('Glyph "{}" has ink.'
                        ' Fixed: Overwritten by'
                        ' an empty glyph').format(g))
@@ -2274,7 +2271,7 @@ def main():
         setWidth(font, space, min(nbspWidth, spaceWidth))
 
         if nbspWidth > spaceWidth and spaceWidth >= 0:
-          if args.autofix:
+          if config['autofix']:
             msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
             fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
           else:
@@ -2282,7 +2279,7 @@ def main():
                    ' needs to be fixed to {}')
             fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
         else:
-          if args.autofix:
+          if config['autofix']:
             msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
             fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
           else:
@@ -2342,7 +2339,7 @@ def main():
         del font[table]
 
     if len(unwanted_tables_found) > 0:
-      if args.autofix:
+      if config['autofix']:
         fb.hotfix(("Unwanted tables were present"
                    " in the font and were removed:"
                    " {}").format(', '.join(unwanted_tables_found)))
@@ -2609,7 +2606,7 @@ def main():
               value = font["gasp"].gaspRange[key]
               if value != 0x0F:
                 failed = True
-                if args.autofix:
+                if config['autofix']:
                   font["gasp"].gaspRange[0xFFFF] = 0x0F
                   fb.hotfix("gaspRange[0xFFFF]"
                             " value ({}) is not 0x0F".format(hex(value)))
@@ -3686,7 +3683,7 @@ def main():
     # re-run the script on each fixed file with logging level = error
     # so no info-level log items are shown
     font_file_output = os.path.splitext(filename)[0] + ".fix"
-    if args.autofix:
+    if config['autofix']:
       font.save(font_file_output)
       logging.info("{} saved\n".format(font_file_output))
     font.close()
@@ -3695,10 +3692,10 @@ def main():
     fb.reset_report()
 
   # -------------------------------------------------------
-  if not args.verbose and \
-     not args.json and \
-     not args.ghm and \
-     not args.error:
+  if not config['verbose'] and \
+     not config['json'] and \
+     not config['ghm'] and \
+     not config['error']:
     # in this specific case, the user would have no way to see
     # the actual check results. So here we inform the user
     # that at least one of these command line parameters
@@ -3721,4 +3718,14 @@ def main():
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
-  main()
+  args = parser.parse_args()
+  config = {
+    'filepaths': args.arg_filepaths,
+    'autofix': args.autofix,
+    'verbose': args.verbose,
+    'json': args.json,
+    'ghm': args.ghm,
+    'error': args.error
+  }
+  fontbakery_check_ttf(config)
+
