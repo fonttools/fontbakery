@@ -249,9 +249,14 @@ class FontBakeryCheckLogger():
 
   def __init__(self, config):
     self.config = config
+    self.font = None
     self.reset_report()
 
+  def set_font(self, f):
+    self.font = f
+
   def reset_report(self):
+    self.fixes = []
     self.all_checks = []
     self.current_check = None
     self.default_target = None  # All new checks have this target by default
@@ -287,11 +292,11 @@ class FontBakeryCheckLogger():
 
     if self.config['json']:
       json_path = font_file + ".fontbakery.json"
-      fb.output_json_report(json_path)
+      self.output_json_report(json_path)
 
     if self.config['ghm']:
       md_path = font_file + ".fontbakery.md"
-      fb.output_github_markdown_report(md_path)
+      self.output_github_markdown_report(md_path)
 
   def output_json_report(self, filename):
     import json
@@ -398,60 +403,55 @@ class FontBakeryCheckLogger():
     self.current_check['log_messages'].append('HOTFIX: ' + msg)
     self.current_check['result'] = "HOTFIX"
 
-# =====================================
-# HELPER FUNCTIONS
-font = None
-fb = None
-fixes = []
-
-
-def assert_table_entry(tableName, fieldName, expectedValue):
-    """ This is a helper function to accumulate
-    all fixes that a test performs so that we can
-    print them all in a single line by invoking
-    the log_results() function.
+  def assert_table_entry(self, tableName, fieldName, expectedValue):
+    """ Accumulates all fixes that a test performs
+    so that we can print them all in a single line by
+    invoking the log_results() method.
 
     Usage example:
-    assert_table_entry('post', 'isFixedPitch', 1)
-    assert_table_entry('OS/2', 'fsType', 0)
-    log_results("Something test.")
+    fb.assert_table_entry('post', 'isFixedPitch', 1)
+    fb.assert_table_entry('OS/2', 'fsType', 0)
+    fb.log_results("Something test.")
     """
 
     # This is meant to support multi-level field hierarchy
     fields = fieldName.split('.')
-    obj = font[tableName]
+    obj = self.font[tableName]
     for f in range(len(fields)-1):
-        obj = getattr(obj, fields[f])
+      obj = getattr(obj, fields[f])
     field = fields[-1]
     value = getattr(obj, field)
 
     if value != expectedValue:
-        setattr(obj, field, expectedValue)
-        fixes.append("{} {} from {} to {}".format(tableName,
-                                                  fieldName,
-                                                  value,
-                                                  expectedValue))
+      setattr(obj, field, expectedValue)
+      self.fixes.append("{} {} from {} to {}".format(tableName,
+                                                     fieldName,
+                                                     value,
+                                                     expectedValue))
 
-
-def log_results(message, hotfix=True):
-  """ Concatenate and log all fixes that happened up to now
-  in a good and regular syntax """
-  global fixes
-  if fixes == []:
-    fb.ok(message)
-  else:
-    if hotfix:
-      if args.autofix:
-        fb.hotfix("{} Fixes: {}".format(message, " | ".join(fixes)))
-      else:
-        fb.error(("{} Changes that must be applied to this font:"
-                  " {}").format(message, " | ".join(fixes)))
+  # TODO: "hotfix" and "autofix" are confusing names in here:
+  def log_results(self, message, hotfix=True):
+    """ Concatenate and log all fixes that happened up to now
+    in a good and regular syntax """
+    if self.fixes == []:
+      self.ok(message)
     else:
-      fb.error("{} {}".format(message, " | ".join(fixes)))
+      if hotfix:
+        if self.config['autofix']:
+          self.hotfix("{} Fixes: {}".format(message, " | ".join(self.fixes)))
+        else:
+          self.error(("{} Changes that must be applied to this font:"
+                      " {}").format(message, " | ".join(self.fixes)))
+      else:
+        self.error("{} {}".format(message, " | ".join(self.fixes)))
 
-    # empty the buffer of fixes,
-    # in preparation for the next test
-    fixes = []
+      # empty the buffer of fixes,
+      # in preparation for the next test
+      self.fixes = []
+
+
+# =====================================
+# HELPER FUNCTIONS
 
 
 def get_bounding_box(font):
@@ -486,7 +486,7 @@ def get_name_string(font,
   return results
 
 
-def parse_version_string(s):
+def parse_version_string(fb, s):
     """ Tries to parse a version string as used
         in ttf versioning metadata fields.
         Example of expected format is:
@@ -595,7 +595,7 @@ parser.add_argument('-m', '--ghm', action='store_true',
 # =====================================
 # Main sequence of checkers & fixers
 def fontbakery_check_ttf(config):
-  global font, fb
+  fb = FontBakeryCheckLogger(config)
 
   # set up a basic logging config
   handler = logging.StreamHandler()
@@ -616,8 +616,6 @@ def fontbakery_check_ttf(config):
   if config['error']:
     fb.progressbar = False
     logger.setLevel(logging.ERROR)
-
-  fb = FontBakeryCheckLogger(config)
 
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
@@ -1003,7 +1001,7 @@ def fontbakery_check_ttf(config):
     return string.split('.')
 
   def get_expected_version(f):
-    expected_version = parse_version_string(str(f['head'].fontRevision))
+    expected_version = parse_version_string(fb, str(f['head'].fontRevision))
     for name in f['name'].names:
       if name.nameID == NAMEID_VERSION_STRING:
         name_version = get_version_from_name_entry(name)
@@ -1044,6 +1042,7 @@ def fontbakery_check_ttf(config):
   for font_file in fonts_to_check:
     font = ttLib.TTFont(font_file)
     fb.default_target = font_file
+    fb.set_font(font)
     logging.info("OK: {} opened with fontTools".format(font_file))
 
     # ----------------------------------------------------
@@ -1057,9 +1056,9 @@ def fontbakery_check_ttf(config):
 
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 fsType")
-    assert_table_entry('OS/2', 'fsType', 0)
-    log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
-                " and must be zero (disabled) in all fonts.")
+    fb.assert_table_entry('OS/2', 'fsType', 0)
+    fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
+                   " and must be zero (disabled) in all fonts.")
 
     # ----------------------------------------------------
     fb.new_check("Assure valid format for the"
@@ -1390,8 +1389,8 @@ def fontbakery_check_ttf(config):
       # Given that the font style is not "Italic",
       # the following call potentially hotfixes
       # the value of italicAngle to zero:
-      assert_table_entry('post', 'italicAngle', 0)
-      log_results("post table italicAngle matches style name")
+      fb.assert_table_entry('post', 'italicAngle', 0)
+      fb.log_results("post table italicAngle matches style name")
 
     # ----------------------------------------------------
     fb.new_check("Checking fsSelection ITALIC bit")
@@ -1686,9 +1685,11 @@ def fontbakery_check_ttf(config):
     # if more than 80% of glyphs have the same width, set monospaced metadata
     monospace_detected = occurrences > 0.80 * len(glyphs)
     if monospace_detected:
-        assert_table_entry('post', 'isFixedPitch', IS_FIXED_WIDTH_MONOSPACED)
-        assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        assert_table_entry('OS/2',
+        fb.assert_table_entry('post',
+                              'isFixedPitch',
+                              IS_FIXED_WIDTH_MONOSPACED)
+        fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
+        fb.assert_table_entry('OS/2',
                            'panose.bProportion',
                            PANOSE_PROPORTION_MONOSPACED)
         outliers = len(glyphs) - occurrences
@@ -1703,25 +1704,25 @@ def fontbakery_check_ttf(config):
               if glyphname in unusually_spaced_glyphs:
                 unusually_spaced_glyphs.remove(glyphname)
 
-            log_results(("Font is monospaced but {} glyphs"
-                         " ({}%) have a different width."
-                         " You should check the widths of: {}").format(
-                           outliers,
-                           outliers_percentage,
-                           unusually_spaced_glyphs))
+            fb.log_results(("Font is monospaced but {} glyphs"
+                            " ({}%) have a different width."
+                            " You should check the widths of: {}").format(
+                              outliers,
+                              outliers_percentage,
+                              unusually_spaced_glyphs))
         else:
-            log_results("Font is monospaced.")
+            fb.log_results("Font is monospaced.")
     else:
         # it is not monospaced, so unset monospaced metadata
-        assert_table_entry('post',
-                           'isFixedPitch',
-                           IS_FIXED_WIDTH_NOT_MONOSPACED)
-        assert_table_entry('hhea', 'advanceWidthMax', width_max)
+        fb.assert_table_entry('post',
+                              'isFixedPitch',
+                              IS_FIXED_WIDTH_NOT_MONOSPACED)
+        fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
         if font['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
-            assert_table_entry('OS/2',
-                               'panose.bProportion',
-                               PANOSE_PROPORTION_ANY)
-        log_results("Font is not monospaced.")
+            fb.assert_table_entry('OS/2',
+                                  'panose.bProportion',
+                                  PANOSE_PROPORTION_ANY)
+        fb.log_results("Font is not monospaced.")
 
     # ----------------------------------------------------
     fb.new_check("Check if xAvgCharWidth is correct.")
@@ -2009,10 +2010,10 @@ def fontbakery_check_ttf(config):
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 usWinAscent & usWinDescent")
     # OS/2 usWinAscent:
-    assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
+    fb.assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
     # OS/2 usWinDescent:
-    assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
-    log_results("OS/2 usWinAscent & usWinDescent")
+    fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
+    fb.log_results("OS/2 usWinAscent & usWinDescent")
 
     # ----------------------------------------------------
     fb.new_check("Checking Vertical Metric Linegaps")
@@ -2329,8 +2330,8 @@ def fontbakery_check_ttf(config):
             optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
             desc += (" but includes "
                      "optional tables [{}]").format(', '.join(optional_tables))
-        fixes.append(desc)
-    log_results("Check no problematic formats. ", hotfix=False)
+        fb.fixes.append(desc)
+    fb.log_results("Check no problematic formats. ", hotfix=False)
 
     # ------------------------------------------------------
     fb.new_check("Are there unwanted tables?")
@@ -3562,9 +3563,9 @@ def fontbakery_check_ttf(config):
           # -----------------------------------------------
           fb.new_check("Checking OS/2 usWeightClass"
                        " matches weight specified at METADATA.pb")
-          assert_table_entry('OS/2', 'usWeightClass', f.weight)
-          log_results("OS/2 usWeightClass matches "
-                      "weight specified at METADATA.pb")
+          fb.assert_table_entry('OS/2', 'usWeightClass', f.weight)
+          fb.log_results("OS/2 usWeightClass matches "
+                         "weight specified at METADATA.pb")
 
           # -----------------------------------------------
           weights = {
