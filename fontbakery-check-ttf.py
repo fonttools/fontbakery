@@ -620,15 +620,18 @@ def fontbakery_check_ttf(config):
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
-  for arg_filepath in sorted(config['filepaths']):
-    # use glob.glob to accept *.ttf
-    for fullpath in glob.glob(arg_filepath):
-      file_path, file_name = os.path.split(fullpath)
-      if file_name.endswith(".ttf"):
-        fonts_to_check.append(fullpath)
-      else:
-        logging.warning("Skipping '{}' as it does not seem "
-                        "to be valid TrueType font file.".format(file_name))
+  for file_to_check in sorted(config['files']):
+    if type(file_to_check) is ByteIO:
+      fonts_to_check.append(file_to_check)
+    else:
+      # use glob.glob to accept *.ttf
+      for fullpath in glob.glob(arg_filepath):
+        file_path, file_name = os.path.split(fullpath)
+        if file_name.endswith(".ttf"):
+          fonts_to_check.append(fullpath)
+        else:
+          logging.warning("Skipping '{}' as it does not seem "
+                          "to be valid TrueType font file.".format(file_name))
   fonts_to_check.sort()
 
   if fonts_to_check == []:
@@ -644,7 +647,12 @@ def fontbakery_check_ttf(config):
   # spreaded in several separate directories).
   failed = False
   target_dir = None
+  in_mem = False
   for target_file in fonts_to_check:
+    if type(target_file) is ByteIO:
+      in_mem = True
+      continue
+    fullpath = target_file  # this will be used on the next check!
     if target_dir is None:
       target_dir = os.path.split(target_file)[0]
     else:
@@ -663,115 +671,122 @@ def fontbakery_check_ttf(config):
 # Perform a few checks on DESCRIPTION files
 # ---------------------------------------------------------------------
 
-  fullpath = fonts_to_check[0]  # assuming all fonts are in the same directory
-  file_name = os.path.split(fullpath)[0]
-  descfile = os.path.join(file_name, "DESCRIPTION.en_us.html")
-  if os.path.exists(descfile):
-    fb.default_target = descfile
-    contents = open(descfile).read()
+  if in_mem is True:
+    # At the moment we won't perform DESCRIPTION
+    # checks on in-memory files (i.e. on the webapp)
+    pass
+  else:
+    file_name = os.path.split(fullpath)[0]
+    descfile = os.path.join(file_name, "DESCRIPTION.en_us.html")
+    if os.path.exists(descfile):
+      fb.default_target = descfile
+      contents = open(descfile).read()
 
 # ---------------------------------------------------------------------
-    fb.new_check("Does DESCRIPTION file contain broken links ?")
-    doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
-    broken_links = []
-    for link in doc.xpath('//a/@href'):
-      try:
-        response = requests.head(link, allow_redirects=True)
-        code = response.status_code
-        if code != requests.codes.ok:
-          broken_links.append(("url: '{}' "
-                               "status code: '{}'").format(link,
-                                                           code))
-      except requests.exceptions.RequestException:
-        broken_links.append(link)
+      fb.new_check("Does DESCRIPTION file contain broken links ?")
+      doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
+      broken_links = []
+      for link in doc.xpath('//a/@href'):
+        try:
+          response = requests.head(link, allow_redirects=True)
+          code = response.status_code
+          if code != requests.codes.ok:
+            broken_links.append(("url: '{}' "
+                                 "status code: '{}'").format(link,
+                                                             code))
+        except requests.exceptions.RequestException:
+          broken_links.append(link)
 
-    if len(broken_links) > 0:
-      fb.error(("The following links are broken"
-                " in the DESCRIPTION file:"
-                " '{}'").format("', '".join(broken_links)))
-    else:
-      fb.ok("All links in the DESCRIPTION file look good!")
-
-# ---------------------------------------------------------------------
-    fb.new_check("Is this a propper HTML snippet ?")
-    try:
-      contenttype = magic.from_file(descfile)
-      if "HTML" not in contenttype:
-        data = open(descfile).read()
-        if "<p>" in data and "</p>" in data:
-          fb.ok(("{} is a propper"
-                 " HTML snippet.").format(descfile))
-        else:
-          fb.error(("{} is not a propper"
-                    " HTML snippet.").format(descfile))
+      if len(broken_links) > 0:
+        fb.error(("The following links are broken"
+                  " in the DESCRIPTION file:"
+                  " '{}'").format("', '".join(broken_links)))
       else:
-        fb.ok("{} is a propper HTML file.".format(descfile))
-    except AttributeError:
-       fb.skip("pythom magic version mismatch: "
-               "This check was skipped because the API of the python"
-               " magic module version installed in your system does not"
-               " provide the from_file method used in"
-               " the check implementation.")
+        fb.ok("All links in the DESCRIPTION file look good!")
 
 # ---------------------------------------------------------------------
-    fb.new_check("DESCRIPTION.en_us.html is more than 200 bytes ?")
-    statinfo = os.stat(descfile)
-    if statinfo.st_size <= 200:
-      fb.error("{} must have size larger than 200 bytes".format(descfile))
-    else:
-      fb.ok("{} is larger than 200 bytes".format(descfile))
+      fb.new_check("Is this a propper HTML snippet ?")
+      try:
+        contenttype = magic.from_file(descfile)
+        if "HTML" not in contenttype:
+          data = open(descfile).read()
+          if "<p>" in data and "</p>" in data:
+            fb.ok(("{} is a propper"
+                   " HTML snippet.").format(descfile))
+          else:
+            fb.error(("{} is not a propper"
+                      " HTML snippet.").format(descfile))
+        else:
+          fb.ok("{} is a propper HTML file.".format(descfile))
+      except AttributeError:
+         fb.skip("pythom magic version mismatch: "
+                 "This check was skipped because the API of the python"
+                 " magic module version installed in your system does not"
+                 " provide the from_file method used in"
+                 " the check implementation.")
 
 # ---------------------------------------------------------------------
-    fb.new_check("DESCRIPTION.en_us.html is less than 1000 bytes ?")
-    statinfo = os.stat(descfile)
-    if statinfo.st_size >= 1000:
-      fb.error("{} must have size smaller than 1000 bytes".format(descfile))
-    else:
-      fb.ok("{} is smaller than 1000 bytes".format(descfile))
+      fb.new_check("DESCRIPTION.en_us.html is more than 200 bytes ?")
+      statinfo = os.stat(descfile)
+      if statinfo.st_size <= 200:
+        fb.error("{} must have size larger than 200 bytes".format(descfile))
+      else:
+        fb.ok("{} is larger than 200 bytes".format(descfile))
+
+# ---------------------------------------------------------------------
+      fb.new_check("DESCRIPTION.en_us.html is less than 1000 bytes ?")
+      statinfo = os.stat(descfile)
+      if statinfo.st_size >= 1000:
+        fb.error("{} must have size smaller than 1000 bytes".format(descfile))
+      else:
+        fb.ok("{} is smaller than 1000 bytes".format(descfile))
 
 # ---------------------------------------------------------------------
 # End of DESCRIPTION checks
 # ---------------------------------------------------------------------
 
   # ------------------------------------------------------
-  fb.new_check("Checking files are named canonically")
-  not_canonical = []
+  if in_memory is True:
+    pass
+  else:
+    fb.new_check("Checking files are named canonically")
+    not_canonical = []
 
-  for font_file in fonts_to_check:
-    file_path, filename = os.path.split(font_file)
-    if file_path == "":
-      fb.set_target("Current Folder")
-    else:
-      fb.set_target(file_path)  # all font files are in the same dir, right?
-    filename_base, filename_extension = os.path.splitext(filename)
-    # remove spaces in style names
-    style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-    try:
-      family, style = filename_base.split('-')
-      if style in style_file_names:
-        fb.ok("{} is named canonically".format(font_file))
+    for font_file in fonts_to_check:
+      file_path, filename = os.path.split(font_file)
+      if file_path == "":
+        fb.set_target("Current Folder")
       else:
-        fb.error(('Style name used in "{}" is not canonical.'
-                  ' You should rebuild the font using'
-                  ' any of the following'
-                  ' style names: "{}".').format(font_file,
-                                                '", "'.join(STYLE_NAMES)))
-        not_canonical.append(font_file)
-        fonts_to_check.remove(font_file)
-        fb.output_report(font_file)
-    except:
-        fb.error(("{} is not named canonically.").format(font_file))
-        not_canonical.append(font_file)
-        fonts_to_check.remove(font_file)
-        fb.output_report(font_file)
-  if not_canonical:
-    print('\nAborted, critical errors with filenames.')
-    print(('Please rename these files canonically and try again:'
-           '\n  {}\n'
-           'Canonical names are defined in '
-           'https://github.com/googlefonts/gf-docs/blob'
-           '/master/ProjectChecklist.md#instance-and-file-naming'
-           '').format('\n  '.join(not_canonical)))
+        fb.set_target(file_path)  # all font files are in the same dir, right?
+      filename_base, filename_extension = os.path.splitext(filename)
+      # remove spaces in style names
+      style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
+      try:
+        family, style = filename_base.split('-')
+        if style in style_file_names:
+          fb.ok("{} is named canonically".format(font_file))
+        else:
+          fb.error(('Style name used in "{}" is not canonical.'
+                    ' You should rebuild the font using'
+                    ' any of the following'
+                    ' style names: "{}".').format(font_file,
+                                                  '", "'.join(STYLE_NAMES)))
+          not_canonical.append(font_file)
+          fonts_to_check.remove(font_file)
+          fb.output_report(font_file)
+      except:
+          fb.error(("{} is not named canonically.").format(font_file))
+          not_canonical.append(font_file)
+          fonts_to_check.remove(font_file)
+          fb.output_report(font_file)
+    if not_canonical:
+      print('\nAborted, critical errors with filenames.')
+      print(('Please rename these files canonically and try again:'
+             '\n  {}\n'
+             'Canonical names are defined in '
+             'https://github.com/googlefonts/gf-docs/blob'
+             '/master/ProjectChecklist.md#instance-and-file-naming'
+             '').format('\n  '.join(not_canonical)))
 
   # ------------------------------------------------------
   logging.debug("Fetching Microsoft's vendorID list")
@@ -813,176 +828,180 @@ def fontbakery_check_ttf(config):
 ##           list of METADATA.pb files first
 ###########################################################################
 
-  metadata_to_check = []
-  for font_file in fonts_to_check:
-    fontdir = os.path.dirname(font_file)
-    metadata = os.path.join(fontdir, "METADATA.pb")
-    if not os.path.exists(metadata):
-      logging.error("'{}' is missing a METADATA.pb file!".format(font_file))
-    else:
-      family = get_FamilyProto_Message(metadata)
-      if family not in metadata_to_check:
-        metadata_to_check.append([fontdir, family])
-
-  def font_key(f):
-    return "{}-{}-{}".format(f.filename,
-                             f.post_script_name,
-                             f.weight)
-
-  for dirname, family in metadata_to_check:
-    ttf = {}
-    for f in family.fonts:
-      if font_key(f) in ttf.keys():
-        # I think this will likely never happen. But just in case...
-        logging.error("This is a fontbakery bug."
-                      " We need to figure out a better hash-function"
-                      " for the font ProtocolBuffer message."
-                      " Please file an issue on"
-                      " https://github.com/googlefonts/fontbakery/issues/new")
+  if in_memory is True:
+    pass
+  else:
+    metadata_to_check = []
+    for font_file in fonts_to_check:
+      fontdir = os.path.dirname(font_file)
+      metadata = os.path.join(fontdir, "METADATA.pb")
+      if not os.path.exists(metadata):
+        logging.error("'{}' is missing a METADATA.pb file!".format(font_file))
       else:
-        ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname, f.filename))
+        family = get_FamilyProto_Message(metadata)
+        if family not in metadata_to_check:
+          metadata_to_check.append([fontdir, family])
 
-    if dirname == "":
-      fb.default_target = "Current Folder"
-    else:
-      fb.default_target = dirname
-    # -----------------------------------------------------
-    fb.new_check("Font designer field is 'unknown' ?")
-    if family.designer.lower() == 'unknown':
-      fb.error("Font designer field is '{}'.".format(family.designer))
-    else:
-      fb.ok("Font designer field is not 'unknown'.")
+    def font_key(f):
+      return "{}-{}-{}".format(f.filename,
+                               f.post_script_name,
+                               f.weight)
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have consistent underline thickness?")
-    fail = False
-    uWeight = None
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      if uWeight is None:
-        uWeight = ttfont['post'].underlineThickness
-      if uWeight != ttfont['post'].underlineThickness:
-        fail = True
+    for dirname, family in metadata_to_check:
+      ttf = {}
+      for f in family.fonts:
+        if font_key(f) in ttf.keys():
+          # I think this will likely never happen. But just in case...
+          logging.error("This is a fontbakery bug."
+                        " We need to figure out a better hash-function"
+                        " for the font ProtocolBuffer message."
+                        " Please file an issue on"
+                        " https://github.com/googlefonts/fontbakery/issues/new")
+        else:
+          ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname, f.filename))
 
-    if fail:
-      fb.error("Thickness of the underline is not"
-               " the same accross this family. In order to fix this,"
-               " please make sure that the underlineThickness value"
-               " is the same in the POST table of all of this family"
-               " font files.")
-    else:
-      fb.ok("Fonts have consistent underline thickness.")
+      if dirname == "":
+        fb.default_target = "Current Folder"
+      else:
+        fb.default_target = dirname
+      # -----------------------------------------------------
+      fb.new_check("Font designer field is 'unknown' ?")
+      if family.designer.lower() == 'unknown':
+        fb.error("Font designer field is '{}'.".format(family.designer))
+      else:
+        fb.ok("Font designer field is not 'unknown'.")
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have consistent PANOSE proportion?")
-    fail = False
-    proportion = None
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      if proportion is None:
-        proportion = ttfont['OS/2'].panose.bProportion
-      if proportion != ttfont['OS/2'].panose.bProportion:
-        fail = True
+      # -----------------------------------------------------
+      fb.new_check("Fonts have consistent underline thickness?")
+      fail = False
+      uWeight = None
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        if uWeight is None:
+          uWeight = ttfont['post'].underlineThickness
+        if uWeight != ttfont['post'].underlineThickness:
+          fail = True
 
-    if fail:
-      fb.error("PANOSE proportion is not"
-               " the same accross this family."
-               " In order to fix this,"
-               " please make sure that the panose.bProportion value"
-               " is the same in the OS/2 table of all of this family"
-               " font files.")
-    else:
-      fb.ok("Fonts have consistent PANOSE proportion.")
+      if fail:
+        fb.error("Thickness of the underline is not"
+                 " the same accross this family. In order to fix this,"
+                 " please make sure that the underlineThickness value"
+                 " is the same in the POST table of all of this family"
+                 " font files.")
+      else:
+        fb.ok("Fonts have consistent underline thickness.")
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have consistent PANOSE family type?")
-    fail = False
-    familytype = None
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      if familytype is None:
-        familytype = ttfont['OS/2'].panose.bFamilyType
-      if familytype != ttfont['OS/2'].panose.bFamilyType:
-        fail = True
+      # -----------------------------------------------------
+      fb.new_check("Fonts have consistent PANOSE proportion?")
+      fail = False
+      proportion = None
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        if proportion is None:
+          proportion = ttfont['OS/2'].panose.bProportion
+        if proportion != ttfont['OS/2'].panose.bProportion:
+          fail = True
 
-    if fail:
-      fb.error("PANOSE family type is not"
-               " the same accross this family."
-               " In order to fix this,"
-               " please make sure that the panose.bFamilyType value"
-               " is the same in the OS/2 table of all of this family"
-               " font files.")
-    else:
-      fb.ok("Fonts have consistent PANOSE family type.")
+      if fail:
+        fb.error("PANOSE proportion is not"
+                 " the same accross this family."
+                 " In order to fix this,"
+                 " please make sure that the panose.bProportion value"
+                 " is the same in the OS/2 table of all of this family"
+                 " font files.")
+      else:
+        fb.ok("Fonts have consistent PANOSE proportion.")
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have equal numbers of glyphs?")
-    counts = {}
-    glyphs_count = None
-    fail = False
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      this_count = len(ttfont['glyf'].glyphs)
-      if glyphs_count is None:
-        glyphs_count = this_count
-      if glyphs_count != this_count:
-        fail = True
-      counts[f.filename] = this_count
+      # -----------------------------------------------------
+      fb.new_check("Fonts have consistent PANOSE family type?")
+      fail = False
+      familytype = None
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        if familytype is None:
+          familytype = ttfont['OS/2'].panose.bFamilyType
+        if familytype != ttfont['OS/2'].panose.bFamilyType:
+          fail = True
 
-    if fail:
-      results_table = ""
-      for key in counts.keys():
-        results_table += "| {} | {} |\n".format(key,
-                                                counts[key])
+      if fail:
+        fb.error("PANOSE family type is not"
+                 " the same accross this family."
+                 " In order to fix this,"
+                 " please make sure that the panose.bFamilyType value"
+                 " is the same in the OS/2 table of all of this family"
+                 " font files.")
+      else:
+        fb.ok("Fonts have consistent PANOSE family type.")
 
-      fb.error('Fonts have different numbers of glyphs:\n\n'
-               '{}\n'.format(results_table))
-    else:
-      fb.ok("Fonts have equal numbers of glyphs.")
+      # -----------------------------------------------------
+      fb.new_check("Fonts have equal numbers of glyphs?")
+      counts = {}
+      glyphs_count = None
+      fail = False
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        this_count = len(ttfont['glyf'].glyphs)
+        if glyphs_count is None:
+          glyphs_count = this_count
+        if glyphs_count != this_count:
+          fail = True
+        counts[f.filename] = this_count
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have equal glyph names?")
-    glyphs = None
-    fail = False
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      if not glyphs:
-        glyphs = ttfont['glyf'].glyphs
-      if glyphs.keys() != ttfont['glyf'].glyphs.keys():
-        fail = True
+      if fail:
+        results_table = ""
+        for key in counts.keys():
+          results_table += "| {} | {} |\n".format(key,
+                                                  counts[key])
 
-    if fail:
-      fb.error('Fonts have different glyph names.')
-    else:
-      fb.ok("Fonts have equal glyph names.")
+        fb.error('Fonts have different numbers of glyphs:\n\n'
+                 '{}\n'.format(results_table))
+      else:
+        fb.ok("Fonts have equal numbers of glyphs.")
 
-    # -----------------------------------------------------
-    fb.new_check("Fonts have equal unicode encodings?")
-    encoding = None
-    fail = False
-    for f in family.fonts:
-      ttfont = ttf[font_key(f)]
-      cmap = None
-      for table in ttfont['cmap'].tables:
-        if table.format == 4:
-          cmap = table
-          break
+      # -----------------------------------------------------
+      fb.new_check("Fonts have equal glyph names?")
+      glyphs = None
+      fail = False
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        if not glyphs:
+          glyphs = ttfont['glyf'].glyphs
+        if glyphs.keys() != ttfont['glyf'].glyphs.keys():
+          fail = True
 
-      if not encoding:
-         encoding = cmap.platEncID
+      if fail:
+        fb.error('Fonts have different glyph names.')
+      else:
+        fb.ok("Fonts have equal glyph names.")
 
-      if encoding != cmap.platEncID:
-        fail = True
+      # -----------------------------------------------------
+      fb.new_check("Fonts have equal unicode encodings?")
+      encoding = None
+      fail = False
+      for f in family.fonts:
+        ttfont = ttf[font_key(f)]
+        cmap = None
+        for table in ttfont['cmap'].tables:
+          if table.format == 4:
+            cmap = table
+            break
 
-    if fail:
-      fb.error('Fonts have different unicode encodings.')
-    else:
-      fb.ok("Fonts have equal unicode encodings.")
+        if not encoding:
+           encoding = cmap.platEncID
+
+        if encoding != cmap.platEncID:
+          fail = True
+
+      if fail:
+        fb.error('Fonts have different unicode encodings.')
+      else:
+        fb.ok("Fonts have equal unicode encodings.")
 
   # ------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
   for font_file in fonts_to_check:
+    # this will both accept ByteIO or a filepath
     font = ttLib.TTFont(font_file)
     font_ymin, font_ymax = get_bounding_box(font)
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
