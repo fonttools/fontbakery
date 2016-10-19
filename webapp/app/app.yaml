@@ -10,3 +10,8 @@ handlers:
   static_dir: static/js
 - url: /runchecks
   script: main.app
+
+libraries:
+- name: lxml
+  version: latest
+
