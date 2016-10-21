@@ -2806,7 +2806,7 @@ def main():
         bad_entries.append({"field": field,
                             "rec": "Value should idealy be a multiple of 50."})
       full_info = " "
-      " 'Having a weightclass of 100 or 200 can result in a "smear bold" or"
+      " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
       " (unintentionally) returning the style-linked bold. Because of this,"
       " you may wish to manually override the weightclass setting for all"
       " extra light, ultra light or thin fonts'"
