@@ -2805,9 +2805,16 @@ def main():
       if weight_value % 50 != 0:
         bad_entries.append({"field": field,
                             "rec": "Value should idealy be a multiple of 50."})
+      full_info = " "
+      " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
+      " (unintentionally) returning the style-linked bold. Because of this,"
+      " you may wish to manually override the weightclass setting for all"
+      " extra light, ultra light or thin fonts'"
+      " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
       if weight_value < 250:
         bad_entries.append({"field": field,
-                            "rec": "Value should idealy be 250 or more."})
+                            "rec": "Value should idealy be 250 or more." +
+                                   full_info})
       if weight_value > 900:
         bad_entries.append({"field": field,
                             "rec": "Value should idealy be 900 or less."})
