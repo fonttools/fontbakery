@@ -1,7 +1,7 @@
 # [START app]
 from __future__ import print_function
 import logging
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, Response
 from fontTools.ttLib import TTFont
 import struct
 from io import BytesIO
@@ -36,11 +36,10 @@ def run_fontbakery():
     'error': False,
     'autofix': False,
     'inmem': True,
-    'filepaths': None,
     'files': _unpack(request.stream)
   }
 
-  check_ttf(config)
+  reports = check_ttf(config)
 
 # TODO:
 #    if hotfixing:
@@ -53,14 +52,18 @@ def run_fontbakery():
   if hotfixing:
     zipf.close()
     data = result.getvalue()
-    response = make_response(data)
+    response = app.make_response(data)
     response.headers['Content-Type'] = 'application/octet-stream'
     response.headers['Content-Disposition'] = 'attachment; filename=fonts-with-changed-names.zip'
+    return response
   else:
-    response = make_response("Fontbakery check results will show up here!")
-    response.headers['Content-Type'] = 'text/html'
+    from markdown import markdown
+    report_data = ""
+    for desc, report_file in reports:
+      if desc["filename"] is not None:
+        report_data += "<h3>{}</h3>{}".format(desc["filename"], markdown(report_file))
 
-  return response
+    return "<h2>Fontbakery check results</h2><div>{}</div>".format(report_data)
 
 @app.errorhandler(500)
 def server_error(e):

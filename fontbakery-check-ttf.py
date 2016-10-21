@@ -301,27 +301,38 @@ class FontBakeryCheckLogger():
       self.all_checks = filtered
 
     if self.config['json']:
-      json_path = font_file + ".fontbakery.json"
-      self.output_json_report(json_path)
+      self.output_json_report(font_file)
 
     if self.config['ghm']:
-      md_path = font_file + ".fontbakery.md"
-      self.output_github_markdown_report(md_path)
+      self.output_github_markdown_report(font_file)
 
-  def output_json_report(self, filename):
+  def output_json_report(self, font_file):
     import json
     json_data = json.dumps(self.all_checks,
                            sort_keys=True,
                            indent=4,
                            separators=(',', ': '))
-    open(filename, 'w').write(json_data)
-    json_report_files.append(filename)
 
-  def output_github_markdown_report(self, filename):
+    if self.config['inmem']:
+      json_output = BytesIO()
+      json_output.write(json_data)
+      json_report_files.append((self.target[0]["filename"], json_output))
+    else:
+      json_output = open(font_file + ".fontbakery.json", 'w')
+      json_output.write(json_data)
+      json_report_files.append(json_output)
+
+
+  def output_github_markdown_report(self, font_file):
+
     markdown_data = "# Fontbakery check results\n"
     all_checks = {}
     for check in self.all_checks:
       target = check["target"]
+
+      if type(target) is tuple:  # In-memory file-like font-object
+        target = target[0]["filename"]
+
       if target in all_checks.keys():
         all_checks[target].append(check)
       else:
@@ -335,8 +346,13 @@ class FontBakeryCheckLogger():
         markdown_data += ("### {}\n"
                           "* {}\n\n").format(check['description'], msgs)
 
-    open(filename, 'w').write(markdown_data)
-    ghm_report_files.append(filename)
+
+    if self.config['inmem']:
+      ghm_report_files.append((font_file[0], markdown_data))
+    else:
+      ghm_output = open(font_file + ".fontbakery.md", 'w')
+      ghm_output.write(markdown_data)
+      ghm_report_files.append(font_file + ".fontbakery.md")
 
   def update_progressbar(self):
     tick = {
@@ -371,6 +387,9 @@ class FontBakeryCheckLogger():
     '''sets target of the current check.
        This can be a folder, or a specific TTF file
        or a METADATA.pb file'''
+#    if type(value) is tuple:
+#      value = value[0]["filename"] # "In-memory font object"
+
     if self.current_check:
       self.current_check["target"] = value
 
@@ -3745,11 +3764,9 @@ def fontbakery_check_ttf(config):
       else:
         fb.ok("Font em size is equal to 1000.")
 
+    fb.output_report(font_file)
 
-    if webapp:
-      # TODO: do something here to output the reports to the web!
-      pass
-    else:
+    if not webapp:
       # ----------------------------------------------------
       # https://github.com/googlefonts/fontbakery/issues/971
       # DC: Each fix line should set a fix flag, and
@@ -3763,7 +3780,6 @@ def fontbakery_check_ttf(config):
         logging.info("{} saved\n".format(font_file_output))
       font.close()
 
-      fb.output_report(font_file)
       fb.reset_report()
 
       # -------------------------------------------------------
@@ -3782,20 +3798,25 @@ def fontbakery_check_ttf(config):
                "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
                "  --error\tPrint only the error messages (outputs to stderr).\n")
 
-      if len(json_report_files) > 0:
-        print(("Saved check results in "
-               "JSON format to:\n\t{}"
-               "").format('\n\t'.join(json_report_files)))
-      if len(ghm_report_files) > 0:
-        print(("Saved check results in "
-               "GitHub Markdown format to:\n\t{}"
-               "").format('\n\t'.join(ghm_report_files)))
+
+
+  if webapp:
+    return ghm_report_files
+  else:
+    if len(json_report_files) > 0:
+      print(("Saved check results in "
+             "JSON format to:\n\t{}"
+             "").format('\n\t'.join(json_report_files)))
+    if len(ghm_report_files) > 0:
+      print(("Saved check results in "
+             "GitHub Markdown format to:\n\t{}"
+             "").format('\n\t'.join(ghm_report_files)))
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
   args = parser.parse_args()
   config = {
-    'filepaths': args.arg_filepaths,
+    'files': args.arg_filepaths,
     'autofix': args.autofix,
     'verbose': args.verbose,
     'json': args.json,

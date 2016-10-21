@@ -236,20 +236,25 @@ define([
 
         xhr = new XMLHttpRequest();
         xhr.open('POST', 'runchecks');
-        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+//        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
         xhr.send(data);
-        xhr.responseType = 'arraybuffer';
+//        xhr.responseType = 'arraybuffer';
+        xhr.responseType = 'html';
+
         xhr.onreadystatechange = function () {
             if(xhr.readyState !== XMLHttpRequest.DONE)
                 return;
             if(xhr.status !== 200)
                 console.warn(xhr.status, xhr.statusText );
             else {
+                //alert(xhr.response);
+                document.getElementById("results").innerHTML = xhr.response;
                 console.info('Received:', xhr.responseType, xhr.response.byteLength, 'Bytes');
-                blob = new Blob([xhr.response], {type: "application/zip"});
-                window.open(URL.createObjectURL(blob));
+                //blob = new Blob([xhr.response], {type: "application/zip"});
+                //window.open(URL.createObjectURL(blob));
             }
-            };
+        };
+
     };
 
     _p._updateAmendment = function(e) {
