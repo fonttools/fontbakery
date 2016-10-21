@@ -2814,7 +2814,7 @@ def main():
       if weight_value < 250:
         bad_entries.append({"field": field,
                             "rec": "Value should idealy be 250 or more." +
-                                   full_info })
+                                   full_info})
       if weight_value > 900:
         bad_entries.append({"field": field,
                             "rec": "Value should idealy be 900 or less."})
