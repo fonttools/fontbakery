@@ -21,6 +21,7 @@
   "dependencies": {
     "requirejs": "~2.3.2",
     "opentype.js": "~0.6.5",
-    "marked": "~0.3.4"
+    "marked": "~0.3.4",
+    "jquery-ui": "~1.12.1"
   }
 }

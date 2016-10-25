@@ -1,9 +1,12 @@
 define([
     'dom-tool'
   , 'opentype'
+  , 'jquery'
+  , 'jquery-ui'
 ], function(
     dom
   , opentype
+  , JQ
 ) {
     "use strict";
     /*global window, console, XMLHttpRequest, URL, TextDecoder, Blob, Uint8Array, TextEncoder, Uint32Array*/
@@ -220,6 +223,8 @@ define([
             else {
                 //alert(xhr.response);
                 document.getElementById("results").innerHTML = xhr.response;
+                JQ("#tabs").tabs();
+
                 console.info('Received:', xhr.responseType, xhr.response.byteLength, 'Bytes');
                 //blob = new Blob([xhr.response], {type: "application/zip"});
                 //window.open(URL.createObjectURL(blob));

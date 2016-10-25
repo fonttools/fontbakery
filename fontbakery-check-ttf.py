@@ -2557,6 +2557,8 @@ def fontbakery_check_ttf(config):
     if ttfautohint_missing:
       fb.skip("This check requires ttfautohint"
               " to be available in the system.")
+    elif webapp is True:
+      fb.skip("This check is not supported on Google App Engine.")
     else:
       version_strings = get_name_string(font, NAMEID_VERSION_STRING)
       ttfa_version = ttfautohint_version(version_strings)

@@ -59,11 +59,15 @@ def run_fontbakery():
   else:
     from markdown import markdown
     report_data = ""
+    i = 1
+    tabs = ""
     for desc, report_file in reports:
       if desc["filename"] is not None:
-        report_data += "<h3>{}</h3>{}".format(desc["filename"], markdown(report_file))
+        tabs += '<li><a href="#tabs-{}">{}</a></li>'.format(i, desc["filename"])
+        report_data += '<div id="tabs-{}">{}</div>'.format(i, markdown(report_file))
+        i+=1
 
-    return "<h2>Fontbakery check results</h2><div>{}</div>".format(report_data)
+    return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, report_data)
 
 @app.errorhandler(500)
 def server_error(e):

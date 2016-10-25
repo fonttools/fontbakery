@@ -5,6 +5,10 @@
     <title>FontBakery</title>
     <script src="js/bower_components/requirejs/require.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Monoton|Raleway:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!--
+<link href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
+-->
     <style>
 
         html {
@@ -72,7 +76,11 @@
 
     </style>
     <script>
-    require.config({baseUrl: 'js'});
+    require.config({baseUrl: 'js',
+                    paths: {'jquery': 'bower_components/jquery/dist/jquery',
+                            'jquery-ui': 'bower_components/jquery-ui/jquery-ui.min'
+                           }
+    });
     require(['bootstrap'], function(require) {
         require(['main'], function(main){main()});
     });
