@@ -88,7 +88,6 @@ define([
 
 
         return [ this._familyName
-               , this.getFamilyNameAmmendment().replace(' ', '')
                , '-'
                , this._weightName
                , this._isItalic ? 'Italic' : ''
@@ -109,33 +108,6 @@ define([
         return [year, month, day].join('');
     };
 
-    _p.getFamilyNameAmmendment = function() {
-        var out = this._amendmentValue, created, modified;
-
-        if(out.indexOf('{created}') !== -1) {
-            created = this._getDate(this._font.tables.head.created);
-            out = out.replace('{created}', created);
-        }
-
-        if(out.indexOf('{modified}') !== -1) {
-            modified = this._getDate(this._font.tables.head.modified);
-            out = out.replace('{modified}', modified);
-        }
-
-        if(out.indexOf('{version}') !== -1)
-            out = out.replace('{version}', 'V'+this._version);
-
-
-                    // remove none alnum
-        out = out.replace(/[^a-z0-9 ]/ig, '')
-                    // multi spaces to single space
-                  .replace(/ +/g, ' ')
-                    // remove leading space
-                  .replace(/^ /, '')
-                  ;
-        return out === ' ' ? '' : out;
-    };
-
     _p._makeControlsElement = function() {
         return dom.createElement('p', null, [
                         [
@@ -153,8 +125,7 @@ define([
     _p.getJobData = function() {
         var bytesJson = new TextEncoder('utf-8').encode(JSON.stringify({
                  filename: this.makeFileName()
-               , familyName: [this._familyName, this.getFamilyNameAmmendment()]
-                                .filter(function(item){ return !!item; }).join(' ')
+               , familyName: this._familyName
                , weightName: this._weightName
                , isItalic: this._isItalic
                , version: this._version
