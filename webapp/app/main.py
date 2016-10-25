@@ -30,10 +30,10 @@ def run_fontbakery():
     zipf = zipfile.ZipFile(result,  "w")
 
   config = {
-    'verbose': True,
+    'verbose': False,
     'ghm': True,
     'json': False,
-    'error': False,
+    'error': True,
     'autofix': False,
     'inmem': True,
     'files': _unpack(request.stream)
