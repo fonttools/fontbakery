@@ -3767,6 +3767,7 @@ def fontbakery_check_ttf(config):
         fb.ok("Font em size is equal to 1000.")
 
     fb.output_report(font_file)
+    fb.reset_report()
 
     if not webapp:
       # ----------------------------------------------------
@@ -3781,8 +3782,6 @@ def fontbakery_check_ttf(config):
         font.save(font_file_output)
         logging.info("{} saved\n".format(font_file_output))
       font.close()
-
-      fb.reset_report()
 
       # -------------------------------------------------------
       if not config['verbose'] and \
@@ -3799,8 +3798,6 @@ def fontbakery_check_ttf(config):
                "  --json \tSave results to a file in JSON format.\n"
                "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
                "  --error\tPrint only the error messages (outputs to stderr).\n")
-
-
 
   if webapp:
     return ghm_report_files
