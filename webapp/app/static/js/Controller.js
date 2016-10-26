@@ -117,11 +117,9 @@ define([
                                  this._familyName
                                 , this._weightName
                                 , this._isItalic && 'italic'
-                                , this._version
                         ]
                         .filter(function(item){return !!item;})
                         .join(', ')
-                        , dom.createElement('span', {'class': 'filename'}, ' => ' + this.makeFileName())
                         ]);
     };
 
