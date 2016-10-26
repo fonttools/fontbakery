@@ -224,6 +224,7 @@ define([
                 //alert(xhr.response);
                 document.getElementById("results").innerHTML = xhr.response;
                 JQ("#tabs").tabs();
+                JQ('html, body').animate({scrollTop: $("#tabs").offset().top}, 1000);
 
                 console.info('Received:', xhr.responseType, xhr.response.byteLength, 'Bytes');
                 //blob = new Blob([xhr.response], {type: "application/zip"});
