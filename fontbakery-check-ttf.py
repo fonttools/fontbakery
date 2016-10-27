@@ -2004,8 +2004,8 @@ def main():
                  "Hints should NOT overlap!",
                  "Hinds do not overlap.")
     except:
-      logging.warning(('fontforge python module could'
-                       ' not open {}').format(font_file))
+      fb.error(('fontforge python module could'
+                ' not open {}').format(font_file))
 
     # ----------------------------------------------------
     fb.new_check("Checking OS/2 usWinAscent & usWinDescent")
