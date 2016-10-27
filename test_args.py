@@ -7,6 +7,7 @@ target_modules = [
 # "fontbakery-crawl", # I need to look at this one carefully later
   "fontbakery-fix-ascii-fontmetadata",
   "fontbakery-fix-familymetadata",
+  "fontbakery-fix-fsselection",
   "fontbakery-fix-gasp",
   "fontbakery-fix-glyph-private-encoding",
   "fontbakery-fix-glyphs",
