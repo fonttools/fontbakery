@@ -396,7 +396,7 @@ class FontBakeryCheckLogger():
   def skip(self, msg):
     self.summary["Skipped"] += 1
     logging.info("SKIP: " + msg)
-    self.current_check["log_messages"].append(msg)
+    self.current_check["log_messages"].append("SKIP: " + msg)
     self.current_check["result"] = "SKIP"
 
   def ok(self, msg):

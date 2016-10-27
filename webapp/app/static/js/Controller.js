@@ -223,6 +223,9 @@ define([
                 document.getElementById("results").innerHTML = xhr.response;
                 JQ("#tabs").tabs();
                 JQ('html, body').animate({scrollTop: $("#tabs").offset().top}, 1000);
+                JQ('ul li').filter(function() { return $(this).text().indexOf("ERROR:") === 0; }).css("color", "#C22");
+                JQ('ul li').filter(function() { return $(this).text().indexOf("Warning:") === 0; }).css("color", "#22C");
+                JQ('ul li').filter(function() { return $(this).text().indexOf("SKIP:") === 0; }).css("color", "#AA4");
 
                 console.info('Received:', xhr.responseType, xhr.response.byteLength, 'Bytes');
                 //blob = new Blob([xhr.response], {type: "application/zip"});
