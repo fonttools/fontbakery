@@ -206,6 +206,7 @@ define([
 
         console.info('Sending', data.byteLength ,'Bytes');
 
+        JQ("#loading").show();
         xhr = new XMLHttpRequest();
         xhr.open('POST', 'runchecks');
 //        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
@@ -216,6 +217,8 @@ define([
         xhr.onreadystatechange = function () {
             if(xhr.readyState !== XMLHttpRequest.DONE)
                 return;
+
+            JQ("#loading").hide();
             if(xhr.status !== 200)
                 console.warn(xhr.status, xhr.statusText );
             else {
