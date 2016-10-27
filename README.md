@@ -206,6 +206,22 @@ optional arguments:
   --csv
 ```
 
+### fontbakery-fix-fsselection.py
+
+Print out fsSelection bitmask of the fonts
+
+```
+usage: fontbakery-fix-fsselection.py [-h] [--csv] [--autofix] font [font ...]
+
+positional arguments:
+  font
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --csv
+  --autofix
+```
+
 ### fontbakery-fix-gasp.py
 
 Fixes TTF GASP table
