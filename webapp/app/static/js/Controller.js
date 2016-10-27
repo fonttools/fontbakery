@@ -206,6 +206,10 @@ define([
 
         console.info('Sending', data.byteLength ,'Bytes');
 
+        // reset files list
+        this._files = [];
+        this._filesControlsContainer.innerHTML = "";
+
         JQ("#loading").show();
         xhr = new XMLHttpRequest();
         xhr.open('POST', 'runchecks');
