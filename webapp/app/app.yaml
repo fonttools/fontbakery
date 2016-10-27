@@ -8,6 +8,8 @@ handlers:
   upload: static/index\.html
 - url: /js
   static_dir: static/js
+- url: /img
+  static_dir: static/img
 - url: /runchecks
   script: main.app
 
