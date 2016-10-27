@@ -250,9 +250,6 @@ BLUE_STR = '\033[1;34;40m{}\033[0m'
 CYAN_STR = '\033[1;36;40m{}\033[0m'
 WHITE_STR = '\033[1;37;40m{}\033[0m'
 
-json_report_files = []
-ghm_report_files = []
-
 
 class FontBakeryCheckLogger():
   progressbar = False
@@ -260,6 +257,8 @@ class FontBakeryCheckLogger():
   def __init__(self, config):
     self.config = config
     self.font = None
+    self.json_report_files = []
+    self.ghm_report_files = []
     self.reset_report()
 
   def set_font(self, f):
@@ -316,11 +315,11 @@ class FontBakeryCheckLogger():
     if self.config['inmem']:
       json_output = BytesIO()
       json_output.write(json_data)
-      json_report_files.append((self.target[0]["filename"], json_output))
+      self.json_report_files.append((self.target[0]["filename"], json_output))
     else:
       json_output = open(font_file + ".fontbakery.json", 'w')
       json_output.write(json_data)
-      json_report_files.append(json_output)
+      self.json_report_files.append(json_output)
 
 
   def output_github_markdown_report(self, font_file):
@@ -348,11 +347,11 @@ class FontBakeryCheckLogger():
 
 
     if self.config['inmem']:
-      ghm_report_files.append((font_file[0], markdown_data))
+      self.ghm_report_files.append((font_file[0], markdown_data))
     else:
       ghm_output = open(font_file + ".fontbakery.md", 'w')
       ghm_output.write(markdown_data)
-      ghm_report_files.append(font_file + ".fontbakery.md")
+      self.ghm_report_files.append(font_file + ".fontbakery.md")
 
   def update_progressbar(self):
     tick = {
@@ -3800,16 +3799,16 @@ def fontbakery_check_ttf(config):
                "  --error\tPrint only the error messages (outputs to stderr).\n")
 
   if webapp:
-    return ghm_report_files
+    return fb.ghm_report_files
   else:
-    if len(json_report_files) > 0:
+    if len(fb.json_report_files) > 0:
       print(("Saved check results in "
              "JSON format to:\n\t{}"
-             "").format('\n\t'.join(json_report_files)))
-    if len(ghm_report_files) > 0:
+             "").format('\n\t'.join(fb.json_report_files)))
+    if len(fb.ghm_report_files) > 0:
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
-             "").format('\n\t'.join(ghm_report_files)))
+             "").format('\n\t'.join(fb.ghm_report_files)))
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
