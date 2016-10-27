@@ -2147,8 +2147,8 @@ def main():
                           " applications that require its presence in"
                           " order to work properly.")
             else:
-                fb.error("This font lacks a digital signature (DSIG table)"
-                         "Some applications may required on (even if only a"
+                fb.error("This font lacks a digital signature (DSIG table)."
+                         " Some applications may require one (even if only a"
                          " dummy placeholder) in order to work properly.")
 
         except ImportError:
@@ -2156,8 +2156,8 @@ def main():
                              " digital signature (DSIG), so OpenType features"
                              " will not be available in some applications that"
                              " use its presense as a (stupid) heuristic."
-                             " So we need to add one. But for that we'll need "
-                             "Fonttools v2.3+ so you need to upgrade it. Try:"
+                             " So we need to add one. But for that we'll need"
+                             " Fonttools v2.3+ so you need to upgrade it. Try:"
                              " $ pip install --upgrade fontTools; or see"
                              " https://pypi.python.org/pypi/FontTools")
             fb.error(error_message.format(font_file))
