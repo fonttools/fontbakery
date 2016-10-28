@@ -408,7 +408,7 @@ class FontBakeryCheckLogger():
   def info(self, msg):  # This is just a way for us to keep merely
                         # informative messages on the markdown output
     logging.info("INFO: " + msg)
-    self.current_check["log_messages"].append(msg)
+    self.current_check["log_messages"].append("INFO: " + msg)
     if self.current_check["result"] != "ERROR":
       self.current_check["result"] = "INFO"
 
