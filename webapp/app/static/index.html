@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>FontBakery</title>
+    <script src="js/bower_components/requirejs/require.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Monoton|Raleway:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+
+        html {
+            font-size: 20px;
+            font-family: Raleway, sans-serif;
+        }
+        article {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+        h1, h2{
+            font-family: Raleway, sans-serif;
+            font-weight: 300;
+        }
+        h1{
+            font-size: 2em;
+        }
+        h2{
+            font-size: 1.7em;
+        }
+        em {
+            color: orange;
+            display: block;
+            font-family: 'Monoton', cursive;
+            font-size: 4em;
+            text-align: center;
+        }
+
+        input,
+        button {
+            display: block;
+            width: 100%;
+            padding: .5em;
+            font-family: Raleway, sans-serif;
+            font-size: 1em;
+        }
+
+
+        input, .drop-fonts, button {
+            background: lightgrey;
+            border: 5px solid grey;
+            box-sizing: border-box;
+
+        }
+        .general-controls, .drop-fonts, button{
+            text-align: center;
+        }
+
+        input {
+            margin-bottom : 1em;
+            background: lightyellow;
+            padding: .5em;
+            font-size: 1.3em;
+        }
+        .drop-fonts:hover, button:hover {
+            background: white;
+        }
+
+        .filename {
+            white-space: nowrap;
+            display: block:
+            padding-left: 1em;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 3px 10px;
+            border: 1px solid #ddd;
+        }
+
+    </style>
+    <script>
+    require.config({baseUrl: 'js',
+                    paths: {'jquery': 'bower_components/jquery/dist/jquery',
+                            'jquery-ui': 'bower_components/jquery-ui/jquery-ui.min'
+                           }
+    });
+    require(['bootstrap'], function(require) {
+        require(['main'], function(main){main()});
+    });
+    </script>
+</head>
+<body>
+<div id="loading" style="display:none; position: absolute; top:0px; left:0px; width:100%; height:100%">
+  <div style="position: fixed; top:0px; left:0px; width:100%; height:100%; background-color:rgba(120, 160, 200, 0.7);">
+    <div style="text-align:center;font-size:24pt; position: absolute; top:20px; left:0px; width:100%; background-color: white">
+      Please wait while fontbakery<br/>
+      runs all the font checks...<br/>
+    </div>
+    <p style="padding-top:50px; text-align:center;">
+      <img src="img/animated_logo.svg"/>
+    </p>
+  </div>
+
+</div>
+<article>
+    <p style="text-align:center;"><img src="img/logo_200px.png"/></p>
+    <p>This tool runs a set of quality checks on any font you drop
+    at it and generates a summary report on which things need to be fixed
+    in order to conform with the Google Fonts project quality guidelines.</p>
+    <div class="drop-fonts"><em>1.</em><p>Drop the font files here or click to choose.</p></div>
+    <div class="interface">
+        <ol class="files-controls"></ol>
+        <div class="general-controls"><em>2.</em><p>There's no step 2. :-)</p></div>
+    </div>
+    <div id="results"></div>
+</article>
+</body>
+</html>

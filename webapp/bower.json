@@ -1,0 +1,27 @@
+{
+  "name": "fontbakerywebapp",
+  "version": "0.0.0",
+  "authors": [
+    "Felipe Sanches <juca@members.fsf.org>",
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "APACHE2",
+  "homepage": "https://github.com/googlefonts/fontbakery",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.3.2",
+    "opentype.js": "~0.6.5",
+    "marked": "~0.3.4",
+    "jquery-ui": "~1.12.1"
+  }
+}
