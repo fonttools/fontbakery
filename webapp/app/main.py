@@ -63,8 +63,12 @@ def run_fontbakery():
     tabs = ""
     for desc, report_file in reports:
       if desc["filename"] is not None:
-        tabs += '<li><a href="#tabs-{}">{}</a></li>'.format(i, desc["filename"])
-        report_data += '<div id="tabs-{}">{}</div>'.format(i, markdown(report_file))
+        tabs += ('<li><a href="#tabs-{}">'
+                 '{}</a></li>').format(i, desc["filename"])
+        markdown_data = markdown(report_file,
+                                 extensions=['markdown.extensions.tables'])
+        report_data += ('<div id="tabs-{}">'
+                        '{}</div>').format(i, markdown_data)
         i+=1
 
     return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, report_data)

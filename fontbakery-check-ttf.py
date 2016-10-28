@@ -2482,7 +2482,7 @@ def fontbakery_check_ttf(config):
 
           results_table = "Hinting filesize impact:\n\n"
           results_table += "|  | {} |\n".format(filename)
-          results_table += "|----------|----------|----------|\n"
+          results_table += "|:--- | ---:| ---:|\n"
           results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
           results_table += "| Hinted Size | {} |\n".format(hinted_size)
           results_table += "| Increase | {} |\n".format(increase)
@@ -2909,7 +2909,7 @@ def fontbakery_check_ttf(config):
 
     if len(bad_entries) > 0:
       table = "| Field | Recommendation |\n"
-      table += "|----------|----------|\n"
+      table += "|:----- |:-------------- |\n"
 
       for bad in bad_entries:
         table += "| {} | {} |\n".format(bad["field"], bad["rec"])
