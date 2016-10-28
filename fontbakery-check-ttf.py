@@ -24,8 +24,6 @@ import requests
 import urllib
 import csv
 import re
-import os
-import lxml
 import defusedxml.lxml
 from bs4 import BeautifulSoup
 from fontTools import ttLib
@@ -42,7 +40,6 @@ if not webapp:
   import magic
   import subprocess
   from fonts_public_pb2 import FamilyProto
-
 
   try:
     from google.protobuf import text_format
@@ -321,7 +318,6 @@ class FontBakeryCheckLogger():
       json_output.write(json_data)
       self.json_report_files.append(json_output)
 
-
   def output_github_markdown_report(self, font_file):
 
     markdown_data = "# Fontbakery check results\n"
@@ -344,7 +340,6 @@ class FontBakeryCheckLogger():
         msgs = '\n* '.join(check['log_messages'])
         markdown_data += ("### {}\n"
                           "* {}\n\n").format(check['description'], msgs)
-
 
     if self.config['inmem']:
       self.ghm_report_files.append((font_file[0], markdown_data))
@@ -620,9 +615,9 @@ parser.add_argument('-j', '--json', action='store_true',
 parser.add_argument('-m', '--ghm', action='store_true',
                     help='Output check results in GitHub Markdown format')
 
-# =====================================
-# Main sequence of checkers & fixers
+
 def fontbakery_check_ttf(config):
+  '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
 
   # set up a basic logging config
@@ -890,9 +885,11 @@ def fontbakery_check_ttf(config):
                         " We need to figure out a better hash-function"
                         " for the font ProtocolBuffer message."
                         " Please file an issue on"
-                        " https://github.com/googlefonts/fontbakery/issues/new")
+                        " https://github.com/googlefonts"
+                        "/fontbakery/issues/new")
         else:
-          ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname, f.filename))
+          ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname,
+                                                       f.filename))
 
       if dirname == "":
         fb.default_target = "Current Folder"
@@ -1762,14 +1759,14 @@ def fontbakery_check_ttf(config):
                               IS_FIXED_WIDTH_MONOSPACED)
         fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
         fb.assert_table_entry('OS/2',
-                           'panose.bProportion',
-                           PANOSE_PROPORTION_MONOSPACED)
+                              'panose.bProportion',
+                              PANOSE_PROPORTION_MONOSPACED)
         outliers = len(glyphs) - occurrences
         if outliers > 0:
             # If any glyphs are outliers, note them
-            unusually_spaced_glyphs =\
-              [g for g in glyphs
-               if font['hmtx'].metrics[g][0] != most_common_width]
+            unusually_spaced_glyphs = \
+             [g for g in glyphs
+              if font['hmtx'].metrics[g][0] != most_common_width]
             outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
 
             for glyphname in ['.notdef', '.null', 'NULL']:
@@ -2382,7 +2379,8 @@ def fontbakery_check_ttf(config):
                                                    font_file],
                                                   stderr=subprocess.STDOUT)
         if "Support level: full" not in fontaine_output:
-          fb.error("pyfontaine output follows:\n\n{}\n".format(fontaine_output))
+          fb.error(("pyfontaine output follows:\n\n"
+                    "{}\n").format(fontaine_output))
         else:
           fb.ok("pyfontaine passed this file")
       except subprocess.CalledProcessError, e:
@@ -2447,7 +2445,7 @@ def fontbakery_check_ttf(config):
         hinted_size = statinfo.st_size
 
         dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
-                                             delete=False)
+                                               delete=False)
         subprocess.call(["ttfautohint",
                          "--dehint",
                          font_file,
@@ -2496,7 +2494,8 @@ def fontbakery_check_ttf(config):
                    " You really MUST check the fonts with this tool."
                    " To install it, see"
                    " https://github.com/googlefonts"
-                   "/gf-docs/blob/master/ProjectChecklist.md#ttfautohint\n\n\n")
+                   "/gf-docs/blob/master/"
+                   "ProjectChecklist.md#ttfautohint\n\n\n")
         pass
 
     # ----------------------------------------------------
@@ -3477,7 +3476,8 @@ def fontbakery_check_ttf(config):
                           " '{}'").format(unidecode(f.copyright)))
 
             # -----------------------------------------------
-            fb.new_check("Copyright notice does not contain Reserved Font Name")
+            fb.new_check("Copyright notice does not "
+                         "contain Reserved Font Name")
             if 'Reserved Font Name' in f.copyright:
               fb.error(("METADATA.pb: copyright field ('{}')"
                         " contains 'Reserved Font Name'"
@@ -3728,7 +3728,8 @@ def fontbakery_check_ttf(config):
 
             def find_italic_in_name_table():
               for entry in font['name'].names:
-                if 'italic' in entry.string.decode(entry.getEncoding()).lower():
+                if 'italic' in entry.string.decode(
+                 entry.getEncoding()).lower():
                   return True
               return False
 
@@ -3796,7 +3797,8 @@ def fontbakery_check_ttf(config):
                "  --verbose\tOutput results to stdout.\n"
                "  --json \tSave results to a file in JSON format.\n"
                "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
-               "  --error\tPrint only the error messages (outputs to stderr).\n")
+               "  --error\tPrint only the error messages "
+               "(outputs to stderr).\n")
 
   if webapp:
     return fb.ghm_report_files
@@ -3804,11 +3806,11 @@ def fontbakery_check_ttf(config):
     if len(fb.json_report_files) > 0:
       print(("Saved check results in "
              "JSON format to:\n\t{}"
-             "").format('\n\t'.join(fb.json_report_files)))
+             "").format('\n\t'.join(map(str, fb.json_report_files))))
     if len(fb.ghm_report_files) > 0:
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
-             "").format('\n\t'.join(fb.ghm_report_files)))
+             "").format('\n\t'.join(map(str, fb.ghm_report_files))))
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
@@ -3823,4 +3825,3 @@ if __name__ == '__main__':
     'inmem': False
   }
   fontbakery_check_ttf(config)
-
