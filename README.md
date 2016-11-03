@@ -28,13 +28,10 @@ For check results in GitHub Markdown syntax you can use --ghm:
 
     fontbakery-check-ttf.py --verbose *.ttf --ghm
 
-Optionaly, a web-based visualization of the summary report can be viewed by running:
+Alternatively, a web-based user-interface for FontBakery is provided at the webapp/ folder. In order to run it load http://0.0.0.0:8000/ on a web-browser after running the following commands:
 
-    python -m SimpleHTTPServer
-
-And then opening http://0.0.0.0:8000/ in a web-browser.
-
-But beware that in order to run the webserver the command above must be executed from the fontbakery project folder and the json file must be available in that same root folder.
+    cd webapp
+    dev_appserver.py app
 
 ### Automated testing of all Google Fonts
 
