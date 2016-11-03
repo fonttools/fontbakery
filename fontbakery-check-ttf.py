@@ -2740,6 +2740,60 @@ def fontbakery_check_ttf(config):
       fb.error('Font is missing a "GPOS" table')
 
     # ----------------------------------------------------
+    fb.new_check("Is there kerning info for non-ligated sequences?")
+    ''' Fonts with ligatures should have kerning on the corresponding
+        non-ligated sequences for text where ligatures aren't used.
+    '''
+    if has_kerning_info is False:
+      fb.skip("This font lacks kerning info.")
+    else:
+      all_ligatures = {}
+      for lookup in font["GSUB"].table.LookupList.Lookup:
+        # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+          for subtable in lookup.SubTable:
+            for firstGlyph in subtable.ligatures.keys():
+              all_ligatures[firstGlyph] = []
+              for lig in subtable.ligatures[firstGlyph]:
+                if lig.Component[0] not in all_ligatures[firstGlyph]:
+                  all_ligatures[firstGlyph].append(lig.Component[0])
+
+      def look_for_nonligated_kern_info(table):
+        for pairpos in table.SubTable:
+          for i, glyph in enumerate(pairpos.Coverage.glyphs):
+            if glyph in all_ligatures.keys():
+              try:
+                for pairvalue in pairpos.PairSet[i].PairValueRecord:
+                  if pairvalue.SecondGlyph in all_ligatures[glyph]:
+                    del all_ligatures[glyph]
+              except:
+                # Sometimes for unknown reason an exception
+                # is raised for accessing pairpos.PairSet
+                pass
+
+      for lookup in font["GPOS"].table.LookupList.Lookup:
+        if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+          look_for_nonligated_kern_info(lookup)
+        # elif lookup.LookupType == 9:
+        #   if lookup.SubTable[0].ExtensionLookupType == 2:
+        #     look_for_nonligated_kern_info(lookup.SubTable[0])
+
+      def ligatures_str(ligatures):
+        result = []
+        for first in ligatures:
+          result.extend(["{}_{}".format(first, second)
+                         for second in ligatures[first]])
+        return result
+
+      if all_ligatures != {}:
+        fb.error(("GPOS table lacks kerning info for the following"
+                  " non-ligated sequences: "
+                  "{}").format(ligatures_str(all_ligatures)))
+      else:
+        fb.ok("GPOS table provides kerning info for "
+              "all non-ligated sequences.")
+
+    # ----------------------------------------------------
     fb.new_check("Is there a 'KERN' table declared in the font?")
     try:
       font["KERN"]
