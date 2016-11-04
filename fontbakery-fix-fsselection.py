@@ -27,6 +27,30 @@ parser.add_argument('font', nargs="+")
 parser.add_argument('--csv', default=False, action='store_true')
 parser.add_argument('--autofix', default=False, action='store_true')
 
+STYLE_NAMES = ["Thin",
+               "ExtraLight",
+               "Light",
+               "Regular",
+               "Medium",
+               "SemiBold",
+               "Bold",
+               "ExtraBold",
+               "Black",
+               "Thin Italic",
+               "ExtraLight Italic",
+               "Light Italic",
+               "Italic",
+               "Medium Italic",
+               "SemiBold Italic",
+               "Bold Italic",
+               "ExtraBold Italic",
+               "Black Italic"]
+
+RIBBI_STYLE_NAMES = ["Regular",
+                     "Italic",
+                     "Bold",
+                     "BoldItalic"]
+
 
 def getByte2(ttfont):
   return ttfont['OS/2'].fsSelection >> 8
@@ -59,18 +83,45 @@ def printInfo(fonts, print_csv=False):
   else:
     print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
+def is_italic(font):
+  filename_base, filename_extension = os.path.splitext(font)
+  family, style = filename_base.split('-')
+  return 'Italic' in style
+
+def is_regular(font):
+  filename_base, filename_extension = os.path.splitext(font)
+  family, style = filename_base.split('-')
+  return ("Regular" in style or
+          (style in STYLE_NAMES and
+           style not in RIBBI_STYLE_NAMES and
+           "Italic" not in style))
+
+def is_bold(font):
+  filename_base, filename_extension = os.path.splitext(font)
+  family, style = filename_base.split('-')
+  return style in ["Bold", "BoldItalic"]
 
 def main():
   args = parser.parse_args()
   if args.autofix:
     for font in args.font:
       ttfont = ttLib.TTFont(font)
-      if '-Regular' in font:
+
+      if is_regular(font):
         ttfont['OS/2'].fsSelection |= 0b1000000
-      if '-Bold' in font:
+      else:
+        ttfont['OS/2'].fsSelection &= ~0b1000000
+
+      if is_bold(font):
         ttfont['OS/2'].fsSelection |= 0b100000
-      if 'Italic' in font:
+      else:
+        ttfont['OS/2'].fsSelection &= ~0b100000
+
+      if is_italic(font):
         ttfont['OS/2'].fsSelection |= 0b1
+      else:
+        ttfont['OS/2'].fsSelection &= ~0b1
+
       ttfont.save(font + '.fix')
     printInfo([f + '.fix' for f in args.font], print_csv=args.csv)
     sys.exit(0)
