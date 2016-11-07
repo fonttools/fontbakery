@@ -84,12 +84,12 @@ def printInfo(fonts, print_csv=False):
     print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
 def is_italic(font):
-  filename_base, filename_extension = os.path.splitext(font)
+  filename_base = font.split('.')[0]
   family, style = filename_base.split('-')
   return 'Italic' in style
 
 def is_regular(font):
-  filename_base, filename_extension = os.path.splitext(font)
+  filename_base = font.split('.')[0]
   family, style = filename_base.split('-')
   return ("Regular" in style or
           (style in STYLE_NAMES and
@@ -97,15 +97,22 @@ def is_regular(font):
            "Italic" not in style))
 
 def is_bold(font):
-  filename_base, filename_extension = os.path.splitext(font)
+  filename_base = font.split('.')[0]
   family, style = filename_base.split('-')
   return style in ["Bold", "BoldItalic"]
 
 def main():
   args = parser.parse_args()
   if args.autofix:
+    fixed_fonts = []
     for font in args.font:
       ttfont = ttLib.TTFont(font)
+
+      if len(font.split('-')) != 2:
+        print("Font filename is not canonical: '{}'".format(font))
+        exit(-1)
+
+      initial_value = ttfont['OS/2'].fsSelection
 
       if is_regular(font):
         ttfont['OS/2'].fsSelection |= 0b1000000
@@ -122,9 +129,16 @@ def main():
       else:
         ttfont['OS/2'].fsSelection &= ~0b1
 
-      ttfont.save(font + '.fix')
-    printInfo([f + '.fix' for f in args.font], print_csv=args.csv)
+      if ttfont['OS/2'].fsSelection != initial_value:
+        fixed_fonts.append(font)
+        ttfont.save(font + '.fix')
+
+
+    if len(fixed_fonts) > 0:
+      printInfo([f + '.fix' for f in fixed_fonts], print_csv=args.csv)
+
     sys.exit(0)
+
   printInfo(args.font, print_csv=args.csv)
 
 
