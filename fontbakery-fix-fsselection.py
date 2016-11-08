@@ -83,23 +83,40 @@ def printInfo(fonts, print_csv=False):
   else:
     print(tabulate.tabulate(rows, headers, tablefmt="pipe"))
 
-def is_italic(font):
+def _style(font):
   filename_base = font.split('.')[0]
-  family, style = filename_base.split('-')
-  return 'Italic' in style
+  return filename_base.split('-')[-1]
+
+def _familyname(font):
+  filename_base = font.split('.')[0]
+  names = filename_base.split('-')
+  names.pop()
+  return '-'.join(names)
+
+def is_italic(font):
+  return 'Italic' in _style(font)
 
 def is_regular(font):
-  filename_base = font.split('.')[0]
-  family, style = filename_base.split('-')
+  style = _style(font)
   return ("Regular" in style or
           (style in STYLE_NAMES and
            style not in RIBBI_STYLE_NAMES and
            "Italic" not in style))
 
 def is_bold(font):
-  filename_base = font.split('.')[0]
-  family, style = filename_base.split('-')
-  return style in ["Bold", "BoldItalic"]
+  return _style(font) in ["Bold", "BoldItalic"]
+
+def is_canonical(font):
+  if '-' not in font:
+    return False
+  else:
+    style = _style(font)
+    for valid in STYLE_NAMES:
+      valid = ''.join(valid.split(' '))
+      if style == valid:
+        return True
+    # otherwise:
+    return False
 
 def main():
   args = parser.parse_args()
@@ -108,7 +125,7 @@ def main():
     for font in args.font:
       ttfont = ttLib.TTFont(font)
 
-      if len(font.split('-')) != 2:
+      if not is_canonical(font):
         print("Font filename is not canonical: '{}'".format(font))
         exit(-1)
 
