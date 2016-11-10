@@ -2805,6 +2805,7 @@ def fontbakery_check_ttf(config):
     fb.new_check("Make sure family name"
                  " does not begin with a digit.")
     familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+    failed = False
     for name in familyname:
       digits = map(str, range(0, 10))
       if name[0] in digits:
