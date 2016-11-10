@@ -1,31 +1,37 @@
 language: python
 branches:
   only:
-    - master
+  - master
 before_install:
-  - sudo add-apt-repository --yes ppa:fontforge/fontforge
-  - sudo apt-get update -qq
-  - sudo apt-get install python-fontforge ttfautohint swig
-  - pip install --upgrade pip
+- openssl aes-256-cbc -K $encrypted_c5c93644f6d0_key -iv $encrypted_c5c93644f6d0_iv
+  -in fontbakery-client-secret.json.enc -out fontbakery-client-secret.json -d
+- sudo add-apt-repository --yes ppa:fontforge/fontforge
+- sudo apt-get update -qq
+- sudo apt-get install python-fontforge ttfautohint swig
+- pip install --upgrade pip
 install:
-  - export LD_LIBRARY_PATH=/usr/local/lib
-  - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.12/lib/python2.7/site-packages
-  - pip install BeautifulSoup4
-  - pip install filemagic
-  - pip install requests
-  - pip install flake8
-  - pip install protobuf
-  - pip install unidecode
-  - pip install lxml
-  - pip install defusedxml
-  - pip install tabulate
-  - pip install pillow
-  - pip install flask
-  - "pip install git+https://github.com/behdad/fonttools.git"
-  - "pip install git+https://github.com/googlei18n/glyphsLib.git"
+- export LD_LIBRARY_PATH=/usr/local/lib
+- cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.12/lib/python2.7/site-packages
+- pip install BeautifulSoup4
+- pip install filemagic
+- pip install requests
+- pip install flake8
+- pip install protobuf
+- pip install unidecode
+- pip install lxml
+- pip install defusedxml
+- pip install tabulate
+- pip install pillow
+- pip install flask
+- pip install git+https://github.com/behdad/fonttools.git
+- pip install git+https://github.com/googlei18n/glyphsLib.git
 script:
-  - flake8 --statistics fontbakery-check-ttf.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126
-  - python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
-  - python test_args.py
+- flake8 --statistics fontbakery-check-ttf.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126
+- python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
+- python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
+- python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
+- python test_args.py
+deploy:
+  provider: gae
+  keyfile: fontbakery-client-secret.json
+  project: fontbakery
