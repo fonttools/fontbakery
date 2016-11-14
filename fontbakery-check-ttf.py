@@ -32,6 +32,16 @@ from lxml.html import HTMLParser
 import plistlib
 from io import BytesIO
 
+try:
+  import fontforge
+except ImportError:
+  logging.warning("fontforge python module is not available!"
+                  " To install it, see"
+                  " https://github.com/googlefonts/"
+                  "gf-docs/blob/master/ProjectChecklist.md#fontforge")
+  pass
+
+
 webapp = (__name__ != "__main__")
 
 if not webapp:
@@ -659,6 +669,13 @@ def get_ttfont(f):
   else:
     return ttLib.TTFont(f)
 
+
+def version_is_newer(a, b):
+  a = map(int, a.split("."))
+  b = map(int, b.split("."))
+  return a > b
+
+
 def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
   value = getattr(font[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
@@ -727,7 +744,7 @@ def check_files_are_named_canonically(fb, fonts_to_check):
            '').format('\n  '.join(not_canonical)))
 
 
-def check_all_files_in_a_single_directory(fb, config, fonts_to_check):
+def check_all_files_in_a_single_directory(fb, fonts_to_check):
   '''If the set of font files passed in the command line
      is not all in the same directory, then we warn the user
      since the tool will interpret the set of files
@@ -1509,6 +1526,1295 @@ def check_font_has_a_valid_license_url(fb, found, font):
         fb.ok("Font has a valid license URL in NAME table.")
 
 
+def check_description_strings_in_name_table(fb, font):
+  fb.new_check(("Description strings in the name table (nameID = {}) must"
+                " not contain copyright info.").format(NAMEID_DESCRIPTION))
+  failed = False
+  for name in font['name'].names:
+    if 'opyright' in name.string.decode(name.getEncoding())\
+       and name.nameID == NAMEID_DESCRIPTION:
+      failed = True
+      del name
+  if failed:
+    if config['autofix']:
+      fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                 " were removed (perhaps added by"
+                 " a longstanding FontLab Studio 5.x bug that"
+                 " copied copyright notices to them.)"
+                 "").format(NAMEID_DESCRIPTION))
+    else:
+      fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                " should be removed (perhaps these were added by"
+                " a longstanding FontLab Studio 5.x bug that"
+                " copied copyright notices to them.)"
+                "").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description strings in the name table"
+          " do not contain any copyright string.")
+
+
+def check_description_strings_do_not_exceed_100_chars(fb, font):
+  fb.new_check(("Description strings in the name table (nameID = {}) must"
+                " not exceed 100 characters").format(NAMEID_DESCRIPTION))
+  failed = False
+  for name in font['name'].names:
+    if len(name.string.decode(name.getEncoding())) > 100 \
+      and name.nameID == NAMEID_DESCRIPTION:
+      if config['autofix']:
+        del name
+      failed = True
+  if failed:
+    if config['autofix']:
+      fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                 " were removed because they"
+                 " were longer than 100 characters"
+                 ".").format(NAMEID_DESCRIPTION))
+    else:
+      fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                " are longer than 100 characters"
+                " and should be removed.").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description name records do not exceed 100 characters.")
+
+
+def check_font_is_truly_monospaced(fb, font):
+  fb.new_check("Checking if the font is truly monospaced")
+  ''' There are various metadata in the OpenType spec to specify if
+      a font is monospaced or not.
+
+      The source of truth for if a font is monospaced is if 90% of all
+      glyphs have the same width. If this is true then these metadata
+      must be set.
+
+      If not true, no monospaced metadata should be set (as sometimes
+      they mistakenly are...)
+
+      Monospace fonts must:
+
+      * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
+        non-zero if the font is not proportionally spaced (monospaced)"
+        www.microsoft.com/typography/otspec/post.htm
+
+      * hhea.advanceWidthMax must be correct, meaning no glyph's
+       width value is greater.
+       www.microsoft.com/typography/otspec/hhea.htm
+
+     * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
+       "The PANOSE definition contains ten digits each of which currently
+       describes up to sixteen variations. Windows uses bFamilyType,
+       bSerifStyle and bProportion in the font mapper to determine
+       family type. It also uses bProportion to determine if the font
+       is monospaced."
+       www.microsoft.com/typography/otspec/os2.htm#pan
+       monotypecom-test.monotype.de/services/pan2
+
+     * OS/2.xAverageWidth must be set accurately.
+       "OS/2.xAverageWidth IS used when rendering monospaced fonts,
+       at least by Windows GDI"
+       http://typedrawers.com/discussion/comment/15397/#Comment_15397
+
+     Also we should report an error for glyphs not of average width
+'''
+  glyphs = font['glyf'].glyphs
+  width_occurrences = {}
+  width_max = 0
+  # count how many times a width occurs
+  for glyph_id in glyphs:
+      width = font['hmtx'].metrics[glyph_id][0]
+      width_max = max(width, width_max)
+      try:
+          width_occurrences[width] += 1
+      except KeyError:
+          width_occurrences[width] = 1
+  # find the most_common_width
+  occurrences = 0
+  for width in width_occurrences.keys():
+      if width_occurrences[width] > occurrences:
+          occurrences = width_occurrences[width]
+          most_common_width = width
+  # if more than 80% of glyphs have the same width, set monospaced metadata
+  monospace_detected = occurrences > 0.80 * len(glyphs)
+  if monospace_detected:
+      fb.assert_table_entry('post',
+                            'isFixedPitch',
+                            IS_FIXED_WIDTH_MONOSPACED)
+      fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
+      fb.assert_table_entry('OS/2',
+                            'panose.bProportion',
+                            PANOSE_PROPORTION_MONOSPACED)
+      outliers = len(glyphs) - occurrences
+      if outliers > 0:
+          # If any glyphs are outliers, note them
+          unusually_spaced_glyphs = \
+           [g for g in glyphs
+            if font['hmtx'].metrics[g][0] != most_common_width]
+          outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
+
+          for glyphname in ['.notdef', '.null', 'NULL']:
+            if glyphname in unusually_spaced_glyphs:
+              unusually_spaced_glyphs.remove(glyphname)
+
+          fb.log_results(("Font is monospaced but {} glyphs"
+                          " ({}%) have a different width."
+                          " You should check the widths of: {}").format(
+                            outliers,
+                            outliers_percentage,
+                            unusually_spaced_glyphs))
+      else:
+          fb.log_results("Font is monospaced.")
+  else:
+      # it is not monospaced, so unset monospaced metadata
+      fb.assert_table_entry('post',
+                            'isFixedPitch',
+                            IS_FIXED_WIDTH_NOT_MONOSPACED)
+      fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
+      if font['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
+          fb.assert_table_entry('OS/2',
+                                'panose.bProportion',
+                                PANOSE_PROPORTION_ANY)
+      fb.log_results("Font is not monospaced.")
+  return monospace_detected
+
+
+def check_if_xAvgCharWidth_is_correct(fb, font):
+  fb.new_check("Check if xAvgCharWidth is correct.")
+  if font['OS/2'].version >= 3:
+    width_sum = 0
+    count = 0
+    for glyph_id in font['glyf'].glyphs:
+      width = font['hmtx'].metrics[glyph_id][0]
+      if width > 0:
+        count += 1
+        width_sum += width
+    if count == 0:
+      fb.error("CRITICAL: Found no glyph width data!")
+    else:
+      expected_value = int(round(width_sum) / count)
+      if font['OS/2'].xAvgCharWidth == expected_value:
+        fb.ok("xAvgCharWidth is correct.")
+      else:
+        fb.error(("xAvgCharWidth is {} but should be "
+                  "{} which corresponds to the "
+                  "average of all glyph widths "
+                  "in the font").format(font['OS/2'].xAvgCharWidth,
+                                        expected_value))
+  else:
+    weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
+                     'e': 100, 'f': 20, 'g': 14, 'h': 42,
+                     'i': 63, 'j': 3, 'k': 6, 'l': 35,
+                     'm': 20, 'n': 56, 'o': 56, 'p': 17,
+                     'q': 4, 'r': 49, 's': 56, 't': 71,
+                     'u': 31, 'v': 10, 'w': 18, 'x': 3,
+                     'y': 18, 'z': 2, 'space': 166}
+    width_sum = 0
+    for glyph_id in font['glyf'].glyphs:
+      width = font['hmtx'].metrics[glyph_id][0]
+      if glyph_id in weightFactors.keys():
+        width_sum += (width*weightFactors[glyph_id])
+    expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
+    if font['OS/2'].xAvgCharWidth == expected_value:
+      fb.ok("xAvgCharWidth value is correct.")
+    else:
+      fb.error(("xAvgCharWidth is {} but it should be "
+                "{} which corresponds to the weighted "
+                "average of the widths of the latin "
+                "lowercase glyphs in "
+                "the font").format(font['OS/2'].xAvgCharWidth,
+                                   expected_value))
+
+
+def check_with_ftxvalidator(fb, font_file):
+  fb.new_check("Checking with ftxvalidator")
+  if webapp is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      ftx_cmd = ["ftxvalidator",
+                 "-t", "all",  # execute all tests
+                 font_file]
+      ftx_output = subprocess.check_output(ftx_cmd,
+                                           stderr=subprocess.STDOUT)
+
+      ftx_data = plistlib.readPlistFromString(ftx_output)
+      # we accept kATSFontTestSeverityInformation
+      # and kATSFontTestSeverityMinorError
+      if 'kATSFontTestSeverityFatalError' \
+         not in ftx_data['kATSFontTestResultKey']:
+        fb.ok("ftxvalidator passed this file")
+      else:
+        ftx_cmd = ["ftxvalidator",
+                   "-T",  # Human-readable output
+                   "-r",  # Generate a full report
+                   "-t", "all",  # execute all tests
+                   font_file]
+        ftx_output = subprocess.check_output(ftx_cmd,
+                                             stderr=subprocess.STDOUT)
+        fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+
+    except subprocess.CalledProcessError, e:
+      fb.info(("ftxvalidator returned an error code. Output follows :"
+               "\n\n{}\n").format(e.output))
+    except OSError:
+      fb.warning("ftxvalidator is not available!")
+      pass
+
+
+def check_with_otsanitise(fb, font_file):
+  fb.new_check("Checking with ot-sanitise")
+  if webapp is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      ots_output = subprocess.check_output(["ot-sanitise", font_file],
+                                           stderr=subprocess.STDOUT)
+      if ots_output != "":
+        fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+      else:
+        fb.ok("ot-sanitise passed this file")
+    except subprocess.CalledProcessError, e:
+        fb.error(("ot-sanitise returned an error code. Output follows :"
+                  "\n\n{}\n").format(e.output))
+    except OSError:
+      # This is made very prominent with additional line breaks
+      fb.warning("\n\n\not-santise is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
+      pass
+
+
+def check_fontforge_outputs_error_msgs(fb, font_file):
+  fb.new_check("fontforge validation outputs error messages?")
+  if "adobeblank" in font_file:
+    fb.skip("Skipping AdobeBlank since"
+            " this font is a very peculiar hack.")
+  else:
+    # temporary stderr redirection:
+    ff_err = os.tmpfile()
+
+    # we do not redirect stderr on Travis because
+    # it's making it think the build failed.
+    # I'm not exactly sure why does it happen, but for now we'll
+    # workaround the issue by not capturing stderr messages
+    # when running on Travis.
+    if 'TRAVIS' not in os.environ:
+      stderr_backup = os.dup(2)
+      os.close(2)
+      os.dup2(ff_err.fileno(), 2)
+
+    # invoke font validation
+    # via fontforge python module:
+    fontforge_font = fontforge.open(font_file)
+    validation_state = fontforge_font.validate()
+
+    if 'TRAVIS' not in os.environ:
+      # restore default stderr:
+      os.dup2(stderr_backup, 2)
+      sys.stderr = os.fdopen(2, 'w', 0)
+
+    # handle captured stderr messages:
+    ff_err.flush()
+    ff_err.seek(0, os.SEEK_SET)
+    ff_err_messages = ff_err.read()
+    filtered_err_msgs = ""
+    for line in ff_err_messages.split('\n'):
+      if 'The following table(s) in the font' \
+         ' have been ignored by FontForge' in line:
+        continue
+      if "Ignoring 'DSIG' digital signature table" in line:
+        continue
+      filtered_err_msgs += line + '\n'
+
+    if len(filtered_err_msgs.strip()) > 0:
+      fb.error(("fontforge did print these messages to stderr:\n"
+                "{}").format(filtered_err_msgs))
+    else:
+      fb.ok("fontforge validation did not output any error message.")
+    ff_err.close()
+    return validation_state
+
+
+
+
+def perform_all_fontforge_checks(fb, validation_state):
+  def ff_check(condition, description, err_msg, ok_msg):
+    fb.new_check("fontforge-check: {}".format(description))
+    if condition is False:
+      fb.error("fontforge-check: {}".format(err_msg))
+    else:
+      fb.ok("fontforge-check: {}".format(ok_msg))
+
+  ff_check("Contours are closed?",
+           bool(validation_state & 0x2) is False,
+           "Contours are not closed!",
+           "Contours are closed.")
+
+  ff_check("Contours do not intersect",
+           bool(validation_state & 0x4) is False,
+           "There are countour intersections!",
+           "Contours do not intersect.")
+
+  ff_check("Contours have correct directions",
+           bool(validation_state & 0x8) is False,
+           "Contours have incorrect directions!",
+           "Contours have correct directions.")
+
+  ff_check("References in the glyph haven't been flipped",
+           bool(validation_state & 0x10) is False,
+           "References in the glyph have been flipped!",
+           "References in the glyph haven't been flipped.")
+
+  ff_check("Glyphs have points at extremas",
+           bool(validation_state & 0x20) is False,
+           "Glyphs do not have points at extremas!",
+           "Glyphs have points at extremas.")
+
+  ff_check("Glyph names referred to from glyphs present in the font",
+           bool(validation_state & 0x40) is False,
+           "Glyph names referred to from glyphs"
+           " not present in the font!",
+           "Glyph names referred to from glyphs"
+           " present in the font.")
+
+  ff_check("Points (or control points) are not too far apart",
+           bool(validation_state & 0x40000) is False,
+           "Points (or control points) are too far apart!",
+           "Points (or control points) are not too far apart.")
+
+  ff_check("Not more than 1,500 points in any glyph"
+           " (a PostScript limit)",
+           bool(validation_state & 0x80) is False,
+           "There are glyphs with more than 1,500 points!"
+           "Exceeds a PostScript limit.",
+           "Not more than 1,500 points in any glyph"
+           " (a PostScript limit).")
+
+  ff_check("PostScript has a limit of 96 hints in glyphs",
+           bool(validation_state & 0x100) is False,
+           "Exceeds PostScript limit of 96 hints per glyph",
+           "Font respects PostScript limit of 96 hints per glyph")
+
+  ff_check("Font doesn't have invalid glyph names",
+           bool(validation_state & 0x200) is False,
+           "Font has invalid glyph names!",
+           "Font doesn't have invalid glyph names.")
+
+  ff_check("Glyphs have allowed numbers of points defined in maxp",
+           bool(validation_state & 0x400) is False,
+           "Glyphs exceed allowed numbers of points defined in maxp",
+           "Glyphs have allowed numbers of points defined in maxp.")
+
+  ff_check("Glyphs have allowed numbers of paths defined in maxp",
+           bool(validation_state & 0x800) is False,
+           "Glyphs exceed allowed numbers of paths defined in maxp!",
+           "Glyphs have allowed numbers of paths defined in maxp.")
+
+  ff_check("Composite glyphs have allowed numbers"
+           " of points defined in maxp?",
+           bool(validation_state & 0x1000) is False,
+           "Composite glyphs exceed allowed numbers"
+           " of points defined in maxp!",
+           "Composite glyphs have allowed numbers"
+           " of points defined in maxp.")
+
+  ff_check("Composite glyphs have allowed numbers"
+           " of paths defined in maxp",
+           bool(validation_state & 0x2000) is False,
+           "Composite glyphs exceed"
+           " allowed numbers of paths defined in maxp!",
+           "Composite glyphs have"
+           " allowed numbers of paths defined in maxp.")
+
+  ff_check("Glyphs instructions have valid lengths",
+           bool(validation_state & 0x4000) is False,
+           "Glyphs instructions have invalid lengths!",
+           "Glyphs instructions have valid lengths.")
+
+  ff_check("Points in glyphs are integer aligned",
+           bool(validation_state & 0x80000) is False,
+           "Points in glyphs are not integer aligned!",
+           "Points in glyphs are integer aligned.")
+
+  # According to the opentype spec, if a glyph contains an anchor point
+  # for one anchor class in a subtable, it must contain anchor points
+  # for all anchor classes in the subtable. Even it, logically,
+  # they do not apply and are unnecessary.
+  ff_check("Glyphs have all required anchors.",
+           bool(validation_state & 0x100000) is False,
+           "Glyphs do not have all required anchors!",
+           "Glyphs have all required anchors.")
+
+  ff_check("Glyph names are unique?",
+           bool(validation_state & 0x200000) is False,
+           "Glyph names are not unique!",
+           "Glyph names are unique.")
+
+  ff_check("Unicode code points are unique?",
+           bool(validation_state & 0x400000) is False,
+           "Unicode code points are not unique!",
+           "Unicode code points are unique.")
+
+  ff_check("Do hints overlap?",
+           bool(validation_state & 0x800000) is False,
+           "Hints should NOT overlap!",
+           "Hinds do not overlap.")
+
+
+def check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax):
+  fb.new_check("Checking OS/2 usWinAscent & usWinDescent")
+  # OS/2 usWinAscent:
+  fb.assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
+  # OS/2 usWinDescent:
+  fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
+  fb.log_results("OS/2 usWinAscent & usWinDescent")
+
+def check_Vertical_Metric_Linegaps(fb, font):
+  fb.new_check("Checking Vertical Metric Linegaps")
+  if font['hhea'].lineGap != 0:
+    fb.warning(("hhea lineGap is not equal to 0"))
+  elif font['OS/2'].sTypoLineGap != 0:
+    fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
+  elif font['OS/2'].sTypoLineGap != font['hhea'].lineGap:
+    fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
+  else:
+    fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
+
+def check_OS2_Metrics_match_hhea_Metrics(fb, font):
+  fb.new_check("Checking OS/2 Metrics match hhea Metrics")
+  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+  if font['OS/2'].sTypoAscender != font['hhea'].ascent:
+    fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
+  elif font['OS/2'].sTypoDescender != font['hhea'].descent:
+    fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
+  else:
+    fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
+          "and descent")
+
+def check_unitsPerEm_value_is_reasonable(fb, font):
+  fb.new_check("Checking unitsPerEm value is reasonable.")
+  upem = font['head'].unitsPerEm
+  target_upem = [2**i for i in range(4, 15)]
+  target_upem.insert(0, 1000)
+  if upem not in target_upem:
+    fb.error(("The value of unitsPerEm at the head table"
+              " must be either 1000 or a power of "
+              "2 between 16 to 16384."
+              " Got '{}' instead.").format(upem))
+  else:
+    fb.ok("unitsPerEm value on the 'head' table is reasonable.")
+
+
+def get_version_from_name_entry(name):
+  string = name.string.decode(name.getEncoding())
+  # we ignore any comments that
+  # may be present in the version name entries
+  if ";" in string:
+    string = string.split(";")[0]
+  # and we also ignore
+  # the 'Version ' prefix
+  if "Version " in string:
+    string = string.split("Version ")[1]
+  return string.split('.')
+
+
+def get_expected_version(f):
+  expected_version = parse_version_string(fb, str(f['head'].fontRevision))
+  for name in f['name'].names:
+    if name.nameID == NAMEID_VERSION_STRING:
+      name_version = get_version_from_name_entry(name)
+      if expected_version is None:
+        expected_version = name_version
+      else:
+        if name_version > expected_version:
+          expected_version = name_version
+  return expected_version
+
+
+def check_font_version_fields(fb, font):
+  fb.new_check("Checking font version fields")
+  failed = False
+  try:
+    expected = get_expected_version(font)
+  except:
+    expected = None
+    fb.error("failed to parse font version entries in the name table.")
+
+  if expected is None:
+    failed = True
+    fb.error("Could not find any font versioning info on the head table"
+             " or in the name table entries.")
+  else:
+    font_revision = str(font['head'].fontRevision)
+    expected_str = "{}.{}".format(expected[0],
+                                    expected[1])
+    if font_revision != expected_str:
+      failed = True
+      fb.error(("Font revision on the head table ({})"
+                " differs from the expected value ({})"
+                "").format(font_revision, expected))
+
+    expected_str = "Version {}.{}".format(expected[0],
+                                          expected[1])
+    for name in font['name'].names:
+      if name.nameID == NAMEID_VERSION_STRING:
+        name_version = name.string.decode(name.getEncoding())
+        # change Version 1.007 -> 1.007
+        version_stripped = r'(?<=[V|v]ersion )([0-9]{1,4}\.[0-9]{1,5})'
+        version_without_comments = re.search(version_stripped,
+                                             name_version).group(0)
+        comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
+        if version_without_comments != expected_str:
+          # maybe the version strings differ only
+          # on floating-point error, so let's
+          # also give it a change by rounding and re-checking...
+
+          try:
+            rounded_string = round(float(version_without_comments), 3)
+            version = round(float(".".join(expected)), 3)
+            if rounded_string != version:
+              failed = True
+              if comments:
+                fix = "{};{}".format(expected_str, comments)
+              else:
+                fix = expected_str
+              if config['autofix']:
+                fb.hotfix(("NAMEID_VERSION_STRING "
+                           "from '{}' to '{}'"
+                           "").format(name_version, fix))
+                name.string = fix.encode(name.getEncoding())
+              else:
+                fb.error(("NAMEID_VERSION_STRING value '{}'"
+                          " does not match expected '{}'"
+                          "").format(name_version, fix))
+          except:
+            failed = True  # give up. it's definitely bad :(
+            fb.error("Unable to parse font version info"
+                     " from name table entries.")
+  if not failed:
+    fb.ok("All font version fields look good.")
+
+
+def check_Digital_Signature_exists(fb, font, font_file):
+  fb.new_check("Digital Signature exists?")
+  if "DSIG" in font:
+    fb.ok("Digital Signature (DSIG) exists.")
+  else:
+    try:
+      if config['autofix']:
+        from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
+        newDSIG = ttLib.newTable("DSIG")
+        newDSIG.ulVersion = 1
+        newDSIG.usFlag = 1
+        newDSIG.usNumSigs = 1
+        sig = SignatureRecord()
+        sig.ulLength = 20
+        sig.cbSignature = 12
+        sig.usReserved2 = 0
+        sig.usReserved1 = 0
+        sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
+        sig.ulFormat = 1
+        sig.ulOffset = 20
+        newDSIG.signatureRecords = [sig]
+        font.tables["DSIG"] = newDSIG
+        fb.hotfix("The font does not have an existing digital"
+                  " signature (DSIG), so we just added a dummy"
+                  " placeholder that should be enough for the"
+                  " applications that require its presence in"
+                  " order to work properly.")
+      else:
+        fb.error("This font lacks a digital signature (DSIG table)."
+                 " Some applications may require one (even if only a"
+                 " dummy placeholder) in order to work properly.")
+    except ImportError:
+      error_message = ("The '{}' font does not have an existing"
+                       " digital signature (DSIG), so OpenType features"
+                       " will not be available in some applications that"
+                       " use its presense as a (stupid) heuristic."
+                       " So we need to add one. But for that we'll need"
+                       " Fonttools v2.3+ so you need to upgrade it. Try:"
+                       " $ pip install --upgrade fontTools; or see"
+                       " https://pypi.python.org/pypi/FontTools")
+      fb.error(error_message.format(font_file))
+
+
+def check_font_contains_the_first_few_mandatory_glyphs(fb, font):
+  fb.new_check("Font contains the first few mandatory glyphs"
+               " (.null or NULL, CR and space)?")
+  # It would be good to also check
+  # for .notdef (codepoint = unspecified)
+  null = getGlyph(font, 0x0000)
+  CR = getGlyph(font, 0x000D)
+  space = getGlyph(font, 0x0020)
+
+  missing = []
+  if null is None: missing.append("0x0000")
+  if CR is None: missing.append("0x000D")
+  if space is None: missing.append("0x0020")
+  if missing != []:
+    fb.error(("Font is missing glyphs for"
+              " the following mandatory codepoints:"
+              " {}.").format(", ".join(missing)))
+  else:
+    fb.ok("Font contains the first few mandatory glyphs"
+          " (.null or NULL, CR and space).")
+
+
+def check_font_contains_glyphs_for_whitespace_characters(fb, font):
+  fb.new_check("Font contains glyphs for whitespace characters?")
+  space = getGlyph(font, 0x0020)
+  nbsp = getGlyph(font, 0x00A0)
+  # tab = getGlyph(font, 0x0009)
+
+  missing = []
+  if space is None: missing.append("0x0020")
+  if nbsp is None: missing.append("0x00A0")
+  # fonts probably don't need an actual tab char
+  # if tab is None: missing.append("0x0009")
+  if missing != []:
+    fb.error(("Whitespace glyphs missing for"
+              " the following codepoints:"
+              " {}.").format(", ".join(missing)))
+  else:
+    fb.ok("Font contains glyphs for whitespace characters.")
+  return missing
+
+
+def check_font_has_proper_whitespace_glyph_names(fb, font, missing):
+  fb.new_check("Font has **proper** whitespace glyph names?")
+  if missing != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  elif font['post'].formatType == 3.0:
+    fb.skip("Font has version 3 post table.")
+    # Any further checks for glyph names are pointless
+    # because you are really checking names generated by FontTools
+    # (or whatever else) that are not actually present in the font.
+  else:
+    failed = False
+    space_enc = getGlyphEncodings(font, ["uni0020", "space"])
+    nbsp_enc = getGlyphEncodings(font, ["uni00A0",
+                                        "nonbreakingspace",
+                                        "nbspace",
+                                        "nbsp"])
+    if 0x0020 not in space_enc:
+      failed = True
+      fb.error(('Glyph 0x0020 is called "{}":'
+                ' Change to "space"'
+                ' or "uni0020"').format(space))
+
+    if 0x00A0 not in nbsp_enc:
+      if 0x00A0 in space_enc:
+        # This is OK.
+        # Some fonts use the same glyph for both space and nbsp.
+        pass
+      else:
+        failed = True
+        fb.error(('Glyph 0x00A0 is called "{}":'
+                  ' Change to "nbsp"'
+                  ' or "uni00A0"').format(nbsp))
+
+    if failed is False:
+      fb.ok('Font has **proper** whitespace glyph names.')
+
+
+def check_whitespace_glyphs_have_ink(fb, font, missing):
+  fb.new_check("Whitespace glyphs have ink?")
+  if missing != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  else:
+    failed = False
+    for codepoint in WHITESPACE_CHARACTERS:
+      g = getGlyph(font, codepoint)
+      if g is not None and glyphHasInk(font, g):
+        failed = True
+        if config['autofix']:
+          fb.hotfix(('Glyph "{}" has ink.'
+                     ' Fixed: Overwritten by'
+                     ' an empty glyph').format(g))
+          # overwrite existing glyph with an empty one
+          font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
+        else:
+          fb.error(('Glyph "{}" has ink.'
+                    ' It needs to be replaced by'
+                    ' an empty glyph').format(g))
+    if not failed:
+      fb.ok("There is no whitespace glyph with ink.")
+
+
+def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
+  fb.new_check("Whitespace glyphs have coherent widths?")
+  if missing != []:
+    fb.skip("Because some mandatory whitespace glyphs"
+            " are missing. Fix that before!")
+  else:
+    space = getGlyph(font, 0x0020)
+    nbsp = getGlyph(font, 0x00A0)
+
+    spaceWidth = getWidth(font, space)
+    nbspWidth = getWidth(font, nbsp)
+
+    if spaceWidth != nbspWidth or nbspWidth < 0:
+      setWidth(font, nbsp, min(nbspWidth, spaceWidth))
+      setWidth(font, space, min(nbspWidth, spaceWidth))
+
+      if nbspWidth > spaceWidth and spaceWidth >= 0:
+        if config['autofix']:
+          msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
+          fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
+        else:
+          msg = ('space {} nbsp {}: Space advanceWidth'
+                 ' needs to be fixed to {}')
+          fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
+      else:
+        if config['autofix']:
+          msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
+          fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
+        else:
+          msg = ('space {} nbsp {}: Nbsp advanceWidth'
+                 ' needs to be fixed to {}')
+          fb.error(msg.format(spaceWidth, nbspWidth, spaceWidth))
+    else:
+      fb.ok("Whitespace glyphs have coherent widths.")
+
+
+def check_with_pyfontaine(fb, font_file):
+  fb.new_check("Checking with pyfontaine")
+  if webapp is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      fontaine_output = subprocess.check_output(["pyfontaine",
+                                                 "--missing",
+                                                 "--set", "gwf_latin",
+                                                 font_file],
+                                                stderr=subprocess.STDOUT)
+      if "Support level: full" not in fontaine_output:
+        fb.error(("pyfontaine output follows:\n\n"
+                  "{}\n").format(fontaine_output))
+      else:
+        fb.ok("pyfontaine passed this file")
+    except subprocess.CalledProcessError, e:
+      fb.error(("pyfontaine returned an error code. Output follows :"
+                "\n\n{}\n").format(e.output))
+    except OSError:
+      # This is made very prominent with additional line breaks
+      fb.warning("\n\n\npyfontaine is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine\n\n\n")
+
+
+def check_no_problematic_formats(fb, font):
+  fb.new_check("Check no problematic formats")
+  # See https://github.com/googlefonts/fontbakery/issues/617
+  # Font contains all required tables?
+  tables = set(font.reader.tables.keys())
+  glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
+  if (REQUIRED_TABLES | glyphs) - tables:
+    missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
+    desc = (("Font is missing required "
+             "tables: [{}]").format(', '.join(missing_tables)))
+    if OPTIONAL_TABLES & tables:
+      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+      desc += (" but includes "
+               "optional tables [{}]").format(', '.join(optional_tables))
+    fb.fixes.append(desc)
+  fb.log_results("Check no problematic formats. ", hotfix=False)
+
+
+def check_for_unwanted_tables(fb, font):
+  fb.new_check("Are there unwanted tables?")
+  unwanted_tables_found = []
+  for table in font.keys():
+    if table in UNWANTED_TABLES:
+      unwanted_tables_found.append(table)
+      del font[table]
+
+  if len(unwanted_tables_found) > 0:
+    if config['autofix']:
+      fb.hotfix(("Unwanted tables were present"
+                 " in the font and were removed:"
+                 " {}").format(', '.join(unwanted_tables_found)))
+    else:
+      fb.error(("Unwanted tables were found"
+                " in the font and should be removed:"
+                " {}").format(', '.join(unwanted_tables_found)))
+  else:
+    fb.ok("There are no unwanted tables.")
+
+
+def check_hinting_filesize_impact(fb, font_file, filename):
+  fb.new_check("Show hinting filesize impact")
+  # current implementation simply logs useful info
+  # but there's no fail scenario for this checker.
+  ttfautohint_missing = False
+  if webapp is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      statinfo = os.stat(font_file)
+      hinted_size = statinfo.st_size
+
+      dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
+      subprocess.call(["ttfautohint",
+                       "--dehint",
+                       font_file,
+                       dehinted.name])
+      statinfo = os.stat(dehinted.name)
+      dehinted_size = statinfo.st_size
+      os.unlink(dehinted.name)
+
+      if dehinted_size == 0:
+        fb.skip("ttfautohint --dehint reports that"
+                " 'This font has already been processed with ttfautohint'."
+                " This is a bug in an old version of ttfautohint."
+                " You'll need to upgrade it."
+                " See https://github.com/googlefonts/fontbakery/"
+                "issues/1043#issuecomment-249035069")
+      else:
+        increase = hinted_size - dehinted_size
+        change = float(hinted_size)/dehinted_size - 1
+        change = int(change*10000)/100.0  # round to 2 decimal pts percentage
+
+        def filesize_formatting(s):
+          if s < 1024:
+            return "{} bytes".format(s)
+          elif s < 1024*1024:
+            return "{}kb".format(s/1024)
+          else:
+            return "{}Mb".format(s/(1024*1024))
+
+        hinted_size = filesize_formatting(hinted_size)
+        dehinted_size = filesize_formatting(dehinted_size)
+        increase = filesize_formatting(increase)
+
+        results_table = "Hinting filesize impact:\n\n"
+        results_table += "|  | {} |\n".format(filename)
+        results_table += "|:--- | ---:| ---:|\n"
+        results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+        results_table += "| Hinted Size | {} |\n".format(hinted_size)
+        results_table += "| Increase | {} |\n".format(increase)
+        results_table += "| Change   | {} % |\n".format(change)
+        fb.info(results_table)
+
+    except OSError:
+      # This is made very prominent with additional line breaks
+      ttfautohint_missing = True
+      fb.warning("\n\n\nttfautohint is not available!"
+                 " You really MUST check the fonts with this tool."
+                 " To install it, see"
+                 " https://github.com/googlefonts"
+                 "/gf-docs/blob/master/"
+                 "ProjectChecklist.md#ttfautohint\n\n\n")
+  return ttfautohint_missing
+
+
+def check_version_format_is_correct_in_NAME_table(fb, font):
+  fb.new_check("Version format is correct in NAME table?")
+
+  def is_valid_version_format(value):
+    return re.match(r'Version\s0*[1-9]+\.\d+', value)
+
+  failed = False
+  version_entries = get_name_string(font, NAMEID_VERSION_STRING)
+  if len(version_entries) == 0:
+    failed = True
+    fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+              " entry").format(NAMEID_VERSION_STRING))
+  for ventry in version_entries:
+    if not is_valid_version_format(ventry):
+      failed = True
+      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
+                'follow the pattern Version X.Y between 1.000 and 9.999.'
+                ' Current value: {}').format(NAMEID_VERSION_STRING,
+                                             ventry))
+  if not failed:
+    fb.ok('Version format in NAME table entries is correct.')
+
+def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
+  fb.new_check("Font has old ttfautohint applied?")
+  ''' ----------------------------------------------------
+     Font has old ttfautohint applied ?
+
+     1. find which version was used, grepping the name table or reading
+        the ttfa table (which are created if the `-I` or `-t` args
+        respectively were passed to ttfautohint, to record its args in
+        the ttf file) (there is a pypi package
+        https://pypi.python.org/pypi/font-ttfa for reading the ttfa table,
+        although per https://github.com/source-foundry/font-ttfa/issues/1
+        it might be better to inline the code... :)
+
+     2. find which version of ttfautohint is installed
+        and warn if not available, similar to ots check above
+
+     3. rehint the font with the latest version of ttfautohint
+        using the same options
+  '''
+
+  def ttfautohint_version(values):
+    for value in values:
+      results = re.search(r'ttfautohint \(v(.*)\)', value)
+      if results:
+        return results.group(1)
+
+  def installed_ttfa_version(value):
+    return re.search(r'ttfautohint ([^-\n]*)(-.*)?\n', value).group(1)
+
+  def installed_version_is_newer(installed, used):
+    installed = map(int, installed.split("."))
+    used = map(int, used.split("."))
+    return installed > used
+
+  if ttfautohint_missing:
+    fb.skip("This check requires ttfautohint"
+            " to be available in the system.")
+  elif webapp is True:
+    fb.skip("This check is not supported on Google App Engine.")
+  else:
+    version_strings = get_name_string(font, NAMEID_VERSION_STRING)
+    ttfa_version = ttfautohint_version(version_strings)
+    if len(version_strings) == 0:
+      fb.error("This font file lacks mandatory "
+               "version strings in its name table.")
+    elif ttfa_version is None:
+      fb.info(("Could not detect which version of"
+               " ttfautohint was used in this font."
+               " It is typically specified as a comment"
+               " in the font version entry of the 'name' table."
+               " Font version string is: '{}'").format(version_strings[0]))
+    else:
+      ttfa_cmd = ["ttfautohint",
+                  "-V"]  # print version info
+      ttfa_output = subprocess.check_output(ttfa_cmd,
+                                            stderr=subprocess.STDOUT)
+      installed_ttfa = installed_ttfa_version(ttfa_output)
+      try:
+        if installed_version_is_newer(installed_ttfa,
+                                      ttfa_version):
+          fb.info(("Ttfautohint used in font = {};"
+                   " installed = {}; Need to re-run"
+                   " with the newer version!").format(ttfa_version,
+                                                      installed_ttfa))
+        else:
+          fb.ok("ttfautohint available in the system is older"
+                " than the one used in the font.")
+      except:
+        fb.error(("failed to parse ttfautohint version strings:\n"
+                  "  * installed = '{}'\n"
+                  "  * used = '{}'").format(installed_ttfa,
+                                            ttfa_version))
+
+
+def check_name_table_entries_do_not_contain_linebreaks(fb, font):
+  fb.new_check("Name table entries should not contain line-breaks")
+  failed = False
+  for name in font['name'].names:
+    string = name.string.decode(name.getEncoding())
+    if "\n" in string:
+      failed = True
+      fb.error(("Name entry {} on platform {} contains"
+                " a line-break.").format(NAMEID_STR[name.nameID],
+                                         PLATID_STR[name.platformID]))
+  if not failed:
+    fb.ok("Name table entries are all single-line (no line-breaks found).")
+
+
+def check_glyph_names_are_all_valid(fb, font):
+  fb.new_check("Glyph names are all valid?")
+  bad_names = []
+  for _, glyphName in enumerate(font.getGlyphOrder()):
+    if glyphName in ['.null', '.notdef']:
+      # These 2 names are explicit exceptions
+      # in the glyph naming rules
+      continue
+    if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
+      bad_names.append(glyphName)
+
+  if len(bad_names) == 0:
+    fb.ok('Glyph names are all valid.')
+  else:
+    fb.error(('The following glyph names do not comply'
+              ' with naming conventions: {}'
+              ' A glyph name may be up to 31 characters in length,'
+              ' must be entirely comprised of characters from'
+              ' the following set:'
+              ' A-Z a-z 0-9 .(period) _(underscore). and must not'
+              ' start with a digit or period.'
+              ' There are a few exceptions'
+              ' such as the special character ".notdef".'
+              ' The glyph names "twocents", "a1", and "_"'
+              ' are all valid, while'
+              ' "2cents" and ".twocents" are not.').format(bad_names))
+
+
+def check_font_has_unique_glyph_names(fb, font):
+  ''' Duplicate glyph names prevent font installation on Mac OS X.'''
+  fb.new_check("Font contains unique glyph names?")
+
+  glyphs = []
+  duplicated_glyphIDs = []
+  for _, g in enumerate(font.getGlyphOrder()):
+    glyphID = re.sub(r'#\w+', '', g)
+    if glyphID in glyphs:
+      duplicated_glyphIDs.append(glyphID)
+    else:
+      glyphs.append(glyphID)
+
+  if len(duplicated_glyphIDs) == 0:
+    fb.ok("Font contains unique glyph names.")
+  else:
+    fb.error(("The following glyph IDs"
+              " occur twice: {}").format(duplicated_glyphIDs))
+
+
+def check_no_glyph_is_incorrectly_named(fb, font):
+  fb.new_check("No glyph is incorrectly named?")
+  bad_glyphIDs = []
+  for _, g in enumerate(font.getGlyphOrder()):
+    if re.search(r'#\w+$', g):
+      bad_glyphIDs.append(glyphID)
+
+  if len(bad_glyphIDs) == 0:
+    fb.ok("Font does not have any incorrectly named glyph.")
+  else:
+    fb.error(("The following glyph IDs"
+              " are incorrectly named: {}").format(bad_glyphIDs))
+
+
+def check_EPAR_table_is_present(fb, font):
+  fb.new_check("EPAR table present in font?")
+  if 'EPAR' not in font:
+    fb.ok('EPAR table not present in font.'
+          ' To learn more see'
+          ' https://github.com/googlefonts/'
+          'fontbakery/issues/818')
+  else:
+    fb.ok("EPAR table present in font.")
+
+
+def check_GASP_table_is_correctly_set(fb, font):
+  fb.new_check("Is GASP table correctly set?")
+  try:
+    if not isinstance(font["gasp"].gaspRange, dict):
+      fb.error("GASP.gaspRange method value have wrong type")
+    else:
+      failed = False
+      if 0xFFFF not in font["gasp"].gaspRange:
+        fb.error("GASP does not have 0xFFFF gaspRange")
+      else:
+        for key in font["gasp"].gaspRange.keys():
+          if key != 0xFFFF:
+            fb.hotfix(("GASP shuld only have 0xFFFF gaspRange,"
+                       " but {} gaspRange was also found"
+                       " and has been removed.").format(hex(key)))
+            del font["gasp"].gaspRange[key]
+            failed = True
+          else:
+            value = font["gasp"].gaspRange[key]
+            if value != 0x0F:
+              failed = True
+              if config['autofix']:
+                font["gasp"].gaspRange[0xFFFF] = 0x0F
+                fb.hotfix("gaspRange[0xFFFF]"
+                          " value ({}) is not 0x0F".format(hex(value)))
+              else:
+                fb.error(" All flags in GASP range 0xFFFF (i.e. all font"
+                         " sizes) must be set to 1.\n"
+                         " Rationale:\n"
+                         " Traditionally version 0 GASP tables were set"
+                         " so that font sizes below 8 ppem had no grid"
+                         " fitting but did have antialiasing. From 9-16"
+                         " ppem, just grid fitting. And fonts above"
+                         " 17ppem had both antialiasing and grid fitting"
+                         " toggled on. The use of accelerated graphics"
+                         " cards and higher resolution screens make this"
+                         " appraoch obsolete. Microsoft's DirectWrite"
+                         " pushed this even further with much improved"
+                         " rendering built into the OS and apps. In this"
+                         " scenario it makes sense to simply toggle all"
+                         " 4 flags ON for all font sizes.")
+        if not failed:
+          fb.ok("GASP table is correctly set.")
+  except KeyError:
+    fb.error("Font is missing the GASP table."
+             " Try exporting the font with autohinting enabled.")
+
+
+def check_GPOS_table_has_kerning_info(fb, font):
+  fb.new_check("Does GPOS table have kerning information?")
+  try:
+    has_kerning_info = False
+    for lookup in font["GPOS"].table.LookupList.Lookup:
+      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+        has_kerning_info = True
+        break  # avoid reading all kerning info
+      elif lookup.LookupType == 9:
+        if lookup.SubTable[0].ExtensionLookupType == 2:
+          has_kerning_info = True
+          break
+    if not has_kerning_info:
+      fb.warning("GPOS table lacks kerning information")
+    else:
+      fb.ok("GPOS table has got kerning information.")
+  except KeyError:
+    fb.error('Font is missing a "GPOS" table')
+  return has_kerning_info
+
+
+def check_nonligated_sequences_kerning_info(fb, font, has_kerning_info):
+  ''' Fonts with ligatures should have kerning on the corresponding
+      non-ligated sequences for text where ligatures aren't used.
+  '''
+  fb.new_check("Is there kerning info for non-ligated sequences?")
+  if has_kerning_info is False:
+    fb.skip("This font lacks kerning info.")
+  else:
+    all_ligatures = {}
+    for lookup in font["GSUB"].table.LookupList.Lookup:
+      # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+      if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+        for subtable in lookup.SubTable:
+          for firstGlyph in subtable.ligatures.keys():
+            all_ligatures[firstGlyph] = []
+            for lig in subtable.ligatures[firstGlyph]:
+              if lig.Component[0] not in all_ligatures[firstGlyph]:
+                all_ligatures[firstGlyph].append(lig.Component[0])
+
+    def look_for_nonligated_kern_info(table):
+      for pairpos in table.SubTable:
+        for i, glyph in enumerate(pairpos.Coverage.glyphs):
+          if glyph in all_ligatures.keys():
+            try:
+              for pairvalue in pairpos.PairSet[i].PairValueRecord:
+                if pairvalue.SecondGlyph in all_ligatures[glyph]:
+                  del all_ligatures[glyph]
+            except:
+              # Sometimes for unknown reason an exception
+              # is raised for accessing pairpos.PairSet
+              pass
+
+    for lookup in font["GPOS"].table.LookupList.Lookup:
+      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+        look_for_nonligated_kern_info(lookup)
+      # elif lookup.LookupType == 9:
+      #   if lookup.SubTable[0].ExtensionLookupType == 2:
+      #     look_for_nonligated_kern_info(lookup.SubTable[0])
+
+    def ligatures_str(ligatures):
+      result = []
+      for first in ligatures:
+        result.extend(["{}_{}".format(first, second)
+                       for second in ligatures[first]])
+      return result
+
+    if all_ligatures != {}:
+      fb.error(("GPOS table lacks kerning info for the following"
+                " non-ligated sequences: "
+                "{}").format(ligatures_str(all_ligatures)))
+    else:
+      fb.ok("GPOS table provides kerning info for "
+            "all non-ligated sequences.")
+
+
+def check_there_is_no_KERN_table_in_the_font(fb, font):
+  fb.new_check("Is there a 'KERN' table declared in the font?")
+  try:
+    font["KERN"]
+    fb.error("Font should not have a 'KERN' table")
+  except KeyError:
+    fb.ok("Font does not declare a 'KERN' table.")
+
+
+def check_familyname_does_not_begin_with_a_digit(fb, font):
+  fb.new_check("Make sure family name"
+               " does not begin with a digit.")
+
+  failed = False
+  for name in get_name_string(font, NAMEID_FONT_FAMILY_NAME):
+    digits = map(str, range(0, 10))
+    if name[0] in digits:
+      fb.error(("Font family name '{}'"
+                " begins with a digit!").format(name))
+      failed = True
+  if failed is False:
+    fb.ok("Font family name first character is not a digit.")
+
+
+def check_fullfontname_begins_with_the_font_familyname(fb, font):
+  fb.new_check("Does full font name begin with the font family name?")
+  familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
+  fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
+
+  if len(familyname) == 0:
+    fb.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
+             ' in the name table.')
+  elif len(fullfontname) == 0:
+    fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
+             ' in the name table.')
+  else:
+    # we probably should check all found values are equivalent.
+    # and, in that case, then performing the rest of the check
+    # with only the first occurences of the name entries
+    # will suffice:
+    fullfontname = fullfontname[0]
+    familyname = familyname[0]
+
+    if not fullfontname.startswith(familyname):
+      fb.error(" On the NAME table, the full font name"
+               " (NameID {} - FULL_FONT_NAME: '{}')"
+               " does not begin with font family name"
+               " (NameID {} - FONT_FAMILY_NAME:"
+               " '{}')".format(NAMEID_FULL_FONT_NAME,
+                               familyname,
+                               NAMEID_FONT_FAMILY_NAME,
+                               fullfontname))
+    else:
+      fb.ok('Full font name begins with the font family name.')
+
+
+def check_unused_data_at_the_end_of_glyf_table(fb, font):
+  fb.new_check("Is there any unused data at the end of the glyf table?")
+  if 'CFF ' in font:
+    fb.skip("This check does not support CFF fonts.")
+  else:
+    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+    expected = len(font['loca']) - 1
+    actual = len(font['glyf'])
+    diff = actual - expected
+
+    # allow up to 3 bytes of padding
+    if diff > 3:
+      fb.error(("Glyf table has unreachable data at"
+                " the end of the table."
+                " Expected glyf table length {}"
+                " (from loca table), got length"
+                " {} (difference: {})").format(expected, actual, diff))
+    elif diff < 0:
+      fb.error(("Loca table references data beyond"
+                " the end of the glyf table."
+                " Expected glyf table length {}"
+                " (from loca table), got length"
+                " {} (difference: {})").format(expected, actual, diff))
+    else:
+      fb.ok("There is no unused data at"
+            " the end of the glyf table.")
+
+
+def check_font_has_EURO_SIGN_character(fb, font):
+  fb.new_check("Font has 'EURO SIGN' character?")
+
+  def font_has_char(font, c):
+    if c in font['cmap'].buildReversed():
+      return len(font['cmap'].buildReversed()[c]) > 0
+    else:
+      return False
+
+  if font_has_char(font, 'Euro'):
+    fb.ok("Font has 'EURO SIGN' character.")
+  else:
+    fb.error("Font lacks the '%s' character." % 'EURO SIGN')
+
 
 # ############################################################################
 # ############################################################################
@@ -1556,7 +2862,7 @@ def fontbakery_check_ttf(config):
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
 
-  check_all_files_in_a_single_directory(fb, config, fonts_to_check)
+  check_all_files_in_a_single_directory(fb, fonts_to_check)
 
   if in_memory is True:
     # At the moment we won't perform DESCRIPTION
@@ -1649,30 +2955,6 @@ def fontbakery_check_ttf(config):
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
-  def get_version_from_name_entry(name):
-    string = name.string.decode(name.getEncoding())
-    # we ignore any comments that
-    # may be present in the version name entries
-    if ";" in string:
-      string = string.split(";")[0]
-    # and we also ignore
-    # the 'Version ' prefix
-    if "Version " in string:
-      string = string.split("Version ")[1]
-    return string.split('.')
-
-  def get_expected_version(f):
-    expected_version = parse_version_string(fb, str(f['head'].fontRevision))
-    for name in f['name'].names:
-      if name.nameID == NAMEID_VERSION_STRING:
-        name_version = get_version_from_name_entry(name)
-        if expected_version is None:
-          expected_version = name_version
-        else:
-          if name_version > expected_version:
-            expected_version = name_version
-    return expected_version
-
   check_all_fontfiles_have_same_version(fb, fonts_to_check)
 
 ##########################################################################
@@ -1713,1245 +2995,52 @@ def fontbakery_check_ttf(config):
     found = check_font_has_a_license(fb, file_path)
     check_copyright_entries_match_license(fb, found, file_path, font)
     check_font_has_a_valid_license_url(fb, found, font)
+    check_description_strings_in_name_table(fb, font)
+    check_description_strings_do_not_exceed_100_chars(fb, font)
+
+    monospace_detected = check_font_is_truly_monospaced(fb, font)
+    check_if_xAvgCharWidth_is_correct(fb, font)
+    check_with_ftxvalidator(fb, font_file)
+    check_with_otsanitise(fb, font_file)
+
+    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
+    perform_all_fontforge_checks(fb, validation_state)
+
+    check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
+    check_Vertical_Metric_Linegaps(fb, font)
+    check_OS2_Metrics_match_hhea_Metrics(fb, font)
+    check_unitsPerEm_value_is_reasonable(fb, font)
+    check_font_version_fields(fb, font)
+    check_Digital_Signature_exists(fb, font, font_file)
+    check_font_contains_the_first_few_mandatory_glyphs(fb, font)
+
+    missing = check_font_contains_glyphs_for_whitespace_characters(fb, font)
+    check_font_has_proper_whitespace_glyph_names(fb, font, missing)
+    check_whitespace_glyphs_have_ink(fb, font, missing)
+    check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
+    check_with_pyfontaine(fb, font_file)
+    check_no_problematic_formats(fb, font)
+    check_for_unwanted_tables(fb, font)
+
+    ttfautohint_missing = \
+      check_hinting_filesize_impact(fb, font_file, filename)
+    check_version_format_is_correct_in_NAME_table(fb, font)
+    check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
+    check_name_table_entries_do_not_contain_linebreaks(fb, font)
+    check_glyph_names_are_all_valid(fb, font)
+    check_font_has_unique_glyph_names(fb, font)
+    check_no_glyph_is_incorrectly_named(fb, font)
+    check_EPAR_table_is_present(fb, font)
+    check_GASP_table_is_correctly_set(fb, font)
+
+    has_kerning_info = check_GPOS_table_has_kerning_info(fb, font)
+    check_nonligated_sequences_kerning_info(fb, font, has_kerning_info)
+    check_there_is_no_KERN_table_in_the_font(fb, font)
+    check_familyname_does_not_begin_with_a_digit(fb, font)
+    check_fullfontname_begins_with_the_font_familyname(fb, font)
+    check_unused_data_at_the_end_of_glyf_table(fb, font)
+    check_font_has_EURO_SIGN_character(fb, font)
 
-
-    # ----------------------------------------------------
-    fb.new_check(("Description strings in the name table (nameID = {}) must"
-                  " not contain copyright info.").format(NAMEID_DESCRIPTION))
-    failed = False
-    for name in font['name'].names:
-      if 'opyright' in name.string.decode(name.getEncoding())\
-         and name.nameID == NAMEID_DESCRIPTION:
-        failed = True
-        del name
-    if failed:
-      if config['autofix']:
-        fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                   " were removed (perhaps added by"
-                   " a longstanding FontLab Studio 5.x bug that"
-                   " copied copyright notices to them.)"
-                   "").format(NAMEID_DESCRIPTION))
-      else:
-        fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                  " should be removed (perhaps these were added by"
-                  " a longstanding FontLab Studio 5.x bug that"
-                  " copied copyright notices to them.)"
-                  "").format(NAMEID_DESCRIPTION))
-    else:
-      fb.ok("Description strings in the name table"
-            " do not contain any copyright string.")
-
-    # ----------------------------------------------------
-    fb.new_check(("Description strings in the name table (nameID = {}) must"
-                  " not exceed 100 characters").format(NAMEID_DESCRIPTION))
-    failed = False
-    for name in font['name'].names:
-      if len(name.string.decode(name.getEncoding())) > 100 \
-        and name.nameID == NAMEID_DESCRIPTION:
-        if config['autofix']:
-          del name
-        failed = True
-    if failed:
-      if config['autofix']:
-        fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                   " were removed because they"
-                   " were longer than 100 characters"
-                   ".").format(NAMEID_DESCRIPTION))
-      else:
-        fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                  " are longer than 100 characters"
-                  " and should be removed.").format(NAMEID_DESCRIPTION))
-    else:
-      fb.ok("Description name records do not exceed 100 characters.")
-
-    # ----------------------------------------------------
-    fb.new_check("Checking if the font is truly monospaced")
-    # There are various metadata in the OpenType spec to specify if
-    # a font is monospaced or not.
-    #
-    # The source of truth for if a font is monospaced is if 90% of all
-    # glyphs have the same width. If this is true then these metadata
-    # must be set.
-    #
-    # If not true, no monospaced metadata should be set (as sometimes
-    # they mistakenly are...)
-    #
-    # Monospace fonts must:
-    #
-    # * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
-    #   non-zero if the font is not proportionally spaced (monospaced)"
-    #   www.microsoft.com/typography/otspec/post.htm
-    #
-    # * hhea.advanceWidthMax must be correct, meaning no glyph's
-    #   width value is greater.
-    #   www.microsoft.com/typography/otspec/hhea.htm
-    #
-    # * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
-    #   "The PANOSE definition contains ten digits each of which currently
-    #   describes up to sixteen variations. Windows uses bFamilyType,
-    #   bSerifStyle and bProportion in the font mapper to determine
-    #   family type. It also uses bProportion to determine if the font
-    #   is monospaced."
-    #   www.microsoft.com/typography/otspec/os2.htm#pan
-    #   monotypecom-test.monotype.de/services/pan2
-    #
-    # * OS/2.xAverageWidth must be set accurately.
-    #   "OS/2.xAverageWidth IS used when rendering monospaced fonts,
-    #   at least by Windows GDI"
-    #   http://typedrawers.com/discussion/comment/15397/#Comment_15397
-    #
-    # Also we should report an error for glyphs not of average width
-    glyphs = font['glyf'].glyphs
-    width_occurrences = {}
-    width_max = 0
-    # count how many times a width occurs
-    for glyph_id in glyphs:
-        width = font['hmtx'].metrics[glyph_id][0]
-        width_max = max(width, width_max)
-        try:
-            width_occurrences[width] += 1
-        except KeyError:
-            width_occurrences[width] = 1
-    # find the most_common_width
-    occurrences = 0
-    for width in width_occurrences.keys():
-        if width_occurrences[width] > occurrences:
-            occurrences = width_occurrences[width]
-            most_common_width = width
-    # if more than 80% of glyphs have the same width, set monospaced metadata
-    monospace_detected = occurrences > 0.80 * len(glyphs)
-    if monospace_detected:
-        fb.assert_table_entry('post',
-                              'isFixedPitch',
-                              IS_FIXED_WIDTH_MONOSPACED)
-        fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        fb.assert_table_entry('OS/2',
-                              'panose.bProportion',
-                              PANOSE_PROPORTION_MONOSPACED)
-        outliers = len(glyphs) - occurrences
-        if outliers > 0:
-            # If any glyphs are outliers, note them
-            unusually_spaced_glyphs = \
-             [g for g in glyphs
-              if font['hmtx'].metrics[g][0] != most_common_width]
-            outliers_percentage = 100 - (100.0 * occurrences/len(glyphs))
-
-            for glyphname in ['.notdef', '.null', 'NULL']:
-              if glyphname in unusually_spaced_glyphs:
-                unusually_spaced_glyphs.remove(glyphname)
-
-            fb.log_results(("Font is monospaced but {} glyphs"
-                            " ({}%) have a different width."
-                            " You should check the widths of: {}").format(
-                              outliers,
-                              outliers_percentage,
-                              unusually_spaced_glyphs))
-        else:
-            fb.log_results("Font is monospaced.")
-    else:
-        # it is not monospaced, so unset monospaced metadata
-        fb.assert_table_entry('post',
-                              'isFixedPitch',
-                              IS_FIXED_WIDTH_NOT_MONOSPACED)
-        fb.assert_table_entry('hhea', 'advanceWidthMax', width_max)
-        if font['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
-            fb.assert_table_entry('OS/2',
-                                  'panose.bProportion',
-                                  PANOSE_PROPORTION_ANY)
-        fb.log_results("Font is not monospaced.")
-
-    # ----------------------------------------------------
-    fb.new_check("Check if xAvgCharWidth is correct.")
-    if font['OS/2'].version >= 3:
-      width_sum = 0
-      count = 0
-      for glyph_id in font['glyf'].glyphs:
-        width = font['hmtx'].metrics[glyph_id][0]
-        if width > 0:
-          count += 1
-          width_sum += width
-      if count == 0:
-        fb.error("CRITICAL: Found no glyph width data!")
-      else:
-        expected_value = int(round(width_sum) / count)
-        if font['OS/2'].xAvgCharWidth == expected_value:
-          fb.ok("xAvgCharWidth is correct.")
-        else:
-          fb.error(("xAvgCharWidth is {} but should be "
-                    "{} which corresponds to the "
-                    "average of all glyph widths "
-                    "in the font").format(font['OS/2'].xAvgCharWidth,
-                                          expected_value))
-    else:
-      weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
-                       'e': 100, 'f': 20, 'g': 14, 'h': 42,
-                       'i': 63, 'j': 3, 'k': 6, 'l': 35,
-                       'm': 20, 'n': 56, 'o': 56, 'p': 17,
-                       'q': 4, 'r': 49, 's': 56, 't': 71,
-                       'u': 31, 'v': 10, 'w': 18, 'x': 3,
-                       'y': 18, 'z': 2, 'space': 166}
-      width_sum = 0
-      for glyph_id in font['glyf'].glyphs:
-        width = font['hmtx'].metrics[glyph_id][0]
-        if glyph_id in weightFactors.keys():
-          width_sum += (width*weightFactors[glyph_id])
-      expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
-      if font['OS/2'].xAvgCharWidth == expected_value:
-        fb.ok("xAvgCharWidth value is correct.")
-      else:
-        fb.error(("xAvgCharWidth is {} but it should be "
-                  "{} which corresponds to the weighted "
-                  "average of the widths of the latin "
-                  "lowercase glyphs in "
-                  "the font").format(font['OS/2'].xAvgCharWidth,
-                                     expected_value))
-
-    # ----------------------------------------------------
-    fb.new_check("Checking with ftxvalidator")
-    if webapp is True:
-      fb.skip("Subprocess is unsupported on Google App Engine")
-    else:
-      try:
-        ftx_cmd = ["ftxvalidator",
-                   "-t", "all",  # execute all tests
-                   font_file]
-        ftx_output = subprocess.check_output(ftx_cmd,
-                                             stderr=subprocess.STDOUT)
-
-        ftx_data = plistlib.readPlistFromString(ftx_output)
-        # we accept kATSFontTestSeverityInformation
-        # and kATSFontTestSeverityMinorError
-        if 'kATSFontTestSeverityFatalError' \
-           not in ftx_data['kATSFontTestResultKey']:
-          fb.ok("ftxvalidator passed this file")
-        else:
-          ftx_cmd = ["ftxvalidator",
-                     "-T",  # Human-readable output
-                     "-r",  # Generate a full report
-                     "-t", "all",  # execute all tests
-                     font_file]
-          ftx_output = subprocess.check_output(ftx_cmd,
-                                               stderr=subprocess.STDOUT)
-          fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
-
-      except subprocess.CalledProcessError, e:
-          fb.info(("ftxvalidator returned an error code. Output follows :"
-                   "\n\n{}\n").format(e.output))
-      except OSError:
-        fb.warning("ftxvalidator is not available!")
-        pass
-
-    # ----------------------------------------------------
-    fb.new_check("Checking with ot-sanitise")
-    if webapp is True:
-      fb.skip("Subprocess is unsupported on Google App Engine")
-    else:
-      try:
-        ots_output = subprocess.check_output(["ot-sanitise", font_file],
-                                             stderr=subprocess.STDOUT)
-        if ots_output != "":
-          fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
-        else:
-          fb.ok("ot-sanitise passed this file")
-      except subprocess.CalledProcessError, e:
-          fb.error(("ot-sanitise returned an error code. Output follows :"
-                    "\n\n{}\n").format(e.output))
-      except OSError:
-        # This is made very prominent with additional line breaks
-        fb.warning("\n\n\not-santise is not available!"
-                   " You really MUST check the fonts with this tool."
-                   " To install it, see"
-                   " https://github.com/googlefonts"
-                   "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
-        pass
-
-    # ----------------------------------------------------
-    try:
-      import fontforge
-    except ImportError:
-      logging.warning("fontforge python module is not available!"
-                      " To install it, see"
-                      " https://github.com/googlefonts/"
-                      "gf-docs/blob/master/ProjectChecklist.md#fontforge")
-      pass
-
-    try:
-      fb.new_check("fontforge validation outputs error messages?")
-      if "adobeblank" in font_file:
-        fb.skip("Skipping AdobeBlank since"
-                " this font is a very peculiar hack.")
-      else:
-        # temporary stderr redirection:
-        ff_err = os.tmpfile()
-
-        # we do not redirect stderr on Travis because
-        # it's making it think the build failed.
-        # I'm not exactly sure why does it happen, but for now we'll
-        # workaround the issue by not capturing stderr messages
-        # when running on Travis.
-        if 'TRAVIS' not in os.environ:
-          stderr_backup = os.dup(2)
-          os.close(2)
-          os.dup2(ff_err.fileno(), 2)
-
-        # invoke font validation
-        # via fontforge python module:
-        fontforge_font = fontforge.open(font_file)
-        validation_state = fontforge_font.validate()
-
-        if 'TRAVIS' not in os.environ:
-          # restore default stderr:
-          os.dup2(stderr_backup, 2)
-          sys.stderr = os.fdopen(2, 'w', 0)
-
-        # handle captured stderr messages:
-        ff_err.flush()
-        ff_err.seek(0, os.SEEK_SET)
-        ff_err_messages = ff_err.read()
-        filtered_err_msgs = ""
-        for line in ff_err_messages.split('\n'):
-          if 'The following table(s) in the font' \
-             ' have been ignored by FontForge' in line:
-            continue
-          if "Ignoring 'DSIG' digital signature table" in line:
-            continue
-          filtered_err_msgs += line + '\n'
-
-        if len(filtered_err_msgs.strip()) > 0:
-          fb.error(("fontforge did print these messages to stderr:\n"
-                    "{}").format(filtered_err_msgs))
-        else:
-          fb.ok("fontforge validation did not output any error message.")
-        ff_err.close()
-
-        def ff_check(condition, description, err_msg, ok_msg):
-          fb.new_check("fontforge-check: {}".format(description))
-          if condition is False:
-            fb.error("fontforge-check: {}".format(err_msg))
-          else:
-            fb.ok("fontforge-check: {}".format(ok_msg))
-
-        ff_check("Contours are closed?",
-                 bool(validation_state & 0x2) is False,
-                 "Contours are not closed!",
-                 "Contours are closed.")
-
-        ff_check("Contours do not intersect",
-                 bool(validation_state & 0x4) is False,
-                 "There are countour intersections!",
-                 "Contours do not intersect.")
-
-        ff_check("Contours have correct directions",
-                 bool(validation_state & 0x8) is False,
-                 "Contours have incorrect directions!",
-                 "Contours have correct directions.")
-
-        ff_check("References in the glyph haven't been flipped",
-                 bool(validation_state & 0x10) is False,
-                 "References in the glyph have been flipped!",
-                 "References in the glyph haven't been flipped.")
-
-        ff_check("Glyphs have points at extremas",
-                 bool(validation_state & 0x20) is False,
-                 "Glyphs do not have points at extremas!",
-                 "Glyphs have points at extremas.")
-
-        ff_check("Glyph names referred to from glyphs present in the font",
-                 bool(validation_state & 0x40) is False,
-                 "Glyph names referred to from glyphs"
-                 " not present in the font!",
-                 "Glyph names referred to from glyphs"
-                 " present in the font.")
-
-        ff_check("Points (or control points) are not too far apart",
-                 bool(validation_state & 0x40000) is False,
-                 "Points (or control points) are too far apart!",
-                 "Points (or control points) are not too far apart.")
-
-        ff_check("Not more than 1,500 points in any glyph"
-                 " (a PostScript limit)",
-                 bool(validation_state & 0x80) is False,
-                 "There are glyphs with more than 1,500 points!"
-                 "Exceeds a PostScript limit.",
-                 "Not more than 1,500 points in any glyph"
-                 " (a PostScript limit).")
-
-        ff_check("PostScript has a limit of 96 hints in glyphs",
-                 bool(validation_state & 0x100) is False,
-                 "Exceeds PostScript limit of 96 hints per glyph",
-                 "Font respects PostScript limit of 96 hints per glyph")
-
-        ff_check("Font doesn't have invalid glyph names",
-                 bool(validation_state & 0x200) is False,
-                 "Font has invalid glyph names!",
-                 "Font doesn't have invalid glyph names.")
-
-        ff_check("Glyphs have allowed numbers of points defined in maxp",
-                 bool(validation_state & 0x400) is False,
-                 "Glyphs exceed allowed numbers of points defined in maxp",
-                 "Glyphs have allowed numbers of points defined in maxp.")
-
-        ff_check("Glyphs have allowed numbers of paths defined in maxp",
-                 bool(validation_state & 0x800) is False,
-                 "Glyphs exceed allowed numbers of paths defined in maxp!",
-                 "Glyphs have allowed numbers of paths defined in maxp.")
-
-        ff_check("Composite glyphs have allowed numbers"
-                 " of points defined in maxp?",
-                 bool(validation_state & 0x1000) is False,
-                 "Composite glyphs exceed allowed numbers"
-                 " of points defined in maxp!",
-                 "Composite glyphs have allowed numbers"
-                 " of points defined in maxp.")
-
-        ff_check("Composite glyphs have allowed numbers"
-                 " of paths defined in maxp",
-                 bool(validation_state & 0x2000) is False,
-                 "Composite glyphs exceed"
-                 " allowed numbers of paths defined in maxp!",
-                 "Composite glyphs have"
-                 " allowed numbers of paths defined in maxp.")
-
-        ff_check("Glyphs instructions have valid lengths",
-                 bool(validation_state & 0x4000) is False,
-                 "Glyphs instructions have invalid lengths!",
-                 "Glyphs instructions have valid lengths.")
-
-        ff_check("Points in glyphs are integer aligned",
-                 bool(validation_state & 0x80000) is False,
-                 "Points in glyphs are not integer aligned!",
-                 "Points in glyphs are integer aligned.")
-
-        # According to the opentype spec, if a glyph contains an anchor point
-        # for one anchor class in a subtable, it must contain anchor points
-        # for all anchor classes in the subtable. Even it, logically,
-        # they do not apply and are unnecessary.
-        ff_check("Glyphs have all required anchors.",
-                 bool(validation_state & 0x100000) is False,
-                 "Glyphs do not have all required anchors!",
-                 "Glyphs have all required anchors.")
-
-        ff_check("Glyph names are unique?",
-                 bool(validation_state & 0x200000) is False,
-                 "Glyph names are not unique!",
-                 "Glyph names are unique.")
-
-        ff_check("Unicode code points are unique?",
-                 bool(validation_state & 0x400000) is False,
-                 "Unicode code points are not unique!",
-                 "Unicode code points are unique.")
-
-        ff_check("Do hints overlap?",
-                 bool(validation_state & 0x800000) is False,
-                 "Hints should NOT overlap!",
-                 "Hinds do not overlap.")
-    except:
-      fb.error(('fontforge python module could'
-                ' not open {}').format(font_file))
-
-    # ----------------------------------------------------
-    fb.new_check("Checking OS/2 usWinAscent & usWinDescent")
-    # OS/2 usWinAscent:
-    fb.assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
-    # OS/2 usWinDescent:
-    fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
-    fb.log_results("OS/2 usWinAscent & usWinDescent")
-
-    # ----------------------------------------------------
-    fb.new_check("Checking Vertical Metric Linegaps")
-    if font['hhea'].lineGap != 0:
-      fb.warning(("hhea lineGap is not equal to 0"))
-    elif font['OS/2'].sTypoLineGap != 0:
-      fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
-    elif font['OS/2'].sTypoLineGap != font['hhea'].lineGap:
-      fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
-    else:
-      fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
-
-   # ----------------------------------------------------
-    fb.new_check("Checking OS/2 Metrics match hhea Metrics")
-    # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
-    if font['OS/2'].sTypoAscender != font['hhea'].ascent:
-      fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
-    elif font['OS/2'].sTypoDescender != font['hhea'].descent:
-      fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
-    else:
-      fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
-            "and descent")
-
-    # ----------------------------------------------------
-    fb.new_check("Checking unitsPerEm value is reasonable.")
-    upem = font['head'].unitsPerEm
-    target_upem = [2**i for i in range(4, 15)]
-    target_upem.insert(0, 1000)
-    if upem not in target_upem:
-      fb.error(("The value of unitsPerEm at the head table"
-                " must be either 1000 or a power of "
-                "2 between 16 to 16384."
-                " Got '{}' instead.").format(upem))
-    else:
-      fb.ok("unitsPerEm value on the 'head' table is reasonable.")
-
-    # ----------------------------------------------------
-    def version_is_newer(a, b):
-      a = map(int, a.split("."))
-      b = map(int, b.split("."))
-      return a > b
-
-    # ----------------------------------------------------
-    fb.new_check("Checking font version fields")
-    failed = False
-    try:
-      expected = get_expected_version(font)
-    except:
-      expected = None
-      fb.error("failed to parse font version entries in the name table.")
-
-    if expected is None:
-      failed = True
-      fb.error("Could not find any font versioning info on the head table"
-               " or in the name table entries.")
-    else:
-      font_revision = str(font['head'].fontRevision)
-      expected_str = "{}.{}".format(expected[0],
-                                    expected[1])
-      if font_revision != expected_str:
-        failed = True
-        fb.error(("Font revision on the head table ({})"
-                  " differs from the expected value ({})"
-                  "").format(font_revision, expected))
-
-      expected_str = "Version {}.{}".format(expected[0],
-                                            expected[1])
-      for name in font['name'].names:
-        if name.nameID == NAMEID_VERSION_STRING:
-          name_version = name.string.decode(name.getEncoding())
-          # change Version 1.007 -> 1.007
-          version_stripped = r'(?<=[V|v]ersion )([0-9]{1,4}\.[0-9]{1,5})'
-          version_without_comments = re.search(version_stripped,
-                                               name_version).group(0)
-          comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
-          if version_without_comments != expected_str:
-            # maybe the version strings differ only
-            # on floating-point error, so let's
-            # also give it a change by rounding and re-checking...
-
-            try:
-              rounded_string = round(float(version_without_comments), 3)
-              version = round(float(".".join(expected)), 3)
-              if rounded_string != version:
-                failed = True
-                if comments:
-                  fix = "{};{}".format(expected_str, comments)
-                else:
-                  fix = expected_str
-                if config['autofix']:
-                  fb.hotfix(("NAMEID_VERSION_STRING "
-                             "from '{}' to '{}'"
-                             "").format(name_version, fix))
-                  name.string = fix.encode(name.getEncoding())
-                else:
-                  fb.error(("NAMEID_VERSION_STRING value '{}'"
-                            " does not match expected '{}'"
-                            "").format(name_version, fix))
-            except:
-              failed = True  # give up. it's definitely bad :(
-              fb.error("Unable to parse font version info"
-                       " from name table entries.")
-    if not failed:
-      fb.ok("All font version fields look good.")
-
-    # ----------------------------------------------------
-    fb.new_check("Digital Signature exists?")
-    if "DSIG" in font:
-        fb.ok("Digital Signature (DSIG) exists.")
-    else:
-        try:
-            if config['autofix']:
-                from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
-                newDSIG = ttLib.newTable("DSIG")
-                newDSIG.ulVersion = 1
-                newDSIG.usFlag = 1
-                newDSIG.usNumSigs = 1
-                sig = SignatureRecord()
-                sig.ulLength = 20
-                sig.cbSignature = 12
-                sig.usReserved2 = 0
-                sig.usReserved1 = 0
-                sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
-                sig.ulFormat = 1
-                sig.ulOffset = 20
-                newDSIG.signatureRecords = [sig]
-                font.tables["DSIG"] = newDSIG
-                fb.hotfix("The font does not have an existing digital"
-                          " signature (DSIG), so we just added a dummy"
-                          " placeholder that should be enough for the"
-                          " applications that require its presence in"
-                          " order to work properly.")
-            else:
-                fb.error("This font lacks a digital signature (DSIG table)."
-                         " Some applications may require one (even if only a"
-                         " dummy placeholder) in order to work properly.")
-
-        except ImportError:
-            error_message = ("The '{}' font does not have an existing"
-                             " digital signature (DSIG), so OpenType features"
-                             " will not be available in some applications that"
-                             " use its presense as a (stupid) heuristic."
-                             " So we need to add one. But for that we'll need"
-                             " Fonttools v2.3+ so you need to upgrade it. Try:"
-                             " $ pip install --upgrade fontTools; or see"
-                             " https://pypi.python.org/pypi/FontTools")
-            fb.error(error_message.format(font_file))
-
-    # ----------------------------------------------------
-    fb.new_check("Font contains the first few mandatory glyphs"
-                 " (.null or NULL, CR and space)?")
-    # It would be good to also check
-    # for .notdef (codepoint = unspecified)
-    null = getGlyph(font, 0x0000)
-    CR = getGlyph(font, 0x000D)
-    space = getGlyph(font, 0x0020)
-
-    missing = []
-    if null is None: missing.append("0x0000")
-    if CR is None: missing.append("0x000D")
-    if space is None: missing.append("0x0020")
-    if missing != []:
-        fb.error(("Font is missing glyphs for"
-                  " the following mandatory codepoints:"
-                  " {}.").format(", ".join(missing)))
-    else:
-        fb.ok("Font contains the first few mandatory glyphs"
-              " (.null or NULL, CR and space).")
-
-    # ----------------------------------------------------
-    fb.new_check("Font contains glyphs for whitespace characters?")
-    space = getGlyph(font, 0x0020)
-    nbsp = getGlyph(font, 0x00A0)
-    # tab = getGlyph(font, 0x0009)
-
-    missing = []
-    if space is None: missing.append("0x0020")
-    if nbsp is None: missing.append("0x00A0")
-    # fonts probably don't need an actual tab char
-    # if tab is None: missing.append("0x0009")
-    if missing != []:
-        fb.error(("Whitespace glyphs missing for"
-                  " the following codepoints:"
-                  " {}.").format(", ".join(missing)))
-    else:
-        fb.ok("Font contains glyphs for whitespace characters.")
-
-    # ----------------------------------------------------
-    fb.new_check("Font has **proper** whitespace glyph names?")
-    if missing != []:
-      fb.skip("Because some whitespace glyphs are missing. Fix that before!")
-    elif font['post'].formatType == 3.0:
-      fb.skip("Font has version 3 post table.")
-      # Any further checks for glyph names are pointless
-      # because you are really checking names generated by FontTools
-      # (or whatever else) that are not actually present in the font.
-    else:
-      failed = False
-      space_enc = getGlyphEncodings(font, ["uni0020", "space"])
-      nbsp_enc = getGlyphEncodings(font, ["uni00A0",
-                                          "nonbreakingspace",
-                                          "nbspace",
-                                          "nbsp"])
-      if 0x0020 not in space_enc:
-        failed = True
-        fb.error(('Glyph 0x0020 is called "{}":'
-                  ' Change to "space"'
-                  ' or "uni0020"').format(space))
-
-      if 0x00A0 not in nbsp_enc:
-        if 0x00A0 in space_enc:
-          # This is OK.
-          # Some fonts use the same glyph for both space and nbsp.
-          pass
-        else:
-          failed = True
-          fb.error(('Glyph 0x00A0 is called "{}":'
-                    ' Change to "nbsp"'
-                    ' or "uni00A0"').format(nbsp))
-
-      if failed is False:
-        fb.ok('Font has **proper** whitespace glyph names.')
-
-    # ----------------------------------------------------
-    fb.new_check("Whitespace glyphs have ink?")
-    if missing != []:
-      fb.skip("Because some whitespace glyphs are missing. Fix that before!")
-    else:
-      failed = False
-      for codepoint in WHITESPACE_CHARACTERS:
-        g = getGlyph(font, codepoint)
-        if g is not None and glyphHasInk(font, g):
-          failed = True
-          if config['autofix']:
-            fb.hotfix(('Glyph "{}" has ink.'
-                       ' Fixed: Overwritten by'
-                       ' an empty glyph').format(g))
-            # overwrite existing glyph with an empty one
-            font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
-          else:
-            fb.error(('Glyph "{}" has ink.'
-                      ' It needs to be replaced by'
-                      ' an empty glyph').format(g))
-      if not failed:
-        fb.ok("There is no whitespace glyph with ink.")
-
-    # ----------------------------------------------------
-    fb.new_check("Whitespace glyphs have coherent widths?")
-    if missing != []:
-      fb.skip("Because some mandatory whitespace glyphs"
-              " are missing. Fix that before!")
-    else:
-      spaceWidth = getWidth(font, space)
-      nbspWidth = getWidth(font, nbsp)
-
-      if spaceWidth != nbspWidth or nbspWidth < 0:
-        setWidth(font, nbsp, min(nbspWidth, spaceWidth))
-        setWidth(font, space, min(nbspWidth, spaceWidth))
-
-        if nbspWidth > spaceWidth and spaceWidth >= 0:
-          if config['autofix']:
-            msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
-            fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
-          else:
-            msg = ('space {} nbsp {}: Space advanceWidth'
-                   ' needs to be fixed to {}')
-            fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
-        else:
-          if config['autofix']:
-            msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-            fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
-          else:
-            msg = ('space {} nbsp {}: Nbsp advanceWidth'
-                   ' needs to be fixed to {}')
-            fb.error(msg.format(spaceWidth, nbspWidth, spaceWidth))
-      else:
-        fb.ok("Whitespace glyphs have coherent widths.")
-
-    # ----------------------------------------------------
-    fb.new_check("Checking with pyfontaine")
-    if webapp is True:
-      fb.skip("Subprocess is unsupported on Google App Engine")
-    else:
-      try:
-        fontaine_output = subprocess.check_output(["pyfontaine",
-                                                   "--missing",
-                                                   "--set", "gwf_latin",
-                                                   font_file],
-                                                  stderr=subprocess.STDOUT)
-        if "Support level: full" not in fontaine_output:
-          fb.error(("pyfontaine output follows:\n\n"
-                    "{}\n").format(fontaine_output))
-        else:
-          fb.ok("pyfontaine passed this file")
-      except subprocess.CalledProcessError, e:
-          fb.error(("pyfontaine returned an error code. Output follows :"
-                    "\n\n{}\n").format(e.output))
-      except OSError:
-        # This is made very prominent with additional line breaks
-        fb.warning("\n\n\npyfontaine is not available!"
-                   " You really MUST check the fonts with this tool."
-                   " To install it, see"
-                   " https://github.com/googlefonts"
-                   "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine\n\n\n")
-        pass
-
-    # ------------------------------------------------------
-    fb.new_check("Check no problematic formats")
-    # See https://github.com/googlefonts/fontbakery/issues/617
-    # Font contains all required tables?
-    tables = set(font.reader.tables.keys())
-    glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
-    if (REQUIRED_TABLES | glyphs) - tables:
-        missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
-        desc = (("Font is missing required "
-                 "tables: [{}]").format(', '.join(missing_tables)))
-        if OPTIONAL_TABLES & tables:
-            optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
-            desc += (" but includes "
-                     "optional tables [{}]").format(', '.join(optional_tables))
-        fb.fixes.append(desc)
-    fb.log_results("Check no problematic formats. ", hotfix=False)
-
-    # ------------------------------------------------------
-    fb.new_check("Are there unwanted tables?")
-    unwanted_tables_found = []
-    for table in font.keys():
-      if table in UNWANTED_TABLES:
-        unwanted_tables_found.append(table)
-        del font[table]
-
-    if len(unwanted_tables_found) > 0:
-      if config['autofix']:
-        fb.hotfix(("Unwanted tables were present"
-                   " in the font and were removed:"
-                   " {}").format(', '.join(unwanted_tables_found)))
-      else:
-        fb.error(("Unwanted tables were found"
-                  " in the font and should be removed:"
-                  " {}").format(', '.join(unwanted_tables_found)))
-    else:
-      fb.ok("There are no unwanted tables.")
-
-    # ------------------------------------------------------
-    fb.new_check("Show hinting filesize impact")
-    # current implementation simply logs useful info
-    # but there's no fail scenario for this checker.
-    ttfautohint_missing = False
-    if webapp is True:
-      fb.skip("Subprocess is unsupported on Google App Engine")
-    else:
-      try:
-        statinfo = os.stat(font_file)
-        hinted_size = statinfo.st_size
-
-        dehinted = tempfile.NamedTemporaryFile(suffix=".ttf",
-                                               delete=False)
-        subprocess.call(["ttfautohint",
-                         "--dehint",
-                         font_file,
-                         dehinted.name])
-        statinfo = os.stat(dehinted.name)
-        dehinted_size = statinfo.st_size
-        os.unlink(dehinted.name)
-
-        if dehinted_size == 0:
-          fb.skip("ttfautohint --dehint reports that"
-                  " 'This font has already been processed with ttfautohint'."
-                  " This is a bug in an old version of ttfautohint."
-                  " You'll need to upgrade it."
-                  " See https://github.com/googlefonts/fontbakery/"
-                  "issues/1043#issuecomment-249035069")
-        else:
-          increase = hinted_size - dehinted_size
-          change = float(hinted_size)/dehinted_size - 1
-          change = int(change*10000)/100.0  # round to 2 decimal pts percentage
-
-          def filesize_formatting(s):
-              if s < 1024:
-                  return "{} bytes".format(s)
-              elif s < 1024*1024:
-                  return "{}kb".format(s/1024)
-              else:
-                  return "{}Mb".format(s/(1024*1024))
-
-          hinted_size = filesize_formatting(hinted_size)
-          dehinted_size = filesize_formatting(dehinted_size)
-          increase = filesize_formatting(increase)
-
-          results_table = "Hinting filesize impact:\n\n"
-          results_table += "|  | {} |\n".format(filename)
-          results_table += "|:--- | ---:| ---:|\n"
-          results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
-          results_table += "| Hinted Size | {} |\n".format(hinted_size)
-          results_table += "| Increase | {} |\n".format(increase)
-          results_table += "| Change   | {} % |\n".format(change)
-          fb.info(results_table)
-
-      except OSError:
-        # This is made very prominent with additional line breaks
-        ttfautohint_missing = True
-        fb.warning("\n\n\nttfautohint is not available!"
-                   " You really MUST check the fonts with this tool."
-                   " To install it, see"
-                   " https://github.com/googlefonts"
-                   "/gf-docs/blob/master/"
-                   "ProjectChecklist.md#ttfautohint\n\n\n")
-        pass
-
-    # ----------------------------------------------------
-    fb.new_check("Version format is correct in NAME table?")
-
-    def is_valid_version_format(value):
-      return re.match(r'Version\s0*[1-9]+\.\d+', value)
-
-    failed = False
-    version_entries = get_name_string(font, NAMEID_VERSION_STRING)
-    if len(version_entries) == 0:
-      failed = True
-      fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-                " entry").format(NAMEID_VERSION_STRING))
-    for ventry in version_entries:
-      if not is_valid_version_format(ventry):
-        failed = True
-        fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
-                  'follow the pattern Version X.Y between 1.000 and 9.999.'
-                  ' Current value: {}').format(NAMEID_VERSION_STRING,
-                                               ventry))
-    if not failed:
-      fb.ok('Version format in NAME table entries is correct.')
-
-    # ----------------------------------------------------
-    # Font has old ttfautohint applied ?
-    #
-    # 1. find which version was used, grepping the name table or reading
-    #    the ttfa table (which are created if the `-I` or `-t` args
-    #    respectively were passed to ttfautohint, to record its args in
-    #    the ttf file) (there is a pypi package
-    #    https://pypi.python.org/pypi/font-ttfa for reading the ttfa table,
-    #    although per https://github.com/source-foundry/font-ttfa/issues/1
-    #    it might be better to inline the code... :)
-    #
-    # 2. find which version of ttfautohint is installed
-    #    and warn if not available, similar to ots check above
-    #
-    # 3. rehint the font with the latest version of ttfautohint
-    #    using the same options
-    fb.new_check("Font has old ttfautohint applied?")
-
-    def ttfautohint_version(values):
-      for value in values:
-        results = re.search(r'ttfautohint \(v(.*)\)', value)
-        if results:
-          return results.group(1)
-
-    def installed_ttfa_version(value):
-      return re.search(r'ttfautohint ([^-\n]*)(-.*)?\n', value).group(1)
-
-    def installed_version_is_newer(installed, used):
-      installed = map(int, installed.split("."))
-      used = map(int, used.split("."))
-      return installed > used
-
-    if ttfautohint_missing:
-      fb.skip("This check requires ttfautohint"
-              " to be available in the system.")
-    elif webapp is True:
-      fb.skip("This check is not supported on Google App Engine.")
-    else:
-      version_strings = get_name_string(font, NAMEID_VERSION_STRING)
-      ttfa_version = ttfautohint_version(version_strings)
-      if len(version_strings) == 0:
-        fb.error("This font file lacks mandatory "
-                 "version strings in its name table.")
-      elif ttfa_version is None:
-        fb.info(("Could not detect which version of"
-                 " ttfautohint was used in this font."
-                 " It is typically specified as a comment"
-                 " in the font version entry of the 'name' table."
-                 " Font version string is: '{}'").format(version_strings[0]))
-      else:
-        ttfa_cmd = ["ttfautohint",
-                    "-V"]  # print version info
-        ttfa_output = subprocess.check_output(ttfa_cmd,
-                                              stderr=subprocess.STDOUT)
-        installed_ttfa = installed_ttfa_version(ttfa_output)
-        try:
-          if installed_version_is_newer(installed_ttfa,
-                                        ttfa_version):
-            fb.info(("Ttfautohint used in font = {};"
-                     " installed = {}; Need to re-run"
-                     " with the newer version!").format(ttfa_version,
-                                                        installed_ttfa))
-          else:
-            fb.ok("ttfautohint available in the system is older"
-                  " than the one used in the font.")
-        except:
-          fb.error(("failed to parse ttfautohint version strings:\n"
-                    "  * installed = '{}'\n"
-                    "  * used = '{}'").format(installed_ttfa,
-                                              ttfa_version))
-
-    # ----------------------------------------------------
-    fb.new_check("Name table entries should not contain line-breaks")
-    failed = False
-    for name in font['name'].names:
-      string = name.string.decode(name.getEncoding())
-      if "\n" in string:
-        failed = True
-        fb.error(("Name entry {} on platform {} contains"
-                  " a line-break.").format(NAMEID_STR[name.nameID],
-                                           PLATID_STR[name.platformID]))
-
-    if not failed:
-      fb.ok("Name table entries are all single-line (no line-breaks found).")
-
-    # ----------------------------------------------------
-    fb.new_check("Glyph names are all valid?")
-    bad_names = []
-    for _, glyphName in enumerate(font.getGlyphOrder()):
-      if glyphName in ['.null', '.notdef']:
-        # These 2 names are explicit exceptions
-        # in the glyph naming rules
-        continue
-      if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
-        bad_names.append(glyphName)
-
-    if len(bad_names) == 0:
-      fb.ok('Glyph names are all valid.')
-    else:
-      fb.error(('The following glyph names do not comply'
-                ' with naming conventions: {}'
-                ' A glyph name may be up to 31 characters in length,'
-                ' must be entirely comprised of characters from'
-                ' the following set:'
-                ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-                ' start with a digit or period.'
-                ' There are a few exceptions'
-                ' such as the special character ".notdef".'
-                ' The glyph names "twocents", "a1", and "_"'
-                ' are all valid, while'
-                ' "2cents" and ".twocents" are not.').format(bad_names))
-
-    # ----------------------------------------------------
-    fb.new_check("Font contains unique glyph names?")
-    # (Duplicate glyph names prevent font installation on Mac OS X.)
-    glyphs = []
-    duplicated_glyphIDs = []
-    for _, g in enumerate(font.getGlyphOrder()):
-      glyphID = re.sub(r'#\w+', '', g)
-      if glyphID in glyphs:
-        duplicated_glyphIDs.append(glyphID)
-      else:
-        glyphs.append(glyphID)
-
-    if len(duplicated_glyphIDs) == 0:
-      fb.ok("Font contains unique glyph names.")
-    else:
-      fb.error(("The following glyph IDs"
-                " occur twice: {}").format(duplicated_glyphIDs))
-
-    # ----------------------------------------------------
-    fb.new_check("No glyph is incorrectly named?")
-    bad_glyphIDs = []
-    for _, g in enumerate(font.getGlyphOrder()):
-      if re.search(r'#\w+$', g):
-        bad_glyphIDs.append(glyphID)
-
-    if len(bad_glyphIDs) == 0:
-      fb.ok("Font does not have any incorrectly named glyph.")
-    else:
-      fb.error(("The following glyph IDs"
-                " are incorrectly named: {}").format(bad_glyphIDs))
-
-    # ----------------------------------------------------
-    fb.new_check("EPAR table present in font?")
-    if 'EPAR' not in font:
-      fb.ok('EPAR table not present in font.'
-            ' To learn more see'
-            ' https://github.com/googlefonts/'
-            'fontbakery/issues/818')
-    else:
-      fb.ok("EPAR table present in font.")
-
-    # ----------------------------------------------------
-    fb.new_check("Is GASP table correctly set?")
-    try:
-      if not isinstance(font["gasp"].gaspRange, dict):
-        fb.error("GASP.gaspRange method value have wrong type")
-      else:
-        failed = False
-        if 0xFFFF not in font["gasp"].gaspRange:
-          fb.error("GASP does not have 0xFFFF gaspRange")
-        else:
-          for key in font["gasp"].gaspRange.keys():
-            if key != 0xFFFF:
-              fb.hotfix(("GASP shuld only have 0xFFFF gaspRange,"
-                         " but {} gaspRange was also found"
-                         " and has been removed.").format(hex(key)))
-              del font["gasp"].gaspRange[key]
-              failed = True
-            else:
-              value = font["gasp"].gaspRange[key]
-              if value != 0x0F:
-                failed = True
-                if config['autofix']:
-                  font["gasp"].gaspRange[0xFFFF] = 0x0F
-                  fb.hotfix("gaspRange[0xFFFF]"
-                            " value ({}) is not 0x0F".format(hex(value)))
-                else:
-                  fb.error(" All flags in GASP range 0xFFFF (i.e. all font"
-                           " sizes) must be set to 1.\n"
-                           " Rationale:\n"
-                           " Traditionally version 0 GASP tables were set"
-                           " so that font sizes below 8 ppem had no grid"
-                           " fitting but did have antialiasing. From 9-16"
-                           " ppem, just grid fitting. And fonts above"
-                           " 17ppem had both antialiasing and grid fitting"
-                           " toggled on. The use of accelerated graphics"
-                           " cards and higher resolution screens make this"
-                           " appraoch obsolete. Microsoft's DirectWrite"
-                           " pushed this even further with much improved"
-                           " rendering built into the OS and apps. In this"
-                           " scenario it makes sense to simply toggle all"
-                           " 4 flags ON for all font sizes.")
-          if not failed:
-            fb.ok("GASP table is correctly set.")
-    except KeyError:
-      fb.error("Font is missing the GASP table."
-               " Try exporting the font with autohinting enabled.")
-
-    # ----------------------------------------------------
-    fb.new_check("Does GPOS table have kerning information?")
-    try:
-      has_kerning_info = False
-      for lookup in font["GPOS"].table.LookupList.Lookup:
-        if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-          has_kerning_info = True
-          break  # avoid reading all kerning info
-        elif lookup.LookupType == 9:
-          if lookup.SubTable[0].ExtensionLookupType == 2:
-            has_kerning_info = True
-            break
-      if not has_kerning_info:
-        fb.warning("GPOS table lacks kerning information")
-      else:
-        fb.ok("GPOS table has got kerning information.")
-    except KeyError:
-      fb.error('Font is missing a "GPOS" table')
-
-    # ----------------------------------------------------
-    fb.new_check("Is there kerning info for non-ligated sequences?")
-    ''' Fonts with ligatures should have kerning on the corresponding
-        non-ligated sequences for text where ligatures aren't used.
-    '''
-    if has_kerning_info is False:
-      fb.skip("This font lacks kerning info.")
-    else:
-      all_ligatures = {}
-      for lookup in font["GSUB"].table.LookupList.Lookup:
-        # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
-        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-          for subtable in lookup.SubTable:
-            for firstGlyph in subtable.ligatures.keys():
-              all_ligatures[firstGlyph] = []
-              for lig in subtable.ligatures[firstGlyph]:
-                if lig.Component[0] not in all_ligatures[firstGlyph]:
-                  all_ligatures[firstGlyph].append(lig.Component[0])
-
-      def look_for_nonligated_kern_info(table):
-        for pairpos in table.SubTable:
-          for i, glyph in enumerate(pairpos.Coverage.glyphs):
-            if glyph in all_ligatures.keys():
-              try:
-                for pairvalue in pairpos.PairSet[i].PairValueRecord:
-                  if pairvalue.SecondGlyph in all_ligatures[glyph]:
-                    del all_ligatures[glyph]
-              except:
-                # Sometimes for unknown reason an exception
-                # is raised for accessing pairpos.PairSet
-                pass
-
-      for lookup in font["GPOS"].table.LookupList.Lookup:
-        if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-          look_for_nonligated_kern_info(lookup)
-        # elif lookup.LookupType == 9:
-        #   if lookup.SubTable[0].ExtensionLookupType == 2:
-        #     look_for_nonligated_kern_info(lookup.SubTable[0])
-
-      def ligatures_str(ligatures):
-        result = []
-        for first in ligatures:
-          result.extend(["{}_{}".format(first, second)
-                         for second in ligatures[first]])
-        return result
-
-      if all_ligatures != {}:
-        fb.error(("GPOS table lacks kerning info for the following"
-                  " non-ligated sequences: "
-                  "{}").format(ligatures_str(all_ligatures)))
-      else:
-        fb.ok("GPOS table provides kerning info for "
-              "all non-ligated sequences.")
-
-    # ----------------------------------------------------
-    fb.new_check("Is there a 'KERN' table declared in the font?")
-    try:
-      font["KERN"]
-      fb.error("Font should not have a 'KERN' table")
-    except KeyError:
-      fb.ok("Font does not declare a 'KERN' table.")
-
-    # ----------------------------------------------------
-    fb.new_check("Make sure family name"
-                 " does not begin with a digit.")
-    familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-    failed = False
-    for name in familyname:
-      digits = map(str, range(0, 10))
-      if name[0] in digits:
-        fb.error(("Font family name '{}'"
-                  " begins with a digit!").format(name))
-        failed = True
-    if failed is False:
-      fb.ok("Font family name first character is not a digit.")
-
-    # ----------------------------------------------------
-    fb.new_check("Does full font name begin with the font family name?")
-    familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-    fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-
-    if len(familyname) == 0:
-      fb.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
-               ' in the name table.')
-    elif len(fullfontname) == 0:
-      fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
-               ' in the name table.')
-    else:
-      # we probably should check all found values are equivalent.
-      # and, in that case, then performing the rest of the check
-      # with only the first occurences of the name entries
-      # will suffice:
-      fullfontname = fullfontname[0]
-      familyname = familyname[0]
-
-      if not fullfontname.startswith(familyname):
-        fb.error(" On the NAME table, the full font name"
-                 " (NameID {} - FULL_FONT_NAME: '{}')"
-                 " does not begin with font family name"
-                 " (NameID {} - FONT_FAMILY_NAME:"
-                 " '{}')".format(NAMEID_FULL_FONT_NAME,
-                                 familyname,
-                                 NAMEID_FONT_FAMILY_NAME,
-                                 fullfontname))
-      else:
-        fb.ok('Full font name begins with the font family name.')
-
-    # ----------------------------------------------------
-    fb.new_check("Is there any unused data at the end of the glyf table?")
-    if 'CFF ' in font:
-      fb.skip("This check does not support CFF fonts.")
-    else:
-      # -1 because https://www.microsoft.com/typography/otspec/loca.htm
-      expected = len(font['loca']) - 1
-      actual = len(font['glyf'])
-      diff = actual - expected
-
-      # allow up to 3 bytes of padding
-      if diff > 3:
-        fb.error(("Glyf table has unreachable data at"
-                  " the end of the table."
-                  " Expected glyf table length {}"
-                  " (from loca table), got length"
-                  " {} (difference: {})").format(expected, actual, diff))
-      elif diff < 0:
-        fb.error(("Loca table references data beyond"
-                  " the end of the glyf table."
-                  " Expected glyf table length {}"
-                  " (from loca table), got length"
-                  " {} (difference: {})").format(expected, actual, diff))
-      else:
-        fb.ok("There is no unused data at"
-              " the end of the glyf table.")
-
-    # ----------------------------------------------------
-    def font_has_char(font, c):
-        if c in font['cmap'].buildReversed():
-          return len(font['cmap'].buildReversed()[c]) > 0
-        else:
-          return False
-
-    fb.new_check("Font has 'EURO SIGN' character?")
-    if font_has_char(font, 'Euro'):
-      fb.ok("Font has 'EURO SIGN' character.")
-    else:
-      fb.error("Font lacks the '%s' character." % 'EURO SIGN')
 
     # ----------------------------------------------------
     fb.new_check("Font follows the family naming recommendations?")
@@ -3492,7 +3581,7 @@ def fontbakery_check_ttf(config):
               if font_familyname not in f.name:
                 fb.error(('Unmatched familyname in font:'
                           ' TTF has "{}" while METADATA.pb has'
-                          ' name="{}"').format(familyname, f.name))
+                          ' name="{}"').format(font_familyname, f.name))
               else:
                 fb.ok(("OK: Family name '{}' is identical"
                        " in METADATA.pb and on the"
