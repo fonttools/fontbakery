@@ -60,7 +60,7 @@ Hotfix operations do create new font files, by copying the file and modifying th
 
 A single TTF can be validated using:
 
-    ~/fonts/ofl/family $ fontbakery-check-ttf *.ttf ;
+    ~/fonts/ofl/family $ fontbakery-check-ttf.py *.ttf ;
 
 In addition to the checks specifically provided by FontBakery, this script also invokes other validation software such as ot-sanitize, nototools, Microsoft Font Validator, Apple Font Validator, FontForge, GlyphNanny, etc.
 
@@ -68,7 +68,7 @@ In addition to the checks specifically provided by FontBakery, this script also 
 
 If a set TTFs is provided, it will be validated as a single family:
 
-    ~/fonts/ofl/family$ fontbakery-check-ttf-family *.ttf ;
+    ~/fonts/ofl/family$ fontbakery-check-ttf.py *.ttf ;
 
 Some of these checks specifically target up to 18 font files in a family in order to conclude that their data is correct and coherent. Also the contents of METADATA.pb files are validated against the entries in the OpenType tables of the font binaries. If this checking is not needed it can be disabled by using the --skip command-line switch.
 
@@ -77,11 +77,11 @@ Some of these checks specifically target up to 18 font files in a family in orde
 Many common issues can be 'hot fixed.'
 A hotfix is a modification to a TTF file itself, a last-minute change, or useful to compare against when fixing the source files and compiling a new font without the issue.
 
-    ~/fonts/ofl/family $ fontbakery-check-ttf *.ttf --autofix ;
+    ~/fonts/ofl/family $ fontbakery-check-ttf.py *.ttf --autofix ;
     $ rm *.ttf ;
     $ rename s/ttf.fix/ttf/g ;
 
-    ~/fonts/ofl/family $ fontbakery-check-ttf-family *.ttf --autofix ;
+    ~/fonts/ofl/family $ fontbakery-check-ttf.py *.ttf --autofix ;
     $ rm *.ttf ;
     $ rename s/ttf.fix/ttf/g ;
 
@@ -95,9 +95,13 @@ This file can not be generated completely and must be manually edited.
 
 #### 2.5 comparing new versions to the ones in production to avoid regressions
 
+To review fonts technically, compare the TTX versions of the 2 sets of fonts.
+
     ~/fonts/ofl $ ttx -s family-old/*ttf family/*ttf ;
     $ meld family-old/ family/ ;
     $ rm family-old/*ttx family/*ttx ;
+
+To review fonts visually, compare with Marc Foley's [gfregression](https://github.com/m4rc1e/gfregression) web application.
 
 ## 3. Collection Management
 
@@ -108,13 +112,34 @@ The ultimate aim is a single master check script that all families pass.
     ~/fonts $ fontbakery-check-collection . ;
     $ 
 
-#### 3.2 Web dashboard
+#### 3.1 Web Checker
 
-In order to develop the collection to the point all families and fonts pass all tests, we will develop a web dashboard that shows their progress against this goal. 
-It will allow a set of upcoming projects to measure their quality, and a 'burn down' chart towards their launch in the directory. 
+In order to make it as easy as possible for font designers to check their fonts with Font Bakery (see parts 2.1 and 2.2 above) we will develop a web checker that allows users to drop fonts on a web page and see the results of the checking. 
 
-A live report about the quality of a font project will encourage test-driven-development for fonts. 
+A live report about the quality of a font project encourages test-driven-development for fonts. 
 Contracts can specify that projects must pass to be considered complete.
+
+A prototype for this is available at <https://fontbakery.appspot.com>
+
+#### 3.3 Web Dashboard
+
+In order to develop the collection to the point all families and fonts pass all tests, we will develop a web dashboard that shows their progress against this goal with a table with rows for families and columns for stages of development with relevant information. 
+
+Those stage cells may pop-up or link to more detailed information about that stage, such as 'burn down' charts showing the family's status towards being without any issues.
+Those stage cells will also indicate the aggregate progress of the collection towards being without any issues. 
+
+It will also allow a set of upcoming projects to measure their quality, and a 'burn down' chart towards their launch in the directory. 
+
+There are 6 stages of progress for a set of TTF files:
+
+1. the font developer's workstation
+2. the font developer's Github repo
+3. the font developer's Github repo's release page (often a hand-crafted ZIP)
+4. the github.com/google/fonts repo
+5. the Google Fonts staging server
+6. the Google Fonts production servers
+
+The current command-line and web applications are suitable for (1) and Marc Foley's "gfregression" web application (<https://github.com/m4rc1e/gfregression>) can compare fonts in (1) with fonts in (5). 
 
 The dashboard will integrate with the Github Issues API, to make it convenient to create and track issues based on our reports.
 
@@ -159,13 +184,13 @@ The most simple form for each tool is a linear, imperative programming style (do
 
 Each tool should only interact with TTF or OTF files with fontTools, or call external tools via shells (done)
 
-Each tool should be structured table by table
+Each tool should be structured table by table (not followed this)
 
 Each tool should operate on a single ttLib font object for each file (done)
 
 Each tool should use the Python standard library logging module (done)
 
-Each test should only have a single log entry 
+Each test should only have a single log entry (done)
 
 Each tool should only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
 
