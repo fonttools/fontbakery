@@ -2574,6 +2574,7 @@ def check_no_glyph_is_incorrectly_named(fb, font):
   bad_glyphIDs = []
   for _, g in enumerate(font.getGlyphOrder()):
     if re.search(r'#\w+$', g):
+      glyphID = re.sub(r'#\w+', '', g)
       bad_glyphIDs.append(glyphID)
 
   if len(bad_glyphIDs) == 0:
