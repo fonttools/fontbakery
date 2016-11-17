@@ -3480,9 +3480,10 @@ def check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f):
   fb.new_check("Copyright notice does not "
 	       "contain Reserved Font Name")
   if 'Reserved Font Name' in f.copyright:
-    fb.error(("METADATA.pb: copyright field ('{}')"
-	      " contains 'Reserved Font Name'"
-	      "").format(unidecode(f.copyright)))
+    fb.warning(("METADATA.pb: copyright field ('{}')"
+                " contains 'Reserved Font Name'."
+                " This is an error except in a few specific"
+                " rare cases.").format(unidecode(f.copyright)))
   else:
     fb.ok('METADATA.pb copyright field'
 	  ' does not contain "Reserved Font Name"')
