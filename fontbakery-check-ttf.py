@@ -610,21 +610,6 @@ def get_FamilyProto_Message(path):
     text_format.Merge(text_data, message)
     return message
 
-# set up some command line argument processing
-parser = argparse.ArgumentParser(description="Check TTF files"
-                                             " for common issues.")
-parser.add_argument('arg_filepaths', nargs='+',
-                    help='font file path(s) to check.'
-                         ' Wildcards like *.ttf are allowed.')
-parser.add_argument('-v', '--verbose', action='count', default=0)
-parser.add_argument('-e', '--error', action='store_true',
-                    help='Output only errors')
-parser.add_argument('-a', '--autofix', action='store_true', default=0)
-parser.add_argument('-j', '--json', action='store_true',
-                    help='Output check results in JSON format')
-parser.add_argument('-m', '--ghm', action='store_true',
-                    help='Output check results in GitHub Markdown format')
-
 
 def fetch_vendorID_list(logging):
   logging.debug("Fetching Microsoft's vendorID list")
@@ -3916,6 +3901,8 @@ def fontbakery_check_ttf(config):
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
   check_all_fontfiles_have_same_version(fb, fonts_to_check)
+  fb.output_report("CrossFamilyChecks")
+  fb.reset_report()
 
 ##########################################################################
 # Step 2: Single TTF tests
@@ -3963,8 +3950,8 @@ def fontbakery_check_ttf(config):
     check_with_ftxvalidator(fb, font_file)
     check_with_otsanitise(fb, font_file)
 
-    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
-    perform_all_fontforge_checks(fb, validation_state)
+#    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
+#    perform_all_fontforge_checks(fb, validation_state)
 
     check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
     check_Vertical_Metric_Linegaps(fb, font)
@@ -4125,6 +4112,21 @@ def fontbakery_check_ttf(config):
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
              "").format('\n\t'.join(map(str, fb.ghm_report_files))))
+
+# set up some command line argument processing
+parser = argparse.ArgumentParser(description="Check TTF files"
+                                             " for common issues.")
+parser.add_argument('arg_filepaths', nargs='+',
+                    help='font file path(s) to check.'
+                         ' Wildcards like *.ttf are allowed.')
+parser.add_argument('-v', '--verbose', action='count', default=0)
+parser.add_argument('-e', '--error', action='store_true',
+                    help='Output only errors')
+parser.add_argument('-a', '--autofix', action='store_true', default=0)
+parser.add_argument('-j', '--json', action='store_true',
+                    help='Output check results in JSON format')
+parser.add_argument('-m', '--ghm', action='store_true',
+                    help='Output check results in GitHub Markdown format')
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
