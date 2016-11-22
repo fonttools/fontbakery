@@ -29,45 +29,72 @@
 #   D 77.0 -26.0 773.0 1442.0
 
 import argparse
+import csv
 import fontforge, sys
 from fontTools.ttLib import TTFont
+import tabulate
 
 description = "A Python script for printing bounding boxes to stdout"
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument('fonts',
                     nargs="+",
                     help="Fonts in OpenType (TTF/OTF) format")
-group = parser.add_mutually_exclusive_group()
+parser.add_argument('--csv', default=False, action='store_true')
+group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--glyphs', default=False, action="store_true")
 group.add_argument('--family', default=False, action="store_true",
                    help='Return the bounds for a family of fonts')
 
 
+
+def printInfo(rows, save=False):
+    header = [r[0] for r in rows[0]]
+    t = []
+    for row in rows:
+        t.append([r[1] for r in row])
+
+    if save:
+        writer = csv.writer(sys.stdout)
+        writer.writerows([header])
+        writer.writerows(t)
+        sys.exit(0)
+    else:
+        print(tabulate.tabulate(t, header, tablefmt="pipe"))
+
+
 def main():
     args = parser.parse_args()
 
+    rows = []
     for font in args.fonts:
         font_path = font
         if args.glyphs:
             font = fontforge.open(font)
             for g in fontforge.activeFont().glyphs():
                 bbox = g.boundingBox()
-                print font_path,
-                print str(g.glyphname),
-                print str(bbox[0]),
-                print str(bbox[1]),
-                print str(bbox[2]),
-                print str(bbox[3])
+                rows.append([
+                    ("Font", font_path),
+                    ("Glyph", g.glyphname),
+                    ("xMin", str(bbox[0])),
+                    ("yMin", str(bbox[1])),
+                    ("xMax", str(bbox[2])),
+                    ("yMax", str(bbox[3]))
+                ])
 
         elif args.family:
-            print font_path
             font = TTFont(font_path)
-            print font_path,
-            print font['head'].xMin,
-            print font['head'].yMin,
-            print font['head'].xMax,
-            print font['head'].yMax
+            rows.append([
+                ("Font", font_path),
+                ("xMin", font['head'].xMin),
+                ("yMin", font['head'].yMin),
+                ("xMax", font['head'].xMax),
+                ("yMax", font['head'].yMax)
+            ])
 
+    if args.csv:
+        printInfo(rows, save=True)
+    else:
+        printInfo(rows)
 
 if __name__ == '__main__':
     main()
