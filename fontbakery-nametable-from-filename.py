@@ -1,4 +1,14 @@
 import re
+import ntpath
+import argparse
+from argparse import RawTextHelpFormatter
+from fontTools.ttLib import TTFont
+
+
+description = """
+Replace a collection of fonts nametable's with a new tables based on the
+filename and Glyphapp's naming schema
+"""
 
 WIN_SAFE_STYLES = [
     'Regular',
@@ -99,19 +109,27 @@ class GlyphsAppNameTable(object):
         for i in self.__dict__():
             yield i
 
+parser = argparse.ArgumentParser(description=description,
+                                 formatter_class=RawTextHelpFormatter)
+parser.add_argument('fonts', nargs="+")
+
+
 
 def main():
-    font = 'Cabin-BlackItalic.ttf'
-    font_names = GlyphsAppNameTable(font, '3.000;NeWT;Nunito-BoldItalic')
-    print 'mac name: ', font_names.mac_family_name
-    print 'win name: ', font_names.win_family_name
+    args = parser.parse_args()
+    
+    for path in args.fonts:
+        font = ntpath.basename(path)
+        font_names = GlyphsAppNameTable(font, '3.000;NeWT;Nunito-BoldItalic')
+        print 'mac name: ', font_names.mac_family_name
+        print 'win name: ', font_names.win_family_name
 
-    print 'mac style: ', font_names.mac_subfamily_name
-    print 'win style: ', font_names.win_subfamily_name
-    print 'full name: ', font_names.full_name
-    print 'ps name: ', font_names.postscript_name
-    print 'pref fam name: ', font_names.pref_family_name
-    print 'pref style name: ', font_names.pref_subfamily_name
+        print 'mac style: ', font_names.mac_subfamily_name
+        print 'win style: ', font_names.win_subfamily_name
+        print 'full name: ', font_names.full_name
+        print 'ps name: ', font_names.postscript_name
+        print 'pref fam name: ', font_names.pref_family_name
+        print 'pref style name: ', font_names.pref_subfamily_name
 
     for i in font_names:
         print i, font_names[i]
