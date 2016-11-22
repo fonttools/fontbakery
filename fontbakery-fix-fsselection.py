@@ -25,6 +25,7 @@ parser = argparse.ArgumentParser(description='Print out fsSelection'
                                              ' bitmask of the fonts')
 parser.add_argument('font', nargs="+")
 parser.add_argument('--csv', default=False, action='store_true')
+parser.add_argument('--usetypometrics', default=False, action='store_true')
 parser.add_argument('--autofix', default=False, action='store_true')
 
 STYLE_NAMES = ["Thin",
@@ -145,6 +146,12 @@ def main():
         ttfont['OS/2'].fsSelection |= 0b1
       else:
         ttfont['OS/2'].fsSelection &= ~0b1
+
+      if args.usetypometrics:
+        ttfont['OS/2'].version = 4
+        ttfont['OS/2'].fsSelection |= 0b10000000
+      else:
+        ttfont['OS/2'].fsSelection &= ~0b10000000
 
       if ttfont['OS/2'].fsSelection != initial_value:
         fixed_fonts.append(font)
