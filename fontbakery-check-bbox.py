@@ -16,15 +16,26 @@
 #   limitations under the License.
 
 import argparse
+from argparse import RawTextHelpFormatter
 import csv
 import fontforge, sys
 from fontTools.ttLib import TTFont
 import tabulate
 
 description = """
+
+fontbakery-check-bbox.py
+~~~~~~~~~~~~~~~~~~~~~~~~
+
 A Python script for printing bounding boxes to stdout.
+
 Users can either check a collection of fonts bounding boxes (--family) or
 the bounding box for each glyph in the collection of fonts (--glyphs).
+
+Extremes coordinates for each category can be returned with the argument
+--extremes.
+
+e.g:
 
 Check bounding boxes of fonts in collection:
 python fontbakery-check-bbox.py --family [fonts]
@@ -32,12 +43,17 @@ python fontbakery-check-bbox.py --family [fonts]
 Check bounding boxes of glyphs in fonts collection:
 python fontbakery-check-bbox.py --glyphs [fonts]
 
+Find the extreme coordinates for the bounding boxes in the fonts collection:
+python fontbakery-check-bbox.py --family --extremes [fonts]
+
 """
-parser = argparse.ArgumentParser(description=description)
+parser = argparse.ArgumentParser(description=description,
+                                 formatter_class=RawTextHelpFormatter)
 parser.add_argument('fonts',
                     nargs="+",
                     help="Fonts in OpenType (TTF/OTF) format")
 parser.add_argument('--csv', default=False, action='store_true')
+parser.add_argument('--extremes', default=False, action='store_true')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--glyphs', default=False, action="store_true")
 group.add_argument('--family', default=False, action="store_true",
@@ -59,6 +75,21 @@ def printInfo(rows, save=False):
         print(tabulate.tabulate(t, header, tablefmt="pipe"))
 
 
+def find_extremes(rows):
+    extremes = {}
+
+    for row in rows:
+        for k, v in row:
+            if type(v) == str:
+                continue
+            if k not in extremes:
+                extremes[k] = int(v)
+            else:
+                if abs(int(v)) > extremes[k]:
+                    extremes[k] = v
+    return [extremes.items()]
+
+
 def main():
     args = parser.parse_args()
 
@@ -72,10 +103,10 @@ def main():
                 rows.append([
                     ("Font", font_path),
                     ("Glyph", g.glyphname),
-                    ("xMin", str(bbox[0])),
-                    ("yMin", str(bbox[1])),
-                    ("xMax", str(bbox[2])),
-                    ("yMax", str(bbox[3]))
+                    ("xMin", int(bbox[0])),
+                    ("yMin", int(bbox[1])),
+                    ("xMax", int(bbox[2])),
+                    ("yMax", int(bbox[3]))
                 ])
 
         elif args.family:
@@ -87,6 +118,9 @@ def main():
                 ("xMax", font['head'].xMax),
                 ("yMax", font['head'].yMax)
             ])
+
+    if args.extremes:
+        rows = find_extremes(rows)
 
     if args.csv:
         printInfo(rows, save=True)
