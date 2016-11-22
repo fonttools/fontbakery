@@ -14,19 +14,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-#
-# bbox.py: A FontForge python script for printing bounding boxes
-# to stdout in this format:
-#
-#   glyphname xmin ymin xmax ymax
-#
-# Usage:
-#
-#   $ python bbox.py Font.ttf 2> /dev/null
-#   A 42.0 -32.0 782.0 1440.0
-#   B 46.0 -72.0 752.0 1478.0
-#   C 53.0 -26.0 821.0 1442.0
-#   D 77.0 -26.0 773.0 1442.0
 
 import argparse
 import csv
@@ -34,7 +21,18 @@ import fontforge, sys
 from fontTools.ttLib import TTFont
 import tabulate
 
-description = "A Python script for printing bounding boxes to stdout"
+description = """
+A Python script for printing bounding boxes to stdout.
+Users can either check a collection of fonts bounding boxes (--family) or
+the bounding box for each glyph in the collection of fonts (--glyphs).
+
+Check bounding boxes of fonts in collection:
+python fontbakery-check-bbox.py --family [fonts]
+
+Check bounding boxes of glyphs in fonts collection:
+python fontbakery-check-bbox.py --glyphs [fonts]
+
+"""
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument('fonts',
                     nargs="+",
@@ -44,7 +42,6 @@ group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--glyphs', default=False, action="store_true")
 group.add_argument('--family', default=False, action="store_true",
                    help='Return the bounds for a family of fonts')
-
 
 
 def printInfo(rows, save=False):
