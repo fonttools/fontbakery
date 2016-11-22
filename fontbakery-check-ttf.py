@@ -1774,48 +1774,55 @@ def check_fontforge_outputs_error_msgs(fb, font_file):
     fb.skip("Skipping AdobeBlank since"
             " this font is a very peculiar hack.")
   else:
-    # temporary stderr redirection:
-    ff_err = os.tmpfile()
+    try:
+      # temporary stderr redirection:
+      ff_err = os.tmpfile()
 
-    # we do not redirect stderr on Travis because
-    # it's making it think the build failed.
-    # I'm not exactly sure why does it happen, but for now we'll
-    # workaround the issue by not capturing stderr messages
-    # when running on Travis.
-    if 'TRAVIS' not in os.environ:
-      stderr_backup = os.dup(2)
-      os.close(2)
-      os.dup2(ff_err.fileno(), 2)
+      # we do not redirect stderr on Travis because
+      # it's making it think the build failed.
+      # I'm not exactly sure why does it happen, but for now we'll
+      # workaround the issue by not capturing stderr messages
+      # when running on Travis.
+      if 'TRAVIS' not in os.environ:
+        stderr_backup = os.dup(2)
+        os.close(2)
+        os.dup2(ff_err.fileno(), 2)
 
-    # invoke font validation
-    # via fontforge python module:
-    fontforge_font = fontforge.open(font_file)
-    validation_state = fontforge_font.validate()
+      # invoke font validation
+      # via fontforge python module:
+      fontforge_font = fontforge.open(font_file)
+      validation_state = fontforge_font.validate()
 
-    if 'TRAVIS' not in os.environ:
-      # restore default stderr:
-      os.dup2(stderr_backup, 2)
-      sys.stderr = os.fdopen(2, 'w', 0)
+      if 'TRAVIS' not in os.environ:
+        # restore default stderr:
+        os.dup2(stderr_backup, 2)
+        sys.stderr = os.fdopen(2, 'w', 0)
 
-    # handle captured stderr messages:
-    ff_err.flush()
-    ff_err.seek(0, os.SEEK_SET)
-    ff_err_messages = ff_err.read()
-    filtered_err_msgs = ""
-    for line in ff_err_messages.split('\n'):
-      if 'The following table(s) in the font' \
-         ' have been ignored by FontForge' in line:
-        continue
-      if "Ignoring 'DSIG' digital signature table" in line:
-        continue
-      filtered_err_msgs += line + '\n'
+      # handle captured stderr messages:
+      ff_err.flush()
+      ff_err.seek(0, os.SEEK_SET)
+      ff_err_messages = ff_err.read()
+      filtered_err_msgs = ""
+      for line in ff_err_messages.split('\n'):
+        if 'The following table(s) in the font' \
+           ' have been ignored by FontForge' in line:
+          continue
+        if "Ignoring 'DSIG' digital signature table" in line:
+          continue
+        filtered_err_msgs += line + '\n'
 
-    if len(filtered_err_msgs.strip()) > 0:
-      fb.error(("fontforge did print these messages to stderr:\n"
-                "{}").format(filtered_err_msgs))
-    else:
-      fb.ok("fontforge validation did not output any error message.")
-    ff_err.close()
+      if len(filtered_err_msgs.strip()) > 0:
+        fb.error(("fontforge did print these messages to stderr:\n"
+                  "{}").format(filtered_err_msgs))
+      else:
+        fb.ok("fontforge validation did not output any error message.")
+      ff_err.close()
+    except:
+      fb.error("FontForge seems to have a problem while"
+               " attempting to run checks on this font file!"
+               " More info at: https://github.com/googlefonts/"
+               "fontbakery/issues/1166")
+
     return validation_state
 
 
@@ -3950,8 +3957,8 @@ def fontbakery_check_ttf(config):
     check_with_ftxvalidator(fb, font_file)
     check_with_otsanitise(fb, font_file)
 
-#    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
-#    perform_all_fontforge_checks(fb, validation_state)
+    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
+    perform_all_fontforge_checks(fb, validation_state)
 
     check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
     check_Vertical_Metric_Linegaps(fb, font)
