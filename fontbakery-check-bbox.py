@@ -30,25 +30,44 @@
 
 import argparse
 import fontforge, sys
+from fontTools.ttLib import TTFont
 
-description = "A FontForge python script for printing bounding boxes to stdout"
+description = "A Python script for printing bounding boxes to stdout"
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('font',
-                    nargs=1,
-                    help="Font in OpenType (TTF/OTF) format")
+parser.add_argument('fonts',
+                    nargs="+",
+                    help="Fonts in OpenType (TTF/OTF) format")
+group = parser.add_mutually_exclusive_group()
+group.add_argument('--glyphs', default=False, action="store_true")
+group.add_argument('--family', default=False, action="store_true",
+                   help='Return the bounds for a family of fonts')
 
 
 def main():
     args = parser.parse_args()
-    font_in = args.font[0]
-    font = fontforge.open(font_in)
-    for g in fontforge.activeFont().glyphs():
-        bbox = g.boundingBox()
-        print str(g.glyphname),
-        print str(bbox[0]),
-        print str(bbox[1]),
-        print str(bbox[2]),
-        print str(bbox[3])
+
+    for font in args.fonts:
+        font_path = font
+        if args.glyphs:
+            font = fontforge.open(font)
+            for g in fontforge.activeFont().glyphs():
+                bbox = g.boundingBox()
+                print font_path,
+                print str(g.glyphname),
+                print str(bbox[0]),
+                print str(bbox[1]),
+                print str(bbox[2]),
+                print str(bbox[3])
+
+        elif args.family:
+            print font_path
+            font = TTFont(font_path)
+            print font_path,
+            print font['head'].xMin,
+            print font['head'].yMin,
+            print font['head'].xMax,
+            print font['head'].yMax
+
 
 if __name__ == '__main__':
     main()
