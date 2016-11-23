@@ -51,12 +51,13 @@ class GlyphsAppNameTable(object):
   """Convert a font's filename into a Glyphsapp name table schema.
   Glyphsapp v2.4.1 (942)
   """
-  def __init__(self, filename, uniqueid, use_typo_metrics=False):
+  def __init__(self, filename, font_ver, vendor_id, use_typo_metrics=False):
     self.filename = filename[:-4]
     self.family_name, self.style_name = self.filename.split('-')
     self.family_name = self._split_camelcase(self.family_name)
-    self.uniqueid = uniqueid
     self.use_typo_metrics = use_typo_metrics
+    self.font_version = font_ver
+    self.vendor_id = vendor_id
 
   @property
   def mac_family_name(self):
@@ -94,7 +95,9 @@ class GlyphsAppNameTable(object):
 
   @property
   def unique_id(self):
-    return ';'.join(self.uniqueid.split(';')[:-1]) + ';' + self.filename
+    # Glyphsapp style 2.000;MYFO;Arsenal-Bold
+    # version;vendorID;filename
+    return '%s;%s;%s' % (self.font_version, self.vendor_id, self.filename)
 
   @property
   def full_name(self):
@@ -194,9 +197,14 @@ def main():
   for font_path in args.fonts:
     font_filename = ntpath.basename(font_path)
     font = TTFont(font_path)
+    font_vendor = font['OS/2'].achVendID
+    font_version =  font['head'].fontRevision
     typo_enabled = typo_metrics_enabled(font)
     unique_id = str(font['name'].getName(3, 1, 0, 0))
-    new_names = GlyphsAppNameTable(font_filename, unique_id, typo_enabled)
+    new_names = GlyphsAppNameTable(font_filename, 
+                                   font_version,
+                                   font_vendor,
+                                   typo_enabled)
 
     for field in new_names:
       # Change name table
