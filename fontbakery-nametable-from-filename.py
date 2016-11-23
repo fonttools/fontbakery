@@ -6,13 +6,15 @@ from fontTools.ttLib import TTFont
 
 
 description = """
-Replace a collection of fonts nametable's with a new tables based on the
-filename and Glyphapp's naming schema
+Replace a collection of fonts nametable's with a new table based on the
+filename and Glyphapp's naming schema.
 """
 
 WIN_SAFE_STYLES = [
     'Regular',
     'Bold',
+    'Italic',
+    'BoldItalic',
 ]
 
 
@@ -22,7 +24,8 @@ class GlyphsAppNameTable(object):
     """
     def __init__(self, filename, uniqueid):
         self.filename = filename[:-4]
-        self. family_name, self.style_name = self.filename.split('-')
+        self.family_name, self.style_name = self.filename.split('-')
+        self.family_name = self._split_camelcase(self.family_name)
         self.uniqueid = uniqueid
 
     @property
@@ -34,16 +37,13 @@ class GlyphsAppNameTable(object):
         name = self.family_name
         if self.style_name not in WIN_SAFE_STYLES:
             name = '%s %s' % (self.family_name, self.style_name)
-            if 'Italic' in name:
-                return re.sub(r'Italic', '', name)
+        if 'Italic' in name:
+            name = re.sub(r'Italic', r'', name)
         return name
 
     @property
     def mac_subfamily_name(self):
-        name = self.style_name
-        if 'Italic' in name:
-            name = re.sub('Italic', ' Italic', name)
-        return name
+        return self._split_camelcase(self.style_name)
 
     @property
     def win_subfamily_name(self):
@@ -59,14 +59,12 @@ class GlyphsAppNameTable(object):
 
     @property
     def unique_id(self):
-        return ';'.join(self.uniqueid.split(';')[:-1]) + self.filename
+        return ';'.join(self.uniqueid.split(';')[:-1]) + ';' + self.filename
 
     @property
     def full_name(self):
         name = self.filename.replace('-', ' ')
-        if 'Italic' in self.filename:
-            name = re.sub('Italic', ' Italic', name)
-            return name
+        name = self._split_camelcase(name)
         return name
 
     @property
@@ -80,6 +78,9 @@ class GlyphsAppNameTable(object):
     @property
     def pref_subfamily_name(self):
         return self.mac_subfamily_name
+
+    def _split_camelcase(self, text):
+        return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
 
     def __dict__(self):
         # Mapping for fontTools getName method in the name table
@@ -109,30 +110,33 @@ class GlyphsAppNameTable(object):
         for i in self.__dict__():
             yield i
 
+
 parser = argparse.ArgumentParser(description=description,
                                  formatter_class=RawTextHelpFormatter)
 parser.add_argument('fonts', nargs="+")
 
 
-
 def main():
     args = parser.parse_args()
-    
-    for path in args.fonts:
-        font = ntpath.basename(path)
-        font_names = GlyphsAppNameTable(font, '3.000;NeWT;Nunito-BoldItalic')
-        print 'mac name: ', font_names.mac_family_name
-        print 'win name: ', font_names.win_family_name
 
-        print 'mac style: ', font_names.mac_subfamily_name
-        print 'win style: ', font_names.win_subfamily_name
-        print 'full name: ', font_names.full_name
-        print 'ps name: ', font_names.postscript_name
-        print 'pref fam name: ', font_names.pref_family_name
-        print 'pref style name: ', font_names.pref_subfamily_name
+    for font_path in args.fonts:
+        font_filename = ntpath.basename(font_path)
+        font = TTFont(font_path)
+        unique_id = str(font['name'].getName(3, 1, 0, 0))
+        new_names = GlyphsAppNameTable(font_filename, unique_id)
 
-    for i in font_names:
-        print i, font_names[i]
+        for field in new_names:
+            if font['name'].getName(*field):
+                try:
+                    field_enc = font['name'].getName(*field).getEncoding()
+                    text = str(font['name'].getName(*field)).decode(field_enc)
+                    text = new_names[field]
+                    font['name'].setName(text, *field)
+                except:
+                    all
+        font.save(font_path + '.fix')
+        print 'font saved %s.fix' % font_path
+
 
 if __name__ == '__main__':
     main()
