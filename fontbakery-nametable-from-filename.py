@@ -72,7 +72,12 @@ class GlyphsAppNameTable(object):
 
     @property
     def mac_subfamily_name(self):
-        return self._split_camelcase(self.style_name)
+        name = self.style_name
+        if name.startswith('Italic'):
+            name = name
+        elif 'Italic' in name:
+            name = name.replace('Italic', ' Italic')
+        return name
 
     @property
     def win_subfamily_name(self):
@@ -92,8 +97,11 @@ class GlyphsAppNameTable(object):
 
     @property
     def full_name(self):
-        name = self.filename.replace('-', ' ')
-        name = self._split_camelcase(name)
+        name = '%s %s' % (self.family_name, self.style_name)
+        if self.style_name.startswith('Italic'):
+            name = name
+        elif 'Italic' in self.style_name:
+            name = name.replace('Italic', ' Italic')
         return name
 
     @property
@@ -173,13 +181,10 @@ def typo_metrics_enabled(fsSelection):
 
 def swap_name(field, font_name_field, new_name):
     '''Replace a font's name field with a new name'''
-    try:
-        enc = font_name_field.getName(*field).getEncoding()
-        text = str(font_name_field.getName(*field)).decode(enc)
-        text = new_name
-        font_name_field.setName(text, *field)
-    except:
-        all
+    enc = font_name_field.getName(*field).getEncoding()
+    text = str(font_name_field.getName(*field)).decode(enc)
+    text = new_name
+    font_name_field.setName(text, *field)
 
 
 def main():
@@ -191,10 +196,11 @@ def main():
         typo_enabled = typo_metrics_enabled(font)
         unique_id = str(font['name'].getName(3, 1, 0, 0))
         new_names = GlyphsAppNameTable(font_filename, unique_id, typo_enabled)
+
         for field in new_names:
             # Change name table
             if font['name'].getName(*field):
-                swap_name(field, font['name'].getName(*field),
+                swap_name(field, font['name'],
                           new_names[field])
         # Change OS/2 table
         font['OS/2'].usWeightClass = new_names.weight
