@@ -37,16 +37,25 @@ WEIGHTS = {
     "Black": 900
 }
 
+FSSELECTION = {
+    'Regular': 64,
+    'Italic': 1,
+    'Bold': 32,
+    'Bold Italic': 33,
+    'UseTypoMetrics': 128
+}
+
 
 class GlyphsAppNameTable(object):
     """Convert a font's filename into a Glyphsapp name table schema.
     Glyphsapp v2.4.1 (942)
     """
-    def __init__(self, filename, uniqueid):
+    def __init__(self, filename, uniqueid, use_typo_metrics=False):
         self.filename = filename[:-4]
         self.family_name, self.style_name = self.filename.split('-')
         self.family_name = self._split_camelcase(self.family_name)
         self.uniqueid = uniqueid
+        self.use_typo_metrics = use_typo_metrics
 
     @property
     def mac_family_name(self):
@@ -74,7 +83,7 @@ class GlyphsAppNameTable(object):
             return 'Italic'
         elif name == 'Bold':
             return 'Bold'
-        elif name == ' Regular':
+        else:
             return 'Regular'
 
     @property
@@ -111,6 +120,13 @@ class GlyphsAppNameTable(object):
     @property
     def macstyle(self):
         return MACSTYLE[self.win_subfamily_name]
+
+    @property
+    def fsselection(self):
+        if self.use_typo_metrics:
+            f = FSSELECTION['UseTypoMetrics']
+            return FSSELECTION[self.win_subfamily_name] + f
+        return FSSELECTION[self.win_subfamily_name]
 
     def _split_camelcase(self, text):
         return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
@@ -149,6 +165,12 @@ parser = argparse.ArgumentParser(description=description,
 parser.add_argument('fonts', nargs="+")
 
 
+def typo_metrics_enabled(fsSelection):
+    if fsSelection >= 128:
+        return True
+    return False
+
+
 def swap_name(field, font_name_field, new_name):
     '''Replace a font's name field with a new name'''
     try:
@@ -166,9 +188,9 @@ def main():
     for font_path in args.fonts:
         font_filename = ntpath.basename(font_path)
         font = TTFont(font_path)
+        typo_enabled = typo_metrics_enabled(font)
         unique_id = str(font['name'].getName(3, 1, 0, 0))
-        new_names = GlyphsAppNameTable(font_filename, unique_id)
-
+        new_names = GlyphsAppNameTable(font_filename, unique_id, typo_enabled)
         for field in new_names:
             # Change name table
             if font['name'].getName(*field):
@@ -176,6 +198,7 @@ def main():
                           new_names[field])
         # Change OS/2 table
         font['OS/2'].usWeightClass = new_names.weight
+        font['OS/2'].fsSelection = new_names.fsselection
 
         # Change head table
         font['head'].macStyle = new_names.macstyle
