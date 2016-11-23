@@ -117,7 +117,7 @@ class GlyphsAppNameTable(object):
         return self.mac_subfamily_name
 
     @property
-    def weight(self):
+    def usWeightClass(self):
         name = self.style_name
         if 'Italic' == self.style_name:
             name = 'Regular'
@@ -126,11 +126,11 @@ class GlyphsAppNameTable(object):
         return WEIGHTS[name]
 
     @property
-    def macstyle(self):
+    def macStyle(self):
         return MACSTYLE[self.win_subfamily_name]
 
     @property
-    def fsselection(self):
+    def fsSelection(self):
         if self.use_typo_metrics:
             f = FSSELECTION['UseTypoMetrics']
             return FSSELECTION[self.win_subfamily_name] + f
@@ -203,11 +203,11 @@ def main():
                 swap_name(field, font['name'],
                           new_names[field])
         # Change OS/2 table
-        font['OS/2'].usWeightClass = new_names.weight
-        font['OS/2'].fsSelection = new_names.fsselection
+        font['OS/2'].usWeightClass = new_names.usWeightClass
+        font['OS/2'].fsSelection = new_names.fsSelection
 
         # Change head table
-        font['head'].macStyle = new_names.macstyle
+        font['head'].macStyle = new_names.macStyle
 
         font.save(font_path + '.fix')
         print 'font saved %s.fix' % font_path
