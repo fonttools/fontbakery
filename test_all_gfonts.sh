@@ -1,16 +1,18 @@
 #!/bin/bash
-APACHE_FOLDERS=~/devel/github_google/fonts/apache/*/
-OFL_FOLDERS=~/devel/github_google/fonts/ofl/*/
-UFL_FOLDERS=~/devel/github_google/fonts/ufl/*/
+COLLECTION_FOLDER=~/devel/github_google/fonts
+APACHE_FOLDERS=$(COLLECTION_FOLDER)/apache/*/
+OFL_FOLDERS=$(COLLECTION_FOLDER)/ofl/*/
+UFL_FOLDERS=$(COLLECTION_FOLDER)/ufl/*/
+RESULTS_FOLDER=$(COLLECTION_FOLDER)/check_results/
 
-mkdir ./check_results/ -p
-rm ./check_results/issues.txt -f
-rm ./check_results/all_fonts.txt -f
+mkdir $(RESULTS_FOLDER) -p
+rm $(RESULTS_FOLDER)/issues.txt -f
+rm $(RESULTS_FOLDER)/all_fonts.txt -f
 
 for f in $APACHE_FOLDERS $OFL_FOLDERS $UFL_FOLDERS
 do
-  LOGDIR=./check_results/$(basename $f)
-  echo "$f" >> ./check_results/all_fonts.txt
+  LOGDIR=$(RESULTS_FOLDER)/$(basename $f)
+  echo "$f" >> $(RESULTS_FOLDER)/all_fonts.txt
 
   if [ "$(ls -A $LOGDIR)" ]
   then
@@ -20,9 +22,9 @@ do
     ./fontbakery-check-ttf.py "$f*.ttf" --json --ghm -vv
     mkdir -p $LOGDIR
     cp $f*fontbakery.json $LOGDIR/
-    cp $f*.md $LOGDIR/ || echo "$f" >> ./check_results/issues.txt
+    cp $f*.md $LOGDIR/ || echo "$f" >> $(RESULTS_FOLDER)/issues.txt
   fi
 done
 
-cat ./check_results/issues.txt
+cat $(RESULTS_FOLDER)/issues.txt
 
