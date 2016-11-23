@@ -17,6 +17,26 @@ WIN_SAFE_STYLES = [
     'BoldItalic',
 ]
 
+MACSTYLE = {
+    'Regular': 0,
+    'Bold': 1,
+    'Italic': 2,
+    'Bold Italic': 3
+}
+
+# Weight name to value mapping:
+WEIGHTS = {
+    "Thin": 250,
+    "ExtraLight": 275,
+    "Light": 300,
+    "Regular": 400,
+    "Medium": 500,
+    "SemiBold": 600,
+    "Bold": 700,
+    "ExtraBold": 800,
+    "Black": 900
+}
+
 
 class GlyphsAppNameTable(object):
     """Convert a font's filename into a Glyphsapp name table schema.
@@ -79,6 +99,19 @@ class GlyphsAppNameTable(object):
     def pref_subfamily_name(self):
         return self.mac_subfamily_name
 
+    @property
+    def weight(self):
+        name = self.style_name
+        if 'Italic' == self.style_name:
+            name = 'Regular'
+        elif 'Italic' in self.style_name:
+            name = re.sub(r'Italic', r'', name)
+        return WEIGHTS[name]
+
+    @property
+    def macstyle(self):
+        return MACSTYLE[self.win_subfamily_name]
+
     def _split_camelcase(self, text):
         return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
 
@@ -116,6 +149,17 @@ parser = argparse.ArgumentParser(description=description,
 parser.add_argument('fonts', nargs="+")
 
 
+def swap_name(field, font_name_field, new_name):
+    '''Replace a font's name field with a new name'''
+    try:
+        enc = font_name_field.getName(*field).getEncoding()
+        text = str(font_name_field.getName(*field)).decode(enc)
+        text = new_name
+        font_name_field.setName(text, *field)
+    except:
+        all
+
+
 def main():
     args = parser.parse_args()
 
@@ -126,14 +170,16 @@ def main():
         new_names = GlyphsAppNameTable(font_filename, unique_id)
 
         for field in new_names:
+            # Change name table
             if font['name'].getName(*field):
-                try:
-                    field_enc = font['name'].getName(*field).getEncoding()
-                    text = str(font['name'].getName(*field)).decode(field_enc)
-                    text = new_names[field]
-                    font['name'].setName(text, *field)
-                except:
-                    all
+                swap_name(field, font['name'].getName(*field),
+                          new_names[field])
+        # Change OS/2 table
+        font['OS/2'].usWeightClass = new_names.weight
+
+        # Change head table
+        font['head'].macStyle = new_names.macstyle
+
         font.save(font_path + '.fix')
         print 'font saved %s.fix' % font_path
 
