@@ -277,7 +277,7 @@ class FontBakeryCheckLogger():
     self.current_check = None
     self.default_target = None  # All new checks have this target by default
     self.summary = {"Passed": 0,
-                    "Hotfixed": 0,
+                    "Hotfixes": 0,
                     "Skipped": 0,
                     "Errors": 0,
                     "Warnings": 0}
@@ -610,6 +610,9 @@ def get_FamilyProto_Message(path):
     text_format.Merge(text_data, message)
     return message
 
+
+def save_FamilyProto_Message(path, message):
+    open(path, "wb").write(text_format.MessageToString(message))
 
 def fetch_vendorID_list(logging):
   logging.debug("Fetching Microsoft's vendorID list")
@@ -3204,15 +3207,26 @@ def check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family):
     fb.ok("METADATA.pb contains 'menu' and 'latin' subsets.")
 
 
-def check_METADATA_subsets_should_be_alphabetically_ordered(fb, family):
+def check_METADATA_subsets_alphabetically_ordered(fb, path, family):
   fb.new_check("METADATA.pb subsets should be alphabetically ordered.")
   expected = list(sorted(family.subsets))
 
   if list(family.subsets) != expected:
-    fb.error(("METADATA.pb subsets are not sorted "
-              "in alphabetical order: Got ['{}']"
-              " and expected ['{}']").format("', '".join(family.subsets),
-                                             "', '".join(expected)))
+    if config["autofix"]:
+      fb.hotfix(("METADATA.pb subsets were not sorted "
+                 "in alphabetical order: ['{}']"
+                 " We're hotfixing that"
+                 " to ['{}']").format("', '".join(family.subsets),
+                                      "', '".join(expected)))
+      del family.subsets[:]
+      family.subsets.extend(expected)
+
+      save_FamilyProto_Message(path, family)
+    else:
+      fb.error(("METADATA.pb subsets are not sorted "
+                "in alphabetical order: Got ['{}']"
+                " and expected ['{}']").format("', '".join(family.subsets),
+                                               "', '".join(expected)))
   else:
     fb.ok("METADATA.pb subsets are sorted in alphabetical order")
 
@@ -4029,7 +4043,7 @@ def fontbakery_check_ttf(config):
         check_METADATA_check_style_weight_pairs_are_unique(fb, family)
         check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
         check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family)
-        check_METADATA_subsets_should_be_alphabetically_ordered(fb, family)
+        check_METADATA_subsets_alphabetically_ordered(fb, metadata, family)
         check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
         check_METADATA_family_values_are_all_the_same(fb, family)
 
