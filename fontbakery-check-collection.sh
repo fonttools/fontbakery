@@ -1,5 +1,11 @@
 #!/bin/bash
-COLLECTION_FOLDER=$1
+if [ "$1" ]; then
+  COLLECTION_FOLDER=$1
+else
+  echo "usage: $0 <collection_folder>"
+  exit 1
+fi
+
 APACHE_FOLDERS=$COLLECTION_FOLDER/apache/*/
 OFL_FOLDERS=$COLLECTION_FOLDER/ofl/*/
 UFL_FOLDERS=$COLLECTION_FOLDER/ufl/*/
