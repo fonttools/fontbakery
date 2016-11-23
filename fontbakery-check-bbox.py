@@ -18,7 +18,7 @@
 import argparse
 from argparse import RawTextHelpFormatter
 import csv
-import fontforge, sys
+import sys
 from fontTools.ttLib import TTFont
 import tabulate
 
@@ -96,21 +96,34 @@ def main():
     rows = []
     for font in args.fonts:
         font_path = font
+        font = TTFont(font_path)
         if args.glyphs:
-            font = fontforge.open(font)
-            for g in fontforge.activeFont().glyphs():
-                bbox = g.boundingBox()
-                rows.append([
-                    ("Font", font_path),
-                    ("Glyph", g.glyphname),
-                    ("xMin", int(bbox[0])),
-                    ("yMin", int(bbox[1])),
-                    ("xMax", int(bbox[2])),
-                    ("yMax", int(bbox[3]))
-                ])
+            for g_name in font['glyf'].glyphs:
+                glyph = font['glyf'][g_name]
+                try:
+                    rows.append([
+                        ("Font", font_path),
+                        ("Glyph", g_name),
+                        ("xMin", glyph.xMin),
+                        ("yMin", glyph.yMin),
+                        ("xMax", glyph.xMax),
+                        ("yMax", glyph.yMax)
+                    ])
+                except AttributeError:
+                    # glyphs without paths or components don't have
+                    # yMin, yMax etc
+                    rows.append([
+                        ("Font", font_path),
+                        ("Glyph", g_name),
+                        ("xMin", 0),
+                        ("yMin", 0),
+                        ("xMax", 0),
+                        ("yMax", 0)
+                    ])
+                    pass
+
 
         elif args.family:
-            font = TTFont(font_path)
             rows.append([
                 ("Font", font_path),
                 ("xMin", font['head'].xMin),
