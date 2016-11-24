@@ -153,6 +153,8 @@ class GlyphsAppNameTable(object):
       (3, 1, 0, 0): self.unique_id,
       (4, 1, 0, 0): self.full_name,
       (6, 1, 0, 0): self.postscript_name,
+      (16, 1, 0, 0): self.pref_family_name,
+      (17, 1, 0, 0): self.pref_subfamily_name,
       # Win
       (1, 3, 1, 1033): self.win_family_name,
       (2, 3, 1, 1033): self.win_subfamily_name,
