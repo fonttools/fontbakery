@@ -85,7 +85,7 @@ def find_extremes(rows):
             if k not in extremes:
                 extremes[k] = int(v)
             else:
-                if abs(int(v)) > extremes[k]:
+                if abs(int(v)) > abs(extremes[k]):
                     extremes[k] = v
     return [extremes.items()]
 
