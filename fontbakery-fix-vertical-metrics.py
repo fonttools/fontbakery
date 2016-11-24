@@ -290,7 +290,7 @@ def main():
         ttfont['OS/2'].sTypoDescender = options.descents
         ttfont['OS/2'].usWinDescent = abs(options.descents)
 
-      if options.linegaps:
+      if options.linegaps or options.linegaps == 0:
         ttfont['hhea'].lineGap = options.linegaps
         ttfont['OS/2'].sTypoLineGap = options.linegaps
 
@@ -308,9 +308,9 @@ def main():
       if options.descents_win:
         ttfont['OS/2'].usWinDescent = abs(options.descents_win)
 
-      if options.linegaps_hhea:
+      if options.linegaps_hhea or options.linegaps_hhea == 0:
         ttfont['hhea'].lineGap = options.linegaps_hhea
-      if options.linegaps_typo:
+      if options.linegaps_typo or options.linegaps_typo == 0:
         ttfont['OS/2'].sTypoLineGap = options.linegaps_typo
 
       ttfont.save(f + '.fix')
