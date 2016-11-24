@@ -7,6 +7,10 @@ from fontTools.ttLib import TTFont
 
 
 description = """
+
+fontbakery-nametable-from-filename.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Replace a collection of fonts nametable's with a new table based on the
 filename and Glyphapp's naming schema.
 """
