@@ -205,7 +205,7 @@ def main():
     font = TTFont(font_path)
     font_vendor = font['OS/2'].achVendID
     font_version =  font['head'].fontRevision
-    typo_enabled = typo_metrics_enabled(font)
+    typo_enabled = typo_metrics_enabled(font['OS/2'].fsSelection)
     unique_id = str(font['name'].getName(3, 1, 0, 0))
     new_names = GlyphsAppNameTable(font_filename, 
                                    font_version,
