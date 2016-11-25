@@ -51,7 +51,7 @@ FSSELECTION = {
 }
 
 
-class GlyphsAppNameTable(object):
+class NameTableFromFilename(object):
   """Convert a font's filename into a Glyphsapp name table schema.
   Glyphsapp v2.4.1 (942)
   """
@@ -208,13 +208,12 @@ def main():
     font_filename = ntpath.basename(font_path)
     font = TTFont(font_path)
     font_vendor = font['OS/2'].achVendID
-    font_version =  font['head'].fontRevision
+    font_version =  str(font['name'].getName(5, 1, 0, 0))
     typo_enabled = typo_metrics_enabled(font['OS/2'].fsSelection)
-    unique_id = str(font['name'].getName(3, 1, 0, 0))
-    new_names = GlyphsAppNameTable(font_filename, 
-                                   font_version,
-                                   font_vendor,
-                                   typo_enabled)
+    new_names = NameTableFromFilename(font_filename,
+                                      font_version,
+                                      font_vendor,
+                                      typo_enabled)
 
     for field in new_names:
       # Change name table

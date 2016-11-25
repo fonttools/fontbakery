@@ -15,9 +15,9 @@ class FileNameFromTTFName(unittest.TestCase):
             font_filename = ntpath.basename(font)
             font_vendor = self.fonts[font]['OS/2'].achVendID
             font_version = str(self.fonts[font]['name'].getName(5, 1, 0, 0))
-            new_names = script.GlyphsAppNameTable(font_filename,
-                                                  font_version,
-                                                  font_vendor)
+            new_names = script.NameTableFromFilename(font_filename,
+                                                     font_version,
+                                                     font_vendor)
             # print new_names.version
 
             for name_field in new_names:
