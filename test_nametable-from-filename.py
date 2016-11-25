@@ -21,7 +21,7 @@ from fontTools.ttLib import TTFont
 script = __import__("fontbakery-nametable-from-filename")
 
 
-class FileNameFromTTFName(unittest.TestCase):
+class NameTableFromTTFName(unittest.TestCase):
     def _font_renaming(self, fonts):
         """Test the filename produces exactly the same name table as the
         font's nametable. Only test against name fields which exist in
