@@ -101,7 +101,7 @@ class GlyphsAppNameTable(object):
   def unique_id(self):
     # Glyphsapp style 2.000;MYFO;Arsenal-Bold
     # version;vendorID;filename
-    return '%s;%s;%s' % (self.font_version, self.vendor_id, self.filename)
+    return '%s;%s;%s' % (self.version, self.vendor_id, self.filename)
 
   @property
   def full_name(self):
@@ -143,6 +143,10 @@ class GlyphsAppNameTable(object):
       f = FSSELECTION['UseTypoMetrics']
       return FSSELECTION[self.win_subfamily_name] + f
     return FSSELECTION[self.win_subfamily_name]
+
+  @property
+  def version(self):
+    return re.search(r'[0-9]{1,4}\.[0-9]{1,8}', self.font_version).group(0)
 
   def _split_camelcase(self, text):
     return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
