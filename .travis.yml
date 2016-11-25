@@ -28,4 +28,7 @@ script:
   - python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
+  - python fontbakery-check-ttf.py data/test/nunito/*.ttf --ghm --json
+  - python fontbakery-check-ttf.py data/test/familysans/*.ttf --ghm --json
+  - python fontbakery-check-ttf.py data/test/cabin/*.ttf --ghm --json
   - python test_args.py
