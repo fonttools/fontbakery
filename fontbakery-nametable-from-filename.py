@@ -11,8 +11,8 @@ description = """
 fontbakery-nametable-from-filename.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Replace a collection of fonts nametable's with a new table based on the
-filename and Glyphapp's naming schema.
+Replace a collection of fonts nametable's with a new table based on the Google
+Fonts naming spec, from just the filename.
 """
 
 WIN_SAFE_STYLES = [
@@ -52,9 +52,7 @@ FSSELECTION = {
 
 
 class NameTableFromFilename(object):
-  """Convert a font's filename into a Glyphsapp name table schema.
-  Glyphsapp v2.4.1 (942)
-  """
+  """Convert filename into relevant font name table fields"""
   def __init__(self, filename, font_ver, vendor_id, use_typo_metrics=False):
     self.filename = filename[:-4]
     self.family_name, self.style_name = self.filename.split('-')
