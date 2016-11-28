@@ -322,7 +322,7 @@ class FontBakeryCheckLogger():
     if self.config['inmem']:
       json_output = BytesIO()
       json_output.write(json_data)
-      self.json_report_files.append((self.target[0]["filename"], json_output))
+      self.json_report_files.append(("font_file", json_output))
     else:
       json_output = open(font_file + ".fontbakery.json", 'w')
       json_output.write(json_data)
@@ -674,7 +674,7 @@ def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
       expected_str = "set"
     else:
       expected_str = "reset"
-    if config['autofix']:
+    if fb.config['autofix']:
       fb.hotfix("{} has been {}.".format(name_str, expected_str))
       if expected:
         setattr(font[table], attr, value | bitmask)
@@ -745,7 +745,7 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
 
   failed = False
   target_dir = None
-  in_memory = config['inmem']
+  in_memory = fb.config['inmem']
   for target_file in fonts_to_check:
     if type(target_file) is tuple:
       in_memory = True
@@ -1221,7 +1221,7 @@ def check_name_entries_symbol_substitutions(fb, font):
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
-        if config['autofix']:
+        if fb.config['autofix']:
           fb.hotfix(("NAMEID #{} contains symbol that was"
                      " replaced by '{}'").format(name.nameID,
                                                  ascii_repl))
@@ -1238,7 +1238,7 @@ def check_name_entries_symbol_substitutions(fb, font):
           " trademark symbols in name table entries of this font.")
 
 
-def check_OS2_usWeightClass(fb, config, font, style):
+def check_OS2_usWeightClass(fb, font, style):
   fb.new_check("Checking OS/2 usWeightClass")
 
   if style == "Italic":
@@ -1251,7 +1251,7 @@ def check_OS2_usWeightClass(fb, config, font, style):
   value = font['OS/2'].usWeightClass
   expected = WEIGHTS[weight_name]
   if value != expected:
-    if config['autofix']:
+    if fb.config['autofix']:
       font['OS/2'].usWeightClass = expected
       fb.hotfix(("OS/2 usWeightClass value was"
                  " fixed from {} to {} ({})."
@@ -1279,7 +1279,7 @@ def check_italicAngle_value_is_negative(fb, font):
   fb.new_check("Checking that italicAngle <= 0")
   value = font['post'].italicAngle
   if value > 0:
-    if config['autofix']:
+    if fb.config['autofix']:
       font['post'].italicAngle = -value
       fb.hotfix(("post table italicAngle"
                  " from {} to {}").format(value, -value))
@@ -1294,7 +1294,7 @@ def check_italicAngle_value_is_less_than_20_degrees(fb, font):
   fb.new_check("Checking that italicAngle is less than 20 degrees")
   value = font['post'].italicAngle
   if abs(value) > 20:
-    if config['autofix']:
+    if fb.config['autofix']:
       font['post'].italicAngle = -20
       fb.hotfix(("post table italicAngle"
                  " changed from {} to -20").format(value))
@@ -1396,7 +1396,7 @@ def check_copyright_entries_match_license(fb, found, file_path, font):
           value = nameRecord.string.decode(nameRecord.getEncoding())
           if value != placeholder and license_exists:
             failed = True
-            if config['autofix']:
+            if fb.config['autofix']:
               fb.hotfix(('License file {} exists but'
                          ' NameID {} (LICENSE DESCRIPTION) value'
                          ' on platform {} ({})'
@@ -1440,7 +1440,7 @@ def check_copyright_entries_match_license(fb, found, file_path, font):
                                 license))
       if not entry_found and license_exists:
         failed = True
-        if config['autofix']:
+        if fb.config['autofix']:
           font['name'].setName(placeholder,
                                NAMEID_LICENSE_DESCRIPTION,
                                PLATFORM_ID_WINDOWS,
@@ -1487,7 +1487,7 @@ def check_font_has_a_valid_license_url(fb, found, font):
           if string == expected:
             found_good_entry = True
           else:
-            if config['autofix']:
+            if fb.config['autofix']:
               pass  # implement-me!
             else:
               failed = True
@@ -1524,7 +1524,7 @@ def check_description_strings_in_name_table(fb, font):
       failed = True
       del name
   if failed:
-    if config['autofix']:
+    if fb.config['autofix']:
       fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                  " were removed (perhaps added by"
                  " a longstanding FontLab Studio 5.x bug that"
@@ -1548,11 +1548,11 @@ def check_description_strings_do_not_exceed_100_chars(fb, font):
   for name in font['name'].names:
     if len(name.string.decode(name.getEncoding())) > 100 \
       and name.nameID == NAMEID_DESCRIPTION:
-      if config['autofix']:
+      if fb.config['autofix']:
         del name
       failed = True
   if failed:
-    if config['autofix']:
+    if fb.config['autofix']:
       fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                  " were removed because they"
                  " were longer than 100 characters"
@@ -1778,6 +1778,7 @@ def check_fontforge_outputs_error_msgs(fb, font_file):
     fb.skip("Skipping AdobeBlank since"
             " this font is a very peculiar hack.")
   else:
+    validation_state = None
     try:
       # temporary stderr redirection:
       ff_err = os.tmpfile()
@@ -2073,7 +2074,7 @@ def check_font_version_fields(fb, font):
                 fix = "{};{}".format(expected_str, comments)
               else:
                 fix = expected_str
-              if config['autofix']:
+              if fb.config['autofix']:
                 fb.hotfix(("NAMEID_VERSION_STRING "
                            "from '{}' to '{}'"
                            "").format(name_version, fix))
@@ -2096,7 +2097,7 @@ def check_Digital_Signature_exists(fb, font, font_file):
     fb.ok("Digital Signature (DSIG) exists.")
   else:
     try:
-      if config['autofix']:
+      if fb.config['autofix']:
         from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
         newDSIG = ttLib.newTable("DSIG")
         newDSIG.ulVersion = 1
@@ -2224,7 +2225,7 @@ def check_whitespace_glyphs_have_ink(fb, font, missing):
       g = getGlyph(font, codepoint)
       if g is not None and glyphHasInk(font, g):
         failed = True
-        if config['autofix']:
+        if fb.config['autofix']:
           fb.hotfix(('Glyph "{}" has ink.'
                      ' Fixed: Overwritten by'
                      ' an empty glyph').format(g))
@@ -2255,7 +2256,7 @@ def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
       setWidth(font, space, min(nbspWidth, spaceWidth))
 
       if nbspWidth > spaceWidth and spaceWidth >= 0:
-        if config['autofix']:
+        if fb.config['autofix']:
           msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
           fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
         else:
@@ -2263,7 +2264,7 @@ def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
                  ' needs to be fixed to {}')
           fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
       else:
-        if config['autofix']:
+        if fb.config['autofix']:
           msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
           fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
         else:
@@ -2329,7 +2330,7 @@ def check_for_unwanted_tables(fb, font):
       del font[table]
 
   if len(unwanted_tables_found) > 0:
-    if config['autofix']:
+    if fb.config['autofix']:
       fb.hotfix(("Unwanted tables were present"
                  " in the font and were removed:"
                  " {}").format(', '.join(unwanted_tables_found)))
@@ -2612,7 +2613,7 @@ def check_GASP_table_is_correctly_set(fb, font):
             value = font["gasp"].gaspRange[key]
             if value != 0x0F:
               failed = True
-              if config['autofix']:
+              if fb.config['autofix']:
                 font["gasp"].gaspRange[0xFFFF] = 0x0F
                 fb.hotfix("gaspRange[0xFFFF]"
                           " value ({}) is not 0x0F".format(hex(value)))
@@ -3213,7 +3214,7 @@ def check_METADATA_subsets_alphabetically_ordered(fb, path, family):
   expected = list(sorted(family.subsets))
 
   if list(family.subsets) != expected:
-    if config["autofix"]:
+    if fb.config["autofix"]:
       fb.hotfix(("METADATA.pb subsets were not sorted "
                  "in alphabetical order: ['{}']"
                  " We're hotfixing that"
@@ -3951,7 +3952,7 @@ def fontbakery_check_ttf(config):
     check_main_entries_in_the_name_table(fb, font, font_file)
     check_OS2_achVendID(fb, font, registered_vendor_ids)
     check_name_entries_symbol_substitutions(fb, font)
-    check_OS2_usWeightClass(fb, config, font, style)
+    check_OS2_usWeightClass(fb, font, style)
     check_fsSelection_REGULAR_bit(fb, font, style)
     check_italicAngle_value_is_negative(fb, font)
     check_italicAngle_value_is_less_than_20_degrees(fb, font)
@@ -3973,7 +3974,8 @@ def fontbakery_check_ttf(config):
     check_with_otsanitise(fb, font_file)
 
     validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
-    perform_all_fontforge_checks(fb, validation_state)
+    if validation_state is not None:
+      perform_all_fontforge_checks(fb, validation_state)
 
     check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
     check_Vertical_Metric_Linegaps(fb, font)
@@ -4124,7 +4126,7 @@ def fontbakery_check_ttf(config):
                "(outputs to stderr).\n")
 
   if webapp:
-    return fb.ghm_report_files
+    return fb.json_report_files
   else:
     if len(fb.json_report_files) > 0:
       print(("Saved check results in "

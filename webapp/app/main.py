@@ -21,18 +21,16 @@ def _unpack(stream):
     font = TTFont(BytesIO(stream.read(fontlen)))
     yield (desc, font)
 
+def build_check_results_table(report_file):
+  return "FOO"
+
 @app.route('/runchecks', methods=['POST'])
 def run_fontbakery():
-  hotfixing = False  # TODO: let the user choose.
-
-  if hotfixing:
-    result = BytesIO()
-    zipf = zipfile.ZipFile(result,  "w")
 
   config = {
     'verbose': False,
-    'ghm': True,
-    'json': False,
+    'ghm': False,
+    'json': True,
     'error': True,
     'autofix': False,
     'inmem': True,
@@ -41,37 +39,19 @@ def run_fontbakery():
 
   reports = check_ttf(config)
 
-# TODO:
-#    if hotfixing:
-#      # write the font file to the zip
-#      fontIO = BytesIO()
-#      font.save(fontIO)
-#      fontData = fontIO.getvalue()
-#      zipf.writestr(filename, fontData)
+  report_data = ""
+  i = 1
+  tabs = ""
+  for desc, report_file in reports:
+    if desc["filename"] is not None:
+      tabs += ('<li><a href="#tabs-{}">'
+               '{}</a></li>').format(i, desc["filename"])
+      table = build_check_results_table(report_file)
+      report_data += ('<div id="tabs-{}">'
+                      '{}</div>').format(i, table)
+      i+=1
 
-  if hotfixing:
-    zipf.close()
-    data = result.getvalue()
-    response = app.make_response(data)
-    response.headers['Content-Type'] = 'application/octet-stream'
-    response.headers['Content-Disposition'] = 'attachment; filename=fonts-with-changed-names.zip'
-    return response
-  else:
-    from markdown import markdown
-    report_data = ""
-    i = 1
-    tabs = ""
-    for desc, report_file in reports:
-      if desc["filename"] is not None:
-        tabs += ('<li><a href="#tabs-{}">'
-                 '{}</a></li>').format(i, desc["filename"])
-        markdown_data = markdown(report_file,
-                                 extensions=['markdown.extensions.tables'])
-        report_data += ('<div id="tabs-{}">'
-                        '{}</div>').format(i, markdown_data)
-        i+=1
-
-    return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, report_data)
+  return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, report_data)
 
 @app.errorhandler(500)
 def server_error(e):
