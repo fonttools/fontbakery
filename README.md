@@ -3,16 +3,21 @@
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt)
 
-# ![Font Bakery](data/logo.png)
+# [![Font Bakery](data/logo.png)](https://fontbakery.appspot.com)
 
-Font Bakery is a command-line tool for testing font projects.
-It runs checks on TrueType files.
+Font Bakery is a command-line tool for testing font projects, also available as a drag-and-drop web app from [fontbakery.appspot.com](https://fontbakery.appspot.com)
+
+It runs checks on TrueType files, and Google Fonts related metadata files.
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run FontBakery on each commit, so that with each update your files are tested.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
-## Usage
+## Web Usage
+
+Visit [fontbakery.appspot.com](https://fontbakery.appspot.com) and drop 1 to 18 TTF files on the page, and click the "
+
+## Command Line Usage
 
     cd ~/path/to/fontproject/
     fontbakery-check-ttf.py *.ttf
