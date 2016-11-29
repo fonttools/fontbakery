@@ -378,8 +378,8 @@ class FontBakeryCheckLogger():
     '''sets target of the current check.
        This can be a folder, or a specific TTF file
        or a METADATA.pb file'''
-#    if type(value) is tuple:
-#      value = value[0]["filename"] # "In-memory font object"
+    if type(value) is tuple:
+      value = value[0]["filename"] # "In-memory font object"
 
     if self.current_check:
       self.current_check["target"] = value
@@ -592,14 +592,23 @@ def glyphHasInk(font, name):
 
 
 def get_FamilyProto_Message(path):
-    message = FamilyProto()
-    text_data = open(path, "rb").read()
-    text_format.Merge(text_data, message)
-    return message
+    try:
+      from fonts_public_pb2 import FamilyProto
+      from google.protobuf import text_format
+      message = FamilyProto()
+      text_data = open(path, "rb").read()
+      text_format.Merge(text_data, message)
+      return message
+    except:
+      sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 
 def save_FamilyProto_Message(path, message):
-    open(path, "wb").write(text_format.MessageToString(message))
+    try:
+      from google.protobuf import text_format
+      open(path, "wb").write(text_format.MessageToString(message))
+    except:
+      sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 def fetch_vendorID_list(logging):
   logging.debug("Fetching Microsoft's vendorID list")
@@ -779,6 +788,7 @@ def check_DESCRIPTION_file_contains_broken_links(fb, contents):
 def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
   fb.new_check("Is this a propper HTML snippet ?")
   try:
+    import magic
     contenttype = magic.from_file(descfile)
     if "HTML" not in contenttype:
       data = open(descfile).read()
@@ -796,6 +806,9 @@ def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
              " magic module version installed in your system does not"
              " provide the from_file method used in"
              " the check implementation.")
+  except ImportError:
+     fb.skip("This check depends on the magic python module which"
+             " does not seem to be currently installed on your system.")
 
 
 def check_DESCRIPTION_max_length(fb, descfile):
@@ -1706,6 +1719,7 @@ def check_with_ftxvalidator(fb, font_file):
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
+      import subprocess
       ftx_cmd = ["ftxvalidator",
                  "-t", "all",  # execute all tests
                  font_file]
@@ -1742,6 +1756,7 @@ def check_with_otsanitise(fb, font_file):
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
+      import subprocess
       ots_output = subprocess.check_output(["ot-sanitise", font_file],
                                            stderr=subprocess.STDOUT)
       if ots_output != "":
@@ -2270,6 +2285,7 @@ def check_with_pyfontaine(fb, font_file):
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
+      import subprocess
       fontaine_output = subprocess.check_output(["pyfontaine",
                                                  "--missing",
                                                  "--set", "gwf_latin",
@@ -2340,6 +2356,7 @@ def check_hinting_filesize_impact(fb, font_file, filename):
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
+      import subprocess
       statinfo = os.stat(font_file)
       hinted_size = statinfo.st_size
 
@@ -2471,6 +2488,7 @@ def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
                " in the font version entry of the 'name' table."
                " Font version string is: '{}'").format(version_strings[0]))
     else:
+      import subprocess
       ttfa_cmd = ["ttfautohint",
                   "-V"]  # print version info
       ttfa_output = subprocess.check_output(ttfa_cmd,
@@ -3784,23 +3802,6 @@ def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
 
-  if not config['webapp']:
-    # avoid importing magic on the webapp due to
-    # usage of ctypes which is incompatible with Google App Engine
-    import magic
-
-    # GAE does not support the subprocess module
-    import subprocess
-
-    # We're currently not checking METADATA.pb
-    # protobuf files on the webapp
-    from fonts_public_pb2 import FamilyProto
-
-    try:
-      from google.protobuf import text_format
-    except:
-      sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
-
   # set up a basic logging config
   handler = logging.StreamHandler()
   formatter = logging.Formatter('%(levelname)-8s %(message)s  ')
@@ -3845,6 +3846,8 @@ def fontbakery_check_ttf(config):
   if fb.config['webapp'] is True:
     # At the moment we won't perform
     # DESCRIPTION checks on the webapp
+    # In particular, one of the checks depends on the magic python module
+    # which is not supported on Google App Engine.
     pass
   else:
     # Perform a few checks on DESCRIPTION files
@@ -3888,7 +3891,9 @@ def fontbakery_check_ttf(config):
         logging.error("'{}' is missing a METADATA.pb file!".format(font_file))
       else:
         family = get_FamilyProto_Message(metadata)
-        if family not in metadata_to_check:
+        if family is None:
+          logging.warning("Could not load data from METADATA.pb.")
+        elif family not in metadata_to_check:
           metadata_to_check.append([fontdir, family])
 
     for dirname, family in metadata_to_check:
@@ -4033,7 +4038,7 @@ def fontbakery_check_ttf(config):
 ## Metadata related checks:
 ##########################################################
     skip_gfonts = False
-    if not webapp:
+    if not fb.config['webapp']:
       fontdir = os.path.dirname(font_file)
       metadata = os.path.join(fontdir, "METADATA.pb")
       if not os.path.exists(metadata):
@@ -4044,6 +4049,11 @@ def fontbakery_check_ttf(config):
         skip_gfonts = True
       else:
         family = get_FamilyProto_Message(metadata)
+        if family is None:
+          logging.warning("Could not load data from METADATA.pb.")
+          skip_gfonts = True
+          break
+
         fb.default_target = metadata
 
         check_METADATA_Ensure_designer_simple_short_name(fb, family)
@@ -4101,7 +4111,7 @@ def fontbakery_check_ttf(config):
     fb.output_report(font_file)
     fb.reset_report()
 
-    if not webapp:
+    if not fb.config['webapp']:
       # ----------------------------------------------------
       # https://github.com/googlefonts/fontbakery/issues/971
       # DC: Each fix line should set a fix flag, and
@@ -4132,7 +4142,7 @@ def fontbakery_check_ttf(config):
                "  --error\tPrint only the error messages "
                "(outputs to stderr).\n")
 
-  if webapp:
+  if fb.config['webapp']:
     return fb.json_report_files
   else:
     if len(fb.json_report_files) > 0:
