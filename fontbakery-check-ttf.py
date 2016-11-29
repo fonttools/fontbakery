@@ -42,20 +42,6 @@ except ImportError:
   pass
 
 
-webapp = (__name__ != "__main__")
-
-if not webapp:
-  # avoid importing magic on the webapp dues to
-  # usage of ctypes which is incompatible with Google App Engine
-  import magic
-  import subprocess
-  from fonts_public_pb2 import FamilyProto
-
-  try:
-    from google.protobuf import text_format
-  except:
-    sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
-
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
@@ -322,6 +308,7 @@ class FontBakeryCheckLogger():
     if self.config['inmem']:
       json_output = BytesIO()
       json_output.write(json_data)
+      # TODO: This next line is wrong!
       self.json_report_files.append(("font_file", json_output))
     else:
       json_output = open(font_file + ".fontbakery.json", 'w')
@@ -740,15 +727,17 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
      that the user would store the files from a single family
      spreaded in several separate directories).
   '''
-  global in_memory, target_dir
+  global target_dir
   fb.new_check("Checking all files are in the same directory")
 
   failed = False
   target_dir = None
-  in_memory = fb.config['inmem']
   for target_file in fonts_to_check:
+    # TODO: This type of if/else checking everywhere is cumbersome.
+    # We need a better solution here for cleanly supporting both
+    # filesystem I/O and in-memory handling of file-like objects.
     if type(target_file) is tuple:
-      in_memory = True
+      fb.config['inmem'] = True
       continue
     if target_dir is None:
       target_dir = os.path.split(target_file)[0]
@@ -1713,7 +1702,7 @@ def check_if_xAvgCharWidth_is_correct(fb, font):
 
 def check_with_ftxvalidator(fb, font_file):
   fb.new_check("Checking with ftxvalidator")
-  if webapp is True:
+  if fb.config['webapp'] is True:
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
@@ -1749,7 +1738,7 @@ def check_with_ftxvalidator(fb, font_file):
 
 def check_with_otsanitise(fb, font_file):
   fb.new_check("Checking with ot-sanitise")
-  if webapp is True:
+  if fb.config['webapp'] is True:
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
@@ -2277,7 +2266,7 @@ def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
 
 def check_with_pyfontaine(fb, font_file):
   fb.new_check("Checking with pyfontaine")
-  if webapp is True:
+  if fb.config['webapp'] is True:
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
@@ -2347,7 +2336,7 @@ def check_hinting_filesize_impact(fb, font_file, filename):
   # current implementation simply logs useful info
   # but there's no fail scenario for this checker.
   ttfautohint_missing = False
-  if webapp is True:
+  if fb.config['webapp'] is True:
     fb.skip("Subprocess is unsupported on Google App Engine")
   else:
     try:
@@ -2467,7 +2456,7 @@ def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
   if ttfautohint_missing:
     fb.skip("This check requires ttfautohint"
             " to be available in the system.")
-  elif webapp is True:
+  elif fb.config['webapp'] is True:
     fb.skip("This check is not supported on Google App Engine.")
   else:
     version_strings = get_name_string(font, NAMEID_VERSION_STRING)
@@ -3795,6 +3784,23 @@ def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
 
+  if not config['webapp']:
+    # avoid importing magic on the webapp due to
+    # usage of ctypes which is incompatible with Google App Engine
+    import magic
+
+    # GAE does not support the subprocess module
+    import subprocess
+
+    # We're currently not checking METADATA.pb
+    # protobuf files on the webapp
+    from fonts_public_pb2 import FamilyProto
+
+    try:
+      from google.protobuf import text_format
+    except:
+      sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
+
   # set up a basic logging config
   handler = logging.StreamHandler()
   formatter = logging.Formatter('%(levelname)-8s %(message)s  ')
@@ -3836,9 +3842,9 @@ def fontbakery_check_ttf(config):
 
   check_all_files_in_a_single_directory(fb, fonts_to_check)
 
-  if in_memory is True:
-    # At the moment we won't perform DESCRIPTION
-    # checks on in-memory files (i.e. on the webapp)
+  if fb.config['webapp'] is True:
+    # At the moment we won't perform
+    # DESCRIPTION checks on the webapp
     pass
   else:
     # Perform a few checks on DESCRIPTION files
@@ -3867,7 +3873,8 @@ def fontbakery_check_ttf(config):
 ##           list of METADATA.pb files first
 ###########################################################################
 
-  if in_memory or webapp:
+  if fb.config['inmem'] or fb.config['webapp']:
+    # TODO: Not sure why these are disabled. I need to review this.
     pass
   else:
     metadata_to_check = []
@@ -4162,6 +4169,19 @@ if __name__ == '__main__':
     'json': args.json,
     'ghm': args.ghm,
     'error': args.error,
-    'inmem': False
+    'inmem': False,
+    'webapp': False
   }
+  # Notes on the meaning of some of the configuration parameters:
+  #
+  # inmem:  Indicated that results should be saved in-memory
+  #         instead of written to the filesystem.
+  #         This may become a command line option (if needed in the future)
+  #         but right now it is only really used by other scripts that
+  #         import this as a module (such as our webapp code).
+  #
+  # webapp: Indicates that we're running as back-end code for
+  #         the FontBakery webapp. This is needed because currently there
+  #         are a few features that must be disabled due to lack of support
+  #         in the Google App Engine environment.
   fontbakery_check_ttf(config)

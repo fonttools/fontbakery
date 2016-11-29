@@ -32,8 +32,9 @@ def run_fontbakery():
     'ghm': False,
     'json': True,
     'error': True,
-    'autofix': False,
-    'inmem': True,
+    'autofix': False,  # Hotfixes are only supported on the command line.
+    'inmem': True, #  Filesystem I/O is forbiden on Google App Engine.
+    'webapp': True, #  This will disable a few unsupported features on GAE.
     'files': _unpack(request.stream)
   }
 
