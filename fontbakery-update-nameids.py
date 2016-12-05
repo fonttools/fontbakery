@@ -15,7 +15,7 @@
 #
 from fontTools.ttLib import TTFont
 import argparse
-
+from argparse import RawTextHelpFormatter
 
 description = """
 
@@ -27,7 +27,7 @@ Update specific nameIDs in a collection of fonts with new strings.
 Examples:
 
 $ fontbakery-update-nameids.py -c="Copyright 2016" font.ttf
-$ fontbakery-update-nameids.py -v="4.000" -ul="http://license.org"
+$ fontbakery-update-nameids.py -v="4.000" -ul="http://license.org" [fonts.ttf]
 
 if you need to change the name or style of a collection of font families, use
 fontbakery-nametable-from-filename.py instead.
@@ -58,11 +58,13 @@ def swap_name(field, font_name_field, new_name):
 def update_field(arg, args, fields, nametable):
   if hasattr(args, arg):
     text = getattr(args, arg)
-    swap_name(fields, nametable, text)
+    if text:
+      swap_name(fields, nametable, text)
 
 
-description = "Update a collection of font's nametable id text"
-parser = argparse.ArgumentParser(description=description)
+
+parser = argparse.ArgumentParser(description=description,
+                 formatter_class=RawTextHelpFormatter)
 parser.add_argument('fonts', nargs="+")
 parser.add_argument('-c', '--copyright', type=str,
                     help='Update copyright string')
