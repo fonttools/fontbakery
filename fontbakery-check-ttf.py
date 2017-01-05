@@ -1017,7 +1017,8 @@ def check_main_entries_in_the_name_table(fb, font, font_file):
   def family_with_spaces(value):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
                                      'PressStart2P': 'Press Start 2P',
-                                     'AmaticSC': 'Amatic SC'}
+                                     'AmaticSC': 'Amatic SC',
+                                     'AmaticaSC': 'Amatica SC'}
     if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
       return FAMILY_WITH_SPACES_EXCEPTIONS[value]
     result = ''
