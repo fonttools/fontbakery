@@ -268,14 +268,14 @@ class FontBakeryCheckLogger():
                     "Errors": 0,
                     "Warnings": 0}
 
-  def output_report(self, font_file):
+  def output_report(self, a_target):
     self.flush()
 
     total = 0
     for key in self.summary.keys():
       total += self.summary[key]
 
-    print ("\nCheck results summary for '{}':".format(font_file))
+    print ("\nCheck results summary for '{}':".format(a_target.fullpath))
     for key in self.summary.keys():
       occurrences = self.summary[key]
       percent = float(100*occurrences)/total
@@ -293,12 +293,12 @@ class FontBakeryCheckLogger():
       self.all_checks = filtered
 
     if self.config['json']:
-      self.output_json_report(font_file)
+      self.output_json_report(a_target)
 
     if self.config['ghm']:
-      self.output_github_markdown_report(font_file)
+      self.output_github_markdown_report(a_target)
 
-  def output_json_report(self, font_file):
+  def output_json_report(self, a_target):
     import json
     json_data = json.dumps(self.all_checks,
                            sort_keys=True,
@@ -308,22 +308,20 @@ class FontBakeryCheckLogger():
     if self.config['inmem']:
       json_output = BytesIO()
       json_output.write(json_data)
-      # TODO: This next line is wrong!
-      self.json_report_files.append(("font_file", json_output))
+      json_output.seek(0)
+      self.json_report_files.append((a_target.fullpath, json_output))
     else:
-      json_output = open(font_file + ".fontbakery.json", 'w')
+      json_output_filename = a_target.fullpath + ".fontbakery.json"
+      json_output = open(json_output_filename, 'w')
       json_output.write(json_data)
-      self.json_report_files.append(json_output)
+      self.json_report_files.append(json_output_filename)
 
-  def output_github_markdown_report(self, font_file):
+  def output_github_markdown_report(self, a_target):
 
     markdown_data = "# Fontbakery check results\n"
     all_checks = {}
     for check in self.all_checks:
       target = check["target"]
-
-      if type(target) is tuple:  # In-memory file-like font-object
-        target = target[0]["filename"]
 
       if target in all_checks.keys():
         all_checks[target].append(check)
@@ -339,11 +337,12 @@ class FontBakeryCheckLogger():
                           "* {}\n\n").format(check['description'], msgs)
 
     if self.config['inmem']:
-      self.ghm_report_files.append((font_file[0], markdown_data))
+      self.ghm_report_files.append((a_target.fullpath, markdown_data))
     else:
-      ghm_output = open(font_file + ".fontbakery.md", 'w')
+      output_filename = a_target.fullpath + ".fontbakery.md"
+      ghm_output = open(output_filename, 'w')
       ghm_output.write(markdown_data)
-      self.ghm_report_files.append(font_file + ".fontbakery.md")
+      self.ghm_report_files.append(output_filename)
 
   def update_progressbar(self):
     tick = {
@@ -378,8 +377,6 @@ class FontBakeryCheckLogger():
     '''sets target of the current check.
        This can be a folder, or a specific TTF file
        or a METADATA.pb file'''
-    if type(value) is tuple:
-      value = value[0]["filename"] # "In-memory font object"
 
     if self.current_check:
       self.current_check["target"] = value
@@ -647,13 +644,6 @@ def font_key(f):
                            f.weight)
 
 
-def get_ttfont(f):
-  if type(f) is tuple:
-    return f[1]
-  else:
-    return ttLib.TTFont(f)
-
-
 def version_is_newer(a, b):
   a = map(int, a.split("."))
   b = map(int, b.split("."))
@@ -688,13 +678,10 @@ def check_files_are_named_canonically(fb, fonts_to_check):
   fb.new_check("Checking files are named canonically")
   not_canonical = []
 
-  for font_file in fonts_to_check:
-    if type(font_file) is tuple:
-      continue
-
-    file_path, filename = os.path.split(font_file)
+  for to_check in fonts_to_check:
+    file_path, filename = os.path.split(to_check.fullpath)
     if file_path == "":
-      fb.set_target("Current Folder")
+      fb.set_target(target_font(desc={"filename":"."})) # Current Directory
     else:
       fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base, filename_extension = os.path.splitext(filename)
@@ -703,21 +690,21 @@ def check_files_are_named_canonically(fb, fonts_to_check):
     try:
       family, style = filename_base.split('-')
       if style in style_file_names:
-        fb.ok("{} is named canonically".format(font_file))
+        fb.ok("{} is named canonically".format(to_check.fullpath))
       else:
         fb.error(('Style name used in "{}" is not canonical.'
                   ' You should rebuild the font using'
                   ' any of the following'
-                  ' style names: "{}".').format(font_file,
+                  ' style names: "{}".').format(to_check.fullpath,
                                                 '", "'.join(STYLE_NAMES)))
-        not_canonical.append(font_file)
-        fonts_to_check.remove(font_file)
-        fb.output_report(font_file)
+        not_canonical.append(to_check.fullpath)
+        fonts_to_check.remove(to_check)
+        fb.output_report(to_check)
     except:
-        fb.error(("{} is not named canonically.").format(font_file))
-        not_canonical.append(font_file)
-        fonts_to_check.remove(font_file)
-        fb.output_report(font_file)
+        fb.error(("Font file '{}' is not named canonically.").format(to_check.fullpath))
+        not_canonical.append(to_check.fullpath)
+        fonts_to_check.remove(to_check)
+        fb.output_report(to_check)
   if not_canonical:
     print('\nAborted, critical errors with filenames.')
     print(('Please rename these files canonically and try again:'
@@ -742,16 +729,10 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
   failed = False
   target_dir = None
   for target_file in fonts_to_check:
-    # TODO: This type of if/else checking everywhere is cumbersome.
-    # We need a better solution here for cleanly supporting both
-    # filesystem I/O and in-memory handling of file-like objects.
-    if type(target_file) is tuple:
-      fb.config['inmem'] = True
-      continue
     if target_dir is None:
-      target_dir = os.path.split(target_file)[0]
+      target_dir = os.path.split(target_file.fullpath)[0]
     else:
-      if target_dir != os.path.split(target_file)[0]:
+      if target_dir != os.path.split(target_file.fullpath)[0]:
         failed = True
         fb.warning("Not all fonts passed in the command line"
                    "are in the same directory. This may lead to"
@@ -969,13 +950,10 @@ def check_all_fontfiles_have_same_version(fb, fonts_to_check):
   fb.new_check("Make sure all font files have the same version value.")
   all_detected_versions = []
   fontfile_versions = {}
-  for font_file in fonts_to_check:
-    font = get_ttfont(font_file)
+  for target in fonts_to_check:
+    font = target.get_ttfont()
     v = font['head'].fontRevision
-    if type(font_file) is tuple:
-      fontfile_versions[font_file[1]] = v
-    else:
-      fontfile_versions[font_file] = v
+    fontfile_versions[target.fullpath] = v
 
     if v not in all_detected_versions:
       all_detected_versions.append(v)
@@ -1006,7 +984,7 @@ def check_OS2_fsType(fb):
   fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
                  " and must be zero (disabled) in all fonts.")
 
-def check_main_entries_in_the_name_table(fb, font, font_file):
+def check_main_entries_in_the_name_table(fb, font, fullpath):
   '''Each entry in the name table has a criteria for validity and
      this check tests if all entries in the name table are
      in conformance with that. This check applies only
@@ -1045,11 +1023,7 @@ def check_main_entries_in_the_name_table(fb, font, font_file):
     else:
       return value
 
-  if type(font_file) is tuple:
-    filename = os.path.split(font_file[0]["filename"])[1]
-  else:
-    filename = os.path.split(font_file)[1]
-
+  filename = os.path.split(fullpath)[1]
   filename_base = os.path.splitext(filename)[0]
   fname, style = filename_base.split('-')
   fname_with_spaces = family_with_spaces(fname)
@@ -2347,7 +2321,7 @@ def check_for_unwanted_tables(fb, font):
     fb.ok("There are no unwanted tables.")
 
 
-def check_hinting_filesize_impact(fb, font_file, filename):
+def check_hinting_filesize_impact(fb, fullpath, filename):
   fb.new_check("Show hinting filesize impact")
   # current implementation simply logs useful info
   # but there's no fail scenario for this checker.
@@ -2357,13 +2331,13 @@ def check_hinting_filesize_impact(fb, font_file, filename):
   else:
     try:
       import subprocess
-      statinfo = os.stat(font_file)
+      statinfo = os.stat(fullpath)
       hinted_size = statinfo.st_size
 
       dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
       subprocess.call(["ttfautohint",
                        "--dehint",
-                       font_file,
+                       fullpath,
                        dehinted.name])
       statinfo = os.stat(dehinted.name)
       dehinted_size = statinfo.st_size
@@ -3795,6 +3769,33 @@ def check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts):
     else:
       fb.ok("Font em size is equal to 1000.")
 
+
+class target_font(object):
+  def __init__(self, ttfont=None, desc={}):
+    self.ttfont = ttfont
+    self.set_description(desc)
+
+  def set_description(self, desc):
+    '''NOTE:
+       The JSON description format is a dictionary with the following fields:
+        -> filename
+        -> familyName
+        -> weightName
+        -> isItalic
+        -> version
+        -> vendorID'''
+    self.fullpath = desc.get("filename")
+    self.familyName = desc.get("familyName")
+    self.weightName = desc.get("weightName")
+    self.isItalic = desc.get("isItalic")
+    self.version = desc.get("version")
+    self.vendorID = desc.get("vendorID")
+
+  def get_ttfont(self):
+    if self.ttfont is None:
+      self.ttfont = ttLib.TTFont(self.fullpath)
+    return self.ttfont
+
 # ############################################################################
 # ############################################################################
 
@@ -3825,23 +3826,31 @@ def fontbakery_check_ttf(config):
   # ------------------------------------------------------
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
-  for file_to_check in sorted(config['files']):
-    if type(file_to_check) is tuple:
-      fonts_to_check.append(file_to_check)
+  for target in config['files']:
+    if type(target) is target_font:
+      fonts_to_check.append(target)
     else:
       # use glob.glob to accept *.ttf
-      for fullpath in glob.glob(file_to_check):
+      for fullpath in glob.glob(target):
         file_path, file_name = os.path.split(fullpath)
         if file_name.endswith(".ttf"):
-          fonts_to_check.append(fullpath)
+          a_target = target_font()
+          a_target.fullpath = fullpath
+          fonts_to_check.append(a_target)
         else:
           logging.warning("Skipping '{}' as it does not seem "
                           "to be valid TrueType font file.".format(file_name))
+
+# FIX-ME: Why do we attempt to sort the fonts here?
+#         Do we expect to remove duplicates? It does not seem very important.
+#         Anyway... this probably need some extra work to get the
+#         font objects sorted by filename field...
   fonts_to_check.sort()
+
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
 
-  check_all_files_in_a_single_directory(fb, fonts_to_check)
+  check_files_are_named_canonically(fb, fonts_to_check)
 
   if fb.config['webapp'] is True:
     # At the moment we won't perform
@@ -3851,18 +3860,26 @@ def fontbakery_check_ttf(config):
     pass
   else:
     # Perform a few checks on DESCRIPTION files
-    
-    folder_name = os.path.split(fonts_to_check[0])[0]
-    descfile = os.path.join(folder_name, "DESCRIPTION.en_us.html")
-    if os.path.exists(descfile):
-      fb.default_target = descfile
-      contents = open(descfile).read()
-      check_DESCRIPTION_file_contains_broken_links(fb, contents)
-      check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile)
-      check_DESCRIPTION_max_length(fb, descfile)
-      check_DESCRIPTION_min_length(fb, descfile)
 
-  check_files_are_named_canonically(fb, fonts_to_check)
+    # This expects all fonts to be in the same folder:
+    a_font = fonts_to_check[0]
+
+    # FIX-ME: This will not work if we have more than
+    #         a single '/' char in the filename:
+    folder_name = os.path.split(a_font.fullpath)[0]
+    descfilepath = os.path.join(folder_name, "DESCRIPTION.en_us.html")
+    if os.path.exists(descfilepath):
+      fb.default_target = descfilepath
+      contents = open(descfilepath).read()
+      check_DESCRIPTION_file_contains_broken_links(fb, contents)
+      check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
+      check_DESCRIPTION_max_length(fb, descfilepath)
+      check_DESCRIPTION_min_length(fb, descfilepath)
+
+  if not fb.config['inmem']:
+    # this check does not make sense for in-memory file-like objects:
+    check_all_files_in_a_single_directory(fb, fonts_to_check)
+
   registered_vendor_ids = fetch_vendorID_list(logging)
 
 # DC This is definitely not step 1, cross-family comes after individual
@@ -3881,14 +3898,11 @@ def fontbakery_check_ttf(config):
     pass
   else:
     metadata_to_check = []
-    for font_file in fonts_to_check:
-      if type(font_file) is tuple:
-        continue
-
-      fontdir = os.path.dirname(font_file)
+    for target in fonts_to_check:
+      fontdir = os.path.dirname(target.fullpath)
       metadata = os.path.join(fontdir, "METADATA.pb")
       if not os.path.exists(metadata):
-        logging.error("'{}' is missing a METADATA.pb file!".format(font_file))
+        logging.error("'{}' is missing a METADATA.pb file!".format(target.fullpath))
       else:
         family = get_FamilyProto_Message(metadata)
         if family is None:
@@ -3927,16 +3941,21 @@ def fontbakery_check_ttf(config):
   # ------------------------------------------------------
   vmetrics_ymin = 0
   vmetrics_ymax = 0
-  for font_file in fonts_to_check:
+  for target in fonts_to_check:
     # this will both accept BytesIO or a filepath
-    font = get_ttfont(font_file)
+    font = target.get_ttfont()
 
     font_ymin, font_ymax = get_bounding_box(font)
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
   check_all_fontfiles_have_same_version(fb, fonts_to_check)
-  fb.output_report("CrossFamilyChecks")
+  # FSanches: I don't like the following few lines.
+  #           They look very hacky even though they actually work... :-P
+  a_font = fonts_to_check[0]
+  family_dir = os.path.split(a_font.fullpath)[0]
+  cross_family = os.path.join(family_dir, "CrossFamilyChecks")
+  fb.output_report(target_font(desc={"filename": cross_family}))
   fb.reset_report()
 
 ##########################################################################
@@ -3946,22 +3965,19 @@ def fontbakery_check_ttf(config):
 ##########################################################################
 
   # ------------------------------------------------------
-  for font_file in fonts_to_check:
-    font = get_ttfont(font_file)
-    fb.default_target = font_file
+  for target in fonts_to_check:
+    font = target.get_ttfont()
+    fb.default_target = target.fullpath
     fb.set_font(font)
-    logging.info("OK: {} opened with fontTools".format(font_file))
+    logging.info("OK: {} opened with fontTools".format(target.fullpath))
 
     # Determine weight from canonical filename
-    if type(font_file) is tuple:
-      file_path, filename = os.path.split(font_file[0]["filename"])
-    else:
-      file_path, filename = os.path.split(font_file)
+    file_path, filename = os.path.split(target.fullpath)
     family, style = os.path.splitext(filename)[0].split('-')
 
     check_font_has_post_table_version_2(fb, font)
     check_OS2_fsType(fb)
-    check_main_entries_in_the_name_table(fb, font, font_file)
+    check_main_entries_in_the_name_table(fb, font, target.fullpath)
     check_OS2_achVendID(fb, font, registered_vendor_ids)
     check_name_entries_symbol_substitutions(fb, font)
     check_OS2_usWeightClass(fb, font, style)
@@ -3982,10 +3998,10 @@ def fontbakery_check_ttf(config):
 
     monospace_detected = check_font_is_truly_monospaced(fb, font)
     check_if_xAvgCharWidth_is_correct(fb, font)
-    check_with_ftxvalidator(fb, font_file)
-    check_with_otsanitise(fb, font_file)
+    check_with_ftxvalidator(fb, target.fullpath)
+    check_with_otsanitise(fb, target.fullpath)
 
-    validation_state = check_fontforge_outputs_error_msgs(fb, font_file)
+    validation_state = check_fontforge_outputs_error_msgs(fb, target.fullpath)
     if validation_state is not None:
       perform_all_fontforge_checks(fb, validation_state)
 
@@ -3994,19 +4010,19 @@ def fontbakery_check_ttf(config):
     check_OS2_Metrics_match_hhea_Metrics(fb, font)
     check_unitsPerEm_value_is_reasonable(fb, font)
     check_font_version_fields(fb, font)
-    check_Digital_Signature_exists(fb, font, font_file)
+    check_Digital_Signature_exists(fb, font, target.fullpath)
     check_font_contains_the_first_few_mandatory_glyphs(fb, font)
 
     missing = check_font_contains_glyphs_for_whitespace_characters(fb, font)
     check_font_has_proper_whitespace_glyph_names(fb, font, missing)
     check_whitespace_glyphs_have_ink(fb, font, missing)
     check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
-    check_with_pyfontaine(fb, font_file)
+    check_with_pyfontaine(fb, target.fullpath)
     check_no_problematic_formats(fb, font)
     check_for_unwanted_tables(fb, font)
 
     ttfautohint_missing = \
-      check_hinting_filesize_impact(fb, font_file, filename)
+      check_hinting_filesize_impact(fb, target.fullpath, filename)
     check_version_format_is_correct_in_NAME_table(fb, font)
     check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
     check_name_table_entries_do_not_contain_linebreaks(fb, font)
@@ -4039,7 +4055,7 @@ def fontbakery_check_ttf(config):
 ##########################################################
     skip_gfonts = False
     if not fb.config['webapp']:
-      fontdir = os.path.dirname(font_file)
+      fontdir = os.path.dirname(target.fullpath)
       metadata = os.path.join(fontdir, "METADATA.pb")
       if not os.path.exists(metadata):
         logging.warning(("{} is missing a METADATA.pb file!"
@@ -4108,7 +4124,7 @@ def fontbakery_check_ttf(config):
     # Google-Fonts specific check:
     check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
 
-    fb.output_report(font_file)
+    fb.output_report(target)
     fb.reset_report()
 
     if not fb.config['webapp']:
@@ -4148,11 +4164,11 @@ def fontbakery_check_ttf(config):
     if len(fb.json_report_files) > 0:
       print(("Saved check results in "
              "JSON format to:\n\t{}"
-             "").format('\n\t'.join(map(str, fb.json_report_files))))
+             "").format('\n\t'.join(fb.json_report_files)))
     if len(fb.ghm_report_files) > 0:
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
-             "").format('\n\t'.join(map(str, fb.ghm_report_files))))
+             "").format('\n\t'.join(fb.ghm_report_files)))
 
 # set up some command line argument processing
 parser = argparse.ArgumentParser(description="Check TTF files"

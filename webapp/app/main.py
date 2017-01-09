@@ -9,6 +9,16 @@ import json
 import zipfile
 app = Flask(__name__)
 check_ttf = __import__("fbCheckTTF").fontbakery_check_ttf
+target_font = __import__("fbCheckTTF").target_font
+
+# NOTE:
+# JSON description format is a dictionary with the following fields:
+#  -> filename
+#  -> familyName
+#  -> weightName
+#  -> isItalic
+#  -> version
+#  -> vendorID
 
 def _unpack(stream):
   # L = unsignedlong 4 bytes
@@ -17,12 +27,15 @@ def _unpack(stream):
     if not head:
       break
     jsonlen, fontlen = struct.unpack('II', head)
-    desc = json.loads(stream.read(jsonlen).decode('utf-8'))
-    font = TTFont(BytesIO(stream.read(fontlen)))
-    yield (desc, font)
+    target = target_font()
+    target.set_description(json.loads(stream.read(jsonlen).decode('utf-8')))
+    target.ttfont = TTFont(BytesIO(stream.read(fontlen)))
+    yield target
 
 def build_check_results_table(report_file):
-  return "FOO"
+  data = report_file.read()
+  return "JSON data:<pre>{}</pre>".format(data)
+
 
 @app.route('/runchecks', methods=['POST'])
 def run_fontbakery():
@@ -39,14 +52,13 @@ def run_fontbakery():
   }
 
   reports = check_ttf(config)
-
   report_data = ""
   i = 1
   tabs = ""
-  for desc, report_file in reports:
-    if desc["filename"] is not None:
+  for target, report_file in reports:
+    if target is not None:
       tabs += ('<li><a href="#tabs-{}">'
-               '{}</a></li>').format(i, desc["filename"])
+               '{}</a></li>').format(i, target)
       table = build_check_results_table(report_file)
       report_data += ('<div id="tabs-{}">'
                       '{}</div>').format(i, table)
