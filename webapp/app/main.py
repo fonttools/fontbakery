@@ -34,7 +34,18 @@ def _unpack(stream):
 
 def build_check_results_table(report_file):
   data = report_file.read()
-  return "JSON data:<pre>{}</pre>".format(data)
+  rows = '''<tr>
+    <th>Result</th>
+    <th>Check description</th>
+    <th>Log Messages</th>
+  </tr>'''
+  for entry in json.loads(data):
+    rows += '''<tr>
+    <th>{}</th>
+    <th>{}</th>
+    <th>{}</th>
+  </tr>'''.format(entry["result"], entry["description"], "<br/>".join(entry["log_messages"]))
+  return "<table style='width:100\%'>{}</table>".format(rows)
 
 
 @app.route('/runchecks', methods=['POST'])
