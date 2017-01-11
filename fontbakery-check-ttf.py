@@ -607,6 +607,7 @@ def save_FamilyProto_Message(path, message):
     except:
       sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
+
 def fetch_vendorID_list(logging):
   logging.debug("Fetching Microsoft's vendorID list")
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
@@ -978,6 +979,7 @@ def check_font_has_post_table_version_2(fb, font):
               "issues/215").format(font['post'].formatType))
   else:
     fb.ok("Font has post table version 2.")
+
 
 def check_OS2_fsType(fb):
   fb.new_check("Checking OS/2 fsType")
@@ -1810,8 +1812,6 @@ def check_fontforge_outputs_error_msgs(fb, font_file):
     return validation_state
 
 
-
-
 def perform_all_fontforge_checks(fb, validation_state):
   def ff_check(condition, description, err_msg, ok_msg):
     fb.new_check("fontforge-check: {}".format(description))
@@ -1944,6 +1944,7 @@ def check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax):
   fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
   fb.log_results("OS/2 usWinAscent & usWinDescent")
 
+
 def check_Vertical_Metric_Linegaps(fb, font):
   fb.new_check("Checking Vertical Metric Linegaps")
   if font['hhea'].lineGap != 0:
@@ -1955,6 +1956,7 @@ def check_Vertical_Metric_Linegaps(fb, font):
   else:
     fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
 
+
 def check_OS2_Metrics_match_hhea_Metrics(fb, font):
   fb.new_check("Checking OS/2 Metrics match hhea Metrics")
   # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
@@ -1965,6 +1967,7 @@ def check_OS2_Metrics_match_hhea_Metrics(fb, font):
   else:
     fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
           "and descent")
+
 
 def check_unitsPerEm_value_is_reasonable(fb, font):
   fb.new_check("Checking unitsPerEm value is reasonable.")
@@ -2410,6 +2413,7 @@ def check_version_format_is_correct_in_NAME_table(fb, font):
                                              ventry))
   if not failed:
     fb.ok('Version format in NAME table entries is correct.')
+
 
 def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
   fb.new_check("Font has old ttfautohint applied?")
