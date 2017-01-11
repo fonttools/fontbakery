@@ -681,7 +681,7 @@ def check_files_are_named_canonically(fb, fonts_to_check):
   for to_check in fonts_to_check:
     file_path, filename = os.path.split(to_check.fullpath)
     if file_path == "":
-      fb.set_target(target_font(desc={"filename":"."})) # Current Directory
+      fb.set_target(target_font(desc={"filename": "."}))  # Current Directory
     else:
       fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base, filename_extension = os.path.splitext(filename)
@@ -701,7 +701,8 @@ def check_files_are_named_canonically(fb, fonts_to_check):
         fonts_to_check.remove(to_check)
         fb.output_report(to_check)
     except:
-        fb.error(("Font file '{}' is not named canonically.").format(to_check.fullpath))
+        fb.error(("Font file '{}' is "
+                  "not named canonically.").format(to_check.fullpath))
         not_canonical.append(to_check.fullpath)
         fonts_to_check.remove(to_check)
         fb.output_report(to_check)
@@ -3902,7 +3903,8 @@ def fontbakery_check_ttf(config):
       fontdir = os.path.dirname(target.fullpath)
       metadata = os.path.join(fontdir, "METADATA.pb")
       if not os.path.exists(metadata):
-        logging.error("'{}' is missing a METADATA.pb file!".format(target.fullpath))
+        logging.error("'{}' is missing"
+                      " a METADATA.pb file!".format(target.fullpath))
       else:
         family = get_FamilyProto_Message(metadata)
         if family is None:
