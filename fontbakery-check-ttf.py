@@ -607,6 +607,7 @@ def save_FamilyProto_Message(path, message):
     except:
       sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
+
 def fetch_vendorID_list(logging):
   logging.debug("Fetching Microsoft's vendorID list")
   url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
@@ -979,11 +980,13 @@ def check_font_has_post_table_version_2(fb, font):
   else:
     fb.ok("Font has post table version 2.")
 
+
 def check_OS2_fsType(fb):
   fb.new_check("Checking OS/2 fsType")
   fb.assert_table_entry('OS/2', 'fsType', 0)
   fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
                  " and must be zero (disabled) in all fonts.")
+
 
 def check_main_entries_in_the_name_table(fb, font, fullpath):
   '''Each entry in the name table has a criteria for validity and
@@ -1029,7 +1032,7 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
   fname, style = filename_base.split('-')
   fname_with_spaces = family_with_spaces(fname)
   style_with_spaces = style.replace('Italic',
-                                      ' Italic').strip()
+                                    ' Italic').strip()
   only_weight = get_only_weight(style)
   required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
                       NAMEID_FONT_SUBFAMILY_NAME,
@@ -1810,8 +1813,6 @@ def check_fontforge_outputs_error_msgs(fb, font_file):
     return validation_state
 
 
-
-
 def perform_all_fontforge_checks(fb, validation_state):
   def ff_check(condition, description, err_msg, ok_msg):
     fb.new_check("fontforge-check: {}".format(description))
@@ -1944,6 +1945,7 @@ def check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax):
   fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
   fb.log_results("OS/2 usWinAscent & usWinDescent")
 
+
 def check_Vertical_Metric_Linegaps(fb, font):
   fb.new_check("Checking Vertical Metric Linegaps")
   if font['hhea'].lineGap != 0:
@@ -1955,6 +1957,7 @@ def check_Vertical_Metric_Linegaps(fb, font):
   else:
     fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
 
+
 def check_OS2_Metrics_match_hhea_Metrics(fb, font):
   fb.new_check("Checking OS/2 Metrics match hhea Metrics")
   # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
@@ -1965,6 +1968,7 @@ def check_OS2_Metrics_match_hhea_Metrics(fb, font):
   else:
     fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
           "and descent")
+
 
 def check_unitsPerEm_value_is_reasonable(fb, font):
   fb.new_check("Checking unitsPerEm value is reasonable.")
@@ -2022,7 +2026,7 @@ def check_font_version_fields(fb, font):
   else:
     font_revision = str(font['head'].fontRevision)
     expected_str = "{}.{}".format(expected[0],
-                                    expected[1])
+                                  expected[1])
     if font_revision != expected_str:
       failed = True
       fb.error(("Font revision on the head table ({})"
@@ -2410,6 +2414,7 @@ def check_version_format_is_correct_in_NAME_table(fb, font):
                                              ventry))
   if not failed:
     fb.ok('Version format in NAME table entries is correct.')
+
 
 def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
   fb.new_check("Font has old ttfautohint applied?")
@@ -3092,6 +3097,8 @@ def check_METADATA_Ensure_designer_simple_short_name(fb, family):
 
 
 fp = None  # This is a bug! Please see fontbakery issue #1159
+
+
 def check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
   global fp
   fb.new_check("METADATA.pb: Fontfamily is listed"
@@ -3278,84 +3285,85 @@ def check_Regular_is_400(fb, family, found):
 
 def check_font_on_disk_and_METADATA_have_same_family_name(fb, font, f):
   fb.new_check("Font on disk and in METADATA.pb"
-	       " have the same family name ?")
+               " have the same family name ?")
   familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
   if len(familynames) == 0:
     fb.error(("This font lacks a FONT_FAMILY_NAME entry"
-	      " (nameID={}) in the name"
-	      " table.").format(NAMEID_FONT_FAMILY_NAME))
+              " (nameID={}) in the name"
+              " table.").format(NAMEID_FONT_FAMILY_NAME))
   else:
     if f.name not in familynames:
       fb.error(('Unmatched family name in font:'
-		' TTF has "{}" while METADATA.pb'
-		' has "{}"').format(familynames, f.name))
+                ' TTF has "{}" while METADATA.pb'
+                ' has "{}"').format(familynames, f.name))
     else:
       fb.ok(("Family name '{}' is identical"
-	     " in METADATA.pb and on the"
-	     " TTF file.").format(f.name))
+             " in METADATA.pb and on the"
+             " TTF file.").format(f.name))
 
 
 def check_METADATA_postScriptName_matches_name_table_value(fb, font, f):
   fb.new_check("Checks METADATA.pb 'postScriptName'"
-	       " matches TTF 'postScriptName'")
+               " matches TTF 'postScriptName'")
   postscript_names = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
   if len(postscript_names) == 0:
     fb.error(("This font lacks a POSTSCRIPT_NAME"
-	      " entry (nameID={}) in the "
-	      "name table.").format(NAMEID_POSTSCRIPT_NAME))
+              " entry (nameID={}) in the "
+              "name table.").format(NAMEID_POSTSCRIPT_NAME))
   else:
     postscript_name = postscript_names[0]
 
     if postscript_name != f.post_script_name:
       fb.error(('Unmatched postscript name in font:'
-		' TTF has "{}" while METADATA.pb has'
-		' "{}"').format(postscript_name,
-				f.post_script_name))
+                ' TTF has "{}" while METADATA.pb has'
+                ' "{}"').format(postscript_name,
+                                f.post_script_name))
     else:
       fb.ok(("Postscript name '{}' is identical"
-	     " in METADATA.pb and on the"
-	     " TTF file.").format(f.post_script_name))
+             " in METADATA.pb and on the"
+             " TTF file.").format(f.post_script_name))
 
 
 def check_METADATA_fullname_matches_name_table_value(fb, font, f):
   fb.new_check("METADATA.pb 'fullname' value"
-	       " matches internal 'fullname' ?")
+               " matches internal 'fullname' ?")
   full_fontnames = get_name_string(font, NAMEID_FULL_FONT_NAME)
   if len(full_fontnames) == 0:
     fb.error(("This font lacks a FULL_FONT_NAME"
-	      " entry (nameID={}) in the "
-	      "name table.").format(NAMEID_FULL_FONT_NAME))
+              " entry (nameID={}) in the "
+              "name table.").format(NAMEID_FULL_FONT_NAME))
   else:
     full_fontname = full_fontnames[0]
 
     if full_fontname != f.full_name:
       fb.error(('Unmatched fullname in font:'
-		' TTF has "{}" while METADATA.pb'
-		' has "{}"').format(full_fontname, f.full_name))
+                ' TTF has "{}" while METADATA.pb'
+                ' has "{}"').format(full_fontname, f.full_name))
     else:
       fb.ok(("Full fontname '{}' is identical"
-	     " in METADATA.pb and on the "
+             " in METADATA.pb and on the "
              "TTF file.").format(full_fontname))
+
 
 def check_METADATA_fonts_name_matches_font_familyname(fb, font, f):
   fb.new_check("METADATA.pb fonts 'name' property"
-	       " should be same as font familyname")
+               " should be same as font familyname")
   font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
   if len(font_familynames) == 0:
     fb.error(("This font lacks a FONT_FAMILY_NAME entry"
-	      " (nameID={}) in the "
-	      "name table.").format(NAMEID_FONT_FAMILY_NAME))
+              " (nameID={}) in the "
+              "name table.").format(NAMEID_FONT_FAMILY_NAME))
   else:
     font_familyname = font_familynames[0]
 
     if font_familyname not in f.name:
       fb.error(('Unmatched familyname in font:'
-		' TTF has "{}" while METADATA.pb has'
-		' name="{}"').format(font_familyname, f.name))
+                ' TTF has "{}" while METADATA.pb has'
+                ' name="{}"').format(font_familyname, f.name))
     else:
       fb.ok(("OK: Family name '{}' is identical"
-	     " in METADATA.pb and on the"
-	     " TTF file.").format(f.name))
+             " in METADATA.pb and on the"
+             " TTF file.").format(f.name))
 
 
 def check_METADATA_fullName_matches_postScriptName(fb, f):
@@ -3365,12 +3373,12 @@ def check_METADATA_fullName_matches_postScriptName(fb, f):
   fullname = regex.sub('', f.full_name)
   if fullname != post_script_name:
     fb.error(('METADATA.pb full_name="{0}"'
-	      ' does not match post_script_name ='
-	      ' "{1}"').format(f.full_name,
-			       f.post_script_name))
+              ' does not match post_script_name ='
+              ' "{1}"').format(f.full_name,
+                               f.post_script_name))
   else:
     fb.ok("METADATA.pb fields 'fullName' and"
-	  " 'postScriptName' have the same value.")
+          " 'postScriptName' have the same value.")
 
 
 def check_METADATA_filename_matches_postScriptName(fb, f):
@@ -3380,7 +3388,7 @@ def check_METADATA_filename_matches_postScriptName(fb, f):
   filename = regex.sub('', os.path.splitext(f.filename)[0])
   if filename != post_script_name:
     msg = ('METADATA.pb filename="{0}" does not match '
-	   'post_script_name="{1}."')
+           'post_script_name="{1}."')
     fb.error(msg.format(f.filename, f.post_script_name))
   else:
     fb.ok("METADATA.pb fields 'filename' and"
@@ -3389,53 +3397,53 @@ def check_METADATA_filename_matches_postScriptName(fb, f):
 
 def check_METADATA_name_contains_good_font_name(fb, font, f):
   fb.new_check("METADATA.pb 'name' contains font name"
-	       " in right format ?")
+               " in right format ?")
   font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
   if len(font_familynames) == 0:
     fb.error("A corrupt font that lacks a font_family"
-	     " nameID entry caused a whole sequence"
-	     " of tests to be skipped.")
+             " nameID entry caused a whole sequence"
+             " of tests to be skipped.")
     return None
   else:
     font_familyname = font_familynames[0]
 
     if font_familyname in f.name:
       fb.ok("METADATA.pb 'name' contains font name"
-	    " in right format.")
+            " in right format.")
     else:
       fb.error(("METADATA.pb name='{}' does not match"
-		" correct font name format.").format(f.name))
+                " correct font name format.").format(f.name))
     return font_familyname
 
 
 def check_METADATA_fullname_contains_good_fname(fb, f, font_familyname):
   fb.new_check("METADATA.pb 'full_name' contains"
-	       " font name in right format ?")
+               " font name in right format ?")
   if font_familyname in f.name:
     fb.ok("METADATA.pb 'full_name' contains"
-	  " font name in right format.")
+          " font name in right format.")
   else:
     fb.error(("METADATA.pb full_name='{}' does not match"
-	      " correct font name format.").format(f.full_name))
+              " correct font name format.").format(f.full_name))
 
 
 def check_METADATA_filename_contains_good_fname(fb, f, font_familyname):
   fb.new_check("METADATA.pb 'filename' contains"
-	       " font name in right format ?")
+               " font name in right format ?")
   if "".join(str(font_familyname).split()) in f.filename:
     fb.ok("METADATA.pb 'filename' contains"
-	  " font name in right format.")
+          " font name in right format.")
   else:
     fb.error(("METADATA.pb filename='{}' does not match"
-	      " correct font name format.").format(f.filename))
+              " correct font name format.").format(f.filename))
 
 
 def check_METADATA_postScriptName_contains_good_fname(fb, f, familyname):
   fb.new_check("METADATA.pb 'postScriptName' contains"
-	       " font name in right format ?")
+               " font name in right format ?")
   if "".join(str(familyname).split()) in f.post_script_name:
     fb.ok("METADATA.pb 'postScriptName' contains"
-	  " font name in right format ?")
+          " font name in right format ?")
   else:
     fb.error(("METADATA.pb postScriptName='{}'"
               " does not match correct"
@@ -3445,30 +3453,30 @@ def check_METADATA_postScriptName_contains_good_fname(fb, f, familyname):
 def check_Copyright_notice_matches_canonical_pattern(fb, f):
   fb.new_check("Copyright notice matches canonical pattern?")
   almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
-			     f.copyright)
+                             f.copyright)
   does_match = re.search(r'(Copyright\s+20\d{2}\s+.*\(.+@.+\..+\))',
-			 f.copyright)
+                         f.copyright)
   if (does_match is not None):
     fb.ok("METADATA.pb copyright field matches canonical pattern.")
   else:
     if (almost_matches):
       fb.warning(("METADATA.pb: Copyright notice is okay,"
-		  " but it lacks an email address."
-		  " Expected pattern is:"
-		  " 'Copyright 2016 Author Name (name@site.com)'\n"
-		  "But detected copyright string is:"
-		  " '{}'").format(unidecode(f.copyright)))
+                  " but it lacks an email address."
+                  " Expected pattern is:"
+                  " 'Copyright 2016 Author Name (name@site.com)'\n"
+                  "But detected copyright string is:"
+                  " '{}'").format(unidecode(f.copyright)))
     else:
       fb.error(("METADATA.pb: Copyright notices should match"
-		" the folowing pattern:"
-		" 'Copyright 2016 Author Name (name@site.com)'\n"
-		"But instead we have got:"
-		" '{}'").format(unidecode(f.copyright)))
+                " the folowing pattern:"
+                " 'Copyright 2016 Author Name (name@site.com)'\n"
+                "But instead we have got:"
+                " '{}'").format(unidecode(f.copyright)))
 
 
 def check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f):
   fb.new_check("Copyright notice does not "
-	       "contain Reserved Font Name")
+               "contain Reserved Font Name")
   if 'Reserved Font Name' in f.copyright:
     fb.warning(("METADATA.pb: copyright field ('{}')"
                 " contains 'Reserved Font Name'."
@@ -3476,17 +3484,17 @@ def check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f):
                 " rare cases.").format(unidecode(f.copyright)))
   else:
     fb.ok('METADATA.pb copyright field'
-	  ' does not contain "Reserved Font Name"')
+          ' does not contain "Reserved Font Name"')
 
 
 def check_Copyright_notice_does_not_exceed_500_chars(fb, f):
   fb.new_check("Copyright notice shouldn't exceed 500 chars")
   if len(f.copyright) > 500:
     fb.error("METADATA.pb: Copyright notice exceeds"
-	     " maximum allowed lengh of 500 characteres.")
+             " maximum allowed lengh of 500 characteres.")
   else:
     fb.ok("Copyright notice string is"
-	  " shorter than 500 chars.")
+          " shorter than 500 chars.")
 
 
 def check_Filename_is_set_canonically(fb, f):
@@ -3510,24 +3518,24 @@ def check_Filename_is_set_canonically(fb, f):
     }
     familyname = font_metadata.name.replace(' ', '')
     style_weight = '%s%s' % (weights.get(font_metadata.weight),
-			     style_names.get(font_metadata.style))
+                             style_names.get(font_metadata.style))
     if not style_weight:
-	style_weight = 'Regular'
+        style_weight = 'Regular'
     return '%s-%s.ttf' % (familyname, style_weight)
 
   canonical_filename = create_canonical_filename(f)
   if canonical_filename != f.filename:
     fb.error("METADATA.pb: filename field ('{}')"
-	     " does not match"
-	     " canonical name '{}'".format(f.filename,
-					   canonical_filename))
+             " does not match"
+             " canonical name '{}'".format(f.filename,
+                                           canonical_filename))
   else:
     fb.ok('Filename is set canonically.')
 
 
-def check_METADATA_font_style_italic_matches_font_internals(fb, font, f):
+def check_METADATA_font_italic_matches_font_internals(fb, font, f):
   fb.new_check("METADATA.pb font.style `italic`"
-	       " matches font internals?")
+               " matches font internals?")
   if f.style != 'italic':
     fb.skip("This test only applies to italic fonts.")
   else:
@@ -3535,7 +3543,7 @@ def check_METADATA_font_style_italic_matches_font_internals(fb, font, f):
     font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
     if len(font_familyname) == 0 or len(font_fullname) == 0:
       fb.skip("Font lacks familyname and/or"
-	      " fullname entries in name table.")
+              " fullname entries in name table.")
       # these fail scenarios were already tested above
       # (passing those previous tests is a prerequisite for this one)
     else:
@@ -3543,23 +3551,23 @@ def check_METADATA_font_style_italic_matches_font_internals(fb, font, f):
       font_fullname = font_fullname[0]
 
       if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
-	  fb.error('METADATA.pb style has been set to italic'
-		   ' but font macStyle is improperly set')
+          fb.error('METADATA.pb style has been set to italic'
+                   ' but font macStyle is improperly set')
       elif not font_familyname.split('-')[-1].endswith('Italic'):
-	  fb.error(('Font macStyle Italic bit is set'
-		    ' but nameID %d ("%s")'
-		    ' is not ended '
-		    'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
-					font_familyname))
+          fb.error(('Font macStyle Italic bit is set'
+                    ' but nameID %d ("%s")'
+                    ' is not ended '
+                    'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
+                                        font_familyname))
       elif not font_fullname.split('-')[-1].endswith('Italic'):
-	  fb.error(('Font macStyle Italic bit is set'
-		    ' but nameID %d ("%s")'
-		    ' is not ended'
-		    ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
-					 font_fullname))
+          fb.error(('Font macStyle Italic bit is set'
+                    ' but nameID %d ("%s")'
+                    ' is not ended'
+                    ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
+                                         font_fullname))
       else:
-	fb.ok("OK: METADATA.pb font.style 'italic'"
-	      " matches font internals.")
+        fb.ok("OK: METADATA.pb font.style 'italic'"
+              " matches font internals.")
 
 
 def check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
@@ -3570,7 +3578,7 @@ def check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
     font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
     if len(font_familyname) == 0 or len(font_fullname) == 0:
       fb.skip("Font lacks familyname and/or"
-	      " fullname entries in name table.")
+              " fullname entries in name table.")
       # these fail scenarios were already tested above
       # (passing those previous tests is a prerequisite for this one)
       return False
@@ -3579,21 +3587,21 @@ def check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
       font_fullname = font_fullname[0]
 
       if bool(font['head'].macStyle & MACSTYLE_ITALIC):
-	  fb.error('METADATA.pb style has been set to normal'
-		   ' but font macStyle is improperly set')
+          fb.error('METADATA.pb style has been set to normal'
+                   ' but font macStyle is improperly set')
       elif font_familyname.split('-')[-1].endswith('Italic'):
-	  fb.error(('Font macStyle indicates a non-Italic font,'
-		    ' but nameID %d (FONT_FAMILY_NAME: "%s") ends'
-		    ' with "Italic"').format(NAMEID_FONT_FAMILY_NAME,
-					     font_familyname))
+          fb.error(('Font macStyle indicates a non-Italic font,'
+                    ' but nameID %d (FONT_FAMILY_NAME: "%s") ends'
+                    ' with "Italic"').format(NAMEID_FONT_FAMILY_NAME,
+                                             font_familyname))
       elif font_fullname.split('-')[-1].endswith('Italic'):
-	  fb.error('Font macStyle indicates a non-Italic font'
-		   ' but nameID %d (FULL_FONT_NAME: "%s") ends'
-		   ' with "Italic"'.format(NAMEID_FULL_FONT_NAME,
-					   font_fullname))
+          fb.error('Font macStyle indicates a non-Italic font'
+                   ' but nameID %d (FULL_FONT_NAME: "%s") ends'
+                   ' with "Italic"'.format(NAMEID_FULL_FONT_NAME,
+                                           font_fullname))
       else:
-	fb.ok("METADATA.pb font.style 'normal'"
-	      " matches font internals.")
+        fb.ok("METADATA.pb font.style 'normal'"
+              " matches font internals.")
       return True
 
 
@@ -3603,24 +3611,25 @@ def check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f):
   font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)[0]
   if font_familyname != f.name:
     fb.error(("METADATA.pb Family name '{}')"
-	      " does not match name table"
-	      " entry '{}' !").format(f.name,
-				      font_familyname))
+              " does not match name table"
+              " entry '{}' !").format(f.name,
+                                      font_familyname))
   elif font_fullname != f.full_name:
     fb.error(("METADATA.pb: Fullname ('{}')"
-	      " does not match name table"
-	      " entry '{}' !").format(f.full_name,
-				      font_fullname))
+              " does not match name table"
+              " entry '{}' !").format(f.full_name,
+                                      font_fullname))
   else:
     fb.ok("METADATA.pb familyname and fullName fields"
-	  " match corresponding name table entries.")
+          " match corresponding name table entries.")
+
 
 def check_fontname_is_not_camel_cased(fb, f):
   fb.new_check("Check if fontname is not camel cased.")
   if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
     fb.error(("METADATA.pb: '%s' is a CamelCased name."
-	      " To solve this, simply use spaces"
-	      " instead in the font name.").format(f.name))
+              " To solve this, simply use spaces"
+              " instead in the font name.").format(f.name))
   else:
     fb.ok("Font name is not camel-cased.")
 
@@ -3629,10 +3638,10 @@ def check_font_name_is_the_same_as_family_name(fb, family, f):
   fb.new_check("Check font name is the same as family name.")
   if f.name != family.name:
     fb.error(('METADATA.pb: %s: Family name "%s"'
-	      ' does not match'
-	      ' font name: "%s"').format(f.filename,
-					 family.name,
-					 f.name))
+              ' does not match'
+              ' font name: "%s"').format(f.filename,
+                                         family.name,
+                                         f.name))
   else:
     fb.ok('Font name is the same as family name.')
 
@@ -3642,19 +3651,19 @@ def check_font_weight_has_a_canonical_value(fb, f):
   first_digit = f.weight / 100
   if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
     fb.error(("METADATA.pb: The weight is declared"
-	      " as {} which is not a "
-	      "multiple of 100"
-	      " between 100 and 900.").format(f.weight))
+              " as {} which is not a "
+              "multiple of 100"
+              " between 100 and 900.").format(f.weight))
   else:
     fb.ok("Font weight has a canonical value.")
 
 
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f):
   fb.new_check("Checking OS/2 usWeightClass"
-	       " matches weight specified at METADATA.pb")
+               " matches weight specified at METADATA.pb")
   fb.assert_table_entry('OS/2', 'usWeightClass', f.weight)
   fb.log_results("OS/2 usWeightClass matches "
-		 "weight specified at METADATA.pb")
+                 "weight specified at METADATA.pb")
 
 
 weights = {
@@ -3688,14 +3697,14 @@ def check_Metadata_weight_matches_postScriptName(fb, f):
 
   if not pair:
     fb.error('METADATA.pb: Font weight'
-	     ' does not match postScriptName')
+             ' does not match postScriptName')
   elif not (f.post_script_name.endswith('-' + pair[0][0]) or
-	    f.post_script_name.endswith('-%s' % pair[1][0])):
+            f.post_script_name.endswith('-%s' % pair[1][0])):
     fb.error('METADATA.pb: postScriptName ("{}")'
-	     ' with weight {} must be '.format(f.post_script_name,
-					       pair[0][1]) +
-	     'ended with "{}" or "{}"'.format(pair[0][0],
-					      pair[1][0]))
+             ' with weight {} must be '.format(f.post_script_name,
+                                               pair[0][1]) +
+             'ended with "{}" or "{}"'.format(pair[0][0],
+                                              pair[1][0]))
   else:
     fb.ok("Weight value matches postScriptName.")
 
@@ -3705,7 +3714,7 @@ def check_METADATA_lists_fonts_named_canonicaly(fb, font, f):
   font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
   if len(font_familyname) == 0:
     fb.skip("Skipping this test due to the lack"
-	    " of a FONT_FAMILY_NAME in the name table.")
+            " of a FONT_FAMILY_NAME in the name table.")
   else:
     font_familyname = font_familyname[0]
 
@@ -3713,20 +3722,20 @@ def check_METADATA_lists_fonts_named_canonicaly(fb, font, f):
     _weights = []
     for value, intvalue in weights.items():
       if intvalue == font['OS/2'].usWeightClass:
-	_weights.append(value)
+        _weights.append(value)
 
     for w in _weights:
       canonical_name = "%s %s" % (font_familyname, w)
       if f.full_name == canonical_name:
-	is_canonical = True
+        is_canonical = True
 
     if is_canonical:
       fb.ok("METADATA.pb lists fonts named canonicaly.")
     else:
       v = map(lambda x: font_familyname + ' ' + x, _weights)
       fb.error('Canonical name in font: Expected "%s"'
-	       ' but got "%s" instead.' % ('" or "'.join(v),
-					   f.full_name))
+               ' but got "%s" instead.' % ('" or "'.join(v),
+                                           f.full_name))
 
 
 def check_Font_styles_are_named_canonically(fb, font, f):
@@ -3736,24 +3745,24 @@ def check_Font_styles_are_named_canonically(fb, font, f):
     for entry in font['name'].names:
       if 'italic' in entry.string.decode(
        entry.getEncoding()).lower():
-	return True
+        return True
     return False
 
   def is_italic():
     return (font['head'].macStyle & MACSTYLE_ITALIC or
-	    font['post'].italicAngle or
-	    find_italic_in_name_table())
+            font['post'].italicAngle or
+            find_italic_in_name_table())
 
   if f.style not in ['italic', 'normal']:
     fb.skip("This check only applies to font styles declared"
-	    " as 'italic' or 'regular' on METADATA.pb")
+            " as 'italic' or 'regular' on METADATA.pb")
   else:
     if is_italic() and f.style != 'italic':
       fb.error("The font style is %s"
-	       " but it should be italic" % (f.style))
+               " but it should be italic" % (f.style))
     elif not is_italic() and f.style != 'normal':
       fb.error(("The font style is %s"
-		" but it should be normal") % (f.style))
+                " but it should be normal") % (f.style))
     else:
       fb.ok("Font styles are named canonically")
 
@@ -3797,9 +3806,8 @@ class target_font(object):
       self.ttfont = ttLib.TTFont(self.fullpath)
     return self.ttfont
 
-# ############################################################################
-# ############################################################################
 
+# ############################################################################
 def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
@@ -4023,8 +4031,9 @@ def fontbakery_check_ttf(config):
     check_no_problematic_formats(fb, font)
     check_for_unwanted_tables(fb, font)
 
-    ttfautohint_missing = \
-      check_hinting_filesize_impact(fb, target.fullpath, filename)
+    ttfautohint_missing = check_hinting_filesize_impact(fb,
+                                                        target.fullpath,
+                                                        filename)
     check_version_format_is_correct_in_NAME_table(fb, font)
     check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
     check_name_table_entries_do_not_contain_linebreaks(fb, font)
@@ -4106,14 +4115,14 @@ def fontbakery_check_ttf(config):
               check_METADATA_filename_contains_good_fname(fb, f, ffname)
               check_METADATA_postScriptName_contains_good_fname(fb, f, ffname)
 
-	    check_Copyright_notice_matches_canonical_pattern(fb, f)
-	    check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f)
-	    check_Copyright_notice_does_not_exceed_500_chars(fb, f)
-	    check_Filename_is_set_canonically(fb, f)
-	    check_METADATA_font_style_italic_matches_font_internals(fb, font, f)
+            check_Copyright_notice_matches_canonical_pattern(fb, f)
+            check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f)
+            check_Copyright_notice_does_not_exceed_500_chars(fb, f)
+            check_Filename_is_set_canonically(fb, f)
+            check_METADATA_font_italic_matches_font_internals(fb, font, f)
 
             if check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
-	      check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f)
+              check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f)
 
             check_fontname_is_not_camel_cased(fb, f)
             check_font_name_is_the_same_as_family_name(fb, family, f)
@@ -4171,6 +4180,7 @@ def fontbakery_check_ttf(config):
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
              "").format('\n\t'.join(fb.ghm_report_files)))
+
 
 # set up some command line argument processing
 parser = argparse.ArgumentParser(description="Check TTF files"
