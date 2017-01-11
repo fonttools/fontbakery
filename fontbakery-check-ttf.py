@@ -987,6 +987,7 @@ def check_OS2_fsType(fb):
   fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
                  " and must be zero (disabled) in all fonts.")
 
+
 def check_main_entries_in_the_name_table(fb, font, fullpath):
   '''Each entry in the name table has a criteria for validity and
      this check tests if all entries in the name table are
@@ -1031,7 +1032,7 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
   fname, style = filename_base.split('-')
   fname_with_spaces = family_with_spaces(fname)
   style_with_spaces = style.replace('Italic',
-                                      ' Italic').strip()
+                                    ' Italic').strip()
   only_weight = get_only_weight(style)
   required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
                       NAMEID_FONT_SUBFAMILY_NAME,
@@ -2025,7 +2026,7 @@ def check_font_version_fields(fb, font):
   else:
     font_revision = str(font['head'].fontRevision)
     expected_str = "{}.{}".format(expected[0],
-                                    expected[1])
+                                  expected[1])
     if font_revision != expected_str:
       failed = True
       fb.error(("Font revision on the head table ({})"
@@ -3096,6 +3097,8 @@ def check_METADATA_Ensure_designer_simple_short_name(fb, family):
 
 
 fp = None  # This is a bug! Please see fontbakery issue #1159
+
+
 def check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
   global fp
   fb.new_check("METADATA.pb: Fontfamily is listed"
@@ -3341,6 +3344,7 @@ def check_METADATA_fullname_matches_name_table_value(fb, font, f):
              " in METADATA.pb and on the "
              "TTF file.").format(full_fontname))
 
+
 def check_METADATA_fonts_name_matches_font_familyname(fb, font, f):
   fb.new_check("METADATA.pb fonts 'name' property"
                " should be same as font familyname")
@@ -3529,7 +3533,7 @@ def check_Filename_is_set_canonically(fb, f):
     fb.ok('Filename is set canonically.')
 
 
-def check_METADATA_font_style_italic_matches_font_internals(fb, font, f):
+def check_METADATA_font_italic_matches_font_internals(fb, font, f):
   fb.new_check("METADATA.pb font.style `italic`"
                " matches font internals?")
   if f.style != 'italic':
@@ -3618,6 +3622,7 @@ def check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f):
   else:
     fb.ok("METADATA.pb familyname and fullName fields"
           " match corresponding name table entries.")
+
 
 def check_fontname_is_not_camel_cased(fb, f):
   fb.new_check("Check if fontname is not camel cased.")
@@ -3801,9 +3806,8 @@ class target_font(object):
       self.ttfont = ttLib.TTFont(self.fullpath)
     return self.ttfont
 
-# ############################################################################
-# ############################################################################
 
+# ############################################################################
 def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
@@ -4027,8 +4031,9 @@ def fontbakery_check_ttf(config):
     check_no_problematic_formats(fb, font)
     check_for_unwanted_tables(fb, font)
 
-    ttfautohint_missing = \
-      check_hinting_filesize_impact(fb, target.fullpath, filename)
+    ttfautohint_missing = check_hinting_filesize_impact(fb,
+                                                        target.fullpath,
+                                                        filename)
     check_version_format_is_correct_in_NAME_table(fb, font)
     check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
     check_name_table_entries_do_not_contain_linebreaks(fb, font)
@@ -4114,7 +4119,7 @@ def fontbakery_check_ttf(config):
             check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f)
             check_Copyright_notice_does_not_exceed_500_chars(fb, f)
             check_Filename_is_set_canonically(fb, f)
-            check_METADATA_font_style_italic_matches_font_internals(fb, font, f)
+            check_METADATA_font_italic_matches_font_internals(fb, font, f)
 
             if check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
               check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f)
@@ -4175,6 +4180,7 @@ def fontbakery_check_ttf(config):
       print(("Saved check results in "
              "GitHub Markdown format to:\n\t{}"
              "").format('\n\t'.join(fb.ghm_report_files)))
+
 
 # set up some command line argument processing
 parser = argparse.ArgumentParser(description="Check TTF files"
