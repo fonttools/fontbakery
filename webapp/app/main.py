@@ -7,6 +7,7 @@ import struct
 from io import BytesIO
 import json
 import zipfile
+from markdown import markdown
 app = Flask(__name__)
 check_ttf = __import__("fbCheckTTF").fontbakery_check_ttf
 target_font = __import__("fbCheckTTF").target_font
@@ -39,11 +40,15 @@ def build_check_results_table(report_data):
     <th>Log Messages</th>
   </tr>'''
   for entry in report_data:
+    msgs = []
+    for msg in entry["log_messages"]:
+      msgs.append(markdown(msg, extensions=['markdown.extensions.tables']))
+
     rows += '''<tr>
     <td>{}</td>
     <td>{}</td>
     <td>{}</td>
-  </tr>'''.format(entry["result"], entry["description"], "<br/>".join(entry["log_messages"]))
+  </tr>'''.format(entry["result"], entry["description"], "<br/>".join(msgs))
   return "<table style='width:100\%'>{}</table>".format(rows)
 
 
