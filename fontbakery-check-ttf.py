@@ -2450,45 +2450,44 @@ def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
     used = map(int, used.split("."))
     return installed > used
 
-  if ttfautohint_missing:
+  version_strings = get_name_string(font, NAMEID_VERSION_STRING)
+  ttfa_version = ttfautohint_version(version_strings)
+  if len(version_strings) == 0:
+    fb.error("This font file lacks mandatory "
+             "version strings in its name table.")
+  elif ttfa_version is None:
+    fb.info(("Could not detect which version of"
+             " ttfautohint was used in this font."
+             " It is typically specified as a comment"
+             " in the font version entry of the 'name' table."
+             " Font version string is: '{}'").format(version_strings[0]))
+  elif fb.config['webapp'] is True:
+    fb.skip("We are currently unable to run ttfautohint on Google App Engine.")
+  elif ttfautohint_missing:
     fb.skip("This check requires ttfautohint"
             " to be available in the system.")
-  elif fb.config['webapp'] is True:
-    fb.skip("This check is not supported on Google App Engine.")
   else:
-    version_strings = get_name_string(font, NAMEID_VERSION_STRING)
-    ttfa_version = ttfautohint_version(version_strings)
-    if len(version_strings) == 0:
-      fb.error("This font file lacks mandatory "
-               "version strings in its name table.")
-    elif ttfa_version is None:
-      fb.info(("Could not detect which version of"
-               " ttfautohint was used in this font."
-               " It is typically specified as a comment"
-               " in the font version entry of the 'name' table."
-               " Font version string is: '{}'").format(version_strings[0]))
-    else:
-      import subprocess
-      ttfa_cmd = ["ttfautohint",
-                  "-V"]  # print version info
-      ttfa_output = subprocess.check_output(ttfa_cmd,
-                                            stderr=subprocess.STDOUT)
-      installed_ttfa = installed_ttfa_version(ttfa_output)
-      try:
-        if installed_version_is_newer(installed_ttfa,
-                                      ttfa_version):
-          fb.info(("Ttfautohint used in font = {};"
-                   " installed = {}; Need to re-run"
-                   " with the newer version!").format(ttfa_version,
-                                                      installed_ttfa))
-        else:
-          fb.ok("ttfautohint available in the system is older"
-                " than the one used in the font.")
-      except:
-        fb.error(("failed to parse ttfautohint version strings:\n"
-                  "  * installed = '{}'\n"
-                  "  * used = '{}'").format(installed_ttfa,
-                                            ttfa_version))
+    import subprocess
+    ttfa_cmd = ["ttfautohint",
+                "-V"]  # print version info
+    ttfa_output = subprocess.check_output(ttfa_cmd,
+                                          stderr=subprocess.STDOUT)
+    installed_ttfa = installed_ttfa_version(ttfa_output)
+    try:
+      if installed_version_is_newer(installed_ttfa,
+                                    ttfa_version):
+        fb.info(("ttfautohint used in font = {};"
+                 " installed = {}; Need to re-run"
+                 " with the newer version!").format(ttfa_version,
+                                                    installed_ttfa))
+      else:
+        fb.ok("ttfautohint available in the system is older"
+              " than the one used in the font.")
+    except:
+      fb.error(("failed to parse ttfautohint version strings:\n"
+                "  * installed = '{}'\n"
+                "  * used = '{}'").format(installed_ttfa,
+                                          ttfa_version))
 
 
 def check_name_table_entries_do_not_contain_linebreaks(fb, font):
