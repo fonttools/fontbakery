@@ -32,14 +32,13 @@ def _unpack(stream):
     target.ttfont = TTFont(BytesIO(stream.read(fontlen)))
     yield target
 
-def build_check_results_table(report_file):
-  data = report_file.read()
+def build_check_results_table(report_data):
   rows = '''<tr>
     <th>Result</th>
     <th>Check description</th>
     <th>Log Messages</th>
   </tr>'''
-  for entry in json.loads(data):
+  for entry in report_data:
     rows += '''<tr>
     <td>{}</td>
     <td>{}</td>
@@ -63,19 +62,20 @@ def run_fontbakery():
   }
 
   reports = check_ttf(config)
-  report_data = ""
+  tabs_html = ""
   i = 1
   tabs = ""
   for target, report_file in reports:
-    if target is not None:
+    report_data = json.loads(report_file.read())
+    if target is not None and len(report_data) > 0:
       tabs += ('<li><a href="#tabs-{}">'
                '{}</a></li>').format(i, target)
-      table = build_check_results_table(report_file)
-      report_data += ('<div id="tabs-{}">'
+      table = build_check_results_table(report_data)
+      tabs_html += ('<div id="tabs-{}">'
                       '{}</div>').format(i, table)
       i+=1
 
-  return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, report_data)
+  return '<div id="tabs"><ul>{}</ul>{}</div>'.format(tabs, tabs_html)
 
 @app.errorhandler(500)
 def server_error(e):
