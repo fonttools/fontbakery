@@ -41,9 +41,9 @@ def build_check_results_table(report_file):
   </tr>'''
   for entry in json.loads(data):
     rows += '''<tr>
-    <th>{}</th>
-    <th>{}</th>
-    <th>{}</th>
+    <td>{}</td>
+    <td>{}</td>
+    <td>{}</td>
   </tr>'''.format(entry["result"], entry["description"], "<br/>".join(entry["log_messages"]))
   return "<table style='width:100\%'>{}</table>".format(rows)
 
