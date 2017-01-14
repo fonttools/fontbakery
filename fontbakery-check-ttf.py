@@ -1754,6 +1754,42 @@ def check_with_otsanitise(fb, font_file):
       pass
 
 
+def check_with_msfontvalidator(fb, font_file):
+  fb.new_check("Checking with Microsoft Font Validator")
+  if fb.config['webapp'] is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      import subprocess
+      fval_cmd = ["mono",
+                  "fval/FontValidator.exe",
+                  "-file", font_file,
+                  "-all-tables",
+                  "-report-in-font-dir"]
+      subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError, e:
+      fb.info(("Microsoft Font Validator returned an error code."
+               " Output follows :\n\n{}\n").format(e.output))
+    except OSError:
+      fb.warning("Mono runtime and/or "
+                 "Microsoft Font Validator are not available!")
+      return
+
+    xml_report = open("{}.report.xml".format(font_file), "r").read()
+    doc = defusedxml.lxml.fromstring(xml_report)
+    for report in doc.iter('Report'):
+      if report.get("ErrorType") == "P":
+        fb.ok("MS-FonVal: {}".format(report.get("Message")))
+      elif report.get("ErrorType") == "E":
+        fb.error("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+                                                    report.get("Details")))
+      elif report.get("ErrorType") == "W":
+        fb.warning("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+                                                      report.get("Details")))
+      else:
+        fb.info("MS-FontVal: {}".format(report.get("Message")))
+
+
 def check_fontforge_outputs_error_msgs(fb, font_file):
   fb.new_check("fontforge validation outputs error messages?")
   if "adobeblank" in font_file:
@@ -4008,6 +4044,7 @@ def fontbakery_check_ttf(config):
     monospace_detected = check_font_is_truly_monospaced(fb, font)
     check_if_xAvgCharWidth_is_correct(fb, font)
     check_with_ftxvalidator(fb, target.fullpath)
+    check_with_msfontvalidator(fb, target.fullpath)
     check_with_otsanitise(fb, target.fullpath)
 
     validation_state = check_fontforge_outputs_error_msgs(fb, target.fullpath)
