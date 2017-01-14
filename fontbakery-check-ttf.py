@@ -1765,23 +1765,29 @@ def check_with_msfontvalidator(fb, font_file):
                   "fval/FontValidator.exe",
                   "-file", font_file,
                   "-all-tables",
-                  "-report-stdout"]
-      fval_output = subprocess.check_output(fval_cmd,
-                                            stderr=subprocess.STDOUT)
-
-      if False:  # TO-DO: Figure out what's the success criteria here.
-        fb.ok("Microsoft Font Validator passed this file.")
-      else:
-        fb.info(("Microsoft Font Validator"
-                 " output follows:\n\n{}\n").format(fval_output))
-
+                  "-report-in-font-dir"]
+      subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError, e:
       fb.info(("Microsoft Font Validator returned an error code."
                " Output follows :\n\n{}\n").format(e.output))
     except OSError:
       fb.warning("Mono runtime and/or "
                  "Microsoft Font Validator are not available!")
-      pass
+      return
+
+    xml_report = open("{}.report.xml".format(font_file), "r").read()
+    doc = defusedxml.lxml.fromstring(xml_report)
+    for report in doc.iter('Report'):
+      if report.get("ErrorType") == "P":
+        fb.ok("MS-FonVal: {}".format(report.get("Message")))
+      elif report.get("ErrorType") == "E":
+        fb.error("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+                                                    report.get("Details")))
+      elif report.get("ErrorType") == "W":
+        fb.warning("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+                                                      report.get("Details")))
+      else:
+        fb.info("MS-FontVal: {}".format(report.get("Message")))
 
 
 def check_fontforge_outputs_error_msgs(fb, font_file):
