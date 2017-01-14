@@ -1754,6 +1754,36 @@ def check_with_otsanitise(fb, font_file):
       pass
 
 
+def check_with_msfontvalidator(fb, font_file):
+  fb.new_check("Checking with Microsoft Font Validator")
+  if fb.config['webapp'] is True:
+    fb.skip("Subprocess is unsupported on Google App Engine")
+  else:
+    try:
+      import subprocess
+      fval_cmd = ["mono",
+                  "fval/FontValidator.exe",
+                  "-file", font_file,
+                  "-all-tables",
+                  "-report-stdout"]
+      fval_output = subprocess.check_output(fval_cmd,
+                                            stderr=subprocess.STDOUT)
+
+      if False:  # TO-DO: Figure out what's the success criteria here.
+        fb.ok("Microsoft Font Validator passed this file.")
+      else:
+        fb.info(("Microsoft Font Validator"
+                 " output follows:\n\n{}\n").format(fval_output))
+
+    except subprocess.CalledProcessError, e:
+      fb.info(("Microsoft Font Validator returned an error code."
+               " Output follows :\n\n{}\n").format(e.output))
+    except OSError:
+      fb.warning("Mono runtime and/or "
+                 "Microsoft Font Validator are not available!")
+      pass
+
+
 def check_fontforge_outputs_error_msgs(fb, font_file):
   fb.new_check("fontforge validation outputs error messages?")
   if "adobeblank" in font_file:
@@ -4008,6 +4038,7 @@ def fontbakery_check_ttf(config):
     monospace_detected = check_font_is_truly_monospaced(fb, font)
     check_if_xAvgCharWidth_is_correct(fb, font)
     check_with_ftxvalidator(fb, target.fullpath)
+    check_with_msfontvalidator(fb, target.fullpath)
     check_with_otsanitise(fb, target.fullpath)
 
     validation_state = check_fontforge_outputs_error_msgs(fb, target.fullpath)
