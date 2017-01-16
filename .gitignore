@@ -1,4 +1,5 @@
-data/test/*/*.md
+data/test/*/*.fontbakery.md
+data/test/*/*.fontbakery.json
 data/test/*/*.ttx
 webapp/app/static/js/bower_components/*
 webapp/app/lib/*
