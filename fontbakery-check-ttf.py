@@ -268,12 +268,61 @@ class FontBakeryCheckLogger():
                     "Errors": 0,
                     "Warnings": 0}
 
+  def update_burndown(self, name, total):
+
+    git_commit = None
+    date = "today"
+    try:
+      import subprocess
+      git_cmd = ["git",
+                 "log",  # display the commid id and message
+                 "HEAD~1..HEAD"]  # only for the last commit
+      cmd_output = subprocess.check_output(git_cmd,
+                                           stderr=subprocess.STDOUT)
+      git_commit = cmd_output.split('\n')[0].split("commit")[1].strip()
+      date = cmd_output.split('\n')[2].split("Date:")[1].strip()
+    except OSError:
+      print("Warning: git is not installed!")
+      pass
+
+    import json
+    fname = "{}.burndown.json".format(name)
+    burn = None
+    data = None
+    try:
+      burn = open(fname, "r")
+      js = burn.read()
+      data = json.loads(js)
+      burn.close
+
+    except IOError:
+      data = {"planned-release": None,  # This is optional.
+              "entries": []}
+
+    burn = open(fname, "w")
+    data["entries"].append({"date": date,
+                           # "fontbakery-version": None,
+                            "commit": git_commit.strip(),
+                            "summary": self.summary})
+    burn.write(json.dumps(data,
+                          sort_keys=True,
+                          indent=4,
+                          separators=(',', ': ')))
+    burn.close()
+
   def output_report(self, a_target):
     self.flush()
 
     total = 0
     for key in self.summary.keys():
       total += self.summary[key]
+
+    try:
+      self.update_burndown(a_target.fullpath, total)
+    except:
+      # the burndown chart code is breaking Travis.
+      # I'll review this tomorrow. For now let's keep things safe here.
+      pass
 
     print ("\nCheck results summary for '{}':".format(a_target.fullpath))
     for key in self.summary.keys():
