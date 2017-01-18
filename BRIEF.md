@@ -66,7 +66,7 @@ In addition to the checks specifically provided by FontBakery, this script also 
 
 #### 2.2 checking TTFs as a family
 
-If a set TTFs is provided, it will be validated as a single family:
+If a set of TTFs is provided, it will be validated as a single family:
 
     ~/fonts/ofl/family$ fontbakery-check-ttf.py *.ttf ;
 
