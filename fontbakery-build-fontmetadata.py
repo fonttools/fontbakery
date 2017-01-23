@@ -183,7 +183,7 @@ description = """Calculates the visual weight, width or italic angle of fonts.
 
   For width, it just measures the width of how a particular piece of text renders.
 
-  For weight, it measures the darness of a piece of text.
+  For weight, it measures the darkness of a piece of text.
 
   For italic angle it defaults to the italicAngle property of the font.
   
