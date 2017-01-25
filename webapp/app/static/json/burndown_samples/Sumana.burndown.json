@@ -1,0 +1,78 @@
+{
+    "CrossFamilyChecks": {
+        "entries": [
+            {
+                "commit": "8dcc24ac42fc382a1c58183fd1a1e40191c0a0ed",
+                "date": "Mon Apr 13 14:01:11 2015 -0400",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "b571f35eca3b914bc1f33965c729cbc9a15c0e75",
+                "date": "Wed Feb 4 12:39:16 2015 +0200",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "9b55c2acb8e03f1d6fa45889da6dadfe738a1599",
+                "date": "Wed Feb 4 12:38:21 2015 +0200",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            }
+        ],
+        "planned-release": null
+    },
+    "Sumana-Regular.ttf": {
+        "entries": [
+            {
+                "commit": "8dcc24ac42fc382a1c58183fd1a1e40191c0a0ed",
+                "date": "Mon Apr 13 14:01:11 2015 -0400",
+                "summary": {
+                    "Errors": 24,
+                    "Hotfixes": 0,
+                    "Passed": 61,
+                    "Skipped": 2,
+                    "Warnings": 53
+                }
+            },
+            {
+                "commit": "b571f35eca3b914bc1f33965c729cbc9a15c0e75",
+                "date": "Wed Feb 4 12:39:16 2015 +0200",
+                "summary": {
+                    "Errors": 23,
+                    "Hotfixes": 0,
+                    "Passed": 61,
+                    "Skipped": 2,
+                    "Warnings": 53
+                }
+            },
+            {
+                "commit": "9b55c2acb8e03f1d6fa45889da6dadfe738a1599",
+                "date": "Wed Feb 4 12:38:21 2015 +0200",
+                "summary": {
+                    "Errors": 23,
+                    "Hotfixes": 0,
+                    "Passed": 61,
+                    "Skipped": 2,
+                    "Warnings": 53
+                }
+            }
+        ],
+        "planned-release": null
+    }
+}

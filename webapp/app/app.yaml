@@ -6,8 +6,13 @@ handlers:
 - url: /
   static_files: static/index.html
   upload: static/index\.html
+- url: /dashboard
+  static_files: static/dashboard.html
+  upload: static/dashboard\.html
 - url: /js
   static_dir: static/js
+- url: /json
+  static_dir: static/json
 - url: /img
   static_dir: static/img
 - url: /runchecks

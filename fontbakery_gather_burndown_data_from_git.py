@@ -12,19 +12,20 @@ def run(cmd):
     print("could not execute command '{}' !".format(cmd))
     pass
 
-# import glob
-# import sys
-# files = None
-# if len(sys.argv) < 2:
-#   print ("usage: {} files.ttf".format(sys.argv[0]))
-#   sys.exit(-1)
-# else:
-#   files = glob.glob(sys.argv[1])
+import glob
+import sys
+files = None
+if len(sys.argv) < 2:
+  print ("usage: {} files.ttf".format(sys.argv[0]))
+  sys.exit(-1)
+else:
+  fontfile_prefix = sys.argv[1]
 
 import os
 files = []
 for f in os.listdir("."):
-  if f[-4:] == ".ttf":
+  pref = f[:len(fontfile_prefix)]
+  if f[-4:] == ".ttf" and pref == fontfile_prefix:
     files.append(f)
 
 print ("\nWe'll be checking these files:\n{}\n\n".format("\n".join(files)))

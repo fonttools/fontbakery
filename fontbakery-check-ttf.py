@@ -290,21 +290,24 @@ class FontBakeryCheckLogger():
       pass
 
     import json
-    fname = "{}.burndown.json".format(name)
+    fname = "burndown.json"
     burn = None
     data = None
     try:
       burn = open(fname, "r")
       js = burn.read()
       data = json.loads(js)
-      burn.close
+      burn.close()
 
     except IOError:
-      data = {"planned-release": None,  # This is optional.
-              "entries": []}
+      data = {name: {"planned-release": None,  # This is optional.
+              "entries": []}}
 
     burn = open(fname, "w")
-    data["entries"].append({"date": date,
+    if name not in data.keys():
+      data[name] = {"planned-release": None,
+                    "entries": []}
+    data[name]["entries"].append({"date": date,
                            # "fontbakery-version": None,
                             "commit": git_commit.strip(),
                             "summary": self.summary})

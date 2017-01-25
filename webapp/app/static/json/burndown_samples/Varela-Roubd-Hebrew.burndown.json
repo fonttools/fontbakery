@@ -1,0 +1,100 @@
+{
+    "CrossFamilyChecks": {
+        "entries": [
+            {
+                "commit": "961260933c4efd6edcbc25926a3c5bfba46f7842",
+                "date": "Wed Nov 9 13:01:13 2016 +0100",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "a16a9738858e46cd220c076a2ca5f60f68faf2d9",
+                "date": "Tue Oct 11 14:00:44 2016 +0200",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "9deb85ada0f930873d7deb6abf98cce2040b04ec",
+                "date": "Tue Oct 11 11:44:45 2016 +0200",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "e8e33ad97a3af3e8cb499929013cd4b41edc9032",
+                "date": "Wed Oct 5 21:54:47 2016 +0200",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 3,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            }
+        ],
+        "planned-release": null
+    },
+    "VarelaRound-Regular.ttf": {
+        "entries": [
+            {
+                "commit": "961260933c4efd6edcbc25926a3c5bfba46f7842",
+                "date": "Wed Nov 9 13:01:13 2016 +0100",
+                "summary": {
+                    "Errors": 4,
+                    "Hotfixes": 0,
+                    "Passed": 74,
+                    "Skipped": 2,
+                    "Warnings": 30
+                }
+            },
+            {
+                "commit": "a16a9738858e46cd220c076a2ca5f60f68faf2d9",
+                "date": "Tue Oct 11 14:00:44 2016 +0200",
+                "summary": {
+                    "Errors": 3,
+                    "Hotfixes": 0,
+                    "Passed": 75,
+                    "Skipped": 2,
+                    "Warnings": 30
+                }
+            },
+            {
+                "commit": "9deb85ada0f930873d7deb6abf98cce2040b04ec",
+                "date": "Tue Oct 11 11:44:45 2016 +0200",
+                "summary": {
+                    "Errors": 4,
+                    "Hotfixes": 0,
+                    "Passed": 74,
+                    "Skipped": 2,
+                    "Warnings": 30
+                }
+            },
+            {
+                "commit": "e8e33ad97a3af3e8cb499929013cd4b41edc9032",
+                "date": "Wed Oct 5 21:54:47 2016 +0200",
+                "summary": {
+                    "Errors": 3,
+                    "Hotfixes": 0,
+                    "Passed": 75,
+                    "Skipped": 2,
+                    "Warnings": 30
+                }
+            }
+        ],
+        "planned-release": null
+    }
+}
