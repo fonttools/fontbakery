@@ -3898,6 +3898,49 @@ def check_regression_v_number_increased(fb, new_font, old_font, f):
            " old version %s") % (new_v_number, old_v_number))
 
 
+def glyphs_structure(font):
+  """Return the glyph's point count or composites"""
+  font_glyphs = {}
+  for glyph in font['glyf'].glyphs:
+    if hasattr(font['glyf'][glyph], 'coordinates'):
+      font_glyphs[glyph] = len(font['glyf'][glyph].coordinates)
+    elif font['glyf'][glyph].isComposite():
+      font_glyphs[glyph] = [c.glyphName for c in font['glyf'][glyph]]
+    else:
+      font_glyphs[glyph] = None
+  return font_glyphs
+
+
+def check_regression_glyphs_structure(fb, new_font, old_font, f):
+  bad_glyphs = []
+  not_composites = []
+  new_glyphs = glyphs_structure(new_font)
+  old_glyphs = glyphs_structure(old_font)
+
+  for glyph in new_glyphs:
+    if glyph in old_glyphs:
+      if isinstance(old_glyphs[glyph], list) and \
+      not isinstance(new_glyphs[glyph], list):
+        not_composites.append(glyph)
+      
+      elif isinstance(old_glyphs[glyph], int) and \
+      isinstance(new_glyphs[glyph], int):
+        if new_glyphs[glyph] ^ old_glyphs[glyph] > 10:
+          bad_glyphs.append(glyph)
+
+  if not_composites:
+    fb.error("Previous version had these glyph as composites [%s]" % (
+      ', '.join(not_composites)
+    ))
+  else:
+    fb.ok("Font has same or more composites than previous version")
+
+  if bad_glyphs:
+    fb.error("Following glyphs differ greatly from previous version [%s]" % (
+      ', '.join(bad_glyphs)
+    ))
+
+
 class target_font(object):
   def __init__(self, ttfont=None, desc={}):
     self.ttfont = ttfont
@@ -4314,6 +4357,12 @@ def fontbakery_check_ttf(config):
           remote_styles[style],
           f
         )
+        check_regression_glyphs_structure(
+          fb,
+          local_styles[style],
+          remote_styles[style],
+          f
+          )
       fb.output_report(target)
       fb.reset_report()
 
