@@ -11,6 +11,8 @@ handlers:
   upload: static/dashboard\.html
 - url: /js
   static_dir: static/js
+- url: /css
+  static_dir: static/css
 - url: /json
   static_dir: static/json
 - url: /img
