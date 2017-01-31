@@ -743,6 +743,22 @@ def fonts_from_zip(zipfile):
       fonts.append(font)
   return fonts
 
+
+def glyphs_surface_area(font):
+  """Calculate the surface area of a glyph's ink"""
+  glyphs = {}
+  glyph_set = font.getGlyphSet()
+  area_pen = AreaPen(glyph_set)
+
+  for glyph in glyph_set.keys():
+    glyph_set[glyph].draw(area_pen)
+
+    area = area_pen.value
+    area_pen.value = 0
+    glyphs[glyph] = area
+  return glyphs
+
+
 # =======================================================================
 # The following functions implement each of the individual checks per-se.
 # =======================================================================
@@ -3899,21 +3915,6 @@ def check_regression_v_number_increased(fb, new_font, old_font, f):
            " old version %s") % (new_v_number, old_v_number))
 
 
-def glyphs_surface_area(font):
-  """Calculate the surface area of a glyph's ink"""
-  glyphs = {}
-  glyph_set = font.getGlyphSet()
-  area_pen = AreaPen(glyph_set)
-
-  for glyph in glyph_set.keys():
-    glyph_set[glyph].draw(area_pen)
-
-    area = area_pen.value
-    area_pen.value = 0
-    glyphs[glyph] = area
-  return glyphs
-
-
 def check_regression_glyphs_structure(fb, new_font, old_font, f):
   fb.new_check("Glyphs are similiar to released version")
   bad_glyphs = []
@@ -4335,6 +4336,7 @@ def fontbakery_check_ttf(config):
     remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
     remote_styles = {}
+    # Check only shared styles
     for target in remote_fonts_to_check:
       remote_font = target.get_ttfont()
       remote_family, remote_style = target.fullpath[:-4].split('-')
