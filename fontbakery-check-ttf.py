@@ -28,6 +28,7 @@ import re
 import defusedxml.lxml
 from bs4 import BeautifulSoup
 from fontTools import ttLib
+from fontTools.pens.areaPen import AreaPen
 from unidecode import unidecode
 from lxml.html import HTMLParser
 import plistlib
@@ -3898,42 +3899,32 @@ def check_regression_v_number_increased(fb, new_font, old_font, f):
            " old version %s") % (new_v_number, old_v_number))
 
 
-def glyphs_structure(font):
-  """Return the glyph's point count or composites"""
-  font_glyphs = {}
-  for glyph in font['glyf'].glyphs:
-    if hasattr(font['glyf'][glyph], 'coordinates'):
-      font_glyphs[glyph] = len(font['glyf'][glyph].coordinates)
-    elif font['glyf'][glyph].isComposite():
-      font_glyphs[glyph] = [c.glyphName for c in font['glyf'][glyph]]
-    else:
-      font_glyphs[glyph] = None
-  return font_glyphs
+def glyphs_surface_area(font):
+  """Calculate the surface area of a glyph's ink"""
+  glyphs = {}
+  glyph_set = font.getGlyphSet()
+  area_pen = AreaPen(glyph_set)
+
+  for glyph in glyph_set.keys():
+    glyph_set[glyph].draw(area_pen)
+
+    area = area_pen.value
+    area_pen.value = 0
+    glyphs[glyph] = area
+  return glyphs
 
 
 def check_regression_glyphs_structure(fb, new_font, old_font, f):
+  fb.new_check("Glyphs are similiar to released version")
   bad_glyphs = []
-  not_composites = []
-  new_glyphs = glyphs_structure(new_font)
-  old_glyphs = glyphs_structure(old_font)
+  new_glyphs = glyphs_surface_area(new_font)
+  old_glyphs = glyphs_surface_area(old_font)
 
-  for glyph in new_glyphs:
-    if glyph in old_glyphs:
-      if isinstance(old_glyphs[glyph], list) and \
-      not isinstance(new_glyphs[glyph], list):
-        not_composites.append(glyph)
-      
-      elif isinstance(old_glyphs[glyph], int) and \
-      isinstance(new_glyphs[glyph], int):
-        if new_glyphs[glyph] ^ old_glyphs[glyph] > 10:
-          bad_glyphs.append(glyph)
+  shared_glyphs = set(new_glyphs) & set(old_glyphs)
 
-  if not_composites:
-    fb.error("Previous version had these glyph as composites [%s]" % (
-      ', '.join(not_composites)
-    ))
-  else:
-    fb.ok("Font has same or more composites than previous version")
+  for glyph in shared_glyphs:
+    if int(new_glyphs[glyph]) ^ int(old_glyphs[glyph]) > 8000:
+      bad_glyphs.append(glyph)
 
   if bad_glyphs:
     fb.error("Following glyphs differ greatly from previous version [%s]" % (
