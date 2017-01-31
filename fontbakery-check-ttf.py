@@ -3916,7 +3916,7 @@ def check_regression_v_number_increased(fb, new_font, old_font, f):
 
 
 def check_regression_glyphs_structure(fb, new_font, old_font, f):
-  fb.new_check("Glyphs are similiar to released version")
+  fb.new_check("Glyphs are similiar to old version")
   bad_glyphs = []
   new_glyphs = glyphs_surface_area(new_font)
   old_glyphs = glyphs_surface_area(old_font)
@@ -3928,7 +3928,7 @@ def check_regression_glyphs_structure(fb, new_font, old_font, f):
       bad_glyphs.append(glyph)
 
   if bad_glyphs:
-    fb.error("Following glyphs differ greatly from previous version [%s]" % (
+    fb.error("Following glyphs differ greatly from previous version: [%s]" % (
       ', '.join(bad_glyphs)
     ))
 
@@ -4336,14 +4336,13 @@ def fontbakery_check_ttf(config):
     remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
     remote_styles = {}
-    # Check only shared styles
     for target in remote_fonts_to_check:
       remote_font = target.get_ttfont()
       remote_family, remote_style = target.fullpath[:-4].split('-')
       remote_styles[remote_style] = remote_font
 
       # Only perform tests if local fonts have the same styles
-      if style in local_styles:
+      if remote_style in local_styles:
         check_regression_v_number_increased(
           fb,
           local_styles[style],
@@ -4355,9 +4354,9 @@ def fontbakery_check_ttf(config):
           local_styles[style],
           remote_styles[style],
           f
-          )
-      fb.output_report(target)
-      fb.reset_report()
+        )
+        fb.output_report(target)
+        fb.reset_report()
 
 
   if fb.config['webapp']:
