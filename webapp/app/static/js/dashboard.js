@@ -1,3 +1,24 @@
+(function() {
+  var app = angular.module('FBDashboard', []);
+
+  app.controller('FontListController', ['$http', function($http){
+    var FListCtrl = this;
+    $http.get('json/dashboard_config.json').success(function(data){
+      FListCtrl.families = [];
+      for (t in data["targets"]){
+        var target = data["targets"][t];
+        var family = {};
+        family.url = target;
+        family.name = target.split("/").pop().split(".")[0];
+        family.num_checks = 100;
+        family.num_passed = 35;
+        FListCtrl.families.push(family);
+      };
+    });
+  }]);
+})();
+
+/*
 var cur_color = 0;
 function random_color(){
   var color_names = ['green', 'blue', 'red', 'magenta', 'grey', 'black', 'cyan', 'green'];
@@ -127,9 +148,4 @@ $(document).ready(function(){
   }
 });
 
-
-
-
-
-
-
+*/
