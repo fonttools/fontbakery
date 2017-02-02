@@ -15,38 +15,7 @@
 #
 __author__="The Font Bakery Authors"
 
-import os, sys, argparse, glob, logging, requests, subprocess
-from fontTools import ttLib
-from fontTools.ttLib.tables._n_a_m_e import NameRecord
-
-#=====================================
-# GLOBAL CONSTANTS DEFINITIONS
-
-NAMEID_VERSION_STRING = 5
-
-def parse_version_string(s):
-    """ Tries to parse a version string as used
-        in ttf versioning metadata fields.
-        Example of expected format is:
-          'Version 01.003; Comments'
-    """
-    try:
-        suffix = ''
-        if ';' in s:
-            fields = s.split(';')
-            s = fields[0]
-            fields.pop(0)
-            suffix = ';'.join(fields)
-        substrings = s.split('.')
-        minor = substrings[-1]
-        if ' ' in substrings[-2]:
-            major = int(substrings[-2].split(' ')[-1])
-        else:
-            major = int(substrings[-2])
-        return major, minor, suffix
-    except:
-        print ("ER: failed to detect major and minor version numbers" +\
-               " in '{}' utf8 encoding: {}".format(s, [s.encode('utf8')]))
+import os, argparse, glob, logging
 
 # set up some command line argument processing
 parser = argparse.ArgumentParser(description="Compare TTF files when upgrading families.")
@@ -54,7 +23,6 @@ parser.add_argument('arg_filepaths', nargs='+',
                     help='font file path(s) to check.'
                          ' Wildcards like *.ttf are allowed.')
 parser.add_argument('-v', '--verbose', action='count', default=0, help="increase output verbosity")
-parser.add_argument('-b', '--versionbump', action="store_true", help="increment font files' minor version number")
 
 #=====================================
 # Main sequence of checkers & fixers
@@ -63,7 +31,6 @@ def main():
   # set up a basic logging config
   # to include timestamps
   # log_format = '%(asctime)s %(levelname)-8s %(message)s'
-  global font
   log_format = '%(levelname)-8s %(message)s  '
   logger = logging.getLogger()
   handler = logging.StreamHandler()
@@ -112,52 +79,6 @@ def main():
                       new_file, -delta))
     else:
       logging.info("New font file '{}' preserves filesize.".format(new_file))
-
-    new_font = ttLib.TTFont(new_file)
-    old_font = ttLib.TTFont(old_file)
-
-    #----------------------------------------------------
-    logging.debug("Checking font version fields")
-    old_version = parse_version_string(str(old_font['head'].fontRevision))
-    if old_version == None:
-        logging.error("Could not parse TTF version string on the 'head' table."+\
-                      " Please fix it. Current value is '{}'".format(str(old_font['head'].fontRevision)))
-    else:
-        if args.versionbump:
-            minor = old_version[1]
-            num_digits = len(minor)
-            minor = str(int(minor) + 1)
-            minor = '0' * (num_digits - len(minor)) + minor
-            incremented_version = [old_version[0], minor, old_version[2]]
-
-            new_version = parse_version_string(str(new_font['head'].fontRevision))
-            if new_version != incremented_version:
-                logging.warning("Auto-incrementing fontRevision from {}.{} to {}.{}".format(new_version[0], new_version[1],
-                                                                                        incremented_version[0], incremented_version[1]))
-                new_font['head'].fontRevision = "{}.{}".format(incremented_version[0], incremented_version[1])
-            else:
-                logging.info("OK: fontRevision is {}.{}".format(new_version[0], new_version[1]))
-
-            for name in new_font['name'].names:
-                if name.nameID == NAMEID_VERSION_STRING:
-                    encoding = name.getEncoding()
-                    s = name.string.decode(encoding)
-                    s = "Version {}.{};{}".format(incremented_version[0],
-                                                  incremented_version[1],
-                                                  incremented_version[2])
-                    new_string = s.encode(encoding)
-                    if name.string != new_string:
-                        logging.info("NAMEID_VERSION_STRING from {} to {}".format(name.string, new_string))
-                        name.string = new_string
-            if 'CFF ' in new_font.keys():
-                major, minor, _ = incremented_version
-                if new_font["CFF "].cff.major != major:
-                    new_font["CFF "].cff.major = major
-                if new_font["CFF "].cff.minor != minor:
-                    new_font["CFF "].cff.minor = minor
-
-    new_font.close()
-    old_font.close()
 
 if __name__=='__main__':
     main()

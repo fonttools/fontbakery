@@ -465,7 +465,7 @@ optional arguments:
 Compare TTF files when upgrading families.
 
 ```
-usage: fontbakery-update-families.py [-h] [-v] [-b]
+usage: fontbakery-update-families.py [-h] [-v]
                                      arg_filepaths [arg_filepaths ...]
 
 positional arguments:
@@ -475,7 +475,6 @@ positional arguments:
 optional arguments:
   -h, --help         show this help message and exit
   -v, --verbose      increase output verbosity
-  -b, --versionbump  increment font files' minor version number
 ```
 
 ## Install
