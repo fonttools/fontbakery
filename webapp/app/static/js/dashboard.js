@@ -11,10 +11,88 @@
         family.url = target;
         family.name = target.split("/").pop().split(".")[0];
         family.num_checks = 100;
-        family.num_passed = 35;
+        family.num_passed = null;
         FListCtrl.families.push(family);
       };
     });
+
+    this.load_progress = function(family){
+      function get_newest_entry(f){
+        var ret_val = null;
+        for (var e in f["entries"]){
+          var entry = f["entries"][e];
+          var this_date = Date.parse(entry["date"]);
+          if (ret_val == null || this_date > most_recent){
+            most_recent = this_date;
+            ret_val = entry;
+          }
+        }
+        return ret_val;
+      }
+
+      $http.get(family.url).success(function(json_data){
+        var num_passed = 0,
+            num_checks = 0;
+        for (var file in json_data){
+          var summary = get_newest_entry(json_data[file])["summary"];
+          num_passed += summary["Passed"];
+          num_checks += summary["Passed"] +
+                        summary["Errors"] +
+                        summary["Hotfixes"] +
+                        summary["Warnings"] +
+                        summary["Skipped"];
+        }
+        family.num_passed = num_passed;
+        family.num_checks = num_checks;
+        family.percentage = (100.0 * num_passed / num_checks).toFixed(2);
+      });
+    };
+
+    this.load_details = function(url){
+      $http.get(url).success(function(json_data){
+        FListCtrl.details = json_data;
+      });
+/*
+        var chart_lines = [],
+            familyname = null;
+        let stats = [];
+        for (var f in json_data){
+          if (f != "CrossFamilyChecks")
+            familyname = f.split("-")[0];
+          var font_data = json_data[f],
+              data = [],
+              min_date = null,
+              max_date = null,
+              max_percent = 0;
+
+          //We expect the first entry to be the latest one:
+          stats.push(font_data["entries"][0]["summary"]);
+
+          for (var e in font_data["entries"]){
+            var entry = font_data["entries"][e],
+                s = entry["summary"],
+                total = s["Errors"] + s["Hotfixes"] + s["Passed"] + s["Skipped"] + s["Warnings"],
+                error_percent = (100.0 * s["Errors"]) / total,
+                _date = Date.parse(entry["date"]);
+
+            if (error_percent < max_percent)
+              max_percent = error_percent;
+            if ((min_date == null) || _date < min_date)
+              min_date = _date;
+            if ((max_date == null) || _date > max_date)
+              max_date = _date;
+
+            data.push({
+              "Errors": error_percent,
+              "date": entry["date"]});
+            }
+            chart_lines.push(data);
+          }
+          InitChart(stats, familyname, chart_lines, min_date, max_date, max_percent);
+        });
+      }
+*/
+    };
   }]);
 })();
 
