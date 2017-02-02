@@ -21,16 +21,20 @@ import argparse
 import glob
 import logging
 import requests
+from urllib import urlopen
 import urllib
 import csv
 import re
 import defusedxml.lxml
 from bs4 import BeautifulSoup
 from fontTools import ttLib
+from fontTools.pens.areaPen import AreaPen
 from unidecode import unidecode
 from lxml.html import HTMLParser
 import plistlib
 from io import BytesIO
+from StringIO import StringIO
+from zipfile import ZipFile
 
 try:
   import fontforge
@@ -718,6 +722,41 @@ def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
         setattr(font[table], attr, value & ~bitmask)
     else:
       fb.error("{} should be {}.".format(name_str, expected_str))
+
+
+def download_family_from_GoogleFontDirectory(family_name):
+    """Return a zipfile containing a font family hosted on fonts.google.com"""
+    url_prefix = 'https://fonts.google.com/download?family='
+    url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
+    request = urlopen(url)
+    # print(request.text)
+    return ZipFile(StringIO(request.read()))
+
+
+def fonts_from_zip(zipfile):
+  '''return a list of fontTools TTFonts'''
+  fonts = []
+  for file_name in zipfile.namelist():
+    if file_name.endswith(".ttf"):
+      font = target_font(ttLib.TTFont(zipfile.open(file_name)))
+      font.fullpath = file_name
+      fonts.append(font)
+  return fonts
+
+
+def glyphs_surface_area(font):
+  """Calculate the surface area of a glyph's ink"""
+  glyphs = {}
+  glyph_set = font.getGlyphSet()
+  area_pen = AreaPen(glyph_set)
+
+  for glyph in glyph_set.keys():
+    glyph_set[glyph].draw(area_pen)
+
+    area = area_pen.value
+    area_pen.value = 0
+    glyphs[glyph] = area
+  return glyphs
 
 
 # =======================================================================
@@ -3194,6 +3233,7 @@ def check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
       fb.error('No family found in GWF in %s' % url)
     else:
       fb.ok('Font is properly listed in Google Font Directory.')
+      return url
   except:
     fb.warning("Failed to query GWF at {}".format(url))
 
@@ -3863,6 +3903,36 @@ def check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts):
       fb.ok("Font em size is equal to 1000.")
 
 
+def check_regression_v_number_increased(fb, new_font, old_font, f):
+  fb.new_check("Version number has increased since previous release?")
+  new_v_number = new_font['head'].fontRevision
+  old_v_number = old_font['head'].fontRevision
+  if new_v_number < old_v_number:
+    fb.error(("Version number %s is less than or equal to"
+              " old version %s") % (new_v_number, old_v_number))
+  else:
+    fb.ok(("Version number %s is greater than"
+           " old version %s") % (new_v_number, old_v_number))
+
+
+def check_regression_glyphs_structure(fb, new_font, old_font, f):
+  fb.new_check("Glyphs are similiar to old version")
+  bad_glyphs = []
+  new_glyphs = glyphs_surface_area(new_font)
+  old_glyphs = glyphs_surface_area(old_font)
+
+  shared_glyphs = set(new_glyphs) & set(old_glyphs)
+
+  for glyph in shared_glyphs:
+    if int(new_glyphs[glyph]) ^ int(old_glyphs[glyph]) > 8000:
+      bad_glyphs.append(glyph)
+
+  if bad_glyphs:
+    fb.error("Following glyphs differ greatly from previous version: [%s]" % (
+      ', '.join(bad_glyphs)
+    ))
+
+
 class target_font(object):
   def __init__(self, ttfont=None, desc={}):
     self.ttfont = ttfont
@@ -4064,9 +4134,11 @@ def fontbakery_check_ttf(config):
     fb.set_font(font)
     logging.info("OK: {} opened with fontTools".format(target.fullpath))
 
+    local_styles = {}
     # Determine weight from canonical filename
     file_path, filename = os.path.split(target.fullpath)
     family, style = os.path.splitext(filename)[0].split('-')
+    local_styles[style] = font
 
     check_font_has_post_table_version_2(fb, font)
     check_OS2_fsType(fb)
@@ -4252,6 +4324,40 @@ def fontbakery_check_ttf(config):
                "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
                "  --error\tPrint only the error messages "
                "(outputs to stderr).\n")
+
+##########################################################
+## Step 3: Regression related checks:
+# if family already exists on fonts.google.com
+##########################################################
+
+  # ------------------------------------------------------
+  if check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
+    remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name)
+    remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
+
+    remote_styles = {}
+    for target in remote_fonts_to_check:
+      remote_font = target.get_ttfont()
+      remote_family, remote_style = target.fullpath[:-4].split('-')
+      remote_styles[remote_style] = remote_font
+
+      # Only perform tests if local fonts have the same styles
+      if remote_style in local_styles:
+        check_regression_v_number_increased(
+          fb,
+          local_styles[style],
+          remote_styles[style],
+          f
+        )
+        check_regression_glyphs_structure(
+          fb,
+          local_styles[style],
+          remote_styles[style],
+          f
+        )
+        fb.output_report(target)
+        fb.reset_report()
+
 
   if fb.config['webapp']:
     return fb.json_report_files
