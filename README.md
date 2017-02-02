@@ -15,7 +15,16 @@ Font Bakery is not an official Google project, and Google provides no support fo
 
 ## Web Usage
 
-Visit [fontbakery.appspot.com](https://fontbakery.appspot.com) and drop 1 to 18 TTF files on the page, and click the "
+Visit [fontbakery.appspot.com](https://fontbakery.appspot.com) and drop 1 to 18 TTF files on the page, and click the "3"
+
+The source code to this web-based user-interface is all in the `webapp/` folder. 
+In order to run it on your own computer, download this source repo and all dependencies for command line usage. 
+Then run the following commands:
+
+    cd webapp
+    ./dev_appserver.py app
+
+Now open <http://0.0.0.0:8000> in your browser.
 
 ## Command Line Usage
 
@@ -33,11 +42,6 @@ The check results will be saved to a file called fontbakery-check-results.json.
 For check results in GitHub Markdown syntax you can use --ghm:
 
     fontbakery-check-ttf.py --verbose *.ttf --ghm
-
-Alternatively, a web-based user-interface for FontBakery is provided at the webapp/ folder. In order to run it load http://0.0.0.0:8000/ on a web-browser after running the following commands:
-
-    cd webapp
-    dev_appserver.py app
 
 ### Automated testing of all Google Fonts
 
