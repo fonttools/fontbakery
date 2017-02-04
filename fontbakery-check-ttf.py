@@ -404,7 +404,8 @@ class FontBakeryCheckLogger():
       "ERROR": RED_STR.format('E'),
       "WARNING": YELLOW_STR.format('W'),
       "SKIP": WHITE_STR.format('S'),
-      "INFO": CYAN_STR.format('I')
+      "INFO": CYAN_STR.format('I'),
+      "unknown": RED_STR.format('?')
     }
     if self.progressbar is False:
       return
@@ -3221,7 +3222,7 @@ def check_METADATA_Ensure_designer_simple_short_name(fb, family):
 fp = None  # This is a bug! Please see fontbakery issue #1159
 
 
-def check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
+def check_family_is_listed_in_GFDirectory(fb, family):
   global fp
   fb.new_check("METADATA.pb: Fontfamily is listed"
                " in Google Font Directory ?")
@@ -3924,7 +3925,7 @@ def check_regression_glyphs_structure(fb, new_font, old_font, f):
   shared_glyphs = set(new_glyphs) & set(old_glyphs)
 
   for glyph in shared_glyphs:
-    if int(new_glyphs[glyph]) ^ int(old_glyphs[glyph]) > 8000:
+    if abs(int(new_glyphs[glyph]) - int(old_glyphs[glyph])) > 8000:
       bad_glyphs.append(glyph)
 
   if bad_glyphs:
@@ -4221,6 +4222,7 @@ def fontbakery_check_ttf(config):
 ## Metadata related checks:
 ##########################################################
     skip_gfonts = False
+    is_listed_in_GFD = False
     if not fb.config['webapp']:
       fontdir = os.path.dirname(target.fullpath)
       metadata = os.path.join(fontdir, "METADATA.pb")
@@ -4240,7 +4242,7 @@ def fontbakery_check_ttf(config):
         fb.default_target = metadata
 
         check_METADATA_Ensure_designer_simple_short_name(fb, family)
-        check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family)
+        is_listed_in_GFD = check_family_is_listed_in_GFDirectory(fb, family)
         check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
         check_METADATA_has_unique_full_name_values(fb, family)
         check_METADATA_check_style_weight_pairs_are_unique(fb, family)
@@ -4291,6 +4293,39 @@ def fontbakery_check_ttf(config):
     # Google-Fonts specific check:
     check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
 
+
+##########################################################
+## Step 3: Regression related checks:
+# if family already exists on fonts.google.com
+##########################################################
+
+    # ------------------------------------------------------
+    if is_listed_in_GFD:
+      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name)
+      remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
+
+      remote_styles = {}
+      for target in remote_fonts_to_check:
+        fb.default_target = target.fullpath
+        remote_font = target.get_ttfont()
+        remote_family, remote_style = target.fullpath[:-4].split('-')
+        remote_styles[remote_style] = remote_font
+
+        # Only perform tests if local fonts have the same styles
+        if remote_style in local_styles:
+          check_regression_v_number_increased(
+            fb,
+            local_styles[style],
+            remote_styles[style],
+            f
+          )
+          check_regression_glyphs_structure(
+            fb,
+            local_styles[style],
+            remote_styles[style],
+            f
+          )
+
     fb.output_report(target)
     fb.reset_report()
 
@@ -4324,40 +4359,6 @@ def fontbakery_check_ttf(config):
                "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
                "  --error\tPrint only the error messages "
                "(outputs to stderr).\n")
-
-##########################################################
-## Step 3: Regression related checks:
-# if family already exists on fonts.google.com
-##########################################################
-
-  # ------------------------------------------------------
-  if check_METADATA_Fontfamily_is_listed_in_GoogleFontDirectory(fb, family):
-    remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name)
-    remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
-
-    remote_styles = {}
-    for target in remote_fonts_to_check:
-      remote_font = target.get_ttfont()
-      remote_family, remote_style = target.fullpath[:-4].split('-')
-      remote_styles[remote_style] = remote_font
-
-      # Only perform tests if local fonts have the same styles
-      if remote_style in local_styles:
-        check_regression_v_number_increased(
-          fb,
-          local_styles[style],
-          remote_styles[style],
-          f
-        )
-        check_regression_glyphs_structure(
-          fb,
-          local_styles[style],
-          remote_styles[style],
-          f
-        )
-        fb.output_report(target)
-        fb.reset_report()
-
 
   if fb.config['webapp']:
     return fb.json_report_files
