@@ -1872,7 +1872,10 @@ def check_with_msfontvalidator(fb, font_file):
     except subprocess.CalledProcessError, e:
       fb.info(("Microsoft Font Validator returned an error code."
                " Output follows :\n\n{}\n").format(e.output))
-    except OSError, IOError:
+    except OSError:
+      fb.warning("Mono runtime and/or "
+                 "Microsoft Font Validator are not available!")
+    except IOError:
       fb.warning("Mono runtime and/or "
                  "Microsoft Font Validator are not available!")
       return
