@@ -1827,7 +1827,7 @@ def check_with_otsanitise(fb, font_file):
   else:
     try:
       import subprocess
-      ots_output = subprocess.check_output(["ot-sanitise", font_file],
+      ots_output = subprocess.check_output(["prebuilt/ot-sanitise", font_file],
                                            stderr=subprocess.STDOUT)
       if ots_output != "":
         fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
@@ -1854,7 +1854,7 @@ def check_with_msfontvalidator(fb, font_file):
     try:
       import subprocess
       fval_cmd = ["mono",
-                  "fval/FontValidator.exe",
+                  "prebuilt/fval/FontValidator.exe",
                   "-file", font_file,
                   "-all-tables",
                   "-report-in-font-dir"]
