@@ -52,6 +52,11 @@ def build_check_results_table(report_data):
   return "<table style='width:100\%'>{}</table>".format(rows)
 
 
+
+@app.route("/")
+def home():
+  return open("static/index.html").read()
+
 @app.route('/runchecks', methods=['POST'])
 def run_fontbakery():
 
@@ -88,3 +93,6 @@ def server_error(e):
     logging.exception('An error occurred during a request.')
     return 'An internal error occurred.', 500
 # [END app]
+
+if __name__ == "__main__":
+    app.run()
