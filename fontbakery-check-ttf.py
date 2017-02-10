@@ -3968,9 +3968,9 @@ def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
 
   if new_inc_xheight != old_inc_xheight:
     fb.error("TTFAutohint --increase-x-height is %s. "
-             "It should match the previous version's value %s" % (
-              new_inc_xheight, old_inc_xheight
-    ))
+             "It should match the previous version's value %s" %
+             (new_inc_xheight, old_inc_xheight)
+             )
 
   else:
     fb.ok("TTFAutohint --increase-x-height is the same as the previous "
