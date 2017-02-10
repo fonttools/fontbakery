@@ -2773,18 +2773,25 @@ def check_GPOS_table_has_kerning_info(fb, font):
     fb.error('Font is missing a "GPOS" table')
   return has_kerning_info
 
+
 def get_all_ligatures(font):
   all_ligatures = {}
-  for lookup in font["GSUB"].table.LookupList.Lookup:
-    # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
-    if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-      for subtable in lookup.SubTable:
-        for firstGlyph in subtable.ligatures.keys():
-          all_ligatures[firstGlyph] = []
-          for lig in subtable.ligatures[firstGlyph]:
-            if lig.Component[0] not in all_ligatures[firstGlyph]:
-              all_ligatures[firstGlyph].append(lig.Component[0])
+  try:
+    for lookup in font["GSUB"].table.LookupList.Lookup:
+      # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+      if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+        for subtable in lookup.SubTable:
+          for firstGlyph in subtable.ligatures.keys():
+            all_ligatures[firstGlyph] = []
+            for lig in subtable.ligatures[firstGlyph]:
+              if lig.Component[0] not in all_ligatures[firstGlyph]:
+                all_ligatures[firstGlyph].append(lig.Component[0])
+  except:
+    # sometimes font["GSUB"].table.LookupList.Lookup is not there.
+    pass
+
   return all_ligatures
+
 
 def check_all_ligatures_have_corresponding_caret_positions(fb, font):
   ''' All ligatures in a font must have corresponding caret (text cursor)
@@ -2806,10 +2813,20 @@ def check_all_ligatures_have_corresponding_caret_positions(fb, font):
     # TODO: After getting a sample of a good font,
     #       resume the implementation of this routine:
     lig_caret_list = font["GDEF"].table.LigCaretList
-    fb.error(("FIXME!"
-              "check_all_ligatures_have_corresponding_caret_positions\n"
-              "all_ligatures = {}\n"
-              "lig_caret_list = {}").format(all_ligatures, lig_caret_list))
+    if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
+      fb.error("This font lacks caret position values for ligature"
+               " glyphs on its GDEF table.")
+    elif lig_caret_list.LigGlyphCount != len(all_ligatures):
+      fb.warning(("It seems that this font lacks caret positioning values"
+                  " for some of its ligature glyphs on the GDEF table."
+                  " There's a total of {} ligatures, but only {} sets of"
+                  " caret positioning values."
+                  "").format(len(all_ligatures),
+                             lig_caret_list.LigGlyphCount))
+    else:
+      # Should we also actually check each individual entry here?
+      fb.ok("Looks good!")
+
 
 def check_nonligated_sequences_kerning_info(fb, font, has_kerning_info):
   ''' Fonts with ligatures should have kerning on the corresponding
