@@ -761,17 +761,16 @@ def glyphs_surface_area(font):
 
 
 def ttfauto_fpgm_xheight_rounding(fpgm_tbl):
-  '''Find the value from the fpgm table which controls ttfautohint's
+  """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.
   This implementation is based on ttfautohint v1.6.
 
   This function has been tested on every font in the fonts/google repo
   which has an fpgm table. Results have been stored in a spreadsheet:
   http://tinyurl.com/jmlfmh3
- 
+
   For more information regarding the fpgm table read:
-  http://tinyurl.com/jzekfyx
-  '''
+  http://tinyurl.com/jzekfyx"""
   fpgm_tbl = '\n'.join(fpgm_tbl)
   xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
   try:
@@ -3971,8 +3970,8 @@ def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
     fb.error("TTFAutohint --increase-x-height is %s. "
              "It should match the previous version's value %s" % (
               new_inc_xheight, old_inc_xheight
-              )
-            )
+    ))
+
   else:
     fb.ok("TTFAutohint --increase-x-height is the same as the previous "
           "release, %s" % (new_inc_xheight))
