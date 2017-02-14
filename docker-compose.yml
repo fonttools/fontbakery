@@ -1,0 +1,23 @@
+version: "2"
+services:
+  worker:
+    build: .
+    environment:
+      - GIT_REPO_URL=https://github.com/andrew-paglinawan/QuicksandFamily.git
+      - FONTFILE_PREFIX=fonts/Quicksand-
+    links:
+      - db
+  web:
+    build: dashboard
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/dashboard
+    links:
+      - db
+  db:
+    image: rethinkdb:latest
+    ports:
+      - "28015:28015"
+      - "8080:8080"
