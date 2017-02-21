@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import glob
+import json
 import os
 import rethinkdb as r
 import subprocess
 import sys
-from json import loads
 
 prefix_elements = os.environ.get("FONTFILE_PREFIX", "").split('/')
 FONTS_PREFIX = prefix_elements.pop(-1)
@@ -17,6 +17,7 @@ def run(cmd):
   try:
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError, e:
+    print ("Error: {}".format(e))
     pass
   except OSError:
     print("could not execute command '{}' !".format(cmd))
@@ -28,7 +29,7 @@ def get_filenames():
   for f in os.listdir(FONTS_DIR):
     pref = f[:len(FONTS_PREFIX)]
     if f[-4:] == ".ttf" and pref == FONTS_PREFIX:
-      files.append(f)
+      files.append(FONTS_DIR + "/" + f)
   if len(files) == 0:
     print ("Where are the TTF files?!\n")
   else:
@@ -55,11 +56,20 @@ print ("We're now at master branch.")
 lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
 commits = [line.split()[0].strip() for line in lines]
 
-#r.connect('db', 28015).repl()
-#db = r.db('fontbakery')
+r.connect('db', 28015).repl()
+try:
+  r.db_create('fontbakery').run()
+except:
+  # OK, it already exists
+  pass
 
-#if not db.table_list().contains("fontprojects").run():
-#  db.table_create("fontprojects").run()
+try:
+  r.db('fontbakery').table_create('checkresults').run()
+except:
+  # alright!
+  pass
+
+db = r.db('fontbakery')
 
 #cursor = r.table("fontprojects").filter(r.row["repo_url"] == repo_url).run()
 #for project in cursor:
@@ -78,18 +88,36 @@ for i, commit in enumerate(commits):
   run(["git", "checkout", commit])
 
   try:
-    files = get_filenames()
-    # print "Checked out '{}'!".format(commit)
     print ("[{} of {}] Running fontbakery on commit '{}'...".format(i+1, len(commits), commit))
-    run(["/fontbakery-check-ttf.py", "--json", "--verbose"] + files)
+    date = run(["git", 
+               "log",  # display the commid id and message 
+               "HEAD~1..HEAD"]  # only for the last commit
+    ).split('\n')[2].split("Date:")[1].strip()
+  except:
+    print ("Failed to parse commit date string")
+    continue
+
+  try:
+    files = get_filenames()
+    run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+
+    for f in os.listdir(FONTS_DIR):
+      if f[-20:] != ".ttf.fontbakery.json":
+        continue
+
+      fname = f.split('.fontbakery.json')[0]
+      data = open(FONTS_DIR + "/" + f).read()
+      check_results = {
+        "giturl": REPO_URL,
+        "results": json.loads(data),
+        "commit": commit,
+        "fontname": fname,
+        "date": date
+      }
+      if db.table('checkresults').filter({"commit": commit, "fontname":fname}).count().run() == 0:
+        db.table('checkresults').insert(check_results).run()
+      else:
+        db.table('checkresults').filter({"commit": commit, "fontname":fname}).update(check_results).run()
   except:
     print("Failed to run fontbakery on this commit (perhaps TTF files moved to a different folder.)")
-  if 0:
-    r.db('fontbakery').table_create('check_results').run()
-    data = open("burndown.json").read()
-    check_results = json.loads(data)
-    r.table('check_results').get(r.row['family'] == familyname).update(check_results).run()
-
-
-print("We're done! Check the burndown.json files now.")
 
