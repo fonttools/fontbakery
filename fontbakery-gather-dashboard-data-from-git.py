@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from dateutil import parser
 import glob
 import json
 import os
@@ -48,6 +49,32 @@ if REPO_URL == None:
         " git repo URL in the GIT_REPO_URL environment variable.")
   sys.exit(-1)
 
+
+def calc_font_stats(results):
+  stats = {
+    "Total": len(results),
+    "Errors": 0,
+    "Warnings": 0,
+    "Hotfixes": 0,
+    "Skipped": 0,
+    "Passed": 0
+  }
+  for r in results:
+    if r['result'] not in stats.keys():
+      stats[r['result']] = 1
+    else:
+      stats[r['result']] += 1
+  return stats
+
+
+def update_global_stats(family, font):
+  if family['summary'] is None:
+    family['summary'] = font
+  else:
+    for k in family['summary'].keys():
+      family['summary'][k] += font[k]
+
+
 clone(REPO_URL, "checkout")
 os.chdir("checkout")
 #run(["git", "checkout", "master"])
@@ -55,69 +82,71 @@ print ("We're now at master branch.")
 
 lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
 commits = [line.split()[0].strip() for line in lines]
+print ("The commits we'll iterate over are: {}".format(commits))
 
 r.connect('db', 28015).repl()
 try:
   r.db_create('fontbakery').run()
+  r.db('fontbakery').table_create('check_results').run()
+  r.db('fontbakery').table_create('cached_stats').run()
 except:
-  # OK, it already exists
-  pass
-
-try:
-  r.db('fontbakery').table_create('checkresults').run()
-except:
-  # alright!
+  # OK, database and tables already exist.
   pass
 
 db = r.db('fontbakery')
 
-#cursor = r.table("fontprojects").filter(r.row["repo_url"] == repo_url).run()
-#for project in cursor:
-#  pass  # TODO!
-
-already_checked_revisions = []
-# TODO: fetch from database
-
-for commit in commits:
-  if commit in already_checked_revisions:
-    del(commit)
-
-print ("The commits we'll iterate over are: {}".format(commits))
-
 for i, commit in enumerate(commits):
   run(["git", "checkout", commit])
 
-  try:
+  if 1:
+#  try:
     print ("[{} of {}] Running fontbakery on commit '{}'...".format(i+1, len(commits), commit))
-    date = run(["git", 
-               "log",  # display the commid id and message 
-               "HEAD~1..HEAD"]  # only for the last commit
-    ).split('\n')[2].split("Date:")[1].strip()
-  except:
-    print ("Failed to parse commit date string")
-    continue
+
+    datestr = run(['git',
+                   'log',
+                   '-1',
+                   '--pretty=format:\"%cd\"'])
+    print ("datestr = {}".format(datestr))
+    date = parser.parse(datestr, fuzzy=True)
+#  except:
+#    print ("Failed to parse commit date string")
+#    continue
 
   try:
     files = get_filenames()
     run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
 
+    family_stats = {
+      "giturl": REPO_URL,
+      "date": date,
+      "summary": None
+    }
     for f in os.listdir(FONTS_DIR):
       if f[-20:] != ".ttf.fontbakery.json":
         continue
 
       fname = f.split('.fontbakery.json')[0]
       data = open(FONTS_DIR + "/" + f).read()
+      results = json.loads(data)
+      font_stats = calc_font_stats(results)
+      update_global_stats(family_stats, font_stats)
       check_results = {
         "giturl": REPO_URL,
-        "results": json.loads(data),
+        "results": results,
         "commit": commit,
         "fontname": fname,
-        "date": date
+        "date": date,
+        "stats": font_stats
       }
-      if db.table('checkresults').filter({"commit": commit, "fontname":fname}).count().run() == 0:
-        db.table('checkresults').insert(check_results).run()
+      if db.table('check_results').filter({"commit": commit, "fontname":fname}).count().run() == 0:
+        db.table('check_results').insert(check_results).run()
       else:
-        db.table('checkresults').filter({"commit": commit, "fontname":fname}).update(check_results).run()
+        db.table('check_results').filter({"commit": commit, "fontname":fname}).update(check_results).run()
+
+    if db.table('cached_stats').filter({"giturl": REPO_URL}).count().run() == 0:
+      db.table('cached_stats').insert(family_stats).run()
+    else:
+      db.table('cached_stats').filter({"giturl": REPO_URL}).update(family_stats).run()
   except:
     print("Failed to run fontbakery on this commit (perhaps TTF files moved to a different folder.)")
 

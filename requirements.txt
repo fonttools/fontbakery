@@ -12,3 +12,4 @@ Unidecode==0.4.19
 wheel==0.24.0
 GitPython==0.3.2rc1
 rethinkdb
+python-dateutil
