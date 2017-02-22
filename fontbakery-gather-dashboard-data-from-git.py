@@ -126,6 +126,8 @@ for i, commit in enumerate(commits):
         continue
 
       fname = f.split('.fontbakery.json')[0]
+      familyname = fname.split('-')[0]
+      family_stats['familyname'] = familyname
       data = open(FONTS_DIR + "/" + f).read()
       results = json.loads(data)
       font_stats = calc_font_stats(results)
@@ -135,6 +137,7 @@ for i, commit in enumerate(commits):
         "results": results,
         "commit": commit,
         "fontname": fname,
+        "familyname": familyname,
         "date": date,
         "stats": font_stats
       }

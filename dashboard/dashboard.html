@@ -1,0 +1,26 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title "Font Bakery Dashboard"></title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Fontbakery Dashboard</h1>
+    <div>
+      <p>This dashboard monitors the progress status of a selection of font projects.</p>
+      <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by the given family. Click on a family to see a detailed report.</p>
+      <ul>
+        {% for font in fonts %}
+        <li onclick="load_details(font.git_url);">
+          <span class="familyname"> {{ font.familyname }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['summary']['Passed']/font['summary']['total'] }} %)</small>
+          <progress max="{{ font['summary']['Total'] }}" value="{{ font['summary']['Passed'] }}" />
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
