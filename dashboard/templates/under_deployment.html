@@ -12,14 +12,7 @@
     <div>
       <p>This dashboard monitors the progress status of a selection of font projects.</p>
       <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by the given family. Click on a family to see a detailed report.</p>
-      <ul>
-        {% for font in fonts %}
-        <li href="/details/{{ font['familyname'] }}">
-          <span class="familyname"> {{ font['familyname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['summary']['OK']*100/font['summary']['Total'] }} %)</small>
-          <progress max="{{ font['summary']['Total'] }}" value="{{ font['summary']['OK'] }}" />
-        </li>
-        {% endfor %}
-      </ul>
+      <b>The webapp database is under deployment. Please reload the page after a while.</b>
     </div>
   </div>
 </body>

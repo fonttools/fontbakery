@@ -52,12 +52,7 @@ if REPO_URL == None:
 
 def calc_font_stats(results):
   stats = {
-    "Total": len(results),
-    "Errors": 0,
-    "Warnings": 0,
-    "Hotfixes": 0,
-    "Skipped": 0,
-    "Passed": 0
+    "Total": len(results)
   }
   for r in results:
     if r['result'] not in stats.keys():
@@ -118,6 +113,7 @@ for i, commit in enumerate(commits):
 
     family_stats = {
       "giturl": REPO_URL,
+      "commit": commit,
       "date": date,
       "summary": None,
       "HEAD": (i==0)
@@ -148,10 +144,10 @@ for i, commit in enumerate(commits):
       else:
         db.table('check_results').filter({"commit": commit, "fontname":fname}).update(check_results).run()
 
-    if db.table('cached_stats').filter({"giturl": REPO_URL}).count().run() == 0:
+    if db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).count().run() == 0:
       db.table('cached_stats').insert(family_stats).run()
     else:
-      db.table('cached_stats').filter({"giturl": REPO_URL}).update(family_stats).run()
+      db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).update(family_stats).run()
   except:
     print("Failed to run fontbakery on this commit (perhaps TTF files moved to a different folder.)")
 
