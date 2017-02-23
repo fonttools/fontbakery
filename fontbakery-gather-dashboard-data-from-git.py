@@ -119,7 +119,8 @@ for i, commit in enumerate(commits):
     family_stats = {
       "giturl": REPO_URL,
       "date": date,
-      "summary": None
+      "summary": None,
+      "HEAD": (i==0)
     }
     for f in os.listdir(FONTS_DIR):
       if f[-20:] != ".ttf.fontbakery.json":
@@ -139,7 +140,8 @@ for i, commit in enumerate(commits):
         "fontname": fname,
         "familyname": familyname,
         "date": date,
-        "stats": font_stats
+        "stats": font_stats,
+        "HEAD": (i==0)
       }
       if db.table('check_results').filter({"commit": commit, "fontname":fname}).count().run() == 0:
         db.table('check_results').insert(check_results).run()

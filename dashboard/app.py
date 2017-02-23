@@ -2,12 +2,13 @@ from flask import Flask, render_template
 import rethinkdb as r
 
 app = Flask(__name__)
-r.connect('db', 28015).repl()
 
 @app.route('/')
 def dashboard():
+  r.connect('db', 28015).repl()
   db = r.db('fontbakery')
-  fonts = db.table('cached_stats').run()
+  fonts = db.table('cached_stats').filter({"HEAD": True}).run()
+  print fonts
   return render_template("dashboard.html", fonts=fonts)
 
 if __name__ == "__main__":
