@@ -1,5 +1,19 @@
 version: "2"
 services:
+  db:
+    image: rethinkdb:latest
+    ports:
+      - "28015:28015"
+      - "8080:8080"
+  web:
+    build: dashboard
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/dashboard
+    links:
+      - db
   worker_a:
     build: .
     environment:
@@ -28,17 +42,3 @@ services:
       - FONTFILE_PREFIX=fonts/VarelaRound-
     links:
       - db
-  web:
-    build: dashboard
-    command: python -u app.py
-    ports:
-      - "5000:5000"
-    volumes:
-      - .:/dashboard
-    links:
-      - db
-  db:
-    image: rethinkdb:latest
-    ports:
-      - "28015:28015"
-      - "8080:8080"

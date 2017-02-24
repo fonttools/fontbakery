@@ -52,27 +52,29 @@ if REPO_URL == None:
 
 def calc_font_stats(results):
   stats = {
-    "Total": len(results)
+    "Total": len(results),
+    "OK": 0
   }
   for r in results:
-    if r['result'] not in stats.keys():
-      stats[r['result']] = 1
+    result = r['result']
+    if result not in stats.keys():
+      stats[result] = 1
     else:
-      stats[r['result']] += 1
+      stats[result] += 1
   return stats
 
 
-def update_global_stats(family, font):
-  if family['summary'] is None:
-    family['summary'] = font
-  else:
-    for k in family['summary'].keys():
-      family['summary'][k] += font[k]
+def update_global_stats(summary, stats):
+  for k in stats.keys():
+    if k in summary.keys():
+      summary[k] += stats[k]
+    else:
+      summary[k] = stats[k]
 
 
 clone(REPO_URL, "checkout")
 os.chdir("checkout")
-#run(["git", "checkout", "master"])
+run(["git", "checkout", "master"])
 print ("We're now at master branch.")
 
 lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
@@ -93,8 +95,7 @@ db = r.db('fontbakery')
 for i, commit in enumerate(commits):
   run(["git", "checkout", commit])
 
-  if 1:
-#  try:
+  try:
     print ("[{} of {}] Running fontbakery on commit '{}'...".format(i+1, len(commits), commit))
 
     datestr = run(['git',
@@ -103,9 +104,9 @@ for i, commit in enumerate(commits):
                    '--pretty=format:\"%cd\"'])
     print ("datestr = {}".format(datestr))
     date = parser.parse(datestr, fuzzy=True)
-#  except:
-#    print ("Failed to parse commit date string")
-#    continue
+  except:
+    print ("Failed to parse commit date string")
+    continue
 
   try:
     files = get_filenames()
@@ -115,7 +116,7 @@ for i, commit in enumerate(commits):
       "giturl": REPO_URL,
       "commit": commit,
       "date": date,
-      "summary": None,
+      "summary": {},
       "HEAD": (i==0)
     }
     for f in os.listdir(FONTS_DIR):
@@ -128,7 +129,7 @@ for i, commit in enumerate(commits):
       data = open(FONTS_DIR + "/" + f).read()
       results = json.loads(data)
       font_stats = calc_font_stats(results)
-      update_global_stats(family_stats, font_stats)
+      update_global_stats(family_stats['summary'], font_stats)
       check_results = {
         "giturl": REPO_URL,
         "results": results,

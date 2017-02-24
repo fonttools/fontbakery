@@ -6,6 +6,6 @@ RUN pip install rethinkdb
 COPY app.py /
 COPY templates/dashboard.html /templates/
 COPY templates/under_deployment.html /templates/
-COPY static/css/dashboard.css /static/css/
+COPY templates/family_details.html /templates/
 
 CMD ["python2", "-u", "app.py"]

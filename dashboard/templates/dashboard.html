@@ -69,12 +69,12 @@ progress[value]::-moz-progress-bar {
       <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by the given family. Click on a family to see a detailed report.</p>
       <ul>
         {% for font in fonts %}
-        <li>
-          <a href="/details/{{ font['familyname'] }}">
+        <a href="/details/{{ font['familyname'] }}">
+          <li>
             <span class="familyname"> {{ font['familyname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['summary']['OK']*100/font['summary']['Total'] }} %)</small>
             <progress max="{{ font['summary']['Total'] }}" value="{{ font['summary']['OK'] }}" />
-          </a>
-        </li>
+          </li>
+        </a>
         {% endfor %}
       </ul>
     </div>

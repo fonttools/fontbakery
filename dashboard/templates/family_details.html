@@ -1,0 +1,97 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title "Font Bakery Dashboard - details for {{ familyname }}"></title>
+  <style>
+.details {
+        width: 100%;
+        margin: 0 auto;
+}
+
+.familyname {
+        font-size: 16pt;
+        font-variant: small-caps;
+}
+
+ul {
+        margin: 0 auto;
+        width: 60%;
+}
+
+li {
+        padding: 4px;
+        width: 100%;
+        height: 2em;
+        list-style-type: none;
+}
+
+li:nth-child(even) {
+        background: #CCC;
+}
+
+li:nth-child(odd){
+        background: #EEE;
+}
+
+progress {
+  padding: 1px;
+  float: right;
+  fill-color: red;
+  font-size: .6em;
+  height: 80%;
+  width: 40%;
+  border: 1px solid grey;
+  background: #fff;
+}
+
+progress[value]::-moz-progress-bar {
+  background-color: #391;
+}
+
+.axis path {
+        fill: none;
+        stroke: #777;
+        shape-rendering: crispEdges;
+}
+.axis text {
+        font-family: Lato;
+        font-size: 13px;
+}
+  </style>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(draw_pie_chart);
+
+  function draw_pie_chart() {
+    var pie_data = google.visualization.arrayToDataTable( {{ chart_data|safe }} );
+    var pie_chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    pie_chart.draw(pie_data, {title: '{{ familyname }} check results:'});
+  }
+  </script>
+</head>
+<body>
+  <div class="details">
+    <h1>Fontbakery Dashboard</h1>
+    <h2>Details for {{ familyname }}</h1>
+    <div>
+      <div id="piechart"></div>
+      <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by each font file within the {{ familyname }} family. Click on a filename to see the specific check results.</p>
+      <ul>
+        {% for font in fonts %}
+        <a href="/check_results/{{ font['filename'] }}">
+          <li>
+            <span class="familyname"> {{ font['fontname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['stats']['OK']*100/font['stats']['Total'] }} %)</small>
+            <progress max="{{ font['stats']['Total'] }}" value="{{ font['stats']['OK'] }}" />
+          </li>
+        </a>
+        {% endfor %}
+      </ul>
+    </div>
+    <a href="/">Return to dashboard...</a>
+  </div>
+</body>
+</html>
