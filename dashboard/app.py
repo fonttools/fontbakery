@@ -29,6 +29,13 @@ def family_details(familyname):
       if k != "Total":
         chart_data.append([k, summary[k]])
 
+    fonts = list(fonts)
+    for f in fonts:
+      if '-' in f['fontname'] and '.ttf' in f['fontname']:
+        f['stylename'] = f['fontname'].split('-')[1].split('.ttf')[0]
+      else:
+        f['stylename'] = "{} (bad name)".format(f['fontname'])
+
     return render_template("family_details.html",
                            fonts=fonts,
                            familyname=familyname,

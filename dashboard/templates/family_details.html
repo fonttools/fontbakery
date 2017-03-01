@@ -3,7 +3,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title "Font Bakery Dashboard - details for {{ familyname }}"></title>
+  <title>Font Bakery Dashboard - details for {{ familyname }}</title>
   <style>
 .details {
         width: 100%;
@@ -20,18 +20,18 @@ ul {
         width: 60%;
 }
 
-li {
+.progress_item {
         padding: 4px;
         width: 100%;
         height: 2em;
         list-style-type: none;
 }
 
-li:nth-child(even) {
+ul:nth-child(even) {
         background: #CCC;
 }
 
-li:nth-child(odd){
+ul:nth-child(odd){
         background: #EEE;
 }
 
@@ -59,9 +59,31 @@ progress[value]::-moz-progress-bar {
         font-family: Lato;
         font-size: 13px;
 }
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+}
+
+table:nth-child(even) {
+    background: #CCC;
+}
+
+table:nth-child(odd){
+    background: #EEE;
+}
   </style>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
   <script type="text/javascript">
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(draw_pie_chart);
@@ -71,25 +93,72 @@ progress[value]::-moz-progress-bar {
     var pie_chart = new google.visualization.PieChart(document.getElementById('piechart'));
     pie_chart.draw(pie_data, {title: '{{ familyname }} check results:'});
   }
+
+  function init(){
+    $("#tabs").tabs();
+
+    var msg_colouring = {
+      "ERROR": "#C22",
+      "WARNING": "#22C",
+      "SKIP": "#AA4",
+      "INFO": "#AAF"
+    };
+    for (var log_type in msg_colouring){
+      $('table tr td:first-child').filter(function() {
+        return $(this).text().indexOf(log_type) === 0;
+      }).parent().css("color", msg_colouring[log_type]);
+    }
+  }
   </script>
 </head>
-<body>
+<body onload="init();">
   <div class="details">
     <h1>Fontbakery Dashboard</h1>
-    <h2>Details for {{ familyname }}</h1>
+    <h2>Details for {{ familyname }}</h2>
     <div>
       <div id="piechart"></div>
       <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by each font file within the {{ familyname }} family. Click on a filename to see the specific check results.</p>
       <ul>
         {% for font in fonts %}
-        <a href="/check_results/{{ font['filename'] }}">
-          <li>
-            <span class="familyname"> {{ font['fontname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['stats']['OK']*100/font['stats']['Total'] }} %)</small>
+        <a href="/check_results/{{ font['fontname'] }}">
+          <li class="progress_item">
+            <span class="familyname">{{ font['fontname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['stats']['OK']*100/font['stats']['Total'] }} %)</small>
             <progress max="{{ font['stats']['Total'] }}" value="{{ font['stats']['OK'] }}" />
           </li>
         </a>
         {% endfor %}
       </ul>
+
+      <div id="tabs">
+        <!-- tabs -->
+        <ul>{% for font in fonts %}
+          <li><a href="#tab-{{ loop.index }}">{{ font['stylename'] }}</a></li>
+          {% endfor %}</ul>
+
+        <!-- Tabs content -->
+        {% for font in fonts %}
+        <div id="tab-{{ loop.index }}">
+          <table>
+            <tr>
+              <th>Result</th>
+              <th>Check description</th>
+              <th>Log Messages</th>
+            </tr>
+            {% for entry in font['results'] %}
+            <tr>
+              <td>{{ entry.result }}</td>
+              <td>{{ entry.description }}</td>
+              <td>
+              {% for msg in entry.log_messages %}
+                {{ msg }} <br/>
+              {% endfor %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        {% endfor %}
+      </div>
     </div>
     <a href="/">Return to dashboard...</a>
   </div>
