@@ -15,6 +15,43 @@ def dashboard():
     return render_template("under_deployment.html")
 
 
+@app.route('/testsuite')
+def testsuite_overview():
+  if 1:  #try:
+    r.connect('db', 28015).repl()
+    db = r.db('fontbakery')
+    targets = db.table('check_results').filter({"HEAD": True}).run()
+    families = []
+    checks = {}
+    num_targets = 0
+    for target in targets:
+      num_targets +=1
+      if target['familyname'] not in families:
+        families.append(target['familyname'])
+
+      for check in target['results']:
+        desc = check['description']
+        result = check['result']
+        if desc not in checks.keys():
+          checks[desc] = {'OK':0,
+                          'Total': 0,
+                          'ERROR': 0,
+                          'WARNING': 0,
+                          'SKIP': 0,
+                          'INFO': 0}
+
+        checks[desc][result] += 1
+        checks[desc]['Total'] += 1
+
+    return render_template("testsuite.html",
+                           checks=checks,
+                           num_targets=num_targets,
+                           num_families=len(families)
+                          )
+#  except:
+#    return render_template("under_deployment.html")
+
+
 @app.route('/details/<familyname>')
 def family_details(familyname):
   try:
