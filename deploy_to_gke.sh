@@ -16,8 +16,10 @@ sudo $GCLOUD docker -- push gcr.io/$PROJECT/fb-dashboard-1
 
 kubectl create -f $SERVICES/rabbitmq-service.yaml
 kubectl create -f $SERVICES/rabbitmq-controller.yaml
-kubectl create -f $SERVICES/rethinkdb-service.yaml
-kubectl create -f $SERVICES/rethinkdb-controler.yaml
+kubectl create -f $SERVICES/rethinkdb-driver-service.yaml
+kubectl create -f $SERVICES/rethinkdb-rc.yaml
+kubectl create -f $SERVICES/rethinkdb-admin-pod.yaml
+kubectl create -f $SERVICES/rethinkdb-admin-service.yaml
 kubectl create -f $JOBS/dispatcher.yaml
 kubectl create -f $JOBS/worker.yaml
 kubectl create -f $JOBS/dashboard.yaml
