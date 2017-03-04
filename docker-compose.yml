@@ -1,4 +1,5 @@
 version: "2"
+
 services:
   db:
     image: rethinkdb:latest
@@ -14,31 +15,19 @@ services:
       - .:/dashboard
     links:
       - db
-  worker_a:
-    build: .
+  msgqueue:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+  dispatcher:
+    build: dashboard/dispatcher
+    command: python dispatch-jobs.py
     environment:
-      - GIT_REPO_URL=https://github.com/andrew-paglinawan/QuicksandFamily.git
-      - FONTFILE_PREFIX=fonts/Quicksand-
+      - BROKER=msgqueue
+  worker:
+    build: .
     links:
       - db
-  worker_b:
-    build: .
     environment:
-      - GIT_REPO_URL=https://github.com/impallari/Cabin.git
-      - FONTFILE_PREFIX=fonts/TTF/Cabin-
-    links:
-      - db
-  worker_c:
-    build: .
-    environment:
-      - GIT_REPO_URL=https://github.com/cadsondemak/chonburi.git
-      - FONTFILE_PREFIX=fonts/Chonburi-
-    links:
-      - db
-  worker_d:
-    build: .
-    environment:
-      - GIT_REPO_URL=https://github.com/alefalefalef/Varela-Round-Hebrew.git
-      - FONTFILE_PREFIX=fonts/VarelaRound-
-    links:
-      - db
+      - BROKER=msgqueue
+      - NONPARALLEL_JOB_RUNS=4

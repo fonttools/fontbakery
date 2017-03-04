@@ -1,5 +1,10 @@
+#!/usr/bin/env python
+from __future__ import print_function
 import pika
+import sys
 import json
+import time
+import os
 
 messages = [
   {"GIT_REPO_URL":"https://github.com/andrew-paglinawan/QuicksandFamily.git",
@@ -13,17 +18,25 @@ messages = [
 ]
 
 def main():
-  rabbitmq_host = os.environ.get("RABBITMQ_SERVICE_SERVICE_HOST")
-  connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
-  channel = connection.channel()
+  # We'll retry until we get a connection and deliver the messages
+  while True:
+    try:
+      msgqueue_host = os.environ.get("BROKER")
+      connection = pika.BlockingConnection(pika.ConnectionParameters(host=msgqueue_host))
+      channel = connection.channel()
 
-  for message in messages:
-    channel.basic_publish(exchange='',
-                          routing_key='font_repo_queue',
-                          body=json.dumps(message),
-                          properties=pika.BasicProperties(
-                           delivery_mode = 2, # make message persistent
-                          ))
+      for message in messages:
+        channel.basic_publish(exchange='',
+                              routing_key='font_repo_queue',
+                              body=json.dumps(message),
+                              properties=pika.BasicProperties(
+                               delivery_mode = 2, # make message persistent
+                              ))
+      sys.exit(0)
+    except pika.exceptions.ConnectionClosed:
+      print ("RabbitMQ not ready yet.", file=sys.stderr)
+      time.sleep(1)
+      pass
 
 main()
 

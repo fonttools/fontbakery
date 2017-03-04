@@ -1,7 +1,7 @@
-$PROJECT = fontbakery
-$GCLOUD = /home/felipe/devel/prebuilt/google-cloud-sdk/bin/gcloud
-$SERVICES = dashboard/services
-$JOBS = dashboard/jobs
+PROJECT=fontbakery
+GCLOUD=/home/felipe/devel/prebuilt/google-cloud-sdk/bin/gcloud
+SERVICES=dashboard/services
+JOBS=dashboard/jobs
 
 sudo docker build -t job-fb-worker-1 .
 sudo docker build -t fb-dashboard-1 dashboard
