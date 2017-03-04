@@ -7,7 +7,8 @@ app = Flask(__name__)
 @app.route('/')
 def dashboard():
   try:
-    r.connect('db', 28015).repl()
+    db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+    r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     fonts = db.table('cached_stats').filter({"HEAD": True}).run()
     return render_template("dashboard.html", fonts=fonts)
@@ -18,7 +19,8 @@ def dashboard():
 @app.route('/testsuite')
 def testsuite_overview():
   if 1:  #try:
-    r.connect('db', 28015).repl()
+    db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+    r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     targets = db.table('check_results').filter({"HEAD": True}).run()
     families = []
@@ -55,7 +57,8 @@ def testsuite_overview():
 @app.route('/details/<familyname>')
 def family_details(familyname):
   try:
-    r.connect('db', 28015).repl()
+    db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+    r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     family = db.table('cached_stats').filter({"HEAD": True, "familyname": familyname}).run()
     fonts = db.table('check_results').filter({"HEAD": True, "familyname": familyname}).run()

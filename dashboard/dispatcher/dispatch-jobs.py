@@ -81,7 +81,7 @@ def main():
   # We'll retry until we get a connection and deliver the messages
   while True:
     try:
-      msgqueue_host = os.environ.get("BROKER")
+      msgqueue_host = os.environ.get("RABBITMQ_SERVICE_SERVICE_HOST", os.environ.get("BROKER"))
       connection = pika.BlockingConnection(pika.ConnectionParameters(host=msgqueue_host))
       channel = connection.channel()
 

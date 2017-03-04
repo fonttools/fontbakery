@@ -3,8 +3,8 @@ kind: Job
 metadata:
   name: job-fb-worker-1
 spec:
-  completions: 4
-  parallelism: 2
+  completions: 34
+  parallelism: 8
   template:
     metadata:
       name: job-fb-worker-1
@@ -12,9 +12,7 @@ spec:
       containers:
       - name: c
         image: gcr.io/fontbakery/job-fb-worker-1
-      env:
-        - name: BROKER
-          value: amqp://guest:guest@rabbitmq-service:5672
+        env:
         - name: QUEUE
           value: job1
       restartPolicy: OnFailure

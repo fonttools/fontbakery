@@ -77,7 +77,8 @@ def perform_job(REPO_URL):
   commits = [line.split()[0].strip() for line in lines]
   print ("The commits we'll iterate over are: {}".format(commits))
 
-  r.connect('db', 28015).repl()
+  db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+  r.connect(db_host, 28015).repl()
   try:
     r.db_create('fontbakery').run()
     r.db('fontbakery').table_create('check_results').run()
@@ -168,7 +169,7 @@ def callback(ch, method, properties, body):
 def main():
   while True:
     try:
-      msgqueue_host = os.environ.get("BROKER")
+      msgqueue_host = os.environ.get("RABBITMQ_SERVICE_SERVICE_HOST", os.environ.get("BROKER"))
       connection = pika.BlockingConnection(pika.ConnectionParameters(host=msgqueue_host))
       channel = connection.channel()
       channel.queue_declare(queue='font_repo_queue', durable=True)
