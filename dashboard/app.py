@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import rethinkdb as r
 import json
+import os
 
 app = Flask(__name__)
 

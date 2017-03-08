@@ -34,6 +34,7 @@ def get_filenames():
       files.append(fonts_dir + "/" + f)
   if len(files) == 0:
     print ("Where are the TTF files?!\n")
+    sys.exit(-1)
   else:
     print ("We'll be checking these files:\n{}\n".format("\n".join(files)))
   return files
@@ -113,7 +114,8 @@ def perform_job(REPO_URL):
         "giturl": REPO_URL,
         "commit": commit,
         "date": date,
-        "summary": {},
+        "summary": {"OK": 0,
+                    "Total": 0},
         "HEAD": (i==0)
       }
       for f in os.listdir(fonts_dir):
