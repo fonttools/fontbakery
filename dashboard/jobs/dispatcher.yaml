@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-fb-dispatcher-1
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: job-fb-dispatcher-1
+    spec:
+      containers:
+      - name: c
+        image: gcr.io/fontbakery/job-fb-dispatcher-1
+        env:
+        - name: QUEUE
+          value: job1
+      restartPolicy: OnFailure

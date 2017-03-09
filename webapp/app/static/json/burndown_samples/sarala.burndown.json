@@ -1,0 +1,110 @@
+{
+    "CrossFamilyChecks": {
+        "entries": [
+            {
+                "commit": "7779e0c9eb121b25d9fcb7c20d5b3541b3f4fc15",
+                "date": "Wed Jul 1 12:42:44 2015 -0300",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 5,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            },
+            {
+                "commit": "c08648a709c04f30a0938d1e7d142426c5c31612",
+                "date": "Wed Jul 1 12:37:29 2015 -0300",
+                "summary": {
+                    "Errors": 0,
+                    "Hotfixes": 0,
+                    "Passed": 5,
+                    "Skipped": 0,
+                    "Warnings": 0
+                }
+            }
+        ],
+        "planned-release": null
+    },
+    "Sarala-Bold.ttf": {
+        "entries": [
+            {
+                "commit": "7779e0c9eb121b25d9fcb7c20d5b3541b3f4fc15",
+                "date": "Wed Jul 1 12:42:44 2015 -0300",
+                "summary": {
+                    "Errors": 15,
+                    "Hotfixes": 0,
+                    "Passed": 66,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            },
+            {
+                "commit": "c08648a709c04f30a0938d1e7d142426c5c31612",
+                "date": "Wed Jul 1 12:37:29 2015 -0300",
+                "summary": {
+                    "Errors": 15,
+                    "Hotfixes": 0,
+                    "Passed": 66,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            }
+        ],
+        "planned-release": null
+    },
+    "Sarala-Medium.ttf": {
+        "entries": [
+            {
+                "commit": "7779e0c9eb121b25d9fcb7c20d5b3541b3f4fc15",
+                "date": "Wed Jul 1 12:42:44 2015 -0300",
+                "summary": {
+                    "Errors": 16,
+                    "Hotfixes": 0,
+                    "Passed": 65,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            },
+            {
+                "commit": "c08648a709c04f30a0938d1e7d142426c5c31612",
+                "date": "Wed Jul 1 12:37:29 2015 -0300",
+                "summary": {
+                    "Errors": 16,
+                    "Hotfixes": 0,
+                    "Passed": 65,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            }
+        ],
+        "planned-release": null
+    },
+    "Sarala-Regular.ttf": {
+        "entries": [
+            {
+                "commit": "7779e0c9eb121b25d9fcb7c20d5b3541b3f4fc15",
+                "date": "Wed Jul 1 12:42:44 2015 -0300",
+                "summary": {
+                    "Errors": 18,
+                    "Hotfixes": 0,
+                    "Passed": 44,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            },
+            {
+                "commit": "c08648a709c04f30a0938d1e7d142426c5c31612",
+                "date": "Wed Jul 1 12:37:29 2015 -0300",
+                "summary": {
+                    "Errors": 18,
+                    "Hotfixes": 0,
+                    "Passed": 44,
+                    "Skipped": 2,
+                    "Warnings": 2
+                }
+            }
+        ],
+        "planned-release": null
+    }
+}

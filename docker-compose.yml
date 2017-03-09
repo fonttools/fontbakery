@@ -1,0 +1,33 @@
+version: "2"
+
+services:
+  db:
+    image: rethinkdb:latest
+    ports:
+      - "28015:28015"
+      - "8080:8080"
+  web:
+    build: dashboard
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/dashboard
+    links:
+      - db
+  msgqueue:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+  dispatcher:
+    build: dashboard/dispatcher
+    command: python dispatch-jobs.py
+    environment:
+      - BROKER=msgqueue
+  worker:
+    build: .
+    links:
+      - db
+    environment:
+      - BROKER=msgqueue
+      - NONPARALLEL_JOB_RUNS=4

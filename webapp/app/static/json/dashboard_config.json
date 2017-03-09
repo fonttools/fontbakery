@@ -1,0 +1,9 @@
+{"targets": [
+    "json/burndown_samples/Cabin.burndown.json",
+    "json/burndown_samples/chonburi.burndown.json",
+    "json/burndown_samples/QuicksandFamily.burndown.json",
+    "json/burndown_samples/sarala.burndown.json",
+    "json/burndown_samples/poiretone.burndown.json",
+    "json/burndown_samples/Varela-Round-Hebrew.burndown.json"
+  ]
+}

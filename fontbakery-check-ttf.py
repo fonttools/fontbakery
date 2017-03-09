@@ -247,6 +247,14 @@ BLUE_STR = '\033[1;34;40m{}\033[0m'
 CYAN_STR = '\033[1;36;40m{}\033[0m'
 WHITE_STR = '\033[1;37;40m{}\033[0m'
 
+# =====================================
+# Check priority levels:
+TRIVIAL = 4
+LOW = 3
+NORMAL = 2
+IMPORTANT = 1
+CRITICAL = 0  # ON FIRE! Must immediately fix!
+
 
 class FontBakeryCheckLogger():
   progressbar = False
@@ -290,21 +298,24 @@ class FontBakeryCheckLogger():
       pass
 
     import json
-    fname = "{}.burndown.json".format(name)
+    fname = "burndown.json"
     burn = None
     data = None
     try:
       burn = open(fname, "r")
       js = burn.read()
       data = json.loads(js)
-      burn.close
+      burn.close()
 
     except IOError:
-      data = {"planned-release": None,  # This is optional.
-              "entries": []}
+      data = {name: {"planned-release": None,  # This is optional.
+              "entries": []}}
 
     burn = open(fname, "w")
-    data["entries"].append({"date": date,
+    if name not in data.keys():
+      data[name] = {"planned-release": None,
+                    "entries": []}
+    data[name]["entries"].append({"date": date,
                            # "fontbakery-version": None,
                             "commit": git_commit.strip(),
                             "summary": self.summary})
@@ -419,12 +430,16 @@ class FontBakeryCheckLogger():
       self.all_checks.append(self.current_check)
       self.current_check = None
 
+  def set_priority(self, level):
+    self.current_check["priority"] = level
+
   def new_check(self, desc):
     self.flush()
     logging.debug("Check #{}: {}".format(len(self.all_checks) + 1, desc))
     self.current_check = {"description": desc,
                           "log_messages": [],
                           "result": "unknown",
+                          "priority": NORMAL,
                           "target": self.default_target}
 
   def set_target(self, value):
@@ -787,6 +802,7 @@ def ttfauto_fpgm_xheight_rounding(fpgm_tbl):
 
 def check_files_are_named_canonically(fb, fonts_to_check):
   fb.new_check("Checking files are named canonically")
+  fb.set_priority(CRITICAL)
   not_canonical = []
 
   for to_check in fonts_to_check:
@@ -837,6 +853,7 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
   '''
   global target_dir
   fb.new_check("Checking all files are in the same directory")
+  fb.set_priority(CRITICAL)
 
   failed = False
   target_dir = None
@@ -1107,6 +1124,7 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
   '''
   fb.new_check("Assure valid format for the"
                " main entries in the name table.")
+  fb.set_priority(IMPORTANT)
 
   def family_with_spaces(value):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
@@ -1444,6 +1462,7 @@ def check_macStyle_BOLD_bit(fb, font, style):
 
 def check_font_has_a_license(fb, file_path):
   fb.new_check("Check font has a license")
+  fb.set_priority(CRITICAL)
   # Check that OFL.txt or LICENSE.txt exists in the same
   # directory as font_file, if not then warn that there should be one.
   found = False
@@ -1470,6 +1489,7 @@ def check_font_has_a_license(fb, file_path):
 
 def check_copyright_entries_match_license(fb, found, file_path, font):
   fb.new_check("Check copyright namerecords match license file")
+  fb.set_priority(CRITICAL)
   if found == "multiple":
     fb.skip("This check will only run after the"
             " multiple-licensing file issue is fixed.")
@@ -1549,6 +1569,7 @@ def check_copyright_entries_match_license(fb, found, file_path, font):
 
 def check_font_has_a_valid_license_url(fb, found, font):
   fb.new_check("Font has a valid license url ?")
+  fb.set_priority(CRITICAL)
   if found == "multiple":
     fb.skip("This check will only run after the"
             " multiple-licensing file issue is fixed.")
@@ -1607,6 +1628,7 @@ def check_font_has_a_valid_license_url(fb, found, font):
 def check_description_strings_in_name_table(fb, font):
   fb.new_check(("Description strings in the name table (nameID = {}) must"
                 " not contain copyright info.").format(NAMEID_DESCRIPTION))
+  fb.set_priority(CRITICAL)
   failed = False
   for name in font['name'].names:
     if 'opyright' in name.string.decode(name.getEncoding())\
@@ -1845,7 +1867,7 @@ def check_with_otsanitise(fb, font_file):
   else:
     try:
       import subprocess
-      ots_output = subprocess.check_output(["ot-sanitise", font_file],
+      ots_output = subprocess.check_output(["prebuilt/ot-sanitise", font_file],
                                            stderr=subprocess.STDOUT)
       if ots_output != "":
         fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
@@ -1872,7 +1894,7 @@ def check_with_msfontvalidator(fb, font_file):
     try:
       import subprocess
       fval_cmd = ["mono",
-                  "fval/FontValidator.exe",
+                  "prebuilt/fval/FontValidator.exe",
                   "-file", font_file,
                   "-all-tables",
                   "-report-in-font-dir"]
