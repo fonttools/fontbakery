@@ -11,13 +11,10 @@ services:
     command: python -u app.py
     ports:
       - "5000:5000"
+    environment:
+      - STATIC_FILES=https://raw.githubusercontent.com/googlefonts/fontbakery/master/dashboard/containers/static
     links:
       - db
-  static:
-    build: containers/static
-    command: python -m SimpleHTTPServer
-    ports:
-      - "8080:8080"
   msgqueue:
     image: rabbitmq:latest
     ports:
