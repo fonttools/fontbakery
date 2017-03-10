@@ -7,27 +7,25 @@ services:
       - "28015:28015"
       - "8080:8080"
   web:
-    build: dashboard
+    build: containers/web
     command: python -u app.py
     ports:
       - "5000:5000"
-    volumes:
-      - .:/dashboard
     links:
       - db
   msgqueue:
     image: rabbitmq:latest
     ports:
       - "5672:5672"
-  dispatcher:
-    build: dashboard/dispatcher
-    command: python dispatch-jobs.py
-    environment:
-      - BROKER=msgqueue
   worker:
-    build: .
+    build: ..
     links:
       - db
     environment:
       - BROKER=msgqueue
       - NONPARALLEL_JOB_RUNS=4
+  dispatcher:
+    build: containers/dispatcher
+    command: python dispatch-jobs.py
+    environment:
+      - BROKER=msgqueue
