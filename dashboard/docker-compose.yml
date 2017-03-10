@@ -13,6 +13,11 @@ services:
       - "5000:5000"
     links:
       - db
+  static:
+    build: containers/static
+    command: python -m SimpleHTTPServer
+    ports:
+      - "8080:8080"
   msgqueue:
     image: rabbitmq:latest
     ports:

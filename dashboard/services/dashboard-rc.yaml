@@ -17,3 +17,7 @@ spec:
         image: gcr.io/fontbakery/fb-dashboard-1
         ports:
         - containerPort: 5000
+      - name: static
+        image: gcr.io/fontbakery/fb-static-1
+        ports:
+        - containerPort: 8080
