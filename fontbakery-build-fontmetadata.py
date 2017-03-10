@@ -135,7 +135,7 @@ def generate_italic_angle_images():
       draw.line([j*spacing - 400, im.size[1], j*spacing - 400 + im.size[1]*math.tan(angle), 0], fill=(50,50,255,255))
     del draw
 
-    imagesdir = os.path.join(os.path.dirname(__file__), "images")
+    imagesdir = os.path.join(os.path.dirname(__file__), "fontmetadata_tool", "images")
     if not os.path.isdir(imagesdir):
       os.mkdir(imagesdir)
     filepath = os.path.join(imagesdir, "angle_{}.png".format(i+1))
@@ -175,7 +175,7 @@ def map_to_int_range(weights, target_min=1, target_max=10):
 
 ITALIC_ANGLE_TEMPLATE = """
 <img height='30%%' src='data:image/png;base64,%s'
-     style="background:url(images/angle_%d.png) 0 0 no-repeat;" />
+     style="background:url(fontmetadata_tool/images/angle_%d.png) 0 0 no-repeat;" />
 """
 
 
