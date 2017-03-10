@@ -9,10 +9,11 @@ app = Flask(__name__)
 def dashboard():
   if 1: #try:
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+    static = os.environ.get("STATIC_FILES")
     r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     fonts = db.table('cached_stats').filter({"HEAD": True}).run()
-    return render_template("dashboard.html", fonts=fonts)
+    return render_template("dashboard.html", fonts=fonts, static=static)
 #  except:
 #    return render_template("under_deployment.html")
 

@@ -15,5 +15,8 @@ spec:
       containers:
       - name: dashboard
         image: gcr.io/fontbakery/fb-dashboard-1
+        env:
+        - name: STATIC_FILES
+          value: https://raw.githubusercontent.com/googlefonts/fontbakery/master/dashboard/containers/static
         ports:
         - containerPort: 5000
