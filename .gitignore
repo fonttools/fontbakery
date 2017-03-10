@@ -1,8 +1,8 @@
 data/test/*/*.fontbakery.md
 data/test/*/*.fontbakery.json
 data/test/*/*.ttx
-webapp/app/static/js/bower_components/*
-webapp/app/lib/*
+dashboard/AppEngine_drag_n_drop/app/static/js/bower_components/*
+dashboard/AppEngine_drag_n_drop/app/lib/*
 *pyc
 .*
 *~
