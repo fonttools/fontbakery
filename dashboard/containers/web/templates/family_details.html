@@ -1,103 +1,19 @@
-<!-- dashboard.html -->
+<!-- family_details.html -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Font Bakery Dashboard - details for {{ familyname }}</title>
-  <style>
-.details {
-        width: 100%;
-        margin: 0 auto;
-}
-
-.familyname {
-        font-size: 16pt;
-        font-variant: small-caps;
-}
-
-.progress_item {
-        padding: 4px;
-        width: 60%;
-}
-
-progress {
-  padding: 1px;
-  border: 4px;
-  fill-color: red;
-  font-size: .6em;
-  width: 40%;
-  border: 1px solid grey;
-  background: #fff;
-}
-
-progress[value]::-moz-progress-bar {
-  background-color: #391;
-}
-
-.axis path {
-        fill: none;
-        stroke: #777;
-        shape-rendering: crispEdges;
-}
-.axis text {
-        font-family: Lato;
-        font-size: 13px;
-}
-
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 3px 10px;
-    border: 1px solid #ddd;
-}
-
-td {
-    vertical-align: top;
-}
-
-table tr:nth-child(even) {
-    background: #EEE;
-}
-
-table tr:nth-child(odd){
-    background: #FFF;
-}
-  </style>
+  <link rel="stylesheet" type="text/css" href="/css/family_details.css" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-  <script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(draw_pie_chart);
-
-  function draw_pie_chart() {
-    var pie_data = google.visualization.arrayToDataTable( {{ chart_data|safe }} );
-    var pie_chart = new google.visualization.PieChart(document.getElementById('piechart'));
-    pie_chart.draw(pie_data, {title: '{{ familyname }} check results:'});
-  }
-
-  function init(){
-    var msg_colouring = {
-      "ERROR": "#C22",
-      "WARNING": "#22C",
-      "SKIP": "#AA4",
-      "INFO": "#AAF"
-    };
-    for (var log_type in msg_colouring){
-      $('table tr td:first-child').filter(function() {
-        return $(this).text().indexOf(log_type) === 0;
-      }).parent().css("color", msg_colouring[log_type]);
-    }
-
-    $("#tabs").tabs().show();
-  }
+  <script>
+    var _chart_data = {{ chart_data|safe }};
+    var _chart_title = '{{ familyname }} check results:';
   </script>
+  <script type="text/javascript" src="/js/family_details.js"></script>
 </head>
 <body onload="init();">
   <div class="details">

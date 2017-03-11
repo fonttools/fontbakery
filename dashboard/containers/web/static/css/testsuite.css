@@ -1,0 +1,27 @@
+#main {
+  margin: 0 auto;
+  width: 80%;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+th, td {
+    min-width: 150px;
+    padding: 3px 10px !important; 
+    border: 1px solid #ddd;
+}
+
+table tr:nth-child(even) {
+    background: #EEE;
+}
+
+table tr:nth-child(odd){
+    background: #FFF;
+}
+
+.progress-bar {
+    height: 15px !important;
+}

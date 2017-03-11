@@ -1,19 +1,26 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 import rethinkdb as r
 import json
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
+
+@app.route('/css/<path>')
+def send_css(path):
+    return send_from_directory('static/css', path)
+
+@app.route('/js/<path>')
+def send_js(path):
+    return send_from_directory('static/js', path)
 
 @app.route('/')
 def dashboard():
   if 1: #try:
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
-    static = os.environ.get("STATIC_FILES")
     r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     fonts = db.table('cached_stats').filter({"HEAD": True}).run()
-    return render_template("dashboard.html", fonts=fonts, static=static)
+    return render_template("dashboard.html", fonts=fonts)
 #  except:
 #    return render_template("under_deployment.html")
 
