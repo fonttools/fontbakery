@@ -12,5 +12,6 @@ COPY static/css/dashboard.css /static/css/
 COPY static/css/family_details.css /static/css/
 COPY static/css/testsuite.css /static/css/
 COPY static/js/family_details.js /static/js/
+COPY static/js/stupidtable/stupidtable.min.js /static/js/
 
 CMD ["python2", "-u", "app.py"]

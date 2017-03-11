@@ -20,5 +20,6 @@ function init(){
     }).parent().css("color", msg_colouring[log_type]);
   }
 
+  $("table").stupidtable(); // This enables table-sorting with a barely minimal amount of code.
   $("#tabs").tabs().show();
 }

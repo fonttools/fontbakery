@@ -14,6 +14,7 @@
     var _chart_title = '{{ familyname }} check results:';
   </script>
   <script type="text/javascript" src="/js/family_details.js"></script>
+  <script type="text/javascript" src="/js/stupidtable.min.js"></script>
 </head>
 <body onload="init();">
   <div class="details">
@@ -37,22 +38,24 @@
           </div>
 
           <table>
-            <tr>
-              <th>Result</th>
-              <th>Check description</th>
-              <th>Log Messages</th>
-            </tr>
-            {% for entry in font['results'] %}
-            <tr>
-              <td>{{ entry.result }}</td>
-              <td>{{ entry.description }}</td>
-              <td>
-              {% for msg in entry.log_messages %}
-                {{ msg }} <br/>
+            <thead>
+              <th data-sort="string">Result</th>
+              <th data-sort="string">Check description</th>
+              <th data-sort="string">Log Messages</th>
+            </thead>
+            <tbody>
+              {% for entry in font['results'] %}
+              <tr>
+                <td>{{ entry.result }}</td>
+                <td>{{ entry.description }}</td>
+                <td>
+                {% for msg in entry.log_messages %}
+                  {{ msg }} <br/>
+                {% endfor %}
+                </td>
+              </tr>
               {% endfor %}
-              </td>
-            </tr>
-            {% endfor %}
+            </tbody>
           </table>
         </div>
         {% endfor %}
