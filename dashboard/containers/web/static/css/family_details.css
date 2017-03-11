@@ -1,0 +1,60 @@
+.details {
+        width: 100%;
+        margin: 0 auto;
+}
+
+.familyname {
+        font-size: 16pt;
+        font-variant: small-caps;
+}
+
+.progress_item {
+        padding: 4px;
+        width: 60%;
+}
+
+progress {
+  padding: 1px;
+  border: 4px;
+  fill-color: red;
+  font-size: .6em;
+  width: 40%;
+  border: 1px solid grey;
+  background: #fff;
+}
+
+progress[value]::-moz-progress-bar {
+  background-color: #391;
+}
+
+.axis path {
+        fill: none;
+        stroke: #777;
+        shape-rendering: crispEdges;
+}
+.axis text {
+        font-family: Lato;
+        font-size: 13px;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+}
+
+td {
+    vertical-align: top;
+}
+
+table tr:nth-child(even) {
+    background: #EEE;
+}
+
+table tr:nth-child(odd){
+    background: #FFF;
+}
