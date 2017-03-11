@@ -2,7 +2,7 @@ PROJECT=fontbakery
 GCLOUD="sudo /home/felipe/devel/prebuilt/google-cloud-sdk/bin/gcloud"
 DOCKER="sudo docker"
 
-$DOCKER build -t job-fb-worker-1 containers/worker
+$DOCKER build -t job-fb-worker-1 ..
 $DOCKER tag job-fb-worker-1 gcr.io/$PROJECT/job-fb-worker-1
 $GCLOUD docker -- push gcr.io/$PROJECT/job-fb-worker-1
 
