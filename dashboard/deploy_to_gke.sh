@@ -10,10 +10,6 @@ $DOCKER build -t fb-dashboard-1 containers/web
 $DOCKER tag fb-dashboard-1 gcr.io/$PROJECT/fb-dashboard-1
 $GCLOUD docker -- push gcr.io/$PROJECT/fb-dashboard-1
 
-$DOCKER build -t fb-static-1 containers/static
-$DOCKER tag fb-static-1 gcr.io/$PROJECT/fb-static-1
-$GCLOUD docker -- push gcr.io/$PROJECT/fb-static-1
-
 $DOCKER build -t job-fb-dispatcher-1 containers/dispatcher
 $DOCKER tag job-fb-dispatcher-1 gcr.io/$PROJECT/job-fb-dispatcher-1
 $GCLOUD docker -- push gcr.io/$PROJECT/job-fb-dispatcher-1
