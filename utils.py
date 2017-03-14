@@ -243,7 +243,7 @@ def fonts_from_zip(zipfile):
   fonts = []
   for file_name in zipfile.namelist():
     if file_name.endswith(".ttf"):
-      font = target_font(ttLib.TTFont(zipfile.open(file_name)))
+      font = TargetFont(ttLib.TTFont(zipfile.open(file_name)))
       font.fullpath = file_name
       fonts.append(font)
   return fonts
