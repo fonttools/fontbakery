@@ -1643,7 +1643,7 @@ def check_font_contains_the_first_few_mandatory_glyphs(fb, font):
           " (.null or NULL, CR and space).")
 
 
-def check_font_contains_glyphs_for_whitespace_characters(fb, font):
+def check_font_contains_glyphs_for_whitespace_chars(fb, font):
   fb.new_check("047", "Font contains glyphs for whitespace characters?")
   space = getGlyph(font, 0x0020)
   nbsp = getGlyph(font, 0x00A0)
@@ -3024,7 +3024,7 @@ def check_Copyright_notice_matches_canonical_pattern(fb, f):
                 " '{}'").format(unidecode(f.copyright)))
 
 
-def check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f):
+def check_Copyright_notice_does_not_contain_Reserved_Name(fb, f):
   fb.new_check("103", "Copyright notice does not "
                       "contain Reserved Font Name")
   if 'Reserved Font Name' in f.copyright:
