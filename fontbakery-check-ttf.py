@@ -23,6 +23,7 @@ from fontbakery_checks import *
 from fontTools import ttLib
 from utils import *
 
+
 def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
