@@ -19,10 +19,10 @@ import logging
 import os
 from FontBakeryCheckLogger import FontBakeryCheckLogger
 from TargetFont import TargetFont
-from fontbakery_checks import *
+import fontbakery_checks as checks
 from fontTools import ttLib
-from utils import *
-
+from utils import get_bounding_box,\
+                  fetch_vendorID_list
 
 def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
@@ -75,7 +75,7 @@ def fontbakery_check_ttf(config):
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
 
-  check_files_are_named_canonically(fb, fonts_to_check)
+  checks.check_files_are_named_canonically(fb, fonts_to_check)
 
   if fb.config['webapp'] is True:
     # At the moment we won't perform
@@ -96,14 +96,14 @@ def fontbakery_check_ttf(config):
     if os.path.exists(descfilepath):
       fb.default_target = descfilepath
       contents = open(descfilepath).read()
-      check_DESCRIPTION_file_contains_broken_links(fb, contents)
-      check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
-      check_DESCRIPTION_max_length(fb, descfilepath)
-      check_DESCRIPTION_min_length(fb, descfilepath)
+      checks.check_DESCRIPTION_file_contains_broken_links(fb, contents)
+      checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
+      checks.check_DESCRIPTION_max_length(fb, descfilepath)
+      checks.check_DESCRIPTION_min_length(fb, descfilepath)
 
   if not fb.config['inmem']:
     # this check does not make sense for in-memory file-like objects:
-    check_all_files_in_a_single_directory(fb, fonts_to_check)
+    checks.check_all_files_in_a_single_directory(fb, fonts_to_check)
 
   registered_vendor_ids = fetch_vendorID_list(logging)
 
@@ -156,13 +156,13 @@ def fontbakery_check_ttf(config):
       else:
         fb.default_target = dirname
       # -----------------------------------------------------
-      check_font_designer_field_is_not_unknown(fb, family)
-      check_fonts_have_consistent_underline_thickness(fb, family, ttf)
-      check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
-      check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
-      check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
-      check_fonts_have_equal_glyph_names(fb, family, ttf)
-      check_fonts_have_equal_unicode_encodings(fb, family, ttf)
+      checks.check_font_designer_field_is_not_unknown(fb, family)
+      checks.check_fonts_have_consistent_underline_thickness(fb, family, ttf)
+      checks.check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
+      checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
+      checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
+      checks.check_fonts_have_equal_glyph_names(fb, family, ttf)
+      checks.check_fonts_have_equal_unicode_encodings(fb, family, ttf)
 
   # ------------------------------------------------------
   vmetrics_ymin = 0
@@ -175,7 +175,7 @@ def fontbakery_check_ttf(config):
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
-  check_all_fontfiles_have_same_version(fb, fonts_to_check)
+  checks.check_all_fontfiles_have_same_version(fb, fonts_to_check)
   # FSanches: I don't like the following few lines.
   #           They look very hacky even though they actually work... :-P
   a_font = fonts_to_check[0]
@@ -203,83 +203,83 @@ def fontbakery_check_ttf(config):
     family, style = os.path.splitext(filename)[0].split('-')
     local_styles[style] = font
 
-    check_font_has_post_table_version_2(fb, font)
-    check_OS2_fsType(fb)
-    check_main_entries_in_the_name_table(fb, font, target.fullpath)
-    check_OS2_achVendID(fb, font, registered_vendor_ids)
-    check_name_entries_symbol_substitutions(fb, font)
-    check_OS2_usWeightClass(fb, font, style)
-    check_fsSelection_REGULAR_bit(fb, font, style)
-    check_italicAngle_value_is_negative(fb, font)
-    check_italicAngle_value_is_less_than_20_degrees(fb, font)
-    check_italicAngle_matches_font_style(fb, font, style)
-    check_fsSelection_ITALIC_bit(fb, font, style)
-    check_macStyle_ITALIC_bit(fb, font, style)
-    check_fsSelection_BOLD_bit(fb, font, style)
-    check_macStyle_BOLD_bit(fb, font, style)
+    checks.check_font_has_post_table_version_2(fb, font)
+    checks.check_OS2_fsType(fb)
+    checks.check_main_entries_in_the_name_table(fb, font, target.fullpath)
+    checks.check_OS2_achVendID(fb, font, registered_vendor_ids)
+    checks.check_name_entries_symbol_substitutions(fb, font)
+    checks.check_OS2_usWeightClass(fb, font, style)
+    checks.check_fsSelection_REGULAR_bit(fb, font, style)
+    checks.check_italicAngle_value_is_negative(fb, font)
+    checks.check_italicAngle_value_is_less_than_20_degrees(fb, font)
+    checks.check_italicAngle_matches_font_style(fb, font, style)
+    checks.check_fsSelection_ITALIC_bit(fb, font, style)
+    checks.check_macStyle_ITALIC_bit(fb, font, style)
+    checks.check_fsSelection_BOLD_bit(fb, font, style)
+    checks.check_macStyle_BOLD_bit(fb, font, style)
 
-    found = check_font_has_a_license(fb, file_path)
-    check_copyright_entries_match_license(fb, found, file_path, font)
-    check_font_has_a_valid_license_url(fb, found, font)
-    check_description_strings_in_name_table(fb, font)
-    check_description_strings_do_not_exceed_100_chars(fb, font)
+    found = checks.check_font_has_a_license(fb, file_path)
+    checks.check_copyright_entries_match_license(fb, found, file_path, font)
+    checks.check_font_has_a_valid_license_url(fb, found, font)
+    checks.check_description_strings_in_name_table(fb, font)
+    checks.check_description_strings_do_not_exceed_100_chars(fb, font)
 
-    monospace_detected = check_font_is_truly_monospaced(fb, font)
-    check_if_xAvgCharWidth_is_correct(fb, font)
-    check_with_ftxvalidator(fb, target.fullpath)
-    check_with_msfontvalidator(fb, target.fullpath)
-    check_with_otsanitise(fb, target.fullpath)
+    monospace_detected = checks.check_font_is_truly_monospaced(fb, font)
+    checks.check_if_xAvgCharWidth_is_correct(fb, font)
+    checks.check_with_ftxvalidator(fb, target.fullpath)
+    checks.check_with_msfontvalidator(fb, target.fullpath)
+    checks.check_with_otsanitise(fb, target.fullpath)
 
-    validation_state = check_fontforge_outputs_error_msgs(fb, target.fullpath)
+    validation_state = checks.check_fontforge_outputs_error_msgs(fb, target.fullpath)
     if validation_state is not None:
-      perform_all_fontforge_checks(fb, validation_state)
+      checks.perform_all_fontforge_checks(fb, validation_state)
 
-    check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
-    check_Vertical_Metric_Linegaps(fb, font)
-    check_OS2_Metrics_match_hhea_Metrics(fb, font)
-    check_unitsPerEm_value_is_reasonable(fb, font)
-    check_font_version_fields(fb, font)
-    check_Digital_Signature_exists(fb, font, target.fullpath)
-    check_font_contains_the_first_few_mandatory_glyphs(fb, font)
+    checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
+    checks.check_Vertical_Metric_Linegaps(fb, font)
+    checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
+    checks.check_unitsPerEm_value_is_reasonable(fb, font)
+    checks.check_font_version_fields(fb, font)
+    checks.check_Digital_Signature_exists(fb, font, target.fullpath)
+    checks.check_font_contains_the_first_few_mandatory_glyphs(fb, font)
 
-    missing = check_font_contains_glyphs_for_whitespace_characters(fb, font)
-    check_font_has_proper_whitespace_glyph_names(fb, font, missing)
-    check_whitespace_glyphs_have_ink(fb, font, missing)
-    check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
-    check_with_pyfontaine(fb, target.fullpath)
-    check_no_problematic_formats(fb, font)
-    check_for_unwanted_tables(fb, font)
+    missing = checks.check_font_contains_glyphs_for_whitespace_characters(fb, font)
+    checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
+    checks.check_whitespace_glyphs_have_ink(fb, font, missing)
+    checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
+    checks.check_with_pyfontaine(fb, target.fullpath)
+    checks.check_no_problematic_formats(fb, font)
+    checks.check_for_unwanted_tables(fb, font)
 
-    ttfautohint_missing = check_hinting_filesize_impact(fb,
+    ttfautohint_missing = checks.check_hinting_filesize_impact(fb,
                                                         target.fullpath,
                                                         filename)
-    check_version_format_is_correct_in_NAME_table(fb, font)
-    check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
-    check_name_table_entries_do_not_contain_linebreaks(fb, font)
-    check_glyph_names_are_all_valid(fb, font)
-    check_font_has_unique_glyph_names(fb, font)
-    check_no_glyph_is_incorrectly_named(fb, font)
-    check_EPAR_table_is_present(fb, font)
-    check_GASP_table_is_correctly_set(fb, font)
+    checks.check_version_format_is_correct_in_NAME_table(fb, font)
+    checks.check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing)
+    checks.check_name_table_entries_do_not_contain_linebreaks(fb, font)
+    checks.check_glyph_names_are_all_valid(fb, font)
+    checks.check_font_has_unique_glyph_names(fb, font)
+    checks.check_no_glyph_is_incorrectly_named(fb, font)
+    checks.check_EPAR_table_is_present(fb, font)
+    checks.check_GASP_table_is_correctly_set(fb, font)
 
-    has_kerning_info = check_GPOS_table_has_kerning_info(fb, font)
-    check_nonligated_sequences_kerning_info(fb, font, has_kerning_info)
-    check_all_ligatures_have_corresponding_caret_positions(fb, font)
-    check_there_is_no_KERN_table_in_the_font(fb, font)
-    check_familyname_does_not_begin_with_a_digit(fb, font)
-    check_fullfontname_begins_with_the_font_familyname(fb, font)
-    check_unused_data_at_the_end_of_glyf_table(fb, font)
-    check_font_has_EURO_SIGN_character(fb, font)
-    check_font_follows_the_family_naming_recommendations(fb, font)
-    check_font_enables_smart_dropout_control(fb, font)
-    check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb, font)
-    check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(fb, font)
+    has_kerning_info = checks.check_GPOS_table_has_kerning_info(fb, font)
+    checks.check_nonligated_sequences_kerning_info(fb, font, has_kerning_info)
+    checks.check_all_ligatures_have_corresponding_caret_positions(fb, font)
+    checks.check_there_is_no_KERN_table_in_the_font(fb, font)
+    checks.check_familyname_does_not_begin_with_a_digit(fb, font)
+    checks.check_fullfontname_begins_with_the_font_familyname(fb, font)
+    checks.check_unused_data_at_the_end_of_glyf_table(fb, font)
+    checks.check_font_has_EURO_SIGN_character(fb, font)
+    checks.check_font_follows_the_family_naming_recommendations(fb, font)
+    checks.check_font_enables_smart_dropout_control(fb, font)
+    checks.check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb, font)
+    checks.check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(fb, font)
 
-    check_for_points_out_of_bounds(fb, font)
-    check_glyphs_have_unique_unicode_codepoints(fb, font)
-    check_all_glyphs_have_codepoints_assigned(fb, font)
-    check_that_glyph_names_do_not_exceed_max_length(fb, font)
-    check_hhea_table_and_advanceWidth_values(fb, font, monospace_detected)
+    checks.check_for_points_out_of_bounds(fb, font)
+    checks.check_glyphs_have_unique_unicode_codepoints(fb, font)
+    checks.check_all_glyphs_have_codepoints_assigned(fb, font)
+    checks.check_that_glyph_names_do_not_exceed_max_length(fb, font)
+    checks.check_hhea_table_and_advanceWidth_values(fb, font, monospace_detected)
 
 ##########################################################
 ## Metadata related checks:
@@ -304,57 +304,57 @@ def fontbakery_check_ttf(config):
 
         fb.default_target = metadata
 
-        check_METADATA_Ensure_designer_simple_short_name(fb, family)
-        is_listed_in_GFD = check_family_is_listed_in_GFDirectory(fb, family)
-        check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
-        check_METADATA_has_unique_full_name_values(fb, family)
-        check_METADATA_check_style_weight_pairs_are_unique(fb, family)
-        check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
-        check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family)
-        check_METADATA_subsets_alphabetically_ordered(fb, metadata, family)
-        check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
-        check_METADATA_family_values_are_all_the_same(fb, family)
+        checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
+        is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb, family)
+        checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
+        checks.check_METADATA_has_unique_full_name_values(fb, family)
+        checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
+        checks.check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
+        checks.check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family)
+        checks.check_METADATA_subsets_alphabetically_ordered(fb, metadata, family)
+        checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
+        checks.check_METADATA_family_values_are_all_the_same(fb, family)
 
-        found_regular = check_font_has_Regular_style(fb, family)
-        check_Regular_is_400(fb, family, found_regular)
+        found_regular = checks.check_font_has_Regular_style(fb, family)
+        checks.check_Regular_is_400(fb, family, found_regular)
 
         for f in family.fonts:
           if filename == f.filename:
             ###### Here go single-TTF metadata tests #######
             # ----------------------------------------------
 
-            check_font_on_disk_and_METADATA_have_same_family_name(fb, font, f)
-            check_METADATA_postScriptName_matches_name_table_value(fb, font, f)
-            check_METADATA_fullname_matches_name_table_value(fb, font, f)
-            check_METADATA_fonts_name_matches_font_familyname(fb, font, f)
-            check_METADATA_fullName_matches_postScriptName(fb, f)
-            check_METADATA_filename_matches_postScriptName(fb, f)
+            checks.check_font_on_disk_and_METADATA_have_same_family_name(fb, font, f)
+            checks.check_METADATA_postScriptName_matches_name_table_value(fb, font, f)
+            checks.check_METADATA_fullname_matches_name_table_value(fb, font, f)
+            checks.check_METADATA_fonts_name_matches_font_familyname(fb, font, f)
+            checks.check_METADATA_fullName_matches_postScriptName(fb, f)
+            checks.check_METADATA_filename_matches_postScriptName(fb, f)
 
-            ffname = check_METADATA_name_contains_good_font_name(fb, font, f)
+            ffname = checks.check_METADATA_name_contains_good_font_name(fb, font, f)
             if ffname is not None:
-              check_METADATA_fullname_contains_good_fname(fb, f, ffname)
-              check_METADATA_filename_contains_good_fname(fb, f, ffname)
-              check_METADATA_postScriptName_contains_good_fname(fb, f, ffname)
+              checks.check_METADATA_fullname_contains_good_fname(fb, f, ffname)
+              checks.check_METADATA_filename_contains_good_fname(fb, f, ffname)
+              checks.check_METADATA_postScriptName_contains_good_fname(fb, f, ffname)
 
-            check_Copyright_notice_matches_canonical_pattern(fb, f)
-            check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f)
-            check_Copyright_notice_does_not_exceed_500_chars(fb, f)
-            check_Filename_is_set_canonically(fb, f)
-            check_METADATA_font_italic_matches_font_internals(fb, font, f)
+            checks.check_Copyright_notice_matches_canonical_pattern(fb, f)
+            checks.check_Copyright_notice_does_not_contain_Reserved_Font_Name(fb, f)
+            checks.check_Copyright_notice_does_not_exceed_500_chars(fb, f)
+            checks.check_Filename_is_set_canonically(fb, f)
+            checks.check_METADATA_font_italic_matches_font_internals(fb, font, f)
 
-            if check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
-              check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f)
+            if checks.check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
+              checks.check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f)
 
-            check_fontname_is_not_camel_cased(fb, f)
-            check_font_name_is_the_same_as_family_name(fb, family, f)
-            check_font_weight_has_a_canonical_value(fb, f)
-            check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f)
-            check_Metadata_weight_matches_postScriptName(fb, f)
-            check_METADATA_lists_fonts_named_canonicaly(fb, font, f)
-            check_Font_styles_are_named_canonically(fb, font, f)
+            checks.check_fontname_is_not_camel_cased(fb, f)
+            checks.check_font_name_is_the_same_as_family_name(fb, family, f)
+            checks.check_font_weight_has_a_canonical_value(fb, f)
+            checks.check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f)
+            checks.check_Metadata_weight_matches_postScriptName(fb, f)
+            checks.check_METADATA_lists_fonts_named_canonicaly(fb, font, f)
+            checks.check_Font_styles_are_named_canonically(fb, font, f)
 
     # Google-Fonts specific check:
-    check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
+    checks.check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
 
 
 ##########################################################
@@ -376,19 +376,19 @@ def fontbakery_check_ttf(config):
 
         # Only perform tests if local fonts have the same styles
         if remote_style in local_styles:
-          check_regression_v_number_increased(
+          checks.check_regression_v_number_increased(
             fb,
             local_styles[style],
             remote_styles[style],
             f
           )
-          check_regression_glyphs_structure(
+          checks.check_regression_glyphs_structure(
             fb,
             local_styles[style],
             remote_styles[style],
             f
           )
-          check_regression_ttfauto_xheight_increase(
+          checks.check_regression_ttfauto_xheight_increase(
             fb,
             local_styles[style],
             remote_styles[style],

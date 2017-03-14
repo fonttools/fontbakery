@@ -35,10 +35,85 @@ import plistlib
 from io import BytesIO
 from StringIO import StringIO
 from zipfile import ZipFile
-from constants import *
-from utils import *
 from FontBakeryCheckLogger import FontBakeryCheckLogger
-
+from utils import get_name_string,\
+                  check_bit_entry,\
+                  getGlyph,\
+                  getGlyphEncodings,\
+                  glyphHasInk,\
+                  getWidth #Of what? This one could get a better name...
+from constants import TRIVIAL,\
+                      LOW,\
+                      NORMAL,\
+                      IMPORTANT,\
+                      CRITICAL,\
+                      STYLE_NAMES,\
+                      NAMEID_COPYRIGHT_NOTICE,\
+                      NAMEID_FONT_FAMILY_NAME,\
+                      NAMEID_FONT_SUBFAMILY_NAME,\
+                      NAMEID_UNIQUE_FONT_IDENTIFIER,\
+                      NAMEID_FULL_FONT_NAME,\
+                      NAMEID_VERSION_STRING,\
+                      NAMEID_POSTSCRIPT_NAME,\
+                      NAMEID_TRADEMARK,\
+                      NAMEID_MANUFACTURER_NAME,\
+                      NAMEID_DESIGNER,\
+                      NAMEID_DESCRIPTION,\
+                      NAMEID_VENDOR_URL,\
+                      NAMEID_DESIGNER_URL,\
+                      NAMEID_LICENSE_DESCRIPTION,\
+                      NAMEID_LICENSE_INFO_URL,\
+                      NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
+                      NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
+                      NAMEID_COMPATIBLE_FULL_MACONLY,\
+                      NAMEID_SAMPLE_TEXT,\
+                      NAMEID_POSTSCRIPT_CID_NAME,\
+                      NAMEID_WWS_FAMILY_NAME,\
+                      NAMEID_WWS_SUBFAMILY_NAME,\
+                      NAMEID_LIGHT_BACKGROUND_PALETTE,\
+                      NAMEID_DARK_BACKGROUD_PALETTE,\
+                      NAMEID_STR,\
+                      RIBBI_STYLE_NAMES,\
+                      PLATFORM_ID_UNICODE,\
+                      PLATFORM_ID_MACINTOSH,\
+                      PLATFORM_ID_ISO,\
+                      PLATFORM_ID_WINDOWS,\
+                      PLATFORM_ID_CUSTOM,\
+                      PLATID_STR,\
+                      WEIGHTS,\
+                      FSSEL_ITALIC,\
+                      FSSEL_UNDERSCORE,\
+                      FSSEL_NEGATIVE,\
+                      FSSEL_OUTLINED,\
+                      FSSEL_STRIKEOUT,\
+                      FSSEL_BOLD,\
+                      FSSEL_REGULAR,\
+                      FSSEL_USETYPOMETRICS,\
+                      FSSEL_WWS,\
+                      FSSEL_OBLIQUE,\
+                      MACSTYLE_BOLD,\
+                      MACSTYLE_ITALIC,\
+                      PANOSE_PROPORTION_ANY,\
+                      PANOSE_PROPORTION_NO_FIT,\
+                      PANOSE_PROPORTION_OLD_STYLE,\
+                      PANOSE_PROPORTION_MODERN,\
+                      PANOSE_PROPORTION_EVEN_WIDTH,\
+                      PANOSE_PROPORTION_EXTENDED,\
+                      PANOSE_PROPORTION_CONDENSED,\
+                      PANOSE_PROPORTION_VERY_EXTENDED,\
+                      PANOSE_PROPORTION_VERY_CONDENSED,\
+                      PANOSE_PROPORTION_MONOSPACED,\
+                      IS_FIXED_WIDTH_NOT_MONOSPACED,\
+                      IS_FIXED_WIDTH_MONOSPACED,\
+                      LANG_ID_ENGLISH_USA,\
+                      LANG_ID_MACINTOSH_ENGLISH,\
+                      PLACEHOLDER_LICENSING_TEXT,\
+                      LICENSE_URL,\
+                      LICENSE_NAME,\
+                      REQUIRED_TABLES,\
+                      OPTIONAL_TABLES,\
+                      UNWANTED_TABLES,\
+                      WHITESPACE_CHARACTERS
 try:
   import fontforge
 except ImportError:

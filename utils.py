@@ -16,7 +16,9 @@
 import logging
 import os
 import re
-from constants import *
+from constants import PLATFORM_ID_WINDOWS,\
+                      PLAT_ENC_ID_UCS2,\
+                      PLAT_ENC_ID_UCS4
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
