@@ -316,9 +316,9 @@ class FontBakeryCheckLogger():
       data[name] = {"planned-release": None,
                     "entries": []}
     data[name]["entries"].append({"date": date,
-                           # "fontbakery-version": None,
-                            "commit": git_commit.strip(),
-                            "summary": self.summary})
+                                 # "fontbakery-version": None,
+                                  "commit": git_commit.strip(),
+                                  "summary": self.summary})
     burn.write(json.dumps(data,
                           sort_keys=True,
                           indent=4,
@@ -3477,7 +3477,8 @@ def check_METADATA_family_values_are_all_the_same(fb, family):
 
 
 def check_font_has_Regular_style(fb, family):
-  fb.new_check("090", "According GWF standards font should have Regular style.")
+  fb.new_check("090", "According GWF standards"
+                      " font should have Regular style.")
   found = False
   for f in family.fonts:
     if f.weight == 400 and f.style == 'normal':
