@@ -28,6 +28,7 @@ from utils import get_bounding_box,\
                   download_family_from_GoogleFontDirectory,\
                   fonts_from_zip
 
+
 def fontbakery_check_ttf(config):
   '''Main sequence of checkers & fixers'''
   fb = FontBakeryCheckLogger(config)
@@ -256,8 +257,8 @@ def fontbakery_check_ttf(config):
     checks.check_for_unwanted_tables(fb, font)
 
     ttfautohint_missing = checks.check_hinting_filesize_impact(fb,
-                                                        target.fullpath,
-                                                        filename)
+                                                               target.fullpath,
+                                                               filename)
     checks.check_version_format_is_correct_in_NAME_table(fb, font)
     checks.check_font_has_latest_ttfautohint_applied(fb,
                                                      font,
