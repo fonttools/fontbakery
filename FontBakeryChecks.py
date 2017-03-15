@@ -22,17 +22,13 @@ import requests
 import urllib
 import csv
 import re
-import glob
 import defusedxml.lxml
 from fontTools import ttLib
 from unidecode import unidecode
 from lxml.html import HTMLParser
 import plistlib
 from TargetFont import TargetFont
-from PiFont import PiFont,\
-                   PiFontSFD,\
-                   PiFontUfo,\
-                   PiFontFontTools
+from PiFont import PiFont
 from utils import get_name_string,\
                   check_bit_entry,\
                   getGlyph,\
@@ -3463,6 +3459,7 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
                       " across all fonts in this family ?")
 
   COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+
   def grep_copyright_notice(contents):
     match = COPYRIGHT_REGEX.search(contents)
     if match:
@@ -3470,7 +3467,7 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
     return
 
   def lookup_copyright_notice(ufo_folder):
-    current_path = ufo_folder
+#    current_path = ufo_folder
     try:
       contents = open(os.path.join(ufo_folder,
                                    'fontinfo.plist')).read()
@@ -3480,7 +3477,7 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
     except (IOError, OSError):
       pass
 
-    #TODO: FIX-ME!
+    # TODO: FIX-ME!
     # I'm not sure what's going on here:
     # "?" was originaly "self.operator.path" in the old codebase:
 #    while os.path.realpath(?) != current_path:
