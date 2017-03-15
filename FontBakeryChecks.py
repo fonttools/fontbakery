@@ -3467,7 +3467,7 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
     return
 
   def lookup_copyright_notice(ufo_folder):
-#    current_path = ufo_folder
+    # current_path = ufo_folder
     try:
       contents = open(os.path.join(ufo_folder,
                                    'fontinfo.plist')).read()
