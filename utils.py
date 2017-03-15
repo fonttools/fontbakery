@@ -16,6 +16,8 @@
 import os
 import re
 import sys
+import requests
+from bs4 import BeautifulSoup
 from constants import PLATFORM_ID_WINDOWS,\
                       PLAT_ENC_ID_UCS2,\
                       PLAT_ENC_ID_UCS4
