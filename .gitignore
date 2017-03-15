@@ -3,7 +3,7 @@ data/test/*/*.fontbakery.json
 data/test/*/*.ttx
 dashboard/AppEngine_drag_n_drop/app/static/js/bower_components/*
 dashboard/AppEngine_drag_n_drop/app/lib/*
-*pyc
+*.pyc
 .*
 *~
 *.egg-info
