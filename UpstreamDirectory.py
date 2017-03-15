@@ -19,6 +19,7 @@ import defusedxml.lxml
 import os
 import logging
 
+
 class UpstreamDirectory(object):
     """ Describes structure of upstream directory
 

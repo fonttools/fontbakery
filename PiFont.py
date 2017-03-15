@@ -15,13 +15,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import argparse
-import defusedxml.lxml
-import glob
 import logging
-import os
-import re
 from fontTools import ttLib
+
 
 # I think that this PiFont and its related classes can be
 # refactored into something a bit less verbose and convoluted

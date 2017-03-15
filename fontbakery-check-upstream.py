@@ -16,13 +16,9 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
-import defusedxml.lxml
-import glob
 import logging
 import os
-import re
 import FontBakeryChecks as checks
-from fontTools import ttLib
 from FontBakeryCheckLogger import FontBakeryCheckLogger
 from TargetFont import TargetFont
 from UpstreamDirectory import UpstreamDirectory
@@ -84,6 +80,7 @@ def upstream_checks(config):
         checks.check_copyright_notice_is_consistent_across_family(fb, folder)
 
         fb.output_report(target)
+
 
 if __name__ == '__main__':
   args = parser.parse_args()
