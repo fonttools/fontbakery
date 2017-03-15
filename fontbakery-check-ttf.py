@@ -101,7 +101,7 @@ def fontbakery_check_ttf(config):
     if os.path.exists(descfilepath):
       fb.default_target = descfilepath
       contents = open(descfilepath).read()
-      checks.check_DESCRIPTION_file_contains_broken_links(fb, contents)
+      checks.check_DESCRIPTION_file_contains_no_broken_links(fb, contents)
       checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
       checks.check_DESCRIPTION_max_length(fb, descfilepath)
       checks.check_DESCRIPTION_min_length(fb, descfilepath)
