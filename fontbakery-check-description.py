@@ -20,7 +20,7 @@ import logging
 import os
 from TargetFont import TargetFont
 from FontBakeryCheckLogger import FontBakeryCheckLogger
-import fontbakery_checks as checks
+import FontBakeryChecks as checks
 
 # set up some command line argument processing
 description = 'Runs checks on specified DESCRIPTION file(s)'
