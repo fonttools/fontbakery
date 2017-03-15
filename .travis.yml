@@ -24,11 +24,15 @@ install:
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
-  - flake8 --statistics fontbakery-check-ttf.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - flake8 --statistics fontbakery-check-description.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - flake8 --statistics utils.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - flake8 --statistics constants.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - flake8 --statistics fontbakery_checks.py --ignore=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
+  - export FLAKE8IGNORE=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
+  - flake8 --statistics fontbakery-check-ttf.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics fontbakery-check-description.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics fontbakery-check-upstream.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics utils.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics constants.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics FontBakeryChecks.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics UpstreamDirectory.py --ignore=$(FLAKE8IGNORE)
+  - flake8 --statistics PiFont.py --ignore=$(FLAKE8IGNORE)
   - python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
