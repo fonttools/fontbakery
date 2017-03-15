@@ -25,7 +25,8 @@ import fontbakery_checks as checks
 # set up some command line argument processing
 description = 'Runs checks on specified DESCRIPTION file(s)'
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('arg_filepaths', nargs="+", help="Test files, can be a list")
+parser.add_argument('arg_filepaths', nargs="+", help="Test files,"
+                                                     " can be a list")
 parser.add_argument('--verbose', '-v', action='count',
                     help="Verbosity level", default=False)
 
@@ -69,6 +70,7 @@ def description_checks(config):
     checks.check_DESCRIPTION_min_length(fb, f)
     checks.check_DESCRIPTION_max_length(fb, f)
     fb.output_report(target)
+
 
 if __name__ == '__main__':
   args = parser.parse_args()
