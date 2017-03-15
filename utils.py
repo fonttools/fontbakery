@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import logging
 import os
 import re
+import sys
 from constants import PLATFORM_ID_WINDOWS,\
                       PLAT_ENC_ID_UCS2,\
                       PLAT_ENC_ID_UCS4
@@ -25,7 +25,7 @@ from StringIO import StringIO
 from TargetFont import TargetFont
 from urllib import urlopen
 from zipfile import ZipFile
-
+import tempfile
 
 # =====================================
 # HELPER FUNCTIONS
