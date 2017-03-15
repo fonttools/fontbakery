@@ -166,7 +166,7 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
     fb.ok("All files are in the same directory.")
 
 
-def check_DESCRIPTION_file_contains_broken_links(fb, contents):
+def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
   fb.new_check("003", "Does DESCRIPTION file contain broken links ?")
   doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
   broken_links = []
