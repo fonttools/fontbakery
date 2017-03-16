@@ -28,11 +28,12 @@ script:
   - flake8 --statistics fontbakery-check-ttf.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics fontbakery-check-description.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics fontbakery-check-upstream.py --ignore=$FLAKE8IGNORE
+  - flake8 --statistics fbchecklogger.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics utils.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics constants.py --ignore=$FLAKE8IGNORE
-  - flake8 --statistics FontBakeryChecks.py --ignore=$FLAKE8IGNORE
-  - flake8 --statistics UpstreamDirectory.py --ignore=$FLAKE8IGNORE
-  - flake8 --statistics PiFont.py --ignore=$FLAKE8IGNORE
+  - flake8 --statistics checks.py --ignore=$FLAKE8IGNORE
+  - flake8 --statistics upstreamdirectory.py --ignore=$FLAKE8IGNORE
+  - flake8 --statistics pifont.py --ignore=$FLAKE8IGNORE
   - python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
   - python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
