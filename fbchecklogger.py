@@ -24,7 +24,6 @@ from constants import YELLOW_STR,\
                       RED_STR,\
                       WHITE_STR,\
                       CYAN_STR,\
-                      RED_STR,\
                       NORMAL
 
 
