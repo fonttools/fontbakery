@@ -22,7 +22,6 @@ from constants import YELLOW_STR,\
                       GREEN_STR,\
                       BLUE_STR,\
                       RED_STR,\
-                      YELLOW_STR,\
                       WHITE_STR,\
                       CYAN_STR,\
                       RED_STR,\
