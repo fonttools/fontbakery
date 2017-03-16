@@ -17,9 +17,9 @@ import argparse
 import glob
 import logging
 import os
-from FontBakeryCheckLogger import FontBakeryCheckLogger
-from TargetFont import TargetFont
-import FontBakeryChecks as checks
+from fbchecklogger import FontBakeryCheckLogger
+from targetfont import TargetFont
+import checks
 from fontTools import ttLib
 from utils import get_bounding_box,\
                   fetch_vendorID_list,\

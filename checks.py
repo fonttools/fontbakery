@@ -27,8 +27,8 @@ from fontTools import ttLib
 from unidecode import unidecode
 from lxml.html import HTMLParser
 import plistlib
-from TargetFont import TargetFont
-from PiFont import PiFont
+from targetfont import TargetFont
+from pifont import PiFont
 from utils import get_name_string,\
                   check_bit_entry,\
                   getGlyph,\

@@ -24,7 +24,7 @@ from constants import PLATFORM_ID_WINDOWS,\
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
-from TargetFont import TargetFont
+from targetfont import TargetFont
 from urllib import urlopen
 from zipfile import ZipFile
 import tempfile

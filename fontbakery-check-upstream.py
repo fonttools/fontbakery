@@ -18,10 +18,10 @@
 import argparse
 import logging
 import os
-import FontBakeryChecks as checks
-from FontBakeryCheckLogger import FontBakeryCheckLogger
-from TargetFont import TargetFont
-from UpstreamDirectory import UpstreamDirectory
+import checks
+from fbchecklogger import FontBakeryCheckLogger
+from targetfont import TargetFont
+from upstreamdirectory import UpstreamDirectory
 
 
 # set up some command line argument processing

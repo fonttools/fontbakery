@@ -17,7 +17,15 @@ import json
 import logging
 import subprocess
 import sys
-from constants import *
+from io import BytesIO
+from constants import YELLOW_STR,\
+                      GREEN_STR,\
+                      BLUE_STR,\
+                      RED_STR,\
+                      WHITE_STR,\
+                      CYAN_STR,\
+                      NORMAL
+
 
 class FontBakeryCheckLogger():
   progressbar = False
