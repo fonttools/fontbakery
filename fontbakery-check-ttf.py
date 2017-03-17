@@ -493,7 +493,7 @@ parser.add_argument('-m', '--ghm', action='store_true',
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
   args = parser.parse_args()
-  config = {
+  fontbakery_check_ttf(config = {
     'files': args.arg_filepaths,
     'autofix': args.autofix,
     'verbose': args.verbose,
@@ -502,7 +502,7 @@ if __name__ == '__main__':
     'error': args.error,
     'inmem': False,
     'webapp': False
-  }
+  })
   # Notes on the meaning of some of the configuration parameters:
   #
   # inmem:  Indicated that results should be saved in-memory
@@ -515,4 +515,3 @@ if __name__ == '__main__':
   #         the FontBakery webapp. This is needed because currently there
   #         are a few features that must be disabled due to lack of support
   #         in the Google App Engine environment.
-  fontbakery_check_ttf(config)

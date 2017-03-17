@@ -74,7 +74,7 @@ def description_checks(config):
 
 if __name__ == '__main__':
   args = parser.parse_args()
-  config = {
+  description_checks(config = {
     'files': args.arg_filepaths,
     'verbose': args.verbose,
     'json': True,
@@ -83,5 +83,4 @@ if __name__ == '__main__':
     'error': False,
     'inmem': False,
     'webapp': False
-  }
-  description_checks(config)
+  })
