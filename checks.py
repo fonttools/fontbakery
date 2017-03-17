@@ -106,11 +106,11 @@ def check_files_are_named_canonically(fb, fonts_to_check):
       fb.set_target(TargetFont(desc={"filename": "."}))  # Current Directory
     else:
       fb.set_target(file_path)  # all font files are in the same dir, right?
-    filename_base, filename_extension = os.path.splitext(filename)
+    filename_base = os.path.splitext(filename)[0]
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
     try:
-      family, style = filename_base.split('-')
+      style = filename_base.split('-')[1]
       if style in style_file_names:
         fb.ok("{} is named canonically".format(to_check.fullpath))
       else:
@@ -2501,7 +2501,7 @@ def check_for_points_out_of_bounds(fb, font):
   failed = False
   for glyphName in font['glyf'].keys():
     glyph = font['glyf'][glyphName]
-    coords, endpts, flags = glyph.getCoordinates(font['glyf'])
+    coords = glyph.getCoordinates(font['glyf'])[0]
     for x, y in coords:
       if x < glyph.xMin or x > glyph.xMax or \
          y < glyph.yMin or y > glyph.yMax or \
@@ -2544,7 +2544,8 @@ def check_all_glyphs_have_codepoints_assigned(fb, font):
   failed = False
   for subtable in font['cmap'].tables:
     if subtable.isUnicode():
-      for codepoint, name in subtable.cmap.items():
+      for item in subtable.cmap.items():
+        codepoint = item[0]
         if codepoint is None:
           failed = True
           fb.error(("Glyph {} lacks a unicode"
@@ -2557,7 +2558,8 @@ def check_that_glyph_names_do_not_exceed_max_length(fb, font):
   fb.new_check("078", "Check that glyph names do not exceed max length")
   failed = False
   for subtable in font['cmap'].tables:
-    for codepoint, name in subtable.cmap.items():
+    for item in subtable.cmap.items():
+      name = item[1]
       if len(name) > 109:
         failed = True
         fb.error(("Glyph name is too long:"
@@ -3496,7 +3498,10 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
     return
 
   ufo_dirs = []
-  for root, dirs, files in os.walk(folder):
+  for item in os.walk(folder):
+    root = item[0]
+    dirs = item[1]
+    # files = item[2]
     for d in dirs:
         fullpath = os.path.join(root, d)
         if os.path.splitext(fullpath)[1].lower() == '.ufo':

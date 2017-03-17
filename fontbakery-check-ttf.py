@@ -404,7 +404,7 @@ def fontbakery_check_ttf(config):
       for target in remote_fonts_to_check:
         fb.default_target = target.fullpath
         remote_font = target.get_ttfont()
-        remote_family, remote_style = target.fullpath[:-4].split('-')
+        remote_style = target.fullpath[:-4].split('-')[1]
         remote_styles[remote_style] = remote_font
 
         # Only perform tests if local fonts have the same styles
