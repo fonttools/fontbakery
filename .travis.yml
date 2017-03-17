@@ -26,7 +26,7 @@ install:
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
   - export FLAKE8IGNORE=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - export WONT_FIX=invalid-name
+  - export WONT_FIX=invalid-name,bad-indentation
   - export MAYBE_SOMEDAY=fixme,missing-docstring,redefined-outer-name,too-many-locals,assignment-from-no-return,no-member,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,unused-variable
   - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
   - $PYLINT fontbakery-check-ttf.py
