@@ -5,7 +5,7 @@ branches:
 before_install:
   - sudo add-apt-repository --yes ppa:fontforge/fontforge
   - sudo apt-get update -qq
-  - sudo apt-get install python-fontforge ttfautohint swig
+  - sudo apt-get install python-fontforge ttfautohint swig pylint
   - pip install --upgrade pip
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
@@ -25,7 +25,10 @@ install:
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
   - export FLAKE8IGNORE=E111,E114,E701,E121,E266,E221,E226,E126,W191,W293
-  - flake8 --statistics fontbakery-check-ttf.py --ignore=$FLAKE8IGNORE
+  - export WONT_FIX=bad-indentation,invalid-name
+  - export PYLINT_SOMEDAY=fixme,missing-docstring,redefined-outer-name,too-many-locals,assignment-from-no-return,no-member,too-many-branches,too-many-statements
+  - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
+  - $PYLINT fontbakery-check-ttf.py
   - flake8 --statistics fontbakery-check-description.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics fontbakery-check-upstream.py --ignore=$FLAKE8IGNORE
   - flake8 --statistics fbchecklogger.py --ignore=$FLAKE8IGNORE
