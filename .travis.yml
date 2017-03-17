@@ -5,7 +5,7 @@ branches:
 before_install:
   - sudo add-apt-repository --yes ppa:fontforge/fontforge
   - sudo apt-get update -qq
-  - sudo apt-get install python-fontforge ttfautohint swig pylint
+  - sudo apt-get install python-fontforge ttfautohint swig
   - pip install --upgrade pip
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
@@ -21,6 +21,7 @@ install:
   - pip install tabulate
   - pip install pillow
   - pip install flask
+  - pip install pylint
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
