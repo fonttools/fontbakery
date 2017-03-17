@@ -62,6 +62,7 @@ from constants import IMPORTANT,\
                       PLATFORM_ID_WINDOWS,\
                       PLATID_STR,\
                       WEIGHTS,\
+                      WEIGHT_VALUE_TO_NAME,\
                       FSSEL_ITALIC,\
                       FSSEL_BOLD,\
                       FSSEL_REGULAR,\
@@ -3021,23 +3022,12 @@ def check_Filename_is_set_canonically(fb, f):
   fb.new_check("105", "Filename is set canonically?")
 
   def create_canonical_filename(font_metadata):
-    weights = {
-      100: 'Thin',
-      200: 'ExtraLight',
-      300: 'Light',
-      400: '',
-      500: 'Medium',
-      600: 'SemiBold',
-      700: 'Bold',
-      800: 'ExtraBold',
-      900: 'Black'
-    }
     style_names = {
      'normal': '',
      'italic': 'Italic'
     }
     familyname = font_metadata.name.replace(' ', '')
-    style_weight = '%s%s' % (weights.get(font_metadata.weight),
+    style_weight = '%s%s' % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
                              style_names.get(font_metadata.style))
     if not style_weight:
         style_weight = 'Regular'
