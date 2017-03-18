@@ -333,7 +333,9 @@ def fontbakery_check_ttf(config):
         found_regular = checks.check_font_has_regular_style(fb, family)
         checks.check_regular_is_400(fb, family, found_regular)
 
-        for f in family.fonts:
+        for f in family.fonts: # pylint: disable=no-member
+                               # (I know this is good, but pylint
+                               #  seems confused here)
           if filename == f.filename:
             ###### Here go single-TTF metadata tests #######
             # ----------------------------------------------
@@ -397,7 +399,7 @@ def fontbakery_check_ttf(config):
 
     # ------------------------------------------------------
     if is_listed_in_GFD:
-      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name)
+      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name) # pylint: disable=no-member
       remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
       remote_styles = {}

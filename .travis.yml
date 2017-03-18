@@ -26,7 +26,7 @@ install:
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
   - export WONT_FIX=invalid-name,bad-indentation
-  - export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,no-member,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module
+  - export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module
   - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
   - $PYLINT fontbakery-check-ttf.py
   - $PYLINT fontbakery-check-description.py
