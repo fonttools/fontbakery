@@ -2773,7 +2773,7 @@ def check_METADATA_family_values_are_all_the_same(fb, family):
           " in all metadata 'fonts' items.")
 
 
-def check_font_has_Regular_style(fb, family):
+def check_font_has_regular_style(fb, family):
   fb.new_check("090", "According GWF standards"
                       " font should have Regular style.")
   found = False
@@ -2786,9 +2786,10 @@ def check_font_has_Regular_style(fb, family):
     fb.error("This font lacks a Regular"
              " (style: normal and weight: 400)"
              " as required by GWF standards.")
+  return found
 
 
-def check_Regular_is_400(fb, family, found):
+def check_regular_is_400(fb, family, found):
   fb.new_check("091", "Regular should be 400")
   if not found:
     fb.skip("This test will only run if font has a Regular style")

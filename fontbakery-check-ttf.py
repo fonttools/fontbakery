@@ -330,8 +330,8 @@ def fontbakery_check_ttf(config):
         checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
         checks.check_METADATA_family_values_are_all_the_same(fb, family)
 
-        found_regular = checks.check_font_has_Regular_style(fb, family)
-        checks.check_Regular_is_400(fb, family, found_regular)
+        found_regular = checks.check_font_has_regular_style(fb, family)
+        checks.check_regular_is_400(fb, family, found_regular)
 
         for f in family.fonts:
           if filename == f.filename:
