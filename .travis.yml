@@ -24,7 +24,7 @@ install:
   - pip install robofab
   - pip install gitpython
   - pip install matplotlib
-  - pip install dateutil
+  - pip install python-dateutil
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
