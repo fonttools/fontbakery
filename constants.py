@@ -16,12 +16,6 @@
 
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
-
-PROFILES_GIT_URL = ('https://github.com/google/'
-                    'fonts/blob/master/designers/profiles.csv')
-PROFILES_RAW_URL = ('https://raw.githubusercontent.com/google/'
-                    'fonts/master/designers/profiles.csv')
-
 STYLE_NAMES = ["Thin",
                "ExtraLight",
                "Light",

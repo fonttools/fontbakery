@@ -80,8 +80,6 @@ from constants import IMPORTANT,\
                       OPTIONAL_TABLES,\
                       UNWANTED_TABLES,\
                       WHITESPACE_CHARACTERS,\
-                      PROFILES_RAW_URL,\
-                      PROFILES_GIT_URL,\
                       PLAT_ENC_ID_UCS2
 try:
   import fontforge
@@ -2633,6 +2631,10 @@ def check_family_is_listed_in_GFDirectory(fb, family):
 
 def check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family):
   fb.new_check("082", "METADATA.pb: Designer exists in GWF profiles.csv ?")
+  PROFILES_GIT_URL = ('https://github.com/google/'
+                      'fonts/blob/master/designers/profiles.csv')
+  PROFILES_RAW_URL = ('https://raw.githubusercontent.com/google/'
+                      'fonts/master/designers/profiles.csv')
   if family.designer == "":
     fb.error('METADATA.pb field "designer" MUST NOT be empty!')
   elif family.designer == "Multiple Designers":
