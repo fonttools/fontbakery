@@ -330,10 +330,12 @@ def fontbakery_check_ttf(config):
         checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
         checks.check_METADATA_family_values_are_all_the_same(fb, family)
 
-        found_regular = checks.check_font_has_Regular_style(fb, family)
-        checks.check_Regular_is_400(fb, family, found_regular)
+        found_regular = checks.check_font_has_regular_style(fb, family)
+        checks.check_regular_is_400(fb, family, found_regular)
 
-        for f in family.fonts:
+        for f in family.fonts: # pylint: disable=no-member
+                               # (I know this is good, but pylint
+                               #  seems confused here)
           if filename == f.filename:
             ###### Here go single-TTF metadata tests #######
             # ----------------------------------------------
@@ -397,14 +399,14 @@ def fontbakery_check_ttf(config):
 
     # ------------------------------------------------------
     if is_listed_in_GFD:
-      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name)
+      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name) # pylint: disable=no-member
       remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
       remote_styles = {}
       for target in remote_fonts_to_check:
         fb.default_target = target.fullpath
         remote_font = target.get_ttfont()
-        remote_family, remote_style = target.fullpath[:-4].split('-')
+        remote_style = target.fullpath[:-4].split('-')[1]
         remote_styles[remote_style] = remote_font
 
         # Only perform tests if local fonts have the same styles
@@ -493,7 +495,7 @@ parser.add_argument('-m', '--ghm', action='store_true',
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
   args = parser.parse_args()
-  config = {
+  fontbakery_check_ttf(config = {
     'files': args.arg_filepaths,
     'autofix': args.autofix,
     'verbose': args.verbose,
@@ -502,7 +504,7 @@ if __name__ == '__main__':
     'error': args.error,
     'inmem': False,
     'webapp': False
-  }
+  })
   # Notes on the meaning of some of the configuration parameters:
   #
   # inmem:  Indicated that results should be saved in-memory
@@ -515,4 +517,3 @@ if __name__ == '__main__':
   #         the FontBakery webapp. This is needed because currently there
   #         are a few features that must be disabled due to lack of support
   #         in the Google App Engine environment.
-  fontbakery_check_ttf(config)

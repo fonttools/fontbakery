@@ -84,7 +84,7 @@ def upstream_checks(config):
 
 if __name__ == '__main__':
   args = parser.parse_args()
-  config = {
+  upstream_checks(config = {
     'folders': args.folders,
     'verbose': args.verbose,
     'json': True,
@@ -93,5 +93,4 @@ if __name__ == '__main__':
     'error': False,
     'inmem': False,
     'webapp': False
-  }
-  upstream_checks(config)
+  })
