@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import git
-import sys
 import os
 import re
 

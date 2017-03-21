@@ -29,21 +29,23 @@
 #     $ sudo pip install pillow protobuf fontbakery
 
 import argparse
-import glob
-import os
-import sys
-import StringIO
-import csv
 import collections
+import csv
+import glob
+import math
+import os
+import StringIO
+import sys
 import re
-from fonts_public_pb2 import FontProto, FamilyProto
+from fonts_public_pb2 import FamilyProto
 
 try:
-  from PIL import ImageFont
+  from PIL import Image,\
+                  ImageDraw,\
+                  ImageFont
 except:
   sys.exit("Needs pillow.\n\nsudo pip install pillow")
-from PIL import Image
-from PIL import ImageDraw
+
 
 try:
   from fontTools.ttLib import TTFont
@@ -56,7 +58,9 @@ except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 try:
-  from flask import Flask, jsonify, request
+  from flask import Flask,\
+                    jsonify,\
+                    request
 except:
   sys.exit("Needs flask.\n\nsudo pip install flask")
 
@@ -121,8 +125,6 @@ NAMEID_LIGHT_BACKGROUND_PALETTE = 23
 NAMEID_DARK_BACKGROUD_PALETTE = 24
 
 def generate_italic_angle_images():
-  from PIL import Image, ImageDraw
-  import math
   for i in range(10):
     angle = 30*(float(i)/10) * 3.1415/180
     width = 2000

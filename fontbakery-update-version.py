@@ -17,10 +17,7 @@
 
 import argparse
 from argparse import RawTextHelpFormatter
-import csv
-import sys
 from fontTools.ttLib import TTFont
-import tabulate
 
 description = """
 

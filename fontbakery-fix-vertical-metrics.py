@@ -18,7 +18,6 @@
 from __future__ import print_function
 import argparse
 import collections
-import os
 import sys
 from fontTools import ttLib
 from fontTools.ttLib import TTLibError

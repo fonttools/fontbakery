@@ -15,10 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import argparse
-import logging
-from argparse import RawTextHelpFormatter
 from fontTools.ttLib import TTFont
-import ntpath
+import logging
 
 description = """
 
@@ -67,7 +65,7 @@ def compare_glyph_count(font1, name1, name2):
 
 parser = argparse.ArgumentParser(
   description=description,
-  formatter_class=RawTextHelpFormatter)
+  formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('hinted', help='Hinted font')
 parser.add_argument('unhinted', help='Unhinted font')
 parser.add_argument('--count', action="store_true", default=True,

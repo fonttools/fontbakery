@@ -25,7 +25,6 @@
 # Import our system library and fontTools ttLib
 import argparse
 import os
-import sys
 from fontTools import ttLib
 from fontTools.ttLib.tables import ttProgram
 
