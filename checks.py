@@ -80,8 +80,6 @@ from constants import IMPORTANT,\
                       OPTIONAL_TABLES,\
                       UNWANTED_TABLES,\
                       WHITESPACE_CHARACTERS,\
-                      PROFILES_RAW_URL,\
-                      PROFILES_GIT_URL,\
                       PLAT_ENC_ID_UCS2
 try:
   import fontforge
@@ -2615,18 +2613,14 @@ def check_METADATA_Ensure_designer_simple_short_name(fb, family):
     fb.ok('Designer is a simple short name')
 
 
-fp = None  # This is a bug! Please see fontbakery issue #1159
-
-
 def check_family_is_listed_in_GFDirectory(fb, family):
-  global fp
   fb.new_check("081", "METADATA.pb: Fontfamily is listed"
                       " in Google Font Directory ?")
   url = ('http://fonts.googleapis.com'
          '/css?family=%s') % family.name.replace(' ', '+')
   try:
-    fp = requests.get(url)
-    if fp.status_code != 200:
+    r = requests.get(url)
+    if r.status_code != 200:
       fb.error('No family found in GWF in %s' % url)
     else:
       fb.ok('Font is properly listed in Google Font Directory.')
@@ -2636,8 +2630,11 @@ def check_family_is_listed_in_GFDirectory(fb, family):
 
 
 def check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family):
-  global fp  # This is a bug! Please see fontbakery issue #1159
   fb.new_check("082", "METADATA.pb: Designer exists in GWF profiles.csv ?")
+  PROFILES_GIT_URL = ('https://github.com/google/'
+                      'fonts/blob/master/designers/profiles.csv')
+  PROFILES_RAW_URL = ('https://raw.githubusercontent.com/google/'
+                      'fonts/master/designers/profiles.csv')
   if family.designer == "":
     fb.error('METADATA.pb field "designer" MUST NOT be empty!')
   elif family.designer == "Multiple Designers":
@@ -2645,9 +2642,9 @@ def check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family):
             "so we won't look for it at profiles.cvs")
   else:
     try:
-      fp = urllib.urlopen(PROFILES_RAW_URL)
+      handle = urllib.urlopen(PROFILES_RAW_URL)
       designers = []
-      for row in csv.reader(fp):
+      for row in csv.reader(handle):
         if not row:
           continue
         designers.append(row[0].decode('utf-8'))
