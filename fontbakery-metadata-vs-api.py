@@ -4,14 +4,12 @@
 from __future__ import print_function
 
 import argparse
-import collections
-import io
 import os
 import sys
 import urllib
 import urlparse
 import json
-from fonts_public_pb2 import FontProto, FamilyProto
+from fonts_public_pb2 import FamilyProto
 from google.protobuf import text_format
 
 parser = argparse.ArgumentParser()

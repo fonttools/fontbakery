@@ -29,14 +29,14 @@
 #     $ sudo pip install pillow protobuf fontbakery
 
 import argparse
+import collections
+import csv
 import glob
 import os
-import sys
 import StringIO
-import csv
-import collections
+import sys
 import re
-from fonts_public_pb2 import FontProto, FamilyProto
+from fonts_public_pb2 import FamilyProto
 
 try:
   from PIL import ImageFont

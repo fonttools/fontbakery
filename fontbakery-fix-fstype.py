@@ -15,7 +15,6 @@
 #
 import argparse
 from argparse import RawTextHelpFormatter
-import sys
 from fontTools.ttLib import TTFont
 
 description = """
