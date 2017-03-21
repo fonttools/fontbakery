@@ -14,8 +14,10 @@
 # limitations under the License.
 #
 __author__="The Font Bakery Authors"
-
-import os, argparse, glob, logging
+import argparse
+import glob
+import logging
+import os
 
 # set up some command line argument processing
 parser = argparse.ArgumentParser(description="Compare TTF files when upgrading families.")
