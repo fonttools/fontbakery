@@ -22,7 +22,7 @@ messages = [
   {"GIT_REPO_URL":"https://github.com/huertatipografica/sarala.git",
    "FONTFILE_PREFIX": "font/Sarala-"},
   {"GIT_REPO_URL":"https://github.com/anexasajoop/cambay.git",
-   "FONTFILE_PREFIX": "cambay/Font files/Unhinted/"},
+   "FONTFILE_PREFIX": "cambay/Font files/Unhinted/CambayDevanagari-"},
   {"GIT_REPO_URL":"https://github.com/cadsondemak/itim.git",
    "FONTFILE_PREFIX": "fonts/Itim-"},
   {"GIT_REPO_URL":"https://github.com/cadsondemak/kanit.git",

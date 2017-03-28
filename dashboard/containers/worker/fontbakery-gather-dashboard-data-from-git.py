@@ -31,10 +31,12 @@ def get_filenames():
   for f in os.listdir(fonts_dir):
     pref = f[:len(fonts_prefix)]
     if f[-4:] == ".ttf" and pref == fonts_prefix:
-      files.append(fonts_dir + "/" + f)
+      fullpath = fonts_dir + "/" + f
+      # Do we need to escape spaces in the fullpaths here?
+      files.append(fullpath)
   if len(files) == 0:
     print ("Where are the TTF files?!\n")
-    sys.exit(-1)
+    sys.exit(0)
   else:
     print ("We'll be checking these files:\n{}\n".format("\n".join(files)))
   return files
@@ -69,13 +71,13 @@ def update_global_stats(summary, stats):
       summary[k] = stats[k]
 
 def perform_job(REPO_URL):
-  clone(REPO_URL, "checkout")
-  os.chdir("checkout")
+  clone(REPO_URL, "clonedir")
+  os.chdir("clonedir")
   run(["git", "checkout", "master"])
   print ("We're now at master branch.")
 
   lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
-  commits = [line.split()[0].strip() for line in lines]
+  commits = ["master"] + [line.split()[0].strip() for line in lines]
   print ("The commits we'll iterate over are: {}".format(commits))
 
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
@@ -121,6 +123,7 @@ def perform_job(REPO_URL):
       for f in os.listdir(fonts_dir):
         if f[-20:] != ".ttf.fontbakery.json":
           continue
+        print ("Check results JSON file: {}".format(f))
 
         fname = f.split('.fontbakery.json')[0]
         familyname = fname.split('-')[0]
@@ -139,6 +142,8 @@ def perform_job(REPO_URL):
           "stats": font_stats,
           "HEAD": (i==0)
         }
+        #print ("check_results: {}".format(check_results))
+
         if db.table('check_results').filter({"commit": commit, "fontname":fname}).count().run() == 0:
           db.table('check_results').insert(check_results).run()
         else:
@@ -150,6 +155,8 @@ def perform_job(REPO_URL):
         db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).update(family_stats).run()
     except:
       print("Failed to run fontbakery on this commit (perhaps TTF files moved to a different folder.)")
+      break
+
 
 connection = None
 def callback(ch, method, properties, body):
@@ -157,9 +164,13 @@ def callback(ch, method, properties, body):
   msg = json.loads(body)
   print("Received %r" % msg, file=sys.stderr)
   repo_url = msg["GIT_REPO_URL"]
-  prefix_elements = msg["FONTFILE_PREFIX"].split('/')
-  fonts_prefix = prefix_elements.pop(-1)
-  fonts_dir = '/'.join(prefix_elements)
+  if '/' in msg["FONTFILE_PREFIX"]:
+    prefix_elements = msg["FONTFILE_PREFIX"].split('/')
+    fonts_prefix = prefix_elements.pop(-1)
+    fonts_dir = '/'.join(prefix_elements)
+  else:
+    fonts_prefix = msg["FONTFILE_PREFIX"]
+    fonts_dir = '.'
   perform_job(repo_url)
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()

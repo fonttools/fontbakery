@@ -1508,9 +1508,11 @@ def check_font_version_fields(fb, font):
                                           expected[1])
     for name in font['name'].names:
       if name.nameID == NAMEID_VERSION_STRING:
+        print ("NAME: '{}'".format(name))
         name_version = name.string.decode(name.getEncoding())
+        print ("name_version: {}".format(name_version))
         # change Version 1.007 -> 1.007
-        version_stripped = r'(?<=[V|v]ersion )([0-9]{1,4}\.[0-9]{1,5})'
+        version_stripped = r'(?<=[V|v]ersion )?([0-9]{1,4}\.[0-9]{1,5})'
         version_without_comments = re.search(version_stripped,
                                              name_version).group(0)
         comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]

@@ -17,6 +17,7 @@ import json
 import logging
 import subprocess
 import sys
+from targetfont import TargetFont
 from io import BytesIO
 from constants import YELLOW_STR,\
                       GREEN_STR,\
@@ -132,6 +133,13 @@ class FontBakeryCheckLogger():
       self.output_github_markdown_report(a_target)
 
   def output_json_report(self, a_target):
+    for check in self.all_checks:
+      if isinstance(check['target'], TargetFont):
+        # This is silly and actually means the handling of
+        # TargetFont is broken somewhere else.
+        # This really needs to be properly fixed ASAP!
+        check['target'] = check['target'].fullpath
+
     json_data = json.dumps(self.all_checks,
                            sort_keys=True,
                            indent=4,
