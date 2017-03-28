@@ -26,5 +26,12 @@ kubectl create -f services/rethinkdb-admin-service.yaml
 kubectl create -f services/flask-service.yaml
 kubectl create -f services/dashboard-rc.yaml
 
+kubectl delete job job-fb-worker-1
+kubectl delete job job-fb-dispatcher-1
 kubectl create -f jobs/worker.yaml
 kubectl create -f jobs/dispatcher.yaml
+kubectl get jobs
+
+
+
+
