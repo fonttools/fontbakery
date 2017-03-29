@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 git_repos = [
+  #["STATUS", "FAMILY-NAME", "GIT-REPO-URL", "FONTFILES-PREFIX"],
   ["OK", "Adamina", "https://github.com/cyrealtype/Adamina.git", "fonts/Adamina-"],
   ["OK", "Abhaya Libre", "https://github.com/mooniak/abhaya-libre-font", "fonts/ttf/AbhayaLibre-"],
   ["OK", "Adobe Blank", "https://github.com/adobe-fonts/adobe-blank", "AdobeBlank"],
