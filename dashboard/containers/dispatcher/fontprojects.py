@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 git_repos = [
   ["Adamina", "https://github.com/cyrealtype/Adamina.git", "fonts/Adamina-"],
   #["Abhaya Libre", "https://github.com/mooniak/abhaya-libre-font", ""],
@@ -74,7 +75,7 @@ git_repos = [
   #["Poppins", "https://github.com/itfoundry/poppins", ""],
   #["Pragati Narrow", "https://github.com/Omnibus-Type/PragatiNarrow", ""],
   ["Quicksand", "https://github.com/andrew-paglinawan/QuicksandFamily.git", "fonts/Quicksand-"],
-  ["Raleway", "https://github.com/impallari/Raleway.git", "fonts/v3.000 Fontlab/TTF/Raleway-"]
+  ["Raleway", "https://github.com/impallari/Raleway.git", "fonts/v3.000 Fontlab/TTF/Raleway-"],
   #["Ranga", "https://github.com/antonxheight/Ranga", ""],
   #["Ramabhadra", "https://github.com/appajid/ramabhadra", ""],
   #["Ramaraja", "https://github.com/appajid/ramaraja", ""],
@@ -105,3 +106,5 @@ git_repos = [
   #["Yantramanav", "https://github.com/erinmclaughlin/Yantramanav", ""]
 ]
 
+if __name__ == '__main__':
+  print ("There are {} font repositories listed in this file.".format(len(git_repos)))
