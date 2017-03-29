@@ -18,10 +18,16 @@ def main():
       print ("Dispatching {} messages...".format(len(messages)), file=sys.stderr)
       for entry in git_repos:
         message = {
-          "FAMILY_NAME": entry[0],
-          "GIT_REPO_URL": entry[1],
-          "FONTFILES_PREFIX": entry[2]
+          "STATUS": entry[0]
+          "FAMILY_NAME": entry[1],
+          "GIT_REPO_URL": entry[2],
+          "FONTFILES_PREFIX": entry[3]
         }
+
+        if message["STATUS"] not in ["OK", "NOTE"]:
+          # Skip this repo, since it is not in bad-shape to run fontbakery checks on it.
+          # See the listing at fontprojects.py script to know the specific issues.
+          continue
 
         print ("Adding {} to the queue.".format(message["GIT_REPO_URL"]), file=sys.stderr)
         channel.basic_publish(exchange='',
