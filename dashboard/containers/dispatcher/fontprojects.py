@@ -34,8 +34,8 @@ git_repos = [
   # Note: There's also Cultive Roman.
   ["OTF", "Datalegreya", "https://github.com/figs-lab/datalegreya", ""], # sources with OTF binaries, but no TTFs.
   ["OK", "Dekko", "https://github.com/EbenSorkin/Dekko.git", "Dekko-"],
-  ["UFO", "Dhurjati", "https://github.com/appajid/dhurjati", "Dhurjati.ufo"],
-  ["OK", "Dhyana", "https://github.com/vernnobile/DhyanaFont", "Regular/Dhyana"], # BAD REPO!
+  ["UFO", "Dhurjati", "https://github.com/appajid/dhurjati", "Dhurjati"],
+  ["NOTE", "Dhyana", "https://github.com/vernnobile/DhyanaFont", "Regular/Dhyana"], # BAD REPO!
   # Note: Dhyana's repo has a bad tree structure (one weight per folder). There's also a "Bold".
   ["GH-PAGES", "Digital Numbers", "https://github.com/s-a/digital-numbers-font", "gh-pages/dist/DigitalNumbers-"],
   # Note: The above requires adding to FB support for cloning a repo from a different branch (such as gh-pages)
@@ -48,7 +48,7 @@ git_repos = [
   ["NOTE", "Fira", "https://github.com/mozilla/Fira", "ttf/FiraSans-"],
   # Note: The above has got good names, but also some extra like "FiraSans-BookItalic.ttf" (may be treated as a separate family?)
   ["TTX", "Fruktur", "https://github.com/EbenSorkin/Fruktur", "TTX/TTF/Fruktur-"],
-  ["UFO", "Gidugu", "https://github.com/appajid/gidugu", "Gidugu.ufo"],
+  ["UFO", "Gidugu", "https://github.com/appajid/gidugu", "Gidugu"],
   ["OK", "Glegoo", "https://github.com/etunni/glegoo.git", "Glegoo-"],
   ["OTF", "Gurajada", "https://github.com/appajid/gurajada", ""],
   ["OTF", "Hind Colombo", "https://github.com/itfoundry/hind-colombo", "build/HindColombo-"], # sources with OTF binaries, but no TTFs.
@@ -74,53 +74,58 @@ git_repos = [
   ["OK", "Khula", "https://github.com/erinmclaughlin/Khula.git", "ttf_hinted/Khula-"],
   ["OK", "Kurale", "https://github.com/etunni/kurale.git", "fonts/Kurale-"],
   ["OK", "Lato", "https://github.com/googlefonts/LatoGFVersion.git", "fonts/Lato-"],
-  ["UFO", "Lakkireddy", "https://github.com/appajid/lakkireddy", "LakkiReddy.ufo"],
-  ["?", "Mallanna", "https://github.com/appajid/mallanna", ""],
-  ["?", "Mandali", "https://github.com/appajid/mandali", ""],
-  ["?", "Martel", "https://github.com/typeoff/martel", ""],
-  ["?", "Martel Sans", "https://github.com/typeoff/martel_sans", ""],
-  ["?", "Merriweather Sans", "https://github.com/EbenSorkin/Merriweather-Sans", ""],
-  ["?", "Modak", "https://github.com/girish-dalvi/Modak", ""],
-  ["?", "Monda", "https://github.com/vernnobile/mondaFont", ""],
-  ["?", "Nats", "https://github.com/appajid/nats", ""],
-  ["?", "Ntr", "https://github.com/appajid/ntr", ""],
-  ["?", "Padauk", "https://github.com/silnrsi/font-padauk", ""],
-  ["?", "Palanquin", "https://github.com/VanillaandCream/Palanquin", ""],
-  ["?", "Peddana", "https://github.com/appajid/peddana", ""],
+  ["UFO", "Lakkireddy", "https://github.com/appajid/lakkireddy", "LakkiReddy"],
+  ["UFO", "Mallanna", "https://github.com/appajid/mallanna", "Mallanna"],
+  ["UFO", "Mandali", "https://github.com/appajid/mandali", "Mandali"],
+  ["NOTE", "Martel", "https://github.com/typeoff/martel", "Martel Font Files/TTFs with ttfautohints/Martel-"],
+  # Note: There's also a "Martel" family without autohints at this repo.
+  ["NOTE", "Martel Sans", "https://github.com/typeoff/martel_sans", "Martel Sans Font Files/TTFs with ttautohints/MartelSans-"],
+  # Note: There's also a "Martel Sans" family without autohints at this repo.
+  ["UFO", "Merriweather Sans", "https://github.com/EbenSorkin/Merriweather-Sans", "SRC/MerriweatherSans-"],
+  ["TTX", "Modak", "https://github.com/girish-dalvi/Modak", "TTX/Modak-"],
+  ["UFO", "Monda", "https://github.com/vernnobile/mondaFont", "in-progress/Roman/Monda-"], #BAD REPO
+  # Note: In the above repo there are versions 1.00, 2.0 and in-progress
+  ["UFO", "Nats", "https://github.com/appajid/nats", "NATS"],
+  ["UFO", "Ntr", "https://github.com/appajid/ntr", "NTR"],
+  ["SOURCE-ONLY", "Padauk", "https://github.com/silnrsi/font-padauk", "font-source"],
+  ["OK", "Palanquin", "https://github.com/VanillaandCream/Palanquin", "Palanquin/Palanquin/Palanquin-"],
+  ["OK", "Palanquin Dark", "https://github.com/VanillaandCream/Palanquin", "PalanquinDark/Palanquin_Dark/PalanquinDark-"],
+  ["UFO", "Peddana", "https://github.com/appajid/peddana", "Peddana-"],
   ["OK", "Poiret One", "https://github.com/alexeiva/poiretone.git", "fonts/ttf/PoiretOne-"],
-  ["?", "Ponnala", "https://github.com/appajid/ponnala", ""],
-  ["?", "Poppins", "https://github.com/itfoundry/poppins", ""],
-  ["?", "Pragati Narrow", "https://github.com/Omnibus-Type/PragatiNarrow", ""],
+  ["UFO", "Ponnala", "https://github.com/appajid/ponnala", "Ponnala"],
+  ["OTF", "Poppins", "https://github.com/itfoundry/poppins", "products/Poppins-"], # sources with OTF binaries, but no TTFs.
+  ["OK", "Pragati Narrow", "https://github.com/Omnibus-Type/PragatiNarrow", "Fonts/PragatiNarrow-"],
   ["OK", "Quicksand", "https://github.com/andrew-paglinawan/QuicksandFamily.git", "fonts/Quicksand-"],
   ["OK", "Raleway", "https://github.com/impallari/Raleway.git", "fonts/v3.000 Fontlab/TTF/Raleway-"],
-  ["?", "Ranga", "https://github.com/antonxheight/Ranga", ""],
-  ["?", "Ramabhadra", "https://github.com/appajid/ramabhadra", ""],
-  ["?", "Ramaraja", "https://github.com/appajid/ramaraja", ""],
-  ["?", "Raviprakash", "https://github.com/appajid/raviprakash", ""],
+  ["NOTE", "Ranga", "https://github.com/antonxheight/Ranga", "Ranga-"], # BAD: NON-CANONICAL NAMES.
+  ["UFO", "Ramabhadra", "https://github.com/appajid/ramabhadra", "Ramabhadra"],
+  ["UFO", "Ramaraja", "https://github.com/appajid/ramaraja", "Ramaraja-"],
+  ["UFO", "Raviprakash", "https://github.com/appajid/raviprakash", "RaviPrakash"],
   ["OK", "Redacted", "https://github.com/christiannaths/Redacted-Font.git", "src/Redacted-"],
   ["OK", "Rhodium Libre", "https://github.com/DunwichType/RhodiumLibre.git", "RhodiumLibre-"],
-  ["?", "Rozhaone", "https://github.com/itfoundry/rozhaone", ""],
-  ["?", "Sahitya", "https://github.com/juandelperal/sahitya", ""],
+  ["OTF", "Rozhaone", "https://github.com/itfoundry/rozhaone", "build/RozhaOne-"], # sources with OTF binaries, but no TTFs.
+  ["OK", "Sahitya", "https://github.com/juandelperal/sahitya", "ttf/Sahitya-"],
   ["OK", "Sarala", "https://github.com/huertatipografica/sarala.git", "font/Sarala-"],
-  ["?", "Silson", "https://github.com/simoncozens/silson", ""],
-  ["?", "Sitara", "https://github.com/Neelakash/sitara", ""],
-  ["?", "Slabo", "https://github.com/TiroTypeworks/Slabo", ""],
-  ["?", "Source Serif Pro", "https://github.com/adobe/source-serif-pro", ""],
-  ["?", "Sreekrushnadevaraya", "https://github.com/appajid/sreekrushnadevaraya", ""],
+  ["OK", "Silson", "https://github.com/simoncozens/silson", "output/ttf/hinted/SilsonCondensed-"],
+  ["404-ERROR", "Sitara", "https://github.com/Neelakash/sitara", ""],
+  ["NOTE", "Slabo", "https://github.com/TiroTypeworks/Slabo", "TTFs/Slabo"], # BAD: NON-CANONICAL NAMES.
+  ["NOTE", "Source Serif Pro", "https://github.com/adobe/source-serif-pro", "Roman"], # BAD REPO!
+   # Note: "Source Serif Pro" has a bad directory structure: one weight/style per folder.
+  ["UFO", "Sreekrushnadevaraya", "https://github.com/appajid/sreekrushnadevaraya", "SreeKrushnadevaraya"],
   ["OK", "Sriracha", "https://github.com/cadsondemak/sriracha.git", "fonts/Sriracha-"],
   ["OK", "Sumana", "https://github.com/cyrealtype/Sumana.git", "Sumana-"],
   ["OK", "Sura", "https://github.com/huertatipografica/sura.git", "fonts/Sura-"],
-  ["?", "Suranna", "https://github.com/appajid/suranna", ""],
-  ["?", "Suravaram", "https://github.com/appajid/suravaram", ""],
-  ["?", "Tenaliramakrishna", "https://github.com/appajid/tenaliramakrishna", ""],
-  ["?", "Tillana", "https://github.com/itfoundry/tillana", ""],
-  ["?", "Timmana", "https://github.com/appajid/timmana", ""],
-  ["?", "TrocchiFont", "https://github.com/vernnobile/TrocchiFont", ""],
+  ["UFO", "Suranna", "https://github.com/appajid/suranna", "Suranna"],
+  ["UFO", "Suravaram", "https://github.com/appajid/suravaram", "Suravaram"],
+  ["UFO", "Tenaliramakrishna", "https://github.com/appajid/tenaliramakrishna", "TenaliRamakrishna-"],
+  ["OTF", "Tillana", "https://github.com/itfoundry/tillana", "build/Tillana-"], # sources with OTF binaries, but no TTFs.
+  ["NOTE", "Timmana", "https://github.com/appajid/timmana", "TimmanaRegular"], # BAD: NON-CANONICAL NAME.
+  ["NOTE", "TrocchiFont", "https://github.com/vernnobile/TrocchiFont", "Regular/Trocchi"], # BAD: NON-CANONICAL NAME.
   ["OK", "Varela Round Hebrew", "https://github.com/alefalefalef/Varela-Round-Hebrew.git", "fonts/VarelaRound-"],
   ["OK", "Varta", "https://github.com/EbenSorkin/Varta.git", "Varta-"],
-  ["?", "Vesper Libre", "https://github.com/motaitalic/vesper-libre", ""],
-  ["?", "Work Sans", "https://github.com/weiweihuanghuang/Work-Sans", ""],
-  ["?", "Yantramanav", "https://github.com/erinmclaughlin/Yantramanav", ""]
+  ["OK", "Vesper Libre", "https://github.com/motaitalic/vesper-libre", "VesperLibre-"],
+  ["OK", "Work Sans", "https://github.com/weiweihuanghuang/Work-Sans", "fonts/webfonts/ttf/WorkSans-"],
+  ["OTF", "Yantramanav", "https://github.com/erinmclaughlin/Yantramanav", "otf/Yantramanav-"] # sources with OTF binaries, but no TTFs.
 ]
 
 if __name__ == '__main__':
