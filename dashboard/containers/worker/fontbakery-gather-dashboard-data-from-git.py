@@ -10,6 +10,7 @@ import subprocess
 import sys
 import time
 
+bail_out = False
 fonts_dir = None
 fonts_prefix = None
 runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
@@ -36,7 +37,7 @@ def get_filenames():
       files.append(fullpath)
   if len(files) == 0:
     print ("Where are the TTF files?!\n")
-    sys.exit(0)
+    bail_out = True
   else:
     print ("We'll be checking these files:\n{}\n".format("\n".join(files)))
   return files
@@ -110,6 +111,9 @@ def perform_job(REPO_URL):
 
     try:
       files = get_filenames()
+      if bail_out:
+        break
+
       run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
 
       family_stats = {
@@ -155,6 +159,7 @@ def perform_job(REPO_URL):
         db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).update(family_stats).run()
     except:
       print("Failed to run fontbakery on this commit (perhaps TTF files moved to a different folder.)")
+      bail_out = True
       break
 
 
@@ -176,7 +181,7 @@ def callback(ch, method, properties, body):
   connection.close()
   runs -= 1
   if runs == 0:
-    sys.exit(0)
+    sys.exit(-1)
 
 
 def main():

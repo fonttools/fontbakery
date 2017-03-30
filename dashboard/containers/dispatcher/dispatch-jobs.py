@@ -15,13 +15,13 @@ def main():
       connection = pika.BlockingConnection(pika.ConnectionParameters(host=msgqueue_host))
       channel = connection.channel()
 
-      print ("Dispatching {} messages...".format(len(messages)), file=sys.stderr)
+      print ("Dispatching messages...", file=sys.stderr)
       for entry in git_repos:
         message = {
-          "STATUS": entry[0]
-          "FAMILY_NAME": entry[1],
+          "STATUS": entry[0],
+          "FAMILYNAME": entry[1],
           "GIT_REPO_URL": entry[2],
-          "FONTFILES_PREFIX": entry[3]
+          "FONTFILE_PREFIX": entry[3]
         }
 
         if message["STATUS"] not in ["OK", "NOTE"]:
