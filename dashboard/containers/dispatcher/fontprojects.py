@@ -948,6 +948,15 @@ git_repos = [
 ]
 
 if __name__ == '__main__':
+  projects_csv = "https://docs.google.com/spreadsheets/d/1ampzD9veEdrwUMkOAJkMNkftqtv1jEygiPR0wZ6eNl8/pub?gid=0&single=true&output=csv"
+  cache_csv = "fontprojects.csv"
+  import csv
+  with open(cache_csv, 'w') as csvfile:
+    writer = csv.writer(csvfile, delimiter=' ',
+                        quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    for repo in git_repos:
+      writer.writerow(repo)
+
   repos_by_status = {}
   for repo in git_repos:
     status = repo[0]
