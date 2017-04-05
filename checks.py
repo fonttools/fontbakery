@@ -424,7 +424,9 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
                                      'PressStart2P': 'Press Start 2P',
                                      'AmaticSC': 'Amatic SC',
-                                     'AmaticaSC': 'Amatica SC'}
+                                     'AmaticaSC': 'Amatica SC',
+                                     'PatrickHandSC': 'Patrick Hand SC',
+                                     'CormorantSC': 'Cormorant SC'}
     if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
       return FAMILY_WITH_SPACES_EXCEPTIONS[value]
     result = ''
