@@ -10,7 +10,7 @@ import sys
 import time
 
 runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
-MAX_NUM_ITERATIONS = 3 # For now we'll limit the jobs to run
+MAX_NUM_ITERATIONS = 1 # For now we'll limit the jobs to run
                        # up to "MAX_NUM_ITERATIONS" commits
                        # in the font project repos
 
