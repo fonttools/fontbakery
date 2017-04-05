@@ -190,9 +190,13 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
   perform_job(fonts_dir, fonts_prefix)
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
+
   runs -= 1
   if runs == 0:
-    sys.exit(-1)
+    print("Finished work. Shutting down this container instance...")
+    sys.exit(0)
+  else:
+    print("Will fetch another workload...")
 
 
 def main():
