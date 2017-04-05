@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
 from dateutil import parser
-import glob
 import json
 import os
 import pika
@@ -11,19 +10,20 @@ import sys
 import time
 
 runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
-MAX_NUM_ITERATIONS = 20 # For now we'll limit the jobs to run
-                        # up to "MAX_NUM_ITERATIONS" commits
-                        # in the font project repos
+MAX_NUM_ITERATIONS = 3 # For now we'll limit the jobs to run
+                       # up to "MAX_NUM_ITERATIONS" commits
+                       # in the font project repos
+
+REPO_URL = None
+db = None
 
 def run(cmd):
   try:
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError, e:
     print ("Error: {}".format(e))
-    pass
   except OSError:
     print("could not execute command '{}' !".format(cmd))
-    pass
 
 
 def get_filenames(fonts_dir, fonts_prefix):
@@ -49,8 +49,8 @@ def calc_font_stats(results):
     "Total": len(results),
     "OK": 0
   }
-  for r in results:
-    result = r['result']
+  for res in results:
+    result = res['result']
     if result not in stats.keys():
       stats[result] = 1
     else:
@@ -66,8 +66,7 @@ def update_global_stats(summary, stats):
       summary[k] = stats[k]
 
 
-def save_results_on_database(f, fonts_dir):
-  global family_stats
+def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
   if f[-20:] != ".ttf.fontbakery.json":
     return
 
@@ -138,12 +137,13 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
   }
 
   for f in files:
-    save_results_on_database(f, fonts_dir)
+    save_results_on_database(f, fonts_dir, commit, i, family_stats, date)
 
   save_overall_stats_to_database(commit, family_stats)
   return True
 
-def perform_job(REPO_URL, fonts_dir, fonts_prefix):
+def perform_job(fonts_dir, fonts_prefix):
+  global db
   clone(REPO_URL, "clonedir")
   os.chdir("clonedir")
   run(["git", "checkout", "master"])
@@ -170,16 +170,16 @@ def perform_job(REPO_URL, fonts_dir, fonts_prefix):
     print ("[{} of {}] Checking out commit '{}'".format(i+1, len(commits), commit))
     run(["git", "checkout", commit])
     print ("==> Running fontbakery on commit '{}'...".format(commit))
-    run_fontbalery_on_commit(fonts_dir, commit, i)
+    run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i)
 
 
 connection = None
-def callback(ch, method, properties, body):
-  global runs
+def callback(ch, method, properties, body): #pylint: disable=unused-argument
+  global runs, REPO_URL
   msg = json.loads(body)
   print("Received %r" % msg, file=sys.stderr)
 
-  repo_url = msg["GIT_REPO_URL"]
+  REPO_URL = msg["GIT_REPO_URL"]
   fonts_prefix = msg["FONTFILE_PREFIX"]
   fonts_dir = '.'
   if '/' in fonts_prefix:
@@ -187,7 +187,7 @@ def callback(ch, method, properties, body):
     fonts_prefix = prefix_elements.pop(-1)
     fonts_dir = '/'.join(prefix_elements)
 
-  perform_job(repo_url, fonts_dir, fonts_prefix)
+  perform_job(fonts_dir, fonts_prefix)
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
   runs -= 1
@@ -211,7 +211,6 @@ def main():
     except pika.exceptions.ConnectionClosed:
       print ("RabbitMQ not ready yet.", file=sys.stderr)
       time.sleep(1)
-      pass
 
 main()
 
