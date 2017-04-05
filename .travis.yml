@@ -25,6 +25,8 @@ install:
   - pip install gitpython
   - pip install matplotlib
   - pip install python-dateutil
+  - pip install rethinkdb
+  - pip install pika
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
 script:
