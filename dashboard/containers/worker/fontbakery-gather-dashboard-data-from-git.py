@@ -11,7 +11,9 @@ import sys
 import time
 
 runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
-
+MAX_NUM_ITERATIONS = 20 # For now we'll limit the jobs to run
+                        # up to "MAX_NUM_ITERATIONS" commits
+                        # in the font project repos
 
 def run(cmd):
   try:
@@ -149,6 +151,7 @@ def perform_job(REPO_URL, fonts_dir, fonts_prefix):
 
   lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
   commits = ["master"] + [line.split()[0].strip() for line in lines]
+  commits = commits[:MAX_NUM_ITERATIONS]
   print ("The commits we'll iterate over are: {}".format(commits))
 
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
