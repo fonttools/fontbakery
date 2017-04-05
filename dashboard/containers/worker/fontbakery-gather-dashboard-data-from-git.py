@@ -146,14 +146,13 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
 
 def perform_job(fonts_dir, fonts_prefix):
   global db
-  clone(REPO_URL, "clonedir")
+  clone(REPO_URL, "clonedir", depth=MAX_NUM_ITERATIONS)
   os.chdir("clonedir")
   run(["git", "checkout", "master"])
   print ("We're now at master branch.")
 
   lines = run(["git", "log", "--oneline", "."]).strip().split('\n')
   commits = ["master"] + [line.split()[0].strip() for line in lines]
-  commits = commits[:MAX_NUM_ITERATIONS]
   print ("The commits we'll iterate over are: {}".format(commits))
 
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
