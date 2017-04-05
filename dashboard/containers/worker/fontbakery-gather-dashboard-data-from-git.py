@@ -67,6 +67,7 @@ def update_global_stats(summary, stats):
 
 
 def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
+  print ("save_results_on_database: '{}'".format(f))
   if f[-20:] != ".ttf.fontbakery.json":
     return
 
@@ -109,6 +110,7 @@ def infer_date_from_git():
 
 
 def save_overall_stats_to_database(commit, family_stats):
+  print ("save_overall_stats_to_database:\nstats = {}".format(family_stats))
   if db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).count().run() == 0:
     db.table('cached_stats').insert(family_stats).run()
   else:
@@ -136,7 +138,7 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
     "HEAD": (i==0)
   }
 
-  for f in files:
+  for f in os.listdir(fonts_dir):
     save_results_on_database(f, fonts_dir, commit, i, family_stats, date)
 
   save_overall_stats_to_database(commit, family_stats)
