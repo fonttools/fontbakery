@@ -17,6 +17,8 @@ kubectl create -f services/rethinkdb-admin-service.yaml
 $DOCKER build -t fb-dashboard-1 containers/web
 $DOCKER tag fb-dashboard-1 gcr.io/$PROJECT/fb-dashboard-1
 $GCLOUD docker -- push gcr.io/$PROJECT/fb-dashboard-1
+kubectl delete svc flaskapp-service
+kubectl delete rc dashboard-rc
 kubectl create -f services/flask-service.yaml
 kubectl create -f services/dashboard-rc.yaml
 

@@ -48,7 +48,8 @@ def testsuite_overview():
                           'Total': 0,
                           'ERROR': 0,
                           'WARNING': 0,
-                          'SKIP': 0,
+                          'SKIP':0,
+                          'HOTFIX': 0,
                           'INFO': 0}
 
         checks[desc][result] += 1
