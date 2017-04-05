@@ -631,8 +631,8 @@ OK,Oswald,https://github.com/googlefonts/OswaldFont.git,fonts/ttf/Oswald-,
 ?,oswaldvfbeta,,,
 ?,overlock,,,
 ?,overlocksc,,,
-NOTE,Overpass,https://github.com/m4rc1e/OverpassGFVersion,Webfonts/Overpass-Bold-,"There's also: ""Desktop Fonts/Overpass-"" | Should probably move this hotfix repo to googlefonts"
-?,overpassmono,,,
+NOTE,Overpass,https://github.com/m4rc1e/OverpassGFVersion,fonts/Overpass-,"There's also: ""Desktop Fonts/Overpass-"" | Should probably move this hotfix repo to googlefonts"
+OK,Overpass Mono,https://github.com/m4rc1e/OverpassGFVersion,fonts/OverpassMono-,
 ?,overpassvfbeta,,,
 ?,overtherainbow,,,
 ?,ovo,,,

@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: job-fb-worker-1
 spec:
-  completions: 152
+  completions: 153
   parallelism: 8
   template:
     metadata:
