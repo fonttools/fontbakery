@@ -3,8 +3,14 @@ PROJECT=fontbakery
 GCLOUD="sudo /home/felipe/devel/prebuilt/google-cloud-sdk/bin/gcloud"
 DOCKER="sudo docker"
 
-
-
+# update_database:
+$DOCKER build -t rethinkdb-2.3.5 containers/rethinkdb
+$DOCKER tag rethinkdb-2.3.5 gcr.io/$PROJECT/rethinkdb-2.3.5
+$GCLOUD docker -- push gcr.io/$PROJECT/rethinkdb-2.3.5
+kubectl delete rc rethinkdb-rc
+kubectl create -f services/rethinkdb-driver-service.yaml
+kubectl create -f services/rethinkdb-rc.yaml
+kubectl create -f services/rethinkdb-admin-service.yaml
 
 
 # update_frontend:
@@ -15,17 +21,6 @@ kubectl delete svc flaskapp-service
 kubectl delete rc dashboard-rc
 kubectl create -f services/flask-service.yaml
 kubectl create -f services/dashboard-rc.yaml
-
-
-# update_database:
-$DOCKER build -t rethinkdb-2.3.5 containers/rethinkdb
-$DOCKER tag rethinkdb-2.3.5 gcr.io/$PROJECT/rethinkdb-2.3.5
-$GCLOUD docker -- push gcr.io/$PROJECT/rethinkdb-2.3.5
-kubectl delete rc rethinkdb-rc
-kubectl create -f services/rethinkdb-driver-service.yaml
-kubectl create -f services/rethinkdb-rc.yaml
-kubectl create -f services/rethinkdb-admin-service.yaml
-
 
 
 #   -> "kill all":

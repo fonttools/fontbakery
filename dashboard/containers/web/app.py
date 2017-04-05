@@ -5,13 +5,16 @@ import os
 
 app = Flask(__name__, static_url_path='')
 
+
 @app.route('/css/<path>')
 def send_css(path):
     return send_from_directory('static/css', path)
 
+
 @app.route('/js/<path>')
 def send_js(path):
     return send_from_directory('static/js', path)
+
 
 @app.route('/')
 def dashboard():
@@ -62,6 +65,19 @@ def testsuite_overview():
                           )
 #  except:
 #    return render_template("under_deployment.html")
+
+
+@app.route('/details/<familyname>/errorlog')
+def family_error_log(familyname):
+  db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+  r.connect(db_host, 28015).repl()
+  db = r.db('fontbakery')
+  family = db.table('fb_log').filter({"familyname": familyname}).run()
+
+  logs = list(family)
+
+  return render_template("error_log.html",
+                         logs=logs)
 
 
 @app.route('/details/<familyname>')

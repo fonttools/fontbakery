@@ -8,6 +8,7 @@ COPY templates/dashboard.html /templates/
 COPY templates/under_deployment.html /templates/
 COPY templates/family_details.html /templates/
 COPY templates/testsuite.html /templates/
+COPY templates/error_log.html /templates/
 COPY static/css/dashboard.css /static/css/
 COPY static/css/family_details.css /static/css/
 COPY static/css/testsuite.css /static/css/
