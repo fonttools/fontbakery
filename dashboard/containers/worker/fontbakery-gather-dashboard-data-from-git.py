@@ -15,6 +15,7 @@ MAX_NUM_ITERATIONS = 1 # For now we'll limit the jobs to run
                        # in the font project repos
 
 REPO_URL = None
+FAMILYNAME = None
 db = None
 
 def run(cmd):
@@ -65,6 +66,14 @@ def update_global_stats(summary, stats):
     else:
       summary[k] = stats[k]
 
+def save_output_on_database(commit, output):
+  data = {"commit": commit, "familyname": FAMILYNAME, "output": output}
+  print ("save_output_on_database: '{}' [{}]".format(FAMILYNAME, commit))
+  if db.table('fb_log').filter({"commit": commit, "familyname": FAMILYNAME}).count().run() == 0:
+    db.table('fb_log').insert(data).run()
+  else:
+    db.table('fb_log').filter({"commit": commit, "familyname": FAMILYNAME}).update(data).run()
+
 
 def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
   print ("save_results_on_database: '{}'".format(f))
@@ -73,8 +82,7 @@ def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
 
   print ("Check results JSON file: {}".format(f))
   fname = f.split('.fontbakery.json')[0]
-  familyname = fname.split('-')[0]
-  family_stats['familyname'] = familyname
+  family_stats['familyname'] = FAMILYNAME
   data = open(fonts_dir + "/" + f).read()
   results = json.loads(data)
   font_stats = calc_font_stats(results)
@@ -84,7 +92,7 @@ def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
     "results": results,
     "commit": commit,
     "fontname": fname,
-    "familyname": familyname,
+    "familyname": FAMILYNAME,
     "date": date,
     "stats": font_stats,
     "HEAD": (i==0)
@@ -111,10 +119,10 @@ def infer_date_from_git():
 
 def save_overall_stats_to_database(commit, family_stats):
   print ("save_overall_stats_to_database:\nstats = {}".format(family_stats))
-  if db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).count().run() == 0:
+  if db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL, "familyname": FAMILYNAME}).count().run() == 0:
     db.table('cached_stats').insert(family_stats).run()
   else:
-    db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL}).update(family_stats).run()
+    db.table('cached_stats').filter({"commit":commit, "giturl": REPO_URL, "familyname": FAMILYNAME}).update(family_stats).run()
 
 
 # Returns boolean "success"
@@ -127,9 +135,11 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
     print ("No font files were found.")
     return False
 
-  run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+  output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+  save_output_on_database(commit, output)
 
   family_stats = {
+    "familyname": FAMILYNAME,
     "giturl": REPO_URL,
     "commit": commit,
      "date": date,
@@ -159,6 +169,7 @@ def perform_job(fonts_dir, fonts_prefix):
   r.connect(db_host, 28015).repl()
   try:
     r.db_create('fontbakery').run()
+    r.db('fontbakery').table_create('fb_log').run()
     r.db('fontbakery').table_create('check_results').run()
     r.db('fontbakery').table_create('cached_stats').run()
   except:
@@ -176,11 +187,12 @@ def perform_job(fonts_dir, fonts_prefix):
 
 connection = None
 def callback(ch, method, properties, body): #pylint: disable=unused-argument
-  global runs, REPO_URL
+  global runs, REPO_URL, FAMILYNAME
   msg = json.loads(body)
   print("Received %r" % msg, file=sys.stderr)
 
   REPO_URL = msg["GIT_REPO_URL"]
+  FAMILYNAME = msg["FAMILYNAME"]
   fonts_prefix = msg["FONTFILE_PREFIX"]
   fonts_dir = '.'
   if '/' in fonts_prefix:
