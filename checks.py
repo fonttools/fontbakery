@@ -1607,9 +1607,9 @@ def check_font_contains_the_first_few_mandatory_glyphs(fb, font):
   if CR is None: missing.append("0x000D")
   if space is None: missing.append("0x0020")
   if missing != []:
-    fb.error(("Font is missing glyphs for"
-              " the following mandatory codepoints:"
-              " {}.").format(", ".join(missing)))
+    fb.warning(("Font is missing glyphs for"
+                " the following mandatory codepoints:"
+                " {}.").format(", ".join(missing)))
   else:
     fb.ok("Font contains the first few mandatory glyphs"
           " (.null or NULL, CR and space).")
