@@ -2080,21 +2080,21 @@ def check_GASP_table_is_correctly_set(fb, font):
                 fb.hotfix("gaspRange[0xFFFF]"
                           " value ({}) is not 0x0F".format(hex(value)))
               else:
-                fb.error(" All flags in GASP range 0xFFFF (i.e. all font"
-                         " sizes) must be set to 1.\n"
-                         " Rationale:\n"
-                         " Traditionally version 0 GASP tables were set"
-                         " so that font sizes below 8 ppem had no grid"
-                         " fitting but did have antialiasing. From 9-16"
-                         " ppem, just grid fitting. And fonts above"
-                         " 17ppem had both antialiasing and grid fitting"
-                         " toggled on. The use of accelerated graphics"
-                         " cards and higher resolution screens make this"
-                         " appraoch obsolete. Microsoft's DirectWrite"
-                         " pushed this even further with much improved"
-                         " rendering built into the OS and apps. In this"
-                         " scenario it makes sense to simply toggle all"
-                         " 4 flags ON for all font sizes.")
+                fb.warning(" All flags in GASP range 0xFFFF (i.e. all font"
+                           " sizes) must be set to 1.\n"
+                           " Rationale:\n"
+                           " Traditionally version 0 GASP tables were set"
+                           " so that font sizes below 8 ppem had no grid"
+                           " fitting but did have antialiasing. From 9-16"
+                           " ppem, just grid fitting. And fonts above"
+                           " 17ppem had both antialiasing and grid fitting"
+                           " toggled on. The use of accelerated graphics"
+                           " cards and higher resolution screens make this"
+                           " appraoch obsolete. Microsoft's DirectWrite"
+                           " pushed this even further with much improved"
+                           " rendering built into the OS and apps. In this"
+                           " scenario it makes sense to simply toggle all"
+                           " 4 flags ON for all font sizes.")
         if not failed:
           fb.ok("GASP table is correctly set.")
   except KeyError:
