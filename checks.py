@@ -2444,9 +2444,9 @@ def check_font_enables_smart_dropout_control(fb, font):
       fb.ok("Program at 'prep' table contains instructions"
             " enabling smart dropout control.")
     else:
-      fb.error("Font does not contain TrueType instructions enabling"
-               " smart dropout control in the 'prep' table program."
-               " Please try exporting the font with autohinting enabled.")
+      fb.warning("Font does not contain TrueType instructions enabling"
+                 " smart dropout control in the 'prep' table program."
+                 " Please try exporting the font with autohinting enabled.")
 
 
 def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb, font):
