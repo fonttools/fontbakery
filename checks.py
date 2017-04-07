@@ -426,7 +426,8 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
                                      'AmaticSC': 'Amatic SC',
                                      'AmaticaSC': 'Amatica SC',
                                      'PatrickHandSC': 'Patrick Hand SC',
-                                     'CormorantSC': 'Cormorant SC'}
+                                     'CormorantSC': 'Cormorant SC',
+                                     'ABeeZee': 'ABeeZee'}
     if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
       return FAMILY_WITH_SPACES_EXCEPTIONS[value]
     result = ''
