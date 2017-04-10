@@ -82,18 +82,18 @@ def family_error_log(familyname):
 
 @app.route('/details/<familyname>')
 def family_details(familyname):
-  try:
+  if 1: #try:
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
     r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
     family = db.table('cached_stats').filter({"HEAD": True, "familyname": familyname}).run()
     fonts = db.table('check_results').filter({"HEAD": True, "familyname": familyname}).run()
 
-    summary = family.next()['summary']
+    the_family = family.next()
     chart_data = [["Results", "Occurrences"]]
-    for k in summary:
+    for k in the_family['summary']:
       if k != "Total":
-        chart_data.append([k, summary[k]])
+        chart_data.append([k, the_family['summary'][k]])
 
     fonts = list(fonts)
     for f in fonts:
@@ -105,9 +105,10 @@ def family_details(familyname):
     return render_template("family_details.html",
                            fonts=fonts,
                            familyname=familyname,
-                           chart_data=json.dumps(chart_data))
-  except:
-    return render_template("under_deployment.html")
+                           chart_data=json.dumps(chart_data),
+                           giturl=the_family['giturl'])
+#  except:
+#    return render_template("under_deployment.html")
 
 
 if __name__ == "__main__":

@@ -12,14 +12,16 @@ kubectl create -f services/rethinkdb-driver-service.yaml
 kubectl create -f services/rethinkdb-rc.yaml
 kubectl create -f services/rethinkdb-admin-service.yaml
 
+# update flask service
+# Note: This will affect the publicly accessinble IP address.
+kubectl delete svc flaskapp-service
+kubectl create -f services/flask-service.yaml
 
 # update_frontend:
 $DOCKER build -t fb-dashboard-1 containers/web
 $DOCKER tag fb-dashboard-1 gcr.io/$PROJECT/fb-dashboard-1
 $GCLOUD docker -- push gcr.io/$PROJECT/fb-dashboard-1
-kubectl delete svc flaskapp-service
 kubectl delete rc dashboard-rc
-kubectl create -f services/flask-service.yaml
 kubectl create -f services/dashboard-rc.yaml
 
 
