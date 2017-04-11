@@ -3,6 +3,7 @@ FROM python:2.7
 RUN apt-get update
 RUN apt-get install -y mono-complete
 RUN apt-get install -y git-core
+RUN apt-get install -y python-fontforge
 
 ADD requirements.txt /
 RUN pip install --no-cache-dir -r requirements.txt

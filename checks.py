@@ -1277,7 +1277,9 @@ def check_fforge_outputs_error_msgs(fb, font_file):
       fb.error("FontForge seems to have a problem while"
                " attempting to run checks on this font file!"
                " More info at: https://github.com/googlefonts/"
-               "fontbakery/issues/1166")
+               "fontbakery/issues/1166 "
+               " Actual error message was:"
+               " '{}'".format(sys.exc_info()[0].output))
 
     return validation_state
 
