@@ -1165,7 +1165,7 @@ def check_with_otsanitise(fb, font_file):
   else:
     try:
       import subprocess
-      ots_output = subprocess.check_output(["prebuilt/ot-sanitise", font_file],
+      ots_output = subprocess.check_output(["ot-sanitise", font_file],
                                            stderr=subprocess.STDOUT)
       if ots_output != "":
         fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
@@ -1180,8 +1180,9 @@ def check_with_otsanitise(fb, font_file):
                  " You really MUST check the fonts with this tool."
                  " To install it, see"
                  " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n"
-                 "{}\n\n".format(e.output))
+                 "/gf-docs/blob/master/ProjectChecklist.md#ots"
+                 " Actual error message was: "
+                 "'{}'\n\n".format(e))
 
 
 def check_with_msfontvalidator(fb, font_file):
