@@ -1156,7 +1156,6 @@ def check_with_ftxvalidator(fb, font_file):
                "\n\n{}\n").format(e.output))
     except OSError:
       fb.warning("ftxvalidator is not available!")
-      pass
 
 
 def check_with_otsanitise(fb, font_file):
@@ -1175,14 +1174,14 @@ def check_with_otsanitise(fb, font_file):
     except subprocess.CalledProcessError, e:
         fb.error(("ot-sanitise returned an error code. Output follows :"
                   "\n\n{}\n").format(e.output))
-    except OSError:
+    except OSError, e:
       # This is made very prominent with additional line breaks
       fb.warning("\n\n\not-santise is not available!"
                  " You really MUST check the fonts with this tool."
                  " To install it, see"
                  " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n\n\n")
-      pass
+                 "/gf-docs/blob/master/ProjectChecklist.md#ots\n"
+                 "{}\n\n".format(e.output))
 
 
 def check_with_msfontvalidator(fb, font_file):
