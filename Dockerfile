@@ -7,7 +7,7 @@ RUN apt-get install -y git-core
 ADD requirements.txt /
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY prebuilt /prebuilt
+ADD prebuilt/ot-sanitise /usr/local/bin/
 ADD fontbakery-check-ttf.py /
 ADD checks.py /
 ADD utils.py /
