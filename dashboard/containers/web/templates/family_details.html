@@ -41,6 +41,7 @@
           <table>
             <thead>
               <th data-sort="string">Result</th>
+              <th data-sort="string">Check ID</th>
               <th data-sort="string">Check description</th>
               <th data-sort="string">Log Messages</th>
             </thead>
@@ -48,6 +49,7 @@
               {% for entry in font['results'] %}
               <tr>
                 <td>{{ entry.result }}</td>
+                <td>{{ entry.check_number }}</td>
                 <td>{{ entry.description }}</td>
                 <td>
                 {% for msg in entry.log_messages %}
