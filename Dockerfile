@@ -4,6 +4,12 @@ RUN apt-get update
 RUN apt-get install -y mono-complete
 RUN apt-get install -y git-core
 
+# Install fontforge.
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:fontforge/fontforge
+RUN apt-get update
+RUN apt-get install -y fontforge-nox python-fontforge
+
 ADD requirements.txt /
 RUN pip install --no-cache-dir -r requirements.txt
 
