@@ -82,7 +82,7 @@ from constants import IMPORTANT,\
                       WHITESPACE_CHARACTERS,\
                       PLAT_ENC_ID_UCS2
 try:
-  import fontforge
+  import fontforge  #pylint: disable=unused-import
 except ImportError:
   logging.warning("fontforge python module is not available!"
                   " To install it, see"
