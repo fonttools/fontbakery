@@ -1231,6 +1231,7 @@ def check_fforge_outputs_error_msgs(fb, font_file):
   else:
     validation_state = None
     try:
+      import fontforge
       # temporary stderr redirection:
       ff_err = os.tmpfile()
 
@@ -1274,12 +1275,12 @@ def check_fforge_outputs_error_msgs(fb, font_file):
         fb.ok("fontforge validation did not output any error message.")
       ff_err.close()
     except:
-      fb.error("FontForge seems to have a problem while"
+      fb.error(" It seems that FontForge had a problem while"
                " attempting to run checks on this font file!"
                " More info at: https://github.com/googlefonts/"
                "fontbakery/issues/1166 "
                " Actual error message was:"
-               " '{}'".format(sys.exc_info()[0].output))
+               " '{}'".format(sys.exc_info()))
 
     return validation_state
 
