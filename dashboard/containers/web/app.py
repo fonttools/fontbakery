@@ -6,12 +6,12 @@ import os
 app = Flask(__name__, static_url_path='')
 
 
-@app.route('/css/<path>')
+@app.route('/css/<path>/')
 def send_css(path):
     return send_from_directory('static/css', path)
 
 
-@app.route('/js/<path>')
+@app.route('/js/<path>/')
 def send_js(path):
     return send_from_directory('static/js', path)
 
@@ -28,7 +28,7 @@ def dashboard():
 #    return render_template("under_deployment.html")
 
 
-@app.route('/testsuite')
+@app.route('/testsuite/')
 def testsuite_overview():
   if 1:  #try:
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
@@ -67,7 +67,7 @@ def testsuite_overview():
 #    return render_template("under_deployment.html")
 
 
-@app.route('/details/<familyname>/errorlog')
+@app.route('/details/<familyname>/errorlog/')
 def family_error_log(familyname):
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
   r.connect(db_host, 28015).repl()
@@ -80,7 +80,7 @@ def family_error_log(familyname):
                          logs=logs)
 
 
-@app.route('/details/<familyname>')
+@app.route('/details/<familyname>/')
 def family_details(familyname):
   if 1: #try:
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
