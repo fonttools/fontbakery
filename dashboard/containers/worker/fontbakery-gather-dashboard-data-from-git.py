@@ -8,6 +8,7 @@ import rethinkdb as r
 import subprocess
 import sys
 import time
+import urllib
 
 runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
 MAX_NUM_ITERATIONS = 1 # For now we'll limit the jobs to run
@@ -185,6 +186,40 @@ def perform_job(fonts_dir, fonts_prefix):
     run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i)
 
 
+def run_fontbakery_on_production_files():
+  PROD_URL = "https://fonts.google.com/download?family={}".format(FAMILYNAME)
+  open("prod/family.zip", "w").write(urllib.urlopen(PROD_URL).read())
+  run(["unzip", "prod/family.zip"])
+  files = []
+  for f in os.listdir("prod"):
+    if f[-4:] == ".ttf":
+      fullpath = "prod/" + f
+      # Do we need to escape spaces in the fullpaths here?
+      files.append(fullpath)
+
+  print ("We'll check the following PRODUCTION font files: {}".format(files))
+  output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+  save_output_on_database("prod", output)
+
+  commit = "prod" # This is sort of a hack!
+
+  family_stats = {
+    "familyname": FAMILYNAME,
+    "giturl": REPO_URL,
+    "commit": commit,
+    "date": None,
+    "summary": {"OK": 0,
+                "Total": 0},
+    "HEAD": False
+  }
+
+  for f in os.listdir("prod"):
+    save_results_on_database(f, "prod", commit, -1, family_stats, None)
+
+  save_overall_stats_to_database(commit, family_stats)
+  return True
+
+
 connection = None
 def callback(ch, method, properties, body): #pylint: disable=unused-argument
   global runs, REPO_URL, FAMILYNAME
@@ -200,6 +235,7 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
     fonts_prefix = prefix_elements.pop(-1)
     fonts_dir = '/'.join(prefix_elements)
 
+  run_fontbakery_on_production_files()
   perform_job(fonts_dir, fonts_prefix)
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
