@@ -236,7 +236,10 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
     fonts_dir = '/'.join(prefix_elements)
 
   run_fontbakery_on_production_files()
-  perform_job(fonts_dir, fonts_prefix)
+
+  if msg["STATUS"] in ["OK", "NOTE"]:
+    perform_job(fonts_dir, fonts_prefix)
+
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
 

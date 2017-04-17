@@ -16,7 +16,11 @@ def main():
       channel = connection.channel()
 
       print ("Dispatching messages...", file=sys.stderr)
-      for entry in git_repos:
+      for i, entry in enumerate(git_repos):
+        if i==0:
+          # Skipt the first line in the list (because it is a purely informative statement)
+          continue
+
         message = {
           "STATUS": entry[0],
           "FAMILYNAME": entry[1],
@@ -24,12 +28,7 @@ def main():
           "FONTFILE_PREFIX": entry[3]
         }
 
-        if message["STATUS"] not in ["OK", "NOTE"]:
-          # Skip this repo, since it is not in bad-shape to run fontbakery checks on it.
-          # See the listing at fontprojects.py script to know the specific issues.
-          continue
-
-        print ("Adding {} to the queue.".format(message["GIT_REPO_URL"]), file=sys.stderr)
+        print ("Adding to queue: {}".format(message), file=sys.stderr)
         channel.basic_publish(exchange='',
                               routing_key='font_repo_queue',
                               body=json.dumps(message),
