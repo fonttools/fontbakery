@@ -77,8 +77,9 @@ def save_output_on_database(commit, output):
 
 
 def save_results_on_database(f, fonts_dir, commit, i, family_stats, date):
-  print ("save_results_on_database: '{}'".format(f))
+#  print ("Invoked 'save_results_on_database' with f='{}'".format(f))
   if f[-20:] != ".ttf.fontbakery.json":
+#    print("Not a report file.")
     return
 
   print ("Check results JSON file: {}".format(f))
@@ -155,7 +156,7 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
   save_overall_stats_to_database(commit, family_stats)
   return True
 
-def perform_job(fonts_dir, fonts_prefix):
+def checkout_and_test_git_repo(fonts_dir, fonts_prefix):
   global db
   clone(REPO_URL, "clonedir", depth=MAX_NUM_ITERATIONS)
   os.chdir("clonedir")
@@ -166,19 +167,6 @@ def perform_job(fonts_dir, fonts_prefix):
   commits = ["master"] + [line.split()[0].strip() for line in lines]
   print ("The commits we'll iterate over are: {}".format(commits))
 
-  db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
-  r.connect(db_host, 28015).repl()
-  try:
-    r.db_create('fontbakery').run()
-    r.db('fontbakery').table_create('fb_log').run()
-    r.db('fontbakery').table_create('check_results').run()
-    r.db('fontbakery').table_create('cached_stats').run()
-  except:
-    # OK, database and tables already exist.
-    pass
-
-  db = r.db('fontbakery')
-
   for i, commit in enumerate(commits):
     print ("[{} of {}] Checking out commit '{}'".format(i+1, len(commits), commit))
     run(["git", "checkout", commit])
@@ -188,14 +176,20 @@ def perform_job(fonts_dir, fonts_prefix):
 
 def run_fontbakery_on_production_files():
   PROD_URL = "https://fonts.google.com/download?family={}".format(FAMILYNAME)
-  open("prod/family.zip", "w").write(urllib.urlopen(PROD_URL).read())
-  run(["unzip", "prod/family.zip"])
+  os.mkdir("prod")
+  open("prod/family.zip", "w+").write(urllib.urlopen(PROD_URL).read())
+  output = run(["unzip", "prod/family.zip", "-d", "prod"])
+  print("unzip output: {}".format(output))
   files = []
   for f in os.listdir("prod"):
     if f[-4:] == ".ttf":
       fullpath = "prod/" + f
       # Do we need to escape spaces in the fullpaths here?
       files.append(fullpath)
+
+  if len(files) == 0:
+    print ("Could not find production files for '{}'".format(FAMILYNAME))
+    return False
 
   print ("We'll check the following PRODUCTION font files: {}".format(files))
   output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
@@ -226,6 +220,7 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
   msg = json.loads(body)
   print("Received %r" % msg, file=sys.stderr)
 
+  STATUS = msg["STATUS"]
   REPO_URL = msg["GIT_REPO_URL"]
   FAMILYNAME = msg["FAMILYNAME"]
   fonts_prefix = msg["FONTFILE_PREFIX"]
@@ -237,8 +232,8 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
 
   run_fontbakery_on_production_files()
 
-  if msg["STATUS"] in ["OK", "NOTE"]:
-    perform_job(fonts_dir, fonts_prefix)
+  if STATUS == "OK" or STATUS == "NOTE":
+    checkout_and_test_git_repo(fonts_dir, fonts_prefix)
 
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
@@ -252,7 +247,20 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
 
 
 def main():
-  global connection
+  global connection, db
+
+  db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+  r.connect(db_host, 28015).repl()
+  try:
+    r.db_create('fontbakery').run()
+    r.db('fontbakery').table_create('fb_log').run()
+    r.db('fontbakery').table_create('check_results').run()
+    r.db('fontbakery').table_create('cached_stats').run()
+  except:
+    # OK, database and tables already exist.
+    pass
+  db = r.db('fontbakery')
+
   while True:
     try:
       msgqueue_host = os.environ.get("RABBITMQ_SERVICE_SERVICE_HOST", os.environ.get("BROKER"))

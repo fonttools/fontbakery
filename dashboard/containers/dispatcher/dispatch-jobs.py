@@ -17,11 +17,13 @@ def main():
 
       print ("Dispatching messages...", file=sys.stderr)
       for i, entry in enumerate(git_repos):
-        if i==0:
-          # Skipt the first line in the list (because it is a purely informative statement)
+        if i<=1:
+          # Skip the first couple lines in the list
+          # because they are purely informative statements
           continue
 
         message = {
+          "MSG_INDEX": i,
           "STATUS": entry[0],
           "FAMILYNAME": entry[1],
           "GIT_REPO_URL": entry[2],

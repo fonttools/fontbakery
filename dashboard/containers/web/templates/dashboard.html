@@ -13,7 +13,7 @@
       <p>This dashboard monitors the progress status of a selection of font projects.</p>
       <p>Percentages and progress bars below correspond to the ammount of checks from the FontBakery test-suite that are satisfied by the given family. Click on a family to see a detailed report.</p>
       <ul>
-        {% for font in fonts %}
+        {% for font in prod %}
         {% if font['summary']['Total'] > 0 %}
         <a href="/details/{{ font['familyname'] }}">
           <li>

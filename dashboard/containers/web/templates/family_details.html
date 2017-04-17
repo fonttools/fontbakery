@@ -25,12 +25,12 @@
       <div id="piechart"></div>
       <div id="tabs" style="display:hidden">
         <!-- tabs -->
-        <ul>{% for font in fonts %}
+        <ul>{% for font in prod %}
           <li><a href="#tab-{{ loop.index }}">{{ font['stylename'] }}</a></li>
           {% endfor %}</ul>
 
         <!-- Tabs content -->
-        {% for font in fonts %}
+        {% for font in prod %}
         <div id="tab-{{ loop.index }}">
           <div class="progress_item">
             <span class="familyname">{{ font['fontname'] }}</span><br/>

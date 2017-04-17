@@ -18,14 +18,11 @@ def send_js(path):
 
 @app.route('/')
 def dashboard():
-  if 1: #try:
-    db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
-    r.connect(db_host, 28015).repl()
-    db = r.db('fontbakery')
-    fonts = db.table('cached_stats').filter({"HEAD": True}).run()
-    return render_template("dashboard.html", fonts=fonts)
-#  except:
-#    return render_template("under_deployment.html")
+  db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
+  r.connect(db_host, 28015).repl()
+  db = r.db('fontbakery')
+  fonts_prod = db.table('cached_stats').filter({"commit": "prod"}).run()
+  return render_template("dashboard.html", prod=fonts_prod)
 
 
 @app.route('/testsuite/')
@@ -34,7 +31,7 @@ def testsuite_overview():
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
     r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
-    targets = db.table('check_results').filter({"HEAD": True}).run()
+    targets = db.table('check_results').filter({"commit": "prod"}).run()
     families = []
     checks = {}
     num_targets = 0
@@ -86,27 +83,37 @@ def family_details(familyname):
     db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
     r.connect(db_host, 28015).repl()
     db = r.db('fontbakery')
-    family = db.table('cached_stats').filter({"HEAD": True, "familyname": familyname}).run()
-    fonts = db.table('check_results').filter({"HEAD": True, "familyname": familyname}).run()
 
-    the_family = family.next()
+    fonts_prod = list(db.table('check_results').filter({"commit": "prod", "familyname": familyname}).run())
+    fonts_dev = list(db.table('check_results').filter({"HEAD": True, "familyname": familyname}).run())
+    family_prod = db.table('cached_stats').filter({"commit": "prod", "familyname": familyname}).run().next()
+    family_dev = []
+    try:
+      family_dev = db.table('cached_stats').filter({"HEAD": True, "familyname": familyname}).run().next()
+    except:
+      pass
+
     chart_data = [["Results", "Occurrences"]]
-    for k in the_family['summary']:
+    delta = {}
+    for k in family_prod['summary']:
       if k != "Total":
-        chart_data.append([k, the_family['summary'][k]])
+        chart_data.append([k, family_prod['summary'][k]])
+        if family_dev != []:
+          delta[k] = (family_dev['summary'][k] - family_prod['summary'][k])
 
-    fonts = list(fonts)
-    for f in fonts:
+    for f in fonts_dev + fonts_prod:
       if '-' in f['fontname'] and '.ttf' in f['fontname']:
         f['stylename'] = f['fontname'].split('-')[1].split('.ttf')[0]
       else:
         f['stylename'] = "{} (bad name)".format(f['fontname'])
 
     return render_template("family_details.html",
-                           fonts=fonts,
+                           delta=delta,
+                           dev=fonts_dev,
+                           prod=fonts_prod,
                            familyname=familyname,
                            chart_data=json.dumps(chart_data),
-                           giturl=the_family['giturl'])
+                           giturl=family_prod['giturl'])
 #  except:
 #    return render_template("under_deployment.html")
 
