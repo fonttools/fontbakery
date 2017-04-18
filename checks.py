@@ -423,10 +423,6 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
   def family_with_spaces(value):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
                                      'PressStart2P': 'Press Start 2P',
-                                     'AmaticSC': 'Amatic SC',
-                                     'AmaticaSC': 'Amatica SC',
-                                     'PatrickHandSC': 'Patrick Hand SC',
-                                     'CormorantSC': 'Cormorant SC',
                                      'ABeeZee': 'ABeeZee'}
     if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
       return FAMILY_WITH_SPACES_EXCEPTIONS[value]
@@ -435,7 +431,12 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
       if c.isupper():
         result += " "
       result += c
-    return result.strip()
+    result = result.strip()
+
+    if result[-3:] == "S C":
+      result = result[:-3] + "SC"
+
+    return result
 
   def get_only_weight(value):
     onlyWeight = {"BlackItalic": "Black",
