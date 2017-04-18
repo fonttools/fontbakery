@@ -87,6 +87,7 @@ def family_details(familyname):
 
     fonts_prod = list(db.table('check_results').filter({"commit": "prod", "familyname": familyname}).run())
     fonts_dev = list(db.table('check_results').filter({"HEAD": True, "familyname": familyname}).run())
+
     family_prod = db.table('cached_stats').filter({"commit": "prod", "familyname": familyname}).run().next()
     family_dev = []
     try:
@@ -108,10 +109,16 @@ def family_details(familyname):
       else:
         f['stylename'] = "{} (bad name)".format(f['fontname'])
 
+    # I think that the rearrangement of data below could be avoided by crafting a smarter database schema...
+    fonts = []
+    for p in fonts_prod:
+      for d in fonts_dev:
+        if d['stylename'] == p['stylename']:
+          fonts.append([p, d])
+
     return render_template("family_details.html",
                            delta=delta,
-                           dev=fonts_dev,
-                           prod=fonts_prod,
+                           fonts=fonts,
                            familyname=familyname,
                            chart_data=json.dumps(chart_data),
                            giturl=family_prod['giturl'])
