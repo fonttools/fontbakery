@@ -260,6 +260,7 @@ def main():
     # OK, database and tables already exist.
     pass
   db = r.db('fontbakery')
+#  db.table('cached_stats').index_create('familyname').run();
 
   while True:
     try:
