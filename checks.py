@@ -427,7 +427,16 @@ def check_main_entries_in_the_name_table(fb, font, fullpath):
                                      'AmaticaSC': 'Amatica SC',
                                      'PatrickHandSC': 'Patrick Hand SC',
                                      'CormorantSC': 'Cormorant SC',
-                                     'ABeeZee': 'ABeeZee'}
+                                     'ABeeZee': 'ABeeZee',
+                                     'CarroisGothicSC': 'Carrois Gothic SC',
+                                     'AlegreyaSC': 'Alegreya SC',
+                                     'HoltwoodOneSC': 'Holtwood One SC',
+                                     'AlmendraSC': 'Almendra SC',
+                                     'BowlbyOneSC': 'Bowlby One SC',
+                                     'MarcellusSC': 'Marcellus SC',
+                                     'AlegreyaSansSC': 'Alegreya Sans SC',
+                                     'DiplomataSC': 'Diplomata SC',
+                                     'MateSC': 'Mate SC'}
     if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
       return FAMILY_WITH_SPACES_EXCEPTIONS[value]
     result = ''
