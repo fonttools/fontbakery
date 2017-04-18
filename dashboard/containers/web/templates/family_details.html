@@ -25,17 +25,18 @@
       <div id="piechart"></div>
       <div id="tabs" style="display:hidden">
         <!-- tabs -->
-        <ul>{% for font in prod %}
-          <li><a href="#tab-{{ loop.index }}">{{ font['stylename'] }}</a></li>
+        <ul>{% for prod, dev in fonts %}
+          <li><a href="#tab-{{ loop.index }}">{{ prod['stylename'] }}</a></li>
           {% endfor %}</ul>
 
         <!-- Tabs content -->
-        {% for font in prod %}
+        {% for prod, dev in fonts %}
         <div id="tab-{{ loop.index }}">
           <div class="progress_item">
-            <span class="familyname">{{ font['fontname'] }}</span><br/>
-            <progress max="{{ font['stats']['Total'] }}" value="{{ font['stats']['OK'] }}"></progress>
-            <small style='text-align:right; margin-left:12px; color:grey'>({{ font['stats']['OK']*100/font['stats']['Total'] }} %)</small>
+            <span class="familyname">{{ prod['fontname'] }}</span><br/>
+            <progress max="{{ prod['stats']['Total'] }}" value="{{ prod['stats']['OK'] }}"></progress>
+            <small style='text-align:right; margin-left:12px; color:grey'>({{ 100*prod['stats']['OK']/prod['stats']['Total'] | round(2, 'floor') }} %)</small>
+            <p>upstream score change: {{ 100*(dev['stats']['OK']/dev['stats']['Total'] - prod['stats']['OK']/prod['stats']['Total']) | round(2, 'floor') }} %</p>
           </div>
 
           <table>
@@ -44,9 +45,10 @@
               <th data-sort="string">Check ID</th>
               <th data-sort="string">Check description</th>
               <th data-sort="string">Log Messages</th>
+              <!--<th data-sort="string">Upstream changes</th>-->
             </thead>
             <tbody>
-              {% for entry in font['results'] %}
+              {% for entry in prod['results'] %}
               <tr>
                 <td>{{ entry.result }}</td>
                 <td>{{ entry.check_number }}</td>
@@ -55,6 +57,9 @@
                 {% for msg in entry.log_messages %}
                   {{ msg }} <br/>
                 {% endfor %}
+                <!--</td>
+                <td>-->
+                
                 </td>
               </tr>
               {% endfor %}

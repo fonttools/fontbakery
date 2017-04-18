@@ -17,7 +17,8 @@
         {% if font['summary']['Total'] > 0 %}
         <a href="/details/{{ font['familyname'] }}">
           <li>
-            <span class="familyname"> {{ font['familyname'] }}</span><small style='text-align:right; margin-left:12px; color:grey'>({{ font['summary']['OK']*100/font['summary']['Total'] }} %)</small>
+            <span class="familyname"> {{ font['familyname'] }}</span>
+            <small style='text-align:right; margin-left:12px; color:grey'>({{ (100 * font['summary']['OK'] / font['summary']['Total']) | round(2, 'floor') }} %)</small>
             <progress max="{{ font['summary']['Total'] }}" value="{{ font['summary']['OK'] }}" />
           </li>
         </a>
