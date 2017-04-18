@@ -100,7 +100,7 @@ def family_details(familyname):
     for k in family_prod['summary']:
       if k != "Total":
         chart_data.append([k, family_prod['summary'][k]])
-        if family_dev != []:
+        if family_dev != [] and k in family_dev['summary']:
           delta[k] = (family_dev['summary'][k] - family_prod['summary'][k])
 
     for f in fonts_dev + fonts_prod:
