@@ -30,12 +30,15 @@ def run(cmd):
 
 def get_filenames(fonts_dir, fonts_prefix):
   files = []
-  for f in os.listdir(fonts_dir):
-    pref = f[:len(fonts_prefix)]
-    if f[-4:] == ".ttf" and pref == fonts_prefix:
-      fullpath = fonts_dir + "/" + f
-      # Do we need to escape spaces in the fullpaths here?
-      files.append(fullpath)
+  try:
+    for f in os.listdir(fonts_dir):
+      pref = f[:len(fonts_prefix)]
+      if f[-4:] == ".ttf" and pref == fonts_prefix:
+        fullpath = fonts_dir + "/" + f
+        # Do we need to escape spaces in the fullpaths here?
+        files.append(fullpath)
+  except OSError:
+    pass
   return files
 
 
