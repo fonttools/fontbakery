@@ -762,7 +762,9 @@ def check_font_has_a_license(fb, file_path):
   fb.new_check("028", "Check font has a license")
   fb.set_priority(CRITICAL)
   # Check that OFL.txt or LICENSE.txt exists in the same
-  # directory as font_file, if not then warn that there should be one.
+  # directory as font_file (or at the working directory from
+  # where fontbakery is invoked), if not then warn that
+  # there should be one.
   found = False
   for license in ['OFL.txt', 'LICENSE.txt']:
     license_path = os.path.join(file_path, license)
@@ -773,6 +775,16 @@ def check_font_has_a_license(fb, file_path):
         found = "multiple"
       else:
         found = license_path
+
+    # Also try at the current working dir:
+    elif os.path.exists(license):
+      if found is not False:
+        fb.error("More than a single license file found."
+                 " Please review.")
+        found = "multiple"
+      else:
+        found = license
+
   if found != "multiple":
     if found is False:
       fb.error("No license file was found."

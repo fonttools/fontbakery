@@ -172,30 +172,31 @@ def checkout_and_test_git_repo(fonts_dir, fonts_prefix):
     run(["git", "checkout", commit])
     print ("==> Running fontbakery on commit '{}'...".format(commit))
     run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i)
-
+  os.chdir("/")
 
 def run_fontbakery_on_production_files():
+  commit = "prod" # This is sort of a hack (but works neatly)!
+
   PROD_URL = "https://fonts.google.com/download?family={}".format(FAMILYNAME)
   os.mkdir("prod")
-  open("prod/family.zip", "w+").write(urllib.urlopen(PROD_URL).read())
-  output = run(["unzip", "prod/family.zip", "-d", "prod"])
+  os.chdir("prod")
+  open("family.zip", "w+").write(urllib.urlopen(PROD_URL).read())
+  output = run(["unzip", "family.zip"])
   print("unzip output: {}".format(output))
   files = []
-  for f in os.listdir("prod"):
+  for f in os.listdir("."):
     if f[-4:] == ".ttf":
-      fullpath = "prod/" + f
       # Do we need to escape spaces in the fullpaths here?
-      files.append(fullpath)
+      files.append(f)
 
   if len(files) == 0:
     print ("Could not find production files for '{}'".format(FAMILYNAME))
+    os.chdir("/")
     return False
 
   print ("We'll check the following PRODUCTION font files: {}".format(files))
   output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
-  save_output_on_database("prod", output)
-
-  commit = "prod" # This is sort of a hack!
+  save_output_on_database(commit, output)
 
   family_stats = {
     "familyname": FAMILYNAME,
@@ -207,10 +208,11 @@ def run_fontbakery_on_production_files():
     "HEAD": False
   }
 
-  for f in os.listdir("prod"):
-    save_results_on_database(f, "prod", commit, -1, family_stats, None)
+  for f in os.listdir("."):
+    save_results_on_database(f, ".", commit, -1, family_stats, None)
 
   save_overall_stats_to_database(commit, family_stats)
+  os.chdir("/")
   return True
 
 
@@ -248,6 +250,7 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
 
 def main():
   global connection, db
+  os.chdir("/")
 
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
   r.connect(db_host, 28015).repl()
