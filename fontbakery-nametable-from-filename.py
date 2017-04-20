@@ -201,7 +201,8 @@ parser.add_argument('fonts', nargs="+")
 
 
 def typo_metrics_enabled(fsSelection):
-  if fsSelection >= 128:
+  fsSelection_on = fsSelection & 0b10000000
+  if fsSelection_on:
     return True
   return False
 
