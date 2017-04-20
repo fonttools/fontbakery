@@ -222,7 +222,8 @@ def main():
     font_filename = ntpath.basename(font_path)
     font = TTFont(font_path)
     font_vendor = font['OS/2'].achVendID
-    font_version =  str(font['name'].getName(5, 1, 0, 0))
+    font_version = font['name'].getName(5, 3, 1, 1033)
+    font_version = str(font_version).decode(font_version.getEncoding())
     typo_enabled = typo_metrics_enabled(font['OS/2'].fsSelection)
     new_names = NameTableFromFilename(font_filename,
                                       font_version,
