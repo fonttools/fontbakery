@@ -18,7 +18,7 @@ import re
 import ntpath
 import argparse
 from argparse import RawTextHelpFormatter
-from fontTools.ttLib import TTFont
+from fontTools.ttLib import TTFont, newTable
 
 
 description = """
@@ -65,6 +65,42 @@ FSSELECTION = {
   'UseTypoMetrics': 128
 }
 
+REQUIRED_FIELDS = [
+  (0, 1, 0, 0),
+  (1, 1, 0, 0),
+  (2, 1, 0, 0),
+  (3, 1, 0, 0),
+  (4, 1, 0, 0),
+  (5, 1, 0, 0),
+  (6, 1, 0, 0),
+  (7, 1, 0, 0),
+  (8, 1, 0, 0),
+  (9, 1, 0, 0),
+  (11, 1, 0, 0),
+  (12, 1, 0, 0),
+  (13, 1, 0, 0),
+  (14, 1, 0, 0),
+  (0, 3, 1, 1033),
+  (1, 3, 1, 1033),
+  (1, 3, 1, 1033),
+  (2, 3, 1, 1033),
+  (3, 3, 1, 1033),
+  (4, 3, 1, 1033),
+  (5, 3, 1, 1033),
+  (6, 3, 1, 1033),
+  (7, 3, 1, 1033),
+  (8, 3, 1, 1033),
+  (9, 3, 1, 1033),
+  (11, 3, 1, 1033),
+  (12, 3, 1, 1033),
+  (13, 3, 1, 1033),
+  (14, 3, 1, 1033),
+]
+
+FIELD_ENCODINGS = {
+  1: 'mac_roman',
+  3: 'utf_16_be'
+}
 
 class NameTableFromFilename(object):
   """Convert filename into relevant font name table fields"""
@@ -207,14 +243,6 @@ def typo_metrics_enabled(fsSelection):
   return False
 
 
-def swap_name(field, font_name_field, new_name):
-  '''Replace a font's name field with a new name'''
-  enc = font_name_field.getName(*field).getEncoding()
-  text = str(font_name_field.getName(*field)).decode(enc)
-  text = new_name.encode(enc)
-  font_name_field.setName(text, *field)
-
-
 def main():
   args = parser.parse_args()
 
@@ -230,16 +258,24 @@ def main():
                                       font_vendor,
                                       typo_enabled)
 
-    for field in new_names:
-      # Change name table
-      if font['name'].getName(*field):
-        swap_name(field, font['name'],
-              new_names[field])
-    # Change OS/2 table
+    new_nametable = newTable('name')
+    for field in REQUIRED_FIELDS:
+      string = None
+      if field in new_names:
+        string = new_names[field]
+      elif font['name'].getName(*field):
+        string = str(font['name'].getName(*field).string).decode(FIELD_ENCODINGS[field[1]])
+      elif font['name'].getName(field[0], 3, 1, 1033): # use windows field
+        string = str(font['name'].getName(field[0], 3, 1, 1033).string).decode(FIELD_ENCODINGS[3])
+      elif font['name'].getName(field[0], 1, 0, 0): # use mac field
+        string = str(font['name'].getName(field[0], 1, 0, 0).string).decode(FIELD_ENCODINGS[1])
+
+      if string:
+        new_nametable.setName(string.encode(FIELD_ENCODINGS[field[1]]), *field)
+
+    font['name'] = new_nametable
     font['OS/2'].usWeightClass = new_names.usWeightClass
     font['OS/2'].fsSelection = new_names.fsSelection
-
-    # Change head table
     font['head'].macStyle = new_names.macStyle
 
     font.save(font_path + '.fix')
