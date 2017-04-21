@@ -111,6 +111,7 @@ def _unique_id(version, vendor_id, filename):
   # version;vendorID;filename
   return '%s;%s;%s' % (version, vendor_id, filename)
 
+
 def _version(text):
   return re.search(r'[0-9]{1,4}\.[0-9]{1,8}', text).group(0)
 
@@ -183,9 +184,9 @@ def nametable_from_filename(filepath):
   font_version = font['name'].getName(5, 3, 1, 1033)
   font_version = str(font_version).decode('utf_16_be')
   vendor_id = font['OS/2'].achVendID
-  
+
   # SET MAC NAME FIELDS
-  #---------------------
+  # -------------------
   # Copyright
   old_cp = old_table.getName(0, 3, 1, 1033).string.decode('utf_16_be')
   new_table.setName(old_cp.encode('mac_roman'), 0, 1, 0, 0)
@@ -197,7 +198,7 @@ def nametable_from_filename(filepath):
   # Unique ID
   unique_id = _unique_id(_version(font_version), vendor_id, filename)
   mac_unique_id = unique_id.encode('mac_roman')
-  new_table.setName(mac_unique_id, 3,  1, 0, 0)
+  new_table.setName(mac_unique_id, 3, 1, 0, 0)
   # Full name
   fullname = _full_name(family_name, style_name)
   mac_fullname = fullname.encode('mac_roman')
@@ -211,11 +212,12 @@ def nametable_from_filename(filepath):
   new_table.setName(mac_ps_name, 6, 1, 0, 0)
 
   # SET WIN NAME FIELDS
-  #--------------------
+  # -------------------
   # Copyright
   new_table.setName(old_cp, 0, 3, 1, 1033)
   # Font Family Name
-  win_family_name = _win_family_name(family_name, style_name).encode('utf_16_be')
+  win_family_name = _win_family_name(family_name, style_name)
+  win_family_name = win_family_name.encode('utf_16_be')
   new_table.setName(win_family_name, 1, 3, 1, 1033)
   # Subfamily Name
   win_subfamily_name = _win_subfamily_name(style_name).encode('utf_16_be')
@@ -238,12 +240,12 @@ def nametable_from_filename(filepath):
   for field in REQUIRED_FIELDS:
     text = None
     if new_table.getName(*field):
-      pass # Name has already been updated
+      pass  # Name has already been updated
     elif old_table.getName(*field):
       text = old_table.getName(*field).string
-    elif old_table.getName(field[0], 3, 1, 1033): # check if field exists for win
+    elif old_table.getName(field[0], 3, 1, 1033):
       text = old_table.getName(field[0], 3, 1, 1033).string.decode('utf_16_be')
-    elif old_table.getName(field[0], 1, 0, 0): # check if field exists for mac
+    elif old_table.getName(field[0], 1, 0, 0):  # check if field exists for mac
       text = old_table.getName(field[0], 3, 1, 1033).string.decode('mac_roman')
 
     if text:
@@ -253,7 +255,7 @@ def nametable_from_filename(filepath):
 
 
 parser = argparse.ArgumentParser(description=description,
-                 formatter_class=RawTextHelpFormatter)
+                                 formatter_class=RawTextHelpFormatter)
 parser.add_argument('fonts', nargs="+")
 
 

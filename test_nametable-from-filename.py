@@ -16,7 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import unittest
 import os
-import ntpath
 from fontTools.ttLib import TTFont
 script = __import__("fontbakery-nametable-from-filename")
 
@@ -49,7 +48,7 @@ class NameTableFromTTFName(unittest.TestCase):
         self._font_renaming(f_path)
 
     def test_cabin_renaming(self):
-    #     """Cabin chosen because it has a seperate Condensed family"""
+        """Cabin chosen because it has a seperate Condensed family"""
         f_path = os.path.join('data', 'test', 'cabin')
         self._font_renaming(f_path)
 
