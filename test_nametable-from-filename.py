@@ -23,9 +23,9 @@ script = __import__("fontbakery-nametable-from-filename")
 
 class NameTableFromTTFName(unittest.TestCase):
     def _font_renaming(self, f_path):
-        """Test the filename produces exactly the same name table as the
-        font's nametable. Only test against name fields which exist in
-        the font."""
+        """The test fonts have been generated from Glyphsapp and conform
+        to the googlefonts nametable spec. The test should pass if the new
+        nametable matches the test font's name table."""
         fonts_paths = [os.path.join(f_path, f) for f in os.listdir(f_path)
                        if '.ttf' in f]
 
