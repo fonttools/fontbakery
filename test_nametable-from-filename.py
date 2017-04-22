@@ -16,61 +16,48 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import unittest
 import os
-import ntpath
 from fontTools.ttLib import TTFont
 script = __import__("fontbakery-nametable-from-filename")
 
 
 class NameTableFromTTFName(unittest.TestCase):
-    def _font_renaming(self, fonts):
-        """Test the filename produces exactly the same name table as the
-        font's nametable. Only test against name fields which exist in
-        the font."""
-        for font in self.fonts:
-            font_filename = ntpath.basename(font)
-            font_vendor = self.fonts[font]['OS/2'].achVendID
-            font_version = str(self.fonts[font]['name'].getName(5, 1, 0, 0))
-            new_names = script.NameTableFromFilename(font_filename,
-                                                     font_version,
-                                                     font_vendor)
-            # print new_names.version
+    def _font_renaming(self, f_path):
+        """The test fonts have been generated from Glyphsapp and conform
+        to the googlefonts nametable spec. The test should pass if the new
+        nametable matches the test font's name table."""
+        fonts_paths = [os.path.join(f_path, f) for f in os.listdir(f_path)
+                       if '.ttf' in f]
 
-            for name_field in new_names:
-                font_field = self.fonts[font]['name'].getName(*name_field)
-                new_name_field = new_names[name_field]
-                if font_field:  # Check the field is in the font
-                    enc = font_field.getEncoding()
-                    self.assertEqual(str(font_field).decode(enc),
-                                     new_name_field,
-                                     'ERROR %s: %s != %s' % (font,
-                                                             str(font_field),
-                                                             new_name_field))
-                    print '%s == %s' % (str(font_field).decode(enc),
-                                        new_name_field)
+        for font_path in fonts_paths:
+            font = TTFont(font_path)
+            old_nametable = font['name']
+            new_nametable = script.nametable_from_filename(font_path)
+
+            for field in script.REQUIRED_FIELDS:
+                if old_nametable.getName(*field):
+                    enc = old_nametable.getName(*field).getEncoding()
+                    self.assertEqual(
+                        str(old_nametable.getName(*field)).decode(enc),
+                        str(new_nametable.getName(*field)).decode(enc),
+                    )
 
     def test_nunito_renaming(self):
         """Nunito Chosen because it has another family Nunito Heavy and a lot
         of weights"""
         f_path = os.path.join('data', 'test', 'nunito')
-        self.fonts = {f: TTFont(os.path.join(f_path, f)) for f
-                      in os.listdir(f_path) if 'ttf' in f}
-        self._font_renaming(self.fonts)
+        self._font_renaming(f_path)
 
     def test_cabin_renaming(self):
         """Cabin chosen because it has a seperate Condensed family"""
         f_path = os.path.join('data', 'test', 'cabin')
-        self.fonts = {f: TTFont(os.path.join(f_path, f)) for f
-                      in os.listdir(f_path) if 'ttf' in f}
-        self._font_renaming(self.fonts)
+        self._font_renaming(f_path)
 
     def test_glyphsapp_family_sans_export(self):
         """The ultimate test. Can this naming tool repoduce Google Font's
         Naming schema.
         Source repo here: https://github.com/davelab6/glyphs-export"""
         f_path = os.path.join('data', 'test', 'familysans')
-        self.fonts = {f: TTFont(os.path.join(f_path, f)) for f
-                      in os.listdir(f_path) if 'ttf' in f}
-        self._font_renaming(self.fonts)
+        self._font_renaming(f_path)
 
 
 if __name__ == '__main__':

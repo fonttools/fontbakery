@@ -18,7 +18,7 @@ import re
 import ntpath
 import argparse
 from argparse import RawTextHelpFormatter
-from fontTools.ttLib import TTFont
+from fontTools.ttLib import TTFont, newTable
 
 
 description = """
@@ -26,8 +26,11 @@ description = """
 fontbakery-nametable-from-filename.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Replace a collection of fonts nametable's with a new table based on the Google
-Fonts naming spec, from just the filename.
+Replace a collection of fonts nametable's with new tables based on the Google
+Fonts naming spec from just the filename.
+
+The fsSelection, fsType and macStyle also get updated to reflect the new
+names.
 """
 
 WIN_SAFE_STYLES = [
@@ -50,6 +53,7 @@ WEIGHTS = {
   "ExtraLight": 275,
   "Light": 300,
   "Regular": 400,
+  "Italic": 400,
   "Medium": 500,
   "SemiBold": 600,
   "Bold": 700,
@@ -57,188 +61,218 @@ WEIGHTS = {
   "Black": 900
 }
 
-FSSELECTION = {
-  'Regular': 64,
-  'Italic': 1,
-  'Bold': 32,
-  'Bold Italic': 33,
-  'UseTypoMetrics': 128
-}
+REQUIRED_FIELDS = [
+  (0, 1, 0, 0),
+  (1, 1, 0, 0),
+  (2, 1, 0, 0),
+  (3, 1, 0, 0),
+  (4, 1, 0, 0),
+  (5, 1, 0, 0),
+  (6, 1, 0, 0),
+  (7, 1, 0, 0),
+  (8, 1, 0, 0),
+  (9, 1, 0, 0),
+  (11, 1, 0, 0),
+  (12, 1, 0, 0),
+  (13, 1, 0, 0),
+  (14, 1, 0, 0),
+  (0, 3, 1, 1033),
+  (1, 3, 1, 1033),
+  (1, 3, 1, 1033),
+  (2, 3, 1, 1033),
+  (3, 3, 1, 1033),
+  (4, 3, 1, 1033),
+  (5, 3, 1, 1033),
+  (6, 3, 1, 1033),
+  (7, 3, 1, 1033),
+  (8, 3, 1, 1033),
+  (9, 3, 1, 1033),
+  (11, 3, 1, 1033),
+  (12, 3, 1, 1033),
+  (13, 3, 1, 1033),
+  (14, 3, 1, 1033),
+]
 
 
-class NameTableFromFilename(object):
-  """Convert filename into relevant font name table fields"""
-  def __init__(self, filename, font_ver, vendor_id, use_typo_metrics=False):
-    self.filename = filename[:-4]
-    self.family_name, self.style_name = self.filename.split('-')
-    self.family_name = self._split_camelcase(self.family_name)
-    self.use_typo_metrics = use_typo_metrics
-    self.font_version = font_ver
-    self.vendor_id = vendor_id
+def _split_camelcase(text):
+  return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
 
-  @property
-  def mac_family_name(self):
-    return self.family_name
 
-  @property
-  def win_family_name(self):
-    name = self.family_name
-    if self.style_name not in WIN_SAFE_STYLES:
-      name = '%s %s' % (self.family_name, self.style_name)
-    if 'Italic' in name:
-      name = re.sub(r'Italic', r'', name)
-    return name
+def _mac_subfamily_name(style_name):
+  if style_name.startswith('Italic'):
+    pass
+  elif 'Italic' in style_name:
+    style_name = style_name.replace('Italic', ' Italic')
+  return style_name
 
-  @property
-  def mac_subfamily_name(self):
-    name = self.style_name
-    if name.startswith('Italic'):
-      name = name
-    elif 'Italic' in name:
-      name = name.replace('Italic', ' Italic')
-    return name
 
-  @property
-  def win_subfamily_name(self):
-    name = self.style_name
-    if 'BoldItalic' == name:
-      return 'Bold Italic'
-    elif 'Italic' in name:
-      return 'Italic'
-    elif name == 'Bold':
-      return 'Bold'
-    else:
-      return 'Regular'
+def _unique_id(version, vendor_id, filename):
+  # Glyphsapp style 2.000;MYFO;Arsenal-Bold
+  # version;vendorID;filename
+  return '%s;%s;%s' % (version, vendor_id, filename)
 
-  @property
-  def unique_id(self):
-    # Glyphsapp style 2.000;MYFO;Arsenal-Bold
-    # version;vendorID;filename
-    return '%s;%s;%s' % (self.version, self.vendor_id, self.filename)
 
-  @property
-  def full_name(self):
-    name = '%s %s' % (self.family_name, self.style_name)
-    if self.style_name.startswith('Italic'):
-      name = name
-    elif 'Italic' in self.style_name:
-      name = name.replace('Italic', ' Italic')
-    return name
+def _version(text):
+  return re.search(r'[0-9]{1,4}\.[0-9]{1,8}', text).group(0)
 
-  @property
-  def postscript_name(self):
-    return self.filename
 
-  @property
-  def pref_family_name(self):
-    return self.mac_family_name
+def _full_name(family_name, style_name):
+  style_name = _mac_subfamily_name(style_name)
+  full_name = '%s %s' % (family_name, style_name)
+  return full_name
 
-  @property
-  def pref_subfamily_name(self):
-    return self.mac_subfamily_name
 
-  @property
-  def usWeightClass(self):
-    name = self.style_name
-    if 'Italic' == self.style_name:
-      name = 'Regular'
-    elif 'Italic' in self.style_name:
-      name = re.sub(r'Italic', r'', name)
-    return WEIGHTS[name]
+def _win_family_name(family_name, style_name):
+  name = family_name
+  if style_name not in WIN_SAFE_STYLES:
+    name = '%s %s' % (family_name, style_name)
+  if 'Italic' in name:
+    name = re.sub(r'Italic', r'', name)
+  return name
 
-  @property
-  def macStyle(self):
-    return MACSTYLE[self.win_subfamily_name]
 
-  @property
-  def fsSelection(self):
-    if self.use_typo_metrics:
-      f = FSSELECTION['UseTypoMetrics']
-      return FSSELECTION[self.win_subfamily_name] + f
-    return FSSELECTION[self.win_subfamily_name]
+def _win_subfamily_name(style_name):
+  name = style_name
+  if 'BoldItalic' == name:
+    return 'Bold Italic'
+  elif 'Italic' in name:
+    return 'Italic'
+  elif name == 'Bold':
+    return 'Bold'
+  else:
+    return 'Regular'
 
-  @property
-  def version(self):
-    return re.search(r'[0-9]{1,4}\.[0-9]{1,8}', self.font_version).group(0)
 
-  def _split_camelcase(self, text):
-    return re.sub(r"(?<=\w)([A-Z])", r" \1", text)
+def set_usWeightClass(style_name):
+  name = style_name
+  if name != 'Italic':
+    name = re.sub(r'Italic', r'', style_name)
+  return WEIGHTS[name]
 
-  def __dict__(self):
-    # Mapping for fontTools getName method in the name table
-    # nameID, platformID, platEncID, langID
-    d = {
-      # Mac
-      (1, 1, 0, 0): self.mac_family_name,
-      (2, 1, 0, 0): self.mac_subfamily_name,
-      (3, 1, 0, 0): self.unique_id,
-      (4, 1, 0, 0): self.full_name,
-      (6, 1, 0, 0): self.postscript_name,
-      (16, 1, 0, 0): self.pref_family_name,
-      (17, 1, 0, 0): self.pref_subfamily_name,
-      # Win
-      (1, 3, 1, 1033): self.win_family_name,
-      (2, 3, 1, 1033): self.win_subfamily_name,
-      (3, 3, 1, 1033): self.unique_id,
-      (4, 3, 1, 1033): self.full_name,
-      (6, 3, 1, 1033): self.postscript_name,
-      (16, 3, 1, 1033): self.pref_family_name,
-      (17, 3, 1, 1033): self.pref_subfamily_name
-    }
-    return d
 
-  def __getitem__(self, key):
-    return self.__dict__()[key]
+def set_macStyle(style_name):
+    return MACSTYLE[style_name]
 
-  def __iter__(self):
-    for i in self.__dict__():
-      yield i
+
+def set_fsSelection(fsSelection, style):
+  bits = fsSelection
+  if 'Regular' in style:
+    bits |= 0b1000000
+  else:
+    bits &= ~0b1000000
+  if 'Bold' in style:
+    bits |= 0b100000
+  else:
+    bits &= ~0b100000
+  if 'Italic' in style:
+    bits |= 0b1
+  else:
+    bits &= ~0b1
+  return bits
+
+
+def nametable_from_filename(filepath):
+  """Generate a new nametable based on a ttf and the GF Spec"""
+  font = TTFont(filepath)
+  old_table = font['name']
+  new_table = newTable('name')
+  filename = ntpath.basename(filepath)[:-4]
+
+  family_name, style_name = filename.split('-')
+  family_name = _split_camelcase(family_name)
+
+  font_version = font['name'].getName(5, 3, 1, 1033)
+  font_version = str(font_version).decode('utf_16_be')
+  vendor_id = font['OS/2'].achVendID
+
+  # SET MAC NAME FIELDS
+  # -------------------
+  # Copyright
+  old_cp = old_table.getName(0, 3, 1, 1033).string.decode('utf_16_be')
+  new_table.setName(old_cp.encode('mac_roman'), 0, 1, 0, 0)
+  # Font Family Name
+  new_table.setName(family_name.encode('mac_roman'), 1, 1, 0, 0)
+  # Subfamily name
+  mac_subfamily_name = _mac_subfamily_name(style_name).encode('mac_roman')
+  new_table.setName(mac_subfamily_name, 2, 1, 0, 0)
+  # Unique ID
+  unique_id = _unique_id(_version(font_version), vendor_id, filename)
+  mac_unique_id = unique_id.encode('mac_roman')
+  new_table.setName(mac_unique_id, 3, 1, 0, 0)
+  # Full name
+  fullname = _full_name(family_name, style_name)
+  mac_fullname = fullname.encode('mac_roman')
+  new_table.setName(mac_fullname, 4, 1, 0, 0)
+  # Version string
+  old_v = old_table.getName(5, 3, 1, 1033).string.decode('utf_16_be')
+  mac_old_v = old_v.encode('mac_roman')
+  new_table.setName(mac_old_v, 5, 1, 0, 0)
+  # Postscript name
+  mac_ps_name = filename.encode('mac_roman')
+  new_table.setName(mac_ps_name, 6, 1, 0, 0)
+
+  # SET WIN NAME FIELDS
+  # -------------------
+  # Copyright
+  new_table.setName(old_cp, 0, 3, 1, 1033)
+  # Font Family Name
+  win_family_name = _win_family_name(family_name, style_name)
+  win_family_name = win_family_name.encode('utf_16_be')
+  new_table.setName(win_family_name, 1, 3, 1, 1033)
+  # Subfamily Name
+  win_subfamily_name = _win_subfamily_name(style_name).encode('utf_16_be')
+  new_table.setName(win_subfamily_name, 2, 3, 1, 1033)
+  # Unique ID
+  win_unique_id = unique_id.encode('utf_16_be')
+  new_table.setName(win_unique_id, 3, 3, 1, 1033)
+  # Full name
+  win_fullname = fullname.encode('utf_16_be')
+  new_table.setName(win_fullname, 4, 3, 1, 1033)
+  # Version string
+  win_old_v = old_v.encode('utf_16_be')
+  new_table.setName(win_old_v, 5, 3, 1, 1033)
+  # Postscript name
+  win_ps_name = filename.encode('utf_16_be')
+  new_table.setName(win_ps_name, 6, 3, 1, 1033)
+
+  # PAD missing fields
+  # ------------------
+  for field in REQUIRED_FIELDS:
+    text = None
+    if new_table.getName(*field):
+      pass  # Name has already been updated
+    elif old_table.getName(*field):
+      text = old_table.getName(*field).string
+    elif old_table.getName(field[0], 3, 1, 1033):
+      text = old_table.getName(field[0], 3, 1, 1033).string.decode('utf_16_be')
+    elif old_table.getName(field[0], 1, 0, 0):  # check if field exists for mac
+      text = old_table.getName(field[0], 3, 1, 1033).string.decode('mac_roman')
+
+    if text:
+      enc = 'utf_16_be' if field[0] == 3 else 'mac_roman'
+      new_table.setName(text.encode(enc), *field)
+  return new_table
 
 
 parser = argparse.ArgumentParser(description=description,
-                 formatter_class=RawTextHelpFormatter)
+                                 formatter_class=RawTextHelpFormatter)
 parser.add_argument('fonts', nargs="+")
-
-
-def typo_metrics_enabled(fsSelection):
-  if fsSelection >= 128:
-    return True
-  return False
-
-
-def swap_name(field, font_name_field, new_name):
-  '''Replace a font's name field with a new name'''
-  enc = font_name_field.getName(*field).getEncoding()
-  text = str(font_name_field.getName(*field)).decode(enc)
-  text = new_name
-  font_name_field.setName(text, *field)
 
 
 def main():
   args = parser.parse_args()
 
   for font_path in args.fonts:
-    font_filename = ntpath.basename(font_path)
+    nametable = nametable_from_filename(font_path)
     font = TTFont(font_path)
-    font_vendor = font['OS/2'].achVendID
-    font_version =  str(font['name'].getName(5, 1, 0, 0))
-    typo_enabled = typo_metrics_enabled(font['OS/2'].fsSelection)
-    new_names = NameTableFromFilename(font_filename,
-                                      font_version,
-                                      font_vendor,
-                                      typo_enabled)
+    font_filename = ntpath.basename(font_path)
 
-    for field in new_names:
-      # Change name table
-      if font['name'].getName(*field):
-        swap_name(field, font['name'],
-              new_names[field])
-    # Change OS/2 table
-    font['OS/2'].usWeightClass = new_names.usWeightClass
-    font['OS/2'].fsSelection = new_names.fsSelection
-
-    # Change head table
-    font['head'].macStyle = new_names.macStyle
+    font['name'] = nametable
+    style = font_filename[:-4].split('-')[-1]
+    font['OS/2'].usWeightClass = set_usWeightClass(style)
+    font['OS/2'].fsSelection = set_fsSelection(font['OS/2'].fsSelection, style)
+    win_style = font['name'].getName(2, 3, 1, 1033).string.decode('utf_16_be')
+    font['head'].macStyle = set_macStyle(win_style)
 
     font.save(font_path + '.fix')
     print 'font saved %s.fix' % font_path
