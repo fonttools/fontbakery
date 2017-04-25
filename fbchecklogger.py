@@ -201,16 +201,14 @@ class FontBakeryCheckLogger():
       sys.stdout.flush()
 
   def flush(self):
-    if self.current_check is not None:
+    if self.current_check:
       self.update_progressbar()
       self.all_checks.append(self.current_check)
-      self.current_check = None
 
   def set_priority(self, level):
     self.current_check["priority"] = level
 
   def new_check(self, check_number, desc):
-    self.flush()
     logging.debug("Check #{}: {}".format(check_number, desc))
     self.current_check = {"description": desc,
                           "check_number": check_number,
@@ -218,6 +216,7 @@ class FontBakeryCheckLogger():
                           "result": "unknown",
                           "priority": NORMAL,
                           "target": self.default_target}
+    self.flush()
 
   def set_target(self, value):
     '''sets target of the current check.
