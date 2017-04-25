@@ -235,6 +235,13 @@ def nametable_from_filename(filepath):
   win_ps_name = filename.encode('utf_16_be')
   new_table.setName(win_ps_name, 6, 3, 1, 1033)
 
+  if style_name not in WIN_SAFE_STYLES:
+    # Preferred Family Name
+    new_table.setName(family_name.encode('utf_16_be'), 16, 3, 1, 1033)
+    # Preferred SubfamilyName
+    win_pref_subfam_name = _mac_subfamily_name(style_name).encode('utf_16_be')
+    new_table.setName(win_pref_subfam_name, 17, 3, 1, 1033)
+
   # PAD missing fields
   # ------------------
   for field in REQUIRED_FIELDS:
