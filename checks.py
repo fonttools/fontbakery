@@ -669,17 +669,8 @@ def check_OS2_usWeightClass(fb, font, style):
   else:
     fb.ok("OS/2 usWeightClass value looks good!")
 
-
-def check_fsSelection_REGULAR_bit(fb, font, style):
-  fb.new_check("021", "Checking fsSelection REGULAR bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Regular" in style or
-                  (style in STYLE_NAMES and
-                   style not in RIBBI_STYLE_NAMES and
-                   "Italic" not in style),
-                  bitmask=FSSEL_REGULAR,
-                  bitname="REGULAR")
-
+# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
+# Replaced by 129 - "Checking OS/2 fsSelection value"
 
 def check_italicAngle_value_is_negative(fb, font):
   fb.new_check("022", "Checking that italicAngle <= 0")
@@ -726,14 +717,8 @@ def check_italicAngle_matches_font_style(fb, font, style):
     fb.assert_table_entry('post', 'italicAngle', 0)
     fb.log_results("post table italicAngle matches style name")
 
-
-def check_fsSelection_ITALIC_bit(fb, font, style):
-  fb.new_check("025", "Checking fsSelection ITALIC bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Italic" in style,
-                  bitmask=FSSEL_ITALIC,
-                  bitname="ITALIC")
-
+# DEPRECATED: 025 - "Checking fsSelection ITALIC bit"
+# Replaced by 129 - "Checking OS/2 fsSelection value"
 
 def check_macStyle_ITALIC_bit(fb, font, style):
   fb.new_check("026", "Checking macStyle ITALIC bit")
@@ -742,14 +727,8 @@ def check_macStyle_ITALIC_bit(fb, font, style):
                   bitmask=MACSTYLE_ITALIC,
                   bitname="ITALIC")
 
-
-def check_fsSelection_BOLD_bit(fb, font, style):
-  fb.new_check("027", "Checking fsSelection BOLD bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=FSSEL_BOLD,
-                  bitname="BOLD")
-
+# DEPRECATED: 027 - "Checking fsSelection BOLD bit"
+# Replaced by 129 - "Checking OS/2 fsSelection value"
 
 def check_macStyle_BOLD_bit(fb, font, style):
   check_bit_entry(fb, font, "head", "macStyle",
@@ -3532,3 +3511,28 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
       copyright = current_notice
     if failed is False:
       fb.ok("Copyright notice is consistent across all fonts in this family.")
+
+
+def check_OS2_fsSelection(fb, font, style):
+  fb.new_check("129", "Checking OS/2 fsSelection value")
+
+  # Checking fsSelection REGULAR bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  "Regular" in style or
+                  (style in STYLE_NAMES and
+                   style not in RIBBI_STYLE_NAMES and
+                   "Italic" not in style),
+                  bitmask=FSSEL_REGULAR,
+                  bitname="REGULAR")
+
+  # Checking fsSelection ITALIC bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  "Italic" in style,
+                  bitmask=FSSEL_ITALIC,
+                  bitname="ITALIC")
+
+  # Checking fsSelection BOLD bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  style in ["Bold", "BoldItalic"],
+                  bitmask=FSSEL_BOLD,
+                  bitname="BOLD")
