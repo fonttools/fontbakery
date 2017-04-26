@@ -209,23 +209,27 @@ def fontbakery_check_ttf(config):
     local_styles[style] = font
 
     checks.check_font_has_post_table_version_2(fb, font)
+    checks.check_post_italicAngle(fb, font, style)
+
+    checks.check_head_macStyle(fb, font, style)
+
     checks.check_OS2_fsType(fb)
-    checks.check_main_entries_in_the_name_table(fb, font, target.fullpath)
     checks.check_OS2_achVendID(fb, font, registered_vendor_ids)
-    checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
-    checks.check_post_italicAngle(fb, font, style)
-    checks.check_head_macStyle(fb, font, style)
+    checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
+    checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
+    checks.check_OS2_xAvgCharWidth(fb, font)
 
     found = checks.check_font_has_a_license(fb, file_path)
     checks.check_copyright_entries_match_license(fb, found, file_path, font)
     checks.check_font_has_a_valid_license_url(fb, found, font)
+    checks.check_main_entries_in_the_name_table(fb, font, target.fullpath)
+    checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_description_strings_in_name_table(fb, font)
     checks.check_description_strings_do_not_exceed_100_chars(fb, font)
 
     monospace_detected = checks.check_font_is_truly_monospaced(fb, font)
-    checks.check_if_xAvgCharWidth_is_correct(fb, font)
     checks.check_with_ftxvalidator(fb, target.fullpath)
     checks.check_with_msfontvalidator(fb, target.fullpath)
     checks.check_with_otsanitise(fb, target.fullpath)
@@ -235,9 +239,8 @@ def fontbakery_check_ttf(config):
     if validation_state is not None:
       checks.perform_all_fontforge_checks(fb, validation_state)
 
-    checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
+
     checks.check_Vertical_Metric_Linegaps(fb, font)
-    checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
     checks.check_unitsPerEm_value_is_reasonable(fb, font)
     checks.check_font_version_fields(fb, font)
     checks.check_Digital_Signature_exists(fb, font, target.fullpath)

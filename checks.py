@@ -1014,8 +1014,8 @@ def check_font_is_truly_monospaced(fb, font):
   return monospace_detected
 
 
-def check_if_xAvgCharWidth_is_correct(fb, font):
-  fb.new_check("034", "Check if xAvgCharWidth is correct.")
+def check_OS2_xAvgCharWidth(fb, font):
+  fb.new_check("034", "Check if OS/2 xAvgCharWidth is correct.")
   if font['OS/2'].version >= 3:
     width_sum = 0
     count = 0
@@ -1029,9 +1029,9 @@ def check_if_xAvgCharWidth_is_correct(fb, font):
     else:
       expected_value = int(round(width_sum) / count)
       if font['OS/2'].xAvgCharWidth == expected_value:
-        fb.ok("xAvgCharWidth is correct.")
+        fb.ok("OS/2 xAvgCharWidth is correct.")
       else:
-        fb.error(("xAvgCharWidth is {} but should be "
+        fb.error(("OS/2 xAvgCharWidth is {} but should be "
                   "{} which corresponds to the "
                   "average of all glyph widths "
                   "in the font").format(font['OS/2'].xAvgCharWidth,
@@ -1051,9 +1051,9 @@ def check_if_xAvgCharWidth_is_correct(fb, font):
         width_sum += (width*weightFactors[glyph_id])
     expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
     if font['OS/2'].xAvgCharWidth == expected_value:
-      fb.ok("xAvgCharWidth value is correct.")
+      fb.ok("OS/2 xAvgCharWidth value is correct.")
     else:
-      fb.error(("xAvgCharWidth is {} but it should be "
+      fb.error(("OS/2 xAvgCharWidth is {} but it should be "
                 "{} which corresponds to the weighted "
                 "average of the widths of the latin "
                 "lowercase glyphs in "
