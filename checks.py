@@ -256,7 +256,7 @@ def check_fonts_have_consistent_underline_thickness(fb, family, ttf):
     fb.error("Thickness of the underline is not"
              " the same accross this family. In order to fix this,"
              " please make sure that the underlineThickness value"
-             " is the same in the POST table of all of this family"
+             " is the same in the 'post' table of all of this family"
              " font files.")
   else:
     fb.ok("Fonts have consistent underline thickness.")
@@ -669,93 +669,19 @@ def check_OS2_usWeightClass(fb, font, style):
   else:
     fb.ok("OS/2 usWeightClass value looks good!")
 
+# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
+#             025 - "Checking fsSelection ITALIC bit"
+#             027 - "Checking fsSelection BOLD bit"
+# Replaced by 129 - "Checking OS/2.fsSelection value"
 
-def check_fsSelection_REGULAR_bit(fb, font, style):
-  fb.new_check("021", "Checking fsSelection REGULAR bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Regular" in style or
-                  (style in STYLE_NAMES and
-                   style not in RIBBI_STYLE_NAMES and
-                   "Italic" not in style),
-                  bitmask=FSSEL_REGULAR,
-                  bitname="REGULAR")
+# DEPRECATED: 022 - "Checking that italicAngle <= 0"
+#             023 - "Checking that italicAngle is less than 20 degrees"
+#             024 - "Checking if italicAngle matches font style"
+# Replaced by 130 - "Checking post.italicAngle value"
 
-
-def check_italicAngle_value_is_negative(fb, font):
-  fb.new_check("022", "Checking that italicAngle <= 0")
-  value = font['post'].italicAngle
-  if value > 0:
-    if fb.config['autofix']:
-      font['post'].italicAngle = -value
-      fb.hotfix(("post table italicAngle"
-                 " from {} to {}").format(value, -value))
-    else:
-      fb.error(("post table italicAngle value must be changed"
-                " from {} to {}").format(value, -value))
-  else:
-    fb.ok("post table italicAngle is {}".format(value))
-
-
-def check_italicAngle_value_is_less_than_20_degrees(fb, font):
-  fb.new_check("023", "Checking that italicAngle is less than 20 degrees")
-  value = font['post'].italicAngle
-  if abs(value) > 20:
-    if fb.config['autofix']:
-      font['post'].italicAngle = -20
-      fb.hotfix(("post table italicAngle"
-                 " changed from {} to -20").format(value))
-    else:
-      fb.error(("post table italicAngle value must be"
-                " changed from {} to -20").format(value))
-  else:
-    fb.ok("OK: post table italicAngle is less than 20 degrees.")
-
-
-def check_italicAngle_matches_font_style(fb, font, style):
-  fb.new_check("024", "Checking if italicAngle matches font style")
-  if "Italic" in style:
-    if font['post'].italicAngle == 0:
-      fb.error("Font is italic, so post table italicAngle"
-               " should be non-zero.")
-    else:
-      fb.ok("post table italicAngle matches style name")
-  else:
-    # Given that the font style is not "Italic",
-    # the following call potentially hotfixes
-    # the value of italicAngle to zero:
-    fb.assert_table_entry('post', 'italicAngle', 0)
-    fb.log_results("post table italicAngle matches style name")
-
-
-def check_fsSelection_ITALIC_bit(fb, font, style):
-  fb.new_check("025", "Checking fsSelection ITALIC bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Italic" in style,
-                  bitmask=FSSEL_ITALIC,
-                  bitname="ITALIC")
-
-
-def check_macStyle_ITALIC_bit(fb, font, style):
-  fb.new_check("026", "Checking macStyle ITALIC bit")
-  check_bit_entry(fb, font, "head", "macStyle",
-                  "Italic" in style,
-                  bitmask=MACSTYLE_ITALIC,
-                  bitname="ITALIC")
-
-
-def check_fsSelection_BOLD_bit(fb, font, style):
-  fb.new_check("027", "Checking fsSelection BOLD bit")
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=FSSEL_BOLD,
-                  bitname="BOLD")
-
-
-def check_macStyle_BOLD_bit(fb, font, style):
-  check_bit_entry(fb, font, "head", "macStyle",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=MACSTYLE_BOLD,
-                  bitname="BOLD")
+# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
+#             ??? - "Checking macStyle BOLD bit"
+# Replaced by 131 - "Checking head.macStyle value"
 
 
 def check_font_has_a_license(fb, file_path):
@@ -1088,8 +1014,8 @@ def check_font_is_truly_monospaced(fb, font):
   return monospace_detected
 
 
-def check_if_xAvgCharWidth_is_correct(fb, font):
-  fb.new_check("034", "Check if xAvgCharWidth is correct.")
+def check_OS2_xAvgCharWidth(fb, font):
+  fb.new_check("034", "Check if OS/2 xAvgCharWidth is correct.")
   if font['OS/2'].version >= 3:
     width_sum = 0
     count = 0
@@ -1103,9 +1029,9 @@ def check_if_xAvgCharWidth_is_correct(fb, font):
     else:
       expected_value = int(round(width_sum) / count)
       if font['OS/2'].xAvgCharWidth == expected_value:
-        fb.ok("xAvgCharWidth is correct.")
+        fb.ok("OS/2 xAvgCharWidth is correct.")
       else:
-        fb.error(("xAvgCharWidth is {} but should be "
+        fb.error(("OS/2 xAvgCharWidth is {} but should be "
                   "{} which corresponds to the "
                   "average of all glyph widths "
                   "in the font").format(font['OS/2'].xAvgCharWidth,
@@ -1125,9 +1051,9 @@ def check_if_xAvgCharWidth_is_correct(fb, font):
         width_sum += (width*weightFactors[glyph_id])
     expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
     if font['OS/2'].xAvgCharWidth == expected_value:
-      fb.ok("xAvgCharWidth value is correct.")
+      fb.ok("OS/2 xAvgCharWidth value is correct.")
     else:
-      fb.error(("xAvgCharWidth is {} but it should be "
+      fb.error(("OS/2 xAvgCharWidth is {} but it should be "
                 "{} which corresponds to the weighted "
                 "average of the widths of the latin "
                 "lowercase glyphs in "
@@ -3532,3 +3458,88 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
       copyright = current_notice
     if failed is False:
       fb.ok("Copyright notice is consistent across all fonts in this family.")
+
+
+def check_OS2_fsSelection(fb, font, style):
+  fb.new_check("129", "Checking OS/2 fsSelection value")
+
+  # Checking fsSelection REGULAR bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  "Regular" in style or
+                  (style in STYLE_NAMES and
+                   style not in RIBBI_STYLE_NAMES and
+                   "Italic" not in style),
+                  bitmask=FSSEL_REGULAR,
+                  bitname="REGULAR")
+
+  # Checking fsSelection ITALIC bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  "Italic" in style,
+                  bitmask=FSSEL_ITALIC,
+                  bitname="ITALIC")
+
+  # Checking fsSelection BOLD bit:
+  check_bit_entry(fb, font, "OS/2", "fsSelection",
+                  style in ["Bold", "BoldItalic"],
+                  bitmask=FSSEL_BOLD,
+                  bitname="BOLD")
+
+
+def check_post_italicAngle(fb, font, style):
+  fb.new_check("130", "Checking post.italicAngle value")
+  failed = False
+  value = font['post'].italicAngle
+
+  # Checking that italicAngle <= 0
+  if value > 0:
+    failed = True
+    if fb.config['autofix']:
+      font['post'].italicAngle = -value
+      fb.hotfix(("post.italicAngle"
+                 " from {} to {}").format(value, -value))
+    else:
+      fb.error(("post.italicAngle value must be changed"
+                " from {} to {}").format(value, -value))
+    value = -value
+
+  # Checking that italicAngle is less than 20 degrees:
+  if abs(value) > 20:
+    failed = True
+    if fb.config['autofix']:
+      font['post'].italicAngle = -20
+      fb.hotfix(("post.italicAngle"
+                 " changed from {} to -20").format(value))
+    else:
+      fb.error(("post.italicAngle value must be"
+                " changed from {} to -20").format(value))
+
+  # Checking if italicAngle matches font style:
+  if "Italic" in style:
+    if font['post'].italicAngle == 0:
+      failed = True
+      fb.error("Font is italic, so post.italicAngle"
+               " should be non-zero.")
+  else:
+    if font['post'].italicAngle != 0:
+      failed = True
+      fb.error("Font is not italic, so post.italicAngle"
+               " should be equal to zero.")
+
+  if not failed:
+    fb.ok("post.italicAngle is {}".format(value))
+
+
+def check_head_macStyle(fb, font, style):
+  fb.new_check("131", "Checking head.macStyle value")
+
+  # Checking macStyle ITALIC bit:
+  check_bit_entry(fb, font, "head", "macStyle",
+                  "Italic" in style,
+                  bitmask=MACSTYLE_ITALIC,
+                  bitname="ITALIC")
+
+  # Checking macStyle BOLD bit:
+  check_bit_entry(fb, font, "head", "macStyle",
+                  style in ["Bold", "BoldItalic"],
+                  bitmask=MACSTYLE_BOLD,
+                  bitname="BOLD")
