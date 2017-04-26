@@ -215,9 +215,8 @@ def fontbakery_check_ttf(config):
     checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
-    checks.check_POST_italicAngle(fb, font, style)
-    checks.check_macStyle_ITALIC_bit(fb, font, style)
-    checks.check_macStyle_BOLD_bit(fb, font, style)
+    checks.check_post_italicAngle(fb, font, style)
+    checks.check_head_macStyle(fb, font, style)
 
     found = checks.check_font_has_a_license(fb, file_path)
     checks.check_copyright_entries_match_license(fb, found, file_path, font)

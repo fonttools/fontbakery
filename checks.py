@@ -256,7 +256,7 @@ def check_fonts_have_consistent_underline_thickness(fb, family, ttf):
     fb.error("Thickness of the underline is not"
              " the same accross this family. In order to fix this,"
              " please make sure that the underlineThickness value"
-             " is the same in the POST table of all of this family"
+             " is the same in the 'post' table of all of this family"
              " font files.")
   else:
     fb.ok("Fonts have consistent underline thickness.")
@@ -670,31 +670,18 @@ def check_OS2_usWeightClass(fb, font, style):
     fb.ok("OS/2 usWeightClass value looks good!")
 
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
-# Replaced by 129 - "Checking OS/2 fsSelection value"
+#             025 - "Checking fsSelection ITALIC bit"
+#             027 - "Checking fsSelection BOLD bit"
+# Replaced by 129 - "Checking OS/2.fsSelection value"
 
 # DEPRECATED: 022 - "Checking that italicAngle <= 0"
-# DEPRECATED: 023 - "Checking that italicAngle is less than 20 degrees"
-# DEPRECATED: 024 - "Checking if italicAngle matches font style"
-# Replaced by 130 - "Checking POST italicAngle value"
+#             023 - "Checking that italicAngle is less than 20 degrees"
+#             024 - "Checking if italicAngle matches font style"
+# Replaced by 130 - "Checking post.italicAngle value"
 
-# DEPRECATED: 025 - "Checking fsSelection ITALIC bit"
-# Replaced by 129 - "Checking OS/2 fsSelection value"
-
-def check_macStyle_ITALIC_bit(fb, font, style):
-  fb.new_check("026", "Checking macStyle ITALIC bit")
-  check_bit_entry(fb, font, "head", "macStyle",
-                  "Italic" in style,
-                  bitmask=MACSTYLE_ITALIC,
-                  bitname="ITALIC")
-
-# DEPRECATED: 027 - "Checking fsSelection BOLD bit"
-# Replaced by 129 - "Checking OS/2 fsSelection value"
-
-def check_macStyle_BOLD_bit(fb, font, style):
-  check_bit_entry(fb, font, "head", "macStyle",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=MACSTYLE_BOLD,
-                  bitname="BOLD")
+# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
+#             ??? - "Checking macStyle BOLD bit"
+# Replaced by 131 - "Checking head.macStyle value"
 
 
 def check_font_has_a_license(fb, file_path):
@@ -3498,8 +3485,8 @@ def check_OS2_fsSelection(fb, font, style):
                   bitname="BOLD")
 
 
-def check_POST_italicAngle(fb, font, style):
-  fb.new_check("130", "Checking that italicAngle <= 0")
+def check_post_italicAngle(fb, font, style):
+  fb.new_check("130", "Checking post.italicAngle value")
   failed = False
   value = font['post'].italicAngle
 
@@ -3508,10 +3495,10 @@ def check_POST_italicAngle(fb, font, style):
     failed = True
     if fb.config['autofix']:
       font['post'].italicAngle = -value
-      fb.hotfix(("post table italicAngle"
+      fb.hotfix(("post.italicAngle"
                  " from {} to {}").format(value, -value))
     else:
-      fb.error(("post table italicAngle value must be changed"
+      fb.error(("post.italicAngle value must be changed"
                 " from {} to {}").format(value, -value))
     value = -value
 
@@ -3520,23 +3507,39 @@ def check_POST_italicAngle(fb, font, style):
     failed = True
     if fb.config['autofix']:
       font['post'].italicAngle = -20
-      fb.hotfix(("post table italicAngle"
+      fb.hotfix(("post.italicAngle"
                  " changed from {} to -20").format(value))
     else:
-      fb.error(("post table italicAngle value must be"
+      fb.error(("post.italicAngle value must be"
                 " changed from {} to -20").format(value))
 
   # Checking if italicAngle matches font style:
   if "Italic" in style:
     if font['post'].italicAngle == 0:
       failed = True
-      fb.error("Font is italic, so post table italicAngle"
+      fb.error("Font is italic, so post.italicAngle"
                " should be non-zero.")
   else:
     if font['post'].italicAngle != 0:
       failed = True
-      fb.error("Font is not italic, so post table italicAngle"
+      fb.error("Font is not italic, so post.italicAngle"
                " should be equal to zero.")
 
   if not failed:
-    fb.ok("post table italicAngle is {}".format(value))
+    fb.ok("post.italicAngle is {}".format(value))
+
+
+def check_head_macStyle(fb, font, style):
+  fb.new_check("131", "Checking head.macStyle value")
+
+  # Checking macStyle ITALIC bit:
+  check_bit_entry(fb, font, "head", "macStyle",
+                  "Italic" in style,
+                  bitmask=MACSTYLE_ITALIC,
+                  bitname="ITALIC")
+
+  # Checking macStyle BOLD bit:
+  check_bit_entry(fb, font, "head", "macStyle",
+                  style in ["Bold", "BoldItalic"],
+                  bitmask=MACSTYLE_BOLD,
+                  bitname="BOLD")
