@@ -215,9 +215,7 @@ def fontbakery_check_ttf(config):
     checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
-    checks.check_italicAngle_value_is_negative(fb, font)
-    checks.check_italicAngle_value_is_less_than_20_degrees(fb, font)
-    checks.check_italicAngle_matches_font_style(fb, font, style)
+    checks.check_POST_italicAngle(fb, font, style)
     checks.check_macStyle_ITALIC_bit(fb, font, style)
     checks.check_macStyle_BOLD_bit(fb, font, style)
 

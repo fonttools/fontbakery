@@ -672,50 +672,10 @@ def check_OS2_usWeightClass(fb, font, style):
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 # Replaced by 129 - "Checking OS/2 fsSelection value"
 
-def check_italicAngle_value_is_negative(fb, font):
-  fb.new_check("022", "Checking that italicAngle <= 0")
-  value = font['post'].italicAngle
-  if value > 0:
-    if fb.config['autofix']:
-      font['post'].italicAngle = -value
-      fb.hotfix(("post table italicAngle"
-                 " from {} to {}").format(value, -value))
-    else:
-      fb.error(("post table italicAngle value must be changed"
-                " from {} to {}").format(value, -value))
-  else:
-    fb.ok("post table italicAngle is {}".format(value))
-
-
-def check_italicAngle_value_is_less_than_20_degrees(fb, font):
-  fb.new_check("023", "Checking that italicAngle is less than 20 degrees")
-  value = font['post'].italicAngle
-  if abs(value) > 20:
-    if fb.config['autofix']:
-      font['post'].italicAngle = -20
-      fb.hotfix(("post table italicAngle"
-                 " changed from {} to -20").format(value))
-    else:
-      fb.error(("post table italicAngle value must be"
-                " changed from {} to -20").format(value))
-  else:
-    fb.ok("OK: post table italicAngle is less than 20 degrees.")
-
-
-def check_italicAngle_matches_font_style(fb, font, style):
-  fb.new_check("024", "Checking if italicAngle matches font style")
-  if "Italic" in style:
-    if font['post'].italicAngle == 0:
-      fb.error("Font is italic, so post table italicAngle"
-               " should be non-zero.")
-    else:
-      fb.ok("post table italicAngle matches style name")
-  else:
-    # Given that the font style is not "Italic",
-    # the following call potentially hotfixes
-    # the value of italicAngle to zero:
-    fb.assert_table_entry('post', 'italicAngle', 0)
-    fb.log_results("post table italicAngle matches style name")
+# DEPRECATED: 022 - "Checking that italicAngle <= 0"
+# DEPRECATED: 023 - "Checking that italicAngle is less than 20 degrees"
+# DEPRECATED: 024 - "Checking if italicAngle matches font style"
+# Replaced by 130 - "Checking POST italicAngle value"
 
 # DEPRECATED: 025 - "Checking fsSelection ITALIC bit"
 # Replaced by 129 - "Checking OS/2 fsSelection value"
@@ -3536,3 +3496,47 @@ def check_OS2_fsSelection(fb, font, style):
                   style in ["Bold", "BoldItalic"],
                   bitmask=FSSEL_BOLD,
                   bitname="BOLD")
+
+
+def check_POST_italicAngle(fb, font, style):
+  fb.new_check("130", "Checking that italicAngle <= 0")
+  failed = False
+  value = font['post'].italicAngle
+
+  # Checking that italicAngle <= 0
+  if value > 0:
+    failed = True
+    if fb.config['autofix']:
+      font['post'].italicAngle = -value
+      fb.hotfix(("post table italicAngle"
+                 " from {} to {}").format(value, -value))
+    else:
+      fb.error(("post table italicAngle value must be changed"
+                " from {} to {}").format(value, -value))
+    value = -value
+
+  # Checking that italicAngle is less than 20 degrees:
+  if abs(value) > 20:
+    failed = True
+    if fb.config['autofix']:
+      font['post'].italicAngle = -20
+      fb.hotfix(("post table italicAngle"
+                 " changed from {} to -20").format(value))
+    else:
+      fb.error(("post table italicAngle value must be"
+                " changed from {} to -20").format(value))
+
+  # Checking if italicAngle matches font style:
+  if "Italic" in style:
+    if font['post'].italicAngle == 0:
+      failed = True
+      fb.error("Font is italic, so post table italicAngle"
+               " should be non-zero.")
+  else:
+    if font['post'].italicAngle != 0:
+      failed = True
+      fb.error("Font is not italic, so post table italicAngle"
+               " should be equal to zero.")
+
+  if not failed:
+    fb.ok("post table italicAngle is {}".format(value))
