@@ -205,6 +205,15 @@ class FontBakeryCheckLogger():
 
   def flush(self):
     if self.current_check is not None:
+      if self.current_check["result"] == "unknown":
+        print(("### CRITICAL ERROR!"
+               " It seems that the check number \"{}\""
+               " failed to produce any output."
+               " This is likely a FontBakery bug."
+               " Please fill an issue at"
+               " https://github.com/googlefonts/fontbakery/issues/new"
+               "\n").format(self.current_check["check_number"]))
+
       self.update_progressbar()
       check_number = self.current_check["check_number"]
       self.all_checks[check_number] = self.current_check
@@ -222,6 +231,13 @@ class FontBakeryCheckLogger():
                           "result": "unknown",
                           "priority": NORMAL,
                           "target": self.default_target}
+    # Here we save the initial (empty) check result entry so that
+    # in case a crash may happen, we'll be able to detect
+    # it due to the presence of the key "result": "unknown".
+    # For more detail, take a look at this issue:
+    # https://github.com/googlefonts/fontbakery/issues/1299
+    check_number = self.current_check["check_number"]
+    self.all_checks[check_number] = self.current_check
 
   def set_target(self, value):
     '''sets target of the current check.

@@ -41,7 +41,8 @@ def testsuite_overview():
       if target['familyname'] not in families:
         families.append(target['familyname'])
 
-      for check in target['results']:
+      for check_number in target['results'].keys():
+        check = target['results'][check_number]
         desc = check['description']
         result = check['result']
         if desc not in checks.keys():
