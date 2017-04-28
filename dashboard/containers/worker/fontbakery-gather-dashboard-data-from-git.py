@@ -268,7 +268,7 @@ def main():
   db = r.db('fontbakery')
 
   try:
-    db.table('cached_stats').index_create('familyname').run();
+    db.table('cached_stats').index_create('familyname').run()
   except:
     pass
 
