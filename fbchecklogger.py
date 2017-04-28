@@ -43,7 +43,7 @@ class FontBakeryCheckLogger():
 
   def reset_report(self):
     self.fixes = []
-    self.all_checks = []
+    self.all_checks = {}
     self.current_check = None
     self.default_target = None  # All new checks have this target by default
     self.summary = {"Passed": 0,
@@ -120,10 +120,11 @@ class FontBakeryCheckLogger():
     print ("  Total: {} checks.\n".format(total))
 
     if not self.config['verbose']:
-      filtered = []
-      for check in self.all_checks:
+      filtered = {}
+      for k in self.all_checks.keys():
+        check = self.all_checks[k]
         if check["result"] != "OK":
-          filtered.append(check)
+          filtered[k] = check
       self.all_checks = filtered
 
     if self.config['json']:
@@ -133,7 +134,8 @@ class FontBakeryCheckLogger():
       self.output_github_markdown_report(a_target)
 
   def output_json_report(self, a_target):
-    for check in self.all_checks:
+    for k in self.all_checks.keys():
+      check = self.all_checks[k]
       if isinstance(check['target'], TargetFont):
         # This is silly and actually means the handling of
         # TargetFont is broken somewhere else.
@@ -160,7 +162,8 @@ class FontBakeryCheckLogger():
 
     markdown_data = "# Fontbakery check results\n"
     all_checks = {}
-    for check in self.all_checks:
+    for k in self.all_checks.keys():
+      check = self.all_checks[k]
       target = check["target"]
 
       if target in all_checks.keys():
@@ -203,7 +206,8 @@ class FontBakeryCheckLogger():
   def flush(self):
     if self.current_check is not None:
       self.update_progressbar()
-      self.all_checks.append(self.current_check)
+      check_number = self.current_check["check_number"]
+      self.all_checks[check_number] = self.current_check
       self.current_check = None
 
   def set_priority(self, level):
