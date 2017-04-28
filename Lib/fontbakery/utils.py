@@ -18,13 +18,13 @@ import re
 import sys
 import requests
 from bs4 import BeautifulSoup
-from constants import PLATFORM_ID_WINDOWS,\
-                      PLAT_ENC_ID_UCS2,\
-                      PLAT_ENC_ID_UCS4
+from fontbakery.constants import PLATFORM_ID_WINDOWS,\
+                                 PLAT_ENC_ID_UCS2,\
+                                 PLAT_ENC_ID_UCS4
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
-from targetfont import TargetFont
+from fontbakery.targetfont import TargetFont
 from urllib import urlopen
 from zipfile import ZipFile
 import tempfile
@@ -152,7 +152,7 @@ def glyphHasInk(font, name):
 
 def get_FamilyProto_Message(path):
     try:
-      from fonts_public_pb2 import FamilyProto
+      from fontbakery.fonts_public_pb2 import FamilyProto
       from google.protobuf import text_format
       message = FamilyProto()
       text_data = open(path, "rb").read()
