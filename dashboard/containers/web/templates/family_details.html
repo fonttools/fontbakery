@@ -48,13 +48,13 @@
               <!--<th data-sort="string">Upstream changes</th>-->
             </thead>
             <tbody>
-              {% for entry in prod['results'] %}
+              {% for check_number in prod['results'].keys() %}
               <tr>
-                <td>{{ entry.result }}</td>
-                <td>{{ entry.check_number }}</td>
-                <td>{{ entry.description }}</td>
+                <td>{{ prod['results'][check_number].result }}</td>
+                <td>{{ check_number }}</td>
+                <td>{{ prod['results'][check_number].description }}</td>
                 <td>
-                {% for msg in entry.log_messages %}
+                {% for msg in prod['results'][check_number].log_messages %}
                   {{ msg }} <br/>
                 {% endfor %}
                 <!--</td>

@@ -51,11 +51,11 @@ def clone(repo, clone_dir, depth=None):
 
 def calc_font_stats(results):
   stats = {
-    "Total": len(results),
+    "Total": len(results.keys()),
     "OK": 0
   }
-  for res in results:
-    result = res['result']
+  for k in results.keys():
+    result = results[k]['result']
     if result not in stats.keys():
       stats[result] = 1
     else:
@@ -266,7 +266,11 @@ def main():
     # OK, database and tables already exist.
     pass
   db = r.db('fontbakery')
-#  db.table('cached_stats').index_create('familyname').run();
+
+  try:
+    db.table('cached_stats').index_create('familyname').run();
+  except:
+    pass
 
   while True:
     try:
