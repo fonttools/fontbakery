@@ -21,7 +21,6 @@ def dashboard():
   db_host = os.environ.get("RETHINKDB_DRIVER_SERVICE_HOST", 'db')
   r.connect(db_host, 28015).repl()
   db = r.db('fontbakery')
-#  db.table('cached_stats').index_create('familyname').run();
   fonts_prod = list(db.table('cached_stats').order_by(index='familyname').filter({"commit": "prod"}).run())
   return render_template("dashboard.html", prod=fonts_prod)
 
@@ -41,7 +40,8 @@ def testsuite_overview():
       if target['familyname'] not in families:
         families.append(target['familyname'])
 
-      for check in target['results']:
+      for check_number in target['results'].keys():
+        check = target['results'][check_number]
         desc = check['description']
         result = check['result']
         if desc not in checks.keys():
