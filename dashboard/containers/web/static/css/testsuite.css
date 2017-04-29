@@ -25,3 +25,15 @@ table tr:nth-child(odd){
 .progress-bar {
     height: 15px !important;
 }
+
+.progress-bar-skip {
+    background-image: -webkit-linear-gradient(top,#eee 0,#aaa 100%) !important;
+    background-image: linear-gradient(to bottom,#eee 0,#aaa 100%) !important;
+    background-repeat: repeat-x;
+}
+
+.progress-bar-hotfix {
+    background-image: -webkit-linear-gradient(top,#4e4 0,#2c2 100%) !important;
+    background-image: linear-gradient(to bottom,#4e4 0,#2c2 100%) !important;
+    background-repeat: repeat-x;
+}
