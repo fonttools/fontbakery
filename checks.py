@@ -1063,103 +1063,94 @@ def check_OS2_xAvgCharWidth(fb, font):
 
 def check_with_ftxvalidator(fb, font_file):
   fb.new_check("035", "Checking with ftxvalidator")
-  if fb.config['webapp'] is True:
-    fb.skip("Subprocess is unsupported on Google App Engine")
-  else:
-    try:
-      import subprocess
+  try:
+    import subprocess
+    ftx_cmd = ["ftxvalidator",
+               "-t", "all",  # execute all tests
+               font_file]
+    ftx_output = subprocess.check_output(ftx_cmd,
+                                         stderr=subprocess.STDOUT)
+
+    ftx_data = plistlib.readPlistFromString(ftx_output)
+    # we accept kATSFontTestSeverityInformation
+    # and kATSFontTestSeverityMinorError
+    if 'kATSFontTestSeverityFatalError' \
+       not in ftx_data['kATSFontTestResultKey']:
+      fb.ok("ftxvalidator passed this file")
+    else:
       ftx_cmd = ["ftxvalidator",
+                 "-T",  # Human-readable output
+                 "-r",  # Generate a full report
                  "-t", "all",  # execute all tests
                  font_file]
       ftx_output = subprocess.check_output(ftx_cmd,
                                            stderr=subprocess.STDOUT)
+      fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
 
-      ftx_data = plistlib.readPlistFromString(ftx_output)
-      # we accept kATSFontTestSeverityInformation
-      # and kATSFontTestSeverityMinorError
-      if 'kATSFontTestSeverityFatalError' \
-         not in ftx_data['kATSFontTestResultKey']:
-        fb.ok("ftxvalidator passed this file")
-      else:
-        ftx_cmd = ["ftxvalidator",
-                   "-T",  # Human-readable output
-                   "-r",  # Generate a full report
-                   "-t", "all",  # execute all tests
-                   font_file]
-        ftx_output = subprocess.check_output(ftx_cmd,
-                                             stderr=subprocess.STDOUT)
-        fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
-
-    except subprocess.CalledProcessError, e:
-      fb.info(("ftxvalidator returned an error code. Output follows :"
-               "\n\n{}\n").format(e.output))
-    except OSError:
-      fb.warning("ftxvalidator is not available!")
+  except subprocess.CalledProcessError, e:
+    fb.info(("ftxvalidator returned an error code. Output follows :"
+             "\n\n{}\n").format(e.output))
+  except OSError:
+    fb.warning("ftxvalidator is not available!")
 
 
 def check_with_otsanitise(fb, font_file):
   fb.new_check("036", "Checking with ot-sanitise")
-  if fb.config['webapp'] is True:
-    fb.skip("Subprocess is unsupported on Google App Engine")
-  else:
-    try:
-      import subprocess
-      ots_output = subprocess.check_output(["ot-sanitise", font_file],
-                                           stderr=subprocess.STDOUT)
-      if ots_output != "":
-        fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
-      else:
-        fb.ok("ot-sanitise passed this file")
-    except subprocess.CalledProcessError, e:
-        fb.error(("ot-sanitise returned an error code. Output follows :"
-                  "\n\n{}\n").format(e.output))
-    except OSError, e:
-      # This is made very prominent with additional line breaks
-      fb.warning("\n\n\not-santise is not available!"
-                 " You really MUST check the fonts with this tool."
-                 " To install it, see"
-                 " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/ProjectChecklist.md#ots"
-                 " Actual error message was: "
-                 "'{}'\n\n".format(e))
+  try:
+    import subprocess
+    ots_output = subprocess.check_output(["ot-sanitise", font_file],
+                                         stderr=subprocess.STDOUT)
+    if ots_output != "":
+      fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+    else:
+      fb.ok("ot-sanitise passed this file")
+  except subprocess.CalledProcessError, e:
+      fb.error(("ot-sanitise returned an error code. Output follows :"
+                "\n\n{}\n").format(e.output))
+  except OSError, e:
+    # This is made very prominent with additional line breaks
+    fb.warning("\n\n\not-santise is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/ProjectChecklist.md#ots"
+               " Actual error message was: "
+               "'{}'\n\n".format(e))
 
 
 def check_with_msfontvalidator(fb, font_file):
   fb.new_check("037", "Checking with Microsoft Font Validator")
-  if fb.config['webapp'] is True:
-    fb.skip("Subprocess is unsupported on Google App Engine")
-  else:
-    try:
-      import subprocess
-      fval_cmd = ["mono",
-                  "prebuilt/fval/FontValidator.exe",
-                  "-file", font_file,
-                  "-all-tables",
-                  "-report-in-font-dir"]
-      subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
-      xml_report = open("{}.report.xml".format(font_file), "r").read()
-      doc = defusedxml.lxml.fromstring(xml_report)
-      for report in doc.iter('Report'):
-        if report.get("ErrorType") == "P":
-          fb.ok("MS-FonVal: {}".format(report.get("Message")))
-        elif report.get("ErrorType") == "E":
-          fb.error("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+  try:
+    import subprocess
+    fval_cmd = ["mono",
+                "prebuilt/fval/FontValidator.exe",
+                "-file", font_file,
+                "-all-tables",
+                "-report-in-font-dir"]
+    subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
+    xml_report = open("{}.report.xml".format(font_file), "r").read()
+    doc = defusedxml.lxml.fromstring(xml_report)
+    for report in doc.iter('Report'):
+      if report.get("ErrorType") == "P":
+        fb.ok("MS-FonVal: {}".format(report.get("Message")))
+      elif report.get("ErrorType") == "E":
+        fb.error("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
+                                                    report.get("Details")))
+      elif report.get("ErrorType") == "W":
+        fb.warning("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
                                                       report.get("Details")))
-        elif report.get("ErrorType") == "W":
-          fb.warning("MS-FonVal: {} DETAILS: {}".format(report.get("Message"),
-                                                        report.get("Details")))
-        else:
-          fb.info("MS-FontVal: {}".format(report.get("Message")))
-    except subprocess.CalledProcessError, e:
-      fb.info(("Microsoft Font Validator returned an error code."
-               " Output follows :\n\n{}\n").format(e.output))
-    except OSError:
-      fb.warning("Mono runtime and/or "
-                 "Microsoft Font Validator are not available!")
-    except IOError:
-      fb.warning("Mono runtime and/or "
-                 "Microsoft Font Validator are not available!")
-      return
+      else:
+        fb.info("MS-FontVal: {}".format(report.get("Message")))
+  except subprocess.CalledProcessError, e:
+    fb.info(("Microsoft Font Validator returned an error code."
+             " Output follows :\n\n{}\n").format(e.output))
+  except OSError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+  except IOError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+    return
 
 
 def check_fforge_outputs_error_msgs(fb, font_file):
@@ -1167,61 +1158,61 @@ def check_fforge_outputs_error_msgs(fb, font_file):
   if "adobeblank" in font_file:
     fb.skip("Skipping AdobeBlank since"
             " this font is a very peculiar hack.")
-  else:
-    validation_state = None
-    try:
-      import fontforge
-      # temporary stderr redirection:
-      ff_err = os.tmpfile()
+    return None
 
-      # we do not redirect stderr on Travis because
-      # it's making it think the build failed.
-      # I'm not exactly sure why does it happen, but for now we'll
-      # workaround the issue by not capturing stderr messages
-      # when running on Travis.
-      if 'TRAVIS' not in os.environ:
-        stderr_backup = os.dup(2)
-        os.close(2)
-        os.dup2(ff_err.fileno(), 2)
+  validation_state = None
+  try:
+    import fontforge
+    # temporary stderr redirection:
+    ff_err = os.tmpfile()
 
-      # invoke font validation
-      # via fontforge python module:
-      fontforge_font = fontforge.open(font_file)
-      validation_state = fontforge_font.validate()
+    # we do not redirect stderr on Travis because
+    # it's making it think the build failed.
+    # I'm not exactly sure why does it happen, but for now we'll
+    # workaround the issue by not capturing stderr messages
+    # when running on Travis.
+    if 'TRAVIS' not in os.environ:
+      stderr_backup = os.dup(2)
+      os.close(2)
+      os.dup2(ff_err.fileno(), 2)
 
-      if 'TRAVIS' not in os.environ:
-        # restore default stderr:
-        os.dup2(stderr_backup, 2)
-        sys.stderr = os.fdopen(2, 'w', 0)
+    # invoke font validation
+    # via fontforge python module:
+    fontforge_font = fontforge.open(font_file)
+    validation_state = fontforge_font.validate()
 
-      # handle captured stderr messages:
-      ff_err.flush()
-      ff_err.seek(0, os.SEEK_SET)
-      ff_err_messages = ff_err.read()
-      filtered_err_msgs = ""
-      for line in ff_err_messages.split('\n'):
-        if 'The following table(s) in the font' \
-           ' have been ignored by FontForge' in line:
-          continue
-        if "Ignoring 'DSIG' digital signature table" in line:
-          continue
-        filtered_err_msgs += line + '\n'
+    if 'TRAVIS' not in os.environ:
+      # restore default stderr:
+      os.dup2(stderr_backup, 2)
+      sys.stderr = os.fdopen(2, 'w', 0)
 
-      if len(filtered_err_msgs.strip()) > 0:
-        fb.error(("fontforge did print these messages to stderr:\n"
-                  "{}").format(filtered_err_msgs))
-      else:
-        fb.ok("fontforge validation did not output any error message.")
-      ff_err.close()
-    except:
-      fb.error(" It seems that FontForge had a problem while"
-               " attempting to run checks on this font file!"
-               " More info at: https://github.com/googlefonts/"
-               "fontbakery/issues/1166 "
-               " Actual error message was:"
-               " '{}'".format(sys.exc_info()))
+    # handle captured stderr messages:
+    ff_err.flush()
+    ff_err.seek(0, os.SEEK_SET)
+    ff_err_messages = ff_err.read()
+    filtered_err_msgs = ""
+    for line in ff_err_messages.split('\n'):
+      if 'The following table(s) in the font' \
+         ' have been ignored by FontForge' in line:
+        continue
+      if "Ignoring 'DSIG' digital signature table" in line:
+        continue
+      filtered_err_msgs += line + '\n'
 
-    return validation_state
+    if len(filtered_err_msgs.strip()) > 0:
+      fb.error(("fontforge did print these messages to stderr:\n"
+                "{}").format(filtered_err_msgs))
+    else:
+      fb.ok("fontforge validation did not output any error message.")
+    ff_err.close()
+  except:
+    fb.error(" It seems that FontForge had a problem while"
+             " attempting to run checks on this font file!"
+             " More info at: https://github.com/googlefonts/"
+             "fontbakery/issues/1166 "
+             " Actual error message was:"
+             " '{}'".format(sys.exc_info()))
+  return validation_state
 
 
 def perform_all_fontforge_checks(fb, validation_state):
@@ -1678,31 +1669,28 @@ def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
 
 def check_with_pyfontaine(fb, font_file):
   fb.new_check("051", "Checking with pyfontaine")
-  if fb.config['webapp'] is True:
-    fb.skip("Subprocess is unsupported on Google App Engine")
-  else:
-    try:
-      import subprocess
-      fontaine_output = subprocess.check_output(["pyfontaine",
-                                                 "--missing",
-                                                 "--set", "gwf_latin",
-                                                 font_file],
-                                                stderr=subprocess.STDOUT)
-      if "Support level: full" not in fontaine_output:
-        fb.error(("pyfontaine output follows:\n\n"
-                  "{}\n").format(fontaine_output))
-      else:
-        fb.ok("pyfontaine passed this file")
-    except subprocess.CalledProcessError, e:
-      fb.error(("pyfontaine returned an error code. Output follows :"
-                "\n\n{}\n").format(e.output))
-    except OSError:
-      # This is made very prominent with additional line breaks
-      fb.warning("\n\n\npyfontaine is not available!"
-                 " You really MUST check the fonts with this tool."
-                 " To install it, see"
-                 " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine\n\n\n")
+  try:
+    import subprocess
+    fontaine_output = subprocess.check_output(["pyfontaine",
+                                               "--missing",
+                                               "--set", "gwf_latin",
+                                               font_file],
+                                              stderr=subprocess.STDOUT)
+    if "Support level: full" not in fontaine_output:
+      fb.error(("pyfontaine output follows:\n\n"
+                "{}\n").format(fontaine_output))
+    else:
+      fb.ok("pyfontaine passed this file")
+  except subprocess.CalledProcessError, e:
+    fb.error(("pyfontaine returned an error code. Output follows :"
+              "\n\n{}\n").format(e.output))
+  except OSError:
+    # This is made very prominent with additional line breaks
+    fb.warning("\n\n\npyfontaine is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine\n\n\n")
 
 
 def check_no_problematic_formats(fb, font):
@@ -1749,65 +1737,62 @@ def check_hinting_filesize_impact(fb, fullpath, filename):
   # current implementation simply logs useful info
   # but there's no fail scenario for this checker.
   ttfautohint_missing = False
-  if fb.config['webapp'] is True:
-    fb.skip("Subprocess is unsupported on Google App Engine")
-  else:
-    try:
-      import subprocess
-      statinfo = os.stat(fullpath)
-      hinted_size = statinfo.st_size
+  try:
+    import subprocess
+    statinfo = os.stat(fullpath)
+    hinted_size = statinfo.st_size
 
-      dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
-      subprocess.call(["ttfautohint",
-                       "--dehint",
-                       fullpath,
-                       dehinted.name])
-      statinfo = os.stat(dehinted.name)
-      dehinted_size = statinfo.st_size
-      os.unlink(dehinted.name)
+    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
+    subprocess.call(["ttfautohint",
+                     "--dehint",
+                     fullpath,
+                     dehinted.name])
+    statinfo = os.stat(dehinted.name)
+    dehinted_size = statinfo.st_size
+    os.unlink(dehinted.name)
 
-      if dehinted_size == 0:
-        fb.skip("ttfautohint --dehint reports that"
-                " 'This font has already been processed with ttfautohint'."
-                " This is a bug in an old version of ttfautohint."
-                " You'll need to upgrade it."
-                " See https://github.com/googlefonts/fontbakery/"
-                "issues/1043#issuecomment-249035069")
-      else:
-        increase = hinted_size - dehinted_size
-        change = float(hinted_size)/dehinted_size - 1
-        change = int(change*10000)/100.0  # round to 2 decimal pts percentage
+    if dehinted_size == 0:
+      fb.skip("ttfautohint --dehint reports that"
+              " 'This font has already been processed with ttfautohint'."
+              " This is a bug in an old version of ttfautohint."
+              " You'll need to upgrade it."
+              " See https://github.com/googlefonts/fontbakery/"
+              "issues/1043#issuecomment-249035069")
+    else:
+      increase = hinted_size - dehinted_size
+      change = float(hinted_size)/dehinted_size - 1
+      change = int(change*10000)/100.0  # round to 2 decimal pts percentage
 
-        def filesize_formatting(s):
-          if s < 1024:
-            return "{} bytes".format(s)
-          elif s < 1024*1024:
-            return "{}kb".format(s/1024)
-          else:
-            return "{}Mb".format(s/(1024*1024))
+      def filesize_formatting(s):
+        if s < 1024:
+          return "{} bytes".format(s)
+        elif s < 1024*1024:
+          return "{}kb".format(s/1024)
+        else:
+          return "{}Mb".format(s/(1024*1024))
 
-        hinted_size = filesize_formatting(hinted_size)
-        dehinted_size = filesize_formatting(dehinted_size)
-        increase = filesize_formatting(increase)
+      hinted_size = filesize_formatting(hinted_size)
+      dehinted_size = filesize_formatting(dehinted_size)
+      increase = filesize_formatting(increase)
 
-        results_table = "Hinting filesize impact:\n\n"
-        results_table += "|  | {} |\n".format(filename)
-        results_table += "|:--- | ---:| ---:|\n"
-        results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
-        results_table += "| Hinted Size | {} |\n".format(hinted_size)
-        results_table += "| Increase | {} |\n".format(increase)
-        results_table += "| Change   | {} % |\n".format(change)
-        fb.info(results_table)
+      results_table = "Hinting filesize impact:\n\n"
+      results_table += "|  | {} |\n".format(filename)
+      results_table += "|:--- | ---:| ---:|\n"
+      results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+      results_table += "| Hinted Size | {} |\n".format(hinted_size)
+      results_table += "| Increase | {} |\n".format(increase)
+      results_table += "| Change   | {} % |\n".format(change)
+      fb.info(results_table)
 
-    except OSError:
-      # This is made very prominent with additional line breaks
-      ttfautohint_missing = True
-      fb.warning("\n\n\nttfautohint is not available!"
-                 " You really MUST check the fonts with this tool."
-                 " To install it, see"
-                 " https://github.com/googlefonts"
-                 "/gf-docs/blob/master/"
-                 "ProjectChecklist.md#ttfautohint\n\n\n")
+  except OSError:
+    # This is made very prominent with additional line breaks
+    ttfautohint_missing = True
+    fb.warning("\n\n\nttfautohint is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/"
+               "ProjectChecklist.md#ttfautohint\n\n\n")
   return ttfautohint_missing
 
 
@@ -1879,8 +1864,6 @@ def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
              " It is typically specified as a comment"
              " in the font version entry of the 'name' table."
              " Font version string is: '{}'").format(version_strings[0]))
-  elif fb.config['webapp'] is True:
-    fb.skip("We are currently unable to run ttfautohint on Google App Engine.")
   elif ttfautohint_missing:
     fb.skip("This check requires ttfautohint"
             " to be available in the system.")
@@ -3265,6 +3248,9 @@ def check_regression_glyphs_structure(fb, new_font, old_font, f):
     fb.error("Following glyphs differ greatly from previous version: [%s]" % (
       ', '.join(bad_glyphs)
     ))
+  else:
+    fb.ok("Yes, the glyphs are similar "
+          "in comparison to the previous version.")
 
 
 def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):

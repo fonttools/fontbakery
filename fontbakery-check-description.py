@@ -80,7 +80,5 @@ if __name__ == '__main__':
     'json': True,
     'autofix': False,
     'ghm': False,
-    'error': False,
-    'inmem': False,
-    'webapp': False
+    'error': False
   })

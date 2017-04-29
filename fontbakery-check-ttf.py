@@ -82,33 +82,24 @@ def fontbakery_check_ttf(config):
 
   checks.check_files_are_named_canonically(fb, fonts_to_check)
 
-  if fb.config['webapp'] is True:
-    # At the moment we won't perform
-    # DESCRIPTION checks on the webapp
-    # In particular, one of the checks depends on the magic python module
-    # which is not supported on Google App Engine.
-    pass
-  else:
-    # Perform a few checks on DESCRIPTION files
+  # Perform a few checks on DESCRIPTION files
 
-    # This expects all fonts to be in the same folder:
-    a_font = fonts_to_check[0]
+  # This expects all fonts to be in the same folder:
+  a_font = fonts_to_check[0]
 
-    # FIX-ME: This will not work if we have more than
-    #         a single '/' char in the filename:
-    folder_name = os.path.split(a_font.fullpath)[0]
-    descfilepath = os.path.join(folder_name, "DESCRIPTION.en_us.html")
-    if os.path.exists(descfilepath):
-      fb.default_target = descfilepath
-      contents = open(descfilepath).read()
-      checks.check_DESCRIPTION_file_contains_no_broken_links(fb, contents)
-      checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
-      checks.check_DESCRIPTION_max_length(fb, descfilepath)
-      checks.check_DESCRIPTION_min_length(fb, descfilepath)
+  # FIX-ME: This will not work if we have more than
+  #         a single '/' char in the filename:
+  folder_name = os.path.split(a_font.fullpath)[0]
+  descfilepath = os.path.join(folder_name, "DESCRIPTION.en_us.html")
+  if os.path.exists(descfilepath):
+    fb.default_target = descfilepath
+    contents = open(descfilepath).read()
+    checks.check_DESCRIPTION_file_contains_no_broken_links(fb, contents)
+    checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
+    checks.check_DESCRIPTION_max_length(fb, descfilepath)
+    checks.check_DESCRIPTION_min_length(fb, descfilepath)
 
-  if not fb.config['inmem']:
-    # this check does not make sense for in-memory file-like objects:
-    checks.check_all_files_in_a_single_directory(fb, fonts_to_check)
+  checks.check_all_files_in_a_single_directory(fb, fonts_to_check)
 
   registered_vendor_ids = fetch_vendorID_list(logging)
 
@@ -123,51 +114,47 @@ def fontbakery_check_ttf(config):
 ##           list of METADATA.pb files first
 ###########################################################################
 
-  if fb.config['inmem'] or fb.config['webapp']:
-    # TODO: Not sure why these are disabled. I need to review this.
-    pass
-  else:
-    metadata_to_check = []
-    for target in fonts_to_check:
-      fontdir = os.path.dirname(target.fullpath)
-      metadata = os.path.join(fontdir, "METADATA.pb")
-      if not os.path.exists(metadata):
-        logging.error("'{}' is missing"
-                      " a METADATA.pb file!".format(target.fullpath))
-      else:
-        family = get_FamilyProto_Message(metadata)
-        if family is None:
-          logging.warning("Could not load data from METADATA.pb.")
-        elif family not in metadata_to_check:
-          metadata_to_check.append([fontdir, family])
+  metadata_to_check = []
+  for target in fonts_to_check:
+    fontdir = os.path.dirname(target.fullpath)
+    metadata = os.path.join(fontdir, "METADATA.pb")
+    if not os.path.exists(metadata):
+      logging.error("'{}' is missing"
+                    " a METADATA.pb file!".format(target.fullpath))
+    else:
+      family = get_FamilyProto_Message(metadata)
+      if family is None:
+        logging.warning("Could not load data from METADATA.pb.")
+      elif family not in metadata_to_check:
+        metadata_to_check.append([fontdir, family])
 
-    for dirname, family in metadata_to_check:
-      ttf = {}
-      for f in family.fonts:
-        if font_key(f) in ttf.keys():
-          # I think this will likely never happen. But just in case...
-          logging.error("This is a fontbakery bug."
-                        " We need to figure out a better hash-function"
-                        " for the font ProtocolBuffer message."
-                        " Please file an issue on"
-                        " https://github.com/googlefonts"
-                        "/fontbakery/issues/new")
-        else:
-          ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname,
-                                                       f.filename))
-
-      if dirname == "":
-        fb.default_target = "Current Folder"
+  for dirname, family in metadata_to_check:
+    ttf = {}
+    for f in family.fonts:
+      if font_key(f) in ttf.keys():
+        # I think this will likely never happen. But just in case...
+        logging.error("This is a fontbakery bug."
+                      " We need to figure out a better hash-function"
+                      " for the font ProtocolBuffer message."
+                      " Please file an issue on"
+                      " https://github.com/googlefonts"
+                      "/fontbakery/issues/new")
       else:
-        fb.default_target = dirname
-      # -----------------------------------------------------
-      checks.check_font_designer_field_is_not_unknown(fb, family)
-      checks.check_fonts_have_consistent_underline_thickness(fb, family, ttf)
-      checks.check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
-      checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
-      checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
-      checks.check_fonts_have_equal_glyph_names(fb, family, ttf)
-      checks.check_fonts_have_equal_unicode_encodings(fb, family, ttf)
+        ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname,
+                                                     f.filename))
+
+    if dirname == "":
+      fb.default_target = "Current Folder"
+    else:
+      fb.default_target = dirname
+    # -----------------------------------------------------
+    checks.check_font_designer_field_is_not_unknown(fb, family)
+    checks.check_fonts_have_consistent_underline_thickness(fb, family, ttf)
+    checks.check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
+    checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
+    checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
+    checks.check_fonts_have_equal_glyph_names(fb, family, ttf)
+    checks.check_fonts_have_equal_unicode_encodings(fb, family, ttf)
 
   # ------------------------------------------------------
   vmetrics_ymin = 0
@@ -295,96 +282,95 @@ def fontbakery_check_ttf(config):
 ##########################################################
     skip_gfonts = False
     is_listed_in_GFD = False
-    if not fb.config['webapp']:
-      fontdir = os.path.dirname(target.fullpath)
-      metadata = os.path.join(fontdir, "METADATA.pb")
-      if not os.path.exists(metadata):
-        logging.warning(("{} is missing a METADATA.pb file!"
-                         " This will disable all Google-Fonts-specific checks."
-                         " Please considering adding a METADATA.pb file to the"
-                         " same folder as the font files.").format(filename))
+    fontdir = os.path.dirname(target.fullpath)
+    metadata = os.path.join(fontdir, "METADATA.pb")
+    if not os.path.exists(metadata):
+      logging.warning(("{} is missing a METADATA.pb file!"
+                       " This will disable all Google-Fonts-specific checks."
+                       " Please considering adding a METADATA.pb file to the"
+                       " same folder as the font files.").format(filename))
+      skip_gfonts = True
+    else:
+      family = get_FamilyProto_Message(metadata)
+      if family is None:
+        logging.warning("Could not load data from METADATA.pb.")
         skip_gfonts = True
-      else:
-        family = get_FamilyProto_Message(metadata)
-        if family is None:
-          logging.warning("Could not load data from METADATA.pb.")
-          skip_gfonts = True
-          break
+        break
 
-        fb.default_target = metadata
+      fb.default_target = metadata
 
-        checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
-        is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
+      checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
+      is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
                                                                         family)
-        checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
-        checks.check_METADATA_has_unique_full_name_values(fb, family)
-        checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
-        checks.check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
-        checks.check_METADATA_contains_at_least_menu_and_latin_subsets(fb,
-                                                                       family)
-        checks.check_METADATA_subsets_alphabetically_ordered(fb,
-                                                             metadata,
-                                                             family)
-        checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
-        checks.check_METADATA_family_values_are_all_the_same(fb, family)
+      checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
+      checks.check_METADATA_has_unique_full_name_values(fb, family)
+      checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
+      checks.check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
+      checks.check_METADATA_contains_at_least_menu_and_latin_subsets(fb,
+                                                                     family)
+      checks.check_METADATA_subsets_alphabetically_ordered(fb,
+                                                           metadata,
+                                                           family)
+      checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
+      checks.check_METADATA_family_values_are_all_the_same(fb, family)
 
-        found_regular = checks.check_font_has_regular_style(fb, family)
-        checks.check_regular_is_400(fb, family, found_regular)
+      found_regular = checks.check_font_has_regular_style(fb, family)
+      checks.check_regular_is_400(fb, family, found_regular)
 
-        for f in family.fonts: # pylint: disable=no-member
-                               # (I know this is good, but pylint
-                               #  seems confused here)
-          if filename == f.filename:
-            ###### Here go single-TTF metadata tests #######
-            # ----------------------------------------------
+      for f in family.fonts: # pylint: disable=no-member
+                             # (I know this is good, but pylint
+                             #  seems confused here)
+        if filename == f.filename:
+          ###### Here go single-TTF metadata tests #######
+          # ----------------------------------------------
 
-            checks.check_font_on_disk_and_METADATA_have_same_family_name(fb,
-                                                                         font,
-                                                                         f)
-            checks.check_METADATA_postScriptName_matches_name_table_value(fb,
-                                                                          font,
-                                                                          f)
-            checks.check_METADATA_fullname_matches_name_table_value(fb,
-                                                                    font,
-                                                                    f)
-            checks.check_METADATA_fonts_name_matches_font_familyname(fb,
-                                                                     font,
-                                                                     f)
-            checks.check_METADATA_fullName_matches_postScriptName(fb, f)
-            checks.check_METADATA_filename_matches_postScriptName(fb, f)
-
-            ffname = checks.check_METADATA_name_contains_good_font_name(fb,
+          checks.check_font_on_disk_and_METADATA_have_same_family_name(fb,
+                                                                       font,
+                                                                       f)
+          checks.check_METADATA_postScriptName_matches_name_table_value(fb,
                                                                         font,
                                                                         f)
-            if ffname is not None:
-              checks.check_METADATA_fullname_contains_good_fname(fb, f, ffname)
-              checks.check_METADATA_filename_contains_good_fname(fb, f, ffname)
-              checks.check_METADATA_postScriptName_contains_good_fname(fb,
-                                                                       f,
-                                                                       ffname)
+          checks.check_METADATA_fullname_matches_name_table_value(fb,
+                                                                  font,
+                                                                  f)
+          checks.check_METADATA_fonts_name_matches_font_familyname(fb,
+                                                                   font,
+                                                                   f)
+          checks.check_METADATA_fullName_matches_postScriptName(fb, f)
+          checks.check_METADATA_filename_matches_postScriptName(fb, f)
 
-            checks.check_Copyright_notice_matches_canonical_pattern(fb, f)
-            checks.check_Copyright_notice_does_not_contain_Reserved_Name(fb, f)
-            checks.check_Copyright_notice_does_not_exceed_500_chars(fb, f)
-            checks.check_Filename_is_set_canonically(fb, f)
-            checks.check_METADATA_font_italic_matches_font_internals(fb,
-                                                                     font,
-                                                                     f)
+          ffname = checks.check_METADATA_name_contains_good_font_name(fb,
+                                                                      font,
+                                                                      f)
+          if ffname is not None:
+            checks.check_METADATA_fullname_contains_good_fname(fb, f, ffname)
+            checks.check_METADATA_filename_contains_good_fname(fb, f, ffname)
+            checks.check_METADATA_postScriptName_contains_good_fname(fb,
+                                                                     f,
+                                                                     ffname)
 
-            if checks.check_METADATA_fontstyle_normal_matches_internals(fb,
-                                                                        font,
-                                                                        f):
-              checks.check_Metadata_keyvalue_match_to_table_name_fields(fb,
-                                                                        font,
-                                                                        f)
+          checks.check_Copyright_notice_matches_canonical_pattern(fb, f)
+          checks.check_Copyright_notice_does_not_contain_Reserved_Name(fb, f)
+          checks.check_Copyright_notice_does_not_exceed_500_chars(fb, f)
+          checks.check_Filename_is_set_canonically(fb, f)
+          checks.check_METADATA_font_italic_matches_font_internals(fb,
+                                                                   font,
+                                                                   f)
 
-            checks.check_fontname_is_not_camel_cased(fb, f)
-            checks.check_font_name_is_the_same_as_family_name(fb, family, f)
-            checks.check_font_weight_has_a_canonical_value(fb, f)
-            checks.check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f)
-            checks.check_Metadata_weight_matches_postScriptName(fb, f)
-            checks.check_METADATA_lists_fonts_named_canonicaly(fb, font, f)
-            checks.check_Font_styles_are_named_canonically(fb, font, f)
+          if checks.check_METADATA_fontstyle_normal_matches_internals(fb,
+                                                                      font,
+                                                                      f):
+            checks.check_Metadata_keyvalue_match_to_table_name_fields(fb,
+                                                                      font,
+                                                                      f)
+
+          checks.check_fontname_is_not_camel_cased(fb, f)
+          checks.check_font_name_is_the_same_as_family_name(fb, family, f)
+          checks.check_font_weight_has_a_canonical_value(fb, f)
+          checks.check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f)
+          checks.check_Metadata_weight_matches_postScriptName(fb, f)
+          checks.check_METADATA_lists_fonts_named_canonicaly(fb, font, f)
+          checks.check_Font_styles_are_named_canonically(fb, font, f)
 
     # Google-Fonts specific check:
     checks.check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
@@ -431,48 +417,44 @@ def fontbakery_check_ttf(config):
     fb.output_report(target)
     fb.reset_report()
 
-    if not fb.config['webapp']:
-      # ----------------------------------------------------
-      # https://github.com/googlefonts/fontbakery/issues/971
-      # DC: Each fix line should set a fix flag, and
-      # if that flag is True by this point, only then write the file
-      # and then say any further output regards fixed files, and
-      # re-run the script on each fixed file with logging level = error
-      # so no info-level log items are shown
-      font_file_output = os.path.splitext(filename)[0] + ".fix"
-      if config['autofix']:
-        font.save(font_file_output)
-        logging.info("{} saved\n".format(font_file_output))
-      font.close()
+    # ----------------------------------------------------
+    # https://github.com/googlefonts/fontbakery/issues/971
+    # DC: Each fix line should set a fix flag, and
+    # if that flag is True by this point, only then write the file
+    # and then say any further output regards fixed files, and
+    # re-run the script on each fixed file with logging level = error
+    # so no info-level log items are shown
+    font_file_output = os.path.splitext(filename)[0] + ".fix"
+    if config['autofix']:
+      font.save(font_file_output)
+      logging.info("{} saved\n".format(font_file_output))
+    font.close()
 
-      # -------------------------------------------------------
-      if not config['verbose'] and \
-         not config['json'] and \
-         not config['ghm'] and \
-         not config['error']:
-        # in this specific case, the user would have no way to see
-        # the actual check results. So here we inform the user
-        # that at least one of these command line parameters
-        # needs to be used in order to see the details.
-        print ("In order to see the actual check result messages,\n"
-               "use one of the following command-line parameters:\n"
-               "  --verbose\tOutput results to stdout.\n"
-               "  --json \tSave results to a file in JSON format.\n"
-               "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
-               "  --error\tPrint only the error messages "
-               "(outputs to stderr).\n")
+    # -------------------------------------------------------
+    if not config['verbose'] and \
+       not config['json'] and \
+       not config['ghm'] and \
+       not config['error']:
+      # in this specific case, the user would have no way to see
+      # the actual check results. So here we inform the user
+      # that at least one of these command line parameters
+      # needs to be used in order to see the details.
+      print ("In order to see the actual check result messages,\n"
+             "use one of the following command-line parameters:\n"
+             "  --verbose\tOutput results to stdout.\n"
+             "  --json \tSave results to a file in JSON format.\n"
+             "  --ghm  \tSave results to a file in GitHub Markdown format.\n"
+             "  --error\tPrint only the error messages "
+             "(outputs to stderr).\n")
 
-  if fb.config['webapp']:
-    return fb.json_report_files
-  else:
-    if len(fb.json_report_files) > 0:
-      print(("Saved check results in "
-             "JSON format to:\n\t{}"
-             "").format('\n\t'.join(fb.json_report_files)))
-    if len(fb.ghm_report_files) > 0:
-      print(("Saved check results in "
-             "GitHub Markdown format to:\n\t{}"
-             "").format('\n\t'.join(fb.ghm_report_files)))
+  if len(fb.json_report_files) > 0:
+    print(("Saved check results in "
+           "JSON format to:\n\t{}"
+           "").format('\n\t'.join(fb.json_report_files)))
+  if len(fb.ghm_report_files) > 0:
+    print(("Saved check results in "
+           "GitHub Markdown format to:\n\t{}"
+           "").format('\n\t'.join(fb.ghm_report_files)))
 
 
 # set up some command line argument processing
@@ -499,19 +481,5 @@ if __name__ == '__main__':
     'verbose': args.verbose,
     'json': args.json,
     'ghm': args.ghm,
-    'error': args.error,
-    'inmem': False,
-    'webapp': False
+    'error': args.error
   })
-  # Notes on the meaning of some of the configuration parameters:
-  #
-  # inmem:  Indicated that results should be saved in-memory
-  #         instead of written to the filesystem.
-  #         This may become a command line option (if needed in the future)
-  #         but right now it is only really used by other scripts that
-  #         import this as a module (such as our webapp code).
-  #
-  # webapp: Indicates that we're running as back-end code for
-  #         the FontBakery webapp. This is needed because currently there
-  #         are a few features that must be disabled due to lack of support
-  #         in the Google App Engine environment.
