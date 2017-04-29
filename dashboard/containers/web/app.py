@@ -115,6 +115,8 @@ def family_details(familyname):
       for d in fonts_dev:
         if d['stylename'] == p['stylename']:
           fonts.append([p, d])
+          break
+      fonts.append([p, None])
 
     return render_template("family_details.html",
                            delta=delta,
