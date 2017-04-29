@@ -3248,6 +3248,9 @@ def check_regression_glyphs_structure(fb, new_font, old_font, f):
     fb.error("Following glyphs differ greatly from previous version: [%s]" % (
       ', '.join(bad_glyphs)
     ))
+  else:
+    fb.ok("Yes, the glyphs are similar "
+          "in comparison to the previous version.")
 
 
 def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
