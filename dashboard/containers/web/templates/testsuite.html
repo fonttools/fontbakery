@@ -25,11 +25,14 @@
       <td>{{ check_description }}</td>
       <td>
         <div class="progress-bar progress-bar-success" style="width: {{ 100*results['OK']/results['Total'] }}%"></div>	  
-        <div class="progress-bar progress-bar-warning" style="width: {{ 100*results['INFO']/results['Total'] }}%"></div>
+        <div class="progress-bar progress-bar-hotfix" style="width: {{ 100*results['HOTFIX']/results['Total'] }}%"></div>
+        <div class="progress-bar progress-bar-warning" style="width: {{ 100*results['WARNING']/results['Total'] }}%"></div>
         <div class="progress-bar progress-bar-danger" style="width: {{ 100*results['ERROR']/results['Total'] }}%"></div>
+        <div class="progress-bar progress-bar-info" style="width: {{ 100*results['INFO']/results['Total'] }}%"></div>
+        <div class="progress-bar progress-bar-skip" style="width: {{ 100*results['SKIP']/results['Total'] }}%"></div>
       </td>
       <td>
-        <small style='text-align:right; margin-left:12px; color:grey'>{{ results['OK'] }} / {{ results['Total'] }}</small>
+        <small style='text-align:right; margin-left:12px; color:grey'>{{ results['OK'] + results['HOTFIX'] }} / {{ results['Total'] }}</small>
       </td>
     </tr>
     {% endfor %}
