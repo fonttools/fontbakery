@@ -18,7 +18,6 @@ import logging
 import subprocess
 import sys
 from targetfont import TargetFont
-from io import BytesIO
 from constants import YELLOW_STR,\
                       GREEN_STR,\
                       BLUE_STR,\
@@ -147,16 +146,10 @@ class FontBakeryCheckLogger():
                            indent=4,
                            separators=(',', ': '))
 
-    if self.config['inmem']:
-      json_output = BytesIO()
-      json_output.write(json_data)
-      json_output.seek(0)
-      self.json_report_files.append((a_target.fullpath, json_output))
-    else:
-      json_output_filename = a_target.fullpath + ".fontbakery.json"
-      json_output = open(json_output_filename, 'w')
-      json_output.write(json_data)
-      self.json_report_files.append(json_output_filename)
+    json_output_filename = a_target.fullpath + ".fontbakery.json"
+    json_output = open(json_output_filename, 'w')
+    json_output.write(json_data)
+    self.json_report_files.append(json_output_filename)
 
   def output_github_markdown_report(self, a_target):
 
@@ -179,13 +172,10 @@ class FontBakeryCheckLogger():
         markdown_data += ("### {}\n"
                           "* {}\n\n").format(check['description'], msgs)
 
-    if self.config['inmem']:
-      self.ghm_report_files.append((a_target.fullpath, markdown_data))
-    else:
-      output_filename = a_target.fullpath + ".fontbakery.md"
-      ghm_output = open(output_filename, 'w')
-      ghm_output.write(markdown_data)
-      self.ghm_report_files.append(output_filename)
+    output_filename = a_target.fullpath + ".fontbakery.md"
+    ghm_output = open(output_filename, 'w')
+    ghm_output.write(markdown_data)
+    self.ghm_report_files.append(output_filename)
 
   def update_progressbar(self):
     tick = {
