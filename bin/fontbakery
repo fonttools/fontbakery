@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import sys, os, argparse
+from argparse import RawTextHelpFormatter
+from warnings import warn
+import subprocess
+
+def _get_subcommands():
+    subcommands = {}
+    scriptdir = os.path.dirname(__file__)
+    for f in os.listdir(scriptdir):
+        command = os.path.join(scriptdir, f)
+        if not os.path.isfile(command) or not os.access(command, os.X_OK):
+            continue
+        if f.startswith('fontbakery-'):
+            subcommand = f[len('fontbakery-'):].rsplit('.')[0]
+        else:
+            continue
+
+        if subcommand in subcommands:
+            warn('SKIPPING subcommand collision "{0}" subcommand "{1}" '
+                 'already found as "{2}".'.format(command,
+                                                  subcommand,
+                                                  subcommands[subcommand]))
+            continue
+        subcommands[subcommand] = command
+    return subcommands
+
+subcommands = _get_subcommands()
+
+description = "Run fontbakery subcomands:{0}".format(''.join(
+                        ['\n    {0}'.format(sc) for sc in sorted(subcommands.keys())]))
+parser = argparse.ArgumentParser(description=description,
+                                 formatter_class=RawTextHelpFormatter)
+parser.add_argument('subcommand',
+                    nargs=1,
+                    help="subcommand to execute")
+
+if __name__ == '__main__':
+
+    if len(sys.argv) >= 2 and sys.argv[1] in subcommands:
+        # relay
+        cmd = subcommands[sys.argv[1]]
+        # execute ['fontbakery-{subcommand}'.format(sys.argv[1])] + sys.argv[2:]
+        args = [cmd] + sys.argv[2:]
+        p = subprocess.Popen(args, stdout=sys.stdout,
+                                   stdin=sys.stdin,
+                                   stderr=sys.stderr)
+        sys.exit(p.wait())
+    else:
+        # shows help if no args
+        args = parser.parse_args()
+        parser.print_help()
