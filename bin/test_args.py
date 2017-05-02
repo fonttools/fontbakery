@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 target_modules = [
  "fontbakery-build-font2ttf",
  "fontbakery-build-fontmetadata",
@@ -29,7 +31,7 @@ for module_name in target_modules:
   target = __import__(module_name)
   help_text[module_name] = target.parser.format_help()
 
-# We need to extend this list with our 
+# We need to extend this list with our
 # minimal common interface for all scripts:
 mandatory_args = ["[-h]"]
 
