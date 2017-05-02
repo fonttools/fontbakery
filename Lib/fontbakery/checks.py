@@ -29,58 +29,62 @@ from lxml.html import HTMLParser
 import plistlib
 from fontbakery.targetfont import TargetFont
 from fontbakery.pifont import PiFont
-from fontbakery.utils import get_name_string,\
-                             check_bit_entry,\
-                             getGlyph,\
-                             getGlyphEncodings,\
-                             glyphHasInk,\
-                             getWidth,\
-                             setWidth,\
-                             ttfauto_fpgm_xheight_rounding,\
-                             glyphs_surface_area,\
-                             save_FamilyProto_Message,\
-                             parse_version_string,\
-                             font_key,\
+from fontbakery.utils import (
+                             get_name_string,
+                             check_bit_entry,
+                             getGlyph,
+                             getGlyphEncodings,
+                             glyphHasInk,
+                             getWidth,
+                             setWidth,
+                             ttfauto_fpgm_xheight_rounding,
+                             glyphs_surface_area,
+                             save_FamilyProto_Message,
+                             parse_version_string,
+                             font_key,
                              assertExists
-from fontbakery.constants import IMPORTANT,\
-                                 CRITICAL,\
-                                 STYLE_NAMES,\
-                                 NAMEID_FONT_FAMILY_NAME,\
-                                 NAMEID_FONT_SUBFAMILY_NAME,\
-                                 NAMEID_FULL_FONT_NAME,\
-                                 NAMEID_VERSION_STRING,\
-                                 NAMEID_POSTSCRIPT_NAME,\
-                                 NAMEID_MANUFACTURER_NAME,\
-                                 NAMEID_DESCRIPTION,\
-                                 NAMEID_LICENSE_DESCRIPTION,\
-                                 NAMEID_LICENSE_INFO_URL,\
-                                 NAMEID_TYPOGRAPHIC_FAMILY_NAME,\
-                                 NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,\
-                                 NAMEID_STR,\
-                                 RIBBI_STYLE_NAMES,\
-                                 PLATFORM_ID_MACINTOSH,\
-                                 PLATFORM_ID_WINDOWS,\
-                                 PLATID_STR,\
-                                 WEIGHTS,\
-                                 WEIGHT_VALUE_TO_NAME,\
-                                 FSSEL_ITALIC,\
-                                 FSSEL_BOLD,\
-                                 FSSEL_REGULAR,\
-                                 MACSTYLE_BOLD,\
-                                 MACSTYLE_ITALIC,\
-                                 PANOSE_PROPORTION_ANY,\
-                                 PANOSE_PROPORTION_MONOSPACED,\
-                                 IS_FIXED_WIDTH_NOT_MONOSPACED,\
-                                 IS_FIXED_WIDTH_MONOSPACED,\
-                                 LANG_ID_ENGLISH_USA,\
-                                 PLACEHOLDER_LICENSING_TEXT,\
-                                 LICENSE_URL,\
-                                 LICENSE_NAME,\
-                                 REQUIRED_TABLES,\
-                                 OPTIONAL_TABLES,\
-                                 UNWANTED_TABLES,\
-                                 WHITESPACE_CHARACTERS,\
+                             )
+from fontbakery.constants import (
+                                 IMPORTANT,
+                                 CRITICAL,
+                                 STYLE_NAMES,
+                                 NAMEID_FONT_FAMILY_NAME,
+                                 NAMEID_FONT_SUBFAMILY_NAME,
+                                 NAMEID_FULL_FONT_NAME,
+                                 NAMEID_VERSION_STRING,
+                                 NAMEID_POSTSCRIPT_NAME,
+                                 NAMEID_MANUFACTURER_NAME,
+                                 NAMEID_DESCRIPTION,
+                                 NAMEID_LICENSE_DESCRIPTION,
+                                 NAMEID_LICENSE_INFO_URL,
+                                 NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                 NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                                 NAMEID_STR,
+                                 RIBBI_STYLE_NAMES,
+                                 PLATFORM_ID_MACINTOSH,
+                                 PLATFORM_ID_WINDOWS,
+                                 PLATID_STR,
+                                 WEIGHTS,
+                                 WEIGHT_VALUE_TO_NAME,
+                                 FSSEL_ITALIC,
+                                 FSSEL_BOLD,
+                                 FSSEL_REGULAR,
+                                 MACSTYLE_BOLD,
+                                 MACSTYLE_ITALIC,
+                                 PANOSE_PROPORTION_ANY,
+                                 PANOSE_PROPORTION_MONOSPACED,
+                                 IS_FIXED_WIDTH_NOT_MONOSPACED,
+                                 IS_FIXED_WIDTH_MONOSPACED,
+                                 LANG_ID_ENGLISH_USA,
+                                 PLACEHOLDER_LICENSING_TEXT,
+                                 LICENSE_URL,
+                                 LICENSE_NAME,
+                                 REQUIRED_TABLES,
+                                 OPTIONAL_TABLES,
+                                 UNWANTED_TABLES,
+                                 WHITESPACE_CHARACTERS,
                                  PLAT_ENC_ID_UCS2
+                                 )
 try:
   import fontforge  #pylint: disable=unused-import
 except ImportError:

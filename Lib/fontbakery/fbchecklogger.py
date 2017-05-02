@@ -19,14 +19,15 @@ import subprocess
 import sys
 
 from fontbakery.targetfont import TargetFont
-from fontbakery.constants import YELLOW_STR,\
-                                 GREEN_STR,\
-                                 BLUE_STR,\
-                                 RED_STR,\
-                                 WHITE_STR,\
-                                 CYAN_STR,\
+from fontbakery.constants import (
+                                 YELLOW_STR,
+                                 GREEN_STR,
+                                 BLUE_STR,
+                                 RED_STR,
+                                 WHITE_STR,
+                                 CYAN_STR,
                                  NORMAL
-
+                                 )
 class FontBakeryCheckLogger():
   progressbar = False
 

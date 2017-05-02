@@ -40,9 +40,11 @@ import re
 from fontbakery.fonts_public_pb2 import FamilyProto
 
 try:
-  from PIL import Image,\
-                  ImageDraw,\
+  from PIL import (
+                  Image,
+                  ImageDraw,
                   ImageFont
+                  )
 except:
   sys.exit("Needs pillow.\n\nsudo pip install pillow")
 
@@ -58,10 +60,12 @@ except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 try:
-  from flask import Flask,\
-                    jsonify,\
-                    request, \
+  from flask import (
+                    Flask,
+                    jsonify,
+                    request,
                     send_from_directory
+                    )
 
 except:
   sys.exit("Needs flask.\n\nsudo pip install flask")

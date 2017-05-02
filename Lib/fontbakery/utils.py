@@ -18,9 +18,11 @@ import re
 import sys
 import requests
 from bs4 import BeautifulSoup
-from fontbakery.constants import PLATFORM_ID_WINDOWS,\
-                                 PLAT_ENC_ID_UCS2,\
+from fontbakery.constants import (
+                                 PLATFORM_ID_WINDOWS,
+                                 PLAT_ENC_ID_UCS2,
                                  PLAT_ENC_ID_UCS4
+                                 )
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
