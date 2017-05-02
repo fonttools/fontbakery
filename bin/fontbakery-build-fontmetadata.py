@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -60,7 +60,9 @@ except:
 try:
   from flask import Flask,\
                     jsonify,\
-                    request
+                    request, \
+                    send_from_directory
+
 except:
   sys.exit("Needs flask.\n\nsudo pip install flask")
 
@@ -139,7 +141,7 @@ def generate_italic_angle_images():
 
     imagesdir = os.path.join(os.path.dirname(__file__), "fontmetadata_tool", "images")
     if not os.path.isdir(imagesdir):
-      os.mkdir(imagesdir)
+       os.mkdir(imagesdir)
     filepath = os.path.join(imagesdir, "angle_{}.png".format(i+1))
     im.save(filepath, "PNG")
 
@@ -181,6 +183,7 @@ ITALIC_ANGLE_TEMPLATE = """
 """
 
 
+
 description = """Calculates the visual weight, width or italic angle of fonts.
 
   For width, it just measures the width of how a particular piece of text renders.
@@ -216,9 +219,10 @@ def main():
     parser.print_help()
     sys.exit()
 
-  files_to_process = []
-  for arg_files in args.files:
-    files_to_process.extend(glob.glob(arg_files))
+  #files_to_process = []
+  #for arg_files in args.files:
+  #  files_to_process.extend(glob.glob(arg_files))
+  files_to_process = glob.glob(args.files)
 
   if len(files_to_process) == 0:
     print("No font files were found!")
@@ -381,6 +385,10 @@ def main():
     return 'ok'
 
   app = Flask(__name__)
+
+  @app.route('/fontmetadata_tool/<path:path>')
+  def send_js(path):
+    return send_from_directory(os.path.dirname(__file__) + '/fontmetadata_tool/', path)
 
   @app.route('/data.json')
   def json_data():
