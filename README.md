@@ -602,7 +602,7 @@ pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 
 ## Bash completion
 
-Fontbakery comes with a minimal Bash completion script. It can help you to type the subcommands that follow directly after the `fontbakery` command. Bash completion is a accessed by hitting the [TAB] key when entering the command.
+Fontbakery comes with a minimal Bash completion script. It can help you to type the subcommands that follow directly after the `fontbakery` command. Bash completion is accessed by hitting the [TAB] key when entering the command.
 
 There's no special completion support for the arguments of the subcommands yet.
 
@@ -610,7 +610,7 @@ There's no special completion support for the arguments of the subcommands yet.
 
 This will enable completion for `fontbakery` on each newly opened Bash.
 
-* Install bash-completion. On many Linux distributions it is installed and enabled by default. Mac OS X users can find it in Fink or MacPorts.
+* Install bash-completion. On many GNU+Linux distributions it is installed and enabled by default. Mac OS X users can find it in Fink or MacPorts.
 * Copy or symlink the `path-to/fontbakery/bin/bash_completion` file to `/etc/bash_completion.d/fontbakery` (on Mac&nbsp;OS&nbsp;X to: `/sw/etc/bash_completion.d/fontbakery` or `/opt/local/etc/bash_completion.d/fontbakery`).
 * Restart your shell.
 
