@@ -41,6 +41,11 @@ parser.add_argument('subcommand',
                     nargs=1,
                     help="the subcommand to execute")
 
+parser.add_argument('--list-subcommands', action='store_true',
+                    help='print the list of subcommnds '
+                    'to stdout, separated by a space character. This is '
+                    'usually only used to generate the shell completion code.')
+
 if __name__ == '__main__':
 
     if len(sys.argv) >= 2 and sys.argv[1] in subcommands:
@@ -52,6 +57,8 @@ if __name__ == '__main__':
                                    stdin=sys.stdin,
                                    stderr=sys.stderr)
         sys.exit(p.wait())
+    elif "--list-subcommands" in sys.argv:
+        print ' '.join(subcommands.keys())
     else:
         # shows help if no args
         args = parser.parse_args()

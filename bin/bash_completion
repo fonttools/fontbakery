@@ -1,0 +1,14 @@
+# bash completion for fontbakery
+which fontbakery &&
+function _fontbakery {
+    local  cur prev subcommands
+    COMPREPLY=()
+    cur="$(_get_cword)"
+    prev="$3"
+    # if prev is empty
+    if [ $COMP_CWORD == 1 ] ; then
+        subcommands="$(fontbakery --list-subcommands)"
+        COMPREPLY=( $(compgen -W "$subcommands" -- "$cur") )
+    fi
+} &&
+complete -o default -F _fontbakery fontbakery
