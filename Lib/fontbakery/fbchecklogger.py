@@ -17,16 +17,17 @@ import json
 import logging
 import subprocess
 import sys
-from targetfont import TargetFont
-from constants import YELLOW_STR,\
-                      GREEN_STR,\
-                      BLUE_STR,\
-                      RED_STR,\
-                      WHITE_STR,\
-                      CYAN_STR,\
-                      NORMAL
 
-
+from fontbakery.targetfont import TargetFont
+from fontbakery.constants import (
+                                 YELLOW_STR,
+                                 GREEN_STR,
+                                 BLUE_STR,
+                                 RED_STR,
+                                 WHITE_STR,
+                                 CYAN_STR,
+                                 NORMAL
+                                 )
 class FontBakeryCheckLogger():
   progressbar = False
 

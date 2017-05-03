@@ -9,7 +9,7 @@ import sys
 import urllib
 import urlparse
 import json
-from fonts_public_pb2 import FamilyProto
+from fontbakery.fonts_public_pb2 import FamilyProto
 from google.protobuf import text_format
 
 parser = argparse.ArgumentParser()

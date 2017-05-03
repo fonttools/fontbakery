@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -37,12 +37,14 @@ import os
 import StringIO
 import sys
 import re
-from fonts_public_pb2 import FamilyProto
+from fontbakery.fonts_public_pb2 import FamilyProto
 
 try:
-  from PIL import Image,\
-                  ImageDraw,\
+  from PIL import (
+                  Image,
+                  ImageDraw,
                   ImageFont
+                  )
 except:
   sys.exit("Needs pillow.\n\nsudo pip install pillow")
 
@@ -58,9 +60,13 @@ except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 try:
-  from flask import Flask,\
-                    jsonify,\
-                    request
+  from flask import (
+                    Flask,
+                    jsonify,
+                    request,
+                    send_from_directory
+                    )
+
 except:
   sys.exit("Needs flask.\n\nsudo pip install flask")
 
@@ -139,7 +145,7 @@ def generate_italic_angle_images():
 
     imagesdir = os.path.join(os.path.dirname(__file__), "fontmetadata_tool", "images")
     if not os.path.isdir(imagesdir):
-      os.mkdir(imagesdir)
+       os.mkdir(imagesdir)
     filepath = os.path.join(imagesdir, "angle_{}.png".format(i+1))
     im.save(filepath, "PNG")
 
@@ -181,6 +187,7 @@ ITALIC_ANGLE_TEMPLATE = """
 """
 
 
+
 description = """Calculates the visual weight, width or italic angle of fonts.
 
   For width, it just measures the width of how a particular piece of text renders.
@@ -188,15 +195,15 @@ description = """Calculates the visual weight, width or italic angle of fonts.
   For weight, it measures the darkness of a piece of text.
 
   For italic angle it defaults to the italicAngle property of the font.
-  
-  Then it starts a HTTP server and shows you the results, or 
+
+  Then it starts a HTTP server and shows you the results, or
   if you pass --debug then it just prints the values.
 
   Example (all Google Fonts files, all existing data):
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
 """
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument("-f", "--files", default="*", required=True, 
+parser.add_argument("-f", "--files", default="*", required=True,
                     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
 parser.add_argument("-d", "--debug", default=False, action='store_true',
                     help="Debug mode, just print results")
@@ -204,7 +211,7 @@ parser.add_argument("-e", "--existing", default=False,
                     help="Path to existing font-metadata.csv")
 parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
                     help="Only process fonts for which metadata is not available yet")
-parser.add_argument("-o", "--output", default="output.csv", required=True, 
+parser.add_argument("-o", "--output", default="output.csv", required=True,
                     help="CSV data output filename")
 
 
@@ -216,9 +223,10 @@ def main():
     parser.print_help()
     sys.exit()
 
-  files_to_process = []
-  for arg_files in args.files:
-    files_to_process.extend(glob.glob(arg_files))
+  #files_to_process = []
+  #for arg_files in args.files:
+  #  files_to_process.extend(glob.glob(arg_files))
+  files_to_process = glob.glob(args.files)
 
   if len(files_to_process) == 0:
     print("No font files were found!")
@@ -274,7 +282,7 @@ def main():
   ints = map_to_int_range(angles)
   for count, key in enumerate(sorted(fontinfo.keys())):
     fontinfo[key]['angle_int'] = ints[count]
-  
+
   # include existing values
   if args.existing and args.missingmetadata == False:
     with open(args.existing, 'rb') as csvfile:
@@ -299,7 +307,7 @@ def main():
     items = ["weight", "weight_int", "width", "width_int",
              "angle", "angle_int", "usage", "gfn"]
     for key in sorted(fontinfo.keys()):
-       print fontinfo[key]["fontfile"], 
+       print fontinfo[key]["fontfile"],
        for item in items:
          print fontinfo[key][item],
        print ""
@@ -318,7 +326,7 @@ def main():
       {"name":"usage","label":"USAGE","datatype":"string","editable":True,
         "values": {"header":"header", "body":"body", "unknown":"unknown"}
       },
-      {"name":"angle","label":"angle","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True}, 
+      {"name":"angle","label":"angle","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
       {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
       {"name":"image","label":"image","datatype":"html","editable":False},
     ],
@@ -381,6 +389,10 @@ def main():
     return 'ok'
 
   app = Flask(__name__)
+
+  @app.route('/fontmetadata_tool/<path:path>')
+  def send_js(path):
+    return send_from_directory(os.path.dirname(__file__) + '/fontmetadata_tool/', path)
 
   @app.route('/data.json')
   def json_data():
@@ -627,12 +639,12 @@ def get_width(fontfile):
   try:
       text_width, text_height = font.getsize(TEXT)
   except:
-      text_width, text_height = 1, 1 
+      text_width, text_height = 1, 1
   img = Image.new('RGBA', (text_width, text_height))
   draw = ImageDraw.Draw(img)
   try:
       draw.text((0, 0), TEXT, font=font, fill=(0, 0, 0))
-  except: 
+  except:
       pass
   return text_width, get_base64_image(img)
 
@@ -659,8 +671,8 @@ def get_darkness(fontfile):
     raise
 
   # Weight the darkness by x-height for more accurate results
-  # FIXME Perhaps this should instead *CROP* the image 
-  # to the bbox of the letters, to remove additional 
+  # FIXME Perhaps this should instead *CROP* the image
+  # to the bbox of the letters, to remove additional
   # whitespace created by vertical metrics, even for more accuracy
   x_height = get_x_height(fontfile)
   darkness *= (x_height / float(FONT_SIZE))

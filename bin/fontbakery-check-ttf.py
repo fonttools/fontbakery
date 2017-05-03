@@ -17,16 +17,19 @@ import argparse
 import glob
 import logging
 import os
-from fbchecklogger import FontBakeryCheckLogger
-from targetfont import TargetFont
-import checks
+from fontbakery.fbchecklogger import FontBakeryCheckLogger
+from fontbakery.targetfont import TargetFont
+from fontbakery import checks
 from fontTools import ttLib
-from utils import get_bounding_box,\
-                  fetch_vendorID_list,\
-                  get_FamilyProto_Message,\
-                  font_key,\
-                  download_family_from_GoogleFontDirectory,\
-                  fonts_from_zip
+from fontbakery.utils import (
+                             get_bounding_box,
+                             fetch_vendorID_list,
+                             get_FamilyProto_Message,
+                             font_key,
+                             download_family_from_GoogleFontDirectory,
+                             download_family_from_GoogleFontDirectory,
+                             fonts_from_zip
+                             )
 
 
 def fontbakery_check_ttf(config):

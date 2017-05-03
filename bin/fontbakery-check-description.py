@@ -18,9 +18,9 @@
 import argparse
 import logging
 import os
-from targetfont import TargetFont
-from fbchecklogger import FontBakeryCheckLogger
-import checks
+from fontbakery.targetfont import TargetFont
+from fontbakery.fbchecklogger import FontBakeryCheckLogger
+from fontbakery import checks
 
 # set up some command line argument processing
 description = 'Runs checks on specified DESCRIPTION file(s)'
