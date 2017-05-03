@@ -29,16 +29,17 @@ install:
   - pip install pika
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlei18n/glyphsLib.git"
+  - pip install -e .
 script:
   - export WONT_FIX=invalid-name,bad-indentation
   - export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module,abstract-method,no-member,line-too-long,trailing-newlines,duplicate-code,redefined-outer-name,trailing-whitespace,unused-variable,logging-not-lazy,undefined-variable,protected-access,anomalous-backslash-in-string,wrong-import-position,ungrouped-imports,singleton-comparison,misplaced-comparison-constant,consider-using-enumerate,used-before-assignment,too-few-public-methods,dangerous-default-value,unexpected-keyword-arg,len-as-condition,no-else-return,relative-import,not-callable
   - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
   - $PYLINT *.py
   - pylint --disable=wrong-import-order,too-many-function-args,bare-except,global-statement,too-many-arguments,missing-docstring,trailing-newlines,invalid-name,line-too-long,bad-indentation,bad-continuation,bad-whitespace,len-as-condition dashboard/containers/worker/fontbakery-gather-dashboard-data-from-git.py
-  - python fontbakery-check-ttf.py data/test/cousine/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/mada/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/merriweather/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/nunito/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/familysans/*.ttf --ghm --json
-  - python fontbakery-check-ttf.py data/test/cabin/*.ttf --ghm --json
-  - python test_args.py
+  - fontbakery check-ttf data/test/cousine/*.ttf --ghm --json
+  - fontbakery check-ttf data/test/mada/*.ttf --ghm --json
+  - fontbakery check-ttf data/test/merriweather/*.ttf --ghm --json
+  - fontbakery check-ttf data/test/nunito/*.ttf --ghm --json
+  - fontbakery check-ttf data/test/familysans/*.ttf --ghm --json
+  - fontbakery check-ttf data/test/cabin/*.ttf --ghm --json
+  - python bin/test_args.py
