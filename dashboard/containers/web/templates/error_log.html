@@ -1,0 +1,22 @@
+<!-- error_log.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Font Bakery Dashboard - Family Error Logs</title>
+</head>
+<body>
+<div id="main">
+  <h1><a href="/">Fontbakery Dashboard</a></h1>
+  {% for log in logs %}
+  <div>
+    <h3>{{ log.familyname }} ({{ log.commit }})</h3>
+    <pre>{{ log.output }}</pre>
+  </tr>
+  {% endfor %}
+  </div>
+  <br/>
+  <a href="/">Return to dashboard...</a>
+</div>
+</body>
+</html>
