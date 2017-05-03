@@ -10,7 +10,6 @@ import sys
 import time
 import urllib
 
-runs = int(os.environ.get("NONPARALLEL_JOB_RUNS", 1))
 MAX_NUM_ITERATIONS = 1 # For now we'll limit the jobs to run
                        # up to "MAX_NUM_ITERATIONS" commits
                        # in the font project repos
@@ -221,7 +220,7 @@ def run_fontbakery_on_production_files():
 
 connection = None
 def callback(ch, method, properties, body): #pylint: disable=unused-argument
-  global runs, REPO_URL, FAMILYNAME
+  global REPO_URL, FAMILYNAME
   msg = json.loads(body)
   print("Received %r" % msg, file=sys.stderr)
 
@@ -243,12 +242,8 @@ def callback(ch, method, properties, body): #pylint: disable=unused-argument
   ch.basic_ack(delivery_tag = method.delivery_tag)
   connection.close()
 
-  runs -= 1
-  if runs == 0:
-    print("Finished work. Shutting down this container instance...")
-    sys.exit(0)
-  else:
-    print("Will fetch another workload...")
+  print("Finished work. Shutting down this container instance...")
+  sys.exit(0)
 
 
 def main():

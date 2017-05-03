@@ -7,6 +7,17 @@ import time
 import os
 from fontprojects import git_repos
 
+local_devel = (os.environ.get("FONTBAKERY_LOCAL_DEVEL" == 1)
+local_families_selection = [
+  "Roboto",
+  "Roboto Condensed",
+  "Ubuntu",
+  "Merriweather",
+  "Lobster",
+  "Exo",
+  "Overpass Mono",
+  "Sarala"]
+
 def main():
   # We'll retry until we get a connection and deliver the messages
   while True:
@@ -20,6 +31,11 @@ def main():
         if i<=1:
           # Skip the first couple lines in the list
           # because they are purely informative statements
+          continue
+
+        if local_devel and entry[1] not in local_families_selection:
+          # when deploying the cluster locally during development,
+          # we restrict the list of families to a smaller selection
           continue
 
         message = {
