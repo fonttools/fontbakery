@@ -140,14 +140,14 @@ def run_fontbakery_on_commit(fonts_dir, fonts_prefix, commit, i):
     print ("No font files were found.")
     return False
 
-  output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+  output = run(["fontbakery", "check-ttf", "--verbose", "--json"] + files)
   save_output_on_database(commit, output)
 
   family_stats = {
     "familyname": FAMILYNAME,
     "giturl": REPO_URL,
     "commit": commit,
-     "date": date,
+    "date": date,
     "summary": {"OK": 0,
                 "Total": 0},
     "HEAD": (i==0)
@@ -198,7 +198,7 @@ def run_fontbakery_on_production_files():
     return False
 
   print ("We'll check the following PRODUCTION font files: {}".format(files))
-  output = run(["python", "/fontbakery-check-ttf.py", "--verbose", "--json"] + files)
+  output = run(["fontbakery", "check-ttf", "--verbose", "--json"] + files)
   save_output_on_database(commit, output)
 
   family_stats = {
