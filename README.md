@@ -17,8 +17,8 @@ Font Bakery is not an official Google project, and Google provides no support fo
 
 Visit [fontbakery.appspot.com](https://fontbakery.appspot.com) and drop 1 to 18 TTF files on the page, and click the "3"
 
-The source code to this web-based user-interface is all in the `webapp/` folder. 
-In order to run it on your own computer, download this source repo and all dependencies for command line usage. 
+The source code to this web-based user-interface is all in the `webapp/` folder.
+In order to run it on your own computer, download this source repo and all dependencies for command line usage.
 Then run the following commands:
 
     cd webapp
@@ -28,12 +28,66 @@ Now open <http://0.0.0.0:8000> in your browser.
 
 ## Command Line Usage
 
+Fontbakery installs its own command `fontbakery` in your `$PATH`. The `fontbakery` command makes other subcommands accessible. Here's the output of the command line help:
+
+```
+$ fontbakery -h
+usage: fontbakery [-h] [--list-subcommands] subcommand
+
+Run fontbakery subcomands:
+    build-contributors
+    build-font2ttf
+    build-fontmetadata
+    build-ofl
+    check-bbox
+    check-collection
+    check-description
+    check-name
+    check-ttf
+    check-upstream
+    check-vtt-compatibility
+    fix-ascii-fontmetadata
+    fix-dsig
+    fix-familymetadata
+    fix-fsselection
+    fix-fstype
+    fix-gasp
+    fix-glyph-private-encoding
+    fix-glyphs
+    fix-nameids
+    fix-nonhinting
+    fix-ttfautohint
+    fix-vendorid
+    fix-vertical-metrics
+    list-panose
+    list-variable-source
+    list-weightclass
+    list-widthclass
+    metadata-vs-api
+    nametable-from-filename
+    update-families
+    update-nameids
+    update-version
+
+Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcomand.
+I.e.: fontbakery subcommand -h
+
+positional arguments:
+  subcommand          the subcommand to execute
+
+optional arguments:
+  -h, --help          show this help message and exit
+  --list-subcommands  print the list of subcommnds to stdout, separated by a space character. This is usually only used to generate the shell completion code.
+```
+
+To run the tests on some fonts:
+
     cd ~/path/to/fontproject/
-    fontbakery-check-ttf.py *.ttf
+    fontbakery check-ttf *.ttf
 
 For more detailed output, run in verbose mode:
 
-    fontbakery-check-ttf.py --verbose *.ttf
+    fontbakery check-ttf --verbose *.ttf
 
 It may fix some problems, and save `*.ttf.fix` files in the same directory as the original `.ttf` files.
 
@@ -41,7 +95,7 @@ The check results will be saved to a file called fontbakery-check-results.json.
 
 For check results in GitHub Markdown syntax you can use --ghm:
 
-    fontbakery-check-ttf.py --verbose *.ttf --ghm
+    fontbakery check-ttf --verbose *.ttf --ghm
 
 ### Automated testing of all Google Fonts
 
@@ -71,12 +125,12 @@ If you rather prefer to save it to a file you can do something like:
 
 ## Other auxiliary fontbakery scripts
 
-### fontbakery-build-contributors.py
+### fontbakery build-contributors
 
 This is a project maintainence tool that generate a CONTRIBUTORS.txt file from a repository's git history.
 
 ```
-usage: fontbakery-build-contributors.py [-h] folder
+usage: fontbakery build-contributors [-h] folder
 
 positional arguments:
   folder      source folder which contains git commits
@@ -85,10 +139,10 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery-build-font2ttf.py
+### fontbakery build-font2ttf
 
 ```
-usage: fontbakery-build-font2ttf.py [-h] [--with-otf] source [source ...]
+usage: fontbakery build-font2ttf [-h] [--with-otf] source [source ...]
 
 positional arguments:
   source
@@ -98,7 +152,7 @@ optional arguments:
   --with-otf  Generate otf file
 ```
 
-### fontbakery-build-fontmetadata.py
+### fontbakery build-fontmetadata
 
 Calculates the visual weight, width or italic angle of fonts. For width, it
 just measures the width of how a particular piece of text renders. For weight,
@@ -107,8 +161,8 @@ the italicAngle property of the font. Then it starts a HTTP server and shows
 you the results, or if you pass --debug then it just prints the values.
 
 ```
-usage: fontbakery-build-fontmetadata.py [-h] -f FILES [-d] [-e EXISTING] [-m]
-                                        -o OUTPUT
+usage: fontbakery build-fontmetadata [-h] -f FILES [-d] [-e EXISTING] [-m]
+                                     -o OUTPUT
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -125,12 +179,12 @@ optional arguments:
                         CSV data output filename
 ```
 
-### fontbakery-check-bbox.py
+### fontbakery check-bbox
 
 A FontForge python script for printing bounding boxes to stdout.
 
 ```
-usage: fontbakery-check-bbox.py [-h] font
+usage: fontbakery check-bbox [-h] font
 
 positional arguments:
   font        Font in OpenType (TTF/OTF) format
@@ -139,12 +193,12 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery-check-description.py
+### fontbakery check-description
 
 Runs checks on specified DESCRIPTION file(s)
 
 ```
-usage: fontbakery-check-description.py [-h] [--verbose] file [file ...]
+usage: fontbakery check-description [-h] [--verbose] file [file ...]
 
 positional arguments:
   file           Test files, can be a list
@@ -154,12 +208,12 @@ optional arguments:
   --verbose, -v  Verbosity level
 ```
 
-### fontbakery-check-upstream.py
+### fontbakery check-upstream
 
 Runs checks or tests on specified upstream folder(s)
 
 ```
-usage: fontbakery-check-upstream.py [-h] [--verbose] folders [folders ...]
+usage: fontbakery check-upstream [-h] [--verbose] folders [folders ...]
 
 positional arguments:
   folders        Test folder(s), can be a list
@@ -169,12 +223,12 @@ optional arguments:
   --verbose, -v  Verbosity level
 ```
 
-### fontbakery-fix-ascii-fontmetadata.py
+### fontbakery fix-ascii-fontmetadata
 
 Fixes TTF NAME table strings to be ascii only
 
 ```
-usage: fontbakery-fix-ascii-fontmetadata.py [-h] ttf_font [ttf_font ...]
+usage: fontbakery fix-ascii-fontmetadata [-h] ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font    Font in OpenType (TTF/OTF) format
@@ -183,12 +237,12 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery-fix-dsig.py
+### fontbakery fix-dsig
 
 Fixes TTF to have a dummy DSIG table
 
 ```
-usage: fontbakery-fix-dsig.py [-h] [--autofix] ttf_font [ttf_font ...]
+usage: fontbakery fix-dsig [-h] [--autofix] ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font    One or more font files
@@ -203,7 +257,7 @@ optional arguments:
 Print out family metadata of the fonts
 
 ```
-usage: fontbakery-fix-familymetadata.py [-h] [--csv] font [font ...]
+usage: fontbakery fix-familymetadata [-h] [--csv] font [font ...]
 
 positional arguments:
   font
@@ -213,12 +267,12 @@ optional arguments:
   --csv
 ```
 
-### fontbakery-fix-fsselection.py
+### fontbakery fix-fsselection
 
 Print out fsSelection bitmask of the fonts
 
 ```
-usage: fontbakery-fix-fsselection.py [-h] [--csv] [--autofix] font [font ...]
+usage: fontbakery fix-fsselection [-h] [--csv] [--autofix] font [font ...]
 
 positional arguments:
   font
@@ -229,13 +283,13 @@ optional arguments:
   --autofix
 ```
 
-### fontbakery-fix-gasp.py
+### fontbakery fix-gasp
 
 Fixes TTF GASP table
 
 ```
-usage: fontbakery-fix-gasp.py [-h] [--autofix] [--set SET]
-                              ttf_font [ttf_font ...]
+usage: fontbakery fix-gasp [-h] [--autofix] [--set SET]
+                           ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font    Font in OpenType (TTF/OTF) format
@@ -246,13 +300,13 @@ optional arguments:
   --set SET   Change gasprange value of key 0xFFFF to a new value
 ```
 
-### fontbakery-fix-glyph-private-encoding.py
+### fontbakery fix-glyph-private-encoding
 
 Fixes TTF unencoded glyphs to have Private Use Area encodings
 
 ```
-usage: fontbakery-fix-glyph-private-encoding.py [-h] [--autofix]
-                                                ttf_font [ttf_font ...]
+usage: fontbakery fix-glyph-private-encoding [-h] [--autofix]
+                                             ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font    Font in OpenType (TTF/OTF) format
@@ -263,12 +317,12 @@ optional arguments:
               glyphs
 ```
 
-### fontbakery-fix-glyphs.py
+### fontbakery fix-glyphs
 
 Report issues on .glyphs font files
 
 ```
-usage: fontbakery-fix-glyphs.py [-h] font [font ...]
+usage: fontbakery fix-glyphs [-h] font [font ...]
 
 positional arguments:
   font
@@ -277,14 +331,14 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery-fix-nameids.py
+### fontbakery fix-nameids
 
 Print out nameID strings of the fonts
 
 ```
-usage: fontbakery-fix-nameids.py [-h] [--autofix] [--csv] [--id ID]
-                                 [--platform PLATFORM]
-                                 font [font ...]
+usage: fontbakery fix-nameids [-h] [--autofix] [--csv] [--id ID]
+                              [--platform PLATFORM]
+                              font [font ...]
 
 positional arguments:
   font
@@ -297,12 +351,12 @@ optional arguments:
   --platform PLATFORM, -p PLATFORM
 ```
 
-### fontbakery-fix-nonhinting.py
+### fontbakery fix-nonhinting
 
 Fixes TTF GASP table so that its program contains the minimal recommended instructions
 
 ```
-usage: fontbakery-fix-nonhinting.py [-h] fontfile_in fontfile_out
+usage: fontbakery fix-nonhinting [-h] fontfile_in fontfile_out
 
 positional arguments:
   fontfile_in   Font in OpenType (TTF/OTF) format
@@ -312,12 +366,12 @@ optional arguments:
   -h, --help    show this help message and exit
 ```
 
-### fontbakery-fix-ttfautohint.py
+### fontbakery fix-ttfautohint
 
 Fixes TTF Autohint table
 
 ```
-usage: fontbakery-fix-ttfautohint.py [-h] ttf_font [ttf_font ...]
+usage: fontbakery fix-ttfautohint [-h] ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font    Font in OpenType (TTF/OTF) format
@@ -326,12 +380,12 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery-fix-vendorid.py
+### fontbakery fix-vendorid
 
 Print vendorID of TTF files
 
 ```
-usage: fontbakery-fix-vendorid.py [-h] arg_filepaths [arg_filepaths ...]
+usage: fontbakery fix-vendorid [-h] arg_filepaths [arg_filepaths ...]
 
 positional arguments:
   arg_filepaths  font file path(s) to check. Wildcards like *.ttf are allowed.
@@ -340,17 +394,17 @@ optional arguments:
   -h, --help     show this help message and exit
 ```
 
-### fontbakery-fix-vertical-metrics.py
+### fontbakery fix-vertical-metrics
 
 ```
-usage: fontbakery-fix-vertical-metrics.py [-h] [-a ASCENTS] [-ah ASCENTS_HHEA]
-                                          [-at ASCENTS_TYPO] [-aw ASCENTS_WIN]
-                                          [-d DESCENTS] [-dh DESCENTS_HHEA]
-                                          [-dt DESCENTS_TYPO]
-                                          [-dw DESCENTS_WIN] [-l LINEGAPS]
-                                          [-lh LINEGAPS_HHEA]
-                                          [-lt LINEGAPS_TYPO]
-                                          ttf_font [ttf_font ...]
+usage: fontbakery fix-vertical-metrics  [-h] [-a ASCENTS] [-ah ASCENTS_HHEA]
+                                        [-at ASCENTS_TYPO] [-aw ASCENTS_WIN]
+                                        [-d DESCENTS] [-dh DESCENTS_HHEA]
+                                        [-dt DESCENTS_TYPO]
+                                        [-dw DESCENTS_WIN] [-l LINEGAPS]
+                                        [-lh LINEGAPS_HHEA]
+                                        [-lt LINEGAPS_TYPO]
+                                        ttf_font [ttf_font ...]
 
 positional arguments:
   ttf_font              Font file in OpenType (TTF/OTF) format
@@ -389,12 +443,12 @@ optional arguments:
                         ('OS/2')
 ```
 
-### fontbakery-list-panose.py
+### fontbakery list-panose
 
 Print out Panose of the fonts
 
 ```
-usage: fontbakery-list-panose.py [-h] [--csv] font [font ...]
+usage: fontbakery list-panose [-h] [--csv] font [font ...]
 
 positional arguments:
   font
@@ -404,12 +458,12 @@ optional arguments:
   --csv
 ```
 
-### fontbakery-list-weightclass.py
+### fontbakery list-weightclass
 
 Print out usWeightClass of the fonts
 
 ```
-usage: fontbakery-list-weightclass.py [-h] [--csv] font [font ...]
+usage: fontbakery list-weightclass [-h] [--csv] font [font ...]
 
 positional arguments:
   font
@@ -419,13 +473,13 @@ optional arguments:
   --csv
 ```
 
-### fontbakery-list-widthclass.py
+### fontbakery list-widthclass
 
 Print out usWidthClass of the fonts
 
 ```
-usage: fontbakery-list-widthclass.py [-h] [--csv] [--set SET] [--autofix]
-                                     font [font ...]
+usage: fontbakery list-widthclass [-h] [--csv] [--set SET] [--autofix]
+                                  font [font ...]
 
 positional arguments:
   font
@@ -437,13 +491,13 @@ optional arguments:
   --autofix
 ```
 
-### fontbakery-metadata-vs-api.py
+### fontbakery metadata-vs-api
 
 ```
-usage: fontbakery-metadata-vs-api.py [-h] [--cache CACHE] [--verbose]
-                                     [--ignore-copy-existing-ttf] [--autofix]
-                                     [--api API]
-                                     key repo
+usage: fontbakery metadata-vs-api [-h] [--cache CACHE] [--verbose]
+                                  [--ignore-copy-existing-ttf] [--autofix]
+                                  [--api API]
+                                  key repo
 
 positional arguments:
   key                   Key from Google Fonts Developer API
@@ -460,13 +514,13 @@ optional arguments:
   --api API             Domain string to use to request
 ```
 
-### fontbakery-update-families.py
+### fontbakery update-families
 
 Compare TTF files when upgrading families.
 
 ```
-usage: fontbakery-update-families.py [-h] [-v]
-                                     arg_filepaths [arg_filepaths ...]
+usage: fontbakery update-families [-h] [-v]
+                                  arg_filepaths [arg_filepaths ...]
 
 positional arguments:
   arg_filepaths      font file path(s) to check. Wildcards like *.ttf are
@@ -487,24 +541,24 @@ xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
 # install ots
-brew tap davelab6/webfonttools; 
-brew update; 
-brew install ots --HEAD; 
+brew tap davelab6/webfonttools;
+brew update;
+brew install ots --HEAD;
 
 # install fontforge
 brew install python giflib libspiro icu4c;
-brew install fontforge --with-extra-tools --HEAD ; 
+brew install fontforge --with-extra-tools --HEAD ;
 
 # install fonttools
 easy_install pip;
-pip install --upgrade git+https://github.com/behdad/fontTools.git; 
+pip install --upgrade git+https://github.com/behdad/fontTools.git;
 
 # install python dependencies
 pip install -r requirements.txt
 
 # install pyfontaine
 CFLAGS=-I/usr/local/opt/icu4c/include LDFLAGS=-L/usr/local/opt/icu4c/lib pip install pyicu;
-pip install --upgrade git+https://github.com/davelab6/pyfontaine.git; 
+pip install --upgrade git+https://github.com/davelab6/pyfontaine.git;
 
 # install travis, for setting up CI
 sudo gem install travis; # fontbakery dependencies
@@ -524,11 +578,11 @@ sudo apt-get install python-fontforge
 # install pyfontaine
 sudo apt-get install libicu-dev git;
 sudo pip install pyicu;
-pip install --upgrade git+https://github.com/davelab6/pyfontaine.git; 
+pip install --upgrade git+https://github.com/davelab6/pyfontaine.git;
 
 # install ots from source
-git clone https://github.com/khaledhosny/ots.git; 
-cd ots; 
+git clone https://github.com/khaledhosny/ots.git;
+cd ots;
 ./autogen.sh;
 ./configure;
 make CXXFLAGS=-DOTS_DEBUG;
@@ -543,5 +597,32 @@ pip install --upgrade git+https://github.com/behdad/fontTools.git;
 pip install -r requirements.txt
 
 # install fontbakery
-pip install --upgrade git+https://github.com/googlefonts/fontbakery.git; 
+pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 ```
+
+## Bash completion
+
+Fontbakery comes with a minimal Bash completion script. It can help you to type the subcommands that follow directly after the `fontbakery` command. Bash completion is a accessed by hitting the [TAB] key when entering the command.
+
+There's no special completion support for the arguments of the subcommands yet.
+
+### Install
+
+This will enable completion for `fontbakery` on each newly opened Bash.
+
+* Install bash-completion. On many Linux distributions it is installed and enabled by default. Mac OS X users can find it in Fink or MacPorts.
+* Copy or symlink the `path-to/fontbakery/bin/bash_completion` file to `/etc/bash_completion.d/fontbakery` (on Mac&nbsp;OS&nbsp;X to: `/sw/etc/bash_completion.d/fontbakery` or `/opt/local/etc/bash_completion.d/fontbakery`).
+* Restart your shell.
+
+### Alternative install
+
+You can source the file directly in a running Bash and only for the running instance:
+
+```
+$ . path-to/fontbakery/bin/bash-completion
+# OR
+$ source path-to/fontbakery/bin/bash-completion
+```
+
+This is particularly useful if you are running `fontbakery` in a python virtual environment, i.e. not a system-wide installation.
+
