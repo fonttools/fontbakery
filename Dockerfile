@@ -9,15 +9,7 @@ ADD requirements.txt /
 RUN pip install --no-cache-dir -r requirements.txt
 
 ADD prebuilt/ot-sanitise /usr/local/bin/
-ADD fontbakery-check-ttf.py /
-ADD checks.py /
-ADD utils.py /
-ADD targetfont.py /
-ADD upstreamdirectory.py /
-ADD fonts_public_pb2.py /
-ADD pifont.py /
-ADD fbchecklogger.py /
-ADD constants.py /
+RUN python setup.py install
 
 ## Install fontforge.
 #RUN apt-get install -y software-properties-common
