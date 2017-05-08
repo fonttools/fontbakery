@@ -177,11 +177,14 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
   broken_links = []
   for link in doc.xpath('//a/@href'):
     try:
-      response = requests.head(link, allow_redirects=True)
+      response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
       if code != requests.codes.ok:
         broken_links.append(("url: '{}' "
                              "status code: '{}'").format(link, code))
+    except requests.exceptions.Timeout:
+      fb.warning(("Timedout while attempting to access: '{}'."
+                  " Please verify if that's a broken link.").format(link))
     except requests.exceptions.RequestException:
       broken_links.append(link)
 
