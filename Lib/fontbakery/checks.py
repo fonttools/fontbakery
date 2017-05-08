@@ -1102,21 +1102,21 @@ def check_with_ftxvalidator(fb, font_file):
 
 
 def check_with_otsanitise(fb, font_file):
-  fb.new_check("036", "Checking with ot-sanitise")
+  fb.new_check("036", "Checking with ots-sanitize")
   try:
     import subprocess
-    ots_output = subprocess.check_output(["ot-sanitise", font_file],
+    ots_output = subprocess.check_output(["ots-sanitize", font_file],
                                          stderr=subprocess.STDOUT)
-    if ots_output != "":
-      fb.error("ot-sanitise output follows:\n\n{}\n".format(ots_output))
+    if ots_output != "" and "File sanitized successfully" not in ots_output:
+      fb.error("ots-sanitize output follows:\n\n{}\n".format(ots_output))
     else:
-      fb.ok("ot-sanitise passed this file")
+      fb.ok("ots-sanitize passed this file")
   except subprocess.CalledProcessError, e:
-      fb.error(("ot-sanitise returned an error code. Output follows :"
+      fb.error(("ots-sanitize returned an error code. Output follows :"
                 "\n\n{}\n").format(e.output))
   except OSError, e:
     # This is made very prominent with additional line breaks
-    fb.warning("\n\n\not-santise is not available!"
+    fb.warning("\n\n\nots-sanitize is not available!"
                " You really MUST check the fonts with this tool."
                " To install it, see"
                " https://github.com/googlefonts"
