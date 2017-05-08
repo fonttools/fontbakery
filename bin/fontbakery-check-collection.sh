@@ -14,6 +14,7 @@ RESULTS_FOLDER=$COLLECTION_FOLDER/check_results/
 mkdir $RESULTS_FOLDER -p
 rm $RESULTS_FOLDER/issues.txt -f
 rm $RESULTS_FOLDER/all_fonts.txt -f
+rm $COLLECTION_FOLDER/*/*/*fontbakery.*
 
 for f in $APACHE_FOLDERS $OFL_FOLDERS $UFL_FOLDERS
 do
@@ -25,10 +26,13 @@ do
     echo "Skipping '$f'"
   else
     echo "Processing '$f'..."
-    ./fontbakery-check-ttf.py "$f*.ttf" --json --ghm -vv
+    fontbakery check-ttf "$f*.ttf" --json --ghm --error
     mkdir -p $LOGDIR
-    cp $f*fontbakery.json $LOGDIR/
-    cp $f*.md $LOGDIR/ || echo "$f" >> $RESULTS_FOLDER/issues.txt
+    mv $f/CrossFamilyChecks.fontbakery.* $LOGDIR/ || echo "$f CrossFamilyChecks" >> $RESULTS_FOLDER/issues.txt
+    for font in $f/*.ttf
+    do
+      mv $(basename $font).fontbakery.* $LOGDIR/ || echo "$font" >> $RESULTS_FOLDER/issues.txt
+    done
   fi
 done
 
