@@ -119,7 +119,8 @@ def check_files_are_named_canonically(fb, fonts_to_check):
                                               '", "'.join(STYLE_NAMES)))
       not_canonical.append(to_check.fullpath)
       fonts_to_check.remove(to_check)
-      fb.output_report(to_check)
+
+
   if len(not_canonical) == 0:
     return True
   else:
@@ -130,6 +131,8 @@ def check_files_are_named_canonically(fb, fonts_to_check):
            'https://github.com/googlefonts/gf-docs/blob'
            '/master/ProjectChecklist.md#instance-and-file-naming'
            '').format('\n  '.join(not_canonical)))
+    fb.output_report(to_check)
+    fb.reset_report()
     return False
 
 

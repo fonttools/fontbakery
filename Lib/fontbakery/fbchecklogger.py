@@ -109,6 +109,11 @@ class FontBakeryCheckLogger():
       # I'll review this tomorrow. For now let's keep things safe here.
       pass
 
+    if total==0:
+      print (("Warning: Not emitting an empty report "
+              "for '{}'.").format(a_target.fullpath))
+      return
+
     print ("\nCheck results summary for '{}':".format(a_target.fullpath))
     for key in self.summary.keys():
       occurrences = self.summary[key]
