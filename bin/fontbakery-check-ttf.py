@@ -156,7 +156,6 @@ def fontbakery_check_ttf(config):
   vmetrics_ymin = 0
   vmetrics_ymax = 0
   for target in fonts_to_check:
-    # this will both accept BytesIO or a filepath
     font = target.get_ttfont()
 
     font_ymin, font_ymax = get_bounding_box(font)
@@ -380,10 +379,10 @@ def fontbakery_check_ttf(config):
       remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
       remote_styles = {}
-      for target in remote_fonts_to_check:
-        fb.default_target = target.fullpath
-        remote_font = target.get_ttfont()
-        remote_style = target.fullpath[:-4].split('-')[1]
+      for remote in remote_fonts_to_check:
+        fb.default_target = remote.fullpath
+        remote_font = remote.get_ttfont()
+        remote_style = remote.fullpath[:-4].split('-')[1]
         remote_styles[remote_style] = remote_font
 
         # Only perform tests if local fonts have the same styles
