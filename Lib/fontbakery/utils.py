@@ -270,7 +270,7 @@ def glyphs_surface_area(font):
   return glyphs
 
 
-def ttfauto_fpgm_xheight_rounding(fpgm_tbl):
+def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
   """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.
   This implementation is based on ttfautohint v1.6.
@@ -286,7 +286,8 @@ def ttfauto_fpgm_xheight_rounding(fpgm_tbl):
   try:
     xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
   except AttributeError:
-    # No instruction for xheight rounding exists
+    fb.warning(("No instruction for xheight rounding found"
+                " on the {} font").format(font))
     xheight_val = None
   return xheight_val
 
