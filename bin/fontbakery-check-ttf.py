@@ -140,7 +140,7 @@ def fontbakery_check_ttf(config):
                                                      f.filename))
 
     if dirname == "":
-      fb.default_target = "Current Folder"
+      fb.default_target = "Current Directory"
     else:
       fb.default_target = dirname
     # -----------------------------------------------------

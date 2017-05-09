@@ -106,13 +106,13 @@ def check_files_are_named_canonically(fb, fonts_to_check):
   for to_check in fonts_to_check:
     file_path, filename = os.path.split(to_check.fullpath)
     if file_path == "":
-      fb.set_target(TargetFont(desc={"filename": "."}))  # Current Directory
+      fb.set_target("Current Directory")
     else:
       fb.set_target(file_path)  # all font files are in the same dir, right?
     filename_base = os.path.splitext(filename)[0]
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-    try:
+    if '-' in filename_base:
       style = filename_base.split('-')[1]
       if style in style_file_names:
         fb.ok("{} is named canonically".format(to_check.fullpath))
@@ -122,12 +122,6 @@ def check_files_are_named_canonically(fb, fonts_to_check):
                   ' any of the following'
                   ' style names: "{}".').format(to_check.fullpath,
                                                 '", "'.join(STYLE_NAMES)))
-        not_canonical.append(to_check.fullpath)
-        fonts_to_check.remove(to_check)
-        fb.output_report(to_check)
-    except:
-        fb.error(("Font file '{}' is "
-                  "not named canonically.").format(to_check.fullpath))
         not_canonical.append(to_check.fullpath)
         fonts_to_check.remove(to_check)
         fb.output_report(to_check)
