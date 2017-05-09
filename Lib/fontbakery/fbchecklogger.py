@@ -110,7 +110,8 @@ class FontBakeryCheckLogger():
       pass
 
     if total==0:
-      print ("Warning: Not emitting an empty report.")
+      print (("Warning: Not emitting an empty report "
+              "for '{}'.").format(a_target.fullpath))
       return
 
     print ("\nCheck results summary for '{}':".format(a_target.fullpath))
