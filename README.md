@@ -105,7 +105,7 @@ There is a web dashboard that is used for monitoring the check-results of the fu
 If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, you have to have a full checkout of it, and then you can run:
 
 ```
-sh bin/fontbakery-check-collection.sh **path-to-collection-directory**
+sh bin/fontbakery-check-collection.sh path-to-collection-directory
 ```
 
 This will create a folder called check_results and it will run fontbakery on every family from the collection, thus generating individual per-font-file reports both in json and in github markdown format. The reports are saved in subdirectories that have the names of the families.
