@@ -17,6 +17,7 @@ import argparse
 import glob
 import logging
 import os
+import sys
 from fontbakery.fbchecklogger import FontBakeryCheckLogger
 from fontbakery.targetfont import TargetFont
 from fontbakery import checks
@@ -75,17 +76,26 @@ def fontbakery_check_ttf(config):
                           "to be valid TrueType font file.".format(file_name))
 
   if fonts_to_check == []:
-    logging.error("None of the fonts are valid TrueType files!")
+    logging.error("CRITICAL ERROR: None of the fonts"
+                  " are valid TrueType files!\n"
+                  "Aborting.")
+    sys.exit(-1)
 
   print (("Fontbakery will check the following files:\n\t"
           "{}\n\n").format("\n\t".join([t.fullpath for t in fonts_to_check])))
 
-  checks.check_files_are_named_canonically(fb, fonts_to_check)
-
-  # Perform a few checks on DESCRIPTION files
-
   # This expects all fonts to be in the same folder:
   family_dir = os.path.split(fonts_to_check[0].fullpath)[0]
+
+  canonical = checks.check_files_are_named_canonically(fb, fonts_to_check)
+  if not canonical:
+    print('\nAborted, critical errors with filenames.')
+    cross_family = os.path.join(family_dir, "CrossFamilyChecks")
+    fb.output_report(TargetFont(desc={"filename": cross_family}))
+
+    sys.exit(-1)
+
+  # Perform a few checks on DESCRIPTION files
 
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
   if os.path.exists(descfilepath):
@@ -167,6 +177,7 @@ def fontbakery_check_ttf(config):
   #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
   fb.output_report(TargetFont(desc={"filename": cross_family}))
+
   fb.reset_report()
 
 ##########################################################################

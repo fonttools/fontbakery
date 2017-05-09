@@ -105,27 +105,24 @@ def check_files_are_named_canonically(fb, fonts_to_check):
 
   for to_check in fonts_to_check:
     file_path, filename = os.path.split(to_check.fullpath)
-    if file_path == "":
-      fb.set_target("Current Directory")
-    else:
-      fb.set_target(file_path)  # all font files are in the same dir, right?
-    filename_base = os.path.splitext(filename)[0]
+    fb.set_target(file_path)  # all font files are in the same dir, right?
+    basename = os.path.splitext(filename)[0]
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-    if '-' in filename_base:
-      style = filename_base.split('-')[1]
-      if style in style_file_names:
-        fb.ok("{} is named canonically".format(to_check.fullpath))
-      else:
-        fb.error(('Style name used in "{}" is not canonical.'
-                  ' You should rebuild the font using'
-                  ' any of the following'
-                  ' style names: "{}".').format(to_check.fullpath,
-                                                '", "'.join(STYLE_NAMES)))
-        not_canonical.append(to_check.fullpath)
-        fonts_to_check.remove(to_check)
-        fb.output_report(to_check)
-  if not_canonical:
+    if '-' in basename and basename.split('-')[1] in style_file_names:
+      fb.ok("{} is named canonically".format(to_check.fullpath))
+    else:
+      fb.error(('Style name used in "{}" is not canonical.'
+                ' You should rebuild the font using'
+                ' any of the following'
+                ' style names: "{}".').format(to_check.fullpath,
+                                              '", "'.join(STYLE_NAMES)))
+      not_canonical.append(to_check.fullpath)
+      fonts_to_check.remove(to_check)
+      fb.output_report(to_check)
+  if len(not_canonical) == 0:
+    return True
+  else:
     print('\nAborted, critical errors with filenames.')
     print(('Please rename these files canonically and try again:'
            '\n  {}\n'
@@ -133,6 +130,7 @@ def check_files_are_named_canonically(fb, fonts_to_check):
            'https://github.com/googlefonts/gf-docs/blob'
            '/master/ProjectChecklist.md#instance-and-file-naming'
            '').format('\n  '.join(not_canonical)))
+    return False
 
 
 def check_all_files_in_a_single_directory(fb, fonts_to_check):
@@ -143,7 +141,6 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
      that the user would store the files from a single family
      spreaded in several separate directories).
   '''
-  global target_dir
   fb.new_check("002", "Checking all files are in the same directory")
   fb.set_priority(CRITICAL)
 
@@ -155,14 +152,15 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
     else:
       if target_dir != os.path.split(target_file.fullpath)[0]:
         failed = True
-        fb.warning("Not all fonts passed in the command line"
-                   "are in the same directory. This may lead to"
-                   "bad results as the tool will interpret all"
-                   "font files as belonging to a single font family.")
         break
 
   if not failed:
     fb.ok("All files are in the same directory.")
+  else:
+    fb.error("Not all fonts passed in the command line"
+             "are in the same directory. This may lead to"
+             "bad results as the tool will interpret all"
+             "font files as belonging to a single font family.")
 
 
 def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
