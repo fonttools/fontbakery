@@ -1,1 +1,0 @@
-../../fontbakery-check-ttf.py
