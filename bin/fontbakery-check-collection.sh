@@ -31,7 +31,7 @@ do
     mv $f/CrossFamilyChecks.fontbakery.* $LOGDIR/ || echo "$f CrossFamilyChecks" >> $RESULTS_FOLDER/issues.txt
     for font in $f/*.ttf
     do
-      mv $(basename $font).fontbakery.* $LOGDIR/ || echo "$font" >> $RESULTS_FOLDER/issues.txt
+      mv $font.fontbakery.* $LOGDIR/ || echo "$font" >> $RESULTS_FOLDER/issues.txt
     done
   fi
 done
