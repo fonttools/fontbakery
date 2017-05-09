@@ -134,14 +134,6 @@ class FontBakeryCheckLogger():
       self.output_github_markdown_report(a_target)
 
   def output_json_report(self, a_target):
-    for k in self.all_checks.keys():
-      check = self.all_checks[k]
-      if isinstance(check['target'], TargetFont):
-        # This is silly and actually means the handling of
-        # TargetFont is broken somewhere else.
-        # This really needs to be properly fixed ASAP!
-        check['target'] = check['target'].fullpath
-
     json_data = json.dumps(self.all_checks,
                            sort_keys=True,
                            indent=4,
