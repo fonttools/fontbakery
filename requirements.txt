@@ -14,3 +14,4 @@ GitPython==0.3.2rc1
 rethinkdb
 python-dateutil
 pika
+pyicu
