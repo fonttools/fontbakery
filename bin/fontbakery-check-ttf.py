@@ -74,26 +74,20 @@ def fontbakery_check_ttf(config):
           logging.warning("Skipping '{}' as it does not seem "
                           "to be valid TrueType font file.".format(file_name))
 
-# FIX-ME: Why do we attempt to sort the fonts here?
-#         Do we expect to remove duplicates? It does not seem very important.
-#         Anyway... this probably need some extra work to get the
-#         font objects sorted by filename field...
-  fonts_to_check.sort()
-
   if fonts_to_check == []:
     logging.error("None of the fonts are valid TrueType files!")
+
+  print (("Fontbakery will check the following files:\n\t"
+          "{}\n\n").format("\n\t".join([t.fullpath for t in fonts_to_check])))
 
   checks.check_files_are_named_canonically(fb, fonts_to_check)
 
   # Perform a few checks on DESCRIPTION files
 
   # This expects all fonts to be in the same folder:
-  a_font = fonts_to_check[0]
+  family_dir = os.path.split(fonts_to_check[0].fullpath)[0]
 
-  # FIX-ME: This will not work if we have more than
-  #         a single '/' char in the filename:
-  folder_name = os.path.split(a_font.fullpath)[0]
-  descfilepath = os.path.join(folder_name, "DESCRIPTION.en_us.html")
+  descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
   if os.path.exists(descfilepath):
     fb.default_target = descfilepath
     contents = open(descfilepath).read()
@@ -119,8 +113,7 @@ def fontbakery_check_ttf(config):
 
   metadata_to_check = []
   for target in fonts_to_check:
-    fontdir = os.path.dirname(target.fullpath)
-    metadata = os.path.join(fontdir, "METADATA.pb")
+    metadata = os.path.join(family_dir, "METADATA.pb")
     if not os.path.exists(metadata):
       logging.error("'{}' is missing"
                     " a METADATA.pb file!".format(target.fullpath))
@@ -129,7 +122,7 @@ def fontbakery_check_ttf(config):
       if family is None:
         logging.warning("Could not load data from METADATA.pb.")
       elif family not in metadata_to_check:
-        metadata_to_check.append([fontdir, family])
+        metadata_to_check.append([family_dir, family])
 
   for dirname, family in metadata_to_check:
     ttf = {}
@@ -171,10 +164,8 @@ def fontbakery_check_ttf(config):
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
   checks.check_all_fontfiles_have_same_version(fb, fonts_to_check)
-  # FSanches: I don't like the following few lines.
-  #           They look very hacky even though they actually work... :-P
-  a_font = fonts_to_check[0]
-  family_dir = os.path.split(a_font.fullpath)[0]
+  # FSanches: I don't like the following.
+  #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
   fb.output_report(TargetFont(desc={"filename": cross_family}))
   fb.reset_report()
@@ -285,8 +276,7 @@ def fontbakery_check_ttf(config):
 ##########################################################
     skip_gfonts = False
     is_listed_in_GFD = False
-    fontdir = os.path.dirname(target.fullpath)
-    metadata = os.path.join(fontdir, "METADATA.pb")
+    metadata = os.path.join(family_dir, "METADATA.pb")
     if not os.path.exists(metadata):
       logging.warning(("{} is missing a METADATA.pb file!"
                        " This will disable all Google-Fonts-specific checks."
