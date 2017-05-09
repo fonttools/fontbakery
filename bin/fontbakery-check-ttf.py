@@ -382,7 +382,11 @@ def fontbakery_check_ttf(config):
       for remote in remote_fonts_to_check:
         fb.default_target = remote.fullpath
         remote_font = remote.get_ttfont()
-        remote_style = remote.fullpath[:-4].split('-')[1]
+	if '-' in remote.fullpath[:-4]:
+          remote_style = remote.fullpath[:-4].split('-')[1]
+        else:
+          # This is a non-canonical filename!
+          remote_style = "Regular" #  But I'm giving it a chance here... :-)
         remote_styles[remote_style] = remote_font
 
         # Only perform tests if local fonts have the same styles
