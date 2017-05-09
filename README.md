@@ -97,6 +97,10 @@ For check results in GitHub Markdown syntax you can use --ghm:
 
     fontbakery check-ttf --verbose *.ttf --ghm
 
+### FontBakery web Dashboard
+
+There is a web dashboard that is used for monitoring the check-results of the full Google Fonts collection (or possibly other collections of font families). This tool was initialy developed in this repository, but later it was split out into its own git repo, now available at: https://github.com/googlefonts/fontbakery-dashboard
+
 ### Automated testing of all Google Fonts
 
 If you need to generate a list of all issues in the Google Fonts, you have to have a full checkout of the Google Fonts git repo, and then you can run:
