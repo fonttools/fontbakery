@@ -40,7 +40,6 @@ Run fontbakery subcomands:
     build-fontmetadata
     build-ofl
     check-bbox
-    check-collection
     check-description
     check-name
     check-ttf
