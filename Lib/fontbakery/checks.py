@@ -3263,11 +3263,19 @@ def check_regression_glyphs_structure(fb, new_font, old_font, f):
 def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
   fb.new_check("119", "TTFAutohint x-height increase value is"
                       " same as previouse release?")
-  new_fpgm_tbl = new_font['fpgm'].program.getAssembly()
-  old_fpgm_tbl = old_font['fpgm'].program.getAssembly()
-  new_inc_xheight = ttfauto_fpgm_xheight_rounding(new_fpgm_tbl)
-  old_inc_xheight = ttfauto_fpgm_xheight_rounding(old_fpgm_tbl)
+  new_inc_xheight = None
+  old_inc_xheight = None
 
+  if 'fpgm' in new_font:
+    new_fpgm_tbl = new_font['fpgm'].program.getAssembly()
+    new_inc_xheight = ttfauto_fpgm_xheight_rounding(fb,
+                                                    new_fpgm_tbl,
+                                                    "this fontfile")
+  if 'fpgm' in old_font:
+    old_fpgm_tbl = old_font['fpgm'].program.getAssembly()
+    old_inc_xheight = ttfauto_fpgm_xheight_rounding(fb,
+                                                    old_fpgm_tbl,
+                                                    "previous release")
   if new_inc_xheight != old_inc_xheight:
     fb.error("TTFAutohint --increase-x-height is %s. "
              "It should match the previous version's value %s" %
