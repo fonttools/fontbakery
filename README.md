@@ -605,7 +605,7 @@ pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 A prebuilt binary of the Microsoft Font Validator is currently available at the prebuilt/fval directory in this repo. The corresponding source code is available under a free license at https://github.com/Microsoft/Font-Validator. In order to enable this check, you'll need to have the mono runtime installed in your system. You'll also need to have FontValidator.exe available in the system path. One way to achieved would be:
 
 ```
-sudo apt-get install mono-runtime
+sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
 ```
 
