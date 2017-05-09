@@ -1124,8 +1124,7 @@ def check_with_msfontvalidator(fb, font_file):
   fb.new_check("037", "Checking with Microsoft Font Validator")
   try:
     import subprocess
-    fval_cmd = ["mono",
-                "prebuilt/fval/FontValidator.exe",
+    fval_cmd = ["FontValidator.exe",
                 "-file", font_file,
                 "-all-tables",
                 "-report-in-font-dir"]

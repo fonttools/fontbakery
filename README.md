@@ -600,6 +600,17 @@ pip install -r requirements.txt
 pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 ```
 
+## Microsoft Font Validator
+
+A prebuilt binary of the Microsoft Font Validator is currently available at the prebuilt/fval directory in this repo. The corresponding source code is available under a free license at https://github.com/Microsoft/Font-Validator. In order to enable this check, you'll need to have the mono runtime installed in your system. You'll also need to have FontValidator.exe available in the system path. One way to achieved would be:
+
+```
+sudo apt-get install mono-runtime
+export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
+```
+
+...where $FONTBAKERY_GIT_REPO should be the name of the directory where you checked out FontBakery source code. Obviously, you can also use any other alternative way of making FontValidator.exe available in your system path.
+
 ## Bash completion
 
 Fontbakery comes with a minimal Bash completion script. It can help you to type the subcommands that follow directly after the `fontbakery` command. Bash completion is accessed by hitting the [TAB] key when entering the command.
