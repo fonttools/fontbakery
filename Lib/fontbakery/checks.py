@@ -99,6 +99,11 @@ except ImportError:
 
 
 def check_files_are_named_canonically(fb, fonts_to_check):
+  """A font's filename must be composed in the following manner:
+
+  <familyname>-<stylename>.ttf
+
+  e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf"""
   fb.new_check("001", "Checking files are named canonically")
   fb.set_priority(CRITICAL)
   not_canonical = []
@@ -192,6 +197,11 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
 
 
 def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
+  """When packaging families for google/fonts. If there is no
+  DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
+  insert a dummy description file which contains invalid html.
+  This file needs to either be replaced with an existing description file
+  or edited by hand."""
   fb.new_check("004", "Is this a propper HTML snippet ?")
   try:
     import magic
@@ -405,6 +415,9 @@ def check_font_has_post_table_version_2(fb, font):
 
 
 def check_OS2_fsType(fb):
+  """Fonts must have their fsType bit set to 0. This setting is known as
+  Installable Embedding,
+  https://www.microsoft.com/typography/otspec/os2.htm#fst"""
   fb.new_check("016", "Checking OS/2 fsType")
   fb.assert_table_entry('OS/2', 'fsType', 0)
   fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
@@ -647,6 +660,22 @@ def check_name_entries_symbol_substitutions(fb, font):
 
 
 def check_OS2_usWeightClass(fb, font, style):
+  """The Google Font's API which serves the fonts can only serve
+  the following weights values with the  corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
   fb.new_check("020", "Checking OS/2 usWeightClass")
 
   if style == "Italic":
@@ -1354,6 +1383,17 @@ def perform_all_fontforge_checks(fb, validation_state):
 
 
 def check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax):
+  """A font's winAscent and winDescent values should be the same as the
+  head table's yMax, abs(yMin) values. By not setting them to these values,
+  clipping can occur on Windows platforms,
+  https://github.com/RedHatBrand/Overpass/issues/33
+
+  If the font includes tall/deep writing systems such as Arabic or
+  Devanagari, the linespacing can appear too loose. To counteract this,
+  enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), Windows will use
+  the OS/2 typo values instead. This means the font developer can control
+  the linespacing with the typo values, whilst avoiding clipping by setting
+  the win values to the bounding box."""
   fb.new_check("040", "Checking OS/2 usWinAscent & usWinDescent")
   # OS/2 usWinAscent:
   fb.assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
@@ -1375,6 +1415,11 @@ def check_Vertical_Metric_Linegaps(fb, font):
 
 
 def check_OS2_Metrics_match_hhea_Metrics(fb, font):
+  """OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, Linux and Windows.
+
+  Mac OS X uses the hhea values
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
   fb.new_check("042", "Checking OS/2 Metrics match hhea Metrics")
   # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
   if font['OS/2'].sTypoAscender != font['hhea'].ascent:
@@ -2165,6 +2210,7 @@ def check_nonligated_sequences_kerning_info(fb, font, has_kerning_info):
 
 
 def check_there_is_no_KERN_table_in_the_font(fb, font):
+  """Fonts should have their kerning implemented in the GPOS table"""
   fb.new_check("066", "Is there a 'KERN' table declared in the font?")
   try:
     font["KERN"]
@@ -2174,6 +2220,8 @@ def check_there_is_no_KERN_table_in_the_font(fb, font):
 
 
 def check_familyname_does_not_begin_with_a_digit(fb, font):
+  """Font family names which start with a numeral are often not
+  discoverable in Windows applications."""
   fb.new_check("067", "Make sure family name"
                       " does not begin with a digit.")
 
