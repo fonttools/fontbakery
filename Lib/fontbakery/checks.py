@@ -660,6 +660,22 @@ def check_name_entries_symbol_substitutions(fb, font):
 
 
 def check_OS2_usWeightClass(fb, font, style):
+  """The Google Font's API which serves the fonts can only serve
+  the following weights values with the  corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
   fb.new_check("020", "Checking OS/2 usWeightClass")
 
   if style == "Italic":
