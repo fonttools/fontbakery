@@ -1130,6 +1130,14 @@ def check_with_msfontvalidator(fb, font_file):
                 "-report-in-font-dir"]
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     xml_report = open("{}.report.xml".format(font_file), "r").read()
+    try:
+      os.remove("{}.report.xml".format(font_file))
+      os.remove("{}.report.html".format(font_file))
+    except:
+      # Treat failure to delete reports
+      # as non-critical. Silently move on.
+      pass
+
     doc = defusedxml.lxml.fromstring(xml_report)
     for report in doc.iter('Report'):
       if report.get("ErrorType") == "P":
