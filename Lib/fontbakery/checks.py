@@ -99,6 +99,11 @@ except ImportError:
 
 
 def check_files_are_named_canonically(fb, fonts_to_check):
+  """A font's filename must be composed in the following manner:
+
+  <familyname>-<stylename>.ttf
+
+  e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf"""
   fb.new_check("001", "Checking files are named canonically")
   fb.set_priority(CRITICAL)
   not_canonical = []
