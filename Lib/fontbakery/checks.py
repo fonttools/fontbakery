@@ -2202,6 +2202,7 @@ def check_nonligated_sequences_kerning_info(fb, font, has_kerning_info):
 
 
 def check_there_is_no_KERN_table_in_the_font(fb, font):
+  """Fonts should have their kerning implemented in the GPOS table"""
   fb.new_check("066", "Is there a 'KERN' table declared in the font?")
   try:
     font["KERN"]
