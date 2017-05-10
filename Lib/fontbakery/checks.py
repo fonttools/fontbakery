@@ -2212,6 +2212,8 @@ def check_there_is_no_KERN_table_in_the_font(fb, font):
 
 
 def check_familyname_does_not_begin_with_a_digit(fb, font):
+  """Font family names which start with a numeral are often not
+  discoverable in Windows applications."""
   fb.new_check("067", "Make sure family name"
                       " does not begin with a digit.")
 
