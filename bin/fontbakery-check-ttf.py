@@ -474,6 +474,9 @@ parser.add_argument('-v', '--verbose', action='count', default=0)
 parser.add_argument('-e', '--error', action='store_true',
                     help='Output only errors')
 parser.add_argument('-a', '--autofix', action='store_true', default=0)
+parser.add_argument('-b', '--burndown', action='store_true', default=0,
+                    help='Compute and output burndown-chart'
+                         ' stats in JSON format.')
 parser.add_argument('-j', '--json', action='store_true',
                     help='Output check results in JSON format')
 parser.add_argument('-m', '--ghm', action='store_true',
@@ -488,5 +491,6 @@ if __name__ == '__main__':
     'verbose': args.verbose,
     'json': args.json,
     'ghm': args.ghm,
-    'error': args.error
+    'error': args.error,
+    'burndown': args.burndown
   })
