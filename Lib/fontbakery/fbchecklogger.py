@@ -94,6 +94,7 @@ class FontBakeryCheckLogger():
                           indent=4,
                           separators=(',', ': ')))
     burn.close()
+    print("Saved burndown data to '{}'\n".format(fname))
 
   def output_report(self, a_target):
     self.flush()
@@ -102,17 +103,18 @@ class FontBakeryCheckLogger():
     for key in self.summary.keys():
       total += self.summary[key]
 
-    try:
-      self.update_burndown(a_target.fullpath, total)
-    except:
-      # the burndown chart code is breaking Travis.
-      # I'll review this tomorrow. For now let's keep things safe here.
-      pass
-
     if total==0:
       print (("Warning: Not emitting an empty report "
               "for '{}'.").format(a_target.fullpath))
       return
+
+    try:
+      if self.config["burndown"]==True:
+        self.update_burndown(a_target.fullpath, total)
+    except:
+      # the burndown chart code is breaking Travis.
+      # I'll review this tomorrow. For now let's keep things safe here.
+      pass
 
     print ("\nCheck results summary for '{}':".format(a_target.fullpath))
     for key in self.summary.keys():
