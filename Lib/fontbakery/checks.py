@@ -197,6 +197,11 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
 
 
 def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
+  """When packaging families for google/fonts. If there is no
+  DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
+  insert a dummy description file which contains invalid html.
+  This file needs to either be replaced with an existing description file
+  or edited by hand."""
   fb.new_check("004", "Is this a propper HTML snippet ?")
   try:
     import magic
