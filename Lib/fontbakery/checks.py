@@ -1407,6 +1407,11 @@ def check_Vertical_Metric_Linegaps(fb, font):
 
 
 def check_OS2_Metrics_match_hhea_Metrics(fb, font):
+  """OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, Linux and Windows.
+
+  Mac OS X uses the hhea values
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
   fb.new_check("042", "Checking OS/2 Metrics match hhea Metrics")
   # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
   if font['OS/2'].sTypoAscender != font['hhea'].ascent:
