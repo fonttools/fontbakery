@@ -241,7 +241,26 @@ def fontbakery_check_ttf(config):
     checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
     checks.check_whitespace_glyphs_have_ink(fb, font, missing)
     checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
-    checks.check_with_pyfontaine(fb, target.fullpath)
+
+    #pyfontaine checks:
+    checks.check_glyphset_google_cyrillic_historical(fb, target.fullpath)
+    checks.check_glyphset_google_cyrillic_plus(fb, target.fullpath)
+    checks.check_glyphset_google_cyrillic_plus_locl(fb, target.fullpath)
+    checks.check_glyphset_google_cyrillic_pro(fb, target.fullpath)
+    checks.check_glyphset_google_greek_ancient_musical(fb, target.fullpath)
+    checks.check_glyphset_google_greek_archaic(fb, target.fullpath)
+    checks.check_glyphset_google_greek_coptic(fb, target.fullpath)
+    checks.check_glyphset_google_greek_core(fb, target.fullpath)
+    checks.check_glyphset_google_greek_expert(fb, target.fullpath)
+    checks.check_glyphset_google_greek_plus(fb, target.fullpath)
+    checks.check_glyphset_google_greek_pro(fb, target.fullpath)
+    checks.check_glyphset_google_latin_core(fb, target.fullpath)
+    checks.check_glyphset_google_latin_expert(fb, target.fullpath)
+    checks.check_glyphset_google_latin_plus(fb, target.fullpath)
+    checks.check_glyphset_google_latin_plus_optional(fb, target.fullpath)
+    checks.check_glyphset_google_latin_pro(fb, target.fullpath)
+    checks.check_glyphset_google_latin_pro_optional(fb, target.fullpath)
+
     checks.check_no_problematic_formats(fb, font)
     checks.check_for_unwanted_tables(fb, font)
 
