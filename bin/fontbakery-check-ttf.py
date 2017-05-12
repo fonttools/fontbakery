@@ -261,6 +261,9 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_latin_plus_optional(fb, target.fullpath)
       checks.check_glyphset_google_latin_pro(fb, target.fullpath)
       checks.check_glyphset_google_latin_pro_optional(fb, target.fullpath)
+      checks.check_glyphset_google_arabic(fb, target.fullpath)
+      checks.check_glyphset_google_vietnamese(fb, target.fullpath)
+      checks.check_glyphset_google_extras(fb, target.fullpath)
 
     checks.check_no_problematic_formats(fb, font)
     checks.check_for_unwanted_tables(fb, font)

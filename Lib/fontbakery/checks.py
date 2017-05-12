@@ -3707,3 +3707,18 @@ def check_glyphset_google_latin_pro_optional(fb, font_file):
   fb.new_check("148", "Checking Google Latin Pro"
                       " (Optional Glyphs) glyph coverage")
   check_with_pyfontaine(fb, font_file, "google_latin_pro_optional")
+
+
+def check_glyphset_google_arabic(fb, font_file):
+  fb.new_check("149", "Checking Google Arabic glyph coverage")
+  check_with_pyfontaine(fb, font_file, "google_arabic")
+
+
+def check_glyphset_google_vietnamese(fb, font_file):
+  fb.new_check("150", "Checking Google Vietnamese glyph coverage")
+  check_with_pyfontaine(fb, font_file, "google_vietnamese")
+
+
+def check_glyphset_google_extras(fb, font_file):
+  fb.new_check("151", "Checking Google Extras glyph coverage")
+  check_with_pyfontaine(fb, font_file, "google_extras")
