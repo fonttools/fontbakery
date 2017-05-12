@@ -242,24 +242,25 @@ def fontbakery_check_ttf(config):
     checks.check_whitespace_glyphs_have_ink(fb, font, missing)
     checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
 
-    #pyfontaine checks:
-    checks.check_glyphset_google_cyrillic_historical(fb, target.fullpath)
-    checks.check_glyphset_google_cyrillic_plus(fb, target.fullpath)
-    checks.check_glyphset_google_cyrillic_plus_locl(fb, target.fullpath)
-    checks.check_glyphset_google_cyrillic_pro(fb, target.fullpath)
-    checks.check_glyphset_google_greek_ancient_musical(fb, target.fullpath)
-    checks.check_glyphset_google_greek_archaic(fb, target.fullpath)
-    checks.check_glyphset_google_greek_coptic(fb, target.fullpath)
-    checks.check_glyphset_google_greek_core(fb, target.fullpath)
-    checks.check_glyphset_google_greek_expert(fb, target.fullpath)
-    checks.check_glyphset_google_greek_plus(fb, target.fullpath)
-    checks.check_glyphset_google_greek_pro(fb, target.fullpath)
-    checks.check_glyphset_google_latin_core(fb, target.fullpath)
-    checks.check_glyphset_google_latin_expert(fb, target.fullpath)
-    checks.check_glyphset_google_latin_plus(fb, target.fullpath)
-    checks.check_glyphset_google_latin_plus_optional(fb, target.fullpath)
-    checks.check_glyphset_google_latin_pro(fb, target.fullpath)
-    checks.check_glyphset_google_latin_pro_optional(fb, target.fullpath)
+    # PyFontaine-based glyph coverage checks:
+    if config['coverage']:
+      checks.check_glyphset_google_cyrillic_historical(fb, target.fullpath)
+      checks.check_glyphset_google_cyrillic_plus(fb, target.fullpath)
+      checks.check_glyphset_google_cyrillic_plus_locl(fb, target.fullpath)
+      checks.check_glyphset_google_cyrillic_pro(fb, target.fullpath)
+      checks.check_glyphset_google_greek_ancient_musical(fb, target.fullpath)
+      checks.check_glyphset_google_greek_archaic(fb, target.fullpath)
+      checks.check_glyphset_google_greek_coptic(fb, target.fullpath)
+      checks.check_glyphset_google_greek_core(fb, target.fullpath)
+      checks.check_glyphset_google_greek_expert(fb, target.fullpath)
+      checks.check_glyphset_google_greek_plus(fb, target.fullpath)
+      checks.check_glyphset_google_greek_pro(fb, target.fullpath)
+      checks.check_glyphset_google_latin_core(fb, target.fullpath)
+      checks.check_glyphset_google_latin_expert(fb, target.fullpath)
+      checks.check_glyphset_google_latin_plus(fb, target.fullpath)
+      checks.check_glyphset_google_latin_plus_optional(fb, target.fullpath)
+      checks.check_glyphset_google_latin_pro(fb, target.fullpath)
+      checks.check_glyphset_google_latin_pro_optional(fb, target.fullpath)
 
     checks.check_no_problematic_formats(fb, font)
     checks.check_for_unwanted_tables(fb, font)
@@ -491,15 +492,26 @@ parser.add_argument('arg_filepaths', nargs='+',
                          ' Wildcards like *.ttf are allowed.')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 parser.add_argument('-e', '--error', action='store_true',
-                    help='Output only errors')
+                    help='Output only errors.')
 parser.add_argument('-a', '--autofix', action='store_true', default=0)
 parser.add_argument('-b', '--burndown', action='store_true', default=0,
                     help='Compute and output burndown-chart'
                          ' stats in JSON format.')
 parser.add_argument('-j', '--json', action='store_true',
-                    help='Output check results in JSON format')
+                    help='Output check results in JSON format.')
 parser.add_argument('-m', '--ghm', action='store_true',
-                    help='Output check results in GitHub Markdown format')
+                    help='Output check results in GitHub Markdown format.')
+pyfontaine_parser = parser.add_mutually_exclusive_group(required=False)
+pyfontaine_parser.add_argument('--coverage',
+                               help='Run glyph coverage checks'
+                                    ' using PyFontaine.',
+                               dest='coverage', action='store_true')
+pyfontaine_parser.add_argument('--no-coverage',
+                               help='Disable all PyFontaine'
+                                    ' (glyph coverage) checks.',
+                               dest='coverage', action='store_false')
+parser.set_defaults(coverage=True)
+
 
 __author__ = "The Font Bakery Authors"
 if __name__ == '__main__':
@@ -511,5 +523,6 @@ if __name__ == '__main__':
     'json': args.json,
     'ghm': args.ghm,
     'error': args.error,
-    'burndown': args.burndown
+    'burndown': args.burndown,
+    'coverage': args.coverage
   })
