@@ -18,7 +18,6 @@ import logging
 import subprocess
 import sys
 
-from fontbakery.targetfont import TargetFont
 from fontbakery.constants import (
                                  YELLOW_STR,
                                  GREEN_STR,
@@ -105,18 +104,18 @@ class FontBakeryCheckLogger():
 
     if total==0:
       print (("Warning: Not emitting an empty report "
-              "for '{}'.").format(a_target.fullpath))
+              "for '{}'.").format(a_target))
       return
 
     try:
       if self.config["burndown"]==True:
-        self.update_burndown(a_target.fullpath, total)
+        self.update_burndown(a_target, total)
     except:
       # the burndown chart code is breaking Travis.
       # I'll review this tomorrow. For now let's keep things safe here.
       pass
 
-    print ("\nCheck results summary for '{}':".format(a_target.fullpath))
+    print ("\nCheck results summary for '{}':".format(a_target))
     for key in self.summary.keys():
       occurrences = self.summary[key]
       percent = float(100*occurrences)/total
@@ -146,7 +145,7 @@ class FontBakeryCheckLogger():
                            indent=4,
                            separators=(',', ': '))
 
-    json_output_filename = a_target.fullpath + ".fontbakery.json"
+    json_output_filename = a_target + ".fontbakery.json"
     json_output = open(json_output_filename, 'w')
     json_output.write(json_data)
     self.json_report_files.append(json_output_filename)
@@ -172,7 +171,7 @@ class FontBakeryCheckLogger():
         markdown_data += ("### {}\n"
                           "* {}\n\n").format(check['description'], msgs)
 
-    output_filename = a_target.fullpath + ".fontbakery.md"
+    output_filename = a_target + ".fontbakery.md"
     ghm_output = open(output_filename, 'w')
     ghm_output.write(markdown_data)
     self.ghm_report_files.append(output_filename)

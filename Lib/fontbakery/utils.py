@@ -26,7 +26,6 @@ from fontbakery.constants import (
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
-from fontbakery.targetfont import TargetFont
 from urllib import urlopen
 from zipfile import ZipFile
 import tempfile
@@ -249,9 +248,7 @@ def fonts_from_zip(zipfile):
   fonts = []
   for file_name in zipfile.namelist():
     if file_name.endswith(".ttf"):
-      font = TargetFont(ttLib.TTFont(zipfile.open(file_name)))
-      font.fullpath = file_name
-      fonts.append(font)
+      fonts.append([file_name, ttLib.TTFont(zipfile.open(file_name))])
   return fonts
 
 
