@@ -98,46 +98,28 @@ except ImportError:
 # =======================================================================
 
 
-def check_files_are_named_canonically(fb, fonts_to_check):
+def check_file_is_named_canonically(fb, font_fname):
   """A font's filename must be composed in the following manner:
 
   <familyname>-<stylename>.ttf
 
   e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf"""
-  fb.new_check("001", "Checking files are named canonically")
+  fb.new_check("001", "Checking file is named canonically")
   fb.set_priority(CRITICAL)
-  not_canonical = []
 
-  for to_check in fonts_to_check:
-    file_path, filename = os.path.split(to_check)
-    fb.set_target(file_path)  # all font files are in the same dir, right?
-    basename = os.path.splitext(filename)[0]
-    # remove spaces in style names
-    style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-    if '-' in basename and basename.split('-')[1] in style_file_names:
-      fb.ok("{} is named canonically".format(to_check))
-    else:
-      fb.error(('Style name used in "{}" is not canonical.'
-                ' You should rebuild the font using'
-                ' any of the following'
-                ' style names: "{}".').format(to_check,
-                                              '", "'.join(STYLE_NAMES)))
-      not_canonical.append(to_check)
-      fonts_to_check.remove(to_check)
-
-
-  if len(not_canonical) == 0:
+  file_path, filename = os.path.split(font_fname)
+  basename = os.path.splitext(filename)[0]
+  # remove spaces in style names
+  style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
+  if '-' in basename and basename.split('-')[1] in style_file_names:
+    fb.ok("{} is named canonically".format(font_fname))
     return True
   else:
-    print('\nAborted, critical errors with filenames.')
-    print(('Please rename these files canonically and try again:'
-           '\n  {}\n'
-           'Canonical names are defined in '
-           'https://github.com/googlefonts/gf-docs/blob'
-           '/master/ProjectChecklist.md#instance-and-file-naming'
-           '').format('\n  '.join(not_canonical)))
-    fb.output_report(to_check)
-    fb.reset_report()
+    fb.error(('Style name used in "{}" is not canonical.'
+              ' You should rebuild the font using'
+              ' any of the following'
+              ' style names: "{}".').format(font_fname,
+                                            '", "'.join(STYLE_NAMES)))
     return False
 
 
@@ -3003,7 +2985,7 @@ def check_Copyright_notice_does_not_exceed_500_chars(fb, f):
 
 
 def check_Filename_is_set_canonically(fb, f):
-  fb.new_check("105", "Filename is set canonically?")
+  fb.new_check("105", "Filename is set canonically in METADATA.pb ?")
 
   def create_canonical_filename(font_metadata):
     style_names = {
@@ -3024,7 +3006,7 @@ def check_Filename_is_set_canonically(fb, f):
              " canonical name '{}'".format(f.filename,
                                            canonical_filename))
   else:
-    fb.ok('Filename is set canonically.')
+    fb.ok('Filename in METADATA.pb is set canonically.')
 
 
 def check_METADATA_font_italic_matches_font_internals(fb, font, f):
