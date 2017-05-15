@@ -18,7 +18,6 @@
 import argparse
 import logging
 import os
-from fontbakery.targetfont import TargetFont
 from fontbakery.fbchecklogger import FontBakeryCheckLogger
 from fontbakery import checks
 
@@ -62,14 +61,12 @@ def description_checks(config):
     except:
       print("ERROR: File '{}' does not exist.".format(f))
       continue
-    target = TargetFont()
-    target.fullpath = f
 
     checks.check_DESCRIPTION_file_contains_no_broken_links(fb, contents)
     checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, f)
     checks.check_DESCRIPTION_min_length(fb, f)
     checks.check_DESCRIPTION_max_length(fb, f)
-    fb.output_report(target)
+    fb.output_report(f)
 
 
 if __name__ == '__main__':

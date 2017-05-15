@@ -20,7 +20,6 @@ import logging
 import os
 from fontbakery import checks
 from fontbakery.fbchecklogger import FontBakeryCheckLogger
-from fontbakery.targetfont import TargetFont
 from fontbakery.upstreamdirectory import UpstreamDirectory
 
 
@@ -66,8 +65,6 @@ def upstream_checks(config):
 
     for folder in folders_to_check:
         directory = UpstreamDirectory(folder)
-        target = TargetFont()
-        target.fullpath = folder
 
         checks.check_all_fonts_have_matching_glyphnames(fb, folder, directory)
         checks.check_glyphs_have_same_num_of_contours(fb, folder, directory)
@@ -79,7 +76,7 @@ def upstream_checks(config):
         checks.check_repository_contains_METADATA_pb_file(fb, f)
         checks.check_copyright_notice_is_consistent_across_family(fb, folder)
 
-        fb.output_report(target)
+        fb.output_report(folder)
 
 
 if __name__ == '__main__':

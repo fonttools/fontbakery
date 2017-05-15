@@ -27,7 +27,6 @@ from fontTools import ttLib
 from unidecode import unidecode
 from lxml.html import HTMLParser
 import plistlib
-from fontbakery.targetfont import TargetFont
 from fontbakery.pifont import PiFont
 from fontbakery.utils import (
                              get_name_string,
@@ -93,6 +92,7 @@ except ImportError:
                   " https://github.com/googlefonts/"
                   "gf-docs/blob/master/ProjectChecklist.md#fontforge")
   pass
+
 # =======================================================================
 # The following functions implement each of the individual checks per-se.
 # =======================================================================
@@ -109,20 +109,20 @@ def check_files_are_named_canonically(fb, fonts_to_check):
   not_canonical = []
 
   for to_check in fonts_to_check:
-    file_path, filename = os.path.split(to_check.fullpath)
+    file_path, filename = os.path.split(to_check)
     fb.set_target(file_path)  # all font files are in the same dir, right?
     basename = os.path.splitext(filename)[0]
     # remove spaces in style names
     style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
     if '-' in basename and basename.split('-')[1] in style_file_names:
-      fb.ok("{} is named canonically".format(to_check.fullpath))
+      fb.ok("{} is named canonically".format(to_check))
     else:
       fb.error(('Style name used in "{}" is not canonical.'
                 ' You should rebuild the font using'
                 ' any of the following'
-                ' style names: "{}".').format(to_check.fullpath,
+                ' style names: "{}".').format(to_check,
                                               '", "'.join(STYLE_NAMES)))
-      not_canonical.append(to_check.fullpath)
+      not_canonical.append(to_check)
       fonts_to_check.remove(to_check)
 
 
@@ -156,9 +156,9 @@ def check_all_files_in_a_single_directory(fb, fonts_to_check):
   target_dir = None
   for target_file in fonts_to_check:
     if target_dir is None:
-      target_dir = os.path.split(target_file.fullpath)[0]
+      target_dir = os.path.split(target_file)[0]
     else:
-      if target_dir != os.path.split(target_file.fullpath)[0]:
+      if target_dir != os.path.split(target_file)[0]:
         failed = True
         break
 
@@ -381,14 +381,14 @@ def check_fonts_have_equal_unicode_encodings(fb, family, ttf):
     fb.ok("Fonts have equal unicode encodings.")
 
 
-def check_all_fontfiles_have_same_version(fb, fonts_to_check):
+def check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache):
   fb.new_check("014", "Make sure all font files have the same version value.")
   all_detected_versions = []
   fontfile_versions = {}
   for target in fonts_to_check:
-    font = target.get_ttfont()
+    font = ttf_cache(target)
     v = font['head'].fontRevision
-    fontfile_versions[target.fullpath] = v
+    fontfile_versions[target] = v
 
     if v not in all_detected_versions:
       all_detected_versions.append(v)

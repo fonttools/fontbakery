@@ -19,7 +19,6 @@ import logging
 import os
 import sys
 from fontbakery.fbchecklogger import FontBakeryCheckLogger
-from fontbakery.targetfont import TargetFont
 from fontbakery import checks
 from fontTools import ttLib
 from fontbakery.utils import (
@@ -31,6 +30,12 @@ from fontbakery.utils import (
                              download_family_from_GoogleFontDirectory,
                              fonts_from_zip
                              )
+cached_font_objects = {}
+def ttf_cache(key):
+  if key not in cached_font_objects.keys():
+    cached_font_objects[key] = ttLib.TTFont(key)
+
+  return cached_font_objects[key]
 
 
 def fontbakery_check_ttf(config):
@@ -61,19 +66,13 @@ def fontbakery_check_ttf(config):
   logging.debug("Checking each file is a ttf")
   fonts_to_check = []
   for target in config['files']:
-    if type(target) is TargetFont:
-      fonts_to_check.append(target)
-    else:
-      # use glob.glob to accept *.ttf
-      for fullpath in glob.glob(target):
-        file_path, file_name = os.path.split(fullpath)
-        if file_name.endswith(".ttf"):
-          a_target = TargetFont()
-          a_target.fullpath = fullpath
-          fonts_to_check.append(a_target)
-        else:
-          logging.warning("Skipping '{}' as it does not seem "
-                          "to be valid TrueType font file.".format(file_name))
+    # use glob.glob to accept *.ttf
+    for fullpath in glob.glob(target):
+      if fullpath.endswith(".ttf"):
+        fonts_to_check.append(fullpath)
+      else:
+        logging.warning("Skipping '{}' as it does not seem "
+                        "to be valid TrueType font file.".format(fullpath))
 
   if fonts_to_check == []:
     logging.error("CRITICAL ERROR: None of the fonts"
@@ -82,16 +81,16 @@ def fontbakery_check_ttf(config):
     sys.exit(-1)
 
   print (("Fontbakery will check the following files:\n\t"
-          "{}\n\n").format("\n\t".join([t.fullpath for t in fonts_to_check])))
+          "{}\n\n").format("\n\t".join(fonts_to_check)))
 
   # This expects all fonts to be in the same folder:
-  family_dir = os.path.split(fonts_to_check[0].fullpath)[0]
+  family_dir = os.path.split(fonts_to_check[0])[0]
 
   canonical = checks.check_files_are_named_canonically(fb, fonts_to_check)
   if not canonical:
     print('\nAborted, critical errors with filenames.')
     cross_family = os.path.join(family_dir, "CrossFamilyChecks")
-    fb.output_report(TargetFont(desc={"filename": cross_family}))
+    fb.output_report(cross_family)
 
     sys.exit(-1)
 
@@ -126,7 +125,7 @@ def fontbakery_check_ttf(config):
     metadata = os.path.join(family_dir, "METADATA.pb")
     if not os.path.exists(metadata):
       logging.error("'{}' is missing"
-                    " a METADATA.pb file!".format(target.fullpath))
+                    " a METADATA.pb file!".format(target))
     else:
       family = get_FamilyProto_Message(metadata)
       if family is None:
@@ -146,8 +145,8 @@ def fontbakery_check_ttf(config):
                       " https://github.com/googlefonts"
                       "/fontbakery/issues/new")
       else:
-        ttf[font_key(f)] = ttLib.TTFont(os.path.join(dirname,
-                                                     f.filename))
+        ttf[font_key(f)] = ttf_cache(os.path.join(dirname,
+                                                  f.filename))
 
     if dirname == "":
       fb.default_target = "Current Directory"
@@ -166,17 +165,17 @@ def fontbakery_check_ttf(config):
   vmetrics_ymin = 0
   vmetrics_ymax = 0
   for target in fonts_to_check:
-    font = target.get_ttfont()
+    font = ttf_cache(target)
 
     font_ymin, font_ymax = get_bounding_box(font)
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
-  checks.check_all_fontfiles_have_same_version(fb, fonts_to_check)
+  checks.check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache)
   # FSanches: I don't like the following.
   #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
-  fb.output_report(TargetFont(desc={"filename": cross_family}))
+  fb.output_report(cross_family)
 
   fb.reset_report()
 
@@ -188,14 +187,14 @@ def fontbakery_check_ttf(config):
 
   # ------------------------------------------------------
   for target in fonts_to_check:
-    font = target.get_ttfont()
-    fb.default_target = target.fullpath
+    font = ttf_cache(target)
+    fb.default_target = target
     fb.set_font(font)
-    logging.info("OK: {} opened with fontTools".format(target.fullpath))
+    logging.info("OK: {} opened with fontTools".format(target))
 
     local_styles = {}
     # Determine weight from canonical filename
-    file_path, filename = os.path.split(target.fullpath)
+    file_path, filename = os.path.split(target)
     family, style = os.path.splitext(filename)[0].split('-')
     local_styles[style] = font
 
@@ -215,18 +214,17 @@ def fontbakery_check_ttf(config):
     found = checks.check_font_has_a_license(fb, file_path)
     checks.check_copyright_entries_match_license(fb, found, file_path, font)
     checks.check_font_has_a_valid_license_url(fb, found, font)
-    checks.check_main_entries_in_the_name_table(fb, font, target.fullpath)
+    checks.check_main_entries_in_the_name_table(fb, font, target)
     checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_description_strings_in_name_table(fb, font)
     checks.check_description_strings_do_not_exceed_100_chars(fb, font)
 
     monospace_detected = checks.check_font_is_truly_monospaced(fb, font)
-    checks.check_with_ftxvalidator(fb, target.fullpath)
-    checks.check_with_msfontvalidator(fb, target.fullpath)
-    checks.check_with_otsanitise(fb, target.fullpath)
+    checks.check_with_ftxvalidator(fb, target)
+    checks.check_with_msfontvalidator(fb, target)
+    checks.check_with_otsanitise(fb, target)
 
-    validation_state = checks.check_fforge_outputs_error_msgs(fb,
-                                                              target.fullpath)
+    validation_state = checks.check_fforge_outputs_error_msgs(fb, target)
     if validation_state is not None:
       checks.perform_all_fontforge_checks(fb, validation_state)
 
@@ -234,7 +232,7 @@ def fontbakery_check_ttf(config):
     checks.check_Vertical_Metric_Linegaps(fb, font)
     checks.check_unitsPerEm_value_is_reasonable(fb, font)
     checks.check_font_version_fields(fb, font)
-    checks.check_Digital_Signature_exists(fb, font, target.fullpath)
+    checks.check_Digital_Signature_exists(fb, font, target)
     checks.check_font_contains_the_first_few_mandatory_glyphs(fb, font)
 
     missing = checks.check_font_contains_glyphs_for_whitespace_chars(fb, font)
@@ -244,32 +242,32 @@ def fontbakery_check_ttf(config):
 
     # PyFontaine-based glyph coverage checks:
     if config['coverage']:
-      checks.check_glyphset_google_cyrillic_historical(fb, target.fullpath)
-      checks.check_glyphset_google_cyrillic_plus(fb, target.fullpath)
-      checks.check_glyphset_google_cyrillic_plus_locl(fb, target.fullpath)
-      checks.check_glyphset_google_cyrillic_pro(fb, target.fullpath)
-      checks.check_glyphset_google_greek_ancient_musical(fb, target.fullpath)
-      checks.check_glyphset_google_greek_archaic(fb, target.fullpath)
-      checks.check_glyphset_google_greek_coptic(fb, target.fullpath)
-      checks.check_glyphset_google_greek_core(fb, target.fullpath)
-      checks.check_glyphset_google_greek_expert(fb, target.fullpath)
-      checks.check_glyphset_google_greek_plus(fb, target.fullpath)
-      checks.check_glyphset_google_greek_pro(fb, target.fullpath)
-      checks.check_glyphset_google_latin_core(fb, target.fullpath)
-      checks.check_glyphset_google_latin_expert(fb, target.fullpath)
-      checks.check_glyphset_google_latin_plus(fb, target.fullpath)
-      checks.check_glyphset_google_latin_plus_optional(fb, target.fullpath)
-      checks.check_glyphset_google_latin_pro(fb, target.fullpath)
-      checks.check_glyphset_google_latin_pro_optional(fb, target.fullpath)
-      checks.check_glyphset_google_arabic(fb, target.fullpath)
-      checks.check_glyphset_google_vietnamese(fb, target.fullpath)
-      checks.check_glyphset_google_extras(fb, target.fullpath)
+      checks.check_glyphset_google_cyrillic_historical(fb, target)
+      checks.check_glyphset_google_cyrillic_plus(fb, target)
+      checks.check_glyphset_google_cyrillic_plus_locl(fb, target)
+      checks.check_glyphset_google_cyrillic_pro(fb, target)
+      checks.check_glyphset_google_greek_ancient_musical(fb, target)
+      checks.check_glyphset_google_greek_archaic(fb, target)
+      checks.check_glyphset_google_greek_coptic(fb, target)
+      checks.check_glyphset_google_greek_core(fb, target)
+      checks.check_glyphset_google_greek_expert(fb, target)
+      checks.check_glyphset_google_greek_plus(fb, target)
+      checks.check_glyphset_google_greek_pro(fb, target)
+      checks.check_glyphset_google_latin_core(fb, target)
+      checks.check_glyphset_google_latin_expert(fb, target)
+      checks.check_glyphset_google_latin_plus(fb, target)
+      checks.check_glyphset_google_latin_plus_optional(fb, target)
+      checks.check_glyphset_google_latin_pro(fb, target)
+      checks.check_glyphset_google_latin_pro_optional(fb, target)
+      checks.check_glyphset_google_arabic(fb, target)
+      checks.check_glyphset_google_vietnamese(fb, target)
+      checks.check_glyphset_google_extras(fb, target)
 
     checks.check_no_problematic_formats(fb, font)
     checks.check_for_unwanted_tables(fb, font)
 
     ttfautohint_missing = checks.check_hinting_filesize_impact(fb,
-                                                               target.fullpath,
+                                                               target,
                                                                filename)
     checks.check_version_format_is_correct_in_NAME_table(fb, font)
     checks.check_font_has_latest_ttfautohint_applied(fb,
@@ -413,11 +411,10 @@ def fontbakery_check_ttf(config):
       remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
 
       remote_styles = {}
-      for remote in remote_fonts_to_check:
-        fb.default_target = remote.fullpath
-        remote_font = remote.get_ttfont()
-	if '-' in remote.fullpath[:-4]:
-          remote_style = remote.fullpath[:-4].split('-')[1]
+      for remote_filename, remote_font in remote_fonts_to_check:
+        fb.default_target = "GF:" + remote_filename
+	if '-' in remote_filename[:-4]:
+          remote_style = remote_filename[:-4].split('-')[1]
         else:
           # This is a non-canonical filename!
           remote_style = "Regular" #  But I'm giving it a chance here... :-)
