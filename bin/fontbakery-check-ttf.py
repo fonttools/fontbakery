@@ -86,14 +86,6 @@ def fontbakery_check_ttf(config):
   # This expects all fonts to be in the same folder:
   family_dir = os.path.split(fonts_to_check[0])[0]
 
-  canonical = checks.check_files_are_named_canonically(fb, fonts_to_check)
-  if not canonical:
-    print('\nAborted, critical errors with filenames.')
-    cross_family = os.path.join(family_dir, "CrossFamilyChecks")
-    fb.output_report(cross_family)
-
-    sys.exit(-1)
-
   # Perform a few checks on DESCRIPTION files
 
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
@@ -197,6 +189,14 @@ def fontbakery_check_ttf(config):
     file_path, filename = os.path.split(target)
     family, style = os.path.splitext(filename)[0].split('-')
     local_styles[style] = font
+
+    canonical = checks.check_file_is_named_canonically(fb, target)
+    if not canonical:
+      print("\nAborted all remaining checks for this font "
+            "due to its non-canonical filename.")
+      fb.output_report(target)
+      fb.reset_report()
+      continue
 
     checks.check_font_has_post_table_version_2(fb, font)
     checks.check_post_italicAngle(fb, font, style)
