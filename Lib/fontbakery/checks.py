@@ -1180,58 +1180,40 @@ def check_fforge_outputs_error_msgs(fb, font_file):
             " this font is a very peculiar hack.")
     return None
 
-  validation_state = None
+
+  import subprocess
+  cmd = (
+        'import fontforge, sys;'
+        'status = fontforge.open("{0}").validate();'
+        'sys.stdout.write(status.__str__());'.format
+        )
+
+  p = subprocess.Popen(['python', '-c', cmd(font_file)],
+                       stderr=subprocess.PIPE,
+                       stdout=subprocess.PIPE
+                      )
+  validation_state, ff_err_messages = p.communicate()
   try:
-    import fontforge
-    # temporary stderr redirection:
-    ff_err = os.tmpfile()
-
-    # we do not redirect stderr on Travis because
-    # it's making it think the build failed.
-    # I'm not exactly sure why does it happen, but for now we'll
-    # workaround the issue by not capturing stderr messages
-    # when running on Travis.
-    if 'TRAVIS' not in os.environ:
-      stderr_backup = os.dup(2)
-      os.close(2)
-      os.dup2(ff_err.fileno(), 2)
-
-    # invoke font validation
-    # via fontforge python module:
-    fontforge_font = fontforge.open(font_file)
-    validation_state = fontforge_font.validate()
-
-    if 'TRAVIS' not in os.environ:
-      # restore default stderr:
-      os.dup2(stderr_backup, 2)
-      sys.stderr = os.fdopen(2, 'w', 0)
-
-    # handle captured stderr messages:
-    ff_err.flush()
-    ff_err.seek(0, os.SEEK_SET)
-    ff_err_messages = ff_err.read()
-    filtered_err_msgs = ""
-    for line in ff_err_messages.split('\n'):
-      if 'The following table(s) in the font' \
-         ' have been ignored by FontForge' in line:
-        continue
-      if "Ignoring 'DSIG' digital signature table" in line:
-        continue
-      filtered_err_msgs += line + '\n'
-
-    if len(filtered_err_msgs.strip()) > 0:
-      fb.error(("fontforge did print these messages to stderr:\n"
-                "{}").format(filtered_err_msgs))
-    else:
-      fb.ok("fontforge validation did not output any error message.")
-    ff_err.close()
+    validation_state = int(validation_state)
   except:
-    fb.error(" It seems that FontForge had a problem while"
-             " attempting to run checks on this font file!"
-             " More info at: https://github.com/googlefonts/"
-             "fontbakery/issues/1166 "
-             " Actual error message was:"
-             " '{}'".format(sys.exc_info()))
+    # None as a value is understood by the fontbakery-check-ttf.py script
+    validation_state = None
+    pass
+
+  filtered_err_msgs = ""
+  for line in ff_err_messages.split('\n'):
+    if 'The following table(s) in the font' \
+        ' have been ignored by FontForge' in line:
+      continue
+    if "Ignoring 'DSIG' digital signature table" in line:
+      continue
+    filtered_err_msgs += line + '\n'
+
+  if len(filtered_err_msgs.strip()) > 0:
+    fb.error(("fontforge did print these messages to stderr:\n"
+              "{}").format(filtered_err_msgs))
+  else:
+    fb.ok("fontforge validation did not output any error message.")
   return validation_state
 
 
