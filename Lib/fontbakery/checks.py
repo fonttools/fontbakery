@@ -63,8 +63,9 @@ from fontbakery.constants import (
                                  PLATFORM_ID_MACINTOSH,
                                  PLATFORM_ID_WINDOWS,
                                  PLATID_STR,
-                                 WEIGHTS,
-                                 WEIGHT_VALUE_TO_NAME,
+                                 WEIGHT_CLASS_VALUES,
+                                 WEIGHT_CLASS_NAMES,
+                                 CSS_WEIGHT_NAMES,
                                  FSSEL_ITALIC,
                                  FSSEL_BOLD,
                                  FSSEL_REGULAR,
@@ -668,7 +669,7 @@ def check_OS2_usWeightClass(fb, font, style):
     weight_name = style
 
   value = font['OS/2'].usWeightClass
-  expected = WEIGHTS[weight_name]
+  expected = WEIGHT_CLASS_VALUES[weight_name]
   if value != expected:
     if fb.config['autofix']:
       font['OS/2'].usWeightClass = expected
@@ -2975,8 +2976,9 @@ def check_Filename_is_set_canonically(fb, f):
      'italic': 'Italic'
     }
     familyname = font_metadata.name.replace(' ', '')
-    style_weight = '%s%s' % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
-                             style_names.get(font_metadata.style))
+    style_weight = CSS_WEIGHT_NAMES.get(font_metadata.weight)
+    style_weight += style_names.get(font_metadata.style)
+
     if not style_weight:
         style_weight = 'Regular'
     return '%s-%s.ttf' % (familyname, style_weight)
@@ -3121,10 +3123,20 @@ def check_font_weight_has_a_canonical_value(fb, f):
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f):
   fb.new_check("112", "Checking OS/2 usWeightClass"
                       " matches weight specified at METADATA.pb")
-  fb.assert_table_entry('OS/2', 'usWeightClass', f.weight)
-  fb.log_results("OS/2 usWeightClass matches "
-                 "weight specified at METADATA.pb")
-
+  weight_class = WEIGHT_CLASS_NAMES[fb.font['OS/2'].usWeightClass]
+  css_weight = CSS_WEIGHT_NAMES[f.weight]
+  if weight_class == css_weight:
+    fb.ok(("OS/2 usWeightClass ({}) matches"
+           " CSS weight ({}) specified at METADATA.pb"
+           "").format(fb.font['OS/2'].usWeightClass,
+                      f.weight))
+  else:
+    fb.error(("OS/2 usWeightClass ({}: '{}') does not correctly correspond"
+              " to the CSS weight ({}: '{}') specified at"
+              " METADATA.pb!").format(fb.font['OS/2'].usWeightClass,
+                                      weight_class,
+                                      f.weight,
+                                      css_weight))
 
 weights = {
   'Thin': 100,
