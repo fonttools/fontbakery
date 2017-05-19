@@ -28,7 +28,6 @@ from fontbakery.constants import (
                                  NORMAL
                                  )
 class FontBakeryCheckLogger():
-  progressbar = False
 
   def __init__(self, config):
     self.config = config
@@ -176,22 +175,6 @@ class FontBakeryCheckLogger():
     ghm_output.write(markdown_data)
     self.ghm_report_files.append(output_filename)
 
-  def update_progressbar(self):
-    tick = {
-      "OK": GREEN_STR.format('.'),
-      "HOTFIX": BLUE_STR.format('H'),
-      "ERROR": RED_STR.format('E'),
-      "WARNING": YELLOW_STR.format('W'),
-      "SKIP": WHITE_STR.format('S'),
-      "INFO": CYAN_STR.format('I'),
-      "unknown": RED_STR.format('?')
-    }
-    if self.progressbar is False:
-      return
-    else:
-      print(tick[self.current_check["result"]], end='')
-      sys.stdout.flush()
-
   def flush(self):
     if self.current_check is not None:
       if self.current_check["result"] == "unknown":
@@ -203,7 +186,6 @@ class FontBakeryCheckLogger():
                " https://github.com/googlefonts/fontbakery/issues/new"
                "\n").format(self.current_check["check_number"]))
 
-      self.update_progressbar()
       check_number = self.current_check["check_number"]
       self.all_checks[check_number] = self.current_check
       self.current_check = None
