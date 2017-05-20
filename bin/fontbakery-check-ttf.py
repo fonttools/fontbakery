@@ -55,9 +55,11 @@ def fontbakery_check_ttf(config):
   elif config['verbose'] >= 2:
     logger.setLevel(logging.DEBUG)
   else:
+    fb.progressbar = True
     logger.setLevel(logging.CRITICAL)
 
   if config['error']:
+    fb.progressbar = False
     logger.setLevel(logging.ERROR)
 
   # ------------------------------------------------------
