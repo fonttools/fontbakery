@@ -96,6 +96,33 @@ For check results in GitHub Markdown syntax you can use --ghm:
 
     fontbakery check-ttf --verbose *.ttf --ghm
 
+
+The full set of attributes for the check-ttf subcommand is:
+
+```
+usage: fontbakery-check-ttf.py [-h] [-v] [-e] [-a] [-b] [-j] [-m] [-n]
+                               [--coverage | --no-coverage]
+                               arg_filepaths [arg_filepaths ...]
+
+Check TTF files for common issues.
+
+positional arguments:
+  arg_filepaths      font file path(s) to check. Wildcards like *.ttf are
+                     allowed.
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -v, --verbose
+  -e, --error        Output only errors.
+  -a, --autofix
+  -b, --burndown     Compute and output burndown-chart stats in JSON format.
+  -j, --json         Output check results in JSON format.
+  -m, --ghm          Output check results in GitHub Markdown format.
+  -n, --no-progress  Disables the display of a progress bar.
+  --coverage         Run glyph coverage checks using PyFontaine.
+  --no-coverage      Disable all PyFontaine (glyph coverage) checks.
+```
+
 ### FontBakery web Dashboard
 
 There is a web dashboard that is used for monitoring the check-results of the full Google Fonts collection (or possibly other collections of font families). This tool was initialy developed in this repository, but later it was split out into its own git repo, now available at: https://github.com/googlefonts/fontbakery-dashboard

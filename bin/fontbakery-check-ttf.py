@@ -55,7 +55,8 @@ def fontbakery_check_ttf(config):
   elif config['verbose'] >= 2:
     logger.setLevel(logging.DEBUG)
   else:
-    fb.progressbar = True
+    if args.progress:
+      fb.progressbar = True
     logger.setLevel(logging.CRITICAL)
 
   if config['error']:
@@ -501,6 +502,9 @@ parser.add_argument('-j', '--json', action='store_true',
                     help='Output check results in JSON format.')
 parser.add_argument('-m', '--ghm', action='store_true',
                     help='Output check results in GitHub Markdown format.')
+parser.add_argument('-n', '--no-progress', action='store_false',
+                    dest='progress',
+                    help='Disables the display of a progress bar.')
 pyfontaine_parser = parser.add_mutually_exclusive_group(required=False)
 pyfontaine_parser.add_argument('--coverage',
                                help='Run glyph coverage checks'
