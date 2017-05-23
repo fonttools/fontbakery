@@ -1,51 +1,54 @@
 language: python
 branches:
   only:
-    - master
+  - master
+  - /^v\d+\.\d+\.\d+/
 before_install:
-  - sudo add-apt-repository --yes ppa:fontforge/fontforge
-  - sudo apt-get update -qq
-  - sudo apt-get -y install python-fontforge ttfautohint swig
-  - pip install --upgrade pip
+- sudo add-apt-repository --yes ppa:fontforge/fontforge
+- sudo apt-get update -qq
+- sudo apt-get -y install python-fontforge ttfautohint swig
+- pip install --upgrade pip
 install:
-  - export LD_LIBRARY_PATH=/usr/local/lib
-  - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
-  - pip install BeautifulSoup4
-  - pip install filemagic
-  - pip install requests
-  - pip install protobuf
-  - pip install unidecode
-  - pip install lxml
-  - pip install defusedxml
-  - pip install tabulate
-  - pip install pillow
-  - pip install flask
-  - pip install pylint
-  - pip install robofab
-  - pip install gitpython
-  - pip install matplotlib
-  - pip install python-dateutil
-  - pip install rethinkdb
-  - pip install pika
-  - "pip install git+https://github.com/behdad/fonttools.git"
-  - "pip install git+https://github.com/googlei18n/glyphsLib.git"
-  - pip install -e .
+- export LD_LIBRARY_PATH=/usr/local/lib
+- cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
+- pip install BeautifulSoup4
+- pip install filemagic
+- pip install requests
+- pip install protobuf
+- pip install unidecode
+- pip install lxml
+- pip install defusedxml
+- pip install tabulate
+- pip install pillow
+- pip install flask
+- pip install pylint
+- pip install robofab
+- pip install gitpython
+- pip install matplotlib
+- pip install python-dateutil
+- pip install rethinkdb
+- pip install pika
+- pip install git+https://github.com/behdad/fonttools.git
+- pip install git+https://github.com/googlei18n/glyphsLib.git
+- pip install -e .
 script:
-  - export WONT_FIX=invalid-name,bad-indentation
-  - export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module,abstract-method,no-member,line-too-long,trailing-newlines,duplicate-code,redefined-outer-name,trailing-whitespace,unused-variable,logging-not-lazy,undefined-variable,protected-access,anomalous-backslash-in-string,wrong-import-position,ungrouped-imports,singleton-comparison,misplaced-comparison-constant,consider-using-enumerate,used-before-assignment,too-few-public-methods,dangerous-default-value,unexpected-keyword-arg,len-as-condition,no-else-return,relative-import,not-callable
-  - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
-  - $PYLINT *.py
-  - fontbakery check-ttf data/test/cousine/*.ttf --ghm --json --no-coverage
-  - fontbakery check-ttf data/test/mada/*.ttf --ghm --json --no-coverage
-  - fontbakery check-ttf data/test/merriweather/*.ttf --ghm --json --no-coverage
-  - fontbakery check-ttf data/test/nunito/*.ttf --ghm --json --no-coverage
-  - fontbakery check-ttf data/test/familysans/*.ttf --ghm --json --no-coverage
-  - fontbakery check-ttf data/test/cabin/*.ttf --ghm --json --no-coverage
-  - python bin/test_args.py
+- export WONT_FIX=invalid-name,bad-indentation
+- export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module,abstract-method,no-member,line-too-long,trailing-newlines,duplicate-code,redefined-outer-name,trailing-whitespace,unused-variable,logging-not-lazy,undefined-variable,protected-access,anomalous-backslash-in-string,wrong-import-position,ungrouped-imports,singleton-comparison,misplaced-comparison-constant,consider-using-enumerate,used-before-assignment,too-few-public-methods,dangerous-default-value,unexpected-keyword-arg,len-as-condition,no-else-return,relative-import,not-callable
+- export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
+- "$PYLINT *.py"
+- fontbakery check-ttf data/test/cousine/*.ttf --ghm --json --no-coverage
+- fontbakery check-ttf data/test/mada/*.ttf --ghm --json --no-coverage
+- fontbakery check-ttf data/test/merriweather/*.ttf --ghm --json --no-coverage
+- fontbakery check-ttf data/test/nunito/*.ttf --ghm --json --no-coverage
+- fontbakery check-ttf data/test/familysans/*.ttf --ghm --json --no-coverage
+- fontbakery check-ttf data/test/cabin/*.ttf --ghm --json --no-coverage
+- python bin/test_args.py
 deploy:
   provider: pypi
-  user: "fsanches"
+  user: fsanches
   password:
-    secure: Lj/e9Zh09FpTeLPsgjoPSoPkZWx0Q4U5mEhkvlVnWIRkEKrKrfYe/wjBymoL8xATE8rd+sPJGbReG63prK9AXo4Y7zLVsgydDCGRG31EIcejMOrrTBNXrEcKdB7/NhzbuORTen9NTCxJ8eU6wvELpKEd/BWMWUm9hTafhVL+weavYYorBqQcvORNUdVzwEepY2V4KchqjzGRQxmqIMKV8boqKwbzgYPDqrAHW9zTRDJnCVF/2/bQ/3OpSJQpcYdZM51iuBBmhfCV2oxvm40BgZmTcg0tFe6XxPehC/lB+P0sXnmbtHbtVt0j6U4OsnYiApjWQ8tEIJESWO3giBaBAU5ZIo7CMbrJ3YopIVDuHiGs9MbFMXB2+Kdc/oXpt4U6SstcVAOKO7l6qpHdoUT91F4aZXwtLPm3bNFPBc/EpC6HEbVIFd3MsIzwVfG4c6fW2QBv0qMrmAgjNEUHrvYB8VbCyyKuDemPfvDUZkd8wOsNjzjcL34kf1Lm2H0FqePUxNmgt07nbIn2X6zhuAGvMRhPdVznFgMBvlZe4FuXaq8SMO2IZa+biMEoR9XzQc4Qo8+ZIEu13E6T0ggGo7cLxIKfWH+YFyW1Xw2anRI4gukRDdAOr4TB2uZqxsMNRjioq7Ck6AmxbPN4yb9heOc+Qo1CR1+4xZM+Vi2gNA3tauk=
+    secure: O/Rtd5tjmzALTHnAQ1irzdH+Xw0YsMwn1N6zKePhoKjYjUngD71ASy8NSMb40XkVm+b5hBn1AgNwzT/3zsFzSyLMqkkXCoQj/4pfnIlt3wmGMYvKAZlAbMJwznwSgHNlJZHr2P5ioLhPC5jLGGEpOIOLC4qItK63/TDrICvYJQaKsiC7sOWwvAVlskGQFxTV2EaN2uZEkqiR4ea+pk/eonxbLoEweiIZ1Bbfv1MgJWt3yACHqYRS4FSI0Gkp24V2xNbSOrAiJO32NAK0wLlQ7um7xV7U/FCyFwUpilePHUha1KevShD8au28Z6qdLcIW43a+pUv7Fx36xofSb9vObzosPw+Z3SU1rxTAnFVrvkIaiU0y9yc1hj7t7912DUGMVenTuD/Z5ANKynsC7GBcPo8zRo0knI914boynt9/NgBS/wH/gwH0J4EYgHTTI3epyNSztQFlH4ZZFCDlfG+LJEsF87opu64L1PHH623ePL1GWisLH0wfraBCu639MXem9+ZL+3iJX4gCgTH07BWWGaspILvUvh+yocqzVdyJo/k1fBpbR2SnOzNb1MQ+BP5FG9rT3o6ChPtcpRpvB/mQMMgf8vY9vvnN1bfYtC1qNDoeHaejFpJjAiVbuY/D37Ng0tyG1/YQd4ObHoGldXohi3idewjBY/xaFG7KkidyyCQ=
+  distributions: sdist
   on:
     tags: true
+    repo: googlefonts/fontbakery
