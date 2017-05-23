@@ -160,14 +160,17 @@ def set_fsSelection(fsSelection, style):
     bits |= 0b1000000
   else:
     bits &= ~0b1000000
-  if 'Bold' in style:
+
+  if style in ['Bold', 'BoldItalic']:
     bits |= 0b100000
   else:
     bits &= ~0b100000
+
   if 'Italic' in style:
     bits |= 0b1
   else:
     bits &= ~0b1
+
   return bits
 
 
