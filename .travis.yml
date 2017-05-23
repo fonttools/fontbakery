@@ -42,3 +42,10 @@ script:
   - fontbakery check-ttf data/test/familysans/*.ttf --ghm --json --no-coverage
   - fontbakery check-ttf data/test/cabin/*.ttf --ghm --json --no-coverage
   - python bin/test_args.py
+deploy:
+  provider: pypi
+  user: "fsanches"
+  password:
+    secure: Lj/e9Zh09FpTeLPsgjoPSoPkZWx0Q4U5mEhkvlVnWIRkEKrKrfYe/wjBymoL8xATE8rd+sPJGbReG63prK9AXo4Y7zLVsgydDCGRG31EIcejMOrrTBNXrEcKdB7/NhzbuORTen9NTCxJ8eU6wvELpKEd/BWMWUm9hTafhVL+weavYYorBqQcvORNUdVzwEepY2V4KchqjzGRQxmqIMKV8boqKwbzgYPDqrAHW9zTRDJnCVF/2/bQ/3OpSJQpcYdZM51iuBBmhfCV2oxvm40BgZmTcg0tFe6XxPehC/lB+P0sXnmbtHbtVt0j6U4OsnYiApjWQ8tEIJESWO3giBaBAU5ZIo7CMbrJ3YopIVDuHiGs9MbFMXB2+Kdc/oXpt4U6SstcVAOKO7l6qpHdoUT91F4aZXwtLPm3bNFPBc/EpC6HEbVIFd3MsIzwVfG4c6fW2QBv0qMrmAgjNEUHrvYB8VbCyyKuDemPfvDUZkd8wOsNjzjcL34kf1Lm2H0FqePUxNmgt07nbIn2X6zhuAGvMRhPdVznFgMBvlZe4FuXaq8SMO2IZa+biMEoR9XzQc4Qo8+ZIEu13E6T0ggGo7cLxIKfWH+YFyW1Xw2anRI4gukRDdAOr4TB2uZqxsMNRjioq7Ck6AmxbPN4yb9heOc+Qo1CR1+4xZM+Vi2gNA3tauk=
+  on:
+    tags: true
