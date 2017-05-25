@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import types
 from collections import OrderedDict
+from itertools import chain
 
 class Status(object):
     """ If you create a custom Status symbol, please use reverse domain
@@ -455,7 +456,7 @@ class TestRunner(object):
 ### This is a stub to build the test execution order logic
 ###
 
-def  _get_exec_bucket_args(tests, head, tail, options):
+def  _get_exec_bucket_args(tests, current_arg, args, options):
     """
         This is just a subroutine of make_bucket.
         It also calls make_bucket itself, recursiveley.
@@ -463,23 +464,112 @@ def  _get_exec_bucket_args(tests, head, tail, options):
     specific_tests = []
     generic_tests = []
     saturated = []
-    tailset = set(tail)
+    args_set = set(args)
     for test in tests:
-        if test.requires(head):
+        if test.requires(current_arg):
             specific_tests.append(test)
-        elif not tail or not len(test.args & tailset):
-            # there's no tail or no arguments of test are still in tail
+        elif not args or not len(test.args & args_set):
+            # there's no tail of args or no arguments of test are still
+            # in tail
             saturated.append(test)
         else:
-            # there's still a tail and test requires one of the
+            # there's still a tail of args and test requires one of the
             # args in tail
             generic_tests.append(test)
 
-    generic_bucket = make_bucket(generic_tests, None, tail, **options)\
+    generic_bucket = make_bucket(generic_tests, None, args, **options)\
                                     if generic_tests else None
-    specific_bucket = make_bucket(specific_tests, head, tail, **options)\
+    specific_bucket = make_bucket(specific_tests, current_arg, args, **options)\
                                     if specific_tests else None
     return saturated, generic_bucket, specific_bucket
+
+
+#def make_bucket(tests, all_args, **options):
+#    """
+#        Sort the tests to get them into a nice execution order.
+#        Via "args" the clustering order of tests by their variable,
+#        iterable arguments can be controlled. A special value in
+#        args is "*test" which clusters by test.
+#
+#        If the Keyword argument `generic_first` is False more generic
+#        tests will be executed after more specific ones (only looking at
+#        variable, iterable arguments). Defaults to True
+#
+#        TODO: This needs better documentation. Maybe add examples.
+#
+#    """
+#    current_arg = all_args[0] if len(all_args) else None
+#    args = all_args[1:]
+#
+#    if current_arg == '*test':
+#        return TestClusterBucket(make_bucket(tests, args, **options))
+#
+#
+#    specific_tests = []
+#    generic_tests = []
+#    saturated = []
+#    all_args_set = set(all_args)
+#    for test in tests:
+#        if not len(test.args & all_args_set):
+#            # there's no all_args or no arguments of test are
+#            # in all_args
+#            saturated.append(test)
+#        if test.requires(current_arg):
+#            specific_tests.append(test)
+#        else:
+#            # there's still a tail of args and test requires one of the
+#            # args in tail
+#            generic_tests.append(test)
+#
+#
+#
+#
+#    # skips current_arg
+#    saturated
+#    # we can just yield them with the parents/initial args (not all_args)
+#    # end of depth traversal
+#    def geenerate(args, world):
+#        for test in saturated:
+#            yield (test, args)
+#
+#    # skips current_arg but NEEDS more
+#    generic_bucket = make_bucket(generic_tests, args, **options)\
+#                                    if generic_tests else None
+#
+#    def generate(args, world):
+#        # no augmenting, but delegating to `generate`:
+#        for env in generic_bucket.generate(args, world):
+#            yield env
+#
+#
+#
+#    # NEEDS current_arg and more
+#    specific_bucket = make_bucket(specific_tests, args, **options)\
+#                                    if specific_tests else None
+#
+#    def generate(args, world):
+#        all_args = _augment_args(current_arg, args)
+#        for n_args in all_args:
+#            for scope in self.specific_bucket.generate(n_args, world):
+#                yield scope;
+#
+#
+#
+#
+#    (
+#        saturated,
+#        generic_bucket,
+#        specific_bucket
+#    ) = _get_exec_bucket_args(tests, current_arg, args, options)
+#
+#    # run each sub bucket for each font
+#    return ExecutionBucket(
+#        satisfies=current_arg,
+#        saturated=saturated,
+#        generic_bucket=generic_bucket,
+#        specific_bucket= specific_bucket,
+#        **options
+#    )
 
 def make_bucket(tests, satisfies,  args, **options):
     """
@@ -498,19 +588,19 @@ def make_bucket(tests, satisfies,  args, **options):
     if satisfies == '*test':
         return TestClusterBucket(make_bucket(tests, None, args, **options))
 
-    head = args[0] if len(args) else None
-    tail = args[1:]
+    head_arg = args[0] if len(args) else None
+    tail_args = args[1:]
 
-    if head != "*test":
+    if head_arg != "*test":
         (
             saturated,
             generic_bucket,
             specific_bucket
-        ) = _get_exec_bucket_args(tests, head, tail, options)
+        ) = _get_exec_bucket_args(tests, head_arg, tail_args, options)
     else:
         saturated = None
         generic_bucket = None
-        specific_bucket = TestClusterBucket(make_bucket(tests, None, tail, **options))
+        specific_bucket = TestClusterBucket(make_bucket(tests, None, tail_args, **options))
 
     # run each sub bucket for each font
     return ExecutionBucket(
@@ -523,6 +613,7 @@ def make_bucket(tests, satisfies,  args, **options):
 
 
 class TestClusterBucket(object):
+    """ add a dimension that clusters by test """
     def __init__(self, subbucket):
         self.subbucket = subbucket;
 
@@ -541,65 +632,63 @@ class TestClusterBucket(object):
 
 
 class ExecutionBucket(object):
-    def __init__(self, satisfies,
-                       saturated=None,
+    def __init__(self, saturated=None,
                        generic_bucket=None,
                        specific_bucket=None,
                        generic_first=True):
-        self._satisfies = satisfies
         self._saturated = saturated
         self._generic_bucket = generic_bucket
         self._specific_bucket = specific_bucket
         self._generic_first = generic_first
-        pass
 
-    @property
-    def subbuckets(self):
-        generic_first = self._generic_first and self._generic_bucket
-        generic_last = not self._generic_first and self._generic_bucket
+    def _scopes(self, args, world):
+        gens = []
 
-        if generic_first:
-            yield generic_first
+        if self._saturated:
+            gens.append( ((test, args) for test in self._saturated) )
+
+        if self._generic_bucket:
+            gens.append( self._generic_bucket.generate(args, world) )
 
         if self._specific_bucket:
-            yield self._specific_bucket
+            gens.append( self._specific_bucket.generate(args, world) )
 
-        if generic_last:
-            yield generic_last
+        if not self._generic_first:
+            gens.reverse()
+
+        return chain(*gens)
 
     def generate(self, args, world):
-        if self._satisfies:
-            # this is a specific bucket, it ads one argument tuple
-            # yields once per item in self._values
-            # using tuples of (key, value) tuples will keep the information
-            # of argument order
-            items = world.get(self._satisfies, None)
-            if items is not None:
-                all_args = (args + ((self._satisfies, item),) for item in items)
-            else:
-                # If items is None, we still want to yield the test
-                # eventually. It's just that we can't satisfy the
-                # requested argument, but that will fail and be reported
-                # when the test is actually called.
-                all_args = [args]
-        else:
-            # this is a generic bucket
-            # iterates once, doesn't add anything
-            all_args = [args]
-
+        all_args = self._augment_args(args)
         for n_args in all_args:
+            for scope in self._scopes(n_args, world):
+                yield scope;
 
-            if self._generic_first and self._saturated:
-                for test in self._saturated:
-                    yield (test, n_args)
+class DelegatingBucket(ExecutionBucket):
+    def _augment_args(self, args):
+        return [args]
 
-            for subbucket in self.subbuckets:
-                for env in subbucket.generate(n_args, world):
-                    yield env;
+class SpicingBucket(ExecutionBucket):
+    def __init__(satisfies, *args,**kwds):
+        self._satisfies = satisfies
+        super(SpicingBucket, self).__init__(saturated, *args,**kwds)
 
-            if not self._generic_first and self._saturated:
-                for test in self._saturated:
-                    yield (test, n_args)
+
+    def _augment_args(self, args):
+        # this is a specific bucket, it ads one argument tuple
+        # yields once per item in self._values
+        # using tuples of (key, value) tuples will keep the information
+        # of argument order
+        items = world.get(self._satisfies, None)
+        if items is not None:
+            all_args = (args + ((self._satisfies, item),) for item in items)
+        else:
+            # If items is None, we still want to yield the test
+            # eventually. It's just that we can't satisfy the
+            # requested argument, but that will fail and be reported
+            # when the test is actually called.
+            all_args = [args]
+        return all_args
 
 class Test(object):
     def __init__(self, name, args):
@@ -610,10 +699,140 @@ class Test(object):
         return arg in self.args
 
     def __str__(self):
-        return '<Test {0}>'.format(self.name)
+        return '<Test {0} :: {1}>'.format(self.name, ', '.join(sorted(self.args)))
 
     __repr__ = __str__
 
+
+def make_generator(world, k):
+    for item in world[k]:
+        yield item
+
+def _analyze_tests(tests, all_args):
+    args = list(all_args)
+    args.reverse()
+    scopes = [(test, tuple(), tuple()) for test in tests]
+    saturated = []
+    while args:
+        new_scopes = []
+        # args_set must contain all current args, hence it's before the pop
+        args_set = set(args)
+        arg = args.pop()
+        for test, signature, scope in scopes:
+            if not len(test.args & args_set):
+                # there's no args mo more or no arguments of test are
+                # in args
+                target = saturated
+            elif arg == '*test' or test.requires(arg):
+                signature += (1, )
+                scope += (arg, )
+                target = new_scopes
+            else:
+                # there's still a tail of args and test requires one of the
+                # args in tail but not the current arg
+                signature += (0, )
+                target = new_scopes
+            target.append((test, signature, scope))
+        # is this enough as a sorting?
+        # otherwise specific + generic
+        # how to sort the saturated into this?
+        scopes = new_scopes
+    return saturated + scopes;
+
+def _execute_section(world, section, items):
+    if section is None:
+        # base case: terminate recursion
+        for test, signature, scope in items:
+            yield test, []
+    elif not section[0]:
+        # no sectioning on this level
+        for item in _execute_scopes(world, items):
+            yield item
+    elif section[1] == '*test':
+        # enforce sectioning by test
+        for section_item in items:
+            for item in _execute_scopes(world, [section_item]):
+                yield item
+    else:
+        # section by gen_arg, i.e. ammend with changing arg.
+        _, gen_arg = section
+        for arg in make_generator(world, gen_arg):
+            for test, args in _execute_scopes(world, items):
+                yield test, [arg] + args
+
+def _execute_scopes(world, scopes):
+    generators = []
+    items = []
+    current_section = None
+    last_section = None
+    seen = set()
+    for test, signature, scope in scopes:
+        if len(signature):
+            if signature[0]:
+                gen_arg = scope[0]
+                scope = scope[1:]
+                current_section = True, gen_arg
+            else:
+                current_section = False, None
+            signature = signature[1:]
+        else:
+            current_section = None
+
+        assert current_section not in seen, 'Scopes are badly sorted.{0} in {1}'.format(current_section, seen)
+
+        if current_section != last_section:
+            if len(items):
+                # flush items
+                generators.append(_execute_section(world, last_section, items))
+                items = []
+                seen.add(last_section)
+            last_section = current_section
+        items.append((test, signature, scope))
+    if len(items):
+        generators.append(_execute_section(world, current_section, items))
+
+    for item in chain(*generators):
+        yield item
+
+def execute(world, tests, order, reverse=False, key=None):
+    """
+        order must:
+            a) contain all variable args (we're appending missing ones)
+            b) not contian duplictates (we're removing repeated items)
+
+        order may contain *varargs otherwise it is appended
+        to the end
+
+        order may contain "*test" otherwise, it is like *test is appended
+        to the end (Not done explicitly though).
+    """
+
+    stack = order[:]
+    if '*varargs' not in stack:
+        stack.append('*varargs')
+    stack.reverse()
+
+    full_order = []
+    seen = set()
+    while len(stack):
+        item = stack.pop()
+        if item == '*varargs':
+            all_varargs = get_all_varargs(world, tests)
+            # assuming there is a meaningful order
+            all_varargs.reverse()
+            stack += all_varargs
+            continue
+        if item in seen:
+            continue
+        seen.add(item)
+        full_order.append(item)
+
+    scopes = _analyze_tests(tests, full_order)
+    if key is None:
+        key = lambda (test, signature, scope): signature
+    scopes.sort(key=key, reverse=reverse)
+    for test, args in _execute_scopes(world, scopes):
+        yield test, args
 
 if __name__ == '__main__':
             # so how does this organize:
@@ -648,7 +867,8 @@ if __name__ == '__main__':
         ('test1', ('font', 'other', )),
         ('test2', ('font', 'other')),
         ('test3', ('font', )),
-        ('test4', tuple())
+        ('test4', tuple()),
+        ('test5', ('other', )),
     )]
 
     world = {
@@ -658,16 +878,19 @@ if __name__ == '__main__':
 
     # generic_first
 
-    order = ['other', 'font', '*test']
+    order = ['font', '*test', 'other'] #,
     # another, higher level special argument will be "*vargs" which will
     # expand the not specially defined vargs in place
     # if neither "*vargs" nor "*test" is defined it equals to
     # ["*vargs", '*test'] but, '*test' won't have to be explicitly mentioned
     # while "*vargs" will be appended to the end if missing.
 
-    b = make_bucket(tests, None, order, generic_first=False)
-    for test, args in b.generate(tuple(), world):
-        print('{0}({1})\t->\t{2}'.format(test.name,
-                ', '.join(test.args),
-                ', '.join(['<{0}>:{1}'.format(*arg) for arg in args]))
-        )
+    # b = make_bucket(tests, None, order, generic_first=True)
+    # for test, args in b.generate(tuple(), world):
+    #     print('{0}({1})\t->\t{2}'.format(test.name,
+    #             ', '.join(test.args),
+    #             ', '.join(['<{0}>:{1}'.format(*arg) for arg in args]))
+    #     )
+
+    for test, args in execute(world, tests, order):
+        print(test, ', '.join(args))
