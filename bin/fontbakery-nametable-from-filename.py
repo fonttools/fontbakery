@@ -171,6 +171,9 @@ def set_fsSelection(fsSelection, style):
   else:
     bits &= ~0b1
 
+  if not bits:
+    bits = 0b1000000
+
   return bits
 
 
