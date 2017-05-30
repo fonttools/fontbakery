@@ -2066,8 +2066,19 @@ def check_GPOS_table_has_kerning_info(fb, font):
   return has_kerning_info
 
 
-def get_all_ligatures(font):
+def get_all_ligatures(fb, font):
   all_ligatures = {}
+
+  if "GDEF" in font:
+    glyph_class_defs = font["GDEF"].table.GlyphClassDef
+    fb.info("Glyph Class Definitions: {}".format(glyph_class_defs))
+    for glyph, _class in glyph_class_defs.classDefs.iteritems():
+      if _class == 2:
+        fb.info("glyph = '{}' class = '{}'".format(glyph, _class))
+    return {}
+  else:
+    fb.info("This font lacks a GDEF table.")
+
   try:
     for lookup in font["GSUB"].table.LookupList.Lookup:
       # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
@@ -2091,7 +2102,7 @@ def check_all_ligatures_have_corresponding_caret_positions(fb, font):
       issues with caret rendering.
   '''
   fb.new_check("064", "Is there a caret position declared for every ligature?")
-  all_ligatures = get_all_ligatures(font)
+  all_ligatures = get_all_ligatures(fb, font)
   if len(all_ligatures) == 0:
     fb.ok("This font does not have ligatures.")
     return
@@ -2128,9 +2139,12 @@ def check_nonligated_sequences_kerning_info(fb, font, has_kerning_info):
   if has_kerning_info is False:
     fb.skip("This font lacks kerning info.")
   else:
-    all_ligatures = get_all_ligatures(font)
+    all_ligatures = get_all_ligatures(fb, font)
 
     def look_for_nonligated_kern_info(table):
+      if type(all_ligatures) != dict:
+        return
+
       for pairpos in table.SubTable:
         for i, glyph in enumerate(pairpos.Coverage.glyphs):
           if glyph in all_ligatures.keys():
