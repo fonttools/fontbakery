@@ -241,11 +241,12 @@ def check_fonts_have_consistent_underline_thickness(fb, family, ttf):
   fail = False
   uWeight = None
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if uWeight is None:
-      uWeight = ttfont['post'].underlineThickness
-    if uWeight != ttfont['post'].underlineThickness:
-      fail = True
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      if uWeight is None:
+        uWeight = ttfont['post'].underlineThickness
+      if uWeight != ttfont['post'].underlineThickness:
+        fail = True
 
   if fail:
     fb.error("Thickness of the underline is not"
@@ -262,11 +263,12 @@ def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
   fail = False
   proportion = None
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if proportion is None:
-      proportion = ttfont['OS/2'].panose.bProportion
-    if proportion != ttfont['OS/2'].panose.bProportion:
-      fail = True
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      if proportion is None:
+        proportion = ttfont['OS/2'].panose.bProportion
+      if proportion != ttfont['OS/2'].panose.bProportion:
+        fail = True
 
   if fail:
     fb.error("PANOSE proportion is not"
@@ -284,11 +286,12 @@ def check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf):
   fail = False
   familytype = None
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if familytype is None:
-      familytype = ttfont['OS/2'].panose.bFamilyType
-    if familytype != ttfont['OS/2'].panose.bFamilyType:
-      fail = True
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      if familytype is None:
+        familytype = ttfont['OS/2'].panose.bFamilyType
+      if familytype != ttfont['OS/2'].panose.bFamilyType:
+        fail = True
 
   if fail:
     fb.error("PANOSE family type is not"
@@ -307,13 +310,14 @@ def check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf):
   glyphs_count = None
   fail = False
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    this_count = len(ttfont['glyf'].glyphs)
-    if glyphs_count is None:
-      glyphs_count = this_count
-    if glyphs_count != this_count:
-      fail = True
-    counts[f.filename] = this_count
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      this_count = len(ttfont['glyf'].glyphs)
+      if glyphs_count is None:
+        glyphs_count = this_count
+      if glyphs_count != this_count:
+        fail = True
+      counts[f.filename] = this_count
 
   if fail:
     results_table = ""
@@ -332,11 +336,12 @@ def check_fonts_have_equal_glyph_names(fb, family, ttf):
   glyphs = None
   fail = False
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if not glyphs:
-      glyphs = ttfont['glyf'].glyphs
-    if glyphs.keys() != ttfont['glyf'].glyphs.keys():
-      fail = True
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      if not glyphs:
+        glyphs = ttfont['glyf'].glyphs
+      if glyphs.keys() != ttfont['glyf'].glyphs.keys():
+        fail = True
   if fail:
     fb.error('Fonts have different glyph names.')
   else:
@@ -348,16 +353,17 @@ def check_fonts_have_equal_unicode_encodings(fb, family, ttf):
   encoding = None
   fail = False
   for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    cmap = None
-    for table in ttfont['cmap'].tables:
-      if table.format == 4:
-        cmap = table
-        break
-    if not encoding:
-      encoding = cmap.platEncID
-    if encoding != cmap.platEncID:
-      fail = True
+    if font_key(f) in ttf:
+      ttfont = ttf[font_key(f)]
+      cmap = None
+      for table in ttfont['cmap'].tables:
+        if table.format == 4:
+          cmap = table
+          break
+      if not encoding:
+        encoding = cmap.platEncID
+      if encoding != cmap.platEncID:
+        fail = True
   if fail:
     fb.error('Fonts have different unicode encodings.')
   else:
