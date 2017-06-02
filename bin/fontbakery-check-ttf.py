@@ -129,6 +129,12 @@ def fontbakery_check_ttf(config):
   for dirname, family in metadata_to_check:
     ttf = {}
     for f in family.fonts:
+      if not os.path.exists(os.path.join(dirname, f.filename)):
+        logging.warning(("METADATA.pb references a TTF file"
+                         " that is missing: "
+                         "'{}'").format(os.path.join(dirname, f.filename)))
+        continue
+
       if font_key(f) in ttf.keys():
         # I think this will likely never happen. But just in case...
         logging.error("This is a fontbakery bug."
