@@ -330,6 +330,7 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
+      checks.check_METADATA_Ensure_all_TTF_references_are_valid(fb, family)
       checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
       is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
                                                                         family)

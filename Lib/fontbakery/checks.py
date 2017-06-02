@@ -3704,3 +3704,17 @@ def check_glyphset_google_vietnamese(fb, font_file):
 def check_glyphset_google_extras(fb, font_file):
   fb.new_check("151", "Checking Google Extras glyph coverage")
   check_with_pyfontaine(fb, font_file, "google_extras")
+
+
+def check_METADATA_Ensure_all_TTF_references_are_valid(fb, family):
+  fb.new_check("152", "METADATA.pb: Ensure all TTF references are valid.")
+  missing_ttf = []
+  for f in family.fonts:
+    if not os.path.exists(f.filename):
+      missing_ttf.append(f.filename)
+
+  if len(missing_ttf) > 0:
+    fb.error(("There are missing TTF files declared on METADATA.pb:\n"
+              "{}").format("\n".join(missing_ttf)))
+  else:
+    fb.ok('All TTF files declared on METADATA.pb are valid.')
