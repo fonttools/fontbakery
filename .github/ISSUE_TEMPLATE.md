@@ -1,12 +1,11 @@
-## Expected behaviour
-
-(describe here what you did and what you expected to happen)
-
 ## Observed behaviour
 
-(describe here what was the actual result instead)
+(Describe here what was the result that you are commenting on)
 
-## How to replicate
+## Expected behaviour
 
-(Please provide here an URL to a font file that causes the issue. We need this in for replicating the issue and fixing it.)
+(Describe here what you expected to happen, or what you wish was different)
 
+## Resources and exact process needed to replicate
+
+(Please provide here an URL to a font file that appears to cause the issue, and the exact steps from updating to the latest code on the `master` branch to reproduce the Observed Behaviour. We need this in for replicating the issue and fixing it :)
