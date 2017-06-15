@@ -50,7 +50,8 @@ class Status(object):
 INFO = Status('INFO')
 WARN = Status('WARN')
 
-
+# exeptional, something a programmer must fix
+ERROR = Status('ERROR')
 
 STARTTEST = Status('STARTTEST')
 # only between STARTTEST and ENDTEST
@@ -59,7 +60,6 @@ PASS = Status('PASS')
 FAIL = Status('FAIL')
 # ends the last test started by STARTTEST
 ENDTEST = Status('ENDTEST')
-
 
 class FontBakeryRunnerError(Exception):
   pass
@@ -82,9 +82,18 @@ class FailedConditionError(FontBakeryRunnerError):
     super(FailedConditionsError, self).__init__(message, result, *args)
 
 class TestRunner(object):
-  def __init__(tests, conditions):
-    self._tests = tests
-    self._conditions = conditions
+  def __init__(self, spec, values):
+    # TODO: transform all iterables that are list like to tuples
+    # to make sure that they won't change anymore.
+    # Also remove duplicates from list like iterables
+    self._iterargs = OrderedDict()
+    for singular, plural in spec.iterargs.items():
+      values[plural] = tuple(values[plural])
+      self._iterargs[singular] = len(values[plural])
+
+    self._spec = spec;
+    # spec.validate(values)?
+    self._values = values;
 
     self._cache = {
       'conditions': {}
@@ -133,7 +142,6 @@ class TestRunner(object):
 
   def _exec_test_generator(self, gen):
     """ Execute a generator returned by a test callable.
-
        Yield each sub-result or, in case of an error, (FAIL, exception)
     """
     try:
@@ -147,7 +155,7 @@ class TestRunner(object):
     except Exception as e:
       yield (FAIL, e)
 
-  def _exec_test(self, test, args, kwds):
+  def _exec_test(self, test, args):
     """ Yields test sub results.
 
     `test` must be a callable
@@ -168,7 +176,7 @@ class TestRunner(object):
         knowledge from the test definition.
     """
     try:
-      result = test(*args,**kwds)
+      result = test(*args)
     except Exception as e:
       result = (FAIL, e)
 
@@ -184,512 +192,129 @@ class TestRunner(object):
     else:
       yield self._check_result(result)
 
-  def _get_condition(condition):
+  def _evaluate_condition(name, iterargs, path=None):
+    if path is None:
+      # top level call
+      path = []
+    if name in path:
+      raise CircularDependencyError('Condition "{0}" is a circular dependency in {1}'\
+                                  .format(condition, ' -> '.join(path)))
+    path.append(name)
+    condition = self._spec.conditions[name]
+    args = self._get_args(condition, iterargs, path)
+    path.pop()
+    try:
+      return None, condition(**args)
+    except Exception as error:
+      return error, None
+
+  def _get_condition(name, iterargs, path):
     # conditions are evaluated lazily
-    if condition not in self._cache['conditions']:
-      err, val = self._evaluate_condition(condition)
-      self._cache['conditions'][condition] = err, val
+    key = (name, iterargs)
+    if key not in self._cache['conditions']:
+      err, val = self._evaluate_condition(name, iterargs, path)
+      self._cache['conditions'][key] = err, val
     return self._cache['conditions'][condition]
 
-  def _get_test_dependencies(self, test):
+  def _get_args(item, iterargs, path=None):
+    # iterargs can't be optional arguments yet, we wouldn't generate
+    # an execution with an empty list. I don't know if that would be even
+    # feasible, so I don't add this complication for the sake of clarity.
+    # If this is needed for anything useful, we'll have to figure this out.
 
-    # font/fonts is an example of an argument, for conditions and
-    # for tests where the singular form would run the callable once
-    # per item and the plural form would run it once overall, with
-    # all items as an argument:
+    # argspec = getargspec()
+    #
+    # # has names
+    # mandatory = argspec.args[:-len(defaults)] \
+    #         if argspec.defaults is not None else argspec.args
+    #
+    # # has names
+    # optional = argspec.args[-len(defaults):] \
+    #         if argspec.defaults is not None else []
+    args = {}
+    for singular, index in iterargs:
+      plural = self._spec.iterargs[singular]
+      args[singular] = self.values[plural][index]
+    for name in item.args:
+      if name in args:
+        continue;
+      if name in self._spec.conditions:
+        error, args[name] = self._get_condition(name, iterargs, path)
+        if error:
+          raise error
+      elif name in self.values:
+        args[name] = self.values[name]
+      elif name not in item.optionalArgs:
+        raise MissingValueError('Value "{0}" is undefined.', name)
+    return args;
 
-    # it's getting very complex if a callable has multiple of these
-    # singular/plural arguments and the intuitive thing to do would
-    # be to run each possible combination.
-
-    # for the example of font/fonts, this doesn't make much sense though:
-    # in a singular execution the "font" of the condition and the "font"
-    # of the test would be the same, only executed if the condition is
-    # trueish. Hence, we are back to a linear complexity.
-
-    # There is currently no more examples for this, but as a general rule
-    # if there are any singular/plural args, they would change for the
-    # conditions and the tests in the same way. So that "font" would
-    # always have the same value for the condition and the subsequent
-    # test.
-
-    # it's also interesting to note, that if a condition has a
-    # singular/plural arg and the test has not, the test would yield
-    # the same result for each conditional execution, which is not
-    # getting us anywhere.
-
-    # one more thing: since the return value of a condition can be
-    # used as an argument for a test, a condition itself can become
-    # a singular/plural arg!
-
-
-    # So: all requested singular-args by a test or it's conditions
-    # must be collected. if we got "font" in multiple positions, it
-    # will always refer to the same value in each position.
-    # If we got another singular-arg, let's say "case/cases" we must
-    # execute for each combination of font and case in fonts and cases
-
-
-    self._iterated_args = {
-      'font': 'fonts'
-    }
-
-    all_args = set()
-    for condition in conditions:
-      all_args.update(condition.arguments)
-    all_args.uodate(test.arguments)
-
-    used_iterated_args = all_args & set(self._iterated_args.keys())
-
-    # if there are iterated args:
-    #   for each compination of iteretad args
-        #executes tests
-
-        # we shouldn't re-yield a SKIP if all the conditions
-        # where already run with the same arguments AND failed
-        # because we get the same skipped message anyways
-        # Though, we get a strange count on this in the end :-/
-        # To keep a good overall count we should yield all occurences
-        #
-        # Another Problem: It's hard to cluster tests by font in
-        # this example. It would be nice to be able to do this.
-        # The problem is that if we run in a per font all tests
-        # order, it's hard to cluster by test.
-        #
-        # Data model wise, we have a many to many relationship
-        # and we can only run one thing in depth and one thing in
-        # breath
-
-        # In an Ideal world, we can decide both: how to run the tests
-        # AND how to order them in the end. The latter means that we
-        # yield the results in a way that they can be resorted/clustered
-        # freely, once all results have been gathered.
-        #
-        #
-        # So, we should first have a generator to `yield test, args`
-        # in some specific order, then we can easily run the tests.
-        #
-        # generally, one question is, how to run tests without sargs
-        # if order by sarg first. They can either run before all,
-        # after all or when they occur?
-
-
-        # iterate by test, then by font then by the other iterargs
-        # here tests would be clustered by test
-        # if there are no test, we don't need to run at all,
-        # this is because the tests are what is executed in the end
-        # mode = ['*test', 'font', '*iterarg']
-        # iterate by font, other iterargs then tests
-        # here tests would be clustered by font
-        # also, if there are no fonts, we can't run tests in a
-        # stupid scenario, we would still have to run once
-        # mode = ['font', '*iterarg', '*test']
-
-        # self._iterated_args could be called "dimensions" ?
-
-        # we should enforce, that we always have a '*test' and a '*iterarg'
-        # argument. Where '*iterarg' can have an internal ordering
-        # and contains all iterargs that are NOT explicitly mentioned
-
-        # maybe best is to preprocess, iterate through all tests
-        # and create a structure
-        # (test, set(used_iterargs))
-        #
-        # so in the case of ['font', '*iterarg', '*test'], where we
-        # basically cluster by font in the iteration order
-        # it would be nice to have tests without fonts executed
-        # before all other.
-        # because, that way, family wide tests would be the first
-        # to be run
-        #
-        # ATTENTION: Much simpler though, could be to control this
-        # externally to the TestRunner.
-        # But, the reason to do this within could be to have the
-        # data tighter together.
-
-        # an execution model could be to have ordered by mode===exec_order
-        # satisfy the first possible argument, then call recursively
-        # to have the next possible argument satisfied
-
-        # when all args are satisfied: yield/exec
-        # otherwise: fail -> missing args
-        # so if font is not requested, this arg will obviously be
-        # skipped
-        # The test would be executed in order though!
-
-        # a way to order this could also be from general to special
-        # where special means uses iterargs where general means uses less
-        # iterargs.
-        #
-        # iterarg order would still have to be considered.
-        # With each skipped iterarg, a test becomes heavier on the general
-        # side.
-        #
-        # so, we can sort: naturally, general first, specific first
-        # where also the iterarg order plays a role.
-        #
-        # A test that uses fonts and font is as specific as if it
-        # uses only font. Using Fonts as well is not changing this.
-        #
-        # conditions can require other conditions, hence we need to
-        # check for circular dependencies!
-        #
-        # custom args can override conditions by using the same
-        # name, but we should info that for the whole run.
-        # If that is the case, the args of the overridden condition
-        # don't play any role anymore.
-
-        # Natural order should always be a thing. Also, a spec should
-        # be able to section tests, so that they are always executed
-        # in a block. (Or at least, that the current section identifier
-        # is bound to it ...
-        # so, the problem of how to order these things is not so much semantic
-        # but really rather organization.
-        # then, having sections, a test that requests 'font' cold still
-        # be executed by test per font
-        # and not by font per test, but that's what we're looking for here!
-        # so, we encounter a test with "font", it needs to be dropped into
-        # the per-font -> test bucket
-        # if it has no font, it's dropped into the generic bucket
-        # within that bucket, the font argument is satisfied
-        # within both, the generic and the per-font bucket, we need
-        # to test for the next var-arg and order accordingly.
-        # whether the specific or the generic bucket is executed
-        # first is then irrelevant.
-
-    # TODO: decide weather to run once or multiple times
-
-    # FIXME: if a condition wants "font" we got to check it
-    # once per font!
-    # ALSO, if test also wants "font" the condition should only skip
-    # if it is false for that single font required by the test!
-    # this is a bit creepy to implement and requires some restructuring
-    # here.
+  def _get_test_dependencies(self, test, iterargs):
     failed_conditions = False
     unfulfilled_conditions = []
     for condition in test.conditions:
-      err, val = self._get_condition(condition)
+      err, val = self._get_condition(condition, iterargs)
       if err:
         failed_conditions = True
-        status = (FAIL, FailedConditionError(condition, err))
-        yield (status, None, None)
+        status = (ERROR, FailedConditionError(condition, err))
+        yield (status, None)
         continue
       if not val:
         unfulfilled_conditions.push(condition)
     if failed_conditions:
       return
+
     if unfulfilled_conditions:
       # This will make the test neither pass nor fail
       status = (SKIP, 'Unfullfilled Conditions: {}'.format(
-                  ', '.join(unfulfilled_conditions)))
-      yield (status, None, None)
+                                    ', '.join(unfulfilled_conditions)))
+      yield (status, None)
       return
 
-    argspec = getargspec()
+    try:
+      yield None, self._get_args(test, iterargs)
+    except Exception as error:
+      status = (ERROR, FailedDependenciesError(condition, err))
+      yield (status, None)
 
-    # has names
-    mandatory = argspec.args[:-len(defaults)] \
-            if argspec.defaults is not None else argspec.args
+  def _run_test(self, test, iterargs):
+    # A test is more than just a function, it carries
+    # a lot of meta-data for us, in this case we can use
+    # meta-data to learn how to call the test (via
+    # configuration or inspection, where inspection would be
+    # the default and configuration could be used to override
+    # inspection results).
+    for skipped, args in self._get_test_dependencies(test):
+      # FIXME: test is not a message
+      # so, to us it as a message, it should have a "message-interface"
+      # TODO: describe generic "message-interface"
+      yield STARTTEST, test
+      if skipped is not None:
+        # `skipped` is a normal result tuple (status, message)
+        # where `status` is either FAIL for unmet dependencies
+        # or SKIP for unmet conditions or ERROR. A status of SKIP is
+        # never a failed test.
+        # ERROR is either a missing dependency or a condition that raised
+        # an exception. This shouldn't happen when everyting is set up
+        # correctly.
+        yield skipped
+      else:
+        for sub_result in self._exec_test(test, args):
+          yield result
+        # The only reason to yield this is to make it testable
+        # that a test ran to its end, or, if we start to allow
+        # nestable subtests. Otherwise, a STARTTEST would end the
+        # previous test implicitly.
+        # We can also use it to display status updates to the user.
+      yield ENDTEST, None
 
-    # has names
-    optional = argspec.args[-len(defaults):] \
-            if argspec.defaults is not None else []
+  def run(self):
+    for section in self.spec.testsections:
+      yield 'startSection', section
+      for test, iterargs in section.execution_order(self._iterargs):
+        print(test, ', '.join(map(lambda arg: '{0}:{1}'.format(*arg), iterargs)))
+        for event in self._run_test(test, iterargs):
+          yield event;
 
-    # these only have the names of the arguments *args and **kwds
-    # I'm not sure if we need to use them.
-    # If there are no args or kwds however, it would be stupid to use
-    # em at all.
-    # values are None if not availabe
-    varargs = argspec.varargs
-    keywords = argspec.keywords
-
-
-    # TODO: test_args =
-
-    if 'font' in test_args:
-      # if test has an argument "font" it will be executed once per
-      # font in fonts. If it requires "fonts" instead, it is executed
-      # once with all fonts.
-      for font in fonts:
-        yield skipped, args, kwds
-    else:
-       yield skipped, args, kwds
-
-  def _run_tests(self, tests):
-    """ returns all test results as a list of tuples:
-      [(test, result), ...]
-      where test is the actual test instance and result
-      is like the return value of `exec_test`.
-    """
-    all_results = []
-    for test in tests:
-
-      # A test is more than just a function, it carries
-      # a lot of meta-data for us, in this case we can use
-      # meta-data to learn how to call the test (via
-      # configuration or inspection, where inspection would be
-      # the default and configuration could be used to override
-      # inspection results).
-      for skipped, args, kwds in self._get_test_dependencies(test):
-        # FIXME: test is not a message
-        # so, to us it as a message, it should have a "message-interface"
-        # TODO: describe generic "message-interface"
-        yield STARTTEST, test
-        if skipped is not None:
-          # `skipped` is a normal result tuple (status, message)
-          # where `status` is either FAIL for unmet dependencies
-          # or SKIP for unmet conditions. A status of SKIP is
-          # never a failed test.
-          yield skipped
-        else:
-          for sub_result in self._exec_test(test, args, kwds):
-            yield result
-          # The only reason to yield this is to make it testable
-          # that a test ran to its end, or, if we start to allow
-          # nestable subtests. Otherwise, a STARTTEST would end the
-          # previous test implicitly.
-          # We can also use it to display status updates to the user.
-        yield ENDTEST, None
-
-
-
-###
-### This is a stub to build the test execution order logic
-###
-
-def  _get_exec_bucket_args(tests, current_arg, args, options):
-  """
-    This is just a subroutine of make_bucket.
-    It also calls make_bucket itself, recursiveley.
-  """
-  specific_tests = []
-  generic_tests = []
-  saturated = []
-  args_set = set(args)
-  for test in tests:
-    if test.requires(current_arg):
-      specific_tests.append(test)
-    elif not args or not len(test.args & args_set):
-      # there's no tail of args or no arguments of test are still
-      # in tail
-      saturated.append(test)
-    else:
-      # there's still a tail of args and test requires one of the
-      # args in tail
-      generic_tests.append(test)
-
-  generic_bucket = make_bucket(generic_tests, None, args, **options)\
-                  if generic_tests else None
-  specific_bucket = make_bucket(specific_tests, current_arg, args, **options)\
-                  if specific_tests else None
-  return saturated, generic_bucket, specific_bucket
-
-
-#def make_bucket(tests, all_args, **options):
-#  """
-#    Sort the tests to get them into a nice execution order.
-#    Via "args" the clustering order of tests by their variable,
-#    iterable arguments can be controlled. A special value in
-#    args is "*test" which clusters by test.
-#
-#    If the Keyword argument `generic_first` is False more generic
-#    tests will be executed after more specific ones (only looking at
-#    variable, iterable arguments). Defaults to True
-#
-#    TODO: This needs better documentation. Maybe add examples.
-#
-#  """
-#  current_arg = all_args[0] if len(all_args) else None
-#  args = all_args[1:]
-#
-#  if current_arg == '*test':
-#    return TestClusterBucket(make_bucket(tests, args, **options))
-#
-#
-#  specific_tests = []
-#  generic_tests = []
-#  saturated = []
-#  all_args_set = set(all_args)
-#  for test in tests:
-#    if not len(test.args & all_args_set):
-#      # there's no all_args or no arguments of test are
-#      # in all_args
-#      saturated.append(test)
-#    if test.requires(current_arg):
-#      specific_tests.append(test)
-#    else:
-#      # there's still a tail of args and test requires one of the
-#      # args in tail
-#      generic_tests.append(test)
-#
-#
-#
-#
-#  # skips current_arg
-#  saturated
-#  # we can just yield them with the parents/initial args (not all_args)
-#  # end of depth traversal
-#  def geenerate(args, world):
-#    for test in saturated:
-#      yield (test, args)
-#
-#  # skips current_arg but NEEDS more
-#  generic_bucket = make_bucket(generic_tests, args, **options)\
-#                  if generic_tests else None
-#
-#  def generate(args, world):
-#    # no augmenting, but delegating to `generate`:
-#    for env in generic_bucket.generate(args, world):
-#      yield env
-#
-#
-#
-#  # NEEDS current_arg and more
-#  specific_bucket = make_bucket(specific_tests, args, **options)\
-#                  if specific_tests else None
-#
-#  def generate(args, world):
-#    all_args = _augment_args(current_arg, args)
-#    for n_args in all_args:
-#      for scope in self.specific_bucket.generate(n_args, world):
-#        yield scope;
-#
-#
-#
-#
-#  (
-#    saturated,
-#    generic_bucket,
-#    specific_bucket
-#  ) = _get_exec_bucket_args(tests, current_arg, args, options)
-#
-#  # run each sub bucket for each font
-#  return ExecutionBucket(
-#    satisfies=current_arg,
-#    saturated=saturated,
-#    generic_bucket=generic_bucket,
-#    specific_bucket= specific_bucket,
-#    **options
-#  )
-
-def make_bucket(tests, satisfies,  args, **options):
-  """
-    Sort the tests to get them into a nice execution order.
-    Via "args" the clustering order of tests by their variable,
-    iterable arguments can be controlled. A special value in
-    args is "*test" which clusters by test.
-
-    If the Keyword argument `generic_first` is False more generic
-    tests will be executed after more specific ones (only looking at
-    variable, iterable arguments). Defaults to True
-
-    TODO: This needs better documentation. Maybe add examples.
-
-  """
-  if satisfies == '*test':
-    return TestClusterBucket(make_bucket(tests, None, args, **options))
-
-  head_arg = args[0] if len(args) else None
-  tail_args = args[1:]
-
-  if head_arg != "*test":
-    (
-      saturated,
-      generic_bucket,
-      specific_bucket
-    ) = _get_exec_bucket_args(tests, head_arg, tail_args, options)
-  else:
-    saturated = None
-    generic_bucket = None
-    specific_bucket = TestClusterBucket(make_bucket(tests, None, tail_args, **options))
-
-  # run each sub bucket for each font
-  return ExecutionBucket(
-    satisfies=satisfies,
-    saturated=saturated,
-    generic_bucket=generic_bucket,
-    specific_bucket= specific_bucket,
-    **options
-  )
-
-
-class TestClusterBucket(object):
-  """ add a dimension that clusters by test """
-  def __init__(self, subbucket):
-    self.subbucket = subbucket;
-
-  def generate(self, args, world):
-    tests = OrderedDict()
-
-    for test, args in self.subbucket.generate(args, world):
-      if test not in tests:
-        tests[test] = []
-      tests[test].append(args)
-
-    for test in tests:
-      for args in tests[test]:
-        yield test, args
-
-
-
-class ExecutionBucket(object):
-  def __init__(self, saturated=None,
-             generic_bucket=None,
-             specific_bucket=None,
-             generic_first=True):
-    self._saturated = saturated
-    self._generic_bucket = generic_bucket
-    self._specific_bucket = specific_bucket
-    self._generic_first = generic_first
-
-  def _scopes(self, args, world):
-    gens = []
-
-    if self._saturated:
-      gens.append( ((test, args) for test in self._saturated) )
-
-    if self._generic_bucket:
-      gens.append( self._generic_bucket.generate(args, world) )
-
-    if self._specific_bucket:
-      gens.append( self._specific_bucket.generate(args, world) )
-
-    if not self._generic_first:
-      gens.reverse()
-
-    return chain(*gens)
-
-  def generate(self, args, world):
-    all_args = self._augment_args(args)
-    for n_args in all_args:
-      for scope in self._scopes(n_args, world):
-        yield scope;
-
-class DelegatingBucket(ExecutionBucket):
-  def _augment_args(self, args):
-    return [args]
-
-class SpicingBucket(ExecutionBucket):
-  def __init__(satisfies, *args,**kwds):
-    self._satisfies = satisfies
-    super(SpicingBucket, self).__init__(saturated, *args,**kwds)
-
-
-  def _augment_args(self, args):
-    # this is a specific bucket, it ads one argument tuple
-    # yields once per item in self._values
-    # using tuples of (key, value) tuples will keep the information
-    # of argument order
-    items = world.get(self._satisfies, None)
-    if items is not None:
-      all_args = (args + ((self._satisfies, item),) for item in items)
-    else:
-      # If items is None, we still want to yield the test
-      # eventually. It's just that we can't satisfy the
-      # requested argument, but that will fail and be reported
-      # when the test is actually called.
-      all_args = [args]
-    return all_args
 
 class Test(object):
   def __init__(self, name, args):
@@ -701,155 +326,167 @@ class Test(object):
 
   def __str__(self):
     return '<Test {0} :: {1}>'.format(self.name, ', '.join(sorted(self.args)))
-
   __repr__ = __str__
 
 
-def make_generator(world, k):
-  for item in world[k]:
-    yield item
 
-def _analyze_tests(tests, all_args):
-  args = list(all_args)
-  args.reverse()
-  scopes = [(test, tuple(), tuple()) for test in tests]
-  saturated = []
-  while args:
-    new_scopes = []
-    # args_set must contain all current args, hence it's before the pop
-    args_set = set(args)
-    arg = args.pop()
-    for test, signature, scope in scopes:
-      if not len(test.args & args_set):
-        # there's no args no more or no arguments of test are
-        # in args
-        target = saturated
-      elif arg == '*test' or test.requires(arg):
-        signature += (1, )
-        scope += (arg, )
-        target = new_scopes
-      else:
-        # there's still a tail of args and test requires one of the
-        # args in tail but not the current arg
-        signature += (0, )
-        target = new_scopes
-      target.append((test, signature, scope))
-    # is this enough as a sorting?
-    # otherwise specific + generic
-    # how to sort the saturated into this?
-    scopes = new_scopes
-  return saturated + scopes;
+class Section(object):
+  def __init(self, name, tests, order=None, description=None):
+    self.name = name;
+    self.description = description;
+    self._tests = tests;
+    # a list of iterarg-names
+    self._order = order or [];
 
-def _execute_section(world, section, items):
-  if section is None:
-    # base case: terminate recursion
-    for test, signature, scope in items:
-      yield test, []
-  elif not section[0]:
-    # no sectioning on this level
-    for item in _execute_scopes(world, items):
+  def _analyze_tests(self, all_args):
+    args = list(all_args)
+    args.reverse()
+    scopes = [(test, tuple(), tuple()) for test in self._tests]
+    saturated = []
+    while args:
+      new_scopes = []
+      # args_set must contain all current args, hence it's before the pop
+      args_set = set(args)
+      arg = args.pop()
+      for test, signature, scope in scopes:
+        if not len(test.args & args_set):
+          # there's no args no more or no arguments of test are
+          # in args
+          target = saturated
+        elif arg == '*test' or test.requires(arg):
+          signature += (1, )
+          scope += (arg, )
+          target = new_scopes
+        else:
+          # there's still a tail of args and test requires one of the
+          # args in tail but not the current arg
+          signature += (0, )
+          target = new_scopes
+        target.append((test, signature, scope))
+      scopes = new_scopes
+    return saturated + scopes;
+
+  def _make_generator(self, iterargs, k):
+    for item in range(iterargs[k]):
       yield item
-  elif section[1] == '*test':
-    # enforce sectioning by test
-    for section_item in items:
-      for item in _execute_scopes(world, [section_item]):
+
+  def _execute_section(self, iterargs, section, items):
+    if section is None:
+      # base case: terminate recursion
+      for test, signature, scope in items:
+        yield test, []
+    elif not section[0]:
+      # no sectioning on this level
+      for item in self._execute_scopes(iterargs, items):
         yield item
-  else:
-    # section by gen_arg, i.e. ammend with changing arg.
-    _, gen_arg = section
-    for arg in make_generator(world, gen_arg):
-      for test, args in _execute_scopes(world, items):
-        yield test, [(gen_arg, arg)] + args
-
-def _execute_scopes(world, scopes):
-  generators = []
-  items = []
-  current_section = None
-  last_section = None
-  seen = set()
-  for test, signature, scope in scopes:
-    if len(signature):
-      # items are left
-      if signature[0]:
-        gen_arg = scope[0]
-        scope = scope[1:]
-        current_section = True, gen_arg
-      else:
-        current_section = False, None
-      signature = signature[1:]
+    elif section[1] == '*test':
+      # enforce sectioning by test
+      for section_item in items:
+        for item in self._execute_scopes(iterargs, [section_item]):
+          yield item
     else:
-      current_section = None
+      # section by gen_arg, i.e. ammend with changing arg.
+      _, gen_arg = section
+      for index in range(iterargs[gen_arg]):
+        for test, args in self._execute_scopes(iterargs, items):
+          yield test, [(gen_arg, index)] + args
 
-    assert current_section not in seen, 'Scopes are badly sorted.{0} in {1}'.format(current_section, seen)
+  def _execute_scopes(self, iterargs, scopes):
+    generators = []
+    items = []
+    current_section = None
+    last_section = None
+    seen = set()
+    for test, signature, scope in scopes:
+      if len(signature):
+        # items are left
+        if signature[0]:
+          gen_arg = scope[0]
+          scope = scope[1:]
+          current_section = True, gen_arg
+        else:
+          current_section = False, None
+        signature = signature[1:]
+      else:
+        current_section = None
 
-    # why would this be?
-    # also, it would be in seen already
-    if current_section != last_section:
-      if len(items):
-        # flush items
-        generators.append(_execute_section(world, last_section, items))
-        items = []
-        seen.add(last_section)
-      last_section = current_section
-    items.append((test, signature, scope))
-  # clean up left overs
-  if len(items):
-    generators.append(_execute_section(world, current_section, items))
+      assert current_section not in seen, 'Scopes are badly sorted.{0} in {1}'.format(current_section, seen)
 
-  for item in chain(*generators):
-    yield item
+      if current_section != last_section:
+        if len(items):
+          # flush items
+          generators.append(self._execute_section(iterargs, last_section, items))
+          items = []
+          seen.add(last_section)
+        last_section = current_section
+      items.append((test, signature, scope))
+    # clean up left overs
+    if len(items):
+      generators.append(_execute_section(iterargs, world, current_section, items))
 
-def get_all_varargs(world, tests):
-  print('NOT IMPLEMENTED get_all_varargs')
-  return []
+    for item in chain(*generators):
+      yield item
 
-def execute(world, tests, order, reverse=False, key=None):
-  """
-    order must:
-      a) contain all variable args (we're appending missing ones)
-      b) not contian duplictates (we're removing repeated items)
+  def execution_order(self, iterargs, reverse=False):
+    """
+      order must:
+        a) contain all variable args (we're appending missing ones)
+        b) not contian duplictates (we're removing repeated items)
 
-    order may contain *varargs otherwise it is appended
-    to the end
+      order may contain *iterargs otherwise it is appended
+      to the end
 
-    order may contain "*test" otherwise, it is like *test is appended
-    to the end (Not done explicitly though).
-  """
+      order may contain "*test" otherwise, it is like *test is appended
+      to the end (Not done explicitly though).
+    """
 
-  stack = order[:]
-  if '*varargs' not in stack:
-    stack.append('*varargs')
-  stack.reverse()
+    stack = self._order[:]
+    if '*iterargs' not in stack:
+      stack.append('*iterargs')
+    stack.reverse()
 
-  full_order = []
-  seen = set()
-  while len(stack):
-    item = stack.pop()
-    if item in seen:
-      continue
-    seen.add(item)
-    if item == '*varargs':
-      all_varargs = get_all_varargs(world, tests)
-      # assuming there is a meaningful order
-      all_varargs.reverse()
-      stack += all_varargs
-      continue
-    full_order.append(item)
+    full_order = []
+    seen = set()
+    while len(stack):
+      item = stack.pop()
+      if item in seen:
+        continue
+      seen.add(item)
+      if item == '*iterargs':
+        all_iterargs = list(iterargs.keys())
+        # assuming there is a meaningful order
+        all_iterargs.reverse()
+        stack += all_iterargs
+        continue
+      full_order.append(item)
 
-  scopes = _analyze_tests(tests, full_order)
-  if key is None:
+    scopes = self._analyze_tests(full_order)
     key = lambda (test, signature, scope): signature
-  scopes.sort(key=key, reverse=reverse)
-  for test, args in _execute_scopes(world, scopes):
-    yield test, args
+    scopes.sort(key=key, reverse=reverse)
+    for test, args in self._execute_scopes(iterargs, scopes):
+      yield test, args
 
 
-class Testsrunner(object):
-  def __init__(self, values, spec):
-    # TODO: transform all iterables that are list like to tuples
-    # to make sure that they won't change anymore.
-    # Also remove duplicates from list like iterables
-    pass
+class Spec(object):
+  def __init__(self, testsections, iterargs, conditions=None):
+    '''
+      testsections: a list of sections, which are ideally ordered sets of
+          individual tests.
+          It makes no sense to have tests repeatedly, they yield the same
+          results anyway.
+          FIXME: Should we detect this and inform the user then skip the repeated tests.
+      iterargs: maping 'singular' variable names to the iterable in values
+          e.g.: `{'font': 'fonts'}` in this case fonts must be iterable AND
+          'font' may not be a value NOR a condition name.
+
+    We will:
+      a) get all needed values/variable names from here
+      b) add some validation, so that we know the values match
+         our expectations! These values must be treated asuser input!
+    '''
+    self.testsections = testsections
+    self.iterargs = iterargs
+    self.conditions = conditions or {}
 
 if __name__ == '__main__':
       # so how does this organize:
@@ -924,18 +561,8 @@ if __name__ == '__main__':
     #      b) add some validation, so that we know these values match
     #       our expectations! These values are the user input!
   }
-  Testsrunner({'fonts': fonts}, googleSpec)
 
-  for test, iterargs in execute(world, tests, order):
-    # at this point, it would be good to add the non-iterargs and execute
-    # where:
-    #   Here "args" must include the iterargs of the test and the conditions!
-    #   the non-iterargs are added here.
-    #   arg is a (name, value) tuple.
-    #   the conditions will be executed first, needs some simple combining
-    #   logic AND, OR, NOT plus bracketing. The results of a condition
-    #   are cached. The same test with the same arguments should
-    #   never be executed twice. shouldn't even be possible (though,
-    #   tests are passed as iterable and can be declared twice (warn
-    #   and remove duplicates)
-    print(test, ', '.join(map(lambda arg: '{0}:{1}'.format(*arg), iterargs)))
+  googleSpec = Spec(conditions={}, tests=[], iterargs={'font': 'fonts'})
+  runner = Testsrunner({'fonts': fonts}, googleSpec)
+  runner.run(order);
+
