@@ -531,12 +531,12 @@ if __name__ == '__main__':
   tests=[]
   registerTest = tests.append
 
-  @condition()
+  @condition
   def fontNameNumber(font):
     return int(font.split('_')[1])
   registerCondition(fontNameNumber)
 
-  @condition()
+  @condition
   def isOddFontName(fontNameNumber):
     return  fontNameNumber % 2 == 1
   registerCondition(isOddFontName)
