@@ -53,6 +53,8 @@ WARN = Status('WARN')
 # exeptional, something a programmer must fix
 ERROR = Status('ERROR')
 
+STARTSECTION = Status('STARTSECTION')
+# only between STARTSECTION and ENDSECTION
 STARTTEST = Status('STARTTEST')
 # only between STARTTEST and ENDTEST
 SKIP = Status('SKIP')
@@ -60,6 +62,9 @@ PASS = Status('PASS')
 FAIL = Status('FAIL')
 # ends the last test started by STARTTEST
 ENDTEST = Status('ENDTEST')
+# ends the last section started by STARTSECTION
+ENDSECTION = Status('ENDSECTION')
+
 
 class FontBakeryRunnerError(Exception):
   pass
@@ -74,12 +79,21 @@ class FailedConditionError(FontBakeryRunnerError):
   """ This is a serious problem with the test suite spec and it must
   be solved.
   """
-  def __init__(self, failed_conditions, *args):
-    message = 'Some conditions had errors: {0}'.format(
-      ', '.join([condition for condition, err in failed_conditions]))
-    self.failed_conditions = failed_conditions
+  def __init__(self, condition, error, *args):
+    message = 'The condtion {0} had an error: {1} {2}'.format(condition, type(error), error)
+    self.condition = condition
+    self.error = error
+    super(FailedConditionError, self).__init__(message, *args)
 
-    super(FailedConditionsError, self).__init__(message, result, *args)
+class FailedDependenciesError(FontBakeryRunnerError):
+  def __init__(self, condition, error, *args):
+    message = 'The condtion {0} had an error: {1} {2}'.format(condition, type(error), error)
+    self.condition = condition
+    self.error = error
+    super(FailedDependenciesError, self).__init__(message, *args)
+
+class MissingValueError(FontBakeryRunnerError):
+  pass
 
 class TestRunner(object):
   def __init__(self, spec, values):
@@ -176,7 +190,7 @@ class TestRunner(object):
         knowledge from the test definition.
     """
     try:
-      result = test(*args)
+      result = test(**args)
     except Exception as e:
       result = (FAIL, e)
 
@@ -192,7 +206,7 @@ class TestRunner(object):
     else:
       yield self._check_result(result)
 
-  def _evaluate_condition(name, iterargs, path=None):
+  def _evaluate_condition(self, name, iterargs, path=None):
     if path is None:
       # top level call
       path = []
@@ -208,64 +222,70 @@ class TestRunner(object):
     except Exception as error:
       return error, None
 
-  def _get_condition(name, iterargs, path):
+  def _get_condition(self, name, iterargs, path=None):
     # conditions are evaluated lazily
-    key = (name, iterargs)
+    key = (name, tuple(iterargs))
     if key not in self._cache['conditions']:
       err, val = self._evaluate_condition(name, iterargs, path)
       self._cache['conditions'][key] = err, val
-    return self._cache['conditions'][condition]
+    else:
+      err, val = self._cache['conditions'][key]
+    return err, val
 
-  def _get_args(item, iterargs, path=None):
+  def _get_args(self, item, iterargs, path=None):
     # iterargs can't be optional arguments yet, we wouldn't generate
     # an execution with an empty list. I don't know if that would be even
     # feasible, so I don't add this complication for the sake of clarity.
     # If this is needed for anything useful, we'll have to figure this out.
-
-    # argspec = getargspec()
-    #
-    # # has names
-    # mandatory = argspec.args[:-len(defaults)] \
-    #         if argspec.defaults is not None else argspec.args
-    #
-    # # has names
-    # optional = argspec.args[-len(defaults):] \
-    #         if argspec.defaults is not None else []
     args = {}
-    for singular, index in iterargs:
-      plural = self._spec.iterargs[singular]
-      args[singular] = self.values[plural][index]
+    iterargsDict = dict(iterargs)
     for name in item.args:
       if name in args:
         continue;
-      if name in self._spec.conditions:
+
+      if name in self._spec.iterargs:
+        plural = self._spec.iterargs[name]
+        index = iterargsDict[name]
+        args[name] = self._values[plural][index]
+      elif name in self._spec.conditions:
         error, args[name] = self._get_condition(name, iterargs, path)
         if error:
           raise error
-      elif name in self.values:
-        args[name] = self.values[name]
+      elif name in self._values:
+        args[name] = self._values[name]
       elif name not in item.optionalArgs:
-        raise MissingValueError('Value "{0}" is undefined.', name)
+        raise MissingValueError('Value "{0}" is undefined.'.format(name))
     return args;
+
+  def _is_negated(self, name):
+    stripped = name.strip()
+    if stripped.startswith('not '):
+      return True, stripped[4:].strip()
+    if stripped.startswith('!'):
+      return True, stripped[1:].strip()
+    return False, stripped
 
   def _get_test_dependencies(self, test, iterargs):
     failed_conditions = False
     unfulfilled_conditions = []
     for condition in test.conditions:
-      err, val = self._get_condition(condition, iterargs)
+      negate, name = self._is_negated(condition)
+      err, val = self._get_condition(name, iterargs)
+      if negate:
+        val = not val
       if err:
         failed_conditions = True
         status = (ERROR, FailedConditionError(condition, err))
         yield (status, None)
         continue
       if not val:
-        unfulfilled_conditions.push(condition)
+        unfulfilled_conditions.append(condition)
     if failed_conditions:
       return
 
     if unfulfilled_conditions:
       # This will make the test neither pass nor fail
-      status = (SKIP, 'Unfullfilled Conditions: {}'.format(
+      status = (SKIP, 'Unfulfilled Conditions: {}'.format(
                                     ', '.join(unfulfilled_conditions)))
       yield (status, None)
       return
@@ -283,7 +303,7 @@ class TestRunner(object):
     # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
     # inspection results).
-    for skipped, args in self._get_test_dependencies(test):
+    for skipped, args in self._get_test_dependencies(test, iterargs):
       # FIXME: test is not a message
       # so, to us it as a message, it should have a "message-interface"
       # TODO: describe generic "message-interface"
@@ -299,7 +319,7 @@ class TestRunner(object):
         yield skipped
       else:
         for sub_result in self._exec_test(test, args):
-          yield result
+          yield sub_result
         # The only reason to yield this is to make it testable
         # that a test ran to its end, or, if we start to allow
         # nestable subtests. Otherwise, a STARTTEST would end the
@@ -308,40 +328,53 @@ class TestRunner(object):
       yield ENDTEST, None
 
   def run(self):
-    for section in self.spec.testsections:
-      yield 'startSection', section
-      for test, iterargs in section.execution_order(self._iterargs):
-        print(test, ', '.join(map(lambda arg: '{0}:{1}'.format(*arg), iterargs)))
+    for section in self._spec.testsections:
+      yield STARTSECTION, section
+      for test, iterargs in section.execution_order(self._iterargs
+                             , getConditionByName=self._spec.conditions.get):
         for event in self._run_test(test, iterargs):
           yield event;
-
-
-class Test(object):
-  def __init__(self, name, args):
-    self.name = name
-    self.args = set(args)
-
-  def requires(self, arg):
-    return arg in self.args
-
-  def __str__(self):
-    return '<Test {0} :: {1}>'.format(self.name, ', '.join(sorted(self.args)))
-  __repr__ = __str__
-
-
+      yield ENDSECTION, None
 
 class Section(object):
-  def __init(self, name, tests, order=None, description=None):
+  def __init__(self, name, tests, order=None, description=None):
     self.name = name;
     self.description = description;
     self._tests = tests;
     # a list of iterarg-names
     self._order = order or [];
 
-  def _analyze_tests(self, all_args):
+  def __repr__(self):
+    return '<Section: {0}>'.format(self.name)
+
+  def _get_aggregate_args(self, test, key, getConditionByName):
+    dependencies = getattr(test, key) + test.conditions[:]
+    args = set()
+    while dependencies:
+      name = dependencies.pop()
+      if name in args:
+        continue
+      args.add(name)
+      # if this is a condition, expand its dependencies
+      c = getConditionByName(name, None)
+      if c is None:
+        continue
+      dependencies += [dependency for dependency in getattr(c, key)
+                                              if dependency not in args]
+    return args
+
+  def _analyze_tests(self, all_args, getConditionByName):
     args = list(all_args)
     args.reverse()
     scopes = [(test, tuple(), tuple()) for test in self._tests]
+    aggregatedArgs = {
+      'args': {test.name:self._get_aggregate_args(
+                                test, 'args', getConditionByName)
+                              for test in self._tests }
+    , 'mandatoryArgs': {test.name: self._get_aggregate_args(
+                                test, 'mandatoryArgs', getConditionByName)
+                              for test in self._tests }
+    }
     saturated = []
     while args:
       new_scopes = []
@@ -349,11 +382,11 @@ class Section(object):
       args_set = set(args)
       arg = args.pop()
       for test, signature, scope in scopes:
-        if not len(test.args & args_set):
+        if not len(aggregatedArgs['args'][test.name] & args_set):
           # there's no args no more or no arguments of test are
           # in args
           target = saturated
-        elif arg == '*test' or test.requires(arg):
+        elif arg == '*test' or arg in aggregatedArgs['mandatoryArgs'][test.name]:
           signature += (1, )
           scope += (arg, )
           target = new_scopes
@@ -422,12 +455,12 @@ class Section(object):
       items.append((test, signature, scope))
     # clean up left overs
     if len(items):
-      generators.append(_execute_section(iterargs, world, current_section, items))
+      generators.append(self._execute_section(iterargs, current_section, items))
 
     for item in chain(*generators):
       yield item
 
-  def execution_order(self, iterargs, reverse=False):
+  def execution_order(self, iterargs, getConditionByName, reverse=False):
     """
       order must:
         a) contain all variable args (we're appending missing ones)
@@ -439,7 +472,6 @@ class Section(object):
       order may contain "*test" otherwise, it is like *test is appended
       to the end (Not done explicitly though).
     """
-
     stack = self._order[:]
     if '*iterargs' not in stack:
       stack.append('*iterargs')
@@ -460,9 +492,10 @@ class Section(object):
         continue
       full_order.append(item)
 
-    scopes = self._analyze_tests(full_order)
+    scopes = self._analyze_tests(full_order, getConditionByName=getConditionByName)
     key = lambda (test, signature, scope): signature
     scopes.sort(key=key, reverse=reverse)
+
     for test, args in self._execute_scopes(iterargs, scopes):
       yield test, args
 
@@ -489,80 +522,56 @@ class Spec(object):
     self.conditions = conditions or {}
 
 if __name__ == '__main__':
-      # so how does this organize:
-    #    test0(fonts)
-    #    test4()
-    #    test1(font1)
-    #    test2(font1)
-    #    test3(font1)
-    #    test1(font2)
-    #    test2(font2)
-    #    test3(font2)
-    #    test1(font3)
-    #    test2(font3)
-    #    test3(font3)
-    # AND ALSO:
-    #    test0(fonts)
-    #    test4()
-    #    test1(font1)
-    #    test1(font2)
-    #    test1(font3)
-    #    test2(font1)
-    #    test2(font2)
-    #    test2(font3)
-    #    test3(font1)
-    #    test3(font2)
-    #    test3(font3)
-    #
-    # generic_first = True
 
-  tests = [Test(*setup) for setup in (
-    ('test0', ('fonts', )),
-    ('test1', ('font', 'other', )),
-    ('test2', ('font', 'other')),
-    ('test3', ('font', )),
-    ('test4', tuple()),
-    ('test5', ('other', )),
-  )]
+  from test import condition, test
 
-  world = {
-    'font': ('font1', 'font2', 'font3'),
-    'other': ('otherA', 'otherB')
-  }
+  conditions={}
+  def registerCondition(condition):
+    conditions[condition.name] = condition
+  tests=[]
+  registerTest = tests.append
 
-  # generic_first
+  @condition()
+  def fontNameNumber(font):
+    return int(font.split('_')[1])
+  registerCondition(fontNameNumber)
 
-  order = ['font', '*test', 'other'] #,
-  # another, higher level special argument will be "*iterarg" which will
-  # expand the not specially defined iterargs in place
-  # if neither "*iterargs" nor "*test" is defined it equals to
-  # ["*iterargs", '*test'] but, '*test' won't have to be explicitly mentioned
-  # while "*iterargs" will be appended to the end if missing.
+  @condition()
+  def isOddFontName(fontNameNumber):
+    return  fontNameNumber % 2 == 1
+  registerCondition(isOddFontName)
 
-  # b = make_bucket(tests, None, order, generic_first=True)
-  # for test, args in b.generate(tuple(), world):
-  #   print('{0}({1})\t->\t{2}'.format(test.name,
-  #       ', '.join(test.args),
-  #       ', '.join(['<{0}>:{1}'.format(*arg) for arg in args]))
-  #   )
+  @test(
+      id='com.google.fonts/1'
+    , conditions=['isOddFontName']
+    , description='Is the odd fontname bigger than one?'
+  )
+  def oddNameBiggerThanOne(fontNameNumber):
+    return PASS if fontNameNumber > 1 else FAIL, fontNameNumber
+  registerTest(oddNameBiggerThanOne)
 
-  fonts = ('font1', 'font2', 'font3')
 
-  # may become a class instance
-  googleSpec = {
-    'conditions': {} # list of conditions? maybe a dict as well!
-    , 'tests': [] # list of test, order matters, maybe a list of sections.
+  @test(
+      id='com.google.fonts/2'
+    , conditions=['not isOddFontName']
+    , description='Is the even fontname bigger than two?'
+  )
+  def evenNameBiggerThanTwo(fontNameNumber):
+    return PASS if fontNameNumber > 2 else FAIL, fontNameNumber
+  registerTest(evenNameBiggerThanTwo)
 
-    # map the 'singular' name to the iterable in values
-    # in this case fonts must be iterable AND
-    # 'font' may not be a value NOR a condition name
-    , 'iterargs': {'font': 'fonts'} # defined by the spec, this is what we expect
-    # we could a) get all needed values from here
-    #      b) add some validation, so that we know these values match
-    #       our expectations! These values are the user input!
-  }
+  testsections=[Section('Default', tests)]
 
-  googleSpec = Spec(conditions={}, tests=[], iterargs={'font': 'fonts'})
-  runner = Testsrunner({'fonts': fonts}, googleSpec)
-  runner.run(order);
+  googleSpec = Spec(
+      conditions=conditions
+    , testsections=testsections
+    , iterargs={'font': 'fonts'}
+  )
+  fonts = ['font_1', 'font_2', 'font_3', 'font_4']
+  runner = TestRunner(googleSpec, {'fonts': fonts})
+  for event, message in runner.run():
+    if event == ERROR:
+      print(event, type(message).__name__, '>>>', message)
+    else:
+      print('{} >>> {}'.format(event, message))
 
