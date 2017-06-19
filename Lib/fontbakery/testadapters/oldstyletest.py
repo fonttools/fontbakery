@@ -41,5 +41,6 @@ class OldStyleTest(FontBakeryTest):
 
 def oldStyleTest(id, description, *args, **kwds):
     def wrapper(testfunc):
-        return OldStyleTest(testfunc, id, description, *args, **kwds)
+        return return wraps(func)(
+                OldStyleTest(testfunc, id, description, *args, **kwds))
     return wrapper
