@@ -541,6 +541,7 @@ if __name__ == '__main__':
     return  fontNameNumber % 2 == 1
   registerCondition(isOddFontName)
 
+
   @test(
       id='com.google.fonts/1'
     , conditions=['isOddFontName']

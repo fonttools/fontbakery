@@ -162,7 +162,7 @@ def condition(*args, **kwds):
   which is passed via the decorator syntax.
   """
   def wrapper(func):
-    return FontBakeryCondition(func, *args, **kwds)
+    return wraps(func)(FontBakeryCondition(func, *args, **kwds))
   return wrapper
 
 def test(*args, **kwds):
@@ -172,5 +172,5 @@ def test(*args, **kwds):
   which is passed via the decorator syntax.
   """
   def wrapper(testfunc):
-    return FontBakeryTest(testfunc, *args, **kwds)
+    return wraps(testfunc)(FontBakeryTest(testfunc, *args, **kwds))
   return wrapper
