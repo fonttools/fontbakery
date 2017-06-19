@@ -1,19 +1,92 @@
 # -*- coding: <encoding name> -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
-import inspect # will be used
+try:
+  from inspect import getfullargspec as getargspec
+except ImportError:
+  from inspect import getargspec
 
-class FontBakeryTest(object):
-  def __init__(self, testfunc,
-         id,
-         description, # short text
-         name = None, # very short text
-         conditions=None,
-         arguments_setup=None,
-         documentation=None, # long text, markdown?
-         advancedMessageSetup=None,
-         priority=None
-         ):
+from functools import wraps
+
+def cached_getter(func):
+  @wraps(func)
+  def wrapper(self):
+    attribute = '_{}'.format(func.__name__)
+    value = getattr(self, attribute, None)
+    if value is None:
+      value = func(self)
+      setattr(self, attribute, value)
+    return value
+  return wrapper
+
+class FontbakeryCallable(object):
+  def __init__(self, func):
+    self._args = None
+    self._mandatoryArgs = None
+    self._optionalArgs = None
+    # must be set by sub class
+    self._func = func
+
+  def __repr__(self):
+    return'<{0}:{1}>'.format(type(self).__name__,
+                getattr(self, 'id',
+                  getattr(self, 'name',
+                    super(FontbakeryCallable, self).__repr__()
+          )))
+
+  @property
+  @cached_getter
+  def args(self):
+    return self.mandatoryArgs + self.optionalArgs
+
+  @property
+  @cached_getter
+  def mandatoryArgs(self):
+    argspec = getargspec(self._func)
+    return argspec.args[:-len(defaults)] \
+             if argspec.defaults is not None else argspec.args
+
+  @property
+  @cached_getter
+  def optionalArgs(self):
+    argspec = getargspec(self._func)
+    return argspec.args[-len(defaults):] \
+             if argspec.defaults is not None else []
+
+  def __call__(self, *args, **kwds):
+    """ Each call to __call__ with the same arguments must return
+    the same result.
+    """
+    return self._func(*args, **kwds)
+
+
+class FontBakeryCondition(FontbakeryCallable):
+  def __init__(
+       self,
+       func,
+       # id,
+       name = None, # very short text
+       description = None, # short text
+      ):
+    super(FontBakeryCondition, self).__init__(func)
+    # self.id = id
+    self.name = func.__name__ if name is None else name
+    self.description = description
+  pass
+
+class FontBakeryTest(FontbakeryCallable):
+  def __init__(
+       self,
+       testfunc,
+       id,
+       description, # short text
+       name = None, # very short text
+       conditions=None,
+       # arguments_setup=None,
+       documentation=None, # long text, markdown?
+       advancedMessageSetup=None,
+       priority=None
+       ):
     """This is the base class for all tests. It will usually
     not be used directly to create test instances, rather
     decorators which are factories will init this class.
@@ -48,11 +121,12 @@ class FontBakeryTest(object):
     via inspection, and returns True or False.
     TODO: flesh out the format.
 
+    NOTE: `arguments_setup` is postponed until we have a case where it's needed.
     arguments_setup: describes the arguments and position/keyword
     of arguments `testfunc` expects. Used to override any arguments
     inferred via inspection of `testfunc`.
     `TestRunner._get_test_dependencies` will use this information
-    to prepare the `args` and `kwargs` for this test.
+    to prepare the arguments for this test.
     TODO: flesh out the format.
 
     documentation: text, used as a detailed documentation,
@@ -64,35 +138,34 @@ class FontBakeryTest(object):
     advancedMessage.
     TODO: Make a proposal for this.
     TODO: This would be used to fix/hotfix issues etc. that means,
-        advancedMessageSetup would know how to fix an issue by
-        looking at an advancedMessage.
+      advancedMessageSetup would know how to fix an issue by
+      looking at an advancedMessage.
     TODO: The naming is a bit odd.
 
     priority: inherted from our legacy tests. Need to see if we
     use this at all now.
     """
-    self._testfunc = testfunc
-    self._id = id
-    self._name = testfunc.__name__ if name is None else name
-    self._name = name
-    self._description = description
-    self._arguments_setup = arguments_setup
-    self._conditions_setup = conditions_setup
-    self._documentation = documentation
+    super(FontBakeryTest, self).__init__(testfunc)
+    self.id = id
+    self.name = testfunc.__name__ if name is None else name
+    self.conditions = conditions
+    self.description = description
+    # self._arguments_setup = arguments_setup
+    # self._conditions_setup = conditions_setup
+    self.documentation = documentation
     self._advancedMessageSetup = advancedMessageSetup
 
+def condition(*args, **kwds):
+  """Test wrapper, a factory for FontBakeryCondition
 
-  # TODO: define public interfaces. The internal state of this
-  # object may however not be changed after initialization.
-  # Each call to __call__ with the same arguments must return
-  # the same result.
+  Requires all arguments of FontBakeryCondition but not `func`
+  which is passed via the decorator syntax.
+  """
+  def wrapper(func):
+    return FontBakeryCondition(func, *args, **kwds)
+  return wrapper
 
-  def __call__(self, *args, **kwds):
-    # override for special cases?
-    return self._testfunc(*args, **kwds)
-
-
-def fontBakeryTest(*args, **kwds):
+def test(*args, **kwds):
   """Test wrapper, a factory for FontBakeryTest
 
   Requires all arguments of FontBakeryTest but not `testfunc`
