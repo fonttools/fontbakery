@@ -148,7 +148,7 @@ class FontBakeryTest(FontbakeryCallable):
     super(FontBakeryTest, self).__init__(testfunc)
     self.id = id
     self.name = testfunc.__name__ if name is None else name
-    self.conditions = conditions
+    self.conditions = conditions or []
     self.description = description
     # self._arguments_setup = arguments_setup
     # self._conditions_setup = conditions_setup
