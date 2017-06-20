@@ -100,6 +100,8 @@ setup(
              'bin/fontbakery-update-families.py',
              'bin/fontbakery-update-nameids.py',
              'bin/fontbakery-update-version.py'],
+             'bin/fontbakery-dev-testrunner.py',
+             'bin/fontbakery-update-families.py'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',
