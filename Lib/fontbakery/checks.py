@@ -21,6 +21,7 @@ import logging
 import requests
 import urllib
 import csv
+import json
 import re
 import defusedxml.lxml
 from fontTools import ttLib
@@ -3729,10 +3730,10 @@ def check_glyphs_have_correct_contour_count(fb, font_file):
   bad_glyphs = []
 
   desired_contours = {}
-  with open('./bin/glyph_contours.csv', 'r') as g_contour_csv:
-    reader = csv.DictReader(g_contour_csv)
+  with open('./bin/glyph_data.json', 'r') as g_data_csv:
+    reader = json.load(g_data_csv)
     for row in reader:
-      desired_contours[int(row['glyph'])] = int(row['number_of_contours'])
+      desired_contours[row['unicode']] = row['contours']
 
   cmap = font_file['cmap'].getcmap(3,1).cmap
   cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
@@ -3747,7 +3748,7 @@ def check_glyphs_have_correct_contour_count(fb, font_file):
 
   shared_glyphs = set(desired_contours) & set(font_contours)
   for glyph in shared_glyphs:
-    if font_contours[glyph] != desired_contours[glyph]:
+    if font_contours[glyph] not in desired_contours[glyph]:
       bad_glyphs.append(cmap[glyph])
 
   if len(bad_glyphs) > 0:
