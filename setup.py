@@ -83,6 +83,7 @@ setup(
 #             'bin/fontbakery-travis-deploy.py',
 #             'bin/fontbakery-travis-init.py',
 #             'bin/fontbakery-travis-secure.sh',
+             'bin/fontbakery-dev-testrunner.py',
              'bin/fontbakery-update-families.py'],
     zip_safe=False,
     classifiers=[
