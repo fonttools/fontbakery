@@ -4,6 +4,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 import types
 from collections import OrderedDict
 from itertools import chain
+import sys
+import traceback
 
 class Status(object):
   """ If you create a custom Status symbol, please use reverse domain
@@ -59,11 +61,19 @@ STARTTEST = Status('STARTTEST')
 # only between STARTTEST and ENDTEST
 SKIP = Status('SKIP')
 PASS = Status('PASS')
-FAIL = Status('FAIL')
+FAIL = Status('FAIL') # a status of ERROR will make a test fail as well
 # ends the last test started by STARTTEST
 ENDTEST = Status('ENDTEST')
 # ends the last section started by STARTSECTION
 ENDSECTION = Status('ENDSECTION')
+
+# TODO:
+# from all the statuses that can occur within a test, the "worst" one
+# should be defining for the test overall status:
+# ERROR > FAIL > WARN > PASS > INFO > SKIP
+# Where a test with no event at all or one with only INFO or WARN should
+# create an ERROR event (since this is programmers fault?)
+# A test with SKIP can't (MUST NOT) create any other event,
 
 
 class FontBakeryRunnerError(Exception):
@@ -79,21 +89,33 @@ class FailedConditionError(FontBakeryRunnerError):
   """ This is a serious problem with the test suite spec and it must
   be solved.
   """
-  def __init__(self, condition, error, *args):
+  def __init__(self, condition, error, traceback, *args):
     message = 'The condtion {0} had an error: {1} {2}'.format(condition, type(error), error)
     self.condition = condition
     self.error = error
+    self.traceback = traceback
     super(FailedConditionError, self).__init__(message, *args)
 
 class FailedDependenciesError(FontBakeryRunnerError):
-  def __init__(self, condition, error, *args):
-    message = 'The condtion {0} had an error: {1} {2}'.format(condition, type(error), error)
-    self.condition = condition
+  def __init__(self, test, error, traceback, *args):
+    message = 'The test {0} had an error: {1} {2}'.format(test, type(error), error)
+    self.test = test
     self.error = error
+    self.traceback = traceback
     super(FailedDependenciesError, self).__init__(message, *args)
 
 class MissingValueError(FontBakeryRunnerError):
   pass
+
+def _get_traceback():
+  """
+  Returns a string with a traceback as the python interpreter would
+  render it. Run this inside of the catch block.
+  """
+  ex_type, ex, tb = sys.exc_info()
+  result = traceback.format_exc(tb)
+  del tb
+  return result
 
 class TestRunner(object):
   def __init__(self, spec, values):
@@ -111,6 +133,7 @@ class TestRunner(object):
 
     self._cache = {
       'conditions': {}
+    , 'order': None
     }
 
   def _check_result(self, result):
@@ -219,7 +242,9 @@ class TestRunner(object):
     path.pop()
     try:
       return None, condition(**args)
-    except Exception as error:
+    except Exception as err:
+      tb = _get_traceback()
+      error = FailedConditionError(condition, err, tb)
       return error, None
 
   def _get_condition(self, name, iterargs, path=None):
@@ -275,7 +300,7 @@ class TestRunner(object):
         val = not val
       if err:
         failed_conditions = True
-        status = (ERROR, FailedConditionError(condition, err))
+        status = (ERROR, err)
         yield (status, None)
         continue
       if not val:
@@ -293,7 +318,8 @@ class TestRunner(object):
     try:
       yield None, self._get_args(test, iterargs)
     except Exception as error:
-      status = (ERROR, FailedDependenciesError(condition, err))
+      tb = _get_traceback()
+      status = (ERROR, FailedDependenciesError(test, error, tb))
       yield (status, None)
 
   def _run_test(self, test, iterargs):
@@ -327,14 +353,41 @@ class TestRunner(object):
         # We can also use it to display status updates to the user.
       yield ENDTEST, None
 
-  def run(self):
-    for section in self._spec.testsections:
-      yield STARTSECTION, section
-      for test, iterargs in section.execution_order(self._iterargs
+  # old, more straight forward, but without a point to extract the order
+  # def run(self):
+  #   for section in self._spec.testsections:
+  #     yield STARTSECTION, section
+  #     for test, iterargs in section.execution_order(self._iterargs
+  #                            , getConditionByName=self._spec.conditions.get):
+  #       for event in self._run_test(test, iterargs):
+  #         yield event;
+  #     yield ENDSECTION, None
+
+  @property
+  def order(self):
+    order = self._cache.get('order', None)
+    if order is None:
+      order = []
+      for section in self._spec.testsections:
+        for test, iterargs in section.execution_order(self._iterargs
                              , getConditionByName=self._spec.conditions.get):
-        for event in self._run_test(test, iterargs):
+          order.append((section, test, iterargs))
+      self._cache['order'] = order = tuple(order)
+    return order
+
+  def run(self):
+    old_section = None
+    for section, test, iterargs in self.order:
+      if section is not old_section:
+        if old_section is not None:
+          yield ENDSECTION, None
+        old_section = section
+        yield STARTSECTION, section
+      print('*****',test, iterargs, '*****')
+      for event in self._run_test(test, iterargs):
           yield event;
-      yield ENDSECTION, None
+    yield ENDSECTION, None
+
 
 class Section(object):
   def __init__(self, name, tests, order=None, description=None):
@@ -497,7 +550,7 @@ class Section(object):
     scopes.sort(key=key, reverse=reverse)
 
     for test, args in self._execute_scopes(iterargs, scopes):
-      yield test, args
+      yield test, tuple(args)
 
 
 class Spec(object):
@@ -570,9 +623,13 @@ if __name__ == '__main__':
   )
   fonts = ['font_1', 'font_2', 'font_3', 'font_4']
   runner = TestRunner(googleSpec, {'fonts': fonts})
+
+  print(len(runner.order), 'individual test executions')
+  print('order:\n', '\n '.join('{} {} {}'.format(*t) for t in runner.order))
   for event, message in runner.run():
     if event == ERROR:
       print(event, type(message).__name__, '>>>', message)
+      print(message.traceback)
     else:
       print('{} >>> {}'.format(event, message))
 
