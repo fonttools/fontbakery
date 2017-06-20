@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import types
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from itertools import chain
 import sys
 import traceback
@@ -17,7 +17,7 @@ class Status(object):
   custom statuses. Interpreters of the test protocol will have to skip
   statuses unknown to them or treat them in an otherwise non-fatal fashion.
   """
-  def __new__(cls, name):
+  def __new__(cls, name, weight=0):
     """ Don't create two instances with same name.
 
     >>> a = Status('PASS')
@@ -35,6 +35,7 @@ class Status(object):
     if instance is None:
       instance = cls.__instances[name] = super(Status, cls).__new__(cls)
       setattr(instance, '_Status__name', name)
+      setattr(instance, '_Status__weight', weight)
     return instance
 
   __instances = {}
@@ -42,30 +43,50 @@ class Status(object):
   def __str__(self):
     return '<Status {0}>'.format(self.__name)
 
+  @property
+  def name(self):
+    return self.__name
+
+  @property
+  def weight(self):
+    return self.__weight
+
+  def __gt__(self, other):
+    return self.weight > other.weight
+
+  def __ge__(self, other):
+    return self.weight >= other.weight
+
+  def __lt__(self, other):
+    return self.weight < other.weight
+
+  def __le__(self, other):
+    return self.weight <= other.weight
+
   __repr__ = __str__
 
 # Status messages of the test runner protocoll
 
-
-
 # always allowed:
-INFO = Status('INFO')
-WARN = Status('WARN')
+INFO = Status('INFO', 0)
+WARN = Status('WARN', 1)
 
 # exeptional, something a programmer must fix
-ERROR = Status('ERROR')
+ERROR = Status('ERROR', 5)
 
-STARTSECTION = Status('STARTSECTION')
+START = Status('START', -6)
+STARTSECTION = Status('STARTSECTION', -4)
 # only between STARTSECTION and ENDSECTION
-STARTTEST = Status('STARTTEST')
+STARTTEST = Status('STARTTEST', -2)
 # only between STARTTEST and ENDTEST
-SKIP = Status('SKIP')
-PASS = Status('PASS')
-FAIL = Status('FAIL') # a status of ERROR will make a test fail as well
+SKIP = Status('SKIP', 3)
+PASS = Status('PASS', 2)
+FAIL = Status('FAIL', 4) # a status of ERROR will make a test fail as well
 # ends the last test started by STARTTEST
-ENDTEST = Status('ENDTEST')
+ENDTEST = Status('ENDTEST', -1)
 # ends the last section started by STARTSECTION
-ENDSECTION = Status('ENDSECTION')
+ENDSECTION = Status('ENDSECTION', -3)
+END = Status('END', -5)
 
 # TODO:
 # from all the statuses that can occur within a test, the "worst" one
@@ -84,6 +105,13 @@ class APIViolationError(FontBakeryRunnerError):
     self.message = message
     self.result = result
     super(APIViolationError, self).__init__(message, result, *args)
+
+class FailedTestError(FontBakeryRunnerError):
+  def __init__(self, error, traceback, *args):
+    message = 'Failed with {0} {1}'.format(type(error), error)
+    self.error = error
+    self.traceback = traceback
+    super(FailedTestError, self).__init__(message, *args)
 
 class FailedConditionError(FontBakeryRunnerError):
   """ This is a serious problem with the test suite spec and it must
@@ -110,7 +138,7 @@ class MissingValueError(FontBakeryRunnerError):
 def _get_traceback():
   """
   Returns a string with a traceback as the python interpreter would
-  render it. Run this inside of the catch block.
+  render it. Run this inside of the except block.
   """
   ex_type, ex, tb = sys.exc_info()
   result = traceback.format_exc(tb)
@@ -190,7 +218,9 @@ class TestRunner(object):
         # or ends the generator.
         yield sub_result
     except Exception as e:
-      yield (FAIL, e)
+      tb = _get_traceback()
+      error = FailedTestError(e, tb)
+      yield (FAIL, error)
 
   def _exec_test(self, test, args):
     """ Yields test sub results.
@@ -215,7 +245,9 @@ class TestRunner(object):
     try:
       result = test(**args)
     except Exception as e:
-      result = (FAIL, e)
+      tb = _get_traceback()
+      error = FailedTestError(e, tb)
+      result = (FAIL, error)
 
     # We allow the `test` callable to "yield" multiple
     # times, instead of returning just once. That's
@@ -291,7 +323,6 @@ class TestRunner(object):
     return False, stripped
 
   def _get_test_dependencies(self, test, iterargs):
-    failed_conditions = False
     unfulfilled_conditions = []
     for condition in test.conditions:
       negate, name = self._is_negated(condition)
@@ -299,59 +330,64 @@ class TestRunner(object):
       if negate:
         val = not val
       if err:
-        failed_conditions = True
         status = (ERROR, err)
-        yield (status, None)
-        continue
+        return (status, None)
       if not val:
         unfulfilled_conditions.append(condition)
-    if failed_conditions:
-      return
-
     if unfulfilled_conditions:
       # This will make the test neither pass nor fail
       status = (SKIP, 'Unfulfilled Conditions: {}'.format(
                                     ', '.join(unfulfilled_conditions)))
-      yield (status, None)
-      return
+      return (status, None)
 
     try:
-      yield None, self._get_args(test, iterargs)
+      return None, self._get_args(test, iterargs)
     except Exception as error:
       tb = _get_traceback()
       status = (ERROR, FailedDependenciesError(test, error, tb))
-      yield (status, None)
+      return (status, None)
 
   def _run_test(self, test, iterargs):
+    summary_status = None
     # A test is more than just a function, it carries
     # a lot of meta-data for us, in this case we can use
     # meta-data to learn how to call the test (via
     # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
     # inspection results).
-    for skipped, args in self._get_test_dependencies(test, iterargs):
-      # FIXME: test is not a message
-      # so, to us it as a message, it should have a "message-interface"
-      # TODO: describe generic "message-interface"
-      yield STARTTEST, test
-      if skipped is not None:
-        # `skipped` is a normal result tuple (status, message)
-        # where `status` is either FAIL for unmet dependencies
-        # or SKIP for unmet conditions or ERROR. A status of SKIP is
-        # never a failed test.
-        # ERROR is either a missing dependency or a condition that raised
-        # an exception. This shouldn't happen when everyting is set up
-        # correctly.
-        yield skipped
-      else:
-        for sub_result in self._exec_test(test, args):
-          yield sub_result
-        # The only reason to yield this is to make it testable
-        # that a test ran to its end, or, if we start to allow
-        # nestable subtests. Otherwise, a STARTTEST would end the
-        # previous test implicitly.
-        # We can also use it to display status updates to the user.
-      yield ENDTEST, None
+    skipped, args = self._get_test_dependencies(test, iterargs)
+    # FIXME: test is not a message
+    # so, to us it as a message, it should have a "message-interface"
+    # TODO: describe generic "message-interface"
+    yield STARTTEST, None
+    if skipped is not None:
+      summary_status = skipped[0]
+      # `skipped` is a normal result tuple (status, message)
+      # where `status` is either FAIL for unmet dependencies
+      # or SKIP for unmet conditions or ERROR. A status of SKIP is
+      # never a failed test.
+      # ERROR is either a missing dependency or a condition that raised
+      # an exception. This shouldn't happen when everyting is set up
+      # correctly.
+      yield skipped
+    else:
+      for sub_result in self._exec_test(test, args):
+        status, _ = sub_result
+        if summary_status is None or status > summary_status:
+          summary_status = status
+        yield sub_result
+      # The only reason to yield this is to make it testable
+      # that a test ran to its end, or, if we start to allow
+      # nestable subtests. Otherwise, a STARTTEST would end the
+      # previous test implicitly.
+      # We can also use it to display status updates to the user.
+    if summary_status < PASS:
+      summary_status = ERROR
+      # got to yield it,so we can see it in the report
+      yield ERROR, ('The most significant status of {} was only {} but the '
+                   'minimum is {}').format(test, summary_status, PASS)
+
+    yield ENDTEST, summary_status
 
   # old, more straight forward, but without a point to extract the order
   # def run(self):
@@ -376,17 +412,46 @@ class TestRunner(object):
     return order
 
   def run(self):
-    old_section = None
+    testrun_summary = Counter()
+
+    # prepare: we'll have less ENDSECTION code in the actual run
+    # also, we can prepare section_order tuples
+    section = None
+    oldsection = None
+    section_order = None
+    section_orders = []
     for section, test, iterargs in self.order:
-      if section is not old_section:
-        if old_section is not None:
-          yield ENDSECTION, None
-        old_section = section
-        yield STARTSECTION, section
-      print('*****',test, iterargs, '*****')
-      for event in self._run_test(test, iterargs):
-          yield event;
-    yield ENDSECTION, None
+      if oldsection != section:
+        if oldsection is not None:
+          section_orders.append((oldsection, tuple(section_order)))
+        oldsection = section
+        section_order = []
+      section_order.append((test, iterargs))
+    if section is not None:
+      section_orders.append((section, tuple(section_order)))
+
+    # run
+    yield START, self.order, (None, None, None)
+    section = None
+    old_section = None
+    for section, section_order in section_orders:
+      section_summary = Counter()
+      yield STARTSECTION, section_order, (section, None, None)
+      for test, iterargs in section_order:
+        for status, message in self._run_test(test, iterargs):
+          yield status, message, (section, test, iterargs);
+        # after _run_test the last status must be ENDTEST
+        assert status == ENDTEST
+        # message is the summary_status of the test when status is ENDTEST
+        section_summary[message.name] += 1
+      yield ENDSECTION, section_summary, (section, None, None)
+      testrun_summary.update(section_summary)
+    yield END, testrun_summary, (None, None, None)
+
+def distribute_generator(gen, targets_callbacks):
+  for item in gen:
+    for target in targets_callbacks:
+      target(item)
 
 
 class Section(object):
@@ -573,63 +638,3 @@ class Spec(object):
     self.testsections = testsections
     self.iterargs = iterargs
     self.conditions = conditions or {}
-
-if __name__ == '__main__':
-
-  from test import condition, test
-
-  conditions={}
-  def registerCondition(condition):
-    conditions[condition.name] = condition
-  tests=[]
-  registerTest = tests.append
-
-  @condition
-  def fontNameNumber(font):
-    return int(font.split('_')[1])
-  registerCondition(fontNameNumber)
-
-  @condition
-  def isOddFontName(fontNameNumber):
-    return  fontNameNumber % 2 == 1
-  registerCondition(isOddFontName)
-
-
-  @test(
-      id='com.google.fonts/1'
-    , conditions=['isOddFontName']
-    , description='Is the odd fontname bigger than one?'
-  )
-  def oddNameBiggerThanOne(fontNameNumber):
-    return PASS if fontNameNumber > 1 else FAIL, fontNameNumber
-  registerTest(oddNameBiggerThanOne)
-
-
-  @test(
-      id='com.google.fonts/2'
-    , conditions=['not isOddFontName']
-    , description='Is the even fontname bigger than two?'
-  )
-  def evenNameBiggerThanTwo(fontNameNumber):
-    return PASS if fontNameNumber > 2 else FAIL, fontNameNumber
-  registerTest(evenNameBiggerThanTwo)
-
-  testsections=[Section('Default', tests)]
-
-  googleSpec = Spec(
-      conditions=conditions
-    , testsections=testsections
-    , iterargs={'font': 'fonts'}
-  )
-  fonts = ['font_1', 'font_2', 'font_3', 'font_4']
-  runner = TestRunner(googleSpec, {'fonts': fonts})
-
-  print(len(runner.order), 'individual test executions')
-  print('order:\n', '\n '.join('{} {} {}'.format(*t) for t in runner.order))
-  for event, message in runner.run():
-    if event == ERROR:
-      print(event, type(message).__name__, '>>>', message)
-      print(message.traceback)
-    else:
-      print('{} >>> {}'.format(event, message))
-
