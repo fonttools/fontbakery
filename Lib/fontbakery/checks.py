@@ -38,6 +38,7 @@ from fontbakery.utils import (
                              setWidth,
                              ttfauto_fpgm_xheight_rounding,
                              glyphs_surface_area,
+                             get_glyph_contours,
                              save_FamilyProto_Message,
                              parse_version_string,
                              font_key,
@@ -3721,3 +3722,36 @@ def check_METADATA_Ensure_all_TTF_references_are_valid(fb, family):
               "{}").format("\n".join(missing_ttf)))
   else:
     fb.ok('All TTF files declared on METADATA.pb are valid.')
+
+
+def check_glyphs_have_correct_contour_count(fb, font_file):
+  fb.new_check("153", "Checking glyphs have correct contour count.")
+  bad_glyphs = []
+
+  desired_contours = {}
+  with open('./bin/glyph_contours.csv', 'r') as g_contour_csv:
+    reader = csv.DictReader(g_contour_csv)
+    for row in reader:
+      desired_contours[int(row['glyph'])] = int(row['number_of_contours'])
+
+  cmap = font_file['cmap'].getcmap(3,1).cmap
+  cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
+
+  font_contours = {}
+  for glyph_name in font_file.getGlyphSet().keys():
+    if glyph_name in cmap_reversed:
+      glyph_uni = cmap_reversed[glyph_name]
+      glyph = font_file['glyf'][glyph_name]
+      glyph_contours = get_glyph_contours(font_file, glyph)
+      font_contours[glyph_uni] = glyph_contours
+
+  shared_glyphs = set(desired_contours) & set(font_contours)
+  for glyph in shared_glyphs:
+    if font_contours[glyph] != desired_contours[glyph]:
+      bad_glyphs.append(cmap[glyph])
+
+  if len(bad_glyphs) > 0:
+    fb.error(("Following glyphs do not have the recommended number"
+              " of contours [{}]").format(', '.join(bad_glyphs)))
+  else:
+    fb.ok("All glyphs have the recommended amount of contours")
