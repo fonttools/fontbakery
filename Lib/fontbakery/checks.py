@@ -716,8 +716,8 @@ def check_font_has_a_license(fb, file_path):
     license_path = os.path.join(file_path, license)
     if os.path.exists(license_path):
       if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
+        fb.warning("More than a single license file found."
+                   " Please review.")
         found = "multiple"
       else:
         found = license_path
@@ -725,8 +725,11 @@ def check_font_has_a_license(fb, file_path):
     # Also try at the current working dir:
     elif os.path.exists(license):
       if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
+        fb.warning(("More than a single license file found."
+                    " Please review. At least one of the files is"
+                    " in the current working directory where "
+                    "fontbakery was invoked:"
+                    " ('{}').").format(os.path.dirname(license)))
         found = "multiple"
       else:
         found = license
