@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+"""
+Font Bakery callable is the wrapper for your custom test code.
+
+
+Separation of Concerns Disclaimer:
+While created specifically for testing fonts and font-families this
+module has no domain knowledge about fonts. It can be used for any kind
+of (document) testing. Please keep it so. It will be valuable for other
+domains as well.
+Domain specific knowledge should be encoded only in the Spec (Tests,
+Conditions) and MAYBE in *customized* reporters e.g. subclasses.
+
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 try:

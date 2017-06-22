@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+"""
+Font Bakery TestRunner is the driver of a font bakery test suite.
+
+
+Separation of Concerns Disclaimer:
+While created specifically for testing fonts and font-families this
+module has no domain knowledge about fonts. It can be used for any kind
+of (document) testing. Please keep it so. It will be valuable for other
+domains as well.
+Domain specific knowledge should be encoded only in the Spec (Tests,
+Conditions) and MAYBE in *customized* reporters e.g. subclasses.
+
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import types
@@ -8,10 +21,8 @@ import sys
 import traceback
 
 class Status(object):
-  """ If you create a custom Status symbol, please use reverse domain
-  name notation as a prefix of `name`.
-  This is because all statuses are registered globally and that would
-  cause name collisions otherwise.
+  """ If you create a custom Status symbol, please keep in mind that
+  all statuses are registered globally and that can cause name collisions.
 
   However, it's an intended use case for your tests to be able to yield
   custom statuses. Interpreters of the test protocol will have to skip
@@ -82,36 +93,48 @@ class Status(object):
 #  * ERROR has the biggest weight
 #  * PASS is the lowest status a test can have,
 #    i.e.: a test run must at least yield one log that is >= PASS
+#
+# From all the statuses that can occur within a test, the "worst" one
+# is defining for the test overall status:
+# ERROR > FAIL > SKIP > PASS
+# Where a test with no event at all or one with only INFO or WARN will
+# create an ERROR event.
+# A test with SKIP can't (MUST NOT) create any other event.
 
-
-
+# Log statuses:
 # always allowed:
 INFO = Status('INFO', 0)
 WARN = Status('WARN', 1)
 ERROR = Status('ERROR', 5) #  something a programmer must fix
-
-START = Status('START', -6)
-STARTSECTION = Status('STARTSECTION', -4)
-# only between STARTSECTION and ENDSECTION
-STARTTEST = Status('STARTTEST', -2)
 # only between STARTTEST and ENDTEST
 PASS = Status('PASS', 2)
+ # SKIP is heavier than PASS because it's likely more interesting to
+ # see
 SKIP = Status('SKIP', 3)
 FAIL = Status('FAIL', 4) # a status of ERROR will make a test fail as well
-# ends the last test started by STARTTEST
+
+
+# Start of the test-suite. Must be always the first message, even in async mode.
+# Message is the full execution order of the whole spec
+START = Status('START', -6)
+# Only between START and END.
+# Message is the execution order of the section.
+STARTSECTION = Status('STARTSECTION', -4)
+# Only between STARTSECTION and ENDSECTION.
+# Message is None.
+STARTTEST = Status('STARTTEST', -2)
+# Ends the last test started by STARTTEST.
+# Message the the result status of the whole test, one of PASS, SKIP, FAIL, ERROR.
 ENDTEST = Status('ENDTEST', -1)
-# ends the last section started by STARTSECTION
+# Ends the last section started by STARTSECTION.
+# Message is a Counter dictionary where the keys are Status.name of
+# the ENDTEST message. If serialized, some existing statuses may not be
+# in the counter because they never occured in the section.
 ENDSECTION = Status('ENDSECTION', -3)
+# End of the test-suite. Must be always the last message, even in async mode.
+# Message is a counter as described in ENDSECTION, but with the collected
+# results of all tests in all sections.
 END = Status('END', -5)
-
-# TODO:
-# from all the statuses that can occur within a test, the "worst" one
-# should be defining for the test overall status:
-# ERROR > FAIL > WARN > PASS > INFO > SKIP
-# Where a test with no event at all or one with only INFO or WARN should
-# create an ERROR event (since this is programmers fault?)
-# A test with SKIP can't (MUST NOT) create any other event,
-
 
 class FontBakeryRunnerError(Exception):
   pass

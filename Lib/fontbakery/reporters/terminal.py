@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+"""
+Font Bakery reporters/terminal can report the events of the Font Bakery
+TestRunner Protocol to the terminal (or by pipe to files). It understands
+both, the synchronous and asynchronous execution model.
+
+Separation of Concerns Disclaimer:
+While created specifically for testing fonts and font-families this
+module has no domain knowledge about fonts. It can be used for any kind
+of (document) testing. Please keep it so. It will be valuable for other
+domains as well.
+Domain specific knowledge should be encoded only in the Spec (Tests,
+Conditions) and MAYBE in *customized* reporters e.g. subclasses.
+
+"""
 from __future__ import absolute_import, print_function, unicode_literals, division
 import sys
 from collections import Counter

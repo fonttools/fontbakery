@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Font Bakery OldStyleTest is a wrapper to make it easier to port
+old style fontbakery/checks tests to TestRunner.
+It's no complete drop-in replacement, but it hopefully can speed up our
+transition to the new runner style.
+Don't use this for any other purpose. This is an interim solution and
+will be deprecated in the future.
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 from collections import namedtuple
