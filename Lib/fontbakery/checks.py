@@ -3752,7 +3752,7 @@ def check_glyphs_have_correct_contour_count(fb, font_file):
       bad_glyphs.append(cmap[glyph])
 
   if len(bad_glyphs) > 0:
-    fb.error(("Following glyphs do not have the recommended number"
+    fb.warning(("Following glyphs do not have the recommended number"
               " of contours [{}]").format(', '.join(bad_glyphs)))
   else:
     fb.ok("All glyphs have the recommended amount of contours")
