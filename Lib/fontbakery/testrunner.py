@@ -124,7 +124,7 @@ class APIViolationError(FontBakeryRunnerError):
 
 class FailedTestError(FontBakeryRunnerError):
   def __init__(self, error, traceback, *args):
-    message = 'Failed with {0} {1}'.format(type(error), error)
+    message = 'Failed with {0}: {1}'.format(type(error).__name__, error)
     self.error = error
     self.traceback = traceback
     super(FailedTestError, self).__init__(message, *args)
@@ -134,7 +134,7 @@ class FailedConditionError(FontBakeryRunnerError):
   be solved.
   """
   def __init__(self, condition, error, traceback, *args):
-    message = 'The condtion {0} had an error: {1} {2}'.format(condition, type(error), error)
+    message = 'The condtion {0} had an error: {1}: {2}'.format(condition, type(error).__name__, error)
     self.condition = condition
     self.error = error
     self.traceback = traceback
@@ -142,7 +142,7 @@ class FailedConditionError(FontBakeryRunnerError):
 
 class FailedDependenciesError(FontBakeryRunnerError):
   def __init__(self, test, error, traceback, *args):
-    message = 'The test {0} had an error: {1} {2}'.format(test, type(error), error)
+    message = 'The test {0} had an error: {1}: {2}'.format(test, type(error).__name__, error)
     self.test = test
     self.error = error
     self.traceback = traceback
