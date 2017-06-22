@@ -289,29 +289,60 @@ class TestRunner(object):
       err, val = self._cache['conditions'][key]
     return err, val
 
+  def get(self, key, iterargs, *args):
+    return self._get(key, iterargs, None, *args)
+
+  def get_iterarg(self, name, index):
+    plural = self._spec.iterargs[name]
+    return self._values[plural][index]
+
+  def _get(self, name, iterargs, path, *args):
+    iterargsDict = dict(iterargs)
+    has_fallback = bool(len(args))
+    if has_fallback:
+      fallback = args[0]
+
+    try:
+      index = iterargsDict[name]
+      return self.get_iterarg(name, index)
+    except KeyError:
+      pass
+
+    if name in self._spec.iterargs:
+      plural = self._spec.iterargs[name]
+      index = iterargsDict[name]
+      return self._values[plural][index]
+
+    if name in self._spec.conditions:
+      error, value = self._get_condition(name, iterargs, path)
+      if error:
+        raise error
+      return value
+
+    if name in self._values:
+      return self._values[name]
+
+    if has_fallback:
+      return fallback
+
+    raise KeyError(name)
+
   def _get_args(self, item, iterargs, path=None):
     # iterargs can't be optional arguments yet, we wouldn't generate
     # an execution with an empty list. I don't know if that would be even
     # feasible, so I don't add this complication for the sake of clarity.
     # If this is needed for anything useful, we'll have to figure this out.
     args = {}
-    iterargsDict = dict(iterargs)
     for name in item.args:
       if name in args:
         continue;
+      try:
+        args[name] = self._get(name, iterargs, path)
+      except KeyError:
+        print('Not Found:', name)
+        if name not in item.optionalArgs:
+          raise MissingValueError('Value "{0}" is undefined.'.format(name))
 
-      if name in self._spec.iterargs:
-        plural = self._spec.iterargs[name]
-        index = iterargsDict[name]
-        args[name] = self._values[plural][index]
-      elif name in self._spec.conditions:
-        error, args[name] = self._get_condition(name, iterargs, path)
-        if error:
-          raise error
-      elif name in self._values:
-        args[name] = self._values[name]
-      elif name not in item.optionalArgs:
-        raise MissingValueError('Value "{0}" is undefined.'.format(name))
     return args;
 
   def _is_negated(self, name):
@@ -452,7 +483,6 @@ def distribute_generator(gen, targets_callbacks):
   for item in gen:
     for target in targets_callbacks:
       target(item)
-
 
 class Section(object):
   def __init__(self, name, tests, order=None, description=None):
