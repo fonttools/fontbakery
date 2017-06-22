@@ -130,7 +130,9 @@
         "name": "Euro", 
         "unicode": 8364, 
         "contours": [
-            1
+            1, 
+            2, 
+            4
         ]
     }, 
     {
@@ -319,13 +321,15 @@
         "name": "k", 
         "unicode": 107, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
         "name": "Rcaron", 
         "unicode": 344, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -685,6 +689,7 @@
         "name": "Rho", 
         "unicode": 929, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -1302,7 +1307,8 @@
         "name": "W", 
         "unicode": 87, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -1414,6 +1420,7 @@
         "name": "B", 
         "unicode": 66, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -1787,7 +1794,8 @@
         "name": "uni25CC", 
         "unicode": 9676, 
         "contours": [
-            16
+            16, 
+            12
         ]
     }, 
     {
@@ -1876,6 +1884,7 @@
         "unicode": 8361, 
         "contours": [
             1, 
+            3, 
             4, 
             7
         ]
@@ -2721,7 +2730,8 @@
         "name": "uni20B4", 
         "unicode": 8372, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -2791,6 +2801,7 @@
         "name": "ij", 
         "unicode": 307, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -3253,6 +3264,7 @@
         "name": "plusminus", 
         "unicode": 177, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -3260,7 +3272,8 @@
         "name": "yen", 
         "unicode": 165, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -3366,6 +3379,7 @@
         "name": "uni20B1", 
         "unicode": 8369, 
         "contours": [
+            1, 
             2, 
             4
         ]
@@ -3558,7 +3572,8 @@
         "name": "uni01F5", 
         "unicode": 501, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -4463,7 +4478,8 @@
         "name": "asterisk", 
         "unicode": 42, 
         "contours": [
-            1
+            1, 
+            4
         ]
     }, 
     {
@@ -4540,7 +4556,8 @@
         "name": "uni255E", 
         "unicode": 9566, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -5024,6 +5041,7 @@
         "name": "ampersand", 
         "unicode": 38, 
         "contours": [
+            1, 
             2, 
             3
         ]
@@ -5082,7 +5100,8 @@
         "name": "Ohorndotbelow", 
         "unicode": 7906, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -5341,7 +5360,8 @@
         "name": "Ohorngrave", 
         "unicode": 7900, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -5453,6 +5473,7 @@
         "name": "uni2117", 
         "unicode": 8471, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -5460,6 +5481,7 @@
         "name": "uni2116", 
         "unicode": 8470, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -5530,6 +5552,7 @@
         "name": "dkshade", 
         "unicode": 9619, 
         "contours": [
+            73, 
             46
         ]
     }, 
@@ -5784,6 +5807,7 @@
         "name": "uni0420", 
         "unicode": 1056, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -6240,14 +6264,16 @@
         "name": "uni2559", 
         "unicode": 9561, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
         "name": "uni2558", 
         "unicode": 9560, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -6583,6 +6609,7 @@
         "name": "uni023A", 
         "unicode": 570, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -6779,6 +6806,7 @@
         "name": "Thorn", 
         "unicode": 222, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -7297,7 +7325,8 @@
         "name": "Ohorn", 
         "unicode": 416, 
         "contours": [
-            2
+            2, 
+            3
         ]
     }, 
     {
@@ -7339,6 +7368,8 @@
         "name": "Aringacute", 
         "unicode": 506, 
         "contours": [
+            3, 
+            4, 
             5
         ]
     }, 
@@ -8208,6 +8239,7 @@
         "name": "uni04BF", 
         "unicode": 1215, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -8215,6 +8247,7 @@
         "name": "uni04BE", 
         "unicode": 1214, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -8854,7 +8887,8 @@
         "name": "dagger", 
         "unicode": 8224, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -9052,6 +9086,7 @@
         "name": "uni01EC", 
         "unicode": 492, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -9439,6 +9474,7 @@
         "unicode": 36, 
         "contours": [
             1, 
+            2, 
             3, 
             5
         ]
@@ -9566,6 +9602,7 @@
         "name": "twothirds", 
         "unicode": 8532, 
         "contours": [
+            1, 
             3
         ]
     }, 
@@ -10274,6 +10311,7 @@
         "name": "ltshade", 
         "unicode": 9617, 
         "contours": [
+            46, 
             30
         ]
     }, 
@@ -10345,13 +10383,15 @@
         "unicode": 182, 
         "contours": [
             1, 
-            2
+            2, 
+            3
         ]
     }, 
     {
         "name": "nine", 
         "unicode": 57, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -10671,7 +10711,8 @@
         "name": "shade", 
         "unicode": 9618, 
         "contours": [
-            60
+            60, 
+            85
         ]
     }, 
     {
@@ -11127,7 +11168,8 @@
         "name": "sterling", 
         "unicode": 163, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -11275,6 +11317,7 @@
         "name": "IJ", 
         "unicode": 306, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -11493,6 +11536,7 @@
         "name": "Rcommaaccent", 
         "unicode": 342, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -13590,7 +13634,8 @@
         "name": "Ohorntilde", 
         "unicode": 7904, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -14005,7 +14050,8 @@
         "name": "gamma", 
         "unicode": 947, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -14092,6 +14138,7 @@
         "name": "registered", 
         "unicode": 174, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -14171,7 +14218,8 @@
         "name": "Ohornacute", 
         "unicode": 7898, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -14598,7 +14646,8 @@
         "name": "kcommaaccent", 
         "unicode": 311, 
         "contours": [
-            2
+            2, 
+            3
         ]
     }, 
     {
@@ -14619,6 +14668,7 @@
         "name": "P", 
         "unicode": 80, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -15292,6 +15342,7 @@
         "name": "six", 
         "unicode": 54, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -15341,7 +15392,8 @@
         "name": "uni045F", 
         "unicode": 1119, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -15397,7 +15449,8 @@
         "name": "uni2561", 
         "unicode": 9569, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -15439,7 +15492,9 @@
         "name": "Q", 
         "unicode": 81, 
         "contours": [
-            2
+            1, 
+            2, 
+            3
         ]
     }, 
     {
@@ -15453,7 +15508,8 @@
         "name": "Ohornhookabove", 
         "unicode": 7902, 
         "contours": [
-            3
+            3, 
+            4
         ]
     }, 
     {
@@ -15502,7 +15558,8 @@
         "name": "kgreenlandic", 
         "unicode": 312, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -16274,6 +16331,7 @@
         "name": "R", 
         "unicode": 82, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -16592,14 +16650,16 @@
         "name": "uni255C", 
         "unicode": 9564, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
         "name": "uni255B", 
         "unicode": 9563, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -16811,7 +16871,8 @@
         "name": "uni2555", 
         "unicode": 9557, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -16832,7 +16893,8 @@
         "name": "uni2556", 
         "unicode": 9558, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -16853,14 +16915,16 @@
         "name": "uni2553", 
         "unicode": 9555, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
         "name": "uni2552", 
         "unicode": 9554, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -17073,6 +17137,7 @@
         "name": "uni048E", 
         "unicode": 1166, 
         "contours": [
+            1, 
             2
         ]
     }, 
@@ -17192,6 +17257,7 @@
         "name": "Racute", 
         "unicode": 340, 
         "contours": [
+            2, 
             3
         ]
     }, 
@@ -17347,7 +17413,8 @@
         "name": "uni1D4D", 
         "unicode": 7501, 
         "contours": [
-            2
+            2, 
+            3
         ]
     }, 
     {
@@ -17830,7 +17897,8 @@
         "name": "daggerdbl", 
         "unicode": 8225, 
         "contours": [
-            1
+            1, 
+            3
         ]
     }, 
     {
@@ -18096,6 +18164,7 @@
         "name": "aringacute", 
         "unicode": 507, 
         "contours": [
+            4, 
             5
         ]
     }, 
@@ -18173,7 +18242,8 @@
         "name": "uni049F", 
         "unicode": 1183, 
         "contours": [
-            1
+            1, 
+            2
         ]
     }, 
     {
@@ -18841,6 +18911,7 @@
         "name": "uni01ED", 
         "unicode": 493, 
         "contours": [
+            3, 
             4
         ]
     }, 
@@ -18943,6 +19014,3663 @@
         ]
     }, 
     {
+        "name": "three.subs", 
+        "unicode": 8323, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "one.subs", 
+        "unicode": 8321, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni25C6", 
+        "unicode": 9670, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni25C1", 
+        "unicode": 9665, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni25C0", 
+        "unicode": 9664, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni25C9", 
+        "unicode": 9673, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "seven.sups", 
+        "unicode": 8311, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2049", 
+        "unicode": 8265, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni2048", 
+        "unicode": 8264, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni2047", 
+        "unicode": 8263, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni25BD", 
+        "unicode": 9661, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni25B6", 
+        "unicode": 9654, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni25B7", 
+        "unicode": 9655, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni25B3", 
+        "unicode": 9651, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni20B9", 
+        "unicode": 8377, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni20B8", 
+        "unicode": 8376, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni20BD", 
+        "unicode": 8381, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni20BF", 
+        "unicode": 8383, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni20BA", 
+        "unicode": 8378, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "f_f_i", 
+        "unicode": 64259, 
+        "contours": [
+            1, 
+            2, 
+            4
+        ]
+    }, 
+    {
+        "name": "fraction", 
+        "unicode": 8260, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni1E9E", 
+        "unicode": 7838, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "semicolon", 
+        "unicode": 59, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "zero.sups", 
+        "unicode": 8304, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni018F", 
+        "unicode": 399, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "nine.subs", 
+        "unicode": 8329, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "space", 
+        "unicode": 32, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": "uni2120", 
+        "unicode": 8480, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "f_f", 
+        "unicode": 64256, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "seven.subs", 
+        "unicode": 8327, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "parenright.sups", 
+        "unicode": 8318, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2713", 
+        "unicode": 10003, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0259", 
+        "unicode": 601, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "zero.subs", 
+        "unicode": 8320, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni2E3B", 
+        "unicode": 11835, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2E3A", 
+        "unicode": 11834, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2010", 
+        "unicode": 8208, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "nine.sups", 
+        "unicode": 8313, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "four.subs", 
+        "unicode": 8324, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni2610", 
+        "unicode": 9744, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2611", 
+        "unicode": 9745, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "six.subs", 
+        "unicode": 8326, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "five.subs", 
+        "unicode": 8325, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "six.sups", 
+        "unicode": 8310, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "parenright.subs", 
+        "unicode": 8334, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "eight.subs", 
+        "unicode": 8328, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2752", 
+        "unicode": 10066, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2197", 
+        "unicode": 8599, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2196", 
+        "unicode": 8598, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2199", 
+        "unicode": 8601, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2198", 
+        "unicode": 8600, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "two.subs", 
+        "unicode": 8322, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "twodotenleader", 
+        "unicode": 8229, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "f_f_l", 
+        "unicode": 64260, 
+        "contours": [
+            1, 
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "eight.sups", 
+        "unicode": 8312, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "parenleft.subs", 
+        "unicode": 8333, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "parenleft.sups", 
+        "unicode": 8317, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "four.sups", 
+        "unicode": 8308, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "hyphen", 
+        "unicode": 45, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "i.sups", 
+        "unicode": 8305, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "five.sups", 
+        "unicode": 8309, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "commaaccent", 
+        "unicode": 63171, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "s_t", 
+        "unicode": 64262, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni207C", 
+        "unicode": 8316, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2785", 
+        "unicode": 10117, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni207A", 
+        "unicode": 8314, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni208C", 
+        "unicode": 8332, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni208A", 
+        "unicode": 8330, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uniF8FF", 
+        "unicode": 63743, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni25C7", 
+        "unicode": 9671, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2781", 
+        "unicode": 10113, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2761", 
+        "unicode": 10081, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2784", 
+        "unicode": 10116, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2786", 
+        "unicode": 10118, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2787", 
+        "unicode": 10119, 
+        "contours": [
+            5
+        ]
+    }, 
+    {
+        "name": "uni2780", 
+        "unicode": 10112, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2782", 
+        "unicode": 10114, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2783", 
+        "unicode": 10115, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni2788", 
+        "unicode": 10120, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni208B", 
+        "unicode": 8331, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni207B", 
+        "unicode": 8315, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni275C", 
+        "unicode": 10076, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni275B", 
+        "unicode": 10075, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni275E", 
+        "unicode": 10078, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni275D", 
+        "unicode": 10077, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "eight.alt", 
+        "unicode": 63496, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "one.sups", 
+        "unicode": 63499, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "six.sinf", 
+        "unicode": 63514, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "one.alt", 
+        "unicode": 63489, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uniE0FF", 
+        "unicode": 57599, 
+        "contours": [
+            7
+        ]
+    }, 
+    {
+        "name": "three.sups", 
+        "unicode": 63501, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "ubuntu", 
+        "unicode": 61952, 
+        "contours": [
+            14
+        ]
+    }, 
+    {
+        "name": "twosevenths", 
+        "unicode": 62727, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "seven.sups", 
+        "unicode": 63505, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "five.alt", 
+        "unicode": 63493, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "nine.sups", 
+        "unicode": 63507, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "two.alt", 
+        "unicode": 63490, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uniF0FF", 
+        "unicode": 61695, 
+        "contours": [
+            7
+        ]
+    }, 
+    {
+        "name": "fi", 
+        "unicode": 61441, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "fl", 
+        "unicode": 61442, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "nine.alt", 
+        "unicode": 63497, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "nonmarkingreturn", 
+        "unicode": 13, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": ".null", 
+        "unicode": 29, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": "four.sinf", 
+        "unicode": 63512, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uniF000", 
+        "unicode": 61440, 
+        "contours": [
+            14
+        ]
+    }, 
+    {
+        "name": "seven.alt", 
+        "unicode": 63495, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "three.sinf", 
+        "unicode": 63511, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "one.sinf", 
+        "unicode": 63509, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "zero.sinf", 
+        "unicode": 63508, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "three.alt", 
+        "unicode": 63491, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "twofifths", 
+        "unicode": 8534, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "fiveninths", 
+        "unicode": 62735, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "eight.sups", 
+        "unicode": 63506, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "seven.sinf", 
+        "unicode": 63515, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "threesevenths", 
+        "unicode": 62728, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "sevenninths", 
+        "unicode": 62736, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "four.sups", 
+        "unicode": 63502, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "threefifths", 
+        "unicode": 8535, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "zero.alt", 
+        "unicode": 63488, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "fourninths", 
+        "unicode": 62734, 
+        "contours": [
+            5
+        ]
+    }, 
+    {
+        "name": "twoninths", 
+        "unicode": 62733, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "nine.sinf", 
+        "unicode": 63517, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uniEFFD", 
+        "unicode": 61437, 
+        "contours": [
+            9, 
+            7
+        ]
+    }, 
+    {
+        "name": "foursevenths", 
+        "unicode": 62729, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "onesixth", 
+        "unicode": 8537, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "oneninth", 
+        "unicode": 62732, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "four.alt", 
+        "unicode": 63492, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "five.sinf", 
+        "unicode": 63513, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "eight.sinf", 
+        "unicode": 63516, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "six.sups", 
+        "unicode": 63504, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "oneseventh", 
+        "unicode": 62726, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "sixsevenths", 
+        "unicode": 62731, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "fivesevenths", 
+        "unicode": 62730, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "fivesixths", 
+        "unicode": 8538, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "fourfifths", 
+        "unicode": 8536, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "eightninths", 
+        "unicode": 62737, 
+        "contours": [
+            6
+        ]
+    }, 
+    {
+        "name": "five.sups", 
+        "unicode": 63503, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "two.sinf", 
+        "unicode": 63510, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "two.sups", 
+        "unicode": 63500, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "zero.sups", 
+        "unicode": 63498, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "six.alt", 
+        "unicode": 63494, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "onefifth", 
+        "unicode": 8533, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni220C", 
+        "unicode": 8716, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni220E", 
+        "unicode": 8718, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "logicaland", 
+        "unicode": 8743, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "therefore", 
+        "unicode": 8756, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "onedotenleader", 
+        "unicode": 8228, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "notelement", 
+        "unicode": 8713, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "gradient", 
+        "unicode": 8711, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "logicalor", 
+        "unicode": 8744, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2218", 
+        "unicode": 8728, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2216", 
+        "unicode": 8726, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2213", 
+        "unicode": 8723, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "congruent", 
+        "unicode": 8773, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni226B", 
+        "unicode": 8811, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni226A", 
+        "unicode": 8810, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "union", 
+        "unicode": 8746, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2043", 
+        "unicode": 8259, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2040", 
+        "unicode": 8256, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni204B", 
+        "unicode": 8267, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "suchthat", 
+        "unicode": 8715, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2263", 
+        "unicode": 8803, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni2262", 
+        "unicode": 8802, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2204", 
+        "unicode": 8708, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni20BC", 
+        "unicode": 8380, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni205D", 
+        "unicode": 8285, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2124", 
+        "unicode": 8484, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni27C2", 
+        "unicode": 10178, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "dotmath", 
+        "unicode": 8901, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2270", 
+        "unicode": 8816, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2271", 
+        "unicode": 8817, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "arrowdblright", 
+        "unicode": 8658, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2A2F", 
+        "unicode": 10799, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni26AF", 
+        "unicode": 9903, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni26AD", 
+        "unicode": 9901, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni26AE", 
+        "unicode": 9902, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni211D", 
+        "unicode": 8477, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni211A", 
+        "unicode": 8474, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2119", 
+        "unicode": 8473, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2115", 
+        "unicode": 8469, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni051C", 
+        "unicode": 1308, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni051B", 
+        "unicode": 1307, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni051A", 
+        "unicode": 1306, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni051D", 
+        "unicode": 1309, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2241", 
+        "unicode": 8769, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2243", 
+        "unicode": 8771, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2249", 
+        "unicode": 8777, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "circleplus", 
+        "unicode": 8853, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2102", 
+        "unicode": 8450, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni210D", 
+        "unicode": 8461, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2254", 
+        "unicode": 8788, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni2259", 
+        "unicode": 8793, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni225C", 
+        "unicode": 8796, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni27E9", 
+        "unicode": 10217, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni27E8", 
+        "unicode": 10216, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2B58", 
+        "unicode": 11096, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "propersuperset", 
+        "unicode": 8835, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "notsubset", 
+        "unicode": 8836, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2011", 
+        "unicode": 8209, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2016", 
+        "unicode": 8214, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0528", 
+        "unicode": 1320, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0529", 
+        "unicode": 1321, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0526", 
+        "unicode": 1318, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0527", 
+        "unicode": 1319, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0524", 
+        "unicode": 1316, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0525", 
+        "unicode": 1317, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni052F", 
+        "unicode": 1327, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni052E", 
+        "unicode": 1326, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "emptyset", 
+        "unicode": 8709, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2027", 
+        "unicode": 8231, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2023", 
+        "unicode": 8227, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21F5", 
+        "unicode": 8693, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni23DE", 
+        "unicode": 9182, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni23DF", 
+        "unicode": 9183, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni202F", 
+        "unicode": 8239, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": "uni2289", 
+        "unicode": 8841, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2288", 
+        "unicode": 8840, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2285", 
+        "unicode": 8837, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "existential", 
+        "unicode": 8707, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni203F", 
+        "unicode": 8255, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni203D", 
+        "unicode": 8253, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2E18", 
+        "unicode": 11800, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2031", 
+        "unicode": 8241, 
+        "contours": [
+            9
+        ]
+    }, 
+    {
+        "name": "uni2036", 
+        "unicode": 8246, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2037", 
+        "unicode": 8247, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2035", 
+        "unicode": 8245, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "arrowdblboth", 
+        "unicode": 8660, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "propersubset", 
+        "unicode": 8834, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "reflexsubset", 
+        "unicode": 8838, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "proportional", 
+        "unicode": 8733, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "similar", 
+        "unicode": 8764, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni03CF", 
+        "unicode": 975, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni299D", 
+        "unicode": 10653, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni299B", 
+        "unicode": 10651, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21CB", 
+        "unicode": 8651, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21CC", 
+        "unicode": 8652, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21CA", 
+        "unicode": 8650, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "element", 
+        "unicode": 8712, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C3", 
+        "unicode": 8643, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C2", 
+        "unicode": 8642, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C1", 
+        "unicode": 8641, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C0", 
+        "unicode": 8640, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C7", 
+        "unicode": 8647, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C6", 
+        "unicode": 8646, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21C5", 
+        "unicode": 8645, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21C4", 
+        "unicode": 8644, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21C9", 
+        "unicode": 8649, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21C8", 
+        "unicode": 8648, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni058F", 
+        "unicode": 1423, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2983", 
+        "unicode": 10627, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2984", 
+        "unicode": 10628, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "angle", 
+        "unicode": 8736, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "reflexsuperset", 
+        "unicode": 8839, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni222F", 
+        "unicode": 8751, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni222E", 
+        "unicode": 8750, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni222D", 
+        "unicode": 8749, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni222C", 
+        "unicode": 8748, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni21B0", 
+        "unicode": 8624, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21B1", 
+        "unicode": 8625, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21B2", 
+        "unicode": 8626, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21B3", 
+        "unicode": 8627, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21BC", 
+        "unicode": 8636, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21BD", 
+        "unicode": 8637, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21BE", 
+        "unicode": 8638, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21BF", 
+        "unicode": 8639, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2226", 
+        "unicode": 8742, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2225", 
+        "unicode": 8741, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2224", 
+        "unicode": 8740, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2223", 
+        "unicode": 8739, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2222", 
+        "unicode": 8738, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2221", 
+        "unicode": 8737, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2038", 
+        "unicode": 8248, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni230A", 
+        "unicode": 8970, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni230B", 
+        "unicode": 8971, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2308", 
+        "unicode": 8968, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2309", 
+        "unicode": 8969, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21A5", 
+        "unicode": 8613, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21A4", 
+        "unicode": 8612, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21A7", 
+        "unicode": 8615, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni21A6", 
+        "unicode": 8614, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni2235", 
+        "unicode": 8757, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni2236", 
+        "unicode": 8758, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni2230", 
+        "unicode": 8752, 
+        "contours": [
+            5
+        ]
+    }, 
+    {
+        "name": "uni223D", 
+        "unicode": 8765, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "asteriskmath", 
+        "unicode": 8727, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "universal", 
+        "unicode": 8704, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "NULL", 
+        "unicode": 0, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": "uni205F", 
+        "unicode": 8287, 
+        "contours": [
+            0
+        ]
+    }, 
+    {
+        "name": "uniE000", 
+        "unicode": 57344, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni097E", 
+        "unicode": 2430, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni096B", 
+        "unicode": 2411, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0908", 
+        "unicode": 2312, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0909", 
+        "unicode": 2313, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0904", 
+        "unicode": 2308, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0905", 
+        "unicode": 2309, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0906", 
+        "unicode": 2310, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0907", 
+        "unicode": 2311, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0901", 
+        "unicode": 2305, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0903", 
+        "unicode": 2307, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0957", 
+        "unicode": 2391, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni090D", 
+        "unicode": 2317, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni090E", 
+        "unicode": 2318, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni090F", 
+        "unicode": 2319, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni090A", 
+        "unicode": 2314, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni090B", 
+        "unicode": 2315, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni090C", 
+        "unicode": 2316, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni097F", 
+        "unicode": 2431, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0FD5", 
+        "unicode": 4053, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0916", 
+        "unicode": 2326, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0923", 
+        "unicode": 2339, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0913", 
+        "unicode": 2323, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0940", 
+        "unicode": 2368, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0941", 
+        "unicode": 2369, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0942", 
+        "unicode": 2370, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0943", 
+        "unicode": 2371, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0944", 
+        "unicode": 2372, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0945", 
+        "unicode": 2373, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0946", 
+        "unicode": 2374, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0947", 
+        "unicode": 2375, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0948", 
+        "unicode": 2376, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0949", 
+        "unicode": 2377, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni094A", 
+        "unicode": 2378, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni094B", 
+        "unicode": 2379, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni094C", 
+        "unicode": 2380, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni094D", 
+        "unicode": 2381, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni094F", 
+        "unicode": 2383, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0979", 
+        "unicode": 2425, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni093F", 
+        "unicode": 2367, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0974", 
+        "unicode": 2420, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0955", 
+        "unicode": 2389, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni093A", 
+        "unicode": 2362, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni093C", 
+        "unicode": 2364, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni093B", 
+        "unicode": 2363, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni093E", 
+        "unicode": 2366, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni093D", 
+        "unicode": 2365, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0939", 
+        "unicode": 2361, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0938", 
+        "unicode": 2360, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0931", 
+        "unicode": 2353, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0930", 
+        "unicode": 2352, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0933", 
+        "unicode": 2355, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0935", 
+        "unicode": 2357, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0937", 
+        "unicode": 2359, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni097D", 
+        "unicode": 2429, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni097A", 
+        "unicode": 2426, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni097C", 
+        "unicode": 2428, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni097B", 
+        "unicode": 2427, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0975", 
+        "unicode": 2421, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0977", 
+        "unicode": 2423, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0976", 
+        "unicode": 2422, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0971", 
+        "unicode": 2417, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0970", 
+        "unicode": 2416, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0973", 
+        "unicode": 2419, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0972", 
+        "unicode": 2418, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0934", 
+        "unicode": 2356, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni0936", 
+        "unicode": 2358, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni095F", 
+        "unicode": 2399, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0926", 
+        "unicode": 2342, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0927", 
+        "unicode": 2343, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0924", 
+        "unicode": 2340, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0925", 
+        "unicode": 2341, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0922", 
+        "unicode": 2338, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0920", 
+        "unicode": 2336, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0921", 
+        "unicode": 2337, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0928", 
+        "unicode": 2344, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0929", 
+        "unicode": 2345, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni092F", 
+        "unicode": 2351, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni092D", 
+        "unicode": 2349, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni092E", 
+        "unicode": 2350, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni092B", 
+        "unicode": 2347, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni092C", 
+        "unicode": 2348, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni092A", 
+        "unicode": 2346, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni096D", 
+        "unicode": 2413, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0932", 
+        "unicode": 2354, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni091F", 
+        "unicode": 2335, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni091E", 
+        "unicode": 2334, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni091D", 
+        "unicode": 2333, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni091C", 
+        "unicode": 2332, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni091B", 
+        "unicode": 2331, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni091A", 
+        "unicode": 2330, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0968", 
+        "unicode": 2408, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0962", 
+        "unicode": 2402, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0963", 
+        "unicode": 2403, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0960", 
+        "unicode": 2400, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0961", 
+        "unicode": 2401, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0966", 
+        "unicode": 2406, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0967", 
+        "unicode": 2407, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0964", 
+        "unicode": 2404, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0965", 
+        "unicode": 2405, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni096C", 
+        "unicode": 2412, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni096A", 
+        "unicode": 2410, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni096F", 
+        "unicode": 2415, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni096E", 
+        "unicode": 2414, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0919", 
+        "unicode": 2329, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0918", 
+        "unicode": 2328, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0917", 
+        "unicode": 2327, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0915", 
+        "unicode": 2325, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0914", 
+        "unicode": 2324, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0912", 
+        "unicode": 2322, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0911", 
+        "unicode": 2321, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0910", 
+        "unicode": 2320, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0900", 
+        "unicode": 2304, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0902", 
+        "unicode": 2306, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0959", 
+        "unicode": 2393, 
+        "contours": [
+            2, 
+            4
+        ]
+    }, 
+    {
+        "name": "uni0958", 
+        "unicode": 2392, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uniA8FB", 
+        "unicode": 43259, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni095C", 
+        "unicode": 2396, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni095B", 
+        "unicode": 2395, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni095A", 
+        "unicode": 2394, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni095E", 
+        "unicode": 2398, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni095D", 
+        "unicode": 2397, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0969", 
+        "unicode": 2409, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0953", 
+        "unicode": 2387, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0952", 
+        "unicode": 2386, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0951", 
+        "unicode": 2385, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0950", 
+        "unicode": 2384, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0956", 
+        "unicode": 2390, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0954", 
+        "unicode": 2388, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uniFFFD", 
+        "unicode": 65533, 
+        "contours": [
+            3, 
+            5
+        ]
+    }, 
+    {
+        "name": "uni0E28", 
+        "unicode": 3624, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E4F", 
+        "unicode": 3663, 
+        "contours": [
+            4
+        ]
+    }, 
+    {
+        "name": "uni0E4B", 
+        "unicode": 3659, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0E45", 
+        "unicode": 3653, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0E47", 
+        "unicode": 3655, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E40", 
+        "unicode": 3648, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E41", 
+        "unicode": 3649, 
+        "contours": [
+            2, 
+            4
+        ]
+    }, 
+    {
+        "name": "uni0E42", 
+        "unicode": 3650, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E43", 
+        "unicode": 3651, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E59", 
+        "unicode": 3673, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E58", 
+        "unicode": 3672, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E56", 
+        "unicode": 3670, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E55", 
+        "unicode": 3669, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E54", 
+        "unicode": 3668, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E53", 
+        "unicode": 3667, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E52", 
+        "unicode": 3666, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E50", 
+        "unicode": 3664, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E0A", 
+        "unicode": 3594, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E29", 
+        "unicode": 3625, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E22", 
+        "unicode": 3618, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E23", 
+        "unicode": 3619, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E20", 
+        "unicode": 3616, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E21", 
+        "unicode": 3617, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E26", 
+        "unicode": 3622, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E27", 
+        "unicode": 3623, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E24", 
+        "unicode": 3620, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E05", 
+        "unicode": 3589, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E2B", 
+        "unicode": 3627, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E07", 
+        "unicode": 3591, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E2D", 
+        "unicode": 3629, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E2E", 
+        "unicode": 3630, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E5B", 
+        "unicode": 3675, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E5A", 
+        "unicode": 3674, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E1C", 
+        "unicode": 3612, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E1B", 
+        "unicode": 3611, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E1A", 
+        "unicode": 3610, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E1F", 
+        "unicode": 3615, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E1E", 
+        "unicode": 3614, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E13", 
+        "unicode": 3603, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E12", 
+        "unicode": 3602, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E11", 
+        "unicode": 3601, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E17", 
+        "unicode": 3607, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E16", 
+        "unicode": 3606, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E15", 
+        "unicode": 3605, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E19", 
+        "unicode": 3609, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E4D", 
+        "unicode": 3661, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E4E", 
+        "unicode": 3662, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni210A", 
+        "unicode": 8458, 
+        "contours": [
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E57", 
+        "unicode": 3671, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E14", 
+        "unicode": 3604, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E4A", 
+        "unicode": 3658, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E4C", 
+        "unicode": 3660, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E48", 
+        "unicode": 3656, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0E49", 
+        "unicode": 3657, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E44", 
+        "unicode": 3652, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E46", 
+        "unicode": 3654, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E51", 
+        "unicode": 3665, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E10", 
+        "unicode": 3600, 
+        "contours": [
+            1, 
+            5
+        ]
+    }, 
+    {
+        "name": "uni0E18", 
+        "unicode": 3608, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uniF6D7", 
+        "unicode": 63191, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uniF6D8", 
+        "unicode": 63192, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E25", 
+        "unicode": 3621, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E01", 
+        "unicode": 3585, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0E02", 
+        "unicode": 3586, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E03", 
+        "unicode": 3587, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E04", 
+        "unicode": 3588, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E06", 
+        "unicode": 3590, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E08", 
+        "unicode": 3592, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E09", 
+        "unicode": 3593, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E0B", 
+        "unicode": 3595, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E0C", 
+        "unicode": 3596, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E0D", 
+        "unicode": 3597, 
+        "contours": [
+            1, 
+            4
+        ]
+    }, 
+    {
+        "name": "uni0E0E", 
+        "unicode": 3598, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E0F", 
+        "unicode": 3599, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E2F", 
+        "unicode": 3631, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E2C", 
+        "unicode": 3628, 
+        "contours": [
+            1, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E1D", 
+        "unicode": 3613, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E2A", 
+        "unicode": 3626, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E3F", 
+        "unicode": 3647, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E3A", 
+        "unicode": 3642, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
+        "name": "uni0E39", 
+        "unicode": 3641, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E35", 
+        "unicode": 3637, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E38", 
+        "unicode": 3640, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E34", 
+        "unicode": 3636, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E37", 
+        "unicode": 3639, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E36", 
+        "unicode": 3638, 
+        "contours": [
+            2, 
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E31", 
+        "unicode": 3633, 
+        "contours": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "name": "uni0E30", 
+        "unicode": 3632, 
+        "contours": [
+            2, 
+            4
+        ]
+    }, 
+    {
+        "name": "uni0E33", 
+        "unicode": 3635, 
+        "contours": [
+            3
+        ]
+    }, 
+    {
+        "name": "uni0E32", 
+        "unicode": 3634, 
+        "contours": [
+            1
+        ]
+    }, 
+    {
         "name": "uni21DF", 
         "unicode": 8671, 
         "contours": [
@@ -18971,38 +22699,10 @@
         ]
     }, 
     {
-        "name": "uniF6C3", 
-        "unicode": 63171, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "fraction", 
-        "unicode": 8260, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
         "name": "uni21B9", 
         "unicode": 8633, 
         "contours": [
             4
-        ]
-    }, 
-    {
-        "name": "space", 
-        "unicode": 32, 
-        "contours": [
-            0
-        ]
-    }, 
-    {
-        "name": "uni21B3", 
-        "unicode": 8627, 
-        "contours": [
-            1
         ]
     }, 
     {
@@ -19048,13 +22748,6 @@
         ]
     }, 
     {
-        "name": "hyphen", 
-        "unicode": 45, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
         "name": "uni21E5", 
         "unicode": 8677, 
         "contours": [
@@ -19090,41 +22783,6 @@
         ]
     }, 
     {
-        "name": "uni2197", 
-        "unicode": 8599, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2196", 
-        "unicode": 8598, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2199", 
-        "unicode": 8601, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2198", 
-        "unicode": 8600, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "semicolon", 
-        "unicode": 59, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
         "name": "uni21DE", 
         "unicode": 8670, 
         "contours": [
@@ -19146,22 +22804,8 @@
         ]
     }, 
     {
-        "name": "uni03CF", 
-        "unicode": 975, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
         "name": "uniA917", 
         "unicode": 43287, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni018F", 
-        "unicode": 399, 
         "contours": [
             2
         ]
@@ -19241,13 +22885,6 @@
         "unicode": 43285, 
         "contours": [
             2
-        ]
-    }, 
-    {
-        "name": "nonmarkingreturn", 
-        "unicode": 13, 
-        "contours": [
-            0
         ]
     }, 
     {
@@ -19332,14 +22969,6 @@
         "unicode": 43305, 
         "contours": [
             1
-        ]
-    }, 
-    {
-        "name": "uni2074", 
-        "unicode": 8308, 
-        "contours": [
-            1, 
-            2
         ]
     }, 
     {
@@ -19434,34 +23063,6 @@
         ]
     }, 
     {
-        "name": "uni20B9", 
-        "unicode": 8377, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni20BD", 
-        "unicode": 8381, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni20BA", 
-        "unicode": 8378, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni20BC", 
-        "unicode": 8380, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
         "name": "uniA90D", 
         "unicode": 43277, 
         "contours": [
@@ -19476,40 +23077,10 @@
         ]
     }, 
     {
-        "name": "replacementCharacter", 
-        "unicode": 65533, 
-        "contours": [
-            3, 
-            5
-        ]
-    }, 
-    {
-        "name": "uni1E9E", 
-        "unicode": 7838, 
-        "contours": [
-            1, 
-            2
-        ]
-    }, 
-    {
         "name": "eMark-kayahli", 
         "unicode": 43303, 
         "contours": [
             1
-        ]
-    }, 
-    {
-        "name": "uni0259", 
-        "unicode": 601, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "NULL", 
-        "unicode": 0, 
-        "contours": [
-            0
         ]
     }, 
     {
@@ -19576,42 +23147,6 @@
         ]
     }, 
     {
-        "name": "uni2010", 
-        "unicode": 8208, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2011", 
-        "unicode": 8209, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uniFB04", 
-        "unicode": 64260, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "twodotenleader", 
-        "unicode": 8229, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uniFB03", 
-        "unicode": 64259, 
-        "contours": [
-            1, 
-            2
-        ]
-    }, 
-    {
         "name": "uniEE01", 
         "unicode": 60929, 
         "contours": [
@@ -19633,104 +23168,6 @@
         ]
     }, 
     {
-        "name": "uni2027", 
-        "unicode": 8231, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni25C1", 
-        "unicode": 9665, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni25C0", 
-        "unicode": 9664, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni25BD", 
-        "unicode": 9661, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni25B6", 
-        "unicode": 9654, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni25B7", 
-        "unicode": 9655, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni25B3", 
-        "unicode": 9651, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2076", 
-        "unicode": 8310, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2077", 
-        "unicode": 8311, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2075", 
-        "unicode": 8309, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2070", 
-        "unicode": 8304, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2078", 
-        "unicode": 8312, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2079", 
-        "unicode": 8313, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "emptyset", 
-        "unicode": 8709, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
         "name": "uniA78C", 
         "unicode": 42892, 
         "contours": [
@@ -19745,91 +23182,6 @@
         ]
     }, 
     {
-        "name": "uni25C7", 
-        "unicode": 9671, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni25C6", 
-        "unicode": 9670, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2089", 
-        "unicode": 8329, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2088", 
-        "unicode": 8328, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2083", 
-        "unicode": 8323, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2082", 
-        "unicode": 8322, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2081", 
-        "unicode": 8321, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2080", 
-        "unicode": 8320, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2087", 
-        "unicode": 8327, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2086", 
-        "unicode": 8326, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2085", 
-        "unicode": 8325, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uni2084", 
-        "unicode": 8324, 
-        "contours": [
-            1, 
-            2
-        ]
-    }, 
-    {
         "name": "uni25B9", 
         "unicode": 9657, 
         "contours": [
@@ -19841,20 +23193,6 @@
         "unicode": 10130, 
         "contours": [
             3
-        ]
-    }, 
-    {
-        "name": "uni2611", 
-        "unicode": 9745, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2071", 
-        "unicode": 8305, 
-        "contours": [
-            2
         ]
     }, 
     {
@@ -19893,24 +23231,10 @@
         ]
     }, 
     {
-        "name": "uni2781", 
-        "unicode": 10113, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
         "name": "uni2790", 
         "unicode": 10128, 
         "contours": [
             2
-        ]
-    }, 
-    {
-        "name": "uni2788", 
-        "unicode": 10120, 
-        "contours": [
-            4
         ]
     }, 
     {
@@ -19928,38 +23252,10 @@
         ]
     }, 
     {
-        "name": "uni2610", 
-        "unicode": 9744, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
-        "name": "uni2787", 
-        "unicode": 10119, 
-        "contours": [
-            5
-        ]
-    }, 
-    {
         "name": "uni25BF", 
         "unicode": 9663, 
         "contours": [
             2
-        ]
-    }, 
-    {
-        "name": "uni2782", 
-        "unicode": 10114, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2783", 
-        "unicode": 10115, 
-        "contours": [
-            4
         ]
     }, 
     {
@@ -19977,13 +23273,6 @@
         ]
     }, 
     {
-        "name": "uni2120", 
-        "unicode": 8480, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
         "name": "uni25B8", 
         "unicode": 9656, 
         "contours": [
@@ -19993,20 +23282,6 @@
     {
         "name": "uniA7B6", 
         "unicode": 42934, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uniFB06", 
-        "unicode": 64262, 
-        "contours": [
-            1
-        ]
-    }, 
-    {
-        "name": "uniFB00", 
-        "unicode": 64256, 
         "contours": [
             1
         ]
@@ -20044,41 +23319,6 @@
         "unicode": 10124, 
         "contours": [
             2
-        ]
-    }, 
-    {
-        "name": "uni2784", 
-        "unicode": 10116, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2785", 
-        "unicode": 10117, 
-        "contours": [
-            4
-        ]
-    }, 
-    {
-        "name": "uni2786", 
-        "unicode": 10118, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2780", 
-        "unicode": 10112, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uni2713", 
-        "unicode": 10003, 
-        "contours": [
-            1
         ]
     }, 
     {
