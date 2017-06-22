@@ -67,20 +67,36 @@ class Status(object):
 
 # Status messages of the test runner protocoll
 
+# Structuring statuses
+#  * begin with "START" and "END"
+#  * have weights < 0
+#  * START statuses have even weight, corresponding END statuses have odd
+#    weights, such that START.weight + 1 == END.weight
+#  * the bigger the weight the bigger is the structure, structuring on a macro-level
+#  * different structures can have the same weights, if they occur on the same level
+#  * ENDTEST is the biggest structuring status
+#
+# Log statuses
+#  * have weights >= 0
+#  * the more important the status the bigger the weight
+#  * ERROR has the biggest weight
+#  * PASS is the lowest status a test can have,
+#    i.e.: a test run must at least yield one log that is >= PASS
+
+
+
 # always allowed:
 INFO = Status('INFO', 0)
 WARN = Status('WARN', 1)
-
-# exeptional, something a programmer must fix
-ERROR = Status('ERROR', 5)
+ERROR = Status('ERROR', 5) #  something a programmer must fix
 
 START = Status('START', -6)
 STARTSECTION = Status('STARTSECTION', -4)
 # only between STARTSECTION and ENDSECTION
 STARTTEST = Status('STARTTEST', -2)
 # only between STARTTEST and ENDTEST
-SKIP = Status('SKIP', 3)
 PASS = Status('PASS', 2)
+SKIP = Status('SKIP', 3)
 FAIL = Status('FAIL', 4) # a status of ERROR will make a test fail as well
 # ends the last test started by STARTTEST
 ENDTEST = Status('ENDTEST', -1)
