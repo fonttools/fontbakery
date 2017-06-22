@@ -3,7 +3,8 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from fontbakery.testrunner import (
-              INFO
+              DEBUG
+            , INFO
             , WARN
             , ERROR
             , SKIP
