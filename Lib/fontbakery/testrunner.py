@@ -102,14 +102,12 @@ class Status(object):
 # result of a test, nor is any of the structuring statuses.
 # A test with SKIP can't (MUST NOT) create any other event.
 
-# Log statuses:
-# always allowed:
+# Log statuses
+# only between STARTTEST and ENDTEST:
 DEBUG = Status('DEBUG', 0) # Silent by default
 INFO = Status('INFO', 2)
 WARN = Status('WARN', 4) # A test that results in WARN may indicate an error, but also may be OK
 ERROR = Status('ERROR', 6) #  something a programmer must fix
-
-# only between STARTTEST and ENDTEST
 PASS = Status('PASS', 1)
  # SKIP is heavier than PASS because it's likely more interesting to
  # see what got skipped, to reveal blind spots.
@@ -318,7 +316,7 @@ class TestRunner(object):
 
   def _get_condition(self, name, iterargs, path=None):
     # conditions are evaluated lazily
-    key = (name, tuple(iterargs))
+    key = (name, iterargs)
     if key not in self._cache['conditions']:
       err, val = self._evaluate_condition(name, iterargs, path)
       self._cache['conditions'][key] = err, val
@@ -681,6 +679,10 @@ class Section(object):
     scopes.sort(key=key, reverse=reverse)
 
     for test, args in self._execute_scopes(iterargs, scopes):
+      # this is the iterargs tuple that will be used as a key for caching
+      # and so on. we could sort it, to ensure it yields in the same
+      # cache locations always, but then again, it is already in a well
+      # defined order, by clustering.
       yield test, tuple(args)
 
 
