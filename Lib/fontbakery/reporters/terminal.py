@@ -45,7 +45,7 @@ from fontbakery.testrunner import (
             , ENDSECTION
             , START
             , END
-            , APIViolationError
+            , ProtocolViolationError
             )
 
 statuses = (
@@ -191,10 +191,12 @@ class FontbakeryReporter(object):
   def receive(self, event):
     status, message, identity = event
     if self._started is None and status != START:
-      raise APIViolationError('Received Event before status START: {} {}.'(status, message))
+      raise ProtocolViolationError('Received Event before status START: '\
+                                      ' {} {}.'.format(status, message))
     if self._ended:
       status, message, identity = event
-      raise APIViolationError('Received Event after status END: {} {}.'(status, message))
+      raise ProtocolViolationError('Received Event after status END: '\
+                                        '{} {}.'.format(status, message))
     self._register(event)
     self._cleanup(event)
     self._output(event)

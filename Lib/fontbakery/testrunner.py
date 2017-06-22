@@ -144,7 +144,13 @@ class APIViolationError(FontBakeryRunnerError):
   def __init__(self, message, result, *args):
     self.message = message
     self.result = result
-    super(APIViolationError, self).__init__(message, result, *args)
+    super(APIViolationError, self).__init__(message, *args)
+
+class ProtocolViolationError(FontBakeryRunnerError):
+  def __init__(self, message, *args):
+    self.message = message
+    super(ProtocolViolationError, self).__init__(message, *args)
+
 
 class FailedTestError(FontBakeryRunnerError):
   def __init__(self, error, traceback, *args):
