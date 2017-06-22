@@ -3,8 +3,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from collections import namedtuple
 from functools import partial, wraps
-from ..testrunner import SKIP, PASS, INFO, WARN, FAIL
-from ..test import FontBakeryTest
+from fontbakery.testrunner import SKIP, PASS, INFO, WARN, FAIL
+from fontbakery.callable import FontBakeryTest
 
 
 _FbloggerAPI = namedtuple('FblogAPI',
@@ -41,6 +41,6 @@ class OldStyleTest(FontBakeryTest):
 
 def oldStyleTest(id, description, *args, **kwds):
     def wrapper(testfunc):
-        return return wraps(func)(
+        return wraps(func)(
                 OldStyleTest(testfunc, id, description, *args, **kwds))
     return wrapper

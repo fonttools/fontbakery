@@ -6,22 +6,16 @@ from fontbakery.testrunner import (
               INFO
             , WARN
             , ERROR
-            , STARTSECTION
-            , STARTTEST
             , SKIP
             , PASS
             , FAIL
-            , ENDTEST
-            , ENDSECTION
-            , START
-            , END
             , distribute_generator
             , Section
             , TestRunner
             , Spec
             )
 from fontbakery.reporters.terminal import TerminalReporter
-from fontbakery.test import condition, test
+from fontbakery.callable import condition, test
 
 conditions={}
 def registerCondition(condition):
