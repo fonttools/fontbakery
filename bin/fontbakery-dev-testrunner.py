@@ -16,6 +16,7 @@ from fontbakery.testrunner import (
             , Spec
             )
 from fontbakery.reporters.terminal import TerminalReporter
+from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.callable import condition, test
 
 conditions={}
@@ -83,10 +84,9 @@ googleSpec = Spec(
 fonts = ['font_1', 'font_2', 'font_3', 'font_4']
 
 
-
 if __name__ == '__main__':
   runner = TestRunner(googleSpec, {'fonts': fonts})
   tr = TerminalReporter(runner=runner, is_async=False, print_progress=True
                                               , collect_results_by='font')
-  distribute_generator(runner.run(), [tr.receive])
-
+  # sr = SerializeReporter(runner=runner, collect_results_by='font')
+  distribute_generator(runner.run(), [tr.receive])# sr.receive
