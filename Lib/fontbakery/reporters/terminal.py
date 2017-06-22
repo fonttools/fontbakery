@@ -45,6 +45,7 @@ from fontbakery.testrunner import (
             , ENDSECTION
             , START
             , END
+            , APIViolationError
             )
 
 statuses = (
@@ -122,12 +123,15 @@ UNICORN = r"""
 
 class FontbakeryReporter(object):
   def __init__(self, is_async=False, runner=None):
+    self._started = None
+    self._ended = None
     self._order = None
-    self._results = []
+    self._results = [] # ENDTEST events in order of appearance
     self._indexes = {}
     self._tick = 0
     self._counter = Counter()
 
+    # Runner should know if it is async!
     self.is_async = is_async
     self.runner = runner
 
@@ -144,7 +148,10 @@ class FontbakeryReporter(object):
 
   def _get_key(self, identity):
     section, test, iterargs = identity
-    return '{}'.format(section), '{}'.format(test), iterargs
+    return ('{}'.format(section) if section else section
+          , '{}'.format(test) if test else test
+          , iterargs
+          )
 
   def _get_index(self, identity):
     key = self._get_key(identity)
@@ -171,6 +178,10 @@ class FontbakeryReporter(object):
     self._tick += 1
     if status == START:
       self._set_order(message)
+      self._started = event
+
+    if status == END:
+      self._ended = event
 
     if status == ENDTEST:
       self._results.append(event)
@@ -178,6 +189,12 @@ class FontbakeryReporter(object):
       self._counter['(not finished)'] -= 1
 
   def receive(self, event):
+    status, message, identity = event
+    if self._started is None and status != START:
+      raise APIViolationError('Received Event before status START: {} {}.'(status, message))
+    if self._ended:
+      status, message, identity = event
+      raise APIViolationError('Received Event after status END: {} {}.'(status, message))
     self._register(event)
     self._cleanup(event)
     self._output(event)
