@@ -28,7 +28,7 @@ from fontbakery.testrunner import (
             , START
             , END
             )
-from .terminal import FontbakeryReporter
+from fontbakery.reporters import FontbakeryReporter
 
 class SerializeReporter(FontbakeryReporter):
   """
