@@ -32,7 +32,8 @@ except ImportError:
 
 
 from fontbakery.testrunner import (
-              INFO
+              DEBUG
+            , INFO
             , WARN
             , ERROR
             , STARTSECTION
@@ -60,7 +61,8 @@ statuses = (
             , START
             , END
             )
-test_statuses = [ERROR, FAIL, SKIP, PASS]
+# these are displayed in the result counters
+test_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
 test_statuses.sort(key=lambda s:s.weight, reverse=True)
 
 RED_STR = '\033[1;31;40m{}\033[0m'.format
@@ -114,7 +116,7 @@ UNICORN = r"""
                           >\  >
                       ,.-' >.'
                      <.'_.''
-              All tests are passing.
+              No test is failing.
     <<Art by Colin J. Randall, cjr, 10mar02>>
 """
 
@@ -235,7 +237,7 @@ class TerminalProgress(FontbakeryReporter):
       if self._print_progress:
         print(self.draw_progressbar().encode('utf-8'))
       print()
-      if self._unicorn and self._counter[PASS.name] == len(self._results):
+      if self._unicorn and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
         unicorn = UNICORN
         if self._use_color:
           unicorn = MAGENTA_STR(UNICORN)
@@ -331,12 +333,13 @@ class TerminalReporter(TerminalProgress):
     self._event_buffers = {}
 
     # logs can occur at any point in the logging protocol
-    # especially INFO, WARNING and ERROR
+    # especially DEBUG, INFO, WARNING and ERROR
     # FAIL, PASS and SKIP are only expected within tests though
     # Log statuses have weights >= 0
     self._log_threshold = min(ERROR.weight + 1 , max(0, log_threshold))
 
     # Use this to silence the output tests
+    # default: no DEBUG output
     self._test_threshold = min(ERROR.weight + 1, max(PASS.weight, test_threshold))
 
     # if this is used we must use async rendering, otherwise we can't
@@ -375,10 +378,10 @@ class TerminalReporter(TerminalProgress):
       print('  ', test.description)
 
     # Log statuses have weights >= 0
-    # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR)
+    # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold and structure_threshold:
       print(' * {}: {}'.format(formatStatus(status, color=self._use_color), message))
-      if (status == ERROR or status == FAIL) and hasattr(message, 'traceback'):
+      if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
     if status == ENDTEST and structure_threshold:

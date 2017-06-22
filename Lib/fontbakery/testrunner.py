@@ -96,22 +96,25 @@ class Status(object):
 #
 # From all the statuses that can occur within a test, the "worst" one
 # is defining for the test overall status:
-# ERROR > FAIL > SKIP > PASS
-# Where a test with no event at all or one with only INFO or WARN will
-# create an ERROR event.
+# ERROR > FAIL > WARN > SKIP > INFO > PASS > DEBUG
+# Anything from WARN to PASS does not make a test fail.
+# A result < PASS creates an ERROR. That means, DEBUG is not a valid
+# result of a test, nor is any of the structuring statuses.
 # A test with SKIP can't (MUST NOT) create any other event.
 
 # Log statuses:
 # always allowed:
-INFO = Status('INFO', 0)
-WARN = Status('WARN', 1)
-ERROR = Status('ERROR', 5) #  something a programmer must fix
+DEBUG = Status('DEBUG', 0) # Silent by default
+INFO = Status('INFO', 2)
+WARN = Status('WARN', 4) # A test that results in WARN may indicate an error, but also may be OK
+ERROR = Status('ERROR', 6) #  something a programmer must fix
+
 # only between STARTTEST and ENDTEST
-PASS = Status('PASS', 2)
+PASS = Status('PASS', 1)
  # SKIP is heavier than PASS because it's likely more interesting to
- # see
+ # see what got skipped, to reveal blind spots.
 SKIP = Status('SKIP', 3)
-FAIL = Status('FAIL', 4) # a status of ERROR will make a test fail as well
+FAIL = Status('FAIL', 5) # a status of ERROR will make a test fail as well
 
 
 # Start of the test-suite. Must be always the first message, even in async mode.
@@ -204,11 +207,11 @@ class TestRunner(object):
     }
 
   def _check_result(self, result):
-    """ Check that the test returned appropriate results:
-       * a tuple (<Status>, message)
-       * if message is an Exception `status` must not be PASS
-       Returns a Tuple which replaces each failing result with a
-       failure message: (<Status FAIL>,<APIViolationError>)
+    """ Check that the test returned a well formed result:
+          a tuple (<Status>, message)
+
+        A boolean Status is allowd and will be transformed to:
+        True <Status: PASS>, False <Status: FAIL>
 
        Tests will be implemented by other parties. This is to
        help implementors creating good tests, to spot erroneous
@@ -237,11 +240,6 @@ class TestRunner(object):
         'Result item `status` must be an instance of '
         'Status, but it is {0} a {1}.'.format(status, type(status)), result))
 
-    if status == PASS and isinstance(message, Exception):
-      return (FAIL, APIViolationError(
-        'Result item `status` cant be a {0} '
-        'since `message` is an Exception'.format(PASS), result))
-    # passed:
     return result
 
   def _exec_test_generator(self, gen):
@@ -378,7 +376,6 @@ class TestRunner(object):
       try:
         args[name] = self._get(name, iterargs, path)
       except KeyError:
-        print('Not Found:', name)
         if name not in item.optionalArgs:
           raise MissingValueError('Value "{0}" is undefined.'.format(name))
 
@@ -443,7 +440,7 @@ class TestRunner(object):
     else:
       for sub_result in self._exec_test(test, args):
         status, _ = sub_result
-        if summary_status is None or status > summary_status:
+        if summary_status is None or status >= summary_status:
           summary_status = status
         yield sub_result
       # The only reason to yield this is to make it testable
