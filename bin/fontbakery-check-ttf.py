@@ -204,7 +204,6 @@ def fontbakery_check_ttf(config):
       fb.reset_report()
       continue
 
-    checks.check_font_has_post_table_version_2(fb, font)
     checks.check_post_italicAngle(fb, font, style)
 
     checks.check_head_macStyle(fb, font, style)

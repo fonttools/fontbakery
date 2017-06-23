@@ -371,16 +371,6 @@ def check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache):
     fb.ok("All font files have the same version.")
 
 
-def check_font_has_post_table_version_2(fb, font):
-  fb.new_check("015", "Font has post table version 2 ?")
-  if font['post'].formatType != 2:
-    fb.error(("Post table should be version 2 instead of {}."
-              "More info at https://github.com/google/fonts/"
-              "issues/215").format(font['post'].formatType))
-  else:
-    fb.ok("Font has post table version 2.")
-
-
 def check_OS2_fsType(fb):
   """Fonts must have their fsType bit set to 0. This setting is known as
   Installable Embedding,
