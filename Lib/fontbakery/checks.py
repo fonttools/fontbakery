@@ -63,9 +63,8 @@ from fontbakery.constants import (
                                  PLATFORM_ID_MACINTOSH,
                                  PLATFORM_ID_WINDOWS,
                                  PLATID_STR,
-                                 WEIGHT_CLASS_VALUES,
-                                 WEIGHT_CLASS_NAMES,
-                                 CSS_WEIGHT_NAMES,
+                                 WEIGHTS,
+                                 WEIGHT_VALUE_TO_NAME,
                                  FSSEL_ITALIC,
                                  FSSEL_BOLD,
                                  FSSEL_REGULAR,
@@ -241,12 +240,11 @@ def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
   fail = False
   proportion = None
   for f in family.fonts:
-    if font_key(f) in ttf:
-      ttfont = ttf[font_key(f)]
-      if proportion is None:
-        proportion = ttfont['OS/2'].panose.bProportion
-      if proportion != ttfont['OS/2'].panose.bProportion:
-        fail = True
+    ttfont = ttf[font_key(f)]
+    if proportion is None:
+      proportion = ttfont['OS/2'].panose.bProportion
+    if proportion != ttfont['OS/2'].panose.bProportion:
+      fail = True
 
   if fail:
     fb.error("PANOSE proportion is not"
@@ -264,12 +262,11 @@ def check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf):
   fail = False
   familytype = None
   for f in family.fonts:
-    if font_key(f) in ttf:
-      ttfont = ttf[font_key(f)]
-      if familytype is None:
-        familytype = ttfont['OS/2'].panose.bFamilyType
-      if familytype != ttfont['OS/2'].panose.bFamilyType:
-        fail = True
+    ttfont = ttf[font_key(f)]
+    if familytype is None:
+      familytype = ttfont['OS/2'].panose.bFamilyType
+    if familytype != ttfont['OS/2'].panose.bFamilyType:
+      fail = True
 
   if fail:
     fb.error("PANOSE family type is not"
@@ -288,14 +285,13 @@ def check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf):
   glyphs_count = None
   fail = False
   for f in family.fonts:
-    if font_key(f) in ttf:
-      ttfont = ttf[font_key(f)]
-      this_count = len(ttfont['glyf'].glyphs)
-      if glyphs_count is None:
-        glyphs_count = this_count
-      if glyphs_count != this_count:
-        fail = True
-      counts[f.filename] = this_count
+    ttfont = ttf[font_key(f)]
+    this_count = len(ttfont['glyf'].glyphs)
+    if glyphs_count is None:
+      glyphs_count = this_count
+    if glyphs_count != this_count:
+      fail = True
+    counts[f.filename] = this_count
 
   if fail:
     results_table = ""
@@ -314,12 +310,11 @@ def check_fonts_have_equal_glyph_names(fb, family, ttf):
   glyphs = None
   fail = False
   for f in family.fonts:
-    if font_key(f) in ttf:
-      ttfont = ttf[font_key(f)]
-      if not glyphs:
-        glyphs = ttfont['glyf'].glyphs
-      if glyphs.keys() != ttfont['glyf'].glyphs.keys():
-        fail = True
+    ttfont = ttf[font_key(f)]
+    if not glyphs:
+      glyphs = ttfont['glyf'].glyphs
+    if glyphs.keys() != ttfont['glyf'].glyphs.keys():
+      fail = True
   if fail:
     fb.error('Fonts have different glyph names.')
   else:
@@ -331,17 +326,16 @@ def check_fonts_have_equal_unicode_encodings(fb, family, ttf):
   encoding = None
   fail = False
   for f in family.fonts:
-    if font_key(f) in ttf:
-      ttfont = ttf[font_key(f)]
-      cmap = None
-      for table in ttfont['cmap'].tables:
-        if table.format == 4:
-          cmap = table
-          break
-      if not encoding:
-        encoding = cmap.platEncID
-      if encoding != cmap.platEncID:
-        fail = True
+    ttfont = ttf[font_key(f)]
+    cmap = None
+    for table in ttfont['cmap'].tables:
+      if table.format == 4:
+        cmap = table
+        break
+    if not encoding:
+      encoding = cmap.platEncID
+    if encoding != cmap.platEncID:
+      fail = True
   if fail:
     fb.error('Fonts have different unicode encodings.')
   else:
@@ -643,7 +637,7 @@ def check_OS2_usWeightClass(fb, font, style):
     weight_name = style
 
   value = font['OS/2'].usWeightClass
-  expected = WEIGHT_CLASS_VALUES[weight_name]
+  expected = WEIGHTS[weight_name]
   if value != expected:
     if fb.config['autofix']:
       font['OS/2'].usWeightClass = expected
@@ -656,48 +650,6 @@ def check_OS2_usWeightClass(fb, font, style):
                 " {}.").format(weight_name, expected, value))
   else:
     fb.ok("OS/2 usWeightClass value looks good!")
-
-
-def check_font_has_a_license(fb, file_path):
-  fb.new_check("028", "Check font has a license")
-  fb.set_priority(CRITICAL)
-  # Check that OFL.txt or LICENSE.txt exists in the same
-  # directory as font_file (or at the working directory from
-  # where fontbakery is invoked), if not then warn that
-  # there should be one.
-  found = False
-  for license in ['OFL.txt', 'LICENSE.txt']:
-    license_path = os.path.join(file_path, license)
-    if os.path.exists(license_path):
-      if found is not False:
-        fb.warning("More than a single license file found."
-                   " Please review.")
-        found = "multiple"
-      else:
-        found = license_path
-
-    # Also try at the current working dir:
-    elif os.path.exists(license):
-      if found is not False:
-        fb.warning(("More than a single license file found."
-                    " Please review. At least one of the files is"
-                    " in the current working directory where "
-                    "fontbakery was invoked:"
-                    " ('{}').").format(os.path.dirname(license)))
-        found = "multiple"
-      else:
-        found = license
-
-  if found != "multiple":
-    if found is False:
-      fb.error("No license file was found."
-               " Please add an OFL.txt or a LICENSE.txt file."
-               " If you are running fontbakery on a Google Fonts"
-               " upstream repo, which is fine, just make sure"
-               " there is a temporary license file in the same folder.")
-    else:
-      fb.ok("Found license at '{}'".format(found))
-  return found
 
 
 def check_copyright_entries_match_license(fb, found, file_path, font):
@@ -2881,9 +2833,8 @@ def check_Filename_is_set_canonically(fb, f):
      'italic': 'Italic'
     }
     familyname = font_metadata.name.replace(' ', '')
-    style_weight = CSS_WEIGHT_NAMES.get(font_metadata.weight)
-    style_weight += style_names.get(font_metadata.style)
-
+    style_weight = '%s%s' % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
+                             style_names.get(font_metadata.style))
     if not style_weight:
         style_weight = 'Regular'
     return '%s-%s.ttf' % (familyname, style_weight)
@@ -3028,20 +2979,10 @@ def check_font_weight_has_a_canonical_value(fb, f):
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f):
   fb.new_check("112", "Checking OS/2 usWeightClass"
                       " matches weight specified at METADATA.pb")
-  weight_class = WEIGHT_CLASS_NAMES[fb.font['OS/2'].usWeightClass]
-  css_weight = CSS_WEIGHT_NAMES[f.weight]
-  if weight_class == css_weight:
-    fb.ok(("OS/2 usWeightClass ({}) matches"
-           " CSS weight ({}) specified at METADATA.pb"
-           "").format(fb.font['OS/2'].usWeightClass,
-                      f.weight))
-  else:
-    fb.error(("OS/2 usWeightClass ({}: '{}') does not correctly correspond"
-              " to the CSS weight ({}: '{}') specified at"
-              " METADATA.pb!").format(fb.font['OS/2'].usWeightClass,
-                                      weight_class,
-                                      f.weight,
-                                      css_weight))
+  fb.assert_table_entry('OS/2', 'usWeightClass', f.weight)
+  fb.log_results("OS/2 usWeightClass matches "
+                 "weight specified at METADATA.pb")
+
 
 weights = {
   'Thin': 100,
@@ -3603,17 +3544,3 @@ def check_glyphset_google_vietnamese(fb, font_file):
 def check_glyphset_google_extras(fb, font_file):
   fb.new_check("151", "Checking Google Extras glyph coverage")
   check_with_pyfontaine(fb, font_file, "google_extras")
-
-
-def check_METADATA_Ensure_all_TTF_references_are_valid(fb, family):
-  fb.new_check("152", "METADATA.pb: Ensure all TTF references are valid.")
-  missing_ttf = []
-  for f in family.fonts:
-    if not os.path.exists(f.filename):
-      missing_ttf.append(f.filename)
-
-  if len(missing_ttf) > 0:
-    fb.error(("There are missing TTF files declared on METADATA.pb:\n"
-              "{}").format("\n".join(missing_ttf)))
-  else:
-    fb.ok('All TTF files declared on METADATA.pb are valid.')
