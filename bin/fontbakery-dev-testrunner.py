@@ -46,26 +46,26 @@ registerCondition(isOddFontName)
 @test(
     id='com.google.fonts/1'
   , conditions=['isOddFontName']
-  , description='Is the odd fontname bigger than one?'
 )
 def oddNameBiggerThanOne(fontNameNumber):
+  """Is the odd fontname bigger than one?"""
   return PASS if fontNameNumber > 1 else FAIL, fontNameNumber
 
 @registerTest
 @test(
     id='com.google.fonts/2'
   , conditions=['not isOddFontName']
-  , description='Is the even fontname bigger than two?'
 )
 def evenNameBiggerThanTwo(fontNameNumber):
+  """Is the even fontname bigger than two?"""
   return PASS if fontNameNumber > 2 else FAIL, fontNameNumber
 
 @registerTest
 @test(
     id='com.google.fonts/3'
-  , description='Fontname starts with "font_".'
 )
 def fontNameStartsWithFont_(font):
+  """Fontname starts with "font_"."""
   test = 'font_2'
   for i in range(len(test)):
     if len(font) >= i and font[i] == test[i]:
