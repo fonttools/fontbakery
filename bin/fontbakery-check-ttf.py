@@ -211,7 +211,6 @@ def fontbakery_check_ttf(config):
 
     found = checks.check_font_has_a_license(fb, file_path)
     checks.check_copyright_entries_match_license(fb, found, file_path, font)
-    checks.check_font_has_a_valid_license_url(fb, found, font)
     checks.check_main_entries_in_the_name_table(fb, font, target)
     checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_description_strings_in_name_table(fb, font)
