@@ -146,7 +146,6 @@ def fontbakery_check_ttf(config):
       fb.default_target = dirname
     # -----------------------------------------------------
     checks.check_font_designer_field_is_not_unknown(fb, family)
-    checks.check_fonts_have_consistent_underline_thickness(fb, family, ttf)
     checks.check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
     checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
     checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
@@ -198,7 +197,6 @@ def fontbakery_check_ttf(config):
       fb.reset_report()
       continue
 
-    checks.check_font_has_post_table_version_2(fb, font)
     checks.check_post_italicAngle(fb, font, style)
 
     checks.check_head_macStyle(fb, font, style)
@@ -211,12 +209,9 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
     checks.check_OS2_xAvgCharWidth(fb, font)
 
-    found = checks.check_font_has_a_license(fb, file_path)
-    checks.check_copyright_entries_match_license(fb, found, file_path, font)
-    checks.check_font_has_a_valid_license_url(fb, found, font)
+#    checks.check_copyright_entries_match_license(fb, found, file_path, font)
     checks.check_main_entries_in_the_name_table(fb, font, target)
     checks.check_name_entries_symbol_substitutions(fb, font)
-    checks.check_description_strings_in_name_table(fb, font)
     checks.check_description_strings_do_not_exceed_100_chars(fb, font)
 
     monospace_detected = checks.check_font_is_truly_monospaced(fb, font)

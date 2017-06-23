@@ -31,11 +31,12 @@ from fontbakery.constants import(
       , IMPORTANT
       , CRITICAL
 
-      , STYLE_NAMES
-      , PLACEHOLDER_LICENSING_TEXT
+      , LICENSE_URL
+      , NAMEID_DESCRIPTION
       , NAMEID_LICENSE_DESCRIPTION
       , NAMEID_LICENSE_INFO_URL
-      , LICENSE_URL
+      , PLACEHOLDER_LICENSING_TEXT
+      , STYLE_NAMES
 )
 
 
@@ -126,6 +127,23 @@ def check_font_has_post_table_version_2(fb, ttFont):
   else:
     fb.ok("Font has post table version 2.")
 
+# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
+#             025 - "Checking fsSelection ITALIC bit"
+#             027 - "Checking fsSelection BOLD bit"
+#
+# Replaced by 129 - "Checking OS/2.fsSelection value"
+
+# DEPRECATED: 022 - "Checking that italicAngle <= 0"
+#             023 - "Checking that italicAngle is less than 20 degrees"
+#             024 - "Checking if italicAngle matches font style"
+#
+# Replaced by 130 - "Checking post.italicAngle value"
+
+# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
+#             ??? - "Checking macStyle BOLD bit"
+#
+# Replaced by 131 - "Checking head.macStyle value"
+
 @registerCondition
 @condition
 def licenses(font):
@@ -214,6 +232,33 @@ def check_font_has_a_valid_license_url(fb, license, ttFont):
                                                NAMEID_LICENSE_INFO_URL))
     else:
       fb.ok("Font has a valid license URL in NAME table.")
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/031'
+  , priority=CRITICAL
+)
+def check_description_strings_in_name_table(fb, ttFont):
+  """Description strings in the name table
+  must not contain copyright info."""
+
+  failed = False
+  for name in ttFont['name'].names:
+    if 'opyright' in name.string.decode(name.getEncoding())\
+       and name.nameID == NAMEID_DESCRIPTION:
+      failed = True
+
+  if failed:
+    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+              " should be removed (perhaps these were added by"
+              " a longstanding FontLab Studio 5.x bug that"
+              " copied copyright notices to them.)"
+              "").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description strings in the name table"
+          " do not contain any copyright string.")
+
 
 specificiation = Spec(
     conditions=conditions

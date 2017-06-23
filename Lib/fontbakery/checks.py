@@ -235,27 +235,6 @@ def check_font_designer_field_is_not_unknown(fb, family):
     fb.ok("Font designer field is not 'unknown'.")
 
 
-def check_fonts_have_consistent_underline_thickness(fb, family, ttf):
-  fb.new_check("008", "Fonts have consistent underline thickness?")
-  fail = False
-  uWeight = None
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if uWeight is None:
-      uWeight = ttfont['post'].underlineThickness
-    if uWeight != ttfont['post'].underlineThickness:
-      fail = True
-
-  if fail:
-    fb.error("Thickness of the underline is not"
-             " the same accross this family. In order to fix this,"
-             " please make sure that the underlineThickness value"
-             " is the same in the 'post' table of all of this family"
-             " font files.")
-  else:
-    fb.ok("Fonts have consistent underline thickness.")
-
-
 def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
   fb.new_check("009", "Fonts have consistent PANOSE proportion?")
   fail = False
@@ -384,16 +363,6 @@ def check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache):
                 "{}").format(versions_list))
   else:
     fb.ok("All font files have the same version.")
-
-
-def check_font_has_post_table_version_2(fb, font):
-  fb.new_check("015", "Font has post table version 2 ?")
-  if font['post'].formatType != 2:
-    fb.error(("Post table should be version 2 instead of {}."
-              "More info at https://github.com/google/fonts/"
-              "issues/215").format(font['post'].formatType))
-  else:
-    fb.ok("Font has post table version 2.")
 
 
 def check_OS2_fsType(fb):
@@ -682,59 +651,6 @@ def check_OS2_usWeightClass(fb, font, style):
   else:
     fb.ok("OS/2 usWeightClass value looks good!")
 
-# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
-#             025 - "Checking fsSelection ITALIC bit"
-#             027 - "Checking fsSelection BOLD bit"
-# Replaced by 129 - "Checking OS/2.fsSelection value"
-
-# DEPRECATED: 022 - "Checking that italicAngle <= 0"
-#             023 - "Checking that italicAngle is less than 20 degrees"
-#             024 - "Checking if italicAngle matches font style"
-# Replaced by 130 - "Checking post.italicAngle value"
-
-# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
-#             ??? - "Checking macStyle BOLD bit"
-# Replaced by 131 - "Checking head.macStyle value"
-
-
-def check_font_has_a_license(fb, file_path):
-  fb.new_check("028", "Check font has a license")
-  fb.set_priority(CRITICAL)
-  # Check that OFL.txt or LICENSE.txt exists in the same
-  # directory as font_file (or at the working directory from
-  # where fontbakery is invoked), if not then warn that
-  # there should be one.
-  found = False
-  for license in ['OFL.txt', 'LICENSE.txt']:
-    license_path = os.path.join(file_path, license)
-    if os.path.exists(license_path):
-      if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
-        found = "multiple"
-      else:
-        found = license_path
-
-    # Also try at the current working dir:
-    elif os.path.exists(license):
-      if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
-        found = "multiple"
-      else:
-        found = license
-
-  if found != "multiple":
-    if found is False:
-      fb.error("No license file was found."
-               " Please add an OFL.txt or a LICENSE.txt file."
-               " If you are running fontbakery on a Google Fonts"
-               " upstream repo, which is fine, just make sure"
-               " there is a temporary license file in the same folder.")
-    else:
-      fb.ok("Found license at '{}'".format(found))
-  return found
-
 
 def check_copyright_entries_match_license(fb, found, file_path, font):
   fb.new_check("029", "Check copyright namerecords match license file")
@@ -814,93 +730,6 @@ def check_copyright_entries_match_license(fb, found, file_path, font):
                     "").format(NAMEID_LICENSE_DESCRIPTION))
     if not failed:
       fb.ok("licensing entry on name table is correctly set.")
-
-
-def check_font_has_a_valid_license_url(fb, found, font):
-  fb.new_check("030", "Font has a valid license url ?")
-  fb.set_priority(CRITICAL)
-  if found == "multiple":
-    fb.skip("This check will only run after the"
-            " multiple-licensing file issue is fixed.")
-    # in case there's no font licensing file
-    # we can still run this check for verifying
-    # that LICENSE_DESCRIPTION and LICENSE_INFO_URL
-    # values are coherent
-  else:
-    detected_license = False
-    for license in ['OFL.txt', 'LICENSE.txt']:
-      placeholder = PLACEHOLDER_LICENSING_TEXT[license]
-      for nameRecord in font['name'].names:
-        string = nameRecord.string.decode(nameRecord.getEncoding())
-        if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION and\
-           string == placeholder:
-          detected_license = license
-          break
-
-    found_good_entry = False
-    if detected_license:
-      failed = False
-      expected = LICENSE_URL[detected_license]
-      for nameRecord in font['name'].names:
-        if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-          string = nameRecord.string.decode(nameRecord.getEncoding())
-          if string == expected:
-            found_good_entry = True
-          else:
-            if fb.config['autofix']:
-              pass  # implement-me!
-            else:
-              failed = True
-              fb.error(("Licensing inconsistency in name table entries!"
-                        " NameID={} (LICENSE DESCRIPTION) indicates"
-                        " {} licensing, but NameID={} (LICENSE URL) has"
-                        " '{}'. Expected:"
-                        " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
-                                        LICENSE_NAME[detected_license],
-                                        NAMEID_LICENSE_INFO_URL,
-                                        string, expected))
-    if not found_good_entry:
-      fb.error(("A License URL must be provided in the "
-                "NameID {} (LICENSE INFO URL) entry."
-                "").format(NAMEID_LICENSE_INFO_URL))
-    else:
-      if failed:
-        fb.error(("Even though a valid license URL was seen in NAME table,"
-                  " there were also bad entries. Please review"
-                  " NameIDs {} (LICENSE DESCRIPTION) and {}"
-                  " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
-                                                 NAMEID_LICENSE_INFO_URL))
-      else:
-        fb.ok("Font has a valid license URL in NAME table.")
-
-
-def check_description_strings_in_name_table(fb, font):
-  fb.new_check("031", ("Description strings in the name table"
-                       " (nameID = {}) must not contain "
-                       "copyright info.").format(NAMEID_DESCRIPTION))
-  fb.set_priority(CRITICAL)
-  failed = False
-  for name in font['name'].names:
-    if 'opyright' in name.string.decode(name.getEncoding())\
-       and name.nameID == NAMEID_DESCRIPTION:
-      failed = True
-      del name
-  if failed:
-    if fb.config['autofix']:
-      fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " were removed (perhaps added by"
-                 " a longstanding FontLab Studio 5.x bug that"
-                 " copied copyright notices to them.)"
-                 "").format(NAMEID_DESCRIPTION))
-    else:
-      fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                " should be removed (perhaps these were added by"
-                " a longstanding FontLab Studio 5.x bug that"
-                " copied copyright notices to them.)"
-                "").format(NAMEID_DESCRIPTION))
-  else:
-    fb.ok("Description strings in the name table"
-          " do not contain any copyright string.")
 
 
 def check_description_strings_do_not_exceed_100_chars(fb, font):
