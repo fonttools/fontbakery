@@ -652,45 +652,6 @@ def check_OS2_usWeightClass(fb, font, style):
     fb.ok("OS/2 usWeightClass value looks good!")
 
 
-def check_font_has_a_license(fb, file_path):
-  fb.new_check("028", "Check font has a license")
-  fb.set_priority(CRITICAL)
-  # Check that OFL.txt or LICENSE.txt exists in the same
-  # directory as font_file (or at the working directory from
-  # where fontbakery is invoked), if not then warn that
-  # there should be one.
-  found = False
-  for license in ['OFL.txt', 'LICENSE.txt']:
-    license_path = os.path.join(file_path, license)
-    if os.path.exists(license_path):
-      if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
-        found = "multiple"
-      else:
-        found = license_path
-
-    # Also try at the current working dir:
-    elif os.path.exists(license):
-      if found is not False:
-        fb.error("More than a single license file found."
-                 " Please review.")
-        found = "multiple"
-      else:
-        found = license
-
-  if found != "multiple":
-    if found is False:
-      fb.error("No license file was found."
-               " Please add an OFL.txt or a LICENSE.txt file."
-               " If you are running fontbakery on a Google Fonts"
-               " upstream repo, which is fine, just make sure"
-               " there is a temporary license file in the same folder.")
-    else:
-      fb.ok("Found license at '{}'".format(found))
-  return found
-
-
 def check_copyright_entries_match_license(fb, found, file_path, font):
   fb.new_check("029", "Check copyright namerecords match license file")
   fb.set_priority(CRITICAL)
