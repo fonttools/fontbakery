@@ -732,35 +732,6 @@ def check_copyright_entries_match_license(fb, found, file_path, font):
       fb.ok("licensing entry on name table is correctly set.")
 
 
-def check_description_strings_in_name_table(fb, font):
-  fb.new_check("031", ("Description strings in the name table"
-                       " (nameID = {}) must not contain "
-                       "copyright info.").format(NAMEID_DESCRIPTION))
-  fb.set_priority(CRITICAL)
-  failed = False
-  for name in font['name'].names:
-    if 'opyright' in name.string.decode(name.getEncoding())\
-       and name.nameID == NAMEID_DESCRIPTION:
-      failed = True
-      del name
-  if failed:
-    if fb.config['autofix']:
-      fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " were removed (perhaps added by"
-                 " a longstanding FontLab Studio 5.x bug that"
-                 " copied copyright notices to them.)"
-                 "").format(NAMEID_DESCRIPTION))
-    else:
-      fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                " should be removed (perhaps these were added by"
-                " a longstanding FontLab Studio 5.x bug that"
-                " copied copyright notices to them.)"
-                "").format(NAMEID_DESCRIPTION))
-  else:
-    fb.ok("Description strings in the name table"
-          " do not contain any copyright string.")
-
-
 def check_description_strings_do_not_exceed_100_chars(fb, font):
   fb.new_check("032", ("Description strings in the name table"
                        " (nameID = {}) must not exceed"

@@ -31,11 +31,12 @@ from fontbakery.constants import(
       , IMPORTANT
       , CRITICAL
 
-      , STYLE_NAMES
-      , PLACEHOLDER_LICENSING_TEXT
+      , LICENSE_URL
+      , NAMEID_DESCRIPTION
       , NAMEID_LICENSE_DESCRIPTION
       , NAMEID_LICENSE_INFO_URL
-      , LICENSE_URL
+      , PLACEHOLDER_LICENSING_TEXT
+      , STYLE_NAMES
 )
 
 
@@ -231,6 +232,33 @@ def check_font_has_a_valid_license_url(fb, license, ttFont):
                                                NAMEID_LICENSE_INFO_URL))
     else:
       fb.ok("Font has a valid license URL in NAME table.")
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/031'
+  , priority=CRITICAL
+)
+def check_description_strings_in_name_table(fb, ttFont):
+  """Description strings in the name table
+  must not contain copyright info."""
+
+  failed = False
+  for name in ttFont['name'].names:
+    if 'opyright' in name.string.decode(name.getEncoding())\
+       and name.nameID == NAMEID_DESCRIPTION:
+      failed = True
+
+  if failed:
+    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+              " should be removed (perhaps these were added by"
+              " a longstanding FontLab Studio 5.x bug that"
+              " copied copyright notices to them.)"
+              "").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description strings in the name table"
+          " do not contain any copyright string.")
+
 
 specificiation = Spec(
     conditions=conditions
