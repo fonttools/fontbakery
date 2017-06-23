@@ -126,6 +126,23 @@ def check_font_has_post_table_version_2(fb, ttFont):
   else:
     fb.ok("Font has post table version 2.")
 
+# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
+#             025 - "Checking fsSelection ITALIC bit"
+#             027 - "Checking fsSelection BOLD bit"
+#
+# Replaced by 129 - "Checking OS/2.fsSelection value"
+
+# DEPRECATED: 022 - "Checking that italicAngle <= 0"
+#             023 - "Checking that italicAngle is less than 20 degrees"
+#             024 - "Checking if italicAngle matches font style"
+#
+# Replaced by 130 - "Checking post.italicAngle value"
+
+# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
+#             ??? - "Checking macStyle BOLD bit"
+#
+# Replaced by 131 - "Checking head.macStyle value"
+
 @registerCondition
 @condition
 def licenses(font):
