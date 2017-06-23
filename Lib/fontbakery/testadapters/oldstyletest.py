@@ -26,29 +26,31 @@ def _initFbloggerAPI():
                         for status in (SKIP, PASS, INFO, WARN, FAIL)])
     return fb, results
 
-def _gen(result):
+def _gen(results):
     # creates a generator, which we understand
     # in TestRunner._exec_test
     for result in results:
         yield result
 
 class OldStyleTest(FontBakeryTest):
-    def __init__(oldstyletest, id, description, *args, **kwargs):
+    def __init__(oldstyletest, id, *args, **kwargs):
         # we'll inspect the arguments directly from oldstyletest
         super(OldStyleTest, OldStyleTest).__init__(oldstyletest, id,
-                                            description, *args, **kwargs)
+                                                        *args, **kwargs)
 
-    def __call__(*args, **kwargs):
+    _ignore_mandatory_args = {'fb'}
+
+    def __call__(self, *args, **kwargs):
         fb, results = _initFbloggerAPI()
         try:
-            self._testfunc(fb, *args, **kwargs)
+            self._func(fb, *args, **kwargs)
         except Exception as e:
             results.append((FAIL, e))
 
-        return _gen(result)
+        return _gen(results)
 
-def oldStyleTest(id, description, *args, **kwds):
-    def wrapper(testfunc):
+def oldStyleTest(id, *args, **kwds):
+    def wrapper(func):
         return wraps(func)(
-                OldStyleTest(testfunc, id, description, *args, **kwds))
+                OldStyleTest(func, id, *args, **kwds))
     return wrapper
