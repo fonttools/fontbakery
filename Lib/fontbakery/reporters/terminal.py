@@ -338,10 +338,12 @@ class TerminalReporter(TerminalProgress):
       if self.results_by:
         print('Collected results by', self.results_by)
         for index in self._collected_results:
-          if self.runner:
+          if index is not None and self.runner:
             val = self.runner.get_iterarg(self.results_by, index)
-          else:
+          elif index is not None:
             val = index
+          else:
+            val = '(not using "{}")'.format(self.results_by)
           print('{}: {}'.format(self.results_by, val))
           print(_render_results_counter(self._collected_results[index],
                                                 color=self._use_color))
