@@ -84,6 +84,7 @@ setup(
 #             'bin/fontbakery-travis-init.py',
 #             'bin/fontbakery-travis-secure.sh',
              'bin/fontbakery-dev-testrunner.py',
+             'bin/fontbakery-check-googlefonts.py',
              'bin/fontbakery-update-families.py'],
     zip_safe=False,
     classifiers=[
