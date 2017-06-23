@@ -101,6 +101,7 @@ setup(
              'bin/fontbakery-update-nameids.py',
              'bin/fontbakery-update-version.py'],
              'bin/fontbakery-dev-testrunner.py',
+             'bin/fontbakery-check-googlefonts.py',
              'bin/fontbakery-update-families.py'],
     zip_safe=False,
     classifiers=[
