@@ -235,27 +235,6 @@ def check_font_designer_field_is_not_unknown(fb, family):
     fb.ok("Font designer field is not 'unknown'.")
 
 
-def check_fonts_have_consistent_underline_thickness(fb, family, ttf):
-  fb.new_check("008", "Fonts have consistent underline thickness?")
-  fail = False
-  uWeight = None
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if uWeight is None:
-      uWeight = ttfont['post'].underlineThickness
-    if uWeight != ttfont['post'].underlineThickness:
-      fail = True
-
-  if fail:
-    fb.error("Thickness of the underline is not"
-             " the same accross this family. In order to fix this,"
-             " please make sure that the underlineThickness value"
-             " is the same in the 'post' table of all of this family"
-             " font files.")
-  else:
-    fb.ok("Fonts have consistent underline thickness.")
-
-
 def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
   fb.new_check("009", "Fonts have consistent PANOSE proportion?")
   fail = False
