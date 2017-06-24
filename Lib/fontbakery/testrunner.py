@@ -181,7 +181,7 @@ class FailedDependenciesError(FontBakeryRunnerError):
 class MissingValueError(FontBakeryRunnerError):
   pass
 
-def _get_traceback():
+def get_traceback():
   """
   Returns a string with a traceback as the python interpreter would
   render it. Run this inside of the except block.
@@ -259,9 +259,9 @@ class TestRunner(object):
         # or ends the generator.
         yield sub_result
     except Exception as e:
-      tb = _get_traceback()
+      tb = get_traceback()
       error = FailedTestError(e, tb)
-      yield (FAIL, error)
+      yield (ERROR, error)
 
   def _exec_test(self, test, args):
     """ Yields test sub results.
@@ -286,7 +286,7 @@ class TestRunner(object):
     try:
       result = test(**args)
     except Exception as e:
-      tb = _get_traceback()
+      tb = get_traceback()
       error = FailedTestError(e, tb)
       result = (FAIL, error)
 
@@ -316,7 +316,7 @@ class TestRunner(object):
     try:
       return None, condition(**args)
     except Exception as err:
-      tb = _get_traceback()
+      tb = get_traceback()
       error = FailedConditionError(condition, err, tb)
       return error, None
 
@@ -337,17 +337,48 @@ class TestRunner(object):
     plural = self._spec.iterargs[name]
     return self._values[plural][index]
 
+  def _generate_iterargs(self, requirements):
+    if not requirements:
+      yield tuple()
+      return
+    name, length = requirements[0]
+    for index in range(length):
+      current = (name, index)
+      for tail in self._generate_iterargs(requirements[1:]):
+        yield (current, ) + tail
+
+  def _derive_iterable_condition(self, name, simple=False, path=None):
+    # should we cache this?
+    condition = self._spec.conditions[name]
+    iterargs = self._spec.get_iterargs(condition)
+
+    if not iterargs:
+      # without this, we would return just an empty tuple
+      raise TypeError('Condition "{}" uses no iterargs.'.format(name))
+
+    # like [('font', 10), ('other', 22)]
+    requirements = [(singular, self._iterargs[singular])
+                                            for singular in iterargs]
+    result = []
+    for iterargs in self._generate_iterargs(requirements):
+      error, value = self._get_condition(name, iterargs, path)
+      if error:
+        raise error
+      if simple:
+        result.append(value)
+      else:
+        result.append((iterargs, value))
+    return tuple(result)
+
   def _get(self, name, iterargs, path, *args):
     iterargsDict = dict(iterargs)
     has_fallback = bool(len(args))
     if has_fallback:
       fallback = args[0]
 
-    try:
+    if name in iterargsDict:
       index = iterargsDict[name]
       return self.get_iterarg(name, index)
-    except KeyError:
-      pass
 
     if name in self._spec.iterargs:
       plural = self._spec.iterargs[name]
@@ -360,13 +391,17 @@ class TestRunner(object):
         raise error
       return value
 
+    if name in self._spec.derived_iterables:
+      condition_name, simple = self._spec.derived_iterables[name]
+      return self._derive_iterable_condition(condition_name, simple, path)
+
     if name in self._values:
       return self._values[name]
 
     if has_fallback:
       return fallback
 
-    raise KeyError(name)
+    raise MissingValueError('Value "{0}" is undefined.'.format(name))
 
   def _get_args(self, item, iterargs, path=None):
     # iterargs can't be optional arguments yet, we wouldn't generate
@@ -379,10 +414,9 @@ class TestRunner(object):
         continue;
       try:
         args[name] = self._get(name, iterargs, path)
-      except KeyError:
+      except MissingValueError:
         if name not in item.optionalArgs:
-          raise MissingValueError('Value "{0}" is undefined.'.format(name))
-
+          raise
     return args;
 
   def _is_negated(self, name):
@@ -414,7 +448,7 @@ class TestRunner(object):
     try:
       return None, self._get_args(test, iterargs)
     except Exception as error:
-      tb = _get_traceback()
+      tb = get_traceback()
       status = (ERROR, FailedDependenciesError(test, error, tb))
       return (status, None)
 
@@ -475,10 +509,9 @@ class TestRunner(object):
     order = self._cache.get('order', None)
     if order is None:
       order = []
-      for section in self._spec.testsections:
-        for test, iterargs in section.execution_order(self._iterargs
-                             , getConditionByName=self._spec.conditions.get):
-          order.append((section, test, iterargs))
+      # section, test, iterargs = identity
+      for identity in self._spec.execution_order(self._iterargs):
+        order.append(identity)
       self._cache['order'] = order = tuple(order)
     return order
 
@@ -526,17 +559,57 @@ def distribute_generator(gen, targets_callbacks):
 
 class Section(object):
   def __init__(self, name, tests, order=None, description=None):
-    self.name = name;
-    self.description = description;
-    self._tests = tests;
+    self.name = name
+    self.description = description
+    self._tests = tuple(tests)
     # a list of iterarg-names
-    self._order = order or [];
+    self._order = order or []
 
   def __repr__(self):
     return '<Section: {0}>'.format(self.name)
 
-  def _get_aggregate_args(self, test, key, getConditionByName):
-    dependencies = getattr(test, key) + test.conditions[:]
+  @property
+  def order(self):
+    return self._order[:]
+
+  @property
+  def tests(self):
+    return self._tests
+
+class Spec(object):
+  def __init__(self, testsections, iterargs, derived_iterables, conditions=None):
+    '''
+      testsections: a list of sections, which are ideally ordered sets of
+          individual tests.
+          It makes no sense to have tests repeatedly, they yield the same
+          results anyway.
+          FIXME: Should we detect this and inform the user then skip the repeated tests.
+      iterargs: maping 'singular' variable names to the iterable in values
+          e.g.: `{'font': 'fonts'}` in this case fonts must be iterable AND
+          'font' may not be a value NOR a condition name.
+
+    We will:
+      a) get all needed values/variable names from here
+      b) add some validation, so that we know the values match
+         our expectations! These values must be treated asuser input!
+    '''
+    self.testsections = testsections
+    self.iterargs = iterargs
+    self.derived_iterables = derived_iterables
+    self.conditions = conditions or {}
+
+  def _get_aggregate_args(self, item, key):
+    """
+      Get all arguments or mandatory arguments of the item.
+
+      Item is a test or a condition, which means it can be dependent on
+      more conditions, this climbs down all the way.
+    """
+    if not key in ('args', 'mandatoryArgs'):
+      raise TypeError('key must be "args" or "mandatoryArgs", got {}').format(key)
+    dependencies = list(getattr(item, key))
+    if hasattr(item, 'conditions'):
+      dependencies += item.conditions
     args = set()
     while dependencies:
       name = dependencies.pop()
@@ -544,24 +617,31 @@ class Section(object):
         continue
       args.add(name)
       # if this is a condition, expand its dependencies
-      c = getConditionByName(name, None)
+      c = self.conditions.get(name, None)
       if c is None:
         continue
       dependencies += [dependency for dependency in getattr(c, key)
                                               if dependency not in args]
     return args
 
-  def _analyze_tests(self, all_args, getConditionByName):
+
+  def get_iterargs(self, item):
+    """ Returns a tuple of all iterags for item, sorted by name."""
+    # iterargs should always be mandatory, unless there's a good reason
+    # not to, which I can't think of right now.
+    args = self._get_aggregate_args(item, 'mandatoryArgs')
+    return tuple(sorted([arg for arg in args if arg in self.iterargs]))
+
+  def _analyze_tests(self, all_args, tests):
     args = list(all_args)
     args.reverse()
-    scopes = [(test, tuple(), tuple()) for test in self._tests]
+              #(test, signature, scope)
+    scopes = [(test, tuple(), tuple()) for test in tests]
     aggregatedArgs = {
-      'args': {test.name:self._get_aggregate_args(
-                                test, 'args', getConditionByName)
-                              for test in self._tests }
-    , 'mandatoryArgs': {test.name: self._get_aggregate_args(
-                                test, 'mandatoryArgs', getConditionByName)
-                              for test in self._tests }
+      'args': {test.name:self._get_aggregate_args(test, 'args')
+                                          for test in tests }
+    , 'mandatoryArgs': {test.name: self._get_aggregate_args(test, 'mandatoryArgs')
+                                          for test in tests }
     }
     saturated = []
     while args:
@@ -586,10 +666,6 @@ class Section(object):
         target.append((test, signature, scope))
       scopes = new_scopes
     return saturated + scopes;
-
-  def _make_generator(self, iterargs, k):
-    for item in range(iterargs[k]):
-      yield item
 
   def _execute_section(self, iterargs, section, items):
     if section is None:
@@ -648,7 +724,7 @@ class Section(object):
     for item in chain(*generators):
       yield item
 
-  def execution_order(self, iterargs, getConditionByName, reverse=False):
+  def _section_execution_order(self, section, iterargs, reverse=False):
     """
       order must:
         a) contain all variable args (we're appending missing ones)
@@ -660,7 +736,7 @@ class Section(object):
       order may contain "*test" otherwise, it is like *test is appended
       to the end (Not done explicitly though).
     """
-    stack = self._order[:]
+    stack = section.order[:]
     if '*iterargs' not in stack:
       stack.append('*iterargs')
     stack.reverse()
@@ -680,7 +756,7 @@ class Section(object):
         continue
       full_order.append(item)
 
-    scopes = self._analyze_tests(full_order, getConditionByName=getConditionByName)
+    scopes = self._analyze_tests(full_order, section.tests)
     key = lambda (test, signature, scope): signature
     scopes.sort(key=key, reverse=reverse)
 
@@ -691,24 +767,9 @@ class Section(object):
       # defined order, by clustering.
       yield test, tuple(args)
 
+  def execution_order(self, iterargs):
+    for section in self.testsections:
+      for test, iterargs in self._section_execution_order(section, iterargs):
+        yield (section, test, iterargs)
 
-class Spec(object):
-  def __init__(self, testsections, iterargs, conditions=None):
-    '''
-      testsections: a list of sections, which are ideally ordered sets of
-          individual tests.
-          It makes no sense to have tests repeatedly, they yield the same
-          results anyway.
-          FIXME: Should we detect this and inform the user then skip the repeated tests.
-      iterargs: maping 'singular' variable names to the iterable in values
-          e.g.: `{'font': 'fonts'}` in this case fonts must be iterable AND
-          'font' may not be a value NOR a condition name.
 
-    We will:
-      a) get all needed values/variable names from here
-      b) add some validation, so that we know the values match
-         our expectations! These values must be treated asuser input!
-    '''
-    self.testsections = testsections
-    self.iterargs = iterargs
-    self.conditions = conditions or {}
