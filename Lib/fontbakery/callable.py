@@ -62,14 +62,14 @@ class FontbakeryCallable(object):
 
     if self._ignore_mandatory_args:
       args = [arg for arg in args if arg not in self._ignore_mandatory_args]
-    return args
+    return tuple(args)
 
   @property
   @cached_getter
   def optionalArgs(self):
     argspec = getargspec(self._func)
-    return argspec.args[-len(defaults):] \
-             if argspec.defaults is not None else []
+    return tuple(argspec.args[-len(defaults):] \
+             if argspec.defaults is not None else [])
 
   def __call__(self, *args, **kwds):
     """ Each call to __call__ with the same arguments must return
