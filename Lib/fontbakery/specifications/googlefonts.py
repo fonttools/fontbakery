@@ -49,12 +49,6 @@ def registerTest(test):
   tests.append(test)
   return test
 
-# FIXME: derive this from ttFont in testrunner ...
-@registerCondition
-@condition
-def ttFonts(fonts):
-  return [TTFont(font) for font in fonts]
-
 @registerCondition
 @condition
 def ttFont(font):
@@ -219,4 +213,5 @@ specificiation = Spec(
     conditions=conditions
   , testsections=[Section('Default', tests)]
   , iterargs={'font': 'fonts'}
+  , derived_iterables={'ttFonts': ('ttFont', True)}
 )

@@ -11,7 +11,16 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from collections import namedtuple
 from functools import partial, wraps
-from fontbakery.testrunner import SKIP, PASS, INFO, WARN, FAIL
+from fontbakery.testrunner import (
+                SKIP
+              , PASS
+              , INFO
+              , WARN
+              , FAIL
+              , ERROR
+              , FailedTestError
+              , get_traceback
+              )
 from fontbakery.callable import FontBakeryTest
 
 
@@ -45,8 +54,9 @@ class OldStyleTest(FontBakeryTest):
         try:
             self._func(fb, *args, **kwargs)
         except Exception as e:
-            results.append((FAIL, e))
-
+            tb = get_traceback()
+            error = FailedTestError(e, tb)
+            results.append((ERROR, error))
         return _gen(results)
 
 def oldStyleTest(id, *args, **kwds):
