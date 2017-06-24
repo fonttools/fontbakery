@@ -181,13 +181,12 @@ def check_font_has_a_license(fb, licenses):
   , conditions=['license']
   , priority=CRITICAL
 )
-def check_font_has_a_valid_license_url(fb, license, ttFont):
-  """"Font has a valid license url ?"""
-  font = ttFont
+def check_font_has_a_valid_license_url(fb, ttFont):
+  """"License URL matches License text on name table ?"""
   detected_license = False
   for license in ['OFL.txt', 'LICENSE.txt']:
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
-    for nameRecord in font['name'].names:
+    for nameRecord in ttFont['name'].names:
       string = nameRecord.string.decode(nameRecord.getEncoding())
       if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION and\
          string == placeholder:
@@ -198,7 +197,7 @@ def check_font_has_a_valid_license_url(fb, license, ttFont):
   if detected_license:
     failed = False
     expected = LICENSE_URL[detected_license]
-    for nameRecord in font['name'].names:
+    for nameRecord in ttFont['name'].names:
       if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
         string = nameRecord.string.decode(nameRecord.getEncoding())
         if string == expected:
