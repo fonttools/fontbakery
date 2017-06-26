@@ -174,6 +174,43 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
 
 @registerTest
 @oldStyleTest(
+    id='com.google.fonts/test/004'
+  , conditions=['descfile']
+)
+def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
+  """Is this a propper HTML snippet ?
+
+  When packaging families for google/fonts, if there is no
+  DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
+  insert a dummy description file which contains invalid html.
+  This file needs to either be replaced with an existing description file
+  or edited by hand."""
+  try:
+    import magic
+    contenttype = magic.from_file(descfile)
+    if "HTML" not in contenttype:
+      data = open(descfile).read()
+      if "<p>" in data and "</p>" in data:
+        fb.ok(("{} is a propper"
+               " HTML snippet.").format(descfile))
+      else:
+        fb.error(("{} is not a propper"
+                  " HTML snippet.").format(descfile))
+    else:
+      fb.ok("{} is a propper HTML file.".format(descfile))
+  except AttributeError:
+     fb.skip("python magic version mismatch: "
+             "This check was skipped because the API of the python"
+             " magic module version installed in your system does not"
+             " provide the from_file method used in"
+             " the check implementation.")
+  except ImportError:
+     fb.skip("This check depends on the magic python module which"
+             " does not seem to be currently installed on your system.")
+
+
+@registerTest
+@oldStyleTest(
     id='com.google.fonts/test/005'
   , conditions=['descfile']
 )
