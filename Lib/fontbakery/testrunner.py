@@ -634,7 +634,7 @@ class Section(object):
     for callback in self._add_test_callbacks:
       callback(self, test)
     self._tests.append(test)
-    return func
+    return test
 
   def register_test(self, func):
     """
@@ -647,7 +647,8 @@ class Section(object):
     return self.add_test(func)
 
 class Spec(object):
-  def __init__(self, sections=None
+  def __init__(self
+             , sections=None
              , iterargs=None
              , derived_iterables=None
              , conditions=None
@@ -717,8 +718,9 @@ class Spec(object):
 
     self._test_registry = {}
     self._sections = OrderedDict()
-    for section in sections:
-      self.add_section(section)
+    if sections:
+      for section in sections:
+        self.add_section(section)
 
     if not default_section:
       default_section = sections[0] if len(sections) else Section('Default')
@@ -1008,7 +1010,7 @@ class Spec(object):
       return partial(self._add_test, section)
 
   def _add_condition(self, condition, name=None):
-    self._add_to_namespace(name or condition.name, 'conditons', conditon)
+    self.add_to_namespace('conditions', name or condition.name, condition)
     return condition
 
   def register_condition(self, *args, **kwds):
@@ -1028,7 +1030,7 @@ class Spec(object):
       return 123
     """
     if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
-      return self._add_condition(func)
+      return self._add_condition(args[0])
     else:
       return partial(self._add_condition, *args, **kwds)
 
