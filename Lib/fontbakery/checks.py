@@ -123,36 +123,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_all_files_in_a_single_directory(fb, fonts_to_check):
-  '''If the set of font files passed in the command line
-     is not all in the same directory, then we warn the user
-     since the tool will interpret the set of files
-     as belonging to a single family (and it is unlikely
-     that the user would store the files from a single family
-     spreaded in several separate directories).
-  '''
-  fb.new_check("002", "Checking all files are in the same directory")
-  fb.set_priority(CRITICAL)
-
-  failed = False
-  target_dir = None
-  for target_file in fonts_to_check:
-    if target_dir is None:
-      target_dir = os.path.split(target_file)[0]
-    else:
-      if target_dir != os.path.split(target_file)[0]:
-        failed = True
-        break
-
-  if not failed:
-    fb.ok("All files are in the same directory.")
-  else:
-    fb.error("Not all fonts passed in the command line"
-             "are in the same directory. This may lead to"
-             "bad results as the tool will interpret all"
-             "font files as belonging to a single font family.")
-
-
 def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
   fb.new_check("003", "Does DESCRIPTION file contain broken links ?")
   doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())

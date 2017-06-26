@@ -98,8 +98,6 @@ def fontbakery_check_ttf(config):
     checks.check_DESCRIPTION_max_length(fb, descfilepath)
     checks.check_DESCRIPTION_min_length(fb, descfilepath)
 
-  checks.check_all_files_in_a_single_directory(fb, fonts_to_check)
-
   registered_vendor_ids = fetch_vendorID_list(logging)
 
 # DC This is definitely not step 1, cross-family comes after individual
