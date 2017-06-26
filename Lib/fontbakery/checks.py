@@ -25,7 +25,6 @@ import re
 import defusedxml.lxml
 from fontTools import ttLib
 from unidecode import unidecode
-from lxml.html import HTMLParser
 import plistlib
 from fontbakery.pifont import PiFont
 from fontbakery.utils import (
@@ -121,31 +120,6 @@ def check_file_is_named_canonically(fb, font_fname):
               ' style names: "{}".').format(font_fname,
                                             '", "'.join(STYLE_NAMES)))
     return False
-
-
-def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
-  fb.new_check("003", "Does DESCRIPTION file contain broken links ?")
-  doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
-  broken_links = []
-  for link in doc.xpath('//a/@href'):
-    try:
-      response = requests.head(link, allow_redirects=True, timeout=10)
-      code = response.status_code
-      if code != requests.codes.ok:
-        broken_links.append(("url: '{}' "
-                             "status code: '{}'").format(link, code))
-    except requests.exceptions.Timeout:
-      fb.warning(("Timedout while attempting to access: '{}'."
-                  " Please verify if that's a broken link.").format(link))
-    except requests.exceptions.RequestException:
-      broken_links.append(link)
-
-  if len(broken_links) > 0:
-    fb.error(("The following links are broken"
-              " in the DESCRIPTION file:"
-              " '{}'").format("', '".join(broken_links)))
-  else:
-    fb.ok("All links in the DESCRIPTION file look good!")
 
 
 def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
