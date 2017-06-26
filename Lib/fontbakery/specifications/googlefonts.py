@@ -152,7 +152,7 @@ def check_font_has_post_table_version_2(fb, ttFont):
   """Font has post table version 2 ?"""
   if ttFont['post'].formatType != 2:
     fb.error(("Post table should be version 2 instead of {}."
-              "More info at https://github.com/google/fonts/"
+              " More info at https://github.com/google/fonts/"
               "issues/215").format(ttFont['post'].formatType))
   else:
     fb.ok("Font has post table version 2.")
@@ -204,10 +204,10 @@ def check_font_has_a_license(fb, licenses):
                  " Please review.")
   elif not licenses:
     fb.error("No license file was found."
-               " Please add an OFL.txt or a LICENSE.txt file."
-               " If you are running fontbakery on a Google Fonts"
-               " upstream repo, which is fine, just make sure"
-               " there is a temporary license file in the same folder.")
+             " Please add an OFL.txt or a LICENSE.txt file."
+             " If you are running fontbakery on a Google Fonts"
+             " upstream repo, which is fine, just make sure"
+             " there is a temporary license file in the same folder.")
   else:
     fb.ok("Found license at '{}'".format(licenses[0]))
 
@@ -249,8 +249,8 @@ def check_font_has_a_valid_license_url(fb, ttFont):
                                     NAMEID_LICENSE_INFO_URL,
                                     string, expected))
   if not found_good_entry:
-    fb.error(("A License URL must be provided in the "
-              "NameID {} (LICENSE INFO URL) entry."
+    fb.error(("A License URL must be provided in the"
+              " NameID {} (LICENSE INFO URL) entry."
               "").format(NAMEID_LICENSE_INFO_URL))
   else:
     if failed:
