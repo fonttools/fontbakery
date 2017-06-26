@@ -74,11 +74,11 @@ def fontNameStartsWithFont_(font):
       yield FAIL, 'Char at index {} is not "{}" in "{}".'.format(i, test[i], font)
       1/0
 
-testsections=[Section('Default', tests), Section('Special', tests)] # order=['*test']
+testsections=[Section('Default', tests)] # order=['*test']
 
 googleSpec = Spec(
     conditions=conditions
-  , testsections=testsections
+  , sections=testsections
   , iterargs={'font': 'fonts'}
 )
 fonts = ['font_1', 'font_2', 'font_3', 'font_4']

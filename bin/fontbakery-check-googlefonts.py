@@ -37,7 +37,8 @@ if __name__ == '__main__':
   args = parser.parse_args()
   values = dict(fonts=get_fonts(args.arg_filepaths))
   runner = TestRunner(specificiation, values)
-  tr = TerminalReporter(runner=runner, is_async=False, print_progress=True
-                                              , collect_results_by='font')
+  tr = TerminalReporter(runner=runner, is_async=False, print_progress=False
+                                              #, collect_results_by='font'
+                                              )
   # sr = SerializeReporter(runner=runner, collect_results_by='font')
   distribute_generator(runner.run(), [tr.receive])# sr.receive
