@@ -59,7 +59,7 @@ class OldStyleTest(FontBakeryTest):
             results.append((ERROR, error))
         return _gen(results)
 
-def oldStyleTest(id, *args, **kwds):
+def old_style_test(id, *args, **kwds):
     def wrapper(func):
         return wraps(func)(
                 OldStyleTest(func, id, *args, **kwds))

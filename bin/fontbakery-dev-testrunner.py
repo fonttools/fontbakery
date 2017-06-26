@@ -19,30 +19,28 @@ from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.callable import condition, test
 
-conditions={}
-def registerCondition(condition):
-  conditions[condition.name] = condition
-  return condition
+default_section = Section('Default')
+specification = Spec(
+    default_section=default_section
+  , iterargs={'font': 'fonts'}
+)
+register_condition = specification.register_condition
+register_test = specification.register_test
 
-tests=[]
-def registerTest(test):
-  tests.append(test)
-  return test
 
-@registerCondition
+
+@register_condition
 @condition
 def fontNameNumber(font):
   return int(font.split('_')[1])
-registerCondition(fontNameNumber)
 
-@registerCondition
+@register_condition
 @condition
 def isOddFontName(fontNameNumber):
   #raise Exception('Just to see how much we can extract from this')
   return  fontNameNumber % 2 == 1
-registerCondition(isOddFontName)
 
-@registerTest
+@register_test
 @test(
     id='com.google.fonts/1'
   , conditions=['isOddFontName']
@@ -51,7 +49,7 @@ def oddNameBiggerThanOne(fontNameNumber):
   """Is the odd fontname bigger than one?"""
   return PASS if fontNameNumber > 1 else FAIL, fontNameNumber
 
-@registerTest
+@register_test
 @test(
     id='com.google.fonts/2'
   , conditions=['not isOddFontName']
@@ -60,7 +58,7 @@ def evenNameBiggerThanTwo(fontNameNumber):
   """Is the even fontname bigger than two?"""
   return PASS if fontNameNumber > 2 else FAIL, fontNameNumber
 
-@registerTest
+@register_test
 @test(
     id='com.google.fonts/3'
 )
@@ -74,18 +72,9 @@ def fontNameStartsWithFont_(font):
       yield FAIL, 'Char at index {} is not "{}" in "{}".'.format(i, test[i], font)
       1/0
 
-testsections=[Section('Default', tests)] # order=['*test']
-
-googleSpec = Spec(
-    conditions=conditions
-  , sections=testsections
-  , iterargs={'font': 'fonts'}
-)
-fonts = ['font_1', 'font_2', 'font_3', 'font_4']
-
-
 if __name__ == '__main__':
-  runner = TestRunner(googleSpec, {'fonts': fonts})
+  fonts = ['font_1', 'font_2', 'font_3', 'font_4']
+  runner = TestRunner(specification, {'fonts': fonts})
   tr = TerminalReporter(runner=runner, is_async=False, print_progress=True
                                               , collect_results_by='font')
   # sr = SerializeReporter(runner=runner, collect_results_by='font')
