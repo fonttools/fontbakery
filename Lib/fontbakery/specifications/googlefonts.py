@@ -245,6 +245,7 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
   """Fonts have consistent underline thickness?"""
   fail = False
   uWeight = None
+  print(ttFonts)
   for ttfont in ttFonts:
     if uWeight is None:
       uWeight = ttfont['post'].underlineThickness
@@ -408,7 +409,8 @@ def check_description_strings_in_name_table(fb, ttFont):
 
 specificiation = Spec(
     conditions=conditions
-  , testsections=[Section('Default', tests)]
+  , sections=[Section('Default', tests)]
   , iterargs={'font': 'fonts'}
   , derived_iterables={'ttFonts': ('ttFont', True)}
 )
+
