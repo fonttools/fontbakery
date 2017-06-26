@@ -91,10 +91,7 @@ def fontbakery_check_ttf(config):
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
   if os.path.exists(descfilepath):
     fb.default_target = descfilepath
-    contents = open(descfilepath).read()
     checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
-    checks.check_DESCRIPTION_max_length(fb, descfilepath)
-    checks.check_DESCRIPTION_min_length(fb, descfilepath)
 
   registered_vendor_ids = fetch_vendorID_list(logging)
 

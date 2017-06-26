@@ -153,24 +153,6 @@ def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
              " does not seem to be currently installed on your system.")
 
 
-def check_DESCRIPTION_max_length(fb, descfile):
-  fb.new_check("005", "DESCRIPTION.en_us.html is more than 200 bytes ?")
-  statinfo = os.stat(descfile)
-  if statinfo.st_size <= 200:
-    fb.error("{} must have size larger than 200 bytes".format(descfile))
-  else:
-    fb.ok("{} is larger than 200 bytes".format(descfile))
-
-
-def check_DESCRIPTION_min_length(fb, descfile):
-  fb.new_check("006", "DESCRIPTION.en_us.html is less than 1000 bytes ?")
-  statinfo = os.stat(descfile)
-  if statinfo.st_size >= 1000:
-    fb.error("{} must have size smaller than 1000 bytes".format(descfile))
-  else:
-    fb.ok("{} is smaller than 1000 bytes".format(descfile))
-
-
 def check_font_designer_field_is_not_unknown(fb, family):
   fb.new_check("007", "Font designer field is 'unknown' ?")
   if family.designer.lower() == 'unknown':
