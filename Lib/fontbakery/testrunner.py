@@ -201,10 +201,15 @@ def get_traceback():
   return result
 
 class TestRunner(object):
-  def __init__(self, spec, values, values_can_override_spec_names=True):
+  def __init__(self, spec, values
+             , values_can_override_spec_names=True
+             , explicit_tests = None
+             ):
     # TODO: transform all iterables that are list like to tuples
     # to make sure that they won't change anymore.
     # Also remove duplicates from list like iterables
+
+    self._explicit_tests = explicit_tests
     self._iterargs = OrderedDict()
     for singular, plural in spec.iterargs.items():
       values[plural] = tuple(values[plural])
@@ -503,7 +508,7 @@ class TestRunner(object):
     # inspection results).
     skipped, args = self._get_test_dependencies(test, iterargs)
     # FIXME: test is not a message
-    # so, to us it as a message, it should have a "message-interface"
+    # so, to use it as a message, it should have a "message-interface"
     # TODO: describe generic "message-interface"
     yield STARTTEST, None
     if skipped is not None:
@@ -551,7 +556,8 @@ class TestRunner(object):
     if order is None:
       order = []
       # section, test, iterargs = identity
-      for identity in self._spec.execution_order(self._iterargs):
+      for identity in self._spec.execution_order(self._iterargs,
+                                    explicit_tests=self._explicit_tests):
         order.append(identity)
       self._cache['order'] = order = tuple(order)
     return order
@@ -898,7 +904,9 @@ class Spec(object):
     for item in chain(*generators):
       yield item
 
-  def _section_execution_order(self, section, iterargs, reverse=False):
+  def _section_execution_order(self, section, iterargs
+                             , reverse=False
+                             , explicit_tests=None):
     """
       order must:
         a) contain all variable args (we're appending missing ones)
@@ -930,7 +938,9 @@ class Spec(object):
         continue
       full_order.append(item)
 
-    scopes = self._analyze_tests(full_order, section.tests)
+    tests = [test for test in section.tests \
+                        if not explicit_tests or test.id in explicit_tests]
+    scopes = self._analyze_tests(full_order, tests)
     key = lambda (test, signature, scope): signature
     scopes.sort(key=key, reverse=reverse)
 
@@ -941,9 +951,11 @@ class Spec(object):
       # defined order, by clustering.
       yield test, tuple(args)
 
-  def execution_order(self, iterargs):
+  def execution_order(self, iterargs, explicit_tests=None):
+    explicit_tests = set() if not explicit_tests else set(explicit_tests)
     for _, section in self._sections.items():
-      for test, iterargs in self._section_execution_order(section, iterargs):
+      for test, iterargs in self._section_execution_order(section, iterargs
+                                          , explicit_tests=explicit_tests):
         yield (section, test, iterargs)
 
   def _register_test(self, section, func):
