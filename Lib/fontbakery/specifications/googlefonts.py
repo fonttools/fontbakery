@@ -270,7 +270,6 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
   """Fonts have consistent underline thickness?"""
   fail = False
   uWeight = None
-  print(ttFonts)
   for ttfont in ttFonts:
     if uWeight is None:
       uWeight = ttfont['post'].underlineThickness

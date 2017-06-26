@@ -181,7 +181,8 @@ class TerminalProgress(FontbakeryReporter):
       if self._print_progress:
         print(self.draw_progressbar().encode('utf-8'))
       print()
-      if self._unicorn and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
+      if self._unicorn and len(self._order) \
+              and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
         unicorn = UNICORN
         if self._use_color:
           unicorn = MAGENTA_STR(UNICORN)
@@ -241,9 +242,6 @@ class TerminalProgress(FontbakeryReporter):
     self._last_progress_lines = rendered.count('\n')
     self.stdout.write(rendered)
     self.stdout.flush()
-
-    import time
-    time.sleep(.05)
 
 def _render_results_counter(counter,color=False):
   format = '    {}: {}'.format

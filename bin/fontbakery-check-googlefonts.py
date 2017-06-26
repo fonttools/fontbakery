@@ -21,6 +21,9 @@ parser.add_argument('arg_filepaths', nargs='+',
                     help='font file path(s) to check.'
                          ' Wildcards like *.ttf are allowed.')
 
+parser.add_argument('-c', '--checkid', action='append',
+                    help='Explicit check-ids to be executed.')
+
 def get_fonts(globs):
   fonts_to_check = []
   for target in globs:
@@ -36,8 +39,8 @@ def get_fonts(globs):
 if __name__ == '__main__':
   args = parser.parse_args()
   values = dict(fonts=get_fonts(args.arg_filepaths))
-  runner = TestRunner(specificiation, values)
-  tr = TerminalReporter(runner=runner, is_async=False, print_progress=False
+  runner = TestRunner(specificiation, values, explicit_tests=args.checkid)
+  tr = TerminalReporter(runner=runner, is_async=False, print_progress=True
                                               #, collect_results_by='font'
                                               )
   # sr = SerializeReporter(runner=runner, collect_results_by='font')
