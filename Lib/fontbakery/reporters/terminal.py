@@ -66,14 +66,20 @@ statuses = (
 test_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
 test_statuses.sort(key=lambda s:s.weight, reverse=True)
 
-RED_STR = '\033[1;31;40m{}\033[0m'.format
+RED_STR =        '\033[1;31;40m{}\033[0m'.format
 RED_BACKGROUND = '\033[1;37;41m{}\033[0m'.format
-GREEN_STR = '\033[1;32;40m{}\033[0m'.format
-YELLOW_STR = '\033[1;33;40m{}\033[0m'.format
-BLUE_STR = '\033[1;34;40m{}\033[0m'.format
-MAGENTA_STR = '\033[1;35;40m{}\033[0m'.format
-CYAN_STR = '\033[1;36;40m{}\033[0m'.format
-WHITE_STR = '\033[1;37;40m{}\033[0m'.format
+GREEN_STR =      '\033[1;32;40m{}\033[0m'.format
+YELLOW_STR =     '\033[1;33;40m{}\033[0m'.format
+BLUE_STR =       '\033[1;34;40m{}\033[0m'.format
+MAGENTA_STR =    '\033[1;35;40m{}\033[0m'.format
+CYAN_STR =       '\033[1;36;40m{}\033[0m'.format
+WHITE_STR =      '\033[1;37;40m{}\033[0m'.format
+
+def highlight(color, text, use_color=False):
+  if use_color:
+    return color(text)
+  else:
+    return text
 
 def formatStatus(status, text=None, color=False):
   # status can be a status or a string
@@ -312,8 +318,10 @@ class TerminalReporter(TerminalProgress):
       print()
 
     if status == STARTTEST and structure_threshold:
-      print('>> {} {} with {}'.format(test.name, test.id, iterargs))
-      print('  ', test.description)
+      print('>> {} with {}'.format(
+        highlight(CYAN_STR, test.id, use_color=self._use_color), iterargs))
+      print('  ',
+        highlight(MAGENTA_STR, test.description, use_color=self._use_color))
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
@@ -323,7 +331,7 @@ class TerminalReporter(TerminalProgress):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
     if status == ENDTEST and structure_threshold:
-      print('   Result: {}'.format(formatStatus(message, color=self._use_color)))
+      print('\n   Result: {}\n'.format(formatStatus(message, color=self._use_color)))
 
     if status == ENDSECTION and structure_threshold:
       print()

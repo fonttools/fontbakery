@@ -25,7 +25,6 @@ import re
 import defusedxml.lxml
 from fontTools import ttLib
 from unidecode import unidecode
-from lxml.html import HTMLParser
 import plistlib
 from fontbakery.pifont import PiFont
 from fontbakery.utils import (
@@ -121,118 +120,6 @@ def check_file_is_named_canonically(fb, font_fname):
               ' style names: "{}".').format(font_fname,
                                             '", "'.join(STYLE_NAMES)))
     return False
-
-
-def check_all_files_in_a_single_directory(fb, fonts_to_check):
-  '''If the set of font files passed in the command line
-     is not all in the same directory, then we warn the user
-     since the tool will interpret the set of files
-     as belonging to a single family (and it is unlikely
-     that the user would store the files from a single family
-     spreaded in several separate directories).
-  '''
-  fb.new_check("002", "Checking all files are in the same directory")
-  fb.set_priority(CRITICAL)
-
-  failed = False
-  target_dir = None
-  for target_file in fonts_to_check:
-    if target_dir is None:
-      target_dir = os.path.split(target_file)[0]
-    else:
-      if target_dir != os.path.split(target_file)[0]:
-        failed = True
-        break
-
-  if not failed:
-    fb.ok("All files are in the same directory.")
-  else:
-    fb.error("Not all fonts passed in the command line"
-             "are in the same directory. This may lead to"
-             "bad results as the tool will interpret all"
-             "font files as belonging to a single font family.")
-
-
-def check_DESCRIPTION_file_contains_no_broken_links(fb, contents):
-  fb.new_check("003", "Does DESCRIPTION file contain broken links ?")
-  doc = defusedxml.lxml.fromstring(contents, parser=HTMLParser())
-  broken_links = []
-  for link in doc.xpath('//a/@href'):
-    try:
-      response = requests.head(link, allow_redirects=True, timeout=10)
-      code = response.status_code
-      if code != requests.codes.ok:
-        broken_links.append(("url: '{}' "
-                             "status code: '{}'").format(link, code))
-    except requests.exceptions.Timeout:
-      fb.warning(("Timedout while attempting to access: '{}'."
-                  " Please verify if that's a broken link.").format(link))
-    except requests.exceptions.RequestException:
-      broken_links.append(link)
-
-  if len(broken_links) > 0:
-    fb.error(("The following links are broken"
-              " in the DESCRIPTION file:"
-              " '{}'").format("', '".join(broken_links)))
-  else:
-    fb.ok("All links in the DESCRIPTION file look good!")
-
-
-def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
-  """When packaging families for google/fonts. If there is no
-  DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
-  insert a dummy description file which contains invalid html.
-  This file needs to either be replaced with an existing description file
-  or edited by hand."""
-  fb.new_check("004", "Is this a propper HTML snippet ?")
-  try:
-    import magic
-    contenttype = magic.from_file(descfile)
-    if "HTML" not in contenttype:
-      data = open(descfile).read()
-      if "<p>" in data and "</p>" in data:
-        fb.ok(("{} is a propper"
-               " HTML snippet.").format(descfile))
-      else:
-        fb.error(("{} is not a propper"
-                  " HTML snippet.").format(descfile))
-    else:
-      fb.ok("{} is a propper HTML file.".format(descfile))
-  except AttributeError:
-     fb.skip("python magic version mismatch: "
-             "This check was skipped because the API of the python"
-             " magic module version installed in your system does not"
-             " provide the from_file method used in"
-             " the check implementation.")
-  except ImportError:
-     fb.skip("This check depends on the magic python module which"
-             " does not seem to be currently installed on your system.")
-
-
-def check_DESCRIPTION_max_length(fb, descfile):
-  fb.new_check("005", "DESCRIPTION.en_us.html is more than 200 bytes ?")
-  statinfo = os.stat(descfile)
-  if statinfo.st_size <= 200:
-    fb.error("{} must have size larger than 200 bytes".format(descfile))
-  else:
-    fb.ok("{} is larger than 200 bytes".format(descfile))
-
-
-def check_DESCRIPTION_min_length(fb, descfile):
-  fb.new_check("006", "DESCRIPTION.en_us.html is less than 1000 bytes ?")
-  statinfo = os.stat(descfile)
-  if statinfo.st_size >= 1000:
-    fb.error("{} must have size smaller than 1000 bytes".format(descfile))
-  else:
-    fb.ok("{} is smaller than 1000 bytes".format(descfile))
-
-
-def check_font_designer_field_is_not_unknown(fb, family):
-  fb.new_check("007", "Font designer field is 'unknown' ?")
-  if family.designer.lower() == 'unknown':
-    fb.error("Font designer field is '{}'.".format(family.designer))
-  else:
-    fb.ok("Font designer field is not 'unknown'.")
 
 
 def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
