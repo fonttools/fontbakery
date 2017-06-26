@@ -126,6 +126,14 @@ def check_all_files_in_a_single_directory(fb, fonts):
 
 @registerCondition
 @condition
+def descfile(font):
+  family_dir = os.path.split(font)[0]
+  descfile = os.path.join(family_dir, "DESCRIPTION.en_us.html")
+  return descfile
+
+
+@registerCondition
+@condition
 def description(font):
   family_dir = os.path.split(font)[0]
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
@@ -162,6 +170,34 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
               " '{}'").format("', '".join(broken_links)))
   else:
     fb.ok("All links in the DESCRIPTION file look good!")
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/005'
+  , conditions=['descfile']
+)
+def check_DESCRIPTION_max_length(fb, descfile):
+  """DESCRIPTION.en_us.html is more than 200 bytes ?"""
+  statinfo = os.stat(descfile)
+  if statinfo.st_size <= 200:
+    fb.error("{} must have size larger than 200 bytes".format(descfile))
+  else:
+    fb.ok("{} is larger than 200 bytes".format(descfile))
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/006'
+  , conditions=['descfile']
+)
+def check_DESCRIPTION_min_length(fb, descfile):
+  """DESCRIPTION.en_us.html is less than 1000 bytes ?"""
+  statinfo = os.stat(descfile)
+  if statinfo.st_size >= 1000:
+    fb.error("{} must have size smaller than 1000 bytes".format(descfile))
+  else:
+    fb.ok("{} is smaller than 1000 bytes".format(descfile))
 
 
 @registerTest
