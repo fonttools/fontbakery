@@ -178,7 +178,16 @@ class FailedDependenciesError(FontBakeryRunnerError):
     self.traceback = traceback
     super(FailedDependenciesError, self).__init__(message, *args)
 
+class SetupError(FontBakeryRunnerError):
+  pass
+
 class MissingValueError(FontBakeryRunnerError):
+  pass
+
+class CircularAliasError(FontBakeryRunnerError):
+  pass
+
+class NamespaceError(FontBakeryRunnerError):
   pass
 
 def get_traceback():
@@ -192,7 +201,7 @@ def get_traceback():
   return result
 
 class TestRunner(object):
-  def __init__(self, spec, values):
+  def __init__(self, spec, values, values_can_override_spec_names=True):
     # TODO: transform all iterables that are list like to tuples
     # to make sure that they won't change anymore.
     # Also remove duplicates from list like iterables
@@ -200,6 +209,12 @@ class TestRunner(object):
     for singular, plural in spec.iterargs.items():
       values[plural] = tuple(values[plural])
       self._iterargs[singular] = len(values[plural])
+
+    if not values_can_override_spec_names:
+      for name in values:
+        if spec.has(name):
+          raise SetupError('Values entry "{}" collides with spec '\
+                      'namespace as a {}'.format(k, spec.get_type(name)))
 
     self._spec = spec;
     # spec.validate(values)?
@@ -334,6 +349,7 @@ class TestRunner(object):
     return self._get(key, iterargs, None, *args)
 
   def get_iterarg(self, name, index):
+    """ Used by e.g. reporters """
     plural = self._spec.iterargs[name]
     return self._values[plural][index]
 
@@ -370,38 +386,63 @@ class TestRunner(object):
         result.append((iterargs, value))
     return tuple(result)
 
+  def _resolve_alias(self, original_name):
+    name = original_name
+    seen = set()
+    path = []
+    while name in self._spec.aliases:
+      if name in seen:
+        raise CircularAliasError('Alias for "{}" has a circular reference'\
+                        ' in {}'.format(original_name, '->'.join(path)))
+      seen.add(name)
+      path.append(name)
+      name = self._spec.aliases[name]
+    return name
+
   def _get(self, name, iterargs, path, *args):
     iterargsDict = dict(iterargs)
     has_fallback = bool(len(args))
     if has_fallback:
       fallback = args[0]
 
-    if name in iterargsDict:
-      index = iterargsDict[name]
-      return self.get_iterarg(name, index)
+    # try this once before resolving aliases and once after
+    if name in self._values:
+      return self._values[name]
 
-    if name in self._spec.iterargs:
-      plural = self._spec.iterargs[name]
+    original_name = name
+    name = self._resolve_alias(name)
+    if name != original_name and name in self._values:
+      return self._values[name]
+
+    nametype = self._spec.get_type(name, None)
+
+    if name in self._values:
+      return self._values[name]
+
+    if name in iterargsDict:
+      assert nametype == 'iterargs'
       index = iterargsDict[name]
+      plural = self._spec.get(name)
       return self._values[plural][index]
 
-    if name in self._spec.conditions:
+    if nametype == 'conditions':
       error, value = self._get_condition(name, iterargs, path)
       if error:
         raise error
       return value
 
-    if name in self._spec.derived_iterables:
-      condition_name, simple = self._spec.derived_iterables[name]
+    if nametype == 'derived_iterables':
+      condition_name, simple = self._spec.get(name)
       return self._derive_iterable_condition(condition_name, simple, path)
-
-    if name in self._values:
-      return self._values[name]
 
     if has_fallback:
       return fallback
 
-    raise MissingValueError('Value "{0}" is undefined.'.format(name))
+    if original_name != name:
+      report_name = '"{}" as "{}"'.format(original_name, name)
+    else:
+      report_name = '"{}"'.format(name)
+    raise MissingValueError('Value {} is undefined.'.format(report_name))
 
   def _get_args(self, item, iterargs, path=None):
     # iterargs can't be optional arguments yet, we wouldn't generate
@@ -496,7 +537,7 @@ class TestRunner(object):
 
   # old, more straight forward, but without a point to extract the order
   # def run(self):
-  #   for section in self._spec.testsections:
+  #   for section in self._spec.sections:
   #     yield STARTSECTION, section
   #     for test, iterargs in section.execution_order(self._iterargs
   #                            , getConditionByName=self._spec.conditions.get):
@@ -558,10 +599,11 @@ def distribute_generator(gen, targets_callbacks):
       target(item)
 
 class Section(object):
-  def __init__(self, name, tests, order=None, description=None):
+  def __init__(self, name, tests=None, order=None, description=None):
     self.name = name
     self.description = description
-    self._tests = tuple(tests)
+    self._add_test_callbacks = []
+    self._tests = [] if tests is None else list(tests)
     # a list of iterarg-names
     self._order = order or []
 
@@ -576,27 +618,160 @@ class Section(object):
   def tests(self):
     return self._tests
 
+  def on_add_test(self, callback):
+    self._add_test_callbacks.append(callback)
+
+  def add_test(self, test):
+    """
+    Please use rather `register_test` as a decorator.
+    """
+    for callback in self._add_test_callbacks:
+      callback(self, test)
+    self._tests.append(test)
+    return func
+
+  def register_test(self, func):
+    """
+    # register in `special_section`
+    @my_section.register_test
+    @test(id='com.example.fontbakery/test/0')
+    def my_test():
+      yield PASS, 'example'
+    """
+    return self.add_test(func)
+
 class Spec(object):
-  def __init__(self, testsections, iterargs, derived_iterables, conditions=None):
+  def __init__(self, sections=None
+             , iterargs=None
+             , derived_iterables=None
+             , conditions=None
+             , aliases=None
+             , default_section=None):
     '''
-      testsections: a list of sections, which are ideally ordered sets of
+      sections: a list of sections, which are ideally ordered sets of
           individual tests.
           It makes no sense to have tests repeatedly, they yield the same
-          results anyway.
-          FIXME: Should we detect this and inform the user then skip the repeated tests.
+          results anyway, thus we don't allow this.
       iterargs: maping 'singular' variable names to the iterable in values
           e.g.: `{'font': 'fonts'}` in this case fonts must be iterable AND
           'font' may not be a value NOR a condition name.
+      derived_iterables: a dictionary {"plural": ("singular", bool simple)}
+          where singular points to a condition, that consumes directly or indirectly
+          iterargs. plural will be a list of all values the condition produces
+          with all combination of it's iterargs.
+          If simple is False, the result returns tuples of: (iterars, value)
+          where iterargs is a tuple of ('iterargname', number index)
+          Especially for cases where only one iterarg is involved, simple
+          can be set to True and the result list will just contain the values.
+          Example:
+
+          @condition
+          def ttFont(font):
+            return TTFont(font)
+
+          values={'fonts': ['font_0', 'font_1']}
+          iterargs={'font': 'fonts'}
+
+          derived_iterables={'ttFonts': ('ttFont', True)}
+          # Then:
+          ttfons = (
+            <TTFont object from font_0>
+          , <TTFont object from font_1>
+          )
+
+          # However
+          derived_iterables={'ttFonts': ('ttFont', False)}
+          ttfons = [
+            ((('font', 0), ), <TTFont object from font_0>)
+          , ((('font', 1), ), <TTFont object from font_1>)
+          ]
 
     We will:
       a) get all needed values/variable names from here
       b) add some validation, so that we know the values match
          our expectations! These values must be treated asuser input!
     '''
-    self.testsections = testsections
-    self.iterargs = iterargs
-    self.derived_iterables = derived_iterables
-    self.conditions = conditions or {}
+    self._namespace = {}
+
+    self.iterargs = {}
+    if iterargs:
+      self._add_dict_to_namespace('iterargs', iterargs)
+
+    self.derived_iterables = {}
+    if derived_iterables:
+      self._add_dict_to_namespace('derived_iterables', derived_iterables)
+
+    self.aliases = {}
+    if aliases:
+      self._add_dict_to_namespace('aliases', aliases)
+
+    self.conditions = {}
+    if conditions:
+      self._add_dict_to_namespace('conditions', conditions)
+
+    self._test_registry = {}
+    self._sections = OrderedDict()
+    for section in sections:
+      self.add_section(section)
+
+    if not default_section:
+      default_section = sections[0] if len(sections) else Section('Default')
+    self._default_section = default_section
+    self.add_section(self._default_section)
+
+  _valid_namespace_types = {'iterargs', 'derived_iterables', 'aliases'
+                                                          , 'conditions'}
+
+  def _add_dict_to_namespace(self, type, data):
+    for key, value in data.items():
+      self.add_to_namespace(type, key, value)
+
+  def add_to_namespace(self, type, name, value, force=False):
+    if type not in self._valid_namespace_types:
+      raise TypeError('Unknow type "{}" valid are: {}'.format(
+                          type, ', '.join(self._valid_namespace_types)))
+    if name in self._namespace and not force:
+      raise NamespaceError('Name "{}" is already registered in "{}".' \
+                                                  .format(name, type))
+    self._namespace[name] = type
+    target = getattr(self, type)
+    target[name] = value
+
+  def get_type(self, name, *args):
+    has_fallback = bool(args)
+    if has_fallback:
+      fallback = args[0]
+
+    if not name in self._namespace:
+      if has_fallback:
+        return fallback
+      raise KeyError(name)
+
+    return self._namespace[name]
+
+  def get(self, name, *args):
+    has_fallback = bool(args)
+    if has_fallback:
+      fallback = args[0]
+
+    try:
+      target_type = self.get_type(name)
+    except KeyError:
+      if not has_fallback:
+        raise
+      return fallback
+
+    target = getattr(self, target_type)
+    if name not in target:
+      if has_fallback:
+        return fallback
+      raise KeyError(name)
+    return target[name]
+
+  def has(self, name):
+    marker_fallback = {}
+    val = self.get(name, marker_fallback)
+    return val is not marker_fallback
 
   def _get_aggregate_args(self, item, key):
     """
@@ -623,7 +798,6 @@ class Spec(object):
       dependencies += [dependency for dependency in getattr(c, key)
                                               if dependency not in args]
     return args
-
 
   def get_iterargs(self, item):
     """ Returns a tuple of all iterags for item, sorted by name."""
@@ -768,8 +942,82 @@ class Spec(object):
       yield test, tuple(args)
 
   def execution_order(self, iterargs):
-    for section in self.testsections:
+    for _, section in self._sections.items():
       for test, iterargs in self._section_execution_order(section, iterargs):
         yield (section, test, iterargs)
+
+  def _register_test(self, section, func):
+    key = '{}'.format(func)
+    other_section = self._test_registry.get(key, None)
+    if other_section:
+      raise SetupError('Test {} is already registered in {}, tried to '
+                       'register in {}.'.format(key, other_section, section))
+    self._test_registry[key] = section
+
+  def add_section(self, section):
+    key = '{}'.format(section)
+    if key in self._sections:
+      # the string representation of a section must be unique.
+      # string representations of section and test will be used as unique keys
+      if self._sections[key] is not section:
+        raise SetupError('A section with key {} is already registered'.format(section))
+      return
+    self._sections[key] = section
+    section.on_add_test(self._register_test)
+    for test in section.tests:
+      self._register_test(section, test)
+
+  def _add_test(self, section, func):
+    self.add_section(section)
+    section.add_test(func)
+    return func
+
+  def register_test(self, section=None, *args, **kwds):
+    """
+    Usage:
+    # register in default section
+    @spec.register_test
+    @test(id='com.example.fontbakery/test/0')
+    def my_test():
+      yield PASS, 'example'
+
+    # register in `special_section` also register that section in the spec
+    @spec.register_test(special_section)
+    @test(id='com.example.fontbakery/test/0')
+    def my_test():
+      yield PASS, 'example'
+
+    """
+    if section and len(kwds) == 0 and callable(section):
+      func = section
+      section = self._default_section
+      return self._add_test(section, func)
+    else:
+      return partial(self._add_test, section)
+
+  def _add_condition(self, condition, name=None):
+    self._add_to_namespace(name or condition.name, 'conditons', conditon)
+    return condition
+
+  def register_condition(self, *args, **kwds):
+    """
+    Usage:
+
+    @spec.register_condition
+    @condition
+    def myCondition():
+      return 123
+
+    #or
+
+    @spec.register_condition(name='my_condition')
+    @condition
+    def myCondition():
+      return 123
+    """
+    if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
+      return self._add_condition(func)
+    else:
+      return partial(self._add_condition, *args, **kwds)
 
 
