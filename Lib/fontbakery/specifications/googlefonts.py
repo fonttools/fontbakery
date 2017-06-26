@@ -18,7 +18,11 @@ from fontbakery.testrunner import (
 from fontbakery.callable import condition, test
 from fontbakery.testadapters.oldstyletest import oldStyleTest
 
+
 import os
+import requests
+import defusedxml.lxml
+from lxml.html import HTMLParser
 from fontTools.ttLib import TTFont
 
 from fontbakery.constants import(
@@ -118,6 +122,46 @@ def check_all_files_in_a_single_directory(fb, fonts):
              " are in the same directory. This may lead to"
              " bad results as the tool will interpret all"
              " font files as belonging to a single font family.")
+
+
+@registerCondition
+@condition
+def description(font):
+  family_dir = os.path.split(font)[0]
+  descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
+  if os.path.exists(descfilepath):
+    contents = open(descfilepath).read()
+    return contents
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/003'
+  , conditions=['description']
+)
+def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
+  """Does DESCRIPTION file contain broken links ?"""
+  doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
+  broken_links = []
+  for link in doc.xpath('//a/@href'):
+    try:
+      response = requests.head(link, allow_redirects=True, timeout=10)
+      code = response.status_code
+      if code != requests.codes.ok:
+        broken_links.append(("url: '{}' "
+                             "status code: '{}'").format(link, code))
+    except requests.exceptions.Timeout:
+      fb.warning(("Timedout while attempting to access: '{}'."
+                  " Please verify if that's a broken link.").format(link))
+    except requests.exceptions.RequestException:
+      broken_links.append(link)
+
+  if len(broken_links) > 0:
+    fb.error(("The following links are broken"
+              " in the DESCRIPTION file:"
+              " '{}'").format("', '".join(broken_links)))
+  else:
+    fb.ok("All links in the DESCRIPTION file look good!")
 
 
 @registerTest
