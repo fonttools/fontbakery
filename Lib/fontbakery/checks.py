@@ -122,14 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_font_designer_field_is_not_unknown(fb, family):
-  fb.new_check("007", "Font designer field is 'unknown' ?")
-  if family.designer.lower() == 'unknown':
-    fb.error("Font designer field is '{}'.".format(family.designer))
-  else:
-    fb.ok("Font designer field is not 'unknown'.")
-
-
 def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
   fb.new_check("009", "Fonts have consistent PANOSE proportion?")
   fail = False

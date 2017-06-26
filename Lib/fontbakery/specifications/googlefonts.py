@@ -18,7 +18,6 @@ from fontbakery.testrunner import (
 from fontbakery.callable import condition, test
 from fontbakery.testadapters.oldstyletest import oldStyleTest
 
-
 import os
 import requests
 import defusedxml.lxml
@@ -43,6 +42,7 @@ from fontbakery.constants import(
       , STYLE_NAMES
 )
 
+from fontbakery.utils import get_FamilyProto_Message
 
 conditions={}
 def registerCondition(condition):
@@ -54,10 +54,13 @@ def registerTest(test):
   tests.append(test)
   return test
 
+# -------------------------------------------------------------------
+
 @registerCondition
 @condition
 def ttFont(font):
   return TTFont(font)
+
 
 @registerTest
 @oldStyleTest(
@@ -127,19 +130,19 @@ def check_all_files_in_a_single_directory(fb, fonts):
 @registerCondition
 @condition
 def descfile(font):
-  family_dir = os.path.split(font)[0]
-  descfile = os.path.join(family_dir, "DESCRIPTION.en_us.html")
-  return descfile
+  """Get the path of the DESCRIPTION file of a given font project."""
+  family_dir = os.path.dirname(font)
+  descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
+  if os.path.exists(descfilepath):
+    return descfilepath
 
 
 @registerCondition
 @condition
-def description(font):
-  family_dir = os.path.split(font)[0]
-  descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
-  if os.path.exists(descfilepath):
-    contents = open(descfilepath).read()
-    return contents
+def description(descfile):
+  """Get the contents of the DESCRIPTION file of a font project."""
+  contents = open(descfile).read()
+  return contents
 
 
 @registerTest
@@ -237,6 +240,28 @@ def check_DESCRIPTION_min_length(fb, descfile):
     fb.ok("{} is smaller than 1000 bytes".format(descfile))
 
 
+@registerCondition
+@condition
+def metadata(font):
+  family_dir = os.path.dirname(font)
+  pb_file = os.path.join(family_dir, "METADATA.pb")
+  if os.path.exists(pb_file):
+    return get_FamilyProto_Message(pb_file)
+
+
+@registerTest
+@oldStyleTest(
+    id='com.google.fonts/test/007'
+  , conditions=['metadata']
+)
+def check_font_designer_field_is_not_unknown(fb, metadata):
+  """Font designer field in METADATA.pb must not be 'unknown'."""
+  if metadata.designer.lower() == 'unknown':
+    fb.error("Font designer field is '{}'.".format(metadata.designer))
+  else:
+    fb.ok("Font designer field is not 'unknown'.")
+
+
 @registerTest
 @oldStyleTest(
     id='com.google.fonts/test/008'
@@ -261,6 +286,7 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
              " font files.")
   else:
     fb.ok("Fonts have consistent underline thickness.")
+
 
 @registerTest
 @oldStyleTest(
@@ -304,12 +330,14 @@ def licenses(font):
       licenses.append(license_path)
   return licenses
 
+
 @registerCondition
 @condition
 def license(licenses):
   """Get license path"""
   # return license if there is exactly one license
   return licenses[0] if len(licenses) == 1 else None
+
 
 @registerTest
 @oldStyleTest(
@@ -328,6 +356,7 @@ def check_font_has_a_license(fb, licenses):
              " there is a temporary license file in the same folder.")
   else:
     fb.ok("Found license at '{}'".format(licenses[0]))
+
 
 @registerTest
 @oldStyleTest(
