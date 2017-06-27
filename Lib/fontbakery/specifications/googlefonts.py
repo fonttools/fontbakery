@@ -342,6 +342,35 @@ def check_fonts_have_consistent_PANOSE_family_type(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/011'
+)
+def check_fonts_have_equal_numbers_of_glyphs(fb, ttFonts):
+  """Fonts have equal numbers of glyphs?"""
+  counts = {}
+  glyphs_count = None
+  fail = False
+  for ttfont in ttFonts:
+    this_count = len(ttfont['glyf'].glyphs)
+    if glyphs_count is None:
+      glyphs_count = this_count
+    if glyphs_count != this_count:
+      fail = True
+    counts[ttfont.reader.file.name] = this_count
+
+  if fail:
+    results_table = ""
+    for key in counts.keys():
+      results_table += "| {} | {} |\n".format(key,
+                                              counts[key])
+
+    fb.error('Fonts have different numbers of glyphs:\n\n'
+             '{}'.format(results_table))
+  else:
+    fb.ok("Fonts have equal numbers of glyphs.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
