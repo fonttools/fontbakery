@@ -316,8 +316,14 @@ class TerminalReporter(TerminalProgress):
       print()
 
     if status == STARTTEST and structure_threshold:
+      if self.runner:
+        formatted_iterargs = tuple(
+            ('{0}[{1}]'.format(*item), self.runner.get_iterarg(*item))
+                                                    for item in iterargs)
+      else:
+        formatted_iterargs = iterargs
       print('>> {} with {}'.format(
-        highlight(CYAN_STR, test.id, use_color=self._use_color), iterargs))
+        highlight(CYAN_STR, test.id, use_color=self._use_color), formatted_iterargs))
       print('  ',
         highlight(MAGENTA_STR, test.description, use_color=self._use_color))
 
