@@ -452,6 +452,24 @@ def check_font_has_post_table_version_2(fb, ttFont):
   else:
     fb.ok("Font has post table version 2.")
 
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/016'
+)
+def check_OS2_fsType(fb, ttFont):
+  """Checking OS/2 fsType
+
+  Fonts must have their fsType bit set to 0. This setting is known as
+  Installable Embedding,
+  https://www.microsoft.com/typography/otspec/os2.htm#fst"""
+
+  if ttFont['OS/2'].fsType != 0:
+    fb.error("OS/2 fsType is a legacy DRM-related field from the 80's"
+             " and must be zero (disabled) in all fonts.")
+  else:
+    fb.ok("OS/2 fsType is properly set to zero (80's DRM scheme is disabled).")
+
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
 #             027 - "Checking fsSelection BOLD bit"

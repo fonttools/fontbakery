@@ -122,16 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_OS2_fsType(fb):
-  """Fonts must have their fsType bit set to 0. This setting is known as
-  Installable Embedding,
-  https://www.microsoft.com/typography/otspec/os2.htm#fst"""
-  fb.new_check("016", "Checking OS/2 fsType")
-  fb.assert_table_entry('OS/2', 'fsType', 0)
-  fb.log_results("OS/2 fsType is a legacy DRM-related field from the 80's"
-                 " and must be zero (disabled) in all fonts.")
-
-
 def check_main_entries_in_the_name_table(fb, font, fullpath):
   '''Each entry in the name table has a criteria for validity and
      this check tests if all entries in the name table are
