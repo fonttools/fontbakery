@@ -208,7 +208,23 @@ class PiFontFontTools:
             return None
 
     def get_contours_count(self, glyphname):
-        return 0
+        """ Retrieves count of glyph points in contours
+
+        >>> f = PiFont('tests/fixtures/src/Font-Italic.ufo')
+        >>> f.get_points_count('AEacute')
+        24
+        """
+        contour_count = 0
+        items = [self.font['glyf'][glyphname]]
+
+        while items:
+            g = items.pop(0)
+            if g.isComposite():
+                for comp in g.components:
+                    items.append(self.font['glyf'][comp.glyphName])
+            if g.numberOfContours != -1:
+                contour_count += g.numberOfContours
+        return contour_count
 
     def get_points_count(self, glyphname):
         return 0
