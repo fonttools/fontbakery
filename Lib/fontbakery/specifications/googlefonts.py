@@ -16,7 +16,7 @@ from fontbakery.testrunner import (
             )
 
 from fontbakery.callable import condition, test
-from fontbakery.testadapters.oldstyletest import oldStyleTest
+from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
 import requests
@@ -44,26 +44,27 @@ from fontbakery.constants import(
 
 from fontbakery.utils import get_FamilyProto_Message
 
-conditions={}
-def registerCondition(condition):
-  conditions[condition.name] = condition
-  return condition
+default_section = Section('Default')
+specificiation = Spec(
+    default_section=default_section
+  , iterargs={'font': 'fonts'}
+  , derived_iterables={'ttFonts': ('ttFont', True)}
+  #, sections=[]
+)
 
-tests=[]
-def registerTest(test):
-  tests.append(test)
-  return test
+register_test = specificiation.register_test
+register_condition = specificiation.register_condition
 
 # -------------------------------------------------------------------
 
-@registerCondition
+@register_condition
 @condition
 def ttFont(font):
   return TTFont(font)
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/001'
   , priority=CRITICAL
 )
@@ -92,8 +93,8 @@ def check_file_is_named_canonically(fb, font):
     return False
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/002',
     priority=CRITICAL
 )
@@ -127,7 +128,7 @@ def check_all_files_in_a_single_directory(fb, fonts):
              " font files as belonging to a single font family.")
 
 
-@registerCondition
+@register_condition
 @condition
 def descfile(font):
   """Get the path of the DESCRIPTION file of a given font project."""
@@ -137,16 +138,18 @@ def descfile(font):
     return descfilepath
 
 
-@registerCondition
+@register_condition
 @condition
 def description(descfile):
   """Get the contents of the DESCRIPTION file of a font project."""
+  if not descfile:
+    return
   contents = open(descfile).read()
   return contents
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/003'
   , conditions=['description']
 )
@@ -175,8 +178,8 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
     fb.ok("All links in the DESCRIPTION file look good!")
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/004'
   , conditions=['descfile']
 )
@@ -212,8 +215,8 @@ def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
              " does not seem to be currently installed on your system.")
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/005'
   , conditions=['descfile']
 )
@@ -226,8 +229,8 @@ def check_DESCRIPTION_max_length(fb, descfile):
     fb.ok("{} is larger than 200 bytes".format(descfile))
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/006'
   , conditions=['descfile']
 )
@@ -240,7 +243,7 @@ def check_DESCRIPTION_min_length(fb, descfile):
     fb.ok("{} is smaller than 1000 bytes".format(descfile))
 
 
-@registerCondition
+@register_condition
 @condition
 def metadata(font):
   family_dir = os.path.dirname(font)
@@ -249,8 +252,8 @@ def metadata(font):
     return get_FamilyProto_Message(pb_file)
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/007'
   , conditions=['metadata']
 )
@@ -262,8 +265,8 @@ def check_font_designer_field_is_not_unknown(fb, metadata):
     fb.ok("Font designer field is not 'unknown'.")
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/008'
 )
 def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
@@ -287,8 +290,8 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
     fb.ok("Fonts have consistent underline thickness.")
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
@@ -317,7 +320,7 @@ def check_font_has_post_table_version_2(fb, ttFont):
 #
 # Replaced by 131 - "Checking head.macStyle value"
 
-@registerCondition
+@register_condition
 @condition
 def licenses(font):
   """Get license path"""
@@ -330,7 +333,7 @@ def licenses(font):
   return licenses
 
 
-@registerCondition
+@register_condition
 @condition
 def license(licenses):
   """Get license path"""
@@ -338,8 +341,8 @@ def license(licenses):
   return licenses[0] if len(licenses) == 1 else None
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/028'
 )
 def check_font_has_a_license(fb, licenses):
@@ -357,8 +360,8 @@ def check_font_has_a_license(fb, licenses):
     fb.ok("Found license at '{}'".format(licenses[0]))
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/030'
   , conditions=['license']
   , priority=CRITICAL
@@ -409,8 +412,8 @@ def check_font_has_a_valid_license_url(fb, ttFont):
       fb.ok("Font has a valid license URL in NAME table.")
 
 
-@registerTest
-@oldStyleTest(
+@register_test
+@old_style_test(
     id='com.google.fonts/test/031'
   , priority=CRITICAL
 )
@@ -433,12 +436,4 @@ def check_description_strings_in_name_table(fb, ttFont):
   else:
     fb.ok("Description strings in the name table"
           " do not contain any copyright string.")
-
-
-specificiation = Spec(
-    conditions=conditions
-  , sections=[Section('Default', tests)]
-  , iterargs={'font': 'fonts'}
-  , derived_iterables={'ttFonts': ('ttFont', True)}
-)
 
