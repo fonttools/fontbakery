@@ -122,27 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fonts_have_equal_unicode_encodings(fb, family, ttf):
-  fb.new_check("013", "Fonts have equal unicode encodings?")
-  encoding = None
-  fail = False
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    cmap = None
-    for table in ttfont['cmap'].tables:
-      if table.format == 4:
-        cmap = table
-        break
-    if not encoding:
-      encoding = cmap.platEncID
-    if encoding != cmap.platEncID:
-      fail = True
-  if fail:
-    fb.error('Fonts have different unicode encodings.')
-  else:
-    fb.ok("Fonts have equal unicode encodings.")
-
-
 def check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache):
   fb.new_check("014", "Make sure all font files have the same version value.")
   all_detected_versions = []
