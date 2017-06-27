@@ -192,8 +192,6 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
     checks.check_OS2_xAvgCharWidth(fb, font)
 
-#    checks.check_copyright_entries_match_license(fb, found, file_path, font)
-    checks.check_name_entries_symbol_substitutions(fb, font)
     checks.check_description_strings_do_not_exceed_100_chars(fb, font)
 
     monospace_detected = checks.check_font_is_truly_monospaced(fb, font)
