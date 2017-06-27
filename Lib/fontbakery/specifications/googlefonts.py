@@ -142,6 +142,8 @@ def descfile(font):
 @condition
 def description(descfile):
   """Get the contents of the DESCRIPTION file of a font project."""
+  if not descfile:
+    return
   contents = open(descfile).read()
   return contents
 
