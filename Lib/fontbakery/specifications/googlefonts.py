@@ -414,6 +414,33 @@ def check_fonts_have_equal_unicode_encodings(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/014'
+)
+def check_all_fontfiles_have_same_version(fb, ttFonts):
+  """Make sure all font files have the same version value."""
+  all_detected_versions = []
+  fontfile_versions = {}
+  for ttfont in ttFonts:
+    v = ttfont['head'].fontRevision
+    fontfile_versions[ttfont] = v
+
+    if v not in all_detected_versions:
+      all_detected_versions.append(v)
+  if len(all_detected_versions) != 1:
+    versions_list = ""
+    for v in fontfile_versions.keys():
+      versions_list += "* {}: {}\n".format(v.reader.file.name,
+                                           fontfile_versions[v])
+    fb.warning(("version info differs among font"
+                " files of the same font project.\n"
+                "These were the version values found:\n"
+                "{}").format(versions_list))
+  else:
+    fb.ok("All font files have the same version.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):

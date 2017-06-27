@@ -158,7 +158,6 @@ def fontbakery_check_ttf(config):
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
-  checks.check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache)
   # FSanches: I don't like the following.
   #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
