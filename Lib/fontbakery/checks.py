@@ -122,37 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_name_entries_symbol_substitutions(fb, font):
-  fb.new_check("019", "substitute copyright, registered and trademark"
-                      " symbols in name table entries")
-  failed = False
-  replacement_map = [(u"\u00a9", '(c)'),
-                     (u"\u00ae", '(r)'),
-                     (u"\u2122", '(tm)')]
-  for name in font['name'].names:
-    new_name = name
-    original = unicode(name.string, encoding=name.getEncoding())
-    string = unicode(name.string, encoding=name.getEncoding())
-    for mark, ascii_repl in replacement_map:
-      new_string = string.replace(mark, ascii_repl)
-      if string != new_string:
-        if fb.config['autofix']:
-          fb.hotfix(("NAMEID #{} contains symbol that was"
-                     " replaced by '{}'").format(name.nameID,
-                                                 ascii_repl))
-          string = new_string
-        else:
-          fb.error(("NAMEID #{} contains symbol that should be"
-                    " replaced by '{}'").format(name.nameID,
-                                                ascii_repl))
-    new_name.string = string.encode(name.getEncoding())
-    if string != original:
-      failed = True
-  if not failed:
-    fb.ok("No need to substitute copyright, registered and"
-          " trademark symbols in name table entries of this font.")
-
-
 def check_OS2_usWeightClass(fb, font, style):
   """The Google Font's API which serves the fonts can only serve
   the following weights values with the  corresponding subfamily styles:

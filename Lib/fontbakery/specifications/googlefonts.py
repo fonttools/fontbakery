@@ -727,6 +727,30 @@ def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
                          unidecode(manufacturer)))
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/019'
+)
+def check_name_entries_symbol_substitutions(fb, ttFont):
+  """Substitute copyright, registered and trademark
+     symbols in name table entries"""
+  failed = False
+  replacement_map = [(u"\u00a9", '(c)'),
+                     (u"\u00ae", '(r)'),
+                     (u"\u2122", '(tm)')]
+  for name in ttFont['name'].names:
+    string = unicode(name.string, encoding=name.getEncoding())
+    for mark, ascii_repl in replacement_map:
+      new_string = string.replace(mark, ascii_repl)
+      if string != new_string:
+        fb.error(("NAMEID #{} contains symbol that should be"
+                  " replaced by '{}'").format(name.nameID,
+                                              ascii_repl))
+        failed = True
+  if not failed:
+    fb.ok("No need to substitute copyright, registered and"
+          " trademark symbols in name table entries of this font.")
+
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
 #             027 - "Checking fsSelection BOLD bit"
