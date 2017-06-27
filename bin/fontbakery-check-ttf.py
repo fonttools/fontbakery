@@ -196,7 +196,6 @@ def fontbakery_check_ttf(config):
 
     checks.check_head_macStyle(fb, font, style)
 
-    checks.check_OS2_fsType(fb)
     checks.check_OS2_achVendID(fb, font, registered_vendor_ids)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
