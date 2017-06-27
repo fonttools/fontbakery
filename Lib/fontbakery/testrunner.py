@@ -477,7 +477,11 @@ class TestRunner(object):
     unfulfilled_conditions = []
     for condition in test.conditions:
       negate, name = self._is_negated(condition)
-      err, val = self._get_condition(name, iterargs)
+      if name in self._values:
+        # this is a handy way to set flags from the outside
+        err, val = None, self._values[name]
+      else:
+        err, val = self._get_condition(name, iterargs)
       if negate:
         val = not val
       if err:
