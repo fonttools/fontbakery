@@ -292,6 +292,155 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/009'
+)
+def check_fonts_have_consistent_PANOSE_proportion(fb, ttFonts):
+  """Fonts have consistent PANOSE proportion?"""
+  fail = False
+  proportion = None
+  for ttfont in ttFonts:
+    if proportion is None:
+      proportion = ttfont['OS/2'].panose.bProportion
+    if proportion != ttfont['OS/2'].panose.bProportion:
+      fail = True
+
+  if fail:
+    fb.error("PANOSE proportion is not"
+             " the same accross this family."
+             " In order to fix this,"
+             " please make sure that the panose.bProportion value"
+             " is the same in the OS/2 table of all of this family"
+             " font files.")
+  else:
+    fb.ok("Fonts have consistent PANOSE proportion.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/010'
+)
+def check_fonts_have_consistent_PANOSE_family_type(fb, ttFonts):
+  """Fonts have consistent PANOSE family type?"""
+  fail = False
+  familytype = None
+  for ttfont in ttFonts:
+    if familytype is None:
+      familytype = ttfont['OS/2'].panose.bFamilyType
+    if familytype != ttfont['OS/2'].panose.bFamilyType:
+      fail = True
+
+  if fail:
+    fb.error("PANOSE family type is not"
+             " the same accross this family."
+             " In order to fix this,"
+             " please make sure that the panose.bFamilyType value"
+             " is the same in the OS/2 table of all of this family"
+             " font files.")
+  else:
+    fb.ok("Fonts have consistent PANOSE family type.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/011'
+)
+def check_fonts_have_equal_numbers_of_glyphs(fb, ttFonts):
+  """Fonts have equal numbers of glyphs?"""
+  counts = {}
+  glyphs_count = None
+  fail = False
+  for ttfont in ttFonts:
+    this_count = len(ttfont['glyf'].glyphs)
+    if glyphs_count is None:
+      glyphs_count = this_count
+    if glyphs_count != this_count:
+      fail = True
+    counts[ttfont.reader.file.name] = this_count
+
+  if fail:
+    results_table = ""
+    for key in counts.keys():
+      results_table += "| {} | {} |\n".format(key,
+                                              counts[key])
+
+    fb.error('Fonts have different numbers of glyphs:\n\n'
+             '{}'.format(results_table))
+  else:
+    fb.ok("Fonts have equal numbers of glyphs.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/012'
+)
+def check_fonts_have_equal_glyph_names(fb, ttFonts):
+  """Fonts have equal glyph names?"""
+  glyphs = None
+  fail = False
+  for ttfont in ttFonts:
+    if not glyphs:
+      glyphs = ttfont['glyf'].glyphs
+    if glyphs.keys() != ttfont['glyf'].glyphs.keys():
+      fail = True
+  if fail:
+    fb.error('Fonts have different glyph names.')
+  else:
+    fb.ok("Fonts have equal glyph names.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/013'
+)
+def check_fonts_have_equal_unicode_encodings(fb, ttFonts):
+  """Fonts have equal unicode encodings?"""
+  encoding = None
+  fail = False
+  for ttfont in ttFonts:
+    cmap = None
+    for table in ttfont['cmap'].tables:
+      if table.format == 4:
+        cmap = table
+        break
+    if not encoding:
+      encoding = cmap.platEncID
+    if encoding != cmap.platEncID:
+      fail = True
+  if fail:
+    fb.error('Fonts have different unicode encodings.')
+  else:
+    fb.ok("Fonts have equal unicode encodings.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/014'
+)
+def check_all_fontfiles_have_same_version(fb, ttFonts):
+  """Make sure all font files have the same version value."""
+  all_detected_versions = []
+  fontfile_versions = {}
+  for ttfont in ttFonts:
+    v = ttfont['head'].fontRevision
+    fontfile_versions[ttfont] = v
+
+    if v not in all_detected_versions:
+      all_detected_versions.append(v)
+  if len(all_detected_versions) != 1:
+    versions_list = ""
+    for v in fontfile_versions.keys():
+      versions_list += "* {}: {}\n".format(v.reader.file.name,
+                                           fontfile_versions[v])
+    fb.warning(("version info differs among font"
+                " files of the same font project.\n"
+                "These were the version values found:\n"
+                "{}").format(versions_list))
+  else:
+    fb.ok("All font files have the same version.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
@@ -302,6 +451,24 @@ def check_font_has_post_table_version_2(fb, ttFont):
               "issues/215").format(ttFont['post'].formatType))
   else:
     fb.ok("Font has post table version 2.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/016'
+)
+def check_OS2_fsType(fb, ttFont):
+  """Checking OS/2 fsType
+
+  Fonts must have their fsType bit set to 0. This setting is known as
+  Installable Embedding,
+  https://www.microsoft.com/typography/otspec/os2.htm#fst"""
+
+  if ttFont['OS/2'].fsType != 0:
+    fb.error("OS/2 fsType is a legacy DRM-related field from the 80's"
+             " and must be zero (disabled) in all fonts.")
+  else:
+    fb.ok("OS/2 fsType is properly set to zero (80's DRM scheme is disabled).")
 
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"

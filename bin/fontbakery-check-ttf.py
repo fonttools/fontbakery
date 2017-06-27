@@ -140,11 +140,6 @@ def fontbakery_check_ttf(config):
       fb.default_target = dirname
     # -----------------------------------------------------
     checks.check_font_designer_field_is_not_unknown(fb, family)
-    checks.check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf)
-    checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
-    checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
-    checks.check_fonts_have_equal_glyph_names(fb, family, ttf)
-    checks.check_fonts_have_equal_unicode_encodings(fb, family, ttf)
 
   # ------------------------------------------------------
   vmetrics_ymin = 0
@@ -156,7 +151,6 @@ def fontbakery_check_ttf(config):
     vmetrics_ymin = min(font_ymin, vmetrics_ymin)
     vmetrics_ymax = max(font_ymax, vmetrics_ymax)
 
-  checks.check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache)
   # FSanches: I don't like the following.
   #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
@@ -195,7 +189,6 @@ def fontbakery_check_ttf(config):
 
     checks.check_head_macStyle(fb, font, style)
 
-    checks.check_OS2_fsType(fb)
     checks.check_OS2_achVendID(fb, font, registered_vendor_ids)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
