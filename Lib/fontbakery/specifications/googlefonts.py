@@ -292,6 +292,31 @@ def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/009'
+)
+def check_fonts_have_consistent_PANOSE_proportion(fb, ttFonts):
+  """Fonts have consistent PANOSE proportion?"""
+  fail = False
+  proportion = None
+  for ttfont in ttFonts:
+    if proportion is None:
+      proportion = ttfont['OS/2'].panose.bProportion
+    if proportion != ttfont['OS/2'].panose.bProportion:
+      fail = True
+
+  if fail:
+    fb.error("PANOSE proportion is not"
+             " the same accross this family."
+             " In order to fix this,"
+             " please make sure that the panose.bProportion value"
+             " is the same in the OS/2 table of all of this family"
+             " font files.")
+  else:
+    fb.ok("Fonts have consistent PANOSE proportion.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
