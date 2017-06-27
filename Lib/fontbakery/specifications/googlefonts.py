@@ -245,8 +245,8 @@ def check_DESCRIPTION_min_length(fb, descfile):
 
 @register_condition
 @condition
-def metadata(font):
-  family_dir = os.path.dirname(font)
+def metadata(fonts):
+  family_dir = os.path.dirname(fonts[0])
   pb_file = os.path.join(family_dir, "METADATA.pb")
   if os.path.exists(pb_file):
     return get_FamilyProto_Message(pb_file)
