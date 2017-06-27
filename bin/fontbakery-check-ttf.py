@@ -23,7 +23,6 @@ from fontbakery import checks
 from fontTools import ttLib
 from fontbakery.utils import (
                              get_bounding_box,
-                             fetch_vendorID_list,
                              get_FamilyProto_Message,
                              font_key,
                              download_family_from_GoogleFontDirectory,
@@ -92,8 +91,6 @@ def fontbakery_check_ttf(config):
   if os.path.exists(descfilepath):
     fb.default_target = descfilepath
     checks.check_DESCRIPTION_is_propper_HTML_snippet(fb, descfilepath)
-
-  registered_vendor_ids = fetch_vendorID_list(logging)
 
 # DC This is definitely not step 1, cross-family comes after individual
 # in order that individual hotfixes can enable cross-family checks to pass
@@ -189,7 +186,6 @@ def fontbakery_check_ttf(config):
 
     checks.check_head_macStyle(fb, font, style)
 
-    checks.check_OS2_achVendID(fb, font, registered_vendor_ids)
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
     checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)

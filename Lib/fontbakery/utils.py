@@ -17,7 +17,6 @@ import os
 import re
 import sys
 import requests
-from bs4 import BeautifulSoup
 from fontbakery.constants import (
                                  PLATFORM_ID_WINDOWS,
                                  PLAT_ENC_ID_UCS2,
@@ -28,7 +27,6 @@ from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
 from urllib import urlopen
 from zipfile import ZipFile
-import tempfile
 
 # =====================================
 # HELPER FUNCTIONS
@@ -169,37 +167,6 @@ def save_FamilyProto_Message(path, message):
       open(path, "wb").write(text_format.MessageToString(message))
     except:
       sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
-
-
-def fetch_vendorID_list(logging):
-  logging.debug("Fetching Microsoft's vendorID list")
-  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
-  registered_vendor_ids = {}
-  try:
-    CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
-                                     'fontbakery-microsoft-vendorlist.cache')
-    if os.path.exists(CACHE_VENDOR_LIST):
-      content = open(CACHE_VENDOR_LIST).read()
-    else:
-      logging.error("Did not find cached vendor list at: " + CACHE_VENDOR_LIST)
-      content = requests.get(url, auth=('user', 'pass')).content
-      open(CACHE_VENDOR_LIST, 'w').write(content)
-    soup = BeautifulSoup(content, 'html.parser')
-    table = soup.find(id="VendorList")
-    try:
-      for row in table.findAll('tr'):
-        cells = row.findAll('td')
-        # pad the code to make sure it is a 4 char string,
-        # otherwise eg "CF  " will not be matched to "CF"
-        code = cells[0].string.strip()
-        code = code + (4 - len(code)) * ' '
-        labels = [label for label in cells[1].stripped_strings]
-        registered_vendor_ids[code] = labels[0]
-    except:
-      logging.warning("Failed to parse Microsoft's vendorID list.")
-  except:
-    logging.warning("Failed to fetch Microsoft's vendorID list.")
-  return registered_vendor_ids
 
 
 def font_key(f):

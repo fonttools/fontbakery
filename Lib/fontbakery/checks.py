@@ -122,54 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_OS2_achVendID(fb, font, registered_vendor_ids):
-  fb.new_check("018", "Checking OS/2 achVendID")
-  vid = font['OS/2'].achVendID
-  bad_vids = ['UKWN', 'ukwn', 'PfEd']
-  if vid is None:
-    fb.error("OS/2 VendorID is not set."
-             " You should set it to your own 4 character code,"
-             " and register that code with Microsoft at"
-             " https://www.microsoft.com"
-             "/typography/links/vendorlist.aspx")
-  elif vid in bad_vids:
-    fb.error(("OS/2 VendorID is '{}', a font editor default."
-              " You should set it to your own 4 character code,"
-              " and register that code with Microsoft at"
-              " https://www.microsoft.com"
-              "/typography/links/vendorlist.aspx").format(vid))
-  elif len(registered_vendor_ids.keys()) > 0:
-    if vid in registered_vendor_ids.keys():
-      for name in font['name'].names:
-        if name.nameID == NAMEID_MANUFACTURER_NAME:
-          manufacturer = name.string.decode(name.getEncoding()).strip()
-          if manufacturer != registered_vendor_ids[vid].strip():
-            fb.warning("VendorID string '{}' does not match"
-                       " nameID {} (Manufacturer Name): '{}'".format(
-                         unidecode(registered_vendor_ids[vid]).strip(),
-                         NAMEID_MANUFACTURER_NAME,
-                         unidecode(manufacturer)))
-      fb.ok(("OS/2 VendorID is '{}' and registered to '{}'."
-             " Is that legit?"
-             ).format(vid,
-                      unidecode(registered_vendor_ids[vid])))
-    elif vid.lower() in [i.lower() for i in registered_vendor_ids.keys()]:
-      fb.error(("OS/2 VendorID is '{}' but this is registered"
-                " with different casing."
-                " You should check the case.").format(vid))
-    else:
-      fb.warning(("OS/2 VendorID is '{}' but"
-                  " this is not registered with Microsoft."
-                  " You should register it at"
-                  " https://www.microsoft.com"
-                  "/typography/links/vendorlist.aspx").format(vid))
-  else:
-    fb.warning(("OS/2 VendorID is '{}'"
-                " but could not be checked against Microsoft's list."
-                " You should check your internet connection"
-                " and try again.").format(vid))
-
-
 def check_name_entries_symbol_substitutions(fb, font):
   fb.new_check("019", "substitute copyright, registered and trademark"
                       " symbols in name table entries")
