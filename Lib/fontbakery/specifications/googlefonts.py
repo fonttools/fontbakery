@@ -390,6 +390,30 @@ def check_fonts_have_equal_glyph_names(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/013'
+)
+def check_fonts_have_equal_unicode_encodings(fb, ttFonts):
+  """Fonts have equal unicode encodings?"""
+  encoding = None
+  fail = False
+  for ttfont in ttFonts:
+    cmap = None
+    for table in ttfont['cmap'].tables:
+      if table.format == 4:
+        cmap = table
+        break
+    if not encoding:
+      encoding = cmap.platEncID
+    if encoding != cmap.platEncID:
+      fail = True
+  if fail:
+    fb.error('Fonts have different unicode encodings.')
+  else:
+    fb.ok("Fonts have equal unicode encodings.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
