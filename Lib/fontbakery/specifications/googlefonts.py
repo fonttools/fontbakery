@@ -317,6 +317,31 @@ def check_fonts_have_consistent_PANOSE_proportion(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/010'
+)
+def check_fonts_have_consistent_PANOSE_family_type(fb, ttFonts):
+  """Fonts have consistent PANOSE family type?"""
+  fail = False
+  familytype = None
+  for ttfont in ttFonts:
+    if familytype is None:
+      familytype = ttfont['OS/2'].panose.bFamilyType
+    if familytype != ttfont['OS/2'].panose.bFamilyType:
+      fail = True
+
+  if fail:
+    fb.error("PANOSE family type is not"
+             " the same accross this family."
+             " In order to fix this,"
+             " please make sure that the panose.bFamilyType value"
+             " is the same in the OS/2 table of all of this family"
+             " font files.")
+  else:
+    fb.ok("Fonts have consistent PANOSE family type.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):

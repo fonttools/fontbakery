@@ -147,7 +147,6 @@ def fontbakery_check_ttf(config):
       fb.default_target = dirname
     # -----------------------------------------------------
     checks.check_font_designer_field_is_not_unknown(fb, family)
-    checks.check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf)
     checks.check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf)
     checks.check_fonts_have_equal_glyph_names(fb, family, ttf)
     checks.check_fonts_have_equal_unicode_encodings(fb, family, ttf)

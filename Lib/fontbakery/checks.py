@@ -122,28 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf):
-  fb.new_check("010", "Fonts have consistent PANOSE family type?")
-  fail = False
-  familytype = None
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if familytype is None:
-      familytype = ttfont['OS/2'].panose.bFamilyType
-    if familytype != ttfont['OS/2'].panose.bFamilyType:
-      fail = True
-
-  if fail:
-    fb.error("PANOSE family type is not"
-             " the same accross this family."
-             " In order to fix this,"
-             " please make sure that the panose.bFamilyType value"
-             " is the same in the OS/2 table of all of this family"
-             " font files.")
-  else:
-    fb.ok("Fonts have consistent PANOSE family type.")
-
-
 def check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf):
   fb.new_check("011", "Fonts have equal numbers of glyphs?")
   counts = {}
