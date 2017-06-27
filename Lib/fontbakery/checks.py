@@ -122,28 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fonts_have_consistent_PANOSE_proportion(fb, family, ttf):
-  fb.new_check("009", "Fonts have consistent PANOSE proportion?")
-  fail = False
-  proportion = None
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    if proportion is None:
-      proportion = ttfont['OS/2'].panose.bProportion
-    if proportion != ttfont['OS/2'].panose.bProportion:
-      fail = True
-
-  if fail:
-    fb.error("PANOSE proportion is not"
-             " the same accross this family."
-             " In order to fix this,"
-             " please make sure that the panose.bProportion value"
-             " is the same in the OS/2 table of all of this family"
-             " font files.")
-  else:
-    fb.ok("Fonts have consistent PANOSE proportion.")
-
-
 def check_fonts_have_consistent_PANOSE_family_type(fb, family, ttf):
   fb.new_check("010", "Fonts have consistent PANOSE family type?")
   fail = False
