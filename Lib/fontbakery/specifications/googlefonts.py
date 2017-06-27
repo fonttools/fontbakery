@@ -371,6 +371,25 @@ def check_fonts_have_equal_numbers_of_glyphs(fb, ttFonts):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/012'
+)
+def check_fonts_have_equal_glyph_names(fb, ttFonts):
+  """Fonts have equal glyph names?"""
+  glyphs = None
+  fail = False
+  for ttfont in ttFonts:
+    if not glyphs:
+      glyphs = ttfont['glyf'].glyphs
+    if glyphs.keys() != ttfont['glyf'].glyphs.keys():
+      fail = True
+  if fail:
+    fb.error('Fonts have different glyph names.')
+  else:
+    fb.ok("Fonts have equal glyph names.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/015'
 )
 def check_font_has_post_table_version_2(fb, ttFont):
