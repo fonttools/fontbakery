@@ -122,32 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fonts_have_equal_numbers_of_glyphs(fb, family, ttf):
-  fb.new_check("011", "Fonts have equal numbers of glyphs?")
-  counts = {}
-  glyphs_count = None
-  fail = False
-  for f in family.fonts:
-    ttfont = ttf[font_key(f)]
-    this_count = len(ttfont['glyf'].glyphs)
-    if glyphs_count is None:
-      glyphs_count = this_count
-    if glyphs_count != this_count:
-      fail = True
-    counts[f.filename] = this_count
-
-  if fail:
-    results_table = ""
-    for key in counts.keys():
-      results_table += "| {} | {} |\n".format(key,
-                                              counts[key])
-
-    fb.error('Fonts have different numbers of glyphs:\n\n'
-             '{}\n'.format(results_table))
-  else:
-    fb.ok("Fonts have equal numbers of glyphs.")
-
-
 def check_fonts_have_equal_glyph_names(fb, family, ttf):
   fb.new_check("012", "Fonts have equal glyph names?")
   glyphs = None
