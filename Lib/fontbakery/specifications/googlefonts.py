@@ -20,6 +20,7 @@ from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
 import requests
+from unidecode import unidecode
 import defusedxml.lxml
 from lxml.html import HTMLParser
 from fontTools.ttLib import TTFont
@@ -34,15 +35,30 @@ from fontbakery.constants import(
       , IMPORTANT
       , CRITICAL
 
-      , LICENSE_URL
       , NAMEID_DESCRIPTION
       , NAMEID_LICENSE_DESCRIPTION
       , NAMEID_LICENSE_INFO_URL
+      , NAMEID_FONT_FAMILY_NAME
+      , NAMEID_FONT_SUBFAMILY_NAME
+      , NAMEID_FULL_FONT_NAME
+      , NAMEID_POSTSCRIPT_NAME
+      , NAMEID_TYPOGRAPHIC_FAMILY_NAME
+      , NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME
+
+      , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
       , STYLE_NAMES
+      , RIBBI_STYLE_NAMES
+      , PLATFORM_ID_MACINTOSH
+      , PLATFORM_ID_WINDOWS
+      , NAMEID_STR
+      , PLATID_STR
 )
 
-from fontbakery.utils import get_FamilyProto_Message
+from fontbakery.utils import(
+        get_FamilyProto_Message
+      , get_name_string
+)
 
 default_section = Section('Default')
 specificiation = Spec(
@@ -469,6 +485,165 @@ def check_OS2_fsType(fb, ttFont):
              " and must be zero (disabled) in all fonts.")
   else:
     fb.ok("OS/2 fsType is properly set to zero (80's DRM scheme is disabled).")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/017'
+  , priority=IMPORTANT
+)
+def check_main_entries_in_the_name_table(fb, ttFont):
+  """Assure valid format for the main entries in the name table.
+
+     Each entry in the name table has a criteria for validity and
+     this check tests if all entries in the name table are
+     in conformance with that. This check applies only
+     to name IDs 1, 2, 4, 6, 16, 17, 18.
+     It must run before any of the other name table related checks.
+  """
+
+  def family_with_spaces(value):
+    FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
+                                     'PressStart2P': 'Press Start 2P',
+                                     'ABeeZee': 'ABeeZee'}
+    if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
+      return FAMILY_WITH_SPACES_EXCEPTIONS[value]
+    result = ''
+    for c in value:
+      if c.isupper():
+        result += " "
+      result += c
+    result = result.strip()
+
+    if result[-3:] == "S C":
+      result = result[:-3] + "SC"
+
+    return result
+
+  def get_only_weight(value):
+    onlyWeight = {"BlackItalic": "Black",
+                  "BoldItalic": "",
+                  "ExtraBold": "ExtraBold",
+                  "ExtraBoldItalic": "ExtraBold",
+                  "ExtraLightItalic": "ExtraLight",
+                  "LightItalic": "Light",
+                  "MediumItalic": "Medium",
+                  "SemiBoldItalic": "SemiBold",
+                  "ThinItalic": "Thin"}
+    if value in onlyWeight.keys():
+      return onlyWeight[value]
+    else:
+      return value
+
+  filename = os.path.split(ttFont.reader.file.name)[1]
+  filename_base = os.path.splitext(filename)[0]
+  fname, style = filename_base.split('-')
+  fname_with_spaces = family_with_spaces(fname)
+  style_with_spaces = style.replace('Italic',
+                                    ' Italic').strip()
+  only_weight = get_only_weight(style)
+  required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
+                      NAMEID_FONT_SUBFAMILY_NAME,
+                      NAMEID_FULL_FONT_NAME,
+                      NAMEID_POSTSCRIPT_NAME]
+
+  if style not in RIBBI_STYLE_NAMES:
+    required_nameIDs += [NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                         NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+  failed = False
+  # The font must have at least these name IDs:
+  for nameId in required_nameIDs:
+    if len(get_name_string(ttFont, nameId)) == 0:
+      failed = True
+      fb.error(("Font lacks entry with"
+                " nameId={} ({})").format(nameId,
+                                          NAMEID_STR[nameId]))
+  for name in ttFont['name'].names:
+    string = name.string.decode(name.getEncoding()).strip()
+    nameid = name.nameID
+    plat = name.platformID
+    expected_value = None
+
+    if nameid == NAMEID_FONT_FAMILY_NAME:
+      if plat == PLATFORM_ID_MACINTOSH:
+        expected_value = fname_with_spaces
+      elif plat == PLATFORM_ID_WINDOWS:
+        if style in ['Regular',
+                     'Italic',
+                     'Bold',
+                     'Bold Italic']:
+          expected_value = fname_with_spaces
+        else:
+          expected_value = " ".join([fname_with_spaces,
+                                     only_weight]).strip()
+      else:
+        fb.error(("Font should not have a "
+                  "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                   nameid,
+                                                   PLATID_STR[plat],
+                                                   plat))
+        continue
+    elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
+      if style_with_spaces not in STYLE_NAMES:
+        fb.error(("Style name '{}' inferred from filename"
+                  " is not canonical."
+                  " Valid options are: {}").format(style_with_spaces,
+                                                   STYLE_NAMES))
+        continue
+      if plat == PLATFORM_ID_MACINTOSH:
+        expected_value = style_with_spaces
+
+      elif plat == PLATFORM_ID_WINDOWS:
+        if style_with_spaces in ["Bold", "Bold Italic"]:
+          expected_value = style_with_spaces
+        else:
+          if "Italic" in style:
+            expected_value = "Italic"
+          else:
+            expected_value = "Regular"
+
+    elif name.nameID == NAMEID_FULL_FONT_NAME:
+      expected_value = "{} {}".format(fname_with_spaces,
+                                      style_with_spaces)
+    elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+      expected_value = "{}-{}".format(fname, style)
+
+    elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+      if style not in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+        expected_value = fname_with_spaces
+
+    elif nameid == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+      if style not in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+        expected_value = style_with_spaces
+    else:
+      # This ignores any other nameID that might
+      # be declared in the name table
+      continue
+    if expected_value is None:
+        fb.warning(("Font is not expected to have a "
+                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                     nameid,
+                                                     PLATID_STR[plat],
+                                                     plat))
+    elif string != expected_value:
+      failed = True
+      fb.error(("[{}({}):{}({})] entry:"
+                " expected '{}'"
+                " but got '{}'").format(NAMEID_STR[nameid],
+                                        nameid,
+                                        PLATID_STR[plat],
+                                        plat,
+                                        expected_value,
+                                        unidecode(string)))
+  if failed is False:
+    fb.ok("Main entries in the name table"
+          " conform to expected format.")
 
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
