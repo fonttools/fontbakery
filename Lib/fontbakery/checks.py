@@ -122,29 +122,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_all_fontfiles_have_same_version(fb, fonts_to_check, ttf_cache):
-  fb.new_check("014", "Make sure all font files have the same version value.")
-  all_detected_versions = []
-  fontfile_versions = {}
-  for target in fonts_to_check:
-    font = ttf_cache(target)
-    v = font['head'].fontRevision
-    fontfile_versions[target] = v
-
-    if v not in all_detected_versions:
-      all_detected_versions.append(v)
-  if len(all_detected_versions) != 1:
-    versions_list = ""
-    for v in fontfile_versions.keys():
-      versions_list += "* {}: {}\n".format(v, fontfile_versions[v])
-    fb.warning(("version info differs among font"
-                " files of the same font project.\n"
-                "These were the version values found:\n"
-                "{}").format(versions_list))
-  else:
-    fb.ok("All font files have the same version.")
-
-
 def check_OS2_fsType(fb):
   """Fonts must have their fsType bit set to 0. This setting is known as
   Installable Embedding,
