@@ -20,6 +20,8 @@ from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
 import requests
+import tempfile
+from bs4 import BeautifulSoup
 from unidecode import unidecode
 import defusedxml.lxml
 from lxml.html import HTMLParser
@@ -44,6 +46,7 @@ from fontbakery.constants import(
       , NAMEID_POSTSCRIPT_NAME
       , NAMEID_TYPOGRAPHIC_FAMILY_NAME
       , NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME
+      , NAMEID_MANUFACTURER_NAME
 
       , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
@@ -644,6 +647,71 @@ def check_main_entries_in_the_name_table(fb, ttFont):
   if failed is False:
     fb.ok("Main entries in the name table"
           " conform to expected format.")
+
+
+@register_condition
+@condition
+def registered_vendor_ids():
+  """Get a list of vendor IDs from Microsoft's website."""
+  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
+  registered_vendor_ids = {}
+  CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
+                                   'fontbakery-microsoft-vendorlist.cache')
+  if os.path.exists(CACHE_VENDOR_LIST):
+    content = open(CACHE_VENDOR_LIST).read()
+  else:
+    content = requests.get(url, auth=('user', 'pass')).content
+    open(CACHE_VENDOR_LIST, 'w').write(content)
+
+  soup = BeautifulSoup(content, 'html.parser')
+  table = soup.find(id="VendorList")
+  for row in table.findAll('tr'):
+    cells = row.findAll('td')
+    # pad the code to make sure it is a 4 char string,
+    # otherwise eg "CF  " will not be matched to "CF"
+    code = cells[0].string.strip()
+    code = code + (4 - len(code)) * ' '
+    labels = [label for label in cells[1].stripped_strings]
+    registered_vendor_ids[code] = labels[0]
+
+  return registered_vendor_ids
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/018'
+  , conditions=['registered_vendor_ids']
+)
+def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
+  """Checking OS/2 achVendID"""
+  vid = ttFont['OS/2'].achVendID
+  bad_vids = ['UKWN', 'ukwn', 'PfEd']
+  if vid is None:
+    fb.error("OS/2 VendorID is not set."
+             " You should set it to your own 4 character code,"
+             " and register that code with Microsoft at"
+             " https://www.microsoft.com"
+             "/typography/links/vendorlist.aspx")
+  elif vid in bad_vids:
+    fb.error(("OS/2 VendorID is '{}', a font editor default."
+              " You should set it to your own 4 character code,"
+              " and register that code with Microsoft at"
+              " https://www.microsoft.com"
+              "/typography/links/vendorlist.aspx").format(vid))
+  elif len(registered_vendor_ids.keys()) > 0:
+    if vid in registered_vendor_ids.keys():
+      for name in ttFont['name'].names:
+        if name.nameID == NAMEID_MANUFACTURER_NAME:
+          manufacturer = name.string.decode(name.getEncoding()).strip()
+          if manufacturer != registered_vendor_ids[vid].strip():
+            fb.warning("VendorID '{}' and corresponding registered name '{}'"
+                       " does not match the value that is currently set on"
+                       " the font nameID {} (Manufacturer Name): '{}'".format(
+                         vid,
+                         unidecode(registered_vendor_ids[vid]).strip(),
+                         NAMEID_MANUFACTURER_NAME,
+                         unidecode(manufacturer)))
+
 
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
