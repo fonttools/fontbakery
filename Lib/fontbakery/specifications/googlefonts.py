@@ -130,9 +130,9 @@ def check_all_files_in_a_single_directory(fb, fonts):
 
 @register_condition
 @condition
-def descfile(font):
+def descfile(fonts):
   """Get the path of the DESCRIPTION file of a given font project."""
-  family_dir = os.path.dirname(font)
+  family_dir = os.path.dirname(fonts[0])
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
   if os.path.exists(descfilepath):
     return descfilepath
@@ -245,8 +245,8 @@ def check_DESCRIPTION_min_length(fb, descfile):
 
 @register_condition
 @condition
-def metadata(font):
-  family_dir = os.path.dirname(font)
+def metadata(fonts):
+  family_dir = os.path.dirname(fonts[0])
   pb_file = os.path.join(family_dir, "METADATA.pb")
   if os.path.exists(pb_file):
     return get_FamilyProto_Message(pb_file)
@@ -322,12 +322,13 @@ def check_font_has_post_table_version_2(fb, ttFont):
 
 @register_condition
 @condition
-def licenses(font):
-  """Get license path"""
+def licenses(fonts):
+  """Get a list of paths for every license
+     file found in a font project."""
   licenses = []
-  file_path = os.path.dirname(font)
+  font_project_path = os.path.dirname(fonts[0])
   for license in ['OFL.txt', 'LICENSE.txt']:
-    license_path = os.path.join(file_path, license)
+    license_path = os.path.join(font_project_path, license)
     if os.path.exists(license_path):
       licenses.append(license_path)
   return licenses
@@ -346,7 +347,7 @@ def license(licenses):
     id='com.google.fonts/test/028'
 )
 def check_font_has_a_license(fb, licenses):
-  """Check font has a license"""
+  """Check font project has a license"""
   if len(licenses) > 1:
     fb.error("More than a single license file found."
                  " Please review.")
