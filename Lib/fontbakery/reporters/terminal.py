@@ -322,8 +322,15 @@ class TerminalReporter(TerminalProgress):
                                                     for item in iterargs)
       else:
         formatted_iterargs = iterargs
-      print('>> {} with {}'.format(
-        highlight(CYAN_STR, test.id, use_color=self._use_color), formatted_iterargs))
+
+      # Omit printing of iterargs when there's none of them:
+      with_string = ""
+      if formatted_iterargs != ():
+        with_string = " with {}".format(formatted_iterargs)
+
+      print('>> {}{}'.format(
+        highlight(CYAN_STR, test.id, use_color=self._use_color), with_string))
+
       print('  ',
         highlight(MAGENTA_STR, test.description, use_color=self._use_color))
 
