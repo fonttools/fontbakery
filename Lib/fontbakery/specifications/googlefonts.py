@@ -130,9 +130,9 @@ def check_all_files_in_a_single_directory(fb, fonts):
 
 @register_condition
 @condition
-def descfile(font):
+def descfile(fonts):
   """Get the path of the DESCRIPTION file of a given font project."""
-  family_dir = os.path.dirname(font)
+  family_dir = os.path.dirname(fonts[0])
   descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
   if os.path.exists(descfilepath):
     return descfilepath
