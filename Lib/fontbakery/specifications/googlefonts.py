@@ -812,22 +812,15 @@ def check_OS2_usWeightClass(fb, ttFont, style):
   else:
     fb.ok("OS/2 usWeightClass value looks good!")
 
-# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
-#             025 - "Checking fsSelection ITALIC bit"
-#             027 - "Checking fsSelection BOLD bit"
-#
-# Replaced by 129 - "Checking OS/2.fsSelection value"
-
-# DEPRECATED: 022 - "Checking that italicAngle <= 0"
-#             023 - "Checking that italicAngle is less than 20 degrees"
-#             024 - "Checking if italicAngle matches font style"
-#
-# Replaced by 130 - "Checking post.italicAngle value"
-
-# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
-#             ??? - "Checking macStyle BOLD bit"
-#
-# Replaced by 131 - "Checking head.macStyle value"
+# DEPRECATED CHECKS:                                             | REPLACED BY:
+# com.google.fonts/test/??? - "Checking macStyle BOLD bit"       | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/021 - "Checking fsSelection REGULAR bit" | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/022 - "italicAngle <= 0 ?"               | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/023 - "italicAngle is < 20 degrees ?"    | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/024 - "italicAngle matches font style ?" | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/025 - "Checking fsSelection ITALIC bit"  | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/026 - "Checking macStyle ITALIC bit"     | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/027 - "Checking fsSelection BOLD bit"    | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
 
 @register_condition
 @condition
