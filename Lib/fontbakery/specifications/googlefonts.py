@@ -20,6 +20,9 @@ from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
 import requests
+import tempfile
+from bs4 import BeautifulSoup
+from unidecode import unidecode
 import defusedxml.lxml
 from lxml.html import HTMLParser
 from fontTools.ttLib import TTFont
@@ -34,15 +37,31 @@ from fontbakery.constants import(
       , IMPORTANT
       , CRITICAL
 
-      , LICENSE_URL
       , NAMEID_DESCRIPTION
       , NAMEID_LICENSE_DESCRIPTION
       , NAMEID_LICENSE_INFO_URL
+      , NAMEID_FONT_FAMILY_NAME
+      , NAMEID_FONT_SUBFAMILY_NAME
+      , NAMEID_FULL_FONT_NAME
+      , NAMEID_POSTSCRIPT_NAME
+      , NAMEID_TYPOGRAPHIC_FAMILY_NAME
+      , NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME
+      , NAMEID_MANUFACTURER_NAME
+
+      , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
       , STYLE_NAMES
+      , RIBBI_STYLE_NAMES
+      , PLATFORM_ID_MACINTOSH
+      , PLATFORM_ID_WINDOWS
+      , NAMEID_STR
+      , PLATID_STR
 )
 
-from fontbakery.utils import get_FamilyProto_Message
+from fontbakery.utils import(
+        get_FamilyProto_Message
+      , get_name_string
+)
 
 default_section = Section('Default')
 specificiation = Spec(
@@ -130,12 +149,26 @@ def check_all_files_in_a_single_directory(fb, fonts):
 
 @register_condition
 @condition
-def descfile(fonts):
+def family_directory(fonts):
+  """Get the path of font project directory."""
+  if len(fonts) == 0:
+    # We're being extra-careful here. But probably
+    #  the only situation in which fonts would be an
+    #  empty would really indicate bad user input on the
+    #  commandline. So perhaps we should detect this earlier.
+    return None
+  else:
+    return os.path.dirname(fonts[0])
+
+
+@register_condition
+@condition
+def descfile(family_directory):
   """Get the path of the DESCRIPTION file of a given font project."""
-  family_dir = os.path.dirname(fonts[0])
-  descfilepath = os.path.join(family_dir, "DESCRIPTION.en_us.html")
-  if os.path.exists(descfilepath):
-    return descfilepath
+  if family_directory:
+    descfilepath = os.path.join(family_directory, "DESCRIPTION.en_us.html")
+    if os.path.exists(descfilepath):
+      return descfilepath
 
 
 @register_condition
@@ -245,11 +278,11 @@ def check_DESCRIPTION_min_length(fb, descfile):
 
 @register_condition
 @condition
-def metadata(fonts):
-  family_dir = os.path.dirname(fonts[0])
-  pb_file = os.path.join(family_dir, "METADATA.pb")
-  if os.path.exists(pb_file):
-    return get_FamilyProto_Message(pb_file)
+def metadata(family_directory):
+  if family_directory:
+    pb_file = os.path.join(family_directory, "METADATA.pb")
+    if os.path.exists(pb_file):
+      return get_FamilyProto_Message(pb_file)
 
 
 @register_test
@@ -470,6 +503,254 @@ def check_OS2_fsType(fb, ttFont):
   else:
     fb.ok("OS/2 fsType is properly set to zero (80's DRM scheme is disabled).")
 
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/017'
+  , priority=IMPORTANT
+)
+def check_main_entries_in_the_name_table(fb, ttFont):
+  """Assure valid format for the main entries in the name table.
+
+     Each entry in the name table has a criteria for validity and
+     this check tests if all entries in the name table are
+     in conformance with that. This check applies only
+     to name IDs 1, 2, 4, 6, 16, 17, 18.
+     It must run before any of the other name table related checks.
+  """
+
+  def family_with_spaces(value):
+    FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
+                                     'PressStart2P': 'Press Start 2P',
+                                     'ABeeZee': 'ABeeZee'}
+    if value in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
+      return FAMILY_WITH_SPACES_EXCEPTIONS[value]
+    result = ''
+    for c in value:
+      if c.isupper():
+        result += " "
+      result += c
+    result = result.strip()
+
+    if result[-3:] == "S C":
+      result = result[:-3] + "SC"
+
+    return result
+
+  def get_only_weight(value):
+    onlyWeight = {"BlackItalic": "Black",
+                  "BoldItalic": "",
+                  "ExtraBold": "ExtraBold",
+                  "ExtraBoldItalic": "ExtraBold",
+                  "ExtraLightItalic": "ExtraLight",
+                  "LightItalic": "Light",
+                  "MediumItalic": "Medium",
+                  "SemiBoldItalic": "SemiBold",
+                  "ThinItalic": "Thin"}
+    if value in onlyWeight.keys():
+      return onlyWeight[value]
+    else:
+      return value
+
+  filename = os.path.split(ttFont.reader.file.name)[1]
+  filename_base = os.path.splitext(filename)[0]
+  fname, style = filename_base.split('-')
+  fname_with_spaces = family_with_spaces(fname)
+  style_with_spaces = style.replace('Italic',
+                                    ' Italic').strip()
+  only_weight = get_only_weight(style)
+  required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
+                      NAMEID_FONT_SUBFAMILY_NAME,
+                      NAMEID_FULL_FONT_NAME,
+                      NAMEID_POSTSCRIPT_NAME]
+
+  if style not in RIBBI_STYLE_NAMES:
+    required_nameIDs += [NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                         NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+  failed = False
+  # The font must have at least these name IDs:
+  for nameId in required_nameIDs:
+    if len(get_name_string(ttFont, nameId)) == 0:
+      failed = True
+      fb.error(("Font lacks entry with"
+                " nameId={} ({})").format(nameId,
+                                          NAMEID_STR[nameId]))
+  for name in ttFont['name'].names:
+    string = name.string.decode(name.getEncoding()).strip()
+    nameid = name.nameID
+    plat = name.platformID
+    expected_value = None
+
+    if nameid == NAMEID_FONT_FAMILY_NAME:
+      if plat == PLATFORM_ID_MACINTOSH:
+        expected_value = fname_with_spaces
+      elif plat == PLATFORM_ID_WINDOWS:
+        if style in ['Regular',
+                     'Italic',
+                     'Bold',
+                     'Bold Italic']:
+          expected_value = fname_with_spaces
+        else:
+          expected_value = " ".join([fname_with_spaces,
+                                     only_weight]).strip()
+      else:
+        fb.error(("Font should not have a "
+                  "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                   nameid,
+                                                   PLATID_STR[plat],
+                                                   plat))
+        continue
+    elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
+      if style_with_spaces not in STYLE_NAMES:
+        fb.error(("Style name '{}' inferred from filename"
+                  " is not canonical."
+                  " Valid options are: {}").format(style_with_spaces,
+                                                   STYLE_NAMES))
+        continue
+      if plat == PLATFORM_ID_MACINTOSH:
+        expected_value = style_with_spaces
+
+      elif plat == PLATFORM_ID_WINDOWS:
+        if style_with_spaces in ["Bold", "Bold Italic"]:
+          expected_value = style_with_spaces
+        else:
+          if "Italic" in style:
+            expected_value = "Italic"
+          else:
+            expected_value = "Regular"
+
+    elif name.nameID == NAMEID_FULL_FONT_NAME:
+      expected_value = "{} {}".format(fname_with_spaces,
+                                      style_with_spaces)
+    elif name.nameID == NAMEID_POSTSCRIPT_NAME:
+      expected_value = "{}-{}".format(fname, style)
+
+    elif nameid == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+      if style not in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+        expected_value = fname_with_spaces
+
+    elif nameid == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+      if style not in ['Regular',
+                       'Italic',
+                       'Bold',
+                       'Bold Italic']:
+        expected_value = style_with_spaces
+    else:
+      # This ignores any other nameID that might
+      # be declared in the name table
+      continue
+    if expected_value is None:
+        fb.warning(("Font is not expected to have a "
+                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                     nameid,
+                                                     PLATID_STR[plat],
+                                                     plat))
+    elif string != expected_value:
+      failed = True
+      fb.error(("[{}({}):{}({})] entry:"
+                " expected '{}'"
+                " but got '{}'").format(NAMEID_STR[nameid],
+                                        nameid,
+                                        PLATID_STR[plat],
+                                        plat,
+                                        expected_value,
+                                        unidecode(string)))
+  if failed is False:
+    fb.ok("Main entries in the name table"
+          " conform to expected format.")
+
+
+@register_condition
+@condition
+def registered_vendor_ids():
+  """Get a list of vendor IDs from Microsoft's website."""
+  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
+  registered_vendor_ids = {}
+  CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
+                                   'fontbakery-microsoft-vendorlist.cache')
+  if os.path.exists(CACHE_VENDOR_LIST):
+    content = open(CACHE_VENDOR_LIST).read()
+  else:
+    content = requests.get(url, auth=('user', 'pass')).content
+    open(CACHE_VENDOR_LIST, 'w').write(content)
+
+  soup = BeautifulSoup(content, 'html.parser')
+  table = soup.find(id="VendorList")
+  for row in table.findAll('tr'):
+    cells = row.findAll('td')
+    # pad the code to make sure it is a 4 char string,
+    # otherwise eg "CF  " will not be matched to "CF"
+    code = cells[0].string.strip()
+    code = code + (4 - len(code)) * ' '
+    labels = [label for label in cells[1].stripped_strings]
+    registered_vendor_ids[code] = labels[0]
+
+  return registered_vendor_ids
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/018'
+  , conditions=['registered_vendor_ids']
+)
+def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
+  """Checking OS/2 achVendID"""
+  vid = ttFont['OS/2'].achVendID
+  bad_vids = ['UKWN', 'ukwn', 'PfEd']
+  if vid is None:
+    fb.error("OS/2 VendorID is not set."
+             " You should set it to your own 4 character code,"
+             " and register that code with Microsoft at"
+             " https://www.microsoft.com"
+             "/typography/links/vendorlist.aspx")
+  elif vid in bad_vids:
+    fb.error(("OS/2 VendorID is '{}', a font editor default."
+              " You should set it to your own 4 character code,"
+              " and register that code with Microsoft at"
+              " https://www.microsoft.com"
+              "/typography/links/vendorlist.aspx").format(vid))
+  elif len(registered_vendor_ids.keys()) > 0:
+    if vid in registered_vendor_ids.keys():
+      for name in ttFont['name'].names:
+        if name.nameID == NAMEID_MANUFACTURER_NAME:
+          manufacturer = name.string.decode(name.getEncoding()).strip()
+          if manufacturer != registered_vendor_ids[vid].strip():
+            fb.warning("VendorID '{}' and corresponding registered name '{}'"
+                       " does not match the value that is currently set on"
+                       " the font nameID {} (Manufacturer Name): '{}'".format(
+                         vid,
+                         unidecode(registered_vendor_ids[vid]).strip(),
+                         NAMEID_MANUFACTURER_NAME,
+                         unidecode(manufacturer)))
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/019'
+)
+def check_name_entries_symbol_substitutions(fb, ttFont):
+  """Substitute copyright, registered and trademark
+     symbols in name table entries"""
+  failed = False
+  replacement_map = [(u"\u00a9", '(c)'),
+                     (u"\u00ae", '(r)'),
+                     (u"\u2122", '(tm)')]
+  for name in ttFont['name'].names:
+    string = unicode(name.string, encoding=name.getEncoding())
+    for mark, ascii_repl in replacement_map:
+      new_string = string.replace(mark, ascii_repl)
+      if string != new_string:
+        fb.error(("NAMEID #{} contains symbol that should be"
+                  " replaced by '{}'").format(name.nameID,
+                                              ascii_repl))
+        failed = True
+  if not failed:
+    fb.ok("No need to substitute copyright, registered and"
+          " trademark symbols in name table entries of this font.")
+
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
 #             027 - "Checking fsSelection BOLD bit"
@@ -489,16 +770,16 @@ def check_OS2_fsType(fb, ttFont):
 
 @register_condition
 @condition
-def licenses(fonts):
+def licenses(family_directory):
   """Get a list of paths for every license
      file found in a font project."""
-  licenses = []
-  font_project_path = os.path.dirname(fonts[0])
-  for license in ['OFL.txt', 'LICENSE.txt']:
-    license_path = os.path.join(font_project_path, license)
-    if os.path.exists(license_path):
-      licenses.append(license_path)
-  return licenses
+  if family_directory:
+    licenses = []
+    for license in ['OFL.txt', 'LICENSE.txt']:
+      license_path = os.path.join(family_directory, license)
+      if os.path.exists(license_path):
+        licenses.append(license_path)
+    return licenses
 
 
 @register_condition
