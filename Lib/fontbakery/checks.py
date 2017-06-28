@@ -62,7 +62,6 @@ from fontbakery.constants import (
                                  PLATFORM_ID_MACINTOSH,
                                  PLATFORM_ID_WINDOWS,
                                  PLATID_STR,
-                                 WEIGHTS,
                                  WEIGHT_VALUE_TO_NAME,
                                  FSSEL_ITALIC,
                                  FSSEL_BOLD,
@@ -120,48 +119,6 @@ def check_file_is_named_canonically(fb, font_fname):
               ' style names: "{}".').format(font_fname,
                                             '", "'.join(STYLE_NAMES)))
     return False
-
-
-def check_OS2_usWeightClass(fb, font, style):
-  """The Google Font's API which serves the fonts can only serve
-  the following weights values with the  corresponding subfamily styles:
-
-  250, Thin
-  275, ExtraLight
-  300, Light
-  400, Regular
-  500, Medium
-  600, SemiBold
-  700, Bold
-  800, ExtraBold
-  900, Black
-
-  Thin is not set to 100 because of legacy Windows GDI issues:
-  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
-  """
-  fb.new_check("020", "Checking OS/2 usWeightClass")
-
-  if style == "Italic":
-    weight_name = "Regular"
-  elif style.endswith("Italic"):
-    weight_name = style.replace("Italic", "")
-  else:
-    weight_name = style
-
-  value = font['OS/2'].usWeightClass
-  expected = WEIGHTS[weight_name]
-  if value != expected:
-    if fb.config['autofix']:
-      font['OS/2'].usWeightClass = expected
-      fb.hotfix(("OS/2 usWeightClass value was"
-                 " fixed from {} to {} ({})."
-                 "").format(value, expected, weight_name))
-    else:
-      fb.error(("OS/2 usWeightClass expected value for"
-                " '{}' is {} but this font has"
-                " {}.").format(weight_name, expected, value))
-  else:
-    fb.ok("OS/2 usWeightClass value looks good!")
 
 
 def check_copyright_entries_match_license(fb, found, file_path, font):
