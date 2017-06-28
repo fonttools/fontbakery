@@ -56,6 +56,7 @@ from fontbakery.constants import(
       , PLATFORM_ID_WINDOWS
       , NAMEID_STR
       , PLATID_STR
+      , WEIGHTS
 )
 
 from fontbakery.utils import(
@@ -759,6 +760,57 @@ def check_name_entries_symbol_substitutions(fb, ttFont):
   if not failed:
     fb.ok("No need to substitute copyright, registered and"
           " trademark symbols in name table entries of this font.")
+
+
+@register_condition
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    return os.path.splitext(filename)[0].split('-')[1]
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/020'
+  , conditions=['style']
+)
+def check_OS2_usWeightClass(fb, ttFont, style):
+  """Checking OS/2 usWeightClass
+
+  The Google Font's API which serves the fonts can only serve
+  the following weights values with the  corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
+
+  if style == "Italic":
+    weight_name = "Regular"
+  elif style.endswith("Italic"):
+    weight_name = style.replace("Italic", "")
+  else:
+    weight_name = style
+
+  value = ttFont['OS/2'].usWeightClass
+  expected = WEIGHTS[weight_name]
+  if value != expected:
+    fb.error(("OS/2 usWeightClass expected value for"
+              " '{}' is {} but this font has"
+              " {}.").format(weight_name, expected, value))
+  else:
+    fb.ok("OS/2 usWeightClass value looks good!")
 
 # DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
 #             025 - "Checking fsSelection ITALIC bit"
