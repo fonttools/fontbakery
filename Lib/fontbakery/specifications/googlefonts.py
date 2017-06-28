@@ -865,6 +865,47 @@ def check_font_has_a_license(fb, licenses):
 
 @register_test
 @old_style_test(
+    id='com.google.fonts/test/029'
+  , conditions=['license']
+  , priority=CRITICAL
+)
+def check_copyright_entries_match_license(fb, ttFont, license):
+  """Check copyright namerecords match license file"""
+  failed = False
+  for license in ['OFL.txt', 'LICENSE.txt']:
+    if license not in ttFont.reader.file.name:
+      continue
+    placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+    entry_found = False
+    for i, nameRecord in enumerate(font['name'].names):
+      if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+        entry_found = True
+        value = nameRecord.string.decode(nameRecord.getEncoding())
+        if value != placeholder:
+          failed = True
+          fb.error(('License file {} exists but'
+                    ' NameID {} (LICENSE DESCRIPTION) value'
+                    ' on platform {} ({})'
+                    ' is not specified for that.'
+                    ' Value was: "{}"'
+                    ' Must be changed to "{}"'
+                    '').format(license,
+                               NAMEID_LICENSE_DESCRIPTION,
+                               nameRecord.platformID,
+                               PLATID_STR[nameRecord.platformID],
+                               unidecode(value),
+                               unidecode(placeholder)))
+    if not entry_found:
+      failed = True
+      fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                " A proper licensing entry must be set."
+                "").format(NAMEID_LICENSE_DESCRIPTION))
+  if not failed:
+    fb.ok("licensing entry on name table is correctly set.")
+
+
+@register_test
+@old_style_test(
     id='com.google.fonts/test/030'
   , conditions=['license']
   , priority=CRITICAL
