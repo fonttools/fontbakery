@@ -698,26 +698,33 @@ def registered_vendor_ids():
 )
 def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
+
+  SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
+    " You should set it to your own 4 character code,"
+    " and register that code with Microsoft at"
+    " https://www.microsoft.com"
+  "/typography/links/vendorlist.aspx")
+
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    fb.error("OS/2 VendorID is not set."
-             " You should set it to your own 4 character code,"
-             " and register that code with Microsoft at"
-             " https://www.microsoft.com"
-             "/typography/links/vendorlist.aspx")
+    fb.error("OS/2 VendorID is not set." +
+             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    fb.error(("OS/2 VendorID is '{}', a font editor default."
-              " You should set it to your own 4 character code,"
-              " and register that code with Microsoft at"
-              " https://www.microsoft.com"
-              "/typography/links/vendorlist.aspx").format(vid))
+    fb.error("OS/2 VendorID is '{}', a font editor default.".format(vid) +
+             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif len(registered_vendor_ids.keys()) > 0:
-    if vid in registered_vendor_ids.keys():
+    if vid not in registered_vendor_ids.keys():
+      fb.warning(("OS/2 VendorID value '{}' is not"
+                  " a known registered id.").format(vid) +
+                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    else:
+      failed = False
       for name in ttFont['name'].names:
         if name.nameID == NAMEID_MANUFACTURER_NAME:
           manufacturer = name.string.decode(name.getEncoding()).strip()
           if manufacturer != registered_vendor_ids[vid].strip():
+            failed = True
             fb.warning("VendorID '{}' and corresponding registered name '{}'"
                        " does not match the value that is currently set on"
                        " the font nameID {} (Manufacturer Name): '{}'".format(
@@ -725,6 +732,8 @@ def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
                          unidecode(registered_vendor_ids[vid]).strip(),
                          NAMEID_MANUFACTURER_NAME,
                          unidecode(manufacturer)))
+      if not failed:
+        fb.ok("OS/2 VendorID '{}' looks good!".format(vid))
 
 
 @register_test
