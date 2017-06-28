@@ -981,3 +981,20 @@ def check_description_strings_in_name_table(fb, ttFont):
     fb.ok("Description strings in the name table"
           " do not contain any copyright string.")
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/032'
+)
+def check_description_strings_do_not_exceed_100_chars(fb, ttFont):
+  """Description strings in the name table"
+     must not exceed 100 characters"""
+  failed = False
+  for name in ttFont['name'].names:
+    failed = (name.nameID == NAMEID_DESCRIPTION and
+              len(name.string.decode(name.getEncoding())) > 100)
+  if failed:
+    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+              " are longer than 100 characters"
+              " and should be removed.").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description name records do not exceed 100 characters.")

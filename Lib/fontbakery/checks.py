@@ -121,31 +121,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_description_strings_do_not_exceed_100_chars(fb, font):
-  fb.new_check("032", ("Description strings in the name table"
-                       " (nameID = {}) must not exceed"
-                       " 100 characters").format(NAMEID_DESCRIPTION))
-  failed = False
-  for name in font['name'].names:
-    if len(name.string.decode(name.getEncoding())) > 100 \
-      and name.nameID == NAMEID_DESCRIPTION:
-      if fb.config['autofix']:
-        del name
-      failed = True
-  if failed:
-    if fb.config['autofix']:
-      fb.hotfix(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " were removed because they"
-                 " were longer than 100 characters"
-                 ".").format(NAMEID_DESCRIPTION))
-    else:
-      fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                " are longer than 100 characters"
-                " and should be removed.").format(NAMEID_DESCRIPTION))
-  else:
-    fb.ok("Description name records do not exceed 100 characters.")
-
-
 def check_font_is_truly_monospaced(fb, font):
   fb.new_check("033", "Checking if the font is truly monospaced")
   ''' There are various metadata in the OpenType spec to specify if
