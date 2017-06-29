@@ -57,6 +57,10 @@ from fontbakery.constants import(
       , NAMEID_STR
       , PLATID_STR
       , WEIGHTS
+      , IS_FIXED_WIDTH_MONOSPACED
+      , IS_FIXED_WIDTH_NOT_MONOSPACED
+      , PANOSE_PROPORTION_MONOSPACED
+      , PANOSE_PROPORTION_ANY
 )
 
 from fontbakery.utils import(
@@ -1000,3 +1004,155 @@ def check_description_strings_do_not_exceed_100_chars(fb, ttFont):
               " and should be removed.").format(NAMEID_DESCRIPTION))
   else:
     fb.ok("Description name records do not exceed 100 characters.")
+
+
+@register_condition
+@condition
+def monospace_stats(ttFont):
+  """Returns a dict with data related to the set of glyphs
+     among which is a boolean indicating whether or not the
+     given font is trully monospaced. The source of truth for
+     if a font is monospaced is if at least 80% of all glyphs
+     have the same width.
+  """
+  glyphs = ttFont['glyf'].glyphs
+  width_occurrences = {}
+  width_max = 0
+  # count how many times a width occurs
+  for glyph_id in glyphs:
+      width = ttFont['hmtx'].metrics[glyph_id][0]
+      width_max = max(width, width_max)
+      try:
+          width_occurrences[width] += 1
+      except KeyError:
+          width_occurrences[width] = 1
+  # find the most_common_width
+  occurrences = 0
+  for width in width_occurrences.keys():
+      if width_occurrences[width] > occurrences:
+          occurrences = width_occurrences[width]
+          most_common_width = width
+  # if more than 80% of glyphs have the same width
+  # then the font is considered to be monospaced
+  is_monospaced = occurrences > 0.80 * len(glyphs)
+
+  return {
+    "is_monospaced": is_monospaced,
+    "width_max": width_max,
+    "most_common": {
+      "width": most_common_width,
+      "occurrences": occurrences
+    }
+  }
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/033'
+  , conditions=['monospace_stats']
+)
+def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
+  """Checking correctness of monospaced metadata.
+
+     There are various metadata in the OpenType spec to specify if
+     a font is monospaced or not. If the font is not trully monospaced,
+     then no monospaced metadata should be set (as sometimes
+     they mistakenly are...)
+
+     Monospace fonts must:
+
+     * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
+       non-zero if the font is not proportionally spaced (monospaced)"
+       www.microsoft.com/typography/otspec/post.htm
+
+     * hhea.advanceWidthMax must be correct, meaning no glyph's
+      width value is greater.
+      www.microsoft.com/typography/otspec/hhea.htm
+
+     * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
+       "The PANOSE definition contains ten digits each of which currently
+       describes up to sixteen variations. Windows uses bFamilyType,
+       bSerifStyle and bProportion in the font mapper to determine
+       family type. It also uses bProportion to determine if the font
+       is monospaced."
+       www.microsoft.com/typography/otspec/os2.htm#pan
+       monotypecom-test.monotype.de/services/pan2
+
+     * OS/2.xAverageWidth must be set accurately.
+       "OS/2.xAverageWidth IS used when rendering monospaced fonts,
+       at least by Windows GDI"
+       http://typedrawers.com/discussion/comment/15397/#Comment_15397
+
+     Also we should report an error for glyphs not of average width
+  """
+  failed = False
+  is_monospaced = monospace_stats["is_monospaced"]
+  width_max = monospace_stats['width_max']
+
+  if ttFont['hhea'].advanceWidthMax != width_max:
+    failed = True
+    fb.error(("Value of hhea.advanceWidthMax"
+              " should be set to %d but got"
+              " %d instead.").format(width_max,
+                                     ttFont['hhea'].advanceWidthMax))
+  if is_monospaced:
+    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
+      failed = True
+      fb.error(("On monospaced fonts, the value of"
+                "post.isFixedPitch must be set to %d"
+                " (fixed width monospaced),"
+                " but got %d instead.").format(IS_FIXED_WIDTH_MONOSPACED,
+                                               ttFont['post'].isFixedPitch))
+
+    if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION_MONOSPACED:
+      failed = True
+      fb.error(("On monospaced fonts, the value of"
+                "OS/2.panose.bProportion must be set to %d"
+                " (proportion: monospaced), but got"
+                " %d instead.").format(PANOSE_PROPORTION_MONOSPACED,
+                                       ttFont['OS/2'].panose.bProportion))
+
+    num_glyphs = len(ttFont['glyf'].glyphs)
+    outliers = num_glyphs - stats['most_common']['occurrences']
+    if outliers > 0:
+      # If any glyphs are outliers, note them
+      unusually_spaced_glyphs = \
+       [g for g in glyphs
+        if font['hmtx'].metrics[g][0] != stats['most_common']['width']]
+      outliers_ratio = float(stats['most_common']['occurrences'])/num_glyphs
+
+      for glyphname in ['.notdef', '.null', 'NULL']:
+        if glyphname in unusually_spaced_glyphs:
+          unusually_spaced_glyphs.remove(glyphname)
+
+      failed = True
+      fb.warning(("Font is monospaced but {} glyphs"
+                  " ({}%) have a different width."
+                  " You should check the widths of: {}").format(
+                    outliers,
+                    100 - (100.0 * outliers_ratio),
+                    unusually_spaced_glyphs))
+    if not failed:
+      fb.ok("Font is monospaced and all related metadata look good.")
+  else:
+    # it is a non-monospaced font, so lets make sure
+    # that all monospace-related metadata is properly unset.
+
+    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_NOT_MONOSPACED:
+      failed = True
+      fb.error(("On non-monospaced fonts, the"
+                " post.isFixedPitch value must be set to %d"
+                " (fixed width not monospaced), but got"
+                " %d instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
+                                       ttFont['post'].isFixedPitch))
+
+    if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
+      failed = True
+      fb.error(("On non-monospaced fonts, the"
+                " OS/2.panose.bProportion value must be set to %d"
+                " (proportion: any), but got"
+                " %d (proportion: monospaced)"
+                " instead.").format(PANOSE_PROPORTION_ANY,
+                                    PANOSE_PROPORTION_MONOSPACED))
+    if not failed:
+      fb.ok("Font is not monospaced and all related metadata look good.")
