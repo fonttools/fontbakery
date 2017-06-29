@@ -872,12 +872,12 @@ def check_font_has_a_license(fb, licenses):
 def check_copyright_entries_match_license(fb, ttFont, license):
   """Check copyright namerecords match license file"""
   failed = False
-  for license in ['OFL.txt', 'LICENSE.txt']:
-    if license not in ttFont.reader.file.name:
+  for license_filename in ['OFL.txt', 'LICENSE.txt']:
+    if license_filename not in license:
       continue
-    placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+    placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
     entry_found = False
-    for i, nameRecord in enumerate(font['name'].names):
+    for i, nameRecord in enumerate(ttFont['name'].names):
       if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
         entry_found = True
         value = nameRecord.string.decode(nameRecord.getEncoding())
@@ -889,7 +889,7 @@ def check_copyright_entries_match_license(fb, ttFont, license):
                     ' is not specified for that.'
                     ' Value was: "{}"'
                     ' Must be changed to "{}"'
-                    '').format(license,
+                    '').format(license_filename,
                                NAMEID_LICENSE_DESCRIPTION,
                                nameRecord.platformID,
                                PLATID_STR[nameRecord.platformID],
