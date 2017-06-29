@@ -838,10 +838,22 @@ def licenses(family_directory):
 
 @register_condition
 @condition
-def license(licenses):
+def license_path(licenses):
   """Get license path"""
   # return license if there is exactly one license
   return licenses[0] if len(licenses) == 1 else None
+
+
+@register_condition
+@condition
+def license(license_path):
+  """Get license name"""
+  if "LICENSE.txt" in license_path:
+    return "LICENSE.txt" # APACHE License
+  if "OFL.txt" in license_path:
+    return "OFL.txt" # Open Font License
+  # else
+  return "unknown:'{}'".format(license_path)
 
 
 @register_test
@@ -872,42 +884,37 @@ def check_font_has_a_license(fb, licenses):
 def check_copyright_entries_match_license(fb, ttFont, license):
   """Check copyright namerecords match license file"""
   failed = False
-  for license_filename in ['OFL.txt', 'LICENSE.txt']:
-    if license_filename not in license:
-      continue
-    placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
-    entry_found = False
-    for i, nameRecord in enumerate(ttFont['name'].names):
-      if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
-        entry_found = True
-        value = nameRecord.string.decode(nameRecord.getEncoding())
-        if value != placeholder:
-          failed = True
-          fb.error(('License file {} exists but'
-                    ' NameID {} (LICENSE DESCRIPTION) value'
-                    ' on platform {} ({})'
-                    ' is not specified for that.'
-                    ' Value was: "{}"'
-                    ' Must be changed to "{}"'
-                    '').format(license_filename,
-                               NAMEID_LICENSE_DESCRIPTION,
-                               nameRecord.platformID,
-                               PLATID_STR[nameRecord.platformID],
-                               unidecode(value),
-                               unidecode(placeholder)))
-    if not entry_found:
-      failed = True
-      fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
-                " A proper licensing entry must be set."
-                "").format(NAMEID_LICENSE_DESCRIPTION))
-  if not failed:
+  placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+  entry_found = False
+  for i, nameRecord in enumerate(ttFont['name'].names):
+    if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+      entry_found = True
+      value = nameRecord.string.decode(nameRecord.getEncoding())
+      if value != placeholder:
+        failed = True
+        fb.error(('License file {} exists but'
+                  ' NameID {} (LICENSE DESCRIPTION) value'
+                  ' on platform {} ({})'
+                  ' is not specified for that.'
+                  ' Value was: "{}"'
+                  ' Must be changed to "{}"'
+                  '').format(license_filename,
+                             NAMEID_LICENSE_DESCRIPTION,
+                             nameRecord.platformID,
+                             PLATID_STR[nameRecord.platformID],
+                             unidecode(value),
+                             unidecode(placeholder)))
+  if not entry_found:
+    fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+              " A proper licensing entry must be set."
+              "").format(NAMEID_LICENSE_DESCRIPTION))
+  elif not failed:
     fb.ok("licensing entry on name table is correctly set.")
 
 
 @register_test
 @old_style_test(
     id='com.google.fonts/test/030'
-  , conditions=['license']
   , priority=CRITICAL
 )
 def check_font_has_a_valid_license_url(fb, ttFont):
@@ -964,7 +971,6 @@ def check_font_has_a_valid_license_url(fb, ttFont):
 def check_description_strings_in_name_table(fb, ttFont):
   """Description strings in the name table
   must not contain copyright info."""
-
   failed = False
   for name in ttFont['name'].names:
     if 'opyright' in name.string.decode(name.getEncoding())\
