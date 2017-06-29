@@ -847,13 +847,9 @@ def license_path(licenses):
 @register_condition
 @condition
 def license(license_path):
-  """Get license name"""
-  if "LICENSE.txt" in license_path:
-    return "LICENSE.txt" # APACHE License
-  if "OFL.txt" in license_path:
-    return "OFL.txt" # Open Font License
-  # else
-  return "unknown:'{}'".format(license_path)
+  """Get license filename"""
+  if license_path:
+    return os.path.basename(license_path)
 
 
 @register_test
