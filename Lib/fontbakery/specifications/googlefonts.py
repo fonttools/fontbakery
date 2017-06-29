@@ -56,6 +56,7 @@ from fontbakery.constants import(
       , PLATFORM_ID_WINDOWS
       , NAMEID_STR
       , PLATID_STR
+      , WEIGHTS
 )
 
 from fontbakery.utils import(
@@ -698,26 +699,33 @@ def registered_vendor_ids():
 )
 def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
+
+  SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
+    " You should set it to your own 4 character code,"
+    " and register that code with Microsoft at"
+    " https://www.microsoft.com"
+  "/typography/links/vendorlist.aspx")
+
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    fb.error("OS/2 VendorID is not set."
-             " You should set it to your own 4 character code,"
-             " and register that code with Microsoft at"
-             " https://www.microsoft.com"
-             "/typography/links/vendorlist.aspx")
+    fb.error("OS/2 VendorID is not set." +
+             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    fb.error(("OS/2 VendorID is '{}', a font editor default."
-              " You should set it to your own 4 character code,"
-              " and register that code with Microsoft at"
-              " https://www.microsoft.com"
-              "/typography/links/vendorlist.aspx").format(vid))
+    fb.error("OS/2 VendorID is '{}', a font editor default.".format(vid) +
+             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif len(registered_vendor_ids.keys()) > 0:
-    if vid in registered_vendor_ids.keys():
+    if vid not in registered_vendor_ids.keys():
+      fb.warning(("OS/2 VendorID value '{}' is not"
+                  " a known registered id.").format(vid) +
+                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    else:
+      failed = False
       for name in ttFont['name'].names:
         if name.nameID == NAMEID_MANUFACTURER_NAME:
           manufacturer = name.string.decode(name.getEncoding()).strip()
           if manufacturer != registered_vendor_ids[vid].strip():
+            failed = True
             fb.warning("VendorID '{}' and corresponding registered name '{}'"
                        " does not match the value that is currently set on"
                        " the font nameID {} (Manufacturer Name): '{}'".format(
@@ -725,6 +733,8 @@ def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
                          unidecode(registered_vendor_ids[vid]).strip(),
                          NAMEID_MANUFACTURER_NAME,
                          unidecode(manufacturer)))
+      if not failed:
+        fb.ok("OS/2 VendorID '{}' looks good!".format(vid))
 
 
 @register_test
@@ -751,22 +761,66 @@ def check_name_entries_symbol_substitutions(fb, ttFont):
     fb.ok("No need to substitute copyright, registered and"
           " trademark symbols in name table entries of this font.")
 
-# DEPRECATED: 021 - "Checking fsSelection REGULAR bit"
-#             025 - "Checking fsSelection ITALIC bit"
-#             027 - "Checking fsSelection BOLD bit"
-#
-# Replaced by 129 - "Checking OS/2.fsSelection value"
 
-# DEPRECATED: 022 - "Checking that italicAngle <= 0"
-#             023 - "Checking that italicAngle is less than 20 degrees"
-#             024 - "Checking if italicAngle matches font style"
-#
-# Replaced by 130 - "Checking post.italicAngle value"
+@register_condition
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    return os.path.splitext(filename)[0].split('-')[1]
 
-# DEPRECATED: 026 - "Checking macStyle ITALIC bit"
-#             ??? - "Checking macStyle BOLD bit"
-#
-# Replaced by 131 - "Checking head.macStyle value"
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/020'
+  , conditions=['style']
+)
+def check_OS2_usWeightClass(fb, ttFont, style):
+  """Checking OS/2 usWeightClass
+
+  The Google Font's API which serves the fonts can only serve
+  the following weights values with the  corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
+
+  if style == "Italic":
+    weight_name = "Regular"
+  elif style.endswith("Italic"):
+    weight_name = style.replace("Italic", "")
+  else:
+    weight_name = style
+
+  value = ttFont['OS/2'].usWeightClass
+  expected = WEIGHTS[weight_name]
+  if value != expected:
+    fb.error(("OS/2 usWeightClass expected value for"
+              " '{}' is {} but this font has"
+              " {}.").format(weight_name, expected, value))
+  else:
+    fb.ok("OS/2 usWeightClass value looks good!")
+
+# DEPRECATED CHECKS:                                             | REPLACED BY:
+# com.google.fonts/test/??? - "Checking macStyle BOLD bit"       | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/021 - "Checking fsSelection REGULAR bit" | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/022 - "italicAngle <= 0 ?"               | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/023 - "italicAngle is < 20 degrees ?"    | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/024 - "italicAngle matches font style ?" | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/025 - "Checking fsSelection ITALIC bit"  | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/026 - "Checking macStyle ITALIC bit"     | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/027 - "Checking fsSelection BOLD bit"    | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
 
 @register_condition
 @condition
@@ -807,6 +861,47 @@ def check_font_has_a_license(fb, licenses):
              " there is a temporary license file in the same folder.")
   else:
     fb.ok("Found license at '{}'".format(licenses[0]))
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/029'
+  , conditions=['license']
+  , priority=CRITICAL
+)
+def check_copyright_entries_match_license(fb, ttFont, license):
+  """Check copyright namerecords match license file"""
+  failed = False
+  for license_filename in ['OFL.txt', 'LICENSE.txt']:
+    if license_filename not in license:
+      continue
+    placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
+    entry_found = False
+    for i, nameRecord in enumerate(ttFont['name'].names):
+      if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+        entry_found = True
+        value = nameRecord.string.decode(nameRecord.getEncoding())
+        if value != placeholder:
+          failed = True
+          fb.error(('License file {} exists but'
+                    ' NameID {} (LICENSE DESCRIPTION) value'
+                    ' on platform {} ({})'
+                    ' is not specified for that.'
+                    ' Value was: "{}"'
+                    ' Must be changed to "{}"'
+                    '').format(license_filename,
+                               NAMEID_LICENSE_DESCRIPTION,
+                               nameRecord.platformID,
+                               PLATID_STR[nameRecord.platformID],
+                               unidecode(value),
+                               unidecode(placeholder)))
+    if not entry_found:
+      failed = True
+      fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                " A proper licensing entry must be set."
+                "").format(NAMEID_LICENSE_DESCRIPTION))
+  if not failed:
+    fb.ok("licensing entry on name table is correctly set.")
 
 
 @register_test
@@ -886,3 +981,20 @@ def check_description_strings_in_name_table(fb, ttFont):
     fb.ok("Description strings in the name table"
           " do not contain any copyright string.")
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/032'
+)
+def check_description_strings_do_not_exceed_100_chars(fb, ttFont):
+  """Description strings in the name table"
+     must not exceed 100 characters"""
+  failed = False
+  for name in ttFont['name'].names:
+    failed = (name.nameID == NAMEID_DESCRIPTION and
+              len(name.string.decode(name.getEncoding())) > 100)
+  if failed:
+    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+              " are longer than 100 characters"
+              " and should be removed.").format(NAMEID_DESCRIPTION))
+  else:
+    fb.ok("Description name records do not exceed 100 characters.")
