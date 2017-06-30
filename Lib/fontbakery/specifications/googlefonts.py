@@ -1087,7 +1087,10 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
      Also we should report an error for glyphs not of average width
   """
   failed = False
+  # Note: These values are read from the dict here only to
+  # reduce the max line length in the test implementation below:
   seems_monospaced = monospace_stats["seems_monospaced"]
+  most_common_width = monospace_stats["most_common_width"]
   width_max = monospace_stats['width_max']
 
   if ttFont['hhea'].advanceWidthMax != width_max:
@@ -1117,7 +1120,7 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
     unusually_spaced_glyphs = [
       g for g in ttFont['glyf'].glyphs
       if g not in ['.notdef', '.null', 'NULL']
-      and font['hmtx'].metrics[g][0] != stats['most_common']['width']
+      and ttFont['hmtx'].metrics[g][0] != most_common_width
     ]
     outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
     if outliers_ratio > 0:
