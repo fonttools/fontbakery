@@ -1148,3 +1148,51 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
                                     PANOSE_PROPORTION_MONOSPACED))
     if not failed:
       fb.ok("Font is not monospaced and all related metadata look good.")
+
+
+@register_condition
+@condition
+def seems_monospaced(monospace_stats):
+  return monospace_stats['seems_monospaced']
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/079'
+  , conditions=['seems_monospaced']
+)
+def check_hhea_table_and_advanceWidth_values(fb, ttFont):
+  """Monospace font has hhea.advanceWidthMax
+     equal to each glyph's advanceWidth ?"""
+
+  # hhea:advanceWidthMax is treated as source of truth here.
+  max_advw = ttFont['hhea'].advanceWidthMax
+  outliers = 0
+  zero_or_double_detected = False
+  glyphs = [
+    g for g in ttFont['glyf'].glyphs
+      if g not in ['.notdef', '.null', 'NULL']
+  ]
+  for glyph_id in glyphs:
+    width = ttFont['hmtx'].metrics[glyph_id][0]
+    if width != max_advw:
+      outliers += 1
+    if width == 0 or width == 2*max_advw:
+      zero_or_double_detected = True
+
+  if outliers > 0:
+    outliers_percentage = float(outliers) / len(ttFont['glyf'].glyphs)
+    fb.warning(("This seems to be a monospaced font,"
+                " so advanceWidth value should be the same"
+                " across all glyphs, but {} % of them"
+                " have a different value."
+                "").format(round(100 * outliers_percentage, 2)))
+    if zero_or_double_detected:
+      fb.warning("Double-width and/or zero-width glyphs"
+                 " were detected. These glyphs should be set"
+                 " to the same width as all others"
+                 " and then add GPOS single pos lookups"
+                 " that zeros/doubles the widths as needed.")
+  else:
+    fb.ok("hhea.advanceWidthMax is equal"
+          " to all glyphs' advanceWidth in this monospaced font.")

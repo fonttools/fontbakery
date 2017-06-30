@@ -1611,41 +1611,6 @@ def check_that_glyph_names_do_not_exceed_max_length(fb, font):
     fb.ok("No glyph names exceed max allowed length.")
 
 
-def check_hhea_table_and_advanceWidth_values(fb, font, monospace_detected):
-  fb.new_check("079", "Monospace font has hhea.advanceWidthMax"
-                      " equal to each glyph's advanceWidth ?")
-  if not monospace_detected:
-    fb.skip("Skipping monospace-only check.")
-    return
-
-  # hhea:advanceWidthMax is treated as source of truth here.
-  max_advw = font['hhea'].advanceWidthMax
-  outliers = 0
-  zero_or_double_detected = False
-  for glyph_id in font['glyf'].glyphs:
-    width = font['hmtx'].metrics[glyph_id][0]
-    if width != max_advw:
-      outliers += 1
-    if width == 0 or width == 2*max_advw:
-      zero_or_double_detected = True
-
-  if outliers > 0:
-    outliers_percentage = float(outliers) / len(font['glyf'].glyphs)
-    msg = ('This is a monospaced font, so advanceWidth'
-           ' value should be the same across all glyphs,'
-           ' but {} % of them have a different'
-           ' value.').format(round(100 * outliers_percentage, 2))
-    if zero_or_double_detected:
-      msg += (' Double-width and/or zero-width glyphs were detected.'
-              ' These glyphs should be set to the same width as all'
-              ' others and then add GPOS single pos lookups that'
-              ' zeros/doubles the widths as needed.')
-    fb.warning(msg)
-  else:
-    fb.ok("hhea.advanceWidthMax is equal"
-          " to all glyphs' advanceWidth in this monospaced font.")
-
-
 def check_METADATA_Ensure_designer_simple_short_name(fb, family):
   fb.new_check("080", "METADATA.pb: Ensure designer simple short name.")
   if len(family.designer.split(' ')) >= 4 or\
