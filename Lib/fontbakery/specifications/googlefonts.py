@@ -513,8 +513,12 @@ def check_OS2_fsType(fb, ttFont):
 @old_style_test(
     id='com.google.fonts/test/017'
   , priority=IMPORTANT
+  , conditions=['style']
+  # TODO:
+  # Thes above is equivalent to requiring a canonical filename.
+  # Can we have something like "passed com.google.fonts/test/001" as a condition ?
 )
-def check_main_entries_in_the_name_table(fb, ttFont):
+def check_main_entries_in_the_name_table(fb, ttFont, style):
   """Assure valid format for the main entries in the name table.
 
      Each entry in the name table has a criteria for validity and
@@ -559,7 +563,7 @@ def check_main_entries_in_the_name_table(fb, ttFont):
 
   filename = os.path.split(ttFont.reader.file.name)[1]
   filename_base = os.path.splitext(filename)[0]
-  fname, style = filename_base.split('-')
+  fname = filename_base.split('-')[0]
   fname_with_spaces = family_with_spaces(fname)
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
