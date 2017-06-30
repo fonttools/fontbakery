@@ -1033,16 +1033,13 @@ def monospace_stats(ttFont):
           occurrences = width_occurrences[width]
           most_common_width = width
   # if more than 80% of glyphs have the same width
-  # then the font is considered to be monospaced
-  is_monospaced = occurrences > 0.80 * len(glyphs)
+  # then the font is very likely considered to be monospaced
+  seems_monospaced = occurrences > 0.80 * len(glyphs)
 
   return {
-    "is_monospaced": is_monospaced,
+    "seems_monospaced": seems_monospaced,
     "width_max": width_max,
-    "most_common": {
-      "width": most_common_width,
-      "occurrences": occurrences
-    }
+    "most_common_width": most_common_width
   }
 
 
@@ -1086,7 +1083,7 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
      Also we should report an error for glyphs not of average width
   """
   failed = False
-  is_monospaced = monospace_stats["is_monospaced"]
+  seems_monospaced = monospace_stats["seems_monospaced"]
   width_max = monospace_stats['width_max']
 
   if ttFont['hhea'].advanceWidthMax != width_max:
@@ -1095,7 +1092,7 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
               " should be set to %d but got"
               " %d instead.").format(width_max,
                                      ttFont['hhea'].advanceWidthMax))
-  if is_monospaced:
+  if seems_monospaced:
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
       failed = True
       fb.error(("On monospaced fonts, the value of"
@@ -1113,24 +1110,19 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
                                        ttFont['OS/2'].panose.bProportion))
 
     num_glyphs = len(ttFont['glyf'].glyphs)
-    outliers = num_glyphs - stats['most_common']['occurrences']
-    if outliers > 0:
-      # If any glyphs are outliers, note them
-      unusually_spaced_glyphs = \
-       [g for g in glyphs
-        if font['hmtx'].metrics[g][0] != stats['most_common']['width']]
-      outliers_ratio = float(stats['most_common']['occurrences'])/num_glyphs
-
-      for glyphname in ['.notdef', '.null', 'NULL']:
-        if glyphname in unusually_spaced_glyphs:
-          unusually_spaced_glyphs.remove(glyphname)
-
+    unusually_spaced_glyphs = [
+      g for g in ttFont['glyf'].glyphs
+      if g not in ['.notdef', '.null', 'NULL']
+      and font['hmtx'].metrics[g][0] != stats['most_common']['width']
+    ]
+    outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
+    if outliers_ratio > 0:
       failed = True
       fb.warning(("Font is monospaced but {} glyphs"
                   " ({}%) have a different width."
                   " You should check the widths of: {}").format(
-                    outliers,
-                    100 - (100.0 * outliers_ratio),
+                    len(unusually_spaced_glyphs),
+                    100.0 * outliers_ratio,
                     unusually_spaced_glyphs))
     if not failed:
       fb.ok("Font is monospaced and all related metadata look good.")
