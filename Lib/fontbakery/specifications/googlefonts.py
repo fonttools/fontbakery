@@ -902,7 +902,7 @@ def check_copyright_entries_match_license(fb, ttFont, license):
                   ' is not specified for that.'
                   ' Value was: "{}"'
                   ' Must be changed to "{}"'
-                  '').format(license_filename,
+                  '').format(license,
                              NAMEID_LICENSE_DESCRIPTION,
                              nameRecord.platformID,
                              PLATID_STR[nameRecord.platformID],
