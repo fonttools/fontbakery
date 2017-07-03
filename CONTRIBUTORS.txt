@@ -28,8 +28,9 @@ Brian Dickens <hostilefork@gmail.com>
 Dave Crossland <dcrossland@google.com>
 Felipe Correa da Silva Sanches <juca@members.fsf.org>
 Filip Zembowicz <fil@google.com>
+Lasse Fister <commander@graphicore.de>
+Marc Foley <m.foley.88@gmail.com>
 Mikhail Kashkin <mkashkin@gmail.com>
 Raph Levien <raph.levien@gmail.com>
 Robert Martinez <mail@robertmartinez.de>
 Vitaly Volkov <hash.3g@gmail.com>
-Felipe Sanches <felipe.sanches@gmail.com>

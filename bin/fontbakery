@@ -29,10 +29,10 @@ def _get_subcommands():
 
 subcommands = _get_subcommands()
 
-description = "Run fontbakery subcomands:{0}".format(''.join(
+description = "Run fontbakery subcommands:{0}".format(''.join(
                         ['\n    {0}'.format(sc) for sc in sorted(subcommands.keys())]))
 description += ("\n\nSubcommands have their own help messages. These are usually "
-                "accessible with the -h/--help flag positioned after the subcomand.\n"
+                "accessible with the -h/--help flag positioned after the subcommand.\n"
                 "I.e.: fontbakery subcommand -h"
                )
 parser = argparse.ArgumentParser(description=description,
