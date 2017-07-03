@@ -513,8 +513,12 @@ def check_OS2_fsType(fb, ttFont):
 @old_style_test(
     id='com.google.fonts/test/017'
   , priority=IMPORTANT
+  , conditions=['style']
+  # TODO:
+  # Thes above is equivalent to requiring a canonical filename.
+  # Can we have something like "passed com.google.fonts/test/001" as a condition ?
 )
-def check_main_entries_in_the_name_table(fb, ttFont):
+def check_main_entries_in_the_name_table(fb, ttFont, style):
   """Assure valid format for the main entries in the name table.
 
      Each entry in the name table has a criteria for validity and
@@ -559,7 +563,7 @@ def check_main_entries_in_the_name_table(fb, ttFont):
 
   filename = os.path.split(ttFont.reader.file.name)[1]
   filename_base = os.path.splitext(filename)[0]
-  fname, style = filename_base.split('-')
+  fname = filename_base.split('-')[0]
   fname_with_spaces = family_with_spaces(fname)
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
@@ -898,7 +902,7 @@ def check_copyright_entries_match_license(fb, ttFont, license):
                   ' is not specified for that.'
                   ' Value was: "{}"'
                   ' Must be changed to "{}"'
-                  '').format(license_filename,
+                  '').format(license,
                              NAMEID_LICENSE_DESCRIPTION,
                              nameRecord.platformID,
                              PLATID_STR[nameRecord.platformID],
@@ -1033,16 +1037,13 @@ def monospace_stats(ttFont):
           occurrences = width_occurrences[width]
           most_common_width = width
   # if more than 80% of glyphs have the same width
-  # then the font is considered to be monospaced
-  is_monospaced = occurrences > 0.80 * len(glyphs)
+  # then the font is very likely considered to be monospaced
+  seems_monospaced = occurrences > 0.80 * len(glyphs)
 
   return {
-    "is_monospaced": is_monospaced,
+    "seems_monospaced": seems_monospaced,
     "width_max": width_max,
-    "most_common": {
-      "width": most_common_width,
-      "occurrences": occurrences
-    }
+    "most_common_width": most_common_width
   }
 
 
@@ -1086,7 +1087,10 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
      Also we should report an error for glyphs not of average width
   """
   failed = False
-  is_monospaced = monospace_stats["is_monospaced"]
+  # Note: These values are read from the dict here only to
+  # reduce the max line length in the test implementation below:
+  seems_monospaced = monospace_stats["seems_monospaced"]
+  most_common_width = monospace_stats["most_common_width"]
   width_max = monospace_stats['width_max']
 
   if ttFont['hhea'].advanceWidthMax != width_max:
@@ -1095,7 +1099,7 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
               " should be set to %d but got"
               " %d instead.").format(width_max,
                                      ttFont['hhea'].advanceWidthMax))
-  if is_monospaced:
+  if seems_monospaced:
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
       failed = True
       fb.error(("On monospaced fonts, the value of"
@@ -1113,24 +1117,19 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
                                        ttFont['OS/2'].panose.bProportion))
 
     num_glyphs = len(ttFont['glyf'].glyphs)
-    outliers = num_glyphs - stats['most_common']['occurrences']
-    if outliers > 0:
-      # If any glyphs are outliers, note them
-      unusually_spaced_glyphs = \
-       [g for g in glyphs
-        if font['hmtx'].metrics[g][0] != stats['most_common']['width']]
-      outliers_ratio = float(stats['most_common']['occurrences'])/num_glyphs
-
-      for glyphname in ['.notdef', '.null', 'NULL']:
-        if glyphname in unusually_spaced_glyphs:
-          unusually_spaced_glyphs.remove(glyphname)
-
+    unusually_spaced_glyphs = [
+      g for g in ttFont['glyf'].glyphs
+      if g not in ['.notdef', '.null', 'NULL']
+      and ttFont['hmtx'].metrics[g][0] != most_common_width
+    ]
+    outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
+    if outliers_ratio > 0:
       failed = True
       fb.warning(("Font is monospaced but {} glyphs"
                   " ({}%) have a different width."
                   " You should check the widths of: {}").format(
-                    outliers,
-                    100 - (100.0 * outliers_ratio),
+                    len(unusually_spaced_glyphs),
+                    100.0 * outliers_ratio,
                     unusually_spaced_glyphs))
     if not failed:
       fb.ok("Font is monospaced and all related metadata look good.")
@@ -1156,3 +1155,51 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
                                     PANOSE_PROPORTION_MONOSPACED))
     if not failed:
       fb.ok("Font is not monospaced and all related metadata look good.")
+
+
+@register_condition
+@condition
+def seems_monospaced(monospace_stats):
+  return monospace_stats['seems_monospaced']
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/079'
+  , conditions=['seems_monospaced']
+)
+def check_hhea_table_and_advanceWidth_values(fb, ttFont):
+  """Monospace font has hhea.advanceWidthMax
+     equal to each glyph's advanceWidth ?"""
+
+  # hhea:advanceWidthMax is treated as source of truth here.
+  max_advw = ttFont['hhea'].advanceWidthMax
+  outliers = 0
+  zero_or_double_detected = False
+  glyphs = [
+    g for g in ttFont['glyf'].glyphs
+      if g not in ['.notdef', '.null', 'NULL']
+  ]
+  for glyph_id in glyphs:
+    width = ttFont['hmtx'].metrics[glyph_id][0]
+    if width != max_advw:
+      outliers += 1
+    if width == 0 or width == 2*max_advw:
+      zero_or_double_detected = True
+
+  if outliers > 0:
+    outliers_percentage = float(outliers) / len(ttFont['glyf'].glyphs)
+    fb.warning(("This seems to be a monospaced font,"
+                " so advanceWidth value should be the same"
+                " across all glyphs, but {} % of them"
+                " have a different value."
+                "").format(round(100 * outliers_percentage, 2)))
+    if zero_or_double_detected:
+      fb.warning("Double-width and/or zero-width glyphs"
+                 " were detected. These glyphs should be set"
+                 " to the same width as all others"
+                 " and then add GPOS single pos lookups"
+                 " that zeros/doubles the widths as needed.")
+  else:
+    fb.ok("hhea.advanceWidthMax is equal"
+          " to all glyphs' advanceWidth in this monospaced font.")
