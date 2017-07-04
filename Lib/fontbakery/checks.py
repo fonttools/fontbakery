@@ -121,53 +121,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_OS2_xAvgCharWidth(fb, font):
-  fb.new_check("034", "Check if OS/2 xAvgCharWidth is correct.")
-  if font['OS/2'].version >= 3:
-    width_sum = 0
-    count = 0
-    for glyph_id in font['glyf'].glyphs:
-      width = font['hmtx'].metrics[glyph_id][0]
-      if width > 0:
-        count += 1
-        width_sum += width
-    if count == 0:
-      fb.error("CRITICAL: Found no glyph width data!")
-    else:
-      expected_value = int(round(width_sum) / count)
-      if font['OS/2'].xAvgCharWidth == expected_value:
-        fb.ok("OS/2 xAvgCharWidth is correct.")
-      else:
-        fb.error(("OS/2 xAvgCharWidth is {} but should be "
-                  "{} which corresponds to the "
-                  "average of all glyph widths "
-                  "in the font").format(font['OS/2'].xAvgCharWidth,
-                                        expected_value))
-  else:
-    weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
-                     'e': 100, 'f': 20, 'g': 14, 'h': 42,
-                     'i': 63, 'j': 3, 'k': 6, 'l': 35,
-                     'm': 20, 'n': 56, 'o': 56, 'p': 17,
-                     'q': 4, 'r': 49, 's': 56, 't': 71,
-                     'u': 31, 'v': 10, 'w': 18, 'x': 3,
-                     'y': 18, 'z': 2, 'space': 166}
-    width_sum = 0
-    for glyph_id in font['glyf'].glyphs:
-      width = font['hmtx'].metrics[glyph_id][0]
-      if glyph_id in weightFactors.keys():
-        width_sum += (width*weightFactors[glyph_id])
-    expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
-    if font['OS/2'].xAvgCharWidth == expected_value:
-      fb.ok("OS/2 xAvgCharWidth value is correct.")
-    else:
-      fb.error(("OS/2 xAvgCharWidth is {} but it should be "
-                "{} which corresponds to the weighted "
-                "average of the widths of the latin "
-                "lowercase glyphs in "
-                "the font").format(font['OS/2'].xAvgCharWidth,
-                                   expected_value))
-
-
 def check_with_ftxvalidator(fb, font_file):
   fb.new_check("035", "Checking with ftxvalidator")
   try:
