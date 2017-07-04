@@ -237,6 +237,37 @@ optional arguments:
   --verbose, -v  Verbosity level
 ```
 
+### fontbakery check-font-version
+
+Check the version number of a family hosted on fonts.google.com.
+
+`fontbakery check-font-version "Roboto"`
+
+
+Comparison against a local family can be made using the -lc argument:
+
+`fontbakery check-font-version "Roboto" -lc [/dir/Roboto-Regular.ttf, ...]`
+
+
+Comparison against a url containing a zipped family can be made using
+the -wc argument:
+
+`fontbakery check-font-version "Roboto" -wc=http://roboto.com/roboto.zip`
+
+```
+usage: fontbakery-check-font-version.py [-h] [-wc WEB_COMPARE]
+                                        [-lc LOCAL_COMPARE [LOCAL_COMPARE ...]]
+                                        family
+
+positional arguments:
+  family                Name of font family
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -wc, --web-compare    Compare against a web url containg a .zip family
+  -lc, --local-compare  Compare against a set of local ttfs
+```
+
 ### fontbakery check-gf-github
 
 Report how many github issues/prs were opened and closed for the google/fonts
