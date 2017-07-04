@@ -99,13 +99,12 @@ def parse_version_string(fb, s):
 def parse_version_head(fonts):
     """Return a family's version number. Ideally, each font in the
     family should have the same version number. If not, return the highest
-    version number."""
+    version number. This function can also work on single fonts."""
     versions = []
-    if isinstance(fonts, list):
-      for font in fonts:
-        versions.append(float(font['head'].fontRevision))
-    else:
-      versions.append(float(fonts['head'].fontRevision))
+    if not isinstance(fonts, list):
+        fonts = [fonts]
+    for font in fonts:
+      versions.append(float(font['head'].fontRevision))
     return max(versions)
 
 
