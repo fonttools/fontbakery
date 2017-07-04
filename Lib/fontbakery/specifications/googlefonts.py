@@ -1247,6 +1247,33 @@ def check_with_ftxvalidator(fb, font):
     fb.warning("ftxvalidator is not available!")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/036'
+)
+def check_with_otsanitise(fb, font):
+  """Checking with ots-sanitize."""
+  try:
+    import subprocess
+    ots_output = subprocess.check_output(["ots-sanitize", font],
+                                         stderr=subprocess.STDOUT)
+    if ots_output != "" and "File sanitized successfully" not in ots_output:
+      fb.error("ots-sanitize output follows:\n\n{}".format(ots_output))
+    else:
+      fb.ok("ots-sanitize passed this file")
+  except subprocess.CalledProcessError, e:
+      fb.error(("ots-sanitize returned an error code. Output follows :"
+                "\n\n{}").format(e.output))
+  except OSError, e:
+    fb.warning("ots-sanitize is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/ProjectChecklist.md#ots"
+               " Actual error message was: "
+               "'{}'".format(e))
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):

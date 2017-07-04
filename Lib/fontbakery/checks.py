@@ -121,30 +121,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_with_otsanitise(fb, font_file):
-  fb.new_check("036", "Checking with ots-sanitize")
-  try:
-    import subprocess
-    ots_output = subprocess.check_output(["ots-sanitize", font_file],
-                                         stderr=subprocess.STDOUT)
-    if ots_output != "" and "File sanitized successfully" not in ots_output:
-      fb.error("ots-sanitize output follows:\n\n{}\n".format(ots_output))
-    else:
-      fb.ok("ots-sanitize passed this file")
-  except subprocess.CalledProcessError, e:
-      fb.error(("ots-sanitize returned an error code. Output follows :"
-                "\n\n{}\n").format(e.output))
-  except OSError, e:
-    # This is made very prominent with additional line breaks
-    fb.warning("\n\n\nots-sanitize is not available!"
-               " You really MUST check the fonts with this tool."
-               " To install it, see"
-               " https://github.com/googlefonts"
-               "/gf-docs/blob/master/ProjectChecklist.md#ots"
-               " Actual error message was: "
-               "'{}'\n\n".format(e))
-
-
 def check_with_msfontvalidator(fb, font_file):
   fb.new_check("037", "Checking with Microsoft Font Validator")
   try:
