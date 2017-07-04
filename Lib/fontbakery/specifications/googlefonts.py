@@ -1274,6 +1274,69 @@ def check_with_otsanitise(fb, font):
                "'{}'".format(e))
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/037'
+)
+def check_with_msfontvalidator(fb, font):
+  """Checking with Microsoft Font Validator."""
+  try:
+    import subprocess
+    fval_cmd = ["FontValidator.exe",
+                "-file", font,
+                "-all-tables",
+                "-report-in-font-dir"]
+    subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
+  except subprocess.CalledProcessError, e:
+    filtered_msgs = ""
+    for line in e.output.split("\n"):
+      if "Validating glyph with index" in line: continue
+      if "Table Test:" in line: continue
+      filtered_msgs += line + "\n"
+    fb.info(("Microsoft Font Validator returned an error code."
+             " Output follows :\n\n{}\n").format(filtered_msgs))
+  except OSError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+  except IOError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+    return
+
+  xml_report = open("{}.report.xml".format(font), "r").read()
+  try:
+    os.remove("{}.report.xml".format(font))
+    os.remove("{}.report.html".format(font))
+  except:
+    # Treat failure to delete reports
+    # as non-critical. Silently move on.
+    pass
+
+  def report_message(msg, details):
+    if details:
+      return "MS-FonVal: {} DETAILS: {}".format(msg, details)
+    else:
+      return "MS-FonVal: {}".format(msg)
+
+  doc = defusedxml.lxml.fromstring(xml_report)
+  already_reported = []
+  for report in doc.iter('Report'):
+    msg = report.get("Message")
+    details = report.get("Details")
+    if [msg, details] not in already_reported:
+      # avoid cluttering the output with tons of identical reports
+      already_reported.append([msg, details])
+
+      if report.get("ErrorType") == "P":
+        fb.ok(report_message(msg, details))
+      elif report.get("ErrorType") == "E":
+        fb.error(report_message(msg, details))
+      elif report.get("ErrorType") == "W":
+        fb.warning(report_message(msg, details))
+      else:
+        fb.info(report_message(msg, details))
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
