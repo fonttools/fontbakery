@@ -1339,6 +1339,59 @@ def check_with_msfontvalidator(fb, font):
 
 @register_condition
 @condition
+def fontforge_check_results(font):
+  if "adobeblank" in font:
+    fb.skip("Skipping AdobeBlank since"
+            " this font is a very peculiar hack.")
+    return None
+
+  import subprocess
+  cmd = (
+        'import fontforge, sys;'
+        'status = fontforge.open("{0}").validate();'
+        'sys.stdout.write(status.__str__());'.format
+        )
+
+  p = subprocess.Popen(['python', '-c', cmd(font)],
+                       stderr=subprocess.PIPE,
+                       stdout=subprocess.PIPE
+                      )
+  ret_val, ff_err_messages = p.communicate()
+  try:
+    return {
+      "validation_state": int(ret_val),
+      "ff_err_messages": ff_err_messages
+    }
+  except:
+    return None
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/038'
+  , conditions=['fontforge_check_results']
+)
+def check_fforge_outputs_error_msgs(fb, font, fontforge_check_results):
+  """fontforge validation outputs error messages?"""
+
+  filtered_err_msgs = ""
+  for line in fontforge_check_results["ff_err_messages"].split('\n'):
+    if 'The following table(s) in the font' \
+        ' have been ignored by FontForge' in line:
+      continue
+    if "Ignoring 'DSIG' digital signature table" in line:
+      continue
+    filtered_err_msgs += line + '\n'
+
+  if len(filtered_err_msgs.strip()) > 0:
+    fb.error(("fontforge did print these messages to stderr:\n"
+              "{}").format(filtered_err_msgs))
+  else:
+    fb.ok("fontforge validation did not output any error message.")
+
+
+@register_condition
+@condition
 def seems_monospaced(monospace_stats):
   return monospace_stats['seems_monospaced']
 

@@ -121,50 +121,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fforge_outputs_error_msgs(fb, font_file):
-  fb.new_check("038", "fontforge validation outputs error messages?")
-  if "adobeblank" in font_file:
-    fb.skip("Skipping AdobeBlank since"
-            " this font is a very peculiar hack.")
-    return None
-
-
-  import subprocess
-  cmd = (
-        'import fontforge, sys;'
-        'status = fontforge.open("{0}").validate();'
-        'sys.stdout.write(status.__str__());'.format
-        )
-
-  p = subprocess.Popen(['python', '-c', cmd(font_file)],
-                       stderr=subprocess.PIPE,
-                       stdout=subprocess.PIPE
-                      )
-  validation_state, ff_err_messages = p.communicate()
-  try:
-    validation_state = int(validation_state)
-  except:
-    # None as a value is understood by the fontbakery-check-ttf.py script
-    validation_state = None
-    pass
-
-  filtered_err_msgs = ""
-  for line in ff_err_messages.split('\n'):
-    if 'The following table(s) in the font' \
-        ' have been ignored by FontForge' in line:
-      continue
-    if "Ignoring 'DSIG' digital signature table" in line:
-      continue
-    filtered_err_msgs += line + '\n'
-
-  if len(filtered_err_msgs.strip()) > 0:
-    fb.error(("fontforge did print these messages to stderr:\n"
-              "{}").format(filtered_err_msgs))
-  else:
-    fb.ok("fontforge validation did not output any error message.")
-  return validation_state
-
-
 def perform_all_fontforge_checks(fb, validation_state):
   def ff_check(description, condition, err_msg, ok_msg):
     import sha
