@@ -145,16 +145,6 @@ def fontbakery_check_ttf(config):
     # -----------------------------------------------------
     checks.check_font_designer_field_is_not_unknown(fb, family)
 
-  # ------------------------------------------------------
-  vmetrics_ymin = 0
-  vmetrics_ymax = 0
-  for target in fonts_to_check:
-    font = ttf_cache(target)
-
-    font_ymin, font_ymax = get_bounding_box(font)
-    vmetrics_ymin = min(font_ymin, vmetrics_ymin)
-    vmetrics_ymax = max(font_ymax, vmetrics_ymax)
-
   # FSanches: I don't like the following.
   #           It look very hacky even though it  actually works... :-P
   cross_family = os.path.join(family_dir, "CrossFamilyChecks")
@@ -195,7 +185,6 @@ def fontbakery_check_ttf(config):
 
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
-    checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
     checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
