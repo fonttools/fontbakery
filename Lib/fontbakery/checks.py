@@ -250,26 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax):
-  """A font's winAscent and winDescent values should be the same as the
-  head table's yMax, abs(yMin) values. By not setting them to these values,
-  clipping can occur on Windows platforms,
-  https://github.com/RedHatBrand/Overpass/issues/33
-
-  If the font includes tall/deep writing systems such as Arabic or
-  Devanagari, the linespacing can appear too loose. To counteract this,
-  enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), Windows will use
-  the OS/2 typo values instead. This means the font developer can control
-  the linespacing with the typo values, whilst avoiding clipping by setting
-  the win values to the bounding box."""
-  fb.new_check("040", "Checking OS/2 usWinAscent & usWinDescent")
-  # OS/2 usWinAscent:
-  fb.assert_table_entry('OS/2', 'usWinAscent', vmetrics_ymax)
-  # OS/2 usWinDescent:
-  fb.assert_table_entry('OS/2', 'usWinDescent', abs(vmetrics_ymin))
-  fb.log_results("OS/2 usWinAscent & usWinDescent")
-
-
 def check_Vertical_Metric_Linegaps(fb, font):
   fb.new_check("041", "Checking Vertical Metric Linegaps")
   if font['hhea'].lineGap != 0:
