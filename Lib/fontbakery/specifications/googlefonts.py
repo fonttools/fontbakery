@@ -1210,6 +1210,43 @@ def check_OS2_xAvgCharWidth(fb, ttFont):
                                    expected_value))
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/035'
+)
+def check_with_ftxvalidator(fb, font):
+  """Checking with ftxvalidator."""
+  try:
+    import subprocess
+    ftx_cmd = ["ftxvalidator",
+               "-t", "all",  # execute all tests
+               font]
+    ftx_output = subprocess.check_output(ftx_cmd,
+                                         stderr=subprocess.STDOUT)
+
+    ftx_data = plistlib.readPlistFromString(ftx_output)
+    # we accept kATSFontTestSeverityInformation
+    # and kATSFontTestSeverityMinorError
+    if 'kATSFontTestSeverityFatalError' \
+       not in ftx_data['kATSFontTestResultKey']:
+      fb.ok("ftxvalidator passed this file")
+    else:
+      ftx_cmd = ["ftxvalidator",
+                 "-T",  # Human-readable output
+                 "-r",  # Generate a full report
+                 "-t", "all",  # execute all tests
+                 font]
+      ftx_output = subprocess.check_output(ftx_cmd,
+                                           stderr=subprocess.STDOUT)
+      fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+
+  except subprocess.CalledProcessError, e:
+    fb.info(("ftxvalidator returned an error code. Output follows :"
+             "\n\n{}\n").format(e.output))
+  except OSError:
+    fb.warning("ftxvalidator is not available!")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):

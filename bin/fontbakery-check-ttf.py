@@ -198,7 +198,6 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_usWinAscent_and_Descent(fb, vmetrics_ymin, vmetrics_ymax)
     checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
 
-    checks.check_with_ftxvalidator(fb, target)
     checks.check_with_msfontvalidator(fb, target)
     checks.check_with_otsanitise(fb, target)
 
