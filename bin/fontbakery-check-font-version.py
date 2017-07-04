@@ -4,18 +4,18 @@ fontbakery-check-font-version.py:
 
 Check the version number of a family hosted on fonts.google.com.
 
-`fontbakery check-font-version.py "Roboto"`
+`fontbakery check-font-version "Roboto"`
 
 
 Comparison against a local family can be made using the -lc argument:
 
-`fontbakery check-font-version.py "Roboto" -lc [/dir/Roboto-Regular.ttf, ...]`
+`fontbakery check-font-version "Roboto" -lc [/dir/Roboto-Regular.ttf, ...]`
 
 
 Comparison against a url containing a zipped family can be made using
 the -wc argument:
 
-`fontbakery check-font-version.py "Roboto" -wc=http://roboto.com/roboto.zip`
+`fontbakery check-font-version "Roboto" -wc=http://roboto.com/roboto.zip`
 
 """
 from __future__ import print_function
