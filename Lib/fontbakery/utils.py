@@ -251,10 +251,10 @@ def download_family_from_GoogleFontDirectory(family_name):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     url_prefix = 'https://fonts.google.com/download?family='
     url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
-    return download_family_zip(url)
+    return download_zip(url)
 
 
-def download_family_zip(url):
+def download_zip(url):
   """Return a zipfile from a url"""
   request = urlopen(url)
   return ZipFile(StringIO(request.read()))
