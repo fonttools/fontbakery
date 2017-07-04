@@ -199,7 +199,6 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
 
     checks.check_with_msfontvalidator(fb, target)
-    checks.check_with_otsanitise(fb, target)
 
     validation_state = checks.check_fforge_outputs_error_msgs(fb, target)
     if validation_state is not None:
