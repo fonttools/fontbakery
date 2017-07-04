@@ -66,6 +66,7 @@ from fontbakery.constants import(
 from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
+      , get_bounding_box
 )
 
 default_section = Section('Default')
@@ -1388,6 +1389,58 @@ def check_fforge_outputs_error_msgs(fb, font, fontforge_check_results):
               "{}").format(filtered_err_msgs))
   else:
     fb.ok("fontforge validation did not output any error message.")
+
+
+# TODO: check 039: fontforge checks
+
+@register_condition
+@condition
+def vmetrics(ttFonts):
+  v_metrics = {"ymin": 0, "ymax": 0}
+  for ttFont in ttFonts:
+    font_ymin, font_ymax = get_bounding_box(ttFont)
+    v_metrics["ymin"] = min(font_ymin, v_metrics["ymin"])
+    v_metrics["ymax"] = max(font_ymax, v_metrics["ymax"])
+  return v_metrics
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/040'
+  , conditions=['vmetrics']
+)
+def check_OS2_usWinAscent_and_Descent(fb, ttFont, vmetrics):
+  """Checking OS/2 usWinAscent & usWinDescent
+
+  A font's winAscent and winDescent values should be the same as the
+  head table's yMax, abs(yMin) values. By not setting them to these values,
+  clipping can occur on Windows platforms,
+  https://github.com/RedHatBrand/Overpass/issues/33
+
+  If the font includes tall/deep writing systems such as Arabic or
+  Devanagari, the linespacing can appear too loose. To counteract this,
+  enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), Windows will use
+  the OS/2 typo values instead. This means the font developer can control
+  the linespacing with the typo values, whilst avoiding clipping by setting
+  the win values to the bounding box."""
+  failed = False
+
+  # OS/2 usWinAscent:
+  if ttFont['OS/2'].usWinAscent != vmetrics['ymax']:
+    failed = True
+    fb.error(("OS/2.usWinAscent value"
+              " should be {}, but got"
+              " {} instead").format(vmetrics['ymax'],
+                                    ttFont['OS/2'].usWinAscent))
+  # OS/2 usWinDescent:
+  if ttFont['OS/2'].usWinDescent != abs(vmetrics['ymin']):
+    failed = True
+    fb.error(("OS/2.usWinDescent value"
+              " should be {}, but got"
+              " {} instead").format(vmetrics['ymin'],
+                                    ttFont['OS/2'].usWinDescent))
+  if not failed:
+    fb.ok("OS/2 usWinAscent & usWinDescent values look good!")
 
 
 @register_condition
