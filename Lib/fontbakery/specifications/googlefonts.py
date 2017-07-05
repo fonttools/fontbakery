@@ -66,6 +66,7 @@ from fontbakery.constants import(
 from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
+      , get_bounding_box
 )
 
 default_section = Section('Default')
@@ -1155,6 +1156,448 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
                                     PANOSE_PROPORTION_MONOSPACED))
     if not failed:
       fb.ok("Font is not monospaced and all related metadata look good.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/034'
+)
+def check_OS2_xAvgCharWidth(fb, ttFont):
+  """Check if OS/2 xAvgCharWidth is correct."""
+  if ttFont['OS/2'].version >= 3:
+    width_sum = 0
+    count = 0
+    for glyph_id in ttFont['glyf'].glyphs:
+      width = ttFont['hmtx'].metrics[glyph_id][0]
+      if width > 0:
+        count += 1
+        width_sum += width
+    if count == 0:
+      fb.error("CRITICAL: Found no glyph width data!")
+    else:
+      expected_value = int(round(width_sum) / count)
+
+      if ttFont['OS/2'].xAvgCharWidth == expected_value:
+        fb.ok("OS/2 xAvgCharWidth is correct.")
+      else:
+        fb.error(("OS/2 xAvgCharWidth is {} but should be "
+                  "{} which corresponds to the "
+                  "average of all glyph widths "
+                  "in the font").format(ttFont['OS/2'].xAvgCharWidth,
+                                        expected_value))
+  else:
+    weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
+                     'e': 100, 'f': 20, 'g': 14, 'h': 42,
+                     'i': 63, 'j': 3, 'k': 6, 'l': 35,
+                     'm': 20, 'n': 56, 'o': 56, 'p': 17,
+                     'q': 4, 'r': 49, 's': 56, 't': 71,
+                     'u': 31, 'v': 10, 'w': 18, 'x': 3,
+                     'y': 18, 'z': 2, 'space': 166}
+    width_sum = 0
+    for glyph_id in ttFont['glyf'].glyphs:
+      width = ttFont['hmtx'].metrics[glyph_id][0]
+      if glyph_id in weightFactors.keys():
+        width_sum += (width*weightFactors[glyph_id])
+    expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
+
+    if ttFont['OS/2'].xAvgCharWidth == expected_value:
+      fb.ok("OS/2 xAvgCharWidth value is correct.")
+    else:
+      fb.error(("OS/2 xAvgCharWidth is {} but it should be "
+                "{} which corresponds to the weighted "
+                "average of the widths of the latin "
+                "lowercase glyphs in "
+                "the font").format(ttFont['OS/2'].xAvgCharWidth,
+                                   expected_value))
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/035'
+)
+def check_with_ftxvalidator(fb, font):
+  """Checking with ftxvalidator."""
+  try:
+    import subprocess
+    ftx_cmd = ["ftxvalidator",
+               "-t", "all",  # execute all tests
+               font]
+    ftx_output = subprocess.check_output(ftx_cmd,
+                                         stderr=subprocess.STDOUT)
+
+    ftx_data = plistlib.readPlistFromString(ftx_output)
+    # we accept kATSFontTestSeverityInformation
+    # and kATSFontTestSeverityMinorError
+    if 'kATSFontTestSeverityFatalError' \
+       not in ftx_data['kATSFontTestResultKey']:
+      fb.ok("ftxvalidator passed this file")
+    else:
+      ftx_cmd = ["ftxvalidator",
+                 "-T",  # Human-readable output
+                 "-r",  # Generate a full report
+                 "-t", "all",  # execute all tests
+                 font]
+      ftx_output = subprocess.check_output(ftx_cmd,
+                                           stderr=subprocess.STDOUT)
+      fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+
+  except subprocess.CalledProcessError, e:
+    fb.info(("ftxvalidator returned an error code. Output follows :"
+             "\n\n{}\n").format(e.output))
+  except OSError:
+    fb.warning("ftxvalidator is not available!")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/036'
+)
+def check_with_otsanitise(fb, font):
+  """Checking with ots-sanitize."""
+  try:
+    import subprocess
+    ots_output = subprocess.check_output(["ots-sanitize", font],
+                                         stderr=subprocess.STDOUT)
+    if ots_output != "" and "File sanitized successfully" not in ots_output:
+      fb.error("ots-sanitize output follows:\n\n{}".format(ots_output))
+    else:
+      fb.ok("ots-sanitize passed this file")
+  except subprocess.CalledProcessError, e:
+      fb.error(("ots-sanitize returned an error code. Output follows :"
+                "\n\n{}").format(e.output))
+  except OSError, e:
+    fb.warning("ots-sanitize is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/ProjectChecklist.md#ots"
+               " Actual error message was: "
+               "'{}'".format(e))
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/037'
+)
+def check_with_msfontvalidator(fb, font):
+  """Checking with Microsoft Font Validator."""
+  try:
+    import subprocess
+    fval_cmd = ["FontValidator.exe",
+                "-file", font,
+                "-all-tables",
+                "-report-in-font-dir"]
+    subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
+  except subprocess.CalledProcessError, e:
+    filtered_msgs = ""
+    for line in e.output.split("\n"):
+      if "Validating glyph with index" in line: continue
+      if "Table Test:" in line: continue
+      filtered_msgs += line + "\n"
+    fb.info(("Microsoft Font Validator returned an error code."
+             " Output follows :\n\n{}\n").format(filtered_msgs))
+  except OSError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+  except IOError:
+    fb.warning("Mono runtime and/or "
+               "Microsoft Font Validator are not available!")
+    return
+
+  xml_report = open("{}.report.xml".format(font), "r").read()
+  try:
+    os.remove("{}.report.xml".format(font))
+    os.remove("{}.report.html".format(font))
+  except:
+    # Treat failure to delete reports
+    # as non-critical. Silently move on.
+    pass
+
+  def report_message(msg, details):
+    if details:
+      return "MS-FonVal: {} DETAILS: {}".format(msg, details)
+    else:
+      return "MS-FonVal: {}".format(msg)
+
+  doc = defusedxml.lxml.fromstring(xml_report)
+  already_reported = []
+  for report in doc.iter('Report'):
+    msg = report.get("Message")
+    details = report.get("Details")
+    if [msg, details] not in already_reported:
+      # avoid cluttering the output with tons of identical reports
+      already_reported.append([msg, details])
+
+      if report.get("ErrorType") == "P":
+        fb.ok(report_message(msg, details))
+      elif report.get("ErrorType") == "E":
+        fb.error(report_message(msg, details))
+      elif report.get("ErrorType") == "W":
+        fb.warning(report_message(msg, details))
+      else:
+        fb.info(report_message(msg, details))
+
+
+@register_condition
+@condition
+def fontforge_check_results(font):
+  if "adobeblank" in font:
+    fb.skip("Skipping AdobeBlank since"
+            " this font is a very peculiar hack.")
+    return None
+
+  import subprocess
+  cmd = (
+        'import fontforge, sys;'
+        'status = fontforge.open("{0}").validate();'
+        'sys.stdout.write(status.__str__());'.format
+        )
+
+  p = subprocess.Popen(['python', '-c', cmd(font)],
+                       stderr=subprocess.PIPE,
+                       stdout=subprocess.PIPE
+                      )
+  ret_val, ff_err_messages = p.communicate()
+  try:
+    return {
+      "validation_state": int(ret_val),
+      "ff_err_messages": ff_err_messages
+    }
+  except:
+    return None
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/038'
+  , conditions=['fontforge_check_results']
+)
+def check_fforge_outputs_error_msgs(fb, font, fontforge_check_results):
+  """fontforge validation outputs error messages?"""
+
+  filtered_err_msgs = ""
+  for line in fontforge_check_results["ff_err_messages"].split('\n'):
+    if 'The following table(s) in the font' \
+        ' have been ignored by FontForge' in line:
+      continue
+    if "Ignoring 'DSIG' digital signature table" in line:
+      continue
+    filtered_err_msgs += line + '\n'
+
+  if len(filtered_err_msgs.strip()) > 0:
+    fb.error(("fontforge did print these messages to stderr:\n"
+              "{}").format(filtered_err_msgs))
+  else:
+    fb.ok("fontforge validation did not output any error message.")
+
+
+# TODO: check 039: fontforge checks
+
+@register_condition
+@condition
+def vmetrics(ttFonts):
+  v_metrics = {"ymin": 0, "ymax": 0}
+  for ttFont in ttFonts:
+    font_ymin, font_ymax = get_bounding_box(ttFont)
+    v_metrics["ymin"] = min(font_ymin, v_metrics["ymin"])
+    v_metrics["ymax"] = max(font_ymax, v_metrics["ymax"])
+  return v_metrics
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/040'
+  , conditions=['vmetrics']
+)
+def check_OS2_usWinAscent_and_Descent(fb, ttFont, vmetrics):
+  """Checking OS/2 usWinAscent & usWinDescent
+
+  A font's winAscent and winDescent values should be the same as the
+  head table's yMax, abs(yMin) values. By not setting them to these values,
+  clipping can occur on Windows platforms,
+  https://github.com/RedHatBrand/Overpass/issues/33
+
+  If the font includes tall/deep writing systems such as Arabic or
+  Devanagari, the linespacing can appear too loose. To counteract this,
+  enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), Windows will use
+  the OS/2 typo values instead. This means the font developer can control
+  the linespacing with the typo values, whilst avoiding clipping by setting
+  the win values to the bounding box."""
+  failed = False
+
+  # OS/2 usWinAscent:
+  if ttFont['OS/2'].usWinAscent != vmetrics['ymax']:
+    failed = True
+    fb.error(("OS/2.usWinAscent value"
+              " should be {}, but got"
+              " {} instead").format(vmetrics['ymax'],
+                                    ttFont['OS/2'].usWinAscent))
+  # OS/2 usWinDescent:
+  if ttFont['OS/2'].usWinDescent != abs(vmetrics['ymin']):
+    failed = True
+    fb.error(("OS/2.usWinDescent value"
+              " should be {}, but got"
+              " {} instead").format(vmetrics['ymin'],
+                                    ttFont['OS/2'].usWinDescent))
+  if not failed:
+    fb.ok("OS/2 usWinAscent & usWinDescent values look good!")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/041'
+)
+def check_Vertical_Metric_Linegaps(fb, ttFont):
+  """Checking Vertical Metric Linegaps."""
+  if ttFont['hhea'].lineGap != 0:
+    fb.warning(("hhea lineGap is not equal to 0"))
+  elif ttFont['OS/2'].sTypoLineGap != 0:
+    fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
+  elif ttFont['OS/2'].sTypoLineGap != ttFont['hhea'].lineGap:
+    fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
+  else:
+    fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/042'
+)
+def check_OS2_Metrics_match_hhea_Metrics(fb, ttFont):
+  """Checking OS/2 Metrics match hhea Metrics.
+
+  OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, Linux and Windows.
+
+  Mac OS X uses the hhea values
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
+
+  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+  if ttFont['OS/2'].sTypoAscender != ttFont['hhea'].ascent:
+    fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
+  elif ttFont['OS/2'].sTypoDescender != ttFont['hhea'].descent:
+    fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
+  else:
+    fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
+          "and descent")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/043'
+)
+def check_unitsPerEm_value_is_reasonable(fb, ttFont):
+  """Checking unitsPerEm value is reasonable."""
+  upem = ttFont['head'].unitsPerEm
+  target_upem = [2**i for i in range(4, 15)]
+  target_upem.insert(0, 1000)
+  if upem not in target_upem:
+    fb.error(("The value of unitsPerEm at the head table"
+              " must be either 1000 or a power of "
+              "2 between 16 to 16384."
+              " Got '{}' instead.").format(upem))
+  else:
+    fb.ok("unitsPerEm value on the 'head' table is reasonable.")
+
+
+def get_version_from_name_entry(name):
+  string = name.string.decode(name.getEncoding())
+  # we ignore any comments that
+  # may be present in the version name entries
+  if ";" in string:
+    string = string.split(";")[0]
+  # and we also ignore
+  # the 'Version ' prefix
+  if "Version " in string:
+    string = string.split("Version ")[1]
+  return string.split('.')
+
+
+def get_expected_version(fb, f):
+  expected_version = parse_version_string(fb, str(f['head'].fontRevision))
+  for name in f['name'].names:
+    if name.nameID == NAMEID_VERSION_STRING:
+      name_version = get_version_from_name_entry(name)
+      if expected_version is None:
+        expected_version = name_version
+      else:
+        if name_version > expected_version:
+          expected_version = name_version
+  return expected_version
+
+# TODO: Review this one.
+# It is currently failing to parse version strings.
+# We must check whether the parser is broken
+# or if the fonts are actually bad.
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/044'
+)
+def check_font_version_fields(fb, ttFont):
+  """Checking font version fields"""
+
+  failed = False
+  try:
+    expected = get_expected_version(fb, ttFont)
+  except:
+    expected = None
+    fb.error("failed to parse font version entries in the name table.")
+
+  if expected is None:
+    failed = True
+    fb.error("Could not find any font versioning info on the head table"
+             " or in the name table entries.")
+  else:
+    font_revision = str(ttFont['head'].fontRevision)
+    expected_str = "{}.{}".format(expected[0],
+                                  expected[1])
+    if font_revision != expected_str:
+      failed = True
+      fb.error(("Font revision on the head table ({})"
+                " differs from the expected value ({})"
+                "").format(font_revision, expected))
+
+    expected_str = "Version {}.{}".format(expected[0],
+                                          expected[1])
+    for name in ttFont['name'].names:
+      if name.nameID == NAMEID_VERSION_STRING:
+        name_version = name.string.decode(name.getEncoding())
+        try:
+          # change "Version 1.007" to "1.007"
+          # (stripping out the "Version " prefix, if any)
+          version_stripped = r'(?<=[V|v]ersion )?([0-9]{1,4}\.[0-9]{1,5})'
+          version_without_comments = re.search(version_stripped,
+                                               name_version).group(0)
+        except:
+          failed = True
+          fb.error(("Unable to parse font version info"
+                    " from this name table entry: '{}'").format(name))
+          continue
+
+        comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
+        if version_without_comments != expected_str:
+          # maybe the version strings differ only
+          # on floating-point error, so let's
+          # also give it a change by rounding and re-checking...
+
+          try:
+            rounded_string = round(float(version_without_comments), 3)
+            version = round(float(".".join(expected)), 3)
+            if rounded_string != version:
+              failed = True
+              if comments:
+                fix = "{};{}".format(expected_str, comments)
+              else:
+                fix = expected_str
+              fb.error(("NAMEID_VERSION_STRING value '{}'"
+                        " does not match expected '{}'"
+                        "").format(name_version, fix))
+          except:
+            failed = True  # give up. it's definitely bad :(
+            fb.error("Unable to parse font version info"
+                     " from name table entries.")
+  if not failed:
+    fb.ok("All font version fields look good.")
 
 
 @register_condition
