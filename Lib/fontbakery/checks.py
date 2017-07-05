@@ -250,28 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_font_contains_the_first_few_mandatory_glyphs(fb, font):
-  fb.new_check("046", "Font contains the first few mandatory glyphs"
-                      " (.null or NULL, CR and space)?")
-  # It would be good to also check
-  # for .notdef (codepoint = unspecified)
-  null = getGlyph(font, 0x0000)
-  CR = getGlyph(font, 0x000D)
-  space = getGlyph(font, 0x0020)
-
-  missing = []
-  if null is None: missing.append("0x0000")
-  if CR is None: missing.append("0x000D")
-  if space is None: missing.append("0x0020")
-  if missing != []:
-    fb.warning(("Font is missing glyphs for"
-                " the following mandatory codepoints:"
-                " {}.").format(", ".join(missing)))
-  else:
-    fb.ok("Font contains the first few mandatory glyphs"
-          " (.null or NULL, CR and space).")
-
-
 def check_font_contains_glyphs_for_whitespace_chars(fb, font):
   fb.new_check("047", "Font contains glyphs for whitespace characters?")
   space = getGlyph(font, 0x0020)

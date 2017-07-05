@@ -67,6 +67,7 @@ from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
       , get_bounding_box
+      , getGlyph
 )
 
 default_section = Section('Default')
@@ -1612,6 +1613,32 @@ def check_Digital_Signature_exists(fb, ttFont):
     fb.error("This font lacks a digital signature (DSIG table)."
              " Some applications may require one (even if only a"
              " dummy placeholder) in order to work properly.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/046'
+)
+def check_font_contains_the_first_few_mandatory_glyphs(fb, ttFont):
+  """Font contains the first few mandatory glyphs
+     (.null or NULL, CR and space)?"""
+  # It would be good to also check
+  # for .notdef (codepoint = unspecified)
+  null = getGlyph(ttFont, 0x0000)
+  CR = getGlyph(ttFont, 0x000D)
+  space = getGlyph(ttFont, 0x0020)
+
+  missing = []
+  if null is None: missing.append("0x0000")
+  if CR is None: missing.append("0x000D")
+  if space is None: missing.append("0x0020")
+  if missing != []:
+    fb.warning(("Font is missing glyphs for"
+                " the following mandatory codepoints:"
+                " {}.").format(", ".join(missing)))
+  else:
+    fb.ok("Font contains the first few mandatory glyphs"
+          " (.null or NULL, CR and space).")
 
 
 @register_condition
