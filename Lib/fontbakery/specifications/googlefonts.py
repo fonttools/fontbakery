@@ -1841,6 +1841,85 @@ def check_for_unwanted_tables(fb, ttFont):
   else:
     fb.ok("There are no unwanted tables.")
 
+@register_condition
+@condition
+def ttfautohint_stats(font):
+  try:
+    import subprocess
+    import tempfile
+    hinted_size = os.stat(font).st_size
+
+    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
+    subprocess.call(["ttfautohint",
+                     "--dehint",
+                     font,
+                     dehinted.name])
+    dehinted_size = os.stat(dehinted.name).st_size
+    os.unlink(dehinted.name)
+  except OSError:
+    return {"missing": True}
+
+  return {
+    "dehinted_size": dehinted_size,
+    "hinted_size": hinted_size
+  }
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/054'
+  , conditions=['ttfautohint_stats']
+)
+def check_hinting_filesize_impact(fb, font, ttfautohint_stats):
+  """Show hinting filesize impact.
+
+     Current implementation simply logs useful info
+     but there's no fail scenario for this checker."""
+
+  if "missing" in ttfautohint_stats.keys():
+    fb.warning("\n\n\nttfautohint is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/"
+               "ProjectChecklist.md#ttfautohint\n\n\n")
+    return
+
+  if ttfautohint_stats["dehinted_size"] == 0:
+    fb.warning("ttfautohint --dehint reports that"
+               " 'This font has already been processed with ttfautohint'."
+               " This is a bug in an old version of ttfautohint."
+               " You'll need to upgrade it."
+               " See https://github.com/googlefonts/fontbakery/"
+               "issues/1043#issuecomment-249035069")
+    return
+
+  hinted = ttfautohint_stats["hinted_size"]
+  dehinted = ttfautohint_stats["dehinted_size"]
+  increase = hinted - dehinted
+  change = float(hinted)/dehinted - 1
+  change = int(change*10000)/100.0  # round to 2 decimal pts percentage
+
+  def filesize_formatting(s):
+    if s < 1024:
+      return "{} bytes".format(s)
+    elif s < 1024*1024:
+      return "{}kb".format(s/1024)
+    else:
+      return "{}Mb".format(s/(1024*1024))
+
+  hinted_size = filesize_formatting(hinted)
+  dehinted_size = filesize_formatting(dehinted)
+  increase = filesize_formatting(increase)
+
+  results_table = "Hinting filesize impact:\n\n"
+  results_table += "|  | {} |\n".format(font)
+  results_table += "|:--- | ---:| ---:|\n"
+  results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+  results_table += "| Hinted Size | {} |\n".format(hinted_size)
+  results_table += "| Increase | {} |\n".format(increase)
+  results_table += "| Change   | {} % |\n".format(change)
+  fb.info(results_table)
+
 
 @register_condition
 @condition
