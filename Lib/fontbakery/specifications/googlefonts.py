@@ -1443,6 +1443,22 @@ def check_OS2_usWinAscent_and_Descent(fb, ttFont, vmetrics):
     fb.ok("OS/2 usWinAscent & usWinDescent values look good!")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/041'
+)
+def check_Vertical_Metric_Linegaps(fb, ttFont):
+  """Checking Vertical Metric Linegaps."""
+  if ttFont['hhea'].lineGap != 0:
+    fb.warning(("hhea lineGap is not equal to 0"))
+  elif ttFont['OS/2'].sTypoLineGap != 0:
+    fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
+  elif ttFont['OS/2'].sTypoLineGap != ttFont['hhea'].lineGap:
+    fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
+  else:
+    fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):

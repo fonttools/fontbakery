@@ -250,18 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_Vertical_Metric_Linegaps(fb, font):
-  fb.new_check("041", "Checking Vertical Metric Linegaps")
-  if font['hhea'].lineGap != 0:
-    fb.warning(("hhea lineGap is not equal to 0"))
-  elif font['OS/2'].sTypoLineGap != 0:
-    fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
-  elif font['OS/2'].sTypoLineGap != font['hhea'].lineGap:
-    fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
-  else:
-    fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
-
-
 def check_OS2_Metrics_match_hhea_Metrics(fb, font):
   """OS/2 and hhea vertical metric values should match. This will produce
   the same linespacing on Mac, Linux and Windows.
