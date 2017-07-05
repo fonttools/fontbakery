@@ -1643,6 +1643,38 @@ def check_font_contains_the_first_few_mandatory_glyphs(fb, ttFont):
 
 @register_condition
 @condition
+def missing_whitespace_chars(ttFont):
+  space = getGlyph(ttFont, 0x0020)
+  nbsp = getGlyph(ttFont, 0x00A0)
+  # tab = getGlyph(ttFont, 0x0009)
+
+  missing = []
+  if space is None: missing.append("0x0020")
+  if nbsp is None: missing.append("0x00A0")
+  # fonts probably don't need an actual tab char
+  # if tab is None: missing.append("0x0009")
+  return missing
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/047'
+  , conditions=['missing_whitespace_chars']
+)
+def check_font_contains_glyphs_for_whitespace_chars(fb,
+                                                    ttFont,
+                                                    missing_whitespace_chars):
+  """Font contains glyphs for whitespace characters?"""
+  if missing_whitespace_chars != []:
+    fb.error(("Whitespace glyphs missing for"
+              " the following codepoints:"
+              " {}.").format(", ".join(missing_whitespace_chars)))
+  else:
+    fb.ok("Font contains glyphs for whitespace characters.")
+
+
+@register_condition
+@condition
 def seems_monospaced(monospace_stats):
   return monospace_stats['seems_monospaced']
 

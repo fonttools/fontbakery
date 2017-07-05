@@ -250,26 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_font_contains_glyphs_for_whitespace_chars(fb, font):
-  fb.new_check("047", "Font contains glyphs for whitespace characters?")
-  space = getGlyph(font, 0x0020)
-  nbsp = getGlyph(font, 0x00A0)
-  # tab = getGlyph(font, 0x0009)
-
-  missing = []
-  if space is None: missing.append("0x0020")
-  if nbsp is None: missing.append("0x00A0")
-  # fonts probably don't need an actual tab char
-  # if tab is None: missing.append("0x0009")
-  if missing != []:
-    fb.error(("Whitespace glyphs missing for"
-              " the following codepoints:"
-              " {}.").format(", ".join(missing)))
-  else:
-    fb.ok("Font contains glyphs for whitespace characters.")
-  return missing
-
-
 def check_font_has_proper_whitespace_glyph_names(fb, font, missing):
   fb.new_check("048", "Font has **proper** whitespace glyph names?")
   if missing != []:

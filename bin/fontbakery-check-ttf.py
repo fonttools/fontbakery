@@ -181,10 +181,9 @@ def fontbakery_check_ttf(config):
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
-    missing = checks.check_font_contains_glyphs_for_whitespace_chars(fb, font)
-    checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
-    checks.check_whitespace_glyphs_have_ink(fb, font, missing)
-    checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
+    #checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
+    #checks.check_whitespace_glyphs_have_ink(fb, font, missing)
+    #checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
 
     # PyFontaine-based glyph coverage checks:
     if config['coverage']:
