@@ -250,23 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_OS2_Metrics_match_hhea_Metrics(fb, font):
-  """OS/2 and hhea vertical metric values should match. This will produce
-  the same linespacing on Mac, Linux and Windows.
-
-  Mac OS X uses the hhea values
-  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
-  fb.new_check("042", "Checking OS/2 Metrics match hhea Metrics")
-  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
-  if font['OS/2'].sTypoAscender != font['hhea'].ascent:
-    fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
-  elif font['OS/2'].sTypoDescender != font['hhea'].descent:
-    fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
-  else:
-    fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
-          "and descent")
-
-
 def check_unitsPerEm_value_is_reasonable(fb, font):
   fb.new_check("043", "Checking unitsPerEm value is reasonable.")
   upem = font['head'].unitsPerEm

@@ -1459,6 +1459,29 @@ def check_Vertical_Metric_Linegaps(fb, ttFont):
     fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/042'
+)
+def check_OS2_Metrics_match_hhea_Metrics(fb, ttFont):
+  """Checking OS/2 Metrics match hhea Metrics.
+
+  OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, Linux and Windows.
+
+  Mac OS X uses the hhea values
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
+
+  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+  if ttFont['OS/2'].sTypoAscender != ttFont['hhea'].ascent:
+    fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
+  elif ttFont['OS/2'].sTypoDescender != ttFont['hhea'].descent:
+    fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
+  else:
+    fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
+          "and descent")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
