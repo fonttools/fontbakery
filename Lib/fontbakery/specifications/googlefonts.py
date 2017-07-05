@@ -1600,6 +1600,20 @@ def check_font_version_fields(fb, ttFont):
     fb.ok("All font version fields look good.")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/045'
+)
+def check_Digital_Signature_exists(fb, ttFont):
+  """Does the font have a DSIG table ?"""
+  if "DSIG" in ttFont:
+    fb.ok("Digital Signature (DSIG) exists.")
+  else:
+    fb.error("This font lacks a digital signature (DSIG table)."
+             " Some applications may require one (even if only a"
+             " dummy placeholder) in order to work properly.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
