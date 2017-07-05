@@ -250,43 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-# DEPRECATED: 051 - "Checking with pyfontaine"
-# Replaced by 132 - "Checking Google Cyrillic Historical glyph coverage"
-# Replaced by 133 - "Checking Google Cyrillic Plus glyph coverage"
-# Replaced by 134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
-# Replaced by 135 - "Checking Google Cyrillic Pro glyph coverage"
-# Replaced by 136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
-# Replaced by 137 - "Checking Google Greek Archaic glyph coverage"
-# Replaced by 138 - "Checking Google Greek Coptic glyph coverage"
-# Replaced by 139 - "Checking Google Greek Core glyph coverage"
-# Replaced by 140 - "Checking Google Greek Expert glyph coverage"
-# Replaced by 141 - "Checking Google Greek Plus glyph coverage"
-# Replaced by 142 - "Checking Google Greek Pro glyph coverage"
-# Replaced by 143 - "Checking Google Latin Core glyph coverage"
-# Replaced by 144 - "Checking Google Latin Expert glyph coverage"
-# Replaced by 145 - "Checking Google Latin Plus glyph coverage"
-# Replaced by 146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
-# Replaced by 147 - "Checking Google Latin Pro glyph coverage"
-# Replaced by 148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
-
-def check_no_problematic_formats(fb, font):
-  fb.new_check("052", "Check no problematic formats")
-  # See https://github.com/googlefonts/fontbakery/issues/617
-  # Font contains all required tables?
-  tables = set(font.reader.tables.keys())
-  glyphs = set(['glyf'] if 'glyf' in font.keys() else ['CFF '])
-  if (REQUIRED_TABLES | glyphs) - tables:
-    missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
-    desc = (("Font is missing required "
-             "tables: [{}]").format(', '.join(missing_tables)))
-    if OPTIONAL_TABLES & tables:
-      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
-      desc += (" but includes "
-               "optional tables [{}]").format(', '.join(optional_tables))
-    fb.fixes.append(desc)
-  fb.log_results("Check no problematic formats. ", hotfix=False)
-
-
 def check_for_unwanted_tables(fb, font):
   fb.new_check("053", "Are there unwanted tables?")
   unwanted_tables_found = []

@@ -62,6 +62,7 @@ from fontbakery.constants import(
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
       , WHITESPACE_CHARACTERS
+      , REQUIRED_TABLES
 )
 
 from fontbakery.utils import(
@@ -1774,6 +1775,51 @@ def check_whitespace_glyphs_have_coherent_widths(fb,
                                   spaceWidth))
     else:
       fb.ok("Whitespace glyphs have coherent widths.")
+
+
+# DEPRECATED:
+# com.google.fonts/test/051 - "Checking with pyfontaine"
+#
+# Replaced by:
+# com.google.fonts/test/132 - "Checking Google Cyrillic Historical glyph coverage"
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage"
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage"
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage"
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage"
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage"
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage"
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage"
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage"
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage"
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage"
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage"
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage"
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/052'
+)
+def check_font_contains_all_required_tables(fb, ttFont):
+  """Font contains all required tables?"""
+  # See https://github.com/googlefonts/fontbakery/issues/617
+  tables = set(ttFont.reader.tables.keys())
+  glyphs = set(['glyf'] if 'glyf' in ttFont.keys() else ['CFF '])
+  if (REQUIRED_TABLES | glyphs) - tables:
+    missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
+    desc = (("Font is missing required "
+             "tables: [{}]").format(', '.join(missing_tables)))
+    if OPTIONAL_TABLES & tables:
+      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+      desc += (" but includes "
+               "optional tables [{}]").format(', '.join(optional_tables))
+    fb.error(desc)
+  else:
+    fb.ok("Font contains all required tables.")
 
 
 @register_condition
