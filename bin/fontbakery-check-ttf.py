@@ -181,7 +181,6 @@ def fontbakery_check_ttf(config):
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
-    checks.check_font_version_fields(fb, font)
     checks.check_Digital_Signature_exists(fb, font, target)
     checks.check_font_contains_the_first_few_mandatory_glyphs(fb, font)
 
