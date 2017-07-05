@@ -63,6 +63,7 @@ from fontbakery.constants import(
       , PANOSE_PROPORTION_ANY
       , WHITESPACE_CHARACTERS
       , REQUIRED_TABLES
+      , UNWANTED_TABLES
 )
 
 from fontbakery.utils import(
@@ -1820,6 +1821,25 @@ def check_font_contains_all_required_tables(fb, ttFont):
     fb.error(desc)
   else:
     fb.ok("Font contains all required tables.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/053'
+)
+def check_for_unwanted_tables(fb, ttFont):
+  """Are there unwanted tables?"""
+  unwanted_tables_found = []
+  for table in ttFont.keys():
+    if table in UNWANTED_TABLES:
+      unwanted_tables_found.append(table)
+
+  if len(unwanted_tables_found) > 0:
+    fb.error(("Unwanted tables were found"
+              " in the font and should be removed:"
+              " {}").format(', '.join(unwanted_tables_found)))
+  else:
+    fb.ok("There are no unwanted tables.")
 
 
 @register_condition
