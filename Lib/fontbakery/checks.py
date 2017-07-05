@@ -250,20 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_unitsPerEm_value_is_reasonable(fb, font):
-  fb.new_check("043", "Checking unitsPerEm value is reasonable.")
-  upem = font['head'].unitsPerEm
-  target_upem = [2**i for i in range(4, 15)]
-  target_upem.insert(0, 1000)
-  if upem not in target_upem:
-    fb.error(("The value of unitsPerEm at the head table"
-              " must be either 1000 or a power of "
-              "2 between 16 to 16384."
-              " Got '{}' instead.").format(upem))
-  else:
-    fb.ok("unitsPerEm value on the 'head' table is reasonable.")
-
-
 def get_version_from_name_entry(name):
   string = name.string.decode(name.getEncoding())
   # we ignore any comments that
