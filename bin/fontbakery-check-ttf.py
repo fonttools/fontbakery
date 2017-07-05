@@ -185,7 +185,6 @@ def fontbakery_check_ttf(config):
 
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
-    checks.check_OS2_Metrics_match_hhea_Metrics(fb, font)
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
