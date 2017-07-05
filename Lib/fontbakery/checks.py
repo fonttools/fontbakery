@@ -250,30 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_whitespace_glyphs_have_ink(fb, font, missing):
-  fb.new_check("049", "Whitespace glyphs have ink?")
-  if missing != []:
-    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
-  else:
-    failed = False
-    for codepoint in WHITESPACE_CHARACTERS:
-      g = getGlyph(font, codepoint)
-      if g is not None and glyphHasInk(font, g):
-        failed = True
-        if fb.config['autofix']:
-          fb.hotfix(('Glyph "{}" has ink.'
-                     ' Fixed: Overwritten by'
-                     ' an empty glyph').format(g))
-          # overwrite existing glyph with an empty one
-          font['glyf'].glyphs[g] = ttLib.getTableModule('glyf').Glyph()
-        else:
-          fb.error(('Glyph "{}" has ink.'
-                    ' It needs to be replaced by'
-                    ' an empty glyph').format(g))
-    if not failed:
-      fb.ok("There is no whitespace glyph with ink.")
-
-
 def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
   fb.new_check("050", "Whitespace glyphs have coherent widths?")
   if missing != []:

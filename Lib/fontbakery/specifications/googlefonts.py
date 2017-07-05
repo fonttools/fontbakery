@@ -61,6 +61,7 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
+      , WHITESPACE_CHARACTERS
 )
 
 from fontbakery.utils import(
@@ -68,6 +69,7 @@ from fontbakery.utils import(
       , get_name_string
       , get_bounding_box
       , getGlyph
+      , glyphHasInk
 )
 
 default_section = Section('Default')
@@ -1714,6 +1716,28 @@ def check_font_has_proper_whitespace_glyph_names(fb,
 
     if failed is False:
       fb.ok('Font has **proper** whitespace glyph names.')
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/049'
+  , conditions=['missing_whitespace_chars']
+)
+def check_whitespace_glyphs_have_ink(fb, font, missing_whitespace_chars):
+  """Whitespace glyphs have ink?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  else:
+    failed = False
+    for codepoint in WHITESPACE_CHARACTERS:
+      g = getGlyph(font, codepoint)
+      if g is not None and glyphHasInk(font, g):
+        failed = True
+        fb.error(("Glyph \"{}\" has ink."
+                  " It needs to be replaced by"
+                  " an empty glyph.").format(g))
+    if not failed:
+      fb.ok("There is no whitespace glyph with ink.")
 
 
 @register_condition
