@@ -1500,6 +1500,106 @@ def check_unitsPerEm_value_is_reasonable(fb, ttFont):
     fb.ok("unitsPerEm value on the 'head' table is reasonable.")
 
 
+def get_version_from_name_entry(name):
+  string = name.string.decode(name.getEncoding())
+  # we ignore any comments that
+  # may be present in the version name entries
+  if ";" in string:
+    string = string.split(";")[0]
+  # and we also ignore
+  # the 'Version ' prefix
+  if "Version " in string:
+    string = string.split("Version ")[1]
+  return string.split('.')
+
+
+def get_expected_version(fb, f):
+  expected_version = parse_version_string(fb, str(f['head'].fontRevision))
+  for name in f['name'].names:
+    if name.nameID == NAMEID_VERSION_STRING:
+      name_version = get_version_from_name_entry(name)
+      if expected_version is None:
+        expected_version = name_version
+      else:
+        if name_version > expected_version:
+          expected_version = name_version
+  return expected_version
+
+# TODO: Review this one.
+# It is currently failing to parse version strings.
+# We must check whether the parser is broken
+# or if the fonts are actually bad.
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/044'
+)
+def check_font_version_fields(fb, ttFont):
+  """Checking font version fields"""
+
+  failed = False
+  try:
+    expected = get_expected_version(fb, ttFont)
+  except:
+    expected = None
+    fb.error("failed to parse font version entries in the name table.")
+
+  if expected is None:
+    failed = True
+    fb.error("Could not find any font versioning info on the head table"
+             " or in the name table entries.")
+  else:
+    font_revision = str(ttFont['head'].fontRevision)
+    expected_str = "{}.{}".format(expected[0],
+                                  expected[1])
+    if font_revision != expected_str:
+      failed = True
+      fb.error(("Font revision on the head table ({})"
+                " differs from the expected value ({})"
+                "").format(font_revision, expected))
+
+    expected_str = "Version {}.{}".format(expected[0],
+                                          expected[1])
+    for name in ttFont['name'].names:
+      if name.nameID == NAMEID_VERSION_STRING:
+        name_version = name.string.decode(name.getEncoding())
+        try:
+          # change "Version 1.007" to "1.007"
+          # (stripping out the "Version " prefix, if any)
+          version_stripped = r'(?<=[V|v]ersion )?([0-9]{1,4}\.[0-9]{1,5})'
+          version_without_comments = re.search(version_stripped,
+                                               name_version).group(0)
+        except:
+          failed = True
+          fb.error(("Unable to parse font version info"
+                    " from this name table entry: '{}'").format(name))
+          continue
+
+        comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
+        if version_without_comments != expected_str:
+          # maybe the version strings differ only
+          # on floating-point error, so let's
+          # also give it a change by rounding and re-checking...
+
+          try:
+            rounded_string = round(float(version_without_comments), 3)
+            version = round(float(".".join(expected)), 3)
+            if rounded_string != version:
+              failed = True
+              if comments:
+                fix = "{};{}".format(expected_str, comments)
+              else:
+                fix = expected_str
+              fb.error(("NAMEID_VERSION_STRING value '{}'"
+                        " does not match expected '{}'"
+                        "").format(name_version, fix))
+          except:
+            failed = True  # give up. it's definitely bad :(
+            fb.error("Unable to parse font version info"
+                     " from name table entries.")
+  if not failed:
+    fb.ok("All font version fields look good.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
