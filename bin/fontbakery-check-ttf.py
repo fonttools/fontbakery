@@ -188,8 +188,6 @@ def fontbakery_check_ttf(config):
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
-    checks.check_font_contains_the_first_few_mandatory_glyphs(fb, font)
-
     missing = checks.check_font_contains_glyphs_for_whitespace_chars(fb, font)
     checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
     checks.check_whitespace_glyphs_have_ink(fb, font, missing)
