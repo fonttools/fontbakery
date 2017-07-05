@@ -1673,6 +1673,49 @@ def check_font_contains_glyphs_for_whitespace_chars(fb,
     fb.ok("Font contains glyphs for whitespace characters.")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/048'
+  , conditions=['missing_whitespace_chars']
+)
+def check_font_has_proper_whitespace_glyph_names(fb,
+                                                 ttFont,
+                                                 missing_whitespace_chars):
+  """Font has **proper** whitespace glyph names?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  elif ttFont['post'].formatType == 3.0:
+    fb.skip("Font has version 3 post table.")
+  else:
+    failed = False
+    space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
+    nbsp_enc = getGlyphEncodings(ttFont, ["uni00A0",
+                                          "nonbreakingspace",
+                                          "nbspace",
+                                          "nbsp"])
+    space = getGlyph(ttFont, 0x0020)
+    if 0x0020 not in space_enc:
+      failed = True
+      fb.error(('Glyph 0x0020 is called "{}":'
+                ' Change to "space"'
+                ' or "uni0020"').format(space))
+
+    nbsp = getGlyph(ttFont, 0x00A0)
+    if 0x00A0 not in nbsp_enc:
+      if 0x00A0 in space_enc:
+        # This is OK.
+        # Some fonts use the same glyph for both space and nbsp.
+        pass
+      else:
+        failed = True
+        fb.error(('Glyph 0x00A0 is called "{}":'
+                  ' Change to "nbsp"'
+                  ' or "uni00A0"').format(nbsp))
+
+    if failed is False:
+      fb.ok('Font has **proper** whitespace glyph names.')
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
