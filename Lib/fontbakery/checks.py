@@ -250,49 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_Digital_Signature_exists(fb, font, font_file):
-  fb.new_check("045", "Digital Signature exists?")
-  if "DSIG" in font:
-    fb.ok("Digital Signature (DSIG) exists.")
-  else:
-    try:
-      if fb.config['autofix']:
-        from fontTools.ttLib.tables.D_S_I_G_ import SignatureRecord
-        newDSIG = ttLib.newTable("DSIG")
-        newDSIG.ulVersion = 1
-        newDSIG.usFlag = 1
-        newDSIG.usNumSigs = 1
-        sig = SignatureRecord()
-        sig.ulLength = 20
-        sig.cbSignature = 12
-        sig.usReserved2 = 0
-        sig.usReserved1 = 0
-        sig.pkcs7 = '\xd3M4\xd3M5\xd3M4\xd3M4'
-        sig.ulFormat = 1
-        sig.ulOffset = 20
-        newDSIG.signatureRecords = [sig]
-        font.tables["DSIG"] = newDSIG
-        fb.hotfix("The font does not have an existing digital"
-                  " signature (DSIG), so we just added a dummy"
-                  " placeholder that should be enough for the"
-                  " applications that require its presence in"
-                  " order to work properly.")
-      else:
-        fb.error("This font lacks a digital signature (DSIG table)."
-                 " Some applications may require one (even if only a"
-                 " dummy placeholder) in order to work properly.")
-    except ImportError:
-      error_message = ("The '{}' font does not have an existing"
-                       " digital signature (DSIG), so OpenType features"
-                       " will not be available in some applications that"
-                       " use its presense as a (stupid) heuristic."
-                       " So we need to add one. But for that we'll need"
-                       " Fonttools v2.3+ so you need to upgrade it. Try:"
-                       " $ pip install --upgrade fontTools; or see"
-                       " https://pypi.python.org/pypi/FontTools")
-      fb.error(error_message.format(font_file))
-
-
 def check_font_contains_the_first_few_mandatory_glyphs(fb, font):
   fb.new_check("046", "Font contains the first few mandatory glyphs"
                       " (.null or NULL, CR and space)?")
