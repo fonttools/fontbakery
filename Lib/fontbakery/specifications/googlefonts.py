@@ -1723,7 +1723,7 @@ def check_font_has_proper_whitespace_glyph_names(fb,
     id='com.google.fonts/test/049'
   , conditions=['missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_ink(fb, font, missing_whitespace_chars):
+def check_whitespace_glyphs_have_ink(fb, ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
   if missing_whitespace_chars != []:
     fb.skip("Because some whitespace glyphs are missing. Fix that before!")
@@ -1731,13 +1731,49 @@ def check_whitespace_glyphs_have_ink(fb, font, missing_whitespace_chars):
     failed = False
     for codepoint in WHITESPACE_CHARACTERS:
       g = getGlyph(font, codepoint)
-      if g is not None and glyphHasInk(font, g):
+      if g is not None and glyphHasInk(ttFont, g):
         failed = True
         fb.error(("Glyph \"{}\" has ink."
                   " It needs to be replaced by"
                   " an empty glyph.").format(g))
     if not failed:
       fb.ok("There is no whitespace glyph with ink.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/050'
+  , conditions=['missing_whitespace_chars']
+)
+def check_whitespace_glyphs_have_coherent_widths(fb,
+                                                 ttFont, 
+                                                 missing_whitespace_chars):
+  """Whitespace glyphs have coherent widths?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some mandatory whitespace glyphs"
+            " are missing. Fix that before!")
+  else:
+    space = getGlyph(ttFont, 0x0020)
+    nbsp = getGlyph(ttFont, 0x00A0)
+
+    spaceWidth = getWidth(ttFont, space)
+    nbspWidth = getWidth(ttFont, nbsp)
+
+    if spaceWidth != nbspWidth or nbspWidth < 0:
+      if nbspWidth > spaceWidth and spaceWidth >= 0:
+        fb.error(("space {} nbsp {}: Space advanceWidth"
+                  " needs to be fixed"
+                  " to {}.").format(spaceWidth,
+                                    nbspWidth,
+                                    nbspWidth))
+      else:
+        fb.error(("space {} nbsp {}: Nbsp advanceWidth"
+                  " needs to be fixed "
+                  "to {}").format(spaceWidth,
+                                  nbspWidth,
+                                  spaceWidth))
+    else:
+      fb.ok("Whitespace glyphs have coherent widths.")
 
 
 @register_condition

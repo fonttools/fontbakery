@@ -250,41 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_whitespace_glyphs_have_coherent_widths(fb, font, missing):
-  fb.new_check("050", "Whitespace glyphs have coherent widths?")
-  if missing != []:
-    fb.skip("Because some mandatory whitespace glyphs"
-            " are missing. Fix that before!")
-  else:
-    space = getGlyph(font, 0x0020)
-    nbsp = getGlyph(font, 0x00A0)
-
-    spaceWidth = getWidth(font, space)
-    nbspWidth = getWidth(font, nbsp)
-
-    if spaceWidth != nbspWidth or nbspWidth < 0:
-      setWidth(font, nbsp, min(nbspWidth, spaceWidth))
-      setWidth(font, space, min(nbspWidth, spaceWidth))
-
-      if nbspWidth > spaceWidth and spaceWidth >= 0:
-        if fb.config['autofix']:
-          msg = 'space {} nbsp {}: Fixed space advanceWidth to {}'
-          fb.hotfix(msg.format(spaceWidth, nbspWidth, nbspWidth))
-        else:
-          msg = ('space {} nbsp {}: Space advanceWidth'
-                 ' needs to be fixed to {}')
-          fb.error(msg.format(spaceWidth, nbspWidth, nbspWidth))
-      else:
-        if fb.config['autofix']:
-          msg = 'space {} nbsp {}: Fixed nbsp advanceWidth to {}'
-          fb.hotfix(msg.format(spaceWidth, nbspWidth, spaceWidth))
-        else:
-          msg = ('space {} nbsp {}: Nbsp advanceWidth'
-                 ' needs to be fixed to {}')
-          fb.error(msg.format(spaceWidth, nbspWidth, spaceWidth))
-    else:
-      fb.ok("Whitespace glyphs have coherent widths.")
-
 # DEPRECATED: 051 - "Checking with pyfontaine"
 # Replaced by 132 - "Checking Google Cyrillic Historical glyph coverage"
 # Replaced by 133 - "Checking Google Cyrillic Plus glyph coverage"
