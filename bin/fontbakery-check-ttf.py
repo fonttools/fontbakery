@@ -189,8 +189,6 @@ def fontbakery_check_ttf(config):
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
-
-    checks.check_Vertical_Metric_Linegaps(fb, font)
     checks.check_unitsPerEm_value_is_reasonable(fb, font)
     checks.check_font_version_fields(fb, font)
     checks.check_Digital_Signature_exists(fb, font, target)
