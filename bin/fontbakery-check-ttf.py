@@ -211,9 +211,6 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_no_problematic_formats(fb, font)
-    checks.check_for_unwanted_tables(fb, font)
-
     ttfautohint_missing = checks.check_hinting_filesize_impact(fb,
                                                                target,
                                                                filename)

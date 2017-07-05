@@ -250,27 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_for_unwanted_tables(fb, font):
-  fb.new_check("053", "Are there unwanted tables?")
-  unwanted_tables_found = []
-  for table in font.keys():
-    if table in UNWANTED_TABLES:
-      unwanted_tables_found.append(table)
-      del font[table]
-
-  if len(unwanted_tables_found) > 0:
-    if fb.config['autofix']:
-      fb.hotfix(("Unwanted tables were present"
-                 " in the font and were removed:"
-                 " {}").format(', '.join(unwanted_tables_found)))
-    else:
-      fb.error(("Unwanted tables were found"
-                " in the font and should be removed:"
-                " {}").format(', '.join(unwanted_tables_found)))
-  else:
-    fb.ok("There are no unwanted tables.")
-
-
 def check_hinting_filesize_impact(fb, fullpath, filename):
   fb.new_check("054", "Show hinting filesize impact")
   # current implementation simply logs useful info
