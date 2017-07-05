@@ -1482,6 +1482,24 @@ def check_OS2_Metrics_match_hhea_Metrics(fb, ttFont):
           "and descent")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/043'
+)
+def check_unitsPerEm_value_is_reasonable(fb, ttFont):
+  """Checking unitsPerEm value is reasonable."""
+  upem = ttFont['head'].unitsPerEm
+  target_upem = [2**i for i in range(4, 15)]
+  target_upem.insert(0, 1000)
+  if upem not in target_upem:
+    fb.error(("The value of unitsPerEm at the head table"
+              " must be either 1000 or a power of "
+              "2 between 16 to 16384."
+              " Got '{}' instead.").format(upem))
+  else:
+    fb.ok("unitsPerEm value on the 'head' table is reasonable.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
