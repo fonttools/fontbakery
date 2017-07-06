@@ -250,29 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_version_format_is_correct_in_NAME_table(fb, font):
-  fb.new_check("055", "Version format is correct in NAME table?")
-
-  def is_valid_version_format(value):
-    return re.match(r'Version\s0*[1-9]+\.\d+', value)
-
-  failed = False
-  version_entries = get_name_string(font, NAMEID_VERSION_STRING)
-  if len(version_entries) == 0:
-    failed = True
-    fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-              " entry").format(NAMEID_VERSION_STRING))
-  for ventry in version_entries:
-    if not is_valid_version_format(ventry):
-      failed = True
-      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
-                'follow the pattern Version X.Y between 1.000 and 9.999.'
-                ' Current value: {}').format(NAMEID_VERSION_STRING,
-                                             ventry))
-  if not failed:
-    fb.ok('Version format in NAME table entries is correct.')
-
-
 def check_font_has_latest_ttfautohint_applied(fb, font, ttfautohint_missing):
   fb.new_check("056", "Font has old ttfautohint applied?")
   ''' ----------------------------------------------------
