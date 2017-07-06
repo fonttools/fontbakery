@@ -19,6 +19,7 @@ from fontbakery.callable import condition, test
 from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
+import re
 import requests
 import tempfile
 from bs4 import BeautifulSoup
@@ -47,6 +48,7 @@ from fontbakery.constants import(
       , NAMEID_TYPOGRAPHIC_FAMILY_NAME
       , NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME
       , NAMEID_MANUFACTURER_NAME
+      , NAMEID_VERSION_STRING
 
       , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
@@ -1919,6 +1921,33 @@ def check_hinting_filesize_impact(fb, font, ttfautohint_stats):
   results_table += "| Increase | {} |\n".format(increase)
   results_table += "| Change   | {} % |\n".format(change)
   fb.info(results_table)
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/055'
+)
+def check_version_format_is_correct_in_NAME_table(fb, ttFont):
+  """Version format is correct in NAME table?"""
+
+  def is_valid_version_format(value):
+    return re.match(r'Version\s0*[1-9]+\.\d+', value)
+
+  failed = False
+  version_entries = get_name_string(ttFont, NAMEID_VERSION_STRING)
+  if len(version_entries) == 0:
+    failed = True
+    fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+              " entry").format(NAMEID_VERSION_STRING))
+  for ventry in version_entries:
+    if not is_valid_version_format(ventry):
+      failed = True
+      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
+                'follow the pattern Version X.Y between 1.000 and 9.999.'
+                ' Current value: {}').format(NAMEID_VERSION_STRING,
+                                             ventry))
+  if not failed:
+    fb.ok('Version format in NAME table entries is correct.')
 
 
 @register_condition
