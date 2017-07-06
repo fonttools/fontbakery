@@ -61,12 +61,17 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
+      , WHITESPACE_CHARACTERS
+      , REQUIRED_TABLES
+      , UNWANTED_TABLES
 )
 
 from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
       , get_bounding_box
+      , getGlyph
+      , glyphHasInk
 )
 
 default_section = Section('Default')
@@ -1598,6 +1603,322 @@ def check_font_version_fields(fb, ttFont):
                      " from name table entries.")
   if not failed:
     fb.ok("All font version fields look good.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/045'
+)
+def check_Digital_Signature_exists(fb, ttFont):
+  """Does the font have a DSIG table ?"""
+  if "DSIG" in ttFont:
+    fb.ok("Digital Signature (DSIG) exists.")
+  else:
+    fb.error("This font lacks a digital signature (DSIG table)."
+             " Some applications may require one (even if only a"
+             " dummy placeholder) in order to work properly.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/046'
+)
+def check_font_contains_the_first_few_mandatory_glyphs(fb, ttFont):
+  """Font contains the first few mandatory glyphs
+     (.null or NULL, CR and space)?"""
+  # It would be good to also check
+  # for .notdef (codepoint = unspecified)
+  null = getGlyph(ttFont, 0x0000)
+  CR = getGlyph(ttFont, 0x000D)
+  space = getGlyph(ttFont, 0x0020)
+
+  missing = []
+  if null is None: missing.append("0x0000")
+  if CR is None: missing.append("0x000D")
+  if space is None: missing.append("0x0020")
+  if missing != []:
+    fb.warning(("Font is missing glyphs for"
+                " the following mandatory codepoints:"
+                " {}.").format(", ".join(missing)))
+  else:
+    fb.ok("Font contains the first few mandatory glyphs"
+          " (.null or NULL, CR and space).")
+
+
+@register_condition
+@condition
+def missing_whitespace_chars(ttFont):
+  space = getGlyph(ttFont, 0x0020)
+  nbsp = getGlyph(ttFont, 0x00A0)
+  # tab = getGlyph(ttFont, 0x0009)
+
+  missing = []
+  if space is None: missing.append("0x0020")
+  if nbsp is None: missing.append("0x00A0")
+  # fonts probably don't need an actual tab char
+  # if tab is None: missing.append("0x0009")
+  return missing
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/047'
+  , conditions=['missing_whitespace_chars']
+)
+def check_font_contains_glyphs_for_whitespace_chars(fb,
+                                                    ttFont,
+                                                    missing_whitespace_chars):
+  """Font contains glyphs for whitespace characters?"""
+  if missing_whitespace_chars != []:
+    fb.error(("Whitespace glyphs missing for"
+              " the following codepoints:"
+              " {}.").format(", ".join(missing_whitespace_chars)))
+  else:
+    fb.ok("Font contains glyphs for whitespace characters.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/048'
+  , conditions=['missing_whitespace_chars']
+)
+def check_font_has_proper_whitespace_glyph_names(fb,
+                                                 ttFont,
+                                                 missing_whitespace_chars):
+  """Font has **proper** whitespace glyph names?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  elif ttFont['post'].formatType == 3.0:
+    fb.skip("Font has version 3 post table.")
+  else:
+    failed = False
+    space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
+    nbsp_enc = getGlyphEncodings(ttFont, ["uni00A0",
+                                          "nonbreakingspace",
+                                          "nbspace",
+                                          "nbsp"])
+    space = getGlyph(ttFont, 0x0020)
+    if 0x0020 not in space_enc:
+      failed = True
+      fb.error(('Glyph 0x0020 is called "{}":'
+                ' Change to "space"'
+                ' or "uni0020"').format(space))
+
+    nbsp = getGlyph(ttFont, 0x00A0)
+    if 0x00A0 not in nbsp_enc:
+      if 0x00A0 in space_enc:
+        # This is OK.
+        # Some fonts use the same glyph for both space and nbsp.
+        pass
+      else:
+        failed = True
+        fb.error(('Glyph 0x00A0 is called "{}":'
+                  ' Change to "nbsp"'
+                  ' or "uni00A0"').format(nbsp))
+
+    if failed is False:
+      fb.ok('Font has **proper** whitespace glyph names.')
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/049'
+  , conditions=['missing_whitespace_chars']
+)
+def check_whitespace_glyphs_have_ink(fb, ttFont, missing_whitespace_chars):
+  """Whitespace glyphs have ink?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+  else:
+    failed = False
+    for codepoint in WHITESPACE_CHARACTERS:
+      g = getGlyph(font, codepoint)
+      if g is not None and glyphHasInk(ttFont, g):
+        failed = True
+        fb.error(("Glyph \"{}\" has ink."
+                  " It needs to be replaced by"
+                  " an empty glyph.").format(g))
+    if not failed:
+      fb.ok("There is no whitespace glyph with ink.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/050'
+  , conditions=['missing_whitespace_chars']
+)
+def check_whitespace_glyphs_have_coherent_widths(fb,
+                                                 ttFont, 
+                                                 missing_whitespace_chars):
+  """Whitespace glyphs have coherent widths?"""
+  if missing_whitespace_chars != []:
+    fb.skip("Because some mandatory whitespace glyphs"
+            " are missing. Fix that before!")
+  else:
+    space = getGlyph(ttFont, 0x0020)
+    nbsp = getGlyph(ttFont, 0x00A0)
+
+    spaceWidth = getWidth(ttFont, space)
+    nbspWidth = getWidth(ttFont, nbsp)
+
+    if spaceWidth != nbspWidth or nbspWidth < 0:
+      if nbspWidth > spaceWidth and spaceWidth >= 0:
+        fb.error(("space {} nbsp {}: Space advanceWidth"
+                  " needs to be fixed"
+                  " to {}.").format(spaceWidth,
+                                    nbspWidth,
+                                    nbspWidth))
+      else:
+        fb.error(("space {} nbsp {}: Nbsp advanceWidth"
+                  " needs to be fixed "
+                  "to {}").format(spaceWidth,
+                                  nbspWidth,
+                                  spaceWidth))
+    else:
+      fb.ok("Whitespace glyphs have coherent widths.")
+
+
+# DEPRECATED:
+# com.google.fonts/test/051 - "Checking with pyfontaine"
+#
+# Replaced by:
+# com.google.fonts/test/132 - "Checking Google Cyrillic Historical glyph coverage"
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage"
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage"
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage"
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage"
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage"
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage"
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage"
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage"
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage"
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage"
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage"
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage"
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/052'
+)
+def check_font_contains_all_required_tables(fb, ttFont):
+  """Font contains all required tables?"""
+  # See https://github.com/googlefonts/fontbakery/issues/617
+  tables = set(ttFont.reader.tables.keys())
+  glyphs = set(['glyf'] if 'glyf' in ttFont.keys() else ['CFF '])
+  if (REQUIRED_TABLES | glyphs) - tables:
+    missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
+    desc = (("Font is missing required "
+             "tables: [{}]").format(', '.join(missing_tables)))
+    if OPTIONAL_TABLES & tables:
+      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+      desc += (" but includes "
+               "optional tables [{}]").format(', '.join(optional_tables))
+    fb.error(desc)
+  else:
+    fb.ok("Font contains all required tables.")
+
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/053'
+)
+def check_for_unwanted_tables(fb, ttFont):
+  """Are there unwanted tables?"""
+  unwanted_tables_found = []
+  for table in ttFont.keys():
+    if table in UNWANTED_TABLES:
+      unwanted_tables_found.append(table)
+
+  if len(unwanted_tables_found) > 0:
+    fb.error(("Unwanted tables were found"
+              " in the font and should be removed:"
+              " {}").format(', '.join(unwanted_tables_found)))
+  else:
+    fb.ok("There are no unwanted tables.")
+
+@register_condition
+@condition
+def ttfautohint_stats(font):
+  try:
+    import subprocess
+    import tempfile
+    hinted_size = os.stat(font).st_size
+
+    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
+    subprocess.call(["ttfautohint",
+                     "--dehint",
+                     font,
+                     dehinted.name])
+    dehinted_size = os.stat(dehinted.name).st_size
+    os.unlink(dehinted.name)
+  except OSError:
+    return {"missing": True}
+
+  return {
+    "dehinted_size": dehinted_size,
+    "hinted_size": hinted_size
+  }
+
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/054'
+  , conditions=['ttfautohint_stats']
+)
+def check_hinting_filesize_impact(fb, font, ttfautohint_stats):
+  """Show hinting filesize impact.
+
+     Current implementation simply logs useful info
+     but there's no fail scenario for this checker."""
+
+  if "missing" in ttfautohint_stats.keys():
+    fb.warning("\n\n\nttfautohint is not available!"
+               " You really MUST check the fonts with this tool."
+               " To install it, see"
+               " https://github.com/googlefonts"
+               "/gf-docs/blob/master/"
+               "ProjectChecklist.md#ttfautohint\n\n\n")
+    return
+
+  if ttfautohint_stats["dehinted_size"] == 0:
+    fb.warning("ttfautohint --dehint reports that"
+               " 'This font has already been processed with ttfautohint'."
+               " This is a bug in an old version of ttfautohint."
+               " You'll need to upgrade it."
+               " See https://github.com/googlefonts/fontbakery/"
+               "issues/1043#issuecomment-249035069")
+    return
+
+  hinted = ttfautohint_stats["hinted_size"]
+  dehinted = ttfautohint_stats["dehinted_size"]
+  increase = hinted - dehinted
+  change = float(hinted)/dehinted - 1
+  change = int(change*10000)/100.0  # round to 2 decimal pts percentage
+
+  def filesize_formatting(s):
+    if s < 1024:
+      return "{} bytes".format(s)
+    elif s < 1024*1024:
+      return "{}kb".format(s/1024)
+    else:
+      return "{}Mb".format(s/(1024*1024))
+
+  hinted_size = filesize_formatting(hinted)
+  dehinted_size = filesize_formatting(dehinted)
+  increase = filesize_formatting(increase)
+
+  results_table = "Hinting filesize impact:\n\n"
+  results_table += "|  | {} |\n".format(font)
+  results_table += "|:--- | ---:| ---:|\n"
+  results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
+  results_table += "| Hinted Size | {} |\n".format(hinted_size)
+  results_table += "| Increase | {} |\n".format(increase)
+  results_table += "| Change   | {} % |\n".format(change)
+  fb.info(results_table)
 
 
 @register_condition

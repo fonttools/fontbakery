@@ -181,14 +181,6 @@ def fontbakery_check_ttf(config):
 
     #checks.perform_all_fontforge_checks(fb, validation_state)
 
-    checks.check_Digital_Signature_exists(fb, font, target)
-    checks.check_font_contains_the_first_few_mandatory_glyphs(fb, font)
-
-    missing = checks.check_font_contains_glyphs_for_whitespace_chars(fb, font)
-    checks.check_font_has_proper_whitespace_glyph_names(fb, font, missing)
-    checks.check_whitespace_glyphs_have_ink(fb, font, missing)
-    checks.check_whitespace_glyphs_have_coherent_widths(fb, font, missing)
-
     # PyFontaine-based glyph coverage checks:
     if config['coverage']:
       checks.check_glyphset_google_cyrillic_historical(fb, target)
@@ -212,16 +204,10 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_no_problematic_formats(fb, font)
-    checks.check_for_unwanted_tables(fb, font)
-
-    ttfautohint_missing = checks.check_hinting_filesize_impact(fb,
-                                                               target,
-                                                               filename)
     checks.check_version_format_is_correct_in_NAME_table(fb, font)
-    checks.check_font_has_latest_ttfautohint_applied(fb,
-                                                     font,
-                                                     ttfautohint_missing)
+    #checks.check_font_has_latest_ttfautohint_applied(fb,
+    #                                                 font,
+    #                                                 ttfautohint_missing)
     checks.check_name_table_entries_do_not_contain_linebreaks(fb, font)
     checks.check_glyph_names_are_all_valid(fb, font)
     checks.check_font_has_unique_glyph_names(fb, font)
