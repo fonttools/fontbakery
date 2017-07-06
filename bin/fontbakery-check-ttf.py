@@ -211,9 +211,6 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    #checks.check_font_has_latest_ttfautohint_applied(fb,
-    #                                                 font,
-    #                                                 ttfautohint_missing)
     checks.check_name_table_entries_do_not_contain_linebreaks(fb, font)
     checks.check_glyph_names_are_all_valid(fb, font)
     checks.check_font_has_unique_glyph_names(fb, font)
