@@ -250,20 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_name_table_entries_do_not_contain_linebreaks(fb, font):
-  fb.new_check("057", "Name table entries should not contain line-breaks")
-  failed = False
-  for name in font['name'].names:
-    string = name.string.decode(name.getEncoding())
-    if "\n" in string:
-      failed = True
-      fb.error(("Name entry {} on platform {} contains"
-                " a line-break.").format(NAMEID_STR[name.nameID],
-                                         PLATID_STR[name.platformID]))
-  if not failed:
-    fb.ok("Name table entries are all single-line (no line-breaks found).")
-
-
 def check_glyph_names_are_all_valid(fb, font):
   fb.new_check("058", "Glyph names are all valid?")
   bad_names = []

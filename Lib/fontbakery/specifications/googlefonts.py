@@ -2018,6 +2018,23 @@ def check_font_has_latest_ttfautohint_applied(fb, ttFont, ttfautohint_stats):
       fb.ok("ttfautohint available in the system is older"
             " than the one used in the font.")
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/057'
+)
+def check_name_table_entries_do_not_contain_linebreaks(fb, ttFont):
+  """Name table entries should not contain line-breaks."""
+  failed = False
+  for name in ttFont['name'].names:
+    string = name.string.decode(name.getEncoding())
+    if "\n" in string:
+      failed = True
+      fb.error(("Name entry {} on platform {} contains"
+                " a line-break.").format(NAMEID_STR[name.nameID],
+                                         PLATID_STR[name.platformID]))
+  if not failed:
+    fb.ok("Name table entries are all single-line (no line-breaks found).")
+
 
 @register_condition
 @condition
