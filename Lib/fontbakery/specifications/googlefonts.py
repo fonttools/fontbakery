@@ -1869,9 +1869,17 @@ def ttfautohint_stats(font):
   except OSError:
     return {"missing": True}
 
+  ttfa_cmd = ["ttfautohint",
+              "-V"]  # print version info
+  ttfa_output = subprocess.check_output(ttfa_cmd,
+                                        stderr=subprocess.STDOUT)
+  installed_ttfa = re.search(r'ttfautohint ([^-\n]*)(-.*)?\n',
+                             ttfa_output).group(1)
+
   return {
     "dehinted_size": dehinted_size,
-    "hinted_size": hinted_size
+    "hinted_size": hinted_size,
+    "version": installed_ttfa
   }
 
 
@@ -1976,9 +1984,6 @@ def check_font_has_latest_ttfautohint_applied(fb, ttFont, ttfautohint_stats):
       if results:
         return results.group(1)
 
-  def installed_ttfa_version(value):
-    return re.search(r'ttfautohint ([^-\n]*)(-.*)?\n', value).group(1)
-
   def installed_version_is_newer(installed, used):
     installed = map(int, installed.split("."))
     used = map(int, used.split("."))
@@ -2002,29 +2007,16 @@ def check_font_has_latest_ttfautohint_applied(fb, ttFont, ttfautohint_stats):
     # regardless of the avaiability of ttfautohint.
     fb.skip(TTFAUTOHINT_MISSING_MSG)
   else:
-    # TODO: Maybe the installed version detection below could be
-    # moved to the ttfautohint_stats condition imlpementation:
-    import subprocess
-    ttfa_cmd = ["ttfautohint",
-                "-V"]  # print version info
-    ttfa_output = subprocess.check_output(ttfa_cmd,
-                                          stderr=subprocess.STDOUT)
-    installed_ttfa = installed_ttfa_version(ttfa_output)
-    try:
-      if installed_version_is_newer(installed_ttfa,
-                                    ttfa_version):
-        fb.info(("ttfautohint used in font = {};"
-                 " installed = {}; Need to re-run"
-                 " with the newer version!").format(ttfa_version,
-                                                    installed_ttfa))
-      else:
-        fb.ok("ttfautohint available in the system is older"
-              " than the one used in the font.")
-    except:
-      fb.error(("failed to parse ttfautohint version strings:\n"
-                "  * installed = '{}'\n"
-                "  * used = '{}'").format(installed_ttfa,
-                                          ttfa_version))
+    installed_ttfa = ttfautohint_stats["version"]
+    if installed_version_is_newer(installed_ttfa,
+                                  ttfa_version):
+      fb.warning(("ttfautohint used in font = {};"
+                  " installed = {}; Need to re-run"
+                  " with the newer version!").format(ttfa_version,
+                                                     installed_ttfa))
+    else:
+      fb.ok("ttfautohint available in the system is older"
+            " than the one used in the font.")
 
 
 @register_condition
