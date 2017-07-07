@@ -250,26 +250,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_font_has_unique_glyph_names(fb, font):
-  ''' Duplicate glyph names prevent font installation on Mac OS X.'''
-  fb.new_check("059", "Font contains unique glyph names?")
-
-  glyphs = []
-  duplicated_glyphIDs = []
-  for _, g in enumerate(font.getGlyphOrder()):
-    glyphID = re.sub(r'#\w+', '', g)
-    if glyphID in glyphs:
-      duplicated_glyphIDs.append(glyphID)
-    else:
-      glyphs.append(glyphID)
-
-  if len(duplicated_glyphIDs) == 0:
-    fb.ok("Font contains unique glyph names.")
-  else:
-    fb.error(("The following glyph IDs"
-              " occur twice: {}").format(duplicated_glyphIDs))
-
-
 def check_no_glyph_is_incorrectly_named(fb, font):
   fb.new_check("060", "No glyph is incorrectly named?")
   bad_glyphIDs = []
