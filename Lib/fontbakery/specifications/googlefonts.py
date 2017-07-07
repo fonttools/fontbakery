@@ -2036,6 +2036,38 @@ def check_name_table_entries_do_not_contain_linebreaks(fb, ttFont):
     fb.ok("Name table entries are all single-line (no line-breaks found).")
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/058'
+)
+def check_glyph_names_are_all_valid(fb, ttFont):
+  """Glyph names are all valid?"""
+  bad_names = []
+  for _, glyphName in enumerate(ttFont.getGlyphOrder()):
+    if glyphName in ['.null', '.notdef']:
+      # These 2 names are explicit exceptions
+      # in the glyph naming rules
+      continue
+    if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
+      bad_names.append(glyphName)
+
+  if len(bad_names) == 0:
+    fb.ok('Glyph names are all valid.')
+  else:
+    fb.error(('The following glyph names do not comply'
+              ' with naming conventions: {}'
+              ' A glyph name may be up to 31 characters in length,'
+              ' must be entirely comprised of characters from'
+              ' the following set:'
+              ' A-Z a-z 0-9 .(period) _(underscore). and must not'
+              ' start with a digit or period.'
+              ' There are a few exceptions'
+              ' such as the special character ".notdef".'
+              ' The glyph names "twocents", "a1", and "_"'
+              ' are all valid, while'
+              ' "2cents" and ".twocents" are not.').format(bad_names))
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
