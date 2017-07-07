@@ -2068,6 +2068,30 @@ def check_glyph_names_are_all_valid(fb, ttFont):
               ' "2cents" and ".twocents" are not.').format(bad_names))
 
 
+@register_test
+@old_style_test(
+    id='com.google.fonts/test/059'
+)
+def check_font_has_unique_glyph_names(fb, ttFont):
+  """Font contains unique glyph names?
+     Duplicate glyph names prevent font installation on Mac OS X."""
+
+  glyphs = []
+  duplicated_glyphIDs = []
+  for _, g in enumerate(ttFont.getGlyphOrder()):
+    glyphID = re.sub(r'#\w+', '', g)
+    if glyphID in glyphs:
+      duplicated_glyphIDs.append(glyphID)
+    else:
+      glyphs.append(glyphID)
+
+  if len(duplicated_glyphIDs) == 0:
+    fb.ok("Font contains unique glyph names.")
+  else:
+    fb.error(("The following glyph IDs"
+              " occur twice: {}").format(duplicated_glyphIDs))
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
