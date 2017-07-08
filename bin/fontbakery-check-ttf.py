@@ -211,13 +211,7 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_no_glyph_is_incorrectly_named(fb, font)
-    checks.check_EPAR_table_is_present(fb, font)
-    checks.check_GASP_table_is_correctly_set(fb, font)
-
-    has_kerning_info = checks.check_GPOS_table_has_kerning_info(fb, font)
     checks.check_nonligated_sequences_kerning_info(fb, font, has_kerning_info)
-    checks.check_all_ligatures_have_corresponding_caret_positions(fb, font)
     checks.check_there_is_no_KERN_table_in_the_font(fb, font)
     checks.check_familyname_does_not_begin_with_a_digit(fb, font)
     checks.check_fullfontname_begins_with_the_font_familyname(fb, font)
