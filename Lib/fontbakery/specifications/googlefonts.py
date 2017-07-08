@@ -16,7 +16,6 @@ from fontbakery.testrunner import (
             )
 
 from fontbakery.callable import condition, test
-from fontbakery.testadapters.oldstyletest import old_style_test
 
 import os
 import re
@@ -761,10 +760,10 @@ def check_OS2_achVendID(ttFont, registered_vendor_ids):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/019'
 )
-def check_name_entries_symbol_substitutions(fb, ttFont):
+def check_name_entries_symbol_substitutions(ttFont):
   """Substitute copyright, registered and trademark
      symbols in name table entries"""
   failed = False
@@ -776,13 +775,13 @@ def check_name_entries_symbol_substitutions(fb, ttFont):
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
-        fb.error(("NAMEID #{} contains symbol that should be"
-                  " replaced by '{}'").format(name.nameID,
-                                              ascii_repl))
+        yield FAIL ("NAMEID #{} contains symbol that should be"
+                    " replaced by '{}'").format(name.nameID,
+                                                ascii_repl)
         failed = True
   if not failed:
-    fb.ok("No need to substitute copyright, registered and"
-          " trademark symbols in name table entries of this font.")
+    yield PASS, ("No need to substitute copyright, registered and"
+                 " trademark symbols in name table entries of this font.")
 
 
 @register_condition
@@ -795,11 +794,11 @@ def style(font):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/020'
   , conditions=['style']
 )
-def check_OS2_usWeightClass(fb, ttFont, style):
+def check_OS2_usWeightClass(ttFont, style):
   """Checking OS/2 usWeightClass
 
   The Google Font's API which serves the fonts can only serve
@@ -829,11 +828,11 @@ def check_OS2_usWeightClass(fb, ttFont, style):
   value = ttFont['OS/2'].usWeightClass
   expected = WEIGHTS[weight_name]
   if value != expected:
-    fb.error(("OS/2 usWeightClass expected value for"
-              " '{}' is {} but this font has"
-              " {}.").format(weight_name, expected, value))
+    yield FAIL, ("OS/2 usWeightClass expected value for"
+                 " '{}' is {} but this font has"
+                 " {}.").format(weight_name, expected, value)
   else:
-    fb.ok("OS/2 usWeightClass value looks good!")
+    yield PASS, "OS/2 usWeightClass value looks good!"
 
 # DEPRECATED CHECKS:                                             | REPLACED BY:
 # com.google.fonts/test/??? - "Checking macStyle BOLD bit"       | com.google.fonts/test/131 - "Checking head.macStyle value"
@@ -876,31 +875,31 @@ def license(license_path):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/028'
 )
-def check_font_has_a_license(fb, licenses):
+def check_font_has_a_license(licenses):
   """Check font project has a license"""
   if len(licenses) > 1:
-    fb.error("More than a single license file found."
+    yield FAIL, ("More than a single license file found."
                  " Please review.")
   elif not licenses:
-    fb.error("No license file was found."
-             " Please add an OFL.txt or a LICENSE.txt file."
-             " If you are running fontbakery on a Google Fonts"
-             " upstream repo, which is fine, just make sure"
-             " there is a temporary license file in the same folder.")
+    yield FAIL, ("No license file was found."
+                 " Please add an OFL.txt or a LICENSE.txt file."
+                 " If you are running fontbakery on a Google Fonts"
+                 " upstream repo, which is fine, just make sure"
+                 " there is a temporary license file in the same folder.")
   else:
-    fb.ok("Found license at '{}'".format(licenses[0]))
+    yield PASS, "Found license at '{}'".format(licenses[0])
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/029'
   , conditions=['license']
   , priority=CRITICAL
 )
-def check_copyright_entries_match_license(fb, ttFont, license):
+def check_copyright_entries_match_license(ttFont, license):
   """Check copyright namerecords match license file"""
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
@@ -911,32 +910,32 @@ def check_copyright_entries_match_license(fb, ttFont, license):
       value = nameRecord.string.decode(nameRecord.getEncoding())
       if value != placeholder:
         failed = True
-        fb.error(('License file {} exists but'
-                  ' NameID {} (LICENSE DESCRIPTION) value'
-                  ' on platform {} ({})'
-                  ' is not specified for that.'
-                  ' Value was: "{}"'
-                  ' Must be changed to "{}"'
-                  '').format(license,
-                             NAMEID_LICENSE_DESCRIPTION,
-                             nameRecord.platformID,
-                             PLATID_STR[nameRecord.platformID],
-                             unidecode(value),
-                             unidecode(placeholder)))
+        yield FAIL, ("License file {} exists but"
+                     " NameID {} (LICENSE DESCRIPTION) value"
+                     " on platform {} ({})"
+                     " is not specified for that."
+                     " Value was: \"{}\""
+                     " Must be changed to \"{}\""
+                     "").format(license,
+                                NAMEID_LICENSE_DESCRIPTION,
+                                nameRecord.platformID,
+                                PLATID_STR[nameRecord.platformID],
+                                unidecode(value),
+                                unidecode(placeholder))
   if not entry_found:
-    fb.error(("Font lacks NameID {} (LICENSE DESCRIPTION)."
-              " A proper licensing entry must be set."
-              "").format(NAMEID_LICENSE_DESCRIPTION))
+    yield FAIL, ("Font lacks NameID {} (LICENSE DESCRIPTION)."
+                 " A proper licensing entry must be set."
+                 "").format(NAMEID_LICENSE_DESCRIPTION)
   elif not failed:
-    fb.ok("licensing entry on name table is correctly set.")
+    yield PASS, "licensing entry on name table is correctly set."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/030'
   , priority=CRITICAL
 )
-def check_font_has_a_valid_license_url(fb, ttFont):
+def check_font_has_a_valid_license_url(ttFont):
   """"License URL matches License text on name table ?"""
   detected_license = False
   for license in ['OFL.txt', 'LICENSE.txt']:
@@ -959,35 +958,35 @@ def check_font_has_a_valid_license_url(fb, ttFont):
           found_good_entry = True
         else:
           failed = True
-          fb.error(("Licensing inconsistency in name table entries!"
-                    " NameID={} (LICENSE DESCRIPTION) indicates"
-                    " {} licensing, but NameID={} (LICENSE URL) has"
-                    " '{}'. Expected:"
-                    " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
-                                    LICENSE_NAME[detected_license],
-                                    NAMEID_LICENSE_INFO_URL,
-                                    string, expected))
+          yield FAIL, ("Licensing inconsistency in name table entries!"
+                       " NameID={} (LICENSE DESCRIPTION) indicates"
+                       " {} licensing, but NameID={} (LICENSE URL) has"
+                       " '{}'. Expected:"
+                       " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
+                                       LICENSE_NAME[detected_license],
+                                       NAMEID_LICENSE_INFO_URL,
+                                       string, expected)
   if not found_good_entry:
-    fb.error(("A License URL must be provided in the"
-              " NameID {} (LICENSE INFO URL) entry."
-              "").format(NAMEID_LICENSE_INFO_URL))
+    yield FAIL, ("A License URL must be provided in the"
+                 " NameID {} (LICENSE INFO URL) entry."
+                 "").format(NAMEID_LICENSE_INFO_URL)
   else:
     if failed:
-      fb.error(("Even though a valid license URL was seen in NAME table,"
-                " there were also bad entries. Please review"
-                " NameIDs {} (LICENSE DESCRIPTION) and {}"
-                " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
-                                               NAMEID_LICENSE_INFO_URL))
+      yield FAIL, ("Even though a valid license URL was seen in NAME table,"
+                   " there were also bad entries. Please review"
+                   " NameIDs {} (LICENSE DESCRIPTION) and {}"
+                   " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
+                                                  NAMEID_LICENSE_INFO_URL)
     else:
-      fb.ok("Font has a valid license URL in NAME table.")
+      yield PASS, "Font has a valid license URL in NAME table."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/031'
   , priority=CRITICAL
 )
-def check_description_strings_in_name_table(fb, ttFont):
+def check_description_strings_in_name_table(ttFont):
   """Description strings in the name table
   must not contain copyright info."""
   failed = False
@@ -997,20 +996,20 @@ def check_description_strings_in_name_table(fb, ttFont):
       failed = True
 
   if failed:
-    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-              " should be removed (perhaps these were added by"
-              " a longstanding FontLab Studio 5.x bug that"
-              " copied copyright notices to them.)"
-              "").format(NAMEID_DESCRIPTION))
+    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                 " should be removed (perhaps these were added by"
+                 " a longstanding FontLab Studio 5.x bug that"
+                 " copied copyright notices to them.)"
+                 "").format(NAMEID_DESCRIPTION)
   else:
-    fb.ok("Description strings in the name table"
-          " do not contain any copyright string.")
+    yield PASS, ("Description strings in the name table"
+                 " do not contain any copyright string.")
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/032'
 )
-def check_description_strings_do_not_exceed_100_chars(fb, ttFont):
+def check_description_strings_do_not_exceed_100_chars(ttFont):
   """Description strings in the name table"
      must not exceed 100 characters"""
   failed = False
@@ -1018,11 +1017,11 @@ def check_description_strings_do_not_exceed_100_chars(fb, ttFont):
     failed = (name.nameID == NAMEID_DESCRIPTION and
               len(name.string.decode(name.getEncoding())) > 100)
   if failed:
-    fb.error(("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-              " are longer than 100 characters"
-              " and should be removed.").format(NAMEID_DESCRIPTION))
+    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
+                 " are longer than 100 characters"
+                 " and should be removed.").format(NAMEID_DESCRIPTION)
   else:
-    fb.ok("Description name records do not exceed 100 characters.")
+    yield PASS, "Description name records do not exceed 100 characters."
 
 
 @register_condition
@@ -1063,11 +1062,11 @@ def monospace_stats(ttFont):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/033'
   , conditions=['monospace_stats']
 )
-def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
+def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
 
      There are various metadata in the OpenType spec to specify if
@@ -1110,26 +1109,26 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
 
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
-    fb.error(("Value of hhea.advanceWidthMax"
-              " should be set to %d but got"
-              " %d instead.").format(width_max,
-                                     ttFont['hhea'].advanceWidthMax))
+    yield FAIL, ("Value of hhea.advanceWidthMax"
+                 " should be set to %d but got"
+                 " %d instead.").format(width_max,
+                                        ttFont['hhea'].advanceWidthMax)
   if seems_monospaced:
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
       failed = True
-      fb.error(("On monospaced fonts, the value of"
-                "post.isFixedPitch must be set to %d"
-                " (fixed width monospaced),"
-                " but got %d instead.").format(IS_FIXED_WIDTH_MONOSPACED,
-                                               ttFont['post'].isFixedPitch))
+      yield FAIL, ("On monospaced fonts, the value of"
+                   "post.isFixedPitch must be set to %d"
+                   " (fixed width monospaced),"
+                   " but got %d instead.").format(IS_FIXED_WIDTH_MONOSPACED,
+                                                  ttFont['post'].isFixedPitch)
 
     if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION_MONOSPACED:
       failed = True
-      fb.error(("On monospaced fonts, the value of"
-                "OS/2.panose.bProportion must be set to %d"
-                " (proportion: monospaced), but got"
-                " %d instead.").format(PANOSE_PROPORTION_MONOSPACED,
-                                       ttFont['OS/2'].panose.bProportion))
+      yield FAIL, ("On monospaced fonts, the value of"
+                   "OS/2.panose.bProportion must be set to %d"
+                   " (proportion: monospaced), but got"
+                   " %d instead.").format(PANOSE_PROPORTION_MONOSPACED,
+                                          ttFont['OS/2'].panose.bProportion)
 
     num_glyphs = len(ttFont['glyf'].glyphs)
     unusually_spaced_glyphs = [
@@ -1140,43 +1139,43 @@ def check_correctness_of_monospaced_metadata(fb, ttFont, monospace_stats):
     outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
     if outliers_ratio > 0:
       failed = True
-      fb.warning(("Font is monospaced but {} glyphs"
-                  " ({}%) have a different width."
-                  " You should check the widths of: {}").format(
-                    len(unusually_spaced_glyphs),
-                    100.0 * outliers_ratio,
-                    unusually_spaced_glyphs))
+      yield WARN, ("Font is monospaced but {} glyphs"
+                   " ({}%) have a different width."
+                   " You should check the widths of: {}").format(
+                     len(unusually_spaced_glyphs),
+                     100.0 * outliers_ratio,
+                     unusually_spaced_glyphs)
     if not failed:
-      fb.ok("Font is monospaced and all related metadata look good.")
+      yield PASS, "Font is monospaced and all related metadata look good."
   else:
     # it is a non-monospaced font, so lets make sure
     # that all monospace-related metadata is properly unset.
 
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_NOT_MONOSPACED:
       failed = True
-      fb.error(("On non-monospaced fonts, the"
-                " post.isFixedPitch value must be set to %d"
-                " (fixed width not monospaced), but got"
-                " %d instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
-                                       ttFont['post'].isFixedPitch))
+      yield FAIL, ("On non-monospaced fonts, the"
+                   " post.isFixedPitch value must be set to %d"
+                   " (fixed width not monospaced), but got"
+                   " %d instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
+                                          ttFont['post'].isFixedPitch)
 
     if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
       failed = True
-      fb.error(("On non-monospaced fonts, the"
-                " OS/2.panose.bProportion value must be set to %d"
-                " (proportion: any), but got"
-                " %d (proportion: monospaced)"
-                " instead.").format(PANOSE_PROPORTION_ANY,
-                                    PANOSE_PROPORTION_MONOSPACED))
+      yield FAIL, ("On non-monospaced fonts, the"
+                   " OS/2.panose.bProportion value must be set to %d"
+                   " (proportion: any), but got"
+                   " %d (proportion: monospaced)"
+                   " instead.").format(PANOSE_PROPORTION_ANY,
+                                       PANOSE_PROPORTION_MONOSPACED)
     if not failed:
-      fb.ok("Font is not monospaced and all related metadata look good.")
+      yield PASS, "Font is not monospaced and all related metadata look good."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/034'
 )
-def check_OS2_xAvgCharWidth(fb, ttFont):
+def check_OS2_xAvgCharWidth(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
   if ttFont['OS/2'].version >= 3:
     width_sum = 0
@@ -1187,18 +1186,18 @@ def check_OS2_xAvgCharWidth(fb, ttFont):
         count += 1
         width_sum += width
     if count == 0:
-      fb.error("CRITICAL: Found no glyph width data!")
+      yield FAIL, "CRITICAL: Found no glyph width data!"
     else:
       expected_value = int(round(width_sum) / count)
 
       if ttFont['OS/2'].xAvgCharWidth == expected_value:
-        fb.ok("OS/2 xAvgCharWidth is correct.")
+        yield PASS, "OS/2 xAvgCharWidth is correct."
       else:
-        fb.error(("OS/2 xAvgCharWidth is {} but should be "
-                  "{} which corresponds to the "
-                  "average of all glyph widths "
-                  "in the font").format(ttFont['OS/2'].xAvgCharWidth,
-                                        expected_value))
+        yield FAIL, ("OS/2 xAvgCharWidth is {} but should be "
+                     "{} which corresponds to the "
+                     "average of all glyph widths "
+                     "in the font").format(ttFont['OS/2'].xAvgCharWidth,
+                                           expected_value)
   else:
     weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
                      'e': 100, 'f': 20, 'g': 14, 'h': 42,
@@ -1215,21 +1214,21 @@ def check_OS2_xAvgCharWidth(fb, ttFont):
     expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
 
     if ttFont['OS/2'].xAvgCharWidth == expected_value:
-      fb.ok("OS/2 xAvgCharWidth value is correct.")
+      yield PASS, "OS/2 xAvgCharWidth value is correct."
     else:
-      fb.error(("OS/2 xAvgCharWidth is {} but it should be "
-                "{} which corresponds to the weighted "
-                "average of the widths of the latin "
-                "lowercase glyphs in "
-                "the font").format(ttFont['OS/2'].xAvgCharWidth,
-                                   expected_value))
+      yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
+                   "{} which corresponds to the weighted "
+                   "average of the widths of the latin "
+                   "lowercase glyphs in "
+                   "the font").format(ttFont['OS/2'].xAvgCharWidth,
+                                      expected_value)
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/035'
 )
-def check_with_ftxvalidator(fb, font):
+def check_with_ftxvalidator(font):
   """Checking with ftxvalidator."""
   try:
     import subprocess
@@ -1244,7 +1243,7 @@ def check_with_ftxvalidator(fb, font):
     # and kATSFontTestSeverityMinorError
     if 'kATSFontTestSeverityFatalError' \
        not in ftx_data['kATSFontTestResultKey']:
-      fb.ok("ftxvalidator passed this file")
+      yield PASS, "ftxvalidator passed this file"
     else:
       ftx_cmd = ["ftxvalidator",
                  "-T",  # Human-readable output
@@ -1253,47 +1252,47 @@ def check_with_ftxvalidator(fb, font):
                  font]
       ftx_output = subprocess.check_output(ftx_cmd,
                                            stderr=subprocess.STDOUT)
-      fb.error("ftxvalidator output follows:\n\n{}\n".format(ftx_output))
+      yield FAIL, "ftxvalidator output follows:\n\n{}\n".format(ftx_output)
 
   except subprocess.CalledProcessError, e:
-    fb.info(("ftxvalidator returned an error code. Output follows :"
-             "\n\n{}\n").format(e.output))
+    yield INFO, ("ftxvalidator returned an error code. Output follows :"
+                 "\n\n{}\n").format(e.output)
   except OSError:
-    fb.warning("ftxvalidator is not available!")
+    yield ERROR, "ftxvalidator is not available!"
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/036'
 )
-def check_with_otsanitise(fb, font):
+def check_with_otsanitise(font):
   """Checking with ots-sanitize."""
   try:
     import subprocess
     ots_output = subprocess.check_output(["ots-sanitize", font],
                                          stderr=subprocess.STDOUT)
     if ots_output != "" and "File sanitized successfully" not in ots_output:
-      fb.error("ots-sanitize output follows:\n\n{}".format(ots_output))
+      yield FAIL, "ots-sanitize output follows:\n\n{}".format(ots_output)
     else:
-      fb.ok("ots-sanitize passed this file")
+      yield PASS, "ots-sanitize passed this file"
   except subprocess.CalledProcessError, e:
-      fb.error(("ots-sanitize returned an error code. Output follows :"
-                "\n\n{}").format(e.output))
+      yield FAIL, ("ots-sanitize returned an error code. Output follows :"
+                   "\n\n{}").format(e.output)
   except OSError, e:
-    fb.warning("ots-sanitize is not available!"
-               " You really MUST check the fonts with this tool."
-               " To install it, see"
-               " https://github.com/googlefonts"
-               "/gf-docs/blob/master/ProjectChecklist.md#ots"
-               " Actual error message was: "
-               "'{}'".format(e))
+    yield ERROR, ("ots-sanitize is not available!"
+                  " You really MUST check the fonts with this tool."
+                  " To install it, see"
+                  " https://github.com/googlefonts"
+                  "/gf-docs/blob/master/ProjectChecklist.md#ots"
+                  " Actual error message was: "
+                  "'{}'").format(e)
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/037'
 )
-def check_with_msfontvalidator(fb, font):
+def check_with_msfontvalidator(font):
   """Checking with Microsoft Font Validator."""
   try:
     import subprocess
@@ -1308,14 +1307,15 @@ def check_with_msfontvalidator(fb, font):
       if "Validating glyph with index" in line: continue
       if "Table Test:" in line: continue
       filtered_msgs += line + "\n"
-    fb.info(("Microsoft Font Validator returned an error code."
-             " Output follows :\n\n{}\n").format(filtered_msgs))
+    yield INFO, ("Microsoft Font Validator returned an error code."
+                 " Output follows :\n\n{}\n").format(filtered_msgs)
   except OSError:
-    fb.warning("Mono runtime and/or "
-               "Microsoft Font Validator are not available!")
+    yield ERROR, ("Mono runtime and/or "
+                  "Microsoft Font Validator are not available!")
+    return
   except IOError:
-    fb.warning("Mono runtime and/or "
-               "Microsoft Font Validator are not available!")
+    yield ERROR, ("Mono runtime and/or "
+                  "Microsoft Font Validator are not available!")
     return
 
   xml_report = open("{}.report.xml".format(font), "r").read()
@@ -1343,13 +1343,13 @@ def check_with_msfontvalidator(fb, font):
       already_reported.append([msg, details])
 
       if report.get("ErrorType") == "P":
-        fb.ok(report_message(msg, details))
+        yield PASS, report_message(msg, details)
       elif report.get("ErrorType") == "E":
-        fb.error(report_message(msg, details))
+        yield FAIL, report_message(msg, details)
       elif report.get("ErrorType") == "W":
-        fb.warning(report_message(msg, details))
+        yield WARN, report_message(msg, details)
       else:
-        fb.info(report_message(msg, details))
+        yield INFO, report_message(msg, details)
 
 
 @register_condition
@@ -1382,11 +1382,11 @@ def fontforge_check_results(font):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/038'
   , conditions=['fontforge_check_results']
 )
-def check_fforge_outputs_error_msgs(fb, font, fontforge_check_results):
+def check_fforge_outputs_error_msgs(font, fontforge_check_results):
   """fontforge validation outputs error messages?"""
 
   filtered_err_msgs = ""
@@ -1399,10 +1399,10 @@ def check_fforge_outputs_error_msgs(fb, font, fontforge_check_results):
     filtered_err_msgs += line + '\n'
 
   if len(filtered_err_msgs.strip()) > 0:
-    fb.error(("fontforge did print these messages to stderr:\n"
-              "{}").format(filtered_err_msgs))
+    yield FAIL, ("fontforge did print these messages to stderr:\n"
+                 "{}").format(filtered_err_msgs)
   else:
-    fb.ok("fontforge validation did not output any error message.")
+    yield PASS, "fontforge validation did not output any error message."
 
 
 # TODO: check 039: fontforge checks
@@ -1419,11 +1419,11 @@ def vmetrics(ttFonts):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/040'
   , conditions=['vmetrics']
 )
-def check_OS2_usWinAscent_and_Descent(fb, ttFont, vmetrics):
+def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
   """Checking OS/2 usWinAscent & usWinDescent
 
   A font's winAscent and winDescent values should be the same as the
@@ -1442,76 +1442,76 @@ def check_OS2_usWinAscent_and_Descent(fb, ttFont, vmetrics):
   # OS/2 usWinAscent:
   if ttFont['OS/2'].usWinAscent != vmetrics['ymax']:
     failed = True
-    fb.error(("OS/2.usWinAscent value"
-              " should be {}, but got"
-              " {} instead").format(vmetrics['ymax'],
-                                    ttFont['OS/2'].usWinAscent))
+    yield FAIL, ("OS/2.usWinAscent value"
+                 " should be {}, but got"
+                 " {} instead").format(vmetrics['ymax'],
+                                       ttFont['OS/2'].usWinAscent)
   # OS/2 usWinDescent:
   if ttFont['OS/2'].usWinDescent != abs(vmetrics['ymin']):
     failed = True
-    fb.error(("OS/2.usWinDescent value"
-              " should be {}, but got"
-              " {} instead").format(vmetrics['ymin'],
-                                    ttFont['OS/2'].usWinDescent))
+    yield FAIL, ("OS/2.usWinDescent value"
+                 " should be {}, but got"
+                 " {} instead").format(vmetrics['ymin'],
+                                       ttFont['OS/2'].usWinDescent)
   if not failed:
-    fb.ok("OS/2 usWinAscent & usWinDescent values look good!")
+    yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/041'
 )
-def check_Vertical_Metric_Linegaps(fb, ttFont):
+def check_Vertical_Metric_Linegaps(ttFont):
   """Checking Vertical Metric Linegaps."""
-  if ttFont['hhea'].lineGap != 0:
-    fb.warning(("hhea lineGap is not equal to 0"))
-  elif ttFont['OS/2'].sTypoLineGap != 0:
-    fb.warning(("OS/2 sTypoLineGap is not equal to 0"))
-  elif ttFont['OS/2'].sTypoLineGap != ttFont['hhea'].lineGap:
-    fb.warning(('OS/2 sTypoLineGap is not equal to hhea lineGap'))
+  if ttFont["hhea"].lineGap != 0:
+    yield WARN, "hhea lineGap is not equal to 0"
+  elif ttFont["OS/2"].sTypoLineGap != 0:
+    yield WARN, "OS/2 sTypoLineGap is not equal to 0"
+  elif ttFont["OS/2"].sTypoLineGap != ttFont["hhea"].lineGap:
+    yield WARN, "OS/2 sTypoLineGap is not equal to hhea lineGap."
   else:
-    fb.ok(('OS/2 sTypoLineGap and hhea lineGap are both 0'))
+    yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/042'
 )
-def check_OS2_Metrics_match_hhea_Metrics(fb, ttFont):
+def check_OS2_Metrics_match_hhea_Metrics(ttFont):
   """Checking OS/2 Metrics match hhea Metrics.
 
   OS/2 and hhea vertical metric values should match. This will produce
   the same linespacing on Mac, Linux and Windows.
 
   Mac OS X uses the hhea values
-  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value"""
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value."""
 
   # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
-  if ttFont['OS/2'].sTypoAscender != ttFont['hhea'].ascent:
-    fb.error(("OS/2 sTypoAscender and hhea ascent must be equal"))
-  elif ttFont['OS/2'].sTypoDescender != ttFont['hhea'].descent:
-    fb.error(("OS/2 sTypoDescender and hhea descent must be equal"))
+  if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
+    yield FAIL, "OS/2 sTypoAscender and hhea ascent must be equal"
+  elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
+    yield FAIL, "OS/2 sTypoDescender and hhea descent must be equal"
   else:
-    fb.ok("OS/2 sTypoDescender and sTypoDescender match hhea ascent "
-          "and descent")
+    yield PASS, ("OS/2 sTypoDescender and sTypoDescender"
+                 " match hhea ascent and descent")
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/043'
 )
-def check_unitsPerEm_value_is_reasonable(fb, ttFont):
+def check_unitsPerEm_value_is_reasonable(ttFont):
   """Checking unitsPerEm value is reasonable."""
   upem = ttFont['head'].unitsPerEm
   target_upem = [2**i for i in range(4, 15)]
   target_upem.insert(0, 1000)
   if upem not in target_upem:
-    fb.error(("The value of unitsPerEm at the head table"
-              " must be either 1000 or a power of "
-              "2 between 16 to 16384."
-              " Got '{}' instead.").format(upem))
+    yield FAIL, ("The value of unitsPerEm at the head table"
+                 " must be either 1000 or a power of"
+                 " 2 between 16 to 16384."
+                 " Got '{}' instead.").format(upem)
   else:
-    fb.ok("unitsPerEm value on the 'head' table is reasonable.")
+    yield PASS, "unitsPerEm value on the 'head' table is reasonable."
 
 
 def get_version_from_name_entry(name):
@@ -1527,9 +1527,37 @@ def get_version_from_name_entry(name):
   return string.split('.')
 
 
-def get_expected_version(fb, f):
-  expected_version = parse_version_string(fb, str(f['head'].fontRevision))
-  for name in f['name'].names:
+def parse_version_string(s):
+  """ Tries to parse a version string as used
+      in ttf versioning metadata fields.
+      Example of expected format is:
+        'Version 01.003; Comments'
+  """
+  suffix = ''
+  # DC: I think this may be wrong, the ; isnt the only separator,
+  # anything not an int is ok
+  if ';' in s:
+    fields = s.split(';')
+    s = fields[0]
+    fields.pop(0)
+    suffix = ';'.join(fields)
+
+  substrings = s.split('.')
+  minor = substrings[-1]
+  if ' ' in substrings[-2]:
+    major = substrings[-2].split(' ')[-1]
+  else:
+    major = substrings[-2]
+
+  if suffix:
+    return major, minor, suffix
+  else:
+    return major, minor
+
+
+def get_expected_version(f):
+  expected_version = parse_version_string(str(f["head"].fontRevision))
+  for name in f["name"].names:
     if name.nameID == NAMEID_VERSION_STRING:
       name_version = get_version_from_name_entry(name)
       if expected_version is None:
@@ -1539,41 +1567,38 @@ def get_expected_version(fb, f):
           expected_version = name_version
   return expected_version
 
-# TODO: Review this one.
-# It is currently failing to parse version strings.
-# We must check whether the parser is broken
-# or if the fonts are actually bad.
+
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/044'
 )
-def check_font_version_fields(fb, ttFont):
+def check_font_version_fields(ttFont):
   """Checking font version fields"""
 
   failed = False
   try:
-    expected = get_expected_version(fb, ttFont)
+    expected = get_expected_version(ttFont)
   except:
     expected = None
-    fb.error("failed to parse font version entries in the name table.")
+    yield FAIL, "failed to parse font version entries in the name table."
 
   if expected is None:
     failed = True
-    fb.error("Could not find any font versioning info on the head table"
-             " or in the name table entries.")
+    yield FAIL, ("Could not find any font versioning info on the head table"
+                 " or in the name table entries.")
   else:
     font_revision = str(ttFont['head'].fontRevision)
     expected_str = "{}.{}".format(expected[0],
                                   expected[1])
     if font_revision != expected_str:
       failed = True
-      fb.error(("Font revision on the head table ({})"
-                " differs from the expected value ({})"
-                "").format(font_revision, expected))
+      yield FAIL, ("Font revision on the head table ({})"
+                   " differs from the expected value ({})"
+                   "").format(font_revision, expected)
 
     expected_str = "Version {}.{}".format(expected[0],
                                           expected[1])
-    for name in ttFont['name'].names:
+    for name in ttFont["name"].names:
       if name.nameID == NAMEID_VERSION_STRING:
         name_version = name.string.decode(name.getEncoding())
         try:
@@ -1584,8 +1609,8 @@ def check_font_version_fields(fb, ttFont):
                                                name_version).group(0)
         except:
           failed = True
-          fb.error(("Unable to parse font version info"
-                    " from this name table entry: '{}'").format(name))
+          yield FAIL, ("Unable to parse font version info"
+                       " from this name table entry: '{}'").format(name)
           continue
 
         comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
@@ -1603,36 +1628,36 @@ def check_font_version_fields(fb, ttFont):
                 fix = "{};{}".format(expected_str, comments)
               else:
                 fix = expected_str
-              fb.error(("NAMEID_VERSION_STRING value '{}'"
-                        " does not match expected '{}'"
-                        "").format(name_version, fix))
+              yield FAIL, ("NAMEID_VERSION_STRING value '{}'"
+                           " does not match expected '{}'"
+                           "").format(name_version, fix)
           except:
             failed = True  # give up. it's definitely bad :(
-            fb.error("Unable to parse font version info"
-                     " from name table entries.")
+            yield FAIL, ("Unable to parse font version info"
+                         " from name table entries.")
   if not failed:
-    fb.ok("All font version fields look good.")
+    yield PASS, "All font version fields look good."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/045'
 )
-def check_Digital_Signature_exists(fb, ttFont):
+def check_Digital_Signature_exists(ttFont):
   """Does the font have a DSIG table ?"""
   if "DSIG" in ttFont:
-    fb.ok("Digital Signature (DSIG) exists.")
+    yield PASS, "Digital Signature (DSIG) exists."
   else:
-    fb.error("This font lacks a digital signature (DSIG table)."
-             " Some applications may require one (even if only a"
-             " dummy placeholder) in order to work properly.")
+    yield FAIL, ("This font lacks a digital signature (DSIG table)."
+                 " Some applications may require one (even if only a"
+                 " dummy placeholder) in order to work properly.")
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/046'
 )
-def check_font_contains_the_first_few_mandatory_glyphs(fb, ttFont):
+def check_font_contains_the_first_few_mandatory_glyphs(ttFont):
   """Font contains the first few mandatory glyphs
      (.null or NULL, CR and space)?"""
   # It would be good to also check
@@ -1646,12 +1671,12 @@ def check_font_contains_the_first_few_mandatory_glyphs(fb, ttFont):
   if CR is None: missing.append("0x000D")
   if space is None: missing.append("0x0020")
   if missing != []:
-    fb.warning(("Font is missing glyphs for"
-                " the following mandatory codepoints:"
-                " {}.").format(", ".join(missing)))
+    yield WARN, ("Font is missing glyphs for"
+                 " the following mandatory codepoints:"
+                 " {}.").format(", ".join(missing))
   else:
-    fb.ok("Font contains the first few mandatory glyphs"
-          " (.null or NULL, CR and space).")
+    yield PASS, ("Font contains the first few mandatory glyphs"
+                 " (.null or NULL, CR and space).")
 
 
 @register_condition
@@ -1670,35 +1695,33 @@ def missing_whitespace_chars(ttFont):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/047'
   , conditions=['missing_whitespace_chars']
 )
-def check_font_contains_glyphs_for_whitespace_chars(fb,
-                                                    ttFont,
+def check_font_contains_glyphs_for_whitespace_chars(ttFont,
                                                     missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
   if missing_whitespace_chars != []:
-    fb.error(("Whitespace glyphs missing for"
-              " the following codepoints:"
-              " {}.").format(", ".join(missing_whitespace_chars)))
+    yield FAIL, ("Whitespace glyphs missing for"
+                 " the following codepoints:"
+                 " {}.").format(", ".join(missing_whitespace_chars))
   else:
-    fb.ok("Font contains glyphs for whitespace characters.")
+    yield PASS, "Font contains glyphs for whitespace characters."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/048'
   , conditions=['missing_whitespace_chars']
 )
-def check_font_has_proper_whitespace_glyph_names(fb,
-                                                 ttFont,
+def check_font_has_proper_whitespace_glyph_names(ttFont,
                                                  missing_whitespace_chars):
   """Font has **proper** whitespace glyph names?"""
   if missing_whitespace_chars != []:
-    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+    yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
   elif ttFont['post'].formatType == 3.0:
-    fb.skip("Font has version 3 post table.")
+    yield SKIP, "Font has version 3 post table."
   else:
     failed = False
     space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
@@ -1709,9 +1732,9 @@ def check_font_has_proper_whitespace_glyph_names(fb,
     space = getGlyph(ttFont, 0x0020)
     if 0x0020 not in space_enc:
       failed = True
-      fb.error(('Glyph 0x0020 is called "{}":'
-                ' Change to "space"'
-                ' or "uni0020"').format(space))
+      yield FAIL, ("Glyph 0x0020 is called \"{}\":"
+                   " Change to \"space\""
+                   " or \"uni0020\"").format(space)
 
     nbsp = getGlyph(ttFont, 0x00A0)
     if 0x00A0 not in nbsp_enc:
@@ -1721,48 +1744,47 @@ def check_font_has_proper_whitespace_glyph_names(fb,
         pass
       else:
         failed = True
-        fb.error(('Glyph 0x00A0 is called "{}":'
-                  ' Change to "nbsp"'
-                  ' or "uni00A0"').format(nbsp))
+        yield FAIL, ("Glyph 0x00A0 is called \"{}\":"
+                     " Change to \"nbsp\""
+                     " or \"uni00A0\"").format(nbsp)
 
     if failed is False:
-      fb.ok('Font has **proper** whitespace glyph names.')
+      yield PASS, "Font has **proper** whitespace glyph names."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/049'
   , conditions=['missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_ink(fb, ttFont, missing_whitespace_chars):
+def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
   if missing_whitespace_chars != []:
-    fb.skip("Because some whitespace glyphs are missing. Fix that before!")
+    yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
   else:
     failed = False
     for codepoint in WHITESPACE_CHARACTERS:
       g = getGlyph(font, codepoint)
       if g is not None and glyphHasInk(ttFont, g):
         failed = True
-        fb.error(("Glyph \"{}\" has ink."
-                  " It needs to be replaced by"
-                  " an empty glyph.").format(g))
+        yield FAIL, ("Glyph \"{}\" has ink."
+                     " It needs to be replaced by"
+                     " an empty glyph.").format(g)
     if not failed:
-      fb.ok("There is no whitespace glyph with ink.")
+      yield PASS, "There is no whitespace glyph with ink."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/050'
   , conditions=['missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_coherent_widths(fb,
-                                                 ttFont, 
+def check_whitespace_glyphs_have_coherent_widths(ttFont, 
                                                  missing_whitespace_chars):
   """Whitespace glyphs have coherent widths?"""
   if missing_whitespace_chars != []:
-    fb.skip("Because some mandatory whitespace glyphs"
-            " are missing. Fix that before!")
+    yield SKIP, ("Because some mandatory whitespace glyphs"
+                 " are missing. Fix that before!")
   else:
     space = getGlyph(ttFont, 0x0020)
     nbsp = getGlyph(ttFont, 0x00A0)
@@ -1772,19 +1794,19 @@ def check_whitespace_glyphs_have_coherent_widths(fb,
 
     if spaceWidth != nbspWidth or nbspWidth < 0:
       if nbspWidth > spaceWidth and spaceWidth >= 0:
-        fb.error(("space {} nbsp {}: Space advanceWidth"
-                  " needs to be fixed"
-                  " to {}.").format(spaceWidth,
-                                    nbspWidth,
-                                    nbspWidth))
+        yield FAIL, ("space {} nbsp {}: Space advanceWidth"
+                     " needs to be fixed"
+                     " to {}.").format(spaceWidth,
+                                       nbspWidth,
+                                       nbspWidth)
       else:
-        fb.error(("space {} nbsp {}: Nbsp advanceWidth"
-                  " needs to be fixed "
-                  "to {}").format(spaceWidth,
-                                  nbspWidth,
-                                  spaceWidth))
+        yield FAIL, ("space {} nbsp {}: Nbsp advanceWidth"
+                     " needs to be fixed "
+                     "to {}").format(spaceWidth,
+                                     nbspWidth,
+                                     spaceWidth)
     else:
-      fb.ok("Whitespace glyphs have coherent widths.")
+      yield PASS, "Whitespace glyphs have coherent widths."
 
 
 # DEPRECATED:
@@ -1811,32 +1833,32 @@ def check_whitespace_glyphs_have_coherent_widths(fb,
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/052'
 )
-def check_font_contains_all_required_tables(fb, ttFont):
+def check_font_contains_all_required_tables(ttFont):
   """Font contains all required tables?"""
   # See https://github.com/googlefonts/fontbakery/issues/617
   tables = set(ttFont.reader.tables.keys())
-  glyphs = set(['glyf'] if 'glyf' in ttFont.keys() else ['CFF '])
+  glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
   if (REQUIRED_TABLES | glyphs) - tables:
     missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
     desc = (("Font is missing required "
-             "tables: [{}]").format(', '.join(missing_tables)))
+             "tables: [{}]").format(", ".join(missing_tables)))
     if OPTIONAL_TABLES & tables:
       optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
       desc += (" but includes "
-               "optional tables [{}]").format(', '.join(optional_tables))
-    fb.error(desc)
+               "optional tables [{}]").format(", ".join(optional_tables))
+    yield FAIL, desc
   else:
-    fb.ok("Font contains all required tables.")
+    yield PASS, "Font contains all required tables."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/053'
 )
-def check_for_unwanted_tables(fb, ttFont):
+def check_for_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
   unwanted_tables_found = []
   for table in ttFont.keys():
@@ -1844,11 +1866,11 @@ def check_for_unwanted_tables(fb, ttFont):
       unwanted_tables_found.append(table)
 
   if len(unwanted_tables_found) > 0:
-    fb.error(("Unwanted tables were found"
-              " in the font and should be removed:"
-              " {}").format(', '.join(unwanted_tables_found)))
+    yield FAIL, ("Unwanted tables were found"
+                 " in the font and should be removed:"
+                 " {}").format(", ".join(unwanted_tables_found))
   else:
-    fb.ok("There are no unwanted tables.")
+    yield PASS, "There are no unwanted tables."
 
 
 @register_condition
@@ -1884,27 +1906,27 @@ def ttfautohint_stats(font):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/054'
   , conditions=['ttfautohint_stats']
 )
-def check_hinting_filesize_impact(fb, font, ttfautohint_stats):
+def check_hinting_filesize_impact(font, ttfautohint_stats):
   """Show hinting filesize impact.
 
      Current implementation simply logs useful info
      but there's no fail scenario for this checker."""
 
   if "missing" in ttfautohint_stats:
-    fb.warning(TTFAUTOHINT_MISSING_MSG)
+    yield WARN, TTFAUTOHINT_MISSING_MSG
     return
 
   if ttfautohint_stats["dehinted_size"] == 0:
-    fb.warning("ttfautohint --dehint reports that"
-               " 'This font has already been processed with ttfautohint'."
-               " This is a bug in an old version of ttfautohint."
-               " You'll need to upgrade it."
-               " See https://github.com/googlefonts/fontbakery/"
-               "issues/1043#issuecomment-249035069")
+    yield WARN, ("ttfautohint --dehint reports that"
+                 " \"This font has already been processed with ttfautohint\"."
+                 " This is a bug in an old version of ttfautohint."
+                 " You'll need to upgrade it."
+                 " See https://github.com/googlefonts/fontbakery/"
+                 "issues/1043#issuecomment-249035069")
     return
 
   hinted = ttfautohint_stats["hinted_size"]
@@ -1932,14 +1954,14 @@ def check_hinting_filesize_impact(fb, font, ttfautohint_stats):
   results_table += "| Hinted Size | {} |\n".format(hinted_size)
   results_table += "| Increase | {} |\n".format(increase)
   results_table += "| Change   | {} % |\n".format(change)
-  fb.info(results_table)
+  yield INFO, results_table
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/055'
 )
-def check_version_format_is_correct_in_NAME_table(fb, ttFont):
+def check_version_format_is_correct_in_NAME_table(ttFont):
   """Version format is correct in NAME table?"""
 
   def is_valid_version_format(value):
@@ -1949,25 +1971,25 @@ def check_version_format_is_correct_in_NAME_table(fb, ttFont):
   version_entries = get_name_string(ttFont, NAMEID_VERSION_STRING)
   if len(version_entries) == 0:
     failed = True
-    fb.error(("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-              " entry").format(NAMEID_VERSION_STRING))
+    yield FAIL, ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+                 " entry").format(NAMEID_VERSION_STRING)
   for ventry in version_entries:
     if not is_valid_version_format(ventry):
       failed = True
-      fb.error(('The NAMEID_VERSION_STRING (nameID={}) value must '
-                'follow the pattern Version X.Y between 1.000 and 9.999.'
-                ' Current value: {}').format(NAMEID_VERSION_STRING,
-                                             ventry))
+      yield FAIL, ("The NAMEID_VERSION_STRING (nameID={}) value must "
+                   "follow the pattern Version X.Y between 1.000 and 9.999."
+                   " Current value: {}").format(NAMEID_VERSION_STRING,
+                                                ventry)
   if not failed:
-    fb.ok('Version format in NAME table entries is correct.')
+    yield PASS, "Version format in NAME table entries is correct."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/056'
   , conditions=['ttfautohint_stats']
 )
-def check_font_has_latest_ttfautohint_applied(fb, ttFont, ttfautohint_stats):
+def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
   """Font has old ttfautohint applied?
 
      1. find which version was used, by inspecting name table entries
@@ -1992,59 +2014,60 @@ def check_font_has_latest_ttfautohint_applied(fb, ttFont, ttfautohint_stats):
   version_strings = get_name_string(ttFont, NAMEID_VERSION_STRING)
   ttfa_version = ttfautohint_version(version_strings)
   if len(version_strings) == 0:
-    fb.error("This font file lacks mandatory "
-             "version strings in its name table.")
+    yield FAIL, ("This font file lacks mandatory "
+                 "version strings in its name table.")
   elif ttfa_version is None:
-    fb.info(("Could not detect which version of"
-             " ttfautohint was used in this font."
-             " It is typically specified as a comment"
-             " in the font version entries of the 'name' table."
-             " Such font version strings are currently:"
-             " {}").format(version_strings))
+    yield INFO, ("Could not detect which version of"
+                 " ttfautohint was used in this font."
+                 " It is typically specified as a comment"
+                 " in the font version entries of the 'name' table."
+                 " Such font version strings are currently:"
+                 " {}").format(version_strings)
   elif "missing" in ttfautohint_stats:
     # Even though we skip here, we still have a chance of performing
     # early portions of the check in the 2 error/info scenarios above
     # regardless of the avaiability of ttfautohint.
-    fb.skip(TTFAUTOHINT_MISSING_MSG)
+    yield SKIP, TTFAUTOHINT_MISSING_MSG
   else:
     installed_ttfa = ttfautohint_stats["version"]
     if installed_version_is_newer(installed_ttfa,
                                   ttfa_version):
-      fb.warning(("ttfautohint used in font = {};"
-                  " installed = {}; Need to re-run"
-                  " with the newer version!").format(ttfa_version,
-                                                     installed_ttfa))
+      yield WARN, ("ttfautohint used in font = {};"
+                   " installed = {}; Need to re-run"
+                   " with the newer version!").format(ttfa_version,
+                                                      installed_ttfa)
     else:
-      fb.ok("ttfautohint available in the system is older"
-            " than the one used in the font.")
+      yield PASS, ("ttfautohint available in the system is older"
+                   " than the one used in the font.")
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/057'
 )
-def check_name_table_entries_do_not_contain_linebreaks(fb, ttFont):
+def check_name_table_entries_do_not_contain_linebreaks(ttFont):
   """Name table entries should not contain line-breaks."""
   failed = False
-  for name in ttFont['name'].names:
+  for name in ttFont["name"].names:
     string = name.string.decode(name.getEncoding())
     if "\n" in string:
       failed = True
-      fb.error(("Name entry {} on platform {} contains"
-                " a line-break.").format(NAMEID_STR[name.nameID],
-                                         PLATID_STR[name.platformID]))
+      yield FAIL, ("Name entry {} on platform {} contains"
+                   " a line-break.").format(NAMEID_STR[name.nameID],
+                                            PLATID_STR[name.platformID])
   if not failed:
-    fb.ok("Name table entries are all single-line (no line-breaks found).")
+    yield PASS, ("Name table entries are all single-line"
+                 " (no line-breaks found).")
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/058'
 )
-def check_glyph_names_are_all_valid(fb, ttFont):
+def check_glyph_names_are_all_valid(ttFont):
   """Glyph names are all valid?"""
   bad_names = []
   for _, glyphName in enumerate(ttFont.getGlyphOrder()):
-    if glyphName in ['.null', '.notdef']:
+    if glyphName in [".null", ".notdef"]:
       # These 2 names are explicit exceptions
       # in the glyph naming rules
       continue
@@ -2052,27 +2075,27 @@ def check_glyph_names_are_all_valid(fb, ttFont):
       bad_names.append(glyphName)
 
   if len(bad_names) == 0:
-    fb.ok('Glyph names are all valid.')
+    yield PASS, "Glyph names are all valid."
   else:
-    fb.error(('The following glyph names do not comply'
-              ' with naming conventions: {}'
-              ' A glyph name may be up to 31 characters in length,'
-              ' must be entirely comprised of characters from'
-              ' the following set:'
-              ' A-Z a-z 0-9 .(period) _(underscore). and must not'
-              ' start with a digit or period.'
-              ' There are a few exceptions'
-              ' such as the special character ".notdef".'
-              ' The glyph names "twocents", "a1", and "_"'
-              ' are all valid, while'
-              ' "2cents" and ".twocents" are not.').format(bad_names))
+    yield FAIL, ("The following glyph names do not comply"
+                 " with naming conventions: {}"
+                 " A glyph name may be up to 31 characters in length,"
+                 " must be entirely comprised of characters from"
+                 " the following set:"
+                 " A-Z a-z 0-9 .(period) _(underscore). and must not"
+                 " start with a digit or period."
+                 " There are a few exceptions"
+                 " such as the special character \".notdef\"."
+                 " The glyph names \"twocents\", \"a1\", and \"_\""
+                 " are all valid, while \"2cents\""
+                 " and \".twocents\" are not.").format(bad_names)
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/059'
 )
-def check_font_has_unique_glyph_names(fb, ttFont):
+def check_font_has_unique_glyph_names(ttFont):
   """Font contains unique glyph names?
      Duplicate glyph names prevent font installation on Mac OS X."""
 
@@ -2086,10 +2109,10 @@ def check_font_has_unique_glyph_names(fb, ttFont):
       glyphs.append(glyphID)
 
   if len(duplicated_glyphIDs) == 0:
-    fb.ok("Font contains unique glyph names.")
+    yield PASS, "Font contains unique glyph names."
   else:
-    fb.error(("The following glyph IDs"
-              " occur twice: {}").format(duplicated_glyphIDs))
+    yield FAIL, ("The following glyph IDs"
+                 " occur twice: {}").format(duplicated_glyphIDs)
 
 
 @register_condition
@@ -2099,11 +2122,11 @@ def seems_monospaced(monospace_stats):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/079'
   , conditions=['seems_monospaced']
 )
-def check_hhea_table_and_advanceWidth_values(fb, ttFont):
+def check_hhea_table_and_advanceWidth_values(ttFont):
   """Monospace font has hhea.advanceWidthMax
      equal to each glyph's advanceWidth ?"""
 
@@ -2124,17 +2147,17 @@ def check_hhea_table_and_advanceWidth_values(fb, ttFont):
 
   if outliers > 0:
     outliers_percentage = float(outliers) / len(ttFont['glyf'].glyphs)
-    fb.warning(("This seems to be a monospaced font,"
-                " so advanceWidth value should be the same"
-                " across all glyphs, but {} % of them"
-                " have a different value."
-                "").format(round(100 * outliers_percentage, 2)))
+    yield WARN, ("This seems to be a monospaced font,"
+                 " so advanceWidth value should be the same"
+                 " across all glyphs, but {} % of them"
+                 " have a different value."
+                 "").format(round(100 * outliers_percentage, 2))
     if zero_or_double_detected:
-      fb.warning("Double-width and/or zero-width glyphs"
-                 " were detected. These glyphs should be set"
-                 " to the same width as all others"
-                 " and then add GPOS single pos lookups"
-                 " that zeros/doubles the widths as needed.")
+      yield WARN, ("Double-width and/or zero-width glyphs"
+                   " were detected. These glyphs should be set"
+                   " to the same width as all others"
+                   " and then add GPOS single pos lookups"
+                   " that zeros/doubles the widths as needed.")
   else:
-    fb.ok("hhea.advanceWidthMax is equal"
-          " to all glyphs' advanceWidth in this monospaced font.")
+    yield PASS, ("hhea.advanceWidthMax is equal"
+                 " to all glyphs' advanceWidth in this monospaced font.")

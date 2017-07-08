@@ -30,16 +30,9 @@ from fontbakery.pifont import PiFont
 from fontbakery.utils import (
                              get_name_string,
                              check_bit_entry,
-                             getGlyph,
-                             getGlyphEncodings,
-                             glyphHasInk,
-                             getWidth,
-                             setWidth,
                              ttfauto_fpgm_xheight_rounding,
                              glyphs_surface_area,
                              save_FamilyProto_Message,
-                             parse_version_string,
-                             font_key,
                              assertExists
                              )
 from fontbakery.constants import (
