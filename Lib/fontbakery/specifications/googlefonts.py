@@ -103,11 +103,11 @@ def ttFont(font):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/001'
   , priority=CRITICAL
 )
-def check_file_is_named_canonically(fb, font):
+def check_file_is_named_canonically(font):
   """Checking file is named canonically
 
   A font's filename must be composed in the following manner:
@@ -121,24 +121,22 @@ def check_file_is_named_canonically(fb, font):
   # remove spaces in style names
   style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
   if '-' in basename and basename.split('-')[1] in style_file_names:
-    fb.ok("{} is named canonically".format(font))
-    return True
+    yield PASS, "{} is named canonically".format(font)
   else:
-    fb.error(('Style name used in "{}" is not canonical.'
-              ' You should rebuild the font using'
-              ' any of the following'
-              ' style names: "{}".').format(font,
-                                            '", "'.join(STYLE_NAMES)))
-    return False
+    yield FAIL, ('Style name used in "{}" is not canonical.'
+                 ' You should rebuild the font using'
+                 ' any of the following'
+                 ' style names: "{}".').format(font,
+                                               '", "'.join(STYLE_NAMES))
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/002',
     priority=CRITICAL
 )
-def check_all_files_in_a_single_directory(fb, fonts):
-  '''Checking all files are in the same directory
+def check_all_files_in_a_single_directory(fonts):
+  """Checking all files are in the same directory
 
      If the set of font files passed in the command line
      is not all in the same directory, then we warn the user
@@ -146,25 +144,24 @@ def check_all_files_in_a_single_directory(fb, fonts):
      as belonging to a single family (and it is unlikely
      that the user would store the files from a single family
      spreaded in several separate directories).
-  '''
+  """
 
-  failed = False
-  target_dir = None
+  directories = []
   for target_file in fonts:
-    if target_dir is None:
-      target_dir = os.path.split(target_file)[0]
-    else:
-      if target_dir != os.path.split(target_file)[0]:
-        failed = True
-        break
+    directory = os.path.split(target_file)[0]
+    if directory not in directories:
+      directories.append(directory)
+      break
 
-  if not failed:
-    fb.ok("All files are in the same directory.")
+  if len(directories) == 1:
+    yield PASS, "All files are in the same directory."
   else:
-    fb.error("Not all fonts passed in the command line"
-             " are in the same directory. This may lead to"
-             " bad results as the tool will interpret all"
-             " font files as belonging to a single font family.")
+    yield FAIL, ("Not all fonts passed in the command line"
+                 " are in the same directory. This may lead to"
+                 " bad results as the tool will interpret all"
+                 " font files as belonging to a single"
+                 " font family. The detected directories are:"
+                 " {}".format(directories))
 
 
 @register_condition
@@ -202,11 +199,11 @@ def description(descfile):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/003'
   , conditions=['description']
 )
-def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
+def check_DESCRIPTION_file_contains_no_broken_links(description):
   """Does DESCRIPTION file contain broken links ?"""
   doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
   broken_links = []
@@ -218,25 +215,25 @@ def check_DESCRIPTION_file_contains_no_broken_links(fb, description):
         broken_links.append(("url: '{}' "
                              "status code: '{}'").format(link, code))
     except requests.exceptions.Timeout:
-      fb.warning(("Timedout while attempting to access: '{}'."
-                  " Please verify if that's a broken link.").format(link))
+      yield WARN, ("Timedout while attempting to access: '{}'."
+                   " Please verify if that's a broken link.").format(link)
     except requests.exceptions.RequestException:
       broken_links.append(link)
 
   if len(broken_links) > 0:
-    fb.error(("The following links are broken"
-              " in the DESCRIPTION file:"
-              " '{}'").format("', '".join(broken_links)))
+    yield FAIL, ("The following links are broken"
+                 " in the DESCRIPTION file:"
+                 " '{}'").format("', '".join(broken_links))
   else:
-    fb.ok("All links in the DESCRIPTION file look good!")
+    yield PASS, "All links in the DESCRIPTION file look good!"
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/004'
   , conditions=['descfile']
 )
-def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
+def check_DESCRIPTION_is_propper_HTML_snippet(descfile):
   """Is this a propper HTML snippet ?
 
   When packaging families for google/fonts, if there is no
@@ -250,50 +247,48 @@ def check_DESCRIPTION_is_propper_HTML_snippet(fb, descfile):
     if "HTML" not in contenttype:
       data = open(descfile).read()
       if "<p>" in data and "</p>" in data:
-        fb.ok(("{} is a propper"
-               " HTML snippet.").format(descfile))
+        yield PASS, "{} is a propper HTML snippet.".format(descfile)
       else:
-        fb.error(("{} is not a propper"
-                  " HTML snippet.").format(descfile))
+        yield FAIL, "{} is not a propper HTML snippet.".format(descfile)
     else:
-      fb.ok("{} is a propper HTML file.".format(descfile))
+      yield PASS, "{} is a propper HTML file.".format(descfile)
   except AttributeError:
-     fb.skip("python magic version mismatch: "
-             "This check was skipped because the API of the python"
-             " magic module version installed in your system does not"
-             " provide the from_file method used in"
-             " the check implementation.")
+    yield SKIP, ("python magic version mismatch: "
+                 "This check was skipped because the API of the python"
+                 " magic module version installed in your system does not"
+                 " provide the from_file method used in"
+                 " the check implementation.")
   except ImportError:
-     fb.skip("This check depends on the magic python module which"
-             " does not seem to be currently installed on your system.")
+    yield SKIP, ("This check depends on the magic python module which"
+                 " does not seem to be currently installed on your system.")
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/005'
   , conditions=['descfile']
 )
-def check_DESCRIPTION_max_length(fb, descfile):
+def check_DESCRIPTION_max_length(descfile):
   """DESCRIPTION.en_us.html is more than 200 bytes ?"""
   statinfo = os.stat(descfile)
   if statinfo.st_size <= 200:
-    fb.error("{} must have size larger than 200 bytes".format(descfile))
+    yield FAIL, "{} must have size larger than 200 bytes".format(descfile)
   else:
-    fb.ok("{} is larger than 200 bytes".format(descfile))
+    yield PASS, "{} is larger than 200 bytes".format(descfile)
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/006'
   , conditions=['descfile']
 )
-def check_DESCRIPTION_min_length(fb, descfile):
+def check_DESCRIPTION_min_length(descfile):
   """DESCRIPTION.en_us.html is less than 1000 bytes ?"""
   statinfo = os.stat(descfile)
   if statinfo.st_size >= 1000:
-    fb.error("{} must have size smaller than 1000 bytes".format(descfile))
+    yield FAIL, "{} must have size smaller than 1000 bytes".format(descfile)
   else:
-    fb.ok("{} is smaller than 1000 bytes".format(descfile))
+    yield PASS, "{} is smaller than 1000 bytes".format(descfile)
 
 
 @register_condition
@@ -306,149 +301,150 @@ def metadata(family_directory):
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/007'
   , conditions=['metadata']
 )
-def check_font_designer_field_is_not_unknown(fb, metadata):
+def check_font_designer_field_is_not_unknown(metadata):
   """Font designer field in METADATA.pb must not be 'unknown'."""
   if metadata.designer.lower() == 'unknown':
-    fb.error("Font designer field is '{}'.".format(metadata.designer))
+    yield FAIL, "Font designer field is '{}'.".format(metadata.designer)
   else:
-    fb.ok("Font designer field is not 'unknown'.")
+    yield PASS, "Font designer field is not 'unknown'."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/008'
 )
-def check_fonts_have_consistent_underline_thickness(fb, ttFonts):
+def check_fonts_have_consistent_underline_thickness(ttFonts):
   """Fonts have consistent underline thickness?"""
-  fail = False
+  failed = False
   uWeight = None
   for ttfont in ttFonts:
     if uWeight is None:
       uWeight = ttfont['post'].underlineThickness
     if uWeight != ttfont['post'].underlineThickness:
-      fail = True
+      failed = True
 
-  if fail:
+  if failed:
     # FIXME: more info would be great! Which fonts are the outliers
-    fb.error("Thickness of the underline is not"
-             " the same accross this family. In order to fix this,"
-             " please make sure that the underlineThickness value"
-             " is the same in the 'post' table of all of this family"
-             " font files.")
+    yield FAIL, ("Thickness of the underline is not"
+                 " the same accross this family. In order to fix this,"
+                 " please make sure that the underlineThickness value"
+                 " is the same in the 'post' table of all of this family"
+                 " font files.")
   else:
-    fb.ok("Fonts have consistent underline thickness.")
+    yield PASS, "Fonts have consistent underline thickness."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/009'
 )
-def check_fonts_have_consistent_PANOSE_proportion(fb, ttFonts):
+def check_fonts_have_consistent_PANOSE_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
-  fail = False
+  failed = False
   proportion = None
   for ttfont in ttFonts:
     if proportion is None:
       proportion = ttfont['OS/2'].panose.bProportion
     if proportion != ttfont['OS/2'].panose.bProportion:
-      fail = True
+      failed = True
 
-  if fail:
-    fb.error("PANOSE proportion is not"
-             " the same accross this family."
-             " In order to fix this,"
-             " please make sure that the panose.bProportion value"
-             " is the same in the OS/2 table of all of this family"
-             " font files.")
+  if failed:
+    yield FAIL, ("PANOSE proportion is not"
+                 " the same accross this family."
+                 " In order to fix this,"
+                 " please make sure that the panose.bProportion value"
+                 " is the same in the OS/2 table of all of this family"
+                 " font files.")
   else:
-    fb.ok("Fonts have consistent PANOSE proportion.")
+    yield PASS, "Fonts have consistent PANOSE proportion."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/010'
 )
-def check_fonts_have_consistent_PANOSE_family_type(fb, ttFonts):
+def check_fonts_have_consistent_PANOSE_family_type(ttFonts):
   """Fonts have consistent PANOSE family type?"""
-  fail = False
+  failed = False
   familytype = None
   for ttfont in ttFonts:
     if familytype is None:
       familytype = ttfont['OS/2'].panose.bFamilyType
     if familytype != ttfont['OS/2'].panose.bFamilyType:
-      fail = True
+      failed = True
 
-  if fail:
-    fb.error("PANOSE family type is not"
-             " the same accross this family."
-             " In order to fix this,"
-             " please make sure that the panose.bFamilyType value"
-             " is the same in the OS/2 table of all of this family"
-             " font files.")
+  if failed:
+    yield FAIL, ("PANOSE family type is not"
+                 " the same accross this family."
+                 " In order to fix this,"
+                 " please make sure that the panose.bFamilyType value"
+                 " is the same in the OS/2 table of all of this family"
+                 " font files.")
   else:
-    fb.ok("Fonts have consistent PANOSE family type.")
+    yield PASS, "Fonts have consistent PANOSE family type."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/011'
 )
-def check_fonts_have_equal_numbers_of_glyphs(fb, ttFonts):
+def check_fonts_have_equal_numbers_of_glyphs(ttFonts):
   """Fonts have equal numbers of glyphs?"""
   counts = {}
   glyphs_count = None
-  fail = False
+  failed = False
   for ttfont in ttFonts:
     this_count = len(ttfont['glyf'].glyphs)
     if glyphs_count is None:
       glyphs_count = this_count
     if glyphs_count != this_count:
-      fail = True
+      failed = True
     counts[ttfont.reader.file.name] = this_count
 
-  if fail:
+  if failed:
     results_table = ""
     for key in counts.keys():
       results_table += "| {} | {} |\n".format(key,
                                               counts[key])
 
-    fb.error('Fonts have different numbers of glyphs:\n\n'
-             '{}'.format(results_table))
+    yield FAIL, ("Fonts have different numbers of glyphs:\n\n"
+                 "{}".format(results_table))
   else:
-    fb.ok("Fonts have equal numbers of glyphs.")
+    yield PASS, "Fonts have equal numbers of glyphs."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/012'
 )
-def check_fonts_have_equal_glyph_names(fb, ttFonts):
+def check_fonts_have_equal_glyph_names(ttFonts):
   """Fonts have equal glyph names?"""
   glyphs = None
-  fail = False
+  failed = False
   for ttfont in ttFonts:
     if not glyphs:
-      glyphs = ttfont['glyf'].glyphs
-    if glyphs.keys() != ttfont['glyf'].glyphs.keys():
-      fail = True
-  if fail:
-    fb.error('Fonts have different glyph names.')
+      glyphs = ttfont["glyf"].glyphs
+    if glyphs.keys() != ttfont["glyf"].glyphs.keys():
+      failed = True
+
+  if failed:
+    yield FAIL, "Fonts have different glyph names."
   else:
-    fb.ok("Fonts have equal glyph names.")
+    yield PASS, "Fonts have equal glyph names."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/013'
 )
-def check_fonts_have_equal_unicode_encodings(fb, ttFonts):
+def check_fonts_have_equal_unicode_encodings(ttFonts):
   """Fonts have equal unicode encodings?"""
   encoding = None
-  fail = False
+  failed = False
   for ttfont in ttFonts:
     cmap = None
     for table in ttfont['cmap'].tables:
@@ -458,18 +454,18 @@ def check_fonts_have_equal_unicode_encodings(fb, ttFonts):
     if not encoding:
       encoding = cmap.platEncID
     if encoding != cmap.platEncID:
-      fail = True
-  if fail:
-    fb.error('Fonts have different unicode encodings.')
+      failed = True
+  if failed:
+    yield FAIL, "Fonts have different unicode encodings."
   else:
-    fb.ok("Fonts have equal unicode encodings.")
+    yield PASS, "Fonts have equal unicode encodings."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/014'
 )
-def check_all_fontfiles_have_same_version(fb, ttFonts):
+def check_all_fontfiles_have_same_version(ttFonts):
   """Make sure all font files have the same version value."""
   all_detected_versions = []
   fontfile_versions = {}
@@ -484,33 +480,33 @@ def check_all_fontfiles_have_same_version(fb, ttFonts):
     for v in fontfile_versions.keys():
       versions_list += "* {}: {}\n".format(v.reader.file.name,
                                            fontfile_versions[v])
-    fb.warning(("version info differs among font"
-                " files of the same font project.\n"
-                "These were the version values found:\n"
-                "{}").format(versions_list))
+    yield WARN, ("version info differs among font"
+                 " files of the same font project.\n"
+                 "These were the version values found:\n"
+                 "{}").format(versions_list)
   else:
-    fb.ok("All font files have the same version.")
+    yield PASS, "All font files have the same version."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/015'
 )
-def check_font_has_post_table_version_2(fb, ttFont):
+def check_font_has_post_table_version_2(ttFont):
   """Font has post table version 2 ?"""
   if ttFont['post'].formatType != 2:
-    fb.error(("Post table should be version 2 instead of {}."
-              " More info at https://github.com/google/fonts/"
-              "issues/215").format(ttFont['post'].formatType))
+    yield FAIL, ("Post table should be version 2 instead of {}."
+                 " More info at https://github.com/google/fonts/"
+                 "issues/215").format(ttFont['post'].formatType)
   else:
-    fb.ok("Font has post table version 2.")
+    yield PASS, "Font has post table version 2."
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/016'
 )
-def check_OS2_fsType(fb, ttFont):
+def check_OS2_fsType(ttFont):
   """Checking OS/2 fsType
 
   Fonts must have their fsType bit set to 0. This setting is known as
@@ -518,14 +514,15 @@ def check_OS2_fsType(fb, ttFont):
   https://www.microsoft.com/typography/otspec/os2.htm#fst"""
 
   if ttFont['OS/2'].fsType != 0:
-    fb.error("OS/2 fsType is a legacy DRM-related field from the 80's"
-             " and must be zero (disabled) in all fonts.")
+    yield FAIL, ("OS/2 fsType is a legacy DRM-related field from the 80's"
+                 " and must be zero (disabled) in all fonts.")
   else:
-    fb.ok("OS/2 fsType is properly set to zero (80's DRM scheme is disabled).")
+    yield PASS, ("OS/2 fsType is properly set to zero "
+                 "(80's DRM scheme is disabled).")
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/017'
   , priority=IMPORTANT
   , conditions=['style']
@@ -533,7 +530,7 @@ def check_OS2_fsType(fb, ttFont):
   # Thes above is equivalent to requiring a canonical filename.
   # Can we have something like "passed com.google.fonts/test/001" as a condition ?
 )
-def check_main_entries_in_the_name_table(fb, ttFont, style):
+def check_main_entries_in_the_name_table(ttFont, style):
   """Assure valid format for the main entries in the name table.
 
      Each entry in the name table has a criteria for validity and
@@ -596,9 +593,9 @@ def check_main_entries_in_the_name_table(fb, ttFont, style):
   for nameId in required_nameIDs:
     if len(get_name_string(ttFont, nameId)) == 0:
       failed = True
-      fb.error(("Font lacks entry with"
-                " nameId={} ({})").format(nameId,
-                                          NAMEID_STR[nameId]))
+      yield FAIL, ("Font lacks entry with"
+                   " nameId={} ({})").format(nameId,
+                                             NAMEID_STR[nameId])
   for name in ttFont['name'].names:
     string = name.string.decode(name.getEncoding()).strip()
     nameid = name.nameID
@@ -618,18 +615,18 @@ def check_main_entries_in_the_name_table(fb, ttFont, style):
           expected_value = " ".join([fname_with_spaces,
                                      only_weight]).strip()
       else:
-        fb.error(("Font should not have a "
-                  "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
-                                                   nameid,
-                                                   PLATID_STR[plat],
-                                                   plat))
+        yield FAIL, ("Font should not have a "
+                     "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                      nameid,
+                                                      PLATID_STR[plat],
+                                                      plat)
         continue
     elif nameid == NAMEID_FONT_SUBFAMILY_NAME:
       if style_with_spaces not in STYLE_NAMES:
-        fb.error(("Style name '{}' inferred from filename"
-                  " is not canonical."
-                  " Valid options are: {}").format(style_with_spaces,
-                                                   STYLE_NAMES))
+        yield FAIL, ("Style name '{}' inferred from filename"
+                     " is not canonical."
+                     " Valid options are: {}").format(style_with_spaces,
+                                                      STYLE_NAMES)
         continue
       if plat == PLATFORM_ID_MACINTOSH:
         expected_value = style_with_spaces
@@ -667,24 +664,24 @@ def check_main_entries_in_the_name_table(fb, ttFont, style):
       # be declared in the name table
       continue
     if expected_value is None:
-        fb.warning(("Font is not expected to have a "
-                    "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
-                                                     nameid,
-                                                     PLATID_STR[plat],
-                                                     plat))
+      yield WARN, ("Font is not expected to have a "
+                   "[{}({}):{}({})] entry!").format(NAMEID_STR[nameid],
+                                                    nameid,
+                                                    PLATID_STR[plat],
+                                                    plat)
     elif string != expected_value:
       failed = True
-      fb.error(("[{}({}):{}({})] entry:"
-                " expected '{}'"
-                " but got '{}'").format(NAMEID_STR[nameid],
-                                        nameid,
-                                        PLATID_STR[plat],
-                                        plat,
-                                        expected_value,
-                                        unidecode(string)))
-  if failed is False:
-    fb.ok("Main entries in the name table"
-          " conform to expected format.")
+      yield FAIL, ("[{}({}):{}({})] entry:"
+                   " expected '{}'"
+                   " but got '{}'").format(NAMEID_STR[nameid],
+                                           nameid,
+                                           PLATID_STR[plat],
+                                           plat,
+                                           expected_value,
+                                           unidecode(string))
+  if not failed:
+    yield PASS, ("Main entries in the name table"
+                 " conform to expected format.")
 
 
 @register_condition
@@ -716,11 +713,11 @@ def registered_vendor_ids():
 
 
 @register_test
-@old_style_test(
+@test(
     id='com.google.fonts/test/018'
   , conditions=['registered_vendor_ids']
 )
-def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
+def check_OS2_achVendID(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
@@ -732,16 +729,17 @@ def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    fb.error("OS/2 VendorID is not set." +
-             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, ("OS/2 VendorID is not set." +
+                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    fb.error("OS/2 VendorID is '{}', a font editor default.".format(vid) +
-             SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, (("OS/2 VendorID is '{}',"
+                  " a font editor default.").format(vid) +
+                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif len(registered_vendor_ids.keys()) > 0:
     if vid not in registered_vendor_ids.keys():
-      fb.warning(("OS/2 VendorID value '{}' is not"
-                  " a known registered id.").format(vid) +
-                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+      yield WARN, (("OS/2 VendorID value '{}' is not"
+                    " a known registered id.").format(vid) +
+                    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
     else:
       failed = False
       for name in ttFont['name'].names:
@@ -749,15 +747,17 @@ def check_OS2_achVendID(fb, ttFont, registered_vendor_ids):
           manufacturer = name.string.decode(name.getEncoding()).strip()
           if manufacturer != registered_vendor_ids[vid].strip():
             failed = True
-            fb.warning("VendorID '{}' and corresponding registered name '{}'"
-                       " does not match the value that is currently set on"
-                       " the font nameID {} (Manufacturer Name): '{}'".format(
-                         vid,
-                         unidecode(registered_vendor_ids[vid]).strip(),
-                         NAMEID_MANUFACTURER_NAME,
-                         unidecode(manufacturer)))
+            yield WARN, ("VendorID '{}' and corresponding registered name"
+                         " '{}' does not match the value that is"
+                         " currently set on the font nameID"
+                         " {} (Manufacturer Name):"
+                         " '{}'".format(
+                           vid,
+                           unidecode(registered_vendor_ids[vid]).strip(),
+                           NAMEID_MANUFACTURER_NAME,
+                           unidecode(manufacturer)))
       if not failed:
-        fb.ok("OS/2 VendorID '{}' looks good!".format(vid))
+        yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
 
 
 @register_test
