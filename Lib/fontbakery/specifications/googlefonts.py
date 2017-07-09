@@ -2115,6 +2115,163 @@ def check_font_has_unique_glyph_names(ttFont):
                  " occur twice: {}").format(duplicated_glyphIDs)
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/060'
+)
+def check_no_glyph_is_incorrectly_named(ttFont):
+  """No glyph is incorrectly named?"""
+  bad_glyphIDs = []
+  for _, g in enumerate(ttFont.getGlyphOrder()):
+    if re.search(r'#\w+$', g):
+      glyphID = re.sub(r'#\w+', '', g)
+      bad_glyphIDs.append(glyphID)
+
+  if len(bad_glyphIDs) == 0:
+    yield PASS, "Font does not have any incorrectly named glyph."
+  else:
+    yield FAIL, ("The following glyph IDs"
+                 " are incorrectly named: {}").format(bad_glyphIDs)
+
+@register_test
+@test(
+    id='com.google.fonts/test/061'
+)
+def check_EPAR_table_is_present(ttFont):
+  """EPAR table present in font?"""
+  if "EPAR" not in ttFont:
+    yield PASS, ("EPAR table not present in font."
+                 " To learn more see"
+                 " https://github.com/googlefonts/"
+                 "fontbakery/issues/818")
+  else:
+    yield PASS, "EPAR table present in font."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/062'
+)
+def check_GASP_table_is_correctly_set(ttFont):
+  """Is GASP table correctly set?"""
+  try:
+    if not isinstance(ttFont["gasp"].gaspRange, dict):
+      yield FAIL, "GASP.gaspRange method value have wrong type."
+    else:
+      failed = False
+      if 0xFFFF not in ttFont["gasp"].gaspRange:
+        yield FAIL, "GASP does not have 0xFFFF gaspRange."
+      else:
+        for key in ttFont["gasp"].gaspRange.keys():
+          if key != 0xFFFF:
+            yield ERROR, ("GASP should only have 0xFFFF gaspRange,"
+                          " but {} gaspRange was also found."
+                          "").format(hex(key))
+            failed = True
+          else:
+            value = ttFont["gasp"].gaspRange[key]
+            if value != 0x0F:
+              failed = True
+              yield WARN, (" All flags in GASP range 0xFFFF (i.e. all font"
+                           " sizes) must be set to 1.\n"
+                           " Rationale:\n"
+                           " Traditionally version 0 GASP tables were set"
+                           " so that font sizes below 8 ppem had no grid"
+                           " fitting but did have antialiasing. From 9-16"
+                           " ppem, just grid fitting. And fonts above"
+                           " 17ppem had both antialiasing and grid fitting"
+                           " toggled on. The use of accelerated graphics"
+                           " cards and higher resolution screens make this"
+                           " appraoch obsolete. Microsoft's DirectWrite"
+                           " pushed this even further with much improved"
+                           " rendering built into the OS and apps. In this"
+                           " scenario it makes sense to simply toggle all"
+                           " 4 flags ON for all font sizes.")
+        if not failed:
+          yield PASS, "GASP table is correctly set."
+  except KeyError:
+    yield FAIL, ("Font is missing the GASP table."
+                 " Try exporting the font with autohinting enabled.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/063'
+)
+def check_GPOS_table_has_kerning_info(ttFont):
+  """Does GPOS table have kerning information?"""
+  if "GPOS" not in ttFont:
+    yield FAIL, "Font is missing a \"GPOS\" table."
+  else:
+    has_kerning_info = False
+    for lookup in ttFont["GPOS"].table.LookupList.Lookup:
+      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+        has_kerning_info = True
+        break  # avoid reading all kerning info
+      elif lookup.LookupType == 9:
+        if lookup.SubTable[0].ExtensionLookupType == 2:
+          has_kerning_info = True
+          break
+    if not has_kerning_info:
+      yield WARN, "GPOS table lacks kerning information."
+    else:
+      yield PASS, "GPOS table has got kerning information."
+
+
+@register_condition
+@condition
+def ligatures(ttFont):
+  all_ligatures = {}
+  if "GSUB" in ttFont:
+    for lookup in ttFont["GSUB"].table.LookupList.Lookup:
+      # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+      if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+        for subtable in lookup.SubTable:
+          for firstGlyph in subtable.ligatures.keys():
+            all_ligatures[firstGlyph] = []
+            for lig in subtable.ligatures[firstGlyph]:
+              if lig.Component[0] not in all_ligatures[firstGlyph]:
+                all_ligatures[firstGlyph].append(lig.Component[0])
+  return all_ligatures
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/064'
+  , conditions=['ligatures']
+)
+def check_all_ligatures_have_corresponding_caret_positions(ttFont, ligatures):
+  """Is there a caret position declared for every ligature?
+
+      All ligatures in a font must have corresponding caret (text cursor)
+      positions defined in the GDEF table, otherwhise, users may experience
+      issues with caret rendering.
+  """
+
+  if "GDEF" not in ttFont:
+    yield FAIL, ("GDEF table is missing, but it is mandatory to declare it"
+                 " on fonts that provide ligature glyphs because the caret"
+                 " (text cursor) positioning for each ligature must be"
+                 " provided in this table.")
+  else:
+    # TODO: After getting a sample of a good font,
+    #       resume the implementation of this routine:
+    lig_caret_list = ttFont["GDEF"].table.LigCaretList
+    if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
+      yield FAIL, ("This font lacks caret position values for ligature"
+                   " glyphs on its GDEF table.")
+    elif lig_caret_list.LigGlyphCount != len(ligatures):
+      yield WARN, ("It seems that this font lacks caret positioning values"
+                   " for some of its ligature glyphs on the GDEF table."
+                   " There's a total of {} ligatures, but only {} sets of"
+                   " caret positioning values."
+                   "").format(len(ligatures),
+                              lig_caret_list.LigGlyphCount)
+    else:
+      # Should we also actually check each individual entry here?
+      yield PASS, "Looks good!"
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
