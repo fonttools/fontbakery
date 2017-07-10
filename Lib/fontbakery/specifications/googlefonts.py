@@ -2278,7 +2278,6 @@ def check_all_ligatures_have_corresponding_caret_positions(ttFont, ligatures):
     id='com.google.fonts/test/065'
   , conditions=['ligatures', 'has_kerning_info']
 )
-
 def check_nonligated_sequences_kerning_info(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?
 
@@ -2315,6 +2314,21 @@ def check_nonligated_sequences_kerning_info(ttFont, ligatures, has_kerning_info)
   else:
     yield PASS, ("GPOS table provides kerning info for "
                  "all non-ligated sequences.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/066'
+)
+def check_there_is_no_KERN_table_in_the_font(ttFont):
+  """Is there a "KERN" table declared in the font?
+
+     Fonts should have their kerning implemented in the GPOS table."""
+
+  if "KERN" in ttFont:
+    yield FAIL, "Font should not have a \"KERN\" table"
+  else:
+    yield PASS, "Font does not declare a \"KERN\" table."
 
 
 @register_condition
