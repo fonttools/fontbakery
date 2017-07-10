@@ -243,16 +243,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_there_is_no_KERN_table_in_the_font(fb, font):
-  """Fonts should have their kerning implemented in the GPOS table"""
-  fb.new_check("066", "Is there a 'KERN' table declared in the font?")
-  try:
-    font["KERN"]
-    fb.error("Font should not have a 'KERN' table")
-  except KeyError:
-    fb.ok("Font does not declare a 'KERN' table.")
-
-
 def check_familyname_does_not_begin_with_a_digit(fb, font):
   """Font family names which start with a numeral are often not
   discoverable in Windows applications."""
