@@ -2331,6 +2331,27 @@ def check_there_is_no_KERN_table_in_the_font(ttFont):
     yield PASS, "Font does not declare a \"KERN\" table."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/067'
+)
+def check_familyname_does_not_begin_with_a_digit(ttFont):
+  """Make sure family name does not begin with a digit.
+
+     Font family names which start with a numeral are often not
+     discoverable in Windows applications.
+  """
+  failed = False
+  for name in get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME):
+    digits = map(str, range(0, 10))
+    if name[0] in digits:
+      yield FAIL, ("Font family name '{}'"
+                   " begins with a digit!").format(name)
+      failed = True
+  if failed is False:
+    yield PASS, "Font family name first character is not a digit."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
