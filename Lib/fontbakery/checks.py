@@ -243,23 +243,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_familyname_does_not_begin_with_a_digit(fb, font):
-  """Font family names which start with a numeral are often not
-  discoverable in Windows applications."""
-  fb.new_check("067", "Make sure family name"
-                      " does not begin with a digit.")
-
-  failed = False
-  for name in get_name_string(font, NAMEID_FONT_FAMILY_NAME):
-    digits = map(str, range(0, 10))
-    if name[0] in digits:
-      fb.error(("Font family name '{}'"
-                " begins with a digit!").format(name))
-      failed = True
-  if failed is False:
-    fb.ok("Font family name first character is not a digit.")
-
-
 def check_fullfontname_begins_with_the_font_familyname(fb, font):
   fb.new_check("068", "Does full font name begin with the font family name?")
   familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
