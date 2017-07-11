@@ -211,7 +211,6 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_unused_data_at_the_end_of_glyf_table(fb, font)
     checks.check_font_follows_the_family_naming_recommendations(fb, font)
     checks.check_font_enables_smart_dropout_control(fb, font)
     checks.check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb,

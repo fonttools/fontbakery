@@ -242,33 +242,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hints should NOT overlap!",
            "Hinds do not overlap.")
 
-def check_unused_data_at_the_end_of_glyf_table(fb, font):
-  fb.new_check("069", "Is there any unused data at the end of the glyf table?")
-  if 'CFF ' in font:
-    fb.skip("This check does not support CFF fonts.")
-  else:
-    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
-    expected = len(font['loca']) - 1
-    actual = len(font['glyf'])
-    diff = actual - expected
-
-    # allow up to 3 bytes of padding
-    if diff > 3:
-      fb.error(("Glyf table has unreachable data at"
-                " the end of the table."
-                " Expected glyf table length {}"
-                " (from loca table), got length"
-                " {} (difference: {})").format(expected, actual, diff))
-    elif diff < 0:
-      fb.error(("Loca table references data beyond"
-                " the end of the glyf table."
-                " Expected glyf table length {}"
-                " (from loca table), got length"
-                " {} (difference: {})").format(expected, actual, diff))
-    else:
-      fb.ok("There is no unused data at"
-            " the end of the glyf table.")
-
 
 def check_font_follows_the_family_naming_recommendations(fb, font):
   fb.new_check("071", "Font follows the family naming recommendations?")

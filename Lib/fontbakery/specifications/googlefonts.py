@@ -2390,6 +2390,37 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
 
 @register_test
 @test(
+    id='com.google.fonts/test/069'
+)
+def check_unused_data_at_the_end_of_glyf_table(ttFont):
+  """Is there any unused data at the end of the glyf table?"""
+  if 'CFF ' in ttFont:
+    yield SKIP, "This check does not support CFF fonts."
+  else:
+    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+    expected = len(ttFont['loca']) - 1
+    actual = len(ttFont['glyf'])
+    diff = actual - expected
+
+    # allow up to 3 bytes of padding
+    if diff > 3:
+      yield FAIL, ("Glyf table has unreachable data at"
+                   " the end of the table."
+                   " Expected glyf table length {}"
+                   " (from loca table), got length"
+                   " {} (difference: {})").format(expected, actual, diff)
+    elif diff < 0:
+      yield FAIL, ("Loca table references data beyond"
+                   " the end of the glyf table."
+                   " Expected glyf table length {}"
+                   " (from loca table), got length"
+                   " {} (difference: {})").format(expected, actual, diff)
+    else:
+      yield PASS, "There is no unused data at the end of the glyf table."
+
+
+@register_test
+@test(
     id='com.google.fonts/test/070'
 )
 def check_font_has_EURO_SIGN_character(ttFont):
