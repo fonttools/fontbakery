@@ -179,8 +179,6 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
 
-    #checks.perform_all_fontforge_checks(fb, validation_state)
-
     # PyFontaine-based glyph coverage checks:
     if config['coverage']:
       checks.check_glyphset_google_cyrillic_historical(fb, target)
