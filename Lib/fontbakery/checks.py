@@ -270,21 +270,6 @@ def check_unused_data_at_the_end_of_glyf_table(fb, font):
             " the end of the glyf table.")
 
 
-def check_font_has_EURO_SIGN_character(fb, font):
-  fb.new_check("070", "Font has 'EURO SIGN' character?")
-
-  def font_has_char(font, c):
-    if c in font['cmap'].buildReversed():
-      return len(font['cmap'].buildReversed()[c]) > 0
-    else:
-      return False
-
-  if font_has_char(font, 'Euro'):
-    fb.ok("Font has 'EURO SIGN' character.")
-  else:
-    fb.error("Font lacks the '%s' character." % 'EURO SIGN')
-
-
 def check_font_follows_the_family_naming_recommendations(fb, font):
   fb.new_check("071", "Font follows the family naming recommendations?")
   # See http://forum.fontlab.com/index.php?topic=313.0

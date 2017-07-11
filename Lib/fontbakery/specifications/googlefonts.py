@@ -2388,6 +2388,23 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
       yield PASS, "Full font name begins with the font family name."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/070'
+)
+def check_font_has_EURO_SIGN_character(ttFont):
+  """Font has 'EURO SIGN' character?"""
+
+  def font_has_char(ttFont, c):
+    rev = ttFont['cmap'].buildReversed()
+    return (c in rev) and len(rev[c]) > 0
+
+  if font_has_char(ttFont, "Euro"):
+    yield PASS, "Font has \"EURO SIGN\" character."
+  else:
+    yield FAIL, "Font lacks the \"EURO SIGN\" character."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
