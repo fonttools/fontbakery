@@ -242,39 +242,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hints should NOT overlap!",
            "Hinds do not overlap.")
 
-
-def check_fullfontname_begins_with_the_font_familyname(fb, font):
-  fb.new_check("068", "Does full font name begin with the font family name?")
-  familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-  fullfontname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-
-  if len(familyname) == 0:
-    fb.error('Font lacks a NAMEID_FONT_FAMILY_NAME entry'
-             ' in the name table.')
-  elif len(fullfontname) == 0:
-    fb.error('Font lacks a NAMEID_FULL_FONT_NAME entry'
-             ' in the name table.')
-  else:
-    # we probably should check all found values are equivalent.
-    # and, in that case, then performing the rest of the check
-    # with only the first occurences of the name entries
-    # will suffice:
-    fullfontname = fullfontname[0]
-    familyname = familyname[0]
-
-    if not fullfontname.startswith(familyname):
-      fb.error(" On the NAME table, the full font name"
-               " (NameID {} - FULL_FONT_NAME: '{}')"
-               " does not begin with font family name"
-               " (NameID {} - FONT_FAMILY_NAME:"
-               " '{}')".format(NAMEID_FULL_FONT_NAME,
-                               familyname,
-                               NAMEID_FONT_FAMILY_NAME,
-                               fullfontname))
-    else:
-      fb.ok('Full font name begins with the font family name.')
-
-
 def check_unused_data_at_the_end_of_glyf_table(fb, font):
   fb.new_check("069", "Is there any unused data at the end of the glyf table?")
   if 'CFF ' in font:
