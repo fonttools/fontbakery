@@ -2525,6 +2525,46 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
     yield PASS, "Font follows the family naming recommendations."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/072'
+)
+def check_font_enables_smart_dropout_control(ttFont):
+  """Font enables smart dropout control in "prep" table instructions?
+
+     B8 01 FF    PUSHW 0x01FF
+     85          SCANCTRL (unconditinally turn on
+                           dropout control mode)
+     B0 04       PUSHB 0x04
+     8D          SCANTYPE (enable smart dropout control)
+
+     Smart dropout control means activating rules 1, 2 and 5:
+     Rule 1: If a pixel's center falls within the glyph outline,
+             that pixel is turned on.
+     Rule 2: If a contour falls exactly on a pixel's center,
+             that pixel is turned on.
+     Rule 5: If a scan line between two adjacent pixel centers
+             (either vertical or horizontal) is intersected
+             by both an on-Transition contour and an off-Transition
+             contour and neither of the pixels was already turned on
+             by rules 1 and 2, turn on the pixel which is closer to
+             the midpoint between the on-Transition contour and
+             off-Transition contour. This is "Smart" dropout control.
+  """
+  instructions = b"\xb8\x01\xff\x85\xb0\x04\x8d"
+  if "CFF " in ttFont:
+    yield SKIP, "Not applicable to a CFF font."
+  else:
+    if ("prep" in ttFont and
+        instructions in ttFont["prep"].program.getBytecode()):
+      yield PASS, ("Program at 'prep' table contains instructions"
+                   " enabling smart dropout control.")
+    else:
+      yield WARN, ("Font does not contain TrueType instructions enabling"
+                   " smart dropout control in the 'prep' table program."
+                   " Please try exporting the font with autohinting enabled.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
