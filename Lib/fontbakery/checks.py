@@ -114,21 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_all_glyphs_have_codepoints_assigned(fb, font):
-  fb.new_check("077", "Check all glyphs have codepoints assigned")
-  failed = False
-  for subtable in font['cmap'].tables:
-    if subtable.isUnicode():
-      for item in subtable.cmap.items():
-        codepoint = item[0]
-        if codepoint is None:
-          failed = True
-          fb.error(("Glyph {} lacks a unicode"
-                    " codepoint assignment").format(codepoint))
-  if not failed:
-    fb.ok("All glyphs have a codepoint value assigned.")
-
-
 def check_that_glyph_names_do_not_exceed_max_length(fb, font):
   fb.new_check("078", "Check that glyph names do not exceed max length")
   failed = False

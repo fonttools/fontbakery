@@ -2796,6 +2796,25 @@ def check_glyphs_have_unique_unicode_codepoints(ttFont):
     yield PASS, "All glyphs have unique unicode codepoint assignments."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/077'
+)
+def check_all_glyphs_have_codepoints_assigned(ttFont):
+  """Check all glyphs have codepoints assigned"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    if subtable.isUnicode():
+      for item in subtable.cmap.items():
+        codepoint = item[0]
+        if codepoint is None:
+          failed = True
+          yield FAIL, ("Glyph {} lacks a unicode"
+                       " codepoint assignment").format(codepoint)
+  if not failed:
+    yield PASS, "All glyphs have a codepoint value assigned."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
