@@ -114,17 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_Ensure_designer_simple_short_name(fb, family):
-  fb.new_check("080", "METADATA.pb: Ensure designer simple short name.")
-  if len(family.designer.split(' ')) >= 4 or\
-     ' and ' in family.designer or\
-     '.' in family.designer or\
-     ',' in family.designer:
-    fb.error('`designer` key must be simple short name')
-  else:
-    fb.ok('Designer is a simple short name')
-
-
 def check_family_is_listed_in_GFDirectory(fb, family):
   fb.new_check("081", "METADATA.pb: Fontfamily is listed"
                       " in Google Font Directory ?")

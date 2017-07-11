@@ -2879,3 +2879,19 @@ def check_hhea_table_and_advanceWidth_values(ttFont):
   else:
     yield PASS, ("hhea.advanceWidthMax is equal"
                  " to all glyphs' advanceWidth in this monospaced font.")
+
+@register_test
+@test(
+    id='com.google.fonts/test/080'
+  , conditions=['metadata']
+)
+def check_METADATA_Ensure_designer_simple_short_name(metadata):
+  """METADATA.pb: Ensure designer simple short name."""
+  if len(metadata.designer.split(" ")) >= 4 or \
+     " and " in metadata.designer or \
+     "." in metadata.designer or \
+     "," in metadata.designer:
+    yield FAIL, "\"designer\" key must be simple short name"
+  else:
+    yield PASS, "Designer is a simple short name"
+
