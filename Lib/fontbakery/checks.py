@@ -114,20 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_that_glyph_names_do_not_exceed_max_length(fb, font):
-  fb.new_check("078", "Check that glyph names do not exceed max length")
-  failed = False
-  for subtable in font['cmap'].tables:
-    for item in subtable.cmap.items():
-      name = item[1]
-      if len(name) > 109:
-        failed = True
-        fb.error(("Glyph name is too long:"
-                  " '{}'").format(name))
-  if not failed:
-    fb.ok("No glyph names exceed max allowed length.")
-
-
 def check_METADATA_Ensure_designer_simple_short_name(fb, family):
   fb.new_check("080", "METADATA.pb: Ensure designer simple short name.")
   if len(family.designer.split(' ')) >= 4 or\

@@ -209,8 +209,6 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_that_glyph_names_do_not_exceed_max_length(fb, font)
-
 ##########################################################
 ## Metadata related checks:
 ##########################################################

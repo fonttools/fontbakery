@@ -2815,6 +2815,24 @@ def check_all_glyphs_have_codepoints_assigned(ttFont):
     yield PASS, "All glyphs have a codepoint value assigned."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/078'
+)
+def check_that_glyph_names_do_not_exceed_max_length(ttFont):
+  """Check that glyph names do not exceed max length"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    for item in subtable.cmap.items():
+      name = item[1]
+      if len(name) > 109:
+        failed = True
+        yield FAIL, ("Glyph name is too long:"
+                     " '{}'").format(name)
+  if not failed:
+    yield PASS, "No glyph names exceed max allowed length."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
