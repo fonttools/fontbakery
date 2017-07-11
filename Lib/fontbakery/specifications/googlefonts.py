@@ -2565,6 +2565,31 @@ def check_font_enables_smart_dropout_control(ttFont):
                    " Please try exporting the font with autohinting enabled.")
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/073'
+)
+def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(ttFont):
+  """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
+  hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
+  hmtx_advance_width_max = None
+  for g in ttFont['hmtx'].metrics.values():
+    if hmtx_advance_width_max is None:
+      hmtx_advance_width_max = max(0, g[0])
+    else:
+      hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
+
+  if hmtx_advance_width_max is None:
+    yield FAIL, "Failed to find advance width data in HMTX table!"
+  elif hmtx_advance_width_max != hhea_advance_width_max:
+    yield FAIL, ("AdvanceWidthMax mismatch: expected %s (from hmtx);"
+                 " got %s (from hhea)") % (hmtx_advance_width_max,
+                                           hhea_advance_width_max)
+  else:
+    yield PASS, ("MaxAdvanceWidth is consistent"
+                 " with values in the Hmtx and Hhea tables.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):

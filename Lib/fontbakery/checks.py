@@ -243,28 +243,6 @@ def perform_all_fontforge_checks(fb, validation_state):
            "Hinds do not overlap.")
 
 
-def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb, font):
-  fb.new_check("073", "MaxAdvanceWidth is consistent with values"
-                      " in the Hmtx and Hhea tables?")
-  hhea_advance_width_max = font['hhea'].advanceWidthMax
-  hmtx_advance_width_max = None
-  for g in font['hmtx'].metrics.values():
-    if hmtx_advance_width_max is None:
-      hmtx_advance_width_max = max(0, g[0])
-    else:
-      hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
-
-  if hmtx_advance_width_max is None:
-    fb.error("Failed to find advance width data in HMTX table!")
-  elif hmtx_advance_width_max != hhea_advance_width_max:
-    fb.error("AdvanceWidthMax mismatch: expected %s (from hmtx);"
-             " got %s (from hhea)") % (hmtx_advance_width_max,
-                                       hhea_advance_width_max)
-  else:
-    fb.ok("MaxAdvanceWidth is consistent"
-          " with values in the Hmtx and Hhea tables.")
-
-
 def check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(fb, font):
   fb.new_check("074", "Are there non-ASCII characters"
                       " in ASCII-only NAME table entries ?")
