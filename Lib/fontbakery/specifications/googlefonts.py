@@ -2720,6 +2720,31 @@ def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(ttFont):
                  " with values in the Hmtx and Hhea tables.")
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/074'
+)
+def check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(ttFont):
+  """Are there non-ASCII characters in ASCII-only NAME table entries ?"""
+  bad_entries = []
+  for name in ttFont["name"].names:
+    # Items with NameID > 18 are expressly for localising
+    # the ASCII-only IDs into Hindi / Arabic / etc.
+    if name.nameID >= 0 and name.nameID <= 18:
+      string = name.string.decode(name.getEncoding())
+      try:
+        string.encode('ascii')
+      except:
+        bad_entries.append(name)
+  if len(bad_entries) > 0:
+    yield FAIL, ("There are {} strings containing"
+                 " non-ASCII characters in the ASCII-only"
+                 " NAME table entries.").format(len(bad_entries))
+  else:
+    yield PASS, ("None of the ASCII-only NAME table entries"
+                 " contain non-ASCII characteres.")
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):

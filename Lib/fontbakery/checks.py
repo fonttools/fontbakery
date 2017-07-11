@@ -114,27 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(fb, font):
-  fb.new_check("074", "Are there non-ASCII characters"
-                      " in ASCII-only NAME table entries ?")
-  bad_entries = []
-  for name in font['name'].names:
-    # Items with NameID > 18 are expressly for localising
-    # the ASCII-only IDs into Hindi / Arabic / etc.
-    if name.nameID >= 0 and name.nameID <= 18:
-      string = name.string.decode(name.getEncoding())
-      try:
-        string.encode('ascii')
-      except:
-        bad_entries.append(name)
-  if len(bad_entries) > 0:
-    fb.error(('There are {} strings containing'
-              ' non-ASCII characters in the ASCII-only'
-              ' NAME table entries.').format(len(bad_entries)))
-  else:
-    fb.ok('None of the ASCII-only NAME table entries'
-          ' contain non-ASCII characteres.')
-
 ##########################################################
 ##  Checks ported from:                                 ##
 ##  https://github.com/mekkablue/Glyphs-Scripts/        ##
