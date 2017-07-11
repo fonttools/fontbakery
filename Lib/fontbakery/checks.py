@@ -114,38 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-##########################################################
-##  Checks ported from:                                 ##
-##  https://github.com/mekkablue/Glyphs-Scripts/        ##
-##  blob/447270c7a82fa272acc312e120abb20f82716d08/      ##
-##  Test/Preflight%20Font.py                            ##
-##########################################################
-
-
-def check_for_points_out_of_bounds(fb, font):
-  fb.new_check("075", "Check for points out of bounds")
-  failed = False
-  for glyphName in font['glyf'].keys():
-    glyph = font['glyf'][glyphName]
-    coords = glyph.getCoordinates(font['glyf'])[0]
-    for x, y in coords:
-      if x < glyph.xMin or x > glyph.xMax or \
-         y < glyph.yMin or y > glyph.yMax or \
-         abs(x) > 32766 or abs(y) > 32766:
-        failed = True
-        fb.warning(("Glyph '{}' coordinates ({},{})"
-                    " out of bounds."
-                    " This happens a lot when points are not extremes,"
-                    " which is usually bad. However, fixing this alert"
-                    " by adding points on extremes may do more harm"
-                    " than good, especially with italics,"
-                    " calligraphic-script, handwriting, rounded and"
-                    " other fonts. So it is common to"
-                    " ignore this message.").format(glyphName, x, y))
-  if not failed:
-    fb.ok("All glyph paths have coordinates within bounds!")
-
-
 def check_glyphs_have_unique_unicode_codepoints(fb, font):
   fb.new_check("076", "Check glyphs have unique unicode codepoints")
   failed = False
