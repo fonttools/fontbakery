@@ -2352,6 +2352,42 @@ def check_familyname_does_not_begin_with_a_digit(ttFont):
     yield PASS, "Font family name first character is not a digit."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/068'
+)
+def check_fullfontname_begins_with_the_font_familyname(ttFont):
+  """Does full font name begin with the font family name?"""
+  familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  fullfontname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+
+  if len(familyname) == 0:
+    yield FAIL, ("Font lacks a NAMEID_FONT_FAMILY_NAME"
+                 " entry in the name table.")
+  elif len(fullfontname) == 0:
+    yield FAIL, ("Font lacks a NAMEID_FULL_FONT_NAME"
+                 " entry in the name table.")
+  else:
+    # we probably should check all found values are equivalent.
+    # and, in that case, then performing the rest of the check
+    # with only the first occurences of the name entries
+    # will suffice:
+    fullfontname = fullfontname[0]
+    familyname = familyname[0]
+
+    if not fullfontname.startswith(familyname):
+      yield FAIL, (" On the NAME table, the full font name"
+                   " (NameID {} - FULL_FONT_NAME: '{}')"
+                   " does not begin with font family name"
+                   " (NameID {} - FONT_FAMILY_NAME:"
+                   " '{}')".format(NAMEID_FULL_FONT_NAME,
+                                   familyname,
+                                   NAMEID_FONT_FAMILY_NAME,
+                                   fullfontname))
+    else:
+      yield PASS, "Full font name begins with the font family name."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
