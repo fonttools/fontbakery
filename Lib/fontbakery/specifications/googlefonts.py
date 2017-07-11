@@ -2436,6 +2436,95 @@ def check_font_has_EURO_SIGN_character(ttFont):
     yield FAIL, "Font lacks the \"EURO SIGN\" character."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/071'
+)
+def check_font_follows_the_family_naming_recommendations(ttFont):
+  """Font follows the family naming recommendations?"""
+  # See http://forum.fontlab.com/index.php?topic=313.0
+  bad_entries = []
+
+  # <Postscript name> may contain only a-zA-Z0-9
+  # and one hyphen
+  regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
+  for name in get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if not regex.match(name):
+      bad_entries.append({'field': 'PostScript Name',
+                          'rec': 'May contain only a-zA-Z0-9'
+                                 ' characters and an hyphen'})
+    if name.count('-') > 1:
+      bad_entries.append({'field': 'Postscript Name',
+                          'rec': 'May contain not more'
+                                 ' than a single hyphen'})
+
+  for name in get_name_string(ttFont, NAMEID_FULL_FONT_NAME):
+    if len(name) >= 64:
+      bad_entries.append({'field': 'Full Font Name',
+                          'rec': 'exceeds max length (64)'})
+
+  for name in get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if len(name) >= 30:
+      bad_entries.append({'field': 'PostScript Name',
+                          'rec': 'exceeds max length (30)'})
+
+  for name in get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'Family Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'Style Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'OT Family Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'OT Style Name',
+                          'rec': 'exceeds max length (32)'})
+  weight_value = None
+  if "OS/2" in ttFont:
+    field = "OS/2 usWeightClass"
+    weight_value = ttFont["OS/2"].usWeightClass
+  if "CFF " in ttFont:
+    field = "CFF Weight"
+    weight_value = ttFont["CFF "].Weight
+
+  if weight_value is not None:
+    # <Weight> value >= 250 and <= 900 in steps of 50
+    if weight_value % 50 != 0:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be a multiple of 50."})
+    full_info = " "
+    " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
+    " (unintentionally) returning the style-linked bold. Because of this,"
+    " you may wish to manually override the weightclass setting for all"
+    " extra light, ultra light or thin fonts'"
+    " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
+    if weight_value < 250:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be 250 or more." +
+                                 full_info})
+    if weight_value > 900:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be 900 or less."})
+  if len(bad_entries) > 0:
+    table = "| Field | Recommendation |\n"
+    table += "|:----- |:-------------- |\n"
+    for bad in bad_entries:
+      table += "| {} | {} |\n".format(bad["field"], bad["rec"])
+    yield INFO, ("Font does not follow "
+                 "some family naming recommendations:\n\n"
+                 "{}").format(table)
+  else:
+    yield PASS, "Font follows the family naming recommendations."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
