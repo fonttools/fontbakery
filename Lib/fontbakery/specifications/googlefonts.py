@@ -2194,28 +2194,29 @@ def check_GASP_table_is_correctly_set(ttFont):
                  " Try exporting the font with autohinting enabled.")
 
 
+@register_condition
+@condition
+def has_kerning_info(ttFont):
+  if not "GPOS" in ttFont:
+    return False
+  for lookup in ttFont["GPOS"].table.LookupList.Lookup:
+    if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+      return True
+    elif lookup.LookupType == 9:
+      if lookup.SubTable[0].ExtensionLookupType == 2:
+        return True
+
+
 @register_test
 @test(
     id='com.google.fonts/test/063'
 )
 def check_GPOS_table_has_kerning_info(ttFont):
   """Does GPOS table have kerning information?"""
-  if "GPOS" not in ttFont:
-    yield FAIL, "Font is missing a \"GPOS\" table."
+  if not has_kerning_info(ttFont):
+    yield WARN, "GPOS table lacks kerning information."
   else:
-    has_kerning_info = False
-    for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-        has_kerning_info = True
-        break  # avoid reading all kerning info
-      elif lookup.LookupType == 9:
-        if lookup.SubTable[0].ExtensionLookupType == 2:
-          has_kerning_info = True
-          break
-    if not has_kerning_info:
-      yield WARN, "GPOS table lacks kerning information."
-    else:
-      yield PASS, "GPOS table has got kerning information."
+    yield PASS, "GPOS table has got kerning information."
 
 
 @register_condition
@@ -2270,6 +2271,85 @@ def check_all_ligatures_have_corresponding_caret_positions(ttFont, ligatures):
     else:
       # Should we also actually check each individual entry here?
       yield PASS, "Looks good!"
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/065'
+  , conditions=['ligatures', 'has_kerning_info']
+)
+def check_nonligated_sequences_kerning_info(ttFont, ligatures, has_kerning_info):
+  """Is there kerning info for non-ligated sequences?
+
+    Fonts with ligatures should have kerning on the corresponding
+    non-ligated sequences for text where ligatures are not used.
+  """
+  remaining = ligatures
+  def look_for_nonligated_kern_info(table):
+    for pairpos in table.SubTable:
+      for i, glyph in enumerate(pairpos.Coverage.glyphs):
+        if glyph in ligatures.keys():
+          for pairvalue in pairpos.PairSet[i].PairValueRecord:
+            if pairvalue.SecondGlyph in ligatures[glyph]:
+              del remaining[glyph]
+
+  for lookup in ttFont["GPOS"].table.LookupList.Lookup:
+    if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+      look_for_nonligated_kern_info(lookup)
+    # elif lookup.LookupType == 9:
+    #   if lookup.SubTable[0].ExtensionLookupType == 2:
+    #     look_for_nonligated_kern_info(lookup.SubTable[0])
+
+  def ligatures_str(ligs):
+    result = []
+    for first in ligs:
+      result.extend(["{}_{}".format(first, second)
+                     for second in ligs[first]])
+    return result
+
+  if remaining != {}:
+    yield FAIL, ("GPOS table lacks kerning info for the following"
+                 " non-ligated sequences: "
+                 "{}").format(ligatures_str(remaining))
+  else:
+    yield PASS, ("GPOS table provides kerning info for "
+                 "all non-ligated sequences.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/066'
+)
+def check_there_is_no_KERN_table_in_the_font(ttFont):
+  """Is there a "KERN" table declared in the font?
+
+     Fonts should have their kerning implemented in the GPOS table."""
+
+  if "KERN" in ttFont:
+    yield FAIL, "Font should not have a \"KERN\" table"
+  else:
+    yield PASS, "Font does not declare a \"KERN\" table."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/067'
+)
+def check_familyname_does_not_begin_with_a_digit(ttFont):
+  """Make sure family name does not begin with a digit.
+
+     Font family names which start with a numeral are often not
+     discoverable in Windows applications.
+  """
+  failed = False
+  for name in get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME):
+    digits = map(str, range(0, 10))
+    if name[0] in digits:
+      yield FAIL, ("Font family name '{}'"
+                   " begins with a digit!").format(name)
+      failed = True
+  if failed is False:
+    yield PASS, "Font family name first character is not a digit."
 
 
 @register_condition
