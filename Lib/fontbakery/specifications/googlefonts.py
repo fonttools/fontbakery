@@ -2773,6 +2773,29 @@ def check_for_points_out_of_bounds(ttFont):
     yield PASS, "All glyph paths have coordinates within bounds!"
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/076'
+)
+def check_glyphs_have_unique_unicode_codepoints(ttFont):
+  """Check glyphs have unique unicode codepoints"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    if subtable.isUnicode():
+      codepoints = {}
+      for codepoint, name in subtable.cmap.items():
+        codepoints.setdefault(codepoint, set()).add(name)
+      for value in codepoints.keys():
+        if len(codepoints[value]) >= 2:
+          failed = True
+          yield FAIL, ("These glyphs carry the same"
+                       " unicode value {}:"
+                       " {}").format(value,
+                                     ", ".join(codepoints[value]))
+  if not failed:
+    yield PASS, "All glyphs have unique unicode codepoint assignments."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
