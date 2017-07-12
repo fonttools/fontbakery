@@ -2895,3 +2895,25 @@ def check_METADATA_Ensure_designer_simple_short_name(metadata):
   else:
     yield PASS, "Designer is a simple short name"
 
+
+@register_condition
+@condition
+def listed_on_gfonts_api(metadata):
+  url = ('http://fonts.googleapis.com'
+         '/css?family=%s') % metadata.name.replace(' ', '+')
+  r = requests.get(url)
+  if r.status_code == 200:
+    return True
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/081'
+  , conditions=['metadata']
+)
+def check_family_is_listed_on_GoogleFontsAPI(metadata):
+  """METADATA.pb: Fontfamily is listed on Google Fonts API ?"""
+  if not listed_on_gfonts_api(metadata):
+    yield FAIL, "Family not found via Google Fonts API."
+  else:
+    yield PASS, "Font is properly listed via Google Fonts API."
