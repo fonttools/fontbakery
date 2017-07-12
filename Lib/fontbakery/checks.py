@@ -114,30 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_subsets_alphabetically_ordered(fb, path, family):
-  fb.new_check("087", "METADATA.pb subsets should be alphabetically ordered.")
-  expected = list(sorted(family.subsets))
-
-  if list(family.subsets) != expected:
-    if fb.config["autofix"]:
-      fb.hotfix(("METADATA.pb subsets were not sorted "
-                 "in alphabetical order: ['{}']"
-                 " We're hotfixing that"
-                 " to ['{}']").format("', '".join(family.subsets),
-                                      "', '".join(expected)))
-      del family.subsets[:]
-      family.subsets.extend(expected)
-
-      save_FamilyProto_Message(path, family)
-    else:
-      fb.error(("METADATA.pb subsets are not sorted "
-                "in alphabetical order: Got ['{}']"
-                " and expected ['{}']").format("', '".join(family.subsets),
-                                               "', '".join(expected)))
-  else:
-    fb.ok("METADATA.pb subsets are sorted in alphabetical order")
-
-
 def check_Copyright_notice_is_the_same_in_all_fonts(fb, family):
   fb.new_check("088", "Copyright notice is the same in all fonts ?")
   copyright = ''
