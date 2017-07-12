@@ -2966,8 +2966,8 @@ def check_METADATA_has_unique_full_name_values(metadata):
   """METADATA.pb: check if fonts field only has
      unique "full_name" values."""
   fonts = {}
-  for font in metadata.fonts:
-    fonts[font.full_name] = font
+  for f in metadata.fonts:
+    fonts[f.full_name] = f
 
   if len(set(fonts.keys())) != len(metadata.fonts):
     yield FAIL, ("Found duplicated \"full_name\" values"
@@ -2975,3 +2975,23 @@ def check_METADATA_has_unique_full_name_values(metadata):
   else:
     yield PASS, ("METADATA.pb \"fonts\" field only has"
                  " unique \"full_name\" values.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/084'
+  , conditions=['metadata']
+)
+def check_METADATA_check_style_weight_pairs_are_unique(metadata):
+  """METADATA.pb: check if fonts field
+     only contains unique style:weight pairs."""
+  pairs = {}
+  for f in metadata.fonts:
+    styleweight = "%s:%s" % (f.style, f.weight)
+    pairs[styleweight] = 1
+  if len(set(pairs.keys())) != len(metadata.fonts):
+    yield FAIL, ("Found duplicated style:weight pair"
+                 " in METADATA.pb fonts field.")
+  else:
+    yield PASS, ("METADATA.pb \"fonts\" field only has"
+                 " unique style:weight pairs.")
