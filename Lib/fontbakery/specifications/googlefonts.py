@@ -3033,3 +3033,21 @@ def check_METADATA_contains_at_least_menu_and_latin_subsets(metadata):
                  " \"{}\"").format(" and ".join(missing))
   else:
     yield PASS, "METADATA.pb contains \"menu\" and \"latin\" subsets."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/087'
+  , conditions=['metadata']
+)
+def check_METADATA_subsets_alphabetically_ordered(metadata):
+  """METADATA.pb subsets should be alphabetically ordered."""
+  expected = list(sorted(metadata.subsets))
+
+  if list(metadata.subsets) != expected:
+    yield FAIL, ("METADATA.pb subsets are not sorted "
+                 "in alphabetical order: Got ['{}']"
+                 " and expected ['{}']").format("', '".join(metadata.subsets),
+                                                "', '".join(expected))
+  else:
+    yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
