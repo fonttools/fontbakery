@@ -2955,3 +2955,23 @@ def check_METADATA_Designer_exists_in_GFonts_profiles_csv(metadata):
                      " at profiles.csv").format(metadata.designer)
     except:
       yield WARN, "Failed to fetch \"{}\"".format(PROFILES_RAW_URL)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/083'
+  , conditions=['metadata']
+)
+def check_METADATA_has_unique_full_name_values(metadata):
+  """METADATA.pb: check if fonts field only has
+     unique "full_name" values."""
+  fonts = {}
+  for font in metadata.fonts:
+    fonts[font.full_name] = font
+
+  if len(set(fonts.keys())) != len(metadata.fonts):
+    yield FAIL, ("Found duplicated \"full_name\" values"
+                 " in METADATA.pb fonts field.")
+  else:
+    yield PASS, ("METADATA.pb \"fonts\" field only has"
+                 " unique \"full_name\" values.")
