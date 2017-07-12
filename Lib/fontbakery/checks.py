@@ -114,22 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_family_is_listed_in_GFDirectory(fb, family):
-  fb.new_check("081", "METADATA.pb: Fontfamily is listed"
-                      " in Google Font Directory ?")
-  url = ('http://fonts.googleapis.com'
-         '/css?family=%s') % family.name.replace(' ', '+')
-  try:
-    r = requests.get(url)
-    if r.status_code != 200:
-      fb.error('No family found in GWF in %s' % url)
-    else:
-      fb.ok('Font is properly listed in Google Font Directory.')
-      return url
-  except:
-    fb.warning("Failed to query GWF at {}".format(url))
-
-
 def check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family):
   fb.new_check("082", "METADATA.pb: Designer exists in GWF profiles.csv ?")
   PROFILES_GIT_URL = ('https://github.com/google/'

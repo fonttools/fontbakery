@@ -54,8 +54,7 @@ def fontbakery_check_ttf(config):
   elif config['verbose'] >= 2:
     logger.setLevel(logging.DEBUG)
   else:
-    if args.progress:
-      fb.progressbar = True
+    fb.progressbar = True
     logger.setLevel(logging.CRITICAL)
 
   if config['error']:
@@ -120,12 +119,6 @@ def fontbakery_check_ttf(config):
   for dirname, family in metadata_to_check:
     ttf = {}
     for f in family.fonts:
-      if not os.path.exists(os.path.join(dirname, f.filename)):
-        logging.warning(("METADATA.pb references a TTF file"
-                         " that is missing: "
-                         "'{}'").format(os.path.join(dirname, f.filename)))
-        continue
-
       if font_key(f) in ttf.keys():
         # I think this will likely never happen. But just in case...
         logging.error("This is a fontbakery bug."
@@ -213,7 +206,6 @@ def fontbakery_check_ttf(config):
 ## Metadata related checks:
 ##########################################################
     skip_gfonts = False
-    is_listed_in_GFD = False
     metadata = os.path.join(family_dir, "METADATA.pb")
     if not os.path.exists(metadata):
       logging.warning(("{} is missing a METADATA.pb file!"
@@ -230,13 +222,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-<<<<<<< aec8b6027d2d2013a4f994f837f2448da0dedcac
-      checks.check_METADATA_Ensure_all_TTF_references_are_valid(fb, family)
-      checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
-=======
->>>>>>> port check 080: METADATA: Ensure_designer_simple_short_name
-      is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
-                                                                        family)
       checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
       checks.check_METADATA_has_unique_full_name_values(fb, family)
       checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
@@ -310,48 +295,7 @@ def fontbakery_check_ttf(config):
     # Google-Fonts specific check:
     checks.check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
 
-
-##########################################################
-## Step 3: Regression related checks:
-# if family already exists on fonts.google.com
-##########################################################
-
     # ------------------------------------------------------
-    if is_listed_in_GFD:
-      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name) # pylint: disable=no-member
-      remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
-
-      remote_styles = {}
-      for remote_filename, remote_font in remote_fonts_to_check:
-        fb.default_target = "GF:" + remote_filename
-	if '-' in remote_filename[:-4]:
-          remote_style = remote_filename[:-4].split('-')[1]
-        else:
-          # This is a non-canonical filename!
-          remote_style = "Regular" #  But I'm giving it a chance here... :-)
-        remote_styles[remote_style] = remote_font
-
-        # Only perform tests if local fonts have the same styles
-        if remote_style in local_styles:
-          checks.check_regression_v_number_increased(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-          checks.check_regression_glyphs_structure(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-          checks.check_regression_ttfauto_xheight_increase(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-
     fb.output_report(target)
     fb.reset_report()
 
@@ -412,9 +356,6 @@ parser.add_argument('-j', '--json', action='store_true',
                     help='Output check results in JSON format.')
 parser.add_argument('-m', '--ghm', action='store_true',
                     help='Output check results in GitHub Markdown format.')
-parser.add_argument('-n', '--no-progress', action='store_false',
-                    dest='progress',
-                    help='Disables the display of a progress bar.')
 pyfontaine_parser = parser.add_mutually_exclusive_group(required=False)
 pyfontaine_parser.add_argument('--coverage',
                                help='Run glyph coverage checks'
