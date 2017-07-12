@@ -21,6 +21,8 @@ import os
 import re
 import requests
 import tempfile
+import urllib
+import csv
 from bs4 import BeautifulSoup
 from unidecode import unidecode
 import defusedxml.lxml
@@ -2917,3 +2919,39 @@ def check_family_is_listed_on_GoogleFontsAPI(metadata):
     yield FAIL, "Family not found via Google Fonts API."
   else:
     yield PASS, "Font is properly listed via Google Fonts API."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/082'
+  , conditions=['metadata']
+)
+def check_METADATA_Designer_exists_in_GFonts_profiles_csv(metadata):
+  """METADATA.pb: Designer exists in Google Fonts profiles.csv ?"""
+  PROFILES_GIT_URL = ("https://github.com/google/"
+                      "fonts/blob/master/designers/profiles.csv")
+  PROFILES_RAW_URL = ("https://raw.githubusercontent.com/google/"
+                      "fonts/master/designers/profiles.csv")
+  if metadata.designer == "":
+    yield FAIL, ("METADATA.pb field \"designer\" MUST NOT be empty!")
+  elif metadata.designer == "Multiple Designers":
+    yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
+                 " is OK, so we won't look for it at profiles.cvs")
+  else:
+    try:
+      handle = urllib.urlopen(PROFILES_RAW_URL)
+      designers = []
+      for row in csv.reader(handle):
+        if not row:
+          continue
+        designers.append(row[0].decode("utf-8"))
+      if metadata.designer not in designers:
+        yield WARN, ("METADATA.pb: Designer \"{}\" is not listed"
+                     " in profiles.csv"
+                     " (at \"{}\")").format(metadata.designer,
+                                            PROFILES_GIT_URL)
+      else:
+        yield PASS, ("Found designer \"{}\""
+                     " at profiles.csv").format(metadata.designer)
+    except:
+      yield WARN, "Failed to fetch \"{}\"".format(PROFILES_RAW_URL)

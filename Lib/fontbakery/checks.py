@@ -114,37 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family):
-  fb.new_check("082", "METADATA.pb: Designer exists in GWF profiles.csv ?")
-  PROFILES_GIT_URL = ('https://github.com/google/'
-                      'fonts/blob/master/designers/profiles.csv')
-  PROFILES_RAW_URL = ('https://raw.githubusercontent.com/google/'
-                      'fonts/master/designers/profiles.csv')
-  if family.designer == "":
-    fb.error('METADATA.pb field "designer" MUST NOT be empty!')
-  elif family.designer == "Multiple Designers":
-    fb.skip("Found 'Multiple Designers' at METADATA.pb, which is OK,"
-            "so we won't look for it at profiles.cvs")
-  else:
-    try:
-      handle = urllib.urlopen(PROFILES_RAW_URL)
-      designers = []
-      for row in csv.reader(handle):
-        if not row:
-          continue
-        designers.append(row[0].decode('utf-8'))
-      if family.designer not in designers:
-        fb.warning(("METADATA.pb: Designer '{}' is not listed"
-                    " in profiles.csv"
-                    " (at '{}')").format(family.designer,
-                                         PROFILES_GIT_URL))
-      else:
-        fb.ok(("Found designer '{}'"
-               " at profiles.csv").format(family.designer))
-    except:
-      fb.warning("Failed to fetch '{}'".format(PROFILES_RAW_URL))
-
-
 def check_METADATA_has_unique_full_name_values(fb, family):
   fb.new_check("083", "METADATA.pb: check if fonts field"
                       " only has unique 'full_name' values")
