@@ -114,19 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family):
-  fb.new_check("085", "METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
-  licenses = ['APACHE2', 'OFL', 'UFL']
-  if family.license in licenses:
-    fb.ok(("Font license is declared"
-           " in METADATA.pb as '{}'").format(family.license))
-  else:
-    fb.error(("METADATA.pb license field ('{}')"
-              " must be one of the following: {}").format(
-                family.license,
-                licenses))
-
-
 def check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family):
   fb.new_check("086", "METADATA.pb should contain at least"
                       " 'menu' and 'latin' subsets.")

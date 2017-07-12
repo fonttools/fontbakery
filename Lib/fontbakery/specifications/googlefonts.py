@@ -2995,3 +2995,21 @@ def check_METADATA_check_style_weight_pairs_are_unique(metadata):
   else:
     yield PASS, ("METADATA.pb \"fonts\" field only has"
                  " unique style:weight pairs.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/085'
+  , conditions=['metadata']
+)
+def check_METADATA_license_is_APACHE2_UFL_or_OFL(metadata):
+  """METADATA.pb license is "APACHE2", "UFL" or "OFL" ?"""
+  licenses = ["APACHE2", "OFL", "UFL"]
+  if metadata.license in licenses:
+    yield PASS, ("Font license is declared"
+                 " in METADATA.pb as \"{}\"").format(metadata.license)
+  else:
+    yield FAIL, ("METADATA.pb license field (\"{}\")"
+                 " must be one of the following:"
+                 " {}").format(metadata.license,
+                               licenses)
