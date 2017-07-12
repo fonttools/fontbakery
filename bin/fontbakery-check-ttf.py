@@ -222,8 +222,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      checks.check_METADATA_contains_at_least_menu_and_latin_subsets(fb,
-                                                                     family)
       checks.check_METADATA_subsets_alphabetically_ordered(fb,
                                                            metadata,
                                                            family)
