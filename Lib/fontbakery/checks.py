@@ -114,19 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_has_unique_full_name_values(fb, family):
-  fb.new_check("083", "METADATA.pb: check if fonts field"
-                      " only has unique 'full_name' values")
-  fonts = {}
-  for x in family.fonts:
-    fonts[x.full_name] = x
-  if len(set(fonts.keys())) != len(family.fonts):
-    fb.error("Found duplicated 'full_name' values"
-             " in METADATA.pb fonts field")
-  else:
-    fb.ok("METADATA.pb 'fonts' field only has unique 'full_name' values")
-
-
 def check_METADATA_check_style_weight_pairs_are_unique(fb, family):
   fb.new_check("084", "METADATA.pb: check if fonts field"
                       " only contains unique style:weight pairs")
