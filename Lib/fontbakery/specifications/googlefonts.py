@@ -3051,3 +3051,23 @@ def check_METADATA_subsets_alphabetically_ordered(metadata):
                                                 "', '".join(expected))
   else:
     yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/088'
+  , conditions=['metadata']
+)
+def check_Copyright_notice_is_the_same_in_all_fonts(metadata):
+  """Copyright notice is the same in all fonts ?"""
+  copyright = None
+  fail = False
+  for f in metadata.fonts:
+    if copyright and f.copyright != copyright:
+      fail = True
+    copyright = f.copyright
+  if fail:
+    yield FAIL, ("METADATA.pb: Copyright field value"
+                 " is inconsistent across family")
+  else:
+    yield PASS, "Copyright is consistent across family"

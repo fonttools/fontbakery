@@ -222,7 +222,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
       checks.check_METADATA_family_values_are_all_the_same(fb, family)
 
       found_regular = checks.check_font_has_regular_style(fb, family)
