@@ -1405,7 +1405,137 @@ def check_fforge_outputs_error_msgs(font, fontforge_check_results):
     yield PASS, "fontforge validation did not output any error message."
 
 
-# TODO: check 039: fontforge checks
+@register_test
+@test(
+    id='com.google.fonts/test/039'
+  , conditions=['fontforge_check_results']
+)
+def perform_all_fontforge_checks(fontforge_check_results):
+  """Fontbakery checks"""
+
+  def ff_check(description, condition, err_msg, ok_msg):
+    if condition is False:
+      yield FAIL, "fontforge-check: {}".format(err_msg)
+    else:
+      yield PASS, "fontforge-check: {}".format(ok_msg)
+
+  validation_state = fontforge_check_results["validation_state"]
+
+  ff_check("Contours are closed?",
+           bool(validation_state & 0x2) is False,
+           "Contours are not closed!",
+           "Contours are closed.")
+
+  ff_check("Contours do not intersect",
+           bool(validation_state & 0x4) is False,
+           "There are countour intersections!",
+           "Contours do not intersect.")
+
+  ff_check("Contours have correct directions",
+           bool(validation_state & 0x8) is False,
+           "Contours have incorrect directions!",
+           "Contours have correct directions.")
+
+  ff_check("References in the glyph haven't been flipped",
+           bool(validation_state & 0x10) is False,
+           "References in the glyph have been flipped!",
+           "References in the glyph haven't been flipped.")
+
+  ff_check("Glyphs have points at extremas",
+           bool(validation_state & 0x20) is False,
+           "Glyphs do not have points at extremas!",
+           "Glyphs have points at extremas.")
+
+  ff_check("Glyph names referred to from glyphs present in the font",
+           bool(validation_state & 0x40) is False,
+           "Glyph names referred to from glyphs"
+           " not present in the font!",
+           "Glyph names referred to from glyphs"
+           " present in the font.")
+
+  ff_check("Points (or control points) are not too far apart",
+           bool(validation_state & 0x40000) is False,
+           "Points (or control points) are too far apart!",
+           "Points (or control points) are not too far apart.")
+
+  ff_check("Not more than 1,500 points in any glyph"
+           " (a PostScript limit)",
+           bool(validation_state & 0x80) is False,
+           "There are glyphs with more than 1,500 points!"
+           "Exceeds a PostScript limit.",
+           "Not more than 1,500 points in any glyph"
+           " (a PostScript limit).")
+
+  ff_check("PostScript has a limit of 96 hints in glyphs",
+           bool(validation_state & 0x100) is False,
+           "Exceeds PostScript limit of 96 hints per glyph",
+           "Font respects PostScript limit of 96 hints per glyph")
+
+  ff_check("Font doesn't have invalid glyph names",
+           bool(validation_state & 0x200) is False,
+           "Font has invalid glyph names!",
+           "Font doesn't have invalid glyph names.")
+
+  ff_check("Glyphs have allowed numbers of points defined in maxp",
+           bool(validation_state & 0x400) is False,
+           "Glyphs exceed allowed numbers of points defined in maxp",
+           "Glyphs have allowed numbers of points defined in maxp.")
+
+  ff_check("Glyphs have allowed numbers of paths defined in maxp",
+           bool(validation_state & 0x800) is False,
+           "Glyphs exceed allowed numbers of paths defined in maxp!",
+           "Glyphs have allowed numbers of paths defined in maxp.")
+
+  ff_check("Composite glyphs have allowed numbers"
+           " of points defined in maxp?",
+           bool(validation_state & 0x1000) is False,
+           "Composite glyphs exceed allowed numbers"
+           " of points defined in maxp!",
+           "Composite glyphs have allowed numbers"
+           " of points defined in maxp.")
+
+  ff_check("Composite glyphs have allowed numbers"
+           " of paths defined in maxp",
+           bool(validation_state & 0x2000) is False,
+           "Composite glyphs exceed"
+           " allowed numbers of paths defined in maxp!",
+           "Composite glyphs have"
+           " allowed numbers of paths defined in maxp.")
+
+  ff_check("Glyphs instructions have valid lengths",
+           bool(validation_state & 0x4000) is False,
+           "Glyphs instructions have invalid lengths!",
+           "Glyphs instructions have valid lengths.")
+
+  ff_check("Points in glyphs are integer aligned",
+           bool(validation_state & 0x80000) is False,
+           "Points in glyphs are not integer aligned!",
+           "Points in glyphs are integer aligned.")
+
+  # According to the opentype spec, if a glyph contains an anchor point
+  # for one anchor class in a subtable, it must contain anchor points
+  # for all anchor classes in the subtable. Even it, logically,
+  # they do not apply and are unnecessary.
+  ff_check("Glyphs have all required anchors.",
+           bool(validation_state & 0x100000) is False,
+           "Glyphs do not have all required anchors!",
+           "Glyphs have all required anchors.")
+
+  ff_check("Glyph names are unique?",
+           bool(validation_state & 0x200000) is False,
+           "Glyph names are not unique!",
+           "Glyph names are unique.")
+
+  ff_check("Unicode code points are unique?",
+           bool(validation_state & 0x400000) is False,
+           "Unicode code points are not unique!",
+           "Unicode code points are unique.")
+
+  ff_check("Do hints overlap?",
+           bool(validation_state & 0x800000) is False,
+           "Hints should NOT overlap!",
+           "Hinds do not overlap.")
+
 
 @register_condition
 @condition
@@ -2352,6 +2482,357 @@ def check_familyname_does_not_begin_with_a_digit(ttFont):
     yield PASS, "Font family name first character is not a digit."
 
 
+@register_test
+@test(
+    id='com.google.fonts/test/068'
+)
+def check_fullfontname_begins_with_the_font_familyname(ttFont):
+  """Does full font name begin with the font family name?"""
+  familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  fullfontname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+
+  if len(familyname) == 0:
+    yield FAIL, ("Font lacks a NAMEID_FONT_FAMILY_NAME"
+                 " entry in the name table.")
+  elif len(fullfontname) == 0:
+    yield FAIL, ("Font lacks a NAMEID_FULL_FONT_NAME"
+                 " entry in the name table.")
+  else:
+    # we probably should check all found values are equivalent.
+    # and, in that case, then performing the rest of the check
+    # with only the first occurences of the name entries
+    # will suffice:
+    fullfontname = fullfontname[0]
+    familyname = familyname[0]
+
+    if not fullfontname.startswith(familyname):
+      yield FAIL, (" On the NAME table, the full font name"
+                   " (NameID {} - FULL_FONT_NAME: '{}')"
+                   " does not begin with font family name"
+                   " (NameID {} - FONT_FAMILY_NAME:"
+                   " '{}')".format(NAMEID_FULL_FONT_NAME,
+                                   familyname,
+                                   NAMEID_FONT_FAMILY_NAME,
+                                   fullfontname))
+    else:
+      yield PASS, "Full font name begins with the font family name."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/069'
+)
+def check_unused_data_at_the_end_of_glyf_table(ttFont):
+  """Is there any unused data at the end of the glyf table?"""
+  if 'CFF ' in ttFont:
+    yield SKIP, "This check does not support CFF fonts."
+  else:
+    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+    expected = len(ttFont['loca']) - 1
+    actual = len(ttFont['glyf'])
+    diff = actual - expected
+
+    # allow up to 3 bytes of padding
+    if diff > 3:
+      yield FAIL, ("Glyf table has unreachable data at"
+                   " the end of the table."
+                   " Expected glyf table length {}"
+                   " (from loca table), got length"
+                   " {} (difference: {})").format(expected, actual, diff)
+    elif diff < 0:
+      yield FAIL, ("Loca table references data beyond"
+                   " the end of the glyf table."
+                   " Expected glyf table length {}"
+                   " (from loca table), got length"
+                   " {} (difference: {})").format(expected, actual, diff)
+    else:
+      yield PASS, "There is no unused data at the end of the glyf table."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/070'
+)
+def check_font_has_EURO_SIGN_character(ttFont):
+  """Font has 'EURO SIGN' character?"""
+
+  def font_has_char(ttFont, c):
+    rev = ttFont['cmap'].buildReversed()
+    return (c in rev) and len(rev[c]) > 0
+
+  if font_has_char(ttFont, "Euro"):
+    yield PASS, "Font has \"EURO SIGN\" character."
+  else:
+    yield FAIL, "Font lacks the \"EURO SIGN\" character."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/071'
+)
+def check_font_follows_the_family_naming_recommendations(ttFont):
+  """Font follows the family naming recommendations?"""
+  # See http://forum.fontlab.com/index.php?topic=313.0
+  bad_entries = []
+
+  # <Postscript name> may contain only a-zA-Z0-9
+  # and one hyphen
+  regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
+  for name in get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if not regex.match(name):
+      bad_entries.append({'field': 'PostScript Name',
+                          'rec': 'May contain only a-zA-Z0-9'
+                                 ' characters and an hyphen'})
+    if name.count('-') > 1:
+      bad_entries.append({'field': 'Postscript Name',
+                          'rec': 'May contain not more'
+                                 ' than a single hyphen'})
+
+  for name in get_name_string(ttFont, NAMEID_FULL_FONT_NAME):
+    if len(name) >= 64:
+      bad_entries.append({'field': 'Full Font Name',
+                          'rec': 'exceeds max length (64)'})
+
+  for name in get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if len(name) >= 30:
+      bad_entries.append({'field': 'PostScript Name',
+                          'rec': 'exceeds max length (30)'})
+
+  for name in get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'Family Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'Style Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'OT Family Name',
+                          'rec': 'exceeds max length (32)'})
+
+  for name in get_name_string(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
+    if len(name) >= 32:
+      bad_entries.append({'field': 'OT Style Name',
+                          'rec': 'exceeds max length (32)'})
+  weight_value = None
+  if "OS/2" in ttFont:
+    field = "OS/2 usWeightClass"
+    weight_value = ttFont["OS/2"].usWeightClass
+  if "CFF " in ttFont:
+    field = "CFF Weight"
+    weight_value = ttFont["CFF "].Weight
+
+  if weight_value is not None:
+    # <Weight> value >= 250 and <= 900 in steps of 50
+    if weight_value % 50 != 0:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be a multiple of 50."})
+    full_info = " "
+    " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
+    " (unintentionally) returning the style-linked bold. Because of this,"
+    " you may wish to manually override the weightclass setting for all"
+    " extra light, ultra light or thin fonts'"
+    " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
+    if weight_value < 250:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be 250 or more." +
+                                 full_info})
+    if weight_value > 900:
+      bad_entries.append({"field": field,
+                          "rec": "Value should idealy be 900 or less."})
+  if len(bad_entries) > 0:
+    table = "| Field | Recommendation |\n"
+    table += "|:----- |:-------------- |\n"
+    for bad in bad_entries:
+      table += "| {} | {} |\n".format(bad["field"], bad["rec"])
+    yield INFO, ("Font does not follow "
+                 "some family naming recommendations:\n\n"
+                 "{}").format(table)
+  else:
+    yield PASS, "Font follows the family naming recommendations."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/072'
+)
+def check_font_enables_smart_dropout_control(ttFont):
+  """Font enables smart dropout control in "prep" table instructions?
+
+     B8 01 FF    PUSHW 0x01FF
+     85          SCANCTRL (unconditinally turn on
+                           dropout control mode)
+     B0 04       PUSHB 0x04
+     8D          SCANTYPE (enable smart dropout control)
+
+     Smart dropout control means activating rules 1, 2 and 5:
+     Rule 1: If a pixel's center falls within the glyph outline,
+             that pixel is turned on.
+     Rule 2: If a contour falls exactly on a pixel's center,
+             that pixel is turned on.
+     Rule 5: If a scan line between two adjacent pixel centers
+             (either vertical or horizontal) is intersected
+             by both an on-Transition contour and an off-Transition
+             contour and neither of the pixels was already turned on
+             by rules 1 and 2, turn on the pixel which is closer to
+             the midpoint between the on-Transition contour and
+             off-Transition contour. This is "Smart" dropout control.
+  """
+  instructions = b"\xb8\x01\xff\x85\xb0\x04\x8d"
+  if "CFF " in ttFont:
+    yield SKIP, "Not applicable to a CFF font."
+  else:
+    if ("prep" in ttFont and
+        instructions in ttFont["prep"].program.getBytecode()):
+      yield PASS, ("Program at 'prep' table contains instructions"
+                   " enabling smart dropout control.")
+    else:
+      yield WARN, ("Font does not contain TrueType instructions enabling"
+                   " smart dropout control in the 'prep' table program."
+                   " Please try exporting the font with autohinting enabled.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/073'
+)
+def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(ttFont):
+  """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
+  hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
+  hmtx_advance_width_max = None
+  for g in ttFont['hmtx'].metrics.values():
+    if hmtx_advance_width_max is None:
+      hmtx_advance_width_max = max(0, g[0])
+    else:
+      hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
+
+  if hmtx_advance_width_max is None:
+    yield FAIL, "Failed to find advance width data in HMTX table!"
+  elif hmtx_advance_width_max != hhea_advance_width_max:
+    yield FAIL, ("AdvanceWidthMax mismatch: expected %s (from hmtx);"
+                 " got %s (from hhea)") % (hmtx_advance_width_max,
+                                           hhea_advance_width_max)
+  else:
+    yield PASS, ("MaxAdvanceWidth is consistent"
+                 " with values in the Hmtx and Hhea tables.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/074'
+)
+def check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(ttFont):
+  """Are there non-ASCII characters in ASCII-only NAME table entries ?"""
+  bad_entries = []
+  for name in ttFont["name"].names:
+    # Items with NameID > 18 are expressly for localising
+    # the ASCII-only IDs into Hindi / Arabic / etc.
+    if name.nameID >= 0 and name.nameID <= 18:
+      string = name.string.decode(name.getEncoding())
+      try:
+        string.encode('ascii')
+      except:
+        bad_entries.append(name)
+  if len(bad_entries) > 0:
+    yield FAIL, ("There are {} strings containing"
+                 " non-ASCII characters in the ASCII-only"
+                 " NAME table entries.").format(len(bad_entries))
+  else:
+    yield PASS, ("None of the ASCII-only NAME table entries"
+                 " contain non-ASCII characteres.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/075'
+)
+def check_for_points_out_of_bounds(ttFont):
+  """Check for points out of bounds."""
+  failed = False
+  for glyphName in ttFont['glyf'].keys():
+    glyph = ttFont['glyf'][glyphName]
+    coords = glyph.getCoordinates(ttFont['glyf'])[0]
+    for x, y in coords:
+      if x < glyph.xMin or x > glyph.xMax or \
+         y < glyph.yMin or y > glyph.yMax or \
+         abs(x) > 32766 or abs(y) > 32766:
+        failed = True
+        yield WARN, ("Glyph '{}' coordinates ({},{})"
+                     " out of bounds."
+                     " This happens a lot when points are not extremes,"
+                     " which is usually bad. However, fixing this alert"
+                     " by adding points on extremes may do more harm"
+                     " than good, especially with italics,"
+                     " calligraphic-script, handwriting, rounded and"
+                     " other fonts. So it is common to"
+                     " ignore this message.").format(glyphName, x, y)
+  if not failed:
+    yield PASS, "All glyph paths have coordinates within bounds!"
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/076'
+)
+def check_glyphs_have_unique_unicode_codepoints(ttFont):
+  """Check glyphs have unique unicode codepoints"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    if subtable.isUnicode():
+      codepoints = {}
+      for codepoint, name in subtable.cmap.items():
+        codepoints.setdefault(codepoint, set()).add(name)
+      for value in codepoints.keys():
+        if len(codepoints[value]) >= 2:
+          failed = True
+          yield FAIL, ("These glyphs carry the same"
+                       " unicode value {}:"
+                       " {}").format(value,
+                                     ", ".join(codepoints[value]))
+  if not failed:
+    yield PASS, "All glyphs have unique unicode codepoint assignments."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/077'
+)
+def check_all_glyphs_have_codepoints_assigned(ttFont):
+  """Check all glyphs have codepoints assigned"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    if subtable.isUnicode():
+      for item in subtable.cmap.items():
+        codepoint = item[0]
+        if codepoint is None:
+          failed = True
+          yield FAIL, ("Glyph {} lacks a unicode"
+                       " codepoint assignment").format(codepoint)
+  if not failed:
+    yield PASS, "All glyphs have a codepoint value assigned."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/078'
+)
+def check_that_glyph_names_do_not_exceed_max_length(ttFont):
+  """Check that glyph names do not exceed max length"""
+  failed = False
+  for subtable in ttFont['cmap'].tables:
+    for item in subtable.cmap.items():
+      name = item[1]
+      if len(name) > 109:
+        failed = True
+        yield FAIL, ("Glyph name is too long:"
+                     " '{}'").format(name)
+  if not failed:
+    yield PASS, "No glyph names exceed max allowed length."
+
+
 @register_condition
 @condition
 def seems_monospaced(monospace_stats):
@@ -2398,3 +2879,19 @@ def check_hhea_table_and_advanceWidth_values(ttFont):
   else:
     yield PASS, ("hhea.advanceWidthMax is equal"
                  " to all glyphs' advanceWidth in this monospaced font.")
+
+@register_test
+@test(
+    id='com.google.fonts/test/080'
+  , conditions=['metadata']
+)
+def check_METADATA_Ensure_designer_simple_short_name(metadata):
+  """METADATA.pb: Ensure designer simple short name."""
+  if len(metadata.designer.split(" ")) >= 4 or \
+     " and " in metadata.designer or \
+     "." in metadata.designer or \
+     "," in metadata.designer:
+    yield FAIL, "\"designer\" key must be simple short name"
+  else:
+    yield PASS, "Designer is a simple short name"
+

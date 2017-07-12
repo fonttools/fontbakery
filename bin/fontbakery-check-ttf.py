@@ -179,8 +179,6 @@ def fontbakery_check_ttf(config):
     checks.check_OS2_usWeightClass(fb, font, style)
     checks.check_OS2_fsSelection(fb, font, style)
 
-    #checks.perform_all_fontforge_checks(fb, validation_state)
-
     # PyFontaine-based glyph coverage checks:
     if config['coverage']:
       checks.check_glyphset_google_cyrillic_historical(fb, target)
@@ -204,23 +202,6 @@ def fontbakery_check_ttf(config):
       checks.check_glyphset_google_vietnamese(fb, target)
       checks.check_glyphset_google_extras(fb, target)
 
-    checks.check_nonligated_sequences_kerning_info(fb, font, has_kerning_info)
-    checks.check_there_is_no_KERN_table_in_the_font(fb, font)
-    checks.check_familyname_does_not_begin_with_a_digit(fb, font)
-    checks.check_fullfontname_begins_with_the_font_familyname(fb, font)
-    checks.check_unused_data_at_the_end_of_glyf_table(fb, font)
-    checks.check_font_has_EURO_SIGN_character(fb, font)
-    checks.check_font_follows_the_family_naming_recommendations(fb, font)
-    checks.check_font_enables_smart_dropout_control(fb, font)
-    checks.check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(fb,
-                                                                         font)
-    checks.check_non_ASCII_chars_in_ASCII_only_NAME_table_entries(fb, font)
-
-    checks.check_for_points_out_of_bounds(fb, font)
-    checks.check_glyphs_have_unique_unicode_codepoints(fb, font)
-    checks.check_all_glyphs_have_codepoints_assigned(fb, font)
-    checks.check_that_glyph_names_do_not_exceed_max_length(fb, font)
-
 ##########################################################
 ## Metadata related checks:
 ##########################################################
@@ -242,7 +223,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      checks.check_METADATA_Ensure_designer_simple_short_name(fb, family)
       is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
                                                                         family)
       checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
