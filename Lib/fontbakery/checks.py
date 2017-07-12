@@ -114,21 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Copyright_notice_is_the_same_in_all_fonts(fb, family):
-  fb.new_check("088", "Copyright notice is the same in all fonts ?")
-  copyright = ''
-  fail = False
-  for font_metadata in family.fonts:
-    if copyright and font_metadata.copyright != copyright:
-      fail = True
-    copyright = font_metadata.copyright
-  if fail:
-    fb.error('METADATA.pb: Copyright field value'
-             ' is inconsistent across family')
-  else:
-    fb.ok('Copyright is consistent across family')
-
-
 def check_METADATA_family_values_are_all_the_same(fb, family):
   fb.new_check("089", "Check that METADATA family values are all the same")
   name = ''
