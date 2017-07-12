@@ -114,21 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_contains_at_least_menu_and_latin_subsets(fb, family):
-  fb.new_check("086", "METADATA.pb should contain at least"
-                      " 'menu' and 'latin' subsets.")
-  missing = []
-  for s in ["menu", "latin"]:
-    if s not in list(family.subsets):
-      missing.append(s)
-
-  if missing != []:
-    fb.error(("Subsets 'menu' and 'latin' are mandatory, but METADATA.pb"
-              " is missing '{}'").format(' and '.join(missing)))
-  else:
-    fb.ok("METADATA.pb contains 'menu' and 'latin' subsets.")
-
-
 def check_METADATA_subsets_alphabetically_ordered(fb, path, family):
   fb.new_check("087", "METADATA.pb subsets should be alphabetically ordered.")
   expected = list(sorted(family.subsets))

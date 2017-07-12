@@ -3013,3 +3013,23 @@ def check_METADATA_license_is_APACHE2_UFL_or_OFL(metadata):
                  " must be one of the following:"
                  " {}").format(metadata.license,
                                licenses)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/086'
+  , conditions=['metadata']
+)
+def check_METADATA_contains_at_least_menu_and_latin_subsets(metadata):
+  """METADATA.pb should contain at least "menu" and "latin" subsets."""
+  missing = []
+  for s in ["menu", "latin"]:
+    if s not in list(metadata.subsets):
+      missing.append(s)
+
+  if missing != []:
+    yield FAIL, ("Subsets \"menu\" and \"latin\" are mandatory,"
+                 " but METADATA.pb is missing"
+                 " \"{}\"").format(" and ".join(missing))
+  else:
+    yield PASS, "METADATA.pb contains \"menu\" and \"latin\" subsets."
