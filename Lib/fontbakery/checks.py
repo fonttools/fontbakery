@@ -114,20 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_check_style_weight_pairs_are_unique(fb, family):
-  fb.new_check("084", "METADATA.pb: check if fonts field"
-                      " only contains unique style:weight pairs")
-  pairs = {}
-  for f in family.fonts:
-    styleweight = '%s:%s' % (f.style, f.weight)
-    pairs[styleweight] = 1
-  if len(set(pairs.keys())) != len(family.fonts):
-    logging.error("Found duplicated style:weight pair"
-                  " in METADATA.pb fonts field")
-  else:
-    fb.ok("METADATA.pb 'fonts' field only has unique style:weight pairs")
-
-
 def check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family):
   fb.new_check("085", "METADATA.pb license is 'APACHE2', 'UFL' or 'OFL' ?")
   licenses = ['APACHE2', 'OFL', 'UFL']
