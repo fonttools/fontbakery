@@ -222,7 +222,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
       checks.check_METADATA_has_unique_full_name_values(fb, family)
       checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
       checks.check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
