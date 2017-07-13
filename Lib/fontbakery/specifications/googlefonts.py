@@ -3187,8 +3187,8 @@ def check_METADATA_postScriptName_matches_name_table_value(ttFont, font_metadata
         failed = True
         yield FAIL, ("Unmatched postscript name in font:"
                      " TTF has \"{}\" while METADATA.pb has"
-                     " \"{}\"").format(psname,
-                                       font_metadata.post_script_name)
+                     " \"{}\".").format(psname,
+                                        font_metadata.post_script_name)
   if not failed:
     yield PASS, ("Postscript name \"{}\" is identical"
                  " in METADATA.pb and on the"
@@ -3212,9 +3212,34 @@ def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
       if full_fontname != font_metadata.full_name:
         yield FAIL, ("Unmatched fullname in font:"
                      " TTF has \"{}\" while METADATA.pb"
-                     " has \"{}\"").format(full_fontname,
-                                           font_metadata.full_name)
+                     " has \"{}\".").format(full_fontname,
+                                            font_metadata.full_name)
       else:
         yield PASS, ("Full fontname \"{}\" is identical"
                      " in METADATA.pb and on the"
                      " TTF file.").format(full_fontname)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/095'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
+  """METADATA.pb fonts "name" property should be same as font familyname."""
+  font_familynames = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if len(font_familynames) == 0:
+    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
+                 " (nameID={}) in the"
+                 " name table.").format(NAMEID_FONT_FAMILY_NAME)
+  else:
+    for font_familyname in font_familynames:
+      if font_familyname not in font_metadata.name:
+        yield FAIL, ("Unmatched familyname in font:"
+                     " TTF has \"{}\" while METADATA.pb has"
+                     " name=\"{}\".").format(font_familyname,
+                                             font_metadata.name)
+      else:
+        yield PASS, ("OK: Family name \"{}\" is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(font_metadata.name)
