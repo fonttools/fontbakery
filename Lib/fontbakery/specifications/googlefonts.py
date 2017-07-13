@@ -3092,3 +3092,27 @@ def check_METADATA_family_values_are_all_the_same(metadata):
   else:
     yield PASS, ("METADATA.pb: Family name is the same"
                  " in all metadata \"fonts\" items.")
+
+
+@register_condition
+@condition
+def has_regular_style(metadata):
+  for f in metadata.fonts:
+    if f.weight == 400 and f.style == "normal":
+      return True
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/090'
+  , conditions=['metadata']
+)
+def check_font_has_regular_style(metadata):
+  """According Google Fonts standards,
+     font should have Regular style."""
+  if has_regular_style(metadata):
+    yield PASS, "Font has a Regular style."
+  else:
+    yield FAIL, ("This font lacks a Regular"
+                 " (style: normal and weight: 400)"
+                 " as required by Google Fonts standards.")
