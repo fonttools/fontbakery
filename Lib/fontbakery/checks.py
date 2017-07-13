@@ -114,27 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_fullname_matches_name_table_value(fb, font, f):
-  fb.new_check("094", "METADATA.pb 'fullname' value"
-                      " matches internal 'fullname' ?")
-  full_fontnames = get_name_string(font, NAMEID_FULL_FONT_NAME)
-  if len(full_fontnames) == 0:
-    fb.error(("This font lacks a FULL_FONT_NAME"
-              " entry (nameID={}) in the "
-              "name table.").format(NAMEID_FULL_FONT_NAME))
-  else:
-    full_fontname = full_fontnames[0]
-
-    if full_fontname != f.full_name:
-      fb.error(('Unmatched fullname in font:'
-                ' TTF has "{}" while METADATA.pb'
-                ' has "{}"').format(full_fontname, f.full_name))
-    else:
-      fb.ok(("Full fontname '{}' is identical"
-             " in METADATA.pb and on the "
-             "TTF file.").format(full_fontname))
-
-
 def check_METADATA_fonts_name_matches_font_familyname(fb, font, f):
   fb.new_check("095", "METADATA.pb fonts 'name' property"
                       " should be same as font familyname")
