@@ -3194,3 +3194,27 @@ def check_METADATA_postScriptName_matches_name_table_value(ttFont, font_metadata
                  " in METADATA.pb and on the"
                  " TTF file.").format(font_metadata.post_script_name)
 
+
+@register_test
+@test(
+    id='com.google.fonts/test/094'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
+  """METADATA.pb "fullname" value matches internal "fullname" ?"""
+  full_fontnames = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+  if len(full_fontnames) == 0:
+    yield FAIL, ("This font lacks a FULL_FONT_NAME"
+                 " entry (nameID={}) in the"
+                 " name table.").format(NAMEID_FULL_FONT_NAME)
+  else:
+    for full_fontname in full_fontnames:
+      if full_fontname != font_metadata.full_name:
+        yield FAIL, ("Unmatched fullname in font:"
+                     " TTF has \"{}\" while METADATA.pb"
+                     " has \"{}\"").format(full_fontname,
+                                           font_metadata.full_name)
+      else:
+        yield PASS, ("Full fontname \"{}\" is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(full_fontname)
