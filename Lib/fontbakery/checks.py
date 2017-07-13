@@ -114,17 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_filename_contains_good_fname(fb, f, font_familyname):
-  fb.new_check("100", "METADATA.pb 'filename' contains"
-                      " font name in right format ?")
-  if "".join(str(font_familyname).split()) in f.filename:
-    fb.ok("METADATA.pb 'filename' contains"
-          " font name in right format.")
-  else:
-    fb.error(("METADATA.pb filename='{}' does not match"
-              " correct font name format.").format(f.filename))
-
-
 def check_METADATA_postScriptName_contains_good_fname(fb, f, familyname):
   fb.new_check("101", "METADATA.pb 'postScriptName' contains"
                       " font name in right format ?")
