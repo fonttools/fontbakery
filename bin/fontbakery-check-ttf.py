@@ -229,9 +229,6 @@ def fontbakery_check_ttf(config):
           ###### Here go single-TTF metadata tests #######
           # ----------------------------------------------
 
-          checks.check_font_on_disk_and_METADATA_have_same_family_name(fb,
-                                                                       font,
-                                                                       f)
           checks.check_METADATA_postScriptName_matches_name_table_value(fb,
                                                                         font,
                                                                         f)

@@ -3135,3 +3135,34 @@ def check_regular_is_400(metadata, has_regular_style):
                  " Please fix these: {}").format(", ".join(badfonts))
   else:
     yield PASS, "Regular has weight = 400."
+
+
+@register_condition
+@condition
+def font_metadata(metadata, ttFont):
+  for f in metadata.fonts:
+    if ttFont.reader.file.name.endswith(f.filename):
+      return f
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/092'
+  , conditions=['font_metadata']
+)
+def check_font_on_disk_and_METADATA_have_same_family_name(ttFont, font_metadata):
+  """Font on disk and in METADATA.pb have the same family name ?"""
+  familynames = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if len(familynames) == 0:
+    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
+                 " (nameID={}) in the name"
+                 " table.").format(NAMEID_FONT_FAMILY_NAME)
+  else:
+    if font_metadata.name not in familynames:
+      yield FAIL, ("Unmatched family name in font:"
+                   " TTF has \"{}\" while METADATA.pb"
+                   " has \"{}\"").format(familynames, font_metadata.name)
+    else:
+      yield PASS, ("Family name \"{}\" is identical"
+                   " in METADATA.pb and on the"
+                   " TTF file.").format(font_metadata.name)
