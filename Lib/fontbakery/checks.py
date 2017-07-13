@@ -114,22 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_regular_is_400(fb, family, found):
-  fb.new_check("091", "Regular should be 400")
-  if not found:
-    fb.skip("This test will only run if font has a Regular style")
-  else:
-    badfonts = []
-    for f in family.fonts:
-      if f.full_name.endswith('Regular') and f.weight != 400:
-        badfonts.append("{} (weight: {})".format(f.filename, f.weight))
-    if len(badfonts) > 0:
-      fb.error(('METADATA.pb: Regular font weight must be 400.'
-                ' Please fix: {}').format(', '.join(badfonts)))
-    else:
-      fb.ok('Regular has weight=400')
-
-
 def check_font_on_disk_and_METADATA_have_same_family_name(fb, font, f):
   fb.new_check("092", "Font on disk and in METADATA.pb"
                       " have the same family name ?")

@@ -3116,3 +3116,22 @@ def check_font_has_regular_style(metadata):
     yield FAIL, ("This font lacks a Regular"
                  " (style: normal and weight: 400)"
                  " as required by Google Fonts standards.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/091'
+  , conditions=['metadata',
+                'has_regular_style']
+)
+def check_regular_is_400(metadata, has_regular_style):
+  """Regular should be 400."""
+  badfonts = []
+  for f in metadata.fonts:
+    if f.full_name.endswith("Regular") and f.weight != 400:
+      badfonts.append("{} (weight: {})".format(f.filename, f.weight))
+  if len(badfonts) > 0:
+    yield FAIL, ("METADATA.pb: Regular font weight must be 400."
+                 " Please fix these: {}").format(", ".join(badfonts))
+  else:
+    yield PASS, "Regular has weight = 400."

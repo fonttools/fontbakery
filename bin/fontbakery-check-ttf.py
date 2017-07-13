@@ -222,8 +222,6 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      #checks.check_regular_is_400(fb, family, found_regular)
-
       for f in family.fonts: # pylint: disable=no-member
                              # (I know this is good, but pylint
                              #  seems confused here)
