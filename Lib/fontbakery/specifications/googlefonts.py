@@ -3263,3 +3263,23 @@ def check_METADATA_fullName_matches_postScriptName(font_metadata):
   else:
     yield PASS, ("METADATA.pb fields \"fullName\" and"
                  " \"postScriptName\" have the same value.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/097'
+  , conditions=['font_metadata']
+)
+def check_METADATA_filename_matches_postScriptName(font_metadata):
+  """METADATA.pb "filename" matches "postScriptName" ?"""
+  regex = re.compile(r"\W")
+  post_script_name = regex.sub("", font_metadata.post_script_name)
+  filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
+  if filename != post_script_name:
+    yield FAIL, ("METADATA.pb filename=\"{}\" does not match"
+                 " post_script_name=\"{}\"."
+                 "").format(font_metadata.filename,
+                            font_metadata.post_script_name)
+  else:
+    yield PASS, ("METADATA.pb fields \"filename\" and"
+                 " \"postScriptName\" have matching values.")
