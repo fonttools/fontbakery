@@ -3243,3 +3243,23 @@ def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
         yield PASS, ("OK: Family name \"{}\" is identical"
                      " in METADATA.pb and on the"
                      " TTF file.").format(font_metadata.name)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/096'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fullName_matches_postScriptName(font_metadata):
+  """METADATA.pb "fullName" matches "postScriptName" ?"""
+  regex = re.compile(r"\W")
+  post_script_name = regex.sub("", font_metadata.post_script_name)
+  fullname = regex.sub("", font_metadata.full_name)
+  if fullname != post_script_name:
+    yield FAIL, ("METADATA.pb full_name=\"{}\""
+                 " does not match post_script_name ="
+                 " \"{}\"").format(font_metadata.full_name,
+                                   font_metadata.post_script_name)
+  else:
+    yield PASS, ("METADATA.pb fields \"fullName\" and"
+                 " \"postScriptName\" have the same value.")

@@ -114,21 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_fullName_matches_postScriptName(fb, f):
-  fb.new_check("096", "METADATA.pb 'fullName' matches 'postScriptName' ?")
-  regex = re.compile(r'\W')
-  post_script_name = regex.sub('', f.post_script_name)
-  fullname = regex.sub('', f.full_name)
-  if fullname != post_script_name:
-    fb.error(('METADATA.pb full_name="{0}"'
-              ' does not match post_script_name ='
-              ' "{1}"').format(f.full_name,
-                               f.post_script_name))
-  else:
-    fb.ok("METADATA.pb fields 'fullName' and"
-          " 'postScriptName' have the same value.")
-
-
 def check_METADATA_filename_matches_postScriptName(fb, f):
   fb.new_check("097", "METADATA.pb 'filename' matches 'postScriptName' ?")
   regex = re.compile(r'\W')
