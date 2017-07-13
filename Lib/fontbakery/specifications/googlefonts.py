@@ -3071,3 +3071,24 @@ def check_Copyright_notice_is_the_same_in_all_fonts(metadata):
                  " is inconsistent across family")
   else:
     yield PASS, "Copyright is consistent across family"
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/089'
+  , conditions=['metadata']
+)
+def check_METADATA_family_values_are_all_the_same(metadata):
+  """Check that METADATA family values are all the same."""
+  name = ""
+  fail = False
+  for f in metadata.fonts:
+    if name and f.name != name:
+      fail = True
+    name = f.name
+  if fail:
+    yield FAIL, ("METADATA.pb: Family name is not the same"
+                 " in all metadata \"fonts\" items.")
+  else:
+    yield PASS, ("METADATA.pb: Family name is the same"
+                 " in all metadata \"fonts\" items.")

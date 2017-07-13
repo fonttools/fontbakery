@@ -114,22 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_family_values_are_all_the_same(fb, family):
-  fb.new_check("089", "Check that METADATA family values are all the same")
-  name = ''
-  fail = False
-  for font_metadata in family.fonts:
-    if name and font_metadata.name != name:
-      fail = True
-    name = font_metadata.name
-  if fail:
-    fb.error("METADATA.pb: Family name is not the same"
-             " in all metadata 'fonts' items.")
-  else:
-    fb.ok("METADATA.pb: Family name is the same"
-          " in all metadata 'fonts' items.")
-
-
 def check_font_has_regular_style(fb, family):
   fb.new_check("090", "According GWF standards"
                       " font should have Regular style.")
