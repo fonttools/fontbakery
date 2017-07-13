@@ -114,27 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_fonts_name_matches_font_familyname(fb, font, f):
-  fb.new_check("095", "METADATA.pb fonts 'name' property"
-                      " should be same as font familyname")
-  font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-  if len(font_familynames) == 0:
-    fb.error(("This font lacks a FONT_FAMILY_NAME entry"
-              " (nameID={}) in the "
-              "name table.").format(NAMEID_FONT_FAMILY_NAME))
-  else:
-    font_familyname = font_familynames[0]
-
-    if font_familyname not in f.name:
-      fb.error(('Unmatched familyname in font:'
-                ' TTF has "{}" while METADATA.pb has'
-                ' name="{}"').format(font_familyname, f.name))
-    else:
-      fb.ok(("OK: Family name '{}' is identical"
-             " in METADATA.pb and on the"
-             " TTF file.").format(f.name))
-
-
 def check_METADATA_fullName_matches_postScriptName(fb, f):
   fb.new_check("096", "METADATA.pb 'fullName' matches 'postScriptName' ?")
   regex = re.compile(r'\W')
