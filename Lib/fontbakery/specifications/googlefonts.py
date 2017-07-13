@@ -3166,3 +3166,31 @@ def check_font_on_disk_and_METADATA_have_same_family_name(ttFont, font_metadata)
       yield PASS, ("Family name \"{}\" is identical"
                    " in METADATA.pb and on the"
                    " TTF file.").format(font_metadata.name)
+
+@register_test
+@test(
+    id='com.google.fonts/test/093'
+  , conditions=['font_metadata']
+)
+def check_METADATA_postScriptName_matches_name_table_value(ttFont, font_metadata):
+  """Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'."""
+  failed = False
+  postscript_names = get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME)
+  if len(postscript_names) == 0:
+    failed = True
+    yield FAIL, ("This font lacks a POSTSCRIPT_NAME"
+                 " entry (nameID={}) in the "
+                 "name table.").format(NAMEID_POSTSCRIPT_NAME)
+  else:
+    for psname in postscript_names:
+      if psname != font_metadata.post_script_name:
+        failed = True
+        yield FAIL, ("Unmatched postscript name in font:"
+                     " TTF has \"{}\" while METADATA.pb has"
+                     " \"{}\"").format(psname,
+                                       font_metadata.post_script_name)
+  if not failed:
+    yield PASS, ("Postscript name \"{}\" is identical"
+                 " in METADATA.pb and on the"
+                 " TTF file.").format(font_metadata.post_script_name)
+

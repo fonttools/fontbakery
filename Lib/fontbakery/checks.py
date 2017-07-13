@@ -114,28 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_postScriptName_matches_name_table_value(fb, font, f):
-  fb.new_check("093", "Checks METADATA.pb 'postScriptName'"
-                      " matches TTF 'postScriptName'")
-  postscript_names = get_name_string(font, NAMEID_POSTSCRIPT_NAME)
-  if len(postscript_names) == 0:
-    fb.error(("This font lacks a POSTSCRIPT_NAME"
-              " entry (nameID={}) in the "
-              "name table.").format(NAMEID_POSTSCRIPT_NAME))
-  else:
-    postscript_name = postscript_names[0]
-
-    if postscript_name != f.post_script_name:
-      fb.error(('Unmatched postscript name in font:'
-                ' TTF has "{}" while METADATA.pb has'
-                ' "{}"').format(postscript_name,
-                                f.post_script_name))
-    else:
-      fb.ok(("Postscript name '{}' is identical"
-             " in METADATA.pb and on the"
-             " TTF file.").format(f.post_script_name))
-
-
 def check_METADATA_fullname_matches_name_table_value(fb, font, f):
   fb.new_check("094", "METADATA.pb 'fullname' value"
                       " matches internal 'fullname' ?")
