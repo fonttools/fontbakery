@@ -206,7 +206,6 @@ def fontbakery_check_ttf(config):
 ## Metadata related checks:
 ##########################################################
     skip_gfonts = False
-    is_listed_in_GFD = False
     metadata = os.path.join(family_dir, "METADATA.pb")
     if not os.path.exists(metadata):
       logging.warning(("{} is missing a METADATA.pb file!"
@@ -223,36 +222,12 @@ def fontbakery_check_ttf(config):
 
       fb.default_target = metadata
 
-      is_listed_in_GFD = checks.check_family_is_listed_in_GFDirectory(fb,
-                                                                        family)
-      checks.check_METADATA_Designer_exists_in_GWF_profiles_csv(fb, family)
-      checks.check_METADATA_has_unique_full_name_values(fb, family)
-      checks.check_METADATA_check_style_weight_pairs_are_unique(fb, family)
-      checks.check_METADATA_license_is_APACHE2_UFL_or_OFL(fb, family)
-      checks.check_METADATA_contains_at_least_menu_and_latin_subsets(fb,
-                                                                     family)
-      checks.check_METADATA_subsets_alphabetically_ordered(fb,
-                                                           metadata,
-                                                           family)
-      checks.check_Copyright_notice_is_the_same_in_all_fonts(fb, family)
-      checks.check_METADATA_family_values_are_all_the_same(fb, family)
-
-      found_regular = checks.check_font_has_regular_style(fb, family)
-      checks.check_regular_is_400(fb, family, found_regular)
-
       for f in family.fonts: # pylint: disable=no-member
                              # (I know this is good, but pylint
                              #  seems confused here)
         if filename == f.filename:
           ###### Here go single-TTF metadata tests #######
           # ----------------------------------------------
-
-          checks.check_font_on_disk_and_METADATA_have_same_family_name(fb,
-                                                                       font,
-                                                                       f)
-          checks.check_METADATA_postScriptName_matches_name_table_value(fb,
-                                                                        font,
-                                                                        f)
           checks.check_METADATA_fullname_matches_name_table_value(fb,
                                                                   font,
                                                                   f)
@@ -298,48 +273,7 @@ def fontbakery_check_ttf(config):
     # Google-Fonts specific check:
     checks.check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts)
 
-
-##########################################################
-## Step 3: Regression related checks:
-# if family already exists on fonts.google.com
-##########################################################
-
     # ------------------------------------------------------
-    if is_listed_in_GFD:
-      remote_fonts_zip = download_family_from_GoogleFontDirectory(family.name) # pylint: disable=no-member
-      remote_fonts_to_check = fonts_from_zip(remote_fonts_zip)
-
-      remote_styles = {}
-      for remote_filename, remote_font in remote_fonts_to_check:
-        fb.default_target = "GF:" + remote_filename
-	if '-' in remote_filename[:-4]:
-          remote_style = remote_filename[:-4].split('-')[1]
-        else:
-          # This is a non-canonical filename!
-          remote_style = "Regular" #  But I'm giving it a chance here... :-)
-        remote_styles[remote_style] = remote_font
-
-        # Only perform tests if local fonts have the same styles
-        if remote_style in local_styles:
-          checks.check_regression_v_number_increased(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-          checks.check_regression_glyphs_structure(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-          checks.check_regression_ttfauto_xheight_increase(
-            fb,
-            local_styles[style],
-            remote_styles[style],
-            f
-          )
-
     fb.output_report(target)
     fb.reset_report()
 

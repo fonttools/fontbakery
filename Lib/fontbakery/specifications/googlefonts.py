@@ -21,6 +21,8 @@ import os
 import re
 import requests
 import tempfile
+import urllib
+import csv
 from bs4 import BeautifulSoup
 from unidecode import unidecode
 import defusedxml.lxml
@@ -2894,4 +2896,301 @@ def check_METADATA_Ensure_designer_simple_short_name(metadata):
     yield FAIL, "\"designer\" key must be simple short name"
   else:
     yield PASS, "Designer is a simple short name"
+
+
+@register_condition
+@condition
+def listed_on_gfonts_api(metadata):
+  url = ('http://fonts.googleapis.com'
+         '/css?family=%s') % metadata.name.replace(' ', '+')
+  r = requests.get(url)
+  if r.status_code == 200:
+    return True
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/081'
+  , conditions=['metadata']
+)
+def check_family_is_listed_on_GoogleFontsAPI(metadata):
+  """METADATA.pb: Fontfamily is listed on Google Fonts API ?"""
+  if not listed_on_gfonts_api(metadata):
+    yield FAIL, "Family not found via Google Fonts API."
+  else:
+    yield PASS, "Font is properly listed via Google Fonts API."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/082'
+  , conditions=['metadata']
+)
+def check_METADATA_Designer_exists_in_GFonts_profiles_csv(metadata):
+  """METADATA.pb: Designer exists in Google Fonts profiles.csv ?"""
+  PROFILES_GIT_URL = ("https://github.com/google/"
+                      "fonts/blob/master/designers/profiles.csv")
+  PROFILES_RAW_URL = ("https://raw.githubusercontent.com/google/"
+                      "fonts/master/designers/profiles.csv")
+  if metadata.designer == "":
+    yield FAIL, ("METADATA.pb field \"designer\" MUST NOT be empty!")
+  elif metadata.designer == "Multiple Designers":
+    yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
+                 " is OK, so we won't look for it at profiles.cvs")
+  else:
+    try:
+      handle = urllib.urlopen(PROFILES_RAW_URL)
+      designers = []
+      for row in csv.reader(handle):
+        if not row:
+          continue
+        designers.append(row[0].decode("utf-8"))
+      if metadata.designer not in designers:
+        yield WARN, ("METADATA.pb: Designer \"{}\" is not listed"
+                     " in profiles.csv"
+                     " (at \"{}\")").format(metadata.designer,
+                                            PROFILES_GIT_URL)
+      else:
+        yield PASS, ("Found designer \"{}\""
+                     " at profiles.csv").format(metadata.designer)
+    except:
+      yield WARN, "Failed to fetch \"{}\"".format(PROFILES_RAW_URL)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/083'
+  , conditions=['metadata']
+)
+def check_METADATA_has_unique_full_name_values(metadata):
+  """METADATA.pb: check if fonts field only has
+     unique "full_name" values."""
+  fonts = {}
+  for f in metadata.fonts:
+    fonts[f.full_name] = f
+
+  if len(set(fonts.keys())) != len(metadata.fonts):
+    yield FAIL, ("Found duplicated \"full_name\" values"
+                 " in METADATA.pb fonts field.")
+  else:
+    yield PASS, ("METADATA.pb \"fonts\" field only has"
+                 " unique \"full_name\" values.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/084'
+  , conditions=['metadata']
+)
+def check_METADATA_check_style_weight_pairs_are_unique(metadata):
+  """METADATA.pb: check if fonts field
+     only contains unique style:weight pairs."""
+  pairs = {}
+  for f in metadata.fonts:
+    styleweight = "%s:%s" % (f.style, f.weight)
+    pairs[styleweight] = 1
+  if len(set(pairs.keys())) != len(metadata.fonts):
+    yield FAIL, ("Found duplicated style:weight pair"
+                 " in METADATA.pb fonts field.")
+  else:
+    yield PASS, ("METADATA.pb \"fonts\" field only has"
+                 " unique style:weight pairs.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/085'
+  , conditions=['metadata']
+)
+def check_METADATA_license_is_APACHE2_UFL_or_OFL(metadata):
+  """METADATA.pb license is "APACHE2", "UFL" or "OFL" ?"""
+  licenses = ["APACHE2", "OFL", "UFL"]
+  if metadata.license in licenses:
+    yield PASS, ("Font license is declared"
+                 " in METADATA.pb as \"{}\"").format(metadata.license)
+  else:
+    yield FAIL, ("METADATA.pb license field (\"{}\")"
+                 " must be one of the following:"
+                 " {}").format(metadata.license,
+                               licenses)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/086'
+  , conditions=['metadata']
+)
+def check_METADATA_contains_at_least_menu_and_latin_subsets(metadata):
+  """METADATA.pb should contain at least "menu" and "latin" subsets."""
+  missing = []
+  for s in ["menu", "latin"]:
+    if s not in list(metadata.subsets):
+      missing.append(s)
+
+  if missing != []:
+    yield FAIL, ("Subsets \"menu\" and \"latin\" are mandatory,"
+                 " but METADATA.pb is missing"
+                 " \"{}\"").format(" and ".join(missing))
+  else:
+    yield PASS, "METADATA.pb contains \"menu\" and \"latin\" subsets."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/087'
+  , conditions=['metadata']
+)
+def check_METADATA_subsets_alphabetically_ordered(metadata):
+  """METADATA.pb subsets should be alphabetically ordered."""
+  expected = list(sorted(metadata.subsets))
+
+  if list(metadata.subsets) != expected:
+    yield FAIL, ("METADATA.pb subsets are not sorted "
+                 "in alphabetical order: Got ['{}']"
+                 " and expected ['{}']").format("', '".join(metadata.subsets),
+                                                "', '".join(expected))
+  else:
+    yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/088'
+  , conditions=['metadata']
+)
+def check_Copyright_notice_is_the_same_in_all_fonts(metadata):
+  """Copyright notice is the same in all fonts ?"""
+  copyright = None
+  fail = False
+  for f in metadata.fonts:
+    if copyright and f.copyright != copyright:
+      fail = True
+    copyright = f.copyright
+  if fail:
+    yield FAIL, ("METADATA.pb: Copyright field value"
+                 " is inconsistent across family")
+  else:
+    yield PASS, "Copyright is consistent across family"
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/089'
+  , conditions=['metadata']
+)
+def check_METADATA_family_values_are_all_the_same(metadata):
+  """Check that METADATA family values are all the same."""
+  name = ""
+  fail = False
+  for f in metadata.fonts:
+    if name and f.name != name:
+      fail = True
+    name = f.name
+  if fail:
+    yield FAIL, ("METADATA.pb: Family name is not the same"
+                 " in all metadata \"fonts\" items.")
+  else:
+    yield PASS, ("METADATA.pb: Family name is the same"
+                 " in all metadata \"fonts\" items.")
+
+
+@register_condition
+@condition
+def has_regular_style(metadata):
+  for f in metadata.fonts:
+    if f.weight == 400 and f.style == "normal":
+      return True
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/090'
+  , conditions=['metadata']
+)
+def check_font_has_regular_style(metadata):
+  """According Google Fonts standards,
+     font should have Regular style."""
+  if has_regular_style(metadata):
+    yield PASS, "Font has a Regular style."
+  else:
+    yield FAIL, ("This font lacks a Regular"
+                 " (style: normal and weight: 400)"
+                 " as required by Google Fonts standards.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/091'
+  , conditions=['metadata',
+                'has_regular_style']
+)
+def check_regular_is_400(metadata, has_regular_style):
+  """Regular should be 400."""
+  badfonts = []
+  for f in metadata.fonts:
+    if f.full_name.endswith("Regular") and f.weight != 400:
+      badfonts.append("{} (weight: {})".format(f.filename, f.weight))
+  if len(badfonts) > 0:
+    yield FAIL, ("METADATA.pb: Regular font weight must be 400."
+                 " Please fix these: {}").format(", ".join(badfonts))
+  else:
+    yield PASS, "Regular has weight = 400."
+
+
+@register_condition
+@condition
+def font_metadata(metadata, ttFont):
+  for f in metadata.fonts:
+    if ttFont.reader.file.name.endswith(f.filename):
+      return f
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/092'
+  , conditions=['font_metadata']
+)
+def check_font_on_disk_and_METADATA_have_same_family_name(ttFont, font_metadata):
+  """Font on disk and in METADATA.pb have the same family name ?"""
+  familynames = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if len(familynames) == 0:
+    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
+                 " (nameID={}) in the name"
+                 " table.").format(NAMEID_FONT_FAMILY_NAME)
+  else:
+    if font_metadata.name not in familynames:
+      yield FAIL, ("Unmatched family name in font:"
+                   " TTF has \"{}\" while METADATA.pb"
+                   " has \"{}\"").format(familynames, font_metadata.name)
+    else:
+      yield PASS, ("Family name \"{}\" is identical"
+                   " in METADATA.pb and on the"
+                   " TTF file.").format(font_metadata.name)
+
+@register_test
+@test(
+    id='com.google.fonts/test/093'
+  , conditions=['font_metadata']
+)
+def check_METADATA_postScriptName_matches_name_table_value(ttFont, font_metadata):
+  """Checks METADATA.pb 'postScriptName' matches TTF 'postScriptName'."""
+  failed = False
+  postscript_names = get_name_string(ttFont, NAMEID_POSTSCRIPT_NAME)
+  if len(postscript_names) == 0:
+    failed = True
+    yield FAIL, ("This font lacks a POSTSCRIPT_NAME"
+                 " entry (nameID={}) in the "
+                 "name table.").format(NAMEID_POSTSCRIPT_NAME)
+  else:
+    for psname in postscript_names:
+      if psname != font_metadata.post_script_name:
+        failed = True
+        yield FAIL, ("Unmatched postscript name in font:"
+                     " TTF has \"{}\" while METADATA.pb has"
+                     " \"{}\"").format(psname,
+                                       font_metadata.post_script_name)
+  if not failed:
+    yield PASS, ("Postscript name \"{}\" is identical"
+                 " in METADATA.pb and on the"
+                 " TTF file.").format(font_metadata.post_script_name)
 
