@@ -114,22 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_font_has_regular_style(fb, family):
-  fb.new_check("090", "According GWF standards"
-                      " font should have Regular style.")
-  found = False
-  for f in family.fonts:
-    if f.weight == 400 and f.style == 'normal':
-      found = True
-  if found:
-    fb.ok("Font has a Regular style.")
-  else:
-    fb.error("This font lacks a Regular"
-             " (style: normal and weight: 400)"
-             " as required by GWF standards.")
-  return found
-
-
 def check_regular_is_400(fb, family, found):
   fb.new_check("091", "Regular should be 400")
   if not found:
