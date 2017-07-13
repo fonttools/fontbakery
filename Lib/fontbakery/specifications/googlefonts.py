@@ -3283,3 +3283,40 @@ def check_METADATA_filename_matches_postScriptName(font_metadata):
   else:
     yield PASS, ("METADATA.pb fields \"filename\" and"
                  " \"postScriptName\" have matching values.")
+
+
+@register_condition
+@condition
+def font_familynames(ttFont):
+  return get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+
+
+@register_condition
+@condition
+def font_familyname(font_familynames):
+  # This assumes that all familyname
+  # name table entries are identical.
+  # FIX-ME: Maybe we should have a check for that.
+  #         Have we ever seen this kind of
+  #         problem in the wild, though ?
+  return font_familynames[0]
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/098'
+  , conditions=['font_metadata',
+                'font_familynames']
+)
+def check_METADATA_name_contains_good_font_name(ttFont,
+                                                font_metadata,
+                                                font_familynames):
+  """METADATA.pb "name" contains font name in right format ?"""
+  for font_familyname in font_familynames:
+    if font_familyname in font_metadata.name:
+      yield PASS, "METADATA.pb name field contains font name in right format."
+    else:
+      yield FAIL, ("METADATA.pb name field (\"{}\") does not match"
+                   " correct font name format (\"{}\")."
+                   "").format(font_metadata.name,
+                              font_familyname)

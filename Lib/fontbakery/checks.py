@@ -114,27 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_name_contains_good_font_name(fb, font, f):
-  fb.new_check("098", "METADATA.pb 'name' contains font name"
-                      " in right format ?")
-  font_familynames = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-  if len(font_familynames) == 0:
-    fb.error("A corrupt font that lacks a font_family"
-             " nameID entry caused a whole sequence"
-             " of tests to be skipped.")
-    return None
-  else:
-    font_familyname = font_familynames[0]
-
-    if font_familyname in f.name:
-      fb.ok("METADATA.pb 'name' contains font name"
-            " in right format.")
-    else:
-      fb.error(("METADATA.pb name='{}' does not match"
-                " correct font name format.").format(f.name))
-    return font_familyname
-
-
 def check_METADATA_fullname_contains_good_fname(fb, f, font_familyname):
   fb.new_check("099", "METADATA.pb 'full_name' contains"
                       " font name in right format ?")
