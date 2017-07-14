@@ -3187,10 +3187,176 @@ def check_METADATA_postScriptName_matches_name_table_value(ttFont, font_metadata
         failed = True
         yield FAIL, ("Unmatched postscript name in font:"
                      " TTF has \"{}\" while METADATA.pb has"
-                     " \"{}\"").format(psname,
-                                       font_metadata.post_script_name)
+                     " \"{}\".").format(psname,
+                                        font_metadata.post_script_name)
   if not failed:
     yield PASS, ("Postscript name \"{}\" is identical"
                  " in METADATA.pb and on the"
                  " TTF file.").format(font_metadata.post_script_name)
 
+
+@register_test
+@test(
+    id='com.google.fonts/test/094'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
+  """METADATA.pb "fullname" value matches internal "fullname" ?"""
+  full_fontnames = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+  if len(full_fontnames) == 0:
+    yield FAIL, ("This font lacks a FULL_FONT_NAME"
+                 " entry (nameID={}) in the"
+                 " name table.").format(NAMEID_FULL_FONT_NAME)
+  else:
+    for full_fontname in full_fontnames:
+      if full_fontname != font_metadata.full_name:
+        yield FAIL, ("Unmatched fullname in font:"
+                     " TTF has \"{}\" while METADATA.pb"
+                     " has \"{}\".").format(full_fontname,
+                                            font_metadata.full_name)
+      else:
+        yield PASS, ("Full fontname \"{}\" is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(full_fontname)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/095'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
+  """METADATA.pb fonts "name" property should be same as font familyname."""
+  font_familynames = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if len(font_familynames) == 0:
+    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
+                 " (nameID={}) in the"
+                 " name table.").format(NAMEID_FONT_FAMILY_NAME)
+  else:
+    for font_familyname in font_familynames:
+      if font_familyname not in font_metadata.name:
+        yield FAIL, ("Unmatched familyname in font:"
+                     " TTF has \"{}\" while METADATA.pb has"
+                     " name=\"{}\".").format(font_familyname,
+                                             font_metadata.name)
+      else:
+        yield PASS, ("OK: Family name \"{}\" is identical"
+                     " in METADATA.pb and on the"
+                     " TTF file.").format(font_metadata.name)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/096'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fullName_matches_postScriptName(font_metadata):
+  """METADATA.pb "fullName" matches "postScriptName" ?"""
+  regex = re.compile(r"\W")
+  post_script_name = regex.sub("", font_metadata.post_script_name)
+  fullname = regex.sub("", font_metadata.full_name)
+  if fullname != post_script_name:
+    yield FAIL, ("METADATA.pb full_name=\"{}\""
+                 " does not match post_script_name ="
+                 " \"{}\"").format(font_metadata.full_name,
+                                   font_metadata.post_script_name)
+  else:
+    yield PASS, ("METADATA.pb fields \"fullName\" and"
+                 " \"postScriptName\" have the same value.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/097'
+  , conditions=['font_metadata']
+)
+def check_METADATA_filename_matches_postScriptName(font_metadata):
+  """METADATA.pb "filename" matches "postScriptName" ?"""
+  regex = re.compile(r"\W")
+  post_script_name = regex.sub("", font_metadata.post_script_name)
+  filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
+  if filename != post_script_name:
+    yield FAIL, ("METADATA.pb filename=\"{}\" does not match"
+                 " post_script_name=\"{}\"."
+                 "").format(font_metadata.filename,
+                            font_metadata.post_script_name)
+  else:
+    yield PASS, ("METADATA.pb fields \"filename\" and"
+                 " \"postScriptName\" have matching values.")
+
+
+@register_condition
+@condition
+def font_familynames(ttFont):
+  return get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+
+
+@register_condition
+@condition
+def font_familyname(font_familynames):
+  # This assumes that all familyname
+  # name table entries are identical.
+  # FIX-ME: Maybe we should have a check for that.
+  #         Have we ever seen this kind of
+  #         problem in the wild, though ?
+  return font_familynames[0]
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/098'
+  , conditions=['font_metadata',
+                'font_familynames']
+)
+def check_METADATA_name_contains_good_font_name(ttFont,
+                                                font_metadata,
+                                                font_familynames):
+  """METADATA.pb "name" contains font name in right format ?"""
+  for font_familyname in font_familynames:
+    if font_familyname in font_metadata.name:
+      yield PASS, "METADATA.pb name field contains font name in right format."
+    else:
+      yield FAIL, ("METADATA.pb name field (\"{}\") does not match"
+                   " correct font name format (\"{}\")."
+                   "").format(font_metadata.name,
+                              font_familyname)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/099'
+  , conditions=['font_metadata',
+                'font_familynames']
+)
+def check_METADATA_fullname_contains_good_fname(font_metadata,
+                                                font_familynames):
+  """METADATA.pb "full_name" contains font name in right format ?"""
+  for font_familyname in font_familynames:
+    if font_familyname in font_metadata.name:
+      yield PASS, ("METADATA.pb full_name field contains"
+                   " font name in right format.")
+    else:
+      yield FAIL, ("METADATA.pb full_name field (\"{}\") does not match"
+                   " correct font name format (\"{}\")."
+                   "").format(font_metadata.full_name,
+                              font_familyname)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/100'
+  , conditions=['font_metadata',
+                'font_familynames']
+)
+def check_METADATA_filename_contains_good_fname(font_metadata,
+                                                font_familynames):
+  """METADATA.pb "filename" contains font name in right format ?"""
+  for font_familyname in font_familynames:
+    if "".join(font_familyname.split()) in font_metadata.filename:
+      yield PASS, ("METADATA.pb filename field contains"
+                   " font name in right format.")
+    else:
+      yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
+                   " correct font name format (\"{}\")."
+                   "").format(font_metadata.filename,
+                              font_familyname)
