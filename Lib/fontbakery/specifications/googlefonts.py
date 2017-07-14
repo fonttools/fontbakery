@@ -9,26 +9,11 @@ from fontbakery.testrunner import (
             , SKIP
             , PASS
             , FAIL
-            , distribute_generator
             , Section
-            , TestRunner
             , Spec
             )
-
-from fontbakery.callable import condition, test
-
 import os
-import re
-import requests
-import tempfile
-import urllib
-import csv
-from bs4 import BeautifulSoup
-from unidecode import unidecode
-import defusedxml.lxml
-from lxml.html import HTMLParser
-from fontTools.ttLib import TTFont
-
+from fontbakery.callable import condition, test
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
         # How did we ever use this information?
@@ -64,9 +49,6 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
-      , WHITESPACE_CHARACTERS
-      , REQUIRED_TABLES
-      , UNWANTED_TABLES
 )
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -100,6 +82,7 @@ register_condition = specificiation.register_condition
 @register_condition
 @condition
 def ttFont(font):
+  from fontTools.ttLib import TTFont
   return TTFont(font)
 
 
@@ -206,6 +189,9 @@ def description(descfile):
 )
 def check_DESCRIPTION_file_contains_no_broken_links(description):
   """Does DESCRIPTION file contain broken links ?"""
+  from lxml.html import HTMLParser
+  import defusedxml.lxml
+  import requests
   doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
   broken_links = []
   for link in doc.xpath('//a/@href'):
@@ -540,6 +526,7 @@ def check_main_entries_in_the_name_table(ttFont, style):
      to name IDs 1, 2, 4, 6, 16, 17, 18.
      It must run before any of the other name table related checks.
   """
+  from unidecode import unidecode
 
   def family_with_spaces(value):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
@@ -689,8 +676,10 @@ def check_main_entries_in_the_name_table(ttFont, style):
 @condition
 def registered_vendor_ids():
   """Get a list of vendor IDs from Microsoft's website."""
-  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
+  import tempfile
+  import requests
   registered_vendor_ids = {}
+  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
                                    'fontbakery-microsoft-vendorlist.cache')
   if os.path.exists(CACHE_VENDOR_LIST):
@@ -699,6 +688,7 @@ def registered_vendor_ids():
     content = requests.get(url, auth=('user', 'pass')).content
     open(CACHE_VENDOR_LIST, 'w').write(content)
 
+  from bs4 import BeautifulSoup
   soup = BeautifulSoup(content, 'html.parser')
   table = soup.find(id="VendorList")
   for row in table.findAll('tr'):
@@ -720,6 +710,7 @@ def registered_vendor_ids():
 )
 def check_OS2_achVendID(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
+  from unidecode import unidecode
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
     " You should set it to your own 4 character code,"
@@ -903,6 +894,7 @@ def check_font_has_a_license(licenses):
 )
 def check_copyright_entries_match_license(ttFont, license):
   """Check copyright namerecords match license file"""
+  from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
@@ -1335,6 +1327,7 @@ def check_with_msfontvalidator(font):
     else:
       return "MS-FonVal: {}".format(msg)
 
+  import defusedxml.lxml
   doc = defusedxml.lxml.fromstring(xml_report)
   already_reported = []
   for report in doc.iter('Report'):
@@ -1706,7 +1699,7 @@ def get_expected_version(f):
 )
 def check_font_version_fields(ttFont):
   """Checking font version fields"""
-
+  import re
   failed = False
   try:
     expected = get_expected_version(ttFont)
@@ -1887,10 +1880,18 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
 @register_test
 @test(
     id='com.google.fonts/test/049'
-  , conditions=['missing_whitespace_chars']
 )
 def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
+  # code-points for all "whitespace" chars:
+  WHITESPACE_CHARACTERS = [
+    0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
+    0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002,
+    0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F,
+    0x3000, 0x180E, 0x200B, 0x200C, 0x200D, 0x2060,
+    0xFEFF
+  ]
   if missing_whitespace_chars != []:
     yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
   else:
@@ -1970,6 +1971,14 @@ def check_whitespace_glyphs_have_coherent_widths(ttFont,
 )
 def check_font_contains_all_required_tables(ttFont):
   """Font contains all required tables?"""
+  REQUIRED_TABLES = set(["cmap", "head", "hhea", "hmtx",
+                         "maxp", "name", "OS/2", "post"])
+  OPTIONAL_TABLES = set(["cvt ", "fpgm", "loca", "prep",
+                         "VORG", "EBDT", "EBLC", "EBSC",
+                         "BASE", "GPOS", "GSUB", "JSTF",
+                         "DSIG", "gasp", "hdmx", "kern",
+                         "LTSH", "PCLT", "VDMX", "vhea",
+                         "vmtx"])
   # See https://github.com/googlefonts/fontbakery/issues/617
   tables = set(ttFont.reader.tables.keys())
   glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
@@ -1992,6 +2001,7 @@ def check_font_contains_all_required_tables(ttFont):
 )
 def check_for_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
+  UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES:
@@ -2008,9 +2018,10 @@ def check_for_unwanted_tables(ttFont):
 @register_condition
 @condition
 def ttfautohint_stats(font):
+  import re
+  import subprocess
+  import tempfile
   try:
-    import subprocess
-    import tempfile
     hinted_size = os.stat(font).st_size
 
     dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
@@ -2095,7 +2106,7 @@ def check_hinting_filesize_impact(font, ttfautohint_stats):
 )
 def check_version_format_is_correct_in_NAME_table(ttFont):
   """Version format is correct in NAME table?"""
-
+  import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
@@ -2133,6 +2144,7 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
         using the same options
   """
   def ttfautohint_version(values):
+    import re
     for value in values:
       results = re.search(r'ttfautohint \(v(.*)\)', value)
       if results:
@@ -2197,6 +2209,7 @@ def check_name_table_entries_do_not_contain_linebreaks(ttFont):
 )
 def check_glyph_names_are_all_valid(ttFont):
   """Glyph names are all valid?"""
+  import re
   bad_names = []
   for _, glyphName in enumerate(ttFont.getGlyphOrder()):
     if glyphName in [".null", ".notdef"]:
@@ -2230,7 +2243,7 @@ def check_glyph_names_are_all_valid(ttFont):
 def check_font_has_unique_glyph_names(ttFont):
   """Font contains unique glyph names?
      Duplicate glyph names prevent font installation on Mac OS X."""
-
+  import re
   glyphs = []
   duplicated_glyphIDs = []
   for _, g in enumerate(ttFont.getGlyphOrder()):
@@ -2253,6 +2266,7 @@ def check_font_has_unique_glyph_names(ttFont):
 )
 def check_no_glyph_is_incorrectly_named(ttFont):
   """No glyph is incorrectly named?"""
+  import re
   bad_glyphIDs = []
   for _, g in enumerate(ttFont.getGlyphOrder()):
     if re.search(r'#\w+$', g):
@@ -2574,6 +2588,7 @@ def check_font_has_EURO_SIGN_character(ttFont):
 )
 def check_font_follows_the_family_naming_recommendations(ttFont):
   """Font follows the family naming recommendations?"""
+  import re
   # See http://forum.fontlab.com/index.php?topic=313.0
   bad_entries = []
 
@@ -2901,6 +2916,7 @@ def check_METADATA_Ensure_designer_simple_short_name(metadata):
 @register_condition
 @condition
 def listed_on_gfonts_api(metadata):
+  import requests
   url = ('http://fonts.googleapis.com'
          '/css?family=%s') % metadata.name.replace(' ', '+')
   r = requests.get(url)
@@ -2936,8 +2952,10 @@ def check_METADATA_Designer_exists_in_GFonts_profiles_csv(metadata):
     yield FAIL, ("METADATA.pb field \"designer\" MUST NOT be empty!")
   elif metadata.designer == "Multiple Designers":
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
-                 " is OK, so we won't look for it at profiles.cvs")
+                 " is OK, so we won't look for it at profiles.csv")
   else:
+    import urllib
+    import csv
     try:
       handle = urllib.urlopen(PROFILES_RAW_URL)
       designers = []
@@ -3252,6 +3270,7 @@ def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
 )
 def check_METADATA_fullName_matches_postScriptName(font_metadata):
   """METADATA.pb "fullName" matches "postScriptName" ?"""
+  import re
   regex = re.compile(r"\W")
   post_script_name = regex.sub("", font_metadata.post_script_name)
   fullname = regex.sub("", font_metadata.full_name)
@@ -3272,6 +3291,7 @@ def check_METADATA_fullName_matches_postScriptName(font_metadata):
 )
 def check_METADATA_filename_matches_postScriptName(font_metadata):
   """METADATA.pb "filename" matches "postScriptName" ?"""
+  import re
   regex = re.compile(r"\W")
   post_script_name = regex.sub("", font_metadata.post_script_name)
   filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
