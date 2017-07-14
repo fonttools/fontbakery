@@ -207,14 +207,6 @@ LICENSE_NAME = {
     'LICENSE.txt': u'Apache'
 }
 
-REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
-                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
-                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
-                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
-
 # =====================================
 # Helper logging class
 RED_STR = '\033[1;31;40m{}\033[0m'
