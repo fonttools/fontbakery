@@ -1897,7 +1897,7 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   else:
     failed = False
     for codepoint in WHITESPACE_CHARACTERS:
-      g = getGlyph(font, codepoint)
+      g = getGlyph(ttFont, codepoint)
       if g is not None and glyphHasInk(ttFont, g):
         failed = True
         yield FAIL, ("Glyph \"{}\" has ink."
