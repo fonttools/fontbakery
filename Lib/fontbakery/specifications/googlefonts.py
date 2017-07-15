@@ -3400,3 +3400,34 @@ def check_METADATA_postScriptName_contains_good_fname(font_metadata,
       yield FAIL, ("METADATA.pb postScriptName (\"{}\")"
                    " does not match correct font name format."
                    "").format(font_metadata.post_script_name)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/102'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_matches_canonical_pattern(font_metadata):
+  """Copyright notice matches canonical pattern ?"""
+  import re
+  from unidecode import unidecode
+  almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
+                             font_metadata.copyright)
+  does_match = re.search(r'(Copyright\s+20\d{2}\s+.*\(.+@.+\..+\))',
+                         font_metadata.copyright)
+  if does_match:
+    yield PASS, "METADATA.pb copyright field matches canonical pattern."
+  else:
+    if almost_matches:
+      yield WARN, ("METADATA.pb: Copyright notice is okay,"
+                   " but it lacks an email address."
+                   " Expected pattern is:"
+                   " 'Copyright 2016 Author Name (name@site.com)'\n"
+                   "But detected copyright string is:"
+                   " '{}'").format(unidecode(font_metadata.copyright))
+    else:
+      yield FAIL, ("METADATA.pb: Copyright notices should match"
+                   " the folowing pattern:"
+                   " 'Copyright 2016 Author Name (name@site.com)'\n"
+                   "But instead we have got:"
+                   " '{}'").format(unidecode(font_metadata.copyright))

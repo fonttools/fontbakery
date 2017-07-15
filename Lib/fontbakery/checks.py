@@ -114,30 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Copyright_notice_matches_canonical_pattern(fb, f):
-  fb.new_check("102", "Copyright notice matches canonical pattern?")
-  almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
-                             f.copyright)
-  does_match = re.search(r'(Copyright\s+20\d{2}\s+.*\(.+@.+\..+\))',
-                         f.copyright)
-  if (does_match is not None):
-    fb.ok("METADATA.pb copyright field matches canonical pattern.")
-  else:
-    if (almost_matches):
-      fb.warning(("METADATA.pb: Copyright notice is okay,"
-                  " but it lacks an email address."
-                  " Expected pattern is:"
-                  " 'Copyright 2016 Author Name (name@site.com)'\n"
-                  "But detected copyright string is:"
-                  " '{}'").format(unidecode(f.copyright)))
-    else:
-      fb.error(("METADATA.pb: Copyright notices should match"
-                " the folowing pattern:"
-                " 'Copyright 2016 Author Name (name@site.com)'\n"
-                "But instead we have got:"
-                " '{}'").format(unidecode(f.copyright)))
-
-
 def check_Copyright_notice_does_not_contain_Reserved_Name(fb, f):
   fb.new_check("103", "Copyright notice does not "
                       "contain Reserved Font Name")
