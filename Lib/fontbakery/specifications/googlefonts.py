@@ -3685,3 +3685,51 @@ def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
   else:
     yield PASS, ("OS/2 usWeightClass matches"
                  " weight specified at METADATA.pb")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/113'
+  , conditions=['font_metadata']
+)
+def check_Metadata_weight_matches_postScriptName(font_metadata):
+  """Metadata weight matches postScriptName"""
+  weights = {
+    'Thin': 100,
+    'ThinItalic': 100,
+    'ExtraLight': 200,
+    'ExtraLightItalic': 200,
+    'Light': 300,
+    'LightItalic': 300,
+    'Regular': 400,
+    'Italic': 400,
+    'Medium': 500,
+    'MediumItalic': 500,
+    'SemiBold': 600,
+    'SemiBoldItalic': 600,
+    'Bold': 700,
+    'BoldItalic': 700,
+    'ExtraBold': 800,
+    'ExtraBoldItalic': 800,
+    'Black': 900,
+    'BlackItalic': 900,
+  }
+  pair = []
+  for k, weight in weights.items():
+    if weight == font_metadata.weight:
+      pair.append((k, weight))
+
+  if not pair:
+    yield FAIL, ("METADATA.pb: Font weight"
+                 " does not match postScriptName")
+  elif not (font_metadata.post_script_name.endswith('-' + pair[0][0]) or
+            font_metadata.post_script_name.endswith('-%s' % pair[1][0])):
+    yield FAIL, ("METADATA.pb: postScriptName (\"{}\")"
+                 " with weight {} must be"
+                 "").format(font_metadata.post_script_name,
+                            pair[0][1]) + \
+                (" ended with \"{}\" or \"{}\""
+                 "").format(pair[0][0],
+                            pair[1][0])
+  else:
+    yield PASS, "Weight value matches postScriptName."
