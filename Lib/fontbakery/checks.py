@@ -114,18 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_postScriptName_contains_good_fname(fb, f, familyname):
-  fb.new_check("101", "METADATA.pb 'postScriptName' contains"
-                      " font name in right format ?")
-  if "".join(str(familyname).split()) in f.post_script_name:
-    fb.ok("METADATA.pb 'postScriptName' contains"
-          " font name in right format ?")
-  else:
-    fb.error(("METADATA.pb postScriptName='{}'"
-              " does not match correct"
-              " font name format.").format(f.post_script_name))
-
-
 def check_Copyright_notice_matches_canonical_pattern(fb, f):
   fb.new_check("102", "Copyright notice matches canonical pattern?")
   almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
