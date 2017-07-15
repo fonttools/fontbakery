@@ -113,25 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f):
-  fb.new_check("108", "Metadata key-value match to table name fields?")
-  font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)[0]
-  font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)[0]
-  if font_familyname != f.name:
-    fb.error(("METADATA.pb Family name '{}')"
-              " does not match name table"
-              " entry '{}' !").format(f.name,
-                                      font_familyname))
-  elif font_fullname != f.full_name:
-    fb.error(("METADATA.pb: Fullname ('{}')"
-              " does not match name table"
-              " entry '{}' !").format(f.full_name,
-                                      font_fullname))
-  else:
-    fb.ok("METADATA.pb familyname and fullName fields"
-          " match corresponding name table entries.")
-
-
 def check_fontname_is_not_camel_cased(fb, f):
   fb.new_check("109", "Check if fontname is not camel cased.")
   if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
