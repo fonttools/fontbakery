@@ -49,6 +49,7 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
+      , MACSTYLE_ITALIC
 )
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -3504,3 +3505,47 @@ def check_Filename_is_set_canonically(font_metadata, canonical_filename):
                                                  canonical_filename))
   else:
     yield PASS, "Filename in METADATA.pb is set canonically."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/106'
+  , conditions=['font_metadata']
+)
+def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
+  """METADATA.pb font.style "italic" matches font internals ?"""
+  if font_metadata.style != "italic":
+    yield SKIP, "This test only applies to italic fonts."
+  else:
+    font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+    font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+    if len(font_familyname) == 0 or len(font_fullname) == 0:
+      yield SKIP, ("Font lacks familyname and/or"
+                   " fullname entries in name table.")
+      # these fail scenarios were already tested above
+      # (passing those previous tests is a prerequisite for this one)
+      # FIXME: Could we pack this into a condition ?
+    else:
+      # FIXME: here we only check the first name entry of each.
+      #        Should we iterate over them all ? Or should we check
+      #        if they're all the same?
+      font_familyname = font_familyname[0]
+      font_fullname = font_fullname[0]
+
+      if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+        yield FAIL, ("METADATA.pb style has been set to italic"
+                     " but font macStyle is improperly set.")
+      elif not font_familyname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle Italic bit is set"
+                     " but nameID %d (\"%s\")"
+                     " is not ended "
+                     "with \"Italic\"") % (NAMEID_FONT_FAMILY_NAME,
+                                           font_familyname)
+      elif not font_fullname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle Italic bit is set"
+                     " but nameID %d (\"%s\") is not ended"
+                     " with \"Italic\"") % (NAMEID_FULL_FONT_NAME,
+                                            font_fullname)
+      else:
+        yield PASS, ("OK: METADATA.pb font.style \"italic\""
+                     " matches font internals.")

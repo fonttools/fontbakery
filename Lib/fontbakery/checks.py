@@ -113,43 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_font_italic_matches_font_internals(fb, font, f):
-  fb.new_check("106", "METADATA.pb font.style `italic`"
-                      " matches font internals?")
-  if f.style != 'italic':
-    fb.skip("This test only applies to italic fonts.")
-  else:
-    font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-    font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-    if len(font_familyname) == 0 or len(font_fullname) == 0:
-      fb.skip("Font lacks familyname and/or"
-              " fullname entries in name table.")
-      # these fail scenarios were already tested above
-      # (passing those previous tests is a prerequisite for this one)
-    else:
-      font_familyname = font_familyname[0]
-      font_fullname = font_fullname[0]
-
-      if not bool(font['head'].macStyle & MACSTYLE_ITALIC):
-          fb.error('METADATA.pb style has been set to italic'
-                   ' but font macStyle is improperly set')
-      elif not font_familyname.split('-')[-1].endswith('Italic'):
-          fb.error(('Font macStyle Italic bit is set'
-                    ' but nameID %d ("%s")'
-                    ' is not ended '
-                    'with "Italic"') % (NAMEID_FONT_FAMILY_NAME,
-                                        font_familyname))
-      elif not font_fullname.split('-')[-1].endswith('Italic'):
-          fb.error(('Font macStyle Italic bit is set'
-                    ' but nameID %d ("%s")'
-                    ' is not ended'
-                    ' with "Italic"') % (NAMEID_FULL_FONT_NAME,
-                                         font_fullname))
-      else:
-        fb.ok("OK: METADATA.pb font.style 'italic'"
-              " matches font internals.")
-
-
 def check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
   fb.new_check("107", "METADATA.pb font.style `normal`"
                       " matches font internals?")
