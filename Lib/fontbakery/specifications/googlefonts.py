@@ -45,6 +45,7 @@ from fontbakery.constants import(
       , NAMEID_STR
       , PLATID_STR
       , WEIGHTS
+      , weights
       , IS_FIXED_WIDTH_MONOSPACED
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
@@ -3694,26 +3695,6 @@ def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
 )
 def check_Metadata_weight_matches_postScriptName(font_metadata):
   """Metadata weight matches postScriptName"""
-  weights = {
-    'Thin': 100,
-    'ThinItalic': 100,
-    'ExtraLight': 200,
-    'ExtraLightItalic': 200,
-    'Light': 300,
-    'LightItalic': 300,
-    'Regular': 400,
-    'Italic': 400,
-    'Medium': 500,
-    'MediumItalic': 500,
-    'SemiBold': 600,
-    'SemiBoldItalic': 600,
-    'Bold': 700,
-    'BoldItalic': 700,
-    'ExtraBold': 800,
-    'ExtraBoldItalic': 800,
-    'Black': 900,
-    'BlackItalic': 900,
-  }
   pair = []
   for k, weight in weights.items():
     if weight == font_metadata.weight:
@@ -3733,3 +3714,38 @@ def check_Metadata_weight_matches_postScriptName(font_metadata):
                             pair[1][0])
   else:
     yield PASS, "Weight value matches postScriptName."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/114'
+  , conditions=['font_metadata']
+)
+def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
+  """METADATA.pb lists fonts named canonicaly ?"""
+  font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if len(font_familyname) == 0:
+    yield SKIP, ("Skipping this test due to the lack"
+                 " of a FONT_FAMILY_NAME in the name table.")
+  else:
+    font_familyname = font_familyname[0]
+    # FIXME: common condition/name-id check as in test/108.
+
+    is_canonical = False
+    _weights = []
+    for value, intvalue in weights.items():
+      if intvalue == ttFont["OS/2"].usWeightClass:
+        _weights.append(value)
+
+    for w in _weights:
+      canonical_name = "%s %s" % (font_familyname, w)
+      if font_metadata.full_name == canonical_name:
+        is_canonical = True
+
+    if is_canonical:
+      yield PASS, "METADATA.pb lists fonts named canonicaly."
+    else:
+      v = map(lambda x: font_familyname + " " + x, _weights)
+      yield FAIL, ("Canonical name in font: Expected \"%s\""
+                   " but got \"%s\" instead.") % ("\" or \"".join(v),
+                                                  font_metadata.full_name)
