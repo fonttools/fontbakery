@@ -3589,3 +3589,29 @@ def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
       else:
         yield PASS, ("METADATA.pb font.style \"normal\""
                      " matches font internals.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/108'
+  , conditions=['font_metadata']
+)
+def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
+  """Metadata key-value match to table name fields?"""
+  font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)[0]
+  font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)[0]
+  # FIXME: common condition/name-id check as in the two previous tests.
+
+  if font_familyname != font_metadata.name:
+    yield FAIL, ("METADATA.pb Family name \"{}\")"
+                 " does not match name table"
+                 " entry \"{}\" !").format(font_metadata.name,
+                                           font_familyname)
+  elif font_fullname != font_metadata.full_name:
+    yield FAIL, ("METADATA.pb: Fullname (\"{}\")"
+                 " does not match name table"
+                 " entry \"{}\" !").format(font_metadata.full_name,
+                                           font_fullname)
+  else:
+    yield PASS, ("METADATA.pb familyname and fullName fields"
+                 " match corresponding name table entries.")
