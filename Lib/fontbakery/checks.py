@@ -113,19 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts):
-  fb.new_check("116", "Is font em size (ideally) equal to 1000?")
-  if skip_gfonts:
-    fb.skip("Skipping this Google-Fonts specific check.")
-  else:
-    upm_height = font['head'].unitsPerEm
-    if upm_height != 1000:
-      fb.warning(("font em size ({}) is not"
-                  " equal to 1000.").format(upm_height))
-    else:
-      fb.ok("Font em size is equal to 1000.")
-
-
 def check_regression_v_number_increased(fb, new_font, old_font, f):
   fb.new_check("117", "Version number has increased since previous release?")
   new_v_number = new_font['head'].fontRevision

@@ -3782,3 +3782,17 @@ def check_Font_styles_are_named_canonically(ttFont, font_metadata):
                    " but it should be normal") % font_metadata.style
     else:
       yield PASS, "Font styles are named canonically."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/116'
+)
+def check_font_em_size_is_ideally_equal_to_1000(ttFont):
+  """Is font em size (ideally) equal to 1000 ?"""
+  upm_height = ttFont["head"].unitsPerEm
+  if upm_height != 1000:
+    yield WARN, ("Font em size ({}) is not"
+                 " equal to 1000.").format(upm_height)
+  else:
+    yield PASS, "Font em size is equal to 1000."
