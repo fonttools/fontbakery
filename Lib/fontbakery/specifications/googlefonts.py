@@ -3749,3 +3749,36 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
       yield FAIL, ("Canonical name in font: Expected \"%s\""
                    " but got \"%s\" instead.") % ("\" or \"".join(v),
                                                   font_metadata.full_name)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/115'
+  , conditions=['font_metadata']
+)
+def check_Font_styles_are_named_canonically(ttFont, font_metadata):
+  """Font styles are named canonically ?"""
+
+  def find_italic_in_name_table():
+    for entry in ttFont["name"].names:
+      if "italic" in entry.string.decode(entry.getEncoding()).lower():
+        return True
+    return False
+
+  def is_italic():
+    return (ttFont["head"].macStyle & MACSTYLE_ITALIC or
+            ttFont["post"].italicAngle or
+            find_italic_in_name_table())
+
+  if font_metadata.style not in ["italic", "normal"]:
+    yield SKIP, ("This check only applies to font styles declared"
+                 " as \"italic\" or \"regular\" on METADATA.pb.")
+  else:
+    if is_italic() and font_metadata.style != "italic":
+      yield FAIL, ("The font style is %s"
+                   " but it should be italic") % font_metadata.style
+    elif not is_italic() and font_metadata.style != "normal":
+      yield FAIL, ("The font style is %s"
+                   " but it should be normal") % font_metadata.style
+    else:
+      yield PASS, "Font styles are named canonically."

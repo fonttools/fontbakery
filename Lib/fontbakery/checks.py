@@ -113,35 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Font_styles_are_named_canonically(fb, font, f):
-  fb.new_check("115", "Font styles are named canonically?")
-
-  def find_italic_in_name_table():
-    for entry in font['name'].names:
-      if 'italic' in entry.string.decode(
-       entry.getEncoding()).lower():
-        return True
-    return False
-
-  def is_italic():
-    return (font['head'].macStyle & MACSTYLE_ITALIC or
-            font['post'].italicAngle or
-            find_italic_in_name_table())
-
-  if f.style not in ['italic', 'normal']:
-    fb.skip("This check only applies to font styles declared"
-            " as 'italic' or 'regular' on METADATA.pb")
-  else:
-    if is_italic() and f.style != 'italic':
-      fb.error("The font style is %s"
-               " but it should be italic" % (f.style))
-    elif not is_italic() and f.style != 'normal':
-      fb.error(("The font style is %s"
-                " but it should be normal") % (f.style))
-    else:
-      fb.ok("Font styles are named canonically")
-
-
 def check_font_em_size_is_ideally_equal_to_1000(fb, font, skip_gfonts):
   fb.new_check("116", "Is font em size (ideally) equal to 1000?")
   if skip_gfonts:
