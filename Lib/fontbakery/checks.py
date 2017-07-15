@@ -113,14 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f):
-  fb.new_check("112", "Checking OS/2 usWeightClass"
-                      " matches weight specified at METADATA.pb")
-  fb.assert_table_entry('OS/2', 'usWeightClass', f.weight)
-  fb.log_results("OS/2 usWeightClass matches "
-                 "weight specified at METADATA.pb")
-
-
 weights = {
   'Thin': 100,
   'ThinItalic': 100,

@@ -3667,3 +3667,21 @@ def check_font_weight_has_a_canonical_value(font_metadata):
                 " between 100 and 900.").format(font_metadata.weight)
   else:
     yield PASS, "Font weight has a canonical value."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/112'
+  , conditions=['font_metadata']
+)
+def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
+                                                          font_metadata):
+  """Checking OS/2 usWeightClass matches weight specified at METADATA.pb"""
+  if ttFont["OS/2"].usWeightClass != font_metadata.weight:
+    yield FAIL, ("OS/2 usWeightClass (\"{}\") does not match"
+                 " weight specified at METADATA.pb (\"{}\")."
+                 "").format(ttFont["OS/2"].usWeightClass,
+                            font_metadata.weight)
+  else:
+    yield PASS, ("OS/2 usWeightClass matches"
+                 " weight specified at METADATA.pb")
