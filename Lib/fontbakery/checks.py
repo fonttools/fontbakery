@@ -113,43 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_fontstyle_normal_matches_internals(fb, font, f):
-  fb.new_check("107", "METADATA.pb font.style `normal`"
-                      " matches font internals?")
-  if f.style != 'normal':
-    fb.skip("This test only applies to normal fonts.")
-  else:
-    font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-    font_fullname = get_name_string(font, NAMEID_FULL_FONT_NAME)
-    if len(font_familyname) == 0 or len(font_fullname) == 0:
-      fb.skip("Font lacks familyname and/or"
-              " fullname entries in name table.")
-      # these fail scenarios were already tested above
-      # (passing those previous tests is a prerequisite for this one)
-      return False
-    else:
-      font_familyname = font_familyname[0]
-      font_fullname = font_fullname[0]
-
-      if bool(font['head'].macStyle & MACSTYLE_ITALIC):
-          fb.error('METADATA.pb style has been set to normal'
-                   ' but font macStyle is improperly set')
-      elif font_familyname.split('-')[-1].endswith('Italic'):
-          fb.error(('Font macStyle indicates a non-Italic font,'
-                    ' but nameID %d (FONT_FAMILY_NAME: "%s") ends'
-                    ' with "Italic"').format(NAMEID_FONT_FAMILY_NAME,
-                                             font_familyname))
-      elif font_fullname.split('-')[-1].endswith('Italic'):
-          fb.error('Font macStyle indicates a non-Italic font'
-                   ' but nameID %d (FULL_FONT_NAME: "%s") ends'
-                   ' with "Italic"'.format(NAMEID_FULL_FONT_NAME,
-                                           font_fullname))
-      else:
-        fb.ok("METADATA.pb font.style 'normal'"
-              " matches font internals.")
-      return True
-
-
 def check_Metadata_keyvalue_match_to_table_name_fields(fb, font, f):
   fb.new_check("108", "Metadata key-value match to table name fields?")
   font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)[0]

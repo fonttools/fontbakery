@@ -3549,3 +3549,43 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
       else:
         yield PASS, ("OK: METADATA.pb font.style \"italic\""
                      " matches font internals.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/107'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
+  """METADATA.pb font.style "normal" matches font internals ?"""
+  if font_metadata.style != "normal":
+    yield SKIP, "This test only applies to normal fonts."
+    # FIXME: declare a common condition called "normal_style"
+  else:
+    font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+    font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+    if len(font_familyname) == 0 or len(font_fullname) == 0:
+      yield SKIP, ("Font lacks familyname and/or"
+                   " fullname entries in name table.")
+      # FIXME: This is the same SKIP condition as in test/106
+      #        so we definitely need to address them with a common condition!
+    else:
+      font_familyname = font_familyname[0]
+      font_fullname = font_fullname[0]
+
+      if bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+        yield FAIL, ("METADATA.pb style has been set to normal"
+                     " but font macStyle is improperly set.")
+      elif font_familyname.split("-")[-1].endswith('Italic'):
+        yield FAIL, ("Font macStyle indicates a non-Italic font,"
+                     " but nameID %d (FONT_FAMILY_NAME: \"%s\") ends"
+                     " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
+                                                 font_familyname)
+      elif font_fullname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle indicates a non-Italic font"
+                     " but nameID %d (FULL_FONT_NAME: \"%s\") ends"
+                     " with \"Italic\".").format(NAMEID_FULL_FONT_NAME,
+                                                 font_fullname)
+      else:
+        yield PASS, ("METADATA.pb font.style \"normal\""
+                     " matches font internals.")
