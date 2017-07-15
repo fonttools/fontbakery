@@ -3431,3 +3431,20 @@ def check_Copyright_notice_matches_canonical_pattern(font_metadata):
                    " 'Copyright 2016 Author Name (name@site.com)'\n"
                    "But instead we have got:"
                    " '{}'").format(unidecode(font_metadata.copyright))
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/103'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_does_not_contain_Reserved_Name(font_metadata):
+  """Copyright notice does not contain Reserved Font Name"""
+  if "Reserved Font Name" in font_metadata.copyright:
+    yield WARN, ("METADATA.pb: copyright field (\"{}\")"
+                 " contains \"Reserved Font Name\"."
+                 " This is an error except in a few specific"
+                 " rare cases.").format(unidecode(font_metadata.copyright))
+  else:
+    yield PASS, ("METADATA.pb copyright field"
+                 " does not contain \"Reserved Font Name\".")

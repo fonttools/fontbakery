@@ -114,19 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Copyright_notice_does_not_contain_Reserved_Name(fb, f):
-  fb.new_check("103", "Copyright notice does not "
-                      "contain Reserved Font Name")
-  if 'Reserved Font Name' in f.copyright:
-    fb.warning(("METADATA.pb: copyright field ('{}')"
-                " contains 'Reserved Font Name'."
-                " This is an error except in a few specific"
-                " rare cases.").format(unidecode(f.copyright)))
-  else:
-    fb.ok('METADATA.pb copyright field'
-          ' does not contain "Reserved Font Name"')
-
-
 def check_Copyright_notice_does_not_exceed_500_chars(fb, f):
   fb.new_check("104", "Copyright notice shouldn't exceed 500 chars")
   if len(f.copyright) > 500:
