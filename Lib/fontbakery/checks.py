@@ -113,16 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_fontname_is_not_camel_cased(fb, f):
-  fb.new_check("109", "Check if fontname is not camel cased.")
-  if bool(re.match(r'([A-Z][a-z]+){2,}', f.name)):
-    fb.error(("METADATA.pb: '%s' is a CamelCased name."
-              " To solve this, simply use spaces"
-              " instead in the font name.").format(f.name))
-  else:
-    fb.ok("Font name is not camel-cased.")
-
-
 def check_font_name_is_the_same_as_family_name(fb, family, f):
   fb.new_check("110", "Check font name is the same as family name.")
   if f.name != family.name:
