@@ -3448,3 +3448,17 @@ def check_Copyright_notice_does_not_contain_Reserved_Name(font_metadata):
   else:
     yield PASS, ("METADATA.pb copyright field"
                  " does not contain \"Reserved Font Name\".")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/104'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_does_not_exceed_500_chars(font_metadata):
+  """Copyright notice shouldn't exceed 500 chars."""
+  if len(font_metadata.copyright) > 500:
+    yield FAIL, ("METADATA.pb: Copyright notice exceeds"
+                 " maximum allowed lengh of 500 characteres.")
+  else:
+    yield PASS, "Copyright notice string is shorter than 500 chars."
