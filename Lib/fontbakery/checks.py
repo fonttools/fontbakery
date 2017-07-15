@@ -113,35 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_METADATA_lists_fonts_named_canonicaly(fb, font, f):
-  fb.new_check("114", "METADATA.pb lists fonts named canonicaly?")
-  font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
-  if len(font_familyname) == 0:
-    fb.skip("Skipping this test due to the lack"
-            " of a FONT_FAMILY_NAME in the name table.")
-  else:
-    font_familyname = font_familyname[0]
-
-    is_canonical = False
-    _weights = []
-    for value, intvalue in weights.items():
-      if intvalue == font['OS/2'].usWeightClass:
-        _weights.append(value)
-
-    for w in _weights:
-      canonical_name = "%s %s" % (font_familyname, w)
-      if f.full_name == canonical_name:
-        is_canonical = True
-
-    if is_canonical:
-      fb.ok("METADATA.pb lists fonts named canonicaly.")
-    else:
-      v = map(lambda x: font_familyname + ' ' + x, _weights)
-      fb.error('Canonical name in font: Expected "%s"'
-               ' but got "%s" instead.' % ('" or "'.join(v),
-                                           f.full_name))
-
-
 def check_Font_styles_are_named_canonically(fb, font, f):
   fb.new_check("115", "Font styles are named canonically?")
 
