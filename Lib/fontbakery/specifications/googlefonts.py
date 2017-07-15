@@ -3631,3 +3631,20 @@ def check_fontname_is_not_camel_cased(font_metadata):
                  " instead in the font name.").format(font_metadata.name)
   else:
     yield PASS, "Font name is not camel-cased."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/110'
+  , conditions=['font_metadata']
+)
+def check_font_name_is_the_same_as_family_name(metadata, font_metadata):
+  """Check font name is the same as family name."""
+  if font_metadata.name != metadata.name:
+    yield FAIL, ("METADATA.pb: %s: Family name \"%s\""
+                 " does not match"
+                 " font name: \"%s\"").format(font_metadata.filename,
+                                              metadata.name,
+                                              font_metadata.name)
+  else:
+    yield PASS, "Font name is the same as family name."
