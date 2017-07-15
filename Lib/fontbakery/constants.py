@@ -52,21 +52,6 @@ WEIGHTS = {"Thin": 250,
            "ExtraBold": 800,
            "Black": 900}
 
-WEIGHT_VALUE_TO_NAME = {
-  100: 'Thin',
-  200: 'ExtraLight',
-  300: 'Light',
-  400: '',
-  500: 'Medium',
-  600: 'SemiBold',
-  700: 'Bold',
-  800: 'ExtraBold',
-  900: 'Black'
-}
-# FIXME: Shouldn't the two dicts above be merged into a single
-#        one and have code refactored to use the single source
-#        of numerical value to weight name ?
-
 # code-points for all "whitespace" chars:
 WHITESPACE_CHARACTERS = [
   0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
@@ -206,14 +191,6 @@ LICENSE_NAME = {
     'OFL.txt': u'Open Font',
     'LICENSE.txt': u'Apache'
 }
-
-REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
-                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
-                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
-                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
 # Helper logging class

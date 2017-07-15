@@ -9,26 +9,11 @@ from fontbakery.testrunner import (
             , SKIP
             , PASS
             , FAIL
-            , distribute_generator
             , Section
-            , TestRunner
             , Spec
             )
-
-from fontbakery.callable import condition, test
-
 import os
-import re
-import requests
-import tempfile
-import urllib
-import csv
-from bs4 import BeautifulSoup
-from unidecode import unidecode
-import defusedxml.lxml
-from lxml.html import HTMLParser
-from fontTools.ttLib import TTFont
-
+from fontbakery.callable import condition, test
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
         # How did we ever use this information?
@@ -64,9 +49,7 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
-      , WHITESPACE_CHARACTERS
-      , REQUIRED_TABLES
-      , UNWANTED_TABLES
+      , MACSTYLE_ITALIC
 )
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -100,6 +83,7 @@ register_condition = specificiation.register_condition
 @register_condition
 @condition
 def ttFont(font):
+  from fontTools.ttLib import TTFont
   return TTFont(font)
 
 
@@ -206,6 +190,9 @@ def description(descfile):
 )
 def check_DESCRIPTION_file_contains_no_broken_links(description):
   """Does DESCRIPTION file contain broken links ?"""
+  from lxml.html import HTMLParser
+  import defusedxml.lxml
+  import requests
   doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
   broken_links = []
   for link in doc.xpath('//a/@href'):
@@ -540,6 +527,7 @@ def check_main_entries_in_the_name_table(ttFont, style):
      to name IDs 1, 2, 4, 6, 16, 17, 18.
      It must run before any of the other name table related checks.
   """
+  from unidecode import unidecode
 
   def family_with_spaces(value):
     FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
@@ -689,8 +677,10 @@ def check_main_entries_in_the_name_table(ttFont, style):
 @condition
 def registered_vendor_ids():
   """Get a list of vendor IDs from Microsoft's website."""
-  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
+  import tempfile
+  import requests
   registered_vendor_ids = {}
+  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
   CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
                                    'fontbakery-microsoft-vendorlist.cache')
   if os.path.exists(CACHE_VENDOR_LIST):
@@ -699,6 +689,7 @@ def registered_vendor_ids():
     content = requests.get(url, auth=('user', 'pass')).content
     open(CACHE_VENDOR_LIST, 'w').write(content)
 
+  from bs4 import BeautifulSoup
   soup = BeautifulSoup(content, 'html.parser')
   table = soup.find(id="VendorList")
   for row in table.findAll('tr'):
@@ -720,6 +711,7 @@ def registered_vendor_ids():
 )
 def check_OS2_achVendID(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
+  from unidecode import unidecode
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
     " You should set it to your own 4 character code,"
@@ -903,6 +895,7 @@ def check_font_has_a_license(licenses):
 )
 def check_copyright_entries_match_license(ttFont, license):
   """Check copyright namerecords match license file"""
+  from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
@@ -1335,6 +1328,7 @@ def check_with_msfontvalidator(font):
     else:
       return "MS-FonVal: {}".format(msg)
 
+  import defusedxml.lxml
   doc = defusedxml.lxml.fromstring(xml_report)
   already_reported = []
   for report in doc.iter('Report'):
@@ -1706,7 +1700,7 @@ def get_expected_version(f):
 )
 def check_font_version_fields(ttFont):
   """Checking font version fields"""
-
+  import re
   failed = False
   try:
     expected = get_expected_version(ttFont)
@@ -1887,16 +1881,24 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
 @register_test
 @test(
     id='com.google.fonts/test/049'
-  , conditions=['missing_whitespace_chars']
 )
 def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
+  # code-points for all "whitespace" chars:
+  WHITESPACE_CHARACTERS = [
+    0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
+    0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002,
+    0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F,
+    0x3000, 0x180E, 0x200B, 0x200C, 0x200D, 0x2060,
+    0xFEFF
+  ]
   if missing_whitespace_chars != []:
     yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
   else:
     failed = False
     for codepoint in WHITESPACE_CHARACTERS:
-      g = getGlyph(font, codepoint)
+      g = getGlyph(ttFont, codepoint)
       if g is not None and glyphHasInk(ttFont, g):
         failed = True
         yield FAIL, ("Glyph \"{}\" has ink."
@@ -1970,6 +1972,14 @@ def check_whitespace_glyphs_have_coherent_widths(ttFont,
 )
 def check_font_contains_all_required_tables(ttFont):
   """Font contains all required tables?"""
+  REQUIRED_TABLES = set(["cmap", "head", "hhea", "hmtx",
+                         "maxp", "name", "OS/2", "post"])
+  OPTIONAL_TABLES = set(["cvt ", "fpgm", "loca", "prep",
+                         "VORG", "EBDT", "EBLC", "EBSC",
+                         "BASE", "GPOS", "GSUB", "JSTF",
+                         "DSIG", "gasp", "hdmx", "kern",
+                         "LTSH", "PCLT", "VDMX", "vhea",
+                         "vmtx"])
   # See https://github.com/googlefonts/fontbakery/issues/617
   tables = set(ttFont.reader.tables.keys())
   glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
@@ -1992,6 +2002,7 @@ def check_font_contains_all_required_tables(ttFont):
 )
 def check_for_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
+  UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES:
@@ -2008,9 +2019,10 @@ def check_for_unwanted_tables(ttFont):
 @register_condition
 @condition
 def ttfautohint_stats(font):
+  import re
+  import subprocess
+  import tempfile
   try:
-    import subprocess
-    import tempfile
     hinted_size = os.stat(font).st_size
 
     dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
@@ -2095,7 +2107,7 @@ def check_hinting_filesize_impact(font, ttfautohint_stats):
 )
 def check_version_format_is_correct_in_NAME_table(ttFont):
   """Version format is correct in NAME table?"""
-
+  import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
@@ -2133,6 +2145,7 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
         using the same options
   """
   def ttfautohint_version(values):
+    import re
     for value in values:
       results = re.search(r'ttfautohint \(v(.*)\)', value)
       if results:
@@ -2197,6 +2210,7 @@ def check_name_table_entries_do_not_contain_linebreaks(ttFont):
 )
 def check_glyph_names_are_all_valid(ttFont):
   """Glyph names are all valid?"""
+  import re
   bad_names = []
   for _, glyphName in enumerate(ttFont.getGlyphOrder()):
     if glyphName in [".null", ".notdef"]:
@@ -2230,7 +2244,7 @@ def check_glyph_names_are_all_valid(ttFont):
 def check_font_has_unique_glyph_names(ttFont):
   """Font contains unique glyph names?
      Duplicate glyph names prevent font installation on Mac OS X."""
-
+  import re
   glyphs = []
   duplicated_glyphIDs = []
   for _, g in enumerate(ttFont.getGlyphOrder()):
@@ -2253,6 +2267,7 @@ def check_font_has_unique_glyph_names(ttFont):
 )
 def check_no_glyph_is_incorrectly_named(ttFont):
   """No glyph is incorrectly named?"""
+  import re
   bad_glyphIDs = []
   for _, g in enumerate(ttFont.getGlyphOrder()):
     if re.search(r'#\w+$', g):
@@ -2574,6 +2589,7 @@ def check_font_has_EURO_SIGN_character(ttFont):
 )
 def check_font_follows_the_family_naming_recommendations(ttFont):
   """Font follows the family naming recommendations?"""
+  import re
   # See http://forum.fontlab.com/index.php?topic=313.0
   bad_entries = []
 
@@ -2901,6 +2917,7 @@ def check_METADATA_Ensure_designer_simple_short_name(metadata):
 @register_condition
 @condition
 def listed_on_gfonts_api(metadata):
+  import requests
   url = ('http://fonts.googleapis.com'
          '/css?family=%s') % metadata.name.replace(' ', '+')
   r = requests.get(url)
@@ -2936,8 +2953,10 @@ def check_METADATA_Designer_exists_in_GFonts_profiles_csv(metadata):
     yield FAIL, ("METADATA.pb field \"designer\" MUST NOT be empty!")
   elif metadata.designer == "Multiple Designers":
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
-                 " is OK, so we won't look for it at profiles.cvs")
+                 " is OK, so we won't look for it at profiles.csv")
   else:
+    import urllib
+    import csv
     try:
       handle = urllib.urlopen(PROFILES_RAW_URL)
       designers = []
@@ -3252,6 +3271,7 @@ def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
 )
 def check_METADATA_fullName_matches_postScriptName(font_metadata):
   """METADATA.pb "fullName" matches "postScriptName" ?"""
+  import re
   regex = re.compile(r"\W")
   post_script_name = regex.sub("", font_metadata.post_script_name)
   fullname = regex.sub("", font_metadata.full_name)
@@ -3272,6 +3292,7 @@ def check_METADATA_fullName_matches_postScriptName(font_metadata):
 )
 def check_METADATA_filename_matches_postScriptName(font_metadata):
   """METADATA.pb "filename" matches "postScriptName" ?"""
+  import re
   regex = re.compile(r"\W")
   post_script_name = regex.sub("", font_metadata.post_script_name)
   filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
@@ -3360,3 +3381,355 @@ def check_METADATA_filename_contains_good_fname(font_metadata,
                    " correct font name format (\"{}\")."
                    "").format(font_metadata.filename,
                               font_familyname)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/101'
+  , conditions=['font_metadata',
+                'font_familynames']
+)
+def check_METADATA_postScriptName_contains_good_fname(font_metadata,
+                                                      font_familynames):
+  """METADATA.pb postScriptName field contains font name in right format ?"""
+  for font_familyname in font_familynames:
+    psname = "".join(str(font_familyname).split())
+    if psname in font_metadata.post_script_name:
+      yield PASS, ("METADATA.pb postScriptName field"
+                   " contains font name in right format.")
+    else:
+      yield FAIL, ("METADATA.pb postScriptName (\"{}\")"
+                   " does not match correct font name format."
+                   "").format(font_metadata.post_script_name)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/102'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_matches_canonical_pattern(font_metadata):
+  """Copyright notice matches canonical pattern ?"""
+  import re
+  from unidecode import unidecode
+  almost_matches = re.search(r'(Copyright\s+20\d{2}.+)',
+                             font_metadata.copyright)
+  does_match = re.search(r'(Copyright\s+20\d{2}\s+.*\(.+@.+\..+\))',
+                         font_metadata.copyright)
+  if does_match:
+    yield PASS, "METADATA.pb copyright field matches canonical pattern."
+  else:
+    if almost_matches:
+      yield WARN, ("METADATA.pb: Copyright notice is okay,"
+                   " but it lacks an email address."
+                   " Expected pattern is:"
+                   " 'Copyright 2016 Author Name (name@site.com)'\n"
+                   "But detected copyright string is:"
+                   " '{}'").format(unidecode(font_metadata.copyright))
+    else:
+      yield FAIL, ("METADATA.pb: Copyright notices should match"
+                   " the folowing pattern:"
+                   " 'Copyright 2016 Author Name (name@site.com)'\n"
+                   "But instead we have got:"
+                   " '{}'").format(unidecode(font_metadata.copyright))
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/103'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_does_not_contain_Reserved_Name(font_metadata):
+  """Copyright notice does not contain Reserved Font Name"""
+  if "Reserved Font Name" in font_metadata.copyright:
+    yield WARN, ("METADATA.pb: copyright field (\"{}\")"
+                 " contains \"Reserved Font Name\"."
+                 " This is an error except in a few specific"
+                 " rare cases.").format(unidecode(font_metadata.copyright))
+  else:
+    yield PASS, ("METADATA.pb copyright field"
+                 " does not contain \"Reserved Font Name\".")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/104'
+  , conditions=['font_metadata']
+)
+def check_Copyright_notice_does_not_exceed_500_chars(font_metadata):
+  """Copyright notice shouldn't exceed 500 chars."""
+  if len(font_metadata.copyright) > 500:
+    yield FAIL, ("METADATA.pb: Copyright notice exceeds"
+                 " maximum allowed lengh of 500 characteres.")
+  else:
+    yield PASS, "Copyright notice string is shorter than 500 chars."
+
+
+@register_condition
+@condition
+def canonical_filename(font_metadata):
+  style_names = {
+    "normal": "",
+    "italic": "Italic"
+  }
+  WEIGHT_VALUE_TO_NAME = {
+    100: "Thin",
+    200: "ExtraLight",
+    300: "Light",
+    400: "",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black"
+  }
+  familyname = font_metadata.name.replace(" ", "")
+  style_weight = "%s%s" % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
+                           style_names.get(font_metadata.style))
+  if style_weight == "":
+    style_weight = "Regular"
+  return "%s-%s.ttf" % (familyname, style_weight)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/105'
+  , conditions=['font_metadata', 'canonical_filename']
+)
+def check_Filename_is_set_canonically(font_metadata, canonical_filename):
+  """Filename is set canonically in METADATA.pb ?"""
+  if canonical_filename != font_metadata.filename:
+    yield FAIL, ("METADATA.pb: filename field (\"{}\")"
+                 " does not match "
+                 "canonical name \"{}\".".format(font_metadata.filename,
+                                                 canonical_filename))
+  else:
+    yield PASS, "Filename in METADATA.pb is set canonically."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/106'
+  , conditions=['font_metadata']
+)
+def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
+  """METADATA.pb font.style "italic" matches font internals ?"""
+  if font_metadata.style != "italic":
+    yield SKIP, "This test only applies to italic fonts."
+  else:
+    font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+    font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+    if len(font_familyname) == 0 or len(font_fullname) == 0:
+      yield SKIP, ("Font lacks familyname and/or"
+                   " fullname entries in name table.")
+      # these fail scenarios were already tested above
+      # (passing those previous tests is a prerequisite for this one)
+      # FIXME: Could we pack this into a condition ?
+    else:
+      # FIXME: here we only check the first name entry of each.
+      #        Should we iterate over them all ? Or should we check
+      #        if they're all the same?
+      font_familyname = font_familyname[0]
+      font_fullname = font_fullname[0]
+
+      if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+        yield FAIL, ("METADATA.pb style has been set to italic"
+                     " but font macStyle is improperly set.")
+      elif not font_familyname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle Italic bit is set"
+                     " but nameID %d (\"%s\")"
+                     " is not ended "
+                     "with \"Italic\"") % (NAMEID_FONT_FAMILY_NAME,
+                                           font_familyname)
+      elif not font_fullname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle Italic bit is set"
+                     " but nameID %d (\"%s\") is not ended"
+                     " with \"Italic\"") % (NAMEID_FULL_FONT_NAME,
+                                            font_fullname)
+      else:
+        yield PASS, ("OK: METADATA.pb font.style \"italic\""
+                     " matches font internals.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/107'
+  , conditions=['font_metadata']
+)
+def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
+  """METADATA.pb font.style "normal" matches font internals ?"""
+  if font_metadata.style != "normal":
+    yield SKIP, "This test only applies to normal fonts."
+    # FIXME: declare a common condition called "normal_style"
+  else:
+    font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)
+    font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
+    if len(font_familyname) == 0 or len(font_fullname) == 0:
+      yield SKIP, ("Font lacks familyname and/or"
+                   " fullname entries in name table.")
+      # FIXME: This is the same SKIP condition as in test/106
+      #        so we definitely need to address them with a common condition!
+    else:
+      font_familyname = font_familyname[0]
+      font_fullname = font_fullname[0]
+
+      if bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+        yield FAIL, ("METADATA.pb style has been set to normal"
+                     " but font macStyle is improperly set.")
+      elif font_familyname.split("-")[-1].endswith('Italic'):
+        yield FAIL, ("Font macStyle indicates a non-Italic font,"
+                     " but nameID %d (FONT_FAMILY_NAME: \"%s\") ends"
+                     " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
+                                                 font_familyname)
+      elif font_fullname.split("-")[-1].endswith("Italic"):
+        yield FAIL, ("Font macStyle indicates a non-Italic font"
+                     " but nameID %d (FULL_FONT_NAME: \"%s\") ends"
+                     " with \"Italic\".").format(NAMEID_FULL_FONT_NAME,
+                                                 font_fullname)
+      else:
+        yield PASS, ("METADATA.pb font.style \"normal\""
+                     " matches font internals.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/108'
+  , conditions=['font_metadata']
+)
+def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
+  """Metadata key-value match to table name fields?"""
+  font_familyname = get_name_string(ttFont, NAMEID_FONT_FAMILY_NAME)[0]
+  font_fullname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)[0]
+  # FIXME: common condition/name-id check as in the two previous tests.
+
+  if font_familyname != font_metadata.name:
+    yield FAIL, ("METADATA.pb Family name \"{}\")"
+                 " does not match name table"
+                 " entry \"{}\" !").format(font_metadata.name,
+                                           font_familyname)
+  elif font_fullname != font_metadata.full_name:
+    yield FAIL, ("METADATA.pb: Fullname (\"{}\")"
+                 " does not match name table"
+                 " entry \"{}\" !").format(font_metadata.full_name,
+                                           font_fullname)
+  else:
+    yield PASS, ("METADATA.pb familyname and fullName fields"
+                 " match corresponding name table entries.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/109'
+  , conditions=['font_metadata']
+)
+def check_fontname_is_not_camel_cased(font_metadata):
+  """Check if fontname is not camel cased."""
+  import re
+  if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)): 
+    yield FAIL, ("METADATA.pb: '%s' is a CamelCased name."
+                 " To solve this, simply use spaces"
+                 " instead in the font name.").format(font_metadata.name)
+  else:
+    yield PASS, "Font name is not camel-cased."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/110'
+  , conditions=['metadata', # that's the family-wide metadata!
+                'font_metadata'] # and this one's specific to a single file
+)
+def check_font_name_is_the_same_as_family_name(metadata, font_metadata):
+  """Check font name is the same as family name."""
+  if font_metadata.name != metadata.name:
+    yield FAIL, ("METADATA.pb: %s: Family name \"%s\""
+                 " does not match"
+                 " font name: \"%s\"").format(font_metadata.filename,
+                                              metadata.name,
+                                              font_metadata.name)
+  else:
+    yield PASS, "Font name is the same as family name."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/111'
+  , conditions=['font_metadata']
+)
+def check_font_weight_has_a_canonical_value(font_metadata):
+  """Check that font weight has a canonical value."""
+  first_digit = font_metadata.weight / 100
+  if (font_metadata.weight % 100) != 0 or \
+     (first_digit < 1 or first_digit > 9):
+   yield FAIL, ("METADATA.pb: The weight is declared"
+                " as {} which is not a "
+                "multiple of 100"
+                " between 100 and 900.").format(font_metadata.weight)
+  else:
+    yield PASS, "Font weight has a canonical value."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/112'
+  , conditions=['font_metadata']
+)
+def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
+                                                          font_metadata):
+  """Checking OS/2 usWeightClass matches weight specified at METADATA.pb"""
+  if ttFont["OS/2"].usWeightClass != font_metadata.weight:
+    yield FAIL, ("OS/2 usWeightClass (\"{}\") does not match"
+                 " weight specified at METADATA.pb (\"{}\")."
+                 "").format(ttFont["OS/2"].usWeightClass,
+                            font_metadata.weight)
+  else:
+    yield PASS, ("OS/2 usWeightClass matches"
+                 " weight specified at METADATA.pb")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/113'
+  , conditions=['font_metadata']
+)
+def check_Metadata_weight_matches_postScriptName(font_metadata):
+  """Metadata weight matches postScriptName"""
+  weights = {
+    'Thin': 100,
+    'ThinItalic': 100,
+    'ExtraLight': 200,
+    'ExtraLightItalic': 200,
+    'Light': 300,
+    'LightItalic': 300,
+    'Regular': 400,
+    'Italic': 400,
+    'Medium': 500,
+    'MediumItalic': 500,
+    'SemiBold': 600,
+    'SemiBoldItalic': 600,
+    'Bold': 700,
+    'BoldItalic': 700,
+    'ExtraBold': 800,
+    'ExtraBoldItalic': 800,
+    'Black': 900,
+    'BlackItalic': 900,
+  }
+  pair = []
+  for k, weight in weights.items():
+    if weight == font_metadata.weight:
+      pair.append((k, weight))
+
+  if not pair:
+    yield FAIL, ("METADATA.pb: Font weight"
+                 " does not match postScriptName")
+  elif not (font_metadata.post_script_name.endswith('-' + pair[0][0]) or
+            font_metadata.post_script_name.endswith('-%s' % pair[1][0])):
+    yield FAIL, ("METADATA.pb: postScriptName (\"{}\")"
+                 " with weight {} must be"
+                 "").format(font_metadata.post_script_name,
+                            pair[0][1]) + \
+                (" ended with \"{}\" or \"{}\""
+                 "").format(pair[0][0],
+                            pair[1][0])
+  else:
+    yield PASS, "Weight value matches postScriptName."
