@@ -113,18 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_font_name_is_the_same_as_family_name(fb, family, f):
-  fb.new_check("110", "Check font name is the same as family name.")
-  if f.name != family.name:
-    fb.error(('METADATA.pb: %s: Family name "%s"'
-              ' does not match'
-              ' font name: "%s"').format(f.filename,
-                                         family.name,
-                                         f.name))
-  else:
-    fb.ok('Font name is the same as family name.')
-
-
 def check_font_weight_has_a_canonical_value(fb, f):
   fb.new_check("111", "Check that font weight has a canonical value")
   first_digit = f.weight / 100
