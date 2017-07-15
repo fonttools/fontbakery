@@ -41,55 +41,16 @@ RIBBI_STYLE_NAMES = ["Regular",
                      "BoldItalic",
                      "Bold Italic"]  # <-- Do we really need this one?
 
-# Weight name to value mappings:
-WEIGHT_CLASS_VALUES = {
-  "Thin": 250,
-  "ExtraLight": 275,
-  "Light": 300,
-  "Regular": 400,
-  "Medium": 500,
-  "SemiBold": 600,
-  "Bold": 700,
-  "ExtraBold": 800,
-  "Black": 900
-}
-
-WEIGHT_CLASS_NAMES = {
-  250: "Thin",
-  275: "ExtraLight",
-  300: "Light",
-  400: "Regular",
-  500: "Medium",
-  600: "SemiBold",
-  700: "Bold",
-  800: "ExtraBold",
-  900: "Black"
-}
-
-CSS_WEIGHT_VALUES = {
-  'Thin': 100,
-  'ExtraLight': 200,
-  'Light': 300,
-  '': 400,
-  'Regular': 400,
-  'Medium': 500,
-  'SemiBold': 600,
-  'Bold': 700,
-  'ExtraBold': 800,
-  'Black': 900
-}
-
-CSS_WEIGHT_NAMES = {
-  100: 'Thin',
-  200: 'ExtraLight',
-  300: 'Light',
-  400: 'Regular',
-  500: 'Medium',
-  600: 'SemiBold',
-  700: 'Bold',
-  800: 'ExtraBold',
-  900: 'Black'
-}
+# Weight name to value mapping:
+WEIGHTS = {"Thin": 250,
+           "ExtraLight": 275,
+           "Light": 300,
+           "Regular": 400,
+           "Medium": 500,
+           "SemiBold": 600,
+           "Bold": 700,
+           "ExtraBold": 800,
+           "Black": 900}
 
 # code-points for all "whitespace" chars:
 WHITESPACE_CHARACTERS = [

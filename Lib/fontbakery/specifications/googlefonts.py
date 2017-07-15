@@ -3462,3 +3462,45 @@ def check_Copyright_notice_does_not_exceed_500_chars(font_metadata):
                  " maximum allowed lengh of 500 characteres.")
   else:
     yield PASS, "Copyright notice string is shorter than 500 chars."
+
+
+@register_condition
+@condition
+def canonical_filename(font_metadata):
+  style_names = {
+    "normal": "",
+    "italic": "Italic"
+  }
+  WEIGHT_VALUE_TO_NAME = {
+    100: "Thin",
+    200: "ExtraLight",
+    300: "Light",
+    400: "",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black"
+  }
+  familyname = font_metadata.name.replace(" ", "")
+  style_weight = "%s%s" % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
+                           style_names.get(font_metadata.style))
+  if style_weight == "":
+    style_weight = "Regular"
+  return "%s-%s.ttf" % (familyname, style_weight)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/105'
+  , conditions=['font_metadata', 'canonical_filename']
+)
+def check_Filename_is_set_canonically(font_metadata, canonical_filename):
+  """Filename is set canonically in METADATA.pb ?"""
+  if canonical_filename != font_metadata.filename:
+    yield FAIL, ("METADATA.pb: filename field (\"{}\")"
+                 " does not match "
+                 "canonical name \"{}\".".format(font_metadata.filename,
+                                                 canonical_filename))
+  else:
+    yield PASS, "Filename in METADATA.pb is set canonically."
