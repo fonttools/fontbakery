@@ -3636,7 +3636,8 @@ def check_fontname_is_not_camel_cased(font_metadata):
 @register_test
 @test(
     id='com.google.fonts/test/110'
-  , conditions=['font_metadata']
+  , conditions=['metadata', # that's the family-wide metadata!
+                'font_metadata'] # and this one's specific to a single file
 )
 def check_font_name_is_the_same_as_family_name(metadata, font_metadata):
   """Check font name is the same as family name."""
@@ -3648,3 +3649,21 @@ def check_font_name_is_the_same_as_family_name(metadata, font_metadata):
                                               font_metadata.name)
   else:
     yield PASS, "Font name is the same as family name."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/111'
+  , conditions=['font_metadata']
+)
+def check_font_weight_has_a_canonical_value(font_metadata):
+  """Check that font weight has a canonical value."""
+  first_digit = font_metadata.weight / 100
+  if (font_metadata.weight % 100) != 0 or \
+     (first_digit < 1 or first_digit > 9):
+   yield FAIL, ("METADATA.pb: The weight is declared"
+                " as {} which is not a "
+                "multiple of 100"
+                " between 100 and 900.").format(font_metadata.weight)
+  else:
+    yield PASS, "Font weight has a canonical value."

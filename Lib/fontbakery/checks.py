@@ -113,18 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_font_weight_has_a_canonical_value(fb, f):
-  fb.new_check("111", "Check that font weight has a canonical value")
-  first_digit = f.weight / 100
-  if (f.weight % 100) != 0 or (first_digit < 1 or first_digit > 9):
-    fb.error(("METADATA.pb: The weight is declared"
-              " as {} which is not a "
-              "multiple of 100"
-              " between 100 and 900.").format(f.weight))
-  else:
-    fb.ok("Font weight has a canonical value.")
-
-
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(fb, f):
   fb.new_check("112", "Checking OS/2 usWeightClass"
                       " matches weight specified at METADATA.pb")
