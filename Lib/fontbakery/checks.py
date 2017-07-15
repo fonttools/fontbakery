@@ -55,7 +55,6 @@ from fontbakery.constants import (
                                  PLATFORM_ID_MACINTOSH,
                                  PLATFORM_ID_WINDOWS,
                                  PLATID_STR,
-                                 WEIGHT_VALUE_TO_NAME,
                                  FSSEL_ITALIC,
                                  FSSEL_BOLD,
                                  FSSEL_REGULAR,
@@ -112,31 +111,6 @@ def check_file_is_named_canonically(fb, font_fname):
               ' style names: "{}".').format(font_fname,
                                             '", "'.join(STYLE_NAMES)))
     return False
-
-
-def check_Filename_is_set_canonically(fb, f):
-  fb.new_check("105", "Filename is set canonically in METADATA.pb ?")
-
-  def create_canonical_filename(font_metadata):
-    style_names = {
-     'normal': '',
-     'italic': 'Italic'
-    }
-    familyname = font_metadata.name.replace(' ', '')
-    style_weight = '%s%s' % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
-                             style_names.get(font_metadata.style))
-    if not style_weight:
-        style_weight = 'Regular'
-    return '%s-%s.ttf' % (familyname, style_weight)
-
-  canonical_filename = create_canonical_filename(f)
-  if canonical_filename != f.filename:
-    fb.error("METADATA.pb: filename field ('{}')"
-             " does not match"
-             " canonical name '{}'".format(f.filename,
-                                           canonical_filename))
-  else:
-    fb.ok('Filename in METADATA.pb is set canonically.')
 
 
 def check_METADATA_font_italic_matches_font_internals(fb, font, f):
