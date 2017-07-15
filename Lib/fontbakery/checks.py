@@ -113,49 +113,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-weights = {
-  'Thin': 100,
-  'ThinItalic': 100,
-  'ExtraLight': 200,
-  'ExtraLightItalic': 200,
-  'Light': 300,
-  'LightItalic': 300,
-  'Regular': 400,
-  'Italic': 400,
-  'Medium': 500,
-  'MediumItalic': 500,
-  'SemiBold': 600,
-  'SemiBoldItalic': 600,
-  'Bold': 700,
-  'BoldItalic': 700,
-  'ExtraBold': 800,
-  'ExtraBoldItalic': 800,
-  'Black': 900,
-  'BlackItalic': 900,
-}
-
-
-def check_Metadata_weight_matches_postScriptName(fb, f):
-  fb.new_check("113", "Metadata weight matches postScriptName")
-  pair = []
-  for k, weight in weights.items():
-    if weight == f.weight:
-      pair.append((k, weight))
-
-  if not pair:
-    fb.error('METADATA.pb: Font weight'
-             ' does not match postScriptName')
-  elif not (f.post_script_name.endswith('-' + pair[0][0]) or
-            f.post_script_name.endswith('-%s' % pair[1][0])):
-    fb.error('METADATA.pb: postScriptName ("{}")'
-             ' with weight {} must be '.format(f.post_script_name,
-                                               pair[0][1]) +
-             'ended with "{}" or "{}"'.format(pair[0][0],
-                                              pair[1][0]))
-  else:
-    fb.ok("Weight value matches postScriptName.")
-
-
 def check_METADATA_lists_fonts_named_canonicaly(fb, font, f):
   fb.new_check("114", "METADATA.pb lists fonts named canonicaly?")
   font_familyname = get_name_string(font, NAMEID_FONT_FAMILY_NAME)
