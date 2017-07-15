@@ -114,16 +114,6 @@ def check_file_is_named_canonically(fb, font_fname):
     return False
 
 
-def check_Copyright_notice_does_not_exceed_500_chars(fb, f):
-  fb.new_check("104", "Copyright notice shouldn't exceed 500 chars")
-  if len(f.copyright) > 500:
-    fb.error("METADATA.pb: Copyright notice exceeds"
-             " maximum allowed lengh of 500 characteres.")
-  else:
-    fb.ok("Copyright notice string is"
-          " shorter than 500 chars.")
-
-
 def check_Filename_is_set_canonically(fb, f):
   fb.new_check("105", "Filename is set canonically in METADATA.pb ?")
 
