@@ -52,6 +52,29 @@ WEIGHTS = {"Thin": 250,
            "ExtraBold": 800,
            "Black": 900}
 
+# FIXME: This needs review, since it seems a bit redundant
+#        with the above "WEIGHTS" dict.
+weights = {
+  "Thin": 100,
+  "ThinItalic": 100,
+  "ExtraLight": 200,
+  "ExtraLightItalic": 200,
+  "Light": 300,
+  "LightItalic": 300,
+  "Regular": 400,
+  "Italic": 400,
+  "Medium": 500,
+  "MediumItalic": 500,
+  "SemiBold": 600,
+  "SemiBoldItalic": 600,
+  "Bold": 700,
+  "BoldItalic": 700,
+  "ExtraBold": 800,
+  "ExtraBoldItalic": 800,
+  "Black": 900,
+  "BlackItalic": 900
+}
+
 # code-points for all "whitespace" chars:
 WHITESPACE_CHARACTERS = [
   0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
