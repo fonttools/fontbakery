@@ -14,7 +14,8 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
 from __future__ import absolute_import, print_function, unicode_literals, division
-import sys
+import sys, os
+from math import ceil
 from collections import Counter
 from functools import partial
 try:
@@ -22,6 +23,8 @@ try:
 except ImportError:
   # Python 3
   from StringIO import StringIO
+
+from time import time
 
 # using this to override print function somewhere
 try:
@@ -46,6 +49,7 @@ from fontbakery.testrunner import (
             , ENDSECTION
             , START
             , END
+            , Status
             )
 
 statuses = (
@@ -127,6 +131,50 @@ UNICORN = r"""
     <<Art by Colin J. Randall, cjr, 10mar02>>
 """
 
+class ThrottledOut(object):
+  def __init__(self, outFile, holdback_time=None, max_ticks=0, draw_progressbar=None):
+    """ holdback_time: float, 1.0 = 1 second"""
+    self._outFile = outFile
+    self._holdback_time = holdback_time
+    self._last_flush_time = None
+    self._buffer = []
+    self._draw_progressbar = draw_progressbar
+    self._current_ticks = 0
+    self._max_ticks = max_ticks
+
+  def write(self, data):
+    """only put to stdout every now and then"""
+    self._buffer.append(data)
+    self._current_ticks += 1
+    # first entry ever will be flushed immediately
+
+    flush=False
+    if self._last_flush_time is None or \
+                (self._holdback_time is None and self._max_ticks == 0):
+      flush = True
+    elif self._max_ticks and self._current_ticks >= self._max_ticks or \
+         self._holdback_time and time() - self._holdback_time >= self._last_flush_time:
+      flush=True
+
+    if flush:
+      self.flush();
+
+  def flush(self, draw_progress=True):
+    """call this at the very end, so that we can output the rest"""
+    reset_progressbar = None
+    if self._draw_progressbar and draw_progress:
+      progressbar, reset_progressbar = self._draw_progressbar();
+      self._buffer.append(progressbar)
+
+    self._outFile.write(''.join(self._buffer))
+    #self._outFile.flush() needed?
+    self._buffer = []
+    if reset_progressbar:
+      # first thing on next flush is to reset the current progressbar
+      self._buffer.append(reset_progressbar)
+    self._current_ticks = 0
+    self._last_flush_time = time()
+
 class TerminalProgress(FontbakeryReporter):
   def __init__(self, print_progress=True
                    , stdout=sys.stdout
@@ -136,12 +184,17 @@ class TerminalProgress(FontbakeryReporter):
                    , **kwd):
     super(TerminalProgress, self).__init__(**kwd)
 
-    self.stdout = stdout
     # must be a tty for this!
     self._use_color = usecolor
-    self._print_progress = self.stdout.isatty() and print_progress
+    self._print_progress = stdout.isatty() and print_progress
+
+    if self._print_progress:
+      self.stdout = ThrottledOut(stdout, holdback_time=1/24, max_ticks=10
+                               , draw_progressbar=self.draw_progressbar)
+    else:
+      self.stdout = stdout
+
     self._progressbar = []
-    self._last_progress_lines = 0
     self._unicorn = unicorn
 
     self._structure_threshold = min(START.weight, structure_threshold) \
@@ -149,10 +202,6 @@ class TerminalProgress(FontbakeryReporter):
     if self._structure_threshold % 2:
       # always include the according START status
       self._structure_threshold -= 1
-
-  def _cleanup(self, (status, message, identity)):
-    super(TerminalProgress, self)._cleanup((status, message, identity))
-    self.reset_last_progress()
 
   def _register(self, event):
     super(TerminalProgress, self)._register(event)
@@ -165,9 +214,13 @@ class TerminalProgress(FontbakeryReporter):
     text = self._render_event(*event)
     if text:
       self.stdout.write(text)
+    elif self._print_progress:
+      # the empty string will change the ticks counter when self.stdout is a ThrottledOut
+      self.stdout.write('')
     status, _, _ = event
-    if status != END and self._print_progress:
-      self.draw_progress()
+    if status == END and self._print_progress:
+      # this flush is only relevant when self.stdout is a ThrottledOut
+      self.stdout.flush(False)
 
   def _render_event(self, status, message, identity):
     output = StringIO()
@@ -179,7 +232,7 @@ class TerminalProgress(FontbakeryReporter):
 
     if status == END and status.weight >= self._structure_threshold:
       if self._print_progress:
-        print(self.draw_progressbar().encode('utf-8'))
+        print(self._draw_progressbar().encode('utf-8'))
       print()
       if self._unicorn and len(self._order) \
               and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
@@ -188,7 +241,6 @@ class TerminalProgress(FontbakeryReporter):
           unicorn = MAGENTA_STR(UNICORN)
         print(unicorn)
       print('DONE!')
-
     return output.getvalue()
 
   def _set_order(self, order):
@@ -210,27 +262,61 @@ class TerminalProgress(FontbakeryReporter):
       self._progressbar.append('.')
     return index
 
-  def reset_last_progress(self):
+  def _reset_progress(self, num_linebeaks):
     BACKSPACE = u'\b'
     TOLEFT = u'\u001b[1000D' # Move all the way left (max 1000 steps
     CLEARLINE = u'\u001b[2K'    # Clear the line
     UP =  '\u001b[1A' # moves cursor 1 up
-    reset = (CLEARLINE + UP) * self._last_progress_lines + TOLEFT
-    self.stdout.write(reset)
-    self.stdout.flush()
+    reset = (CLEARLINE + UP) * num_linebeaks + TOLEFT
+    return reset
 
-  def draw_progressbar(self):
+  def _draw_progressbar(self, columns=None, len_prefix=0, right_margin=0):
+    """
+    if columns is None, don't insert any extra line breaks
+    """
     if self._order == None:
       total = len(self._results)
     else:
       total = max(len(self._order), len(self._results))
 
     percent = int(round(len(self._results)/total*100)) if total else 0
-    barformat = '[{0}] {1: 3d}% '.format
-    return barformat(''.join(self._progressbar), percent)
 
-  def draw_progress(self):
-    progressbar = self.draw_progressbar()
+    needs_break = lambda count: columns and count > columns \
+                                and (count % (columns - right_margin))
+
+    status = type(b'status', (object,), dict(count=0,progressbar=[]))
+    def _append(status, item, length=1, separator=''):
+      # * assuming a standard item will take one column in the tty
+      # * length must not be bigger than columns (=very narrow columns)
+      progressbar = status.progressbar
+      if needs_break(status.count + length + len(separator)):
+        progressbar.append('\n')
+        status.count = 0
+      else:
+        progressbar.append(separator)
+      status.count += length + len(separator)
+      progressbar.append(item)
+    append=partial(_append, status)
+    progressbar = status.progressbar
+
+    append('', len_prefix)
+    append('[')
+    map(append, self._progressbar)
+    append(']')
+    percentstring = '{0:3d}%'.format(percent)
+    append(percentstring, len(percentstring), ' ')
+    return ''.join(progressbar)
+
+
+  def draw_progressbar(self):
+    # tty size
+    rows, columns = map(int, os.popen('stty size', 'r').read().split())
+    # this is the amout of space the spinner takes when rendered in the tty
+    # NOTE: the color codes are not taking space in the tty, so we can't
+    # just take the length of `spinner`.
+    # 1 for the spinner + 1 for the separating space
+    len_prefix = 2;
+    progressbar = self._draw_progressbar(columns, len_prefix=2)
     counter = _render_results_counter(self._counter, color=self._use_color)
 
     spinnerstates = ' ░▒▓█▓▒░'
@@ -238,10 +324,9 @@ class TerminalProgress(FontbakeryReporter):
     if self._use_color:
       spinner = GREEN_STR(spinner)
 
-    rendered = '\n{0}\n\n{2} {1}'.format(counter, progressbar, spinner)
-    self._last_progress_lines = rendered.count('\n')
-    self.stdout.write(rendered)
-    self.stdout.flush()
+    rendered = '\n{0}\n\n{2} {1}\n'.format(counter, progressbar, spinner)
+    num_linebeaks = rendered.count('\n')
+    return rendered, self._reset_progress(num_linebeaks)
 
 def _render_results_counter(counter,color=False):
   format = '    {}: {}'.format
@@ -278,10 +363,18 @@ class TerminalReporter(TerminalProgress):
     # especially DEBUG, INFO, WARNING and ERROR
     # FAIL, PASS and SKIP are only expected within tests though
     # Log statuses have weights >= 0
+    log_threshold = log_threshold if type(log_threshold) is not Status \
+                                  else log_threshold.weight
     self._log_threshold = min(ERROR.weight + 1 , max(0, log_threshold))
 
-    # Use this to silence the output tests
+    # Use this to silence the output tests in async mode, it also activates
+    # async mode if turned off.
+    # You can't silence whole tests in sync output, as the events are
+    # rendered as soon as they happen, you can however silence some log
+    # messages in sync mode, use log_threshold for this.
     # default: no DEBUG output
+    test_threshold = test_threshold if type(test_threshold) is not Status \
+                                    else test_threshold.weight
     self._test_threshold = min(ERROR.weight + 1, max(PASS.weight, test_threshold))
 
     # if this is used we must use async rendering, otherwise we can't
@@ -375,7 +468,8 @@ class TerminalReporter(TerminalProgress):
 
       # same end message as parent
       text = super(TerminalReporter, self)._render_event(*event)
-      print(text)
+      if text:
+        print(text)
 
     if status not in statuses and structure_threshold:
       print('-'*8, status , '-'*8)
@@ -418,4 +512,5 @@ class TerminalReporter(TerminalProgress):
       self._render_event_async(print, event)
     else:
       self._render_event_sync(print, event)
+
     return output.getvalue()
