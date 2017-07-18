@@ -1226,6 +1226,7 @@ def check_OS2_xAvgCharWidth(ttFont):
 )
 def check_with_ftxvalidator(font):
   """Checking with ftxvalidator."""
+  import plistlib
   try:
     import subprocess
     ftx_cmd = ["ftxvalidator",
