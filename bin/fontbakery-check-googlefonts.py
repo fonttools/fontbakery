@@ -60,6 +60,10 @@ parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_g
                     help='Report log messages of this status or higher.\n'
                          'One of: {}'.format(', '.join(log_levels.keys())))
 
+parser.add_argument('-n', '--no-progress', default=False, action='store_true',
+                    help='In a tty as stdout, don\'t render the progress indicators.')
+
+
 def get_fonts(globs):
   fonts_to_check = []
   for target in globs:
@@ -77,7 +81,8 @@ if __name__ == '__main__':
   values = dict(fonts=get_fonts(args.arg_filepaths))
   runner = TestRunner(specificiation, values, explicit_tests=args.checkid)
 
-  tr = TerminalReporter(runner=runner, is_async=False, print_progress=True
+  tr = TerminalReporter(runner=runner, is_async=False
+                       , print_progress=not args.no_progress
                        , test_threshold=args.loglevel_tests
                        , log_threshold=args.loglevel_messages
                        , collect_results_by='font'
