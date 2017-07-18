@@ -154,13 +154,7 @@ def check_all_files_in_a_single_directory(fonts):
 @condition
 def family_directory(fonts):
   """Get the path of font project directory."""
-  if len(fonts) == 0:
-    # We're being extra-careful here. But probably
-    #  the only situation in which fonts would be an
-    #  empty would really indicate bad user input on the
-    #  commandline. So perhaps we should detect this earlier.
-    return None
-  else:
+  if fonts:
     return os.path.dirname(fonts[0])
 
 
@@ -3118,6 +3112,8 @@ def check_METADATA_family_values_are_all_the_same(metadata):
 @register_condition
 @condition
 def has_regular_style(metadata):
+  if not metadata:
+    return
   for f in metadata.fonts:
     if f.weight == 400 and f.style == "normal":
       return True
@@ -3161,6 +3157,8 @@ def check_regular_is_400(metadata, has_regular_style):
 @register_condition
 @condition
 def font_metadata(metadata, ttFont):
+  if not metadata:
+    return
   for f in metadata.fonts:
     if ttFont.reader.file.name.endswith(f.filename):
       return f
@@ -3470,6 +3468,8 @@ def check_Copyright_notice_does_not_exceed_500_chars(font_metadata):
 @register_condition
 @condition
 def canonical_filename(font_metadata):
+  if not font_metadata:
+    return
   style_names = {
     "normal": "",
     "italic": "Italic"
