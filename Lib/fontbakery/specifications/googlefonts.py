@@ -2913,22 +2913,22 @@ def check_METADATA_Ensure_designer_simple_short_name(metadata):
 @register_condition
 @condition
 def listed_on_gfonts_api(metadata):
+  if not metadata:
+    return False
   import requests
   url = ('http://fonts.googleapis.com'
          '/css?family=%s') % metadata.name.replace(' ', '+')
   r = requests.get(url)
-  if r.status_code == 200:
-    return True
-
+  return r.status_code == 200
 
 @register_test
 @test(
     id='com.google.fonts/test/081'
   , conditions=['metadata']
 )
-def check_family_is_listed_on_GoogleFontsAPI(metadata):
+def check_family_is_listed_on_GoogleFontsAPI(listed_on_gfonts_api):
   """METADATA.pb: Fontfamily is listed on Google Fonts API ?"""
-  if not listed_on_gfonts_api(metadata):
+  if not listed_on_gfonts_api:
     yield FAIL, "Family not found via Google Fonts API."
   else:
     yield PASS, "Font is properly listed via Google Fonts API."
@@ -3087,7 +3087,6 @@ def check_Copyright_notice_is_the_same_in_all_fonts(metadata):
   else:
     yield PASS, "Copyright is consistent across family"
 
-
 @register_test
 @test(
     id='com.google.fonts/test/089'
@@ -3112,11 +3111,11 @@ def check_METADATA_family_values_are_all_the_same(metadata):
 @register_condition
 @condition
 def has_regular_style(metadata):
-  if not metadata:
-    return
-  for f in metadata.fonts:
+  fonts = metadata.fonts if metadata else []
+  for f in fonts:
     if f.weight == 400 and f.style == "normal":
       return True
+  return False
 
 
 @register_test
@@ -3124,10 +3123,10 @@ def has_regular_style(metadata):
     id='com.google.fonts/test/090'
   , conditions=['metadata']
 )
-def check_font_has_regular_style(metadata):
+def check_font_has_regular_style(has_regular_style):
   """According Google Fonts standards,
      font should have Regular style."""
-  if has_regular_style(metadata):
+  if has_regular_style:
     yield PASS, "Font has a Regular style."
   else:
     yield FAIL, ("This font lacks a Regular"
@@ -3141,7 +3140,7 @@ def check_font_has_regular_style(metadata):
   , conditions=['metadata',
                 'has_regular_style']
 )
-def check_regular_is_400(metadata, has_regular_style):
+def check_regular_is_400(metadata):
   """Regular should be 400."""
   badfonts = []
   for f in metadata.fonts:
