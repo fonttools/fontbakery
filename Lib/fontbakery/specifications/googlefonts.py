@@ -1909,7 +1909,7 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
     id='com.google.fonts/test/050'
   , conditions=['missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_coherent_widths(ttFont, 
+def check_whitespace_glyphs_have_coherent_widths(ttFont,
                                                  missing_whitespace_chars):
   """Whitespace glyphs have coherent widths?"""
   if missing_whitespace_chars != []:
@@ -3627,7 +3627,7 @@ def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
 def check_fontname_is_not_camel_cased(font_metadata):
   """Check if fontname is not camel cased."""
   import re
-  if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)): 
+  if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
     yield FAIL, ("METADATA.pb: '%s' is a CamelCased name."
                  " To solve this, simply use spaces"
                  " instead in the font name.").format(font_metadata.name)
