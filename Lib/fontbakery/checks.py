@@ -337,22 +337,6 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
       fb.ok("Copyright notice is consistent across all fonts in this family.")
 
 
-def check_head_macStyle(fb, font, style):
-  fb.new_check("131", "Checking head.macStyle value")
-
-  # Checking macStyle ITALIC bit:
-  check_bit_entry(fb, font, "head", "macStyle",
-                  "Italic" in style,
-                  bitmask=MACSTYLE_ITALIC,
-                  bitname="ITALIC")
-
-  # Checking macStyle BOLD bit:
-  check_bit_entry(fb, font, "head", "macStyle",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=MACSTYLE_BOLD,
-                  bitname="BOLD")
-
-
 def check_with_pyfontaine(fb, font_file, glyphset):
   try:
     import subprocess
