@@ -337,50 +337,6 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
       fb.ok("Copyright notice is consistent across all fonts in this family.")
 
 
-def check_post_italicAngle(fb, font, style):
-  fb.new_check("130", "Checking post.italicAngle value")
-  failed = False
-  value = font['post'].italicAngle
-
-  # Checking that italicAngle <= 0
-  if value > 0:
-    failed = True
-    if fb.config['autofix']:
-      font['post'].italicAngle = -value
-      fb.hotfix(("post.italicAngle"
-                 " from {} to {}").format(value, -value))
-    else:
-      fb.error(("post.italicAngle value must be changed"
-                " from {} to {}").format(value, -value))
-    value = -value
-
-  # Checking that italicAngle is less than 20 degrees:
-  if abs(value) > 20:
-    failed = True
-    if fb.config['autofix']:
-      font['post'].italicAngle = -20
-      fb.hotfix(("post.italicAngle"
-                 " changed from {} to -20").format(value))
-    else:
-      fb.error(("post.italicAngle value must be"
-                " changed from {} to -20").format(value))
-
-  # Checking if italicAngle matches font style:
-  if "Italic" in style:
-    if font['post'].italicAngle == 0:
-      failed = True
-      fb.error("Font is italic, so post.italicAngle"
-               " should be non-zero.")
-  else:
-    if font['post'].italicAngle != 0:
-      failed = True
-      fb.error("Font is not italic, so post.italicAngle"
-               " should be equal to zero.")
-
-  if not failed:
-    fb.ok("post.italicAngle is {}".format(value))
-
-
 def check_head_macStyle(fb, font, style):
   fb.new_check("131", "Checking head.macStyle value")
 

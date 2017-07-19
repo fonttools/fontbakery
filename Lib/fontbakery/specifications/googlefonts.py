@@ -3850,3 +3850,41 @@ def check_OS2_fsSelection(ttFont, style):
                         expected,
                         bitmask=FSSEL_BOLD,
                         bitname="BOLD")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/130'
+  , conditions=['style']
+)
+def check_post_italicAngle(ttFont, style):
+  """Checking post.italicAngle value."""
+  failed = False
+  value = ttFont["post"].italicAngle
+
+  # Checking that italicAngle <= 0
+  if value > 0:
+    failed = True
+    yield FAIL ("The value of post.italicAngle must be"
+                " changed from {} to {}.").format(value, -value)
+
+  # Checking that italicAngle is less than 20 degrees:
+  if abs(value) > 20:
+    failed = True
+    yield FAIL, ("The value of post.italicAngle must be"
+                 " changed from {} to -20.").format(value)
+
+  # Checking if italicAngle matches font style:
+  if "Italic" in style:
+    if ttFont['post'].italicAngle == 0:
+      failed = True
+      yield FAIL, ("Font is italic, so post.italicAngle"
+                   " should be non-zero.")
+  else:
+    if ttFont["post"].italicAngle != 0:
+      failed = True
+      yield FAIL, ("Font is not italic, so post.italicAngle"
+                   " should be equal to zero.")
+
+  if not failed:
+    yield PASS, "Value of post.italicAngle is {}.".format(value)
