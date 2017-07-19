@@ -180,25 +180,18 @@ def version_is_newer(a, b):
   b = map(int, b.split("."))
   return a > b
 
-
-def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
-  value = getattr(font[table], attr)
+from fontbakery.testrunner import (PASS, FAIL)
+def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
+  value = getattr(ttFont[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
   if bool(value & bitmask) == expected:
-    fb.ok("{} is properly set.".format(name_str))
+    return PASS, "{} is properly set.".format(name_str)
   else:
     if expected:
       expected_str = "set"
     else:
       expected_str = "reset"
-    if fb.config['autofix']:
-      fb.hotfix("{} has been {}.".format(name_str, expected_str))
-      if expected:
-        setattr(font[table], attr, value | bitmask)
-      else:
-        setattr(font[table], attr, value & ~bitmask)
-    else:
-      fb.error("{} should be {}.".format(name_str, expected_str))
+    return FAIL, "{} should be {}.".format(name_str, expected_str)
 
 
 def download_family_from_GoogleFontDirectory(family_name):
