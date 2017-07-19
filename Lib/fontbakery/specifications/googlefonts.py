@@ -50,6 +50,7 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
+      , MACSTYLE_BOLD
       , MACSTYLE_ITALIC
       , FSSEL_ITALIC
       , FSSEL_BOLD
@@ -3888,3 +3889,26 @@ def check_post_italicAngle(ttFont, style):
 
   if not failed:
     yield PASS, "Value of post.italicAngle is {}.".format(value)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/131'
+  , conditions=['style']
+)
+def check_head_macStyle(ttFont, style):
+  """Checking head.macStyle value."""
+
+  # Checking macStyle ITALIC bit:
+  expected = "Italic" in style
+  yield check_bit_entry(ttFont, "head", "macStyle",
+                        expected,
+                        bitmask=MACSTYLE_ITALIC,
+                        bitname="ITALIC")
+
+  # Checking macStyle BOLD bit:
+  expected = style in ["Bold", "BoldItalic"]
+  check_bit_entry(ttFont, "head", "macStyle",
+                  expected,
+                  bitmask=MACSTYLE_BOLD,
+                  bitname="BOLD")
