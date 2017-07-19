@@ -337,31 +337,6 @@ def check_copyright_notice_is_consistent_across_family(fb, folder):
       fb.ok("Copyright notice is consistent across all fonts in this family.")
 
 
-def check_OS2_fsSelection(fb, font, style):
-  fb.new_check("129", "Checking OS/2 fsSelection value")
-
-  # Checking fsSelection REGULAR bit:
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Regular" in style or
-                  (style in STYLE_NAMES and
-                   style not in RIBBI_STYLE_NAMES and
-                   "Italic" not in style),
-                  bitmask=FSSEL_REGULAR,
-                  bitname="REGULAR")
-
-  # Checking fsSelection ITALIC bit:
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  "Italic" in style,
-                  bitmask=FSSEL_ITALIC,
-                  bitname="ITALIC")
-
-  # Checking fsSelection BOLD bit:
-  check_bit_entry(fb, font, "OS/2", "fsSelection",
-                  style in ["Bold", "BoldItalic"],
-                  bitmask=FSSEL_BOLD,
-                  bitname="BOLD")
-
-
 def check_post_italicAngle(fb, font, style):
   fb.new_check("130", "Checking post.italicAngle value")
   failed = False

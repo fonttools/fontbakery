@@ -51,6 +51,9 @@ from fontbakery.constants import(
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
       , MACSTYLE_ITALIC
+      , FSSEL_ITALIC
+      , FSSEL_BOLD
+      , FSSEL_REGULAR
 )
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -66,6 +69,7 @@ from fontbakery.utils import(
       , get_bounding_box
       , getGlyph
       , glyphHasInk
+      , check_bit_entry
 )
 
 default_section = Section('Default')
@@ -3815,3 +3819,34 @@ def check_repository_contains_METADATA_pb_file(metadata):
 
 # TODO: port check 128 (upstream font project folder check)
 
+@register_test
+@test(
+    id='com.google.fonts/test/129'
+  , conditions=['style']
+)
+def check_OS2_fsSelection(ttFont, style):
+  """Checking OS/2 fsSelection value."""
+
+  # Checking fsSelection REGULAR bit:
+  expected = "Regular" in style or \
+             (style in STYLE_NAMES and
+              style not in RIBBI_STYLE_NAMES and
+              "Italic" not in style)
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_REGULAR,
+                        bitname="REGULAR")
+
+  # Checking fsSelection ITALIC bit:
+  expected = "Italic" in style
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_ITALIC,
+                        bitname="ITALIC")
+
+  # Checking fsSelection BOLD bit:
+  expected = style in ["Bold", "BoldItalic"]
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_BOLD,
+                        bitname="BOLD")
