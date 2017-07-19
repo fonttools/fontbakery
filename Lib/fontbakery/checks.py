@@ -268,16 +268,6 @@ def check_font_folder_contains_a_FONTLOG_txt_file(fb, folder):
                "Font folder should contain a 'FONTLOG.txt' file.")
 
 
-def check_repository_contains_METADATA_pb_file(fb, f):
-  fb.new_check("127", "Repository contains METADATA.pb file?")
-  fullpath = os.path.join(f, 'METADATA.pb')
-  if not os.path.exists(fullpath):
-    fb.error("File 'METADATA.pb' does not exist"
-             " in root of upstream repository")
-  else:
-    fb.ok("Repository contains METADATA.pb file.")
-
-
 def check_copyright_notice_is_consistent_across_family(fb, folder):
   fb.new_check("128", "Copyright notice is consistent"
                       " across all fonts in this family ?")

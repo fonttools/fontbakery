@@ -3796,3 +3796,22 @@ def check_font_em_size_is_ideally_equal_to_1000(ttFont):
                  " equal to 1000.").format(upm_height)
   else:
     yield PASS, "Font em size is equal to 1000."
+
+# TODO: port checks 117-119 (regression checks)
+
+# TODO: port checks 120-126 (upstream font project folder checks)
+
+@register_test
+@test(
+    id='com.google.fonts/test/127'
+)
+def check_repository_contains_METADATA_pb_file(metadata):
+  """Repository contains METADATA.pb file?"""
+  if not metadata:
+    yield FAIL, ("File \"METADATA.pb\" does not exist"
+                 " in root of the repository.")
+  else:
+    yield PASS, "Repository contains a \"METADATA.pb\" file."
+
+# TODO: port check 128 (upstream font project folder check)
+
