@@ -15,24 +15,11 @@
 #
 from __future__ import print_function
 import os
-import sys
-import tempfile
-import logging
-import requests
-import urllib
-import csv
 import re
-import defusedxml.lxml
-from fontTools import ttLib
-from unidecode import unidecode
-import plistlib
 from fontbakery.pifont import PiFont
 from fontbakery.utils import (
-                             get_name_string,
-                             check_bit_entry,
                              ttfauto_fpgm_xheight_rounding,
                              glyphs_surface_area,
-                             save_FamilyProto_Message,
                              assertExists
                              )
 
