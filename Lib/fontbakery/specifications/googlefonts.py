@@ -3801,8 +3801,61 @@ def check_font_em_size_is_ideally_equal_to_1000(ttFont):
   else:
     yield PASS, "Font em size is equal to 1000."
 
-# TODO: port checks 117-119 (regression checks)
 
+@register_condition
+@condition
+def remote_styles(metadata):
+  """Get a dictionary of TTFont objects of all font files of
+     a given family as currently hosted at Google Fonts."""
+  from fontbakery.utils import (download_family_from_Google_Fonts,
+                                fonts_from_zip)
+  if (not listed_on_gfonts_api or
+      not metadata):
+    return None
+
+  try:
+    remote_fonts_zip = download_family_from_Google_Fonts(metadata.name)
+    rstyles = {}
+  except IOError:
+    return None
+
+  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+    if '-' in remote_filename[:-4]:
+      remote_style = remote_filename[:-4].split('-')[1]
+    rstyles[remote_style] = remote_font
+  return rstyles
+
+@register_condition
+@condition
+def gfonts_ttFont(style, remote_styles):
+  """Get a TTFont object of a font downloaded from Google Fonts
+     corresponding to the given TTFont object of
+     a local font being tested."""
+  if remote_styles and style in remote_styles:
+    return remote_styles[style]
+
+@register_test
+@test(
+    id='com.google.fonts/test/117'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_v_number_increased(ttFont, gfonts_ttFont):
+  """Version number has increased since previous release on Google Fonts?"""
+  v_number = ttFont["head"].fontRevision
+  gfonts_v_number = gfonts_ttFont["head"].fontRevision
+  if v_number == gfonts_v_number:
+    yield FAIL, ("Version number %s is equal to"
+                 " version on Google Fonts.") % (v_number)
+  elif v_number < gfonts_v_number:
+    yield FAIL, ("Version number %s is less than"
+                 " version on Google Fonts (%s).") % (v_number,
+                                                      gfonts_v_number)
+  else:
+    yield PASS, ("Version number %s is greater than"
+                 " version on Google Fonts (%s).") % (v_number,
+                                                      gfonts_v_number)
+
+# TODO: port checks 118-119 (regression checks)
 # TODO: port checks 120-126 (upstream font project folder checks)
 
 @register_test

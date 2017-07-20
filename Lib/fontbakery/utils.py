@@ -94,18 +94,6 @@ def parse_version_string(fb, s):
                  " version numbers in '{}'".format(s))
 
 
-def parse_version_head(fonts):
-    """Return a family's version number. Ideally, each font in the
-    family should have the same version number. If not, return the highest
-    version number. This function can also work on single fonts."""
-    versions = []
-    if not isinstance(fonts, list):
-        fonts = [fonts]
-    for font in fonts:
-      versions.append(float(font['head'].fontRevision))
-    return max(versions)
-
-
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
         if table.platformID == PLATFORM_ID_WINDOWS and\
@@ -206,17 +194,12 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     return FAIL, "{} should be {}.".format(name_str, expected_str)
 
 
-def download_family_from_GoogleFontDirectory(family_name):
+def download_family_from_Google_Fonts(family_name):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     url_prefix = 'https://fonts.google.com/download?family='
     url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
-    return download_zip(url)
-
-
-def download_zip(url):
-  """Return a zipfile from a url"""
-  request = urlopen(url)
-  return ZipFile(StringIO(request.read()))
+    request = urlopen(url)
+    return ZipFile(StringIO(request.read()))
 
 
 def fonts_from_zip(zipfile):
@@ -228,10 +211,10 @@ def fonts_from_zip(zipfile):
   return fonts
 
 
-def glyphs_surface_area(font):
+def glyphs_surface_area(ttFont):
   """Calculate the surface area of a glyph's ink"""
   glyphs = {}
-  glyph_set = font.getGlyphSet()
+  glyph_set = ttFont.getGlyphSet()
   area_pen = AreaPen(glyph_set)
 
   for glyph in glyph_set.keys():
