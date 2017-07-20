@@ -35,83 +35,10 @@ from fontbakery.utils import (
                              save_FamilyProto_Message,
                              assertExists
                              )
-from fontbakery.constants import (
-                                 IMPORTANT,
-                                 CRITICAL,
-                                 STYLE_NAMES,
-                                 NAMEID_FONT_FAMILY_NAME,
-                                 NAMEID_FONT_SUBFAMILY_NAME,
-                                 NAMEID_FULL_FONT_NAME,
-                                 NAMEID_VERSION_STRING,
-                                 NAMEID_POSTSCRIPT_NAME,
-                                 NAMEID_MANUFACTURER_NAME,
-                                 NAMEID_DESCRIPTION,
-                                 NAMEID_LICENSE_DESCRIPTION,
-                                 NAMEID_LICENSE_INFO_URL,
-                                 NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                                 NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
-                                 NAMEID_STR,
-                                 RIBBI_STYLE_NAMES,
-                                 PLATFORM_ID_MACINTOSH,
-                                 PLATFORM_ID_WINDOWS,
-                                 PLATID_STR,
-                                 FSSEL_ITALIC,
-                                 FSSEL_BOLD,
-                                 FSSEL_REGULAR,
-                                 MACSTYLE_BOLD,
-                                 MACSTYLE_ITALIC,
-                                 PANOSE_PROPORTION_ANY,
-                                 PANOSE_PROPORTION_MONOSPACED,
-                                 IS_FIXED_WIDTH_NOT_MONOSPACED,
-                                 IS_FIXED_WIDTH_MONOSPACED,
-                                 LANG_ID_ENGLISH_USA,
-                                 PLACEHOLDER_LICENSING_TEXT,
-                                 LICENSE_URL,
-                                 LICENSE_NAME,
-                                 REQUIRED_TABLES,
-                                 OPTIONAL_TABLES,
-                                 UNWANTED_TABLES,
-                                 WHITESPACE_CHARACTERS,
-                                 PLAT_ENC_ID_UCS2
-                                 )
-try:
-  import fontforge  #pylint: disable=unused-import
-except ImportError:
-  logging.warning("fontforge python module is not available!"
-                  " To install it, see"
-                  " https://github.com/googlefonts/"
-                  "gf-docs/blob/master/ProjectChecklist.md#fontforge")
-  pass
 
 # =======================================================================
 # The following functions implement each of the individual checks per-se.
 # =======================================================================
-
-
-def check_file_is_named_canonically(fb, font_fname):
-  """A font's filename must be composed in the following manner:
-
-  <familyname>-<stylename>.ttf
-
-  e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf"""
-  fb.new_check("001", "Checking file is named canonically")
-  fb.set_priority(CRITICAL)
-
-  file_path, filename = os.path.split(font_fname)
-  basename = os.path.splitext(filename)[0]
-  # remove spaces in style names
-  style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-  if '-' in basename and basename.split('-')[1] in style_file_names:
-    fb.ok("{} is named canonically".format(font_fname))
-    return True
-  else:
-    fb.error(('Style name used in "{}" is not canonical.'
-              ' You should rebuild the font using'
-              ' any of the following'
-              ' style names: "{}".').format(font_fname,
-                                            '", "'.join(STYLE_NAMES)))
-    return False
-
 
 def check_regression_v_number_increased(fb, new_font, old_font, f):
   fb.new_check("117", "Version number has increased since previous release?")
