@@ -3880,7 +3880,39 @@ def check_regression_glyphs_structure(ttFont, gfonts_ttFont):
     yield PASS, ("Glyphs are similar in"
                  " comparison to the Google Fonts version.")
 
-# TODO: port check 119 (regression check)
+
+@register_test
+@test(
+    id='com.google.fonts/test/119'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
+  """TTFAutohint x-height increase value is same as in
+     previous release on Google Fonts ?"""
+  from fontbakery.utils import ttfauto_fpgm_xheight_rounding
+  inc_xheight = None
+  gf_inc_xheight = None
+
+  if "fpgm" in ttFont:
+    fpgm_tbl = ttFont["fpgm"].program.getAssembly()
+    msg, inc_xheight = \
+      ttfauto_fpgm_xheight_rounding(fpgm_tbl, "this fontfile")
+    if msg: yield WARN, msg
+
+  if 'fpgm' in gfonts_ttFont:
+    gfonts_fpgm_tbl = gfonts_ttFont["fpgm"].program.getAssembly()
+    warn, gf_inc_xheight = \
+      ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
+    if msg: yield WARN, msg
+
+  if inc_xheight != gf_inc_xheight:
+    yield FAIL, ("TTFAutohint --increase-x-height is %s. "
+                 "It should match the previous"
+                 " version's value (%s).") % (inc_xheight, gf_inc_xheight)
+  else:
+    yield PASS, ("TTFAutohint --increase-x-height is the same as in"
+                  " the previous Google Fonts release (%s).") % inc_xheight
+
 # TODO: port checks 120-126 (upstream font project folder checks)
 
 @register_test
