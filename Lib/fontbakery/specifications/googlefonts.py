@@ -3855,7 +3855,32 @@ def check_regression_v_number_increased(ttFont, gfonts_ttFont):
                  " version on Google Fonts (%s).") % (v_number,
                                                       gfonts_v_number)
 
-# TODO: port checks 118-119 (regression checks)
+@register_test
+@test(
+    id='com.google.fonts/test/118'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_glyphs_structure(ttFont, gfonts_ttFont):
+  """Glyphs are similiar to Google Fonts version ?"""
+  from fontbakery.utils import glyphs_surface_area
+  bad_glyphs = []
+  these_glyphs = glyphs_surface_area(ttFont)
+  gfonts_glyphs = glyphs_surface_area(gfonts_ttFont)
+
+  shared_glyphs = set(these_glyphs) & set(gfonts_glyphs)
+
+  for glyph in shared_glyphs:
+    if abs(int(these_glyphs[glyph]) - int(gfonts_glyphs[glyph])) > 8000:
+      bad_glyphs.append(glyph)
+
+  if bad_glyphs:
+    yield FAIL, ("Following glyphs differ greatly from"
+                 " Google Fonts version: [%s]") % ", ".join(bad_glyphs)
+  else:
+    yield PASS, ("Glyphs are similar in"
+                 " comparison to the Google Fonts version.")
+
+# TODO: port check 119 (regression check)
 # TODO: port checks 120-126 (upstream font project folder checks)
 
 @register_test

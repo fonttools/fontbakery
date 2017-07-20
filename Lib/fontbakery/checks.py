@@ -19,34 +19,12 @@ import re
 from fontbakery.pifont import PiFont
 from fontbakery.utils import (
                              ttfauto_fpgm_xheight_rounding,
-                             glyphs_surface_area,
                              assertExists
                              )
 
 # =======================================================================
 # The following functions implement each of the individual checks per-se.
 # =======================================================================
-
-def check_regression_glyphs_structure(fb, new_font, old_font, f):
-  fb.new_check("118", "Glyphs are similiar to old version")
-  bad_glyphs = []
-  new_glyphs = glyphs_surface_area(new_font)
-  old_glyphs = glyphs_surface_area(old_font)
-
-  shared_glyphs = set(new_glyphs) & set(old_glyphs)
-
-  for glyph in shared_glyphs:
-    if abs(int(new_glyphs[glyph]) - int(old_glyphs[glyph])) > 8000:
-      bad_glyphs.append(glyph)
-
-  if bad_glyphs:
-    fb.error("Following glyphs differ greatly from previous version: [%s]" % (
-      ', '.join(bad_glyphs)
-    ))
-  else:
-    fb.ok("Yes, the glyphs are similar "
-          "in comparison to the previous version.")
-
 
 def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
   fb.new_check("119", "TTFAutohint x-height increase value is"
