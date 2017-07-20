@@ -17,40 +17,7 @@ from __future__ import print_function
 import os
 import re
 from fontbakery.pifont import PiFont
-from fontbakery.utils import (
-                             ttfauto_fpgm_xheight_rounding,
-                             assertExists
-                             )
-
-# =======================================================================
-# The following functions implement each of the individual checks per-se.
-# =======================================================================
-
-def check_regression_ttfauto_xheight_increase(fb, new_font, old_font, f):
-  fb.new_check("119", "TTFAutohint x-height increase value is"
-                      " same as previouse release?")
-  new_inc_xheight = None
-  old_inc_xheight = None
-
-  if 'fpgm' in new_font:
-    new_fpgm_tbl = new_font['fpgm'].program.getAssembly()
-    new_inc_xheight = ttfauto_fpgm_xheight_rounding(fb,
-                                                    new_fpgm_tbl,
-                                                    "this fontfile")
-  if 'fpgm' in old_font:
-    old_fpgm_tbl = old_font['fpgm'].program.getAssembly()
-    old_inc_xheight = ttfauto_fpgm_xheight_rounding(fb,
-                                                    old_fpgm_tbl,
-                                                    "previous release")
-  if new_inc_xheight != old_inc_xheight:
-    fb.error("TTFAutohint --increase-x-height is %s. "
-             "It should match the previous version's value %s" %
-             (new_inc_xheight, old_inc_xheight)
-             )
-  else:
-    fb.ok("TTFAutohint --increase-x-height is the same as the previous "
-          "release, %s" % (new_inc_xheight))
-
+from fontbakery.utils import assertExists
 
 ###############################
 # Upstream Font Source checks #

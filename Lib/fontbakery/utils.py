@@ -226,7 +226,7 @@ def glyphs_surface_area(ttFont):
   return glyphs
 
 
-def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
+def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
   """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.
   This implementation is based on ttfautohint v1.6.
@@ -239,13 +239,14 @@ def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
   http://tinyurl.com/jzekfyx"""
   fpgm_tbl = '\n'.join(fpgm_tbl)
   xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
+  warning = None
   try:
     xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
   except AttributeError:
-    fb.warning(("No instruction for xheight rounding found"
-                " on the {} font").format(font))
+    warning = ("No instruction for xheight rounding found"
+               " on the {} font").format(which)
     xheight_val = None
-  return xheight_val
+  return (warning, xheight_val)
 
 
 def assertExists(fb, folderpath, filenames, err_msg, ok_msg):
