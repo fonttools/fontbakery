@@ -102,7 +102,6 @@ def check_file_is_named_canonically(font):
   """Checking file is named canonically
 
   A font's filename must be composed in the following manner:
-
   <familyname>-<stylename>.ttf
 
   e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf
@@ -112,7 +111,7 @@ def check_file_is_named_canonically(font):
   # remove spaces in style names
   style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
   if '-' in basename and basename.split('-')[1] in style_file_names:
-    yield PASS, "{} is named canonically".format(font)
+    yield PASS, "{} is named canonically.".format(font)
   else:
     yield FAIL, ('Style name used in "{}" is not canonical.'
                  ' You should rebuild the font using'
