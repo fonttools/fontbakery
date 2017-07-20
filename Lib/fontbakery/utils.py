@@ -180,33 +180,25 @@ def version_is_newer(a, b):
   b = map(int, b.split("."))
   return a > b
 
-
-def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
-  value = getattr(font[table], attr)
+from fontbakery.testrunner import (PASS, FAIL)
+def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
+  value = getattr(ttFont[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
   if bool(value & bitmask) == expected:
-    fb.ok("{} is properly set.".format(name_str))
+    return PASS, "{} is properly set.".format(name_str)
   else:
     if expected:
       expected_str = "set"
     else:
       expected_str = "reset"
-    if fb.config['autofix']:
-      fb.hotfix("{} has been {}.".format(name_str, expected_str))
-      if expected:
-        setattr(font[table], attr, value | bitmask)
-      else:
-        setattr(font[table], attr, value & ~bitmask)
-    else:
-      fb.error("{} should be {}.".format(name_str, expected_str))
+    return FAIL, "{} should be {}.".format(name_str, expected_str)
 
 
-def download_family_from_GoogleFontDirectory(family_name):
+def download_family_from_Google_Fonts(family_name):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     url_prefix = 'https://fonts.google.com/download?family='
     url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
     request = urlopen(url)
-    # print(request.text)
     return ZipFile(StringIO(request.read()))
 
 
@@ -219,10 +211,10 @@ def fonts_from_zip(zipfile):
   return fonts
 
 
-def glyphs_surface_area(font):
+def glyphs_surface_area(ttFont):
   """Calculate the surface area of a glyph's ink"""
   glyphs = {}
-  glyph_set = font.getGlyphSet()
+  glyph_set = ttFont.getGlyphSet()
   area_pen = AreaPen(glyph_set)
 
   for glyph in glyph_set.keys():
@@ -234,7 +226,7 @@ def glyphs_surface_area(font):
   return glyphs
 
 
-def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
+def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
   """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.
   This implementation is based on ttfautohint v1.6.
@@ -247,13 +239,14 @@ def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
   http://tinyurl.com/jzekfyx"""
   fpgm_tbl = '\n'.join(fpgm_tbl)
   xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
+  warning = None
   try:
     xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
   except AttributeError:
-    fb.warning(("No instruction for xheight rounding found"
-                " on the {} font").format(font))
+    warning = ("No instruction for xheight rounding found"
+               " on the {} font").format(which)
     xheight_val = None
-  return xheight_val
+  return (warning, xheight_val)
 
 
 def assertExists(fb, folderpath, filenames, err_msg, ok_msg):

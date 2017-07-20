@@ -50,7 +50,11 @@ from fontbakery.constants import(
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
+      , MACSTYLE_BOLD
       , MACSTYLE_ITALIC
+      , FSSEL_ITALIC
+      , FSSEL_BOLD
+      , FSSEL_REGULAR
 )
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -66,6 +70,7 @@ from fontbakery.utils import(
       , get_bounding_box
       , getGlyph
       , glyphHasInk
+      , check_bit_entry
 )
 
 default_section = Section('Default')
@@ -97,7 +102,6 @@ def check_file_is_named_canonically(font):
   """Checking file is named canonically
 
   A font's filename must be composed in the following manner:
-
   <familyname>-<stylename>.ttf
 
   e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf
@@ -107,7 +111,7 @@ def check_file_is_named_canonically(font):
   # remove spaces in style names
   style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
   if '-' in basename and basename.split('-')[1] in style_file_names:
-    yield PASS, "{} is named canonically".format(font)
+    yield PASS, "{} is named canonically.".format(font)
   else:
     yield FAIL, ('Style name used in "{}" is not canonical.'
                  ' You should rebuild the font using'
@@ -3796,3 +3800,430 @@ def check_font_em_size_is_ideally_equal_to_1000(ttFont):
                  " equal to 1000.").format(upm_height)
   else:
     yield PASS, "Font em size is equal to 1000."
+
+
+@register_condition
+@condition
+def remote_styles(metadata):
+  """Get a dictionary of TTFont objects of all font files of
+     a given family as currently hosted at Google Fonts."""
+  from fontbakery.utils import (download_family_from_Google_Fonts,
+                                fonts_from_zip)
+  if (not listed_on_gfonts_api or
+      not metadata):
+    return None
+
+  try:
+    remote_fonts_zip = download_family_from_Google_Fonts(metadata.name)
+    rstyles = {}
+  except IOError:
+    return None
+
+  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+    if '-' in remote_filename[:-4]:
+      remote_style = remote_filename[:-4].split('-')[1]
+    rstyles[remote_style] = remote_font
+  return rstyles
+
+@register_condition
+@condition
+def gfonts_ttFont(style, remote_styles):
+  """Get a TTFont object of a font downloaded from Google Fonts
+     corresponding to the given TTFont object of
+     a local font being tested."""
+  if remote_styles and style in remote_styles:
+    return remote_styles[style]
+
+@register_test
+@test(
+    id='com.google.fonts/test/117'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_v_number_increased(ttFont, gfonts_ttFont):
+  """Version number has increased since previous release on Google Fonts?"""
+  v_number = ttFont["head"].fontRevision
+  gfonts_v_number = gfonts_ttFont["head"].fontRevision
+  if v_number == gfonts_v_number:
+    yield FAIL, ("Version number %s is equal to"
+                 " version on Google Fonts.") % (v_number)
+  elif v_number < gfonts_v_number:
+    yield FAIL, ("Version number %s is less than"
+                 " version on Google Fonts (%s).") % (v_number,
+                                                      gfonts_v_number)
+  else:
+    yield PASS, ("Version number %s is greater than"
+                 " version on Google Fonts (%s).") % (v_number,
+                                                      gfonts_v_number)
+
+@register_test
+@test(
+    id='com.google.fonts/test/118'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_glyphs_structure(ttFont, gfonts_ttFont):
+  """Glyphs are similiar to Google Fonts version ?"""
+  from fontbakery.utils import glyphs_surface_area
+  bad_glyphs = []
+  these_glyphs = glyphs_surface_area(ttFont)
+  gfonts_glyphs = glyphs_surface_area(gfonts_ttFont)
+
+  shared_glyphs = set(these_glyphs) & set(gfonts_glyphs)
+
+  for glyph in shared_glyphs:
+    if abs(int(these_glyphs[glyph]) - int(gfonts_glyphs[glyph])) > 8000:
+      bad_glyphs.append(glyph)
+
+  if bad_glyphs:
+    yield FAIL, ("Following glyphs differ greatly from"
+                 " Google Fonts version: [%s]") % ", ".join(bad_glyphs)
+  else:
+    yield PASS, ("Glyphs are similar in"
+                 " comparison to the Google Fonts version.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/119'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
+  """TTFAutohint x-height increase value is same as in
+     previous release on Google Fonts ?"""
+  from fontbakery.utils import ttfauto_fpgm_xheight_rounding
+  inc_xheight = None
+  gf_inc_xheight = None
+
+  if "fpgm" in ttFont:
+    fpgm_tbl = ttFont["fpgm"].program.getAssembly()
+    msg, inc_xheight = \
+      ttfauto_fpgm_xheight_rounding(fpgm_tbl, "this fontfile")
+    if msg: yield WARN, msg
+
+  if 'fpgm' in gfonts_ttFont:
+    gfonts_fpgm_tbl = gfonts_ttFont["fpgm"].program.getAssembly()
+    warn, gf_inc_xheight = \
+      ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
+    if msg: yield WARN, msg
+
+  if inc_xheight != gf_inc_xheight:
+    yield FAIL, ("TTFAutohint --increase-x-height is %s. "
+                 "It should match the previous"
+                 " version's value (%s).") % (inc_xheight, gf_inc_xheight)
+  else:
+    yield PASS, ("TTFAutohint --increase-x-height is the same as in"
+                  " the previous Google Fonts release (%s).") % inc_xheight
+
+# TODO: port checks 120-126 (upstream font project folder checks)
+
+@register_test
+@test(
+    id='com.google.fonts/test/127'
+)
+def check_repository_contains_METADATA_pb_file(metadata):
+  """Repository contains METADATA.pb file?"""
+  if not metadata:
+    yield FAIL, ("File \"METADATA.pb\" does not exist"
+                 " in root of the repository.")
+  else:
+    yield PASS, "Repository contains a \"METADATA.pb\" file."
+
+# TODO: port check 128 (upstream font project folder check)
+
+@register_test
+@test(
+    id='com.google.fonts/test/129'
+  , conditions=['style']
+)
+def check_OS2_fsSelection(ttFont, style):
+  """Checking OS/2 fsSelection value."""
+
+  # Checking fsSelection REGULAR bit:
+  expected = "Regular" in style or \
+             (style in STYLE_NAMES and
+              style not in RIBBI_STYLE_NAMES and
+              "Italic" not in style)
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_REGULAR,
+                        bitname="REGULAR")
+
+  # Checking fsSelection ITALIC bit:
+  expected = "Italic" in style
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_ITALIC,
+                        bitname="ITALIC")
+
+  # Checking fsSelection BOLD bit:
+  expected = style in ["Bold", "BoldItalic"]
+  yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                        expected,
+                        bitmask=FSSEL_BOLD,
+                        bitname="BOLD")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/130'
+  , conditions=['style']
+)
+def check_post_italicAngle(ttFont, style):
+  """Checking post.italicAngle value."""
+  failed = False
+  value = ttFont["post"].italicAngle
+
+  # Checking that italicAngle <= 0
+  if value > 0:
+    failed = True
+    yield FAIL ("The value of post.italicAngle must be"
+                " changed from {} to {}.").format(value, -value)
+
+  # Checking that italicAngle is less than 20 degrees:
+  if abs(value) > 20:
+    failed = True
+    yield FAIL, ("The value of post.italicAngle must be"
+                 " changed from {} to -20.").format(value)
+
+  # Checking if italicAngle matches font style:
+  if "Italic" in style:
+    if ttFont['post'].italicAngle == 0:
+      failed = True
+      yield FAIL, ("Font is italic, so post.italicAngle"
+                   " should be non-zero.")
+  else:
+    if ttFont["post"].italicAngle != 0:
+      failed = True
+      yield FAIL, ("Font is not italic, so post.italicAngle"
+                   " should be equal to zero.")
+
+  if not failed:
+    yield PASS, "Value of post.italicAngle is {}.".format(value)
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/131'
+  , conditions=['style']
+)
+def check_head_macStyle(ttFont, style):
+  """Checking head.macStyle value."""
+
+  # Checking macStyle ITALIC bit:
+  expected = "Italic" in style
+  yield check_bit_entry(ttFont, "head", "macStyle",
+                        expected,
+                        bitmask=MACSTYLE_ITALIC,
+                        bitname="ITALIC")
+
+  # Checking macStyle BOLD bit:
+  expected = style in ["Bold", "BoldItalic"]
+  check_bit_entry(ttFont, "head", "macStyle",
+                  expected,
+                  bitmask=MACSTYLE_BOLD,
+                  bitname="BOLD")
+
+
+def check_with_pyfontaine(font, glyphset):
+  try:
+    import subprocess
+    fontaine_output = subprocess.check_output(["pyfontaine",
+                                               "--missing",
+                                               "--set", glyphset,
+                                               font],
+                                              stderr=subprocess.STDOUT)
+    if "Support level: full" not in fontaine_output:
+      return FAIL, ("Pyfontaine output follows:"
+                    "\n\n{}\n").format(fontaine_output)
+    else:
+      return PASS, "Pyfontaine passed this file."
+  except subprocess.CalledProcessError, e:
+    return FAIL, "pyfontaine returned an error code."
+                 # " Output follows :"
+                 # "\n\n{}\n").format(e.output)
+  except OSError:
+    # This is made very prominent with additional line breaks
+    return WARN, ("Pyfontaine is not available!"
+                  " You really MUST check the fonts with this tool."
+                  " To install it, see"
+                  " https://github.com/googlefonts"
+                  "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/132'
+)
+def check_glyphset_google_cyrillic_historical(font):
+  """Checking Cyrillic Historical glyph coverage."""
+  yield check_with_pyfontaine(font, "google_cyrillic_historical")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/133'
+)
+def check_glyphset_google_cyrillic_plus(font):
+  """Checking Google Cyrillic Plus glyph coverage."""
+  yield check_with_pyfontaine(font, "google_cyrillic_plus")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/134'
+)
+def check_glyphset_google_cyrillic_plus_locl(font):
+  """Checking Google Cyrillic Plus (Localized Forms) glyph coverage."""
+  yield check_with_pyfontaine(font, "google_cyrillic_plus_locl")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/135'
+)
+def check_glyphset_google_cyrillic_pro(font):
+  """Checking Google Cyrillic Pro glyph coverage."""
+  yield check_with_pyfontaine(font, "google_cyrillic_pro")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/136'
+)
+def check_glyphset_google_greek_ancient_musical(font):
+  """Checking Google Greek Ancient Musical Symbols glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_ancient_musical_symbols")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/137'
+)
+def check_glyphset_google_greek_archaic(font):
+  """Checking Google Greek Archaic glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_archaic")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/138'
+)
+def check_glyphset_google_greek_coptic(font):
+  """Checking Google Greek Coptic glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_coptic")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/139'
+)
+def check_glyphset_google_greek_core(font):
+  """Checking Google Greek Core glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_core")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/140'
+)
+def check_glyphset_google_greek_expert(font):
+  """Checking Google Greek Expert glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_expert")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/141'
+)
+def check_glyphset_google_greek_plus(font_file):
+  """Checking Google Greek Plus glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_plus")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/142'
+)
+def check_glyphset_google_greek_pro(font):
+  """Checking Google Greek Pro glyph coverage."""
+  yield check_with_pyfontaine(font, "google_greek_pro")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/143'
+)
+def check_glyphset_google_latin_core(font):
+  """Checking Google Latin Core glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_core")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/144'
+)
+def check_glyphset_google_latin_expert(font):
+  """Checking Google Latin Expert glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_expert")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/145'
+)
+def check_glyphset_google_latin_plus(font):
+  """Checking Google Latin Plus glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_plus")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/146'
+)
+def check_glyphset_google_latin_plus_optional(font):
+  """Checking Google Latin Plus (Optional Glyphs) glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_plus_optional")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/147'
+)
+def check_glyphset_google_latin_pro(font):
+  """Checking Google Latin Pro glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_pro")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/148'
+)
+def check_glyphset_google_latin_pro_optional(font):
+  """Checking Google Latin Pro (Optional Glyphs) glyph coverage."""
+  yield check_with_pyfontaine(font, "google_latin_pro_optional")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/149'
+)
+def check_glyphset_google_arabic(font):
+  """Checking Google Arabic glyph coverage."""
+  yield check_with_pyfontaine(font, "google_arabic")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/150'
+)
+def check_glyphset_google_vietnamese(font):
+  """Checking Google Vietnamese glyph coverage."""
+  yield check_with_pyfontaine(font, "google_vietnamese")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/151'
+)
+def check_glyphset_google_extras(font):
+  """Checking Google Extras glyph coverage."""
+  yield check_with_pyfontaine(font, "google_extras")
