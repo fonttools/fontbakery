@@ -27,18 +27,6 @@ from fontbakery.utils import (
 # The following functions implement each of the individual checks per-se.
 # =======================================================================
 
-def check_regression_v_number_increased(fb, new_font, old_font, f):
-  fb.new_check("117", "Version number has increased since previous release?")
-  new_v_number = new_font['head'].fontRevision
-  old_v_number = old_font['head'].fontRevision
-  if new_v_number < old_v_number:
-    fb.error(("Version number %s is less than or equal to"
-              " old version %s") % (new_v_number, old_v_number))
-  else:
-    fb.ok(("Version number %s is greater than"
-           " old version %s") % (new_v_number, old_v_number))
-
-
 def check_regression_glyphs_structure(fb, new_font, old_font, f):
   fb.new_check("118", "Glyphs are similiar to old version")
   bad_glyphs = []
