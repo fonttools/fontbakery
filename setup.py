@@ -77,6 +77,7 @@ setup(
              'bin/fontbakery-check-upstream.py',
              'bin/fontbakery-check-vtt-compatibility.py',
              'bin/fontbakery-fix-ascii-fontmetadata.py',
+             'bin/fontbakery-fix-cmap.py',
              'bin/fontbakery-fix-dsig.py',
              'bin/fontbakery-fix-familymetadata.py',
              'bin/fontbakery-fix-fsselection.py',
