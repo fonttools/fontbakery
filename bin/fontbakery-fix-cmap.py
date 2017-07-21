@@ -57,7 +57,7 @@ def main():
                       action='store_true',
                       help='Drop Mac cmap subtables')
   args = parser.parse_args()
-  
+
   for path in args.fonts:
     font = TTFont(path)
     font_filename = basename(font)
