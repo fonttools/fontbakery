@@ -22,26 +22,6 @@ from fontbakery.utils import assertExists
 # Upstream Font Source checks #
 ###############################
 
-def check_glyphs_have_same_num_of_points(fb, folder, directory):
-  fb.new_check("122", "Glyphs have same number of points across family ?")
-  glyphs = {}
-  failed = False
-  for f in directory.get_fonts():
-    font = PiFont(os.path.join(folder, f))
-    for g, glyphname in font.get_glyphs():
-      points = font.get_points_count(glyphname)
-      if g in glyphs and glyphs[g] != points:
-        failed = True
-        fb.error(("Number of points of glyph '{}' does not match."
-                  " Expected {} points, but actual is"
-                  " {} points").format(glyphname,
-                                       glyphs[g],
-                                       points))
-      glyphs[g] = points
-  if failed is False:
-    fb.ok("Glyphs have same number of points across family.")
-
-
 def check_font_folder_contains_a_COPYRIGHT_file(fb, folder):
   fb.new_check("123", "Does this font folder contain COPYRIGHT file ?")
   assertExists(fb, folder, "COPYRIGHT.txt",

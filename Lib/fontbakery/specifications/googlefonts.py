@@ -3992,7 +3992,33 @@ def check_glyphs_have_same_num_of_contours(folder, upstream_directory):
   if failed is False:
     yield PASS, "Glyphs have same number of contours across family."
 
-# TODO: port checks 122-126 (upstream font project folder checks)
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/122'
+  , conditions=['upstream_directory']
+)
+def check_glyphs_have_same_num_of_points(folder, upstream_directory):
+  """Glyphs have same number of points across family ?"""
+  from fontbakery.pifont import PiFont
+  glyphs = {}
+  failed = False
+  for f in upstream_directory.get_fonts():
+    font = PiFont(os.path.join(folder, f))
+    for g, glyphname in font.get_glyphs():
+      points = font.get_points_count(glyphname)
+      if g in glyphs and glyphs[g] != points:
+        failed = True
+        yield FAIL, ("Number of points of glyph '{}' does not match."
+                     " Expected {} points, but actual is"
+                     " {} points").format(glyphname,
+                                          glyphs[g],
+                                          points)
+      glyphs[g] = points
+  if failed is False:
+    yield PASS, "Glyphs have same number of points across family."
+
+# TODO: port checks 123-126 (upstream font project folder checks)
 
 @register_test
 @test(
