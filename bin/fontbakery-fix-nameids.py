@@ -97,24 +97,24 @@ def main():
     print(tabulate.tabulate(rows, header, tablefmt="pipe"))
 
     for path in args.font:
+        font = ttLib.TTFont(path)
+        saveit = False
+
         if args.autofix:
-            font = ttLib.TTFont(path)
-            saveit = False
             for name in font['name'].names:
                 if name.platformID != 1:
                     saveit = True
                     del name
-            if saveit:
-                font.save(path + ".fix")
 
-    if args.drop_superfluous_mac_names:
-        for path in args.font:
-            font = ttLib.TTFont(path)
+        if args.drop_superfluous_mac_names:
             if has_mac_names(font):
                 drop_superfluous_mac_names(font)
-                font.save(path + ".fix")
+                saveit = True
             else:
                 print('font %s has no mac nametable' % path)
+
+        if saveit:
+                font.save(path + ".fix")
 
 
 if __name__ == '__main__':
