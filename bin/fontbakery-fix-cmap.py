@@ -50,9 +50,12 @@ def remove_cmap_subtable(font, plat_id, enc_id):
 def main():
   parser = ArgumentParser(description=description)
   parser.add_argument('fonts', nargs='+')
-  parser.add_argument('--format-4-subtables', '-f4', default=False,action='store_true')
+  parser.add_argument('--format-4-subtables', '-f4', default=False,
+                      action='store_true',
+                      help="Convert cmap subtables to format 4")
   parser.add_argument('-drop-mac-subtable', '-dm', default=False,
-                      action='store_true')
+                      action='store_true',
+                      help='Drop Mac cmap subtables')
   args = parser.parse_args()
   
   for path in args.fonts:
