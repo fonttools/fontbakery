@@ -14,9 +14,9 @@ parser.add_argument('--csv', default=False, action='store_true',
                          " (CSV) file format")
 parser.add_argument('--id', '-i', default='all')
 parser.add_argument('--platform', '-p', type=int, default=3)
-parser.add_argument('--drop-superflous-mac-names', '-m', default=False,
+parser.add_argument('--drop-superfluous-mac-names', '-m', default=False,
                     action='store_true',
-                    help='Drop superflous Mac names')
+                    help='Drop superfluous Mac names')
 
 
 def has_mac_names(ttfont):
@@ -29,8 +29,8 @@ def has_mac_names(ttfont):
     return False
 
 
-def drop_superflous_mac_names(ttfont):
-    """Drop superflous Mac nameIDs.
+def drop_superfluous_mac_names(ttfont):
+    """Drop superfluous Mac nameIDs.
 
     The following nameIDS are kept:
     1: Font Family name,
@@ -107,11 +107,11 @@ def main():
             if saveit:
                 font.save(path + ".fix")
 
-    if args.drop_superflous_mac_names:
+    if args.drop_superfluous_mac_names:
         for path in args.font:
             font = ttLib.TTFont(path)
             if has_mac_names(font):
-                drop_superflous_mac_names(font)
+                drop_superfluous_mac_names(font)
                 font.save(path + ".fix")
             else:
                 print('font %s has no mac nametable' % path)
