@@ -22,27 +22,6 @@ from fontbakery.utils import assertExists
 # Upstream Font Source checks #
 ###############################
 
-def check_glyphs_have_same_num_of_contours(fb, folder, directory):
-  fb.new_check("121", "Glyphs have same number of contours across family ?")
-  glyphs = {}
-  failed = False
-  for f in directory.get_fonts():
-    font = PiFont(os.path.join(folder, f))
-    for glyphcode, glyphname in font.get_glyphs():
-      contours = font.get_contours_count(glyphname)
-      if glyphcode in glyphs and glyphs[glyphcode] != contours:
-        failed = True
-        fb.error(("Number of contours of glyph '{}'"
-                  " does not match."
-                  " Expected {} contours, but actual is"
-                  " {} contours").format(glyphname,
-                                         glyphs[glyphcode],
-                                         contours))
-      glyphs[glyphcode] = contours
-  if failed is False:
-    fb.ok("Glyphs have same number of contours across family.")
-
-
 def check_glyphs_have_same_num_of_points(fb, folder, directory):
   fb.new_check("122", "Glyphs have same number of points across family ?")
   glyphs = {}
