@@ -528,6 +528,7 @@ Print out nameID strings of the fonts
 ```
 usage: fontbakery fix-nameids [-h] [--autofix] [--csv] [--id ID]
                               [--platform PLATFORM]
+                              [--drop-superfluous-mac-names]
                               font [font ...]
 
 positional arguments:
@@ -539,6 +540,8 @@ optional arguments:
   --csv                 Output data in comma-separate-values (CSV) file format
   --id ID, -i ID
   --platform PLATFORM, -p PLATFORM
+  --drop-superfluous-mac-names, -m
+                        Drop superfluous Mac names
 ```
 
 ### fontbakery fix-nonhinting
