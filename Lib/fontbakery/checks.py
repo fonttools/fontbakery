@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from __future__ import print_function
 import os
 import re
 from fontbakery.pifont import PiFont
@@ -22,29 +21,6 @@ from fontbakery.utils import assertExists
 ###############################
 # Upstream Font Source checks #
 ###############################
-
-def check_all_fonts_have_matching_glyphnames(fb, folder, directory):
-  fb.new_check(120, "Each font in family has matching glyph names?")
-  glyphs = None
-  failed = False
-  for f in directory.get_fonts():
-    try:
-      font = PiFont(os.path.join(folder, f))
-      if glyphs is None:
-        glyphs = font.get_glyphs()
-      elif glyphs != font.get_glyphs():
-        failed = True
-        fb.error(("Font '{}' has different glyphs in"
-                  " comparison to onther fonts"
-                  " in this family.").format(f))
-        break
-    except:
-      failed = True
-      fb.error("Failed to load font file: '{}'".format(f))
-
-  if failed is False:
-    fb.ok("All fonts in family have matching glyph names.")
-
 
 def check_glyphs_have_same_num_of_contours(fb, folder, directory):
   fb.new_check("121", "Glyphs have same number of contours across family ?")

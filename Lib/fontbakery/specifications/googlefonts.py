@@ -74,15 +74,24 @@ from fontbakery.utils import(
 )
 
 default_section = Section('Default')
-specificiation = Spec(
+specification = Spec(
     default_section=default_section
   , iterargs={'font': 'fonts'}
   , derived_iterables={'ttFonts': ('ttFont', True)}
   #, sections=[]
 )
 
-register_test = specificiation.register_test
-register_condition = specificiation.register_condition
+register_test = specification.register_test
+register_condition = specification.register_condition
+
+upstream_spec = Spec(
+    default_section=default_section
+  , iterargs={'folder': 'folders'}
+  #, sections=[]
+)
+
+register_upstream_test = upstream_spec.register_test
+register_upstream_condition = upstream_spec.register_condition
 
 # -------------------------------------------------------------------
 
@@ -3913,7 +3922,50 @@ def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
     yield PASS, ("TTFAutohint --increase-x-height is the same as in"
                   " the previous Google Fonts release (%s).") % inc_xheight
 
-# TODO: port checks 120-126 (upstream font project folder checks)
+
+# Note:
+#       Here we use the term 'folder' meaning a directory path
+#       (where a font project is located) while the term
+#       'upstream_directory' refers to an instance of the
+#       UpstreamDirectory class
+
+from fontbakery.upstreamdirectory import UpstreamDirectory
+@register_upstream_condition
+@condition
+def upstream_directory(folder):
+  if os.path.exists(folder):
+    return UpstreamDirectory(folder)
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/120'
+  , conditions=['upstream_directory']
+)
+def check_all_fonts_have_matching_glyphnames(folder, upstream_directory):
+  """Each font in family project has matching glyph names ?"""
+  from fontbakery.pifont import PiFont
+  glyphs = None
+  failed = False
+  for f in upstream_directory.get_fonts():
+    try:
+      font = PiFont(os.path.join(folder, f))
+      if glyphs is None:
+        glyphs = font.get_glyphs()
+      elif glyphs != font.get_glyphs():
+        failed = True
+        yield FAIL, ("Font \"{}\" has different glyphs in"
+                     " comparison to other fonts"
+                     " in this family.").format(f)
+        break
+    except:
+      failed = True
+      yield FAIL, "Failed to load font file: \"{}\".".format(f)
+
+  if failed is False:
+    yield PASS, "All fonts in family have matching glyph names."
+
+# TODO: port checks 121-126 (upstream font project folder checks)
 
 @register_test
 @test(
