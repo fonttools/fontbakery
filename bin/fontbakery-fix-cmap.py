@@ -1,8 +1,31 @@
 #!/usr/bin/env python
+# Copyright 2016 The Fontbakery Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 from ntpath import basename
 from argparse import ArgumentParser
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
+
+
+description = """
+
+fontbakery-fix-cmap.py
+~~~~~~~~~~~~~~~~~~~~~~
+
+Manipulate a collection of fonts' cmap tables.
+"""
 
 
 def convert_cmap_subtables_to_v4(font):
@@ -25,9 +48,9 @@ def remove_cmap_subtable(font, plat_id, enc_id):
 
 
 def main():
-  parser = ArgumentParser()
+  parser = ArgumentParser(description=description)
   parser.add_argument('fonts', nargs='+')
-  parser.add_argument('--format-4-subtables', '-f4', default=False, action='store_true')
+  parser.add_argument('--format-4-subtables', '-f4', default=False,action='store_true')
   parser.add_argument('-drop-mac-subtable', '-dm', default=False,
                       action='store_true')
   args = parser.parse_args()
