@@ -354,6 +354,23 @@ optional arguments:
   --compatible  Check glyphs share same coordinates and composites
 ```
 
+### fontbakery family-html-snippet
+
+Generate a test html snippet for a family hosted on fonts.google.com
+
+This script works well for quickly producing test cases using [jsbin](http://jsbin.com).
+
+```
+usage: fontbakery family-html-snippet [-h] family sample_text
+
+positional arguments:
+  family       family name on fonts.google.com
+  sample_text  sample text used for each font
+
+optional arguments:
+  -h, --help   show this help message and exit
+```
+
 ### fontbakery fix-ascii-fontmetadata
 
 Fixes TTF NAME table strings to be ascii only
