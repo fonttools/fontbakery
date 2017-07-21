@@ -385,6 +385,25 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
+### fontbakery fix-cmap
+
+Manipulate a collection of fonts' cmap tables.
+
+```
+usage: fontbakery-fix-cmap.py [-h] [--format-4-subtables] [-drop-mac-subtable]
+                              fonts [fonts ...]
+
+positional arguments:
+  fonts
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --format-4-subtables, -f4
+                        Convert cmap subtables to format 4
+  -drop-mac-subtable, -dm
+                        Drop Mac cmap subtables
+```
+
 ### fontbakery fix-dsig
 
 Fixes TTF to have a dummy DSIG table
