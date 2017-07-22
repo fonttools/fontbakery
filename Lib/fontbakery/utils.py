@@ -64,36 +64,6 @@ def get_name_string(font,
   return results
 
 
-def parse_version_string(fb, s):
-    """ Tries to parse a version string as used
-        in ttf versioning metadata fields.
-        Example of expected format is:
-          'Version 01.003; Comments'
-    """
-    try:
-        suffix = ''
-        # DC: I think this may be wrong, the ; isnt the only separator,
-        # anything not an int is ok
-        if ';' in s:
-            fields = s.split(';')
-            s = fields[0]
-            fields.pop(0)
-            suffix = ';'.join(fields)
-        substrings = s.split('.')
-        minor = substrings[-1]
-        if ' ' in substrings[-2]:
-            major = substrings[-2].split(' ')[-1]
-        else:
-            major = substrings[-2]
-        if suffix:
-          return major, minor, suffix
-        else:
-          return major, minor
-    except:
-        fb.error("Failed to detect major and minor"
-                 " version numbers in '{}'".format(s))
-
-
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
         if table.platformID == PLATFORM_ID_WINDOWS and\
