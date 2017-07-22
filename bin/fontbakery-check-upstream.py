@@ -1,91 +1,86 @@
 #!/usr/bin/env python
-# coding: utf-8
-# Copyright 2013 The Font Bakery Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, print_function, unicode_literals
+
 import argparse
-import logging
-import os
-from fontbakery import checks
-from fontbakery.fbchecklogger import FontBakeryCheckLogger
-from fontbakery.upstreamdirectory import UpstreamDirectory
+import glob
+from collections import OrderedDict
+
+from fontbakery.testrunner import (
+              distribute_generator
+            , TestRunner
+            , Spec
+            , DEBUG
+            , INFO
+            , WARN
+            , ERROR
+            , SKIP
+            , PASS
+            , FAIL
+            )
+
+log_levels =  OrderedDict((s.name,s) for s in sorted((
+              DEBUG
+            , INFO
+            , WARN
+            , ERROR
+            , SKIP
+            , PASS
+            , FAIL
+            )))
 
 
-# set up some command line argument processing
-description = 'Runs checks or tests on specified upstream folder(s)'
-parser = argparse.ArgumentParser(description=description)
-parser.add_argument('folders', nargs="+",
-                    help="Test folder(s), can be a list")
-parser.add_argument('--verbose', '-v', action='count',
-                    help="Verbosity level", default=False)
+
+from fontbakery.reporters.terminal import TerminalReporter
+from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.specifications.googlefonts import upstream_spec as upstream_spec
+
+parser = argparse.ArgumentParser(description="Check TTF files"
+                                             " for common issues.")
+parser.add_argument('arg_folders', nargs='+',
+                    help='font project folder path(s) to check.'
+                         ' Usage of wildcards is allowed.')
+
+parser.add_argument('-c', '--checkid', action='append',
+                    help='Explicit check-ids to be executed.')
 
 
-def upstream_checks(config):
-    fb = FontBakeryCheckLogger(config)
+def log_levels_get(key):
+  if key in log_levels:
+    return log_levels[key]
+  raise argparse.ArgumentTypeError('Key "{}" must be one of: {}.'.format(
+                                        key, ', '.join(log_levels.keys())))
 
-    # set up a basic logging config
-    log_format = '%(levelname)-8s %(message)s'
-    logger = logging.getLogger()
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter(log_format)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+parser.add_argument('-l', '--loglevel-tests', default=None, type=log_levels_get,
+                    help='Report tests with a result of this status or higher.\n'
+                         'One of: {}'.format(', '.join(log_levels.keys())))
 
-    if args.verbose == 1:
-        logger.setLevel(logging.INFO)
-    elif args.verbose >= 2:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.ERROR)
+parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_get,
+                    help='Report log messages of this status or higher.\n'
+                         'One of: {}'.format(', '.join(log_levels.keys())))
 
-    folders_to_check = []
-    for f in config['folders']:
-        if os.path.isdir(f):
-            folders_to_check.append(f)
-        else:
-            print("ERROR: '{}' is not a valid existing folder.".format(f))
-            continue
+parser.add_argument('-n', '--no-progress', default=False, action='store_true',
+                    help='In a tty as stdout, don\'t render the progress indicators.')
 
-    if len(folders_to_check) == 0:
-        print("ERROR: None of the specified paths "
-              "seem to be existing folders.")
-        exit(-1)
 
-    for folder in folders_to_check:
-        directory = UpstreamDirectory(folder)
-
-        checks.check_all_fonts_have_matching_glyphnames(fb, folder, directory)
-        checks.check_glyphs_have_same_num_of_contours(fb, folder, directory)
-        checks.check_glyphs_have_same_num_of_points(fb, folder, directory)
-        checks.check_font_folder_contains_a_COPYRIGHT_file(fb, folder)
-        checks.check_font_folder_contains_a_DESCRIPTION_file(fb, folder)
-        checks.check_font_folder_contains_licensing_files(fb, folder)
-        checks.check_font_folder_contains_a_FONTLOG_txt_file(fb, folder)
-        checks.check_repository_contains_METADATA_pb_file(fb, f)
-        checks.check_copyright_notice_is_consistent_across_family(fb, folder)
-
-        fb.output_report(folder)
-
+def get_folders(globs):
+  folders_to_check = []
+  for target in globs:
+    # use glob.glob to accept wildcards
+    for fullpath in glob.glob(target):
+      folders_to_check.append(fullpath)
+  return folders_to_check
 
 if __name__ == '__main__':
   args = parser.parse_args()
-  upstream_checks(config = {
-    'folders': args.folders,
-    'verbose': args.verbose,
-    'json': True,
-    'autofix': False,
-    'ghm': False,
-    'error': False
-  })
+  values = dict(folders=get_folders(args.arg_folders))
+  runner = TestRunner(upstream_spec, values, explicit_tests=args.checkid)
+
+  tr = TerminalReporter(runner=runner, is_async=False
+                       , print_progress=not args.no_progress
+                       , test_threshold=args.loglevel_tests
+                       , log_threshold=args.loglevel_messages
+                       , collect_results_by='folder'
+                       )
+  # sr = SerializeReporter(runner=runner, collect_results_by='folder')
+  distribute_generator(runner.run(), [tr.receive])# sr.receive

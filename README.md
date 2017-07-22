@@ -40,7 +40,6 @@ Run fontbakery subcomands:
     build-fontmetadata
     build-ofl
     check-bbox
-    check-description
     check-name
     check-ttf
     check-upstream
@@ -178,21 +177,6 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-```
-
-### fontbakery check-description
-
-Runs checks on specified DESCRIPTION file(s)
-
-```
-usage: fontbakery check-description [-h] [--verbose] file [file ...]
-
-positional arguments:
-  file           Test files, can be a list
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --verbose, -v  Verbosity level
 ```
 
 ### fontbakery check-upstream

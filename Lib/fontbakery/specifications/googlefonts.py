@@ -13,6 +13,7 @@ from fontbakery.testrunner import (
             , Spec
             )
 import os
+from fontbakery.utils import assertExists
 from fontbakery.callable import condition, test
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
@@ -36,7 +37,6 @@ from fontbakery.constants import(
       , NAMEID_MANUFACTURER_NAME
       , NAMEID_VERSION_STRING
 
-      , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
       , STYLE_NAMES
       , RIBBI_STYLE_NAMES
@@ -74,15 +74,24 @@ from fontbakery.utils import(
 )
 
 default_section = Section('Default')
-specificiation = Spec(
+specification = Spec(
     default_section=default_section
   , iterargs={'font': 'fonts'}
   , derived_iterables={'ttFonts': ('ttFont', True)}
   #, sections=[]
 )
 
-register_test = specificiation.register_test
-register_condition = specificiation.register_condition
+register_test = specification.register_test
+register_condition = specification.register_condition
+
+upstream_spec = Spec(
+    default_section=default_section
+  , iterargs={'folder': 'folders'}
+  #, sections=[]
+)
+
+register_upstream_test = upstream_spec.register_test
+register_upstream_condition = upstream_spec.register_condition
 
 # -------------------------------------------------------------------
 
@@ -931,6 +940,14 @@ def check_copyright_entries_match_license(ttFont, license):
 )
 def check_font_has_a_valid_license_url(ttFont):
   """"License URL matches License text on name table ?"""
+  LICENSE_URL = {
+    'OFL.txt': u'http://scripts.sil.org/OFL',
+    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
+  }
+  LICENSE_NAME = {
+    'OFL.txt': u'Open Font',
+    'LICENSE.txt': u'Apache'
+  }
   detected_license = False
   for license in ['OFL.txt', 'LICENSE.txt']:
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
@@ -1352,9 +1369,8 @@ def check_with_msfontvalidator(font):
 @condition
 def fontforge_check_results(font):
   if "adobeblank" in font:
-    fb.skip("Skipping AdobeBlank since"
-            " this font is a very peculiar hack.")
-    return None
+    return SKIP, ("Skipping AdobeBlank since"
+                  " this font is a very peculiar hack.")
 
   import subprocess
   cmd = (
@@ -2372,7 +2388,7 @@ def ligatures(ttFont):
   all_ligatures = {}
   if "GSUB" in ttFont:
     for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-      # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+      # yield INFO, "lookup.LookupType: {}".format(lookup.LookupType)
       if lookup.LookupType == 4:  # type 4 = Ligature Substitution
         for subtable in lookup.SubTable:
           for firstGlyph in subtable.ligatures.keys():
@@ -3913,7 +3929,146 @@ def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
     yield PASS, ("TTFAutohint --increase-x-height is the same as in"
                   " the previous Google Fonts release (%s).") % inc_xheight
 
-# TODO: port checks 120-126 (upstream font project folder checks)
+
+# Note:
+#       Here we use the term 'folder' meaning a directory path
+#       (where a font project is located) while the term
+#       'upstream_directory' refers to an instance of the
+#       UpstreamDirectory class
+
+from fontbakery.upstreamdirectory import UpstreamDirectory
+@register_upstream_condition
+@condition
+def upstream_directory(folder):
+  if os.path.exists(folder):
+    return UpstreamDirectory(folder)
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/120'
+  , conditions=['upstream_directory']
+)
+def check_all_fonts_have_matching_glyphnames(folder, upstream_directory):
+  """Each font in family project has matching glyph names ?"""
+  from fontbakery.pifont import PiFont
+  glyphs = None
+  failed = False
+  for f in upstream_directory.get_fonts():
+    try:
+      font = PiFont(os.path.join(folder, f))
+      if glyphs is None:
+        glyphs = font.get_glyphs()
+      elif glyphs != font.get_glyphs():
+        failed = True
+        yield FAIL, ("Font \"{}\" has different glyphs in"
+                     " comparison to other fonts"
+                     " in this family.").format(f)
+        break
+    except:
+      failed = True
+      yield FAIL, "Failed to load font file: \"{}\".".format(f)
+
+  if failed is False:
+    yield PASS, "All fonts in family have matching glyph names."
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/121'
+  , conditions=['upstream_directory']
+)
+def check_glyphs_have_same_num_of_contours(folder, upstream_directory):
+  """Glyphs have same number of contours across family ?"""
+  from fontbakery.pifont import PiFont
+  glyphs = {}
+  failed = False
+  for f in upstream_directory.get_fonts():
+    font = PiFont(os.path.join(folder, f))
+    for glyphcode, glyphname in font.get_glyphs():
+      contours = font.get_contours_count(glyphname)
+      if glyphcode in glyphs and glyphs[glyphcode] != contours:
+        failed = True
+        yield FAIL, ("Number of contours of glyph '{}'"
+                     " does not match."
+                     " Expected {} contours, but actual is"
+                     " {} contours.").format(glyphname,
+                                             glyphs[glyphcode],
+                                             contours)
+      glyphs[glyphcode] = contours
+  if failed is False:
+    yield PASS, "Glyphs have same number of contours across family."
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/122'
+  , conditions=['upstream_directory']
+)
+def check_glyphs_have_same_num_of_points(folder, upstream_directory):
+  """Glyphs have same number of points across family ?"""
+  from fontbakery.pifont import PiFont
+  glyphs = {}
+  failed = False
+  for f in upstream_directory.get_fonts():
+    font = PiFont(os.path.join(folder, f))
+    for g, glyphname in font.get_glyphs():
+      points = font.get_points_count(glyphname)
+      if g in glyphs and glyphs[g] != points:
+        failed = True
+        yield FAIL, ("Number of points of glyph '{}' does not match."
+                     " Expected {} points, but actual is"
+                     " {} points").format(glyphname,
+                                          glyphs[g],
+                                          points)
+      glyphs[g] = points
+  if failed is False:
+    yield PASS, "Glyphs have same number of points across family."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/123'
+)
+def check_font_folder_contains_a_COPYRIGHT_file(folder):
+  """Does this font folder contain COPYRIGHT file ?"""
+  yield assertExists(folder, "COPYRIGHT.txt",
+                     "Font folder lacks a copyright file at '{}'",
+                     "Font folder contains COPYRIGHT.txt")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/124'
+)
+def check_font_folder_contains_a_DESCRIPTION_file(folder):
+  """Does this font folder contain a DESCRIPTION file ?"""
+  yield assertExists(folder, "DESCRIPTION.en_us.html",
+                     "Font folder lacks a description file at '{}'",
+                     "Font folder should contain DESCRIPTION.en_us.html.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/125'
+)
+def check_font_folder_contains_licensing_files(folder):
+  """Does this font folder contain licensing files ?"""
+  yield assertExists(folder, ["LICENSE.txt", "OFL.txt"],
+                     "Font folder lacks licensing files at '{}'",
+                     "Font folder should contain licensing files.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/126'
+)
+def check_font_folder_contains_a_FONTLOG_txt_file(folder):
+  """Does font folder contain FONTLOG.txt ?"""
+  yield assertExists(folder, "FONTLOG.txt",
+                     "Font folder lacks a fontlog file at '{}'",
+                     "Font folder should contain a 'FONTLOG.txt' file.")
+
 
 @register_test
 @test(
@@ -3927,7 +4082,64 @@ def check_repository_contains_METADATA_pb_file(metadata):
   else:
     yield PASS, "Repository contains a \"METADATA.pb\" file."
 
-# TODO: port check 128 (upstream font project folder check)
+
+@register_upstream_condition
+@condition
+def ufo_dirs(folder):
+  dirs = []
+  for item in os.walk(folder):
+    root = item[0]
+    directories = item[1]
+    # files = item[2]
+    for d in directories:
+      fullpath = os.path.join(root, d)
+      if os.path.splitext(fullpath)[1].lower() == '.ufo':
+        dirs.append(fullpath)
+  return dirs
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/128'
+  , conditions=['ufo_dirs']
+)
+def check_copyright_notice_is_consistent_across_family(folder, ufo_dirs):
+  """Copyright notice is consistent across all fonts in this family ?"""
+  import re
+  COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+
+  def grep_copyright_notice(contents):
+    match = COPYRIGHT_REGEX.search(contents)
+    if match:
+      return match.group(0).strip(',\r\n')
+    return
+
+  def lookup_copyright_notice(ufo_folder):
+    try:
+      contents = open(os.path.join(ufo_folder,
+                                   'fontinfo.plist')).read()
+      copyright = grep_copyright_notice(contents)
+      if copyright:
+        return copyright
+    except (IOError, OSError):
+      return
+
+  failed = False
+  copyright = None
+  for ufo_folder in ufo_dirs:
+    current_notice = lookup_copyright_notice(ufo_folder)
+    if current_notice is None:
+      continue
+    if copyright is not None and current_notice != copyright:
+      failed = True
+      yield FAIL, "\"{}\" != \"{}\"".format(current_notice,
+                                            copyright)
+      break
+    copyright = current_notice
+  if failed is False:
+    yield PASS, ("Copyright notice is consistent"
+                 " across all fonts in this family.")
+
 
 @register_test
 @test(

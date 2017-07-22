@@ -205,16 +205,6 @@ PLACEHOLDER_LICENSING_TEXT = {
     'LICENSE.txt': u'Licensed under the Apache License, Version 2.0'
 }
 
-LICENSE_URL = {
-    'OFL.txt': u'http://scripts.sil.org/OFL',
-    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
-}
-
-LICENSE_NAME = {
-    'OFL.txt': u'Open Font',
-    'LICENSE.txt': u'Apache'
-}
-
 # =====================================
 # Helper logging class
 RED_STR = '\033[1;31;40m{}\033[0m'
