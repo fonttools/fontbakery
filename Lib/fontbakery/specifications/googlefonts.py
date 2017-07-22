@@ -4032,7 +4032,64 @@ def check_repository_contains_METADATA_pb_file(metadata):
   else:
     yield PASS, "Repository contains a \"METADATA.pb\" file."
 
-# TODO: port check 128 (upstream font project folder check)
+
+@register_upstream_condition
+@condition
+def ufo_dirs(folder):
+  dirs = []
+  for item in os.walk(folder):
+    root = item[0]
+    directories = item[1]
+    # files = item[2]
+    for d in directories:
+      fullpath = os.path.join(root, d)
+      if os.path.splitext(fullpath)[1].lower() == '.ufo':
+        dirs.append(fullpath)
+  return dirs
+
+
+@register_upstream_test
+@test(
+    id='com.google.fonts/test/128'
+  , conditions=['ufo_dirs']
+)
+def check_copyright_notice_is_consistent_across_family(folder, ufo_dirs):
+  """Copyright notice is consistent across all fonts in this family ?"""
+  import re
+  COPYRIGHT_REGEX = re.compile(r'Copyright.*?20\d{2}.*', re.U | re.I)
+
+  def grep_copyright_notice(contents):
+    match = COPYRIGHT_REGEX.search(contents)
+    if match:
+      return match.group(0).strip(',\r\n')
+    return
+
+  def lookup_copyright_notice(ufo_folder):
+    try:
+      contents = open(os.path.join(ufo_folder,
+                                   'fontinfo.plist')).read()
+      copyright = grep_copyright_notice(contents)
+      if copyright:
+        return copyright
+    except (IOError, OSError):
+      return
+
+  failed = False
+  copyright = None
+  for ufo_folder in ufo_dirs:
+    current_notice = lookup_copyright_notice(ufo_folder)
+    if current_notice is None:
+      continue
+    if copyright is not None and current_notice != copyright:
+      failed = True
+      yield FAIL, "\"{}\" != \"{}\"".format(current_notice,
+                                            copyright)
+      break
+    copyright = current_notice
+  if failed is False:
+    yield PASS, ("Copyright notice is consistent"
+                 " across all fonts in this family.")
+
 
 @register_test
 @test(
