@@ -37,7 +37,6 @@ from fontbakery.constants import(
       , NAMEID_MANUFACTURER_NAME
       , NAMEID_VERSION_STRING
 
-      , LICENSE_URL
       , PLACEHOLDER_LICENSING_TEXT
       , STYLE_NAMES
       , RIBBI_STYLE_NAMES
@@ -941,6 +940,14 @@ def check_copyright_entries_match_license(ttFont, license):
 )
 def check_font_has_a_valid_license_url(ttFont):
   """"License URL matches License text on name table ?"""
+  LICENSE_URL = {
+    'OFL.txt': u'http://scripts.sil.org/OFL',
+    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
+  }
+  LICENSE_NAME = {
+    'OFL.txt': u'Open Font',
+    'LICENSE.txt': u'Apache'
+  }
   detected_license = False
   for license in ['OFL.txt', 'LICENSE.txt']:
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
