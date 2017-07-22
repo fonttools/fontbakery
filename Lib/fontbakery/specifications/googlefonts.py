@@ -13,6 +13,7 @@ from fontbakery.testrunner import (
             , Spec
             )
 import os
+from fontbakery.utils import assertExists
 from fontbakery.callable import condition, test
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
@@ -4018,7 +4019,50 @@ def check_glyphs_have_same_num_of_points(folder, upstream_directory):
   if failed is False:
     yield PASS, "Glyphs have same number of points across family."
 
-# TODO: port checks 123-126 (upstream font project folder checks)
+
+@register_test
+@test(
+    id='com.google.fonts/test/123'
+)
+def check_font_folder_contains_a_COPYRIGHT_file(folder):
+  """Does this font folder contain COPYRIGHT file ?"""
+  yield assertExists(folder, "COPYRIGHT.txt",
+                     "Font folder lacks a copyright file at '{}'",
+                     "Font folder contains COPYRIGHT.txt")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/124'
+)
+def check_font_folder_contains_a_DESCRIPTION_file(folder):
+  """Does this font folder contain a DESCRIPTION file ?"""
+  yield assertExists(folder, "DESCRIPTION.en_us.html",
+                     "Font folder lacks a description file at '{}'",
+                     "Font folder should contain DESCRIPTION.en_us.html.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/125'
+)
+def check_font_folder_contains_licensing_files(folder):
+  """Does this font folder contain licensing files ?"""
+  yield assertExists(folder, ["LICENSE.txt", "OFL.txt"],
+                     "Font folder lacks licensing files at '{}'",
+                     "Font folder should contain licensing files.")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/126'
+)
+def check_font_folder_contains_a_FONTLOG_txt_file(folder):
+  """Does font folder contain FONTLOG.txt ?"""
+  yield assertExists(folder, "FONTLOG.txt",
+                     "Font folder lacks a fontlog file at '{}'",
+                     "Font folder should contain a 'FONTLOG.txt' file.")
+
 
 @register_test
 @test(
