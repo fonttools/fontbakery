@@ -219,7 +219,7 @@ def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
   return (warning, xheight_val)
 
 
-def assertExists(fb, folderpath, filenames, err_msg, ok_msg):
+def assertExists(folderpath, filenames, err_msg, ok_msg):
   if not isinstance(filenames, list):
     filenames = [filenames]
 
@@ -229,6 +229,6 @@ def assertExists(fb, folderpath, filenames, err_msg, ok_msg):
     if os.path.exists(fullpath):
       missing.append(fullpath)
   if len(missing) > 0:
-    fb.error(err_msg.format(", ".join(missing)))
+    return FAIL, err_msg.format(", ".join(missing))
   else:
-    fb.ok(ok_msg)
+    return PASS, ok_msg
