@@ -1362,9 +1362,8 @@ def check_with_msfontvalidator(font):
 @condition
 def fontforge_check_results(font):
   if "adobeblank" in font:
-    fb.skip("Skipping AdobeBlank since"
-            " this font is a very peculiar hack.")
-    return None
+    return SKIP, ("Skipping AdobeBlank since"
+                  " this font is a very peculiar hack.")
 
   import subprocess
   cmd = (
@@ -2382,7 +2381,7 @@ def ligatures(ttFont):
   all_ligatures = {}
   if "GSUB" in ttFont:
     for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-      # fb.info("lookup.LookupType: {}".format(lookup.LookupType))
+      # yield INFO, "lookup.LookupType: {}".format(lookup.LookupType)
       if lookup.LookupType == 4:  # type 4 = Ligature Substitution
         for subtable in lookup.SubTable:
           for firstGlyph in subtable.ligatures.keys():
