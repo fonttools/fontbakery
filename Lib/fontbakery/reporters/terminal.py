@@ -166,7 +166,7 @@ class ThrottledOut(object):
       progressbar, reset_progressbar = self._draw_progressbar();
       self._buffer.append(progressbar)
 
-    self._outFile.write(''.join(self._buffer))
+    map(self._outFile.write, self._buffer)
     #self._outFile.flush() needed?
     self._buffer = []
     if reset_progressbar:
@@ -430,7 +430,8 @@ class TerminalReporter(TerminalProgress):
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold and structure_threshold:
-      print(' * {}: {}'.format(formatStatus(status, color=self._use_color), message))
+      print(' * {}: {}'.format(formatStatus(status, color=self._use_color)
+                                               , message).encode('utf-8'))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 

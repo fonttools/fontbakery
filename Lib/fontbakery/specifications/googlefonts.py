@@ -4243,6 +4243,7 @@ def check_with_pyfontaine(font, glyphset):
                                                "--set", glyphset,
                                                font],
                                               stderr=subprocess.STDOUT)
+    fontaine_output = fontaine_output.decode('utf-8')
     if "Support level: full" not in fontaine_output:
       return FAIL, ("Pyfontaine output follows:"
                     "\n\n{}\n").format(fontaine_output)
