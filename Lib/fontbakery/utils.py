@@ -283,6 +283,22 @@ def glyphs_surface_area(font):
   return glyphs
 
 
+def get_glyph_contours(font, glyph):
+    """
+    Flatten a glyph's components and count each contour
+    """
+    contour_count = 0
+    components = [glyph]
+    while components:
+        g = components.pop(0)
+        if g.isComposite():
+            for comp in g.components:
+                components.append(font['glyf'][comp.glyphName])
+        if g.numberOfContours != -1:
+            contour_count += g.numberOfContours
+    return contour_count
+
+
 def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
   """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.

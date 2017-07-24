@@ -308,6 +308,7 @@ def fontbakery_check_ttf(config):
     checks.check_hhea_table_and_advanceWidth_values(fb,
                                                     font,
                                                     monospace_detected)
+    checks.check_glyphs_have_correct_contour_count(fb, font)
 
 ##########################################################
 ## Metadata related checks:
