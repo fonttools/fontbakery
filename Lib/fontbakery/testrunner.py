@@ -170,6 +170,17 @@ class FailedConditionError(FontBakeryRunnerError):
     self.traceback = traceback
     super(FailedConditionError, self).__init__(message, *args)
 
+class MissingConditionError(FontBakeryRunnerError):
+  """ This is a serious problem with the test suite spec and it must
+  be solved, most probably a typo.
+  """
+  def __init__(self, condition_name, error, traceback, *args):
+    message = 'The condtion named {0} is missing: {1}: {2}'.format(
+                              condition_name, type(error).__name__, error)
+    self.error = error
+    self.traceback = traceback
+    super(MissingConditionError, self).__init__(message, *args)
+
 class FailedDependenciesError(FontBakeryRunnerError):
   def __init__(self, test, error, traceback, *args):
     message = 'The test {0} had an error: {1}: {2}'.format(test, type(error).__name__, error)
@@ -330,7 +341,14 @@ class TestRunner(object):
       raise CircularDependencyError('Condition "{0}" is a circular dependency in {1}'\
                                   .format(condition, ' -> '.join(path)))
     path.append(name)
-    condition = self._spec.conditions[name]
+
+    try:
+      condition = self._spec.conditions[name]
+    except KeyError as err:
+      tb = get_traceback()
+      error = MissingConditionError(name, err, tb)
+      return error, None
+
     args = self._get_args(condition, iterargs, path)
     path.pop()
     try:
