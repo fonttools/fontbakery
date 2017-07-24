@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ntpath import basename
+from os.path import basename
 from argparse import ArgumentParser
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
@@ -60,7 +60,7 @@ def main():
 
   for path in args.fonts:
     font = TTFont(path)
-    font_filename = basename(font)
+    font_filename = basename(path)
     fixit = False
 
     if args.format_4_subtables:
