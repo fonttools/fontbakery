@@ -3,10 +3,6 @@
 target_modules = [
  "fontbakery-build-font2ttf",
  "fontbakery-build-fontmetadata",
-  "fontbakery-check-description",
-  "fontbakery-check-ttf",
-  "fontbakery-check-upstream",
-# "fontbakery-crawl", # I need to look at this one carefully later
   "fontbakery-fix-ascii-fontmetadata",
   "fontbakery-fix-familymetadata",
   "fontbakery-fix-fsselection",

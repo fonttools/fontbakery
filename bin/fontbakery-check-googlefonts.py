@@ -34,7 +34,7 @@ log_levels =  OrderedDict((s.name,s) for s in sorted((
 
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
-from fontbakery.specifications.googlefonts import specificiation as specificiation
+from fontbakery.specifications.googlefonts import specification as specification
 
 parser = argparse.ArgumentParser(description="Check TTF files"
                                              " for common issues.")
@@ -79,7 +79,7 @@ def get_fonts(globs):
 if __name__ == '__main__':
   args = parser.parse_args()
   values = dict(fonts=get_fonts(args.arg_filepaths))
-  runner = TestRunner(specificiation, values, explicit_tests=args.checkid)
+  runner = TestRunner(specification, values, explicit_tests=args.checkid)
 
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
