@@ -3977,7 +3977,7 @@ def check_post_italicAngle(ttFont, style):
   # Checking that italicAngle <= 0
   if value > 0:
     failed = True
-    yield FAIL ("The value of post.italicAngle must be"
+    yield FAIL, ("The value of post.italicAngle must be"
                 " changed from {} to {}.").format(value, -value)
 
   # Checking that italicAngle is less than 20 degrees:
