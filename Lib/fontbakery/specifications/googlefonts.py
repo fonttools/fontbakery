@@ -4347,7 +4347,7 @@ def check_glyphset_google_greek_expert(font):
 @test(
     id='com.google.fonts/test/141'
 )
-def check_glyphset_google_greek_plus(font_file):
+def check_glyphset_google_greek_plus(font):
   """Checking Google Greek Plus glyph coverage."""
   yield check_with_pyfontaine(font, "google_greek_plus")
 
