@@ -745,7 +745,7 @@ class Spec(object):
         self.add_section(section)
 
     if not default_section:
-      default_section = sections[0] if len(sections) else Section('Default')
+      default_section = sections[0] if sections and len(sections) else Section('Default')
     self._default_section = default_section
     self.add_section(self._default_section)
 
