@@ -14,9 +14,12 @@ parser.add_argument('--csv', default=False, action='store_true',
                          " (CSV) file format")
 parser.add_argument('--id', '-i', default='all')
 parser.add_argument('--platform', '-p', type=int, default=3)
-parser.add_argument('--drop-superfluous-mac-names', '-m', default=False,
+parser.add_argument('--drop-superfluous-mac-names', '-ms', default=False,
                     action='store_true',
                     help='Drop superfluous Mac names')
+parser.add_argument('--drop-mac-names', '-m', default=False,
+                    action='store_true',
+                    help='Drop all Mac name fields')
 
 
 def has_mac_names(ttfont):
@@ -57,6 +60,14 @@ def drop_superfluous_mac_names(ttfont):
             name = ttfont['name'].getName(n, 1, 0, 0)
             if name:
                 ttfont['name'].names.remove(name)
+
+
+def drop_mac_names(ttfont):
+    """Drop all mac names"""
+    for n in range(255):
+        name = ttfont['name'].getName(n, 1, 0, 0)
+        if name:
+            ttfont['name'].names.remove(name)
 
 
 def main():
@@ -109,6 +120,13 @@ def main():
         if args.drop_superfluous_mac_names:
             if has_mac_names(font):
                 drop_superfluous_mac_names(font)
+                saveit = True
+            else:
+                print('font %s has no mac nametable' % path)
+
+        if args.drop_mac_names:
+            if has_mac_names(font):
+                drop_mac_names(font)
                 saveit = True
             else:
                 print('font %s has no mac nametable' % path)
