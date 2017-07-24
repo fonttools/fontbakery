@@ -41,8 +41,7 @@ Run fontbakery subcomands:
     build-ofl
     check-bbox
     check-name
-    check-ttf
-    check-upstream
+    check-googlefonts
     check-vtt-compatibility
     fix-ascii-fontmetadata
     fix-dsig
@@ -81,19 +80,17 @@ optional arguments:
 To run the tests on some fonts:
 
     cd ~/path/to/fontproject/
-    fontbakery check-ttf *.ttf
+    fontbakery check-googlefonts *.ttf
 
 For more detailed output, run in verbose mode:
 
-    fontbakery check-ttf --verbose *.ttf
-
-It may fix some problems, and save `*.ttf.fix` files in the same directory as the original `.ttf` files.
+    fontbakery check-googlefonts --verbose *.ttf
 
 The check results will be saved to a file called fontbakery-check-results.json.
 
 For check results in GitHub Markdown syntax you can use --ghm:
 
-    fontbakery check-ttf --verbose *.ttf --ghm
+    fontbakery check-googlefonts --verbose *.ttf --ghm
 
 ### FontBakery web Dashboard
 
@@ -177,21 +174,6 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-```
-
-### fontbakery check-upstream
-
-Runs checks or tests on specified upstream folder(s)
-
-```
-usage: fontbakery check-upstream [-h] [--verbose] folders [folders ...]
-
-positional arguments:
-  folders        Test folder(s), can be a list
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --verbose, -v  Verbosity level
 ```
 
 ### fontbakery fix-ascii-fontmetadata
