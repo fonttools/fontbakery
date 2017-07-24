@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from __future__ import print_function
+from __future__ import print_function, division
 import os
 import sys
 import tempfile
@@ -1050,7 +1050,7 @@ def check_OS2_xAvgCharWidth(fb, font):
     if count == 0:
       fb.error("CRITICAL: Found no glyph width data!")
     else:
-      expected_value = int(round(width_sum) / count)
+      expected_value = int(round(width_sum / count))
       if font['OS/2'].xAvgCharWidth == expected_value:
         fb.ok("OS/2 xAvgCharWidth is correct.")
       else:
