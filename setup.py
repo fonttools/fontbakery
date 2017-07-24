@@ -55,7 +55,7 @@ if not libmagic or not libmagic._name:
 from setuptools import setup
 setup(
     name="fontbakery",
-    version='0.1.0',
+    version='0.3.0',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
                 ' for testing font projects',
@@ -66,9 +66,6 @@ setup(
     scripts=['bin/fontbakery',
              'bin/fontbakery-build-font2ttf.py',
              'bin/fontbakery-build-fontmetadata.py',
-             'bin/fontbakery-check-description.py',
-             'bin/fontbakery-check-ttf.py',
-             'bin/fontbakery-check-upstream.py',
              'bin/fontbakery-fix-ascii-fontmetadata.py',
              'bin/fontbakery-fix-familymetadata.py',
              'bin/fontbakery-fix-gasp.py',
@@ -80,9 +77,6 @@ setup(
              'bin/fontbakery-list-weightclass.py',
              'bin/fontbakery-list-widthclass.py',
              'bin/fontbakery-metadata-vs-api.py',
-#             'bin/fontbakery-travis-deploy.py',
-#             'bin/fontbakery-travis-init.py',
-#             'bin/fontbakery-travis-secure.sh',
              'bin/fontbakery-dev-testrunner.py',
              'bin/fontbakery-check-googlefonts.py',
              'bin/fontbakery-update-families.py'],
