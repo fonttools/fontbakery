@@ -41,54 +41,38 @@ RIBBI_STYLE_NAMES = ["Regular",
                      "BoldItalic",
                      "Bold Italic"]  # <-- Do we really need this one?
 
-# Weight name to value mappings:
-WEIGHT_CLASS_VALUES = {
-  "Thin": 250,
-  "ExtraLight": 275,
+# Weight name to value mapping:
+WEIGHTS = {"Thin": 250,
+           "ExtraLight": 275,
+           "Light": 300,
+           "Regular": 400,
+           "Medium": 500,
+           "SemiBold": 600,
+           "Bold": 700,
+           "ExtraBold": 800,
+           "Black": 900}
+
+# FIXME: This needs review, since it seems a bit redundant
+#        with the above "WEIGHTS" dict.
+weights = {
+  "Thin": 100,
+  "ThinItalic": 100,
+  "ExtraLight": 200,
+  "ExtraLightItalic": 200,
   "Light": 300,
+  "LightItalic": 300,
   "Regular": 400,
+  "Italic": 400,
   "Medium": 500,
+  "MediumItalic": 500,
   "SemiBold": 600,
+  "SemiBoldItalic": 600,
   "Bold": 700,
+  "BoldItalic": 700,
   "ExtraBold": 800,
-  "Black": 900
-}
-
-WEIGHT_CLASS_NAMES = {
-  250: "Thin",
-  275: "ExtraLight",
-  300: "Light",
-  400: "Regular",
-  500: "Medium",
-  600: "SemiBold",
-  700: "Bold",
-  800: "ExtraBold",
-  900: "Black"
-}
-
-CSS_WEIGHT_VALUES = {
-  'Thin': 100,
-  'ExtraLight': 200,
-  'Light': 300,
-  '': 400,
-  'Regular': 400,
-  'Medium': 500,
-  'SemiBold': 600,
-  'Bold': 700,
-  'ExtraBold': 800,
-  'Black': 900
-}
-
-CSS_WEIGHT_NAMES = {
-  100: 'Thin',
-  200: 'ExtraLight',
-  300: 'Light',
-  400: 'Regular',
-  500: 'Medium',
-  600: 'SemiBold',
-  700: 'Bold',
-  800: 'ExtraBold',
-  900: 'Black'
+  "ExtraBoldItalic": 800,
+  "Black": 900,
+  "BlackItalic": 900
 }
 
 # code-points for all "whitespace" chars:
@@ -220,24 +204,6 @@ PLACEHOLDER_LICENSING_TEXT = {
                'at: http://scripts.sil.org/OFL',
     'LICENSE.txt': u'Licensed under the Apache License, Version 2.0'
 }
-
-LICENSE_URL = {
-    'OFL.txt': u'http://scripts.sil.org/OFL',
-    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
-}
-
-LICENSE_NAME = {
-    'OFL.txt': u'Open Font',
-    'LICENSE.txt': u'Apache'
-}
-
-REQUIRED_TABLES = set(['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name',
-                       'OS/2', 'post'])
-OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep',
-                       'VORG', 'EBDT', 'EBLC', 'EBSC', 'BASE', 'GPOS',
-                       'GSUB', 'JSTF', 'DSIG', 'gasp', 'hdmx', 'kern',
-                       'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx'])
-UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
 
 # =====================================
 # Helper logging class

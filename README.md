@@ -34,19 +34,15 @@ Fontbakery installs its own command `fontbakery` in your `$PATH`. The `fontbaker
 $ fontbakery -h
 usage: fontbakery [-h] [--list-subcommands] subcommand
 
-Run fontbakery subcommands:
+Run fontbakery subcomands:
+    build-contributors
     build-font2ttf
     build-fontmetadata
     build-ofl
     check-bbox
-    check-description
-    check-gf-github
-    check-googlefonts
     check-name
-    check-ttf
-    check-upstream
+    check-googlefonts
     check-vtt-compatibility
-    dev-testrunner
     fix-ascii-fontmetadata
     fix-dsig
     fix-familymetadata
@@ -61,6 +57,7 @@ Run fontbakery subcommands:
     fix-vendorid
     fix-vertical-metrics
     list-panose
+    list-variable-source
     list-weightclass
     list-widthclass
     metadata-vs-api
@@ -69,7 +66,7 @@ Run fontbakery subcommands:
     update-nameids
     update-version
 
-Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcommand.
+Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcomand.
 I.e.: fontbakery subcommand -h
 
 positional arguments:
@@ -83,46 +80,17 @@ optional arguments:
 To run the tests on some fonts:
 
     cd ~/path/to/fontproject/
-    fontbakery check-ttf *.ttf
+    fontbakery check-googlefonts *.ttf
 
 For more detailed output, run in verbose mode:
 
-    fontbakery check-ttf --verbose *.ttf
-
-It may fix some problems, and save `*.ttf.fix` files in the same directory as the original `.ttf` files.
+    fontbakery check-googlefonts --verbose *.ttf
 
 The check results will be saved to a file called fontbakery-check-results.json.
 
 For check results in GitHub Markdown syntax you can use --ghm:
 
-    fontbakery check-ttf --verbose *.ttf --ghm
-
-
-The full set of attributes for the check-ttf subcommand is:
-
-```
-usage: fontbakery-check-ttf.py [-h] [-v] [-e] [-a] [-b] [-j] [-m] [-n]
-                               [--coverage | --no-coverage]
-                               arg_filepaths [arg_filepaths ...]
-
-Check TTF files for common issues.
-
-positional arguments:
-  arg_filepaths      font file path(s) to check. Wildcards like *.ttf are
-                     allowed.
-
-optional arguments:
-  -h, --help         show this help message and exit
-  -v, --verbose
-  -e, --error        Output only errors.
-  -a, --autofix
-  -b, --burndown     Compute and output burndown-chart stats in JSON format.
-  -j, --json         Output check results in JSON format.
-  -m, --ghm          Output check results in GitHub Markdown format.
-  -n, --no-progress  Disables the display of a progress bar.
-  --coverage         Run glyph coverage checks using PyFontaine.
-  --no-coverage      Disable all PyFontaine (glyph coverage) checks.
-```
+    fontbakery check-googlefonts --verbose *.ttf --ghm
 
 ### FontBakery web Dashboard
 
@@ -194,20 +162,6 @@ optional arguments:
                         CSV data output filename
 ```
 
-### fontbakery build-ofl
-
-Generate an OFL.txt license document.
-
-```
-usage: fontbakery build-ofl [-h] folder
-
-positional arguments:
-  folder      folder containing font family
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
 ### fontbakery check-bbox
 
 A FontForge python script for printing bounding boxes to stdout.
@@ -222,155 +176,6 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### fontbakery check-description
-
-Runs checks on specified DESCRIPTION file(s)
-
-```
-usage: fontbakery check-description [-h] [--verbose] file [file ...]
-
-positional arguments:
-  file           Test files, can be a list
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --verbose, -v  Verbosity level
-```
-
-### fontbakery check-font-version
-
-Check the version number of a family hosted on fonts.google.com.
-
-`fontbakery check-font-version "Roboto"`
-
-
-Comparison against a local family can be made using the -lc argument:
-
-`fontbakery check-font-version "Roboto" -lc [/dir/Roboto-Regular.ttf, ...]`
-
-
-Comparison against a url containing a zipped family can be made using
-the -wc argument:
-
-`fontbakery check-font-version "Roboto" -wc=http://roboto.com/roboto.zip`
-
-```
-usage: fontbakery-check-font-version.py [-h] [-wc WEB_COMPARE]
-                                        [-lc LOCAL_COMPARE [LOCAL_COMPARE ...]]
-                                        family
-
-positional arguments:
-  family                Name of font family
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -wc, --web-compare    Compare against a web url containg a .zip family
-  -lc, --local-compare  Compare against a set of local ttfs
-```
-
-### fontbakery check-gf-github
-
-Report how many github issues/prs were opened and closed for the google/fonts
-repository between two specified dates. Example: Issues between 2017-01-01 to
-2017-06-01: python fontbakery-check-gf-github.py <user> <pass> 2017-01-01
-2017-06-01 The title and url of each issues/pr can be displayed by using the
--v, --verbose option.
-
-```
-usage: fontbakery-check-gf-github.py [-h] [-v] [-ci] [-oi] [-cp] [-op]
-                                     username password start end
-
-positional arguments:
-  username              Your Github username
-  password              Your Github password
-  start                 Start date in ISO 8601 format YYYY-MM-DD
-  end                   End date in ISO 8601 format YYYY-MM-DD
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --verbose         Output all title and urls for prs and issues
-  -ci, --closed-issues  Output all closed issues
-  -oi, --opened-issues  Output all opened issues
-  -cp, --closed-pulls   Output all closed/merged pull requests
-  -op, --opened-pulls   Output all opened pull requests
-```
-
-### fontbakery check-name
-
-A Python script for printing nametables to stdout.
-
-e.g:
-
-Check nametables of fonts in collection:
-python fontbakery-check-name.py [fonts]
-
-Output in csv format:
-python fontbakery-check-name.py [fonts] --csv
-
-```
-usage: fontbakery-check-name.py [-h] [--csv] fonts [fonts ...]
-
-positional arguments:
-  fonts       Fonts in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-```
-
-### fontbakery check-upstream
-
-Runs checks or tests on specified upstream folder(s)
-
-```
-usage: fontbakery check-upstream [-h] [--verbose] folders [folders ...]
-
-positional arguments:
-  folders        Test folder(s), can be a list
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --verbose, -v  Verbosity level
-```
-
-### fontbakery check-vtt-compatibility
-
-Check a hinted font will successfully transfer vtt instructions to an
-unhinted font
-
-$ python fontbakery-check-vtt-compatibility.py hinted.ttf unhinted.ttf
-
-```
-usage: fontbakery-check-vtt-compatibility.py [-h] [--count] [--compatible]
-                                             hinted unhinted
-
-positional arguments:
-  hinted        Hinted font
-  unhinted      Unhinted font
-
-optional arguments:
-  -h, --help    show this help message and exit
-  --count       Check fonts have the same glyph count
-  --compatible  Check glyphs share same coordinates and composites
-```
-
-### fontbakery family-html-snippet
-
-Generate a test html snippet for a family hosted on fonts.google.com
-
-This script works well for quickly producing test cases using [jsbin](http://jsbin.com).
-
-```
-usage: fontbakery family-html-snippet [-h] family sample_text
-
-positional arguments:
-  family       family name on fonts.google.com
-  sample_text  sample text used for each font
-
-optional arguments:
-  -h, --help   show this help message and exit
-```
-
 ### fontbakery fix-ascii-fontmetadata
 
 Fixes TTF NAME table strings to be ascii only
@@ -383,25 +188,6 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-```
-
-### fontbakery fix-cmap
-
-Manipulate a collection of fonts' cmap tables.
-
-```
-usage: fontbakery-fix-cmap.py [-h] [--format-4-subtables] [-drop-mac-subtable]
-                              fonts [fonts ...]
-
-positional arguments:
-  fonts
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --format-4-subtables, -f4
-                        Convert cmap subtables to format 4
-  -drop-mac-subtable, -dm
-                        Drop Mac cmap subtables
 ```
 
 ### fontbakery fix-dsig
@@ -448,29 +234,6 @@ optional arguments:
   -h, --help  show this help message and exit
   --csv
   --autofix
-```
-
-### fontbakery fix-fstype
-
-Update a collection of fonts fsType value to Installable Embedding.
-
-Google Fonts requires Installable Embedding (0):
-https://github.com/googlefonts/gf-docs/blob/master/ProjectChecklist.md#fstype
-
-Microsoft OpenType specification:
-https://www.microsoft.com/typography/otspec/os2.htm#fst
-
-e.g:
-python fontbakery-fix-fstype.py [fonts]
-
-```
-usage: fontbakery-fix-fstype.py [-h] fonts [fonts ...]
-
-positional arguments:
-  fonts       Fonts in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
 ```
 
 ### fontbakery fix-gasp
@@ -528,7 +291,6 @@ Print out nameID strings of the fonts
 ```
 usage: fontbakery fix-nameids [-h] [--autofix] [--csv] [--id ID]
                               [--platform PLATFORM]
-                              [--drop-superfluous-mac-names]
                               font [font ...]
 
 positional arguments:
@@ -540,8 +302,6 @@ optional arguments:
   --csv                 Output data in comma-separate-values (CSV) file format
   --id ID, -i ID
   --platform PLATFORM, -p PLATFORM
-  --drop-superfluous-mac-names, -m
-                        Drop superfluous Mac names
 ```
 
 ### fontbakery fix-nonhinting
@@ -707,24 +467,6 @@ optional arguments:
   --api API             Domain string to use to request
 ```
 
-### fontbakery nametable-from-filename
-
-Replace a collection of fonts nametable's with new tables based on the Google
-Fonts naming spec from just the filename.
-
-The fsSelection, fsType and macStyle also get updated to reflect the new
-names.
-
-```
-usage: fontbakery-nametable-from-filename.py [-h] fonts [fonts ...]
-
-positional arguments:
-  fonts
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
 ### fontbakery update-families
 
 Compare TTF files when upgrading families.
@@ -740,73 +482,6 @@ positional arguments:
 optional arguments:
   -h, --help         show this help message and exit
   -v, --verbose      increase output verbosity
-```
-
-### fontbakery update-nameids
-
-Update specific nameIDs in a collection of fonts with new strings.
-
-Examples:
-
-$ fontbakery-update-nameids.py -c="Copyright 2016" font.ttf
-$ fontbakery-update-nameids.py -v="4.000" -ul="http://license.org" [fonts.ttf]
-
-if you need to change the name or style of a collection of font families, use
-fontbakery-nametable-from-filename.py instead.
-
-```
-usage: fontbakery-update-nameids.py [-h] [-c COPYRIGHT] [-u UNIQUEID]
-                                    [-v VERSION] [-t TRADEMARK]
-                                    [-m MANUFACTURER] [-d DESIGNER]
-                                    [-l LICENSE] [-uv URLVENDOR]
-                                    [-ud URLDESIGNER] [-ul URLLICENSE]
-                                    fonts [fonts ...]
-
-positional arguments:
-  fonts
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -c COPYRIGHT, --copyright COPYRIGHT
-                        Update copyright string
-  -u UNIQUEID, --uniqueid UNIQUEID
-                        Update uniqueid string
-  -v VERSION, --version VERSION
-                        Update version string
-  -t TRADEMARK, --trademark TRADEMARK
-                        Update trademark string
-  -m MANUFACTURER, --manufacturer MANUFACTURER
-                        Update manufacturer string
-  -d DESIGNER, --designer DESIGNER
-                        Update designer string
-  -l LICENSE, --license LICENSE
-                        Update license string
-  -uv URLVENDOR, --urlvendor URLVENDOR
-                        Update url vendor string
-  -ud URLDESIGNER, --urldesigner URLDESIGNER
-                        Update url vendor string
-  -ul URLLICENSE, --urllicense URLLICENSE
-                        Update url license string
-```
-
-### fontbakery update-version
-
-Update a collection of fonts version number to a new version number.
-
-e.g:
-python fontbakery-update-version.py [fonts] 2.300 2.301
-
-```
-usage: fontbakery-update-version.py [-h]
-                                    fonts [fonts ...] old_version new_version
-
-positional arguments:
-  fonts        Fonts in OpenType (TTF/OTF) format
-  old_version  Old version number
-  new_version  New Version number
-
-optional arguments:
-  -h, --help   show this help message and exit
 ```
 
 ## Install

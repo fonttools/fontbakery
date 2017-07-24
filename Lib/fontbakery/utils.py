@@ -17,7 +17,6 @@ import os
 import re
 import sys
 import requests
-from bs4 import BeautifulSoup
 from fontbakery.constants import (
                                  PLATFORM_ID_WINDOWS,
                                  PLAT_ENC_ID_UCS2,
@@ -28,7 +27,6 @@ from fontTools.pens.areaPen import AreaPen
 from StringIO import StringIO
 from urllib import urlopen
 from zipfile import ZipFile
-import tempfile
 
 # =====================================
 # HELPER FUNCTIONS
@@ -64,48 +62,6 @@ def get_name_string(font,
        (langID is None or entry.langID == langID):
       results.append(entry.string.decode(entry.getEncoding()))
   return results
-
-
-def parse_version_string(fb, s):
-    """ Tries to parse a version string as used
-        in ttf versioning metadata fields.
-        Example of expected format is:
-          'Version 01.003; Comments'
-    """
-    try:
-        suffix = ''
-        # DC: I think this may be wrong, the ; isnt the only separator,
-        # anything not an int is ok
-        if ';' in s:
-            fields = s.split(';')
-            s = fields[0]
-            fields.pop(0)
-            suffix = ';'.join(fields)
-        substrings = s.split('.')
-        minor = substrings[-1]
-        if ' ' in substrings[-2]:
-            major = substrings[-2].split(' ')[-1]
-        else:
-            major = substrings[-2]
-        if suffix:
-          return major, minor, suffix
-        else:
-          return major, minor
-    except:
-        fb.error("Failed to detect major and minor"
-                 " version numbers in '{}'".format(s))
-
-
-def parse_version_head(fonts):
-    """Return a family's version number. Ideally, each font in the
-    family should have the same version number. If not, return the highest
-    version number. This function can also work on single fonts."""
-    versions = []
-    if not isinstance(fonts, list):
-        fonts = [fonts]
-    for font in fonts:
-      versions.append(float(font['head'].fontRevision))
-    return max(versions)
 
 
 def getGlyph(font, uchar):
@@ -183,37 +139,6 @@ def save_FamilyProto_Message(path, message):
       sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 
-def fetch_vendorID_list(logging):
-  logging.debug("Fetching Microsoft's vendorID list")
-  url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
-  registered_vendor_ids = {}
-  try:
-    CACHE_VENDOR_LIST = os.path.join(tempfile.gettempdir(),
-                                     'fontbakery-microsoft-vendorlist.cache')
-    if os.path.exists(CACHE_VENDOR_LIST):
-      content = open(CACHE_VENDOR_LIST).read()
-    else:
-      logging.error("Did not find cached vendor list at: " + CACHE_VENDOR_LIST)
-      content = requests.get(url, auth=('user', 'pass')).content
-      open(CACHE_VENDOR_LIST, 'w').write(content)
-    soup = BeautifulSoup(content, 'html.parser')
-    table = soup.find(id="VendorList")
-    try:
-      for row in table.findAll('tr'):
-        cells = row.findAll('td')
-        # pad the code to make sure it is a 4 char string,
-        # otherwise eg "CF  " will not be matched to "CF"
-        code = cells[0].string.strip()
-        code = code + (4 - len(code)) * ' '
-        labels = [label for label in cells[1].stripped_strings]
-        registered_vendor_ids[code] = labels[0]
-    except:
-      logging.warning("Failed to parse Microsoft's vendorID list.")
-  except:
-    logging.warning("Failed to fetch Microsoft's vendorID list.")
-  return registered_vendor_ids
-
-
 def font_key(f):
   return "{}-{}-{}".format(f.filename,
                            f.post_script_name,
@@ -225,38 +150,26 @@ def version_is_newer(a, b):
   b = map(int, b.split("."))
   return a > b
 
-
-def check_bit_entry(fb, font, table, attr, expected, bitmask, bitname):
-  value = getattr(font[table], attr)
+from fontbakery.testrunner import (PASS, FAIL)
+def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
+  value = getattr(ttFont[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
   if bool(value & bitmask) == expected:
-    fb.ok("{} is properly set.".format(name_str))
+    return PASS, "{} is properly set.".format(name_str)
   else:
     if expected:
       expected_str = "set"
     else:
       expected_str = "reset"
-    if fb.config['autofix']:
-      fb.hotfix("{} has been {}.".format(name_str, expected_str))
-      if expected:
-        setattr(font[table], attr, value | bitmask)
-      else:
-        setattr(font[table], attr, value & ~bitmask)
-    else:
-      fb.error("{} should be {}.".format(name_str, expected_str))
+    return FAIL, "{} should be {}.".format(name_str, expected_str)
 
 
-def download_family_from_GoogleFontDirectory(family_name):
+def download_family_from_Google_Fonts(family_name):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     url_prefix = 'https://fonts.google.com/download?family='
     url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
-    return download_zip(url)
-
-
-def download_zip(url):
-  """Return a zipfile from a url"""
-  request = urlopen(url)
-  return ZipFile(StringIO(request.read()))
+    request = urlopen(url)
+    return ZipFile(StringIO(request.read()))
 
 
 def fonts_from_zip(zipfile):
@@ -268,10 +181,10 @@ def fonts_from_zip(zipfile):
   return fonts
 
 
-def glyphs_surface_area(font):
+def glyphs_surface_area(ttFont):
   """Calculate the surface area of a glyph's ink"""
   glyphs = {}
-  glyph_set = font.getGlyphSet()
+  glyph_set = ttFont.getGlyphSet()
   area_pen = AreaPen(glyph_set)
 
   for glyph in glyph_set.keys():
@@ -283,7 +196,7 @@ def glyphs_surface_area(font):
   return glyphs
 
 
-def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
+def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
   """Find the value from the fpgm table which controls ttfautohint's
   increase xheight parameter, '--increase-x-height'.
   This implementation is based on ttfautohint v1.6.
@@ -296,16 +209,17 @@ def ttfauto_fpgm_xheight_rounding(fb, fpgm_tbl, font):
   http://tinyurl.com/jzekfyx"""
   fpgm_tbl = '\n'.join(fpgm_tbl)
   xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
+  warning = None
   try:
     xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
   except AttributeError:
-    fb.warning(("No instruction for xheight rounding found"
-                " on the {} font").format(font))
+    warning = ("No instruction for xheight rounding found"
+               " on the {} font").format(which)
     xheight_val = None
-  return xheight_val
+  return (warning, xheight_val)
 
 
-def assertExists(fb, folderpath, filenames, err_msg, ok_msg):
+def assertExists(folderpath, filenames, err_msg, ok_msg):
   if not isinstance(filenames, list):
     filenames = [filenames]
 
@@ -315,6 +229,6 @@ def assertExists(fb, folderpath, filenames, err_msg, ok_msg):
     if os.path.exists(fullpath):
       missing.append(fullpath)
   if len(missing) > 0:
-    fb.error(err_msg.format(", ".join(missing)))
+    return FAIL, err_msg.format(", ".join(missing))
   else:
-    fb.ok(ok_msg)
+    return PASS, ok_msg
