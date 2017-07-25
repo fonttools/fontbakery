@@ -4230,3 +4230,22 @@ def check_glyphset_google_vietnamese(font):
 def check_glyphset_google_extras(font):
   """Checking Google Extras glyph coverage."""
   yield check_with_pyfontaine(font, "google_extras")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/152'
+)
+def check_name_table_entries_do_not_contain_Reserved_Name(ttFont):
+  """Name table strings must not contain 'Reserved Font Name'."""
+  failed = False
+  for entry in ttFont["name"].names:
+    if "reserved font name" in entry.string.decode(entry.getEncoding()).lower():
+      yield WARN, ("Name table entry (\"{}\")"
+                   " contains \"Reserved Font Name\"."
+                   " This is an error except in a few specific"
+                   " rare cases.").format(entry)
+      failed = True
+  if not failed:
+    yield PASS, ("None of the name table strings"
+                 " contain \"Reserved Font Name\".")
