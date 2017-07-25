@@ -33,7 +33,7 @@ script:
 - export WONT_FIX=invalid-name,bad-indentation
 - export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module,abstract-method,no-member,line-too-long,trailing-newlines,duplicate-code,redefined-outer-name,trailing-whitespace,unused-variable,logging-not-lazy,undefined-variable,protected-access,anomalous-backslash-in-string,wrong-import-position,ungrouped-imports,singleton-comparison,misplaced-comparison-constant,consider-using-enumerate,used-before-assignment,too-few-public-methods,dangerous-default-value,unexpected-keyword-arg,len-as-condition,no-else-return,relative-import,not-callable
 - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
-- "$PYLINT Lib/fontbakery/specification/*.py"
+- "$PYLINT Lib/fontbakery/specifications/*.py"
 - fontbakery check-googlefonts data/test/merriweather/*.ttf --no-progress -l ERROR
 - python bin/test_args.py
 deploy:
