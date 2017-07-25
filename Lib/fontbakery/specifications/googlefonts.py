@@ -3451,6 +3451,7 @@ def check_Copyright_notice_matches_canonical_pattern(font_metadata):
 )
 def check_Copyright_notice_does_not_contain_Reserved_Name(font_metadata):
   """Copyright notice does not contain Reserved Font Name"""
+  from unidecode import unidecode
   if "Reserved Font Name" in font_metadata.copyright:
     yield WARN, ("METADATA.pb: copyright field (\"{}\")"
                  " contains \"Reserved Font Name\"."
