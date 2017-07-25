@@ -122,7 +122,6 @@ setup(
         'lxml',
         'requests',
         'pyyaml',
-        'robofab',
         'fontaine',
         'html5lib',
         'python-magic',

@@ -2,8 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from fontbakery.testrunner import (
-              DEBUG
-            , INFO
+              INFO
             , WARN
             , ERROR
             , SKIP
@@ -13,17 +12,16 @@ from fontbakery.testrunner import (
             , Spec
             )
 import os
-from fontbakery.utils import assertExists
 from fontbakery.callable import condition, test
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
         # How did we ever use this information?
         # Check priority levels:
-        TRIVIAL
-      , LOW
-      , NORMAL
+        CRITICAL
       , IMPORTANT
-      , CRITICAL
+#     , NORMAL
+#     , LOW
+#     , TRIVIAL
 
       , NAMEID_DESCRIPTION
       , NAMEID_LICENSE_DESCRIPTION
@@ -3451,6 +3449,7 @@ def check_Copyright_notice_matches_canonical_pattern(font_metadata):
 )
 def check_Copyright_notice_does_not_contain_Reserved_Name(font_metadata):
   """Copyright notice does not contain Reserved Font Name"""
+  from unidecode import unidecode
   if "Reserved Font Name" in font_metadata.copyright:
     yield WARN, ("METADATA.pb: copyright field (\"{}\")"
                  " contains \"Reserved Font Name\"."
