@@ -494,7 +494,7 @@ xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
 # install ots
-brew tap davelab6/webfonttools;
+brew tap bramstein/webfonttools;
 brew update;
 brew install ots --HEAD;
 
