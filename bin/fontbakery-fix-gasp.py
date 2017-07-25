@@ -36,7 +36,12 @@ class GaspFixer():
             table.gaspRange[65535] = value
             self.saveit = True
         except:
-            print('ER: {}: no table gasp'.format(self.fontpath))
+            print(('ER: {}: no table gasp... '
+                  'Creating new table. ').format(self.path))
+            table = ttLib.newTable('gasp')
+            table.gaspRange = {65535: value}
+            self.font['gasp'] = table
+            self.saveit = True
 
     def show(self):
         try:
@@ -65,6 +70,8 @@ def main():
     for path in args.ttf_font:
         if args.set is not None:
             GaspFixer(path).fix(args.set)
+        elif args.autofix:
+            GaspFixer(path).fix()
         else:
             GaspFixer(path).show()
 
