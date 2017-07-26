@@ -331,10 +331,10 @@ def check_fonts_have_consistent_PANOSE_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
   proportion = None
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     if proportion is None:
-      proportion = ttfont['OS/2'].panose.bProportion
-    if proportion != ttfont['OS/2'].panose.bProportion:
+      proportion = ttFont['OS/2'].panose.bProportion
+    if proportion != ttFont['OS/2'].panose.bProportion:
       failed = True
 
   if failed:
