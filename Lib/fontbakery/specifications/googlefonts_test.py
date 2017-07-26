@@ -4,14 +4,14 @@ from __future__ import absolute_import, print_function, unicode_literals, divisi
 import pytest
 
 from fontbakery.testrunner import (
-              INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
+              PASS
+#           , INFO
+#           , WARN
+#           , ERROR
+#           , SKIP
             , FAIL
             , ENDTEST
-            , Section
+#            , Section
             )
 
 from fontTools.ttLib import TTFont
