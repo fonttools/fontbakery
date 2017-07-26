@@ -265,6 +265,24 @@ def test_id_011(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
+def test_id_012(mada_ttFonts, cabin_ttFonts):
+  """ Fonts have equal glyph names ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fonts_have_equal_glyph_names
+
+  print('Test PASS with good family.')
+  # our reference Cabin family is know to be good here.
+  status, message = list(check_fonts_have_equal_glyph_names(cabin_ttFonts))[-1]
+  assert status == PASS
+
+  print('Test FAIL with fonts that diverge on number of glyphs.')
+  # our reference Mada family is bad here with 407 glyphs on most font files
+  # except the Black and the Medium, that both have 408 glyphs (that extra glyph
+  # causes the test to fail).
+  status, message = list(check_fonts_have_equal_glyph_names(mada_ttFonts))[-1]
+  assert status == FAIL
+
+
 def test_id_029_shorter(font_1):
   """ This is much more direct, as it calls the test directly.
       However, since these tests are often generators (using yield)

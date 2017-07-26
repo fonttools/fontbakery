@@ -410,10 +410,10 @@ def check_fonts_have_equal_glyph_names(ttFonts):
   """Fonts have equal glyph names?"""
   glyphs = None
   failed = False
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     if not glyphs:
-      glyphs = ttfont["glyf"].glyphs
-    if glyphs.keys() != ttfont["glyf"].glyphs.keys():
+      glyphs = ttFont["glyf"].glyphs
+    if glyphs.keys() != ttFont["glyf"].glyphs.keys():
       failed = True
 
   if failed:
