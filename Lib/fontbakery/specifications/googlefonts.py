@@ -430,12 +430,15 @@ def check_fonts_have_equal_unicode_encodings(ttFonts):
   """Fonts have equal unicode encodings?"""
   encoding = None
   failed = False
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     cmap = None
-    for table in ttfont['cmap'].tables:
+    for table in ttFont['cmap'].tables:
       if table.format == 4:
         cmap = table
         break
+    # Could a font lack a format 4 cmap table ?
+    # If we ever find one of those, it would crash the test here.
+    # Then we'd have to yield a FAIL regarding the missing table entry.
     if not encoding:
       encoding = cmap.platEncID
     if encoding != cmap.platEncID:

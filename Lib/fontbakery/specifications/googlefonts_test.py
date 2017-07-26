@@ -283,6 +283,30 @@ def test_id_012(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
+def test_id_013(mada_ttFonts):
+  """ Fonts have equal unicode encodings ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fonts_have_equal_unicode_encodings
+  from fontbakery.constants import (PLAT_ENC_ID_SYMBOL,
+                                    PLAT_ENC_ID_UCS2)
+  print('Test PASS with good family.')
+  # our reference Mada family is know to be good here.
+  status, message = list(check_fonts_have_equal_unicode_encodings(mada_ttFonts))[-1]
+  assert status == PASS
+
+  bad_ttFonts = mada_ttFonts
+  # introduce mismatching encodings into the first 2 font files:
+  for i, encoding in enumerate([PLAT_ENC_ID_SYMBOL,
+                                PLAT_ENC_ID_UCS2]):
+    for table in bad_ttFonts[i]['cmap'].tables:
+      if table.format == 4:
+        table.platEncID = encoding
+
+  print('Test FAIL with fonts that diverge on unicode encoding.')
+  status, message = list(check_fonts_have_equal_unicode_encodings(bad_ttFonts))[-1]
+  assert status == FAIL
+
+
 def test_id_029_shorter(font_1):
   """ This is much more direct, as it calls the test directly.
       However, since these tests are often generators (using yield)
