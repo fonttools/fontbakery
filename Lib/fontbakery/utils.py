@@ -119,6 +119,24 @@ def glyphHasInk(font, name):
     return False
 
 
+def glyph_contour_count(font, name):
+    """Contour count for specified glyph.
+    This implementation will also return contour count for
+    composite glyphs.
+    """
+    contour_count = 0
+    items = [font['glyf'][name]]
+
+    while items:
+        g = items.pop(0)
+        if g.isComposite():
+            for comp in g.components:
+                items.append(font['glyf'][comp.glyphName])
+        if g.numberOfContours != -1:
+            contour_count += g.numberOfContours
+    return contour_count
+
+
 def get_FamilyProto_Message(path):
     try:
       from fontbakery.fonts_public_pb2 import FamilyProto
