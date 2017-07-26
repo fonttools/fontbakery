@@ -13,6 +13,7 @@ from fontbakery.testrunner import (
             )
 import os
 from fontbakery.callable import condition, test
+from fontbakery.message import Message
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
         # How did we ever use this information?
@@ -902,7 +903,7 @@ def check_copyright_entries_match_license(ttFont, license):
       value = nameRecord.string.decode(nameRecord.getEncoding())
       if value != placeholder:
         failed = True
-        yield FAIL, ("License file {} exists but"
+        yield FAIL, Message('wrong', ("License file {} exists but"
                      " NameID {} (LICENSE DESCRIPTION) value"
                      " on platform {} ({})"
                      " is not specified for that."
@@ -913,13 +914,13 @@ def check_copyright_entries_match_license(ttFont, license):
                                 nameRecord.platformID,
                                 PLATID_STR[nameRecord.platformID],
                                 unidecode(value),
-                                unidecode(placeholder))
+                                unidecode(placeholder)))
   if not entry_found:
-    yield FAIL, ("Font lacks NameID {} (LICENSE DESCRIPTION)."
-                 " A proper licensing entry must be set."
-                 "").format(NAMEID_LICENSE_DESCRIPTION)
+    yield FAIL, Message('missing', ("Font lacks NameID {} "
+                 "(LICENSE DESCRIPTION). A proper licensing entry must be "
+                 "set.").format(NAMEID_LICENSE_DESCRIPTION))
   elif not failed:
-    yield PASS, "licensing entry on name table is correctly set."
+    yield PASS, Message('good', "licensing entry on name table is correctly set.")
 
 
 @register_test
