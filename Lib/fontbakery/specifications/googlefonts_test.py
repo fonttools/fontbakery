@@ -133,6 +133,27 @@ def test_id_001():
     assert status == FAIL
 
 
+def test_id_002():
+  """ Fonts are all in the same directory. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_all_files_in_a_single_directory
+  same_dir = [
+    "data/test/cabin/Cabin-Thin.ttf",
+    "data/test/cabin/Cabin-ExtraLight.ttf"
+  ]
+  multiple_dirs = [
+    "data/test/mada/Mada-Regular.ttf",
+    "data/test/cabin/Cabin-ExtraLight.ttf"
+  ]
+  print('Test PASS with same dir: {}'.format(same_dir))
+  status, message = list(check_all_files_in_a_single_directory(same_dir))[-1]
+  assert status == PASS
+
+  print('Test FAIL with multiple dirs: {}'.format(multiple_dirs))
+  status, message = list(check_all_files_in_a_single_directory(multiple_dirs))[-1]
+  assert status == FAIL
+
+
 def test_id_029_shorter(font_1):
   """ This is much more direct, as it calls the test directly.
       However, since these tests are often generators (using yield)

@@ -137,10 +137,9 @@ def check_all_files_in_a_single_directory(fonts):
 
   directories = []
   for target_file in fonts:
-    directory = os.path.split(target_file)[0]
+    directory = os.path.dirname(target_file)
     if directory not in directories:
       directories.append(directory)
-      break
 
   if len(directories) == 1:
     yield PASS, "All files are in the same directory."
