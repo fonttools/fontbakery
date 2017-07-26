@@ -92,6 +92,47 @@ def test_example_testrunner_based(font_1):
      assert message == FAIL and last_test_message.code == 'missing'
      break
 
+
+def test_id_001():
+  """ Files are named canonically. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_file_is_named_canonically
+  canonical_names = [
+    "data/test/cabin/Cabin-Thin.ttf",
+    "data/test/cabin/Cabin-ExtraLight.ttf",
+    "data/test/cabin/Cabin-Light.ttf",
+    "data/test/cabin/Cabin-Regular.ttf",
+    "data/test/cabin/Cabin-Medium.ttf",
+    "data/test/cabin/Cabin-SemiBold.ttf",
+    "data/test/cabin/Cabin-Bold.ttf",
+    "data/test/cabin/Cabin-ExtraBold.ttf",
+    "data/test/cabin/Cabin-Black.ttf",
+    "data/test/cabin/Cabin-ThinItalic.ttf",
+    "data/test/cabin/Cabin-ExtraLightItalic.ttf",
+    "data/test/cabin/Cabin-LightItalic.ttf",
+    "data/test/cabin/Cabin-Italic.ttf",
+    "data/test/cabin/Cabin-MediumItalic.ttf",
+    "data/test/cabin/Cabin-SemiBoldItalic.ttf",
+    "data/test/cabin/Cabin-BoldItalic.ttf",
+    "data/test/cabin/Cabin-ExtraBoldItalic.ttf",
+    "data/test/cabin/Cabin-BlackItalic.ttf"
+  ]
+  non_canonical_names = [
+    "data/test/cabin/Cabin.ttf",
+    "data/test/cabin/Cabin-semibold.ttf"
+  ]
+
+  print('Test PASS ...')
+  for canonical in canonical_names:
+    status, message = list(check_file_is_named_canonically(canonical))[-1]
+    assert status == PASS
+
+  print('Test FAIL ...')
+  for non_canonical in non_canonical_names:
+    status, message = list(check_file_is_named_canonically(non_canonical))[-1]
+    assert status == FAIL
+
+
 def test_id_029_shorter(font_1):
   """ This is much more direct, as it calls the test directly.
       However, since these tests are often generators (using yield)
