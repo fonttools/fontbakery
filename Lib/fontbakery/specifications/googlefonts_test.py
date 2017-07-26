@@ -214,6 +214,25 @@ def test_id_009(mada_ttFonts):
   assert status == FAIL
 
 
+def test_id_010(mada_ttFonts):
+  """ Fonts have consistent PANOSE family type ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fonts_have_consistent_PANOSE_family_type
+
+  print('Test PASS with good family.')
+  status, message = list(check_fonts_have_consistent_PANOSE_family_type(mada_ttFonts))[-1]
+  assert status == PASS
+
+  # introduce a wrong value in one of the font files:
+  value = mada_ttFonts[0]['OS/2'].panose.bFamilyType
+  incorrect_value = value + 1
+  mada_ttFonts[0]['OS/2'].panose.bFamilyType = incorrect_value
+
+  print('Test FAIL with inconsistent family.')
+  status, message = list(check_fonts_have_consistent_PANOSE_family_type(mada_ttFonts))[-1]
+  assert status == FAIL
+
+
 def test_id_029_shorter(font_1):
   """ This is much more direct, as it calls the test directly.
       However, since these tests are often generators (using yield)
