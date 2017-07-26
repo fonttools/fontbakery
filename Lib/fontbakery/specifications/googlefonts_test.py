@@ -40,6 +40,21 @@ def mada_ttFonts():
   return [TTFont(path) for path in paths]
 
 
+@pytest.fixture
+def cabin_ttFonts():
+  paths = [
+    "data/test/cabin/Cabin-BoldItalic.ttf",
+    "data/test/cabin/Cabin-Bold.ttf",
+    "data/test/cabin/Cabin-Italic.ttf",
+    "data/test/cabin/Cabin-MediumItalic.ttf",
+    "data/test/cabin/Cabin-Medium.ttf",
+    "data/test/cabin/Cabin-Regular.ttf",
+    "data/test/cabin/Cabin-SemiBoldItalic.ttf",
+    "data/test/cabin/Cabin-SemiBold.ttf"
+  ]
+  return [TTFont(path) for path in paths]
+
+
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
   for i, nameRecord in enumerate(ttFont['name'].names):
     if nameRecord.nameID == nameID and nameRecord.platEncID == platEncID:
@@ -230,6 +245,23 @@ def test_id_010(mada_ttFonts):
 
   print('Test FAIL with inconsistent family.')
   status, message = list(check_fonts_have_consistent_PANOSE_family_type(mada_ttFonts))[-1]
+  assert status == FAIL
+
+
+def test_id_011(mada_ttFonts, cabin_ttFonts):
+  """ Fonts have equal numbers of glyphs ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fonts_have_equal_numbers_of_glyphs
+
+  print('Test PASS with good family.')
+  # our reference Cabin family is know to be good here.
+  status, message = list(check_fonts_have_equal_numbers_of_glyphs(cabin_ttFonts))[-1]
+  assert status == PASS
+
+  print('Test FAIL with fonts that diverge on number of glyphs.')
+  # our reference Mada family is bad here with 407 glyphs on most font files
+  # except the Black and the Medium, that both have 408 glyphs.
+  status, message = list(check_fonts_have_equal_numbers_of_glyphs(mada_ttFonts))[-1]
   assert status == FAIL
 
 
