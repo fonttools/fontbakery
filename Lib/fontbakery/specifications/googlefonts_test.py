@@ -25,6 +25,21 @@ def font_1():
   # return TTFont(path)
   return path
 
+
+@pytest.fixture
+def mada_ttFonts():
+  paths = [
+    "data/test/mada/Mada-Black.ttf",
+    "data/test/mada/Mada-ExtraLight.ttf",
+    "data/test/mada/Mada-Medium.ttf",
+    "data/test/mada/Mada-SemiBold.ttf",
+    "data/test/mada/Mada-Bold.ttf",
+    "data/test/mada/Mada-Light.ttf",
+    "data/test/mada/Mada-Regular.ttf",
+  ]
+  return [TTFont(path) for path in paths]
+
+
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
   for i, nameRecord in enumerate(ttFont['name'].names):
     if nameRecord.nameID == nameID and nameRecord.platEncID == platEncID:
@@ -151,6 +166,32 @@ def test_id_002():
 
   print('Test FAIL with multiple dirs: {}'.format(multiple_dirs))
   status, message = list(check_all_files_in_a_single_directory(multiple_dirs))[-1]
+  assert status == FAIL
+
+
+# TODO: test_id_003
+# TODO: test_id_004
+# TODO: test_id_005
+# TODO: test_id_006
+# TODO: test_id_007
+
+
+def test_id_008(mada_ttFonts):
+  """ Fonts have consistent underline thickness ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fonts_have_consistent_underline_thickness
+
+  print('Test PASS with good family.')
+  status, message = list(check_fonts_have_consistent_underline_thickness(mada_ttFonts))[-1]
+  assert status == PASS
+
+  # introduce a wronge value in one of the font files:
+  value = mada_ttFonts[0]['post'].underlineThickness
+  incorrect_value = value + 1
+  mada_ttFonts[0]['post'].underlineThickness = incorrect_value
+
+  print('Test FAIL with inconsistent family.')
+  status, message = list(check_fonts_have_consistent_underline_thickness(mada_ttFonts))[-1]
   assert status == FAIL
 
 
