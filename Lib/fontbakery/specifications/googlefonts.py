@@ -899,30 +899,32 @@ def check_copyright_entries_match_license(ttFont, license):
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
-  for i, nameRecord in enumerate(ttFont['name'].names):
+  for i, nameRecord in enumerate(ttFont["name"].names):
     if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
       entry_found = True
       value = nameRecord.string.decode(nameRecord.getEncoding())
       if value != placeholder:
         failed = True
-        yield FAIL, Message('wrong', ("License file {} exists but"
-                     " NameID {} (LICENSE DESCRIPTION) value"
-                     " on platform {} ({})"
-                     " is not specified for that."
-                     " Value was: \"{}\""
-                     " Must be changed to \"{}\""
-                     "").format(license,
-                                NAMEID_LICENSE_DESCRIPTION,
-                                nameRecord.platformID,
-                                PLATID_STR[nameRecord.platformID],
-                                unidecode(value),
-                                unidecode(placeholder)))
+        yield FAIL, Message("wrong", \
+                            ("License file {} exists but"
+                             " NameID {} (LICENSE DESCRIPTION) value"
+                             " on platform {} ({})"
+                             " is not specified for that."
+                             " Value was: \"{}\""
+                             " Must be changed to \"{}\""
+                             "").format(license,
+                                        NAMEID_LICENSE_DESCRIPTION,
+                                        nameRecord.platformID,
+                                        PLATID_STR[nameRecord.platformID],
+                                        unidecode(value),
+                                        unidecode(placeholder)))
   if not entry_found:
-    yield FAIL, Message('missing', ("Font lacks NameID {} "
-                 "(LICENSE DESCRIPTION). A proper licensing entry must be "
-                 "set.").format(NAMEID_LICENSE_DESCRIPTION))
+    yield FAIL, Message("missing", \
+                        ("Font lacks NameID {} "
+                         "(LICENSE DESCRIPTION). A proper licensing entry"
+                         " must be set.").format(NAMEID_LICENSE_DESCRIPTION))
   elif not failed:
-    yield PASS, Message('good', "licensing entry on name table is correctly set.")
+    yield PASS, "Licensing entry on name table is correctly set."
 
 
 @register_test

@@ -58,7 +58,7 @@ def cabin_ttFonts():
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
   for i, nameRecord in enumerate(ttFont['name'].names):
     if nameRecord.nameID == nameID and nameRecord.platEncID == platEncID:
-      nameRecord.string = newEntryString
+      ttFont['name'].names[i].string = newEntryString
 
 def delete_name_table_id(ttFont, nameID):
   delete = []
@@ -92,7 +92,7 @@ def test_example_testrunner_based(font_1):
     if status in test_statuses:
       last_test_message = message
     if status == ENDTEST:
-     assert message == PASS and last_test_message.code == 'good'
+     assert message == PASS
      break
 
   # we could also reuse the `iterargs` that was assigned in the previous
@@ -307,34 +307,30 @@ def test_id_013(mada_ttFonts):
   assert status == FAIL
 
 
-def test_id_029_shorter(font_1):
-  """ This is much more direct, as it calls the test directly.
-      However, since these tests are often generators (using yield)
-      we still need to get the last (in this case) iteration value,
-      using `list(generator)[-1]` here.
-  """
+def test_id_029(mada_ttFonts):
+  """ Check copyright namerecords match license file. """
   from fontbakery.specifications.googlefonts import \
                                   check_copyright_entries_match_license
   from fontbakery.constants import NAMEID_LICENSE_DESCRIPTION
-  ttFont = TTFont(font_1)
+
+  # Our reference Mada family its copyright name records properly set
+  # identifying it as being licensed under the Open Font License
   license = 'OFL.txt'
+  wrong_license = 'LICENSE.txt' # Apache
 
-  print('Test PASS ...')
-  # run
-  status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
-  assert status == PASS and message.code == 'good'
+  print('Test PASS with good fonts ...')
+  for ttFont in mada_ttFonts:
+    status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
+    assert status == PASS
 
-  print('Test failing entry ...')
-  # prepare
-  change_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION, 'failing')
-  # run
-  status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
-  assert status == FAIL and message.code == 'wrong'
+  print('Test with wrong entry values ...')
+  for ttFont in mada_ttFonts:
+    status, message = list(check_copyright_entries_match_license(ttFont, wrong_license))[-1]
+    assert status == FAIL and message.code == 'wrong'
 
-  print('Test missing entry ...')
-  # prepare
-  delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
-  # run
-  status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
-  assert status == FAIL and message.code == 'missing'
+  print('Test with missing copyright namerecords ...')
+  for ttFont in mada_ttFonts:
+    delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
+    status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
+    assert status == FAIL and message.code == 'missing'
 
