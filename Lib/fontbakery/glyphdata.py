@@ -14,5 +14,5 @@ def _glyph_data(json_file):
 path = os.path.dirname(__file__)
 
 
-desired_glyph_data_path = os.path.join(path, 'glyph_data.json')
+desired_glyph_data_path = os.path.join(path, 'desired_glyph_data.json')
 desired_glyph_data = _glyph_data(desired_glyph_data_path)

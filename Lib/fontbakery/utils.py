@@ -137,6 +137,24 @@ def glyph_contour_count(font, name):
     return contour_count
 
 
+def get_font_glyph_data(font):
+    """Return information for each glyph in a font"""
+    font_data = []
+    cmap = font['cmap'].getcmap(3,1).cmap
+    cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
+
+    for glyph_name in font.getGlyphSet().keys():
+        if glyph_name in cmap_reversed:
+            uni_glyph = cmap_reversed[glyph_name]
+            contours = glyph_contour_count(font, glyph_name)
+            font_data.append({
+                'unicode': uni_glyph,
+                'name': glyph_name,
+                'contours': set([contours])
+            })
+    return font_data
+
+
 def get_FamilyProto_Message(path):
     try:
       from fontbakery.fonts_public_pb2 import FamilyProto

@@ -23,7 +23,7 @@ import os
 import json
 from fontTools.ttLib import TTFont
 
-from fontbakery.utils import download_file, glyph_contour_count
+from fontbakery.utils import download_file, get_font_glyph_data
 
 
 class JsonSetEncoder(json.JSONEncoder):
@@ -32,23 +32,6 @@ class JsonSetEncoder(json.JSONEncoder):
        if isinstance(obj, set):
           return list(obj)
        return json.JSONEncoder.default(self, obj)
-
-
-def get_font_data(font):
-    font_data = []
-    cmap = font['cmap'].getcmap(3,1).cmap
-    cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
-
-    for glyph_name in font.getGlyphSet().keys():
-        if glyph_name in cmap_reversed:
-            uni_glyph = cmap_reversed[glyph_name]
-            contours = glyph_contour_count(font, glyph_name)
-            font_data.append({
-                'unicode': uni_glyph,
-                'name': glyph_name,
-                'contours': set([contours])
-            })
-    return font_data
 
 
 def collate_fonts_data(fonts_data):
@@ -103,13 +86,15 @@ def main():
         print('Downloading and generating glyph data for {}'.format(font_url))
         font_ttf = download_file(font_url)
         font = TTFont(font_ttf)
-        fonts_data.append(get_font_data(font))
+        fonts_data.append(get_font_glyph_data(font))
 
     print('Collating font data into glyph data file')
     glyph_data = collate_fonts_data(fonts_data)
 
     script_path = os.path.dirname(__file__)
-    glyph_data_path = os.path.join(script_path, '..', 'Lib', 'fontbakery', 'glyph_data.json')
+    glyph_data_path = os.path.join(
+        script_path, '..', 'Lib', 'fontbakery', 'desired_glyph_data.json'
+        )
     
     print('Saving to {}'.format(glyph_data_path))
     with open(glyph_data_path, 'w') as glyph_file:
