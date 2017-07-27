@@ -184,7 +184,39 @@ def test_id_002():
   assert status == FAIL
 
 
-# TODO: test_id_003
+def test_id_003():
+  """ Does DESCRIPTION file contain broken links ? """
+  from unidecode import unidecode
+  from fontbakery.specifications.googlefonts import \
+                                  (check_DESCRIPTION_file_contains_no_broken_links,
+                                   description,
+                                   descfile)
+
+  good_desc = description(descfile("data/test/cabin/"))
+  print('Test PASS with description file that has no links...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  assert status == PASS
+
+  good_desc = unidecode(good_desc.decode("utf8")) + \
+     "<a href='http://example.com'>Good Link</a>" + \
+     "<a href='http://fonts.google.com'>Another Good One</a>"
+  print('Test PASS with description file that has good links...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  assert status == PASS
+
+# TODO: good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+# See https://github.com/googlefonts/fontbakery/issues/1404
+# "[new-arch] com.google.fonts/test/003: Should we accept "mailto:" URLs on Description files ?"
+#  print('Test FAIL with a description file containing a mailto links...')
+#  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+#  assert status == PASS
+
+  bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
+  print('Test FAIL with a description file containing a known-bad URL...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(bad_desc))[-1]
+  assert status == FAIL
+
+
 # TODO: test_id_004
 # TODO: test_id_005
 # TODO: test_id_006
