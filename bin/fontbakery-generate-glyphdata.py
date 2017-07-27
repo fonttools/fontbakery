@@ -1,8 +1,8 @@
 """
-Generate FontBakery's glyph_data.json file.
+Generate FontBakery's desired_glyph_data.json file.
 
-The glyph_data.json file contains the 'recommended' countour count for
-encoded glyphs. The contour counts are derived from fonts which were
+The desired_glyph_data.json file contains the 'recommended' countour count
+for encoded glyphs. The contour counts are derived from fonts which were
 chosen for their quality and unique design decisions for particular glyphs.
 
 Why make this?
@@ -14,9 +14,7 @@ However, a quotedbl should have 2 contours, unless the font belongs to a
 display family.
 
 In the future, additional glyph data can be included. A good addition would
-be the 'recommended' anchor counts for each glyph. Think of this file as a
-glyph construction database.
-
+be the 'recommended' anchor counts for each glyph.
 """
 from __future__ import print_function
 import os
@@ -29,13 +27,13 @@ from fontbakery.utils import download_file, get_font_glyph_data
 class JsonSetEncoder(json.JSONEncoder):
     """Serialise Set objects for json module."""
     def default(self, obj):
-       if isinstance(obj, set):
-          return list(obj)
-       return json.JSONEncoder.default(self, obj)
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def collate_fonts_data(fonts_data):
-    """Collate individual fonts data into a single glyph data file"""
+    """Collate individual fonts data into a single glyph data list"""
     glyphs = {}
 
     for family in fonts_data:
@@ -94,8 +92,8 @@ def main():
     script_path = os.path.dirname(__file__)
     glyph_data_path = os.path.join(
         script_path, '..', 'Lib', 'fontbakery', 'desired_glyph_data.json'
-        )
-    
+    )
+
     print('Saving to {}'.format(glyph_data_path))
     with open(glyph_data_path, 'w') as glyph_file:
         json.dump(glyph_data, glyph_file, indent=4, cls=JsonSetEncoder)
