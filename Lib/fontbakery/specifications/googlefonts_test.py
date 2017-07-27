@@ -313,7 +313,7 @@ def test_id_029(mada_ttFonts):
                                   check_copyright_entries_match_license
   from fontbakery.constants import NAMEID_LICENSE_DESCRIPTION
 
-  # Our reference Mada family its copyright name records properly set
+  # Our reference Mada family has its copyright name records properly set
   # identifying it as being licensed under the Open Font License
   license = 'OFL.txt'
   wrong_license = 'LICENSE.txt' # Apache
@@ -323,12 +323,12 @@ def test_id_029(mada_ttFonts):
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
     assert status == PASS
 
-  print('Test with wrong entry values ...')
+  print('Test FAIL with wrong entry values ...')
   for ttFont in mada_ttFonts:
     status, message = list(check_copyright_entries_match_license(ttFont, wrong_license))[-1]
     assert status == FAIL and message.code == 'wrong'
 
-  print('Test with missing copyright namerecords ...')
+  print('Test FAIL with missing copyright namerecords ...')
   for ttFont in mada_ttFonts:
     delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
