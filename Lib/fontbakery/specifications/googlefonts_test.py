@@ -215,7 +215,23 @@ def test_id_003():
   assert status == FAIL
 
 
-# TODO: test_id_004
+def test_id_004():
+  """ DESCRIPTION file is a propper HTML snippet ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_DESCRIPTION_is_propper_HTML_snippet,
+                                   descfile)
+
+  good_descfile = descfile("data/test/nunito/")
+  print('Test PASS with description file that contains a good HTML snippet...')
+  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(good_descfile))[-1]
+  assert status == PASS
+
+  bad_descfile = "data/test/cabin/FONTLOG.txt" # :-)
+  print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
+  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(bad_descfile))[-1]
+  assert status == FAIL
+
+
 # TODO: test_id_005
 # TODO: test_id_006
 # TODO: test_id_007
