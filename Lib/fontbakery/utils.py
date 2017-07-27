@@ -204,7 +204,7 @@ def download_family_from_Google_Fonts(family_name):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     url_prefix = 'https://fonts.google.com/download?family='
     url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
-    return download_file(url)
+    return ZipFile(download_file(url))
 
 
 def download_file(url):
