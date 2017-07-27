@@ -193,6 +193,12 @@ def check_DESCRIPTION_file_contains_no_broken_links(description):
   doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
   broken_links = []
   for link in doc.xpath('//a/@href'):
+    if link.startswith("mailto:") and \
+       "@" in link and \
+       "." in link.split("@")[1]:
+      yield INFO, ("Found an email address: {}".format(link))
+      continue
+
     try:
       response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
