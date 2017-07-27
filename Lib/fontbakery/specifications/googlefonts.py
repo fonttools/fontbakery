@@ -137,10 +137,9 @@ def check_all_files_in_a_single_directory(fonts):
 
   directories = []
   for target_file in fonts:
-    directory = os.path.split(target_file)[0]
+    directory = os.path.dirname(target_file)
     if directory not in directories:
       directories.append(directory)
-      break
 
   if len(directories) == 1:
     yield PASS, "All files are in the same directory."
@@ -332,10 +331,10 @@ def check_fonts_have_consistent_PANOSE_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
   proportion = None
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     if proportion is None:
-      proportion = ttfont['OS/2'].panose.bProportion
-    if proportion != ttfont['OS/2'].panose.bProportion:
+      proportion = ttFont['OS/2'].panose.bProportion
+    if proportion != ttFont['OS/2'].panose.bProportion:
       failed = True
 
   if failed:
@@ -411,10 +410,10 @@ def check_fonts_have_equal_glyph_names(ttFonts):
   """Fonts have equal glyph names?"""
   glyphs = None
   failed = False
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     if not glyphs:
-      glyphs = ttfont["glyf"].glyphs
-    if glyphs.keys() != ttfont["glyf"].glyphs.keys():
+      glyphs = ttFont["glyf"].glyphs
+    if glyphs.keys() != ttFont["glyf"].glyphs.keys():
       failed = True
 
   if failed:
@@ -431,12 +430,15 @@ def check_fonts_have_equal_unicode_encodings(ttFonts):
   """Fonts have equal unicode encodings?"""
   encoding = None
   failed = False
-  for ttfont in ttFonts:
+  for ttFont in ttFonts:
     cmap = None
-    for table in ttfont['cmap'].tables:
+    for table in ttFont['cmap'].tables:
       if table.format == 4:
         cmap = table
         break
+    # Could a font lack a format 4 cmap table ?
+    # If we ever find one of those, it would crash the test here.
+    # Then we'd have to yield a FAIL regarding the missing table entry.
     if not encoding:
       encoding = cmap.platEncID
     if encoding != cmap.platEncID:
@@ -897,30 +899,32 @@ def check_copyright_entries_match_license(ttFont, license):
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
-  for i, nameRecord in enumerate(ttFont['name'].names):
+  for i, nameRecord in enumerate(ttFont["name"].names):
     if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
       entry_found = True
       value = nameRecord.string.decode(nameRecord.getEncoding())
       if value != placeholder:
         failed = True
-        yield FAIL, Message('wrong', ("License file {} exists but"
-                     " NameID {} (LICENSE DESCRIPTION) value"
-                     " on platform {} ({})"
-                     " is not specified for that."
-                     " Value was: \"{}\""
-                     " Must be changed to \"{}\""
-                     "").format(license,
-                                NAMEID_LICENSE_DESCRIPTION,
-                                nameRecord.platformID,
-                                PLATID_STR[nameRecord.platformID],
-                                unidecode(value),
-                                unidecode(placeholder)))
+        yield FAIL, Message("wrong", \
+                            ("License file {} exists but"
+                             " NameID {} (LICENSE DESCRIPTION) value"
+                             " on platform {} ({})"
+                             " is not specified for that."
+                             " Value was: \"{}\""
+                             " Must be changed to \"{}\""
+                             "").format(license,
+                                        NAMEID_LICENSE_DESCRIPTION,
+                                        nameRecord.platformID,
+                                        PLATID_STR[nameRecord.platformID],
+                                        unidecode(value),
+                                        unidecode(placeholder)))
   if not entry_found:
-    yield FAIL, Message('missing', ("Font lacks NameID {} "
-                 "(LICENSE DESCRIPTION). A proper licensing entry must be "
-                 "set.").format(NAMEID_LICENSE_DESCRIPTION))
+    yield FAIL, Message("missing", \
+                        ("Font lacks NameID {} "
+                         "(LICENSE DESCRIPTION). A proper licensing entry"
+                         " must be set.").format(NAMEID_LICENSE_DESCRIPTION))
   elif not failed:
-    yield PASS, Message('good', "licensing entry on name table is correctly set.")
+    yield PASS, "Licensing entry on name table is correctly set."
 
 
 @register_test
