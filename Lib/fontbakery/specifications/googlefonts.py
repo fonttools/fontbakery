@@ -233,26 +233,17 @@ def check_DESCRIPTION_is_propper_HTML_snippet(descfile):
   insert a dummy description file which contains invalid html.
   This file needs to either be replaced with an existing description file
   or edited by hand."""
-  try:
-    import magic
-    contenttype = magic.from_file(descfile)
-    if "HTML" not in contenttype:
-      data = open(descfile).read()
-      if "<p>" in data and "</p>" in data:
-        yield PASS, "{} is a propper HTML snippet.".format(descfile)
-      else:
-        yield FAIL, "{} is not a propper HTML snippet.".format(descfile)
+  import magic
+  m = magic.Magic(mime=True)
+  mimetype = m.from_file(descfile)
+  if "html" not in mimetype:
+    data = open(descfile).read()
+    if "<p>" in data and "</p>" in data:
+      yield PASS, "[{}] {} is a propper HTML snippet.".format(mimetype, descfile)
     else:
-      yield PASS, "{} is a propper HTML file.".format(descfile)
-  except AttributeError:
-    yield SKIP, ("python magic version mismatch: "
-                 "This check was skipped because the API of the python"
-                 " magic module version installed in your system does not"
-                 " provide the from_file method used in"
-                 " the check implementation.")
-  except ImportError:
-    yield SKIP, ("This check depends on the magic python module which"
-                 " does not seem to be currently installed on your system.")
+      yield FAIL, "[{}] {} is not a propper HTML snippet.".format(mimetype, descfile)
+  else:
+    yield PASS, "{} is a propper HTML file.".format(descfile)
 
 
 @register_test
