@@ -70,6 +70,7 @@ from fontbakery.utils import(
       , getGlyph
       , glyphHasInk
       , check_bit_entry
+      , get_font_glyph_data
 )
 
 default_section = Section('Default')
@@ -4259,3 +4260,34 @@ def check_name_table_entries_do_not_contain_Reserved_Name(ttFont):
   if not failed:
     yield PASS, ("None of the name table strings"
                  " contain \"Reserved Font Name\".")
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/153'
+)
+def check_glyphs_have_recommended_contour_count(ttFont):
+  """Check if each glyph has the recommended amount of contours.
+  This test is useful to check if glyphs are incorrectly constructed."""
+  from fontbakery.glyphdata import desired_glyph_data
+
+  bad_glyphs = []
+  desired_glyph_contours = {f: desired_glyph_data[f]['contours']
+                            for f in desired_glyph_data}
+
+  font_glyph_data = get_font_glyph_data(ttFont)
+  font_glyph_contours = {f['unicode']: list(f['contours'])[0]
+                         for f in font_glyph_data}
+
+  shared_glyphs = set(desired_glyph_contours) & set(font_glyph_contours)
+  for glyph in shared_glyphs:
+    if font_glyph_contours[glyph] not in desired_glyph_contours[glyph]:
+      bad_glyphs.append(glyph)
+
+  if len(bad_glyphs) > 0:
+    cmap = ttFont['cmap'].getcmap(3,1).cmap
+    bad_glyphs_name = [cmap[n] for n in bad_glyphs]
+    yield WARN, (("Following glyphs do not have the recommended number"
+                  " of contours [{}]").format(', '.join(bad_glyphs_name)))
+  else:
+    yield PASS, "All glyphs have the recommended amount of contours"
