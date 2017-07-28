@@ -234,8 +234,7 @@ def check_DESCRIPTION_is_propper_HTML_snippet(descfile):
   This file needs to either be replaced with an existing description file
   or edited by hand."""
   import magic
-  m = magic.Magic(mime=True)
-  mimetype = m.from_file(descfile)
+  mimetype = magic.from_file(descfile, mime=True)
   if "html" not in mimetype:
     data = open(descfile).read()
     if "<p>" in data and "</p>" in data:
