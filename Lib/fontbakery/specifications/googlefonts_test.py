@@ -430,6 +430,25 @@ def test_id_013(mada_ttFonts):
   assert status == FAIL
 
 
+def test_id_014(mada_ttFonts):
+  """ Make sure all font files have the same version value. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_all_fontfiles_have_same_version
+  print('Test PASS with good family.')
+  # our reference Mada family is know to be good here.
+  status, message = list(check_all_fontfiles_have_same_version(mada_ttFonts))[-1]
+  assert status == PASS
+
+  bad_ttFonts = mada_ttFonts
+  # introduce a mismatching version value into the second font file:
+  version = bad_ttFonts[0]['head'].fontRevision
+  bad_ttFonts[1]['head'].fontRevision = version + 1
+
+  print('Test WARN with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_all_fontfiles_have_same_version(bad_ttFonts))[-1]
+  assert status == WARN
+
+
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
   from fontbakery.specifications.googlefonts import \

@@ -464,9 +464,9 @@ def check_all_fontfiles_have_same_version(ttFonts):
   """Make sure all font files have the same version value."""
   all_detected_versions = []
   fontfile_versions = {}
-  for ttfont in ttFonts:
-    v = ttfont['head'].fontRevision
-    fontfile_versions[ttfont] = v
+  for ttFont in ttFonts:
+    v = ttFont['head'].fontRevision
+    fontfile_versions[ttFont] = v
 
     if v not in all_detected_versions:
       all_detected_versions.append(v)
