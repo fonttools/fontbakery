@@ -55,6 +55,31 @@ def cabin_ttFonts():
   return [TTFont(path) for path in paths]
 
 
+@pytest.fixture
+def montserrat_ttFonts():
+  paths = [
+    "data/test/montserrat/Montserrat-Black.ttf",
+    "data/test/montserrat/Montserrat-BlackItalic.ttf",
+    "data/test/montserrat/Montserrat-Bold.ttf",
+    "data/test/montserrat/Montserrat-BoldItalic.ttf",
+    "data/test/montserrat/Montserrat-ExtraBold.ttf",
+    "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",
+    "data/test/montserrat/Montserrat-ExtraLight.ttf",
+    "data/test/montserrat/Montserrat-ExtraLightItalic.ttf",
+    "data/test/montserrat/Montserrat-Italic.ttf",
+    "data/test/montserrat/Montserrat-Light.ttf",
+    "data/test/montserrat/Montserrat-LightItalic.ttf",
+    "data/test/montserrat/Montserrat-Medium.ttf",
+    "data/test/montserrat/Montserrat-MediumItalic.ttf",
+    "data/test/montserrat/Montserrat-Regular.ttf",
+    "data/test/montserrat/Montserrat-SemiBold.ttf",
+    "data/test/montserrat/Montserrat-SemiBoldItalic.ttf",
+    "data/test/montserrat/Montserrat-Thin.ttf",
+    "data/test/montserrat/Montserrat-ThinItalic.ttf"
+  ]
+  return [TTFont(path) for path in paths]
+
+
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
   for i, nameRecord in enumerate(ttFont['name'].names):
     if nameRecord.nameID == nameID and nameRecord.platEncID == platEncID:
@@ -334,3 +359,19 @@ def test_id_029(mada_ttFonts):
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
     assert status == FAIL and message.code == 'missing'
 
+
+def test_id_152(montserrat_ttFonts):
+  """Check glyphs contain the recommended contour count"""
+  from fontbakery.specifications.googlefonts import \
+    check_glyphs_have_recommended_contour_count
+
+  # Montserrat should pass this test since it was used to assemble the glyph data
+  for ttFont in montserrat_ttFonts:
+    status, message = list(check_glyphs_have_recommended_contour_count(ttFont))[-1]
+    assert status == PASS
+
+  # Lets swap the glyf a (2 contours) with glyf c (1 contour)
+  for ttFont in montserrat_ttFonts:
+    ttFont['glyf']['a'] = ttFont['glyf']['c']
+    status, message = list(check_glyphs_have_recommended_contour_count(ttFont))[-1]
+    assert status == WARN
