@@ -467,6 +467,23 @@ def test_id_015():
   assert status == FAIL
 
 
+def test_id_016():
+  """ Checking OS/2 fsType """
+  from fontbakery.specifications.googlefonts import check_OS2_fsType
+  print('Test PASS with good font.')
+  # our reference Cabin family is know to be good here.
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  status, message = list(check_OS2_fsType(ttFont))[-1]
+  assert status == PASS
+
+  # modify the OS/2 fsType value to something different than zero:
+  ttFont['OS/2'].fsType = 1
+
+  print('Test FAIL with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_OS2_fsType(ttFont))[-1]
+  assert status == FAIL
+
+
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
   from fontbakery.specifications.googlefonts import \
