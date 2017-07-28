@@ -297,7 +297,21 @@ def test_id_006():
   assert status == PASS
 
 
-# TODO: test_id_007
+def test_id_007():
+  """ Font designer field in METADATA.pb must not be 'unknown'. """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_font_designer_field_is_not_unknown,
+                                   metadata)
+  good = metadata("data/test/merriweather/")
+  print('Test PASS with a good METADATA.pb file...')
+  status, message = list(check_font_designer_field_is_not_unknown(good))[-1]
+  assert status == PASS
+
+  bad = metadata("data/test/merriweather/")
+  bad.designer = "unknown"
+  print('Test FAIL with a bad METADATA.pb file...')
+  status, message = list(check_font_designer_field_is_not_unknown(bad))[-1]
+  assert status == FAIL
 
 
 def test_id_008(mada_ttFonts):
