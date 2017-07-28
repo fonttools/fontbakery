@@ -449,6 +449,24 @@ def test_id_014(mada_ttFonts):
   assert status == WARN
 
 
+def test_id_015():
+  """ Font has post table version 2 ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_font_has_post_table_version_2
+  print('Test PASS with good font.')
+  # our reference Mada family is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  assert status == PASS
+
+  # modify the post table version
+  ttFont['post'].formatType = 3
+
+  print('Test FAIL with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  assert status == FAIL
+
+
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
   from fontbakery.specifications.googlefonts import \
