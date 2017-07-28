@@ -184,8 +184,54 @@ def test_id_002():
   assert status == FAIL
 
 
-# TODO: test_id_003
-# TODO: test_id_004
+def test_id_003():
+  """ Does DESCRIPTION file contain broken links ? """
+  from unidecode import unidecode
+  from fontbakery.specifications.googlefonts import \
+                                  (check_DESCRIPTION_file_contains_no_broken_links,
+                                   description,
+                                   descfile)
+
+  good_desc = description(descfile("data/test/cabin/"))
+  print('Test PASS with description file that has no links...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  assert status == PASS
+
+  good_desc = unidecode(good_desc.decode("utf8")) + \
+     "<a href='http://example.com'>Good Link</a>" + \
+     "<a href='http://fonts.google.com'>Another Good One</a>"
+  print('Test PASS with description file that has good links...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  assert status == PASS
+
+  good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+  print('Test FAIL with a description file containing a mailto links...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  assert status == PASS
+
+  bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
+  print('Test FAIL with a description file containing a known-bad URL...')
+  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(bad_desc))[-1]
+  assert status == FAIL
+
+
+def test_id_004():
+  """ DESCRIPTION file is a propper HTML snippet ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_DESCRIPTION_is_propper_HTML_snippet,
+                                   descfile)
+
+  good_descfile = descfile("data/test/nunito/")
+  print('Test PASS with description file that contains a good HTML snippet...')
+  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(good_descfile))[-1]
+  assert status == PASS
+
+  bad_descfile = "data/test/cabin/FONTLOG.txt" # :-)
+  print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
+  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(bad_descfile))[-1]
+  assert status == FAIL
+
+
 # TODO: test_id_005
 # TODO: test_id_006
 # TODO: test_id_007
@@ -313,7 +359,7 @@ def test_id_029(mada_ttFonts):
                                   check_copyright_entries_match_license
   from fontbakery.constants import NAMEID_LICENSE_DESCRIPTION
 
-  # Our reference Mada family its copyright name records properly set
+  # Our reference Mada family has its copyright name records properly set
   # identifying it as being licensed under the Open Font License
   license = 'OFL.txt'
   wrong_license = 'LICENSE.txt' # Apache
@@ -323,12 +369,12 @@ def test_id_029(mada_ttFonts):
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
     assert status == PASS
 
-  print('Test with wrong entry values ...')
+  print('Test FAIL with wrong entry values ...')
   for ttFont in mada_ttFonts:
     status, message = list(check_copyright_entries_match_license(ttFont, wrong_license))[-1]
     assert status == FAIL and message.code == 'wrong'
 
-  print('Test with missing copyright namerecords ...')
+  print('Test FAIL with missing copyright namerecords ...')
   for ttFont in mada_ttFonts:
     delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
