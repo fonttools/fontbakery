@@ -360,7 +360,7 @@ def test_id_029(mada_ttFonts):
     assert status == FAIL and message.code == 'missing'
 
 
-def test_id_152(montserrat_ttFonts):
+def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
     check_glyphs_have_recommended_contour_count
