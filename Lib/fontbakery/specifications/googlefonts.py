@@ -258,29 +258,29 @@ def check_DESCRIPTION_is_propper_HTML_snippet(descfile):
 @register_test
 @test(
     id='com.google.fonts/test/005'
-  , conditions=['descfile']
+  , conditions=['description']
 )
-def check_DESCRIPTION_max_length(descfile):
-  """DESCRIPTION.en_us.html is more than 200 bytes ?"""
-  statinfo = os.stat(descfile)
-  if statinfo.st_size <= 200:
-    yield FAIL, "{} must have size larger than 200 bytes".format(descfile)
+def check_DESCRIPTION_min_length(description):
+  """ DESCRIPTION.en_us.html must have more than 200 bytes. """
+  if len(description) <= 200:
+    yield FAIL, ("DESCRIPTION.en_us.html must"
+                 " have size larger than 200 bytes.")
   else:
-    yield PASS, "{} is larger than 200 bytes".format(descfile)
+    yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
 
 
 @register_test
 @test(
     id='com.google.fonts/test/006'
-  , conditions=['descfile']
+  , conditions=['description']
 )
-def check_DESCRIPTION_min_length(descfile):
-  """DESCRIPTION.en_us.html is less than 1000 bytes ?"""
-  statinfo = os.stat(descfile)
-  if statinfo.st_size >= 1000:
-    yield FAIL, "{} must have size smaller than 1000 bytes".format(descfile)
+def check_DESCRIPTION_max_length(description):
+  """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
+  if len(description) >= 1000:
+    yield FAIL, ("DESCRIPTION.en_us.html must"
+                 " have size smaller than 1000 bytes.")
   else:
-    yield PASS, "{} is smaller than 1000 bytes".format(descfile)
+    yield PASS, "DESCRIPTION.en_us.html is smaller than 1000 bytes."
 
 
 @register_condition

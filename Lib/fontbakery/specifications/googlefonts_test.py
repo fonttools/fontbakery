@@ -257,8 +257,46 @@ def test_id_004():
   assert status == FAIL
 
 
-# TODO: test_id_005
-# TODO: test_id_006
+def test_id_005():
+  """ DESCRIPTION.en_us.html must have more than 200 bytes. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_DESCRIPTION_min_length
+  good_length = 'a' * 199
+  print('Test FAIL with 199-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  assert status == FAIL
+
+  good_length = 'a' * 200
+  print('Test FAIL with 200-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  assert status == FAIL
+
+  bad_length = 'a' * 201
+  print('Test PASS with 201-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(bad_length))[-1]
+  assert status == PASS
+
+
+def test_id_006():
+  """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_DESCRIPTION_max_length
+  bad_length = 'a' * 1001
+  print('Test FAIL with 1001-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  assert status == FAIL
+
+  bad_length = 'a' * 1000
+  print('Test FAIL with 1000-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  assert status == FAIL
+
+  good_length = 'a' * 999
+  print('Test PASS with 999-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(good_length))[-1]
+  assert status == PASS
+
+
 # TODO: test_id_007
 
 
