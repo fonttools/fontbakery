@@ -719,17 +719,17 @@ def check_OS2_achVendID(ttFont, registered_vendor_ids):
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    yield FAIL, ("OS/2 VendorID is not set." +
-                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, Message("not set", "OS/2 VendorID is not set." +
+                                   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    yield FAIL, (("OS/2 VendorID is '{}',"
-                  " a font editor default.").format(vid) +
-                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, Message("bad", ("OS/2 VendorID is '{}',"
+                                " a font editor default.").format(vid) +
+                                SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif len(registered_vendor_ids.keys()) > 0:
     if vid not in registered_vendor_ids.keys():
-      yield WARN, (("OS/2 VendorID value '{}' is not"
-                    " a known registered id.").format(vid) +
-                    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+      yield WARN, Message("unknown", ("OS/2 VendorID value '{}' is not"
+                                      " a known registered id.").format(vid) +
+                                      SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
     else:
       failed = False
       for name in ttFont['name'].names:
@@ -737,15 +737,18 @@ def check_OS2_achVendID(ttFont, registered_vendor_ids):
           manufacturer = name.string.decode(name.getEncoding()).strip()
           if manufacturer != registered_vendor_ids[vid].strip():
             failed = True
-            yield WARN, ("VendorID '{}' and corresponding registered name"
-                         " '{}' does not match the value that is"
-                         " currently set on the font nameID"
-                         " {} (Manufacturer Name):"
-                         " '{}'".format(
-                           vid,
-                           unidecode(registered_vendor_ids[vid]).strip(),
-                           NAMEID_MANUFACTURER_NAME,
-                           unidecode(manufacturer)))
+            yield WARN, Message("mismatch",
+                                "VendorID '{}' and corresponding"
+                                " registered name '{}' does not"
+                                " match the value that is"
+                                " currently set"
+                                " on the font nameID"
+                                " {} (Manufacturer Name):"
+                                " '{}'".format(
+                                vid,
+                                unidecode(registered_vendor_ids[vid]).strip(),
+                                NAMEID_MANUFACTURER_NAME,
+                                unidecode(manufacturer)))
       if not failed:
         yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
 

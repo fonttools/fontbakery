@@ -483,6 +483,49 @@ def test_id_016():
   status, message = list(check_OS2_fsType(ttFont))[-1]
   assert status == FAIL
 
+#TODO: test/017
+
+def test_id_018():
+  """ Checking OS/2 achVendID """
+  from fontbakery.specifications.googlefonts import (check_OS2_achVendID,
+                                                     registered_vendor_ids)
+  from fontbakery.constants import NAMEID_MANUFACTURER_NAME
+  registered_ids = registered_vendor_ids()
+
+  print('Test WARN with mismatching vendor id.')
+  # Our reference Cabin family is know to have mismatching value of
+  # Vendor ID ('STC ') and Manufacturer Name ('Eben Sorkin').
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == WARN and message.code == "mismatch"
+
+  print('Test FAIL with bad vid.')
+  bad_vids = ['UKWN', 'ukwn', 'PfEd']
+  for bad_vid in bad_vids:
+    ttFont['OS/2'].achVendID = bad_vid
+    status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+    assert status == FAIL and message.code == "bad"
+
+  print('Test FAIL with font missing vendor id info.')
+  ttFont['OS/2'].achVendID = None
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == FAIL and message.code == "not set"
+
+  print('Test WARN with unknwon vendor id.')
+  ttFont['OS/2'].achVendID = "????"
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == WARN and message.code == "unknown"
+
+  print('Test PASS with good font.')
+  # we change the fields into a known good combination
+  # of vendor id and manufacturer name here:
+  ttFont['OS/2'].achVendID = "APPL"
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_MANUFACTURER_NAME:
+      ttFont['name'].names[i].string = "Apple".encode(name.getEncoding())
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == PASS
+
 
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
