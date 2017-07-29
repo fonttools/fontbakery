@@ -257,9 +257,61 @@ def test_id_004():
   assert status == FAIL
 
 
-# TODO: test_id_005
-# TODO: test_id_006
-# TODO: test_id_007
+def test_id_005():
+  """ DESCRIPTION.en_us.html must have more than 200 bytes. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_DESCRIPTION_min_length
+  good_length = 'a' * 199
+  print('Test FAIL with 199-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  assert status == FAIL
+
+  good_length = 'a' * 200
+  print('Test FAIL with 200-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  assert status == FAIL
+
+  bad_length = 'a' * 201
+  print('Test PASS with 201-byte buffer...')
+  status, message = list(check_DESCRIPTION_min_length(bad_length))[-1]
+  assert status == PASS
+
+
+def test_id_006():
+  """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_DESCRIPTION_max_length
+  bad_length = 'a' * 1001
+  print('Test FAIL with 1001-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  assert status == FAIL
+
+  bad_length = 'a' * 1000
+  print('Test FAIL with 1000-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  assert status == FAIL
+
+  good_length = 'a' * 999
+  print('Test PASS with 999-byte buffer...')
+  status, message = list(check_DESCRIPTION_max_length(good_length))[-1]
+  assert status == PASS
+
+
+def test_id_007():
+  """ Font designer field in METADATA.pb must not be 'unknown'. """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_font_designer_field_is_not_unknown,
+                                   metadata)
+  good = metadata("data/test/merriweather/")
+  print('Test PASS with a good METADATA.pb file...')
+  status, message = list(check_font_designer_field_is_not_unknown(good))[-1]
+  assert status == PASS
+
+  bad = metadata("data/test/merriweather/")
+  bad.designer = "unknown"
+  print('Test FAIL with a bad METADATA.pb file...')
+  status, message = list(check_font_designer_field_is_not_unknown(bad))[-1]
+  assert status == FAIL
 
 
 def test_id_008(mada_ttFonts):
@@ -376,6 +428,103 @@ def test_id_013(mada_ttFonts):
   print('Test FAIL with fonts that diverge on unicode encoding.')
   status, message = list(check_fonts_have_equal_unicode_encodings(bad_ttFonts))[-1]
   assert status == FAIL
+
+
+def test_id_014(mada_ttFonts):
+  """ Make sure all font files have the same version value. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_all_fontfiles_have_same_version
+  print('Test PASS with good family.')
+  # our reference Mada family is know to be good here.
+  status, message = list(check_all_fontfiles_have_same_version(mada_ttFonts))[-1]
+  assert status == PASS
+
+  bad_ttFonts = mada_ttFonts
+  # introduce a mismatching version value into the second font file:
+  version = bad_ttFonts[0]['head'].fontRevision
+  bad_ttFonts[1]['head'].fontRevision = version + 1
+
+  print('Test WARN with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_all_fontfiles_have_same_version(bad_ttFonts))[-1]
+  assert status == WARN
+
+
+def test_id_015():
+  """ Font has post table version 2 ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_font_has_post_table_version_2
+  print('Test PASS with good font.')
+  # our reference Mada family is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  assert status == PASS
+
+  # modify the post table version
+  ttFont['post'].formatType = 3
+
+  print('Test FAIL with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  assert status == FAIL
+
+
+def test_id_016():
+  """ Checking OS/2 fsType """
+  from fontbakery.specifications.googlefonts import check_OS2_fsType
+  print('Test PASS with good font.')
+  # our reference Cabin family is know to be good here.
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  status, message = list(check_OS2_fsType(ttFont))[-1]
+  assert status == PASS
+
+  # modify the OS/2 fsType value to something different than zero:
+  ttFont['OS/2'].fsType = 1
+
+  print('Test FAIL with fonts that diverge on the fontRevision field value.')
+  status, message = list(check_OS2_fsType(ttFont))[-1]
+  assert status == FAIL
+
+#TODO: test/017
+
+def test_id_018():
+  """ Checking OS/2 achVendID """
+  from fontbakery.specifications.googlefonts import (check_OS2_achVendID,
+                                                     registered_vendor_ids)
+  from fontbakery.constants import NAMEID_MANUFACTURER_NAME
+  registered_ids = registered_vendor_ids()
+
+  print('Test WARN with mismatching vendor id.')
+  # Our reference Cabin family is know to have mismatching value of
+  # Vendor ID ('STC ') and Manufacturer Name ('Eben Sorkin').
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == WARN and message.code == "mismatch"
+
+  print('Test FAIL with bad vid.')
+  bad_vids = ['UKWN', 'ukwn', 'PfEd']
+  for bad_vid in bad_vids:
+    ttFont['OS/2'].achVendID = bad_vid
+    status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+    assert status == FAIL and message.code == "bad"
+
+  print('Test FAIL with font missing vendor id info.')
+  ttFont['OS/2'].achVendID = None
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == FAIL and message.code == "not set"
+
+  print('Test WARN with unknwon vendor id.')
+  ttFont['OS/2'].achVendID = "????"
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == WARN and message.code == "unknown"
+
+  print('Test PASS with good font.')
+  # we change the fields into a known good combination
+  # of vendor id and manufacturer name here:
+  ttFont['OS/2'].achVendID = "APPL"
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_MANUFACTURER_NAME:
+      ttFont['name'].names[i].string = "Apple".encode(name.getEncoding())
+  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  assert status == PASS
 
 
 def test_id_029(mada_ttFonts):

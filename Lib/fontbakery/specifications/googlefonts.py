@@ -233,54 +233,44 @@ def check_DESCRIPTION_is_propper_HTML_snippet(descfile):
   insert a dummy description file which contains invalid html.
   This file needs to either be replaced with an existing description file
   or edited by hand."""
-  try:
-    import magic
-    contenttype = magic.from_file(descfile)
-    if "HTML" not in contenttype:
-      data = open(descfile).read()
-      if "<p>" in data and "</p>" in data:
-        yield PASS, "{} is a propper HTML snippet.".format(descfile)
-      else:
-        yield FAIL, "{} is not a propper HTML snippet.".format(descfile)
+  import magic
+  mimetype = magic.from_file(descfile, mime=True)
+  if "html" not in mimetype:
+    data = open(descfile).read()
+    if "<p>" in data and "</p>" in data:
+      yield PASS, "[{}] {} is a propper HTML snippet.".format(mimetype, descfile)
     else:
-      yield PASS, "{} is a propper HTML file.".format(descfile)
-  except AttributeError:
-    yield SKIP, ("python magic version mismatch: "
-                 "This check was skipped because the API of the python"
-                 " magic module version installed in your system does not"
-                 " provide the from_file method used in"
-                 " the check implementation.")
-  except ImportError:
-    yield SKIP, ("This check depends on the magic python module which"
-                 " does not seem to be currently installed on your system.")
+      yield FAIL, "[{}] {} is not a propper HTML snippet.".format(mimetype, descfile)
+  else:
+    yield PASS, "{} is a propper HTML file.".format(descfile)
 
 
 @register_test
 @test(
     id='com.google.fonts/test/005'
-  , conditions=['descfile']
+  , conditions=['description']
 )
-def check_DESCRIPTION_max_length(descfile):
-  """DESCRIPTION.en_us.html is more than 200 bytes ?"""
-  statinfo = os.stat(descfile)
-  if statinfo.st_size <= 200:
-    yield FAIL, "{} must have size larger than 200 bytes".format(descfile)
+def check_DESCRIPTION_min_length(description):
+  """ DESCRIPTION.en_us.html must have more than 200 bytes. """
+  if len(description) <= 200:
+    yield FAIL, ("DESCRIPTION.en_us.html must"
+                 " have size larger than 200 bytes.")
   else:
-    yield PASS, "{} is larger than 200 bytes".format(descfile)
+    yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
 
 
 @register_test
 @test(
     id='com.google.fonts/test/006'
-  , conditions=['descfile']
+  , conditions=['description']
 )
-def check_DESCRIPTION_min_length(descfile):
-  """DESCRIPTION.en_us.html is less than 1000 bytes ?"""
-  statinfo = os.stat(descfile)
-  if statinfo.st_size >= 1000:
-    yield FAIL, "{} must have size smaller than 1000 bytes".format(descfile)
+def check_DESCRIPTION_max_length(description):
+  """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
+  if len(description) >= 1000:
+    yield FAIL, ("DESCRIPTION.en_us.html must"
+                 " have size smaller than 1000 bytes.")
   else:
-    yield PASS, "{} is smaller than 1000 bytes".format(descfile)
+    yield PASS, "DESCRIPTION.en_us.html is smaller than 1000 bytes."
 
 
 @register_condition
@@ -464,9 +454,9 @@ def check_all_fontfiles_have_same_version(ttFonts):
   """Make sure all font files have the same version value."""
   all_detected_versions = []
   fontfile_versions = {}
-  for ttfont in ttFonts:
-    v = ttfont['head'].fontRevision
-    fontfile_versions[ttfont] = v
+  for ttFont in ttFonts:
+    v = ttFont['head'].fontRevision
+    fontfile_versions[ttFont] = v
 
     if v not in all_detected_versions:
       all_detected_versions.append(v)
@@ -729,17 +719,17 @@ def check_OS2_achVendID(ttFont, registered_vendor_ids):
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    yield FAIL, ("OS/2 VendorID is not set." +
-                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, Message("not set", "OS/2 VendorID is not set." +
+                                   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    yield FAIL, (("OS/2 VendorID is '{}',"
-                  " a font editor default.").format(vid) +
-                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+    yield FAIL, Message("bad", ("OS/2 VendorID is '{}',"
+                                " a font editor default.").format(vid) +
+                                SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif len(registered_vendor_ids.keys()) > 0:
     if vid not in registered_vendor_ids.keys():
-      yield WARN, (("OS/2 VendorID value '{}' is not"
-                    " a known registered id.").format(vid) +
-                    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+      yield WARN, Message("unknown", ("OS/2 VendorID value '{}' is not"
+                                      " a known registered id.").format(vid) +
+                                      SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
     else:
       failed = False
       for name in ttFont['name'].names:
@@ -747,15 +737,18 @@ def check_OS2_achVendID(ttFont, registered_vendor_ids):
           manufacturer = name.string.decode(name.getEncoding()).strip()
           if manufacturer != registered_vendor_ids[vid].strip():
             failed = True
-            yield WARN, ("VendorID '{}' and corresponding registered name"
-                         " '{}' does not match the value that is"
-                         " currently set on the font nameID"
-                         " {} (Manufacturer Name):"
-                         " '{}'".format(
-                           vid,
-                           unidecode(registered_vendor_ids[vid]).strip(),
-                           NAMEID_MANUFACTURER_NAME,
-                           unidecode(manufacturer)))
+            yield WARN, Message("mismatch",
+                                "VendorID '{}' and corresponding"
+                                " registered name '{}' does not"
+                                " match the value that is"
+                                " currently set"
+                                " on the font nameID"
+                                " {} (Manufacturer Name):"
+                                " '{}'".format(
+                                vid,
+                                unidecode(registered_vendor_ids[vid]).strip(),
+                                NAMEID_MANUFACTURER_NAME,
+                                unidecode(manufacturer)))
       if not failed:
         yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
 
