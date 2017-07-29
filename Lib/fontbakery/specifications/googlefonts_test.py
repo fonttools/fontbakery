@@ -19,14 +19,6 @@ test_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 from fontTools.ttLib import TTFont
 
 @pytest.fixture
-def font_1():
-  # FIXME: find absolute path via the path of this module
-  path = 'data/test/cabin/Cabin-Regular.ttf'
-  # return TTFont(path)
-  return path
-
-
-@pytest.fixture
 def mada_ttFonts():
   paths = [
     "data/test/mada/Mada-Black.ttf",
@@ -93,8 +85,13 @@ def delete_name_table_id(ttFont, nameID):
   for i in sorted(delete, reverse=True):
     del(ttFont['name'].names[i])
 
+@pytest.fixture
+def cabin_regular_path():
+  # FIXME: find absolute path via the path of this module
+  return 'data/test/cabin/Cabin-Regular.ttf'
 
-def test_example_testrunner_based(font_1):
+
+def test_example_testrunner_based(cabin_regular_path):
   """ This is just an example test. We'll probably need something like
       this setup in a testrunner_test.py testsuite.
       Leave it here for the moment until we implemented a real case.
@@ -108,7 +105,7 @@ def test_example_testrunner_based(font_1):
   from fontbakery.testrunner import TestRunner
   from fontbakery.specifications.googlefonts import specification
   from fontbakery.constants import NAMEID_LICENSE_DESCRIPTION
-  values = dict(fonts=[font_1])
+  values = dict(fonts=[cabin_regular_path])
   runner = TestRunner(specification, values, explicit_tests=['com.google.fonts/test/029'])
 
   print('Test PASS ...')
