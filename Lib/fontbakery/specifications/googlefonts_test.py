@@ -681,6 +681,42 @@ def test_id_032():
   status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
   assert status == FAIL
 
+# TODO: test_id_033
+# TODO: test_id_034
+# TODO: test_id_035
+# TODO: test_id_036
+# TODO: test_id_037
+# TODO: test_id_038
+# TODO: test_id_039
+# TODO: test_id_040
+
+def test_id_041():
+  """ Checking Vertical Metric Linegaps. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_Vertical_Metric_Linegaps
+
+  print('Test FAIL with non-zero hhea.lineGap...')
+  # Our reference Mada Regular is know to be bad here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # But just to be sure we explicitely set the values we're testing for:
+  ttFont['hhea'].lineGap = 1
+  ttFont['OS/2'].sTypoLineGap = 0
+  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  assert status == WARN and message.code == "hhea"
+
+  # Then we test with a non-zero OS/2.sTypoLineGap:
+  ttFont['hhea'].lineGap = 0
+  ttFont['OS/2'].sTypoLineGap = 1
+  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  assert status == WARN and message.code == "OS/2"
+
+  # And finaly we fix it by making both values equal to zero:
+  ttFont['hhea'].lineGap = 0
+  ttFont['OS/2'].sTypoLineGap = 0
+  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  assert status == PASS
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""

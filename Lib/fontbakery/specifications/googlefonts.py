@@ -1606,11 +1606,9 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
 def check_Vertical_Metric_Linegaps(ttFont):
   """Checking Vertical Metric Linegaps."""
   if ttFont["hhea"].lineGap != 0:
-    yield WARN, "hhea lineGap is not equal to 0"
+    yield WARN, Message("hhea", "hhea lineGap is not equal to 0.")
   elif ttFont["OS/2"].sTypoLineGap != 0:
-    yield WARN, "OS/2 sTypoLineGap is not equal to 0"
-  elif ttFont["OS/2"].sTypoLineGap != ttFont["hhea"].lineGap:
-    yield WARN, "OS/2 sTypoLineGap is not equal to hhea lineGap."
+    yield WARN, Message("OS/2", "OS/2 sTypoLineGap is not equal to 0.")
   else:
     yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
 
