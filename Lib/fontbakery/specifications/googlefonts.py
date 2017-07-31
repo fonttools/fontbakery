@@ -506,6 +506,15 @@ def check_OS2_fsType(ttFont):
                  "(80's DRM scheme is disabled).")
 
 
+@register_condition
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    return os.path.splitext(filename)[0].split('-')[1]
+
+
 @register_test
 @test(
     id='com.google.fonts/test/017'
@@ -776,15 +785,6 @@ def check_name_entries_symbol_substitutions(ttFont):
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"
                  " trademark symbols in name table entries of this font.")
-
-
-@register_condition
-@condition
-def style(font):
-  """Determine font style from canonical filename."""
-  filename = os.path.split(font)[-1]
-  if '-' in filename:
-    return os.path.splitext(filename)[0].split('-')[1]
 
 
 @register_test
