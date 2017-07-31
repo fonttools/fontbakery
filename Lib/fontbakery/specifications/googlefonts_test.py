@@ -18,33 +18,34 @@ test_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
+mada_fonts = [
+  "data/test/mada/Mada-Black.ttf",
+  "data/test/mada/Mada-ExtraLight.ttf",
+  "data/test/mada/Mada-Medium.ttf",
+  "data/test/mada/Mada-SemiBold.ttf",
+  "data/test/mada/Mada-Bold.ttf",
+  "data/test/mada/Mada-Light.ttf",
+  "data/test/mada/Mada-Regular.ttf",
+]
+
 @pytest.fixture
 def mada_ttFonts():
-  paths = [
-    "data/test/mada/Mada-Black.ttf",
-    "data/test/mada/Mada-ExtraLight.ttf",
-    "data/test/mada/Mada-Medium.ttf",
-    "data/test/mada/Mada-SemiBold.ttf",
-    "data/test/mada/Mada-Bold.ttf",
-    "data/test/mada/Mada-Light.ttf",
-    "data/test/mada/Mada-Regular.ttf",
-  ]
-  return [TTFont(path) for path in paths]
+  return [TTFont(path) for path in mada_fonts]
 
+cabin_fonts = [
+  "data/test/cabin/Cabin-BoldItalic.ttf",
+  "data/test/cabin/Cabin-Bold.ttf",
+  "data/test/cabin/Cabin-Italic.ttf",
+  "data/test/cabin/Cabin-MediumItalic.ttf",
+  "data/test/cabin/Cabin-Medium.ttf",
+  "data/test/cabin/Cabin-Regular.ttf",
+  "data/test/cabin/Cabin-SemiBoldItalic.ttf",
+  "data/test/cabin/Cabin-SemiBold.ttf"
+]
 
 @pytest.fixture
 def cabin_ttFonts():
-  paths = [
-    "data/test/cabin/Cabin-BoldItalic.ttf",
-    "data/test/cabin/Cabin-Bold.ttf",
-    "data/test/cabin/Cabin-Italic.ttf",
-    "data/test/cabin/Cabin-MediumItalic.ttf",
-    "data/test/cabin/Cabin-Medium.ttf",
-    "data/test/cabin/Cabin-Regular.ttf",
-    "data/test/cabin/Cabin-SemiBoldItalic.ttf",
-    "data/test/cabin/Cabin-SemiBold.ttf"
-  ]
-  return [TTFont(path) for path in paths]
+  return [TTFont(path) for path in cabin_fonts]
 
 
 @pytest.fixture
@@ -540,6 +541,23 @@ def test_id_019():
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   status, message = list(check_name_entries_symbol_substitutions(ttFont))[-1]
   assert status == PASS
+
+
+def test_id_020():
+  """ Checking OS/2 usWeightClass. """
+  from fontbakery.specifications.googlefonts import (check_OS2_usWeightClass,
+                                                     style)
+  print('Test FAIL with a bad font...')
+  # Our reference Mada Regular is know to be bad here.
+  font = "data/test/mada/Mada-Regular.ttf"
+  status, message = list(check_OS2_usWeightClass(TTFont(font), style(font)))[-1]
+  assert status == FAIL
+
+  print('Test PASS with a good font...')
+  # All fonts in our reference Cabin family are know to be good here.
+  for font in cabin_fonts:
+    status, message = list(check_OS2_usWeightClass(TTFont(font), style(font)))[-1]
+    assert status == PASS
 
 
 def test_id_029(mada_ttFonts):
