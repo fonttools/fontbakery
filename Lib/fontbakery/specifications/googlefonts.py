@@ -4284,3 +4284,25 @@ def check_glyphs_have_recommended_contour_count(ttFont):
                   " of contours [{}]").format(', '.join(bad_glyphs_name)))
   else:
     yield PASS, "All glyphs have the recommended amount of contours"
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/154'
+  , conditions=['gfonts_ttFont']
+)
+def check_regression_missing_glyphs(ttFont, gfonts_ttFont):
+  """Check font has same encoded glyphs as version hosted on
+  fonts.google.com"""
+  cmap = ttFont['cmap'].getcmap(3, 1).cmap
+  gf_cmap = gfonts_ttFont['cmap'].getcmap(3, 1).cmap
+  missing_codepoints = set(gf_cmap.keys()) - set(cmap.keys())
+
+  if missing_codepoints:
+    hex_codepoints = ['0x' + hex(c).upper()[2:].zfill(4) for c
+                      in missing_codepoints]
+    yield FAIL, ("Font is missing the following glyphs "
+                 "from the previous release [%s]" % (
+                   ', '.join(hex_codepoints)))
+  else:
+    yield PASS, ('Font has all the glyphs from the previous release')
