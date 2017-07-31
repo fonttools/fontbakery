@@ -571,22 +571,27 @@ def test_id_020():
 
 def test_id_028():
   """ Check font project has a license. """
-  from fontbakery.specifications.googlefonts import check_font_has_a_license
+  from fontbakery.specifications.googlefonts import (check_font_has_a_license,
+                                                     licenses)
 
   print('Test FAIL with multiple licenses...')
-  status, message = list(check_font_has_a_license(["OFL.txt", "LICENSE.txt"]))[-1]
+  detected_licenses = licenses("data/test/028/multiple/")
+  status, message = list(check_font_has_a_license(detected_licenses))[-1]
   assert status == FAIL and message.code == "multiple"
 
   print('Test FAIL with no license...')
-  status, message = list(check_font_has_a_license([]))[-1]
+  detected_licenses = licenses("data/test/028/none/")
+  status, message = list(check_font_has_a_license(detected_licenses))[-1]
   assert status == FAIL and message.code == "none"
 
   print('Test PASS with a single OFL license...')
-  status, message = list(check_font_has_a_license(["OFL.txt"]))[-1]
+  detected_licenses = licenses("data/test/028/pass_ofl/")
+  status, message = list(check_font_has_a_license(detected_licenses))[-1]
   assert status == PASS
 
   print('Test PASS with a single Apache license...')
-  status, message = list(check_font_has_a_license(["LICENSE.txt"]))[-1]
+  detected_licenses = licenses("data/test/028/pass_apache/")
+  status, message = list(check_font_has_a_license(detected_licenses))[-1]
   assert status == PASS
 
 
