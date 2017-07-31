@@ -622,6 +622,31 @@ def test_id_029(mada_ttFonts):
     status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
     assert status == FAIL and message.code == 'missing'
 
+# TODO: test_id_030
+
+def test_id_031():
+  """ Description strings in the name table
+      must not contain copyright info.
+  """
+  from fontbakery.specifications.googlefonts import \
+                                  check_description_strings_in_name_table
+  from fontbakery.constants import NAMEID_DESCRIPTION
+
+  print('Test PASS with a good font...')
+  # Our reference Mada Regular is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  status, message = list(check_description_strings_in_name_table(ttFont))[-1]
+  assert status == PASS
+
+  # here we add a "Copyright" string to a NAMEID_DESCRIPTION
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_DESCRIPTION:
+      ttFont['name'].names[i].string = "Copyright".encode(name.getEncoding())
+
+  print('Test FAIL with a bad font...')
+  status, message = list(check_description_strings_in_name_table(ttFont))[-1]
+  assert status == FAIL
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
