@@ -559,6 +559,36 @@ def test_id_020():
     status, message = list(check_OS2_usWeightClass(TTFont(font), style(font)))[-1]
     assert status == PASS
 
+# DEPRECATED CHECKS:                                             | REPLACED BY:
+# com.google.fonts/test/??? - "Checking macStyle BOLD bit"       | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/021 - "Checking fsSelection REGULAR bit" | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/022 - "italicAngle <= 0 ?"               | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/023 - "italicAngle is < 20 degrees ?"    | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/024 - "italicAngle matches font style ?" | com.google.fonts/test/130 - "Checking post.italicAngle value"
+# com.google.fonts/test/025 - "Checking fsSelection ITALIC bit"  | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+# com.google.fonts/test/026 - "Checking macStyle ITALIC bit"     | com.google.fonts/test/131 - "Checking head.macStyle value"
+# com.google.fonts/test/027 - "Checking fsSelection BOLD bit"    | com.google.fonts/test/129 - "Checking OS/2.fsSelection value"
+
+def test_id_028():
+  """ Check font project has a license. """
+  from fontbakery.specifications.googlefonts import check_font_has_a_license
+
+  print('Test FAIL with multiple licenses...')
+  status, message = list(check_font_has_a_license(["OFL.txt", "LICENSE.txt"]))[-1]
+  assert status == FAIL and message.code == "multiple"
+
+  print('Test FAIL with no license...')
+  status, message = list(check_font_has_a_license([]))[-1]
+  assert status == FAIL and message.code == "none"
+
+  print('Test PASS with a single OFL license...')
+  status, message = list(check_font_has_a_license(["OFL.txt"]))[-1]
+  assert status == PASS
+
+  print('Test PASS with a single Apache license...')
+  status, message = list(check_font_has_a_license(["LICENSE.txt"]))[-1]
+  assert status == PASS
+
 
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """

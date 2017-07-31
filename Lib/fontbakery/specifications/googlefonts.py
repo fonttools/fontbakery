@@ -873,16 +873,19 @@ def license(license_path):
     id='com.google.fonts/test/028'
 )
 def check_font_has_a_license(licenses):
-  """Check font project has a license"""
+  """Check font has a license."""
   if len(licenses) > 1:
-    yield FAIL, ("More than a single license file found."
-                 " Please review.")
+    yield FAIL, Message("multiple",
+                        ("More than a single license file found."
+                         " Please review."))
   elif not licenses:
-    yield FAIL, ("No license file was found."
-                 " Please add an OFL.txt or a LICENSE.txt file."
-                 " If you are running fontbakery on a Google Fonts"
-                 " upstream repo, which is fine, just make sure"
-                 " there is a temporary license file in the same folder.")
+    yield FAIL, Message("none",
+                        ("No license file was found."
+                         " Please add an OFL.txt or a LICENSE.txt file."
+                         " If you are running fontbakery on a Google Fonts"
+                         " upstream repo, which is fine, just make sure"
+                         " there is a temporary license file in"
+                         " the same folder."))
   else:
     yield PASS, "Found license at '{}'".format(licenses[0])
 
