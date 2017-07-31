@@ -769,9 +769,9 @@ def check_name_entries_symbol_substitutions(ttFont):
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
-        yield FAIL ("NAMEID #{} contains symbol that should be"
-                    " replaced by '{}'").format(name.nameID,
-                                                ascii_repl)
+        yield FAIL, ("NAMEID #{} contains symbol that should be"
+                     " replaced by '{}'").format(name.nameID,
+                                                 ascii_repl)
         failed = True
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"

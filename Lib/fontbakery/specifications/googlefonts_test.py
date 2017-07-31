@@ -524,6 +524,24 @@ def test_id_018():
   assert status == PASS
 
 
+def test_id_019():
+  """ Substitute copyright, registered and trademark
+      symbols in name table entries. """
+  from fontbakery.specifications.googlefonts import check_name_entries_symbol_substitutions
+
+  print('Test FAIL with a bad font...')
+  # Our reference Mada Regular is know to be bad here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  status, message = list(check_name_entries_symbol_substitutions(ttFont))[-1]
+  assert status == FAIL
+
+  print('Test PASS with a good font...')
+  # Our reference Cabin Regular is know to be good here.
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  status, message = list(check_name_entries_symbol_substitutions(ttFont))[-1]
+  assert status == PASS
+
+
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
   from fontbakery.specifications.googlefonts import \
