@@ -776,6 +776,29 @@ def test_id_042(mada_ttFonts):
   assert status == FAIL and message.code == "descender"
 
 
+def test_id_043():
+  """ Checking unitsPerEm value is reasonable. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_unitsPerEm_value_is_reasonable
+  # In this test we'll forge several known-good and known-bad values.
+  # We'll use Mada Regular to start with:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  for good_value in [1000, 16, 32, 64, 128, 256,
+                     512, 1024, 2048, 4096, 8192, 16384]:
+    print("Test PASS with a good value of unitsPerEm = {} ...".format(good_value))
+    ttFont['head'].unitsPerEm = good_value
+    status, message = list(check_unitsPerEm_value_is_reasonable(ttFont))[-1]
+    assert status == PASS
+
+  # These are arbitrarily chosen bad values:
+  for bad_value in [0, 1, 2, 4, 8, 10, 100, 10000, 32768]:
+    print("Test FAIL with a bad value of unitsPerEm = {} ...".format(bad_value))
+    ttFont['head'].unitsPerEm = bad_value
+    status, message = list(check_unitsPerEm_value_is_reasonable(ttFont))[-1]
+    assert status == FAIL
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
