@@ -688,7 +688,36 @@ def test_id_032():
 # TODO: test_id_037
 # TODO: test_id_038
 # TODO: test_id_039
-# TODO: test_id_040
+
+def test_id_040(mada_ttFonts):
+  """ Checking OS/2 usWinAscent & usWinDescent. """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_OS2_usWinAscent_and_Descent,
+                                   vmetrics)
+  # Our reference Mada Regular is know to be bad here.
+  vm = vmetrics(mada_ttFonts)
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # But we fix it first to test the PASS code-path:
+  print('Test PASS with a good font...')
+  ttFont['OS/2'].usWinAscent = vm['ymax']
+  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
+  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  assert status == PASS
+
+  # Then we break it:
+  print('Test FAIL with a bad OS/2.usWinAscent...')
+  ttFont['OS/2'].usWinAscent = vm['ymax'] + 1
+  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
+  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  assert status == FAIL and message.code == "ascent"
+
+  print('Test FAIL with a bad OS/2.usWinDescent...')
+  ttFont['OS/2'].usWinAscent = vm['ymax']
+  ttFont['OS/2'].usWinDescent = abs(vm['ymin']) + 1
+  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  assert status == FAIL and message.code == "descent"
+
 
 def test_id_041():
   """ Checking Vertical Metric Linegaps. """

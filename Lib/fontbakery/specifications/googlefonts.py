@@ -1584,17 +1584,19 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
   # OS/2 usWinAscent:
   if ttFont['OS/2'].usWinAscent != vmetrics['ymax']:
     failed = True
-    yield FAIL, ("OS/2.usWinAscent value"
-                 " should be {}, but got"
-                 " {} instead").format(vmetrics['ymax'],
-                                       ttFont['OS/2'].usWinAscent)
+    yield FAIL, Message("ascent",
+                 ("OS/2.usWinAscent value"
+                  " should be {}, but got"
+                  " {} instead").format(vmetrics['ymax'],
+                                        ttFont['OS/2'].usWinAscent))
   # OS/2 usWinDescent:
   if ttFont['OS/2'].usWinDescent != abs(vmetrics['ymin']):
     failed = True
-    yield FAIL, ("OS/2.usWinDescent value"
-                 " should be {}, but got"
-                 " {} instead").format(vmetrics['ymin'],
-                                       ttFont['OS/2'].usWinDescent)
+    yield FAIL, Message("descent",
+                 ("OS/2.usWinDescent value"
+                  " should be {}, but got"
+                  " {} instead").format(vmetrics['ymin'],
+                                        ttFont['OS/2'].usWinDescent))
   if not failed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
