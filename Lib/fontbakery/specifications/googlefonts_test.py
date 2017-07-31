@@ -798,6 +798,26 @@ def test_id_043():
     status, message = list(check_unitsPerEm_value_is_reasonable(ttFont))[-1]
     assert status == FAIL
 
+# TODO: test_id_044
+
+def test_id_045():
+  """ Does the font have a DSIG table ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_Digital_Signature_exists
+  # Our reference Cabin Regular font is good (theres a DSIG table declared):
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_Digital_Signature_exists(ttFont))[-1]
+  assert status == PASS
+
+  # Then we remove the DSIG table so that we get a FAIL:
+  print ("Test FAIL with a font lacking a DSIG table...")
+  del ttFont['DSIG']
+  status, message = list(check_Digital_Signature_exists(ttFont))[-1]
+  assert status == FAIL
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
