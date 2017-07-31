@@ -1628,14 +1628,16 @@ def check_OS2_Metrics_match_hhea_Metrics(ttFont):
   Mac OS X uses the hhea values
   Windows uses OS/2 or Win, depending on the OS or fsSelection bit value."""
 
-  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
   if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
-    yield FAIL, "OS/2 sTypoAscender and hhea ascent must be equal"
+    yield FAIL, Message("ascender",
+                        "OS/2 sTypoAscender and hhea ascent must be equal.")
   elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
-    yield FAIL, "OS/2 sTypoDescender and hhea descent must be equal"
+    yield FAIL, Message("descender",
+                        "OS/2 sTypoDescender and hhea descent must be equal.")
   else:
-    yield PASS, ("OS/2 sTypoDescender and sTypoDescender"
-                 " match hhea ascent and descent")
+    yield PASS, ("OS/2.sTypoAscender/Descender"
+                 " match hhea.ascent/descent.")
 
 
 @register_test

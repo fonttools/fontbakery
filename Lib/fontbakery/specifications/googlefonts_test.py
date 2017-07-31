@@ -747,6 +747,35 @@ def test_id_041():
   assert status == PASS
 
 
+def test_id_042(mada_ttFonts):
+  """ Checking OS/2 Metrics match hhea Metrics. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_OS2_Metrics_match_hhea_Metrics
+  # Our reference Mada Regular is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  print("Test PASS with a good font...")
+  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  assert status == PASS
+
+  # Now we break it:
+  print('Test FAIL with a bad OS/2.sTypoAscender font...')
+  correct = ttFont['hhea'].ascent
+  ttFont['OS/2'].sTypoAscender = correct + 1
+  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  assert status == FAIL and message.code == "ascender"
+
+  # Restore good value:
+  ttFont['OS/2'].sTypoAscender = correct
+
+  # And break it again, now on sTypoDescender value:
+  print('Test FAIL with a bad OS/2.sTypoDescender font...')
+  correct = ttFont['hhea'].descent
+  ttFont['OS/2'].sTypoDescender = correct + 1
+  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  assert status == FAIL and message.code == "descender"
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
