@@ -834,8 +834,21 @@ def test_id_047():
   status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
   assert status == PASS
 
-  # Then we remove the nbsp glyph (0x00A0) so that we get a FAIL:
+  # Then we remove the nbsp char (0x00A0) so that we get a FAIL:
   print ("Test FAIL with a font lacking a nbsp (0x00A0)...")
+  for table in ttFont['cmap'].tables:
+    if 0x00A0 in table.cmap:
+      del table.cmap[0x00A0]
+
+  missing = missing_whitespace_chars(ttFont)
+  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  assert status == FAIL
+
+  # restore original Mada Regular font:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # And finally remove the space character (0x0020) to get another FAIL:
+  print ("Test FAIL with a font lacking a space (0x0020)...")
   for table in ttFont['cmap'].tables:
     if 0x00A0 in table.cmap:
       del table.cmap[0x00A0]
