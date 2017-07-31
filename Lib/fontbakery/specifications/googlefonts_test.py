@@ -818,6 +818,37 @@ def test_id_045():
   status, message = list(check_Digital_Signature_exists(ttFont))[-1]
   assert status == FAIL
 
+# TODO: test_id_046
+
+def test_id_047():
+  """ Font contains glyphs for whitespace characters ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_font_contains_glyphs_for_whitespace_chars,
+                                   missing_whitespace_chars)
+  from fontbakery.constants import (PLATFORM_ID_WINDOWS,
+                                    PLAT_ENC_ID_UCS2,
+                                    PLAT_ENC_ID_UCS4)
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  missing = missing_whitespace_chars(ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  assert status == PASS
+
+  # Then we remove the nbsp glyph (0x00A0) so that we get a FAIL:
+  print ("Test FAIL with a font lacking a nbsp (0x00A0)...")
+  for table in ttFont['cmap'].tables:
+    if (table.platformID == PLATFORM_ID_WINDOWS and \
+        table.platEncID in [PLAT_ENC_ID_UCS2,
+                            PLAT_ENC_ID_UCS4]) and 0x00A0 in table.cmap:
+      del table.cmap[0x00A0]
+
+  missing = missing_whitespace_chars(ttFont)
+  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  assert status == FAIL
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
