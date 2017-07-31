@@ -1022,8 +1022,11 @@ def check_description_strings_do_not_exceed_100_chars(ttFont):
      must not exceed 100 characters"""
   failed = False
   for name in ttFont['name'].names:
-    failed = (name.nameID == NAMEID_DESCRIPTION and
-              len(name.string.decode(name.getEncoding())) > 100)
+    if (name.nameID == NAMEID_DESCRIPTION and
+        len(name.string.decode(name.getEncoding())) > 100):
+      failed = True
+      break
+
   if failed:
     yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                  " are longer than 100 characters"

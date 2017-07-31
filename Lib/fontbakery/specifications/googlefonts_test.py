@@ -648,6 +648,40 @@ def test_id_031():
   assert status == FAIL
 
 
+def test_id_032():
+  """ Description strings in the name table
+      must not exceed 100 characters.
+  """
+  from fontbakery.specifications.googlefonts import \
+                   check_description_strings_do_not_exceed_100_chars
+  from fontbakery.constants import NAMEID_DESCRIPTION
+
+  print('Test PASS with a good font...')
+  # Our reference Mada Regular is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  assert status == PASS
+
+  # Here we add strings to NAMEID_DESCRIPTION with exactly 100 chars,
+  # so it should still PASS:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_DESCRIPTION:
+      ttFont['name'].names[i].string = ('a' * 100).encode(name.getEncoding())
+
+  print('Test PASS with a 100 char string...')
+  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  assert status == PASS
+
+  # And here we make the strings longer than 100 chars in order to FAIL the test:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_DESCRIPTION:
+      ttFont['name'].names[i].string = ('a' * 101).encode(name.getEncoding())
+
+  print('Test FAIL with a bad font...')
+  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  assert status == FAIL
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
