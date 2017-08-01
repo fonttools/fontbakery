@@ -67,7 +67,6 @@ from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
       , get_bounding_box
-      , getGlyph
       , glyphHasInk
       , check_bit_entry
       , get_font_glyph_data
@@ -1804,6 +1803,8 @@ def check_Digital_Signature_exists(ttFont):
 def check_font_contains_the_first_few_mandatory_glyphs(ttFont):
   """Font contains the first few mandatory glyphs
      (.null or NULL, CR and space)?"""
+  from fontbakery.utils import getGlyph
+
   # It would be good to also check
   # for .notdef (codepoint = unspecified)
   null = getGlyph(ttFont, 0x0000)
@@ -1826,6 +1827,7 @@ def check_font_contains_the_first_few_mandatory_glyphs(ttFont):
 @register_condition
 @condition
 def missing_whitespace_chars(ttFont):
+  from fontbakery.utils import getGlyph
   space = getGlyph(ttFont, 0x0020)
   nbsp = getGlyph(ttFont, 0x00A0)
   # tab = getGlyph(ttFont, 0x0009)
@@ -1902,6 +1904,8 @@ def check_font_has_proper_whitespace_glyph_names(ttFont):
 )
 def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
+  from fontbakery.utils import getGlyph
+
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
     0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
@@ -1934,6 +1938,8 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
 def check_whitespace_glyphs_have_coherent_widths(ttFont,
                                                  missing_whitespace_chars):
   """Whitespace glyphs have coherent widths?"""
+  from fontbakery.utils import (getGlyph,
+                                getWidth)
   if missing_whitespace_chars != []:
     yield SKIP, ("Because some mandatory whitespace glyphs"
                  " are missing. Fix that before!")
