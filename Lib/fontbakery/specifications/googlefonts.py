@@ -2003,17 +2003,16 @@ def check_font_contains_all_required_tables(ttFont):
                          "vmtx"])
   # See https://github.com/googlefonts/fontbakery/issues/617
   tables = set(ttFont.reader.tables.keys())
+  if OPTIONAL_TABLES & tables:
+    optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+    yield INFO, ("This font contains the following"
+                 " optional tables [{}]").format(", ".join(optional_tables))
+
   glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
   if (REQUIRED_TABLES | glyphs) - tables:
     missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
-    code, desc = "required", (("Font is missing required tables:"
-                               " [{}]").format(", ".join(missing_tables)))
-    if OPTIONAL_TABLES & tables:
-      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
-      desc += (" but includes "
-               "optional tables [{}]").format(", ".join(optional_tables))
-      code = "optional"
-    yield FAIL, Message(code, desc)
+    yield FAIL, ("This font is missing the following required tables:"
+                 " [{}]").format(", ".join(missing_tables))
   else:
     yield PASS, "Font contains all required tables."
 

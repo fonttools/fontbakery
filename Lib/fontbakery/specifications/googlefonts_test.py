@@ -944,17 +944,25 @@ def test_id_052():
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     if required in ttFont.reader.tables:
       del ttFont.reader.tables[required]
-    for optional in optional_tables:
-      if optional in ttFont.reader.tables:
-        del ttFont.reader.tables[optional]
 
     status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
-    assert status == FAIL and message.code == "required"
+    assert status == FAIL
 
-    for optional in optional_tables:
-      ttFont.reader.tables[optional] = "foo"
-      status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
-      assert status == FAIL and message.code == "optional"
+  # Then make sure there's no optional table (by removing them all):
+  for optional in optional_tables:
+    if optional in ttFont.reader.tables:
+      del ttFont.reader.tables[optional]
+
+  # Then re-insert them one by one:
+  for optional in optional_tables:
+    print ("Test INFO with optional table {} ...".format(required))
+    ttFont.reader.tables[optional] = "foo"
+    # and ensure that the second to last logged message is an
+    # INFO status informing the user about it:
+    status, message = list(check_font_contains_all_required_tables(ttFont))[-2]
+    assert status == INFO
+    # remove the one we've just inserted before trying the next one:
+    del ttFont.reader.tables[optional]
 
 
 def test_id_153(montserrat_ttFonts):
