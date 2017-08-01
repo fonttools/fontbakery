@@ -923,14 +923,6 @@ def test_id_052():
   """ Font contains all required tables ? """
   from fontbakery.specifications.googlefonts import \
                                   check_font_contains_all_required_tables
-  # Our reference Mada Regular font is good here:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-
-  # So it must PASS the test:
-  print ("Test PASS with a good font...")
-  status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
-  assert status == PASS
-
   required_tables = ["cmap", "head", "hhea", "hmtx",
                      "maxp", "name", "OS/2", "post"]
   optional_tables = ["cvt ", "fpgm", "loca", "prep",
@@ -939,21 +931,30 @@ def test_id_052():
                      "DSIG", "gasp", "hdmx", "kern",
                      "LTSH", "PCLT", "VDMX", "vhea",
                      "vmtx"]
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+  assert status == PASS
+
+  # We not remove required tables one-by-one to validate the FAIL code-path:
   for required in required_tables:
     print ("Test FAIL with missing mandatory table {} ...".format(required))
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     if required in ttFont.reader.tables:
       del ttFont.reader.tables[required]
-
     status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
     assert status == FAIL
 
-  # Then make sure there's no optional table (by removing them all):
+  # Then, in preparation for the next step, we make sure
+  # there's no optional table (by removing them all):
   for optional in optional_tables:
     if optional in ttFont.reader.tables:
       del ttFont.reader.tables[optional]
 
-  # Then re-insert them one by one:
+  # Then re-insert them one by one to validate the INFO code-path:
   for optional in optional_tables:
     print ("Test INFO with optional table {} ...".format(required))
     ttFont.reader.tables[optional] = "foo"
