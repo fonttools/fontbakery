@@ -2006,13 +2006,14 @@ def check_font_contains_all_required_tables(ttFont):
   glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
   if (REQUIRED_TABLES | glyphs) - tables:
     missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
-    desc = (("Font is missing required "
-             "tables: [{}]").format(", ".join(missing_tables)))
+    code, desc = "required", (("Font is missing required tables:"
+                               " [{}]").format(", ".join(missing_tables)))
     if OPTIONAL_TABLES & tables:
       optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
       desc += (" but includes "
                "optional tables [{}]").format(", ".join(optional_tables))
-    yield FAIL, desc
+      code = "optional"
+    yield FAIL, Message(code, desc)
   else:
     yield PASS, "Font contains all required tables."
 

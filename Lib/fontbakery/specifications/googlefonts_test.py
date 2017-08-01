@@ -893,6 +893,69 @@ def test_id_048():
   status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
   assert status == FAIL and message.code == "badA0"
 
+# TODO: test_id_049
+# TODO: test_id_050 (the original test itself has unclear semantics, so that needs to be reviewed first)
+
+# DEPRECATED:
+# com.google.fonts/test/051 - "Checking with pyfontaine"
+#
+# Replaced by:
+# com.google.fonts/test/132 - "Checking Google Cyrillic Historical glyph coverage"
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage"
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage"
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage"
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage"
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage"
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage"
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage"
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage"
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage"
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage"
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage"
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage"
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
+
+
+def test_id_052():
+  """ Font contains all required tables ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_font_contains_all_required_tables
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+  assert status == PASS
+
+  required_tables = ["cmap", "head", "hhea", "hmtx",
+                     "maxp", "name", "OS/2", "post"]
+  optional_tables = ["cvt ", "fpgm", "loca", "prep",
+                     "VORG", "EBDT", "EBLC", "EBSC",
+                     "BASE", "GPOS", "GSUB", "JSTF",
+                     "DSIG", "gasp", "hdmx", "kern",
+                     "LTSH", "PCLT", "VDMX", "vhea",
+                     "vmtx"]
+  for required in required_tables:
+    print ("Test FAIL with missing mandatory table {} ...".format(required))
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    if required in ttFont.reader.tables:
+      del ttFont.reader.tables[required]
+    for optional in optional_tables:
+      if optional in ttFont.reader.tables:
+        del ttFont.reader.tables[optional]
+
+    status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+    assert status == FAIL and message.code == "required"
+
+    for optional in optional_tables:
+      ttFont.reader.tables[optional] = "foo"
+      status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+      assert status == FAIL and message.code == "optional"
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
