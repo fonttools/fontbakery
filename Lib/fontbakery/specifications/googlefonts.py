@@ -1841,7 +1841,6 @@ def missing_whitespace_chars(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/047'
-  , conditions=['missing_whitespace_chars']
 )
 def check_font_contains_glyphs_for_whitespace_chars(ttFont,
                                                     missing_whitespace_chars):
