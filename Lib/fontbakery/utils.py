@@ -83,6 +83,18 @@ def getGlyphEncodings(font, names):
     return result
 
 
+def deleteGlyphEncodings(font, cp):
+    """ This routine is used on the pytest for test/048
+        to introduce errors in a given font by removing
+        specific entries in the cmap tables.
+    """
+    for subtable in font['cmap'].tables:
+        if subtable.isUnicode():
+            for codepoint, name in subtable.cmap.items():
+                if codepoint == cp:
+                    del subtable.cmap[codepoint]
+
+
 def getWidth(font, glyph):
     return font['hmtx'][glyph][0]
 

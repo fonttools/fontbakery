@@ -67,7 +67,6 @@ from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
       , get_bounding_box
-      , getGlyph
       , glyphHasInk
       , check_bit_entry
       , get_font_glyph_data
@@ -506,6 +505,15 @@ def check_OS2_fsType(ttFont):
                  "(80's DRM scheme is disabled).")
 
 
+@register_condition
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    return os.path.splitext(filename)[0].split('-')[1]
+
+
 @register_test
 @test(
     id='com.google.fonts/test/017'
@@ -769,22 +777,13 @@ def check_name_entries_symbol_substitutions(ttFont):
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
-        yield FAIL ("NAMEID #{} contains symbol that should be"
-                    " replaced by '{}'").format(name.nameID,
-                                                ascii_repl)
+        yield FAIL, ("NAMEID #{} contains symbol that should be"
+                     " replaced by '{}'").format(name.nameID,
+                                                 ascii_repl)
         failed = True
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"
                  " trademark symbols in name table entries of this font.")
-
-
-@register_condition
-@condition
-def style(font):
-  """Determine font style from canonical filename."""
-  filename = os.path.split(font)[-1]
-  if '-' in filename:
-    return os.path.splitext(filename)[0].split('-')[1]
 
 
 @register_test
@@ -873,16 +872,19 @@ def license(license_path):
     id='com.google.fonts/test/028'
 )
 def check_font_has_a_license(licenses):
-  """Check font project has a license"""
+  """Check font has a license."""
   if len(licenses) > 1:
-    yield FAIL, ("More than a single license file found."
-                 " Please review.")
+    yield FAIL, Message("multiple",
+                        ("More than a single license file found."
+                         " Please review."))
   elif not licenses:
-    yield FAIL, ("No license file was found."
-                 " Please add an OFL.txt or a LICENSE.txt file."
-                 " If you are running fontbakery on a Google Fonts"
-                 " upstream repo, which is fine, just make sure"
-                 " there is a temporary license file in the same folder.")
+    yield FAIL, Message("none",
+                        ("No license file was found."
+                         " Please add an OFL.txt or a LICENSE.txt file."
+                         " If you are running fontbakery on a Google Fonts"
+                         " upstream repo, which is fine, just make sure"
+                         " there is a temporary license file in"
+                         " the same folder."))
   else:
     yield PASS, "Found license at '{}'".format(licenses[0])
 
@@ -1019,8 +1021,11 @@ def check_description_strings_do_not_exceed_100_chars(ttFont):
      must not exceed 100 characters"""
   failed = False
   for name in ttFont['name'].names:
-    failed = (name.nameID == NAMEID_DESCRIPTION and
-              len(name.string.decode(name.getEncoding())) > 100)
+    if (name.nameID == NAMEID_DESCRIPTION and
+        len(name.string.decode(name.getEncoding())) > 100):
+      failed = True
+      break
+
   if failed:
     yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
                  " are longer than 100 characters"
@@ -1578,17 +1583,19 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
   # OS/2 usWinAscent:
   if ttFont['OS/2'].usWinAscent != vmetrics['ymax']:
     failed = True
-    yield FAIL, ("OS/2.usWinAscent value"
-                 " should be {}, but got"
-                 " {} instead").format(vmetrics['ymax'],
-                                       ttFont['OS/2'].usWinAscent)
+    yield FAIL, Message("ascent",
+                 ("OS/2.usWinAscent value"
+                  " should be {}, but got"
+                  " {} instead").format(vmetrics['ymax'],
+                                        ttFont['OS/2'].usWinAscent))
   # OS/2 usWinDescent:
   if ttFont['OS/2'].usWinDescent != abs(vmetrics['ymin']):
     failed = True
-    yield FAIL, ("OS/2.usWinDescent value"
-                 " should be {}, but got"
-                 " {} instead").format(vmetrics['ymin'],
-                                       ttFont['OS/2'].usWinDescent)
+    yield FAIL, Message("descent",
+                 ("OS/2.usWinDescent value"
+                  " should be {}, but got"
+                  " {} instead").format(vmetrics['ymin'],
+                                        ttFont['OS/2'].usWinDescent))
   if not failed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
@@ -1600,11 +1607,9 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
 def check_Vertical_Metric_Linegaps(ttFont):
   """Checking Vertical Metric Linegaps."""
   if ttFont["hhea"].lineGap != 0:
-    yield WARN, "hhea lineGap is not equal to 0"
+    yield WARN, Message("hhea", "hhea lineGap is not equal to 0.")
   elif ttFont["OS/2"].sTypoLineGap != 0:
-    yield WARN, "OS/2 sTypoLineGap is not equal to 0"
-  elif ttFont["OS/2"].sTypoLineGap != ttFont["hhea"].lineGap:
-    yield WARN, "OS/2 sTypoLineGap is not equal to hhea lineGap."
+    yield WARN, Message("OS/2", "OS/2 sTypoLineGap is not equal to 0.")
   else:
     yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
 
@@ -1622,14 +1627,16 @@ def check_OS2_Metrics_match_hhea_Metrics(ttFont):
   Mac OS X uses the hhea values
   Windows uses OS/2 or Win, depending on the OS or fsSelection bit value."""
 
-  # OS/2 sTypoDescender and sTypoDescender match hhea ascent and descent
+  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
   if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
-    yield FAIL, "OS/2 sTypoAscender and hhea ascent must be equal"
+    yield FAIL, Message("ascender",
+                        "OS/2 sTypoAscender and hhea ascent must be equal.")
   elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
-    yield FAIL, "OS/2 sTypoDescender and hhea descent must be equal"
+    yield FAIL, Message("descender",
+                        "OS/2 sTypoDescender and hhea descent must be equal.")
   else:
-    yield PASS, ("OS/2 sTypoDescender and sTypoDescender"
-                 " match hhea ascent and descent")
+    yield PASS, ("OS/2.sTypoAscender/Descender"
+                 " match hhea.ascent/descent.")
 
 
 @register_test
@@ -1796,6 +1803,8 @@ def check_Digital_Signature_exists(ttFont):
 def check_font_contains_the_first_few_mandatory_glyphs(ttFont):
   """Font contains the first few mandatory glyphs
      (.null or NULL, CR and space)?"""
+  from fontbakery.utils import getGlyph
+
   # It would be good to also check
   # for .notdef (codepoint = unspecified)
   null = getGlyph(ttFont, 0x0000)
@@ -1818,6 +1827,7 @@ def check_font_contains_the_first_few_mandatory_glyphs(ttFont):
 @register_condition
 @condition
 def missing_whitespace_chars(ttFont):
+  from fontbakery.utils import getGlyph
   space = getGlyph(ttFont, 0x0020)
   nbsp = getGlyph(ttFont, 0x00A0)
   # tab = getGlyph(ttFont, 0x0009)
@@ -1833,7 +1843,6 @@ def missing_whitespace_chars(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/047'
-  , conditions=['missing_whitespace_chars']
 )
 def check_font_contains_glyphs_for_whitespace_chars(ttFont,
                                                     missing_whitespace_chars):
@@ -1849,14 +1858,13 @@ def check_font_contains_glyphs_for_whitespace_chars(ttFont,
 @register_test
 @test(
     id='com.google.fonts/test/048'
-  , conditions=['missing_whitespace_chars']
+  , conditions=['not missing_whitespace_chars']
 )
-def check_font_has_proper_whitespace_glyph_names(ttFont,
-                                                 missing_whitespace_chars):
+def check_font_has_proper_whitespace_glyph_names(ttFont):
   """Font has **proper** whitespace glyph names?"""
-  if missing_whitespace_chars != []:
-    yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
-  elif ttFont['post'].formatType == 3.0:
+  from fontbakery.utils import (getGlyphEncodings,
+                                getGlyph)
+  if ttFont['post'].formatType == 3.0:
     yield SKIP, "Font has version 3 post table."
   else:
     failed = False
@@ -1868,9 +1876,10 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
     space = getGlyph(ttFont, 0x0020)
     if 0x0020 not in space_enc:
       failed = True
-      yield FAIL, ("Glyph 0x0020 is called \"{}\":"
-                   " Change to \"space\""
-                   " or \"uni0020\"").format(space)
+      yield FAIL, Message("bad20",
+                          ("Glyph 0x0020 is called \"{}\":"
+                           " Change to \"space\""
+                           " or \"uni0020\"").format(space))
 
     nbsp = getGlyph(ttFont, 0x00A0)
     if 0x00A0 not in nbsp_enc:
@@ -1880,9 +1889,10 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
         pass
       else:
         failed = True
-        yield FAIL, ("Glyph 0x00A0 is called \"{}\":"
-                     " Change to \"nbsp\""
-                     " or \"uni00A0\"").format(nbsp)
+        yield FAIL, Message("badA0",
+                            ("Glyph 0x00A0 is called \"{}\":"
+                             " Change to \"nbsp\""
+                             " or \"uni00A0\"").format(nbsp))
 
     if failed is False:
       yield PASS, "Font has **proper** whitespace glyph names."
@@ -1894,6 +1904,8 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
 )
 def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
+  from fontbakery.utils import getGlyph
+
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
     0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
@@ -1926,6 +1938,8 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
 def check_whitespace_glyphs_have_coherent_widths(ttFont,
                                                  missing_whitespace_chars):
   """Whitespace glyphs have coherent widths?"""
+  from fontbakery.utils import (getGlyph,
+                                getWidth)
   if missing_whitespace_chars != []:
     yield SKIP, ("Because some mandatory whitespace glyphs"
                  " are missing. Fix that before!")
