@@ -1933,38 +1933,35 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
 @register_test
 @test(
     id='com.google.fonts/test/050'
-  , conditions=['missing_whitespace_chars']
+  , conditions=['not missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_coherent_widths(ttFont,
-                                                 missing_whitespace_chars):
+def check_whitespace_glyphs_have_coherent_widths(ttFont):
   """Whitespace glyphs have coherent widths?"""
   from fontbakery.utils import (getGlyph,
                                 getWidth)
-  if missing_whitespace_chars != []:
-    yield SKIP, ("Because some mandatory whitespace glyphs"
-                 " are missing. Fix that before!")
-  else:
-    space = getGlyph(ttFont, 0x0020)
-    nbsp = getGlyph(ttFont, 0x00A0)
+  space = getGlyph(ttFont, 0x0020)
+  nbsp = getGlyph(ttFont, 0x00A0)
 
-    spaceWidth = getWidth(ttFont, space)
-    nbspWidth = getWidth(ttFont, nbsp)
+  spaceWidth = getWidth(ttFont, space)
+  nbspWidth = getWidth(ttFont, nbsp)
 
-    if spaceWidth != nbspWidth or nbspWidth < 0:
-      if nbspWidth > spaceWidth and spaceWidth >= 0:
-        yield FAIL, ("space {} nbsp {}: Space advanceWidth"
-                     " needs to be fixed"
-                     " to {}.").format(spaceWidth,
-                                       nbspWidth,
-                                       nbspWidth)
-      else:
-        yield FAIL, ("space {} nbsp {}: Nbsp advanceWidth"
-                     " needs to be fixed "
-                     "to {}").format(spaceWidth,
-                                     nbspWidth,
-                                     spaceWidth)
+  if spaceWidth != nbspWidth or nbspWidth < 0:
+    if nbspWidth > spaceWidth and spaceWidth >= 0:
+      yield FAIL, Message("bad_space",
+                          ("space {} nbsp {}: Space advanceWidth"
+                           " needs to be fixed"
+                           " to {}.").format(spaceWidth,
+                                             nbspWidth,
+                                             nbspWidth))
     else:
-      yield PASS, "Whitespace glyphs have coherent widths."
+      yield FAIL, Message("bad_nbsp",
+                          ("space {} nbsp {}: Nbsp advanceWidth"
+                           " needs to be fixed "
+                           "to {}").format(spaceWidth,
+                                           nbspWidth,
+                                           spaceWidth))
+  else:
+    yield PASS, "Whitespace glyphs have coherent widths."
 
 
 # DEPRECATED:
