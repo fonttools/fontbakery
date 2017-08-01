@@ -923,7 +923,7 @@ def test_id_154(cabin_ttFonts):
     print(cabin_ttFonts)
     style = font['name'].getName(2, 1, 0, 0)
 
-    meta = metadata("data/test/cabin/")
+    meta = metadata("data/test/regression/cabin/")
     gfonts_remote_styles = remote_styles(meta)
     gfont = gfonts_ttFont(str(style), gfonts_remote_styles)
 
