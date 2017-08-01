@@ -909,3 +909,33 @@ def test_id_153(montserrat_ttFonts):
     ttFont['glyf']['a'] = ttFont['glyf']['c']
     status, message = list(check_glyphs_have_recommended_contour_count(ttFont))[-1]
     assert status == WARN
+
+
+def test_id_154(cabin_ttFonts):
+    """Check glyphs are not missing when compared to version on fonts.google.com"""
+    from fontbakery.specifications.googlefonts import (
+                                      check_regression_missing_glyphs,
+                                      gfonts_ttFont,
+                                      remote_styles,
+                                      metadata)
+
+    font = cabin_ttFonts[-1]
+    print(cabin_ttFonts)
+    style = font['name'].getName(2, 1, 0, 0)
+
+    meta = metadata("data/test/cabin/")
+    gfonts_remote_styles = remote_styles(meta)
+    gfont = gfonts_ttFont(str(style), gfonts_remote_styles)
+
+    # Cabin font hosted on fonts.google.com contains all the glyphs for the font in
+    # data/test/cabin
+    status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
+    assert status == PASS
+
+    # Take A glyph out of font
+    font['cmap'].getcmap(3, 1).cmap.pop(ord('A'))
+    font['glyf'].glyphs.pop('A')
+
+    status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
+    assert status == FAIL
+
