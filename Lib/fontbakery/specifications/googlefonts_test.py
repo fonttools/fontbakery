@@ -858,6 +858,42 @@ def test_id_047():
   assert status == FAIL
 
 
+def test_id_048():
+  """ Font has **proper** whitespace glyph names ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_font_has_proper_whitespace_glyph_names
+  from fontbakery.utils import deleteGlyphEncodings
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  assert status == PASS
+
+  print ("Test SKIP with post.formatType == 3.0 ...")
+  value = ttFont["post"].formatType
+  ttFont["post"].formatType = 3.0
+  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  assert status == SKIP
+  # and restore good value:
+  ttFont["post"].formatType = value
+
+  print ("Test FAIL with bad glyph name for char 0x0020 ...")
+  deleteGlyphEncodings(ttFont, 0x0020)
+  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  assert status == FAIL and message.code == "bad20"
+
+  # restore the original font object in preparation for the next test-case:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  print ("Test FAIL with bad glyph name for char 0x00A0 ...")
+  deleteGlyphEncodings(ttFont, 0x00A0)
+  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  assert status == FAIL and message.code == "badA0"
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \

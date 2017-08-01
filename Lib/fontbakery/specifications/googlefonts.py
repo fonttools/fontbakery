@@ -1856,14 +1856,13 @@ def check_font_contains_glyphs_for_whitespace_chars(ttFont,
 @register_test
 @test(
     id='com.google.fonts/test/048'
-  , conditions=['missing_whitespace_chars']
+  , conditions=['not missing_whitespace_chars']
 )
-def check_font_has_proper_whitespace_glyph_names(ttFont,
-                                                 missing_whitespace_chars):
+def check_font_has_proper_whitespace_glyph_names(ttFont):
   """Font has **proper** whitespace glyph names?"""
-  if missing_whitespace_chars != []:
-    yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
-  elif ttFont['post'].formatType == 3.0:
+  from fontbakery.utils import (getGlyphEncodings,
+                                getGlyph)
+  if ttFont['post'].formatType == 3.0:
     yield SKIP, "Font has version 3 post table."
   else:
     failed = False
@@ -1875,9 +1874,10 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
     space = getGlyph(ttFont, 0x0020)
     if 0x0020 not in space_enc:
       failed = True
-      yield FAIL, ("Glyph 0x0020 is called \"{}\":"
-                   " Change to \"space\""
-                   " or \"uni0020\"").format(space)
+      yield FAIL, Message("bad20",
+                          ("Glyph 0x0020 is called \"{}\":"
+                           " Change to \"space\""
+                           " or \"uni0020\"").format(space))
 
     nbsp = getGlyph(ttFont, 0x00A0)
     if 0x00A0 not in nbsp_enc:
@@ -1887,9 +1887,10 @@ def check_font_has_proper_whitespace_glyph_names(ttFont,
         pass
       else:
         failed = True
-        yield FAIL, ("Glyph 0x00A0 is called \"{}\":"
-                     " Change to \"nbsp\""
-                     " or \"uni00A0\"").format(nbsp)
+        yield FAIL, Message("badA0",
+                            ("Glyph 0x00A0 is called \"{}\":"
+                             " Change to \"nbsp\""
+                             " or \"uni00A0\"").format(nbsp))
 
     if failed is False:
       yield PASS, "Font has **proper** whitespace glyph names."
