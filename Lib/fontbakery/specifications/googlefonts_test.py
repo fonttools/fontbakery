@@ -577,7 +577,8 @@ def test_id_154(cabin_ttFonts):
     from fontbakery.specifications.googlefonts import (
                                       check_regression_missing_glyphs,
                                       gfonts_ttFont,
-                                      remote_styles, metadata)
+                                      remote_styles,
+                                      metadata)
 
     font = cabin_ttFonts[-1]
     print(cabin_ttFonts)
@@ -598,4 +599,4 @@ def test_id_154(cabin_ttFonts):
 
     status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
     assert status == FAIL
-    assert 'Font is missing the following glyphs from the previous release [0x0041]' == message
+
