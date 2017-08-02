@@ -1166,7 +1166,48 @@ def test_id_067():
   status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
   assert status == FAIL
 
-# TODO: test_id_068
+
+def test_id_068():
+  """ Does full font name begin with the font family name ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fullfontname_begins_with_the_font_familyname
+  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
+                                    NAMEID_FONT_FAMILY_NAME)
+  # Our reference Mada Regular is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == PASS
+
+  # alter the full-font-name prepending a bad prefix:
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      ttFont["name"].names[i].string = "bad-prefix".encode(name.getEncoding())
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font in which the family name begins with a digit...")
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "does-not"
+
+  print ("Test FAIL with no FULL_FONT_NAME entries...")
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      del ttFont["name"].names[i]
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "no-full-font-name"
+
+  print ("Test FAIL with no FONT_FAMILY_NAME entries...")
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      del ttFont["name"].names[i]
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "no-font-family-name"
+
+# TODO: test_id_069
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""

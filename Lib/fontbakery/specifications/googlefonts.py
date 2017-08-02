@@ -2536,11 +2536,13 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
   fullfontname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
 
   if len(familyname) == 0:
-    yield FAIL, ("Font lacks a NAMEID_FONT_FAMILY_NAME"
-                 " entry in the name table.")
+    yield FAIL, Message("no-font-family-name",
+                        ("Font lacks a NAMEID_FONT_FAMILY_NAME"
+                         " entry in the 'name' table."))
   elif len(fullfontname) == 0:
-    yield FAIL, ("Font lacks a NAMEID_FULL_FONT_NAME"
-                 " entry in the name table.")
+    yield FAIL, Message("no-full-font-name",
+                        ("Font lacks a NAMEID_FULL_FONT_NAME"
+                         " entry in the 'name' table."))
   else:
     # we probably should check all found values are equivalent.
     # and, in that case, then performing the rest of the check
@@ -2550,14 +2552,15 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
     familyname = familyname[0]
 
     if not fullfontname.startswith(familyname):
-      yield FAIL, (" On the NAME table, the full font name"
-                   " (NameID {} - FULL_FONT_NAME: '{}')"
-                   " does not begin with font family name"
-                   " (NameID {} - FONT_FAMILY_NAME:"
-                   " '{}')".format(NAMEID_FULL_FONT_NAME,
-                                   familyname,
-                                   NAMEID_FONT_FAMILY_NAME,
-                                   fullfontname))
+      yield FAIL, Message("does-not",
+                          (" On the 'name' table, the full font name"
+                           " (NameID {} - FULL_FONT_NAME: '{}')"
+                           " does not begin with font family name"
+                           " (NameID {} - FONT_FAMILY_NAME:"
+                           " '{}')".format(NAMEID_FULL_FONT_NAME,
+                                           familyname,
+                                           NAMEID_FONT_FAMILY_NAME,
+                                           fullfontname)))
     else:
       yield PASS, "Full font name begins with the font family name."
 
