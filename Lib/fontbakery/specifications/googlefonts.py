@@ -1933,38 +1933,35 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
 @register_test
 @test(
     id='com.google.fonts/test/050'
-  , conditions=['missing_whitespace_chars']
+  , conditions=['not missing_whitespace_chars']
 )
-def check_whitespace_glyphs_have_coherent_widths(ttFont,
-                                                 missing_whitespace_chars):
+def check_whitespace_glyphs_have_coherent_widths(ttFont):
   """Whitespace glyphs have coherent widths?"""
   from fontbakery.utils import (getGlyph,
                                 getWidth)
-  if missing_whitespace_chars != []:
-    yield SKIP, ("Because some mandatory whitespace glyphs"
-                 " are missing. Fix that before!")
-  else:
-    space = getGlyph(ttFont, 0x0020)
-    nbsp = getGlyph(ttFont, 0x00A0)
+  space = getGlyph(ttFont, 0x0020)
+  nbsp = getGlyph(ttFont, 0x00A0)
 
-    spaceWidth = getWidth(ttFont, space)
-    nbspWidth = getWidth(ttFont, nbsp)
+  spaceWidth = getWidth(ttFont, space)
+  nbspWidth = getWidth(ttFont, nbsp)
 
-    if spaceWidth != nbspWidth or nbspWidth < 0:
-      if nbspWidth > spaceWidth and spaceWidth >= 0:
-        yield FAIL, ("space {} nbsp {}: Space advanceWidth"
-                     " needs to be fixed"
-                     " to {}.").format(spaceWidth,
-                                       nbspWidth,
-                                       nbspWidth)
-      else:
-        yield FAIL, ("space {} nbsp {}: Nbsp advanceWidth"
-                     " needs to be fixed "
-                     "to {}").format(spaceWidth,
-                                     nbspWidth,
-                                     spaceWidth)
+  if spaceWidth != nbspWidth or nbspWidth < 0:
+    if nbspWidth > spaceWidth and spaceWidth >= 0:
+      yield FAIL, Message("bad_space",
+                          ("space {} nbsp {}: Space advanceWidth"
+                           " needs to be fixed"
+                           " to {}.").format(spaceWidth,
+                                             nbspWidth,
+                                             nbspWidth))
     else:
-      yield PASS, "Whitespace glyphs have coherent widths."
+      yield FAIL, Message("bad_nbsp",
+                          ("space {} nbsp {}: Nbsp advanceWidth"
+                           " needs to be fixed "
+                           "to {}").format(spaceWidth,
+                                           nbspWidth,
+                                           spaceWidth))
+  else:
+    yield PASS, "Whitespace glyphs have coherent widths."
 
 
 # DEPRECATED:
@@ -2006,16 +2003,16 @@ def check_font_contains_all_required_tables(ttFont):
                          "vmtx"])
   # See https://github.com/googlefonts/fontbakery/issues/617
   tables = set(ttFont.reader.tables.keys())
+  if OPTIONAL_TABLES & tables:
+    optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+    yield INFO, ("This font contains the following"
+                 " optional tables [{}]").format(", ".join(optional_tables))
+
   glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
   if (REQUIRED_TABLES | glyphs) - tables:
     missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
-    desc = (("Font is missing required "
-             "tables: [{}]").format(", ".join(missing_tables)))
-    if OPTIONAL_TABLES & tables:
-      optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
-      desc += (" but includes "
-               "optional tables [{}]").format(", ".join(optional_tables))
-    yield FAIL, desc
+    yield FAIL, ("This font is missing the following required tables:"
+                 " [{}]").format(", ".join(missing_tables))
   else:
     yield PASS, "Font contains all required tables."
 
@@ -2129,8 +2126,8 @@ def check_hinting_filesize_impact(font, ttfautohint_stats):
 @test(
     id='com.google.fonts/test/055'
 )
-def check_version_format_is_correct_in_NAME_table(ttFont):
-  """Version format is correct in NAME table?"""
+def check_version_format_is_correct_in_name_table(ttFont):
+  """Version format is correct in 'name' table?"""
   import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
@@ -2139,15 +2136,17 @@ def check_version_format_is_correct_in_NAME_table(ttFont):
   version_entries = get_name_string(ttFont, NAMEID_VERSION_STRING)
   if len(version_entries) == 0:
     failed = True
-    yield FAIL, ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-                 " entry").format(NAMEID_VERSION_STRING)
+    yield FAIL, Message("no-version-string",
+                        ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+                         " entry").format(NAMEID_VERSION_STRING))
   for ventry in version_entries:
     if not is_valid_version_format(ventry):
       failed = True
-      yield FAIL, ("The NAMEID_VERSION_STRING (nameID={}) value must "
-                   "follow the pattern Version X.Y between 1.000 and 9.999."
-                   " Current value: {}").format(NAMEID_VERSION_STRING,
-                                                ventry)
+      yield FAIL, Message("bad-version-strings",
+                          ("The NAMEID_VERSION_STRING (nameID={}) value must "
+                           "follow the pattern Version X.Y between 1.000 and 9.999."
+                           " Current value: {}").format(NAMEID_VERSION_STRING,
+                                                        ventry))
   if not failed:
     yield PASS, "Version format in NAME table entries is correct."
 
@@ -2311,7 +2310,7 @@ def check_no_glyph_is_incorrectly_named(ttFont):
 def check_EPAR_table_is_present(ttFont):
   """EPAR table present in font?"""
   if "EPAR" not in ttFont:
-    yield PASS, ("EPAR table not present in font."
+    yield INFO, ("EPAR table not present in font."
                  " To learn more see"
                  " https://github.com/googlefonts/"
                  "fontbakery/issues/818")
@@ -2335,7 +2334,7 @@ def check_GASP_table_is_correctly_set(ttFont):
       else:
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
-            yield ERROR, ("GASP should only have 0xFFFF gaspRange,"
+            yield FAIL, ("GASP should only have 0xFFFF gaspRange,"
                           " but {} gaspRange was also found."
                           "").format(hex(key))
             failed = True

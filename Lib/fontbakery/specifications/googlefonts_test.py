@@ -893,6 +893,180 @@ def test_id_048():
   status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
   assert status == FAIL and message.code == "badA0"
 
+# TODO: test_id_049
+# TODO: test_id_050 (the original test itself has unclear semantics, so that needs to be reviewed first)
+
+# DEPRECATED:
+# com.google.fonts/test/051 - "Checking with pyfontaine"
+#
+# Replaced by:
+# com.google.fonts/test/132 - "Checking Google Cyrillic Historical glyph coverage"
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage"
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage"
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage"
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage"
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage"
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage"
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage"
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage"
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage"
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage"
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage"
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage"
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
+
+
+def test_id_052():
+  """ Font contains all required tables ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_font_contains_all_required_tables
+  required_tables = ["cmap", "head", "hhea", "hmtx",
+                     "maxp", "name", "OS/2", "post"]
+  optional_tables = ["cvt ", "fpgm", "loca", "prep",
+                     "VORG", "EBDT", "EBLC", "EBSC",
+                     "BASE", "GPOS", "GSUB", "JSTF",
+                     "DSIG", "gasp", "hdmx", "kern",
+                     "LTSH", "PCLT", "VDMX", "vhea",
+                     "vmtx"]
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+  assert status == PASS
+
+  # We now remove required tables one-by-one to validate the FAIL code-path:
+  for required in required_tables:
+    print ("Test FAIL with missing mandatory table {} ...".format(required))
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    if required in ttFont.reader.tables:
+      del ttFont.reader.tables[required]
+    status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+    assert status == FAIL
+
+  # Then, in preparation for the next step, we make sure
+  # there's no optional table (by removing them all):
+  for optional in optional_tables:
+    if optional in ttFont.reader.tables:
+      del ttFont.reader.tables[optional]
+
+  # Then re-insert them one by one to validate the INFO code-path:
+  for optional in optional_tables:
+    print ("Test INFO with optional table {} ...".format(required))
+    ttFont.reader.tables[optional] = "foo"
+    # and ensure that the second to last logged message is an
+    # INFO status informing the user about it:
+    status, message = list(check_font_contains_all_required_tables(ttFont))[-2]
+    assert status == INFO
+    # remove the one we've just inserted before trying the next one:
+    del ttFont.reader.tables[optional]
+
+
+def test_id_053():
+  """ Are there unwanted tables ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_for_unwanted_tables
+  unwanted_tables = ["FFTM", "TTFA", "prop"]
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_for_unwanted_tables(ttFont))[-1]
+  assert status == PASS
+
+  # We now add unwanted tables one-by-one to validate the FAIL code-path:
+  for unwanted in unwanted_tables:
+    print ("Test FAIL with unwanted table {} ...".format(unwanted))
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont.reader.tables[unwanted] = "foo"
+    status, message = list(check_for_unwanted_tables(ttFont))[-1]
+    assert status == FAIL
+
+# TODO: test_id_054
+
+def test_id_055():
+  """ Version format is correct in 'name' table ? """
+  from fontbakery.specifications.googlefonts import \
+                   check_version_format_is_correct_in_name_table
+  from fontbakery.constants import NAMEID_VERSION_STRING
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  assert status == PASS
+
+  # then we introduce bad strings in all version-string entries:
+  print ("Test FAIL with bad version format in name table...")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_VERSION_STRING:
+      invalid = "invalid-version-string".encode(name.getEncoding())
+      ttFont["name"].names[i].string = invalid
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  assert status == FAIL and message.code == "bad-version-strings"
+
+  # and finally we remove all version-string entries:
+  print ("Test FAIL with font lacking version string entries in name table...")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_VERSION_STRING:
+      del ttFont["name"].names[i]
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  assert status == FAIL and message.code == "no-version-string"
+
+# TODO: test_id_056
+
+def test_id_057():
+  """ Name table entries should not contain line-breaks. """
+  from fontbakery.specifications.googlefonts import \
+                   check_name_table_entries_do_not_contain_linebreaks
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+  assert status == PASS
+
+  print ("Test FAIL with name entries containing a linebreak...")
+  for i in range(len(ttFont["name"].names)):
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    encoding = ttFont["name"].names[i].getEncoding()
+    ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
+    status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+    assert status == FAIL
+
+# TODO: test_id_058
+# TODO: test_id_059
+# TODO: test_id_060
+
+def test_id_061():
+  """ EPAR table present in font ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_EPAR_table_is_present
+
+  # Our reference Mada Regular lacks an EPAR table:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must emit an INFO message inviting the designers
+  # to learn more about it:
+  print ("Test INFO with a font lacking an EPAR table...")
+  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  assert status == INFO
+
+  print ("Test PASS with a good font...")
+  # add a fake EPAR table to validate the PASS code-path:
+  ttFont["EPAR"] = "foo"
+  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  assert status == PASS
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
@@ -923,7 +1097,7 @@ def test_id_154(cabin_ttFonts):
     print(cabin_ttFonts)
     style = font['name'].getName(2, 1, 0, 0)
 
-    meta = metadata("data/test/cabin/")
+    meta = metadata("data/test/regression/cabin/")
     gfonts_remote_styles = remote_styles(meta)
     gfont = gfonts_ttFont(str(style), gfonts_remote_styles)
 
