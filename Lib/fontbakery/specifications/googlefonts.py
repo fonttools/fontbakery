@@ -2367,14 +2367,19 @@ def check_GASP_table_is_correctly_set(ttFont):
 @register_condition
 @condition
 def has_kerning_info(ttFont):
+  """ A font has kerning info if it has a GPOS table
+      containing at least one Pair Adjustment lookup
+      (eigther directly or through an extension subtable).
+  """
   if not "GPOS" in ttFont:
     return False
   for lookup in ttFont["GPOS"].table.LookupList.Lookup:
     if lookup.LookupType == 2:  # type 2 = Pair Adjustment
       return True
-    elif lookup.LookupType == 9:
-      if lookup.SubTable[0].ExtensionLookupType == 2:
-        return True
+    elif lookup.LookupType == 9: # type 9 = Extension subtable
+      for ext in lookup.SubTable:
+        if ext.ExtensionLookupType == 2:  # type 2 = Pair Adjustment
+          return True
 
 
 @register_test
