@@ -2136,15 +2136,17 @@ def check_version_format_is_correct_in_NAME_table(ttFont):
   version_entries = get_name_string(ttFont, NAMEID_VERSION_STRING)
   if len(version_entries) == 0:
     failed = True
-    yield FAIL, ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-                 " entry").format(NAMEID_VERSION_STRING)
+    yield FAIL, Message("no-version-string",
+                        ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
+                         " entry").format(NAMEID_VERSION_STRING))
   for ventry in version_entries:
     if not is_valid_version_format(ventry):
       failed = True
-      yield FAIL, ("The NAMEID_VERSION_STRING (nameID={}) value must "
-                   "follow the pattern Version X.Y between 1.000 and 9.999."
-                   " Current value: {}").format(NAMEID_VERSION_STRING,
-                                                ventry)
+      yield FAIL, Message("bad-version-strings",
+                          ("The NAMEID_VERSION_STRING (nameID={}) value must "
+                           "follow the pattern Version X.Y between 1.000 and 9.999."
+                           " Current value: {}").format(NAMEID_VERSION_STRING,
+                                                        ventry))
   if not failed:
     yield PASS, "Version format in NAME table entries is correct."
 

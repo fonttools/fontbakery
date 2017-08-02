@@ -987,6 +987,39 @@ def test_id_053():
     status, message = list(check_for_unwanted_tables(ttFont))[-1]
     assert status == FAIL
 
+# TODO: test_id_054
+
+def test_id_055():
+  """ Version format is correct in NAME table ? """
+  from fontbakery.specifications.googlefonts import \
+                   check_version_format_is_correct_in_NAME_table
+  from fontbakery.constants import NAMEID_VERSION_STRING
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  assert status == PASS
+
+  # then we introduce bad strings in all version-string entries:
+  print ("Test FAIL with bad version format in name table...")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_VERSION_STRING:
+      invalid = "invalid-version-string".encode(name.getEncoding())
+      ttFont["name"].names[i].string = invalid
+  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  assert status == FAIL and message.code == "bad-version-strings"
+
+  # and finally we remove all version-string entries:
+  print ("Test FAIL with font lacking version string entries in name table...")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_VERSION_STRING:
+      del ttFont["name"].names[i]
+  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  assert status == FAIL and message.code == "no-version-string"
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
