@@ -2400,7 +2400,6 @@ def ligatures(ttFont):
   all_ligatures = {}
   if "GSUB" in ttFont:
     for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-      # yield INFO, "lookup.LookupType: {}".format(lookup.LookupType)
       if lookup.LookupType == 4:  # type 4 = Ligature Substitution
         for subtable in lookup.SubTable:
           for firstGlyph in subtable.ligatures.keys():
