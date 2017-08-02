@@ -1116,6 +1116,31 @@ def test_id_063():
   status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
   assert status == WARN
 
+# TODO: test_id_064
+# TODO: test_id_065
+
+def test_id_066():
+  """ Is there a "KERN" table declared in the font ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_there_is_no_KERN_table_in_the_font
+
+  # Our reference Mada Regular is known to be good
+  # (does not have a KERN table):
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a font without a KERN table...")
+  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  assert status == PASS
+
+  # add a fake KERN table:
+  ttFont["KERN"] = "foo"
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font containing a KERN table...")
+  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  assert status == FAIL
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
