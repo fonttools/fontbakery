@@ -939,7 +939,7 @@ def test_id_052():
   status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
   assert status == PASS
 
-  # We not remove required tables one-by-one to validate the FAIL code-path:
+  # We now remove required tables one-by-one to validate the FAIL code-path:
   for required in required_tables:
     print ("Test FAIL with missing mandatory table {} ...".format(required))
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -964,6 +964,28 @@ def test_id_052():
     assert status == INFO
     # remove the one we've just inserted before trying the next one:
     del ttFont.reader.tables[optional]
+
+
+def test_id_053():
+  """ Are there unwanted tables ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_for_unwanted_tables
+  unwanted_tables = ["FFTM", "TTFA", "prop"]
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_for_unwanted_tables(ttFont))[-1]
+  assert status == PASS
+
+  # We now add unwanted tables one-by-one to validate the FAIL code-path:
+  for unwanted in unwanted_tables:
+    print ("Test FAIL with unwanted table {} ...".format(unwanted))
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont.reader.tables[unwanted] = "foo"
+    status, message = list(check_for_unwanted_tables(ttFont))[-1]
+    assert status == FAIL
 
 
 def test_id_153(montserrat_ttFonts):
