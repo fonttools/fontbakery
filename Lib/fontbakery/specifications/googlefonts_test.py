@@ -990,9 +990,9 @@ def test_id_053():
 # TODO: test_id_054
 
 def test_id_055():
-  """ Version format is correct in NAME table ? """
+  """ Version format is correct in 'name' table ? """
   from fontbakery.specifications.googlefonts import \
-                   check_version_format_is_correct_in_NAME_table
+                   check_version_format_is_correct_in_name_table
   from fontbakery.constants import NAMEID_VERSION_STRING
 
   # Our reference Mada Regular font is good here:
@@ -1000,7 +1000,7 @@ def test_id_055():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
   assert status == PASS
 
   # then we introduce bad strings in all version-string entries:
@@ -1009,7 +1009,7 @@ def test_id_055():
     if name.nameID == NAMEID_VERSION_STRING:
       invalid = "invalid-version-string".encode(name.getEncoding())
       ttFont["name"].names[i].string = invalid
-  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
   assert status == FAIL and message.code == "bad-version-strings"
 
   # and finally we remove all version-string entries:

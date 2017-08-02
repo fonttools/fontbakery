@@ -2126,8 +2126,8 @@ def check_hinting_filesize_impact(font, ttfautohint_stats):
 @test(
     id='com.google.fonts/test/055'
 )
-def check_version_format_is_correct_in_NAME_table(ttFont):
-  """Version format is correct in NAME table?"""
+def check_version_format_is_correct_in_name_table(ttFont):
+  """Version format is correct in 'name' table?"""
   import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
