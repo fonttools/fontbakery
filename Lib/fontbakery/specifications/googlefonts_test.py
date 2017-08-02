@@ -1017,8 +1017,31 @@ def test_id_055():
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NAMEID_VERSION_STRING:
       del ttFont["name"].names[i]
-  status, message = list(check_version_format_is_correct_in_NAME_table(ttFont))[-1]
+  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
   assert status == FAIL and message.code == "no-version-string"
+
+# TODO: test_id_056
+
+def test_id_057():
+  """ Name table entries should not contain line-breaks. """
+  from fontbakery.specifications.googlefonts import \
+                   check_name_table_entries_do_not_contain_linebreaks
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+  assert status == PASS
+
+  print ("Test FAIL with name entries containing a linebreak...")
+  for i in range(len(ttFont["name"].names)):
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    encoding = ttFont["name"].names[i].getEncoding()
+    ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
+    status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+    assert status == FAIL
 
 
 def test_id_153(montserrat_ttFonts):
