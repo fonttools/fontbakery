@@ -1142,6 +1142,32 @@ def test_id_066():
   assert status == FAIL
 
 
+def test_id_067():
+  """ Make sure family name does not begin with a digit. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_familyname_does_not_begin_with_a_digit
+  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
+
+  # Our reference Mada Regular is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  assert status == PASS
+
+  # alter the family-name prepending a digit:
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      ttFont["name"].names[i].string = "1badname".encode(name.getEncoding())
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font in which the family name begins with a digit...")
+  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  assert status == FAIL
+
+# TODO: test_id_068
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
