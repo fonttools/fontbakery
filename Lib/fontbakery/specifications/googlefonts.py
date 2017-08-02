@@ -2334,7 +2334,7 @@ def check_GASP_table_is_correctly_set(ttFont):
       else:
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
-            yield ERROR, ("GASP should only have 0xFFFF gaspRange,"
+            yield FAIL, ("GASP should only have 0xFFFF gaspRange,"
                           " but {} gaspRange was also found."
                           "").format(hex(key))
             failed = True
