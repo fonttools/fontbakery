@@ -1043,6 +1043,30 @@ def test_id_057():
     status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
     assert status == FAIL
 
+# TODO: test_id_058
+# TODO: test_id_059
+# TODO: test_id_060
+
+def test_id_061():
+  """ EPAR table present in font ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_EPAR_table_is_present
+
+  # Our reference Mada Regular lacks an EPAR table:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must emit an INFO message inviting the designers
+  # to learn more about it:
+  print ("Test INFO with a font lacking an EPAR table...")
+  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  assert status == INFO
+
+  print ("Test PASS with a good font...")
+  # add a fake EPAR table to validate the PASS code-path:
+  ttFont["EPAR"] = "foo"
+  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  assert status == PASS
+
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""

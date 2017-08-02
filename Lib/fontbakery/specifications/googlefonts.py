@@ -2310,7 +2310,7 @@ def check_no_glyph_is_incorrectly_named(ttFont):
 def check_EPAR_table_is_present(ttFont):
   """EPAR table present in font?"""
   if "EPAR" not in ttFont:
-    yield PASS, ("EPAR table not present in font."
+    yield INFO, ("EPAR table not present in font."
                  " To learn more see"
                  " https://github.com/googlefonts/"
                  "fontbakery/issues/818")
