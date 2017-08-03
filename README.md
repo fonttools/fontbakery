@@ -15,20 +15,22 @@ Font Bakery is not an official Google project, and Google provides no support fo
 
 ## Web Usage
 
-Visit [fontbakery.appspot.com](https://fontbakery.appspot.com) and drop 1 to 18 TTF files on the page, and click the "3"
+To use Font Bakery through a web UI is currently not supported. 
 
-The source code to this web-based user-interface is all in the `webapp/` folder.
-In order to run it on your own computer, download this source repo and all dependencies for command line usage.
-Then run the following commands:
+A web dashboard is under development at <https://github.com/googlefonts/fontbakery-dashboard/> and will allow monitoring the check results of collections of font families, such as the entire Google Fonts collection.
 
-    cd webapp
-    ./dev_appserver.py app
-
-Now open <http://0.0.0.0:8000> in your browser.
+This tool was initialy developed in this repository, but later it was split out into its own git repo.
 
 ## Command Line Usage
 
-Fontbakery installs its own command `fontbakery` in your `$PATH`. The `fontbakery` command makes other subcommands accessible. Here's the output of the command line help:
+For infrequent usage, clone this repo and then run each tool by itself:
+
+    PYTHONPATH=Lib python bin/fontbakery-metadata-vs-api.py <args>
+
+For regular usage, install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install) below.
+This puts thex `fontbakery` command in your `$PATH`, and makes all other subcommands accessible. 
+
+Here's the output of the command line help:
 
 ```
 $ fontbakery -h
@@ -65,9 +67,13 @@ Run fontbakery subcomands:
     update-families
     update-nameids
     update-version
+```
 
-Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcomand.
-I.e.: fontbakery subcommand -h
+Subcommands have their own help messages. 
+These are usually accessible with the `-h/--help` flag positioned after the subcomand.
+
+```
+fontbakery subcommand -h
 
 positional arguments:
   subcommand          the subcommand to execute
@@ -92,19 +98,14 @@ For check results in GitHub Markdown syntax you can use --ghm:
 
     fontbakery check-googlefonts --verbose *.ttf --ghm
 
-### FontBakery web Dashboard
-
-There is a web dashboard that is used for monitoring the check-results of the full Google Fonts collection (or possibly other collections of font families). This tool was initialy developed in this repository, but later it was split out into its own git repo, now available at: https://github.com/googlefonts/fontbakery-dashboard
-
 ### Automated testing of all Google Fonts
 
 If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, you have to have a full checkout of it, and then you can run:
 
-```
-sh bin/fontbakery-check-collection.sh path-to-collection-directory
-```
+    sh bin/fontbakery-check-collection.sh path-to-collection-directory
 
-This will create a folder called check_results and it will run fontbakery on every family from the collection, thus generating individual per-font-file reports both in json and in github markdown format. The reports are saved in subdirectories that have the names of the families.
+This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection. 
+The output is individual per-font-file reports, both in json and in github markdown format, each saved in subdirectories that are the names of the families.
 
 ## Other auxiliary fontbakery scripts
 
@@ -562,7 +563,7 @@ sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
 ```
 
-...where $FONTBAKERY_GIT_REPO should be the name of the directory where you checked out FontBakery source code. Obviously, you can also use any other alternative way of making FontValidator.exe available in your system path.
+...where $FONTBAKERY_GIT_REPO should be the name of the directory where you checked out Font Bakery source code. Obviously, you can also use any other alternative way of making FontValidator.exe available in your system path.
 
 ## Bash completion
 
@@ -589,4 +590,3 @@ $ source path-to/fontbakery/bin/bash-completion
 ```
 
 This is particularly useful if you are running `fontbakery` in a python virtual environment, i.e. not a system-wide installation.
-
