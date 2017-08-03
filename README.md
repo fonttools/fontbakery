@@ -447,6 +447,11 @@ optional arguments:
 
 ### fontbakery metadata-vs-api
 
+This script compares the info on local METADATA.pb files
+with data fetched from the Google Fonts Developer API.
+
+In order to use it you need to provide an API key.
+
 ```
 usage: fontbakery metadata-vs-api [-h] [--cache CACHE] [--verbose]
                                   [--ignore-copy-existing-ttf] [--autofix]
@@ -454,18 +459,18 @@ usage: fontbakery metadata-vs-api [-h] [--cache CACHE] [--verbose]
                                   key repo
 
 positional arguments:
-  key                   Key from Google Fonts Developer API
+  key                   Key from Google Fonts Developer API.
   repo                  Directory tree that contains directories with
-                        METADATA.pb files
+                        METADATA.pb files.
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            show this help message and exit.
   --cache CACHE         Directory to store a copy of the files in the fonts
-                        developer api
-  --verbose             Print additional information
+                        developer api.
+  --verbose             Print additional information.
   --ignore-copy-existing-ttf
-  --autofix             Apply automatic fixes to files
-  --api API             Domain string to use to request
+  --autofix             Apply automatic fixes to files.
+  --api API             Domain string to use to request.
 ```
 
 ### fontbakery update-families
