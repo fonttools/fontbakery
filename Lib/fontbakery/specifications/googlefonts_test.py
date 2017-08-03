@@ -1067,6 +1067,147 @@ def test_id_061():
   status, message = list(check_EPAR_table_is_present(ttFont))[-1]
   assert status == PASS
 
+# TODO: test_id_062
+
+def test_id_063():
+  """ Does GPOS table have kerning information ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_GPOS_table_has_kerning_info
+
+  # Our reference Mada Regular is known to have kerning-info
+  # exclusively on an extension subtable
+  # (lookup type = 9 / ext-type = 2):
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a font that has got kerning info...")
+  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  assert status == PASS
+
+  # delete all Pair Adjustment lookups:
+  while True:
+    found = False
+    for l, lookup in enumerate(ttFont["GPOS"].table.LookupList.Lookup):
+      #if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+      #  del ttFont["GPOS"].table.LookupList.Lookup[l]
+      #  found = True
+      if lookup.LookupType == 9:  # type 9 = Extension subtable
+        for e, ext in enumerate(lookup.SubTable):
+          if ext.ExtensionLookupType == 2:  # type 2 = Pair Adjustment
+            del ttFont["GPOS"].table.LookupList.Lookup[l].SubTable[e]
+            found = True
+    if not found:
+      break
+
+  print ("Test WARN with a font lacking kerning info...")
+  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  assert status == WARN
+
+  # setup a fake type=2 Pair Adjustment lookup
+  ttFont["GPOS"].table.LookupList.Lookup[0].LookupType = 2
+  # and make sure the test emits a PASS result:
+  print ("Test PASS with kerning info on a type=2 lookup...")
+  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  assert status == PASS
+
+  # remove the GPOS table and make sure to get a WARN:
+  del ttFont["GPOS"]
+  print ("Test WARN with a font lacking a GPOS table...")
+  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  assert status == WARN
+
+# TODO: test_id_064
+# TODO: test_id_065
+
+def test_id_066():
+  """ Is there a "KERN" table declared in the font ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_there_is_no_KERN_table_in_the_font
+
+  # Our reference Mada Regular is known to be good
+  # (does not have a KERN table):
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a font without a KERN table...")
+  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  assert status == PASS
+
+  # add a fake KERN table:
+  ttFont["KERN"] = "foo"
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font containing a KERN table...")
+  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  assert status == FAIL
+
+
+def test_id_067():
+  """ Make sure family name does not begin with a digit. """
+  from fontbakery.specifications.googlefonts import \
+                                  check_familyname_does_not_begin_with_a_digit
+  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
+
+  # Our reference Mada Regular is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  assert status == PASS
+
+  # alter the family-name prepending a digit:
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      ttFont["name"].names[i].string = "1badname".encode(name.getEncoding())
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font in which the family name begins with a digit...")
+  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  assert status == FAIL
+
+
+def test_id_068():
+  """ Does full font name begin with the font family name ? """
+  from fontbakery.specifications.googlefonts import \
+                                  check_fullfontname_begins_with_the_font_familyname
+  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
+                                    NAMEID_FONT_FAMILY_NAME)
+  # Our reference Mada Regular is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == PASS
+
+  # alter the full-font-name prepending a bad prefix:
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      ttFont["name"].names[i].string = "bad-prefix".encode(name.getEncoding())
+
+  # and make sure the test FAILs:
+  print ("Test FAIL with a font in which the family name begins with a digit...")
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "does-not"
+
+  print ("Test FAIL with no FULL_FONT_NAME entries...")
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      del ttFont["name"].names[i]
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "no-full-font-name"
+
+  print ("Test FAIL with no FONT_FAMILY_NAME entries...")
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      del ttFont["name"].names[i]
+  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  assert status == FAIL and message.code == "no-font-family-name"
+
+# TODO: test_id_069
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""

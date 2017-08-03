@@ -2367,14 +2367,19 @@ def check_GASP_table_is_correctly_set(ttFont):
 @register_condition
 @condition
 def has_kerning_info(ttFont):
+  """ A font has kerning info if it has a GPOS table
+      containing at least one Pair Adjustment lookup
+      (eigther directly or through an extension subtable).
+  """
   if not "GPOS" in ttFont:
     return False
   for lookup in ttFont["GPOS"].table.LookupList.Lookup:
     if lookup.LookupType == 2:  # type 2 = Pair Adjustment
       return True
-    elif lookup.LookupType == 9:
-      if lookup.SubTable[0].ExtensionLookupType == 2:
-        return True
+    elif lookup.LookupType == 9: # type 9 = Extension subtable
+      for ext in lookup.SubTable:
+        if ext.ExtensionLookupType == 2:  # type 2 = Pair Adjustment
+          return True
 
 
 @register_test
@@ -2395,7 +2400,6 @@ def ligatures(ttFont):
   all_ligatures = {}
   if "GSUB" in ttFont:
     for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-      # yield INFO, "lookup.LookupType: {}".format(lookup.LookupType)
       if lookup.LookupType == 4:  # type 4 = Ligature Substitution
         for subtable in lookup.SubTable:
           for firstGlyph in subtable.ligatures.keys():
@@ -2532,11 +2536,13 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
   fullfontname = get_name_string(ttFont, NAMEID_FULL_FONT_NAME)
 
   if len(familyname) == 0:
-    yield FAIL, ("Font lacks a NAMEID_FONT_FAMILY_NAME"
-                 " entry in the name table.")
+    yield FAIL, Message("no-font-family-name",
+                        ("Font lacks a NAMEID_FONT_FAMILY_NAME"
+                         " entry in the 'name' table."))
   elif len(fullfontname) == 0:
-    yield FAIL, ("Font lacks a NAMEID_FULL_FONT_NAME"
-                 " entry in the name table.")
+    yield FAIL, Message("no-full-font-name",
+                        ("Font lacks a NAMEID_FULL_FONT_NAME"
+                         " entry in the 'name' table."))
   else:
     # we probably should check all found values are equivalent.
     # and, in that case, then performing the rest of the check
@@ -2546,14 +2552,15 @@ def check_fullfontname_begins_with_the_font_familyname(ttFont):
     familyname = familyname[0]
 
     if not fullfontname.startswith(familyname):
-      yield FAIL, (" On the NAME table, the full font name"
-                   " (NameID {} - FULL_FONT_NAME: '{}')"
-                   " does not begin with font family name"
-                   " (NameID {} - FONT_FAMILY_NAME:"
-                   " '{}')".format(NAMEID_FULL_FONT_NAME,
-                                   familyname,
-                                   NAMEID_FONT_FAMILY_NAME,
-                                   fullfontname))
+      yield FAIL, Message("does-not",
+                          (" On the 'name' table, the full font name"
+                           " (NameID {} - FULL_FONT_NAME: '{}')"
+                           " does not begin with font family name"
+                           " (NameID {} - FONT_FAMILY_NAME:"
+                           " '{}')".format(NAMEID_FULL_FONT_NAME,
+                                           familyname,
+                                           NAMEID_FONT_FAMILY_NAME,
+                                           fullfontname)))
     else:
       yield PASS, "Full font name begins with the font family name."
 
