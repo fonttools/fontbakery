@@ -1594,7 +1594,7 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
     yield FAIL, Message("descent",
                  ("OS/2.usWinDescent value"
                   " should be {}, but got"
-                  " {} instead").format(vmetrics['ymin'],
+                  " {} instead").format(abs(vmetrics['ymin']),
                                         ttFont['OS/2'].usWinDescent))
   if not failed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
