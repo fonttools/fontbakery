@@ -15,9 +15,11 @@ if len(sys.argv) == 1:
 elif len(sys.argv) == 2:
   files = [sys.argv[1]]
 else:
-  print ("Usage: {} examplefont.ttf.burndown.json".format(sys.argv[0]))
-  print ("Without attributes the script will target all TTF files found in the current directory.")
-  sys.exit(-1)
+  usage = ("Usage: {} examplefont.ttf.burndown.json\n"
+           "\n"
+           "Without attributes the script will target all TTF files"
+           " found in the current directory.").format(sys.argv[0])
+  sys.exit(usage)
 
 max_val = 0
 for target in files:

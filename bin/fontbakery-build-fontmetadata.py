@@ -221,7 +221,7 @@ def main():
   # show help if no args
   if len(sys.argv) <= 1:
     parser.print_help()
-    sys.exit()
+    sys.exit(0)
 
   #files_to_process = []
   #for arg_files in args.files:
@@ -229,8 +229,7 @@ def main():
   files_to_process = glob.glob(args.files)
 
   if len(files_to_process) == 0:
-    print("No font files were found!")
-    sys.exit()
+    sys.exit("No font files were found!")
 
   if args.missingmetadata:
     if args.existing == False:
@@ -255,8 +254,8 @@ def main():
   fontinfo = analyse_fonts(files_to_process)
 
   if fontinfo == {}:
-    print("All specified fonts are blacklisted!")
-    sys.exit()
+    sys.exit("All specified fonts are blacklisted!")
+
 
   # normalise weights
   weights = []
@@ -311,7 +310,7 @@ def main():
        for item in items:
          print fontinfo[key][item],
        print ""
-    sys.exit()
+    sys.exit(0)
 
   # generate data for the web server
   # double(<unit>, <precision>, <decimal_point>, <thousands_separator>, <show_unit_before_number>, <nansymbol>)

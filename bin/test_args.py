@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import sys
 target_modules = [
  "fontbakery-build-font2ttf",
  "fontbakery-build-fontmetadata",
@@ -88,5 +88,6 @@ for module_name in help_text.keys():
 # TODO: we also need to verify positional attributes like font and ttfont
 
 if failed:
-  sys.exit(-1)
+  sys.exit("Some errors were detected in the command-line"
+            " arguments of the Font Bakery scripts.")
 
