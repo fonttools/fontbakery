@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
 from __future__ import print_function
 
 import argparse
@@ -12,20 +11,35 @@ import json
 from fontbakery.fonts_public_pb2 import FamilyProto
 from google.protobuf import text_format
 
-parser = argparse.ArgumentParser()
+description = ("This script compares the info on local METADATA.pb files"
+               " with data fetched from the Google Fonts Developer API.\n\n"
+               " In order to use it you need to provide an API key.")
+parser = argparse.ArgumentParser(description=description)
 parser.add_argument('key', help='Key from Google Fonts Developer API')
-parser.add_argument('repo', help='Directory tree that contains directories with METADATA.pb files')
-parser.add_argument('--cache', help='Directory to store a copy of the files in the fonts developer api',
+parser.add_argument('repo',
+                    help=('Directory tree that contains'
+                          ' directories with METADATA.pb files.'))
+parser.add_argument('--cache',
+                    help=('Directory to store a copy'
+                          ' of the files in the fonts developer API.'),
                     default="/tmp/fontbakery-compare-git-api")
-parser.add_argument('--verbose', help='Print additional information', action="store_true")
+parser.add_argument('--verbose',
+                    help='Print additional information',
+                    action="store_true")
 parser.add_argument('--ignore-copy-existing-ttf', action="store_true")
-parser.add_argument('--autofix', help='Apply automatic fixes to files', action="store_true")
-parser.add_argument('--api', help='Domain string to use to request', default="fonts.googleapis.com")
+parser.add_argument('--autofix',
+                    help='Apply automatic fixes to files.',
+                    action="store_true")
+parser.add_argument('--api',
+                    help='Domain string to use to request.',
+                    default="fonts.googleapis.com")
 
 
 def get_cache_font_path(cache_dir, fonturl):
     urlparts = urlparse.urlparse(fonturl)
-    cache_dir = os.path.join(cache_dir, urlparts.netloc, os.path.dirname(urlparts.path).strip('/'))
+    cache_dir = os.path.join(cache_dir,
+                             urlparts.netloc,
+                             os.path.dirname(urlparts.path).strip('/'))
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     fontname = os.path.basename(fonturl)
@@ -45,34 +59,39 @@ def getVariantName(item):
     return name
 
 
+API_URL = 'https://www.googleapis.com/webfonts/v1/webfonts?key={}'
 def main():
     args = parser.parse_args()
-    response = urllib.urlopen('https://www.googleapis.com/webfonts/v1/webfonts?key={}'.format(args.key))
+    response = urllib.urlopen(API_URL.format(args.key))
     try:
         webfontList = json.loads(response.read())['items']
         webfontListFamilyNames = [item['family'] for item in webfontList]
     except (ValueError, KeyError):
-        sys.exit(1)
+        sys.exit("Unable to load and parse"
+                 " list of families from Google Web Fonts API.")
 
     for dirpath, dirnames, filenames in os.walk(args.repo):
-        metadataProtoFile = os.path.join(dirpath, 'METADATA.pb')
-        if not os.path.exists(metadataProtoFile):
+        metadata_path = os.path.join(dirpath, 'METADATA.pb')
+        if not os.path.exists(metadata_path):
             continue
 
         metadata = FamilyProto()
-        text_data = open(metadataProtoFile, "rb").read()
+        text_data = open(metadata_path, "rb").read()
         text_format.Merge(text_data, metadata)
         try:
             family = metadata.name
         except KeyError:
-            print('ER: "{}" does not contain FamilyName'.format(metadataProtoFile), file=sys.stderr)
+            print(('ERROR: "{}" does not contain'
+                   ' familyname info.').format(metadata_path),
+                  file=sys.stderr)
             continue
 
         try:
             index = webfontListFamilyNames.index(family)
             webfontsItem = webfontList[index]
         except ValueError:
-            print('ER: Family "{}" could not be found in API'.format(family))
+            print(('ERROR: Family "{}" could not be found'
+                   ' in Google Web Fonts API.').format(family))
             continue
 
         webfontVariants = []
@@ -85,20 +104,29 @@ def main():
                 continue
 
             with open(cache_font_path, 'w') as fp:
-                filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
-                filename = metadata.fonts[filenameWeightStyleIndex].filename
-                if args.verbose:
-                    print('Downloading "{}" as "{}"'.format(fonturl, filename))
+                found = False
+                for font in metadata.fonts:
+                    if getVariantName(font) == variant:
+                        found = True
+                        if args.verbose:
+                            print('Downloading "{}"'
+                                  ' as "{}"'.format(fonturl,
+                                                    font.filename))
 
-                #Saving:
-                fp.write(urllib.urlopen(fonturl).read())
+                        #Saving:
+                        fp.write(urllib.urlopen(fonturl).read())
 
-                #Symlinking:
-                src = cache_font_path
-                dst_dir = os.path.dirname(cache_font_path)
-                dst = os.path.join(dst_dir, filename)
-                if not os.path.exists(dst):
-                    os.symlink(src, dst)
+                        #Symlinking:
+                        src = cache_font_path
+                        dst_dir = os.path.dirname(cache_font_path)
+                        dst = os.path.join(dst_dir, font.filename)
+                        if not os.path.exists(dst):
+                            os.symlink(src, dst)
+                if not found:
+                    print(("ERROR: Google Fonts API references"
+                           " a '{}' variant which is not declared"
+                           " on local '{}'.").format(variant,
+                                                     metadata_path))
 
         for subset in webfontsItem['subsets']:
             if subset == "menu":
@@ -107,50 +135,75 @@ def main():
                 continue
 
             if subset not in metadata.subsets:
-                print('ER: "{}" lacks subset "{}" in git'.format(family, subset), file=sys.stderr)
+                print(('ERROR: "{}" '
+                       'lacks subset "{}" in git.').format(family, subset),
+                      file=sys.stderr)
             else:
                 if args.verbose:
-                    print('OK: "{}" subset "{}" in sync'.format(family, subset))
+                    print(('OK: "{}" '
+                           'subset "{}" in sync.').format(family, subset))
 
         for subset in metadata.subsets:
             if subset != "menu" and subset not in webfontsItem['subsets']:
-                print('ER: "{}" lacks subset "{}" in API'.format(family, subset), file=sys.stderr)
+                print(('ERROR: "{}" '
+                       'lacks subset "{}" in API.').format(family, subset),
+                      file=sys.stderr)
 
         if metadata.category.lower() != webfontsItem['category']:
-            print('ER: "{}" category "{}" in git does not match category "{}" in API'.format(family, metadata.category, webfontsItem['category']))
+            print(('ERROR: "{}" category "{}" in git'
+                   ' does not match category "{}"'
+                   ' in API.').format(family,
+                                      metadata.category,
+                                      webfontsItem['category']))
         else:
             if args.verbose:
-                print('OK: "{}" category "{}" in sync'.format(family, metadata.category))
+                print(('OK: "{}" '
+                       'category "{}" in sync.').format(family,
+                                                        metadata.category))
 
 
         for variant in webfontVariants:
             try:
-                filenameWeightStyleIndex = [getVariantName(item) for item in metadata.fonts].index(variant)
-                repoFileName = metadata.fonts[filenameWeightStyleIndex].filename
+                idx = [getVariantName(f) for f in metadata.fonts].index(variant)
+                repoFileName = metadata.fonts[idx].filename
 
                 fonturl = webfontsItem['files'][variant]
                 fontpath = get_cache_font_path(args.cache, fonturl)
 
                 import hashlib
                 google_md5 = hashlib.md5(open(fontpath, 'rb').read()).hexdigest()
-                repo_md5 = hashlib.md5(open(os.path.join(dirpath, repoFileName), 'rb').read()).hexdigest()
+                data = open(os.path.join(dirpath, repoFileName), 'rb').read()
+                repo_md5 = hashlib.md5(data).hexdigest()
 
                 if repo_md5 == google_md5:
-                    log_messages.append([variant, 'OK', '"{}" in sync'.format(repoFileName)])
+                    log_messages.append([variant,
+                                         'OK',
+                                         '"{}" in sync'.format(repoFileName)])
                 else:
-                    log_messages.append([variant, 'ER', '"{}" checksum mismatch, file in API does not match file in git'.format(repoFileName)])
+                    log_messages.append([variant,
+                                         'ERROR',
+                                         ('"{}" checksum mismatch, file'
+                                          ' in API does not match file'
+                                          ' in git.').format(repoFileName)])
 
             except ValueError:
-                log_messages.append([variant, 'ER', '"{}" available in API but not in git'.format(font.filename)])
+                log_messages.append([variant,
+                                     'ERROR',
+                                     ('"{}" available in API but'
+                                      ' not in git.').format(font.filename)])
 
         for font in metadata.fonts:
             variant = getVariantName(font)
             try:
                 webfontVariants.index(variant)
             except ValueError:
-                log_messages.append([variant, 'ER', '"{}" available in git but not in API'.format(font.filename)])
+                log_messages.append([variant,
+                                     'ERROR',
+                                     ('"{}" available in git but'
+                                      ' not in API.').format(font.filename)])
 
-        #sort all the messages by their respective metadataFileName and print them:
+        # Sort all the messages by their respective
+        # metadataFileName and print them:
         for message in sorted(log_messages, key=lambda x: x[0].lower()):
             variant, status, text = message
             if status == "OK":
