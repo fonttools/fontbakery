@@ -842,13 +842,13 @@ def check_OS2_usWeightClass(ttFont, style):
 def licenses(family_directory):
   """Get a list of paths for every license
      file found in a font project."""
+  licenses = []
   if family_directory:
-    licenses = []
     for license in ['OFL.txt', 'LICENSE.txt']:
       license_path = os.path.join(family_directory, license)
       if os.path.exists(license_path):
         licenses.append(license_path)
-    return licenses
+  return licenses
 
 
 @register_condition
