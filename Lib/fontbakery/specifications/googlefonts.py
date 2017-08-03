@@ -2463,6 +2463,8 @@ def check_nonligated_sequences_kerning_info(ttFont, ligatures, has_kerning_info)
     for pairpos in table.SubTable:
       for i, glyph in enumerate(pairpos.Coverage.glyphs):
         if glyph in ligatures.keys():
+          if not hasattr(pairpos, 'PairSet'):
+            continue
           for pairvalue in pairpos.PairSet[i].PairValueRecord:
             if pairvalue.SecondGlyph in ligatures[glyph]:
               del remaining[glyph]
