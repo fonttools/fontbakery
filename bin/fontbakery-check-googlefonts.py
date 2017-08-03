@@ -63,6 +63,8 @@ parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_g
 parser.add_argument('-n', '--no-progress', default=False, action='store_true',
                     help='In a tty as stdout, don\'t render the progress indicators.')
 
+parser.add_argument('-C', '--no-colors', default=False, action='store_true',
+                    help='No colors for tty output')
 
 def get_fonts(globs):
   fonts_to_check = []
@@ -85,6 +87,7 @@ if __name__ == '__main__':
                        , print_progress=not args.no_progress
                        , test_threshold=args.loglevel_tests
                        , log_threshold=args.loglevel_messages
+                       , usecolor=not args.no_colors
                        , collect_results_by='font'
                        )
   # sr = SerializeReporter(runner=runner, collect_results_by='font')

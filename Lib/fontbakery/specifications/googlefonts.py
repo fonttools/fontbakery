@@ -842,13 +842,13 @@ def check_OS2_usWeightClass(ttFont, style):
 def licenses(family_directory):
   """Get a list of paths for every license
      file found in a font project."""
+  licenses = []
   if family_directory:
-    licenses = []
     for license in ['OFL.txt', 'LICENSE.txt']:
       license_path = os.path.join(family_directory, license)
       if os.path.exists(license_path):
         licenses.append(license_path)
-    return licenses
+  return licenses
 
 
 @register_condition
@@ -1594,7 +1594,7 @@ def check_OS2_usWinAscent_and_Descent(ttFont, vmetrics):
     yield FAIL, Message("descent",
                  ("OS/2.usWinDescent value"
                   " should be {}, but got"
-                  " {} instead").format(vmetrics['ymin'],
+                  " {} instead").format(abs(vmetrics['ymin']),
                                         ttFont['OS/2'].usWinDescent))
   if not failed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
@@ -2463,6 +2463,8 @@ def check_nonligated_sequences_kerning_info(ttFont, ligatures, has_kerning_info)
     for pairpos in table.SubTable:
       for i, glyph in enumerate(pairpos.Coverage.glyphs):
         if glyph in ligatures.keys():
+          if not hasattr(pairpos, 'PairSet'):
+            continue
           for pairvalue in pairpos.PairSet[i].PairValueRecord:
             if pairvalue.SecondGlyph in ligatures[glyph]:
               del remaining[glyph]
