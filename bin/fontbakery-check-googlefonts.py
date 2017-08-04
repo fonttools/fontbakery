@@ -56,10 +56,11 @@ def log_levels_get(key):
   raise argparse.ArgumentTypeError('Key "{}" must be one of: {}.'.format(
                                         key, ', '.join(log_levels.keys())))
 DEFAULT_LOG_LEVEL = WARN
-parser.add_argument('-v', '--verbose', default=DEFAULT_LOG_LEVEL, const=PASS ,action='store_const',
+parser.add_argument('-v', '--verbose', dest='loglevels', const=PASS, action='append_const',
                     help='Shortcut for `-l PASS`.\n')
 
-parser.add_argument('-l', '--loglevel', default=DEFAULT_LOG_LEVEL, type=log_levels_get,
+parser.add_argument('-l', '--loglevel', dest='loglevels', type=log_levels_get,
+                    action='append',
                     metavar= 'LOGLEVEL',
                     help='Report tests with a result of this status or higher.\n'
                          'One of: {}.\n'
@@ -133,9 +134,8 @@ if __name__ == '__main__':
                      , custom_order=args.order
                      )
 
-  # the more verbose loglevel wins
-  loglevel = min(args.loglevel, args.verbose)
-
+  # the most verbose loglevel wins
+  loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
                        , test_threshold=loglevel
