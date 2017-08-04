@@ -110,7 +110,7 @@ parser.add_argument('-o','--order', default=None, type=parse_order,
                     'ITERATED_ARGS: {}\n'
                     'A sections default is equivalent to: "*iterargs, *test".\n'
                     'A common use case is `-o "*test"` when testing the whole \n'
-                    'collection against a selection of test picked with `--checkid`.'
+                    'collection against a selection of tests picked with `--checkid`.'
                     ''.format(', '.join(iterargs))
                     )
 
