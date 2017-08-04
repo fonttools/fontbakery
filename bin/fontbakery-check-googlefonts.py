@@ -83,6 +83,17 @@ parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                     metavar= 'JSON_FILE',
                     help='Write a json formatted report to JSON_FILE.')
 
+iterargs = sorted(specification.iterargs.keys())
+parser.add_argument('-g','--gather-by', default=None,
+                    metavar= 'ITERATED_ARG',
+                    choices=iterargs,
+                    help='Optional: collect results by ITERATED_ARG\n'
+                    'In terminal output: create a summary counter for each ITERATED_ARG.\n'
+                    'In json output: structure the document by ITERATED_ARG.\n'
+                    'One of: {}'.format(','.join(iterargs))
+                    )
+
+
 def get_fonts(globs):
   fonts_to_check = []
   for target in globs:
@@ -108,11 +119,11 @@ if __name__ == '__main__':
                        , test_threshold=loglevel
                        , log_threshold=args.loglevel_messages or loglevel
                        , usecolor=not args.no_colors
-                       , collect_results_by='font'
+                       , collect_results_by=args.gather_by
                        )
   reporters = [tr.receive]
   if args.json:
-    sr = SerializeReporter(runner=runner, collect_results_by='font')
+    sr = SerializeReporter(runner=runner, collect_results_by=args.gather_by)
     reporters.append(sr.receive)
   distribute_generator(runner.run(), reporters)
 
