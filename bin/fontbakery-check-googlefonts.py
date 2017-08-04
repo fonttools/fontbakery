@@ -79,6 +79,10 @@ parser.add_argument('-n', '--no-progress', default=False, action='store_true',
 parser.add_argument('-C', '--no-colors', default=False, action='store_true',
                     help='No colors for tty output')
 
+parser.add_argument('--json', default=False, type=argparse.FileType('w'),
+                    metavar= 'JSON_FILE',
+                    help='Write a json formatted report to JSON_FILE.')
+
 def get_fonts(globs):
   fonts_to_check = []
   for target in globs:
@@ -106,5 +110,12 @@ if __name__ == '__main__':
                        , usecolor=not args.no_colors
                        , collect_results_by='font'
                        )
-  # sr = SerializeReporter(runner=runner, collect_results_by='font')
-  distribute_generator(runner.run(), [tr.receive])# sr.receive
+  reporters = [tr.receive]
+  if args.json:
+    sr = SerializeReporter(runner=runner, collect_results_by='font')
+    reporters.append(sr.receive)
+  distribute_generator(runner.run(), reporters)
+
+  if args.json:
+    import json
+    json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
