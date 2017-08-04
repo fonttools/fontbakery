@@ -37,7 +37,9 @@ from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.specifications.googlefonts import specification as specification
 
 parser = argparse.ArgumentParser(description="Check TTF files"
-                                             " for common issues.")
+                                             " for common issues.",
+                                 formatter_class=argparse.RawTextHelpFormatter)
+
 parser.add_argument('arg_filepaths', nargs='+',
                     help='font file path(s) to check.'
                          ' Wildcards like *.ttf are allowed.')
@@ -51,14 +53,22 @@ def log_levels_get(key):
     return log_levels[key]
   raise argparse.ArgumentTypeError('Key "{}" must be one of: {}.'.format(
                                         key, ', '.join(log_levels.keys())))
+DEFAULT_LOG_LEVEL = WARN
+parser.add_argument('-v', '--verbose', default=DEFAULT_LOG_LEVEL, const=PASS ,action='store_const',
+                    help='Shortcut for `-l PASS`.\n')
 
-parser.add_argument('-l', '--loglevel-tests', default=None, type=log_levels_get,
+parser.add_argument('-l', '--loglevel-tests', default=DEFAULT_LOG_LEVEL, type=log_levels_get,
                     help='Report tests with a result of this status or higher.\n'
-                         'One of: {}'.format(', '.join(log_levels.keys())))
+                         'One of: {}.\n'
+                         '(default: {})'.format(', '.join(log_levels.keys())
+                                                 , DEFAULT_LOG_LEVEL.name))
 
 parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_get,
-                    help='Report log messages of this status or higher.\n'
-                         'One of: {}'.format(', '.join(log_levels.keys())))
+                    help=('Report log messages of this status or higher.\n'
+                          'Messages are all status lines of a test.\n'
+                          'One of: {}.\n'
+                          '(default: LOGLEVEL_TESTS)'
+                          ).format(', '.join(log_levels.keys())))
 
 parser.add_argument('-n', '--no-progress', default=False, action='store_true',
                     help='In a tty as stdout, don\'t render the progress indicators.')
@@ -83,10 +93,14 @@ if __name__ == '__main__':
   values = dict(fonts=get_fonts(args.arg_filepaths))
   runner = TestRunner(specification, values, explicit_tests=args.checkid)
 
+
+  # the more verbose loglevel wins
+  loglevel = min(args.loglevel_tests, args.verbose)
+
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
-                       , test_threshold=args.loglevel_tests
-                       , log_threshold=args.loglevel_messages
+                       , test_threshold=loglevel
+                       , log_threshold=args.loglevel_messages or loglevel
                        , usecolor=not args.no_colors
                        , collect_results_by='font'
                        )
