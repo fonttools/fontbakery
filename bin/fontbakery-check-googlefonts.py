@@ -45,7 +45,9 @@ parser.add_argument('arg_filepaths', nargs='+',
                          ' Wildcards like *.ttf are allowed.')
 
 parser.add_argument('-c', '--checkid', action='append',
-                    help='Explicit check-ids to be executed.')
+                    help='Explicit check-ids to be executed.\n'
+                         'Use this option multiple times to select multiple checks.'
+                   )
 
 
 def log_levels_get(key):
@@ -57,7 +59,8 @@ DEFAULT_LOG_LEVEL = WARN
 parser.add_argument('-v', '--verbose', default=DEFAULT_LOG_LEVEL, const=PASS ,action='store_const',
                     help='Shortcut for `-l PASS`.\n')
 
-parser.add_argument('-l', '--loglevel-tests', default=DEFAULT_LOG_LEVEL, type=log_levels_get,
+parser.add_argument('-l', '--loglevel', default=DEFAULT_LOG_LEVEL, type=log_levels_get,
+                    metavar= 'LOGLEVEL',
                     help='Report tests with a result of this status or higher.\n'
                          'One of: {}.\n'
                          '(default: {})'.format(', '.join(log_levels.keys())
@@ -65,9 +68,9 @@ parser.add_argument('-l', '--loglevel-tests', default=DEFAULT_LOG_LEVEL, type=lo
 
 parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_get,
                     help=('Report log messages of this status or higher.\n'
-                          'Messages are all status lines of a test.\n'
+                          'Messages are all status lines within a test.\n'
                           'One of: {}.\n'
-                          '(default: LOGLEVEL_TESTS)'
+                          '(default: LOGLEVEL)'
                           ).format(', '.join(log_levels.keys())))
 
 parser.add_argument('-n', '--no-progress', default=False, action='store_true',
@@ -93,9 +96,8 @@ if __name__ == '__main__':
   values = dict(fonts=get_fonts(args.arg_filepaths))
   runner = TestRunner(specification, values, explicit_tests=args.checkid)
 
-
   # the more verbose loglevel wins
-  loglevel = min(args.loglevel_tests, args.verbose)
+  loglevel = min(args.loglevel, args.verbose)
 
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
