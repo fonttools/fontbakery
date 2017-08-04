@@ -92,7 +92,25 @@ parser.add_argument('-g','--gather-by', default=None,
                     'In json output: structure the document by ITERATED_ARG.\n'
                     'One of: {}'.format(','.join(iterargs))
                     )
-
+def parse_order(arg):
+  order = filter(len, [n.strip() for n in arg.split(',')])
+  return order or None
+parser.add_argument('-o','--order', default=None, type=parse_order,
+                    help='Comma separated list of order arguments.\n'
+                    'The execution order is determined by the order of the test\n'
+                    'definitions and by the order of the iterable arguments.\n'
+                    'A section defines its own order. `--order` can be used to\n'
+                    'override the order of *all* sections.\n'
+                    'Despite the ITERATED_ARGS there are two special\n'
+                    'values available:\n'
+                    '"*iterargs" -- all remainig ITERATED_ARGS\n'
+                    '"*test"     -- order by test\n'
+                    'ITERATED_ARGS: {}\n'
+                    'A sections default is equivalent to: "*iterargs, *test".\n'
+                    'A common use case is `-o "*test"` when testing the whole \n'
+                    'collection against a selection of test picked with `--checkid`.'
+                    ''.format(', '.join(iterargs))
+                    )
 
 def get_fonts(globs):
   fonts_to_check = []
@@ -109,7 +127,10 @@ def get_fonts(globs):
 if __name__ == '__main__':
   args = parser.parse_args()
   values = dict(fonts=get_fonts(args.arg_filepaths))
-  runner = TestRunner(specification, values, explicit_tests=args.checkid)
+  runner = TestRunner(specification, values
+                     , explicit_tests=args.checkid
+                     , custom_order=args.order
+                     )
 
   # the more verbose loglevel wins
   loglevel = min(args.loglevel, args.verbose)

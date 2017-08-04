@@ -214,12 +214,14 @@ def get_traceback():
 class TestRunner(object):
   def __init__(self, spec, values
              , values_can_override_spec_names=True
-             , explicit_tests = None
+             , custom_order=None
+             , explicit_tests=None
              ):
     # TODO: transform all iterables that are list like to tuples
     # to make sure that they won't change anymore.
     # Also remove duplicates from list like iterables
 
+    self._custom_order = custom_order
     self._explicit_tests = explicit_tests
     self._iterargs = OrderedDict()
     for singular, plural in spec.iterargs.items():
@@ -579,6 +581,7 @@ class TestRunner(object):
       order = []
       # section, test, iterargs = identity
       for identity in self._spec.execution_order(self._iterargs,
+                                    custom_order=self._custom_order,
                                     explicit_tests=self._explicit_tests):
         order.append(identity)
       self._cache['order'] = order = tuple(order)
@@ -930,6 +933,7 @@ class Spec(object):
 
   def _section_execution_order(self, section, iterargs
                              , reverse=False
+                             , custom_order=None
                              , explicit_tests=None):
     """
       order must:
@@ -942,7 +946,7 @@ class Spec(object):
       order may contain "*test" otherwise, it is like *test is appended
       to the end (Not done explicitly though).
     """
-    stack = section.order[:]
+    stack = custom_order[:] if custom_order is not None else section.order[:]
     if '*iterargs' not in stack:
       stack.append('*iterargs')
     stack.reverse()
@@ -975,10 +979,12 @@ class Spec(object):
       # defined order, by clustering.
       yield test, tuple(args)
 
-  def execution_order(self, iterargs, explicit_tests=None):
+  def execution_order(self, iterargs, custom_order=None, explicit_tests=None):
+    # TODO: a custom_order per section may become necessary one day
     explicit_tests = set() if not explicit_tests else set(explicit_tests)
     for _, section in self._sections.items():
       for test, iterargs in self._section_execution_order(section, iterargs
+                                          , custom_order=custom_order
                                           , explicit_tests=explicit_tests):
         yield (section, test, iterargs)
 
