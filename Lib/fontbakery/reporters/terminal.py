@@ -387,7 +387,9 @@ class TerminalReporter(TerminalProgress):
     status, message, (section, test, iterargs) = event
 
     if self.results_by and status == ENDTEST:
-      key = dict(iterargs).get(self.results_by, None)
+
+      key = test.id if self.results_by == '*test' \
+                      else dict(iterargs).get(self.results_by, None)
       if key not in self._collected_results:
         self._collected_results[key] = Counter()
       self._collected_results[key][message.name] += 1
@@ -450,15 +452,17 @@ class TerminalReporter(TerminalProgress):
       print()
       if self.results_by:
         print('Collected results by', self.results_by)
-        for index in self._collected_results:
-          if index is not None and self.runner:
-            val = self.runner.get_iterarg(self.results_by, index)
-          elif index is not None:
-            val = index
+        for key in self._collected_results:
+          if self.results_by == '*test':
+            val = key
+          elif key is not None and self.runner:
+            val = self.runner.get_iterarg(self.results_by, key)
+          elif key is not None:
+            val = key
           else:
             val = '(not using "{}")'.format(self.results_by)
           print('{}: {}'.format(self.results_by, val))
-          print(_render_results_counter(self._collected_results[index],
+          print(_render_results_counter(self._collected_results[key],
                                                 color=self._use_color))
           print()
 

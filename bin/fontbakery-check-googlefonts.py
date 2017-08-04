@@ -84,13 +84,14 @@ parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                     help='Write a json formatted report to JSON_FILE.')
 
 iterargs = sorted(specification.iterargs.keys())
+gather_by_choices = iterargs + ['*test']
 parser.add_argument('-g','--gather-by', default=None,
                     metavar= 'ITERATED_ARG',
-                    choices=iterargs,
+                    choices=gather_by_choices,
                     help='Optional: collect results by ITERATED_ARG\n'
                     'In terminal output: create a summary counter for each ITERATED_ARG.\n'
                     'In json output: structure the document by ITERATED_ARG.\n'
-                    'One of: {}'.format(','.join(iterargs))
+                    'One of: {}'.format(', '.join(gather_by_choices))
                     )
 def parse_order(arg):
   order = filter(len, [n.strip() for n in arg.split(',')])
