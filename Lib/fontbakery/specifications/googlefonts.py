@@ -3664,7 +3664,7 @@ def check_fontname_is_not_camel_cased(font_metadata):
   """Check if fontname is not camel cased."""
   import re
   if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
-    yield FAIL, ("METADATA.pb: '%s' is a CamelCased name."
+    yield FAIL, ("METADATA.pb: '{}' is a CamelCased name."
                  " To solve this, simply use spaces"
                  " instead in the font name.").format(font_metadata.name)
   else:

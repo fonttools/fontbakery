@@ -1209,6 +1209,37 @@ def test_id_068():
 
 # TODO: test_id_069
 
+def test_id_109():
+  """ Check if fontname is not camel cased. """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_fontname_is_not_camel_cased,
+                                   metadata,
+                                   font_metadata)
+  # Our reference Cabin Regular is known to be good
+  meta = metadata("data/test/cabin/")
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  font_meta = font_metadata(meta, ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+  assert status == PASS
+
+  # Then we FAIL with a CamelCased name:
+  font_meta.name = "GollyGhost"
+  print ("Test FAIL with a bad font (CamelCased font name)...")
+  status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+  assert status == FAIL
+
+  # And we also make sure the test passes with a few known good names:
+  good_names = ["VT323", "PT Sans", "Amatic SC"]
+  for good_name in good_names:
+    font_meta.name = good_name
+    print ("Test PASS with a good font name '{}'...".format(good_name))
+    status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+    assert status == PASS
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
