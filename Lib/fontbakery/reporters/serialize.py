@@ -44,9 +44,13 @@ class SerializeReporter(FontbakeryReporter):
                    , **kwd):
     super(SerializeReporter, self).__init__(**kwd)
     self._results_by = collect_results_by
-    self._max_cluster_by_index = None
     self._items = {}
     self._doc = None
+
+    # used when self._results_by is set
+    # this way we minimize our knowledge of the specification
+    self._max_cluster_by_index = None
+    self._observed_tests = {}
 
   def _set_metadata(self, identity, item):
     section, test, iterargs = identity
@@ -77,12 +81,20 @@ class SerializeReporter(FontbakeryReporter):
       if test:
         item.update(dict(key=key, result=None, logs=[]))
         if self._results_by:
-          index = dict(iterargs).get(self._results_by, None)
-          value = None
-          if index is not None:
-            self._max_cluster_by_index = max(index, self._max_cluster_by_index)
+          if self._results_by == '*test':
+            if test.id not in self._observed_tests:
+              self._observed_tests[test.id] = len(self._observed_tests)
+            index = self._observed_tests[test.id]
+            value = test.id
+          else:
+            index = dict(iterargs).get(self._results_by, None)
+            value = None
             if self.runner:
               value = self.runner.get_iterarg(self._results_by, index)
+
+          if index is not None:
+            self._max_cluster_by_index = max(index, self._max_cluster_by_index)
+
           item['clustered'] = {
               'name': self._results_by
             , 'index': index # None if this test did not require self.results_by
@@ -122,8 +134,10 @@ class SerializeReporter(FontbakeryReporter):
       if self._results_by:
         if not len(sectionDoc['tests']):
           clusterlen = self._max_cluster_by_index + 1
-          # + 1 for rests bucket
-          sectionDoc['tests'] = [[] for _ in range(clusterlen + 1)]
+          if self._results_by != '*test':
+            # + 1 for rests bucket
+            clusterlen += 1
+          sectionDoc['tests'] = [[] for _ in range(clusterlen)]
         index = test['clustered']['index']
         if index is None:
           # last element collects unclustered

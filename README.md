@@ -15,20 +15,21 @@ Font Bakery is not an official Google project, and Google provides no support fo
 
 ## Web Usage
 
-To use Font Bakery through a web UI is currently not supported. 
+To use Font Bakery through a web UI is currently not supported.
 
 A web dashboard is under development at <https://github.com/googlefonts/fontbakery-dashboard/> and will allow monitoring the check results of collections of font families, such as the entire Google Fonts collection.
 
-This tool was initialy developed in this repository, but later it was split out into its own git repo.
+This tool was initially developed in this repository, but later it was split out into its own git repo.
 
 ## Command Line Usage
 
-For infrequent usage, clone this repo and then run each tool by itself:
+**For infrequent usage**, clone this repo and then run each tool by itself:
 
     PYTHONPATH=Lib python bin/fontbakery-metadata-vs-api.py <args>
 
-For regular usage, install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install) below.
-This puts thex `fontbakery` command in your `$PATH`, and makes all other subcommands accessible. 
+Beware, some of the scripts in `bin` do have further dependencies. In that case and<br />
+**for regular usage**, install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install) below.
+This puts the `fontbakery` command in your `$PATH`, and makes all other subcommands accessible.
 
 Here's the output of the command line help:
 
@@ -36,15 +37,18 @@ Here's the output of the command line help:
 $ fontbakery -h
 usage: fontbakery [-h] [--list-subcommands] subcommand
 
-Run fontbakery subcomands:
+Run fontbakery subcommands:
     build-contributors
     build-font2ttf
     build-fontmetadata
     build-ofl
     check-bbox
-    check-name
+    check-collection
+    check-gf-github
     check-googlefonts
+    check-name
     check-vtt-compatibility
+    dev-testrunner
     fix-ascii-fontmetadata
     fix-dsig
     fix-familymetadata
@@ -69,34 +73,100 @@ Run fontbakery subcomands:
     update-version
 ```
 
-Subcommands have their own help messages. 
-These are usually accessible with the `-h/--help` flag positioned after the subcomand.
+### fontbakery check-googlefonts
+
+This is the central script to run the fontbakery test suite. It runs the
+tests (`specifications/googlefonts.py`) that we use for QA of https://github.com/google/fonts.
+
+#### To run the tests on some fonts:
+
+    $ cd ~/path/to/fontproject/
+    $ fontbakery check-googlefonts *.ttf
+
+#### For more detailed output, run in verbose mode:
+
+    $ fontbakery check-googlefonts --verbose *.ttf
+
+To save a json formatted report do:
+
+    $ fontbakery check-googlefonts --json report.json *.ttf
+
+The check results will be saved to a file called `report.json`.
+
+#### Run hand picked checks for all fonts in the google/fonts repository:
 
 ```
-fontbakery subcommand -h
+$ fontbakery check-googlefonts \
+    -c com.google.fonts/test/034 \
+    -c com.google.fonts/test/044 \
+    -n -o "*test" -g "*test" \
+    path/to/fonts/{apache,ofl,ufl}/*/*.ttf
+```
+
+ * `-c` selects a test by id
+ * `-n` turns off the progress bar
+ * `-o "*test"` change execution order to run each test for all fonts instead of all tests for each font.
+ * `-g "*test"` creates a summary report per test
+
+
+Heres the output of `fontbakery check-googlefonts -h`
+
+```
+$ fontbakery check-googlefonts -h
+usage: fontbakery-check-googlefonts.py [-h] [-c CHECKID] [-v] [-l LOGLEVEL]
+                                       [-m LOGLEVEL_MESSAGES] [-n] [-C]
+                                       [--json JSON_FILE] [-g ITERATED_ARG]
+                                       [-o ORDER]
+                                       arg_filepaths [arg_filepaths ...]
+
+Check TTF files for common issues.
 
 positional arguments:
-  subcommand          the subcommand to execute
+  arg_filepaths         font file path(s) to check. Wildcards like *.ttf are allowed.
 
 optional arguments:
-  -h, --help          show this help message and exit
-  --list-subcommands  print the list of subcommnds to stdout, separated by a space character. This is usually only used to generate the shell completion code.
+  -h, --help            show this help message and exit
+  -c CHECKID, --checkid CHECKID
+                        Explicit check-ids to be executed.
+                        Use this option multiple times to select multiple checks.
+  -v, --verbose         Shortcut for `-l PASS`.
+  -l LOGLEVEL, --loglevel LOGLEVEL
+                        Report tests with a result of this status or higher.
+                        One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
+                        (default: WARN)
+  -m LOGLEVEL_MESSAGES, --loglevel-messages LOGLEVEL_MESSAGES
+                        Report log messages of this status or higher.
+                        Messages are all status lines within a test.
+                        One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
+                        (default: LOGLEVEL)
+  -n, --no-progress     In a tty as stdout, don't render the progress indicators.
+  -C, --no-colors       No colors for tty output
+  --json JSON_FILE      Write a json formatted report to JSON_FILE.
+  -g ITERATED_ARG, --gather-by ITERATED_ARG
+                        Optional: collect results by ITERATED_ARG
+                        In terminal output: create a summary counter for each ITERATED_ARG.
+                        In json output: structure the document by ITERATED_ARG.
+                        One of: font, *test
+  -o ORDER, --order ORDER
+                        Comma separated list of order arguments.
+                        The execution order is determined by the order of the test
+                        definitions and by the order of the iterable arguments.
+                        A section defines its own order. `--order` can be used to
+                        override the order of *all* sections.
+                        Despite the ITERATED_ARGS there are two special
+                        values available:
+                        "*iterargs" -- all remainig ITERATED_ARGS
+                        "*test"     -- order by test
+                        ITERATED_ARGS: font
+                        A sections default is equivalent to: "*iterargs, *test".
+                        A common use case is `-o "*test"` when testing the whole
+                        collection against a selection of tests picked with `--checkid`.
 ```
 
-To run the tests on some fonts:
 
-    cd ~/path/to/fontproject/
-    fontbakery check-googlefonts *.ttf
+### FontBakery web Dashboard
 
-For more detailed output, run in verbose mode:
-
-    fontbakery check-googlefonts --verbose *.ttf
-
-The check results will be saved to a file called fontbakery-check-results.json.
-
-For check results in GitHub Markdown syntax you can use --ghm:
-
-    fontbakery check-googlefonts --verbose *.ttf --ghm
+There is a web dashboard that is used for monitoring the check-results of the full Google Fonts collection (or possibly other collections of font families). This tool was initialy developed in this repository, but later it was split out into its own git repo, now available at: https://github.com/googlefonts/fontbakery-dashboard
 
 ### Automated testing of all Google Fonts
 
@@ -104,8 +174,8 @@ If you need to generate a list of all issues in a font family collection, such a
 
     sh bin/fontbakery-check-collection.sh path-to-collection-directory
 
-This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection. 
-The output is individual per-font-file reports, both in json and in github markdown format, each saved in subdirectories that are the names of the families.
+This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection.
+The output is individual per-family reports, both in json format, each saved in subdirectories that are the names of the license directories.
 
 ## Other auxiliary fontbakery scripts
 
