@@ -109,7 +109,7 @@ $ fontbakery check-googlefonts \
  * `-g "*test"` creates a summary report per test
 
 
-Heres the output of `fontbakery check-googlefonts -h`
+Here's the output of `fontbakery check-googlefonts -h`
 
 ```
 $ fontbakery check-googlefonts -h
@@ -175,7 +175,7 @@ If you need to generate a list of all issues in a font family collection, such a
     sh bin/fontbakery-check-collection.sh path-to-collection-directory
 
 This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection.
-The output is individual per-family reports, both in json format, each saved in subdirectories that are the names of the license directories.
+The output is individual per-family reports, in json format, saved in subdirectories with the names of the license directories.
 
 ## Other auxiliary fontbakery scripts
 
