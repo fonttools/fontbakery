@@ -675,3 +675,13 @@ Releases to PyPI are performed by updating the version metadata on setup.py and 
  python setup.py bdist_wheel
  twine upload dist/*
 
+### Self-tests using pytest
+
+Font Bakery check-googlefonts target provides a total of 120 tests for fonts and families according to the quality requirements of the Google Fonts team.
+In addition to a complete architectural overhaul, release 0.3.0 introduced a set of self-tests to assure the quality of the Font Bakery tests themselves. Such "testsuite for the testsuite" currently only cover 44 tests (a bit more than a third of the tests). Upcoming releases aim to reach 100% coverage.
+
+In order to run the self-tests you need to have the pytest dependence installed and then run:
+
+ pytest Lib/fontbakery --verbose
+
+All future pull-requests adding new tests must also provide a corresponding self-test. Travis is configured to automatically run the self-tests and pull-requests cannot be merged if any self-test is failing.
