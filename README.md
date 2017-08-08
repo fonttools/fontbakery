@@ -666,7 +666,7 @@ $ source path-to/fontbakery/bin/bash-completion
 
 This is particularly useful if you are running `fontbakery` in a python virtual environment, i.e. not a system-wide installation.
 
-### Font Bakery mantainence
+### Font Bakery maintenance
 
 This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@members.fsf.org> with very frequent contributions from Lasse Fister, Marc Foley and Dave Crossland.
 
