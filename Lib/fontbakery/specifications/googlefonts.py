@@ -3616,12 +3616,12 @@ def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
                      " but font macStyle is improperly set.")
       elif font_familyname.split("-")[-1].endswith('Italic'):
         yield FAIL, ("Font macStyle indicates a non-Italic font,"
-                     " but nameID %d (FONT_FAMILY_NAME: \"%s\") ends"
+                     " but nameID %d (FONT_FAMILY_NAME: \"{}\") ends"
                      " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
                                                  font_familyname)
       elif font_fullname.split("-")[-1].endswith("Italic"):
         yield FAIL, ("Font macStyle indicates a non-Italic font"
-                     " but nameID %d (FULL_FONT_NAME: \"%s\") ends"
+                     " but nameID {} (FULL_FONT_NAME: \"{}\") ends"
                      " with \"Italic\".").format(NAMEID_FULL_FONT_NAME,
                                                  font_fullname)
       else:
@@ -3680,9 +3680,9 @@ def check_fontname_is_not_camel_cased(font_metadata):
 def check_font_name_is_the_same_as_family_name(metadata, font_metadata):
   """Check font name is the same as family name."""
   if font_metadata.name != metadata.name:
-    yield FAIL, ("METADATA.pb: %s: Family name \"%s\""
+    yield FAIL, ("METADATA.pb: {}: Family name \"{}\""
                  " does not match"
-                 " font name: \"%s\"").format(font_metadata.filename,
+                 " font name: \"{}\"").format(font_metadata.filename,
                                               metadata.name,
                                               font_metadata.name)
   else:
