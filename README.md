@@ -665,3 +665,13 @@ $ source path-to/fontbakery/bin/bash-completion
 ```
 
 This is particularly useful if you are running `fontbakery` in a python virtual environment, i.e. not a system-wide installation.
+
+### Font Bakery mantainence
+
+This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@members.fsf.org> with very frequent contributions from Lasse Fister, Marc Foley and Dave Crossland.
+
+Releases to PyPI are performed by updating the version metadata on setup.py and then running the following commands:
+
+ python setup.py bdist_wheel
+ twine upload dist/*
+
