@@ -664,15 +664,30 @@ def check_main_entries_in_the_name_table(ttFont, style):
                                                     PLATID_STR[plat],
                                                     plat)
     elif string != expected_value:
-      failed = True
-      yield FAIL, ("[{}({}):{}({})] entry:"
-                   " expected '{}'"
-                   " but got '{}'").format(NAMEID_STR[nameid],
-                                           nameid,
-                                           PLATID_STR[plat],
-                                           plat,
-                                           expected_value,
-                                           unidecode(string))
+
+      # special case for FULL_FONT_NAME:
+      # see https://github.com/googlefonts/fontbakery/issues/1436
+      if name.nameID == NAMEID_FULL_FONT_NAME \
+         and style == "Regular" \
+         and string == fname_with_spaces:
+        yield WARN, ("[{}({}):{}({})] entry:"
+                     " Got '{}' which lacks 'Regular',"
+                     " but is probably OK"
+                     " in this case.").format(NAMEID_STR[nameid],
+                                              nameid,
+                                              PLATID_STR[plat],
+                                              plat,
+                                              unidecode(string))
+      else:
+        failed = True
+        yield FAIL, ("[{}({}):{}({})] entry:"
+                     " expected '{}'"
+                     " but got '{}'").format(NAMEID_STR[nameid],
+                                             nameid,
+                                             PLATID_STR[plat],
+                                             plat,
+                                             expected_value,
+                                             unidecode(string))
   if not failed:
     yield PASS, ("Main entries in the name table"
                  " conform to expected format.")
