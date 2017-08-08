@@ -1240,6 +1240,30 @@ def test_id_109():
     assert status == PASS
 
 
+def test_id_110():
+  """ Check font name is the same as family name. """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_font_name_is_the_same_as_family_name,
+                                   metadata,
+                                   font_metadata)
+  # Our reference Cabin Regular is known to be good
+  family_meta = metadata("data/test/cabin/")
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  font_meta = font_metadata(family_meta, ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
+  assert status == PASS
+
+  # Then we FAIL with mismatching names:
+  family_meta.name = "Some Fontname"
+  font_meta.name = "Something Else"
+  print ("Test FAIL with a bad font...")
+  status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
+  assert status == FAIL
+
+
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
   from fontbakery.specifications.googlefonts import \
