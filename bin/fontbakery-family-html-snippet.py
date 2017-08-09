@@ -72,21 +72,42 @@ API_TO_CSS_STYLE_NAME = {
 }
 
 
-def get_family_styles(family):
-  """Get all the styles of a family hosted on Google Fonts"""
-  styles = []
+def get_gf_family(family):
+  """Get data of the given family hosted on Google Fonts"""
   request = requests.get(GF_API)
   gf_families = json.loads(request.text)
   for item in gf_families['items']:
     if family == item['family']:
-      for var in item['variants']:
+        return item
+  return False
+
+
+def get_family_styles(gf_family):
+  """Get all the styles of a family"""
+  styles = []
+  if gf_family:
+      for var in gf_family['variants']:
         styles.append((GF_API_WEIGHT_TO_CSS_WEIGHT[var]))
   return styles
 
 
-def gen_head_webfonts(family, styles):
+def get_family_subsets(family_subsets, gf_family):
+  """Get all the valid subsets from the given family"""
+  valid_subsets = []
+  if family_subsets:
+    for subset in family_subsets:
+      if subset in gf_family['subsets']:
+        valid_subsets.append(subset)
+  return valid_subsets
+
+
+def gen_head_webfonts(family, styles, subsets=None):
   """Gen the html snippet to load fonts"""
   server = '"https://fonts.googleapis.com/css?family='
+  if subsets:
+    return '<link href=%s%s:%s&amp;subset=%s" /rel="stylesheet">' % (
+      server, family.replace(' ', '+'), ','.join(styles), ','.join(subsets)
+    )
   return '<link href=%s%s:%s" /rel="stylesheet">' % (
     server, family.replace(' ', '+'), ','.join(styles)
   )
@@ -129,11 +150,19 @@ def main():
                       help='family name on fonts.google.com')
   parser.add_argument('sample_text',
                       help='sample text used for each font')
+  parser.add_argument('--subsets', nargs='+',
+                      help='family subset(s) seperated by a space')
   args = parser.parse_args()
 
-  family_styles = get_family_styles(args.family)
+  gf_family = get_gf_family(args.family)
+  family_styles = get_family_styles(gf_family)
+  family_subsets = get_family_subsets(args.subsets, gf_family)
 
-  head_fonts = gen_head_webfonts(args.family, family_styles)
+  if family_subsets:
+    head_fonts = gen_head_webfonts(args.family, family_styles, family_subsets)
+  else:
+    head_fonts = gen_head_webfonts(args.family, family_styles)
+
   css_styles = gen_css_styles(args.family, family_styles)
   body_text = gen_body_text(family_styles, args.sample_text)
 

@@ -49,6 +49,7 @@ Run fontbakery subcommands:
     check-name
     check-vtt-compatibility
     dev-testrunner
+    family-html-snippet
     fix-ascii-fontmetadata
     fix-dsig
     fix-familymetadata
@@ -245,6 +246,32 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+```
+
+### fontbakery family-html-snippet
+
+Generate a test html snippet for a family hosted on fonts.google.com This
+script works well for quickly producing test cases using jsbin. $ fontbakery
+family-html-snippet "Exo" "Hello World" >>> ... <html> <head> <link
+href="https://fonts.googleapis.com/css?family=Exo"/rel="stylesheet"> <style>
+.g{font-family: 'Exo'; font-weight:400;} .h{font-family: 'Exo'; font-
+weight:400; font-style: italic;} .m{font-family: 'Exo'; font-weight:700;} .n
+{font-family: 'Exo'; font-weight:700; font-style: italic;} </style> </head>
+<body> <p class='g'>Hello World</p> <p class='h'>Hello World</p> <p
+class='m'>Hello World</p> <p class='n'>Hello World</p> </body> </html>
+
+```
+usage: fontbakery family-html-snippet [-h]
+                                      [--subsets SUBSETS [SUBSETS ...]]
+                                      family sample_text
+positional arguments:
+  family                family name on fonts.google.com
+  sample_text           sample text used for each font
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --subsets SUBSETS [SUBSETS ...]
+                        family subset(s) seperated by a space
 ```
 
 ### fontbakery fix-ascii-fontmetadata
