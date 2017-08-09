@@ -55,14 +55,17 @@ if not libmagic or not libmagic._name:
 from setuptools import setup
 setup(
     name="fontbakery",
-    version='0.3.0',
+    version='0.3.1-RC1',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
                 ' for testing font projects',
     author='Font Bakery Authors: Dave Crossland, Felipe Sanches, Lasse Fister, Marc Foley, Vitaly Volkov',
     author_email='dave@lab6.com',
     package_dir={'': 'Lib'},
-    packages=['fontbakery'],
+    packages=['fontbakery',
+              'fontbakery.reporters',
+              'fontbakery.specifications',
+              'fontbakery.testadapters'],
     scripts=['bin/fontbakery',
              'bin/fontbakery-build-font2ttf.py',
              'bin/fontbakery-build-fontmetadata.py',
