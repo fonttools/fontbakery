@@ -66,6 +66,7 @@ setup(
     scripts=['bin/fontbakery',
              'bin/fontbakery-build-font2ttf.py',
              'bin/fontbakery-build-fontmetadata.py',
+             'bin/fontbakery-family-html-snippet.py',
              'bin/fontbakery-fix-ascii-fontmetadata.py',
              'bin/fontbakery-fix-familymetadata.py',
              'bin/fontbakery-fix-gasp.py',
