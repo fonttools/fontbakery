@@ -4343,3 +4343,27 @@ def check_regression_missing_glyphs(ttFont, gfonts_ttFont):
                    ', '.join(hex_codepoints)))
   else:
     yield PASS, ('Font has all the glyphs from the previous release')
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/155'
+  , conditions=['font_metadata']
+)
+def check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_metadata):
+  """"Copyright notice name entry matches those on METADATA.pb ?"""
+  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+  from unidecode import unidecode
+  failed = False
+  for nameRecord in ttFont['name'].names:
+    string = nameRecord.string.decode(nameRecord.getEncoding())
+    if nameRecord.nameID == NAMEID_COPYRIGHT_NOTICE and\
+       string != font_metadata.copyright:
+        failed = True
+        yield FAIL, ("Copyright notice name entry ('{}')"
+                     " differs from copyright field on"
+                     " METADATA.pb ('{}').").format(unidecode(string),
+                                                    font_metadata.copyright)
+  if not failed:
+    yield PASS, ("Copyright notice name entry matches"
+                 " those on METADATA.pb fields.")

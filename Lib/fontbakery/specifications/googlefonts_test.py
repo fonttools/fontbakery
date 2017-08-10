@@ -1309,3 +1309,28 @@ def test_id_154(cabin_ttFonts):
     status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
     assert status == FAIL
 
+
+def test_id_155():
+  """ Copyright notice name entry matches those on METADATA.pb ? """
+  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+  from fontbakery.specifications.googlefonts import \
+                   (check_METADATA_copyright_notices_match_name_table_entries,
+                    metadata,
+                    font_metadata,
+                    get_name_string)
+  # Our reference Cabin Regular is known to be good
+  family_meta = metadata("data/test/cabin/")
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  font_meta = font_metadata(family_meta, ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  # Then we FAIL with mismatching names:
+  good_value = get_name_string(ttFont, NAMEID_COPYRIGHT_NOTICE)[0]
+  font_meta.copyright = good_value + "something bad"
+  print ("Test FAIL with a bad font...")
+  status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
+  assert status == FAIL
