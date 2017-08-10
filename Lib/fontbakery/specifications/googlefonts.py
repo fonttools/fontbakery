@@ -4353,6 +4353,7 @@ def check_regression_missing_glyphs(ttFont, gfonts_ttFont):
 def check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_metadata):
   """"Copyright notice name entry matches those on METADATA.pb ?"""
   from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+  from unidecode import unidecode
   failed = False
   for nameRecord in ttFont['name'].names:
     string = nameRecord.string.decode(nameRecord.getEncoding())
