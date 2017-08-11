@@ -1135,24 +1135,24 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
     yield FAIL, ("Value of hhea.advanceWidthMax"
-                 " should be set to %d but got"
-                 " %d instead.").format(width_max,
+                 " should be set to {} but got"
+                 " {} instead.").format(width_max,
                                         ttFont['hhea'].advanceWidthMax)
   if seems_monospaced:
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
       failed = True
       yield FAIL, ("On monospaced fonts, the value of"
-                   "post.isFixedPitch must be set to %d"
+                   "post.isFixedPitch must be set to {}"
                    " (fixed width monospaced),"
-                   " but got %d instead.").format(IS_FIXED_WIDTH_MONOSPACED,
+                   " but got {} instead.").format(IS_FIXED_WIDTH_MONOSPACED,
                                                   ttFont['post'].isFixedPitch)
 
     if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION_MONOSPACED:
       failed = True
       yield FAIL, ("On monospaced fonts, the value of"
-                   "OS/2.panose.bProportion must be set to %d"
+                   "OS/2.panose.bProportion must be set to {}"
                    " (proportion: monospaced), but got"
-                   " %d instead.").format(PANOSE_PROPORTION_MONOSPACED,
+                   " {} instead.").format(PANOSE_PROPORTION_MONOSPACED,
                                           ttFont['OS/2'].panose.bProportion)
 
     num_glyphs = len(ttFont['glyf'].glyphs)
@@ -1166,7 +1166,8 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
       failed = True
       yield WARN, ("Font is monospaced but {} glyphs"
                    " ({}%) have a different width."
-                   " You should check the widths of: {}").format(
+                   " You should check the widths of:"
+                   " {}").format(
                      len(unusually_spaced_glyphs),
                      100.0 * outliers_ratio,
                      unusually_spaced_glyphs)
@@ -1179,17 +1180,17 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_NOT_MONOSPACED:
       failed = True
       yield FAIL, ("On non-monospaced fonts, the"
-                   " post.isFixedPitch value must be set to %d"
+                   " post.isFixedPitch value must be set to {}"
                    " (fixed width not monospaced), but got"
-                   " %d instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
+                   " {} instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
                                           ttFont['post'].isFixedPitch)
 
     if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
       failed = True
       yield FAIL, ("On non-monospaced fonts, the"
-                   " OS/2.panose.bProportion value must be set to %d"
+                   " OS/2.panose.bProportion value must be set to {}"
                    " (proportion: any), but got"
-                   " %d (proportion: monospaced)"
+                   " {} (proportion: monospaced)"
                    " instead.").format(PANOSE_PROPORTION_ANY,
                                        PANOSE_PROPORTION_MONOSPACED)
     if not failed:
@@ -2777,9 +2778,9 @@ def check_MaxAdvanceWidth_is_consistent_with_Hmtx_and_Hhea_tables(ttFont):
   if hmtx_advance_width_max is None:
     yield FAIL, "Failed to find advance width data in HMTX table!"
   elif hmtx_advance_width_max != hhea_advance_width_max:
-    yield FAIL, ("AdvanceWidthMax mismatch: expected %s (from hmtx);"
-                 " got %s (from hhea)") % (hmtx_advance_width_max,
-                                           hhea_advance_width_max)
+    yield FAIL, ("AdvanceWidthMax mismatch: expected {} (from hmtx);"
+                 " got {} (from hhea)").format(hmtx_advance_width_max,
+                                               hhea_advance_width_max)
   else:
     yield PASS, ("MaxAdvanceWidth is consistent"
                  " with values in the Hmtx and Hhea tables.")
@@ -2968,7 +2969,7 @@ def listed_on_gfonts_api(metadata):
     return False
   import requests
   url = ('http://fonts.googleapis.com'
-         '/css?family=%s') % metadata.name.replace(' ', '+')
+         '/css?family={}').format(metadata.name.replace(' ', '+'))
   r = requests.get(url)
   return r.status_code == 200
 
@@ -3053,7 +3054,7 @@ def check_METADATA_check_style_weight_pairs_are_unique(metadata):
      only contains unique style:weight pairs."""
   pairs = {}
   for f in metadata.fonts:
-    styleweight = "%s:%s" % (f.style, f.weight)
+    styleweight = "{}:{}".format(f.style, f.weight)
     pairs[styleweight] = 1
   if len(set(pairs.keys())) != len(metadata.fonts):
     yield FAIL, ("Found duplicated style:weight pair"
@@ -3537,11 +3538,11 @@ def canonical_filename(font_metadata):
     900: "Black"
   }
   familyname = font_metadata.name.replace(" ", "")
-  style_weight = "%s%s" % (WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
-                           style_names.get(font_metadata.style))
+  style_weight = "{}{}".format(WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
+                               style_names.get(font_metadata.style))
   if style_weight == "":
     style_weight = "Regular"
-  return "%s-%s.ttf" % (familyname, style_weight)
+  return "{}-{}.ttf".format(familyname, style_weight)
 
 
 @register_test
@@ -3590,15 +3591,15 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
                      " but font macStyle is improperly set.")
       elif not font_familyname.split("-")[-1].endswith("Italic"):
         yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID %d (\"%s\")"
+                     " but nameID {} (\"{}\")"
                      " is not ended "
-                     "with \"Italic\"") % (NAMEID_FONT_FAMILY_NAME,
-                                           font_familyname)
+                     "with \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
+                                               font_familyname)
       elif not font_fullname.split("-")[-1].endswith("Italic"):
         yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID %d (\"%s\") is not ended"
-                     " with \"Italic\"") % (NAMEID_FULL_FONT_NAME,
-                                            font_fullname)
+                     " but nameID {} (\"{}\") is not ended"
+                     " with \"Italic\"").format(NAMEID_FULL_FONT_NAME,
+                                                font_fullname)
       else:
         yield PASS, ("OK: METADATA.pb font.style \"italic\""
                      " matches font internals.")
@@ -3631,7 +3632,7 @@ def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
                      " but font macStyle is improperly set.")
       elif font_familyname.split("-")[-1].endswith('Italic'):
         yield FAIL, ("Font macStyle indicates a non-Italic font,"
-                     " but nameID %d (FONT_FAMILY_NAME: \"{}\") ends"
+                     " but nameID {} (FONT_FAMILY_NAME: \"{}\") ends"
                      " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
                                                  font_familyname)
       elif font_fullname.split("-")[-1].endswith("Italic"):
@@ -3756,13 +3757,13 @@ def check_Metadata_weight_matches_postScriptName(font_metadata):
     yield FAIL, ("METADATA.pb: Font weight"
                  " does not match postScriptName")
   elif not (font_metadata.post_script_name.endswith('-' + pair[0][0]) or
-            font_metadata.post_script_name.endswith('-%s' % pair[1][0])):
+            font_metadata.post_script_name.endswith('-' + pair[1][0])):
     yield FAIL, ("METADATA.pb: postScriptName (\"{}\")"
                  " with weight {} must be"
+                 " ended with \"{}\" or \"{}\""
                  "").format(font_metadata.post_script_name,
-                            pair[0][1]) + \
-                (" ended with \"{}\" or \"{}\""
-                 "").format(pair[0][0],
+                            pair[0][1],
+                            pair[0][0],
                             pair[1][0])
   else:
     yield PASS, "Weight value matches postScriptName."
@@ -3790,7 +3791,7 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
         _weights.append(value)
 
     for w in _weights:
-      canonical_name = "%s %s" % (font_familyname, w)
+      canonical_name = "{} {}".format(font_familyname, w)
       if font_metadata.full_name == canonical_name:
         is_canonical = True
 
@@ -3798,9 +3799,9 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
       yield PASS, "METADATA.pb lists fonts named canonicaly."
     else:
       v = map(lambda x: font_familyname + " " + x, _weights)
-      yield FAIL, ("Canonical name in font: Expected \"%s\""
-                   " but got \"%s\" instead.") % ("\" or \"".join(v),
-                                                  font_metadata.full_name)
+      yield FAIL, ("Canonical name in font: Expected \"{}\""
+                   " but got \"{}\" instead.").format("\" or \"".join(v),
+                                                      font_metadata.full_name)
 
 
 @register_test
@@ -3827,11 +3828,11 @@ def check_Font_styles_are_named_canonically(ttFont, font_metadata):
                  " as \"italic\" or \"regular\" on METADATA.pb.")
   else:
     if is_italic() and font_metadata.style != "italic":
-      yield FAIL, ("The font style is %s"
-                   " but it should be italic") % font_metadata.style
+      yield FAIL, ("The font style is {}"
+                   " but it should be italic").format(font_metadata.style)
     elif not is_italic() and font_metadata.style != "normal":
-      yield FAIL, ("The font style is %s"
-                   " but it should be normal") % font_metadata.style
+      yield FAIL, ("The font style is {}"
+                   " but it should be normal").format(font_metadata.style)
     else:
       yield PASS, "Font styles are named canonically."
 
@@ -3892,16 +3893,16 @@ def check_regression_v_number_increased(ttFont, gfonts_ttFont):
   v_number = ttFont["head"].fontRevision
   gfonts_v_number = gfonts_ttFont["head"].fontRevision
   if v_number == gfonts_v_number:
-    yield FAIL, ("Version number %s is equal to"
-                 " version on Google Fonts.") % (v_number)
+    yield FAIL, ("Version number {} is equal to"
+                 " version on Google Fonts.").format(v_number)
   elif v_number < gfonts_v_number:
-    yield FAIL, ("Version number %s is less than"
-                 " version on Google Fonts (%s).") % (v_number,
-                                                      gfonts_v_number)
+    yield FAIL, ("Version number {} is less than"
+                 " version on Google Fonts ({}).").format(v_number,
+                                                          gfonts_v_number)
   else:
-    yield PASS, ("Version number %s is greater than"
-                 " version on Google Fonts (%s).") % (v_number,
-                                                      gfonts_v_number)
+    yield PASS, ("Version number {} is greater than"
+                 " version on Google Fonts ({}).").format(v_number,
+                                                          gfonts_v_number)
 
 @register_test
 @test(
@@ -3923,7 +3924,7 @@ def check_regression_glyphs_structure(ttFont, gfonts_ttFont):
 
   if bad_glyphs:
     yield FAIL, ("Following glyphs differ greatly from"
-                 " Google Fonts version: [%s]") % ", ".join(bad_glyphs)
+                 " Google Fonts version: [{}]").format(", ".join(bad_glyphs))
   else:
     yield PASS, ("Glyphs are similar in"
                  " comparison to the Google Fonts version.")
@@ -3954,12 +3955,13 @@ def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
     if msg: yield WARN, msg
 
   if inc_xheight != gf_inc_xheight:
-    yield FAIL, ("TTFAutohint --increase-x-height is %s. "
+    yield FAIL, ("TTFAutohint --increase-x-height is {}. "
                  "It should match the previous"
-                 " version's value (%s).") % (inc_xheight, gf_inc_xheight)
+                 " version's value ({}).").format(inc_xheight,
+                                                  gf_inc_xheight)
   else:
     yield PASS, ("TTFAutohint --increase-x-height is the same as in"
-                  " the previous Google Fonts release (%s).") % inc_xheight
+                  " the previous Google Fonts release ({}).").format(inc_xheight)
 
 # The following upstream font project tests have been DEPRECATED:
 # com.google.fonts/test/120 "Each font in family project has matching glyph names ?"
@@ -4338,9 +4340,9 @@ def check_regression_missing_glyphs(ttFont, gfonts_ttFont):
   if missing_codepoints:
     hex_codepoints = ['0x' + hex(c).upper()[2:].zfill(4) for c
                       in missing_codepoints]
-    yield FAIL, ("Font is missing the following glyphs "
-                 "from the previous release [%s]" % (
-                   ', '.join(hex_codepoints)))
+    yield FAIL, ("Font is missing the following glyphs"
+                 " from the previous release"
+                 " [{}]").format(', '.join(hex_codepoints))
   else:
     yield PASS, ('Font has all the glyphs from the previous release')
 
