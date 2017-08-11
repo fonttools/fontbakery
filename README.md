@@ -708,8 +708,8 @@ twine upload dist/*
 
 ### Self-tests using pytest
 
-Font Bakery check-googlefonts target provides a total of 120 tests for fonts and families according to the quality requirements of the Google Fonts team.
-In addition to a complete architectural overhaul, release 0.3.1 introduced a set of self-tests to assure the quality of the Font Bakery tests themselves. Such "testsuite for the testsuite" currently only includes 44 self-tests (covering a bit more than a third of the tests). Upcoming releases will aim at reaching 100% self-test coverage.
+Font Bakery check-googlefonts target provides a total of 121 tests for fonts and families according to the quality requirements of the Google Fonts team.
+In addition to a complete architectural overhaul, release 0.3.1 introduced a set of self-tests to assure the quality of the Font Bakery tests themselves. Such "testsuite for the testsuite" currently only includes 45 self-tests (covering a bit more than a third of the tests). Upcoming releases will aim at reaching 100% self-test coverage.
 
 In order to run the self-tests you need to have the pytest dependence installed and then run:
 
