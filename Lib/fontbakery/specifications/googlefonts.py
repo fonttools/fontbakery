@@ -3463,13 +3463,14 @@ def check_Copyright_notice_matches_canonical_pattern(font_metadata):
   """Copyright notice matches canonical pattern ?"""
   import re
   from unidecode import unidecode
-  does_match = re.search(r'Copyright [0-9]{4} The %s Project Authors \(%s\)',
+  does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \(.*\)',
                          font_metadata.copyright)
   if does_match:
-    yield PASS, "METADATA.pb copyright field matches canonical pattern."
+    yield PASS, ("METADATA.pb copyright field '{}'"
+                 " matches canonical pattern.").format(font_metadata.copyright)
   else:
     yield FAIL, ("METADATA.pb: Copyright notices should match"
-                 " the folowing pattern:"
+                 " a pattern similar to:"
                  " 'Copyright 2017 The Familyname"
                  " Project Authors (git url)'\n"
                  "But instead we have got:"
