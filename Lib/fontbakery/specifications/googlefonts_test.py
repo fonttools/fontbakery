@@ -1209,6 +1209,30 @@ def test_id_068():
 
 # TODO: test_id_069
 
+def test_id_102():
+  """ Copyright notice matches canonical pattern ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (check_Copyright_notice_matches_canonical_pattern,
+                                   metadata,
+                                   font_metadata)
+  # Our reference Cabin Regular is known to be bad
+  # Since it provides an email instead of a git URL:
+  meta = metadata("data/test/cabin/")
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  font_meta = font_metadata(meta, ttFont)
+
+  # So it must FAIL the test:
+  print ("Test FAIL with a bad copyright notice string...")
+  status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
+  assert status == FAIL
+
+  # Then we change it into a good string (example extracted from Archivo Black):
+  font_meta.copyright = "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
+  print ("Test PASS with a good copyright notice string...")
+  status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
+  assert status == PASS
+
+
 def test_id_109():
   """ Check if fontname is not camel cased. """
   from fontbakery.specifications.googlefonts import \
