@@ -2198,8 +2198,9 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
   version_strings = get_name_string(ttFont, NAMEID_VERSION_STRING)
   ttfa_version = ttfautohint_version(version_strings)
   if len(version_strings) == 0:
-    yield FAIL, ("This font file lacks mandatory "
-                 "version strings in its name table.")
+    yield FAIL, Message("lacks-version-strings",
+                        "This font file lacks mandatory "
+                        "version strings in its name table.")
   elif ttfa_version is None:
     yield INFO, ("Could not detect which version of"
                  " ttfautohint was used in this font."
@@ -2214,15 +2215,23 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
     yield SKIP, TTFAUTOHINT_MISSING_MSG
   else:
     installed_ttfa = ttfautohint_stats["version"]
-    if installed_version_is_newer(installed_ttfa,
-                                  ttfa_version):
-      yield WARN, ("ttfautohint used in font = {};"
-                   " installed = {}; Need to re-run"
-                   " with the newer version!").format(ttfa_version,
-                                                      installed_ttfa)
-    else:
-      yield PASS, ("ttfautohint available in the system is older"
-                   " than the one used in the font.")
+    try:
+      if installed_version_is_newer(installed_ttfa,
+                                    ttfa_version):
+        yield WARN, ("ttfautohint used in font = {};"
+                     " installed = {}; Need to re-run"
+                     " with the newer version!").format(ttfa_version,
+                                                        installed_ttfa)
+      else:
+        yield PASS, ("ttfautohint available in the system is older"
+                     " than the one used in the font.")
+    except ValueError:
+      yield FAIL, Message("parse-error",
+                          ("Failed to parse ttfautohint version values:"
+                           " installed = '{}';"
+                           " used_in_font = '{}'").format(installed_ttfa,
+                                                          ttfa_version))
+
 
 @register_test
 @test(
