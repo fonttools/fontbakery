@@ -1335,7 +1335,8 @@ def test_id_154(cabin_ttFonts):
 
 
 def test_id_155():
-  """ Copyright notice name entry matches those on METADATA.pb ? """
+  """ Copyright field for this font on METADATA.pb matches
+      all copyright notice entries on the name table ? """
   from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
   from fontbakery.specifications.googlefonts import \
                    (check_METADATA_copyright_notices_match_name_table_entries,
@@ -1348,13 +1349,13 @@ def test_id_155():
   font_meta = font_metadata(family_meta, ttFont)
 
   # So it must PASS the test:
-  print ("Test PASS with a good font...")
+  print ("Test PASS with a good METADATA.pb for this font...")
   status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
   assert status == PASS
 
   # Then we FAIL with mismatching names:
   good_value = get_name_string(ttFont, NAMEID_COPYRIGHT_NOTICE)[0]
   font_meta.copyright = good_value + "something bad"
-  print ("Test FAIL with a bad font...")
+  print ("Test FAIL with a bad METADATA.pb (with a copyright string not matching this font)...")
   status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
   assert status == FAIL
