@@ -4354,7 +4354,8 @@ def check_regression_missing_glyphs(ttFont, gfonts_ttFont):
   , conditions=['font_metadata']
 )
 def check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_metadata):
-  """"Copyright notice name entry matches those on METADATA.pb ?"""
+  """Copyright field for this font on METADATA.pb matches
+     all copyright notice entries on the name table ?"""
   from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
   from unidecode import unidecode
   failed = False
@@ -4363,10 +4364,11 @@ def check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_metad
     if nameRecord.nameID == NAMEID_COPYRIGHT_NOTICE and\
        string != font_metadata.copyright:
         failed = True
-        yield FAIL, ("Copyright notice name entry ('{}')"
-                     " differs from copyright field on"
-                     " METADATA.pb ('{}').").format(unidecode(string),
-                                                    font_metadata.copyright)
+        yield FAIL, ("Copyright field for this font on METADATA.pb ('{}')"
+                     " differs from a copyright notice entry"
+                     " on the name table:"
+                     " '{}'").format(font_metadata.copyright,
+                                     unidecode(string))
   if not failed:
-    yield PASS, ("Copyright notice name entry matches"
-                 " those on METADATA.pb fields.")
+    yield PASS, ("Copyright field for this font on METADATA.pb matches"
+                 " copyright notice entries on the name table.")
