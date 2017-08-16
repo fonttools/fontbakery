@@ -74,6 +74,7 @@ setup(
     scripts=[normalize_path('bin/fontbakery'),
              normalize_path('bin/fontbakery-build-font2ttf.py'),
              normalize_path('bin/fontbakery-build-fontmetadata.py'),
+             normalize_path('bin/fontbakery-check-noto.sh'),
              normalize_path('bin/fontbakery-family-html-snippet.py'),
              normalize_path('bin/fontbakery-fix-ascii-fontmetadata.py'),
              normalize_path('bin/fontbakery-fix-familymetadata.py'),
