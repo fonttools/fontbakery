@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Generate a test html snippet for a family hosted on fonts.google.com
 
@@ -27,7 +28,7 @@ import json
 import requests
 from argparse import ArgumentParser
 
-GF_API = 'http://tinyurl.com/m8o9k39'
+GF_API = "https://www.googleapis.com/webfonts/v1/webfonts?key={}"
 
 GF_API_WEIGHT_TO_CSS_WEIGHT = {
   "100": "100",
@@ -72,9 +73,9 @@ API_TO_CSS_STYLE_NAME = {
 }
 
 
-def get_gf_family(family):
+def get_gf_family(family, api_key):
   """Get data of the given family hosted on Google Fonts"""
-  request = requests.get(GF_API)
+  request = requests.get(GF_API.format(api_key))
   gf_families = json.loads(request.text)
   for item in gf_families['items']:
     if family == item['family']:
@@ -146,6 +147,8 @@ def gen_body_text(styles, sample_text):
 
 def main():
   parser = ArgumentParser(description=__doc__)
+  parser.add_argument('key',
+                      help='Key from Google Fonts Developer API')
   parser.add_argument('family',
                       help='family name on fonts.google.com')
   parser.add_argument('sample_text',
@@ -154,7 +157,7 @@ def main():
                       help='family subset(s) seperated by a space')
   args = parser.parse_args()
 
-  gf_family = get_gf_family(args.family)
+  gf_family = get_gf_family(args.family, args.key)
   family_styles = get_family_styles(gf_family)
   family_subsets = get_family_subsets(args.subsets, gf_family)
 
