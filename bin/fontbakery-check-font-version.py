@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 fontbakery-check-font-version.py:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
