@@ -75,7 +75,7 @@ setup(
              normalize_path('bin/fontbakery-build-font2ttf.py'),
              normalize_path('bin/fontbakery-build-fontmetadata.py'),
              normalize_path('bin/fontbakery-check-font-version.py'),
-             normalize_path('bin/fontbakery-check-noto.sh'),
+             normalize_path('bin/fontbakery-check-noto-version.sh'),
              normalize_path('bin/fontbakery-check-googlefonts.py'),
              normalize_path('bin/fontbakery-dev-testrunner.py'),
              normalize_path('bin/fontbakery-family-html-snippet.py'),
