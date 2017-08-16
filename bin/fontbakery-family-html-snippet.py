@@ -26,6 +26,7 @@ $ fontbakery family-html-snippet "Exo" "Hello World"
 """
 import json
 import requests
+import sys
 from argparse import ArgumentParser
 
 GF_API = "https://www.googleapis.com/webfonts/v1/webfonts?key={}"
@@ -76,7 +77,22 @@ API_TO_CSS_STYLE_NAME = {
 def get_gf_family(family, api_key):
   """Get data of the given family hosted on Google Fonts"""
   request = requests.get(GF_API.format(api_key))
-  gf_families = json.loads(request.text)
+
+  try:
+    response = json.loads(request.text)
+    if "error" in response:
+      if response["error"]["errors"][0]["reason"] == "keyInvalid":
+        sys.exit(("The Google Fonts API key '{}'"
+                  " was rejected as being invalid !").format(api_key))
+      else:
+        sys.exit(("There were errors in the"
+                  " Google Fonts API request:"
+                  " {}").format(response["error"]))
+    else:
+      gf_families = response
+  except (ValueError, KeyError):
+    sys.exit("Unable to load and parse data from Google Web Fonts API.")
+
   for item in gf_families['items']:
     if family == item['family']:
         return item
