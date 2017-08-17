@@ -1,6 +1,7 @@
 beautifulsoup4==4.5.1
 bs4==0.0.1
 defusedxml==0.4.1
+glyphsLib==1.8.0
 fonttools==3.6
 lxml==3.5.0
 protobuf==3.0.0
