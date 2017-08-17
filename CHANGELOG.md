@@ -1,3 +1,7 @@
+* 0.3.2 (2017-Aug-??):
+  - fix crash on fontbakery-check-font-version.py
+  - add automated tests for the fixer scripts
+
 * 0.3.1 (2017-Aug-11):
   - Emergencial release to address broken 0.3.0 packaging.
   - setup.py: Added modules that were missing in previous release
