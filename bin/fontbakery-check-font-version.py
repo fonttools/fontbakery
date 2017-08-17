@@ -25,7 +25,7 @@ from fontTools.ttLib import TTFont
 from ntpath import basename
 
 from fontbakery.utils import (
-  download_family_from_GoogleFontDirectory,
+  download_family_from_Google_Fonts,
   download_zip,
   fonts_from_zip,
   parse_version_head,
@@ -41,7 +41,7 @@ def main():
                       help='Compare against a set of local ttfs')
   args = parser.parse_args()
 
-  google_family_zip = download_family_from_GoogleFontDirectory(args.family)
+  google_family_zip = download_family_from_Google_Fonts(args.family)
   google_family_fonts = [f[1] for f in fonts_from_zip(google_family_zip)]
   google_family_version = parse_version_head(google_family_fonts)
 
