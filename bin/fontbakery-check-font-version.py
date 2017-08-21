@@ -27,9 +27,20 @@ from ntpath import basename
 from fontbakery.utils import (
   download_family_from_Google_Fonts,
   download_file,
-  fonts_from_zip,
-  parse_version_head,
+  fonts_from_zip
 )
+
+def parse_version_head(fonts):
+  """Return a family's version number. Ideally, each font in the
+  family should have the same version number. If not, return the highest
+  version number."""
+  versions = []
+  if isinstance(fonts, list):
+    for font in fonts:
+      versions.append(float(font['head'].fontRevision))
+  else:
+    versions.append(float(fonts['head'].fontRevision))
+  return max(versions)
 
 def main():
   parser = ArgumentParser(description=__doc__)
