@@ -26,7 +26,7 @@ from ntpath import basename
 
 from fontbakery.utils import (
   download_family_from_Google_Fonts,
-  download_zip,
+  download_file,
   fonts_from_zip,
   parse_version_head,
 )
@@ -47,7 +47,7 @@ def main():
 
   if args.web_compare:
     if args.web_compare.endswith('.zip'):
-      web_family_zip = download_zip(args.web_compare)
+      web_family_zip = download_file(args.web_compare)
       web_family = fonts_from_zip(web_family_zip)
       web_family_fonts = [f[1] for f in web_family]
       web_family_name = set(f[0].split('-')[0] for f in web_family)
