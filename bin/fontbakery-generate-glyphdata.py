@@ -1,3 +1,4 @@
+#!/usr/bin/evn python
 """
 Generate FontBakery's desired_glyph_data.json file.
 

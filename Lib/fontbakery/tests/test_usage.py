@@ -9,6 +9,7 @@ class TestSubcommands(unittest.TestCase):
     """Functional tests to determine that bin/fontbakery runs correctly"""
     def setUp(self):
         self.bin_path = os.path.join('bin')
+        self.maxDiff = None
 
     def test_list_subcommands_has_all_scripts(self):
         """Tests if the output from running fontbakery --list-subcommands matches the
@@ -133,6 +134,7 @@ class TestFontbakeryScripts(unittest.TestCase):
 
 # Temporarily disabling this until we close issue #1514
 # (https://github.com/googlefonts/fontbakery/issues/1514)
+# See also https://github.com/googlefonts/fontbakery/issues/1535
 #    def test_update_families(self):
 #        self.check_script(['python', self.get_path('update-families'), self.example_font])
 
