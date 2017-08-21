@@ -99,9 +99,8 @@ class TestFontbakeryScripts(unittest.TestCase):
     def test_fix_glyph_private_encoding(self):
         self.check_script(['python', self.get_path('fix-glyph-private-encoding'), self.example_font])
 
-# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
-#    def test_fix_glyphs(self):
-#        self.check_script(['python', self.get_path('fix-glyphs')])
+    def test_fix_glyphs(self):
+        self.check_script(['python', self.get_path('fix-glyphs')])
 
     def test_fix_nameids(self):
         self.check_script(['python', self.get_path('fix-nameids'), self.example_font])
@@ -121,9 +120,8 @@ class TestFontbakeryScripts(unittest.TestCase):
     def test_list_panose(self):
         self.check_script(['python', self.get_path('list-panose'), self.example_font])
 
-# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
-#    def test_list_variable_source(self):
-#        self.check_script(['python', self.get_path('list-variable-source')])
+    def test_list_variable_source(self):
+        self.check_script(['python', self.get_path('list-variable-source')])
 
     def test_list_weightclass(self):
         self.check_script(['python', self.get_path('list-weightclass'), self.example_font])
