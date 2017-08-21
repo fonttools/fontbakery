@@ -29,7 +29,7 @@ class TestFontbakeryScripts(unittest.TestCase):
         self.example_dir = os.path.join('data', 'test', 'cabin')
         self.example_font = os.path.join(self.example_dir, 'Cabin-Regular.ttf')
         self.blacklisted_scripts = [
-          ['python', self.get_path('build-contributers')],  # requires source folder of git commits
+          ['python', self.get_path('build-contributors')],  # requires source folder of git commits
           ['python', self.get_path('check-gf-github')],  # Requires github credentials
           ['python', self.get_path('build-font2ttf')],  # Requires fontforge
           ['python', self.get_path('generate-glyphdata')],  # Generates desired_glyph_data.json
