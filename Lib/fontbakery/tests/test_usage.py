@@ -9,18 +9,18 @@ class TestSubcommands(unittest.TestCase):
     """Functional tests to determine that bin/fontbakery runs correctly"""
     def setUp(self):
         self.bin_path = os.path.join('bin')
+        self.maxDiff = None
 
-# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
-#    def test_list_subcommands_has_all_scripts(self):
-#        """Tests if the output from running fontbakery --list-subcommands matches the
-#        fontbakery scripts within the bin folder"""
-#
-#        scripts = [f for f in os.listdir(self.bin_path) if f.startswith('fontbakery-')]
-#        fontbakery = os.path.join('bin', 'fontbakery')
-#        subcommands = subprocess.check_output(['python', fontbakery, '--list-subcommands']).split()
-#        scripts = [re.sub('\.\w*$', '', f.replace('fontbakery-', '')) for f in scripts]
-#
-#        self.assertEqual(sorted(scripts), sorted(subcommands))
+    def test_list_subcommands_has_all_scripts(self):
+        """Tests if the output from running fontbakery --list-subcommands matches the
+        fontbakery scripts within the bin folder"""
+
+        scripts = [f for f in os.listdir(self.bin_path) if f.startswith('fontbakery-')]
+        fontbakery = os.path.join('bin', 'fontbakery')
+        subcommands = subprocess.check_output(['python', fontbakery, '--list-subcommands']).split()
+        scripts = [re.sub('\.\w*$', '', f.replace('fontbakery-', '')) for f in scripts]
+
+        self.assertEqual(sorted(scripts), sorted(subcommands))
 
 
 class TestFontbakeryScripts(unittest.TestCase):
