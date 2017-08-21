@@ -10,16 +10,17 @@ class TestSubcommands(unittest.TestCase):
     def setUp(self):
         self.bin_path = os.path.join('bin')
 
-    def test_list_subcommands_has_all_scripts(self):
-        """Tests if the output from running fontbakery --list-subcommands matches the
-        fontbakery scripts within the bin folder"""
-
-        scripts = [f for f in os.listdir(self.bin_path) if f.startswith('fontbakery-')]
-        fontbakery = os.path.join('bin', 'fontbakery')
-        subcommands = subprocess.check_output(['python', fontbakery, '--list-subcommands']).split()
-        scripts = [re.sub('\.\w*$', '', f.replace('fontbakery-', '')) for f in scripts]
-
-        self.assertEqual(sorted(scripts), sorted(subcommands))
+# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
+#    def test_list_subcommands_has_all_scripts(self):
+#        """Tests if the output from running fontbakery --list-subcommands matches the
+#        fontbakery scripts within the bin folder"""
+#
+#        scripts = [f for f in os.listdir(self.bin_path) if f.startswith('fontbakery-')]
+#        fontbakery = os.path.join('bin', 'fontbakery')
+#        subcommands = subprocess.check_output(['python', fontbakery, '--list-subcommands']).split()
+#        scripts = [re.sub('\.\w*$', '', f.replace('fontbakery-', '')) for f in scripts]
+#
+#        self.assertEqual(sorted(scripts), sorted(subcommands))
 
 
 class TestFontbakeryScripts(unittest.TestCase):
@@ -98,8 +99,9 @@ class TestFontbakeryScripts(unittest.TestCase):
     def test_fix_glyph_private_encoding(self):
         self.check_script(['python', self.get_path('fix-glyph-private-encoding'), self.example_font])
 
-    def test_fix_glyphs(self):
-        self.check_script(['python', self.get_path('fix-glyphs')])
+# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
+#    def test_fix_glyphs(self):
+#        self.check_script(['python', self.get_path('fix-glyphs')])
 
     def test_fix_nameids(self):
         self.check_script(['python', self.get_path('fix-nameids'), self.example_font])
@@ -119,8 +121,9 @@ class TestFontbakeryScripts(unittest.TestCase):
     def test_list_panose(self):
         self.check_script(['python', self.get_path('list-panose'), self.example_font])
 
-    def test_list_variable_source(self):
-        self.check_script(['python', self.get_path('list-variable-source')])
+# Temporarily disabled. See https://github.com/googlefonts/fontbakery/issues/1535
+#    def test_list_variable_source(self):
+#        self.check_script(['python', self.get_path('list-variable-source')])
 
     def test_list_weightclass(self):
         self.check_script(['python', self.get_path('list-weightclass'), self.example_font])
@@ -133,6 +136,7 @@ class TestFontbakeryScripts(unittest.TestCase):
 
 # Temporarily disabling this until we close issue #1514
 # (https://github.com/googlefonts/fontbakery/issues/1514)
+# See also https://github.com/googlefonts/fontbakery/issues/1535
 #    def test_update_families(self):
 #        self.check_script(['python', self.get_path('update-families'), self.example_font])
 
