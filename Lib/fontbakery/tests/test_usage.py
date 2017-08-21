@@ -131,8 +131,10 @@ class TestFontbakeryScripts(unittest.TestCase):
     def test_nametable_from_filename(self):
         self.check_script(['python', self.get_path('nametable-from-filename'), self.example_font])
 
-    def test_update_families(self):
-        self.check_script(['python', self.get_path('update-families'), self.example_font])
+# Temporarily disabling this until we close issue #1514
+# (https://github.com/googlefonts/fontbakery/issues/1514)
+#    def test_update_families(self):
+#        self.check_script(['python', self.get_path('update-families'), self.example_font])
 
     def test_update_nameids(self):
         self.check_script(['python', self.get_path('update-nameids'), self.example_font])
