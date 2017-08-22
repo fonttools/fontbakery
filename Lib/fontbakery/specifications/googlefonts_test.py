@@ -1207,7 +1207,7 @@ def test_id_068():
   status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
   assert status == FAIL and message.code == "no-font-family-name"
 
-# TODO: test_id_069
+# TODO: tests 069 to 108
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
@@ -1232,6 +1232,7 @@ def test_id_102():
   status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
   assert status == PASS
 
+# TODO: tests 103 to 108
 
 def test_id_109():
   """ Check if fontname is not camel cased. """
@@ -1287,6 +1288,31 @@ def test_id_110():
   status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
   assert status == FAIL
 
+# TODO: tests 111 to 131
+
+# DEPRECATED CHECKS:
+# com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage."
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage."
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage."
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage."
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage."
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage."
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage."
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage."
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage."
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage."
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage."
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage."
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage."
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage."
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage."
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage."
+# com.google.fonts/test/149 - "Checking Google Arabic glyph coverage."
+# com.google.fonts/test/150 - "Checking Google Vietnamese glyph coverage."
+# com.google.fonts/test/151 - "Checking Google Extras glyph coverage."
+
+# TODO: test_id_152
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""

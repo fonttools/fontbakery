@@ -34,7 +34,6 @@ Steps below can be ignored if you use `fontbakery-travis-init.py` script. It get
    - sudo make install
    - cd ..
    install:
-   - pip install pyicu
    - pip install git+https://github.com/behdad/fontTools.git
    - pip install git+https://github.com/googlefonts/fontcrunch.git
    - pip install git+https://github.com/googlefonts/fontbakery.git

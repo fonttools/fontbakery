@@ -238,7 +238,6 @@ setup(
         'lxml',
         'requests',
         'pyyaml',
-        'fontaine',
         'html5lib',
         'python-magic',
         'markdown',
