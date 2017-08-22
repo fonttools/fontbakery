@@ -591,8 +591,23 @@ class TestRunner(object):
       self._cache['order'] = order = tuple(order)
     return order
 
-  def run(self):
+  def check_order(order):
+    """
+      order must be a subset of self.order
+    """
+    own_order = self.order
+    for item in order:
+      if item not in own_order:
+        raise ValueError('Order item {} not found.'.format(item))
+    return order
+
+  def run(self, order=None):
     testrun_summary = Counter()
+
+    if order is not None:
+      order = self.check_order(order)
+    else:
+      order = self.order
 
     # prepare: we'll have less ENDSECTION code in the actual run
     # also, we can prepare section_order tuples
@@ -600,7 +615,7 @@ class TestRunner(object):
     oldsection = None
     section_order = None
     section_orders = []
-    for section, test, iterargs in self.order:
+    for section, test, iterargs in order:
       if oldsection != section:
         if oldsection is not None:
           section_orders.append((oldsection, tuple(section_order)))
@@ -611,7 +626,7 @@ class TestRunner(object):
       section_orders.append((section, tuple(section_order)))
 
     # run
-    yield START, self.order, (None, None, None)
+    yield START, order, (None, None, None)
     section = None
     old_section = None
     for section, section_order in section_orders:
@@ -644,6 +659,10 @@ class Section(object):
 
   def __repr__(self):
     return '<Section: {0}>'.format(self.name)
+
+  def __eq__(self, other):
+    """ True if other.tests has the same tests in the same order"""
+    return self._tests == other.tests
 
   @property
   def order(self):

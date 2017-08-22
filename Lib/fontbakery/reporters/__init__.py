@@ -42,11 +42,11 @@ class FontbakeryReporter(object):
     self.is_async = is_async
     self.runner = runner
 
-  def run(self):
+  def run(self, order=None):
     """
     self.runner must be present
     """
-    for event in self.runner.run():
+    for event in self.runner.run(order=order):
       self.receive(event)
 
   @property
