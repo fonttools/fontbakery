@@ -4068,213 +4068,27 @@ def check_head_macStyle(ttFont, style):
                   bitmask=MACSTYLE_BOLD,
                   bitname="BOLD")
 
-
-def check_with_pyfontaine(font, glyphset):
-  try:
-    import subprocess
-    fontaine_output = subprocess.check_output(["pyfontaine",
-                                               "--missing",
-                                               "--set", glyphset,
-                                               font],
-                                              stderr=subprocess.STDOUT)
-    fontaine_output = fontaine_output.decode('utf-8')
-    if "Support level: full" not in fontaine_output:
-      return FAIL, ("Pyfontaine output follows:"
-                    "\n\n{}\n").format(fontaine_output)
-    else:
-      return PASS, "Pyfontaine passed this file."
-  except subprocess.CalledProcessError, e:
-    return FAIL, "pyfontaine returned an error code."
-                 # " Output follows :"
-                 # "\n\n{}\n").format(e.output)
-  except OSError:
-    # This is made very prominent with additional line breaks
-    return WARN, ("Pyfontaine is not available!"
-                  " You really MUST check the fonts with this tool."
-                  " To install it, see"
-                  " https://github.com/googlefonts"
-                  "/gf-docs/blob/master/ProjectChecklist.md#pyfontaine")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/132'
-)
-def check_glyphset_google_cyrillic_historical(font):
-  """Checking Cyrillic Historical glyph coverage."""
-  yield check_with_pyfontaine(font, "google_cyrillic_historical")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/133'
-)
-def check_glyphset_google_cyrillic_plus(font):
-  """Checking Google Cyrillic Plus glyph coverage."""
-  yield check_with_pyfontaine(font, "google_cyrillic_plus")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/134'
-)
-def check_glyphset_google_cyrillic_plus_locl(font):
-  """Checking Google Cyrillic Plus (Localized Forms) glyph coverage."""
-  yield check_with_pyfontaine(font, "google_cyrillic_plus_locl")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/135'
-)
-def check_glyphset_google_cyrillic_pro(font):
-  """Checking Google Cyrillic Pro glyph coverage."""
-  yield check_with_pyfontaine(font, "google_cyrillic_pro")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/136'
-)
-def check_glyphset_google_greek_ancient_musical(font):
-  """Checking Google Greek Ancient Musical Symbols glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_ancient_musical_symbols")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/137'
-)
-def check_glyphset_google_greek_archaic(font):
-  """Checking Google Greek Archaic glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_archaic")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/138'
-)
-def check_glyphset_google_greek_coptic(font):
-  """Checking Google Greek Coptic glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_coptic")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/139'
-)
-def check_glyphset_google_greek_core(font):
-  """Checking Google Greek Core glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_core")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/140'
-)
-def check_glyphset_google_greek_expert(font):
-  """Checking Google Greek Expert glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_expert")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/141'
-)
-def check_glyphset_google_greek_plus(font):
-  """Checking Google Greek Plus glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_plus")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/142'
-)
-def check_glyphset_google_greek_pro(font):
-  """Checking Google Greek Pro glyph coverage."""
-  yield check_with_pyfontaine(font, "google_greek_pro")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/143'
-)
-def check_glyphset_google_latin_core(font):
-  """Checking Google Latin Core glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_core")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/144'
-)
-def check_glyphset_google_latin_expert(font):
-  """Checking Google Latin Expert glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_expert")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/145'
-)
-def check_glyphset_google_latin_plus(font):
-  """Checking Google Latin Plus glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_plus")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/146'
-)
-def check_glyphset_google_latin_plus_optional(font):
-  """Checking Google Latin Plus (Optional Glyphs) glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_plus_optional")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/147'
-)
-def check_glyphset_google_latin_pro(font):
-  """Checking Google Latin Pro glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_pro")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/148'
-)
-def check_glyphset_google_latin_pro_optional(font):
-  """Checking Google Latin Pro (Optional Glyphs) glyph coverage."""
-  yield check_with_pyfontaine(font, "google_latin_pro_optional")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/149'
-)
-def check_glyphset_google_arabic(font):
-  """Checking Google Arabic glyph coverage."""
-  yield check_with_pyfontaine(font, "google_arabic")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/150'
-)
-def check_glyphset_google_vietnamese(font):
-  """Checking Google Vietnamese glyph coverage."""
-  yield check_with_pyfontaine(font, "google_vietnamese")
-
-
-@register_test
-@test(
-    id='com.google.fonts/test/151'
-)
-def check_glyphset_google_extras(font):
-  """Checking Google Extras glyph coverage."""
-  yield check_with_pyfontaine(font, "google_extras")
-
+# DEPRECATED CHECKS:
+# com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."
+# com.google.fonts/test/133 - "Checking Google Cyrillic Plus glyph coverage."
+# com.google.fonts/test/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage."
+# com.google.fonts/test/135 - "Checking Google Cyrillic Pro glyph coverage."
+# com.google.fonts/test/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage."
+# com.google.fonts/test/137 - "Checking Google Greek Archaic glyph coverage."
+# com.google.fonts/test/138 - "Checking Google Greek Coptic glyph coverage."
+# com.google.fonts/test/139 - "Checking Google Greek Core glyph coverage."
+# com.google.fonts/test/140 - "Checking Google Greek Expert glyph coverage."
+# com.google.fonts/test/141 - "Checking Google Greek Plus glyph coverage."
+# com.google.fonts/test/142 - "Checking Google Greek Pro glyph coverage."
+# com.google.fonts/test/143 - "Checking Google Latin Core glyph coverage."
+# com.google.fonts/test/144 - "Checking Google Latin Expert glyph coverage."
+# com.google.fonts/test/145 - "Checking Google Latin Plus glyph coverage."
+# com.google.fonts/test/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage."
+# com.google.fonts/test/147 - "Checking Google Latin Pro glyph coverage."
+# com.google.fonts/test/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage."
+# com.google.fonts/test/149 - "Checking Google Arabic glyph coverage."
+# com.google.fonts/test/150 - "Checking Google Vietnamese glyph coverage."
+# com.google.fonts/test/151 - "Checking Google Extras glyph coverage."
 
 @register_test
 @test(
