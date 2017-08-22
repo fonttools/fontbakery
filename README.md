@@ -612,10 +612,6 @@ pip install --upgrade git+https://github.com/behdad/fontTools.git;
 # install python dependencies
 pip install -r requirements.txt
 
-# install pyfontaine
-CFLAGS=-I/usr/local/opt/icu4c/include LDFLAGS=-L/usr/local/opt/icu4c/lib pip install pyicu;
-pip install --upgrade git+https://github.com/davelab6/pyfontaine.git;
-
 # install travis, for setting up CI
 sudo gem install travis; # fontbakery dependencies
 
@@ -630,11 +626,6 @@ pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 sudo add-apt-repository --yes ppa:fontforge/fontforge;
 sudo apt-get update -qq;
 sudo apt-get install python-fontforge
-
-# install pyfontaine
-sudo apt-get install libicu-dev git;
-sudo pip install pyicu;
-pip install --upgrade git+https://github.com/davelab6/pyfontaine.git;
 
 # install ots from source
 git clone https://github.com/khaledhosny/ots.git;
