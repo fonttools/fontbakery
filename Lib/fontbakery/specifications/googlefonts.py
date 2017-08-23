@@ -1089,7 +1089,8 @@ def monospace_stats(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/033'
-  , conditions=['monospace_stats']
+  , conditions=['monospace_stats'
+              , 'not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
@@ -1437,7 +1438,8 @@ def check_fforge_outputs_error_msgs(font, fontforge_check_results):
     id='com.google.fonts/test/039'
   , conditions=['fontforge_check_results']
 )
-def perform_all_fontforge_checks(fontforge_check_results):
+def perform_all_fontforge_checks(fontforge_check_results,
+                                 whitelist_librebarcode):
   """FontForge checks"""
 
   def ff_check(description, condition, err_msg, ok_msg):
@@ -1468,10 +1470,11 @@ def perform_all_fontforge_checks(fontforge_check_results):
            "References in the glyph have been flipped!",
            "References in the glyph haven't been flipped.")
 
-  yield ff_check("Glyphs have points at extremas",
-           bool(validation_state & 0x20) is False,
-           "Glyphs do not have points at extremas!",
-           "Glyphs have points at extremas.")
+  if not whitelist_librebarcode: # See: https://github.com/graphicore/librebarcode/issues/3
+    yield ff_check("Glyphs have points at extremas",
+             bool(validation_state & 0x20) is False,
+             "Glyphs do not have points at extremas!",
+             "Glyphs have points at extremas.")
 
   yield ff_check("Glyph names referred to from glyphs present in the font",
            bool(validation_state & 0x40) is False,
@@ -1498,10 +1501,11 @@ def perform_all_fontforge_checks(fontforge_check_results):
            "Exceeds PostScript limit of 96 hints per glyph",
            "Font respects PostScript limit of 96 hints per glyph")
 
-  yield ff_check("Font doesn't have invalid glyph names",
-           bool(validation_state & 0x200) is False,
-           "Font has invalid glyph names!",
-           "Font doesn't have invalid glyph names.")
+  if not whitelist_librebarcode: # See: https://github.com/graphicore/librebarcode/issues/3
+    yield ff_check("Font doesn't have invalid glyph names",
+             bool(validation_state & 0x200) is False,
+             "Font has invalid glyph names!",
+             "Font doesn't have invalid glyph names.")
 
   yield ff_check("Glyphs have allowed numbers of points defined in maxp",
            bool(validation_state & 0x400) is False,
@@ -1917,6 +1921,7 @@ def check_font_has_proper_whitespace_glyph_names(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/049'
+  , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
   """Whitespace glyphs have ink?"""
@@ -2407,9 +2412,26 @@ def has_kerning_info(ttFont):
           return True
 
 
+# TODO: Design special case handling for whitelists/blacklists
+# https://github.com/googlefonts/fontbakery/issues/1540
+@register_condition
+@condition
+def whitelist_librebarcode(font):
+  font_filenames = [
+    "LibreBarcode39-Regular.ttf",
+    "LibreBarcode39Text-Regular.ttf",
+    "LibreBarcode128-Regular.ttf",
+    "LibreBarcode128Text-Regular.ttf"
+  ]
+  for fname in font_filenames:
+    if fname in font:
+      return True
+
+
 @register_test
 @test(
     id='com.google.fonts/test/063'
+  , conditions=['not whitelist_librebarcode']
 )
 def check_GPOS_table_has_kerning_info(ttFont):
   """Does GPOS table have kerning information?"""
@@ -2626,6 +2648,7 @@ def check_unused_data_at_the_end_of_glyf_table(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/070'
+  , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def check_font_has_EURO_SIGN_character(ttFont):
   """Font has 'EURO SIGN' character?"""
