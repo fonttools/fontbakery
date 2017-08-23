@@ -81,26 +81,16 @@ TEXT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvXxYyZz"
 # will be skipped.
 # TODO: Investigate why these don't work.
 BLACKLIST = [
-  #SystemError: tile cannot extend outside image (issue #704)
-  "Suwannaphum",
-  "KarlaTamil",
-  "Khmer",
-  "KdamThmor",
-  "Battambang",
-  "AksaraBaliGalang",
-  "Phetsarath",
-  "Kantumruy",
-  "Nokora",
-  "Droid",
-  #IOError: execution context too long (issue #703)
-  "FiraSans",
-  "FiraMono",
-  "Benne",
-  "Kolar",
+#IOError: execution context too long (issue #703)
+  "Padauk",
   "KumarOne",
-  "Mogra",
-  "Redacted",  # Its pure black so it throws everything off
-  "AdobeBlank", # Testing font, gives ZeroDivisionError: float division by zero
+#ZeroDivisionError: float division by zero
+  "AdobeBlank",
+  "Phetsarath",
+# IOError: invalid reference See also: https://github.com/google/fonts/issues/132#issuecomment-244796023
+  "Corben",
+# IOError: stack overflow on text_width, text_height = font.getsize(TEXT) 
+  "Rubik",
 ]
 
 # nameID definitions for the name table:
@@ -203,7 +193,7 @@ description = """Calculates the visual weight, width or italic angle of fonts.
     compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
 """
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument("-f", "--files", default="*", required=True,
+parser.add_argument("-f", "--files", default="*", required=True, nargs="+",
                     help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
 parser.add_argument("-d", "--debug", default=False, action='store_true',
                     help="Debug mode, just print results")
@@ -223,10 +213,9 @@ def main():
     parser.print_help()
     sys.exit(0)
 
-  #files_to_process = []
-  #for arg_files in args.files:
-  #  files_to_process.extend(glob.glob(arg_files))
-  files_to_process = glob.glob(args.files)
+  files_to_process = []
+  for pattern in args.files:
+    files_to_process.extend(glob.glob(pattern))
 
   if len(files_to_process) == 0:
     sys.exit("No font files were found!")
