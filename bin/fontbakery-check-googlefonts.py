@@ -126,13 +126,27 @@ def get_fonts(globs):
                         "to be valid TrueType font file.".format(fullpath))
   return fonts_to_check
 
-if __name__ == '__main__':
-  args = parser.parse_args()
-  values = dict(fonts=get_fonts(args.arg_filepaths))
-  runner = TestRunner(specification, values
+
+# FIXME: needed via a module!
+def init_runner(fonts, explicit_tests=None, custom_order=None):
+    # this values dict will probably get one or more specific blacklists
+    # for the google font project. It would be good if it was not necessary
+    # to copy paste this kind of configuration, thus a central init for
+    # the google/fonts repository would be good.
+    # This is more specific than specifications/googlefonts and should
+    # thus be in another module.
+    values = dict(fonts=fonts)
+    return TestRunner(specification, values
                      , explicit_tests=args.checkid
                      , custom_order=args.order
                      )
+
+if __name__ == '__main__':
+  args = parser.parse_args()
+  runner = init(fonts
+              , explicit_tests=args.checkid
+              , custom_order=args.order
+              )
 
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
