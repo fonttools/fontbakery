@@ -57,7 +57,7 @@ class FontbakeryCallable(object):
   @cached_getter
   def mandatoryArgs(self):
     argspec = getargspec(self._func)
-    args = argspec.args[:-len(defaults)] \
+    args = argspec.args[:-len(argspec.defaults)] \
              if argspec.defaults is not None else argspec.args
 
     if self._ignore_mandatory_args:
@@ -68,7 +68,7 @@ class FontbakeryCallable(object):
   @cached_getter
   def optionalArgs(self):
     argspec = getargspec(self._func)
-    return tuple(argspec.args[-len(defaults):] \
+    return tuple(argspec.args[-len(argspec.defaults):] \
              if argspec.defaults is not None else [])
 
   def __call__(self, *args, **kwds):
