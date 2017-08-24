@@ -16,6 +16,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import types
 from collections import OrderedDict, Counter
+from functools import partial
 from itertools import chain
 import sys
 import traceback
