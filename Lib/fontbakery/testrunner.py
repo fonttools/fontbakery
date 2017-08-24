@@ -141,6 +141,9 @@ END = Status('END', -5)
 class FontBakeryRunnerError(Exception):
   pass
 
+class CircularDependencyError(FontBakeryRunnerError):
+  pass
+
 class APIViolationError(FontBakeryRunnerError):
   def __init__(self, message, result, *args):
     self.message = message
@@ -233,7 +236,7 @@ class TestRunner(object):
       for name in values:
         if spec.has(name):
           raise SetupError('Values entry "{}" collides with spec '\
-                      'namespace as a {}'.format(k, spec.get_type(name)))
+                      'namespace as a {}'.format(name, spec.get_type(name)))
 
     self._spec = spec;
     # spec.validate(values)?
@@ -342,7 +345,7 @@ class TestRunner(object):
       path = []
     if name in path:
       raise CircularDependencyError('Condition "{0}" is a circular dependency in {1}'\
-                                  .format(condition, ' -> '.join(path)))
+                                  .format(name, ' -> '.join(path)))
     path.append(name)
 
     try:
