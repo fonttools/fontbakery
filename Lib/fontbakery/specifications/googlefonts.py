@@ -67,7 +67,6 @@ from fontbakery.utils import(
         get_FamilyProto_Message
       , get_name_string
       , get_bounding_box
-      , glyphHasInk
       , check_bit_entry
       , get_font_glyph_data
 )
@@ -1923,10 +1922,10 @@ def check_font_has_proper_whitespace_glyph_names(ttFont):
     id='com.google.fonts/test/049'
   , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
-def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
+def check_whitespace_glyphs_have_ink(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import getGlyph
-
+  from fontbakery.utils import (getGlyph
+                              , glyphHasInk)
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
     0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
@@ -1936,19 +1935,16 @@ def check_whitespace_glyphs_have_ink(ttFont, missing_whitespace_chars):
     0x3000, 0x180E, 0x200B, 0x200C, 0x200D, 0x2060,
     0xFEFF
   ]
-  if missing_whitespace_chars != []:
-    yield SKIP, "Because some whitespace glyphs are missing. Fix that before!"
-  else:
-    failed = False
-    for codepoint in WHITESPACE_CHARACTERS:
-      g = getGlyph(ttFont, codepoint)
-      if g is not None and glyphHasInk(ttFont, g):
-        failed = True
-        yield FAIL, ("Glyph \"{}\" has ink."
-                     " It needs to be replaced by"
-                     " an empty glyph.").format(g)
-    if not failed:
-      yield PASS, "There is no whitespace glyph with ink."
+  failed = False
+  for codepoint in WHITESPACE_CHARACTERS:
+    g = getGlyph(ttFont, codepoint)
+    if g is not None and glyphHasInk(ttFont, g):
+      failed = True
+      yield FAIL, ("Glyph \"{}\" has ink."
+                   " It needs to be replaced by"
+                   " an empty glyph.").format(g)
+  if not failed:
+    yield PASS, "There is no whitespace glyph with ink."
 
 
 @register_test
