@@ -70,7 +70,9 @@ setup(
     packages=['fontbakery',
               'fontbakery.reporters',
               'fontbakery.specifications',
-              'fontbakery.testadapters'],
+              'fontbakery.testadapters',
+              'fontbakery.commands'
+              ],
     scripts=[normalize_path('bin/fontbakery'),
              normalize_path('bin/fontbakery-build-font2ttf.py'),
              normalize_path('bin/fontbakery-build-fontmetadata.py'),
