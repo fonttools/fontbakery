@@ -1217,9 +1217,8 @@ def test_id_102():
                                    font_metadata)
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
-  meta = metadata("data/test/cabin/")
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(meta, ttFont)
+  font_meta = font_metadata(ttFont)
 
   # So it must FAIL the test:
   print ("Test FAIL with a bad copyright notice string...")
@@ -1241,9 +1240,8 @@ def test_id_109():
                                    metadata,
                                    font_metadata)
   # Our reference Cabin Regular is known to be good
-  meta = metadata("data/test/cabin/")
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(meta, ttFont)
+  font_meta = font_metadata(ttFont)
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
@@ -1272,9 +1270,9 @@ def test_id_110():
                                    metadata,
                                    font_metadata)
   # Our reference Cabin Regular is known to be good
-  family_meta = metadata("data/test/cabin/")
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(family_meta, ttFont)
+  font_meta = font_metadata(ttFont)
+  family_meta = metadata("data/test/cabin/")
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
@@ -1370,9 +1368,8 @@ def test_id_155():
                     font_metadata,
                     get_name_string)
   # Our reference Cabin Regular is known to be good
-  family_meta = metadata("data/test/cabin/")
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(family_meta, ttFont)
+  font_meta = font_metadata(ttFont)
 
   # So it must PASS the test:
   print ("Test PASS with a good METADATA.pb for this font...")

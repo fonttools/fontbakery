@@ -3235,9 +3235,16 @@ def check_regular_is_400(metadata):
 
 @register_condition
 @condition
-def font_metadata(metadata, ttFont):
+def font_metadata(ttFont):
+  family_directory = os.path.dirname(ttFont.reader.file.name)
+  pb_file = os.path.join(family_directory, "METADATA.pb")
+  if not os.path.exists(pb_file):
+    return None
+  metadata = get_FamilyProto_Message(pb_file)
+
   if not metadata:
-    return
+    return None
+
   for f in metadata.fonts:
     if ttFont.reader.file.name.endswith(f.filename):
       return f
@@ -3691,10 +3698,29 @@ def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
                  " match corresponding name table entries.")
 
 
+# TODO: Design special case handling for whitelists/blacklists
+# https://github.com/googlefonts/fontbakery/issues/1540
+@register_condition
+@condition
+def whitelist_camelcased_familyname(font):
+  familynames = [
+    "BenchNine",
+    "FakeFont",
+    "McLaren",
+    "MedievalSharp",
+    "UnifrakturCook",
+    "UnifrakturMaguntia"
+  ]
+  for familyname in familynames:
+    if familyname in font:
+      return True
+
+
 @register_test
 @test(
     id='com.google.fonts/test/109'
-  , conditions=['font_metadata']
+  , conditions=['font_metadata'
+              , 'not whitelist_camelcased_familyname']
 )
 def check_fontname_is_not_camel_cased(font_metadata):
   """Check if fontname is not camel cased."""
