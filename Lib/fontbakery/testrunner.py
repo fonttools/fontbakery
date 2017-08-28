@@ -605,7 +605,7 @@ class TestRunner(object):
       self._cache['order'] = order = tuple(order)
     return order
 
-  def check_order(order):
+  def check_order(self, order):
     """
       order must be a subset of self.order
     """
@@ -1138,10 +1138,12 @@ class Spec(object):
     return map(self.serialize_identity, order)
 
   def deserialize_order(self, serialized_order):
-    for key in serialized_order:
+    result = []
+    for item in serialized_order:
       item = json.loads(item)
       section = self._get_section(item['section'])
-      test, _ = self._get_test(item['test'])
+      test, _ = self.get_test(item['test'])
       # tuple of tuples instead list of lists
       iterargs = tuple(tuple(item) for item in item['iterargs'])
-      yield(section, test, item)
+      result.append((section, test, iterargs))
+    return tuple(result)

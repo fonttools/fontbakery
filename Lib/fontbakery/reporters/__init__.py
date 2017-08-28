@@ -69,10 +69,10 @@ class FontbakeryReporter(object):
       return self._indexes[key]
 
   def _set_order(self, order):
-    self._order = order
-    length = len(order)
+    self._order = tuple(order)
+    length = len(self._order)
     self._counter['(not finished)'] = length - len(self._results)
-    self._indexes = dict(zip(map(self._get_key, order), range(length)))
+    self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
 
   def _cleanup(self, (status, message, identity)):
     pass
