@@ -25,3 +25,12 @@ class Message(object):
 
   def __repr__(self):
     return '{1} [code: {0}]'.format(self.code, self.message)
+
+  def getData(self):
+    """ return a dictionary with data suitable for serialization,
+        i.e. only stuff that is allowed in JSON.
+    """
+    return {
+        'code': self.code
+      , 'message': self.message
+    }

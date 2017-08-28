@@ -20,6 +20,7 @@ from functools import partial
 from itertools import chain
 import sys
 import traceback
+import json
 
 class Status(object):
   """ If you create a custom Status symbol, please keep in mind that
@@ -246,6 +247,19 @@ class TestRunner(object):
       'conditions': {}
     , 'order': None
     }
+
+  @property
+  def iterargs(self):
+    """ uses the singular name as key """
+    iterargs = OrderedDict()
+    for name in self._iterargs:
+      plural = self._spec.iterargs[name]
+      iterargs[name] = tuple(self._values[plural])
+    return iterargs
+
+  @property
+  def specification(self):
+    return self._spec
 
   def _check_result(self, result):
     """ Check that the test returned a well formed result:
@@ -591,8 +605,23 @@ class TestRunner(object):
       self._cache['order'] = order = tuple(order)
     return order
 
-  def run(self):
+  def check_order(self, order):
+    """
+      order must be a subset of self.order
+    """
+    own_order = self.order
+    for item in order:
+      if item not in own_order:
+        raise ValueError('Order item {} not found.'.format(item))
+    return order
+
+  def run(self, order=None):
     testrun_summary = Counter()
+
+    if order is not None:
+      order = self.check_order(order)
+    else:
+      order = self.order
 
     # prepare: we'll have less ENDSECTION code in the actual run
     # also, we can prepare section_order tuples
@@ -600,7 +629,7 @@ class TestRunner(object):
     oldsection = None
     section_order = None
     section_orders = []
-    for section, test, iterargs in self.order:
+    for section, test, iterargs in order:
       if oldsection != section:
         if oldsection is not None:
           section_orders.append((oldsection, tuple(section_order)))
@@ -611,7 +640,7 @@ class TestRunner(object):
       section_orders.append((section, tuple(section_order)))
 
     # run
-    yield START, self.order, (None, None, None)
+    yield START, order, (None, None, None)
     section = None
     old_section = None
     for section, section_order in section_orders:
@@ -639,11 +668,16 @@ class Section(object):
     self.description = description
     self._add_test_callbacks = []
     self._tests = [] if tests is None else list(tests)
+    self._testid2index = {i:test.id for i, test in enumerate(self._tests)}
     # a list of iterarg-names
     self._order = order or []
 
   def __repr__(self):
     return '<Section: {0}>'.format(self.name)
+
+  def __eq__(self, other):
+    """ True if other.tests has the same tests in the same order"""
+    return self._tests == other.tests
 
   @property
   def order(self):
@@ -662,8 +696,13 @@ class Section(object):
     """
     for callback in self._add_test_callbacks:
       callback(self, test)
+    self._testid2index[test.id] = len(self._tests)
     self._tests.append(test)
     return test
+
+  def get_test(self, test_id):
+    index = self._testid2index[test_id]
+    return self._tests[index]
 
   def register_test(self, func):
     """
@@ -840,6 +879,7 @@ class Spec(object):
     """ Returns a tuple of all iterags for item, sorted by name."""
     # iterargs should always be mandatory, unless there's a good reason
     # not to, which I can't think of right now.
+
     args = self._get_aggregate_args(item, 'mandatoryArgs')
     return tuple(sorted([arg for arg in args if arg in self.iterargs]))
 
@@ -993,12 +1033,15 @@ class Spec(object):
         yield (section, test, iterargs)
 
   def _register_test(self, section, func):
-    key = '{}'.format(func)
-    other_section = self._test_registry.get(key, None)
+    other_section = self._test_registry.get(func.id, None)
     if other_section:
       raise SetupError('Test {} is already registered in {}, tried to '
-                       'register in {}.'.format(key, other_section, section))
-    self._test_registry[key] = section
+                       'register in {}.'.format(func, other_section, section))
+    self._test_registry[func.id] = section
+
+  def get_test(self, test_id):
+    section = self._test_registry[test_id]
+    return section.get_test(test_id), section
 
   def add_section(self, section):
     key = '{}'.format(section)
@@ -1012,6 +1055,9 @@ class Spec(object):
     section.on_add_test(self._register_test)
     for test in section.tests:
       self._register_test(section, test)
+
+  def _get_section(self, key):
+    return self._sections[key]
 
   def _add_test(self, section, func):
     self.add_section(section)
@@ -1066,4 +1112,38 @@ class Spec(object):
     else:
       return partial(self._add_condition, *args, **kwds)
 
+  def serialize_identity(self, identity):
+    """ Return a json string that can also  be used as a key.
 
+    The JSON is explicitly unambiguous in the item order
+    entries (dictionaries are not ordered usually)
+    Otherwise it is valid JSON
+    """
+    section, test, iterargs = identity
+    values = map(
+        # separators are without space, which is the default in JavaScript;
+        # just in case we need to make these keys in JS.
+        partial(json.dumps, separators=(',', ':'))
+        # iterargs are sorted, because it doesn't matter for the result
+        # but it gives more predictable keys.
+        # Though, arguably, the order generated by the spec is also good
+        # and conveys insights on how the order came to be (clustering of
+        # iterargs). `sorted(iterargs)` however is more robust over time,
+        # the keys will be the same, even if the sorting order changes.
+      , ['{}'.format(section), test.id, sorted(iterargs)]
+    )
+    return '{{"section":{},"test":{},"iterargs":{}}}'.format(*values)
+
+  def serialize_order(self, order):
+    return map(self.serialize_identity, order)
+
+  def deserialize_order(self, serialized_order):
+    result = []
+    for item in serialized_order:
+      item = json.loads(item)
+      section = self._get_section(item['section'])
+      test, _ = self.get_test(item['test'])
+      # tuple of tuples instead list of lists
+      iterargs = tuple(tuple(item) for item in item['iterargs'])
+      result.append((section, test, iterargs))
+    return tuple(result)
