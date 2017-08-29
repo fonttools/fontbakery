@@ -49,11 +49,11 @@ def get_bounding_box(font):
     return ymin, ymax
 
 
-def get_name_string(font,
-                    nameID,
-                    platformID=None,
-                    encodingID=None,
-                    langID=None):
+def get_name_entry_strings(font,
+                           nameID,
+                           platformID=None,
+                           encodingID=None,
+                           langID=None):
   results = []
   for entry in font['name'].names:
     if entry.nameID == nameID and \
@@ -62,6 +62,15 @@ def get_name_string(font,
        (langID is None or entry.langID == langID):
       results.append(entry.string.decode(entry.getEncoding()))
   return results
+
+
+def name_entry_id(name):
+  from fontbakery.constants import (NAMEID_STR,
+                                    PLATID_STR)
+  return "[{}({}):{}({})]".format(NAMEID_STR[name.nameID],
+                                  name.nameID,
+                                  PLATID_STR[name.platformID],
+                                  name.platformID)
 
 
 def getGlyph(font, uchar):
