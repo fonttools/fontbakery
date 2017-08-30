@@ -41,50 +41,6 @@ RIBBI_STYLE_NAMES = ["Regular",
                      "BoldItalic",
                      "Bold Italic"]  # <-- Do we really need this one?
 
-# Weight name to value mapping:
-WEIGHTS = {"Thin": 250,
-           "ExtraLight": 275,
-           "Light": 300,
-           "Regular": 400,
-           "Medium": 500,
-           "SemiBold": 600,
-           "Bold": 700,
-           "ExtraBold": 800,
-           "Black": 900}
-
-# FIXME: This needs review, since it seems a bit redundant
-#        with the above "WEIGHTS" dict.
-weights = {
-  "Thin": 100,
-  "ThinItalic": 100,
-  "ExtraLight": 200,
-  "ExtraLightItalic": 200,
-  "Light": 300,
-  "LightItalic": 300,
-  "Regular": 400,
-  "Italic": 400,
-  "Medium": 500,
-  "MediumItalic": 500,
-  "SemiBold": 600,
-  "SemiBoldItalic": 600,
-  "Bold": 700,
-  "BoldItalic": 700,
-  "ExtraBold": 800,
-  "ExtraBoldItalic": 800,
-  "Black": 900,
-  "BlackItalic": 900
-}
-
-# code-points for all "whitespace" chars:
-WHITESPACE_CHARACTERS = [
-  0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
-  0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002,
-  0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-  0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F,
-  0x3000, 0x180E, 0x200B, 0x200C, 0x200D, 0x2060,
-  0xFEFF
-]
-
 # nameID definitions for the name table:
 NAMEID_COPYRIGHT_NOTICE = 0
 NAMEID_FONT_FAMILY_NAME = 1
@@ -156,47 +112,43 @@ MACSTYLE_BOLD   = (1 << 0)
 MACSTYLE_ITALIC = (1 << 1)
 
 # Panose definitions:
-PANOSE_PROPORTION_ANY = 0
-PANOSE_PROPORTION_NO_FIT = 1
-PANOSE_PROPORTION_OLD_STYLE = 2
-PANOSE_PROPORTION_MODERN = 3
-PANOSE_PROPORTION_EVEN_WIDTH = 4
-PANOSE_PROPORTION_EXTENDED = 5
-PANOSE_PROPORTION_CONDENSED = 6
-PANOSE_PROPORTION_VERY_EXTENDED = 7
-PANOSE_PROPORTION_VERY_CONDENSED = 8
-PANOSE_PROPORTION_MONOSPACED = 9
+PANOSE_PROPORTION__ANY = 0
+PANOSE_PROPORTION__NO_FIT = 1
+PANOSE_PROPORTION__OLD_STYLE = 2
+PANOSE_PROPORTION__MODERN = 3
+PANOSE_PROPORTION__EVEN_WIDTH = 4
+PANOSE_PROPORTION__EXTENDED = 5
+PANOSE_PROPORTION__CONDENSED = 6
+PANOSE_PROPORTION__VERY_EXTENDED = 7
+PANOSE_PROPORTION__VERY_CONDENSED = 8
+PANOSE_PROPORTION__MONOSPACED = 9
 
 # 'post' table / isFixedWidth definitions:
-IS_FIXED_WIDTH_NOT_MONOSPACED = 0
-IS_FIXED_WIDTH_MONOSPACED = 1  # any non-zero value means monospaced
+IS_FIXED_WIDTH__NOT_MONOSPACED = 0
+IS_FIXED_WIDTH__MONOSPACED = 1  # any non-zero value means monospaced
 
 # Platform IDs:
-PLATFORM_ID_UNICODE = 0
-PLATFORM_ID_MACINTOSH = 1
-PLATFORM_ID_ISO = 2
-PLATFORM_ID_WINDOWS = 3
-PLATFORM_ID_CUSTOM = 4
+PLATFORM_ID__UNICODE = 0
+PLATFORM_ID__MACINTOSH = 1
+PLATFORM_ID__ISO = 2
+PLATFORM_ID__WINDOWS = 3
+PLATFORM_ID__CUSTOM = 4
 
 PLATID_STR = {
-  PLATFORM_ID_UNICODE: "UNICODE",
-  PLATFORM_ID_MACINTOSH: "MACINTOSH",
-  PLATFORM_ID_ISO: "ISO",
-  PLATFORM_ID_WINDOWS: "WINDOWS",
-  PLATFORM_ID_CUSTOM: "CUSTOM"
+  PLATFORM_ID__UNICODE: "UNICODE",
+  PLATFORM_ID__MACINTOSH: "MACINTOSH",
+  PLATFORM_ID__ISO: "ISO",
+  PLATFORM_ID__WINDOWS: "WINDOWS",
+  PLATFORM_ID__CUSTOM: "CUSTOM"
 }
 
-# Unicode platform-specific encoding IDs (when platID == 0):
-PLAT_ENC_ID_UNICODE_BMP_ONLY = 3
+# Unicode pladdtform-specific encoding IDs (when platID == 0):
+PLAT_ENC_ID__UNICODE_BMP_ONLY = 3
 
 # Windows platform-specific encoding IDs (when platID == 3):
-PLAT_ENC_ID_SYMBOL = 0
-PLAT_ENC_ID_UCS2 = 1
-PLAT_ENC_ID_UCS4 = 10
-
-# Windows-specific langIDs:
-LANG_ID_ENGLISH_USA = 0x0409
-LANG_ID_MACINTOSH_ENGLISH = 0
+PLAT_ENC_ID__SYMBOL = 0
+PLAT_ENC_ID__UCS2 = 1
+PLAT_ENC_ID__UCS4 = 10
 
 PLACEHOLDER_LICENSING_TEXT = {
     'OFL.txt': u'This Font Software is licensed under the SIL Open Font '

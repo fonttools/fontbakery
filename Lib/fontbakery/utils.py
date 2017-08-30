@@ -18,9 +18,9 @@ import re
 import sys
 import requests
 from fontbakery.constants import (
-                                 PLATFORM_ID_WINDOWS,
-                                 PLAT_ENC_ID_UCS2,
-                                 PLAT_ENC_ID_UCS4
+                                 PLATFORM_ID__WINDOWS,
+                                 PLAT_ENC_ID__UCS2,
+                                 PLAT_ENC_ID__UCS4
                                  )
 from fontTools import ttLib
 from fontTools.pens.areaPen import AreaPen
@@ -75,9 +75,9 @@ def name_entry_id(name):
 
 def getGlyph(font, uchar):
     for table in font['cmap'].tables:
-        if table.platformID == PLATFORM_ID_WINDOWS and\
-           table.platEncID in [PLAT_ENC_ID_UCS2,
-                               PLAT_ENC_ID_UCS4]:
+        if table.platformID == PLATFORM_ID__WINDOWS and\
+           table.platEncID in [PLAT_ENC_ID__UCS2,
+                               PLAT_ENC_ID__UCS4]:
           if uchar in table.cmap:
               return table.cmap[uchar]
 
