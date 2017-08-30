@@ -3,19 +3,20 @@ import argparse
 import os
 import tabulate
 from fontTools import ttLib
+from fontbakery.constants import (PLATFORM_ID__WINDOWS,
+                                  NAMEID_STR,
+                                  NAMEID_FONT_FAMILY_NAME,
+                                  NAMEID_FONT_SUBFAMILY_NAME,
+                                  NAMEID_FULL_FONT_NAME,
+                                  NAMEID_POSTSCRIPT_NAME,
+                                  NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                  NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                                  NAMEID_COMPATIBLE_FULL_MACONLY)
 
 parser = argparse.ArgumentParser(description=("Print out family"
                                               " metadata of the fonts"))
 parser.add_argument('font', nargs="+")
 parser.add_argument('--csv', default=False, action='store_true')
-
-
-def getByte2(i_value):
-    return i_value >> 8
-
-
-def getByte1(i_value):
-    return i_value & 255
 
 
 class FamilyMetadataTable(object):
@@ -35,30 +36,32 @@ class FamilyMetadataTable(object):
     def putrowToTable(self):
         self.rows.append(self.current_row)
 
+    def binary_string(self, value):
+        return "{:#010b} {:#010b}".format(value >> 8,
+                                          value & 0xFF).replace('0b', '')
     def putfsSelection(self, ttfont):
         self.addToHeader('fsSelection')
-        args = (getByte2(ttfont['OS/2'].fsSelection),
-                getByte1(ttfont['OS/2'].fsSelection))
-        self.current_row.append(("{:#010b}"
-                                 " {:#010b}").format(*args).replace('0b', ''))
+        self.current_row.append(self.binary_string(ttfont['OS/2'].fsSelection))
 
     def putmacStyle(self, ttfont):
         self.addToHeader('macStyle')
-        value = ttfont['head'].macStyle
-        args = getByte2(value), getByte1(value)
-        self.current_row.append(("{:#010b}"
-                                 " {:#010b}").format(*args).replace('0b', ''))
+        self.current_row.append(self.binary_string(ttfont['head'].macStyle))
 
-    def putnameIds(self, ttfont, platform=3):
-        nameids = ['1', '2', '4', '6', '16', '17', '18']
-        for nameid in nameids:
+    def putnameIds(self, ttfont, platform=PLATFORM_ID__WINDOWS):
+        for nameid in [NAMEID_FONT_FAMILY_NAME,
+                       NAMEID_FONT_SUBFAMILY_NAME,
+                       NAMEID_FULL_FONT_NAME,
+                       NAMEID_POSTSCRIPT_NAME,
+                       NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                       NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME,
+                       NAMEID_COMPATIBLE_FULL_MACONLY]:
             value = ''
             for name in ttfont['name'].names:
-                if str(name.nameID) == nameid and platform == name.platformID:
+                if nameid == name.nameID and platform == name.platformID:
                     value = name.string.decode(name.getEncoding()) or ''
                     break
 
-            self.addToHeader('id{}'.format(nameid))
+            self.addToHeader('{}:{}'.format(nameid, NAMEID_STR[nameid]))
             self.current_row.append(value)
 
     def putitalicAngle(self, ttfont):
