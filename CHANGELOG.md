@@ -1,9 +1,10 @@
-* 0.3.2 (2017-Aug-??):
+* 0.3.2 (2017-Sept-??):
   - whitelist: a few legacy CamelCased familynames (test/109)
   - fix computation of font_metadata condition
   - fix crash on fontbakery-check-font-version.py
   - add automated tests for the fixer scripts
   - deprecated pyfontaine tests (132 to 151)
+  - deprecated the unified name table entries test (test/017) spliting it up into new individual per-entry tests (156 to 162)
 
 * 0.3.1 (2017-Aug-11):
   - Emergencial release to address broken 0.3.0 packaging.

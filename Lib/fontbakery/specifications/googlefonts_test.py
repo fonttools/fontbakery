@@ -1362,11 +1362,11 @@ def test_id_155():
   """ Copyright field for this font on METADATA.pb matches
       all copyright notice entries on the name table ? """
   from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+  from fontbakery.utils import get_name_entry_strings
   from fontbakery.specifications.googlefonts import \
                    (check_METADATA_copyright_notices_match_name_table_entries,
                     metadata,
-                    font_metadata,
-                    get_name_string)
+                    font_metadata)
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   font_meta = font_metadata(ttFont)
@@ -1377,7 +1377,7 @@ def test_id_155():
   assert status == PASS
 
   # Then we FAIL with mismatching names:
-  good_value = get_name_string(ttFont, NAMEID_COPYRIGHT_NOTICE)[0]
+  good_value = get_name_entry_strings(ttFont, NAMEID_COPYRIGHT_NOTICE)[0]
   font_meta.copyright = good_value + "something bad"
   print ("Test FAIL with a bad METADATA.pb (with a copyright string not matching this font)...")
   status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
