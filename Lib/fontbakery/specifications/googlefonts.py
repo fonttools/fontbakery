@@ -23,20 +23,6 @@ from fontbakery.constants import(
 #     , NORMAL
 #     , LOW
 #     , TRIVIAL
-
-      , WEIGHTS
-      , weights
-      , IS_FIXED_WIDTH_MONOSPACED
-      , IS_FIXED_WIDTH_NOT_MONOSPACED
-      , PANOSE_PROPORTION_MONOSPACED
-      , PANOSE_PROPORTION_ANY
-)
-
-from fontbakery.utils import(
-        get_FamilyProto_Message
-      , get_bounding_box
-      , check_bit_entry
-      , get_font_glyph_data
 )
 
 default_section = Section('Default')
@@ -244,6 +230,8 @@ def check_DESCRIPTION_max_length(description):
 @register_condition
 @condition
 def metadata(family_directory):
+  from fontbakery.utils import get_FamilyProto_Message
+
   if family_directory:
     pb_file = os.path.join(family_directory, "METADATA.pb")
     if os.path.exists(pb_file):
@@ -612,7 +600,7 @@ def check_OS2_usWeightClass(ttFont, style):
   """Checking OS/2 usWeightClass
 
   The Google Font's API which serves the fonts can only serve
-  the following weights values with the  corresponding subfamily styles:
+  the following weights values with the corresponding subfamily styles:
 
   250, Thin
   275, ExtraLight
@@ -627,7 +615,16 @@ def check_OS2_usWeightClass(ttFont, style):
   Thin is not set to 100 because of legacy Windows GDI issues:
   https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
   """
-
+  # Weight name to value mapping:
+  GF_API_WEIGHTS = {"Thin": 250,
+                    "ExtraLight": 275,
+                    "Light": 300,
+                    "Regular": 400,
+                    "Medium": 500,
+                    "SemiBold": 600,
+                    "Bold": 700,
+                    "ExtraBold": 800,
+                    "Black": 900}
   if style == "Italic":
     weight_name = "Regular"
   elif style.endswith("Italic"):
@@ -636,7 +633,7 @@ def check_OS2_usWeightClass(ttFont, style):
     weight_name = style
 
   value = ttFont['OS/2'].usWeightClass
-  expected = WEIGHTS[weight_name]
+  expected = GF_API_WEIGHTS[weight_name]
   if value != expected:
     yield FAIL, ("OS/2 usWeightClass expected value for"
                  " '{}' is {} but this font has"
@@ -938,6 +935,10 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
 
      Also we should report an error for glyphs not of average width
   """
+  from fontbakery.constants import (IS_FIXED_WIDTH__MONOSPACED,
+                                    IS_FIXED_WIDTH__NOT_MONOSPACED,
+                                    PANOSE_PROPORTION__MONOSPACED,
+                                    PANOSE_PROPORTION__ANY)
   failed = False
   # Note: These values are read from the dict here only to
   # reduce the max line length in the test implementation below:
@@ -952,20 +953,20 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
                  " {} instead.").format(width_max,
                                         ttFont['hhea'].advanceWidthMax)
   if seems_monospaced:
-    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_MONOSPACED:
+    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__MONOSPACED:
       failed = True
       yield FAIL, ("On monospaced fonts, the value of"
                    "post.isFixedPitch must be set to {}"
                    " (fixed width monospaced),"
-                   " but got {} instead.").format(IS_FIXED_WIDTH_MONOSPACED,
+                   " but got {} instead.").format(IS_FIXED_WIDTH__MONOSPACED,
                                                   ttFont['post'].isFixedPitch)
 
-    if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION_MONOSPACED:
+    if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION__MONOSPACED:
       failed = True
       yield FAIL, ("On monospaced fonts, the value of"
                    "OS/2.panose.bProportion must be set to {}"
                    " (proportion: monospaced), but got"
-                   " {} instead.").format(PANOSE_PROPORTION_MONOSPACED,
+                   " {} instead.").format(PANOSE_PROPORTION__MONOSPACED,
                                           ttFont['OS/2'].panose.bProportion)
 
     num_glyphs = len(ttFont['glyf'].glyphs)
@@ -990,22 +991,22 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
     # it is a non-monospaced font, so lets make sure
     # that all monospace-related metadata is properly unset.
 
-    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH_NOT_MONOSPACED:
+    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__NOT_MONOSPACED:
       failed = True
       yield FAIL, ("On non-monospaced fonts, the"
                    " post.isFixedPitch value must be set to {}"
                    " (fixed width not monospaced), but got"
-                   " {} instead.").format(IS_FIXED_WIDTH_NOT_MONOSPACED,
+                   " {} instead.").format(IS_FIXED_WIDTH__NOT_MONOSPACED,
                                           ttFont['post'].isFixedPitch)
 
-    if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION_MONOSPACED:
+    if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION__MONOSPACED:
       failed = True
       yield FAIL, ("On non-monospaced fonts, the"
                    " OS/2.panose.bProportion value must be set to {}"
                    " (proportion: any), but got"
                    " {} (proportion: monospaced)"
-                   " instead.").format(PANOSE_PROPORTION_ANY,
-                                       PANOSE_PROPORTION_MONOSPACED)
+                   " instead.").format(PANOSE_PROPORTION__ANY,
+                                       PANOSE_PROPORTION__MONOSPACED)
     if not failed:
       yield PASS, "Font is not monospaced and all related metadata look good."
 
@@ -1383,6 +1384,7 @@ def perform_all_fontforge_checks(fontforge_check_results,
 @register_condition
 @condition
 def vmetrics(ttFonts):
+  from fontbakery.utils import get_bounding_box
   v_metrics = {"ymin": 0, "ymax": 0}
   for ttFont in ttFonts:
     font_ymin, font_ymax = get_bounding_box(ttFont)
@@ -3076,6 +3078,8 @@ def check_regular_is_400(metadata):
 @register_condition
 @condition
 def font_metadata(ttFont):
+  from fontbakery.utils import get_FamilyProto_Message
+
   family_directory = os.path.dirname(ttFont.reader.file.name)
   pb_file = os.path.join(family_directory, "METADATA.pb")
   if not os.path.exists(pb_file):
@@ -3661,8 +3665,28 @@ def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
 )
 def check_Metadata_weight_matches_postScriptName(font_metadata):
   """Metadata weight matches postScriptName"""
+  WEIGHTS = {
+    "Thin": 100,
+    "ThinItalic": 100,
+    "ExtraLight": 200,
+    "ExtraLightItalic": 200,
+    "Light": 300,
+    "LightItalic": 300,
+    "Regular": 400,
+    "Italic": 400,
+    "Medium": 500,
+    "MediumItalic": 500,
+    "SemiBold": 600,
+    "SemiBoldItalic": 600,
+    "Bold": 700,
+    "BoldItalic": 700,
+    "ExtraBold": 800,
+    "ExtraBoldItalic": 800,
+    "Black": 900,
+    "BlackItalic": 900
+  }
   pair = []
-  for k, weight in weights.items():
+  for k, weight in WEIGHTS.items():
     if weight == font_metadata.weight:
       pair.append((k, weight))
 
@@ -3691,7 +3715,26 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
   """METADATA.pb lists fonts named canonicaly ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
-
+  WEIGHTS = {
+    "Thin": 100,
+    "ThinItalic": 100,
+    "ExtraLight": 200,
+    "ExtraLightItalic": 200,
+    "Light": 300,
+    "LightItalic": 300,
+    "Regular": 400,
+    "Italic": 400,
+    "Medium": 500,
+    "MediumItalic": 500,
+    "SemiBold": 600,
+    "SemiBoldItalic": 600,
+    "Bold": 700,
+    "BoldItalic": 700,
+    "ExtraBold": 800,
+    "ExtraBoldItalic": 800,
+    "Black": 900,
+    "BlackItalic": 900
+  }
   font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
   if len(font_familyname) == 0:
     yield SKIP, ("Skipping this test due to the lack"
@@ -3701,12 +3744,12 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
     # FIXME: common condition/name-id check as in test/108.
 
     is_canonical = False
-    _weights = []
-    for value, intvalue in weights.items():
+    weights = []
+    for value, intvalue in WEIGHTS.items():
       if intvalue == ttFont["OS/2"].usWeightClass:
-        _weights.append(value)
+        weights.append(value)
 
-    for w in _weights:
+    for w in weights:
       canonical_name = "{} {}".format(font_familyname, w)
       if font_metadata.full_name == canonical_name:
         is_canonical = True
@@ -3714,7 +3757,7 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
     if is_canonical:
       yield PASS, "METADATA.pb lists fonts named canonicaly."
     else:
-      v = map(lambda x: font_familyname + " " + x, _weights)
+      v = map(lambda x: font_familyname + " " + x, weights)
       yield FAIL, ("Canonical name in font: Expected \"{}\""
                    " but got \"{}\" instead.").format("\" or \"".join(v),
                                                       font_metadata.full_name)
@@ -3898,6 +3941,7 @@ def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
 )
 def check_OS2_fsSelection(ttFont, style):
   """Checking OS/2 fsSelection value."""
+  from fontbakery.utils import check_bit_entry
   from fontbakery.constants import (STYLE_NAMES,
                                     RIBBI_STYLE_NAMES,
                                     FSSEL_REGULAR,
@@ -3974,6 +4018,7 @@ def check_post_italicAngle(ttFont, style):
 )
 def check_head_macStyle(ttFont, style):
   """Checking head.macStyle value."""
+  from fontbakery.utils import check_bit_entry
   from fontbakery.constants import (MACSTYLE_ITALIC,
                                     MACSTYLE_BOLD)
   # Checking macStyle ITALIC bit:
@@ -3985,10 +4030,10 @@ def check_head_macStyle(ttFont, style):
 
   # Checking macStyle BOLD bit:
   expected = style in ["Bold", "BoldItalic"]
-  check_bit_entry(ttFont, "head", "macStyle",
-                  expected,
-                  bitmask=MACSTYLE_BOLD,
-                  bitname="BOLD")
+  yield check_bit_entry(ttFont, "head", "macStyle",
+                        expected,
+                        bitmask=MACSTYLE_BOLD,
+                        bitname="BOLD")
 
 # DEPRECATED CHECKS:
 # com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."
@@ -4040,6 +4085,7 @@ def check_glyphs_have_recommended_contour_count(ttFont):
   """Check if each glyph has the recommended amount of contours.
   This test is useful to check if glyphs are incorrectly constructed."""
   from fontbakery.glyphdata import desired_glyph_data
+  from fontbakery.utils import get_font_glyph_data
 
   bad_glyphs = []
   desired_glyph_contours = {f: desired_glyph_data[f]['contours']
@@ -4204,17 +4250,17 @@ def check_name_table_FONT_FAMILY_NAME(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    PLATFORM_ID_MACINTOSH,
-                                    PLATFORM_ID_WINDOWS)
+                                    PLATFORM_ID__MACINTOSH,
+                                    PLATFORM_ID__WINDOWS)
   failed = False
   only_weight = get_only_weight(style)
   for name in ttFont['name'].names:
     if name.nameID == NAMEID_FONT_FAMILY_NAME:
 
-      if name.platformID == PLATFORM_ID_MACINTOSH:
+      if name.platformID == PLATFORM_ID__MACINTOSH:
         expected_value = familyname_with_spaces
 
-      elif name.platformID == PLATFORM_ID_WINDOWS:
+      elif name.platformID == PLATFORM_ID__WINDOWS:
         if style in ['Regular',
                      'Italic',
                      'Bold',
@@ -4250,8 +4296,8 @@ def check_name_table_FONT_SUBFAMILY_NAME(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
   from fontbakery.constants import (NAMEID_FONT_SUBFAMILY_NAME,
-                                    PLATFORM_ID_MACINTOSH,
-                                    PLATFORM_ID_WINDOWS,
+                                    PLATFORM_ID__MACINTOSH,
+                                    PLATFORM_ID__WINDOWS,
                                     STYLE_NAMES)
   failed = False
   only_weight = get_only_weight(style)
@@ -4267,10 +4313,10 @@ def check_name_table_FONT_SUBFAMILY_NAME(ttFont, style, familyname_with_spaces):
         failed = True
         continue
 
-      if name.platformID == PLATFORM_ID_MACINTOSH:
+      if name.platformID == PLATFORM_ID__MACINTOSH:
         expected_value = style_with_spaces
 
-      elif name.platformID == PLATFORM_ID_WINDOWS:
+      elif name.platformID == PLATFORM_ID__WINDOWS:
         if style_with_spaces in ["Bold", "Bold Italic"]:
           expected_value = style_with_spaces
         else:
