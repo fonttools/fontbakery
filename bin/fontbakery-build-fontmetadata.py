@@ -38,13 +38,13 @@ import StringIO
 import sys
 import re
 from fontbakery.fonts_public_pb2 import FamilyProto
+from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
+                                  NAMEID_FONT_SUBFAMILY_NAME)
 
 try:
-  from PIL import (
-                  Image,
-                  ImageDraw,
-                  ImageFont
-                  )
+  from PIL import (Image,
+                   ImageDraw,
+                   ImageFont)
 except:
   sys.exit("Needs pillow.\n\nsudo pip install pillow")
 
@@ -60,12 +60,10 @@ except:
   sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
 
 try:
-  from flask import (
-                    Flask,
-                    jsonify,
-                    request,
-                    send_from_directory
-                    )
+  from flask import (Flask,
+                     jsonify,
+                     request,
+                     send_from_directory)
 
 except:
   sys.exit("Needs flask.\n\nsudo pip install flask")
@@ -93,33 +91,6 @@ BLACKLIST = [
   "Rubik",
 ]
 
-# nameID definitions for the name table:
-NAMEID_COPYRIGHT_NOTICE = 0
-NAMEID_FONT_FAMILY_NAME = 1
-NAMEID_FONT_SUBFAMILY_NAME = 2
-NAMEID_UNIQUE_FONT_IDENTIFIER = 3
-NAMEID_FULL_FONT_NAME = 4
-NAMEID_VERSION_STRING = 5
-NAMEID_POSTSCRIPT_NAME = 6
-NAMEID_TRADEMARK = 7
-NAMEID_MANUFACTURER_NAME = 8
-NAMEID_DESIGNER = 9
-NAMEID_DESCRIPTION = 10
-NAMEID_VENDOR_URL = 11
-NAMEID_DESIGNER_URL = 12
-NAMEID_LICENSE_DESCRIPTION = 13
-NAMEID_LICENSE_INFO_URL = 14
-# Name ID 15 is RESERVED
-NAMEID_TYPOGRAPHIC_FAMILY_NAME = 16
-NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME = 17
-NAMEID_COMPATIBLE_FULL_MACONLY = 18
-NAMEID_SAMPLE_TEXT = 19
-NAMEID_POSTSCRIPT_CID_NAME = 20
-NAMEID_WWS_FAMILY_NAME = 21
-NAMEID_WWS_SUBFAMILY_NAME = 22
-NAMEID_LIGHT_BACKGROUND_PALETTE = 23
-NAMEID_DARK_BACKGROUD_PALETTE = 24
-
 def generate_italic_angle_images():
   for i in range(10):
     angle = 30*(float(i)/10) * 3.1415/180
@@ -139,7 +110,6 @@ def generate_italic_angle_images():
     filepath = os.path.join(imagesdir, "angle_{}.png".format(i+1))
     im.save(filepath, "PNG")
 
-generate_italic_angle_images()
 
 def get_FamilyProto_Message(path):
     message = FamilyProto()
@@ -176,233 +146,9 @@ ITALIC_ANGLE_TEMPLATE = """
      style="background:url(fontmetadata_tool/images/angle_%d.png) 0 0 no-repeat;" />
 """
 
-
-
-description = """Calculates the visual weight, width or italic angle of fonts.
-
-  For width, it just measures the width of how a particular piece of text renders.
-
-  For weight, it measures the darkness of a piece of text.
-
-  For italic angle it defaults to the italicAngle property of the font.
-
-  Then it starts a HTTP server and shows you the results, or
-  if you pass --debug then it just prints the values.
-
-  Example (all Google Fonts files, all existing data):
-    compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
-"""
-parser = argparse.ArgumentParser(description=description)
-parser.add_argument("-f", "--files", default="*", required=True, nargs="+",
-                    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
-parser.add_argument("-d", "--debug", default=False, action='store_true',
-                    help="Debug mode, just print results")
-parser.add_argument("-e", "--existing", default=False,
-                    help="Path to existing font-metadata.csv")
-parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
-                    help="Only process fonts for which metadata is not available yet")
-parser.add_argument("-o", "--output", default="output.csv", required=True,
-                    help="CSV data output filename")
-
-
-def main():
-  args = parser.parse_args()
-
-  # show help if no args
-  if len(sys.argv) <= 1:
-    parser.print_help()
-    sys.exit(0)
-
-  files_to_process = []
-  for pattern in args.files:
-    files_to_process.extend(glob.glob(pattern))
-
-  if len(files_to_process) == 0:
-    sys.exit("No font files were found!")
-
-  if args.missingmetadata:
-    if args.existing == False:
-      sys.exit("you must use the --existing attribute in conjunction with --missingmetadata")
-    else:
-      rejected = []
-      with open(args.existing, 'rb') as csvfile:
-        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
-        next(existing_data) # skip first row as its not data
-        for row in existing_data:
-          name = row[0].split(':')[0]
-          if ' ' in name:
-            name = ''.join(name.split(' '))
-          for f, fname in enumerate(files_to_process):
-            if name in fname:
-              files_to_process.pop(f)
-              rejected.append(fname + ":" + row[0])
-
-      print("These files were removed from the list:\n" + '\n'.join(rejected))
-
-  # analyse fonts
-  fontinfo = analyse_fonts(files_to_process)
-
-  if fontinfo == {}:
-    sys.exit("All specified fonts are blacklisted!")
-
-
-  # normalise weights
-  weights = []
-  for key in sorted(fontinfo.keys()):
-    weights.append(fontinfo[key]["weight"])
-  ints = map_to_int_range(weights)
-  for count, key in enumerate(sorted(fontinfo.keys())):
-    fontinfo[key]['weight_int'] = ints[count]
-
-  # normalise widths
-  widths = []
-  for key in sorted(fontinfo.keys()):
-    widths.append(fontinfo[key]["width"])
-  ints = map_to_int_range(widths)
-  for count, key in enumerate(sorted(fontinfo.keys())):
-    fontinfo[key]['width_int'] = ints[count]
-
-  # normalise angles
-  angles = []
-  for fontfile in sorted(fontinfo.keys()):
-    angle = abs(fontinfo[fontfile]["angle"])
-    angles.append(angle)
-  ints = map_to_int_range(angles)
-  for count, key in enumerate(sorted(fontinfo.keys())):
-    fontinfo[key]['angle_int'] = ints[count]
-
-  # include existing values
-  if args.existing and args.missingmetadata == False:
-    with open(args.existing, 'rb') as csvfile:
-        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
-        next(existing_data) # skip first row as its not data
-        for row in existing_data:
-          gfn = row[0]
-          fontinfo[gfn] = {"weight": "None",
-                           "weight_int": row[1],
-                           "width": "None",
-                           "width_int": row[3],
-                           "angle": "None",
-                           "angle_int": row[2],
-                           "img_weight": None,
-                           "img_width": None,
-                           "usage": row[4],
-                           "gfn": gfn
-                          }
-
-  # if we are debugging, just print the stuff
-  if args.debug:
-    items = ["weight", "weight_int", "width", "width_int",
-             "angle", "angle_int", "usage", "gfn"]
-    for key in sorted(fontinfo.keys()):
-       print fontinfo[key]["fontfile"],
-       for item in items:
-         print fontinfo[key][item],
-       print ""
-    sys.exit(0)
-
-  # generate data for the web server
-  # double(<unit>, <precision>, <decimal_point>, <thousands_separator>, <show_unit_before_number>, <nansymbol>)
-  grid_data = {
-    "metadata": [
-      {"name":"fontfile","label":"filename","datatype":"string","editable":True},
-      {"name":"gfn","label":"GFN","datatype":"string","editable":True},
-      {"name":"weight","label":"weight","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
-      {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
-      {"name":"width","label":"width","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
-      {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
-      {"name":"usage","label":"USAGE","datatype":"string","editable":True,
-        "values": {"header":"header", "body":"body", "unknown":"unknown"}
-      },
-      {"name":"angle","label":"angle","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
-      {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
-      {"name":"image","label":"image","datatype":"html","editable":False},
-    ],
-    "data": []
-  }
-
-  #renders a sample of a few glyphs and
-  #returns a PNG image as base64 data
-  def render_slant_chars(fontfile):
-    SAMPLE_CHARS = "HNHNUHNHN"
-    font = ImageFont.truetype(fontfile, FONT_SIZE * 10)
-    try:
-      text_width, text_height = font.getsize(SAMPLE_CHARS)
-    except:
-      text_width, text_height = 1, 1
-    img = Image.new('RGBA', (text_width, 20+text_height))
-    draw = ImageDraw.Draw(img)
-    try:
-      draw.text((0, 0), SAMPLE_CHARS, font=font, fill=(0, 0, 0))
-    except:
-      pass
-    return get_base64_image(img)
-
-  field_id = 1
-  for key in fontinfo:
-    values = fontinfo[key]
-    if values["gfn"] == "unknown":
-      continue
-    img_weight_html, img_width_html = "", ""
-    if values["img_weight"] is not None:
-      img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_weight"])
-      #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_width"])
-
-    img_angle_html = ""
-    if ".ttf" in values["fontfile"]:
-      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_slant_chars(values["fontfile"]), values["angle_int"])
-
-    values["image"] = img_weight_html
-    values["angle_image"] = img_angle_html
-    grid_data["data"].append({"id": field_id, "values": values})
-    field_id += 1
-
-  def save_csv():
-    filename = args.output
-    #count = 0
-    #while os.isfile(filename):
-    #  print filename, "exists, trying", filename + count
-    #  filename = filename + count
-    with open(filename, 'wb') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"')
-        writer.writerow(["GFN","FWE","FIA","FWI","USAGE"]) # first row has the headers
-        for data in grid_data["data"]:
-          values = data["values"]
-          gfn = values['gfn']
-          fwe = values['weight_int']
-          fia = values['angle_int']
-          fwi = values['width_int']
-          usage = values['usage']
-          writer.writerow([gfn, fwe, fia, fwi, usage])
-    return 'ok'
-
-  app = Flask(__name__)
-
-  @app.route('/fontmetadata_tool/<path:path>')
-  def send_js(path):
-    return send_from_directory(os.path.dirname(__file__) + '/fontmetadata_tool/', path)
-
-  @app.route('/data.json')
-  def json_data():
-    return jsonify(grid_data)
-
-  @app.route('/update', methods=['POST'])
-  def update():
-    rowid = request.form['id']
-    newvalue = request.form['newvalue']
-    colname = request.form['colname']
-    for row in grid_data["data"]:
-      if row['id'] == int(rowid):
-        row['values'][colname] = newvalue
-    return save_csv()
-
-  print "Access http://127.0.0.1:5000/fontmetadata_tool/index.html\n"
-  app.run()
-
 #====================================================================
 # Here we copy/paste and adapt a bunch of code
 # from https://github.com/google/fonts/blob/master/tools/add_font.py
-# following the policy of keeping this script standalone.
 #====================================================================
 
 class Error(Exception):
@@ -679,6 +425,229 @@ def get_x_height(fontfile):
   font = ImageFont.truetype(fontfile, FONT_SIZE)
   _, x_height = font.getsize("x")
   return x_height
+
+
+description = """Calculates the visual weight, width or italic angle of fonts.
+
+  For width, it just measures the width of how a particular piece of text renders.
+
+  For weight, it measures the darkness of a piece of text.
+
+  For italic angle it defaults to the italicAngle property of the font.
+
+  Then it starts a HTTP server and shows you the results, or
+  if you pass --debug then it just prints the values.
+
+  Example (all Google Fonts files, all existing data):
+    compute_font_metrics.py --files="fonts/*/*/*.ttf" --existing=fonts/tools/font-metadata.csv
+"""
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument("-f", "--files", default="*", required=True, nargs="+",
+                    help="The pattern to match for finding ttfs, eg 'folder_with_fonts/*.ttf'.")
+parser.add_argument("-d", "--debug", default=False, action='store_true',
+                    help="Debug mode, just print results")
+parser.add_argument("-e", "--existing", default=False,
+                    help="Path to existing font-metadata.csv")
+parser.add_argument("-m", "--missingmetadata", default=False, action='store_true',
+                    help="Only process fonts for which metadata is not available yet")
+parser.add_argument("-o", "--output", default="output.csv", required=True,
+                    help="CSV data output filename")
+
+
+def main():
+  args = parser.parse_args()
+
+  # show help if no args
+  if len(sys.argv) <= 1:
+    parser.print_help()
+    sys.exit(0)
+
+  files_to_process = []
+  for pattern in args.files:
+    files_to_process.extend(glob.glob(pattern))
+
+  if len(files_to_process) == 0:
+    sys.exit("No font files were found!")
+
+  if args.missingmetadata:
+    if args.existing == False:
+      sys.exit("you must use the --existing attribute in conjunction with --missingmetadata")
+    else:
+      rejected = []
+      with open(args.existing, 'rb') as csvfile:
+        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
+        next(existing_data) # skip first row as its not data
+        for row in existing_data:
+          name = row[0].split(':')[0]
+          if ' ' in name:
+            name = ''.join(name.split(' '))
+          for f, fname in enumerate(files_to_process):
+            if name in fname:
+              files_to_process.pop(f)
+              rejected.append(fname + ":" + row[0])
+
+      print("These files were removed from the list:\n" + '\n'.join(rejected))
+
+  # analyse fonts
+  fontinfo = analyse_fonts(files_to_process)
+
+  if fontinfo == {}:
+    sys.exit("All specified fonts are blacklisted!")
+
+
+  # normalise weights
+  weights = []
+  for key in sorted(fontinfo.keys()):
+    weights.append(fontinfo[key]["weight"])
+  ints = map_to_int_range(weights)
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['weight_int'] = ints[count]
+
+  # normalise widths
+  widths = []
+  for key in sorted(fontinfo.keys()):
+    widths.append(fontinfo[key]["width"])
+  ints = map_to_int_range(widths)
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['width_int'] = ints[count]
+
+  # normalise angles
+  angles = []
+  for fontfile in sorted(fontinfo.keys()):
+    angle = abs(fontinfo[fontfile]["angle"])
+    angles.append(angle)
+  ints = map_to_int_range(angles)
+  for count, key in enumerate(sorted(fontinfo.keys())):
+    fontinfo[key]['angle_int'] = ints[count]
+
+  # include existing values
+  if args.existing and args.missingmetadata == False:
+    with open(args.existing, 'rb') as csvfile:
+        existing_data = csv.reader(csvfile, delimiter=',', quotechar='"')
+        next(existing_data) # skip first row as its not data
+        for row in existing_data:
+          gfn = row[0]
+          fontinfo[gfn] = {"weight": "None",
+                           "weight_int": row[1],
+                           "width": "None",
+                           "width_int": row[3],
+                           "angle": "None",
+                           "angle_int": row[2],
+                           "img_weight": None,
+                           "img_width": None,
+                           "usage": row[4],
+                           "gfn": gfn
+                          }
+
+  # if we are debugging, just print the stuff
+  if args.debug:
+    items = ["weight", "weight_int", "width", "width_int",
+             "angle", "angle_int", "usage", "gfn"]
+    for key in sorted(fontinfo.keys()):
+       print fontinfo[key]["fontfile"],
+       for item in items:
+         print fontinfo[key][item],
+       print ""
+    sys.exit(0)
+
+  # generate data for the web server
+  # double(<unit>, <precision>, <decimal_point>, <thousands_separator>, <show_unit_before_number>, <nansymbol>)
+  grid_data = {
+    "metadata": [
+      {"name":"fontfile","label":"filename","datatype":"string","editable":True},
+      {"name":"gfn","label":"GFN","datatype":"string","editable":True},
+      {"name":"weight","label":"weight","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
+      {"name":"weight_int","label":"WEIGHT_INT","datatype":"integer","editable":True},
+      {"name":"width","label":"width","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
+      {"name":"width_int","label":"WIDTH_INT","datatype":"integer","editable":True},
+      {"name":"usage","label":"USAGE","datatype":"string","editable":True,
+        "values": {"header":"header", "body":"body", "unknown":"unknown"}
+      },
+      {"name":"angle","label":"angle","datatype":"double(, 2, dot, comma, 0, n/a)","editable":True},
+      {"name":"angle_int","label":"ANGLE_INT","datatype":"integer","editable":True},
+      {"name":"image","label":"image","datatype":"html","editable":False},
+    ],
+    "data": []
+  }
+  generate_italic_angle_images()
+
+  #renders a sample of a few glyphs and
+  #returns a PNG image as base64 data
+  def render_slant_chars(fontfile):
+    SAMPLE_CHARS = "HNHNUHNHN"
+    font = ImageFont.truetype(fontfile, FONT_SIZE * 10)
+    try:
+      text_width, text_height = font.getsize(SAMPLE_CHARS)
+    except:
+      text_width, text_height = 1, 1
+    img = Image.new('RGBA', (text_width, 20+text_height))
+    draw = ImageDraw.Draw(img)
+    try:
+      draw.text((0, 0), SAMPLE_CHARS, font=font, fill=(0, 0, 0))
+    except:
+      pass
+    return get_base64_image(img)
+
+  field_id = 1
+  for key in fontinfo:
+    values = fontinfo[key]
+    if values["gfn"] == "unknown":
+      continue
+    img_weight_html, img_width_html = "", ""
+    if values["img_weight"] is not None:
+      img_weight_html = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_weight"])
+      #img_width_html  = "<img height='50%%' src='data:image/png;base64,%s' />" % (values["img_width"])
+
+    img_angle_html = ""
+    if ".ttf" in values["fontfile"]:
+      img_angle_html = ITALIC_ANGLE_TEMPLATE % (render_slant_chars(values["fontfile"]), values["angle_int"])
+
+    values["image"] = img_weight_html
+    values["angle_image"] = img_angle_html
+    grid_data["data"].append({"id": field_id, "values": values})
+    field_id += 1
+
+  def save_csv():
+    filename = args.output
+    #count = 0
+    #while os.isfile(filename):
+    #  print filename, "exists, trying", filename + count
+    #  filename = filename + count
+    with open(filename, 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"')
+        writer.writerow(["GFN","FWE","FIA","FWI","USAGE"]) # first row has the headers
+        for data in grid_data["data"]:
+          values = data["values"]
+          gfn = values['gfn']
+          fwe = values['weight_int']
+          fia = values['angle_int']
+          fwi = values['width_int']
+          usage = values['usage']
+          writer.writerow([gfn, fwe, fia, fwi, usage])
+    return 'ok'
+
+  app = Flask(__name__)
+
+  @app.route('/fontmetadata_tool/<path:path>')
+  def send_js(path):
+    return send_from_directory(os.path.dirname(__file__) + '/fontmetadata_tool/', path)
+
+  @app.route('/data.json')
+  def json_data():
+    return jsonify(grid_data)
+
+  @app.route('/update', methods=['POST'])
+  def update():
+    rowid = request.form['id']
+    newvalue = request.form['newvalue']
+    colname = request.form['colname']
+    for row in grid_data["data"]:
+      if row['id'] == int(rowid):
+        row['values'][colname] = newvalue
+    return save_csv()
+
+  print "Access http://127.0.0.1:5000/fontmetadata_tool/index.html\n"
+  app.run()
 
 
 if __name__ == "__main__":
