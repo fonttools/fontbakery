@@ -24,33 +24,13 @@ from fontbakery.constants import(
 #     , LOW
 #     , TRIVIAL
 
-      , NAMEID_MANUFACTURER_NAME
-      , NAMEID_VERSION_STRING
-
-      , STYLE_NAMES
-      , PLATFORM_ID_MACINTOSH
-      , PLATFORM_ID_WINDOWS
-      , NAMEID_STR
-      , PLATID_STR
       , WEIGHTS
       , weights
       , IS_FIXED_WIDTH_MONOSPACED
       , IS_FIXED_WIDTH_NOT_MONOSPACED
       , PANOSE_PROPORTION_MONOSPACED
       , PANOSE_PROPORTION_ANY
-      , MACSTYLE_BOLD
-      , MACSTYLE_ITALIC
-      , FSSEL_ITALIC
-      , FSSEL_BOLD
-      , FSSEL_REGULAR
 )
-
-TTFAUTOHINT_MISSING_MSG = (
-  "ttfautohint is not available!"
-  " You really MUST check the fonts with this tool."
-  " To install it, see https://github.com"
-  "/googlefonts/gf-docs/blob/master"
-  "/ProjectChecklist.md#ttfautohint")
 
 from fontbakery.utils import(
         get_FamilyProto_Message
@@ -92,6 +72,8 @@ def check_file_is_named_canonically(font):
 
   e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf
   """
+  from fontbakery.constants import STYLE_NAMES
+
   file_path, filename = os.path.split(font)
   basename = os.path.splitext(filename)[0]
   # remove spaces in style names
@@ -542,6 +524,7 @@ def registered_vendor_ids():
 def check_OS2_achVendID(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID"""
   from unidecode import unidecode
+  from fontbakery.constants import NAMEID_MANUFACTURER_NAME
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
     " You should set it to your own 4 character code,"
@@ -733,7 +716,9 @@ def check_copyright_entries_match_license(ttFont, license):
   """Check copyright namerecords match license file"""
   from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
                                     NAMEID_LICENSE_INFO_URL,
-                                    PLACEHOLDER_LICENSING_TEXT)
+                                    PLACEHOLDER_LICENSING_TEXT,
+                                    NAMEID_STR,
+                                    PLATID_STR)
   from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
@@ -1546,6 +1531,7 @@ def parse_version_string(s):
 
 
 def get_expected_version(f):
+  from fontbakery.constants import NAMEID_VERSION_STRING
   expected_version = parse_version_string(str(f["head"].fontRevision))
   for name in f["name"].names:
     if name.nameID == NAMEID_VERSION_STRING:
@@ -1565,6 +1551,7 @@ def get_expected_version(f):
 def check_font_version_fields(ttFont):
   """Checking font version fields"""
   import re
+  from fontbakery.constants import NAMEID_VERSION_STRING
   failed = False
   try:
     expected = get_expected_version(ttFont)
@@ -1914,6 +1901,12 @@ def ttfautohint_stats(font):
     "version": installed_ttfa
   }
 
+TTFAUTOHINT_MISSING_MSG = (
+  "ttfautohint is not available!"
+  " You really MUST check the fonts with this tool."
+  " To install it, see https://github.com"
+  "/googlefonts/gf-docs/blob/master"
+  "/ProjectChecklist.md#ttfautohint")
 
 @register_test
 @test(
@@ -1974,6 +1967,7 @@ def check_hinting_filesize_impact(font, ttfautohint_stats):
 def check_version_format_is_correct_in_name_table(ttFont):
   """Version format is correct in 'name' table?"""
   from fontbakery.utils import get_name_entry_strings
+  from fontbakery.constants import NAMEID_VERSION_STRING
   import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
@@ -2014,6 +2008,7 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
         using the same options
   """
   from fontbakery.utils import get_name_entry_strings
+  from fontbakery.constants import NAMEID_VERSION_STRING
 
   def ttfautohint_version(values):
     import re
@@ -2071,6 +2066,8 @@ def check_font_has_latest_ttfautohint_applied(ttFont, ttfautohint_stats):
 )
 def check_name_table_entries_do_not_contain_linebreaks(ttFont):
   """Name table entries should not contain line-breaks."""
+  from fontbakery.constants import (NAMEID_STR,
+                                    PLATID_STR)
   failed = False
   for name in ttFont["name"].names:
     string = name.string.decode(name.getEncoding())
@@ -3730,6 +3727,7 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
 )
 def check_Font_styles_are_named_canonically(ttFont, font_metadata):
   """Font styles are named canonically ?"""
+  from fontbakery.constants import MACSTYLE_ITALIC
 
   def find_italic_in_name_table():
     for entry in ttFont["name"].names:
@@ -3900,7 +3898,11 @@ def check_regression_ttfauto_xheight_increase(ttFont, gfonts_ttFont):
 )
 def check_OS2_fsSelection(ttFont, style):
   """Checking OS/2 fsSelection value."""
-  from fontbakery.constants import RIBBI_STYLE_NAMES
+  from fontbakery.constants import (STYLE_NAMES,
+                                    RIBBI_STYLE_NAMES,
+                                    FSSEL_REGULAR,
+                                    FSSEL_ITALIC,
+                                    FSSEL_BOLD)
 
   # Checking fsSelection REGULAR bit:
   expected = "Regular" in style or \
@@ -3972,7 +3974,8 @@ def check_post_italicAngle(ttFont, style):
 )
 def check_head_macStyle(ttFont, style):
   """Checking head.macStyle value."""
-
+  from fontbakery.constants import (MACSTYLE_ITALIC,
+                                    MACSTYLE_BOLD)
   # Checking macStyle ITALIC bit:
   expected = "Italic" in style
   yield check_bit_entry(ttFont, "head", "macStyle",
