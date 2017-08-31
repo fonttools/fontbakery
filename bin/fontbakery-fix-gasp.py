@@ -53,7 +53,7 @@ class GaspFixer():
         try:
             print(self.font.get('gasp').gaspRange[65535])
         except IndexError:
-            print('ER: {}: no index 65535'.format(path))
+            print('ER: {}: no index 65535'.format(self.path))
 
 description = 'Fixes TTF GASP table'
 parser = argparse.ArgumentParser(description=description)
