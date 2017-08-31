@@ -62,7 +62,7 @@ def main():
         logging.debug("'{}' has a ttf mimetype".format(file_name))
         fonts_to_check.append(fullpath)
       else:
-        logging.warning("Skipping '{}' as mime was '{}', should be 'application/x-font-ttf')".format(filename, mimetype))
+        logging.warning("Skipping '{}' as mime was '{}', should be 'application/x-font-ttf')".format(file_name, mimetype))
   fonts_to_check.sort()
 
  #------------------------------------------------------

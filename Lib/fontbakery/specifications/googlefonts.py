@@ -4435,7 +4435,7 @@ def check_name_table_TYPOGRAPHIC_FAMILY_NAME(ttFont, style, familyname_with_spac
         yield WARN, ("Font style is '{}' and, for that reason,"
                      " it is not expected to have a "
                      "{} entry!").format(style,
-                                         get_name_id(name))
+                                         name_entry_id(name))
       else:
         expected_value = familyname_with_spaces
 
@@ -4475,7 +4475,7 @@ def check_name_table_TYPOGRAPHIC_SUBFAMILY_NAME(ttFont, style):
         yield WARN, ("Font style is '{}' and, for that reason,"
                      " it is not expected to have a "
                      "{} entry!").format(style,
-                                         get_name_id(name))
+                                         name_entry_id(name))
       else:
         expected_value = style_with_spaces
 

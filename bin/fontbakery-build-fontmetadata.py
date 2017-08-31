@@ -37,6 +37,7 @@ import os
 import StringIO
 import sys
 import re
+import errno
 from fontbakery.fonts_public_pb2 import FamilyProto
 from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
                                   NAMEID_FONT_SUBFAMILY_NAME)
