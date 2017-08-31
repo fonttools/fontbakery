@@ -1095,7 +1095,7 @@ def check_with_ftxvalidator(font):
                                            stderr=subprocess.STDOUT)
       yield FAIL, "ftxvalidator output follows:\n\n{}\n".format(ftx_output)
 
-  except subprocess.CalledProcessError, e:
+  except subprocess.CalledProcessError as e:
     yield INFO, ("ftxvalidator returned an error code. Output follows :"
                  "\n\n{}\n").format(e.output)
   except OSError:
@@ -1116,10 +1116,10 @@ def check_with_otsanitise(font):
       yield FAIL, "ots-sanitize output follows:\n\n{}".format(ots_output)
     else:
       yield PASS, "ots-sanitize passed this file"
-  except subprocess.CalledProcessError, e:
+  except subprocess.CalledProcessError as e:
       yield FAIL, ("ots-sanitize returned an error code. Output follows :"
                    "\n\n{}").format(e.output)
-  except OSError, e:
+  except OSError as e:
     yield ERROR, ("ots-sanitize is not available!"
                   " You really MUST check the fonts with this tool."
                   " To install it, see"
@@ -1142,7 +1142,7 @@ def check_with_msfontvalidator(font):
                 "-all-tables",
                 "-report-in-font-dir"]
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
-  except subprocess.CalledProcessError, e:
+  except subprocess.CalledProcessError as e:
     filtered_msgs = ""
     for line in e.output.split("\n"):
       if "Validating glyph with index" in line: continue
