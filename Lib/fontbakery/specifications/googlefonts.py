@@ -2513,46 +2513,54 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
 
   # <Postscript name> may contain only a-zA-Z0-9
   # and one hyphen
-  regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
-  for name in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if not regex.match(name):
+  bad_psname = re.compile("[^A-Za-z0-9-]")
+  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if bad_psname.search(string):
       bad_entries.append({'field': 'PostScript Name',
+                          'value': string,
                           'rec': 'May contain only a-zA-Z0-9'
-                                 ' characters and an hyphen'})
-    if name.count('-') > 1:
+                                 ' characters and an hyphen.'})
+    if string.count('-') > 1:
       bad_entries.append({'field': 'Postscript Name',
+                          'value': string,
                           'rec': 'May contain not more'
                                  ' than a single hyphen'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME):
-    if len(name) >= 64:
+  for string in get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME):
+    if len(string) >= 64:
       bad_entries.append({'field': 'Full Font Name',
-                          'rec': 'exceeds max length (64)'})
+                          'value': string,
+                          'rec': 'exceeds max length (63)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if len(name) >= 30:
+  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if len(string) >= 30:
       bad_entries.append({'field': 'PostScript Name',
-                          'rec': 'exceeds max length (30)'})
+                          'value': string,
+                          'rec': 'exceeds max length (29)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'Family Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'Style Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'OT Family Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'OT Style Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
   weight_value = None
   if "OS/2" in ttFont:
     field = "OS/2 usWeightClass"
@@ -2565,7 +2573,8 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
     # <Weight> value >= 250 and <= 900 in steps of 50
     if weight_value % 50 != 0:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be a multiple of 50."})
+                          'value': weight_value,
+                          "rec": "Value should ideally be a multiple of 50."})
     full_info = " "
     " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
     " (unintentionally) returning the style-linked bold. Because of this,"
@@ -2574,16 +2583,18 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
     " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
     if weight_value < 250:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be 250 or more." +
+                          'value': weight_value,
+                          "rec": "Value should ideally be 250 or more." +
                                  full_info})
     if weight_value > 900:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be 900 or less."})
+                          'value': weight_value,
+                          "rec": "Value should ideally be 900 or less."})
   if len(bad_entries) > 0:
-    table = "| Field | Recommendation |\n"
-    table += "|:----- |:-------------- |\n"
+    table = "| Field | Value | Recommendation |\n"
+    table += "|:----- |:----- |:-------------- |\n"
     for bad in bad_entries:
-      table += "| {} | {} |\n".format(bad["field"], bad["rec"])
+      table += "| {} | {} | {} |\n".format(bad["field"], bad["value"], bad["rec"])
     yield INFO, ("Font does not follow "
                  "some family naming recommendations:\n\n"
                  "{}").format(table)

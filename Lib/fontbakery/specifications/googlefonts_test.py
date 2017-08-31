@@ -1207,7 +1207,128 @@ def test_id_068():
   status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
   assert status == FAIL and message.code == "no-font-family-name"
 
-# TODO: tests 069 to 108
+# TODO: test/069
+# TODO: test/070
+
+def assert_name_table_check_result(ttFont, index, name, test, value, expected_result):
+  backup = name.string
+  # set value
+  ttFont["name"].names[index].string = value.encode(name.getEncoding())
+  # run test
+  status, message = list(test(ttFont))[-1]
+  # restore value
+  ttFont["name"].names[index].string = backup
+  assert status == expected_result
+
+
+def test_id_071():
+  """ Font follows the family naming recommendations ? """
+  from fontbakery.specifications.googlefonts import \
+         check_font_follows_the_family_naming_recommendations as test
+  from fontbakery.constants import (NAMEID_POSTSCRIPT_NAME,
+                                    NAMEID_FULL_FONT_NAME,
+                                    NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_FONT_SUBFAMILY_NAME,
+                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                    NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
+  # Our reference Mada Medium is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
+
+  # We'll test rule violations in all entries one-by-one
+  for index, name in enumerate(ttFont["name"].names):
+    # and we'll test all INFO/PASS code-paths for each of the rules:
+    def name_test(value, expected):
+      assert_name_table_check_result(ttFont, index, name, test, value, expected)
+
+    if name.nameID == NAMEID_POSTSCRIPT_NAME:
+      print ("== NAMEID_POST_SCRIPT_NAME ==")
+
+      print ("Test INFO: May contain only a-zA-Z0-9 characters and an hyphen...")
+      # The '@' and '!' chars here are the expected rule violations:
+      name_test("B@zinga!", INFO)
+
+      print ("Test PASS: A name with a single hyphen is OK...")
+      # A single hypen in the name is OK:
+      name_test("Big-Bang", PASS)
+
+      print ("Test INFO: May not contain more than a single hyphen...")
+      # The second hyphen char here is the expected rule violation:
+      name_test("Big-Bang-Theory", INFO)
+
+      print ("Test INFO: Exceeds max length (29)...")
+      name_test("A"*30, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*29, PASS)
+
+    elif name.nameID == NAMEID_FULL_FONT_NAME:
+      print ("== NAMEID_FULL_FONT_NAME ==")
+
+      print ("Test INFO: Exceeds max length (63)...")
+      name_test("A"*64, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*63, PASS)
+
+    elif name.nameID == NAMEID_FONT_FAMILY_NAME:
+      print ("== NAMEID_FONT_FAMILY_NAME ==")
+
+      print ("Test INFO: Exceeds max length (31)...")
+      name_test("A"*32, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*31, PASS)
+
+    elif name.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+      print ("== NAMEID_FONT_SUBFAMILY_NAME ==")
+
+      print ("Test INFO: Exceeds max length (31)...")
+      name_test("A"*32, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*31, PASS)
+
+    elif name.nameID == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+      print ("== NAMEID_TYPOGRAPHIC_FAMILY_NAME ==")
+
+      print ("Test INFO: Exceeds max length (31)...")
+      name_test("A"*32, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*31, PASS)
+
+    elif name.nameID == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+      print ("== NAMEID_FONT_TYPOGRAPHIC_SUBFAMILY_NAME ==")
+
+      print ("Test INFO: Exceeds max length (31)...")
+      name_test("A"*32, INFO)
+
+      print ("Test PASS: Does not exceeds max length...")
+      name_test("A"*31, PASS)
+
+  for w in range(0, 1000, 50):
+    ttFont["OS/2"].usWeightClass = w
+    if w < 250 or w > 900:
+      print ("Test FAIL: Weight out of acceptable range of values (from 250 to 900)...")
+      status, message = list(test(ttFont))[-1]
+      assert status == INFO
+    else:
+      print ("Test PASS: Weight value is between 250 and 900 (including the extreme values)...")
+      status, message = list(test(ttFont))[-1]
+      assert status == PASS
+
+  for w in [251, 275, 325, 425, 775, 825, 899]:
+    ttFont["OS/2"].usWeightClass = w
+    print ("Test FAIL: Weight value is not multiple of 50...")
+    status, message = list(test(ttFont))[-1]
+    assert status == INFO
+
+# TODO: tests 072 to 108
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
