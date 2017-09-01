@@ -3195,25 +3195,37 @@ def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
 @register_test
 @test(
     id='com.google.fonts/test/095'
-  , conditions=['font_metadata']
+  , conditions=['font_metadata', 'style']
 )
-def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
+def check_METADATA_fonts_name_matches_font_familyname(ttFont, style, font_metadata):
   """METADATA.pb fonts "name" property should be same as font familyname."""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
+  from fontbakery.constants import (RIBBI_STYLE_NAMES,
+                                    NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                    NAMEID_STR)
 
-  font_familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if style in RIBBI_STYLE_NAMES:
+    font_familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+    nameid = NAMEID_FONT_FAMILY_NAME
+  else:
+    font_familynames = get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+    nameid = NAMEID_TYPOGRAPHIC_FAMILY_NAME
+
   if len(font_familynames) == 0:
-    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
-                 " (nameID={}) in the"
-                 " name table.").format(NAMEID_FONT_FAMILY_NAME)
+    yield FAIL, Message("lacks-entry",
+                        ("This font lacks a {} entry"
+                         " (nameID={}) in the"
+                         " name table.").format(NAMEID_STR(nameid),
+                                                nameid))
   else:
     for font_familyname in font_familynames:
       if font_familyname not in font_metadata.name:
-        yield FAIL, ("Unmatched familyname in font:"
-                     " TTF has \"{}\" while METADATA.pb has"
-                     " name=\"{}\".").format(font_familyname,
-                                             font_metadata.name)
+        yield FAIL, Message("mismatch",
+                            ("Unmatched familyname in font:"
+                             " TTF has \"{}\" while METADATA.pb has"
+                             " name=\"{}\".").format(font_familyname,
+                                                     font_metadata.name))
       else:
         yield PASS, ("OK: Family name \"{}\" is identical"
                      " in METADATA.pb and on the"
