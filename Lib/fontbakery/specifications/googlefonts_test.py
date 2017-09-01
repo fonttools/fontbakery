@@ -1496,7 +1496,45 @@ def test_id_107():
   # Not it's not! FAIL! :-D
   assert status == FAIL and message.code == "bad-macstyle"
 
-# TODO: test/108
+def test_id_108():
+  """ Metadata key-value match to table name fields ? """
+  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
+                                    NAMEID_FONT_FAMILY_NAME)
+  from fontbakery.specifications.googlefonts import \
+         (check_Metadata_keyvalue_match_to_table_name_fields as test,
+          font_metadata)
+  # Our reference Merriweather Regular is known to be good here.
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  font_meta = font_metadata(ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  # There we go again:
+  # breaking FULL_FONT_NAME entries
+  # one by one:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      backup = name.string
+      ttFont['name'].names[i].string = "This is utterly wrong!".encode(name.getEncoding())
+      print ("Test FAIL with a METADATA.pb / FULL_FONT_NAME mismatch...")
+      status, message = list(test(ttFont, font_meta))[-1]
+      assert status == FAIL and message.code == "fullname-mismatch"
+      # and restore the good value:
+      ttFont['name'].names[i].string = backup
+
+  # And then we do the same with FONT_FAMILY_NAME entries:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      backup = name.string
+      ttFont['name'].names[i].string = "I'm listening to deadmau5 :-)".encode(name.getEncoding())
+      print ("Test FAIL with a METADATA.pb / FONT_FAMILY_NAME mismatch...")
+      status, message = list(test(ttFont, font_meta))[-1]
+      assert status == FAIL and message.code == "familyname-mismatch"
+      # and restore the good value:
+      ttFont['name'].names[i].string = backup
 
 def test_id_109():
   """ Check if fontname is not camel cased. """

@@ -3573,16 +3573,18 @@ def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
   font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)[0]
   # FIXME: common condition/name-id check as in the two previous tests.
 
-  if font_familyname != font_metadata.name:
-    yield FAIL, ("METADATA.pb Family name \"{}\")"
-                 " does not match name table"
-                 " entry \"{}\" !").format(font_metadata.name,
-                                           font_familyname)
-  elif font_fullname != font_metadata.full_name:
-    yield FAIL, ("METADATA.pb: Fullname (\"{}\")"
-                 " does not match name table"
-                 " entry \"{}\" !").format(font_metadata.full_name,
-                                           font_fullname)
+  if font_fullname != font_metadata.full_name:
+    yield FAIL, Message("fullname-mismatch",
+                        ("METADATA.pb: Fullname (\"{}\")"
+                         " does not match name table"
+                         " entry \"{}\" !").format(font_metadata.full_name,
+                                                   font_fullname))
+  elif font_familyname != font_metadata.name:
+    yield FAIL, Message("familyname-mismatch",
+                        ("METADATA.pb Family name \"{}\")"
+                         " does not match name table"
+                         " entry \"{}\" !").format(font_metadata.name,
+                                                   font_familyname))
   else:
     yield PASS, ("METADATA.pb familyname and fullName fields"
                  " match corresponding name table entries.")
