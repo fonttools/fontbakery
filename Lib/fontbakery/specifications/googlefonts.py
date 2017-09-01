@@ -4373,8 +4373,7 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
-                                    STYLE_NAMES)
+  from fontbakery.constants import NAMEID_FULL_FONT_NAME
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
@@ -4384,10 +4383,10 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
                                       style_with_spaces)
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
+        failed = True
         # special case
         # see https://github.com/googlefonts/fontbakery/issues/1436
-        if name.nameID == NAMEID_FULL_FONT_NAME \
-           and style == "Regular" \
+        if style == "Regular" \
            and string == familyname_with_spaces:
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
@@ -4395,7 +4394,6 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
                        "").format(name_entry_id(name),
                                   unidecode(string))
         else:
-          failed = True
           yield FAIL, ("Entry {} on the 'name' table: "
                        "Expected '{}' "
                        "but got '{}'.").format(name_entry_id(name),

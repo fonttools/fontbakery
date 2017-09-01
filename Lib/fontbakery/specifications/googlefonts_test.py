@@ -1685,3 +1685,117 @@ def test_id_155():
   print ("Test FAIL with a bad METADATA.pb (with a copyright string not matching this font)...")
   status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
   assert status == FAIL
+
+
+def test_id_156():
+  """ Font has all mandatory 'name' table entries ? """
+  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_FONT_SUBFAMILY_NAME,
+                                    NAMEID_FULL_FONT_NAME,
+                                    NAMEID_POSTSCRIPT_NAME,
+                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                    NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
+  from fontbakery.specifications.googlefonts import \
+                   check_font_has_mandatory_name_entries as test
+  # We'll check both RIBBI and non-RIBBI fonts
+  # so that we cover both cases for FAIL/PASS scenarios
+
+  #First with a RIBBI font:
+  # Our reference Cabin Regular is known to be good
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  style = "Regular"
+
+  # So it must PASS the test:
+  print ("Test PASS with a good RIBBI font...")
+  status, message = list(test(ttFont, style))[-1]
+  assert status == PASS
+
+  mandatory_entries = [NAMEID_FONT_FAMILY_NAME,
+                       NAMEID_FONT_SUBFAMILY_NAME,
+                       NAMEID_FULL_FONT_NAME,
+                       NAMEID_POSTSCRIPT_NAME]
+
+  # then we remove each mandatory entry
+  # one by one:
+  for mandatory in [mandatory_entries]:
+    for i, name in enumerate(ttFont['name'].names):
+      if name.nameID == mandatory:
+        del ttFont['name'].names[i]
+        print ("Test FAIL with a missing madatory (RIBBI) name entry...")
+        status, message = list(test(ttFont, style))[-1]
+        assert status == FAIL
+
+  #And now a non-RIBBI font:
+  # Our reference Merriweather Black is known to be good
+  ttFont = TTFont("data/test/merriweather/Merriweather-Black.ttf")
+  style = "Black"
+
+  # So it must PASS the test:
+  print ("Test PASS with a good non-RIBBI font...")
+  status, message = list(test(ttFont, style))[-1]
+  assert status == PASS
+
+  mandatory_entries = [NAMEID_FONT_FAMILY_NAME,
+                       NAMEID_FONT_SUBFAMILY_NAME,
+                       NAMEID_FULL_FONT_NAME,
+                       NAMEID_POSTSCRIPT_NAME,
+                       NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                       NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+
+  # then we (again) remove each mandatory entry
+  # one by one:
+  for mandatory in [mandatory_entries]:
+    for i, name in enumerate(ttFont['name'].names):
+      if name.nameID == mandatory:
+        del ttFont['name'].names[i]
+        print ("Test FAIL with a missing madatory (non-RIBBI) name entry...")
+        status, message = list(test(ttFont, style))[-1]
+        assert status == FAIL
+
+# TODO: test_id_157
+# TODO: test_id_158
+
+def test_id_159():
+  """ Check name table: FULL_FONT_NAME entries. """
+  from fontbakery.constants import NAMEID_FULL_FONT_NAME
+  from fontbakery.specifications.googlefonts import \
+         check_name_table_FULL_FONT_NAME as test
+  # Our reference Cabin Regular is known to be good
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good Regular font...")
+  status, message = list(test(ttFont, "Regular", "Cabin"))[-1]
+  assert status == PASS
+
+  # Let's now test the Regular exception
+  # ('Regular' can be optionally ommited on the FULL_FONT_NAME entry):
+  for index, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      backup = name.string
+      ttFont["name"].names[index].string = "Cabin".encode(name.getEncoding())
+      print ("Test WARN with a good Regular font that omits 'Regular' on FULL_FONT_NAME...")
+      status, message = list(test(ttFont, "Regular", "Cabin"))[-1]
+      assert status == WARN
+      # restore it:
+      ttFont["name"].names[index].string = backup
+
+  # Let's also make sure our good reference Cabin BoldItalic PASSes the test:
+  # This also tests the splitting of filename infered style with a space char
+  ttFont = TTFont("data/test/cabin/Cabin-BoldItalic.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good Bold Italic font...")
+  status, message = list(test(ttFont, "BoldItalic", "Cabin"))[-1]
+  assert status == PASS
+
+  # And here we test the FAIL codepath:
+  for index, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      backup = name.string
+      ttFont["name"].names[index].string = "MAKE IT FAIL".encode(name.getEncoding())
+      print ("Test FAIL with a bad FULL_FONT_NAME entry...")
+      status, message = list(test(ttFont, "BoldItalic", "Cabin"))[-1]
+      assert status == FAIL
+      # restore it:
+      ttFont["name"].names[index].string = backup
