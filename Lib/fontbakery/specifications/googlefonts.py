@@ -3465,7 +3465,7 @@ def check_Filename_is_set_canonically(font_metadata, canonical_filename):
     id='com.google.fonts/test/106'
   , conditions=['font_metadata']
 )
-def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
+def check_METADATA_italic_matches_font_internals(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
@@ -3516,7 +3516,7 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
     id='com.google.fonts/test/107'
   , conditions=['font_metadata']
 )
-def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
+def check_METADATA_normal_matches_font_internals(ttFont, font_metadata):
   """METADATA.pb font.style "normal" matches font internals ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
@@ -3538,18 +3538,21 @@ def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
       font_fullname = font_fullname[0]
 
       if bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
-        yield FAIL, ("METADATA.pb style has been set to normal"
-                     " but font macStyle is improperly set.")
+        yield FAIL, Message("bad-macstyle",
+                            ("METADATA.pb style has been set to normal"
+                             " but font macStyle is improperly set."))
       elif font_familyname.split("-")[-1].endswith('Italic'):
-        yield FAIL, ("Font macStyle indicates a non-Italic font,"
-                     " but nameID {} (FONT_FAMILY_NAME: \"{}\") ends"
-                     " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
-                                                 font_familyname)
+        yield FAIL, Message("familyname-italic",
+                            ("Font macStyle indicates a non-Italic font, but"
+                             " nameID {} (FONT_FAMILY_NAME: \"{}\") ends with"
+                             " \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
+                                                    font_familyname))
       elif font_fullname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle indicates a non-Italic font"
-                     " but nameID {} (FULL_FONT_NAME: \"{}\") ends"
-                     " with \"Italic\".").format(NAMEID_FULL_FONT_NAME,
-                                                 font_fullname)
+        yield FAIL, Message("fullfont-italic",
+                            ("Font macStyle indicates a non-Italic font but"
+                             " nameID {} (FULL_FONT_NAME: \"{}\") ends with"
+                             " \"Italic\".").format(NAMEID_FULL_FONT_NAME,
+                                                    font_fullname))
       else:
         yield PASS, ("METADATA.pb font.style \"normal\""
                      " matches font internals.")
