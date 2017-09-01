@@ -1328,7 +1328,43 @@ def test_id_071():
     status, message = list(test(ttFont))[-1]
     assert status == INFO
 
-# TODO: tests 072 to 108
+# TODO: tests 072 to 093
+
+def test_id_094():
+  """ METADATA.pb "fullname" value matches internal "fullname" ? """
+  from fontbakery.specifications.googlefonts import font_metadata
+  from fontbakery.specifications.googlefonts import \
+         check_METADATA_fullname_matches_name_table_value as test
+  from fontbakery.constants import NAMEID_FULL_FONT_NAME
+
+  print('Test FAIL with mismatching fullname values...')
+  # Our reference Cabin family is know to have good fullname metadata
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  font_meta = font_metadata(ttFont)
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  print('Test FAIL with mismatching fullname values...')
+  good = font_meta.full_name
+  # here we change the font.fullname on the METADATA.pb
+  # to introduce a "mismatch" error condition:
+  font_meta.full_name = good + "bad-suffix"
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == FAIL and message.code == "mismatch"
+
+  # and restore the good value prior to the next test case:
+  font_meta.full_name = good
+
+  print('Test FAIL when a font lacks FULL_FONT_NAME entries in its name table...')
+  # And here we remove all FULL_FONT_NAME entries
+  # in order to get a "lacks-entry" error condition:
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      del ttFont["name"].names[i]
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == FAIL and message.code == "lacks-entry"
+
+# TODO: tests 095 to 108
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """

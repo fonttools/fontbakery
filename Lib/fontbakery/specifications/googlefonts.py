@@ -3174,16 +3174,18 @@ def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
 
   full_fontnames = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
   if len(full_fontnames) == 0:
-    yield FAIL, ("This font lacks a FULL_FONT_NAME"
-                 " entry (nameID={}) in the"
-                 " name table.").format(NAMEID_FULL_FONT_NAME)
+    yield FAIL, Message("lacks-entry",
+                        ("This font lacks a FULL_FONT_NAME"
+                         " entry (nameID={}) in the"
+                         " name table.").format(NAMEID_FULL_FONT_NAME))
   else:
     for full_fontname in full_fontnames:
       if full_fontname != font_metadata.full_name:
-        yield FAIL, ("Unmatched fullname in font:"
-                     " TTF has \"{}\" while METADATA.pb"
-                     " has \"{}\".").format(full_fontname,
-                                            font_metadata.full_name)
+        yield FAIL, Message("mismatch",
+                            ("Unmatched fullname in font:"
+                             " TTF has \"{}\" while METADATA.pb"
+                             " has \"{}\".").format(full_fontname,
+                                                    font_metadata.full_name))
       else:
         yield PASS, ("Full fontname \"{}\" is identical"
                      " in METADATA.pb and on the"
