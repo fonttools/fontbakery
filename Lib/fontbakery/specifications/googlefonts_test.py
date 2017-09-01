@@ -1243,7 +1243,7 @@ def test_id_071():
   for index, name in enumerate(ttFont["name"].names):
     # and we'll test all INFO/PASS code-paths for each of the rules:
     def name_test(value, expected):
-      assert_name_table_check_result(ttFont, index, name, test, value, expected)
+      assert_name_table_check_result(ttFont, index, name, test, value, expected) #pylint: disable=cell-var-from-loop
 
     if name.nameID == NAMEID_POSTSCRIPT_NAME:
       print ("== NAMEID_POST_SCRIPT_NAME ==")
