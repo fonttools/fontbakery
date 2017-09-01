@@ -3837,6 +3837,7 @@ def check_font_em_size_is_ideally_equal_to_1000(ttFont):
 def remote_styles(metadata):
   """Get a dictionary of TTFont objects of all font files of
      a given family as currently hosted at Google Fonts."""
+  from zipfile import BadZipfile
   from fontbakery.utils import (download_family_from_Google_Fonts,
                                 fonts_from_zip)
   if (not listed_on_gfonts_api or
@@ -3846,14 +3847,16 @@ def remote_styles(metadata):
   try:
     remote_fonts_zip = download_family_from_Google_Fonts(metadata.name)
     rstyles = {}
+
+    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+      if '-' in remote_filename[:-4]:
+        remote_style = remote_filename[:-4].split('-')[1]
+      rstyles[remote_style] = remote_font
+    return rstyles
   except IOError:
     return None
-
-  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-    if '-' in remote_filename[:-4]:
-      remote_style = remote_filename[:-4].split('-')[1]
-    rstyles[remote_style] = remote_font
-  return rstyles
+  except BadZipfile:
+    return None
 
 @register_condition
 @condition
