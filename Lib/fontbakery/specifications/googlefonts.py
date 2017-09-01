@@ -2513,46 +2513,54 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
 
   # <Postscript name> may contain only a-zA-Z0-9
   # and one hyphen
-  regex = re.compile(r'[a-z0-9-]+', re.IGNORECASE)
-  for name in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if not regex.match(name):
+  bad_psname = re.compile("[^A-Za-z0-9-]")
+  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if bad_psname.search(string):
       bad_entries.append({'field': 'PostScript Name',
+                          'value': string,
                           'rec': 'May contain only a-zA-Z0-9'
-                                 ' characters and an hyphen'})
-    if name.count('-') > 1:
+                                 ' characters and an hyphen.'})
+    if string.count('-') > 1:
       bad_entries.append({'field': 'Postscript Name',
+                          'value': string,
                           'rec': 'May contain not more'
                                  ' than a single hyphen'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME):
-    if len(name) >= 64:
+  for string in get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME):
+    if len(string) >= 64:
       bad_entries.append({'field': 'Full Font Name',
-                          'rec': 'exceeds max length (64)'})
+                          'value': string,
+                          'rec': 'exceeds max length (63)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if len(name) >= 30:
+  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
+    if len(string) >= 30:
       bad_entries.append({'field': 'PostScript Name',
-                          'rec': 'exceeds max length (30)'})
+                          'value': string,
+                          'rec': 'exceeds max length (29)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'Family Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'Style Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'OT Family Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
 
-  for name in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
-    if len(name) >= 32:
+  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
+    if len(string) >= 32:
       bad_entries.append({'field': 'OT Style Name',
-                          'rec': 'exceeds max length (32)'})
+                          'value': string,
+                          'rec': 'exceeds max length (31)'})
   weight_value = None
   if "OS/2" in ttFont:
     field = "OS/2 usWeightClass"
@@ -2565,7 +2573,8 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
     # <Weight> value >= 250 and <= 900 in steps of 50
     if weight_value % 50 != 0:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be a multiple of 50."})
+                          'value': weight_value,
+                          "rec": "Value should ideally be a multiple of 50."})
     full_info = " "
     " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
     " (unintentionally) returning the style-linked bold. Because of this,"
@@ -2574,16 +2583,18 @@ def check_font_follows_the_family_naming_recommendations(ttFont):
     " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
     if weight_value < 250:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be 250 or more." +
+                          'value': weight_value,
+                          "rec": "Value should ideally be 250 or more." +
                                  full_info})
     if weight_value > 900:
       bad_entries.append({"field": field,
-                          "rec": "Value should idealy be 900 or less."})
+                          'value': weight_value,
+                          "rec": "Value should ideally be 900 or less."})
   if len(bad_entries) > 0:
-    table = "| Field | Recommendation |\n"
-    table += "|:----- |:-------------- |\n"
+    table = "| Field | Value | Recommendation |\n"
+    table += "|:----- |:----- |:-------------- |\n"
     for bad in bad_entries:
-      table += "| {} | {} |\n".format(bad["field"], bad["rec"])
+      table += "| {} | {} | {} |\n".format(bad["field"], bad["value"], bad["rec"])
     yield INFO, ("Font does not follow "
                  "some family naming recommendations:\n\n"
                  "{}").format(table)
@@ -3163,16 +3174,18 @@ def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
 
   full_fontnames = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
   if len(full_fontnames) == 0:
-    yield FAIL, ("This font lacks a FULL_FONT_NAME"
-                 " entry (nameID={}) in the"
-                 " name table.").format(NAMEID_FULL_FONT_NAME)
+    yield FAIL, Message("lacks-entry",
+                        ("This font lacks a FULL_FONT_NAME"
+                         " entry (nameID={}) in the"
+                         " name table.").format(NAMEID_FULL_FONT_NAME))
   else:
     for full_fontname in full_fontnames:
       if full_fontname != font_metadata.full_name:
-        yield FAIL, ("Unmatched fullname in font:"
-                     " TTF has \"{}\" while METADATA.pb"
-                     " has \"{}\".").format(full_fontname,
-                                            font_metadata.full_name)
+        yield FAIL, Message("mismatch",
+                            ("Unmatched fullname in font:"
+                             " TTF has \"{}\" while METADATA.pb"
+                             " has \"{}\".").format(full_fontname,
+                                                    font_metadata.full_name))
       else:
         yield PASS, ("Full fontname \"{}\" is identical"
                      " in METADATA.pb and on the"
@@ -3452,7 +3465,7 @@ def check_Filename_is_set_canonically(font_metadata, canonical_filename):
     id='com.google.fonts/test/106'
   , conditions=['font_metadata']
 )
-def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
+def check_METADATA_italic_matches_font_internals(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
@@ -3477,19 +3490,22 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
       font_fullname = font_fullname[0]
 
       if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
-        yield FAIL, ("METADATA.pb style has been set to italic"
-                     " but font macStyle is improperly set.")
+        yield FAIL, Message("bad-macstyle",
+                            "METADATA.pb style has been set to italic"
+                            " but font macStyle is improperly set.")
       elif not font_familyname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID {} (\"{}\")"
-                     " is not ended "
-                     "with \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
-                                               font_familyname)
+        yield FAIL, Message("bad-family-name",
+                            ("Font macStyle Italic bit is set"
+                             " but nameID {} (\"{}\")"
+                             " is not ended with"
+                             " \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
+                                                   font_familyname))
       elif not font_fullname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID {} (\"{}\") is not ended"
-                     " with \"Italic\"").format(NAMEID_FULL_FONT_NAME,
-                                                font_fullname)
+        yield FAIL, Message("bad-fullfont-name",
+                            ("Font macStyle Italic bit is set"
+                             " but nameID {} (\"{}\") is not ended with"
+                             " \"Italic\"").format(NAMEID_FULL_FONT_NAME,
+                                                   font_fullname))
       else:
         yield PASS, ("OK: METADATA.pb font.style \"italic\""
                      " matches font internals.")
@@ -3500,7 +3516,7 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
     id='com.google.fonts/test/107'
   , conditions=['font_metadata']
 )
-def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
+def check_METADATA_normal_matches_font_internals(ttFont, font_metadata):
   """METADATA.pb font.style "normal" matches font internals ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
@@ -3522,18 +3538,21 @@ def check_METADATA_fontstyle_normal_matches_internals(ttFont, font_metadata):
       font_fullname = font_fullname[0]
 
       if bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
-        yield FAIL, ("METADATA.pb style has been set to normal"
-                     " but font macStyle is improperly set.")
+        yield FAIL, Message("bad-macstyle",
+                            ("METADATA.pb style has been set to normal"
+                             " but font macStyle is improperly set."))
       elif font_familyname.split("-")[-1].endswith('Italic'):
-        yield FAIL, ("Font macStyle indicates a non-Italic font,"
-                     " but nameID {} (FONT_FAMILY_NAME: \"{}\") ends"
-                     " with \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
-                                                 font_familyname)
+        yield FAIL, Message("familyname-italic",
+                            ("Font macStyle indicates a non-Italic font, but"
+                             " nameID {} (FONT_FAMILY_NAME: \"{}\") ends with"
+                             " \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
+                                                    font_familyname))
       elif font_fullname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle indicates a non-Italic font"
-                     " but nameID {} (FULL_FONT_NAME: \"{}\") ends"
-                     " with \"Italic\".").format(NAMEID_FULL_FONT_NAME,
-                                                 font_fullname)
+        yield FAIL, Message("fullfont-italic",
+                            ("Font macStyle indicates a non-Italic font but"
+                             " nameID {} (FULL_FONT_NAME: \"{}\") ends with"
+                             " \"Italic\".").format(NAMEID_FULL_FONT_NAME,
+                                                    font_fullname))
       else:
         yield PASS, ("METADATA.pb font.style \"normal\""
                      " matches font internals.")
@@ -3554,16 +3573,18 @@ def check_Metadata_keyvalue_match_to_table_name_fields(ttFont, font_metadata):
   font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)[0]
   # FIXME: common condition/name-id check as in the two previous tests.
 
-  if font_familyname != font_metadata.name:
-    yield FAIL, ("METADATA.pb Family name \"{}\")"
-                 " does not match name table"
-                 " entry \"{}\" !").format(font_metadata.name,
-                                           font_familyname)
-  elif font_fullname != font_metadata.full_name:
-    yield FAIL, ("METADATA.pb: Fullname (\"{}\")"
-                 " does not match name table"
-                 " entry \"{}\" !").format(font_metadata.full_name,
-                                           font_fullname)
+  if font_fullname != font_metadata.full_name:
+    yield FAIL, Message("fullname-mismatch",
+                        ("METADATA.pb: Fullname (\"{}\")"
+                         " does not match name table"
+                         " entry \"{}\" !").format(font_metadata.full_name,
+                                                   font_fullname))
+  elif font_familyname != font_metadata.name:
+    yield FAIL, Message("familyname-mismatch",
+                        ("METADATA.pb Family name \"{}\")"
+                         " does not match name table"
+                         " entry \"{}\" !").format(font_metadata.name,
+                                                   font_familyname))
   else:
     yield PASS, ("METADATA.pb familyname and fullName fields"
                  " match corresponding name table entries.")
@@ -4352,8 +4373,7 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
-                                    STYLE_NAMES)
+  from fontbakery.constants import NAMEID_FULL_FONT_NAME
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
@@ -4363,10 +4383,10 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
                                       style_with_spaces)
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
+        failed = True
         # special case
         # see https://github.com/googlefonts/fontbakery/issues/1436
-        if name.nameID == NAMEID_FULL_FONT_NAME \
-           and style == "Regular" \
+        if style == "Regular" \
            and string == familyname_with_spaces:
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
@@ -4374,7 +4394,6 @@ def check_name_table_FULL_FONT_NAME(ttFont, style, familyname_with_spaces):
                        "").format(name_entry_id(name),
                                   unidecode(string))
         else:
-          failed = True
           yield FAIL, ("Entry {} on the 'name' table: "
                        "Expected '{}' "
                        "but got '{}'.").format(name_entry_id(name),
