@@ -1456,8 +1456,8 @@ def test_id_107():
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
   font_meta = font_metadata(ttFont)
 
-  # So it must FAIL the test:
-  print ("Test FAIL with bad NAMEID_FONT_FAMILY_NAME entry...")
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
   status, message = list(test(ttFont, font_meta))[-1]
   assert status == PASS
 
