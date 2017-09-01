@@ -3490,19 +3490,22 @@ def check_METADATA_font_italic_matches_font_internals(ttFont, font_metadata):
       font_fullname = font_fullname[0]
 
       if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
-        yield FAIL, ("METADATA.pb style has been set to italic"
-                     " but font macStyle is improperly set.")
+        yield FAIL, Message("bad-macstyle",
+                            "METADATA.pb style has been set to italic"
+                            " but font macStyle is improperly set.")
       elif not font_familyname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID {} (\"{}\")"
-                     " is not ended "
-                     "with \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
-                                               font_familyname)
+        yield FAIL, Message("bad-family-name",
+                            ("Font macStyle Italic bit is set"
+                             " but nameID {} (\"{}\")"
+                             " is not ended with"
+                             " \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
+                                                   font_familyname))
       elif not font_fullname.split("-")[-1].endswith("Italic"):
-        yield FAIL, ("Font macStyle Italic bit is set"
-                     " but nameID {} (\"{}\") is not ended"
-                     " with \"Italic\"").format(NAMEID_FULL_FONT_NAME,
-                                                font_fullname)
+        yield FAIL, Message("bad-fullfont-name",
+                            ("Font macStyle Italic bit is set"
+                             " but nameID {} (\"{}\") is not ended with"
+                             " \"Italic\"").format(NAMEID_FULL_FONT_NAME,
+                                                   font_fullname))
       else:
         yield PASS, ("OK: METADATA.pb font.style \"italic\""
                      " matches font internals.")

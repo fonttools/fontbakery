@@ -1388,7 +1388,61 @@ def test_id_102():
   status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
   assert status == PASS
 
-# TODO: tests 103 to 108
+# TODO: test/103
+# TODO: test/104
+# TODO: test/105
+
+def test_id_106():
+  """ METADATA.pb font.style "italic" matches font internals ? """
+  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
+                                    NAMEID_FONT_FAMILY_NAME,
+                                    MACSTYLE_ITALIC)
+  from fontbakery.specifications.googlefonts import \
+         (check_METADATA_font_italic_matches_font_internals as test,
+          font_metadata)
+  # Our reference Merriweather Italic is known to have
+  # a bad NAMEID_FONT_FAMILY_NAME value (lacking "Italic"):
+  ttFont = TTFont("data/test/merriweather/Merriweather-Italic.ttf")
+  font_meta = font_metadata(ttFont)
+
+  # So it must FAIL the test:
+  print ("Test FAIL with bad NAMEID_FONT_FAMILY_NAME entry...")
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == FAIL and message.code == "bad-family-name"
+
+  # now we fix any occurrences of that nameid
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      ttFont['name'].names[i].string = "Merriweather Italic".encode(name.getEncoding())
+
+  # and with this the test is known to PASS, since
+  # the above is the only known problem
+  # of our reference Merriweather Italic in this test
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  # now let's introduce issues on the FULL_FONT_NAME entries
+  # to test the "bad-fullfont-name codepath:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      backup = name.string
+      ttFont['name'].names[i].string = "BAD VALUE".encode(name.getEncoding())
+      print ("Test FAIL with a bad NAMEID_FULL_FONT_NAME entry...")
+      status, message = list(test(ttFont, font_meta))[-1]
+      assert status == FAIL and message.code == "bad-fullfont-name"
+      # and restore the good value:
+      ttFont['name'].names[i].string = backup
+
+  # And, finally, let's flip off that italic bit
+  # and get a "bad-macstyle" error (so much fun!):
+  print ("Test FAIL with bad macstyle bit value...")
+  ttFont['head'].macStyle &= ~MACSTYLE_ITALIC
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == FAIL and message.code == "bad-macstyle"
+
+# TODO: test/107
+# TODO: test/108
 
 def test_id_109():
   """ Check if fontname is not camel cased. """
