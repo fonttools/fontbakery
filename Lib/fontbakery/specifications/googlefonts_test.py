@@ -1379,7 +1379,16 @@ def test_id_095():
   status, message = list(test(ttFont, font_meta))[-1]
   assert status == PASS
 
-# TODO: tests 096 to 108
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      good = name.string.decode(name.getEncoding()) # keep a copy of the good value
+      print("Test FAIL with a bad FULL_FONT_NAME entry...")
+      ttFont["name"].names[i].string = (good + "bad-suffix").encode(name.getEncoding())
+      status, message = list(test(ttFont, font_meta))[-1]
+      assert status == FAIL
+      ttFont["name"].names[i].string = good # restore good value
+
+# TODO: tests 096 to 101
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
