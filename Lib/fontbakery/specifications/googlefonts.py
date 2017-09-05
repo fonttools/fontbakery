@@ -3284,6 +3284,14 @@ def font_familynames(ttFont):
 
 @register_condition
 @condition
+def typographic_familynames(ttFont):
+  from fontbakery.utils import get_name_entry_strings
+  from fontbakery.constants import NAMEID_TYPOGRAPHIC_FAMILY_NAME
+  return get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+
+
+@register_condition
+@condition
 def font_familyname(font_familynames):
   # This assumes that all familyname
   # name table entries are identical.
@@ -3296,14 +3304,22 @@ def font_familyname(font_familynames):
 @register_test
 @test(
     id='com.google.fonts/test/098'
-  , conditions=['font_metadata',
-                'font_familynames']
+  , conditions=['style',
+                'font_metadata']
 )
 def check_METADATA_name_contains_good_font_name(ttFont,
+                                                style,
                                                 font_metadata,
-                                                font_familynames):
+                                                font_familynames,
+                                                typographic_familynames):
   """METADATA.pb "name" contains font name in right format ?"""
-  for font_familyname in font_familynames:
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  if style in RIBBI_STYLE_NAMES:
+    familynames = font_familynames
+  else:
+    familynames = typographic_familynames
+
+  for font_familyname in familynames:
     if font_familyname in font_metadata.name:
       yield PASS, "METADATA.pb name field contains font name in right format."
     else:
