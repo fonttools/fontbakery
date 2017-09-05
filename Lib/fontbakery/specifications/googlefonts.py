@@ -3363,21 +3363,21 @@ def check_METADATA_fullname_contains_good_fontname(style,
 @register_test
 @test(
     id='com.google.fonts/test/100'
-  , conditions=['font_metadata',
-                'font_familynames']
+  , conditions=['style', # This means the font filename (source of truth here) is good
+                'font_metadata']
 )
-def check_METADATA_filename_contains_good_fontname(font_metadata,
-                                                   font_familynames):
+def check_METADATA_filename_contains_good_fontname(ttFont,
+                                                   font_metadata):
   """METADATA.pb "filename" contains font name in right format ?"""
-  for font_familyname in font_familynames:
-    if "".join(font_familyname.split()) in font_metadata.filename:
-      yield PASS, ("METADATA.pb filename field contains"
-                   " font name in right format.")
-    else:
-      yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
-                   " correct font name format (\"{}\")."
-                   "").format(font_metadata.filename,
-                              font_familyname)
+  expected = os.path.split(ttFont.reader.file.name)[1]
+  if font_metadata.filename == expected:
+    yield PASS, ("METADATA.pb filename field contains"
+                 " font name in right format.")
+  else:
+    yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
+                 " correct font name format (\"{}\")."
+                 "").format(font_metadata.filename,
+                            expected)
 
 
 @register_test
