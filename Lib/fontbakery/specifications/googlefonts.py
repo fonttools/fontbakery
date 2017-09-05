@@ -3698,11 +3698,36 @@ def check_font_weight_has_a_canonical_value(font_metadata):
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
                                                           font_metadata):
   """Checking OS/2 usWeightClass matches weight specified at METADATA.pb"""
-  if ttFont["OS/2"].usWeightClass != font_metadata.weight:
-    yield FAIL, ("OS/2 usWeightClass (\"{}\") does not match"
-                 " weight specified at METADATA.pb (\"{}\")."
+  # Weight name to value mapping:
+  GF_API_WEIGHT_NAMES = {250: "Thin",
+                         275: "ExtraLight",
+                         300: "Light",
+                         400: "Regular",
+                         500: "Medium",
+                         600: "SemiBold",
+                         700: "Bold",
+                         800: "ExtraBold",
+                         900: "Black"}
+  CSS_WEIGHT_NAMES = {
+    100: "Thin",
+    200: "ExtraLight",
+    300: "Light",
+    400: "Regular",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black"
+  }
+  gf_weight = GF_API_WEIGHT_NAMES[ttFont["OS/2"].usWeightClass]
+  css_weight = CSS_WEIGHT_NAMES[font_metadata.weight]
+  if gf_weight != css_weight:
+    yield FAIL, ("OS/2 usWeightClass ({}:\"{}\") does not match"
+                 " weight specified at METADATA.pb ({}:\"{}\")."
                  "").format(ttFont["OS/2"].usWeightClass,
-                            font_metadata.weight)
+                            gf_weight,
+                            font_metadata.weight,
+                            css_weight)
   else:
     yield PASS, ("OS/2 usWeightClass matches"
                  " weight specified at METADATA.pb")
