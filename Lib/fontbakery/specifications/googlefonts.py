@@ -3391,13 +3391,14 @@ def check_METADATA_postScriptName_contains_good_fontname(font_metadata,
   """METADATA.pb postScriptName field contains font name in right format ?"""
   for font_familyname in font_familynames:
     psname = "".join(str(font_familyname).split())
-    if psname in font_metadata.post_script_name:
+    if psname in "".join(font_metadata.post_script_name.split("-")):
       yield PASS, ("METADATA.pb postScriptName field"
                    " contains font name in right format.")
     else:
       yield FAIL, ("METADATA.pb postScriptName (\"{}\")"
-                   " does not match correct font name format."
-                   "").format(font_metadata.post_script_name)
+                   " does not match correct font name format (\"{}\")."
+                   "").format(font_metadata.post_script_name,
+                              font_familyname)
 
 
 @register_test
