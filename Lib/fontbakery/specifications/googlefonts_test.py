@@ -1415,24 +1415,11 @@ def test_id_106():
   from fontbakery.specifications.googlefonts import \
          (check_METADATA_italic_matches_font_internals as test,
           font_metadata)
-  # Our reference Merriweather Italic is known to have
-  # a bad NAMEID_FONT_FAMILY_NAME value (lacking "Italic"):
+  # Our reference Merriweather Italic is known to good
   ttFont = TTFont("data/test/merriweather/Merriweather-Italic.ttf")
   font_meta = font_metadata(ttFont)
 
-  # So it must FAIL the test:
-  print ("Test FAIL with bad NAMEID_FONT_FAMILY_NAME entry...")
-  status, message = list(test(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "bad-family-name"
-
-  # now we fix any occurrences of that nameid
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_FONT_FAMILY_NAME:
-      ttFont['name'].names[i].string = "Merriweather Italic".encode(name.getEncoding())
-
-  # and with this the test is known to PASS, since
-  # the above is the only known problem
-  # of our reference Merriweather Italic in this test
+  # So it must PASS:
   print ("Test PASS with a good font...")
   status, message = list(test(ttFont, font_meta))[-1]
   assert status == PASS
