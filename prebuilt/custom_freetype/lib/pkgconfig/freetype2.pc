@@ -1,0 +1,14 @@
+prefix=/home/felipe/custom_ft
+exec_prefix=/home/felipe/custom_ft
+libdir=/home/felipe/custom_ft/lib
+includedir=/home/felipe/custom_ft/include
+
+Name: FreeType 2
+URL: http://freetype.org
+Description: A free, high-quality, and portable font engine.
+Version: 20.0.14
+Requires:
+Requires.private: zlib, libpng, harfbuzz >= 0.9.21
+Libs: -L${libdir} -lfreetype
+Libs.private: -lbz2
+Cflags: -I${includedir}/freetype2
