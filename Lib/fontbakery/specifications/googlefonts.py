@@ -3195,25 +3195,37 @@ def check_METADATA_fullname_matches_name_table_value(ttFont, font_metadata):
 @register_test
 @test(
     id='com.google.fonts/test/095'
-  , conditions=['font_metadata']
+  , conditions=['font_metadata', 'style']
 )
-def check_METADATA_fonts_name_matches_font_familyname(ttFont, font_metadata):
+def check_METADATA_fonts_name_matches_font_familyname(ttFont, style, font_metadata):
   """METADATA.pb fonts "name" property should be same as font familyname."""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
+  from fontbakery.constants import (RIBBI_STYLE_NAMES,
+                                    NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
+                                    NAMEID_STR)
 
-  font_familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+  if style in RIBBI_STYLE_NAMES:
+    font_familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+    nameid = NAMEID_FONT_FAMILY_NAME
+  else:
+    font_familynames = get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+    nameid = NAMEID_TYPOGRAPHIC_FAMILY_NAME
+
   if len(font_familynames) == 0:
-    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
-                 " (nameID={}) in the"
-                 " name table.").format(NAMEID_FONT_FAMILY_NAME)
+    yield FAIL, Message("lacks-entry",
+                        ("This font lacks a {} entry"
+                         " (nameID={}) in the"
+                         " name table.").format(NAMEID_STR(nameid),
+                                                nameid))
   else:
     for font_familyname in font_familynames:
       if font_familyname not in font_metadata.name:
-        yield FAIL, ("Unmatched familyname in font:"
-                     " TTF has \"{}\" while METADATA.pb has"
-                     " name=\"{}\".").format(font_familyname,
-                                             font_metadata.name)
+        yield FAIL, Message("mismatch",
+                            ("Unmatched familyname in font:"
+                             " TTF has \"{}\" while METADATA.pb has"
+                             " name=\"{}\".").format(font_familyname,
+                                                     font_metadata.name))
       else:
         yield PASS, ("OK: Family name \"{}\" is identical"
                      " in METADATA.pb and on the"
@@ -3272,6 +3284,14 @@ def font_familynames(ttFont):
 
 @register_condition
 @condition
+def typographic_familynames(ttFont):
+  from fontbakery.utils import get_name_entry_strings
+  from fontbakery.constants import NAMEID_TYPOGRAPHIC_FAMILY_NAME
+  return get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+
+
+@register_condition
+@condition
 def font_familyname(font_familynames):
   # This assumes that all familyname
   # name table entries are identical.
@@ -3284,14 +3304,22 @@ def font_familyname(font_familynames):
 @register_test
 @test(
     id='com.google.fonts/test/098'
-  , conditions=['font_metadata',
-                'font_familynames']
+  , conditions=['style',
+                'font_metadata']
 )
 def check_METADATA_name_contains_good_font_name(ttFont,
+                                                style,
                                                 font_metadata,
-                                                font_familynames):
+                                                font_familynames,
+                                                typographic_familynames):
   """METADATA.pb "name" contains font name in right format ?"""
-  for font_familyname in font_familynames:
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  if style in RIBBI_STYLE_NAMES:
+    familynames = font_familynames
+  else:
+    familynames = typographic_familynames
+
+  for font_familyname in familynames:
     if font_familyname in font_metadata.name:
       yield PASS, "METADATA.pb name field contains font name in right format."
     else:
@@ -3304,16 +3332,27 @@ def check_METADATA_name_contains_good_font_name(ttFont,
 @register_test
 @test(
     id='com.google.fonts/test/099'
-  , conditions=['font_metadata',
+  , conditions=['style',
+                'font_metadata',
                 'font_familynames']
 )
-def check_METADATA_fullname_contains_good_fontname(font_metadata,
-                                                   font_familynames):
+def check_METADATA_fullname_contains_good_fontname(style,
+                                                   font_metadata,
+                                                   font_familynames,
+                                                   typographic_familynames):
   """METADATA.pb "full_name" contains font name in right format ?"""
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  if style in RIBBI_STYLE_NAMES:
+    familynames = font_familynames
+  else:
+    familynames = typographic_familynames
+
   for font_familyname in font_familynames:
-    if font_familyname in font_metadata.name:
+    if font_familyname in font_metadata.full_name:
       yield PASS, ("METADATA.pb full_name field contains"
-                   " font name in right format.")
+                   " font name in right format."
+                   " ('{}' in '{}')".format(font_familyname,
+                                            font_metadata.full_name))
     else:
       yield FAIL, ("METADATA.pb full_name field (\"{}\") does not match"
                    " correct font name format (\"{}\")."
@@ -3324,21 +3363,21 @@ def check_METADATA_fullname_contains_good_fontname(font_metadata,
 @register_test
 @test(
     id='com.google.fonts/test/100'
-  , conditions=['font_metadata',
-                'font_familynames']
+  , conditions=['style', # This means the font filename (source of truth here) is good
+                'font_metadata']
 )
-def check_METADATA_filename_contains_good_fontname(font_metadata,
-                                                   font_familynames):
+def check_METADATA_filename_contains_good_fontname(ttFont,
+                                                   font_metadata):
   """METADATA.pb "filename" contains font name in right format ?"""
-  for font_familyname in font_familynames:
-    if "".join(font_familyname.split()) in font_metadata.filename:
-      yield PASS, ("METADATA.pb filename field contains"
-                   " font name in right format.")
-    else:
-      yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
-                   " correct font name format (\"{}\")."
-                   "").format(font_metadata.filename,
-                              font_familyname)
+  expected = os.path.split(ttFont.reader.file.name)[1]
+  if font_metadata.filename == expected:
+    yield PASS, ("METADATA.pb filename field contains"
+                 " font name in right format.")
+  else:
+    yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
+                 " correct font name format (\"{}\")."
+                 "").format(font_metadata.filename,
+                            expected)
 
 
 @register_test
@@ -3352,13 +3391,14 @@ def check_METADATA_postScriptName_contains_good_fontname(font_metadata,
   """METADATA.pb postScriptName field contains font name in right format ?"""
   for font_familyname in font_familynames:
     psname = "".join(str(font_familyname).split())
-    if psname in font_metadata.post_script_name:
+    if psname in "".join(font_metadata.post_script_name.split("-")):
       yield PASS, ("METADATA.pb postScriptName field"
                    " contains font name in right format.")
     else:
       yield FAIL, ("METADATA.pb postScriptName (\"{}\")"
-                   " does not match correct font name format."
-                   "").format(font_metadata.post_script_name)
+                   " does not match correct font name format (\"{}\")."
+                   "").format(font_metadata.post_script_name,
+                              font_familyname)
 
 
 @register_test
@@ -3468,38 +3508,27 @@ def check_Filename_is_set_canonically(font_metadata, canonical_filename):
 def check_METADATA_italic_matches_font_internals(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals ?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FULL_FONT_NAME,
+  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     MACSTYLE_ITALIC)
   if font_metadata.style != "italic":
     yield SKIP, "This test only applies to italic fonts."
   else:
-    font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
     font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
-    if len(font_familyname) == 0 or len(font_fullname) == 0:
-      yield SKIP, ("Font lacks familyname and/or"
-                   " fullname entries in name table.")
-      # these fail scenarios were already tested above
+    if len(font_fullname) == 0:
+      yield SKIP, "Font lacks fullname entries in name table."
+      # this fail scenario was already tested above
       # (passing those previous tests is a prerequisite for this one)
       # FIXME: Could we pack this into a condition ?
     else:
-      # FIXME: here we only check the first name entry of each.
+      # FIXME: here we only check the first name entry.
       #        Should we iterate over them all ? Or should we check
       #        if they're all the same?
-      font_familyname = font_familyname[0]
       font_fullname = font_fullname[0]
 
       if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
         yield FAIL, Message("bad-macstyle",
                             "METADATA.pb style has been set to italic"
                             " but font macStyle is improperly set.")
-      elif not font_familyname.split("-")[-1].endswith("Italic"):
-        yield FAIL, Message("bad-family-name",
-                            ("Font macStyle Italic bit is set"
-                             " but nameID {} (\"{}\")"
-                             " is not ended with"
-                             " \"Italic\"").format(NAMEID_FONT_FAMILY_NAME,
-                                                   font_familyname))
       elif not font_fullname.split("-")[-1].endswith("Italic"):
         yield FAIL, Message("bad-fullfont-name",
                             ("Font macStyle Italic bit is set"
@@ -3669,11 +3698,36 @@ def check_font_weight_has_a_canonical_value(font_metadata):
 def check_METADATA_weigth_matches_OS2_usWeightClass_value(ttFont,
                                                           font_metadata):
   """Checking OS/2 usWeightClass matches weight specified at METADATA.pb"""
-  if ttFont["OS/2"].usWeightClass != font_metadata.weight:
-    yield FAIL, ("OS/2 usWeightClass (\"{}\") does not match"
-                 " weight specified at METADATA.pb (\"{}\")."
+  # Weight name to value mapping:
+  GF_API_WEIGHT_NAMES = {250: "Thin",
+                         275: "ExtraLight",
+                         300: "Light",
+                         400: "Regular",
+                         500: "Medium",
+                         600: "SemiBold",
+                         700: "Bold",
+                         800: "ExtraBold",
+                         900: "Black"}
+  CSS_WEIGHT_NAMES = {
+    100: "Thin",
+    200: "ExtraLight",
+    300: "Light",
+    400: "Regular",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black"
+  }
+  gf_weight = GF_API_WEIGHT_NAMES[ttFont["OS/2"].usWeightClass]
+  css_weight = CSS_WEIGHT_NAMES[font_metadata.weight]
+  if gf_weight != css_weight:
+    yield FAIL, ("OS/2 usWeightClass ({}:\"{}\") does not match"
+                 " weight specified at METADATA.pb ({}:\"{}\")."
                  "").format(ttFont["OS/2"].usWeightClass,
-                            font_metadata.weight)
+                            gf_weight,
+                            font_metadata.weight,
+                            css_weight)
   else:
     yield PASS, ("OS/2 usWeightClass matches"
                  " weight specified at METADATA.pb")
@@ -3736,25 +3790,25 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
   """METADATA.pb lists fonts named canonicaly ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
-  WEIGHTS = {
-    "Thin": 100,
-    "ThinItalic": 100,
-    "ExtraLight": 200,
-    "ExtraLightItalic": 200,
+  GF_WEIGHTS = {
+    "Thin": 250,
+    "Thin Italic": 250,
+    "ExtraLight": 275,
+    "ExtraLight Italic": 275,
     "Light": 300,
-    "LightItalic": 300,
+    "Light Italic": 300,
     "Regular": 400,
     "Italic": 400,
     "Medium": 500,
-    "MediumItalic": 500,
+    "Medium Italic": 500,
     "SemiBold": 600,
-    "SemiBoldItalic": 600,
+    "SemiBold Italic": 600,
     "Bold": 700,
-    "BoldItalic": 700,
+    "Bold Italic": 700,
     "ExtraBold": 800,
-    "ExtraBoldItalic": 800,
+    "ExtraBold Italic": 800,
     "Black": 900,
-    "BlackItalic": 900
+    "Black Italic": 900
   }
   font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
   if len(font_familyname) == 0:
@@ -3766,9 +3820,11 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
 
     is_canonical = False
     weights = []
-    for value, intvalue in WEIGHTS.items():
+    for value, intvalue in GF_WEIGHTS.items():
       if intvalue == ttFont["OS/2"].usWeightClass:
         weights.append(value)
+    if weights == []:
+      yield INFO, "Bad value: {}".format(ttFont["OS/2"].usWeightClass)
 
     for w in weights:
       canonical_name = "{} {}".format(font_familyname, w)
@@ -3837,6 +3893,7 @@ def check_font_em_size_is_ideally_equal_to_1000(ttFont):
 def remote_styles(metadata):
   """Get a dictionary of TTFont objects of all font files of
      a given family as currently hosted at Google Fonts."""
+  from zipfile import BadZipfile
   from fontbakery.utils import (download_family_from_Google_Fonts,
                                 fonts_from_zip)
   if (not listed_on_gfonts_api or
@@ -3846,14 +3903,16 @@ def remote_styles(metadata):
   try:
     remote_fonts_zip = download_family_from_Google_Fonts(metadata.name)
     rstyles = {}
+
+    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+      if '-' in remote_filename[:-4]:
+        remote_style = remote_filename[:-4].split('-')[1]
+      rstyles[remote_style] = remote_font
+    return rstyles
   except IOError:
     return None
-
-  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-    if '-' in remote_filename[:-4]:
-      remote_style = remote_filename[:-4].split('-')[1]
-    rstyles[remote_style] = remote_font
-  return rstyles
+  except BadZipfile:
+    return None
 
 @register_condition
 @condition

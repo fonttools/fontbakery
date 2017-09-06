@@ -1337,8 +1337,8 @@ def test_id_094():
          check_METADATA_fullname_matches_name_table_value as test
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
 
-  print('Test FAIL with mismatching fullname values...')
-  # Our reference Cabin family is know to have good fullname metadata
+  print('Test PASS with a good font...')
+  # Our reference Merriweather-Regular is know to be good here
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
   font_meta = font_metadata(ttFont)
   status, message = list(test(ttFont, font_meta))[-1]
@@ -1364,7 +1364,31 @@ def test_id_094():
   status, message = list(test(ttFont, font_meta))[-1]
   assert status == FAIL and message.code == "lacks-entry"
 
-# TODO: tests 095 to 108
+
+def test_id_095():
+  """ METADATA.pb "fullname" value matches internal "fullname" ? """
+  from fontbakery.specifications.googlefonts import font_metadata
+  from fontbakery.specifications.googlefonts import \
+         check_METADATA_fullname_matches_name_table_value as test
+  from fontbakery.constants import NAMEID_FULL_FONT_NAME
+
+  print('Test PASS with a good font...')
+  # Our reference Merriweather-Regular is know to have good fullname metadata
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  font_meta = font_metadata(ttFont)
+  status, message = list(test(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  for i, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FULL_FONT_NAME:
+      good = name.string.decode(name.getEncoding()) # keep a copy of the good value
+      print("Test FAIL with a bad FULL_FONT_NAME entry...")
+      ttFont["name"].names[i].string = (good + "bad-suffix").encode(name.getEncoding())
+      status, message = list(test(ttFont, font_meta))[-1]
+      assert status == FAIL
+      ttFont["name"].names[i].string = good # restore good value
+
+# TODO: tests 096 to 101
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
@@ -1400,24 +1424,11 @@ def test_id_106():
   from fontbakery.specifications.googlefonts import \
          (check_METADATA_italic_matches_font_internals as test,
           font_metadata)
-  # Our reference Merriweather Italic is known to have
-  # a bad NAMEID_FONT_FAMILY_NAME value (lacking "Italic"):
+  # Our reference Merriweather Italic is known to good
   ttFont = TTFont("data/test/merriweather/Merriweather-Italic.ttf")
   font_meta = font_metadata(ttFont)
 
-  # So it must FAIL the test:
-  print ("Test FAIL with bad NAMEID_FONT_FAMILY_NAME entry...")
-  status, message = list(test(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "bad-family-name"
-
-  # now we fix any occurrences of that nameid
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_FONT_FAMILY_NAME:
-      ttFont['name'].names[i].string = "Merriweather Italic".encode(name.getEncoding())
-
-  # and with this the test is known to PASS, since
-  # the above is the only known problem
-  # of our reference Merriweather Italic in this test
+  # So it must PASS:
   print ("Test PASS with a good font...")
   status, message = list(test(ttFont, font_meta))[-1]
   assert status == PASS
