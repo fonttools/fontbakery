@@ -691,11 +691,21 @@ def test_id_037():
   from fontbakery.specifications.googlefonts import \
                                   check_with_msfontvalidator as test
   font = "data/test/mada/Mada-Regular.ttf"
-#  RASTER_EXCEPTION_MESSAGE = ("MS-FonVal: An exception occurred"
-#                              " during rasterization testing")
-#  for status, message in test(font):
-#    assert RASTER_EXCEPTION_MESSAGE not in message
-  status, message = list(test(font))[-1]
+  RASTER_EXCEPTION_MESSAGE = ("MS-FonVal: An exception occurred"
+                              " during rasterization testing")
+  # we want to run all FValidator tests only once,
+  # so here we cache all results:
+  fval_results = list(test(font))
+
+  # Then we make sure that the freetype backend we're using
+  # supports the hinting instructions validation tests,
+  # which are refered to as "rasterization testing":
+  # (See also: https://github.com/googlefonts/fontbakery/issues/1524)
+  for status, message in fval_results:
+    assert RASTER_EXCEPTION_MESSAGE not in message
+
+  # and finaly, we make sure that there wasn't an ERROR
+  # which would mean FontValidator is not properly installed:
   assert status != ERROR
 
 # TODO: test_id_038
