@@ -1,3 +1,4 @@
+prebuilt/fval/*/libfreetype*
 data/test/*/*.fontbakery.md
 data/test/*/*.fontbakery.json
 data/test/*/*.ttx
