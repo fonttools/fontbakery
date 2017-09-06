@@ -12,6 +12,7 @@ before_install:
 install:
 - export LD_LIBRARY_PATH=/usr/local/lib
 - export PATH=$PATH:prebuilt/fval/
+- export LD_PRELOAD=prebuilt/custom_freetype/lib/libfreetype.so
 - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
 - pip install BeautifulSoup4
 - pip install requests
