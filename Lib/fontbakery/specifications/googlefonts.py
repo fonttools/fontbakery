@@ -3790,25 +3790,25 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
   """METADATA.pb lists fonts named canonicaly ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
-  WEIGHTS = {
-    "Thin": 100,
-    "ThinItalic": 100,
-    "ExtraLight": 200,
-    "ExtraLightItalic": 200,
+  GF_WEIGHTS = {
+    "Thin": 250,
+    "Thin Italic": 250,
+    "ExtraLight": 275,
+    "ExtraLight Italic": 275,
     "Light": 300,
-    "LightItalic": 300,
+    "Light Italic": 300,
     "Regular": 400,
     "Italic": 400,
     "Medium": 500,
-    "MediumItalic": 500,
+    "Medium Italic": 500,
     "SemiBold": 600,
-    "SemiBoldItalic": 600,
+    "SemiBold Italic": 600,
     "Bold": 700,
-    "BoldItalic": 700,
+    "Bold Italic": 700,
     "ExtraBold": 800,
-    "ExtraBoldItalic": 800,
+    "ExtraBold Italic": 800,
     "Black": 900,
-    "BlackItalic": 900
+    "Black Italic": 900
   }
   font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
   if len(font_familyname) == 0:
@@ -3820,9 +3820,11 @@ def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
 
     is_canonical = False
     weights = []
-    for value, intvalue in WEIGHTS.items():
+    for value, intvalue in GF_WEIGHTS.items():
       if intvalue == ttFont["OS/2"].usWeightClass:
         weights.append(value)
+    if weights == []:
+      yield INFO, "Bad value: {}".format(ttFont["OS/2"].usWeightClass)
 
     for w in weights:
       canonical_name = "{} {}".format(font_familyname, w)
