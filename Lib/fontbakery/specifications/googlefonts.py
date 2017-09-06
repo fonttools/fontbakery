@@ -1140,7 +1140,8 @@ def check_with_msfontvalidator(font):
     fval_cmd = ["FontValidator.exe",
                 "-file", font,
                 "-all-tables",
-                "-report-in-font-dir"]
+                "-report-in-font-dir",
+                "+rendering-tests"]
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
     filtered_msgs = ""
