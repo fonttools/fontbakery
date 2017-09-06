@@ -685,7 +685,19 @@ def test_id_032():
 # TODO: test_id_034
 # TODO: test_id_035
 # TODO: test_id_036
-# TODO: test_id_037
+
+def test_id_037():
+  """ MS Font Validator checks """
+  from fontbakery.specifications.googlefonts import \
+                                  check_with_msfontvalidator as test
+  font = "data/test/mada/Mada-Regular.ttf"
+#  RASTER_EXCEPTION_MESSAGE = ("MS-FonVal: An exception occurred"
+#                              " during rasterization testing")
+#  for status, message in test(font):
+#    assert RASTER_EXCEPTION_MESSAGE not in message
+  status, message = list(test(font))[-1]
+  assert status != ERROR
+
 # TODO: test_id_038
 # TODO: test_id_039
 
