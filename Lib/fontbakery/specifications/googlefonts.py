@@ -1859,7 +1859,8 @@ def check_font_contains_all_required_tables(ttFont):
 )
 def check_for_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
-  UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop'])
+  UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop',
+                         'TSI0', 'TSI1', 'TSI2', 'TSI3'])
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES:
