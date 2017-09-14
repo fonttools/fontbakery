@@ -58,6 +58,11 @@ def normalize_path(path, seperator='/'):
     """Normalise any path to be system independent"""
     return os.path.join(*path.split(seperator))
 
+def fontbakery_scripts():
+  scripts = [os.path.join('bin', f) for f in os.listdir('bin') if f.startswith('fontbakery-')]
+  scripts.append(os.path.join('bin', 'fontbakery'))
+  return scripts
+
 setup(
     name="fontbakery",
     version='0.3.1',
@@ -73,27 +78,7 @@ setup(
               'fontbakery.testadapters',
               'fontbakery.commands'
               ],
-    scripts=[normalize_path('bin/fontbakery'),
-             normalize_path('bin/fontbakery-build-font2ttf.py'),
-             normalize_path('bin/fontbakery-build-fontmetadata.py'),
-             normalize_path('bin/fontbakery-check-font-version.py'),
-             normalize_path('bin/fontbakery-check-noto-version.sh'),
-             normalize_path('bin/fontbakery-check-googlefonts.py'),
-             normalize_path('bin/fontbakery-dev-testrunner.py'),
-             normalize_path('bin/fontbakery-family-html-snippet.py'),
-             normalize_path('bin/fontbakery-fix-ascii-fontmetadata.py'),
-             normalize_path('bin/fontbakery-fix-cmap.py'),
-             normalize_path('bin/fontbakery-fix-familymetadata.py'),
-             normalize_path('bin/fontbakery-fix-gasp.py'),
-             normalize_path('bin/fontbakery-fix-glyph-private-encoding.py'),
-             normalize_path('bin/fontbakery-fix-nameids.py'),
-             normalize_path('bin/fontbakery-fix-nonhinting.py'),
-             normalize_path('bin/fontbakery-fix-ttfautohint.py'),
-             normalize_path('bin/fontbakery-list-panose.py'),
-             normalize_path('bin/fontbakery-list-weightclass.py'),
-             normalize_path('bin/fontbakery-list-widthclass.py'),
-             normalize_path('bin/fontbakery-metadata-vs-api.py'),
-             normalize_path('bin/fontbakery-update-families.py')],
+    scripts=fontbakery_scripts(),
     zip_safe=False,
     classifiers=[
         'Environment :: Console',
