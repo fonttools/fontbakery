@@ -12,8 +12,26 @@ The title and url of each issues/pr can be displayed by using the
 -v, --verbose option.
 """
 import requests
+import re
 from datetime import datetime
 from argparse import ArgumentParser
+
+
+def get_pagination_urls(request):
+    pages = dict(
+        [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
+        [link.split(';') for link in
+        request.headers['link'].split(',')]]
+    )
+    last_page_url = pages['last']
+    last_page_no = re.search(r'(?<=&page=)[0-9]{1,20}', last_page_url).group(0)
+    base_url = last_page_url.replace(last_page_no, '')
+
+    urls = []
+    for n in range(1, int(last_page_no) + 1):
+        url = base_url + str(n)
+        urls.append(url)
+    return urls
 
 
 def get_issues_paginate(request_issues, start, end, auth):
@@ -21,42 +39,37 @@ def get_issues_paginate(request_issues, start, end, auth):
   If there are too many issues for one page, iterate through the pages
   to collect them all.
   """
-  # get the non paginated issues to start with
-  issues = get_issues(request_issues, start, end)
-
+  issues = {}
   print 'Getting paginated results, be patient...'
-  pages = dict(
-      [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
-        [link.split(';') for link in
-          request_issues.headers['link'].split(',')]])
+  pages_url = get_pagination_urls(request_issues)
 
-  while 'last' in pages and 'next' in pages:
-    request_issues = requests.get(pages['next'], auth=auth)
-    page_issues = get_issues(request_issues, start, end)
+  for page_url in pages_url:
+    request = requests.get(page_url, auth=auth)
+    page_issues = get_issues(request, start, end)
 
     for issue_type in page_issues:
+      if issue_type not in issues:
+        issues[issue_type] = []
       issues[issue_type] = issues[issue_type] + page_issues[issue_type]
-
-    if pages['next'] == pages['last']:
-      break
   return issues
 
 
 def get_issues(request_issues, start, end):
   """
-  Return a dictionary containing 3 categories of issues
+  Return a dictionary containing 4 categories of issues
   """
   issues = [i for i in request_issues.json()]
   return {
     "closed_issues": [
       i for i in issues
       if i['closed_at'] and 'pull_request' not in i
+      and iso8601_to_date(i['closed_at']) >= start
       and iso8601_to_date(i['closed_at']) <= end
     ],
 
     "opened_issues": [
       i for i in issues
-      if not i['closed_at'] and 'pull_request' not in i
+      if 'pull_request' not in i
       and iso8601_to_date(i['created_at']) >= start
       and iso8601_to_date(i['created_at']) <= end
     ],
@@ -70,7 +83,7 @@ def get_issues(request_issues, start, end):
 
     "opened_prs": [
       i for i in issues
-      if not i['closed_at'] and 'pull_request' in i
+      if 'pull_request' in i
       and iso8601_to_date(i['created_at']) >= start
       and iso8601_to_date(i['created_at']) <= end
     ],
@@ -83,8 +96,8 @@ def output_issues(issues, key):
     url = issue['url'].replace('api.github.com/repos/', 'github.com/')
     print '%s\t%s\t%s' % (
       key,
-      title.ljust(50, ' '),
-      url,
+      title.ljust(50, ' ').encode('utf-8'),
+      url.encode('utf-8'),
     )
 
 
@@ -128,13 +141,13 @@ def main():
   request_params = {
     'state': 'all',
     'direction': 'asc',
-    'since': args.start,
+    'since': '2015-03-01', # Date repo was created
     'per_page': 100
   }
 
   auth = (args.username, args.password)
   request_issues = requests.get(
-    "https://api.github.com/repos/google/fonts/issues",
+    repo_url,
     auth=auth,
     params=request_params,
   )
