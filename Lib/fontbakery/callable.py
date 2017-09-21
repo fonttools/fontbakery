@@ -150,7 +150,14 @@ class FontBakeryTest(FontbakeryCallable):
        name = None, # very short text
        conditions=None,
        # arguments_setup=None,
-       documentation=None, # long text, markdown?
+       documentation=None, # markdown?
+       rationale=None, # long text explaining why this test is needed. Using markdown, perhaps?
+       affects=None, # A list of tuples each indicating Browser/OS/Application
+                     # and the affected versions range.
+       request=None, # An URL to the original request for implementation of this test.
+                     # This is typically a github issue tracker URL.
+       example_failures=None, # A reference to some font or family that originally failed due to
+                              # the problems that this test tries to detect and report.
        advancedMessageSetup=None,
        priority=None
        ):
