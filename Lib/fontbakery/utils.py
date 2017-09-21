@@ -49,19 +49,28 @@ def get_bounding_box(font):
     return ymin, ymax
 
 
-def get_name_entry_strings(font,
-                           nameID,
-                           platformID=None,
-                           encodingID=None,
-                           langID=None):
+def get_name_entries(font,
+                     nameID,
+                     platformID=None,
+                     encodingID=None,
+                     langID=None):
   results = []
   for entry in font['name'].names:
     if entry.nameID == nameID and \
        (platformID is None or entry.platformID == platformID) and \
        (encodingID is None or entry.platEncID == encodingID) and \
        (langID is None or entry.langID == langID):
-      results.append(entry.string.decode(entry.getEncoding()))
+      results.append(entry)
   return results
+
+
+def get_name_entry_strings(font,
+                           nameID,
+                           platformID=None,
+                           encodingID=None,
+                           langID=None):
+  entries = get_name_entries(font, nameID, platformID, encodingID, langID)
+  return map(lambda e: e.string.decode(e.getEncoding()), entries)
 
 
 def name_entry_id(name):

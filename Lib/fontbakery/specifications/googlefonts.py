@@ -4570,3 +4570,39 @@ def check_name_table_TYPOGRAPHIC_SUBFAMILY_NAME(ttFont, style):
                                                unidecode(string))
   if not failed:
     yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/163'
+  , rationale = """According to a Glyphs tutorial (available at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances), in order to make sure all versions of Windows recognize it as a valid font file, we must make sure that the concatenated length of the familyname (NAMEID_FONT_FAMILY_NAME) and style (NAMEID_FONT_SUBFAMILY_NAME) strings in the name table do not exceed 20 characters.""" # Somebody with access to Windows should make some tests and confirm that this is really the case.
+  , affects = [('Windows', 'unspecified')]
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1488'
+  , example_failures = None
+)
+def com_google_fonts_test_163(ttFont):
+  """ Combined length of family and style must not exceed 20 characters. """
+  from unidecode import unidecode
+  from fontbakery.utils import (get_name_entries,
+                                get_name_entry_strings)
+  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_FONT_SUBFAMILY_NAME,
+                                    PLATID_STR)
+  failed = False
+  for familyname in get_name_entries(ttFont, NAMEID_FONT_FAMILY_NAME):
+    # we'll only match family/style name entries with the same platform ID:
+    plat = familyname.platformID
+    familyname_str = familyname.string.decode(familyname.getEncoding())
+    for stylename_str in get_name_entry_strings(ttFont,
+                                                NAMEID_FONT_SUBFAMILY_NAME,
+                                                platformID=plat):
+      if len(familyname_str + stylename_str) > 20:
+        failed = True
+        yield FAIL, ("The combined length of family and style"
+                     " exceeds 20 chars in the following '{}' entries:"
+                     " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
+                     "").format(PLATID_STR[plat],
+                                unidecode(familyname_str),
+                                unidecode(stylename_str))
+  if not failed:
+    yield PASS, "All name entries are good."

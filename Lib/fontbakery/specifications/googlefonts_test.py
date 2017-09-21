@@ -1832,3 +1832,37 @@ def test_id_159():
       assert status == FAIL
       # restore it:
       ttFont["name"].names[index].string = backup
+
+# TODO: test_id_160
+# TODO: test_id_161
+# TODO: test_id_162
+
+def test_id_163():
+  """ Check font name is the same as family name. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_163 as test
+  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
+                                    NAMEID_FONT_SUBFAMILY_NAME)
+  # Our reference Cabin Regular is known to be good
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
+
+  # Then we FAIL with the long family/style names
+  # that were used as an example on the glyphs tutorial
+  # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances):
+  for index, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      ttFont["name"].names[index].string = "ImpossibleFamilyNameFont".encode(name.getEncoding())
+      break
+
+  for index, name in enumerate(ttFont["name"].names):
+    if name.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+      ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding())
+      break
+
+  print ("Test FAIL with a bad font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == FAIL
