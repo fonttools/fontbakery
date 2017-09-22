@@ -901,7 +901,7 @@ def monospace_stats(ttFont):
   , conditions=['monospace_stats'
               , 'not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
-def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
+def com_google_fonts_test_033(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
 
      There are various metadata in the OpenType spec to specify if
@@ -948,26 +948,32 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
 
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
-    yield FAIL, ("Value of hhea.advanceWidthMax"
-                 " should be set to {} but got"
-                 " {} instead.").format(width_max,
-                                        ttFont['hhea'].advanceWidthMax)
+    yield FAIL, Message("bad-advanceWidthMax",
+                        ("Value of hhea.advanceWidthMax"
+                         " should be set to {} but got"
+                         " {} instead."
+                         "").format(width_max,
+                                    ttFont['hhea'].advanceWidthMax))
   if seems_monospaced:
     if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__MONOSPACED:
       failed = True
-      yield FAIL, ("On monospaced fonts, the value of"
-                   "post.isFixedPitch must be set to {}"
-                   " (fixed width monospaced),"
-                   " but got {} instead.").format(IS_FIXED_WIDTH__MONOSPACED,
-                                                  ttFont['post'].isFixedPitch)
+      yield FAIL, Message("mono-bad-post-isFixedPitch",
+                          ("On monospaced fonts, the value of"
+                           " post.isFixedPitch must be set to {}"
+                           " (fixed width monospaced),"
+                           " but got {} instead."
+                           "").format(IS_FIXED_WIDTH__MONOSPACED,
+                                      ttFont['post'].isFixedPitch))
 
     if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION__MONOSPACED:
       failed = True
-      yield FAIL, ("On monospaced fonts, the value of"
-                   "OS/2.panose.bProportion must be set to {}"
-                   " (proportion: monospaced), but got"
-                   " {} instead.").format(PANOSE_PROPORTION__MONOSPACED,
-                                          ttFont['OS/2'].panose.bProportion)
+      yield FAIL, Message("mono-bad-panose-proportion",
+                          ("On monospaced fonts, the value of"
+                           " OS/2.panose.bProportion must be set to {}"
+                           " (proportion: monospaced), but got"
+                           " {} instead."
+                           "").format(PANOSE_PROPORTION__MONOSPACED,
+                                      ttFont['OS/2'].panose.bProportion))
 
     num_glyphs = len(ttFont['glyf'].glyphs)
     unusually_spaced_glyphs = [
@@ -978,37 +984,42 @@ def check_correctness_of_monospaced_metadata(ttFont, monospace_stats):
     outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
     if outliers_ratio > 0:
       failed = True
-      yield WARN, ("Font is monospaced but {} glyphs"
-                   " ({}%) have a different width."
-                   " You should check the widths of:"
-                   " {}").format(
-                     len(unusually_spaced_glyphs),
-                     100.0 * outliers_ratio,
-                     unusually_spaced_glyphs)
+      yield WARN, Message("mono-outliers",
+                          ("Font is monospaced but {} glyphs"
+                           " ({}%) have a different width."
+                           " You should check the widths of:"
+                           " {}").format(
+                             len(unusually_spaced_glyphs),
+                             100.0 * outliers_ratio,
+                             unusually_spaced_glyphs))
     if not failed:
-      yield PASS, "Font is monospaced and all related metadata look good."
+      yield PASS, Message("mono-good",
+                          ("Font is monospaced and all"
+                           " related metadata look good."))
   else:
     # it is a non-monospaced font, so lets make sure
     # that all monospace-related metadata is properly unset.
 
-    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__NOT_MONOSPACED:
+    if ttFont['post'].isFixedPitch == IS_FIXED_WIDTH__MONOSPACED:
       failed = True
-      yield FAIL, ("On non-monospaced fonts, the"
-                   " post.isFixedPitch value must be set to {}"
-                   " (fixed width not monospaced), but got"
-                   " {} instead.").format(IS_FIXED_WIDTH__NOT_MONOSPACED,
-                                          ttFont['post'].isFixedPitch)
+      yield FAIL, Message("bad-post-isFixedPitch",
+                          ("On non-monospaced fonts, the"
+                           " post.isFixedPitch value must be set to {}"
+                           " (not monospaced), but got {} instead."
+                           "").format(IS_FIXED_WIDTH__NOT_MONOSPACED,
+                                      ttFont['post'].isFixedPitch))
 
     if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION__MONOSPACED:
       failed = True
-      yield FAIL, ("On non-monospaced fonts, the"
-                   " OS/2.panose.bProportion value must be set to {}"
-                   " (proportion: any), but got"
-                   " {} (proportion: monospaced)"
-                   " instead.").format(PANOSE_PROPORTION__ANY,
-                                       PANOSE_PROPORTION__MONOSPACED)
+      yield FAIL, Message("bad-panose-proportion",
+                          ("On non-monospaced fonts, the"
+                           " OS/2.panose.bProportion value can be set to "
+                           " any value except 9 (proportion: monospaced)"
+                           " which is the bad value we got in this font."))
     if not failed:
-      yield PASS, "Font is not monospaced and all related metadata look good."
+      yield PASS, Message("good",
+                          ("Font is not monospaced and"
+                           " all related metadata look good."))
 
 
 @register_test

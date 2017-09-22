@@ -681,7 +681,111 @@ def test_id_032():
   status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
   assert status == FAIL
 
-# TODO: test_id_033
+
+# If we ever reuse this helper function,
+# then move it into fontbakery.utils:
+def results_contain(results, expected_status, expected_code):
+  for status, message in results:
+    if status == expected_status and message.code == expected_code:
+      return True
+  # else
+  return False
+
+
+def test_id_033():
+  """ Checking correctness of monospaced metadata. """
+  from fontbakery.specifications.googlefonts import (monospace_stats,
+                                                     com_google_fonts_test_033 as test)
+  from fontbakery.constants import (PANOSE_PROPORTION__ANY,
+                                    PANOSE_PROPORTION__NO_FIT,
+                                    PANOSE_PROPORTION__OLD_STYLE,
+                                    PANOSE_PROPORTION__MODERN,
+                                    PANOSE_PROPORTION__EVEN_WIDTH,
+                                    PANOSE_PROPORTION__EXTENDED,
+                                    PANOSE_PROPORTION__CONDENSED,
+                                    PANOSE_PROPORTION__VERY_EXTENDED,
+                                    PANOSE_PROPORTION__VERY_CONDENSED,
+                                    PANOSE_PROPORTION__MONOSPACED,
+                                    IS_FIXED_WIDTH__MONOSPACED,
+                                    IS_FIXED_WIDTH__NOT_MONOSPACED)
+
+  # This test has a large number of code-paths
+  # We'll make sure to test them all here.
+  #
+  # --------------------------------------------
+  # Starting with non-monospaced code-paths:
+  # --------------------------------------------
+
+  print('Test PASS with a good non-monospace font...')
+  # Our reference Mada Regular is a non-monospace font
+  # know to have good metadata for this test.
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  stats = monospace_stats(ttFont)
+  status, message = list(test(ttFont, stats))[-1]
+  assert status == PASS and message.code == "good"
+
+  # We'll mark it as monospaced on the post table and make sure it fails:
+  print('Test FAIL with a non-monospaced font with bad post.isFixedPitch value ...')
+  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__MONOSPACED
+  status, message = list(test(ttFont, stats))[-1]
+  assert status == FAIL and message.code == "bad-post-isFixedPitch"
+
+  # restore good value:
+  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__NOT_MONOSPACED
+
+  # Now we mark it as monospaced on the OS/2 and it should also fail:
+  print('Test FAIL with a non-monospaced font with bad OS/2.panose.bProportion value (MONOSPACED) ...')
+  ttFont["OS/2"].panose.bProportion = PANOSE_PROPORTION__MONOSPACED
+  status, message = list(test(ttFont, stats))[-1]
+  assert status == FAIL and message.code == "bad-panose-proportion"
+
+  # --------------------------------------------
+  # And now we test the monospaced code-paths:
+  # --------------------------------------------
+
+  print('Test PASS with a good monospaced font...')
+  # Our reference OverpassMono Regular is know to be
+  # a monospaced font with good metadata here.
+  ttFont = TTFont("data/test/overpassmono/OverpassMono-Regular.ttf")
+  stats = monospace_stats(ttFont)
+  status, message = list(test(ttFont, stats))[-1]
+  # WARN is emitted when there's at least one outlier.
+  # I don't see a good reason to be picky and also test that one separately here...
+  assert (status == WARN and message.code == "mono-outliers") or \
+         (status == PASS and message.code == "mono-good")
+
+  # Let's incorrectly mark it as a non-monospaced on the post table and it should fail:
+  print('Test FAIL with a monospaced font with bad post.isFixedPitch value ...')
+  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__NOT_MONOSPACED
+  # here we search for the expected FAIL among all results
+  # instead of simply looking at the last one
+  # because we may also get an outliers WARN in some cases:
+  results = list(test(ttFont, stats))
+  assert results_contain(results, FAIL, "mono-bad-post-isFixedPitch")
+
+  # There are several bad panose proportion values for a monospaced font.
+  # Only PANOSE_PROPORTION__MONOSPACED would be valid.
+  # So we'll try all the bad ones here to make sure all of them emit a FAIL:
+  bad_monospaced_panose_values = [
+    PANOSE_PROPORTION__ANY,
+    PANOSE_PROPORTION__NO_FIT,
+    PANOSE_PROPORTION__OLD_STYLE,
+    PANOSE_PROPORTION__MODERN,
+    PANOSE_PROPORTION__EVEN_WIDTH,
+    PANOSE_PROPORTION__EXTENDED,
+    PANOSE_PROPORTION__CONDENSED,
+    PANOSE_PROPORTION__VERY_EXTENDED,
+    PANOSE_PROPORTION__VERY_CONDENSED,
+  ]
+  good_value = ttFont["OS/2"].panose.bProportion
+  for bad_value in bad_monospaced_panose_values:
+    print('Test FAIL with a monospaced font with bad OS/2.panose.bProportion value ({}) ...'.format(bad_value))
+    ttFont["OS/2"].panose.bProportion = bad_value
+    # again, we search the expected FAIL because we may algo get an outliers WARN here:
+    results = list(test(ttFont, stats))
+    assert results_contain(results, FAIL, "mono-bad-panose-proportion")
+
+
 # TODO: test_id_034
 # TODO: test_id_035
 # TODO: test_id_036
