@@ -3405,9 +3405,10 @@ def com_google_fonts_test_100(ttFont,
   , conditions=['font_metadata',
                 'font_familynames']
 )
-def check_METADATA_postScriptName_contains_good_fontname(font_metadata,
-                                                         font_familynames):
-  """METADATA.pb postScriptName field contains font name in right format ?"""
+def com_google_fonts_test_101(font_metadata,
+                              font_familynames):
+  """METADATA.pb font.postScriptName field
+     contains font name in right format ?"""
   for font_familyname in font_familynames:
     psname = "".join(str(font_familyname).split())
     if psname in "".join(font_metadata.post_script_name.split("-")):
