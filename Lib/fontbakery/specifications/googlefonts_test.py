@@ -1540,7 +1540,7 @@ MONTSERRAT_NON_RIBBI = [
 ]
 
 def test_id_098():
-  """ METADATA.pb "name" contains font name in right format ? """
+  """ METADATA.pb font.name contains font name in right format ? """
   from fontbakery.specifications.googlefonts import \
                                   (com_google_fonts_test_098 as test,
                                    style,
@@ -1557,13 +1557,13 @@ def test_id_098():
 
     # So it must PASS the test:
     print ("Test PASS with a good RIBBI font ({})...".format(fontfile))
-    status, message = list(test(ttFont, font_style, font_meta, font_fnames, font_tfnames))[-1]
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_fnames = ["WrongFamilyName"]
     print ("Test FAIL with a bad RIBBI font ({})...".format(fontfile))
-    status, message = list(test(ttFont, font_style, font_meta, font_fnames, font_tfnames))[-1]
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
   #we do the same for NON-RIBBI styles:
@@ -1576,17 +1576,63 @@ def test_id_098():
 
     # So it must PASS the test:
     print ("Test PASS with a good NON-RIBBI font ({})...".format(fontfile))
-    status, message = list(test(ttFont, font_style, font_meta, font_fnames, font_tfnames))[-1]
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_tfnames = ["WrongFamilyName"]
     print ("Test FAIL with a bad NON_RIBBI font ({})...".format(fontfile))
-    status, message = list(test(ttFont, font_style, font_meta, font_fnames, font_tfnames))[-1]
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
 
-# TODO: tests 099 to 101
+def test_id_099():
+  """ METADATA.pb font.full_name contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_099 as test,
+                                   style,
+                                   font_metadata,
+                                   font_familynames,
+                                   typographic_familynames)
+  # Our reference Merriweather family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_style = style(ttFont.reader.file.name)
+    font_meta = font_metadata(ttFont)
+    font_fnames = font_familynames(ttFont)
+    font_tfnames = []
+
+    # So it must PASS the test:
+    print ("Test PASS with a good RIBBI font ({})...".format(fontfile))
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad font_familyname:
+    font_fnames = ["WrongFamilyName"]
+    print ("Test FAIL with a bad RIBBI font ({})...".format(fontfile))
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
+    assert status == FAIL
+
+  #we do the same for NON-RIBBI styles:
+  for fontfile in MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_style = style(ttFont.reader.file.name)
+    font_meta = font_metadata(ttFont)
+    font_fnames = []
+    font_tfnames = typographic_familynames(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good NON-RIBBI font ({})...".format(fontfile))
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad font_familyname:
+    font_tfnames = ["WrongFamilyName"]
+    print ("Test FAIL with a bad NON_RIBBI font ({})...".format(fontfile))
+    status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
+    assert status == FAIL
+
+# TODO: tests 100 and 101
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
