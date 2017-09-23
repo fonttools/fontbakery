@@ -3385,9 +3385,9 @@ def com_google_fonts_test_099(style,
   , conditions=['style', # This means the font filename (source of truth here) is good
                 'font_metadata']
 )
-def check_METADATA_filename_contains_good_fontname(ttFont,
-                                                   font_metadata):
-  """METADATA.pb "filename" contains font name in right format ?"""
+def com_google_fonts_test_100(ttFont,
+                              font_metadata):
+  """METADATA.pb font.filename contains font name in right format ?"""
   expected = os.path.split(ttFont.reader.file.name)[1]
   if font_metadata.filename == expected:
     yield PASS, ("METADATA.pb filename field contains"

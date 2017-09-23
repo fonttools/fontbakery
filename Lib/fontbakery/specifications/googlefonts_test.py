@@ -1632,7 +1632,29 @@ def test_id_099():
     status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
-# TODO: tests 100 and 101
+
+def test_id_100():
+  """ METADATA.pb font.filename contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_100 as test,
+                                   font_metadata)
+  # Our reference Montserrat family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_meta = font_metadata(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad filename:
+    font_meta.filename = "WrongFileName"
+    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == FAIL
+
+# TODO: test/101
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
