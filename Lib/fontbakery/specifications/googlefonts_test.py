@@ -1915,7 +1915,11 @@ def test_id_112():
     status, message = list(test(ttFont, font_meta))[-1]
     assert status == FAIL
 
-# TODO: tests 113 to 131
+# TODO: test/113
+
+# DEPRECATED: com.google.fonts/test/114
+
+# TODO: tests 115 to 131
 
 # DEPRECATED CHECKS:
 # com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."

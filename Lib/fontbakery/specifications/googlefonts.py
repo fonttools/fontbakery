@@ -3803,63 +3803,29 @@ def check_Metadata_weight_matches_postScriptName(font_metadata):
     yield PASS, "Weight value matches postScriptName."
 
 
-@register_test
-@test(
-    id='com.google.fonts/test/114'
-  , conditions=['font_metadata']
-)
-def check_METADATA_lists_fonts_named_canonicaly(ttFont, font_metadata):
-  """METADATA.pb lists fonts named canonicaly ?"""
-  from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
-  GF_WEIGHTS = {
-    "Thin": 250,
-    "Thin Italic": 250,
-    "ExtraLight": 275,
-    "ExtraLight Italic": 275,
-    "Light": 300,
-    "Light Italic": 300,
-    "Regular": 400,
-    "Italic": 400,
-    "Medium": 500,
-    "Medium Italic": 500,
-    "SemiBold": 600,
-    "SemiBold Italic": 600,
-    "Bold": 700,
-    "Bold Italic": 700,
-    "ExtraBold": 800,
-    "ExtraBold Italic": 800,
-    "Black": 900,
-    "Black Italic": 900
-  }
-  font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
-  if len(font_familyname) == 0:
-    yield SKIP, ("Skipping this test due to the lack"
-                 " of a FONT_FAMILY_NAME in the name table.")
-  else:
-    font_familyname = font_familyname[0]
-    # FIXME: common condition/name-id check as in test/108.
-
-    is_canonical = False
-    weights = []
-    for value, intvalue in GF_WEIGHTS.items():
-      if intvalue == ttFont["OS/2"].usWeightClass:
-        weights.append(value)
-    if weights == []:
-      yield INFO, "Bad value: {}".format(ttFont["OS/2"].usWeightClass)
-
-    for w in weights:
-      canonical_name = "{} {}".format(font_familyname, w)
-      if font_metadata.full_name == canonical_name:
-        is_canonical = True
-
-    if is_canonical:
-      yield PASS, "METADATA.pb lists fonts named canonicaly."
-    else:
-      v = map(lambda x: font_familyname + " " + x, weights)
-      yield FAIL, ("Canonical name in font: Expected \"{}\""
-                   " but got \"{}\" instead.").format("\" or \"".join(v),
-                                                      font_metadata.full_name)
+# DEPRECATED: com.google.fonts/test/114
+#
+# == Rationale ==
+# We need to assure coherence among the following pieces of info:
+#
+# (A) A given font canonical filename;
+# (B) Its ttFont["OS/2"].usWeightClass;
+# (C) The METADATA.pb font.weight field;
+# (D) Its name table entries.
+#
+# - Canonical filenames (A) are treated as the source of truth.
+# - com.google.fonts/test/001:  Makes sure (A) is good.
+# - com.google.fonts/test/020:  (B) is tied to (A)
+# - com.google.fonts/test/112:  (C) is tied to (B)
+# - multiple name table tests are crafted to tie (D) to (A)
+#
+# The original implementation of com.google.fonts/test/114
+# had a convoluted test linking together (B), (C) and (D).
+# That was a complex and error-prone implementation.
+#
+# Given tests 001, 020 and 112 discussed above,
+# it is clear that test/114 is redundant and thus
+# can be safely deprecated.
 
 
 @register_test
