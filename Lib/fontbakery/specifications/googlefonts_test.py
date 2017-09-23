@@ -1547,7 +1547,7 @@ def test_id_098():
                                    font_metadata,
                                    font_familynames,
                                    typographic_familynames)
-  # Our reference Merriweather family is a good 18-styles family:
+  # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(ttFont.reader.file.name)
@@ -1594,7 +1594,7 @@ def test_id_099():
                                    font_metadata,
                                    font_familynames,
                                    typographic_familynames)
-  # Our reference Merriweather family is a good 18-styles family:
+  # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(ttFont.reader.file.name)
