@@ -1890,7 +1890,32 @@ def test_id_110():
   status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
   assert status == FAIL
 
-# TODO: tests 111 to 131
+# TODO: test/111
+
+def test_id_112():
+  """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_112 as test,
+                                   font_metadata)
+  # Our reference Montserrat family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_meta = font_metadata(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad weight value:
+    good_value = font_meta.weight
+    bad_value = good_value + 50
+    font_meta.weight = bad_value
+    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == FAIL
+
+# TODO: tests 113 to 131
 
 # DEPRECATED CHECKS:
 # com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."
