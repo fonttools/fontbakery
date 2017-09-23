@@ -3321,12 +3321,11 @@ def font_familyname(font_familynames):
   , conditions=['style',
                 'font_metadata']
 )
-def com_google_fonts_test_098(ttFont,
-                              style,
+def com_google_fonts_test_098(style,
                               font_metadata,
                               font_familynames,
                               typographic_familynames):
-  """METADATA.pb "name" contains font name in right format ?"""
+  """METADATA.pb font.name contains font name in right format ?"""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   if style in RIBBI_STYLE_NAMES:
     familynames = font_familynames
@@ -3336,10 +3335,12 @@ def com_google_fonts_test_098(ttFont,
   for font_familyname in familynames:
     if font_familyname in font_metadata.name:
       yield PASS, ("METADATA.pb font.name field contains"
-                   " font name in right format.")
+                   " font name in right format."
+                   " ('{}' in '{}')").format(font_familyname,
+                                             font_metadata.name)
     else:
-      yield FAIL, ("METADATA.pb font.name field (\"{}\") does not match"
-                   " correct font name format (\"{}\")."
+      yield FAIL, ("METADATA.pb font.name field (\"{}\")"
+                   " does not match correct font name format (\"{}\")."
                    "").format(font_metadata.name,
                               font_familyname)
 
@@ -3348,29 +3349,32 @@ def com_google_fonts_test_098(ttFont,
 @test(
     id='com.google.fonts/test/099'
   , conditions=['style',
-                'font_metadata',
-                'font_familynames']
+                'font_metadata']
 )
-def check_METADATA_fullname_contains_good_fontname(style,
-                                                   font_metadata,
-                                                   font_familynames,
-                                                   typographic_familynames):
-  """METADATA.pb "full_name" contains font name in right format ?"""
+def com_google_fonts_test_099(style,
+                              font_metadata,
+                              font_familynames,
+                              typographic_familynames):
+  """METADATA.pb font.full_name contains font name in right format ?"""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   if style in RIBBI_STYLE_NAMES:
     familynames = font_familynames
+    if familynames == []:
+      yield SKIP, "No FONT_FAMILYNAME"
   else:
     familynames = typographic_familynames
+    if familynames == []:
+      yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-  for font_familyname in font_familynames:
+  for font_familyname in familynames:
     if font_familyname in font_metadata.full_name:
-      yield PASS, ("METADATA.pb full_name field contains"
+      yield PASS, ("METADATA.pb font.full_name field contains"
                    " font name in right format."
-                   " ('{}' in '{}')".format(font_familyname,
-                                            font_metadata.full_name))
+                   " ('{}' in '{}')").format(font_familyname,
+                                             font_metadata.full_name)
     else:
-      yield FAIL, ("METADATA.pb full_name field (\"{}\") does not match"
-                   " correct font name format (\"{}\")."
+      yield FAIL, ("METADATA.pb font.full_name field (\"{}\")"
+                   " does not match correct font name format (\"{}\")."
                    "").format(font_metadata.full_name,
                               font_familyname)
 
