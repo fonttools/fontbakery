@@ -1547,7 +1547,7 @@ def test_id_098():
                                    font_metadata,
                                    font_familynames,
                                    typographic_familynames)
-  # Our reference Merriweather family is a good 18-styles family:
+  # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(ttFont.reader.file.name)
@@ -1594,7 +1594,7 @@ def test_id_099():
                                    font_metadata,
                                    font_familynames,
                                    typographic_familynames)
-  # Our reference Merriweather family is a good 18-styles family:
+  # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(ttFont.reader.file.name)
@@ -1632,7 +1632,53 @@ def test_id_099():
     status, message = list(test(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
-# TODO: tests 100 and 101
+
+def test_id_100():
+  """ METADATA.pb font.filename contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_100 as test,
+                                   font_metadata)
+  # Our reference Montserrat family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_meta = font_metadata(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad filename:
+    font_meta.filename = "WrongFileName"
+    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == FAIL
+
+
+def test_id_101():
+  """ METADATA.pb font.postScriptName field
+      contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_101 as test,
+                                   font_metadata,
+                                   font_familynames)
+  # Our reference Montserrat family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_meta = font_metadata(ttFont)
+    font_fnames = font_familynames(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good font ({})...".format(fontfile))
+    status, message = list(test(font_meta, font_fnames))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad filename:
+    font_meta.post_script_name = "WrongPSName"
+    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    status, message = list(test(font_meta, font_fnames))[-1]
+    assert status == FAIL
+
 
 def test_id_102():
   """ Copyright notice matches canonical pattern ? """
@@ -1844,7 +1890,36 @@ def test_id_110():
   status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
   assert status == FAIL
 
-# TODO: tests 111 to 131
+# TODO: test/111
+
+def test_id_112():
+  """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
+  from fontbakery.specifications.googlefonts import \
+                                  (com_google_fonts_test_112 as test,
+                                   font_metadata)
+  # Our reference Montserrat family is a good 18-styles family:
+  for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+    ttFont = TTFont(fontfile)
+    font_meta = font_metadata(ttFont)
+
+    # So it must PASS the test:
+    print ("Test PASS with a good font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == PASS
+
+    # And fail if it finds a bad weight value:
+    good_value = font_meta.weight
+    bad_value = good_value + 50
+    font_meta.weight = bad_value
+    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    status, message = list(test(ttFont, font_meta))[-1]
+    assert status == FAIL
+
+# TODO: test/113
+
+# DEPRECATED: com.google.fonts/test/114
+
+# TODO: tests 115 to 131
 
 # DEPRECATED CHECKS:
 # com.google.fonts/test/132 - "Checking Cyrillic Historical glyph coverage."
