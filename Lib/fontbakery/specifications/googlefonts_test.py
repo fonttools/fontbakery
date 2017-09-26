@@ -148,8 +148,7 @@ def test_example_testrunner_based(cabin_regular_path):
 
 def test_id_001():
   """ Files are named canonically. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_file_is_named_canonically
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_001 as test
   canonical_names = [
     "data/test/cabin/Cabin-Thin.ttf",
     "data/test/cabin/Cabin-ExtraLight.ttf",
@@ -177,19 +176,18 @@ def test_id_001():
 
   print('Test PASS ...')
   for canonical in canonical_names:
-    status, message = list(check_file_is_named_canonically(canonical))[-1]
+    status, message = list(test(canonical))[-1]
     assert status == PASS
 
   print('Test FAIL ...')
   for non_canonical in non_canonical_names:
-    status, message = list(check_file_is_named_canonically(non_canonical))[-1]
+    status, message = list(test(non_canonical))[-1]
     assert status == FAIL
 
 
 def test_id_002():
   """ Fonts are all in the same directory. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_all_files_in_a_single_directory
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_002 as test
   same_dir = [
     "data/test/cabin/Cabin-Thin.ttf",
     "data/test/cabin/Cabin-ExtraLight.ttf"
@@ -199,126 +197,120 @@ def test_id_002():
     "data/test/cabin/Cabin-ExtraLight.ttf"
   ]
   print('Test PASS with same dir: {}'.format(same_dir))
-  status, message = list(check_all_files_in_a_single_directory(same_dir))[-1]
+  status, message = list(test(same_dir))[-1]
   assert status == PASS
 
   print('Test FAIL with multiple dirs: {}'.format(multiple_dirs))
-  status, message = list(check_all_files_in_a_single_directory(multiple_dirs))[-1]
+  status, message = list(test(multiple_dirs))[-1]
   assert status == FAIL
 
 
 def test_id_003():
   """ Does DESCRIPTION file contain broken links ? """
   from unidecode import unidecode
-  from fontbakery.specifications.googlefonts import \
-                                  (check_DESCRIPTION_file_contains_no_broken_links,
-                                   description,
-                                   descfile)
-
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_003 as test,
+                                                     description,
+                                                     descfile)
   good_desc = description(descfile("data/test/cabin/"))
   print('Test PASS with description file that has no links...')
-  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  status, message = list(test(good_desc))[-1]
   assert status == PASS
 
   good_desc = unidecode(good_desc.decode("utf8")) + \
      "<a href='http://example.com'>Good Link</a>" + \
      "<a href='http://fonts.google.com'>Another Good One</a>"
   print('Test PASS with description file that has good links...')
-  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  status, message = list(test(good_desc))[-1]
   assert status == PASS
 
   good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
   print('Test FAIL with a description file containing a mailto links...')
-  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(good_desc))[-1]
+  status, message = list(test(good_desc))[-1]
   assert status == PASS
 
   bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
   print('Test FAIL with a description file containing a known-bad URL...')
-  status, message = list(check_DESCRIPTION_file_contains_no_broken_links(bad_desc))[-1]
+  status, message = list(test(bad_desc))[-1]
   assert status == FAIL
 
 
 def test_id_004():
   """ DESCRIPTION file is a propper HTML snippet ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_DESCRIPTION_is_propper_HTML_snippet,
-                                   descfile)
-
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_004 as test,
+                                                     descfile)
   good_descfile = descfile("data/test/nunito/")
   print('Test PASS with description file that contains a good HTML snippet...')
-  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(good_descfile))[-1]
+  status, message = list(test(good_descfile))[-1]
   assert status == PASS
 
   bad_descfile = "data/test/cabin/FONTLOG.txt" # :-)
   print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
-  status, message = list(check_DESCRIPTION_is_propper_HTML_snippet(bad_descfile))[-1]
+  status, message = list(test(bad_descfile))[-1]
   assert status == FAIL
 
 
 def test_id_005():
   """ DESCRIPTION.en_us.html must have more than 200 bytes. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_DESCRIPTION_min_length
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_005 as test
+
   good_length = 'a' * 199
   print('Test FAIL with 199-byte buffer...')
-  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  status, message = list(test(good_length))[-1]
   assert status == FAIL
 
   good_length = 'a' * 200
   print('Test FAIL with 200-byte buffer...')
-  status, message = list(check_DESCRIPTION_min_length(good_length))[-1]
+  status, message = list(test(good_length))[-1]
   assert status == FAIL
 
   bad_length = 'a' * 201
   print('Test PASS with 201-byte buffer...')
-  status, message = list(check_DESCRIPTION_min_length(bad_length))[-1]
+  status, message = list(test(bad_length))[-1]
   assert status == PASS
 
 
 def test_id_006():
   """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_DESCRIPTION_max_length
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_006 as test
+
   bad_length = 'a' * 1001
   print('Test FAIL with 1001-byte buffer...')
-  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  status, message = list(test(bad_length))[-1]
   assert status == FAIL
 
   bad_length = 'a' * 1000
   print('Test FAIL with 1000-byte buffer...')
-  status, message = list(check_DESCRIPTION_max_length(bad_length))[-1]
+  status, message = list(test(bad_length))[-1]
   assert status == FAIL
 
   good_length = 'a' * 999
   print('Test PASS with 999-byte buffer...')
-  status, message = list(check_DESCRIPTION_max_length(good_length))[-1]
+  status, message = list(test(good_length))[-1]
   assert status == PASS
 
 
 def test_id_007():
   """ Font designer field in METADATA.pb must not be 'unknown'. """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_font_designer_field_is_not_unknown,
-                                   metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_007 as test,
+                                                     metadata)
   good = metadata("data/test/merriweather/")
   print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check_font_designer_field_is_not_unknown(good))[-1]
+  status, message = list(test(good))[-1]
   assert status == PASS
 
   bad = metadata("data/test/merriweather/")
   bad.designer = "unknown"
   print('Test FAIL with a bad METADATA.pb file...')
-  status, message = list(check_font_designer_field_is_not_unknown(bad))[-1]
+  status, message = list(test(bad))[-1]
   assert status == FAIL
 
 
 def test_id_008(mada_ttFonts):
   """ Fonts have consistent underline thickness ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_consistent_underline_thickness
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_008 as test
 
   print('Test PASS with good family.')
-  status, message = list(check_fonts_have_consistent_underline_thickness(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == PASS
 
   # introduce a wronge value in one of the font files:
@@ -327,17 +319,16 @@ def test_id_008(mada_ttFonts):
   mada_ttFonts[0]['post'].underlineThickness = incorrect_value
 
   print('Test FAIL with inconsistent family.')
-  status, message = list(check_fonts_have_consistent_underline_thickness(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_009(mada_ttFonts):
   """ Fonts have consistent PANOSE proportion ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_consistent_PANOSE_proportion
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_009 as test
 
   print('Test PASS with good family.')
-  status, message = list(check_fonts_have_consistent_PANOSE_proportion(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == PASS
 
   # introduce a wrong value in one of the font files:
@@ -346,17 +337,16 @@ def test_id_009(mada_ttFonts):
   mada_ttFonts[0]['OS/2'].panose.bProportion = incorrect_value
 
   print('Test FAIL with inconsistent family.')
-  status, message = list(check_fonts_have_consistent_PANOSE_proportion(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_010(mada_ttFonts):
   """ Fonts have consistent PANOSE family type ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_consistent_PANOSE_family_type
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_010 as test
 
   print('Test PASS with good family.')
-  status, message = list(check_fonts_have_consistent_PANOSE_family_type(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == PASS
 
   # introduce a wrong value in one of the font files:
@@ -365,54 +355,51 @@ def test_id_010(mada_ttFonts):
   mada_ttFonts[0]['OS/2'].panose.bFamilyType = incorrect_value
 
   print('Test FAIL with inconsistent family.')
-  status, message = list(check_fonts_have_consistent_PANOSE_family_type(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_011(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal numbers of glyphs ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_equal_numbers_of_glyphs
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_011 as test
 
   print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check_fonts_have_equal_numbers_of_glyphs(cabin_ttFonts))[-1]
+  status, message = list(test(cabin_ttFonts))[-1]
   assert status == PASS
 
   print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
-  status, message = list(check_fonts_have_equal_numbers_of_glyphs(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_012(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal glyph names ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_equal_glyph_names
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_012 as test
 
   print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check_fonts_have_equal_glyph_names(cabin_ttFonts))[-1]
+  status, message = list(test(cabin_ttFonts))[-1]
   assert status == PASS
 
   print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs (that extra glyph
   # causes the test to fail).
-  status, message = list(check_fonts_have_equal_glyph_names(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_013(mada_ttFonts):
   """ Fonts have equal unicode encodings ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fonts_have_equal_unicode_encodings
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_013 as test
   from fontbakery.constants import (PLAT_ENC_ID__SYMBOL,
                                     PLAT_ENC_ID__UCS2)
   print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
-  status, message = list(check_fonts_have_equal_unicode_encodings(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == PASS
 
   bad_ttFonts = mada_ttFonts
@@ -424,17 +411,17 @@ def test_id_013(mada_ttFonts):
         table.platEncID = encoding
 
   print('Test FAIL with fonts that diverge on unicode encoding.')
-  status, message = list(check_fonts_have_equal_unicode_encodings(bad_ttFonts))[-1]
+  status, message = list(test(bad_ttFonts))[-1]
   assert status == FAIL
 
 
 def test_id_014(mada_ttFonts):
   """ Make sure all font files have the same version value. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_all_fontfiles_have_same_version
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_014 as test
+
   print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
-  status, message = list(check_all_fontfiles_have_same_version(mada_ttFonts))[-1]
+  status, message = list(test(mada_ttFonts))[-1]
   assert status == PASS
 
   bad_ttFonts = mada_ttFonts
@@ -443,49 +430,60 @@ def test_id_014(mada_ttFonts):
   bad_ttFonts[1]['head'].fontRevision = version + 1
 
   print('Test WARN with fonts that diverge on the fontRevision field value.')
-  status, message = list(check_all_fontfiles_have_same_version(bad_ttFonts))[-1]
+  status, message = list(test(bad_ttFonts))[-1]
   assert status == WARN
 
 
 def test_id_015():
   """ Font has post table version 2 ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_font_has_post_table_version_2
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_015 as test
+
   print('Test PASS with good font.')
   # our reference Mada family is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # modify the post table version
   ttFont['post'].formatType = 3
 
   print('Test FAIL with fonts that diverge on the fontRevision field value.')
-  status, message = list(check_font_has_post_table_version_2(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 
 def test_id_016():
   """ Checking OS/2 fsType """
-  from fontbakery.specifications.googlefonts import check_OS2_fsType
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_016 as test
+
   print('Test PASS with good font.')
   # our reference Cabin family is know to be good here.
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  status, message = list(check_OS2_fsType(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # modify the OS/2 fsType value to something different than zero:
   ttFont['OS/2'].fsType = 1
 
   print('Test FAIL with fonts that diverge on the fontRevision field value.')
-  status, message = list(check_OS2_fsType(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
-#TODO: test/017
+# DEPRECATED CHECK:
+# com.google.fonts/test/017 - "Assure valid format for the main entries in the name table."
+#
+# REPLACED BY:
+# com.google.fonts/test/156 - "Font has all mandatory 'name' table entries ?"
+# com.google.fonts/test/157 - "Check name table: FONT_FAMILY_NAME entries."
+# com.google.fonts/test/158 - "Check name table: FONT_SUBFAMILY_NAME entries."
+# com.google.fonts/test/159 - "Check name table: FULL_FONT_NAME entries."
+# com.google.fonts/test/160 - "Check name table: POSTSCRIPT_NAME entries."
+# com.google.fonts/test/161 - "Check name table: TYPOGRAPHIC_FAMILY_NAME entries."
+# com.google.fonts/test/162 - "Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."
 
 def test_id_018():
   """ Checking OS/2 achVendID """
-  from fontbakery.specifications.googlefonts import (check_OS2_achVendID,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_018 as test,
                                                      registered_vendor_ids)
   from fontbakery.constants import NAMEID_MANUFACTURER_NAME
   registered_ids = registered_vendor_ids()
@@ -494,24 +492,24 @@ def test_id_018():
   # Our reference Cabin family is know to have mismatching value of
   # Vendor ID ('STC ') and Manufacturer Name ('Eben Sorkin').
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
-  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  status, message = list(test(ttFont, registered_ids))[-1]
   assert status == WARN and message.code == "mismatch"
 
   print('Test FAIL with bad vid.')
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   for bad_vid in bad_vids:
     ttFont['OS/2'].achVendID = bad_vid
-    status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+    status, message = list(test(ttFont, registered_ids))[-1]
     assert status == FAIL and message.code == "bad"
 
   print('Test FAIL with font missing vendor id info.')
   ttFont['OS/2'].achVendID = None
-  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  status, message = list(test(ttFont, registered_ids))[-1]
   assert status == FAIL and message.code == "not set"
 
   print('Test WARN with unknwon vendor id.')
   ttFont['OS/2'].achVendID = "????"
-  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  status, message = list(test(ttFont, registered_ids))[-1]
   assert status == WARN and message.code == "unknown"
 
   print('Test PASS with good font.')
@@ -521,42 +519,42 @@ def test_id_018():
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NAMEID_MANUFACTURER_NAME:
       ttFont['name'].names[i].string = "Apple".encode(name.getEncoding())
-  status, message = list(check_OS2_achVendID(ttFont, registered_ids))[-1]
+  status, message = list(test(ttFont, registered_ids))[-1]
   assert status == PASS
 
 
 def test_id_019():
   """ Substitute copyright, registered and trademark
       symbols in name table entries. """
-  from fontbakery.specifications.googlefonts import check_name_entries_symbol_substitutions
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_019 as test
 
   print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check_name_entries_symbol_substitutions(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
   print('Test PASS with a good font...')
   # Our reference Cabin Regular is know to be good here.
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  status, message = list(check_name_entries_symbol_substitutions(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
 
 def test_id_020():
   """ Checking OS/2 usWeightClass. """
-  from fontbakery.specifications.googlefonts import (check_OS2_usWeightClass,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_020 as test,
                                                      style)
   print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
   font = "data/test/mada/Mada-Regular.ttf"
-  status, message = list(check_OS2_usWeightClass(TTFont(font), style(font)))[-1]
+  status, message = list(test(TTFont(font), style(font)))[-1]
   assert status == FAIL
 
   print('Test PASS with a good font...')
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
-    status, message = list(check_OS2_usWeightClass(TTFont(font), style(font)))[-1]
+    status, message = list(test(TTFont(font), style(font)))[-1]
     assert status == PASS
 
 # DEPRECATED CHECKS:                                             | REPLACED BY:
@@ -571,34 +569,32 @@ def test_id_020():
 
 def test_id_028():
   """ Check font project has a license. """
-  from fontbakery.specifications.googlefonts import (check_font_has_a_license,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_028 as test,
                                                      licenses)
-
   print('Test FAIL with multiple licenses...')
   detected_licenses = licenses("data/test/028/multiple/")
-  status, message = list(check_font_has_a_license(detected_licenses))[-1]
+  status, message = list(test(detected_licenses))[-1]
   assert status == FAIL and message.code == "multiple"
 
   print('Test FAIL with no license...')
   detected_licenses = licenses("data/test/028/none/")
-  status, message = list(check_font_has_a_license(detected_licenses))[-1]
+  status, message = list(test(detected_licenses))[-1]
   assert status == FAIL and message.code == "none"
 
   print('Test PASS with a single OFL license...')
   detected_licenses = licenses("data/test/028/pass_ofl/")
-  status, message = list(check_font_has_a_license(detected_licenses))[-1]
+  status, message = list(test(detected_licenses))[-1]
   assert status == PASS
 
   print('Test PASS with a single Apache license...')
   detected_licenses = licenses("data/test/028/pass_apache/")
-  status, message = list(check_font_has_a_license(detected_licenses))[-1]
+  status, message = list(test(detected_licenses))[-1]
   assert status == PASS
 
 
 def test_id_029(mada_ttFonts):
   """ Check copyright namerecords match license file. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_copyright_entries_match_license
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_029 as test
   from fontbakery.constants import NAMEID_LICENSE_DESCRIPTION
 
   # Our reference Mada family has its copyright name records properly set
@@ -608,18 +604,18 @@ def test_id_029(mada_ttFonts):
 
   print('Test PASS with good fonts ...')
   for ttFont in mada_ttFonts:
-    status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
+    status, message = list(test(ttFont, license))[-1]
     assert status == PASS
 
   print('Test FAIL with wrong entry values ...')
   for ttFont in mada_ttFonts:
-    status, message = list(check_copyright_entries_match_license(ttFont, wrong_license))[-1]
+    status, message = list(test(ttFont, wrong_license))[-1]
     assert status == FAIL and message.code == 'wrong'
 
   print('Test FAIL with missing copyright namerecords ...')
   for ttFont in mada_ttFonts:
     delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
-    status, message = list(check_copyright_entries_match_license(ttFont, license))[-1]
+    status, message = list(test(ttFont, license))[-1]
     assert status == FAIL and message.code == 'missing'
 
 # TODO: test_id_030
@@ -628,14 +624,13 @@ def test_id_031():
   """ Description strings in the name table
       must not contain copyright info.
   """
-  from fontbakery.specifications.googlefonts import \
-                                  check_description_strings_in_name_table
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_031 as test
   from fontbakery.constants import NAMEID_DESCRIPTION
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check_description_strings_in_name_table(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # here we add a "Copyright" string to a NAMEID_DESCRIPTION
@@ -644,7 +639,7 @@ def test_id_031():
       ttFont['name'].names[i].string = "Copyright".encode(name.getEncoding())
 
   print('Test FAIL with a bad font...')
-  status, message = list(check_description_strings_in_name_table(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 
@@ -652,14 +647,13 @@ def test_id_032():
   """ Description strings in the name table
       must not exceed 100 characters.
   """
-  from fontbakery.specifications.googlefonts import \
-                   check_description_strings_do_not_exceed_100_chars
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_032 as test
   from fontbakery.constants import NAMEID_DESCRIPTION
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # Here we add strings to NAMEID_DESCRIPTION with exactly 100 chars,
@@ -669,7 +663,7 @@ def test_id_032():
       ttFont['name'].names[i].string = ('a' * 100).encode(name.getEncoding())
 
   print('Test PASS with a 100 char string...')
-  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # And here we make the strings longer than 100 chars in order to FAIL the test:
@@ -678,7 +672,7 @@ def test_id_032():
       ttFont['name'].names[i].string = ('a' * 101).encode(name.getEncoding())
 
   print('Test FAIL with a bad font...')
-  status, message = list(check_description_strings_do_not_exceed_100_chars(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 
@@ -694,8 +688,8 @@ def results_contain(results, expected_status, expected_code):
 
 def test_id_033():
   """ Checking correctness of monospaced metadata. """
-  from fontbakery.specifications.googlefonts import (monospace_stats,
-                                                     com_google_fonts_test_033 as test)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_033 as test,
+                                                     monospace_stats)
   from fontbakery.constants import (PANOSE_PROPORTION__ANY,
                                     PANOSE_PROPORTION__NO_FIT,
                                     PANOSE_PROPORTION__OLD_STYLE,
@@ -792,8 +786,8 @@ def test_id_033():
 
 def test_id_037():
   """ MS Font Validator checks """
-  from fontbakery.specifications.googlefonts import \
-                                  check_with_msfontvalidator as test
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_037 as test
+
   font = "data/test/mada/Mada-Regular.ttf"
   RASTER_EXCEPTION_MESSAGE = ("MS-FonVal: An exception occurred"
                               " during rasterization testing")
@@ -817,9 +811,8 @@ def test_id_037():
 
 def test_id_040(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_OS2_usWinAscent_and_Descent,
-                                   vmetrics)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_040 as test,
+                                                     vmetrics)
   # Our reference Mada Regular is know to be bad here.
   vm = vmetrics(mada_ttFonts)
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -828,27 +821,26 @@ def test_id_040(mada_ttFonts):
   print('Test PASS with a good font...')
   ttFont['OS/2'].usWinAscent = vm['ymax']
   ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  status, message = list(test(ttFont, vm))[-1]
   assert status == PASS
 
   # Then we break it:
   print('Test FAIL with a bad OS/2.usWinAscent...')
   ttFont['OS/2'].usWinAscent = vm['ymax'] + 1
   ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  status, message = list(test(ttFont, vm))[-1]
   assert status == FAIL and message.code == "ascent"
 
   print('Test FAIL with a bad OS/2.usWinDescent...')
   ttFont['OS/2'].usWinAscent = vm['ymax']
   ttFont['OS/2'].usWinDescent = abs(vm['ymin']) + 1
-  status, message = list(check_OS2_usWinAscent_and_Descent(ttFont, vm))[-1]
+  status, message = list(test(ttFont, vm))[-1]
   assert status == FAIL and message.code == "descent"
 
 
 def test_id_041():
   """ Checking Vertical Metric Linegaps. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_Vertical_Metric_Linegaps
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_041 as test
 
   print('Test FAIL with non-zero hhea.lineGap...')
   # Our reference Mada Regular is know to be bad here.
@@ -857,38 +849,38 @@ def test_id_041():
   # But just to be sure we explicitely set the values we're testing for:
   ttFont['hhea'].lineGap = 1
   ttFont['OS/2'].sTypoLineGap = 0
-  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == WARN and message.code == "hhea"
 
   # Then we test with a non-zero OS/2.sTypoLineGap:
   ttFont['hhea'].lineGap = 0
   ttFont['OS/2'].sTypoLineGap = 1
-  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == WARN and message.code == "OS/2"
 
   # And finaly we fix it by making both values equal to zero:
   ttFont['hhea'].lineGap = 0
   ttFont['OS/2'].sTypoLineGap = 0
-  status, message = list(check_Vertical_Metric_Linegaps(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
 
 def test_id_042(mada_ttFonts):
   """ Checking OS/2 Metrics match hhea Metrics. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_OS2_Metrics_match_hhea_Metrics
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_042 as test
+
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
   print("Test PASS with a good font...")
-  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # Now we break it:
   print('Test FAIL with a bad OS/2.sTypoAscender font...')
   correct = ttFont['hhea'].ascent
   ttFont['OS/2'].sTypoAscender = correct + 1
-  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "ascender"
 
   # Restore good value:
@@ -898,14 +890,14 @@ def test_id_042(mada_ttFonts):
   print('Test FAIL with a bad OS/2.sTypoDescender font...')
   correct = ttFont['hhea'].descent
   ttFont['OS/2'].sTypoDescender = correct + 1
-  status, message = list(check_OS2_Metrics_match_hhea_Metrics(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "descender"
 
 
 def test_id_043():
   """ Checking unitsPerEm value is reasonable. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_unitsPerEm_value_is_reasonable
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_043 as test
+
   # In this test we'll forge several known-good and known-bad values.
   # We'll use Mada Regular to start with:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -914,50 +906,49 @@ def test_id_043():
                      512, 1024, 2048, 4096, 8192, 16384]:
     print("Test PASS with a good value of unitsPerEm = {} ...".format(good_value))
     ttFont['head'].unitsPerEm = good_value
-    status, message = list(check_unitsPerEm_value_is_reasonable(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == PASS
 
   # These are arbitrarily chosen bad values:
   for bad_value in [0, 1, 2, 4, 8, 10, 100, 10000, 32768]:
     print("Test FAIL with a bad value of unitsPerEm = {} ...".format(bad_value))
     ttFont['head'].unitsPerEm = bad_value
-    status, message = list(check_unitsPerEm_value_is_reasonable(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == FAIL
 
 # TODO: test_id_044
 
 def test_id_045():
   """ Does the font have a DSIG table ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_Digital_Signature_exists
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_045 as test
+
   # Our reference Cabin Regular font is good (theres a DSIG table declared):
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_Digital_Signature_exists(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # Then we remove the DSIG table so that we get a FAIL:
   print ("Test FAIL with a font lacking a DSIG table...")
   del ttFont['DSIG']
-  status, message = list(check_Digital_Signature_exists(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 # TODO: test_id_046
 
 def test_id_047():
   """ Font contains glyphs for whitespace characters ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_font_contains_glyphs_for_whitespace_chars,
-                                   missing_whitespace_chars)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_047 as test,
+                                                     missing_whitespace_chars)
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
   missing = missing_whitespace_chars(ttFont)
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  status, message = list(test(ttFont, missing))[-1]
   assert status == PASS
 
   # Then we remove the nbsp char (0x00A0) so that we get a FAIL:
@@ -967,7 +958,7 @@ def test_id_047():
       del table.cmap[0x00A0]
 
   missing = missing_whitespace_chars(ttFont)
-  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  status, message = list(test(ttFont, missing))[-1]
   assert status == FAIL
 
   # restore original Mada Regular font:
@@ -980,14 +971,13 @@ def test_id_047():
       del table.cmap[0x00A0]
 
   missing = missing_whitespace_chars(ttFont)
-  status, message = list(check_font_contains_glyphs_for_whitespace_chars(ttFont, missing))[-1]
+  status, message = list(test(ttFont, missing))[-1]
   assert status == FAIL
 
 
 def test_id_048():
   """ Font has **proper** whitespace glyph names ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_font_has_proper_whitespace_glyph_names
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_048 as test
   from fontbakery.utils import deleteGlyphEncodings
 
   # Our reference Mada Regular font is good here:
@@ -995,20 +985,20 @@ def test_id_048():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   print ("Test SKIP with post.formatType == 3.0 ...")
   value = ttFont["post"].formatType
   ttFont["post"].formatType = 3.0
-  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == SKIP
   # and restore good value:
   ttFont["post"].formatType = value
 
   print ("Test FAIL with bad glyph name for char 0x0020 ...")
   deleteGlyphEncodings(ttFont, 0x0020)
-  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "bad20"
 
   # restore the original font object in preparation for the next test-case:
@@ -1016,7 +1006,7 @@ def test_id_048():
 
   print ("Test FAIL with bad glyph name for char 0x00A0 ...")
   deleteGlyphEncodings(ttFont, 0x00A0)
-  status, message = list(check_font_has_proper_whitespace_glyph_names(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "badA0"
 
 # TODO: test_id_049
@@ -1047,8 +1037,8 @@ def test_id_048():
 
 def test_id_052():
   """ Font contains all required tables ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_font_contains_all_required_tables
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_052 as test
+
   required_tables = ["cmap", "head", "hhea", "hmtx",
                      "maxp", "name", "OS/2", "post"]
   optional_tables = ["cvt ", "fpgm", "loca", "prep",
@@ -1062,7 +1052,7 @@ def test_id_052():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # We now remove required tables one-by-one to validate the FAIL code-path:
@@ -1071,7 +1061,7 @@ def test_id_052():
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     if required in ttFont.reader.tables:
       del ttFont.reader.tables[required]
-    status, message = list(check_font_contains_all_required_tables(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == FAIL
 
   # Then, in preparation for the next step, we make sure
@@ -1086,7 +1076,7 @@ def test_id_052():
     ttFont.reader.tables[optional] = "foo"
     # and ensure that the second to last logged message is an
     # INFO status informing the user about it:
-    status, message = list(check_font_contains_all_required_tables(ttFont))[-2]
+    status, message = list(test(ttFont))[-2]
     assert status == INFO
     # remove the one we've just inserted before trying the next one:
     del ttFont.reader.tables[optional]
@@ -1094,15 +1084,15 @@ def test_id_052():
 
 def test_id_053():
   """ Are there unwanted tables ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_for_unwanted_tables
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_053 as test
+
   unwanted_tables = ["FFTM", "TTFA", "prop"]
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_for_unwanted_tables(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # We now add unwanted tables one-by-one to validate the FAIL code-path:
@@ -1110,15 +1100,14 @@ def test_id_053():
     print ("Test FAIL with unwanted table {} ...".format(unwanted))
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     ttFont.reader.tables[unwanted] = "foo"
-    status, message = list(check_for_unwanted_tables(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == FAIL
 
 # TODO: test_id_054
 
 def test_id_055():
   """ Version format is correct in 'name' table ? """
-  from fontbakery.specifications.googlefonts import \
-                   check_version_format_is_correct_in_name_table
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_055 as test
   from fontbakery.constants import NAMEID_VERSION_STRING
 
   # Our reference Mada Regular font is good here:
@@ -1126,7 +1115,7 @@ def test_id_055():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # then we introduce bad strings in all version-string entries:
@@ -1135,7 +1124,7 @@ def test_id_055():
     if name.nameID == NAMEID_VERSION_STRING:
       invalid = "invalid-version-string".encode(name.getEncoding())
       ttFont["name"].names[i].string = invalid
-  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "bad-version-strings"
 
   # and finally we remove all version-string entries:
@@ -1143,22 +1132,21 @@ def test_id_055():
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NAMEID_VERSION_STRING:
       del ttFont["name"].names[i]
-  status, message = list(check_version_format_is_correct_in_name_table(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "no-version-string"
 
 # TODO: test_id_056
 
 def test_id_057():
   """ Name table entries should not contain line-breaks. """
-  from fontbakery.specifications.googlefonts import \
-                   check_name_table_entries_do_not_contain_linebreaks
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_057 as test
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   print ("Test FAIL with name entries containing a linebreak...")
@@ -1166,7 +1154,7 @@ def test_id_057():
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     encoding = ttFont["name"].names[i].getEncoding()
     ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
-    status, message = list(check_name_table_entries_do_not_contain_linebreaks(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == FAIL
 
 # TODO: test_id_058
@@ -1175,8 +1163,7 @@ def test_id_057():
 
 def test_id_061():
   """ EPAR table present in font ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_EPAR_table_is_present
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_061 as test
 
   # Our reference Mada Regular lacks an EPAR table:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -1184,21 +1171,20 @@ def test_id_061():
   # So it must emit an INFO message inviting the designers
   # to learn more about it:
   print ("Test INFO with a font lacking an EPAR table...")
-  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == INFO
 
   print ("Test PASS with a good font...")
   # add a fake EPAR table to validate the PASS code-path:
   ttFont["EPAR"] = "foo"
-  status, message = list(check_EPAR_table_is_present(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
 # TODO: test_id_062
 
 def test_id_063():
   """ Does GPOS table have kerning information ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_GPOS_table_has_kerning_info
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_063 as test
 
   # Our reference Mada Regular is known to have kerning-info
   # exclusively on an extension subtable
@@ -1207,7 +1193,7 @@ def test_id_063():
 
   # So it must PASS the test:
   print ("Test PASS with a font that has got kerning info...")
-  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # delete all Pair Adjustment lookups:
@@ -1226,20 +1212,20 @@ def test_id_063():
       break
 
   print ("Test WARN with a font lacking kerning info...")
-  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == WARN
 
   # setup a fake type=2 Pair Adjustment lookup
   ttFont["GPOS"].table.LookupList.Lookup[0].LookupType = 2
   # and make sure the test emits a PASS result:
   print ("Test PASS with kerning info on a type=2 lookup...")
-  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # remove the GPOS table and make sure to get a WARN:
   del ttFont["GPOS"]
   print ("Test WARN with a font lacking a GPOS table...")
-  status, message = list(check_GPOS_table_has_kerning_info(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == WARN
 
 # TODO: test_id_064
@@ -1247,8 +1233,7 @@ def test_id_063():
 
 def test_id_066():
   """ Is there a "KERN" table declared in the font ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_there_is_no_KERN_table_in_the_font
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_066 as test
 
   # Our reference Mada Regular is known to be good
   # (does not have a KERN table):
@@ -1256,7 +1241,7 @@ def test_id_066():
 
   # So it must PASS the test:
   print ("Test PASS with a font without a KERN table...")
-  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # add a fake KERN table:
@@ -1264,14 +1249,13 @@ def test_id_066():
 
   # and make sure the test FAILs:
   print ("Test FAIL with a font containing a KERN table...")
-  status, message = list(check_there_is_no_KERN_table_in_the_font(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 
 def test_id_067():
   """ Make sure family name does not begin with a digit. """
-  from fontbakery.specifications.googlefonts import \
-                                  check_familyname_does_not_begin_with_a_digit
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_067 as test
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
 
   # Our reference Mada Regular is known to be good
@@ -1279,7 +1263,7 @@ def test_id_067():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # alter the family-name prepending a digit:
@@ -1289,14 +1273,13 @@ def test_id_067():
 
   # and make sure the test FAILs:
   print ("Test FAIL with a font in which the family name begins with a digit...")
-  status, message = list(check_familyname_does_not_begin_with_a_digit(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
 
 def test_id_068():
   """ Does full font name begin with the font family name ? """
-  from fontbakery.specifications.googlefonts import \
-                                  check_fullfontname_begins_with_the_font_familyname
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_068 as test
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME)
   # Our reference Mada Regular is known to be good
@@ -1304,7 +1287,7 @@ def test_id_068():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == PASS
 
   # alter the full-font-name prepending a bad prefix:
@@ -1314,7 +1297,7 @@ def test_id_068():
 
   # and make sure the test FAILs:
   print ("Test FAIL with a font in which the family name begins with a digit...")
-  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "does-not"
 
   print ("Test FAIL with no FULL_FONT_NAME entries...")
@@ -1322,7 +1305,7 @@ def test_id_068():
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NAMEID_FULL_FONT_NAME:
       del ttFont["name"].names[i]
-  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "no-full-font-name"
 
   print ("Test FAIL with no FONT_FAMILY_NAME entries...")
@@ -1330,7 +1313,7 @@ def test_id_068():
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NAMEID_FONT_FAMILY_NAME:
       del ttFont["name"].names[i]
-  status, message = list(check_fullfontname_begins_with_the_font_familyname(ttFont))[-1]
+  status, message = list(test(ttFont))[-1]
   assert status == FAIL and message.code == "no-font-family-name"
 
 # TODO: test/069
@@ -1349,8 +1332,7 @@ def assert_name_table_check_result(ttFont, index, name, test, value, expected_re
 
 def test_id_071():
   """ Font follows the family naming recommendations ? """
-  from fontbakery.specifications.googlefonts import \
-         check_font_follows_the_family_naming_recommendations as test
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_071 as test
   from fontbakery.constants import (NAMEID_POSTSCRIPT_NAME,
                                     NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME,
@@ -1457,10 +1439,9 @@ def test_id_071():
 # TODO: tests 072 to 093
 
 def test_id_094():
-  """ METADATA.pb "fullname" value matches internal "fullname" ? """
+  """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
   from fontbakery.specifications.googlefonts import font_metadata
-  from fontbakery.specifications.googlefonts import \
-         check_METADATA_fullname_matches_name_table_value as test
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_094 as test
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
 
   print('Test PASS with a good font...')
@@ -1492,29 +1473,32 @@ def test_id_094():
 
 
 def test_id_095():
-  """ METADATA.pb "fullname" value matches internal "fullname" ? """
-  from fontbakery.specifications.googlefonts import font_metadata
-  from fontbakery.specifications.googlefonts import \
-         check_METADATA_fullname_matches_name_table_value as test
-  from fontbakery.constants import NAMEID_FULL_FONT_NAME
-
+  """ METADATA.pb font.name value should be same as the family name declared on the name table. """
+  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_095 as test,
+                                                     font_metadata,
+                                                     style)
   print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to have good fullname metadata
-  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  font = "data/test/merriweather/Merriweather-Regular.ttf"
+  ttFont = TTFont(font)
   font_meta = font_metadata(ttFont)
-  status, message = list(test(ttFont, font_meta))[-1]
+  font_style = style(font)
+  status, message = list(test(ttFont, font_style, font_meta))[-1]
   assert status == PASS
 
   for i, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FULL_FONT_NAME:
+    if name.nameID == NAMEID_FONT_FAMILY_NAME:
       good = name.string.decode(name.getEncoding()) # keep a copy of the good value
       print("Test FAIL with a bad FULL_FONT_NAME entry...")
       ttFont["name"].names[i].string = (good + "bad-suffix").encode(name.getEncoding())
-      status, message = list(test(ttFont, font_meta))[-1]
+      status, message = list(test(ttFont, font_style, font_meta))[-1]
       assert status == FAIL
       ttFont["name"].names[i].string = good # restore good value
 
-# TODO: tests 096 to 097
+# TODO: test/096
+
+# TODO: test/097
 
 MONTSERRAT_RIBBI = [
   "data/test/montserrat/Montserrat-Regular.ttf",
@@ -1540,13 +1524,12 @@ MONTSERRAT_NON_RIBBI = [
 ]
 
 def test_id_098():
-  """ METADATA.pb font.name contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (com_google_fonts_test_098 as test,
-                                   style,
-                                   font_metadata,
-                                   font_familynames,
-                                   typographic_familynames)
+  """ METADATA.pb font.name field contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_098 as test,
+                                                     style,
+                                                     font_metadata,
+                                                     font_familynames,
+                                                     typographic_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1587,13 +1570,12 @@ def test_id_098():
 
 
 def test_id_099():
-  """ METADATA.pb font.full_name contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (com_google_fonts_test_099 as test,
-                                   style,
-                                   font_metadata,
-                                   font_familynames,
-                                   typographic_familynames)
+  """ METADATA.pb font.full_name field contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_099 as test,
+                                                     style,
+                                                     font_metadata,
+                                                     font_familynames,
+                                                     typographic_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1634,10 +1616,9 @@ def test_id_099():
 
 
 def test_id_100():
-  """ METADATA.pb font.filename contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (com_google_fonts_test_100 as test,
-                                   font_metadata)
+  """ METADATA.pb font.filename field contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_100 as test,
+                                                     font_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1656,12 +1637,10 @@ def test_id_100():
 
 
 def test_id_101():
-  """ METADATA.pb font.postScriptName field
-      contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (com_google_fonts_test_101 as test,
-                                   font_metadata,
-                                   font_familynames)
+  """ METADATA.pb font.post_script_name field contains font name in right format ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_101 as test,
+                                                     font_metadata,
+                                                     font_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1681,11 +1660,10 @@ def test_id_101():
 
 
 def test_id_102():
-  """ Copyright notice matches canonical pattern ? """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_Copyright_notice_matches_canonical_pattern,
-                                   metadata,
-                                   font_metadata)
+  """ Copyright notice on METADATA.pb matches canonical pattern ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_102 as test,
+                                                     metadata,
+                                                     font_metadata)
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
@@ -1693,13 +1671,13 @@ def test_id_102():
 
   # So it must FAIL the test:
   print ("Test FAIL with a bad copyright notice string...")
-  status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
+  status, message = list(test(font_meta))[-1]
   assert status == FAIL
 
   # Then we change it into a good string (example extracted from Archivo Black):
   font_meta.copyright = "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
   print ("Test PASS with a good copyright notice string...")
-  status, message = list(check_Copyright_notice_matches_canonical_pattern(font_meta))[-1]
+  status, message = list(test(font_meta))[-1]
   assert status == PASS
 
 # TODO: test/103
@@ -1711,9 +1689,8 @@ def test_id_106():
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME,
                                     MACSTYLE_ITALIC)
-  from fontbakery.specifications.googlefonts import \
-         (check_METADATA_italic_matches_font_internals as test,
-          font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_106 as test,
+                                                     font_metadata)
   # Our reference Merriweather Italic is known to good
   ttFont = TTFont("data/test/merriweather/Merriweather-Italic.ttf")
   font_meta = font_metadata(ttFont)
@@ -1748,9 +1725,8 @@ def test_id_107():
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME,
                                     MACSTYLE_ITALIC)
-  from fontbakery.specifications.googlefonts import \
-         (check_METADATA_normal_matches_font_internals as test,
-          font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_107 as test,
+                                                     font_metadata)
   # This one is pretty similar to test/106
   # You may want to take a quick look above...
   # Our reference Merriweather Regular is known to be good here.
@@ -1798,12 +1774,11 @@ def test_id_107():
   assert status == FAIL and message.code == "bad-macstyle"
 
 def test_id_108():
-  """ Metadata key-value match to table name fields ? """
+  """ METADATA.pb font.name and font.full_name fields match the values declared on the name table? """
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME)
-  from fontbakery.specifications.googlefonts import \
-         (check_Metadata_keyvalue_match_to_table_name_fields as test,
-          font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_108 as test,
+                                                     font_metadata)
   # Our reference Merriweather Regular is known to be good here.
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
   font_meta = font_metadata(ttFont)
@@ -1839,23 +1814,22 @@ def test_id_108():
 
 def test_id_109():
   """ Check if fontname is not camel cased. """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_fontname_is_not_camel_cased,
-                                   metadata,
-                                   font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_109 as test,
+                                                     metadata,
+                                                     font_metadata)
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   font_meta = font_metadata(ttFont)
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+  status, message = list(test(font_meta))[-1]
   assert status == PASS
 
   # Then we FAIL with a CamelCased name:
   font_meta.name = "GollyGhost"
   print ("Test FAIL with a bad font (CamelCased font name)...")
-  status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+  status, message = list(test(font_meta))[-1]
   assert status == FAIL
 
   # And we also make sure the test passes with a few known good names:
@@ -1863,16 +1837,15 @@ def test_id_109():
   for good_name in good_names:
     font_meta.name = good_name
     print ("Test PASS with a good font name '{}'...".format(good_name))
-    status, message = list(check_fontname_is_not_camel_cased(font_meta))[-1]
+    status, message = list(test(font_meta))[-1]
     assert status == PASS
 
 
 def test_id_110():
   """ Check font name is the same as family name. """
-  from fontbakery.specifications.googlefonts import \
-                                  (check_font_name_is_the_same_as_family_name,
-                                   metadata,
-                                   font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_110 as test,
+                                                     metadata,
+                                                     font_metadata)
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   font_meta = font_metadata(ttFont)
@@ -1880,23 +1853,22 @@ def test_id_110():
 
   # So it must PASS the test:
   print ("Test PASS with a good font...")
-  status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
+  status, message = list(test(family_meta, font_meta))[-1]
   assert status == PASS
 
   # Then we FAIL with mismatching names:
   family_meta.name = "Some Fontname"
   font_meta.name = "Something Else"
   print ("Test FAIL with a bad font...")
-  status, message = list(check_font_name_is_the_same_as_family_name(family_meta, font_meta))[-1]
+  status, message = list(test(family_meta, font_meta))[-1]
   assert status == FAIL
 
 # TODO: test/111
 
 def test_id_112():
   """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
-  from fontbakery.specifications.googlefonts import \
-                                  (com_google_fonts_test_112 as test,
-                                   font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_112 as test,
+                                                     font_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1947,29 +1919,26 @@ def test_id_112():
 
 def test_id_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
-  from fontbakery.specifications.googlefonts import \
-    check_glyphs_have_recommended_contour_count
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_153 as test
 
   # Montserrat should pass this test since it was used to assemble the glyph data
   for ttFont in montserrat_ttFonts:
-    status, message = list(check_glyphs_have_recommended_contour_count(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == PASS
 
   # Lets swap the glyf a (2 contours) with glyf c (1 contour)
   for ttFont in montserrat_ttFonts:
     ttFont['glyf']['a'] = ttFont['glyf']['c']
-    status, message = list(check_glyphs_have_recommended_contour_count(ttFont))[-1]
+    status, message = list(test(ttFont))[-1]
     assert status == WARN
 
 
 def test_id_154(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
-    from fontbakery.specifications.googlefonts import (
-                                      check_regression_missing_glyphs,
-                                      gfonts_ttFont,
-                                      remote_styles,
-                                      metadata)
-
+    from fontbakery.specifications.googlefonts import (com_google_fonts_test_154 as test,
+                                                       gfonts_ttFont,
+                                                       remote_styles,
+                                                       metadata)
     font = cabin_ttFonts[-1]
     print(cabin_ttFonts)
     style = font['name'].getName(2, 1, 0, 0)
@@ -1980,14 +1949,14 @@ def test_id_154(cabin_ttFonts):
 
     # Cabin font hosted on fonts.google.com contains all the glyphs for the font in
     # data/test/cabin
-    status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
+    status, message = list(test(font, gfont))[-1]
     assert status == PASS
 
     # Take A glyph out of font
     font['cmap'].getcmap(3, 1).cmap.pop(ord('A'))
     font['glyf'].glyphs.pop('A')
 
-    status, message = list(check_regression_missing_glyphs(font, gfont))[-1]
+    status, message = list(test(font, gfont))[-1]
     assert status == FAIL
 
 
@@ -1996,24 +1965,23 @@ def test_id_155():
       all copyright notice entries on the name table ? """
   from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.specifications.googlefonts import \
-                   (check_METADATA_copyright_notices_match_name_table_entries,
-                    metadata,
-                    font_metadata)
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_155 as test,
+                                                     metadata,
+                                                     font_metadata)
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   font_meta = font_metadata(ttFont)
 
   # So it must PASS the test:
   print ("Test PASS with a good METADATA.pb for this font...")
-  status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
+  status, message = list(test(ttFont, font_meta))[-1]
   assert status == PASS
 
   # Then we FAIL with mismatching names:
   good_value = get_name_entry_strings(ttFont, NAMEID_COPYRIGHT_NOTICE)[0]
   font_meta.copyright = good_value + "something bad"
   print ("Test FAIL with a bad METADATA.pb (with a copyright string not matching this font)...")
-  status, message = list(check_METADATA_copyright_notices_match_name_table_entries(ttFont, font_meta))[-1]
+  status, message = list(test(ttFont, font_meta))[-1]
   assert status == FAIL
 
 
@@ -2025,8 +1993,8 @@ def test_id_156():
                                     NAMEID_POSTSCRIPT_NAME,
                                     NAMEID_TYPOGRAPHIC_FAMILY_NAME,
                                     NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
-  from fontbakery.specifications.googlefonts import \
-                   check_font_has_mandatory_name_entries as test
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_156 as test
+
   # We'll check both RIBBI and non-RIBBI fonts
   # so that we cover both cases for FAIL/PASS scenarios
 
@@ -2088,8 +2056,8 @@ def test_id_156():
 def test_id_159():
   """ Check name table: FULL_FONT_NAME entries. """
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
-  from fontbakery.specifications.googlefonts import \
-         check_name_table_FULL_FONT_NAME as test
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_159 as test
+
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
 
