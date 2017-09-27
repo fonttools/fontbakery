@@ -2242,6 +2242,10 @@ def has_kerning_info(ttFont):
   """
   if not "GPOS" in ttFont:
     return False
+
+  if not ttFont["GPOS"].table.LookupList:
+    return False
+
   for lookup in ttFont["GPOS"].table.LookupList.Lookup:
     if lookup.LookupType == 2:  # type 2 = Pair Adjustment
       return True
@@ -2284,7 +2288,7 @@ def com_google_fonts_test_063(ttFont):
 @condition
 def ligatures(ttFont):
   all_ligatures = {}
-  if "GSUB" in ttFont:
+  if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
     for lookup in ttFont["GSUB"].table.LookupList.Lookup:
       if lookup.LookupType == 4:  # type 4 = Ligature Substitution
         for subtable in lookup.SubTable:
