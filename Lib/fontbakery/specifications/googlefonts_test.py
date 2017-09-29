@@ -1317,7 +1317,27 @@ def test_id_068():
   assert status == FAIL and message.code == "no-font-family-name"
 
 # TODO: test/069
-# TODO: test/070
+
+def test_id_070():
+  """ Font has all expected currency sign characters ? """
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_070 as test
+
+  # Our reference Mada Medium is known to be good
+  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
+
+  # And FamilySans Regular is known to be bad
+  ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
+
+  # So it must FAIL the test:
+  print ("Test FAIL with a bad font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == FAIL
+
 
 def assert_name_table_check_result(ttFont, index, name, test, value, expected_result):
   backup = name.string
