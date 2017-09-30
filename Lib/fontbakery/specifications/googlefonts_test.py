@@ -1228,7 +1228,33 @@ def test_id_063():
   status, message = list(test(ttFont))[-1]
   assert status == WARN
 
-# TODO: test_id_064
+
+def test_id_064():
+  """ Is there a caret position declared for every ligature ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_064 as test,
+                                                     ligatures)
+
+  # TODO: We currently lack a reference family that passes this test!
+
+  # Our reference Mada Medium is known to be bad
+  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+  lig = ligatures(ttFont)
+
+  # So it must FAIL the test:
+  print ("Test FAIL with a good font...")
+  status, message = list(test(ttFont, lig))[-1]
+  assert status == FAIL and message.code == "lacks-caret-pos"
+
+  # And FamilySans Regular is known to be bad
+  ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
+  lig = ligatures(ttFont)
+
+  # So it must FAIL the test:
+  print ("Test FAIL with a bad font...")
+  status, message = list(test(ttFont, lig))[-1]
+  assert status == FAIL and message.code == "GDEF-missing"
+
+
 # TODO: test_id_065
 
 def test_id_066():

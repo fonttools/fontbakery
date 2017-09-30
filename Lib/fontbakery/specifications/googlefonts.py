@@ -2314,17 +2314,20 @@ def com_google_fonts_test_064(ttFont, ligatures):
   """
 
   if "GDEF" not in ttFont:
-    yield FAIL, ("GDEF table is missing, but it is mandatory to declare it"
-                 " on fonts that provide ligature glyphs because the caret"
-                 " (text cursor) positioning for each ligature must be"
-                 " provided in this table.")
+    yield FAIL, Message("GDEF-missing",
+                        ("GDEF table is missing, but it is mandatory"
+                         " to declare it on fonts that provide ligature"
+                         " glyphs because the caret (text cursor)"
+                         " positioning for each ligature must be"
+                         " provided in this table."))
   else:
     # TODO: After getting a sample of a good font,
     #       resume the implementation of this routine:
     lig_caret_list = ttFont["GDEF"].table.LigCaretList
     if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
-      yield FAIL, ("This font lacks caret position values for ligature"
-                   " glyphs on its GDEF table.")
+      yield FAIL, Message("lacks-caret-pos",
+                          ("This font lacks caret position values for"
+                           " ligature glyphs on its GDEF table."))
     elif lig_caret_list.LigGlyphCount != len(ligatures):
       yield WARN, ("It seems that this font lacks caret positioning values"
                    " for some of its ligature glyphs on the GDEF table."
