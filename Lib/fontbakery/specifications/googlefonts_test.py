@@ -1255,7 +1255,33 @@ def test_id_064():
   assert status == FAIL and message.code == "GDEF-missing"
 
 
-# TODO: test_id_065
+def test_id_065():
+  """ Is there kerning info for non-ligated sequences ? """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_065 as test,
+                                                     has_kerning_info,
+                                                     ligatures)
+  # TODO: We currently lack a reference family that passes this test!
+
+  # Our reference Mada Medium is known to be bad
+  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+  lig = ligatures(ttFont)
+  has_kinfo = has_kerning_info(ttFont)
+
+  # So it must PASS the test:
+  print ("Test PASS with a good font...")
+  status, message = list(test(ttFont, lig, has_kinfo))[-1]
+  assert status == PASS
+
+  # And Merriweather Regular is known to be good
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  lig = ligatures(ttFont)
+  has_kinfo = has_kerning_info(ttFont)
+
+  # So it must FAIL the test:
+  print ("Test FAIL with a bad font...")
+  status, message = list(test(ttFont, lig, has_kinfo))[-1]
+  assert status == FAIL
+
 
 def test_id_066():
   """ Is there a "KERN" table declared in the font ? """
