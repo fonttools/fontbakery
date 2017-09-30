@@ -2314,17 +2314,20 @@ def com_google_fonts_test_064(ttFont, ligatures):
   """
 
   if "GDEF" not in ttFont:
-    yield FAIL, ("GDEF table is missing, but it is mandatory to declare it"
-                 " on fonts that provide ligature glyphs because the caret"
-                 " (text cursor) positioning for each ligature must be"
-                 " provided in this table.")
+    yield FAIL, Message("GDEF-missing",
+                        ("GDEF table is missing, but it is mandatory"
+                         " to declare it on fonts that provide ligature"
+                         " glyphs because the caret (text cursor)"
+                         " positioning for each ligature must be"
+                         " provided in this table."))
   else:
     # TODO: After getting a sample of a good font,
     #       resume the implementation of this routine:
     lig_caret_list = ttFont["GDEF"].table.LigCaretList
     if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
-      yield FAIL, ("This font lacks caret position values for ligature"
-                   " glyphs on its GDEF table.")
+      yield FAIL, Message("lacks-caret-pos",
+                          ("This font lacks caret position values for"
+                           " ligature glyphs on its GDEF table."))
     elif lig_caret_list.LigGlyphCount != len(ligatures):
       yield WARN, ("It seems that this font lacks caret positioning values"
                    " for some of its ligature glyphs on the GDEF table."
@@ -2494,22 +2497,44 @@ def com_google_fonts_test_069(ttFont):
       yield PASS, "There is no unused data at the end of the glyf table."
 
 
+# TODO: extend this test to check for availability of all required currency symbols.
 @register_test
 @test(
     id='com.google.fonts/test/070'
   , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def com_google_fonts_test_070(ttFont):
-  """Font has 'EURO SIGN' character?"""
+  """Font has all expected currency sign characters?"""
 
-  def font_has_char(ttFont, c):
-    rev = ttFont['cmap'].buildReversed()
-    return (c in rev) and len(rev[c]) > 0
+  def font_has_char(ttFont, codepoint):
+    for subtable in ttFont['cmap'].tables:
+      if codepoint in subtable.cmap:
+        return True
+    #otherwise
+    return False
 
-  if font_has_char(ttFont, "Euro"):
-    yield PASS, "Font has \"EURO SIGN\" character."
-  else:
-    yield FAIL, "Font lacks the \"EURO SIGN\" character."
+  failed = False
+
+  OPTIONAL = {
+    #TODO: Do we want to check for this one?
+    #0x20A0: "EUROPEAN CURRENCY SIGN"
+  }
+  MANDATORY = {
+    0x20AC: "EURO SIGN"
+    # TODO: extend this list
+  }
+  for codepoint, charname in OPTIONAL.items():
+    if not font_has_char(ttFont, codepoint):
+      failed = True
+      yield WARN, "Font lacks \"%s\" character (unicode: 0x%04X)" % (charname, codepoint)
+
+  for codepoint, charname in MANDATORY.items():
+    if not font_has_char(ttFont, codepoint):
+      failed = True
+      yield FAIL, "Font lacks \"%s\" character (unicode: 0x%04X)" % (charname, codepoint)
+
+  if not failed:
+    yield PASS, "Font has all expected currency sign characters."
 
 
 @register_test
