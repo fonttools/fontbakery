@@ -1260,9 +1260,7 @@ def test_id_065():
   from fontbakery.specifications.googlefonts import (com_google_fonts_test_065 as test,
                                                      has_kerning_info,
                                                      ligatures)
-  # TODO: We currently lack a reference family that passes this test!
-
-  # Our reference Mada Medium is known to be bad
+  # Our reference Mada Medium is known to be good
   ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
   lig = ligatures(ttFont)
   has_kinfo = has_kerning_info(ttFont)
@@ -1272,7 +1270,7 @@ def test_id_065():
   status, message = list(test(ttFont, lig, has_kinfo))[-1]
   assert status == PASS
 
-  # And Merriweather Regular is known to be good
+  # And Merriweather Regular is known to be bad
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
   lig = ligatures(ttFont)
   has_kinfo = has_kerning_info(ttFont)
