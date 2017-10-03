@@ -4184,12 +4184,34 @@ def com_google_fonts_test_152(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/153'
+  , rationale = """
+      Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
+      be constructured in a handful of ways. This means a glyph's contour count
+      will only differ slightly amongst different fonts, e.g a 'g' could either
+      be 2 or 3 contours, depending on whether its double story or single story.
+      However, a quotedbl should have 2 contours, unless the font belongs to a
+      display family.
+    """
 )
 def com_google_fonts_test_153(ttFont):
   """Check if each glyph has the recommended amount of contours.
-  This test is useful to check if glyphs are incorrectly constructed."""
-  from fontbakery.glyphdata import desired_glyph_data
+
+  This test is useful to check if glyphs are incorrectly constructed.
+
+  The desired_glyph_data module contains the 'recommended' countour count
+  for encoded glyphs. The contour counts are derived from fonts which were
+  chosen for their quality and unique design decisions for particular glyphs.
+
+  In the future, additional glyph data can be included. A good addition would
+  be the 'recommended' anchor counts for each glyph.
+  """
+  from fontbakery.glyphdata import desired_glyph_data as glyph_data
   from fontbakery.utils import get_font_glyph_data
+
+  # rearrange data structure:
+  desired_glyph_data = {}
+  for glyph in glyph_data:
+    desired_glyph_data[glyph['unicode']] = glyph
 
   bad_glyphs = []
   desired_glyph_contours = {f: desired_glyph_data[f]['contours']
