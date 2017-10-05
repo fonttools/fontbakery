@@ -253,19 +253,19 @@ def test_id_005():
   """ DESCRIPTION.en_us.html must have more than 200 bytes. """
   from fontbakery.specifications.googlefonts import com_google_fonts_test_005 as test
 
-  good_length = 'a' * 199
+  bad_length = 'a' * 199
   print('Test FAIL with 199-byte buffer...')
-  status, message = list(test(good_length))[-1]
-  assert status == FAIL
-
-  good_length = 'a' * 200
-  print('Test FAIL with 200-byte buffer...')
-  status, message = list(test(good_length))[-1]
-  assert status == FAIL
-
-  bad_length = 'a' * 201
-  print('Test PASS with 201-byte buffer...')
   status, message = list(test(bad_length))[-1]
+  assert status == FAIL
+
+  bad_length = 'a' * 200
+  print('Test FAIL with 200-byte buffer...')
+  status, message = list(test(bad_length))[-1]
+  assert status == FAIL
+
+  good_length = 'a' * 201
+  print('Test PASS with 201-byte buffer...')
+  status, message = list(test(good_length))[-1]
   assert status == PASS
 
 
@@ -2201,5 +2201,37 @@ def test_id_163():
       break
 
   print ("Test FAIL with a bad font...")
+  status, message = list(test(ttFont))[-1]
+  assert status == FAIL
+
+
+def test_id_164():
+  """ Length of copyright notice must not exceed 500 characters. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_164 as test
+  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+
+  print('Test PASS with 499-byte copyright notice string...')
+  good_entry = 'a' * 499
+  for i, entry in enumerate(ttFont['name'].names):
+    if entry.nameID == NAMEID_COPYRIGHT_NOTICE:
+      ttFont['name'].names[i].string = good_entry.encode(entry.getEncoding())
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
+
+  print('Test PASS with 500-byte copyright notice string...')
+  good_entry = 'a' * 500
+  for i, entry in enumerate(ttFont['name'].names):
+    if entry.nameID == NAMEID_COPYRIGHT_NOTICE:
+      ttFont['name'].names[i].string = good_entry.encode(entry.getEncoding())
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
+
+  print('Test FAIL with 501-byte copyright notice string...')
+  bad_entry = 'a' * 501
+  for i, entry in enumerate(ttFont['name'].names):
+    if entry.nameID == NAMEID_COPYRIGHT_NOTICE:
+      ttFont['name'].names[i].string = bad_entry.encode(entry.getEncoding())
   status, message = list(test(ttFont))[-1]
   assert status == FAIL
