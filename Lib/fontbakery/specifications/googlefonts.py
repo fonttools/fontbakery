@@ -4649,3 +4649,34 @@ def com_google_fonts_test_163(ttFont):
                                 unidecode(stylename_str))
   if not failed:
     yield PASS, "All name entries are good."
+
+
+@register_test
+@test(
+    id='com.google.fonts/test/164'
+  , rationale = """
+    This is an arbitrary max lentgh for the copyright notice field
+    of the name table. We simply don't want such notices to be too long.
+    Typically such notices are actually much shorter than this with
+    a lenghth of roughtly 70 or 80 characters.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1603'
+)
+def com_google_fonts_test_164(ttFont):
+  """ Length of copyright notice must not exceed 500 characters. """
+  from unidecode import unidecode
+  from fontbakery.utils import get_name_entries
+  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
+
+  failed = False
+  for notice in get_name_entries(ttFont, NAMEID_COPYRIGHT_NOTICE):
+    notice_str = notice.string.decode(notice.getEncoding())
+    if len(notice_str) > 500:
+        failed = True
+        yield FAIL, ("The length of the following copyright notice ({})"
+                     " exceeds 500 chars: '{}'"
+                     "").format(len(notice_str),
+                                unidecode(notice_str))
+  if not failed:
+    yield PASS, ("All copyright notice name entries on the"
+                 " 'name' table are shorter than 500 characters.")
