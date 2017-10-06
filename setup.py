@@ -190,7 +190,8 @@ setup(
         'defusedxml',
         'requests',
         'unidecode',
-        'protobuf'
+        'protobuf',
+        'bs4'
     ]
 )
 

@@ -6,7 +6,7 @@ branches:
 before_install:
 - sudo add-apt-repository --yes ppa:fontforge/fontforge
 - sudo apt-get update -qq
-- sudo apt-get -y install python-fontforge ttfautohint swig
+- sudo apt-get -y install python-fontforge ttfautohint
 - sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 - pip install --upgrade pip
 install:
@@ -14,18 +14,13 @@ install:
 - export PATH=$PATH:prebuilt/fval/
 - export LD_PRELOAD=prebuilt/custom_freetype/lib/libfreetype.so
 - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
-- pip install BeautifulSoup4
-- pip install requests
-- pip install protobuf
-- pip install unidecode
-- pip install lxml
-- pip install glyphsLib
-- pip install defusedxml
-- pip install pylint
+- pip install -e .
 - pip install git+https://github.com/behdad/fonttools.git
+- pip install glyphsLib
+- pip install tabulate
 - pip install pytest
 - pip install flake8
-- pip install -e .
+- pip install pylint
 script:
 - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
 - export WONT_FIX=invalid-name,bad-indentation
