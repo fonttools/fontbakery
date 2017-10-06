@@ -6,7 +6,7 @@ branches:
 before_install:
 - sudo add-apt-repository --yes ppa:fontforge/fontforge
 - sudo apt-get update -qq
-- sudo apt-get -y install python-fontforge ttfautohint swig
+- sudo apt-get -y install python-fontforge ttfautohint
 - sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 - pip install --upgrade pip
 install:
@@ -14,18 +14,13 @@ install:
 - export PATH=$PATH:prebuilt/fval/
 - export LD_PRELOAD=prebuilt/custom_freetype/lib/libfreetype.so
 - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
-- pip install BeautifulSoup4
-- pip install requests
-- pip install protobuf
-- pip install unidecode
-- pip install lxml
-- pip install glyphsLib
-- pip install defusedxml
-- pip install pylint
+- pip install -e .
 - pip install git+https://github.com/behdad/fonttools.git
+- pip install glyphsLib
+- pip install tabulate
 - pip install pytest
 - pip install flake8
-- pip install -e .
+- pip install pylint
 script:
 - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
 - export WONT_FIX=invalid-name,bad-indentation
@@ -33,12 +28,3 @@ script:
 - export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
 - "$PYLINT Lib/fontbakery/specifications/*.py"
 - pytest Lib/fontbakery --verbose
-deploy:
-  provider: pypi
-  user: "fsanches"
-  password:
-    secure: "D3R6jMlqH3Qg3Fi8IjkHr5UzELh4c4SSh0hMmi6PBKCxsUX2q/YZSuq+ZxryTL0bITdJgYy4/47xJNmpemxhSt/jYlarCn0naEerpMLgYZiz6vGs9xRdSeeAMeWyokXTiQ98MFZt7Sym5RZhpo9hzMkiqNF8RQuCzcimUkAScsXFkBfe3I59gOreACzvo9Lg2OA5NJnUSbfKn6kFkM4lEZbbiFG25/X2RB8HLKQs3HeAyNwOwOl2r21Z+STjU9bBbYM77FBXHd/D3lFsIDyQ6QUCp6B3NB2ZuUYZDg5E1VQXYL16iFu1yf0ACQhmCPOvy9rxoa3IXkfkTdr51CAg3ezz5HOMzDXY+qNWt9g/ghYshPD7IHUNrQZ95XAvbLkinbZLU0Sr60MYyqBF6YuQUsrQwsT2rEW8I9HpnhRBf9GNxvh9hSn72Uf6skcwmVVqnVEe/UyRqFfhh0SWe1nQVY4KNqST/x+o/n/dh0p6+jVaKwEa0NLzEWWAVb0qw1pHm8izm3SH7TSQ1PYXQeA2y3Xu0nrCE8YrZpe0+rC3NTi6asuAYTgSKlQvpZOZiwk+cytEe9JBHrT0Cj8VrjQqXc9ZjhkYnFSiO0NZ0obQin4tJY5/CPFF5VjZoUCCZNm0/9KNexYCBM8YGMNeH4nVy2BEcRlx7+rZV8BtvMJSrXw="
-  distributions: sdist
-  on:
-    tags: true
-    repo: googlefonts/fontbakery
