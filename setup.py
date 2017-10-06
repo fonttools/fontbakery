@@ -187,21 +187,10 @@ setup(
                 [normalize_path('data/test/028/pass_ofl/OFL.txt')])],
     install_requires=[
         'lxml',
-        'requests',
-        'pyyaml',
-        'html5lib',
-        'python-magic',
-        'markdown',
-        'scrapy',
-        'urwid',
-        'GitPython==0.3.2.RC1',
         'defusedxml',
+        'requests',
         'unidecode',
-        'tabulate',
-        'pyasn1',
-        'protobuf',
-        'flake8',
-        'coveralls'
+        'protobuf'
     ]
 )
 
