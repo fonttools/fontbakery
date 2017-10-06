@@ -187,14 +187,9 @@ def com_google_fonts_test_004(descfile):
   insert a dummy description file which contains invalid html.
   This file needs to either be replaced with an existing description file
   or edited by hand."""
-  import magic
-  mimetype = magic.from_file(descfile, mime=True)
-  if "html" not in mimetype:
-    data = open(descfile).read()
-    if "<p>" in data and "</p>" in data:
-      yield PASS, "[{}] {} is a propper HTML snippet.".format(mimetype, descfile)
-    else:
-      yield FAIL, "[{}] {} is not a propper HTML snippet.".format(mimetype, descfile)
+  data = open(descfile).read()
+  if "<p>" not in data or "</p>" not in data:
+    yield FAIL, "{} does not look like a propper HTML snippet.".format(descfile)
   else:
     yield PASS, "{} is a propper HTML file.".format(descfile)
 

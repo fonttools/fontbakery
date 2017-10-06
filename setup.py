@@ -16,42 +16,6 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import glob
 import os
-
-# require libmagic
-import ctypes
-import ctypes.util
-libmagic = None
-# Let's try to find magic or magic1
-dll = ctypes.util.find_library('magic') or ctypes.util.find_library('magic1')
-
-# This is necessary because find_library returns None if it doesn't find the library
-if dll:
-    libmagic = ctypes.CDLL(dll)
-
-if not libmagic or not libmagic._name:
-    import sys
-    platform_to_lib = {'darwin': ['/opt/local/lib/libmagic.dylib',
-                                  '/usr/local/lib/libmagic.dylib'] +
-                       # Assumes there will only be one version installed
-                       glob.glob('/usr/local/Cellar/libmagic/*/lib/libmagic.dylib'),
-                       'win32':  ['magic1.dll']}
-    for dll in platform_to_lib.get(sys.platform, []):
-        try:
-            libmagic = ctypes.CDLL(dll)
-            break
-        except OSError:
-            pass
-
-msg = """Failed to find libmagic. Please install it, such as with
-    brew install libmagic;
-or
-    apt-get install libmagic;
-"""
-if not libmagic or not libmagic._name:
-    # It is better to raise an ImportError since we are importing magic module
-    raise ImportError(msg)
-
-# now installation can begin!
 from setuptools import setup
 
 def normalize_path(path, seperator='/'):
