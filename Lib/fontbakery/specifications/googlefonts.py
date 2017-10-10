@@ -581,9 +581,12 @@ def com_google_fonts_test_019(ttFont):
 @condition
 def style(font):
   """Determine font style from canonical filename."""
+  from fontbakery.constants import STYLE_NAMES
   filename = os.path.split(font)[-1]
   if '-' in filename:
-    return os.path.splitext(filename)[0].split('-')[1]
+    stylename = os.path.splitext(filename)[0].split('-')[1]
+    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+      return stylename
 
 
 @register_test
