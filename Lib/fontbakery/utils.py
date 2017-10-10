@@ -169,8 +169,16 @@ def glyph_contour_count(font, name):
 
 def get_font_glyph_data(font):
     """Return information for each glyph in a font"""
+    from fontbakery.constants import (PLATFORM_ID__WINDOWS,
+                                      PLAT_ENC_ID__UCS2)
     font_data = []
-    cmap = font['cmap'].getcmap(3,1).cmap
+
+    try:
+        cmap = font['cmap'].getcmap(PLATFORM_ID__WINDOWS,
+                                    PLAT_ENC_ID__UCS2).cmap
+    except:
+        return None
+
     cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
 
     for glyph_name in font.getGlyphSet().keys():
