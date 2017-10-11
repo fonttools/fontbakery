@@ -699,14 +699,18 @@ This is particularly useful if you are running `fontbakery` in a python virtual 
 
 This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@members.fsf.org> with very frequent contributions from Lasse Fister, Marc Foley and Dave Crossland.
 
-Releases to PyPI are performed by updating the version metadata on `setup.py` and then running the following commands:
+Releases to PyPI are performed by updating the version metadata on `setup.py` and then running the following commands (with the proper version number and date):
 
 ```
 rm build/ -rf
 rm dist/ -rf
 python setup.py bdist_wheel
 twine upload dist/*
+git tag -a v0.3.2 -m "FontBakery version 0.3.2 (2017-Oct-11)"
+git push upstream --tags
 ```
+
+We also keep setup.py with a '-git' prefix in the version number during development cycles (such as 'v0.3.2-git' meaning v0.3.2 plus further development changes).
 
 ### Self-tests using pytest
 
