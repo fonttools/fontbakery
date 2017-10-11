@@ -423,7 +423,8 @@ class TestRunner(object):
         yield (current, ) + tail
 
   def _derive_iterable_condition(self, name, simple=False, path=None):
-    # should we cache this?
+    # returns a generator, which is better for memory critical situations
+    # than a list containing all results of the used conditions
     condition = self._spec.conditions[name]
     iterargs = self._spec.get_iterargs(condition)
 
@@ -434,16 +435,14 @@ class TestRunner(object):
     # like [('font', 10), ('other', 22)]
     requirements = [(singular, self._iterargs[singular])
                                             for singular in iterargs]
-    result = []
     for iterargs in self._generate_iterargs(requirements):
       error, value = self._get_condition(name, iterargs, path)
       if error:
         raise error
       if simple:
-        result.append(value)
+        yield value
       else:
-        result.append((iterargs, value))
-    return tuple(result)
+        yield (iterargs, value)
 
   def _resolve_alias(self, original_name):
     name = original_name
