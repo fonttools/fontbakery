@@ -378,12 +378,28 @@ class TestRunner(object):
       error = FailedConditionError(condition, err, tb)
       return error, None
 
+  def _filter_condition_used_iterargs(self, name, iterargs):
+    allArgs = set()
+    names = list(self._spec.conditions[name].args)
+    while(names):
+      name = names.pop()
+      if name in allArgs:
+        continue
+      allArgs.add(name)
+      if name in self._spec.conditions:
+        names += self._spec.conditions[name].args
+    return tuple( (name, value) for name, value in iterargs
+                                                  if name in allArgs)
+
   def _get_condition(self, name, iterargs, path=None):
     # conditions are evaluated lazily
-    key = (name, iterargs)
-    if key not in self._cache['conditions']:
-      err, val = self._evaluate_condition(name, iterargs, path)
-      self._cache['conditions'][key] = err, val
+    usecache = True #False
+    used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
+    key = (name, used_iterargs)
+    if not usecache or key not in self._cache['conditions']:
+      err, val = self._evaluate_condition(name, used_iterargs, path)
+      if usecache:
+        self._cache['conditions'][key] = err, val
     else:
       err, val = self._cache['conditions'][key]
     return err, val
