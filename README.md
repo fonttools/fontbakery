@@ -94,7 +94,7 @@ To save a json formatted report do:
 
 The check results will be saved to a file called `report.json`.
 
-#### Run hand picked checks for all fonts in the google/fonts repository:
+#### Run hand picked checks for all fonts in the `google/fonts` repository:
 
 ```
 $ fontbakery check-googlefonts \
@@ -173,7 +173,7 @@ There is a web dashboard that is used for monitoring the check-results of the fu
 
 If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, you have to have a full checkout of it, and then you can run:
 
-    sh bin/fontbakery-check-collection.sh path-to-collection-directory
+    `sh bin/fontbakery-check-collection.sh path-to-collection-directory
 
 This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection.
 The output is individual per-family reports, in json format, saved in subdirectories with the names of the license directories.
@@ -182,7 +182,7 @@ The output is individual per-family reports, in json format, saved in subdirecto
 
 ### fontbakery build-contributors
 
-This is a project maintainence tool that generate a CONTRIBUTORS.txt file from a repository's git history.
+This is a project maintainence tool that generate a `CONTRIBUTORS.txt` file from a repository's git history.
 
 ```
 usage: fontbakery build-contributors [-h] folder
@@ -211,7 +211,7 @@ optional arguments:
 
 Calculates the visual weight, width or italic angle of fonts. For width, it
 just measures the width of how a particular piece of text renders. For weight,
-it measures the darness of a piece of text. For italic angle it defaults to
+it measures the darkness of a piece of text. For italic angle it defaults to
 the italicAngle property of the font. Then it starts a HTTP server and shows
 you the results, or if you pass --debug then it just prints the values.
 
@@ -251,7 +251,7 @@ optional arguments:
 ### fontbakery family-html-snippet
 
 Generate a test html snippet for a family hosted on fonts.google.com This
-script works well for quickly producing test cases using jsbin. $ fontbakery
+script works well for quickly producing test cases using jsbin. `$ fontbakery
 family-html-snippet "Exo" "Hello World" >>> ... <html> <head> <link
 href="https://fonts.googleapis.com/css?family=Exo"/rel="stylesheet"> <style>
 .g{font-family: 'Exo'; font-weight:400;} .h{font-family: 'Exo'; font-
@@ -649,14 +649,14 @@ pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 
 ## Microsoft Font Validator
 
-A prebuilt binary of the Microsoft Font Validator is currently available at the prebuilt/fval directory in this repo. (The corresponding source code is available under a free license at https://github.com/Microsoft/Font-Validator). In order to enable this check, you'll need to have the mono runtime installed in your system. You'll also need to have FontValidator.exe available in the system path. One way to achieved would be:
+A prebuilt binary of the Microsoft Font Validator is currently available at the `prebuilt/fval` directory in this repo. (The corresponding source code is available under a free license at https://github.com/Microsoft/Font-Validator). In order to enable this check, you'll need to have the mono runtime installed in your system. You'll also need to have `FontValidator.exe` available in the system path. One way to achieved would be:
 
 ```
 sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
 ```
 
-...where $FONTBAKERY_GIT_REPO should be the name of the directory where you checked out Font Bakery source code. Obviously, you can also use any other alternative way of making FontValidator.exe available in your system path.
+...where `$FONTBAKERY_GIT_REPO` should be the name of the directory where you checked out Font Bakery source code. Obviously, you can also use any other alternative way of making `FontValidator.exe` available in your system path.
 
 FontValidator includes some hinting instruction validation tests. These rely on a customized version of the Freetype library. In order to enable those, you'll need to use the custom build available in this repo by doing:
 
@@ -699,7 +699,7 @@ This is particularly useful if you are running `fontbakery` in a python virtual 
 
 This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@members.fsf.org> with very frequent contributions from Lasse Fister, Marc Foley and Dave Crossland.
 
-Releases to PyPI are performed by updating the version metadata on setup.py and then running the following commands:
+Releases to PyPI are performed by updating the version metadata on `setup.py` and then running the following commands:
 
 ```
 rm build/ -rf
