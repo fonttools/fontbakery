@@ -1,10 +1,16 @@
-* 0.3.2 (2017-Sept-??):
+* 0.3.2 (2017-Oct-11):
+  - Increased self-testing now covering a bit more than half of the google fonts testsuite (more self-testing to be done on upcoming releases).
+  - overall refactoring of all test implementations so that they're all self-contained
+  - updated prebuilt FVal binary (built from proper sources)
+  - Added APIs used by the web dashboard and report documents
   - whitelist: a few legacy CamelCased familynames (test/109)
-  - fix computation of font_metadata condition
-  - fix crash on fontbakery-check-font-version.py
-  - add automated tests for the fixer scripts
+  - Added VTT-related tables to the list of unwanted tables (test/053)
+  - fixed computation of font_metadata condition
+  - fixed crash on fontbakery-check-font-version.py
+  - added automated tests for the fixer scripts
   - deprecated pyfontaine tests (132 to 151)
   - deprecated the unified name table entries test (test/017) spliting it up into new individual per-entry tests (156 to 162)
+  - overall bugfixing / code-quality improvements.
 
 * 0.3.1 (2017-Aug-11):
   - Emergencial release to address broken 0.3.0 packaging.

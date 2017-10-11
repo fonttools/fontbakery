@@ -4678,3 +4678,7 @@ def com_google_fonts_test_164(ttFont):
   if not failed:
     yield PASS, ("All copyright notice name entries on the"
                  " 'name' table are shorter than 500 characters.")
+
+
+for section_name, section in specification._sections.items():
+  print ("There is a total of {} tests on {}.".format(len(section._tests), section_name))
