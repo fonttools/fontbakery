@@ -378,12 +378,28 @@ class TestRunner(object):
       error = FailedConditionError(condition, err, tb)
       return error, None
 
+  def _filter_condition_used_iterargs(self, name, iterargs):
+    allArgs = set()
+    names = list(self._spec.conditions[name].args)
+    while(names):
+      name = names.pop()
+      if name in allArgs:
+        continue
+      allArgs.add(name)
+      if name in self._spec.conditions:
+        names += self._spec.conditions[name].args
+    return tuple( (name, value) for name, value in iterargs
+                                                  if name in allArgs)
+
   def _get_condition(self, name, iterargs, path=None):
     # conditions are evaluated lazily
-    key = (name, iterargs)
-    if key not in self._cache['conditions']:
-      err, val = self._evaluate_condition(name, iterargs, path)
-      self._cache['conditions'][key] = err, val
+    usecache = True #False
+    used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
+    key = (name, used_iterargs)
+    if not usecache or key not in self._cache['conditions']:
+      err, val = self._evaluate_condition(name, used_iterargs, path)
+      if usecache:
+        self._cache['conditions'][key] = err, val
     else:
       err, val = self._cache['conditions'][key]
     return err, val
@@ -407,7 +423,8 @@ class TestRunner(object):
         yield (current, ) + tail
 
   def _derive_iterable_condition(self, name, simple=False, path=None):
-    # should we cache this?
+    # returns a generator, which is better for memory critical situations
+    # than a list containing all results of the used conditions
     condition = self._spec.conditions[name]
     iterargs = self._spec.get_iterargs(condition)
 
@@ -418,16 +435,14 @@ class TestRunner(object):
     # like [('font', 10), ('other', 22)]
     requirements = [(singular, self._iterargs[singular])
                                             for singular in iterargs]
-    result = []
     for iterargs in self._generate_iterargs(requirements):
       error, value = self._get_condition(name, iterargs, path)
       if error:
         raise error
       if simple:
-        result.append(value)
+        yield value
       else:
-        result.append((iterargs, value))
-    return tuple(result)
+        yield (iterargs, value)
 
   def _resolve_alias(self, original_name):
     name = original_name
@@ -574,7 +589,10 @@ class TestRunner(object):
       # nestable subtests. Otherwise, a STARTTEST would end the
       # previous test implicitly.
       # We can also use it to display status updates to the user.
-    if summary_status < PASS:
+    if summary_status is None:
+      summary_status = ERROR
+      yield ERROR, ('The check {} did not yield any status'.format(test))
+    elif summary_status < PASS:
       summary_status = ERROR
       # got to yield it,so we can see it in the report
       yield ERROR, ('The most significant status of {} was only {} but the '

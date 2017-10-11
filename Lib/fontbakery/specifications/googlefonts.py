@@ -3261,7 +3261,7 @@ def com_google_fonts_test_095(ttFont, style, font_metadata):
     yield FAIL, Message("lacks-entry",
                         ("This font lacks a {} entry"
                          " (nameID={}) in the"
-                         " name table.").format(NAMEID_STR(nameid),
+                         " name table.").format(NAMEID_STR[nameid],
                                                 nameid))
   else:
     for font_familyname in font_familynames:
