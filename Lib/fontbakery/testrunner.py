@@ -589,7 +589,10 @@ class TestRunner(object):
       # nestable subtests. Otherwise, a STARTTEST would end the
       # previous test implicitly.
       # We can also use it to display status updates to the user.
-    if summary_status < PASS:
+    if summary_status is None:
+      summary_status = ERROR
+      yield ERROR, ('The check {} did not yield any status'.format(test))
+    elif summary_status < PASS:
       summary_status = ERROR
       # got to yield it,so we can see it in the report
       yield ERROR, ('The most significant status of {} was only {} but the '
