@@ -53,7 +53,7 @@ def main():
   parser.add_argument('--format-4-subtables', '-f4', default=False,
                       action='store_true',
                       help="Convert cmap subtables to format 4")
-  parser.add_argument('-drop-mac-subtable', '-dm', default=False,
+  parser.add_argument('--drop-mac-subtable', '-dm', default=False,
                       action='store_true',
                       help='Drop Mac cmap subtables')
   args = parser.parse_args()
