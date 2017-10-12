@@ -44,13 +44,18 @@ Run fontbakery subcommands:
     build-ofl
     check-bbox
     check-collection
+    check-copyright-notices
+    check-font-version
     check-gf-github
     check-googlefonts
     check-name
+    check-noto-version
+    check-specification
     check-vtt-compatibility
     dev-testrunner
     family-html-snippet
     fix-ascii-fontmetadata
+    fix-cmap
     fix-dsig
     fix-familymetadata
     fix-fsselection
@@ -63,12 +68,14 @@ Run fontbakery subcommands:
     fix-ttfautohint
     fix-vendorid
     fix-vertical-metrics
+    generate-glyphdata
     list-panose
     list-variable-source
     list-weightclass
     list-widthclass
     metadata-vs-api
     nametable-from-filename
+    ots
     update-families
     update-nameids
     update-version
