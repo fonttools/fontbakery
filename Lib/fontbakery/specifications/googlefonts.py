@@ -2286,16 +2286,19 @@ def com_google_fonts_test_063(ttFont):
 @condition
 def ligatures(ttFont):
   all_ligatures = {}
-  if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
-    for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-      if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-        for subtable in lookup.SubTable:
-          for firstGlyph in subtable.ligatures.keys():
-            all_ligatures[firstGlyph] = []
-            for lig in subtable.ligatures[firstGlyph]:
-              if lig.Component[0] not in all_ligatures[firstGlyph]:
-                all_ligatures[firstGlyph].append(lig.Component[0])
-  return all_ligatures
+  try:
+    if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
+      for lookup in ttFont["GSUB"].table.LookupList.Lookup:
+        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+          for subtable in lookup.SubTable:
+            for firstGlyph in subtable.ligatures.keys():
+              all_ligatures[firstGlyph] = []
+              for lig in subtable.ligatures[firstGlyph]:
+                if lig.Component[0] not in all_ligatures[firstGlyph]:
+                  all_ligatures[firstGlyph].append(lig.Component[0])
+    return all_ligatures
+  except:
+    return -1  # Indicate fontTools-related crash...
 
 
 @register_test
@@ -2310,8 +2313,12 @@ def com_google_fonts_test_064(ttFont, ligatures):
       positions defined in the GDEF table, otherwhise, users may experience
       issues with caret rendering.
   """
-
-  if "GDEF" not in ttFont:
+  if ligatures == -1:
+    yield FAIL, ("Failed to lookup ligatures."
+                 " This font file seems to be malformed."
+                 " For more info, read:"
+                 " https://github.com/googlefonts/fontbakery/issues/1596")
+  elif "GDEF" not in ttFont:
     yield WARN, Message("GDEF-missing",
                         ("GDEF table is missing, but it is mandatory"
                          " to declare it on fonts that provide ligature"
@@ -2362,13 +2369,6 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
             if pairvalue.SecondGlyph in ligatures[glyph]:
               del remaining[glyph]
 
-  for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-    if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-      look_for_nonligated_kern_info(lookup)
-    # elif lookup.LookupType == 9:
-    #   if lookup.SubTable[0].ExtensionLookupType == 2:
-    #     look_for_nonligated_kern_info(lookup.SubTable[0])
-
   def ligatures_str(ligs):
     result = []
     for first in ligs:
@@ -2376,13 +2376,26 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
                      for second in ligs[first]])
     return result
 
-  if remaining != {}:
-    yield FAIL, ("GPOS table lacks kerning info for the following"
-                 " non-ligated sequences: "
-                 "{}").format(ligatures_str(remaining))
+  if ligatures == -1:
+    yield FAIL, ("Failed to lookup ligatures."
+                 " This font file seems to be malformed."
+                 " For more info, read:"
+                 " https://github.com/googlefonts/fontbakery/issues/1596")
   else:
-    yield PASS, ("GPOS table provides kerning info for "
-                 "all non-ligated sequences.")
+    for lookup in ttFont["GPOS"].table.LookupList.Lookup:
+      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
+        look_for_nonligated_kern_info(lookup)
+      # elif lookup.LookupType == 9:
+      #   if lookup.SubTable[0].ExtensionLookupType == 2:
+      #     look_for_nonligated_kern_info(lookup.SubTable[0])
+
+    if remaining != {}:
+      yield FAIL, ("GPOS table lacks kerning info for the following"
+                   " non-ligated sequences: "
+                   "{}").format(ligatures_str(remaining))
+    else:
+      yield PASS, ("GPOS table provides kerning info for "
+                   "all non-ligated sequences.")
 
 
 @register_test
