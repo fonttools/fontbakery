@@ -1280,7 +1280,7 @@ def test_id_065():
   # So it must FAIL the test:
   print ("Test FAIL with a bad font...")
   status, message = list(test(ttFont, lig, has_kinfo))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "lacks-kern-info"
 
 
 def test_id_066():
