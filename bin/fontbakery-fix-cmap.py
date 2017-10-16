@@ -19,19 +19,21 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
 
 
-description = """
-
-fontbakery-fix-cmap.py
-~~~~~~~~~~~~~~~~~~~~~~
-
-Manipulate a collection of fonts' cmap tables.
-"""
+description = "Manipulate a collection of fonts' cmap tables."
 
 
 def convert_cmap_subtables_to_v4(font):
   cmap = font['cmap']
   outtables = []
+  fixit = False
   for table in cmap.tables:
+    if table.format != 4:
+      print(('Converted format {} cmap subtable'
+             ' with Platform ID = {} and Encoding ID = {}'
+             ' to format 4.').format(table.format,
+                                     table.platformID,
+                                     table.platEncID))
+      fixit = True
     newtable = CmapSubtable.newSubtable(4)
     newtable.platformID = table.platformID
     newtable.platEncID = table.platEncID
@@ -39,12 +41,45 @@ def convert_cmap_subtables_to_v4(font):
     newtable.cmap = table.cmap
     outtables.append(newtable)
   font['cmap'].tables = outtables
+  return fixit
 
 
 def remove_cmap_subtable(font, plat_id, enc_id):
-  for table in font['cmap'].tables:
+  to_be_removed = []
+  for index, table in enumerate(font['cmap'].tables):
     if table.platformID == plat_id and table.platEncID == enc_id:
-      font['cmap'].tables.remove(table)
+      to_be_removed.append(index)
+
+  to_be_removed.reverse()
+  for index in to_be_removed:
+    font['cmap'].tables.remove(table)
+
+  fixit = len(to_be_removed) > 0
+  return fixit
+
+
+def keep_only_specific_cmap(font, plat_id, enc_id=None):
+  to_be_removed = []
+  for index, table in enumerate(font['cmap'].tables):
+    if table.platformID != plat_id and (enc_id==None or table.platEncID != enc_id):
+      to_be_removed.append(index)
+    else:
+      print(("Keeping format {} cmap subtable with Platform ID = {}"
+             " and Encoding ID = {}").format(table.format,
+                                             table.platformID,
+                                             table.platEncID))
+
+  to_be_removed.reverse()
+  for index in to_be_removed:
+    table = font['cmap'].tables[index]
+    print(("--- Removed format {} cmap subtable with Platform ID = {}"
+           " and Encoding ID = {} ---").format(table.format,
+                                               table.platformID,
+                                               table.platEncID))
+    font['cmap'].tables.remove(table)
+
+  fixit = len(to_be_removed) > 0
+  return fixit
 
 
 def main():
@@ -56,6 +91,10 @@ def main():
   parser.add_argument('--drop-mac-subtable', '-dm', default=False,
                       action='store_true',
                       help='Drop Mac cmap subtables')
+  parser.add_argument('--keep-only-pid-0', '-k0', default=False,
+                      action='store_true',
+                      help=('Keep only cmap subtables with pid=0'
+                            ' and drop the rest.'))
   args = parser.parse_args()
 
   for path in args.fonts:
@@ -64,19 +103,24 @@ def main():
     fixit = False
 
     if args.format_4_subtables:
-      print('%s: Converting Cmap subtables to format 4' % font_filename)
-      convert_cmap_subtables_to_v4(font)
-      fixit = True
+      print('\nConverting Cmap subtables to format 4...')
+      fixit = convert_cmap_subtables_to_v4(font)
 
-    if args.drop_mac_subtable:
-      if font['cmap'].getcmap(1, 0):
-        print('%s: Dropping Cmap Mac subtable' % font_filename)
-        remove_cmap_subtable(font, 1, 0)
-        fixit = True
+    if args.keep_only_pid_0:
+      print('\nDropping all Cmap subtables,'
+            ' except the ones with PlatformId = 0...')
+      dropped = keep_only_specific_cmap(font, 0)
+      fixit = fixit or dropped
+    elif args.drop_mac_subtable:
+      print('\nDropping any Cmap Mac subtable...')
+      dropped = remove_cmap_subtable(font, 1, 0)
+      fixit = fixit or dropped
 
     if fixit:
-      print('Saving %s to %s.fix' % (font_filename, path))
+      print('\n\nSaving %s to %s.fix' % (font_filename, path))
       font.save(path + '.fix')
+    else:
+      print('\n\nThere were no changes needed on the font file!')
 
 
 if __name__ == '__main__':
