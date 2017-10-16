@@ -2314,10 +2314,12 @@ def com_google_fonts_test_064(ttFont, ligatures):
       issues with caret rendering.
   """
   if ligatures == -1:
-    yield FAIL, ("Failed to lookup ligatures."
-                 " This font file seems to be malformed."
-                 " For more info, read:"
-                 " https://github.com/googlefonts/fontbakery/issues/1596")
+    yield FAIL, Message("malformed",
+                        "Failed to lookup ligatures."
+                        " This font file seems to be malformed."
+                        " For more info, read:"
+                        " https://github.com"
+                        "/googlefonts/fontbakery/issues/1596")
   elif "GDEF" not in ttFont:
     yield WARN, Message("GDEF-missing",
                         ("GDEF table is missing, but it is mandatory"
@@ -2377,10 +2379,12 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
     return result
 
   if ligatures == -1:
-    yield FAIL, ("Failed to lookup ligatures."
-                 " This font file seems to be malformed."
-                 " For more info, read:"
-                 " https://github.com/googlefonts/fontbakery/issues/1596")
+    yield FAIL, Message("malformed",
+                        "Failed to lookup ligatures."
+                        " This font file seems to be malformed."
+                        " For more info, read:"
+                        " https://github.com"
+                        "/googlefonts/fontbakery/issues/1596")
   else:
     for lookup in ttFont["GPOS"].table.LookupList.Lookup:
       if lookup.LookupType == 2:  # type 2 = Pair Adjustment
@@ -2390,9 +2394,10 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
       #     look_for_nonligated_kern_info(lookup.SubTable[0])
 
     if remaining != {}:
-      yield FAIL, ("GPOS table lacks kerning info for the following"
-                   " non-ligated sequences: "
-                   "{}").format(ligatures_str(remaining))
+      yield FAIL, Message("lacks-kern-info",
+                          ("GPOS table lacks kerning info for the following"
+                           " non-ligated sequences: "
+                           "{}").format(ligatures_str(remaining)))
     else:
       yield PASS, ("GPOS table provides kerning info for "
                    "all non-ligated sequences.")
