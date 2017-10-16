@@ -258,7 +258,10 @@ optional arguments:
 ### fontbakery family-html-snippet
 
 Generate a test html snippet for a family hosted on fonts.google.com This
-script works well for quickly producing test cases using jsbin. `$ fontbakery
+script works well for quickly producing test cases using jsbin.
+
+```
+$ fontbakery
 family-html-snippet "Exo" "Hello World" >>> ... <html> <head> <link
 href="https://fonts.googleapis.com/css?family=Exo"/rel="stylesheet"> <style>
 .g{font-family: 'Exo'; font-weight:400;} .h{font-family: 'Exo'; font-
@@ -266,6 +269,7 @@ weight:400; font-style: italic;} .m{font-family: 'Exo'; font-weight:700;} .n
 {font-family: 'Exo'; font-weight:700; font-style: italic;} </style> </head>
 <body> <p class='g'>Hello World</p> <p class='h'>Hello World</p> <p
 class='m'>Hello World</p> <p class='n'>Hello World</p> </body> </html>
+```
 
 ```
 usage: fontbakery family-html-snippet [-h]
