@@ -2351,8 +2351,14 @@ def com_google_fonts_test_064(ttFont, ligatures):
 @register_test
 @test(
     id='com.google.fonts/test/065'
-  , conditions=['ligatures',
-                'has_kerning_info']
+  , rationale = """
+      Fonts with ligatures should have kerning on the corresponding
+      non-ligated sequences for text where ligatures aren't used
+      (eg https://github.com/impallari/Raleway/issues/14).
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1145'
+  , conditions = ['ligatures',
+                  'has_kerning_info']
 )
 def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?
@@ -4640,7 +4646,15 @@ def com_google_fonts_test_162(ttFont, style):
 @register_test
 @test(
     id='com.google.fonts/test/163'
-  , rationale = """According to a Glyphs tutorial (available at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances), in order to make sure all versions of Windows recognize it as a valid font file, we must make sure that the concatenated length of the familyname (NAMEID_FONT_FAMILY_NAME) and style (NAMEID_FONT_SUBFAMILY_NAME) strings in the name table do not exceed 20 characters.""" # Somebody with access to Windows should make some tests and confirm that this is really the case.
+  , rationale = """
+      According to a Glyphs tutorial (available at
+      https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
+      in order to make sure all versions of Windows recognize it as a valid
+      font file, we must make sure that the concatenated length of the
+      familyname (NAMEID_FONT_FAMILY_NAME) and style (NAMEID_FONT_SUBFAMILY_NAME)
+      strings in the name table do not exceed 20 characters.
+    """ # Somebody with access to Windows should make some tests
+        # and confirm that this is really the case.
   , affects = [('Windows', 'unspecified')]
   , request = 'https://github.com/googlefonts/fontbakery/issues/1488'
   , example_failures = None
@@ -4677,10 +4691,10 @@ def com_google_fonts_test_163(ttFont):
 @test(
     id='com.google.fonts/test/164'
   , rationale = """
-    This is an arbitrary max lentgh for the copyright notice field
-    of the name table. We simply don't want such notices to be too long.
-    Typically such notices are actually much shorter than this with
-    a lenghth of roughtly 70 or 80 characters.
+      This is an arbitrary max lentgh for the copyright notice field
+      of the name table. We simply don't want such notices to be too long.
+      Typically such notices are actually much shorter than this with
+      a lenghth of roughtly 70 or 80 characters.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1603'
 )
