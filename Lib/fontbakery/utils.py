@@ -174,8 +174,14 @@ def get_font_glyph_data(font):
     font_data = []
 
     try:
-        cmap = font['cmap'].getcmap(PLATFORM_ID__WINDOWS,
-                                    PLAT_ENC_ID__UCS2).cmap
+        subtable = font['cmap'].getcmap(PLATFORM_ID__WINDOWS,
+                                        PLAT_ENC_ID__UCS2)
+        if not subtable:
+          # Well... Give it a chance here...
+          # It may be using a different Encoding_ID value
+          subtable = font['cmap'].tables[0]
+
+        cmap = subtable.cmap
     except:
         return None
 
