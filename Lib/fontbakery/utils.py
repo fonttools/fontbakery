@@ -169,8 +169,22 @@ def glyph_contour_count(font, name):
 
 def get_font_glyph_data(font):
     """Return information for each glyph in a font"""
+    from fontbakery.constants import (PLATFORM_ID__WINDOWS,
+                                      PLAT_ENC_ID__UCS2)
     font_data = []
-    cmap = font['cmap'].getcmap(3,1).cmap
+
+    try:
+        subtable = font['cmap'].getcmap(PLATFORM_ID__WINDOWS,
+                                        PLAT_ENC_ID__UCS2)
+        if not subtable:
+          # Well... Give it a chance here...
+          # It may be using a different Encoding_ID value
+          subtable = font['cmap'].tables[0]
+
+        cmap = subtable.cmap
+    except:
+        return None
+
     cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
 
     for glyph_name in font.getGlyphSet().keys():

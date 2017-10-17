@@ -4223,7 +4223,8 @@ def com_google_fonts_test_153(ttFont):
   """
   from fontbakery.glyphdata import desired_glyph_data as glyph_data
   from fontbakery.utils import get_font_glyph_data
-
+  from fontbakery.constants import (PLATFORM_ID__WINDOWS,
+                                    PLAT_ENC_ID__UCS2)
   # rearrange data structure:
   desired_glyph_data = {}
   for glyph in glyph_data:
@@ -4234,21 +4235,26 @@ def com_google_fonts_test_153(ttFont):
                             for f in desired_glyph_data}
 
   font_glyph_data = get_font_glyph_data(ttFont)
-  font_glyph_contours = {f['unicode']: list(f['contours'])[0]
-                         for f in font_glyph_data}
 
-  shared_glyphs = set(desired_glyph_contours) & set(font_glyph_contours)
-  for glyph in shared_glyphs:
-    if font_glyph_contours[glyph] not in desired_glyph_contours[glyph]:
-      bad_glyphs.append(glyph)
-
-  if len(bad_glyphs) > 0:
-    cmap = ttFont['cmap'].getcmap(3,1).cmap
-    bad_glyphs_name = [cmap[n] for n in bad_glyphs]
-    yield WARN, (("Following glyphs do not have the recommended number"
-                  " of contours [{}]").format(', '.join(bad_glyphs_name)))
+  if font_glyph_data is None:
+      yield FAIL, "This font lacks cmap data."
   else:
-    yield PASS, "All glyphs have the recommended amount of contours"
+    font_glyph_contours = {f['unicode']: list(f['contours'])[0]
+                           for f in font_glyph_data}
+
+    shared_glyphs = set(desired_glyph_contours) & set(font_glyph_contours)
+    for glyph in shared_glyphs:
+      if font_glyph_contours[glyph] not in desired_glyph_contours[glyph]:
+        bad_glyphs.append(glyph)
+
+    if len(bad_glyphs) > 0:
+      cmap = ttFont['cmap'].getcmap(PLATFORM_ID__WINDOWS,
+                                    PLAT_ENC_ID__UCS2).cmap
+      bad_glyphs_name = [cmap[n] for n in bad_glyphs]
+      yield WARN, (("Following glyphs do not have the recommended number"
+                    " of contours [{}]").format(', '.join(bad_glyphs_name)))
+    else:
+      yield PASS, "All glyphs have the recommended amount of contours"
 
 
 @register_test
