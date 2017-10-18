@@ -149,7 +149,12 @@ def main():
                        'lacks subset "{}" in API.').format(family, subset),
                       file=sys.stderr)
 
-        if metadata.category.lower() != webfontsItem['category']:
+        if metadata.category == "SANS_SERIF":  # That's fine :-)
+            category = "sans-serif"
+        else:
+            category = metadata.category.lower()
+
+        if category != webfontsItem['category']:
             print(('ERROR: "{}" category "{}" in git'
                    ' does not match category "{}"'
                    ' in API.').format(family,

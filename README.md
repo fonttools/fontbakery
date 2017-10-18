@@ -43,6 +43,7 @@ Run fontbakery subcommands:
     build-fontmetadata
     build-ofl
     check-bbox
+    check-category
     check-collection
     check-copyright-notices
     check-font-version
@@ -253,6 +254,25 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+```
+
+### fontbakery check-category
+
+Comparison of category fields of local METADATA.pb files with data
+corresponding metadata on the Google Fonts Developer API.
+
+In order to use it you need to provide an API key.
+
+```
+usage: fontbakery-check-category.py [-h] [--verbose] key repo
+
+positional arguments:
+  key         Key from Google Fonts Developer API
+  repo        Directory tree that contains directories with METADATA.pb files.
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --verbose   Print additional information
 ```
 
 ### fontbakery family-html-snippet
