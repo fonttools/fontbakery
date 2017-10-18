@@ -253,10 +253,21 @@ parser.add_argument('-lt', '--linegaps-typo', type=int,
                     help=("Set new linegaps value in 'Horizontal Header'"
                           " table ('OS/2')"))
 
-# parser.add_argument('--autofix', action="store_true",
-#                     help="Autofix font metrics")
+parser.add_argument('--autofix', action="store_true",
+                     help="Autofix font metrics")
 parser.add_argument('ttf_font', nargs='+', metavar='ttf_font',
                     help="Font file in OpenType (TTF/OTF) format")
+
+
+def vmetrics(ttFonts):
+  from fontbakery.utils import get_bounding_box
+  v_metrics = {"ymin": 0, "ymax": 0}
+  for ttFont in ttFonts:
+    font_ymin, font_ymax = get_bounding_box(ttFont)
+    v_metrics["ymin"] = min(font_ymin, v_metrics["ymin"])
+    v_metrics["ymax"] = max(font_ymax, v_metrics["ymax"])
+  return v_metrics
+
 
 def main():
   options = parser.parse_args()
@@ -315,7 +326,28 @@ def main():
       if options.linegaps_typo or options.linegaps_typo == 0:
         ttfont['OS/2'].sTypoLineGap = options.linegaps_typo
 
-      ttfont.save(f + '.fix')
+      ttfont.save(f[:-4] + '.fix.ttf')
+
+  elif options.autofix:
+    ttFonts = []
+    for f in fonts:
+      try:
+        ttFonts.append(ttLib.TTFont(f))
+      except TTLibError as ex:
+        print('Error: {0}: {1}'.format(f, ex))
+        continue
+
+    v_metrics = vmetrics(ttFonts)
+    for ttfont in ttFonts:
+      ttfont['hhea'].ascent = v_metrics["ymax"]
+      ttfont['OS/2'].sTypoAscender = v_metrics["ymax"]
+      ttfont['OS/2'].usWinAscent = v_metrics["ymax"]
+
+      ttfont['hhea'].descent = v_metrics["ymin"]
+      ttfont['OS/2'].sTypoDescender = v_metrics["ymin"]
+      ttfont['OS/2'].usWinDescent = abs(v_metrics["ymin"])
+
+      ttfont.save(ttfont.reader.file.name[:-4] + '.fix.ttf')
 
   else:
     entries = [

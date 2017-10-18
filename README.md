@@ -507,7 +507,7 @@ usage: fontbakery fix-vertical-metrics  [-h] [-a ASCENTS] [-ah ASCENTS_HHEA]
                                         [-dt DESCENTS_TYPO]
                                         [-dw DESCENTS_WIN] [-l LINEGAPS]
                                         [-lh LINEGAPS_HHEA]
-                                        [-lt LINEGAPS_TYPO]
+                                        [-lt LINEGAPS_TYPO] [--autofix]
                                         ttf_font [ttf_font ...]
 
 positional arguments:
@@ -545,6 +545,7 @@ optional arguments:
   -lt LINEGAPS_TYPO, --linegaps-typo LINEGAPS_TYPO
                         Set new linegaps value in 'Horizontal Header' table
                         ('OS/2')
+  --autofix             Autofix font metrics
 ```
 
 ### fontbakery list-panose
