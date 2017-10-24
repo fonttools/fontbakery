@@ -6,3 +6,4 @@ bs4==0.0.1
 defusedxml==0.4.1
 lxml==3.5.0
 Unidecode==0.4.19
+pybrowserstack-screenshots==0.1
