@@ -2400,10 +2400,10 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
       #     look_for_nonligated_kern_info(lookup.SubTable[0])
 
     if remaining != {}:
-      yield FAIL, Message("lacks-kern-info",
-                          ("GPOS table lacks kerning info for the following"
-                           " non-ligated sequences: "
-                           "{}").format(ligatures_str(remaining)))
+      yield WARN, Message("lacks-kern-info",
+                         ("GPOS table lacks kerning info for the following"
+                          " non-ligated sequences: "
+                          "{}").format(ligatures_str(remaining)))
     else:
       yield PASS, ("GPOS table provides kerning info for "
                    "all non-ligated sequences.")
