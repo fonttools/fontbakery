@@ -1277,10 +1277,10 @@ def test_id_065():
   lig = ligatures(ttFont)
   has_kinfo = has_kerning_info(ttFont)
 
-  # So it must FAIL the test:
-  print ("Test FAIL with a bad font...")
+  # So it must emit a WARN in this test:
+  print ("Test WARN with a bad font...")
   status, message = list(test(ttFont, lig, has_kinfo))[-1]
-  assert status == FAIL and message.code == "lacks-kern-info"
+  assert status == WARN and message.code == "lacks-kern-info"
 
 
 def test_id_066():
