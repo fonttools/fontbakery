@@ -1026,6 +1026,9 @@ def com_google_fonts_test_033(ttFont, monospace_stats):
 )
 def com_google_fonts_test_034(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
+  current_value = ttFont['OS/2'].xAvgCharWidth
+  ACCEPTABLE_ERROR = 10 # This is how much we're willing to accept
+
   if ttFont['OS/2'].version >= 3:
     width_sum = 0
     count = 0
@@ -1038,14 +1041,24 @@ def com_google_fonts_test_034(ttFont):
       yield FAIL, "CRITICAL: Found no glyph width data!"
     else:
       expected_value = int(round(width_sum) / count)
-
-      if ttFont['OS/2'].xAvgCharWidth == expected_value:
+      if current_value == expected_value:
         yield PASS, "OS/2 xAvgCharWidth is correct."
+      elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
+        yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
+                     " {} which corresponds to the"
+                     " average of all glyph widths"
+                     " in the font. These are similar values, which"
+                     " may be a symptom of the slightly different"
+                     " calculation of the xAvgCharWidth value in"
+                     " font editors. There's further discussion on"
+                     " this at https://github.com/googlefonts/fontbakery"
+                     "/issues/1622").format(current_value,
+                                            expected_value)
       else:
         yield FAIL, ("OS/2 xAvgCharWidth is {} but should be "
                      "{} which corresponds to the "
                      "average of all glyph widths "
-                     "in the font").format(ttFont['OS/2'].xAvgCharWidth,
+                     "in the font").format(current_value,
                                            expected_value)
   else:
     weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
@@ -1062,14 +1075,26 @@ def com_google_fonts_test_034(ttFont):
         width_sum += (width*weightFactors[glyph_id])
     expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
 
-    if ttFont['OS/2'].xAvgCharWidth == expected_value:
+    if current_value == expected_value:
       yield PASS, "OS/2 xAvgCharWidth value is correct."
+    elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
+      yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
+                   " {} which corresponds to the weighted"
+                   " average of the widths of the latin"
+                   " lowercase glyphs in the font."
+                   " These are similar values, which"
+                   " may be a symptom of the slightly different"
+                   " calculation of the xAvgCharWidth value in"
+                   " font editors. There's further discussion on"
+                   " this at https://github.com/googlefonts/fontbakery"
+                   "/issues/1622").format(current_value,
+                                          expected_value)
     else:
       yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
                    "{} which corresponds to the weighted "
                    "average of the widths of the latin "
                    "lowercase glyphs in "
-                   "the font").format(ttFont['OS/2'].xAvgCharWidth,
+                   "the font").format(current_value,
                                       expected_value)
 
 
