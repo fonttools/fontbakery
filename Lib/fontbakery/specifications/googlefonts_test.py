@@ -2187,7 +2187,7 @@ def test_id_163():
   status, message = list(test(ttFont))[-1]
   assert status == PASS
 
-  # Then we FAIL with the long family/style names
+  # Then we emit a WARNing with the long family/style names
   # that were used as an example on the glyphs tutorial
   # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances):
   for index, name in enumerate(ttFont["name"].names):
@@ -2200,9 +2200,9 @@ def test_id_163():
       ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding())
       break
 
-  print ("Test FAIL with a bad font...")
+  print ("Test WARN with a bad font...")
   status, message = list(test(ttFont))[-1]
-  assert status == FAIL
+  assert status == WARN
 
 
 def test_id_164():

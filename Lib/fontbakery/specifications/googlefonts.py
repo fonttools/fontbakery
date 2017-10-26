@@ -4680,7 +4680,7 @@ def com_google_fonts_test_163(ttFont):
                                                 platformID=plat):
       if len(familyname_str + stylename_str) > 20:
         failed = True
-        yield FAIL, ("The combined length of family and style"
+        yield WARN, ("The combined length of family and style"
                      " exceeds 20 chars in the following '{}' entries:"
                      " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
                      "").format(PLATID_STR[plat],
