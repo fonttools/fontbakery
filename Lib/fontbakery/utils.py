@@ -31,6 +31,13 @@ from zipfile import ZipFile
 # =====================================
 # HELPER FUNCTIONS
 
+def pretty_print_list(values):
+  if len(values) == 1:
+    return str(values[0])
+  else:
+    return "{} or {}".format(", ".join(map(str, values[:-1])),
+                             str(values[-1]))
+
 
 def get_bounding_box(font):
     """ Returns max and min bbox of given truetype font """
