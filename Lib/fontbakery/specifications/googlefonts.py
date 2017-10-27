@@ -4256,7 +4256,8 @@ def com_google_fonts_test_153(ttFont):
   be the 'recommended' anchor counts for each glyph.
   """
   from fontbakery.glyphdata import desired_glyph_data as glyph_data
-  from fontbakery.utils import get_font_glyph_data
+  from fontbakery.utils import (get_font_glyph_data,
+                                pretty_print_list)
   from fontbakery.constants import (PLATFORM_ID__WINDOWS,
                                     PLAT_ENC_ID__UCS2)
   # rearrange data structure:
@@ -4279,14 +4280,34 @@ def com_google_fonts_test_153(ttFont):
     shared_glyphs = set(desired_glyph_contours) & set(font_glyph_contours)
     for glyph in shared_glyphs:
       if font_glyph_contours[glyph] not in desired_glyph_contours[glyph]:
-        bad_glyphs.append(glyph)
+        bad_glyphs.append([glyph,
+                           font_glyph_contours[glyph],
+                           desired_glyph_contours[glyph]])
 
     if len(bad_glyphs) > 0:
       cmap = ttFont['cmap'].getcmap(PLATFORM_ID__WINDOWS,
                                     PLAT_ENC_ID__UCS2).cmap
-      bad_glyphs_name = [cmap[n] for n in bad_glyphs]
-      yield WARN, (("Following glyphs do not have the recommended number"
-                    " of contours [{}]").format(', '.join(bad_glyphs_name)))
+      bad_glyphs_name = [("Glyph name: {}\t"
+                          "Counters detected: {}\t"
+                          "Expected: {}").format(cmap[name],
+                                                 count,
+                                                 pretty_print_list(expected))
+                         for name, count, expected in bad_glyphs]
+      yield WARN, (("This test inspects the glyph outlines and detects the"
+                    " total number of counters in each of them. The expected"
+                    " values are infered from the typical ammounts of"
+                    " counters observed in a large collection of reference"
+                    " font families. The divergences listed below may simply"
+                    " indicate a significantly different design on some of"
+                    " your glyphs. On the other hand, some of these may flag"
+                    " actual bugs in the font such as glyphs mapped to an"
+                    " incorrect codepoint. Please consider reviewing"
+                    " the design and codepoint assignment of these to make"
+                    " sure they are correct.\n"
+                    "\n"
+                    "The following glyphs do not have the recommended"
+                    " number of contours:\n"
+                    "\n{}").format('\n'.join(bad_glyphs_name)))
     else:
       yield PASS, "All glyphs have the recommended amount of contours"
 
