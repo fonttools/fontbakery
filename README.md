@@ -666,9 +666,6 @@ pip install --upgrade git+https://github.com/behdad/fontTools.git;
 # install python dependencies
 pip install -r requirements.txt
 
-# install travis, for setting up CI
-sudo gem install travis; # fontbakery dependencies
-
 # install fontbakery
 pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
 ```
