@@ -1,3 +1,7 @@
+* 0.3.3:
+  - new subcommand: list-italicangle
+  - several bugfixes
+
 * 0.3.2 (2017-Oct-11):
   - Increased self-testing now covering a bit more than half of the google fonts testsuite (more self-testing to be done on upcoming releases).
   - overall refactoring of all test implementations so that they're all self-contained
