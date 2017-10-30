@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     if arg.csv:
         import csv
+        import sys
         writer = csv.writer(sys.stdout)
         writer.writerows([headers])
         writer.writerows(rows)
