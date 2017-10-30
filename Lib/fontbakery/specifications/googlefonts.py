@@ -4037,7 +4037,7 @@ def com_google_fonts_test_118(ttFont, gfonts_ttFont):
       bad_glyphs.append(glyph)
 
   if bad_glyphs:
-    yield FAIL, ("Following glyphs differ greatly from"
+    yield WARN, ("Following glyphs differ greatly from"
                  " Google Fonts version: [{}]").format(", ".join(bad_glyphs))
   else:
     yield PASS, ("Glyphs are similar in"
