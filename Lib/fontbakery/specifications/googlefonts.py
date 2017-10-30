@@ -187,7 +187,7 @@ def com_google_fonts_test_004(descfile):
   insert a dummy description file which contains invalid html.
   This file needs to either be replaced with an existing description file
   or edited by hand."""
-  data = open(descfile).read()
+  data = open(descfile).read().decode("utf-8")
   if "<p>" not in data or "</p>" not in data:
     yield FAIL, "{} does not look like a propper HTML snippet.".format(descfile)
   else:
