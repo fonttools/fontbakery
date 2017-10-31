@@ -1,5 +1,5 @@
 fonttools==3.6
-protobuf==3.0.0
+protobuf>=3.4.0
 requests==2.11.1
 beautifulsoup4==4.5.1
 bs4==0.0.1
