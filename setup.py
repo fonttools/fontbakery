@@ -191,7 +191,8 @@ setup(
         'requests',
         'unidecode',
         'protobuf',
-        'bs4'
+        'bs4',
+        'fontTools'
     ]
 )
 
