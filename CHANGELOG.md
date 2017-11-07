@@ -1,8 +1,9 @@
 * 0.3.3:
-  - All auxiliary scripts have been moved into a separate python package called
-    gftools (Google Fonts Tools) available at https://github.com/googlefonts/tools/
-    and at http://pypi.python.org/gftools. Fontbakery is now solely focused on
-    font family automated quality tests.
+  - All auxiliary scripts have been moved into a separate python
+    package called gftools (Google Fonts Tools) available at
+    https://github.com/googlefonts/tools/ (source code repo on git) and at
+    https://pypi.python.org/pypi/gftools (installable package on PyPI).
+  - Fontbakery is now solely focused on font family automated quality tests.
   - new subcommand: list-italicangle (moved to gftools as well)
   - several bugfixes
 

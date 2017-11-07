@@ -22,7 +22,9 @@ The web dashboard was initially developed in this repository, but later it was s
 
 ## Auxiliary scripts
 
-All auxiliary scripts provided by fontbakery up to v0.3.2 have been moved into a separate python package called `gftools` (which stands for 'Google Fonts Tools') available at https://github.com/googlefonts/tools/ and at http://pypi.python.org/gftools. Fontbakery (starting on the v0.3.3 release) is now solely focused on font family automated quality tests.
+All auxiliary scripts provided by fontbakery up to v0.3.2 have been moved into a separate python package called `gftools` (which stands for 'Google Fonts Tools') available at https://github.com/googlefonts/tools/ and at https://pypi.python.org/pypi/gftools
+
+Fontbakery (starting on the v0.3.3 release) is now solely focused on font family automated quality tests.
 
 Installing the latest version of the auxiliary scripts should be as easy as:
 ```
