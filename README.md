@@ -183,11 +183,8 @@ brew install ots --HEAD;
 brew install python giflib libspiro icu4c;
 brew install fontforge --with-extra-tools --HEAD ;
 
-# install fonttools
-easy_install pip;
-pip install --upgrade git+https://github.com/behdad/fontTools.git;
-
 # install fontbakery
+easy_install pip;
 pip install fontbakery
 ```
 
@@ -213,9 +210,6 @@ make CXXFLAGS=-DOTS_DEBUG;
 sudo make install;
 cd ..;
 rm -rf ots;
-
-# install fonttools
-pip install --upgrade git+https://github.com/behdad/fontTools.git;
 
 # install fontbakery
 pip install fontbakery
