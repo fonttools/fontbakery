@@ -5,9 +5,7 @@
 
 # [![Font Bakery](data/logo.png)](https://fontbakery.appspot.com)
 
-Font Bakery is a command-line tool for testing font projects, also available as a drag-and-drop web app from [fontbakery.appspot.com](https://fontbakery.appspot.com)
-
-It runs checks on TrueType files, and Google Fonts related metadata files.
+Font Bakery is a command-line tool for testing font projects. It runs checks on TrueType files, and Google Fonts related metadata files.
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run FontBakery on each commit, so that with each update your files are tested.
 
@@ -16,20 +14,27 @@ Font Bakery is not an official Google project, and Google provides no support fo
 ## Web Usage
 
 To use Font Bakery through a web UI is currently not supported.
+There is an old version of a drag-and-drop web app still hosted at [fontbakery.appspot.com](https://fontbakery.appspot.com) but not actively maintained anymore.
 
-A web dashboard is under development at <https://github.com/googlefonts/fontbakery-dashboard/> and will allow monitoring the check results of collections of font families, such as the entire Google Fonts collection.
+A modern web dashboard is under development at <https://github.com/googlefonts/fontbakery-dashboard/> and will allow monitoring the check results of collections of font families, such as the entire Google Fonts collection.
 
-This tool was initially developed in this repository, but later it was split out into its own git repo.
+The web dashboard was initially developed in this repository, but later it was split out into its own git repo.
+
+## Auxiliary scripts
+
+All auxiliary scripts provided by fontbakery up to v0.3.2 have been moved into a separate python package called `gftools` (which stands for 'Google Fonts Tools') available at https://github.com/googlefonts/tools/ and at http://pypi.python.org/gftools. Fontbakery (starting on the v0.3.3 release) is now solely focused on font family automated quality tests.
+
+Installing the latest version of the auxiliary scripts should be as easy as:
+```
+pip install gftools --upgrade
+```
+
+For any further guidance, please see the gftools documentation at https://github.com/googlefonts/tools/
 
 ## Command Line Usage
 
-**For infrequent usage**, clone this repo and then run each tool by itself:
-
-    PYTHONPATH=Lib python bin/fontbakery-metadata-vs-api.py <args>
-
-Beware, some of the scripts in `bin` do have further dependencies. In that case and<br />
-**for regular usage**, install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install) below.
-This puts the `fontbakery` command in your `$PATH`, and makes all other subcommands accessible.
+Install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install).
+This puts the `fontbakery` command in your `$PATH`, and makes its subcommands accessible as described below.
 
 Here's the output of the command line help:
 
@@ -39,47 +44,21 @@ usage: fontbakery [-h] [--list-subcommands] subcommand
 
 Run fontbakery subcommands:
     build-contributors
-    build-font2ttf
-    build-fontmetadata
-    build-ofl
-    check-bbox
-    check-category
     check-collection
-    check-copyright-notices
-    check-font-version
-    check-gf-github
     check-googlefonts
-    check-name
     check-noto-version
     check-specification
-    check-vtt-compatibility
-    dev-testrunner
-    family-html-snippet
-    fix-ascii-fontmetadata
-    fix-cmap
-    fix-dsig
-    fix-familymetadata
-    fix-fsselection
-    fix-fstype
-    fix-gasp
-    fix-glyph-private-encoding
-    fix-glyphs
-    fix-nameids
-    fix-nonhinting
-    fix-ttfautohint
-    fix-vendorid
-    fix-vertical-metrics
     generate-glyphdata
-    list-panose
-    list-variable-source
-    list-weightclass
-    list-widthclass
-    metadata-vs-api
-    nametable-from-filename
-    ots
-    update-families
-    update-nameids
-    update-version
+
+Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcommand.
+I.e.: fontbakery subcommand -h
+
+positional arguments:
+  subcommand          the subcommand to execute
+
+optional arguments:
+  -h, --help          show this help message and exit
+  --list-subcommands  print the list of subcommnds to stdout, separated by a space character. This is usually only used to generate the shell completion code.
 ```
 
 ### fontbakery check-googlefonts
@@ -186,461 +165,6 @@ If you need to generate a list of all issues in a font family collection, such a
 This will create a folder called `check_results/`, then run Font Bakery `check-googlefonts` on every family from the collection.
 The output is individual per-family reports, in json format, saved in subdirectories with the names of the license directories.
 
-## Other auxiliary fontbakery scripts
-
-### fontbakery build-contributors
-
-This is a project maintainence tool that generate a `CONTRIBUTORS.txt` file from a repository's git history.
-
-```
-usage: fontbakery build-contributors [-h] folder
-
-positional arguments:
-  folder      source folder which contains git commits
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### fontbakery build-font2ttf
-
-```
-usage: fontbakery build-font2ttf [-h] [--with-otf] source [source ...]
-
-positional arguments:
-  source
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --with-otf  Generate otf file
-```
-
-### fontbakery build-fontmetadata
-
-Calculates the visual weight, width or italic angle of fonts. For width, it
-just measures the width of how a particular piece of text renders. For weight,
-it measures the darkness of a piece of text. For italic angle it defaults to
-the italicAngle property of the font. Then it starts a HTTP server and shows
-you the results, or if you pass --debug then it just prints the values.
-
-```
-usage: fontbakery build-fontmetadata [-h] -f FILES [-d] [-e EXISTING] [-m]
-                                     -o OUTPUT
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -f FILES, --files FILES
-                        The pattern to match for finding ttfs, eg
-                        'folder_with_fonts/*.ttf'.
-  -d, --debug           Debug mode, just print results
-  -e EXISTING, --existing EXISTING
-                        Path to existing font-metadata.csv
-  -m, --missingmetadata
-                        Only process fonts for which metadata is not available
-                        yet
-  -o OUTPUT, --output OUTPUT
-                        CSV data output filename
-```
-
-### fontbakery check-bbox
-
-A FontForge python script for printing bounding boxes to stdout.
-
-```
-usage: fontbakery check-bbox [-h] font
-
-positional arguments:
-  font        Font in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### fontbakery check-category
-
-Comparison of category fields of local METADATA.pb files with data
-corresponding metadata on the Google Fonts Developer API.
-
-In order to use it you need to provide an API key.
-
-```
-usage: fontbakery-check-category.py [-h] [--verbose] key repo
-
-positional arguments:
-  key         Key from Google Fonts Developer API
-  repo        Directory tree that contains directories with METADATA.pb files.
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --verbose   Print additional information
-```
-
-### fontbakery family-html-snippet
-
-Generate a test html snippet for a family hosted on fonts.google.com This
-script works well for quickly producing test cases using jsbin.
-
-```
-$ fontbakery
-family-html-snippet "Exo" "Hello World" >>> ... <html> <head> <link
-href="https://fonts.googleapis.com/css?family=Exo"/rel="stylesheet"> <style>
-.g{font-family: 'Exo'; font-weight:400;} .h{font-family: 'Exo'; font-
-weight:400; font-style: italic;} .m{font-family: 'Exo'; font-weight:700;} .n
-{font-family: 'Exo'; font-weight:700; font-style: italic;} </style> </head>
-<body> <p class='g'>Hello World</p> <p class='h'>Hello World</p> <p
-class='m'>Hello World</p> <p class='n'>Hello World</p> </body> </html>
-```
-
-```
-usage: fontbakery family-html-snippet [-h]
-                                      [--subsets SUBSETS [SUBSETS ...]]
-                                      family sample_text
-positional arguments:
-  family                family name on fonts.google.com
-  sample_text           sample text used for each font
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --subsets SUBSETS [SUBSETS ...]
-                        family subset(s) seperated by a space
-```
-
-### fontbakery fix-ascii-fontmetadata
-
-Fixes TTF NAME table strings to be ascii only
-
-```
-usage: fontbakery fix-ascii-fontmetadata [-h] ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font    Font in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### fontbakery fix-cmap
-
-Manipulate a collection of fonts' cmap tables.
-
-```
-usage: fontbakery-fix-cmap.py [-h] [--format-4-subtables]
-                              [--drop-mac-subtable] [--keep-only-pid-0]
-                              fonts [fonts ...]
-
-positional arguments:
-  fonts
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --format-4-subtables, -f4
-                        Convert cmap subtables to format 4
-  --drop-mac-subtable, -dm
-                        Drop Mac cmap subtables
-  --keep-only-pid-0, -k0
-                        Keep only cmap subtables with pid=0 and drop the rest.
-```
-
-### fontbakery fix-dsig
-
-Fixes TTF to have a dummy DSIG table
-
-```
-usage: fontbakery fix-dsig [-h] [--autofix] ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font    One or more font files
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --autofix   Apply autofix
-```
-
-### fontbakery-fix-familymetadata.py
-
-Print out family metadata of the fonts
-
-```
-usage: fontbakery fix-familymetadata [-h] [--csv] font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-```
-
-### fontbakery fix-fsselection
-
-Print out fsSelection bitmask of the fonts
-
-```
-usage: fontbakery fix-fsselection [-h] [--csv] [--autofix] font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-  --autofix
-```
-
-### fontbakery fix-gasp
-
-Fixes TTF GASP table
-
-```
-usage: fontbakery fix-gasp [-h] [--autofix] [--set SET]
-                           ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font    Font in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --autofix   Apply autofix
-  --set SET   Change gasprange value of key 0xFFFF to a new value
-```
-
-### fontbakery fix-glyph-private-encoding
-
-Fixes TTF unencoded glyphs to have Private Use Area encodings
-
-```
-usage: fontbakery fix-glyph-private-encoding [-h] [--autofix]
-                                             ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font    Font in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --autofix   Apply autofix. Otherwise just check if there are unencoded
-              glyphs
-```
-
-### fontbakery fix-glyphs
-
-Report issues on .glyphs font files
-
-```
-usage: fontbakery fix-glyphs [-h] font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### fontbakery fix-nameids
-
-Print out nameID strings of the fonts
-
-```
-usage: fontbakery fix-nameids [-h] [--autofix] [--csv] [--id ID]
-                              [--platform PLATFORM]
-                              font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --autofix             Apply autofix
-  --csv                 Output data in comma-separate-values (CSV) file format
-  --id ID, -i ID
-  --platform PLATFORM, -p PLATFORM
-```
-
-### fontbakery fix-nonhinting
-
-Fixes TTF GASP table so that its program contains the minimal recommended instructions
-
-```
-usage: fontbakery fix-nonhinting [-h] fontfile_in fontfile_out
-
-positional arguments:
-  fontfile_in   Font in OpenType (TTF/OTF) format
-  fontfile_out  Filename for the output
-
-optional arguments:
-  -h, --help    show this help message and exit
-```
-
-### fontbakery fix-ttfautohint
-
-Fixes TTF Autohint table
-
-```
-usage: fontbakery fix-ttfautohint [-h] ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font    Font in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### fontbakery fix-vendorid
-
-Print vendorID of TTF files
-
-```
-usage: fontbakery fix-vendorid [-h] arg_filepaths [arg_filepaths ...]
-
-positional arguments:
-  arg_filepaths  font file path(s) to check. Wildcards like *.ttf are allowed.
-
-optional arguments:
-  -h, --help     show this help message and exit
-```
-
-### fontbakery fix-vertical-metrics
-
-```
-usage: fontbakery fix-vertical-metrics  [-h] [-a ASCENTS] [-ah ASCENTS_HHEA]
-                                        [-at ASCENTS_TYPO] [-aw ASCENTS_WIN]
-                                        [-d DESCENTS] [-dh DESCENTS_HHEA]
-                                        [-dt DESCENTS_TYPO]
-                                        [-dw DESCENTS_WIN] [-l LINEGAPS]
-                                        [-lh LINEGAPS_HHEA]
-                                        [-lt LINEGAPS_TYPO] [--autofix]
-                                        ttf_font [ttf_font ...]
-
-positional arguments:
-  ttf_font              Font file in OpenType (TTF/OTF) format
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -a ASCENTS, --ascents ASCENTS
-                        Set new ascents value.
-  -ah ASCENTS_HHEA, --ascents-hhea ASCENTS_HHEA
-                        Set new ascents value in 'Horizontal Header' table
-                        ('hhea'). This argument cancels --ascents.
-  -at ASCENTS_TYPO, --ascents-typo ASCENTS_TYPO
-                        Set new ascents value in 'Horizontal Header' table
-                        ('OS/2'). This argument cancels --ascents.
-  -aw ASCENTS_WIN, --ascents-win ASCENTS_WIN
-                        Set new ascents value in 'Horizontal Header' table
-                        ('OS/2.Win'). This argument cancels --ascents.
-  -d DESCENTS, --descents DESCENTS
-                        Set new descents value.
-  -dh DESCENTS_HHEA, --descents-hhea DESCENTS_HHEA
-                        Set new descents value in 'Horizontal Header' table
-                        ('hhea'). This argument cancels --descents.
-  -dt DESCENTS_TYPO, --descents-typo DESCENTS_TYPO
-                        Set new descents value in 'Horizontal Header' table
-                        ('OS/2'). This argument cancels --descents.
-  -dw DESCENTS_WIN, --descents-win DESCENTS_WIN
-                        Set new descents value in 'Horizontal Header' table
-                        ('OS/2.Win'). This argument cancels --descents.
-  -l LINEGAPS, --linegaps LINEGAPS
-                        Set new linegaps value.
-  -lh LINEGAPS_HHEA, --linegaps-hhea LINEGAPS_HHEA
-                        Set new linegaps value in 'Horizontal Header' table
-                        ('hhea')
-  -lt LINEGAPS_TYPO, --linegaps-typo LINEGAPS_TYPO
-                        Set new linegaps value in 'Horizontal Header' table
-                        ('OS/2')
-  --autofix             Autofix font metrics
-```
-
-### fontbakery list-panose
-
-Print out Panose of the fonts
-
-```
-usage: fontbakery list-panose [-h] [--csv] font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-```
-
-### fontbakery list-weightclass
-
-Print out usWeightClass of the fonts
-
-```
-usage: fontbakery list-weightclass [-h] [--csv] font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-```
-
-### fontbakery list-widthclass
-
-Print out usWidthClass of the fonts
-
-```
-usage: fontbakery list-widthclass [-h] [--csv] [--set SET] [--autofix]
-                                  font [font ...]
-
-positional arguments:
-  font
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --csv
-  --set SET
-  --autofix
-```
-
-### fontbakery metadata-vs-api
-
-This script compares the info on local METADATA.pb files
-with data fetched from the Google Fonts Developer API.
-
-In order to use it you need to provide an API key.
-
-```
-usage: fontbakery metadata-vs-api [-h] [--cache CACHE] [--verbose]
-                                  [--ignore-copy-existing-ttf] [--autofix]
-                                  [--api API]
-                                  key repo
-
-positional arguments:
-  key                   Key from Google Fonts Developer API.
-  repo                  Directory tree that contains directories with
-                        METADATA.pb files.
-
-optional arguments:
-  -h, --help            show this help message and exit.
-  --cache CACHE         Directory to store a copy of the files in the fonts
-                        developer api.
-  --verbose             Print additional information.
-  --ignore-copy-existing-ttf
-  --autofix             Apply automatic fixes to files.
-  --api API             Domain string to use to request.
-```
-
-### fontbakery update-families
-
-Compare TTF files when upgrading families.
-
-```
-usage: fontbakery update-families [-h] [-v]
-                                  arg_filepaths [arg_filepaths ...]
-
-positional arguments:
-  arg_filepaths      font file path(s) to check. Wildcards like *.ttf are
-                     allowed.
-
-optional arguments:
-  -h, --help         show this help message and exit
-  -v, --verbose      increase output verbosity
-```
-
 ## Install
 
 ### Mac OS X
@@ -663,11 +187,13 @@ brew install fontforge --with-extra-tools --HEAD ;
 easy_install pip;
 pip install --upgrade git+https://github.com/behdad/fontTools.git;
 
-# install python dependencies
-pip install -r requirements.txt
-
 # install fontbakery
-pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
+pip install fontbakery
+```
+
+For upgrading to a newer version (if you already installed a previous version of fontbakery) you should do:
+```
+pip install --upgrade fontbakery
 ```
 
 ### GNU+Linux
@@ -691,11 +217,13 @@ rm -rf ots;
 # install fonttools
 pip install --upgrade git+https://github.com/behdad/fontTools.git;
 
-# install python dependencies
-pip install -r requirements.txt
-
 # install fontbakery
-pip install --upgrade git+https://github.com/googlefonts/fontbakery.git;
+pip install fontbakery
+```
+
+For upgrading to a newer version (if you already installed a previous version of fontbakery) you should do:
+```
+pip install --upgrade fontbakery
 ```
 
 ## Microsoft Font Validator
@@ -753,15 +281,42 @@ This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@me
 Releases to PyPI are performed by updating the version metadata on `setup.py` and then running the following commands (with the proper version number and date):
 
 ```
+# cleanup
 rm build/ -rf
 rm dist/ -rf
+rm venv/ -rf
+
+# create a fresh python virtual env
+virtualenv venv
+. venv/bin/activate
+
+# Remove the '-git' suffix and bump up the version number on setup.py
+vim setup.py
+git add setup.py
+git commit -m "Updating version in preparation for a new release"
+
+# install fontbakery on it and run our code tests
+python setup.py install
+pip install pytest
+pytest Lib/fontbakery --verbose
+
+# crate the package
 python setup.py bdist_wheel
-twine upload dist/*
+
+# Register a git tag for this release and publish it
 git tag -a v0.3.2 -m "FontBakery version 0.3.2 (2017-Oct-11)"
 git push upstream --tags
+
+# and finally upload the new package to PyPI
+twine upload dist/*
+
+# Then we append a '-git' suffix on setup.py
+vim setup.py
+git add setup.py
+git commit -m "Adding '-git' to version for the next release cycle"
 ```
 
-We also keep setup.py with a '-git' prefix in the version number during development cycles (such as 'v0.3.2-git' meaning v0.3.2 plus further development changes).
+We keep setup.py with a '-git' suffix in the version number during development cycles (such as 'v0.3.2-git' meaning v0.3.2 plus further development changes).
 
 ### Self-tests using pytest
 
