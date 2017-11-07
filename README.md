@@ -290,7 +290,7 @@ git add setup.py
 git commit -m "Updating version in preparation for a new release"
 
 # install fontbakery on it and run our code tests
-python setup.py install
+pip install -e .
 pip install pytest
 pytest Lib/fontbakery --verbose
 
