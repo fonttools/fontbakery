@@ -2439,14 +2439,14 @@ def com_google_fonts_test_065(ttFont, ligatures, has_kerning_info):
     id='com.google.fonts/test/066'
 )
 def com_google_fonts_test_066(ttFont):
-  """Is there a "KERN" table declared in the font?
+  """Is there a "kern" table declared in the font?
 
      Fonts should have their kerning implemented in the GPOS table."""
 
-  if "KERN" in ttFont:
-    yield FAIL, "Font should not have a \"KERN\" table"
+  if "kern" in ttFont:
+    yield FAIL, "Font should not have a \"kern\" table"
   else:
-    yield PASS, "Font does not declare a \"KERN\" table."
+    yield PASS, "Font does not declare a \"kern\" table."
 
 
 @register_test
