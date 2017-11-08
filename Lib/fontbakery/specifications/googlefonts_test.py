@@ -1284,23 +1284,23 @@ def test_id_065():
 
 
 def test_id_066():
-  """ Is there a "KERN" table declared in the font ? """
+  """ Is there a "kern" table declared in the font ? """
   from fontbakery.specifications.googlefonts import com_google_fonts_test_066 as test
 
   # Our reference Mada Regular is known to be good
-  # (does not have a KERN table):
+  # (does not have a 'kern' table):
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
   # So it must PASS the test:
-  print ("Test PASS with a font without a KERN table...")
+  print ("Test PASS with a font without a 'kern' table...")
   status, message = list(test(ttFont))[-1]
   assert status == PASS
 
-  # add a fake KERN table:
-  ttFont["KERN"] = "foo"
+  # add a fake 'kern' table:
+  ttFont["kern"] = "foo"
 
   # and make sure the test FAILs:
-  print ("Test FAIL with a font containing a KERN table...")
+  print ("Test FAIL with a font containing a 'kern' table...")
   status, message = list(test(ttFont))[-1]
   assert status == FAIL
 
