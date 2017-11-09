@@ -4040,7 +4040,7 @@ def com_google_fonts_test_118(ttFont, gfonts_ttFont):
     this_glyph_area = (these_glyphs[glyph] / this_upm) * gfonts_upm
     gfont_glyph_area = (gfonts_glyphs[glyph] / gfonts_upm) * this_upm
 
-    if abs(this_glyph_area - gfont_glyph_area) > 8000:
+    if abs(this_glyph_area - gfont_glyph_area) > 7000:
       bad_glyphs.append(glyph)
 
   if bad_glyphs:
