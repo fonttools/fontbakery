@@ -4032,8 +4032,15 @@ def com_google_fonts_test_118(ttFont, gfonts_ttFont):
 
   shared_glyphs = set(these_glyphs) & set(gfonts_glyphs)
 
+  this_upm = ttFont['head'].unitsPerEm
+  gfonts_upm = gfonts_ttFont['head'].unitsPerEm
+
   for glyph in shared_glyphs:
-    if abs(int(these_glyphs[glyph]) - int(gfonts_glyphs[glyph])) > 8000:
+    # Normalize area difference against comparison's upm
+    this_glyph_area = (these_glyphs[glyph] / this_upm) * gfonts_upm
+    gfont_glyph_area = (gfonts_glyphs[glyph] / gfonts_upm) * this_upm
+
+    if abs(this_glyph_area - gfont_glyph_area) > 8000:
       bad_glyphs.append(glyph)
 
   if bad_glyphs:
