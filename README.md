@@ -11,6 +11,12 @@ If you are developing a font project publicly with Github (or a similar host) yo
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
+## Cached Vendor ID data
+
+This project hosts a copy of the Microsoft's Vendor ID list at Lib/fontbakery/Lib/data/fontbakery-microsoft-vendorlist.cache
+
+This is meant only as a caching mechanism. The latest data can always be fetched from Microsoft's website directly at: https://www.microsoft.com/typography/links/vendorlist.aspx
+
 ## Web Usage
 
 To use Font Bakery through a web UI is currently not supported.
