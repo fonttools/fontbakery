@@ -1,0 +1,2678 @@
+
+
+<HTML>
+<HEAD>
+	<TITLE>Microsoft Typography - Vendor links database </TITLE>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso8859-1">
+	<META NAME="MS.LOCALE" CONTENT="EN-US">
+	<LINK REL=STYLESHEET HREF="/typography/css.css" TYPE="text/css" />
+	<link type='text/css' rel='Stylesheet' href='/library/mnp/2/aspx/css.aspx?locale=en-us&amp;name=Menu&amp;static=Page' />
+<script type='text/javascript' language='Javascript' src='/typography/mnp_utility.mspx/menujs?mnpshell=%2ftypography%2fConfiguration.xml&amp;clicktrax=False'></script>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"><link rel='stylesheet' type='text/css' href='/library/toolbar/3.0/css.aspx?c=/typography/Configuration.xml'/><script language='JavaScript'>var doImage=doImage;var TType=TType;var defaultSearchLable;
+function mhHover(tbl,idx,cls){var t,d;if(document.getElementById)t=document.getElementById(tbl);else t=document.all(tbl);if(t==null)return;if(t.getElementsByTagName)d=t.getElementsByTagName("TD");else d=t.all.tags("TD");if(d==null)return;if(d.length<=idx)return;d[idx].className=cls;}
+function footerjs(doc){};
+var varSegmentation = 0;
+var varClickTracking = 1;
+var varCustomerTracking=1;
+document.write("<script type='text/javascript' src='" + (window.location.protocol) + "//c.microsoft.com/ms.js'"+"'><\/script>");
+
+
+var rsltextbox = 'msviLSBtbox'; var wtflag = false;
+function stripSymbols () { var objrslttextbox = getObjectById(rsltextbox); if (objrslttextbox) { var form = objrslttextbox.form; var s = objrslttextbox.value; filteredValues = "<>!@^*"; var i; var returnString = ""; for (i = 0; i < s.length; i++) { var c = s.charAt(i); if (filteredValues.indexOf(c) == -1) { returnString += c; } else { returnString += " "; } } objrslttextbox.value = returnString; } if(!wtflag) { trackLSB("Site"); } } 
+function addSubmitEvent() {
+ msviLSBtbox=document.getElementById("msviLSBtbox")
+ if(msviLSBtbox)
+ {
+    defaultSearchLable = msviLSBtbox.value;
+ }
+ var objrslttextbox = getObjectById(rsltextbox); 
+ if (objrslttextbox) 
+ { 
+    var form = objrslttextbox.form;
+     if (window.attachEvent) 
+     { 
+         form.attachEvent("onsubmit",stripSymbols); 
+     }
+     else 
+     { 
+        form.addEventListener("submit",stripSymbols,false);
+     }
+  } 
+} 
+function getObjectById(elid) 
+{ 
+    if (document.getElementById) 
+    { 
+        return document.getElementById(elid); 
+    } 
+    else if (document.all) 
+    { 
+        return document.all[elid]; 
+    } 
+    else if (document.layers) 
+    { 
+        return document.layers[elid];
+    } 
+} 
+if (window.attachEvent) { window.attachEvent("onload",addSubmitEvent); } else { window.addEventListener("load",addSubmitEvent,false); } 
+var FromWeb = false;
+function trackLSB(type)
+{
+
+  clearDefaultSearchLable();
+ 
+  if(type=="Web")
+    FromWeb = true;
+  var tmp = document.getElementById("msviLSBtbox");
+  var errorInfo = document.getElementById("errorInfo");
+  if(type=="Site" && tmp.value.length==0 && !FromWeb)
+  {
+       tmp.value=errorInfo.value;
+       tmp.style.color='#bc2b2b';
+       ajustWidth();
+  }
+  if (typeof dcsMultiTrack == "function")
+  { 
+      var qu = document.getElementById("msviLSBtbox").value;
+      var dcsuri = "results.aspx";
+      var dcssip, ti;
+      if (type == "Site")
+      {
+        dcssip = "search.microsoft.com";
+        ti = "SearchButton: OnSite"; 
+      }
+      else if (type == "Web")
+      {
+         dcssip = "bing.com";
+         ti = "SearchButton: Web";
+      }
+      dcsMultiTrack("DCS.dcsuri", dcsuri, "DCS.dcssip", dcssip, "WT.ti", ti, "WT.dl", "2", "WT.z_srch_t", qu, "DCS.dcsqry", "", "WT.ad", "", "WT.mc_id", ""); 
+      wtflag = true; DCS.dcsuri=DCS.dcssip=DCS.dcsqry=WT.ti=WT.z_srch_t="";
+  }
+}
+
+var isInputqu = false;
+var searchBoxWidthWithKievLogo = 0;
+var searchBoxWidthWithoutKievLogo = 0;
+function clearDefaultSearchLable()
+{var searchBox = document.getElementById("msviLSBtbox");
+if(!isInputqu){searchBox.value = "";}}
+var kievImageWidth = 47;
+var isAdTboxWidth = false;
+var isInitailed = false;
+function ajustWidth()
+{
+    var searchBoxInput = document.getElementById("msviLSBtbox");
+    var kievImage = document.getElementById("msviLSBlogo");
+    if(!isInitailed)
+    {
+         searchBoxWidthWithKievLogo = searchBoxInput.style.width;
+         searchBoxWidthWithoutKievLogo = searchBoxInput.clientWidth + (kievImageWidth - 1);
+         isInitailed = true;
+    }
+    var width = kievImage.clientWidth-1;
+    kievImage.style.width = '1px';
+    var tBoxAloneWidth = searchBoxInput.clientWidth + width;
+    searchBoxInput.style.width = tBoxAloneWidth;
+    isAdTboxWidth = true;
+    
+      
+    
+}
+
+function searchBoxFocused(defaultSearchLabel)
+{
+    var searchBoxInput = document.getElementById("msviLSBtbox");
+    var kievImage = document.getElementById("msviLSBlogo");
+    if(searchBoxInput.value == defaultSearchLabel || searchBoxInput.value==document.getElementById("errorInfo").value)
+    {
+        searchBoxInput.value = '';
+        searchBoxInput.style.fontStyle = '';
+        searchBoxInput.style.color='#000000';
+        kievImage.style.width = '1px';
+        if(searchBoxWidthWithKievLogo == 0 && !isAdTboxWidth &&!isInitailed)
+        {
+            searchBoxWidthWithKievLogo = searchBoxInput.style.width;
+            searchBoxWidthWithoutKievLogo = searchBoxInput.clientWidth + (kievImageWidth - 1);
+            isInitailed = true;
+        }
+        searchBoxInput.style.width = searchBoxWidthWithoutKievLogo;
+    }
+}
+
+function searchBoxBlur(defaultSearchLabel)
+{
+    var searchBoxInput = document.getElementById("msviLSBtbox");
+    var kievImage = document.getElementById("msviLSBlogo");
+    if(searchBoxInput.value.replace(/(^\s*)|(\s*$)/g, '')=='') 
+    {
+        searchBoxInput.value=defaultSearchLabel;searchBoxInput.style.fontStyle ='Italic';
+        searchBoxInput.style.color = "#a1a1a1";
+        kievImage.style.width = kievImageWidth;
+        
+        searchBoxInput.style.width = searchBoxWidthWithKievLogo;
+        isInputqu = false;
+     }
+     else
+     {
+        isInputqu = true;
+     }
+}
+
+function Test()
+{
+    var searchBox = document.getElementById(rsltextbox);
+    var go = document.getElementById("errorInfo");
+    if(searchBox.value==go.value)
+        return false;
+    return true; 
+}</script><meta name="WT.sp" content="_typography_" /><script language='JavaScript' src='/library/svy/broker.js'></script>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" BOTTOMMARGIN="20" TOPMARGIN="0" LEFTMARGIN="0">
+<a id="top" name="top" />
+	
+		<!--NOINDEX_START--><script language="Javascript">
+				if (self.name == "MNPMainFrame") top.location.href = self.location.href;
+			</script><div id="msviMasthead"><table cellpadding="0" cellspacing="0" width="100%" border="0"><tr><td width="100%"><table cellpadding="0" cellspacing="0" width="100%" height="22" border="0"><tr><td id="msviMarketing" bgcolor="#4B92D9" nowrap=""><a href="http://go.microsoft.com/fwlink/?LinkID=92799">Click Here to Install Silverlight</a></td><td width="100%" bgcolor="#1E77D3"><img src="/library/toolbar/3.0/gradient.aspx?a=4B92D9&amp;b=1E77D3&amp;w=250&amp;h=22&amp;d=ltr&amp;c=eFLbOmyDquZL7nbgTLBSftxozLo%3d" width="250" height="22" alt="*" title=""></td></tr></table></td><td id="msviGlobalToolbar" bgcolor="#1E77D3" height="22" nowrap="" dir="ltr" align="left"><table cellpadding="0" cellspacing="0" border="0"><tr><td id="msviRegionId" nowrap>United States</td><td id="msviRegionSelector" nowrap><a href="http://www.microsoft.com/worldwide">Change</a></td><td class="gtsep">|</td><td id="msviSiteMap" nowrap><a href="http://www.microsoft.com/en/us/sitemap.aspx">All Microsoft Sites</a></td><td class="msviPPSpace"></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" border="0"><tr valign="top"><td><table cellpadding="0" cellspacing="0" width="100%" height="42" border="0" style="height:expression(parentElement.parentElement.parentElement.parentElement.offsetHeight)"><tr valign="top"><td id="msviBrandBanner" bgcolor="0A6CCE"><a href="http://www.microsoft.com"><img src="/library/toolbar/3.0/images/banners/ms_masthead_ltr.gif" width="136" height="42" alt="Microsoft" title="" border="0"></a></td></tr></table></td><td id="msviGlobalSearch" width="100%" bgcolor="#FFFFFF"><div class="msviLSBsform"><form id="msviLSBForm" action="/library/toolbar/3.0/search.aspx" target="_top"><div id="msKiev"><input type="hidden" name="View" value="en-us"><input type="hidden" name="charset" value="iso-8859-1"><input id="msviLSBtbox" style="font-style:italic; color:#a1a1a1" onkeydown="if(event.keyCode == 13)searchBoxBlur('Search Microsoft.com')" onfocus="searchBoxFocused('Search Microsoft.com')" onblur="searchBoxBlur('Search Microsoft.com')" type="text" name="qu" value="Search Microsoft.com" autocomplete="off"><span id="msviLSBlogo" class="msviLSBlogo" title="Results by Bing"></span><input id="msviLSBssearch" title="Search Microsoft.com" type="image" name="site" src="/library/toolbar/3.0/images/LSB/Search_icon.gif" align="absmiddle" onclick="trackLSB('Site')"></div><input id="msviLSBWeb" title="Search the Web" name="sweb" type="submit" value="" onclick="trackLSB('Web')" align="absmiddle"></form></div></td></tr></table><div id="msviMastheadHR"></div></div>
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" dir="LTR">
+				<tr valign="top">
+		<td height="100%" style="overflow-x: hidden" width="181">
+  <div id="mnpMenuTop" class="mnpMenuTop" style="overflow-x: hidden; width: 181px" url="/typography/links/vendorlist.aspx" dir="LTR" parent="/typography/default.mspx"><div class="mnpInherit"><div class="mnpMenuRow" style="border-color: #999999; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/default.mspx">Typography Home</a></div><div class="mnpMenuLabel">About fonts</div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/AboutFontsOverview.mspx">Overview</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/WhatIsOpenType.mspx">OpenType</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden" menu="m683e38b81d9003406cf963263d564b6f"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/ClearTypeInfo.mspx">ClearType</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden" menu="m5b8ddbdcd15a5e991a3a2b37db57776d"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/TrueTypeFAQ.mspx">FAQs</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/fonts/default.aspx">Find Fonts</a></div><div class="mnpMenuBorder" style="width: 180px"></div><div class="mnpMenuLabel">Resources</div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/links/default.aspx">Links, news &amp; contacts</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/links/links.aspx?type=vendor&amp;part=1">Registered vendor list</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/links/links.aspx?type=foundries&amp;part=1">Font foundry list</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden" menu="m70edfd1662de73f9141541aab07a8d8e"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/FreeToolsOverview.mspx">Free font tools</a></div><div class="mnpMenuBorder" style="width: 180px"></div><div class="mnpMenuLabel">Developing fonts</div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/DevOverview.mspx">Overview</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden" menu="mbab9f307185bfe4d934ffafe73928b46"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/SpecificationsOverview.mspx">Specifications</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/DevArticles.mspx">Articles</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden" menu="m1de4bbe9aca746d6a1df242a7e836bd0"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/DevToolsOverview.mspx">Tools &amp; SDKs</a></div><div class="mnpMenuRow" style="border-color: #F1F1F1; background: #F1F1F1; width: 153px; overflow-x: hidden"><img width="4" height="7" border="0" alt="*" title="" class="mnpMenuArrow" src="/library/mnp/2/gif/arrowLTR.gif" style="left: 166px; visibility: hidden"><a href="/typography/links/news.aspx?NID=1122">Communities</a></div><div class="mnpMenuBorder" style="width: 180px; margin-bottom: 0px"></div></div></div>
+  <div class="mnpAds" style="width: 181px; height: 100%; padding-bottom: 20px; background: #F1F1F1; border-style: solid; border-color: #999999; border-width: 0px 1px 0px 0px">
+    <center><script type="text/javascript" src=""></script><div style="height: 20px; background: inherit"></div>
+      
+        <img border="0" src="/typography/graphics/vttad.gif" alt=""></img>
+      <br></center>
+  </div>
+</td>
+          <td width="100%" dir="LTR">
+        <table width="100%" cellpadding="0" cellspacing="0" height="30" bgcolor="#055F9D">
+  <tr>
+    <td width="255"><img border="0" src="/typography/graphics/MastheadTitle.gif" width="255" height="30" alt="Typography Home"></td>
+    <td width="100%" title="Typography Home" background="" bgcolor="#055F9D">&nbsp;</td>
+    <td width="165"><img border="0" src="/typography/graphics/MastheadRight.gif" width="165" height="30" alt="Typography Home"></td>
+  </tr>
+</table><!--NOINDEX_STOP-->
+
+<TABLE WIDTH=540 CELLSPACING=0 CELLPADDING=0 BORDER="0" style="margin-top:20;margin-bottom:30">
+
+<TR>
+<TD HEIGHT=1 WIDTH=60><IMG SRC="/typography/graphics/pixel.gif" WIDTH=60 HEIGHT=1 ALT=""></TD>
+<TD HEIGHT=1 WIDTH=480><IMG SRC="/typography/graphics/pixel.gif" WIDTH=480 HEIGHT=1 ALT=""></TD>
+</TR>
+
+<TR>
+<TD WIDTH=60 VALIGN=TOP></TD>
+<TD WIDTH=480 VALIGN=TOP>
+	<p id="Eyebrow" class="detail"><a href="/typography/links/default.aspx">Links, news &amp; contacts</a>&nbsp;&gt;&nbsp;Vendor links database</p>
+
+<P CLASS=heading>Microsoft's Type foundries and font related product vendors database</P>
+<P>If you're involved in the design and development of typefaces, or make font related software you will want to be included in our comprehensive database of Type foundries and font related product vendors. Just send an e-mail to us at <A HREF="/typography/about.htm">the e-mail address listed on this page</A> that includes all the details you'd like to see published.</P>
+<P>If you are making TrueType or OpenType fonts you should also consider registering a four-letter 'Vendor ID' with us and include the ID in your fonts.</P>
+<BR/>
+<B>Registering a Vendor ID</B>
+<P>The Vendor ID identifies the company responsible for the marketing and distribution of a typeface. It is reasonable to assume that there will be 6 vendors of ITC Zapf Dingbats for use on desktop platforms in the near future (if not already). It is also likely that the vendors will have other inherent benefits in their fonts (more kern pairs, unregularized data, hand hinted, etc.). This identifier will allow for the correct vendor's type to be used over another, possibly inferior, font file.</p>
+<P>Font producers are under no obligation to register a Vendor ID with Microsoft. However, if they register with us and include their Vendor ID within their fonts, they will be assured that users will always be able to contact them, even if they change their Web or physical address. As an added benefit vendors are listed on our links pages with a registered vendor icon <IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"> which links to a page of additional information about the company.</p>
+<P>To register e-mail the following information to <A HREF="/typography/about.htm">the e-mail address listed on this page</A>.</p>
+
+<UL>
+<LI>Your contact details
+<UL>
+<LI>The Vendor ID you'd like to register (choose up to four letters - certain combinations can't be accepted)
+<LI>The name and e-mail address of the person we should contact regarding Vendor ID issues
+<LI>Public e-mail address, an email address we can publish
+<LI>Your company address, phone number, fax number and e-mail address
+<LI>A description of your company, which may include links and paragraph breaks
+</UL>
+<LI>The font formats and platforms you support
+<UL>
+<LI>Windows TrueType fonts
+<LI>Mac TrueType fonts
+<LI>Windows Type 1 fonts 
+<LI>Mac Type 1 fonts 
+<LI>OpenType fonts 
+<LI>Multiple Master fonts 
+<LI>Other font (such as PCL, Type 1 for Unix etc.,)
+</UL>
+<LI>Type related software you produce
+<UL>
+<LI>Windows applications, tools or utilities
+<LI>Mac applications, tools or utilities
+<LI>Applications, tools or utilities for other platforms
+</UL>
+<LI>Font distribution methods
+<UL>
+<LI>Approximate number of fonts in your catalog
+<LI>Direct sales and licensing
+<LI>Online sales and licensing
+<LI>Shareware
+<LI>Freeware
+<LI>Free samples
+</UL>
+<LI>Specialist areas
+<UL>
+<LI>International fonts
+<LI>Symbol and dingbat fonts
+<LI>Machine readable fonts
+<LI>Custom type design
+</UL>
+</UL>
+
+<P>
+<BR>
+<B>Placing a Vendor ID within a font</B>
+<P>
+In Fontographer version 4.1 for Windows, you can set your Vendor ID from the 'E<U>l</U>ement', '<U>F</U>ont Info', '<U>O</U>S/2 Data' dialog box. In FontLab 4.5 for Windows, you can set your Vendor ID in the '<U>F</U>ile', '<U>F</U>ont Info', 'Version and Identification', 'Key identification settings', 'TrueType vendor code' combo box. 
+Alternatively, use our free <A HREF="/typography/PropertiesEditor.mspx">Font properties editor</A>.
+
+
+<P><BR /><B>Registered Vendors</B></P>
+
+<P>
+
+FontLab users: to update the built-in vendor ID list, save the list below as a plain text file named 'vendor.dat' and place it in the Data subfolder of the FontLab folder. </p>
+<P>
+<table id="VendorList" border="0" cellspacing="2" cellpadding="0" width="100%">
+	<tr>
+		<td WIDTH="20%">!ETF</td>
+		<td>!Exclamachine Type Foundry<A HREF="/typography/links/vendor.aspx?VID=!ETF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">$pro</td>
+		<td>CheapProFonts<A HREF="/typography/links/vendor.aspx?VID=$pro"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">0264</td>
+		<td>Patricia Lillie<A HREF="/typography/links/vendor.aspx?VID=0264"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">1ASC</td>
+		<td>Ascender Corporation<A HREF="/typography/links/vendor.aspx?VID=1ASC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">1BOU</td>
+		<td>Boutros International<A HREF="/typography/links/vendor.aspx?VID=1BOU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">1KTF</td>
+		<td>Kief Type Foundry<A HREF="/typography/links/vendor.aspx?VID=1KTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">2DLT</td>
+		<td>2D Typo<A HREF="/typography/links/vendor.aspx?VID=2DLT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">2REB</td>
+		<td>2Rebels<A HREF="/typography/links/vendor.aspx?VID=2REB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">39BC</td>
+		<td>Finley's Barcode Fonts<A HREF="/typography/links/vendor.aspx?VID=39BC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">3ip</td>
+		<td>Three Islands Press<A HREF="/typography/links/vendor.aspx?VID=3ip"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">4FEB</td>
+		<td>4th february<A HREF="/typography/links/vendor.aspx?VID=4FEB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">5PTS</td>
+		<td>Five Points Technology<A HREF="/typography/links/vendor.aspx?VID=5PTS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">918</td>
+		<td>RavenType<A HREF="/typography/links/vendor.aspx?VID=918"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">A&S</td>
+		<td>Art&Sign Studio<A HREF="/typography/links/vendor.aspx?VID=A%26S"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">A2</td>
+		<td>A2-Type<A HREF="/typography/links/vendor.aspx?VID=A2"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">aaff</td>
+		<td>AstroAcademia Font Foundry<A HREF="/typography/links/vendor.aspx?VID=aaff"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AAT</td>
+		<td>AhmetAltunType<A HREF="/typography/links/vendor.aspx?VID=AAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ABBO</td>
+		<td>Arabic Dictionary Lab<A HREF="/typography/links/vendor.aspx?VID=ABBO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ABC</td>
+		<td>Altek Instruments<A HREF="/typography/links/vendor.aspx?VID=ABC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ABCD</td>
+		<td>Dinamo Typefoundry<A HREF="/typography/links/vendor.aspx?VID=ABCD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ABOU</td>
+		<td>Aboutype, Inc.<A HREF="/typography/links/vendor.aspx?VID=ABOU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ABYM</td>
+		<td>ABYME<A HREF="/typography/links/vendor.aspx?VID=ABYM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ACUT</td>
+		<td>Acute Type<A HREF="/typography/links/vendor.aspx?VID=ACUT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ADBE</td>
+		<td>Adobe<A HREF="/typography/links/vendor.aspx?VID=ADBE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ADBO</td>
+		<td>Adobe<A HREF="/typography/links/vendor.aspx?VID=ADBO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AdeT</td>
+		<td>Adele Type<A HREF="/typography/links/vendor.aspx?VID=AdeT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ADG</td>
+		<td>Apply Design Group<A HREF="/typography/links/vendor.aspx?VID=ADG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AE</td>
+		<td>AE Type<A HREF="/typography/links/vendor.aspx?VID=AE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AEF</td>
+		<td>Altered Ego Fonts<A HREF="/typography/links/vendor.aspx?VID=AEF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AGFA</td>
+		<td>Monotype Imaging (replaced by MONO)<A HREF="/typography/links/vendor.aspx?VID=AGFA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AID</td>
+		<td>Artistic Imposter Design<A HREF="/typography/links/vendor.aspx?VID=AID"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AJPT</td>
+		<td>Alan Jay Prescott Typography<A HREF="/typography/links/vendor.aspx?VID=AJPT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AKOF</td>
+		<td>AKOFAType<A HREF="/typography/links/vendor.aspx?VID=AKOF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ALFA</td>
+		<td>Alphabets<A HREF="/typography/links/vendor.aspx?VID=ALFA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ALPH</td>
+		<td>Alphameric Broadcast Solutions Limited<A HREF="/typography/links/vendor.aspx?VID=ALPH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ALPN</td>
+		<td>Alpona Portal<A HREF="/typography/links/vendor.aspx?VID=ALPN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ALS</td>
+		<td>Art. Lebedev Studio<A HREF="/typography/links/vendor.aspx?VID=ALS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">alte</td>
+		<td>Altemus<A HREF="/typography/links/vendor.aspx?VID=alte"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ALTS</td>
+		<td>Altsys / Made with Fontographer<A HREF="/typography/links/vendor.aspx?VID=ALTS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AMUT</td>
+		<td>Kwesi Amuti<A HREF="/typography/links/vendor.aspx?VID=AMUT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ANDO</td>
+		<td>Osam Ando<A HREF="/typography/links/vendor.aspx?VID=ANDO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">anty</td>
+		<td>Anatoletype<A HREF="/typography/links/vendor.aspx?VID=anty"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AOP</td>
+		<td>an Art Of Pengwyn<A HREF="/typography/links/vendor.aspx?VID=AOP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">APLY</td>
+		<td>Apply Interactive<A HREF="/typography/links/vendor.aspx?VID=APLY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">APOS</td>
+		<td>Apostrophic Laboratories<A HREF="/typography/links/vendor.aspx?VID=APOS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">APPL</td>
+		<td>Apple<A HREF="/typography/links/vendor.aspx?VID=APPL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARBX</td>
+		<td>Arabetics<A HREF="/typography/links/vendor.aspx?VID=ARBX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARCH</td>
+		<td>Architext<A HREF="/typography/links/vendor.aspx?VID=ARCH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARIN</td>
+		<td>Aring Typeface AB<A HREF="/typography/links/vendor.aspx?VID=ARIN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARPH</td>
+		<td>Arphic Technology Co.<A HREF="/typography/links/vendor.aspx?VID=ARPH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARS</td>
+		<td>EN ARS Ltd.<A HREF="/typography/links/vendor.aspx?VID=ARS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ARTE</td>
+		<td>Artegra<A HREF="/typography/links/vendor.aspx?VID=ARTE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ArTy</td>
+		<td>Archive Type<A HREF="/typography/links/vendor.aspx?VID=ArTy"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ASL</td>
+		<td>Abneil Software Ltd fonts<A HREF="/typography/links/vendor.aspx?VID=ASL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ASSA</td>
+		<td>astype<A HREF="/typography/links/vendor.aspx?VID=ASSA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ASYM</td>
+		<td>Applied Symbols<A HREF="/typography/links/vendor.aspx?VID=ASYM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ATEC</td>
+		<td>Page Technology Marketing, Inc.<A HREF="/typography/links/vendor.aspx?VID=ATEC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ATF</td>
+		<td>American Type Founders Collection<A HREF="/typography/links/vendor.aspx?VID=ATF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ATF1</td>
+		<td>Australian Type Foundry<A HREF="/typography/links/vendor.aspx?VID=ATF1"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ATFS</td>
+		<td>Andrew Tyler's fonts<A HREF="/typography/links/vendor.aspx?VID=ATFS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AURE</td>
+		<td>Aure Font Design<A HREF="/typography/links/vendor.aspx?VID=AURE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AUTO</td>
+		<td>Autodidakt<A HREF="/typography/links/vendor.aspx?VID=AUTO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AVFF</td>
+		<td>Agustín Varela Font Factory<A HREF="/typography/links/vendor.aspx?VID=AVFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AVP</td>
+		<td>Aviation Partners<A HREF="/typography/links/vendor.aspx?VID=AVP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">AZLS</td>
+		<td>Azalea Software, Inc.<A HREF="/typography/links/vendor.aspx?VID=AZLS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">B&H</td>
+		<td>Bigelow & Holmes<A HREF="/typography/links/vendor.aspx?VID=B%26H"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BARS</td>
+		<td>CIA (BAR CODES) UK<A HREF="/typography/links/vendor.aspx?VID=BARS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BASE</td>
+		<td>Baseline Fonts<A HREF="/typography/links/vendor.aspx?VID=BASE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BAT</td>
+		<td>BUREAU DES AFFAIRES TYPOGRAPHIQUES<A HREF="/typography/links/vendor.aspx?VID=BAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BCP</td>
+		<td>Expert Labels Ltd.<A HREF="/typography/links/vendor.aspx?VID=BCP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BDX</td>
+		<td>Studio Christian Bordeaux<A HREF="/typography/links/vendor.aspx?VID=BDX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BERT</td>
+		<td>Berthold<A HREF="/typography/links/vendor.aspx?VID=BERT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BF</td>
+		<td>BrassFonts<A HREF="/typography/links/vendor.aspx?VID=BF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BITM</td>
+		<td>Bitmap Software<A HREF="/typography/links/vendor.aspx?VID=BITM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BITS</td>
+		<td>Bitstream<A HREF="/typography/links/vendor.aspx?VID=BITS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">bizf</td>
+		<td>Bizfonts.com<A HREF="/typography/links/vendor.aspx?VID=bizf"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BL</td>
+		<td>Binnenland<A HREF="/typography/links/vendor.aspx?VID=BL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BLAB</td>
+		<td>BaseLab<A HREF="/typography/links/vendor.aspx?VID=BLAB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BLAH</td>
+		<td>Mister Bla's Fontworx<A HREF="/typography/links/vendor.aspx?VID=BLAH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BLCK</td>
+		<td>Black Foundry<A HREF="/typography/links/vendor.aspx?VID=BLCK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BLI</td>
+		<td>Blissym Language Institute<A HREF="/typography/links/vendor.aspx?VID=BLI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BLV</td>
+		<td>Bladvulling<A HREF="/typography/links/vendor.aspx?VID=BLV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BOLD</td>
+		<td>Bold Monday<A HREF="/typography/links/vendor.aspx?VID=BOLD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BORW</td>
+		<td>em2 Solutions<A HREF="/typography/links/vendor.aspx?VID=BORW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BOYB</td>
+		<td>BoyBeaver Fonts<A HREF="/typography/links/vendor.aspx?VID=BOYB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BRBT</td>
+		<td>Bureau Brut<A HREF="/typography/links/vendor.aspx?VID=BRBT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BRDV</td>
+		<td>BoardVantage, Inc.<A HREF="/typography/links/vendor.aspx?VID=BRDV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BREM</td>
+		<td>Mark Bremmer<A HREF="/typography/links/vendor.aspx?VID=BREM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BROS</td>
+		<td>Michael Brosnan<A HREF="/typography/links/vendor.aspx?VID=BROS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BRTC</td>
+		<td>ITSCO - Bar Code Fonts<A HREF="/typography/links/vendor.aspx?VID=BRTC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BS</td>
+		<td>Barcodesoft<A HREF="/typography/links/vendor.aspx?VID=BS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BSYV</td>
+		<td>Ben Syverson<A HREF="/typography/links/vendor.aspx?VID=BSYV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BUBU</td>
+		<td>BUBULogix<A HREF="/typography/links/vendor.aspx?VID=BUBU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BWFW</td>
+		<td>B/W Fontworks<A HREF="/typography/links/vendor.aspx?VID=BWFW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">BwT</td>
+		<td>Branding with Type<A HREF="/typography/links/vendor.aspx?VID=BwT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">C&B</td>
+		<td>Coppers & Brasses<A HREF="/typography/links/vendor.aspx?VID=C%26B"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">C&C</td>
+		<td>Carter & Cone<A HREF="/typography/links/vendor.aspx?VID=C%26C"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">C&G</td>
+		<td>C&G Inc.<A HREF="/typography/links/vendor.aspx?VID=C%26G"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">C21</td>
+		<td>Club 21<A HREF="/typography/links/vendor.aspx?VID=C21"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CAK</td>
+		<td>pluginfonts.com<A HREF="/typography/links/vendor.aspx?VID=CAK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CAM</td>
+		<td>Camelot Typefaces<A HREF="/typography/links/vendor.aspx?VID=CAM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CANO</td>
+		<td>Canon<A HREF="/typography/links/vendor.aspx?VID=CANO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CASL</td>
+		<td>H.W. Caslon & Company Ltd.<A HREF="/typography/links/vendor.aspx?VID=CASL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CATG</td>
+		<td>CAT-Fonts Germany<A HREF="/typography/links/vendor.aspx?VID=CATG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CB</td>
+		<td>Christian Büning<A HREF="/typography/links/vendor.aspx?VID=CB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CBDO</td>
+		<td>Borges Lettering & Design<A HREF="/typography/links/vendor.aspx?VID=CBDO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CDAC</td>
+		<td>Centre for Development of Advanced Computing<A HREF="/typography/links/vendor.aspx?VID=CDAC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">cdd</td>
+		<td>Crazy Diamond Design<A HREF="/typography/links/vendor.aspx?VID=cdd"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CDFP</td>
+		<td>VT2000 Technical Services<A HREF="/typography/links/vendor.aspx?VID=CDFP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CELB</td>
+		<td>Celebrity Fontz<A HREF="/typography/links/vendor.aspx?VID=CELB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CF</td>
+		<td>Colophon Foundry<A HREF="/typography/links/vendor.aspx?VID=CF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CFA</td>
+		<td>Computer Fonts Australia<A HREF="/typography/links/vendor.aspx?VID=CFA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CFF</td>
+		<td>Characters Font Foundry<A HREF="/typography/links/vendor.aspx?VID=CFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CJCJ</td>
+		<td>Creative Juncture<A HREF="/typography/links/vendor.aspx?VID=CJCJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CKTP</td>
+		<td>CakeType<A HREF="/typography/links/vendor.aspx?VID=CKTP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CLM</td>
+		<td>Culmus Project<A HREF="/typography/links/vendor.aspx?VID=CLM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CMJK</td>
+		<td>Slanted Hall<A HREF="/typography/links/vendor.aspx?VID=CMJK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">COMM</td>
+		<td>Commercial Type<A HREF="/typography/links/vendor.aspx?VID=COMM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CONR</td>
+		<td>Connare.com<A HREF="/typography/links/vendor.aspx?VID=CONR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">COOL</td>
+		<td>Cool Fonts<A HREF="/typography/links/vendor.aspx?VID=COOL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CORD</td>
+		<td>corduroy<A HREF="/typography/links/vendor.aspx?VID=CORD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CR8</td>
+		<td>CR8 Software Solutions<A HREF="/typography/links/vendor.aspx?VID=CR8"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CRRT</td>
+		<td>Carrot Type<A HREF="/typography/links/vendor.aspx?VID=CRRT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CT</td>
+		<td>CastleType<A HREF="/typography/links/vendor.aspx?VID=CT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CTDL</td>
+		<td>China Type Designs Ltd.<A HREF="/typography/links/vendor.aspx?VID=CTDL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CTL</td>
+		<td>Chaitanya Type Library<A HREF="/typography/links/vendor.aspx?VID=CTL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">cwwf</td>
+		<td>Computers World Wide/AC Capital Funding<A HREF="/typography/links/vendor.aspx?VID=cwwf"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CYPE</td>
+		<td>Club Type<A HREF="/typography/links/vendor.aspx?VID=CYPE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">CYRE</td>
+		<td>Cyreal<A HREF="/typography/links/vendor.aspx?VID=CYRE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">D&ST</td>
+		<td>Dots&Stripes Type<A HREF="/typography/links/vendor.aspx?VID=D%26ST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DADA</td>
+		<td>Dada Studio<A HREF="/typography/links/vendor.aspx?VID=DADA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DAMA</td>
+		<td>Dalton Maag Limited<A HREF="/typography/links/vendor.aspx?VID=DAMA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DARK</td>
+		<td>Out Of The Dark<A HREF="/typography/links/vendor.aspx?VID=DARK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DB</td>
+		<td>Daniel Bruce<A HREF="/typography/links/vendor.aspx?VID=DB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DBFF</td>
+		<td>DesignBase<A HREF="/typography/links/vendor.aspx?VID=DBFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DD</td>
+		<td>Devon DeLapp<A HREF="/typography/links/vendor.aspx?VID=DD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Deco</td>
+		<td>DecoType (replaced by DT)<A HREF="/typography/links/vendor.aspx?VID=Deco"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DELV</td>
+		<td>Delve Fonts<A HREF="/typography/links/vendor.aspx?VID=DELV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">dezc</td>
+		<td>Dezcom<A HREF="/typography/links/vendor.aspx?VID=dezc"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DFS</td>
+		<td>Datascan Font Service Ltd<A HREF="/typography/links/vendor.aspx?VID=DFS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DG</td>
+		<td>Daniel Grumer<A HREF="/typography/links/vendor.aspx?VID=DG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DGL</td>
+		<td>Digital Graphic Labs foundry<A HREF="/typography/links/vendor.aspx?VID=DGL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DOM</td>
+		<td>Dukom Design<A HREF="/typography/links/vendor.aspx?VID=DOM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DS</td>
+		<td>Dainippon Screen Mfg. Co., Inc.<A HREF="/typography/links/vendor.aspx?VID=DS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSBV</td>
+		<td>Datascan bv<A HREF="/typography/links/vendor.aspx?VID=DSBV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSCI</td>
+		<td>Design Science Inc.<A HREF="/typography/links/vendor.aspx?VID=DSCI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSGN</td>
+		<td>DizajnDesign<A HREF="/typography/links/vendor.aspx?VID=DSGN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSKY</td>
+		<td>Jacek Dziubinski<A HREF="/typography/links/vendor.aspx?VID=DSKY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSSR</td>
+		<td>Dresser Johnson<A HREF="/typography/links/vendor.aspx?VID=DSSR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSST</td>
+		<td>Dubina Nikolay<A HREF="/typography/links/vendor.aspx?VID=DSST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DST</td>
+		<td>DSType<A HREF="/typography/links/vendor.aspx?VID=DST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DSTE</td>
+		<td>Dieste<A HREF="/typography/links/vendor.aspx?VID=DSTE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DT</td>
+		<td>DecoType<A HREF="/typography/links/vendor.aspx?VID=DT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DTC</td>
+		<td>Digital Typeface Corp.<A HREF="/typography/links/vendor.aspx?VID=DTC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DTF</td>
+		<td>Dunwich Type Founders<A HREF="/typography/links/vendor.aspx?VID=DTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DTL</td>
+		<td>Dutch Type Library<A HREF="/typography/links/vendor.aspx?VID=DTL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DTPS</td>
+		<td>DTP-Software<A HREF="/typography/links/vendor.aspx?VID=DTPS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">dtpT</td>
+		<td>dtpTypes Limited<A HREF="/typography/links/vendor.aspx?VID=dtpT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DUXB</td>
+		<td>Duxbury Systems, Inc.<A HREF="/typography/links/vendor.aspx?VID=DUXB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">DYNA</td>
+		<td>DynaComware<A HREF="/typography/links/vendor.aspx?VID=DYNA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ECAL</td>
+		<td>ECAL Typefaces<A HREF="/typography/links/vendor.aspx?VID=ECAL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EDBI</td>
+		<td>edilbiStudio<A HREF="/typography/links/vendor.aspx?VID=EDBI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EDGE</td>
+		<td>Rivers Edge Corp.<A HREF="/typography/links/vendor.aspx?VID=EDGE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EF</td>
+		<td>Elsner+Flake<A HREF="/typography/links/vendor.aspx?VID=EF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EFF</td>
+		<td>Electronic Font Foundry<A HREF="/typography/links/vendor.aspx?VID=EFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EFI</td>
+		<td>Elfring Fonts Inc.<A HREF="/typography/links/vendor.aspx?VID=EFI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EFNT</td>
+		<td>E Fonts L.L.C.<A HREF="/typography/links/vendor.aspx?VID=EFNT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EFWS</td>
+		<td>eFilm World<A HREF="/typography/links/vendor.aspx?VID=EFWS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EKIO</td>
+		<td>Ekioh<A HREF="/typography/links/vendor.aspx?VID=EKIO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ELSE</td>
+		<td>Elseware<A HREF="/typography/links/vendor.aspx?VID=ELSE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EMGR</td>
+		<td>Emigre<A HREF="/typography/links/vendor.aspx?VID=EMGR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EPSN</td>
+		<td>Epson<A HREF="/typography/links/vendor.aspx?VID=EPSN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ESIG</td>
+		<td>E-Signature<A HREF="/typography/links/vendor.aspx?VID=ESIG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ETIO</td>
+		<td>Ethiopian Font Foundry<A HREF="/typography/links/vendor.aspx?VID=ETIO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">EVER</td>
+		<td>Evertype<A HREF="/typography/links/vendor.aspx?VID=EVER"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FA</td>
+		<td>FontArte Type Foundry<A HREF="/typography/links/vendor.aspx?VID=FA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FAFO</td>
+		<td>FamiraFonts<A HREF="/typography/links/vendor.aspx?VID=FAFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FAPA</td>
+		<td>FamiljenPangea<A HREF="/typography/links/vendor.aspx?VID=FAPA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FAT</td>
+		<td>Fatype<A HREF="/typography/links/vendor.aspx?VID=FAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FBI</td>
+		<td>The Font Bureau, Inc.<A HREF="/typography/links/vendor.aspx?VID=FBI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FCAB</td>
+		<td>The Font Cabinet<A HREF="/typography/links/vendor.aspx?VID=FCAB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FCAN</td>
+		<td>fontage canada<A HREF="/typography/links/vendor.aspx?VID=FCAN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FCTP</td>
+		<td>Facetype<A HREF="/typography/links/vendor.aspx?VID=FCTP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FDI</td>
+		<td>FDI fonts.info<A HREF="/typography/links/vendor.aspx?VID=FDI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FEED</td>
+		<td>Studio Feed Inc.<A HREF="/typography/links/vendor.aspx?VID=FEED"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FeoN</td>
+		<td>Fe&ograve;rag N&igrave;cBhr&igrave;de<A HREF="/typography/links/vendor.aspx?VID=FeoN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FGOD</td>
+		<td>FontGod<A HREF="/typography/links/vendor.aspx?VID=FGOD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FILI</td>
+		<td>Louise Fili Ltd<A HREF="/typography/links/vendor.aspx?VID=FILI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FJTY</td>
+		<td>Frank Jonen - Illustration & Typography<A HREF="/typography/links/vendor.aspx?VID=FJTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FMFO</td>
+		<td>Fontmill Foundry<A HREF="/typography/links/vendor.aspx?VID=FMFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FMST</td>
+		<td>Formist<A HREF="/typography/links/vendor.aspx?VID=FMST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FNTF</td>
+		<td>Fontfoundry<A HREF="/typography/links/vendor.aspx?VID=FNTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FoFa</td>
+		<td>FontFabrik<A HREF="/typography/links/vendor.aspx?VID=FoFa"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FONT</td>
+		<td>Font Source<A HREF="/typography/links/vendor.aspx?VID=FONT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FORM</td>
+		<td>Formation Type Foundry<A HREF="/typography/links/vendor.aspx?VID=FORM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FOST</td>
+		<td>Foster Type<A HREF="/typography/links/vendor.aspx?VID=FOST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FOUN</td>
+		<td>The Foundry<A HREF="/typography/links/vendor.aspx?VID=FOUN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FP</td>
+		<td>The Fontpad<A HREF="/typography/links/vendor.aspx?VID=FP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FRJN</td>
+		<td>Frere-Jones Type<A HREF="/typography/links/vendor.aspx?VID=FRJN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FRML</td>
+		<td>formlos<A HREF="/typography/links/vendor.aspx?VID=FRML"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FRTH</td>
+		<td>Forthcome<A HREF="/typography/links/vendor.aspx?VID=FRTH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FS</td>
+		<td>Formula Solutions<A HREF="/typography/links/vendor.aspx?VID=FS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FSE</td>
+		<td>Font Source Europe<A HREF="/typography/links/vendor.aspx?VID=FSE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FSI</td>
+		<td>FontShop International<A HREF="/typography/links/vendor.aspx?VID=FSI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FSL</td>
+		<td>FontSurfer Ltd<A HREF="/typography/links/vendor.aspx?VID=FSL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">fsmi</td>
+		<td>Fontsmith<A HREF="/typography/links/vendor.aspx?VID=fsmi"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FSTR</td>
+		<td>Fontstore Pte Ltd<A HREF="/typography/links/vendor.aspx?VID=FSTR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTF</td>
+		<td>Fontef<A HREF="/typography/links/vendor.aspx?VID=FTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTFT</td>
+		<td>FontFont<A HREF="/typography/links/vendor.aspx?VID=FTFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTGD</td>
+		<td>Font Garden<A HREF="/typography/links/vendor.aspx?VID=FTGD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTH</td>
+		<td>For the Hearts<A HREF="/typography/links/vendor.aspx?VID=FTH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTN</td>
+		<td>Fountain<A HREF="/typography/links/vendor.aspx?VID=FTN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FTPT</td>
+		<td>Fontpartners<A HREF="/typography/links/vendor.aspx?VID=FTPT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FWKS</td>
+		<td>Fontworks<A HREF="/typography/links/vendor.aspx?VID=FWKS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FWRE</td>
+		<td>Fontware Limited<A HREF="/typography/links/vendor.aspx?VID=FWRE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">FY</td>
+		<td>Fontyou<A HREF="/typography/links/vendor.aspx?VID=FY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GAF</td>
+		<td>Glifo Art Fonts Inc.<A HREF="/typography/links/vendor.aspx?VID=GAF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GALA</td>
+		<td>Galápagos Design Group, Inc.<A HREF="/typography/links/vendor.aspx?VID=GALA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GALO</td>
+		<td>Gerald Gallo<A HREF="/typography/links/vendor.aspx?VID=GALO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GARI</td>
+		<td>Gary Ritchie<A HREF="/typography/links/vendor.aspx?VID=GARI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GATF</td>
+		<td>Greater Albion Typefounders<A HREF="/typography/links/vendor.aspx?VID=GATF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GD</td>
+		<td>GD Fonts<A HREF="/typography/links/vendor.aspx?VID=GD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GF</td>
+		<td>GarageFonts<A HREF="/typography/links/vendor.aspx?VID=GF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GIA</td>
+		<td>Georgian Internet Avenue<A HREF="/typography/links/vendor.aspx?VID=GIA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GLCF</td>
+		<td>GLC foundry<A HREF="/typography/links/vendor.aspx?VID=GLCF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GLYF</td>
+		<td>Glyph Systems<A HREF="/typography/links/vendor.aspx?VID=GLYF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GNU</td>
+		<td>Free Software Foundation, Inc.<A HREF="/typography/links/vendor.aspx?VID=GNU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GOAT</td>
+		<td>Dingbat Dungeon<A HREF="/typography/links/vendor.aspx?VID=GOAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GOGO</td>
+		<td>Fonts-A-Go-Go<A HREF="/typography/links/vendor.aspx?VID=GOGO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GOHE</td>
+		<td>GoHebrew, division of GoME2.com Inc.<A HREF="/typography/links/vendor.aspx?VID=GOHE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GOOG</td>
+		<td>Google<A HREF="/typography/links/vendor.aspx?VID=GOOG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GPI</td>
+		<td>Gamma Productions, Inc.<A HREF="/typography/links/vendor.aspx?VID=GPI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GRAF</td>
+		<td>Grafikarna d.o.o.<A HREF="/typography/links/vendor.aspx?VID=GRAF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GRCR</td>
+		<td>Graphicore<A HREF="/typography/links/vendor.aspx?VID=GRCR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GREY</td>
+		<td>Greyletter<A HREF="/typography/links/vendor.aspx?VID=GREY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GRIL</td>
+		<td>Grilled cheese<A HREF="/typography/links/vendor.aspx?VID=GRIL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GRIM</td>
+		<td>Legacy publishing<A HREF="/typography/links/vendor.aspx?VID=GRIM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">grro</td>
+		<td>grafikk RØren<A HREF="/typography/links/vendor.aspx?VID=grro"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GT</td>
+		<td>Graphity!<A HREF="/typography/links/vendor.aspx?VID=GT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">GTYP</td>
+		<td>G-Type<A HREF="/typography/links/vendor.aspx?VID=GTYP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">H</td>
+		<td>Hurme Design<A HREF="/typography/links/vendor.aspx?VID=H"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">H&FJ</td>
+		<td>Hoefler & Frere-Jones<A HREF="/typography/links/vendor.aspx?VID=H%26FJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HA</td>
+		<td>HoboArt<A HREF="/typography/links/vendor.aspx?VID=HA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HAD</td>
+		<td>Hoffmann Angelic Design<A HREF="/typography/links/vendor.aspx?VID=HAD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HAIL</td>
+		<td>Hail Design<A HREF="/typography/links/vendor.aspx?VID=HAIL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HanS</td>
+		<td>HanStyle<A HREF="/typography/links/vendor.aspx?VID=HanS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HAUS</td>
+		<td>TypeHaus<A HREF="/typography/links/vendor.aspx?VID=HAUS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HEB</td>
+		<td>Sivan Toledo<A HREF="/typography/links/vendor.aspx?VID=HEB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HFJ</td>
+		<td>Hoefler & Frere-Jones (replaced by H&FJ)<A HREF="/typography/links/vendor.aspx?VID=HFJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HIH</td>
+		<td>HiH Retrofonts<A HREF="/typography/links/vendor.aspx?VID=HIH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HILL</td>
+		<td>Hill Systems<A HREF="/typography/links/vendor.aspx?VID=HILL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HJZ</td>
+		<td>Hans J. Zinken<A HREF="/typography/links/vendor.aspx?VID=HJZ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HL</td>
+		<td>High-Logic<A HREF="/typography/links/vendor.aspx?VID=HL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HM</td>
+		<td>Haiku Monkey<A HREF="/typography/links/vendor.aspx?VID=HM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HoP</td>
+		<td>House of Pretty<A HREF="/typography/links/vendor.aspx?VID=HoP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HOUS</td>
+		<td>House Industries<A HREF="/typography/links/vendor.aspx?VID=HOUS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HP</td>
+		<td>Hewlett-Packard<A HREF="/typography/links/vendor.aspx?VID=HP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HS</td>
+		<td>HermesSOFT Company<A HREF="/typography/links/vendor.aspx?VID=HS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HT</td>
+		<td>Huerta Tipográfica<A HREF="/typography/links/vendor.aspx?VID=HT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HTF</td>
+		<td>The Hoefler Type Foundry, Inc.<A HREF="/typography/links/vendor.aspx?VID=HTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HVD</td>
+		<td>HVD Fonts GmbH<A HREF="/typography/links/vendor.aspx?VID=HVD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HXTP</td>
+		<td>Hexatype<A HREF="/typography/links/vendor.aspx?VID=HXTP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">HY</td>
+		<td>HanYang Information & Communication<A HREF="/typography/links/vendor.aspx?VID=HY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IBM</td>
+		<td>IBM<A HREF="/typography/links/vendor.aspx?VID=IBM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IDAU</td>
+		<td>IDAutomation.com, Inc.<A HREF="/typography/links/vendor.aspx?VID=IDAU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IDEA</td>
+		<td>Glenn Campbell t/a Idea Studio<A HREF="/typography/links/vendor.aspx?VID=IDEA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IDEE</td>
+		<td>IDEE TYPOGRAFICA<A HREF="/typography/links/vendor.aspx?VID=IDEE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IDF</td>
+		<td>International Digital Fonts<A HREF="/typography/links/vendor.aspx?VID=IDF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IFF</td>
+		<td>Indian Font Factory<A HREF="/typography/links/vendor.aspx?VID=IFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IKOF</td>
+		<td>IKOffice GmbH<A HREF="/typography/links/vendor.aspx?VID=IKOF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ILP</td>
+		<td>Indigenous Languages Project<A HREF="/typography/links/vendor.aspx?VID=ILP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">IMPR</td>
+		<td>Impress<A HREF="/typography/links/vendor.aspx?VID=IMPR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INGT</td>
+		<td>Ingrimayne Type<A HREF="/typography/links/vendor.aspx?VID=INGT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INRA</td>
+		<td>INRAY Inc.<A HREF="/typography/links/vendor.aspx?VID=INRA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INTR</td>
+		<td>Interstitial Entertainment<A HREF="/typography/links/vendor.aspx?VID=INTR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INVC</td>
+		<td>Invoice Central<A HREF="/typography/links/vendor.aspx?VID=INVC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INVD</td>
+		<td>TYPE INVADERS<A HREF="/typography/links/vendor.aspx?VID=INVD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">INVT</td>
+		<td>Invisible Type<A HREF="/typography/links/vendor.aspx?VID=INVT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ISE</td>
+		<td>ISE-Aditi Info. Pvt . Ltd.<A HREF="/typography/links/vendor.aspx?VID=ISE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ITC</td>
+		<td>ITC<A HREF="/typography/links/vendor.aspx?VID=ITC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ITF</td>
+		<td>Red Rooster Collection (ITF, Inc.)<A HREF="/typography/links/vendor.aspx?VID=ITF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ITFO</td>
+		<td>Indian Type Foundry<A HREF="/typography/links/vendor.aspx?VID=ITFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ITSM</td>
+		<td>Simon Stratford<A HREF="/typography/links/vendor.aspx?VID=ITSM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JABM</td>
+		<td>JAB'M Foundry<A HREF="/typography/links/vendor.aspx?VID=JABM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JAF</td>
+		<td>Just Another Foundry<A HREF="/typography/links/vendor.aspx?VID=JAF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JAKE</td>
+		<td>Jake Tilson Studio<A HREF="/typography/links/vendor.aspx?VID=JAKE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JBLT</td>
+		<td>JEAN-BAPTISTE LEV&#201;E TYPOGRAPHY<A HREF="/typography/links/vendor.aspx?VID=JBLT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JDB</td>
+		<td>Jeff Bensch<A HREF="/typography/links/vendor.aspx?VID=JDB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">jeff</td>
+		<td>jeff-levine<A HREF="/typography/links/vendor.aspx?VID=jeff"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JF</td>
+		<td>Jan Fromm<A HREF="/typography/links/vendor.aspx?VID=JF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JHA</td>
+		<td>Jan Henrik Arnold<A HREF="/typography/links/vendor.aspx?VID=JHA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JHF</td>
+		<td>JH Fonts<A HREF="/typography/links/vendor.aspx?VID=JHF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JP</td>
+		<td>Jamra Patel<A HREF="/typography/links/vendor.aspx?VID=JP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JPTT</td>
+		<td>Jeremy Tankard Typography Ltd<A HREF="/typography/links/vendor.aspx?VID=JPTT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JWTM</td>
+		<td>Type Matters<A HREF="/typography/links/vendor.aspx?VID=JWTM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">JY</td>
+		<td>JIYUKOBO Ltd.<A HREF="/typography/links/vendor.aspx?VID=JY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KATF</td>
+		<td>Kingsley/ATF<A HREF="/typography/links/vendor.aspx?VID=KATF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KBNT</td>
+		<td>Kombinat-Typefounders<A HREF="/typography/links/vendor.aspx?VID=KBNT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KDW</td>
+		<td>Kinuta Font Factory<A HREF="/typography/links/vendor.aspx?VID=KDW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KF</td>
+		<td>Karakta Fonthome<A HREF="/typography/links/vendor.aspx?VID=KF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KIRK</td>
+		<td>Typekirk<A HREF="/typography/links/vendor.aspx?VID=KIRK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KLIM</td>
+		<td>Klim Typographic Design<A HREF="/typography/links/vendor.aspx?VID=KLIM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KLTF</td>
+		<td>Karsten Luecke<A HREF="/typography/links/vendor.aspx?VID=KLTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KNST</td>
+		<td>Konst.ru<A HREF="/typography/links/vendor.aspx?VID=KNST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KNTR</td>
+		<td>Kontour<A HREF="/typography/links/vendor.aspx?VID=KNTR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KOP</td>
+		<td>Leo Koppelkamm<A HREF="/typography/links/vendor.aspx?VID=KOP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KORK</td>
+		<td>Khork OÜ<A HREF="/typography/links/vendor.aspx?VID=KORK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KOVL</td>
+		<td>Koval Type Foundry<A HREF="/typography/links/vendor.aspx?VID=KOVL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KrKo</td>
+		<td>Kreative Software<A HREF="/typography/links/vendor.aspx?VID=KrKo"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KRND</td>
+		<td>Karandash Type &amp; Graphics Foundry<A HREF="/typography/links/vendor.aspx?VID=KRND"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KTF</td>
+		<td>Kustomtype<A HREF="/typography/links/vendor.aspx?VID=KTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">KUBA</td>
+		<td>Kuba Tatarkiewicz<A HREF="/typography/links/vendor.aspx?VID=KUBA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LAIT</td>
+		<td>la laiterie<A HREF="/typography/links/vendor.aspx?VID=LAIT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LAND</td>
+		<td>Typeland<A HREF="/typography/links/vendor.aspx?VID=LAND"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LANS</td>
+		<td>Lanston Type Company<A HREF="/typography/links/vendor.aspx?VID=LANS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LARA</td>
+		<td>Larabiefonts<A HREF="/typography/links/vendor.aspx?VID=LARA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LAUD</td>
+		<td>Carolina Laudon<A HREF="/typography/links/vendor.aspx?VID=LAUD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LAYT</td>
+		<td>LAYOUT SARL<A HREF="/typography/links/vendor.aspx?VID=LAYT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LEAF</td>
+		<td>Interleaf, Inc.<A HREF="/typography/links/vendor.aspx?VID=LEAF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LETR</td>
+		<td>Letraset<A HREF="/typography/links/vendor.aspx?VID=LETR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">lewd</td>
+		<td>Lettering World LLC<A HREF="/typography/links/vendor.aspx?VID=lewd"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LFS</td>
+		<td>Letters from Sweden<A HREF="/typography/links/vendor.aspx?VID=LFS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LGX</td>
+		<td>Logix Research Institute, Inc.<A HREF="/typography/links/vendor.aspx?VID=LGX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LHF</td>
+		<td>Letterhead Fonts<A HREF="/typography/links/vendor.aspx?VID=LHF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LIND</td>
+		<td>Lindenberg Software LLC<A HREF="/typography/links/vendor.aspx?VID=LIND"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LING</td>
+		<td>Linguist's Software<A HREF="/typography/links/vendor.aspx?VID=LING"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LINO</td>
+		<td>Linotype GmbH<A HREF="/typography/links/vendor.aspx?VID=LINO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LIVE</td>
+		<td>Livedesign<A HREF="/typography/links/vendor.aspx?VID=LIVE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LJ</td>
+		<td>Letterjuice<A HREF="/typography/links/vendor.aspx?VID=LJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LNGU</td>
+		<td>LangusteFonts<A HREF="/typography/links/vendor.aspx?VID=LNGU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LNTO</td>
+		<td>Lineto<A HREF="/typography/links/vendor.aspx?VID=LNTO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LORO</td>
+		<td>LoRo Productions<A HREF="/typography/links/vendor.aspx?VID=LORO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LP</td>
+		<td>LetterPerfect Fonts<A HREF="/typography/links/vendor.aspx?VID=LP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LT</td>
+		<td>Le Typophage<A HREF="/typography/links/vendor.aspx?VID=LT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LTF</td>
+		<td>Liberty Type Foundry<A HREF="/typography/links/vendor.aspx?VID=LTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LTFD</td>
+		<td>Linnea Type<A HREF="/typography/links/vendor.aspx?VID=LTFD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Ltrm</td>
+		<td>Lettermin type and design<A HREF="/typography/links/vendor.aspx?VID=Ltrm"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LTRX</td>
+		<td>Lighttracks<A HREF="/typography/links/vendor.aspx?VID=LTRX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LTTR</td>
+		<td>LettError<A HREF="/typography/links/vendor.aspx?VID=LTTR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LUD</td>
+		<td>Ludlow<A HREF="/typography/links/vendor.aspx?VID=LUD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LuFo</td>
+		<td>LucasFonts<A HREF="/typography/links/vendor.aspx?VID=LuFo"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LUSH</td>
+		<td>Lush Type<A HREF="/typography/links/vendor.aspx?VID=LUSH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">LUV</td>
+		<td>iLUVfonts<A HREF="/typography/links/vendor.aspx?VID=LUV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MACR</td>
+		<td>Macromedia / Made with Fontographer<A HREF="/typography/links/vendor.aspx?VID=MACR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MADT</td>
+		<td>MADType<A HREF="/typography/links/vendor.aspx?VID=MADT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MagD</td>
+		<td>Magus Digital<A HREF="/typography/links/vendor.aspx?VID=MagD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MANS</td>
+		<td>Mans Greback AB<A HREF="/typography/links/vendor.aspx?VID=MANS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MAPS</td>
+		<td>Tom Mouat's Map Symbol Fonts<A HREF="/typography/links/vendor.aspx?VID=MAPS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MATE</td>
+		<td>TypeMates<A HREF="/typography/links/vendor.aspx?VID=MATE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MATS</td>
+		<td>Match Fonts<A HREF="/typography/links/vendor.aspx?VID=MATS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MC</td>
+		<td>Cerajewski Computer Consulting<A HREF="/typography/links/vendor.aspx?VID=MC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MCHL</td>
+		<td>Michal Sahar<A HREF="/typography/links/vendor.aspx?VID=MCHL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MCKL</td>
+		<td>MCKL<A HREF="/typography/links/vendor.aspx?VID=MCKL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MCOW</td>
+		<td>Mountaincow<A HREF="/typography/links/vendor.aspx?VID=MCOW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MDSN</td>
+		<td>Moraitis Design<A HREF="/typography/links/vendor.aspx?VID=MDSN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MEH</td>
+		<td>Steve Mehallo<A HREF="/typography/links/vendor.aspx?VID=MEH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MEIR</td>
+		<td>Meir Sadan<A HREF="/typography/links/vendor.aspx?VID=MEIR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MESA</td>
+		<td>FontMesa,<A HREF="/typography/links/vendor.aspx?VID=MESA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MF</td>
+		<td>Magic Fonts<A HREF="/typography/links/vendor.aspx?VID=MF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MFNT</td>
+		<td>Masterfont<A HREF="/typography/links/vendor.aspx?VID=MFNT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MG</td>
+		<td>Milieu Grotesque<A HREF="/typography/links/vendor.aspx?VID=MG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MGD</td>
+		<td>Matt Grey Design<A HREF="/typography/links/vendor.aspx?VID=MGD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MILL</td>
+		<td>Millan<A HREF="/typography/links/vendor.aspx?VID=MILL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MINT</td>
+		<td>Mint Type<A HREF="/typography/links/vendor.aspx?VID=MINT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MJ</td>
+		<td>Majus Corporation<A HREF="/typography/links/vendor.aspx?VID=MJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MJR</td>
+		<td>Majur Inc.<A HREF="/typography/links/vendor.aspx?VID=MJR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MLBU</td>
+		<td>Malibu Dream Designs, LLC<A HREF="/typography/links/vendor.aspx?VID=MLBU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MLGC</td>
+		<td>Micrologic Software<A HREF="/typography/links/vendor.aspx?VID=MLGC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">mlss</td>
+		<td>Mark Simonson Studio LLC<A HREF="/typography/links/vendor.aspx?VID=mlss"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MMFT</td>
+		<td>Michel M.<A HREF="/typography/links/vendor.aspx?VID=MMFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MMIK</td>
+		<td>Monomonnik<A HREF="/typography/links/vendor.aspx?VID=MMIK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MNCK</td>
+		<td>Mine Creek<A HREF="/typography/links/vendor.aspx?VID=MNCK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MNJU</td>
+		<td>Manjunatha Bengaluru<A HREF="/typography/links/vendor.aspx?VID=MNJU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MNKR</td>
+		<td>Monokrom Skriftforlag AS<A HREF="/typography/links/vendor.aspx?VID=MNKR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MODI</td>
+		<td>Modular Infotech Private Limited.<A HREF="/typography/links/vendor.aspx?VID=MODI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MOHT</td>
+		<td>Al Mohtaraf Assaudi Ltd<A HREF="/typography/links/vendor.aspx?VID=MOHT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MOJI</td>
+		<td>Mojijuku<A HREF="/typography/links/vendor.aspx?VID=MOJI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MONB</td>
+		<td>Monib<A HREF="/typography/links/vendor.aspx?VID=MONB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MONE</td>
+		<td>Meta One Limited<A HREF="/typography/links/vendor.aspx?VID=MONE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MONO</td>
+		<td>Monotype Imaging<A HREF="/typography/links/vendor.aspx?VID=MONO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MOON</td>
+		<td>Moonlight Type and Technolog<A HREF="/typography/links/vendor.aspx?VID=MOON"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MOTA</td>
+		<td>Mota Italic<A HREF="/typography/links/vendor.aspx?VID=MOTA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MRSW</td>
+		<td>Morisawa & Company, Ltd.<A HREF="/typography/links/vendor.aspx?VID=MRSW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MRV</td>
+		<td>Morovia Corporation<A HREF="/typography/links/vendor.aspx?VID=MRV"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MS</td>
+		<td>Microsoft Corp.<A HREF="/typography/links/vendor.aspx?VID=MS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MSCH</td>
+		<td>Guitar-Injection<A HREF="/typography/links/vendor.aspx?VID=MSCH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MSCR</td>
+		<td>Majus Corporation<A HREF="/typography/links/vendor.aspx?VID=MSCR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MSE</td>
+		<td>MSE-iT<A HREF="/typography/links/vendor.aspx?VID=MSE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MT</td>
+		<td>Monotype Imaging (replaced by MONO)<A HREF="/typography/links/vendor.aspx?VID=MT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MTF</td>
+		<td>Miss Tiina Fonts<A HREF="/typography/links/vendor.aspx?VID=MTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MTFO</td>
+		<td>Music Type Foundry<A HREF="/typography/links/vendor.aspx?VID=MTFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MTY</td>
+		<td>Motoya Co. ,LTD.<A HREF="/typography/links/vendor.aspx?VID=MTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MUTF</td>
+		<td>Murasu Systems Sdn. Bhd<A HREF="/typography/links/vendor.aspx?VID=MUTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MVB</td>
+		<td>MVB Fonts<A HREF="/typography/links/vendor.aspx?VID=MVB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MVTP</td>
+		<td>Mauve Type<A HREF="/typography/links/vendor.aspx?VID=MVTP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MVty</td>
+		<td>MV Typo<A HREF="/typography/links/vendor.aspx?VID=MVty"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MW</td>
+		<td>Michael Want<A HREF="/typography/links/vendor.aspx?VID=MW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">MYFO</td>
+		<td>MyFonts.com<A HREF="/typography/links/vendor.aspx?VID=MYFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NB</td>
+		<td>No Bodoni Typography<A HREF="/typography/links/vendor.aspx?VID=NB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ncnd</td>
+		<td>&cond<A HREF="/typography/links/vendor.aspx?VID=ncnd"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NDCT</td>
+		<td>Neufville Digital Corporatype<A HREF="/typography/links/vendor.aspx?VID=NDCT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NDTC</td>
+		<td>Neufville Digital<A HREF="/typography/links/vendor.aspx?VID=NDTC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NEC</td>
+		<td>NEC Corporation<A HREF="/typography/links/vendor.aspx?VID=NEC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NEWL</td>
+		<td>Newlyn<A HREF="/typography/links/vendor.aspx?VID=NEWL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NICK</td>
+		<td>Nick's Fonts<A HREF="/typography/links/vendor.aspx?VID=NICK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NIS</td>
+		<td>NIS Corporation<A HREF="/typography/links/vendor.aspx?VID=NIS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NM</td>
+		<td>NM type<A HREF="/typography/links/vendor.aspx?VID=NM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NOOT</td>
+		<td>Nootype<A HREF="/typography/links/vendor.aspx?VID=NOOT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NORF</td>
+		<td>Norfok Incredible Font Design<A HREF="/typography/links/vendor.aspx?VID=NORF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NOVA</td>
+		<td>NOVATYPE<A HREF="/typography/links/vendor.aspx?VID=NOVA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">NP</td>
+		<td>Nipponia<A HREF="/typography/links/vendor.aspx?VID=NP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ODSR</td>
+		<td>Oddsorts<A HREF="/typography/links/vendor.aspx?VID=ODSR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OHG</td>
+		<td>Our House Graphic Design<A HREF="/typography/links/vendor.aspx?VID=OHG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OHNO</td>
+		<td>OH no Type Company<A HREF="/typography/links/vendor.aspx?VID=OHNO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OKAY</td>
+		<td>Okay Type<A HREF="/typography/links/vendor.aspx?VID=OKAY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Once</td>
+		<td>Michael T Neff<A HREF="/typography/links/vendor.aspx?VID=Once"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OPTM</td>
+		<td>Optimo<A HREF="/typography/links/vendor.aspx?VID=OPTM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OPTO</td>
+		<td>Opto<A HREF="/typography/links/vendor.aspx?VID=OPTO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ORBI</td>
+		<td>Orbit Enterprises, Inc.<A HREF="/typography/links/vendor.aspx?VID=ORBI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ORK1</td>
+		<td>Ork1<A HREF="/typography/links/vendor.aspx?VID=ORK1"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OSFC</td>
+		<td>Out Of Step Font Company<A HREF="/typography/links/vendor.aspx?VID=OSFC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">OURT</td>
+		<td>Ourtype<A HREF="/typography/links/vendor.aspx?VID=OURT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">P22</td>
+		<td>P22 Inc.<A HREF="/typography/links/vendor.aspx?VID=P22"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PARA</td>
+		<td>ParaType Inc.<A HREF="/typography/links/vendor.aspx?VID=PARA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PDWX</td>
+		<td>Parsons Design Workx<A HREF="/typography/links/vendor.aspx?VID=PDWX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PECI</td>
+		<td>Pecita<A HREF="/typography/links/vendor.aspx?VID=PECI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PF</td>
+		<td>Phil's Fonts, Inc.<A HREF="/typography/links/vendor.aspx?VID=PF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PINT</td>
+		<td>PintassilgoPrints<A HREF="/typography/links/vendor.aspx?VID=PINT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PIXL</td>
+		<td>Pixilate<A HREF="/typography/links/vendor.aspx?VID=PIXL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PKDD</td>
+		<td>Philip Kelly Digital Design<A HREF="/typography/links/vendor.aspx?VID=PKDD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PLAT</td>
+		<td>PLATINUM technology<A HREF="/typography/links/vendor.aspx?VID=PLAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PRFS</td>
+		<td>Production First Software<A HREF="/typography/links/vendor.aspx?VID=PRFS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PRGR</td>
+		<td>Paragraph<A HREF="/typography/links/vendor.aspx?VID=PRGR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PROD</td>
+		<td>Production Type<A HREF="/typography/links/vendor.aspx?VID=PROD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PROT</td>
+		<td>PROTOTYPO<A HREF="/typography/links/vendor.aspx?VID=PROT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PRTF</td>
+		<td>Process Type Foundry<A HREF="/typography/links/vendor.aspx?VID=PRTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PSIS</td>
+		<td>PhotoShopIsland.com<A HREF="/typography/links/vendor.aspx?VID=PSIS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PSY</td>
+		<td>PSY/OPS<A HREF="/typography/links/vendor.aspx?VID=PSY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PT</td>
+		<td>Playtype APS<A HREF="/typography/links/vendor.aspx?VID=PT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PTF</td>
+		<td>Porchez Typofonderie<A HREF="/typography/links/vendor.aspx?VID=PTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PTMI</td>
+		<td>Page Technology Marketing, Inc.<A HREF="/typography/links/vendor.aspx?VID=PTMI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PTYP</td>
+		<td>preussTYPE<A HREF="/typography/links/vendor.aspx?VID=PTYP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">PYRS</td>
+		<td>PYRS   Fontlab Ltd. / Made with FontLab<A HREF="/typography/links/vendor.aspx?VID=PYRS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">QMSI</td>
+		<td>QMS/Imagen<A HREF="/typography/links/vendor.aspx?VID=QMSI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">QRAT</td>
+		<td>Quadrat Communications<A HREF="/typography/links/vendor.aspx?VID=QRAT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">QTYP</td>
+		<td>Qtypography<A HREF="/typography/links/vendor.aspx?VID=QTYP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RBFF</td>
+		<td>Rare Bird Font Foundry<A HREF="/typography/links/vendor.aspx?VID=RBFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">READ</td>
+		<td>ReadyType<A HREF="/typography/links/vendor.aspx?VID=READ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">REAL</td>
+		<td>Underware<A HREF="/typography/links/vendor.aspx?VID=REAL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RES</td>
+		<td>Resultat<A HREF="/typography/links/vendor.aspx?VID=RES"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RICK</td>
+		<td>Rickner Type<A HREF="/typography/links/vendor.aspx?VID=RICK"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RJPS</td>
+		<td>Reall Graphics<A HREF="/typography/links/vendor.aspx?VID=RJPS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RKFN</td>
+		<td>R K Fonts<A HREF="/typography/links/vendor.aspx?VID=RKFN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RL</td>
+		<td>Ruben Holthuijsen<A HREF="/typography/links/vendor.aspx?VID=RL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RLTF</td>
+		<td>Rebeletter Studios<A HREF="/typography/links/vendor.aspx?VID=RLTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RMU</td>
+		<td>RMU TypeDesign<A HREF="/typography/links/vendor.aspx?VID=RMU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">robo</td>
+		<td>Buro Petr van Blokland<A HREF="/typography/links/vendor.aspx?VID=robo"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ROBU</td>
+		<td>SC ROBU DESIGN S.R.L.<A HREF="/typography/links/vendor.aspx?VID=ROBU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ROHH</td>
+		<td>ROHH studio<A HREF="/typography/links/vendor.aspx?VID=ROHH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RPTR</td>
+		<td>Rampage Raptor<A HREF="/typography/links/vendor.aspx?VID=RPTR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RRT</td>
+		<td>Red Rooster Collection (ITF, Inc.)<A HREF="/typography/links/vendor.aspx?VID=RRT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RSJ</td>
+		<td>RSJ Software<A HREF="/typography/links/vendor.aspx?VID=RSJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RST</td>
+		<td>Rosetta<A HREF="/typography/links/vendor.aspx?VID=RST"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RUDY</td>
+		<td>RudynFluffy<A HREF="/typography/links/vendor.aspx?VID=RUDY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">RYOB</td>
+		<td>Ryobi Limited<A HREF="/typography/links/vendor.aspx?VID=RYOB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SAJA</td>
+		<td>Saja Typeworks<A HREF="/typography/links/vendor.aspx?VID=SAJA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SALT</td>
+		<td>Solonka Type Foundry<A HREF="/typography/links/vendor.aspx?VID=SALT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SAND</td>
+		<td>Sandoll<A HREF="/typography/links/vendor.aspx?VID=SAND"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SAPL</td>
+		<td>Fonderie sans plomb<A HREF="/typography/links/vendor.aspx?VID=SAPL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SATY</td>
+		<td>Samuelstype Design AB<A HREF="/typography/links/vendor.aspx?VID=SATY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SAX</td>
+		<td>s.a.x. Software gmbh<A HREF="/typography/links/vendor.aspx?VID=SAX"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SbB</td>
+		<td>Sketchbook B<A HREF="/typography/links/vendor.aspx?VID=SbB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SBT</td>
+		<td>SelfBuild Type Foundry<A HREF="/typography/links/vendor.aspx?VID=SBT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SCTO</td>
+		<td>Schick Toikka<A HREF="/typography/links/vendor.aspx?VID=SCTO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SE</td>
+		<td>Stéphane Elbaz<A HREF="/typography/links/vendor.aspx?VID=SE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Sean</td>
+		<td>The FontSite<A HREF="/typography/links/vendor.aspx?VID=Sean"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SFS</td>
+		<td>Sarumadhu Services Pvt. Ltd.<A HREF="/typography/links/vendor.aspx?VID=SFS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SFUN</td>
+		<td>Software Union<A HREF="/typography/links/vendor.aspx?VID=SFUN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SG</td>
+		<td>Scooter Graphics<A HREF="/typography/links/vendor.aspx?VID=SG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHAM</td>
+		<td>ShamFonts / Shamrock Int.<A HREF="/typography/links/vendor.aspx?VID=SHAM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHFT</td>
+		<td>Shift<A HREF="/typography/links/vendor.aspx?VID=SHFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHMI</td>
+		<td>Sharanda<A HREF="/typography/links/vendor.aspx?VID=SHMI"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHOT</td>
+		<td>Shotype<A HREF="/typography/links/vendor.aspx?VID=SHOT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHRP</td>
+		<td>Sharp Type<A HREF="/typography/links/vendor.aspx?VID=SHRP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHS</td>
+		<td>Shahab Siavash Studio<A HREF="/typography/links/vendor.aspx?VID=SHS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SHUB</td>
+		<td>The Software Hub<A HREF="/typography/links/vendor.aspx?VID=SHUB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SIG</td>
+		<td>vLetter, Inc<A HREF="/typography/links/vendor.aspx?VID=SIG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SIL</td>
+		<td>SIL International (SIL)<A HREF="/typography/links/vendor.aspx?VID=SIL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SIT</td>
+		<td>Summit Information Technologies Pvt.Ltd,<A HREF="/typography/links/vendor.aspx?VID=SIT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SKP</td>
+		<td>Essqu&#233; Productions<A HREF="/typography/links/vendor.aspx?VID=SKP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">skz</td>
+		<td>Celtic Lady's Fonts<A HREF="/typography/links/vendor.aspx?VID=skz"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SL</td>
+		<td>Silesian Letters<A HREF="/typography/links/vendor.aspx?VID=SL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Slab</td>
+		<td>Schriftlabor<A HREF="/typography/links/vendor.aspx?VID=Slab"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SMC</td>
+		<td>Swathanthra Malayalam Computing<A HREF="/typography/links/vendor.aspx?VID=SMC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SN</td>
+		<td>SourceNet<A HREF="/typography/links/vendor.aspx?VID=SN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SOHO</td>
+		<td>Soft Horizons<A HREF="/typography/links/vendor.aspx?VID=SOHO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SOS</td>
+		<td>Standing Ovations Software<A HREF="/typography/links/vendor.aspx?VID=SOS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SPRT</td>
+		<td>Sports Fonts<A HREF="/typography/links/vendor.aspx?VID=SPRT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SRC</td>
+		<td>Source Foundry<A HREF="/typography/links/vendor.aspx?VID=SRC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">STC</td>
+		<td>Sorkin Type Co<A HREF="/typography/links/vendor.aspx?VID=STC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">STF</td>
+		<td>Brian Sooy & Co + Sooy Type Foundry<A HREF="/typography/links/vendor.aspx?VID=STF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">STFD</td>
+		<td>snuffletrumper<A HREF="/typography/links/vendor.aspx?VID=STFD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Stor</td>
+		<td>Storm Type Foundry<A HREF="/typography/links/vendor.aspx?VID=Stor"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">STYP</td>
+		<td>Stone Type Foundry<A HREF="/typography/links/vendor.aspx?VID=STYP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SUNW</td>
+		<td>sunwalk fontworks<A HREF="/typography/links/vendor.aspx?VID=SUNW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SVTD</td>
+		<td>Synthview<A HREF="/typography/links/vendor.aspx?VID=SVTD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SWFT</td>
+		<td>Swfte International<A HREF="/typography/links/vendor.aspx?VID=SWFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SWTY</td>
+		<td>Swiss Typefaces<A HREF="/typography/links/vendor.aspx?VID=SWTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SXRA</td>
+		<td>Page42 Type Foundry<A HREF="/typography/links/vendor.aspx?VID=SXRA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SYDA</td>
+		<td>Shree Muktananda Ashram<A HREF="/typography/links/vendor.aspx?VID=SYDA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SYN</td>
+		<td>SynFonts<A HREF="/typography/links/vendor.aspx?VID=SYN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">SYRC</td>
+		<td>Syriac Computing Institute<A HREF="/typography/links/vendor.aspx?VID=SYRC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TB</td>
+		<td>TypeBank Co.,Ltd<A HREF="/typography/links/vendor.aspx?VID=TB"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TBFF</td>
+		<td>TrueBlue Font Foundry<A HREF="/typography/links/vendor.aspx?VID=TBFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TC</td>
+		<td>Typeco<A HREF="/typography/links/vendor.aspx?VID=TC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TCH</td>
+		<td>Darryl Cook<A HREF="/typography/links/vendor.aspx?VID=TCH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TD</td>
+		<td>Typedepot<A HREF="/typography/links/vendor.aspx?VID=TD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TDR</td>
+		<td>Tansin A. Darcos & Co.<A HREF="/typography/links/vendor.aspx?VID=TDR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TERM</td>
+		<td>Terminal Design, Inc.<A HREF="/typography/links/vendor.aspx?VID=TERM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TF</td>
+		<td>Treacyfaces / Headliners<A HREF="/typography/links/vendor.aspx?VID=TF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TF3D</td>
+		<td>TattooFont3D<A HREF="/typography/links/vendor.aspx?VID=TF3D"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TFAC</td>
+		<td>Typefactory<A HREF="/typography/links/vendor.aspx?VID=TFAC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TFND</td>
+		<td>Typefounding<A HREF="/typography/links/vendor.aspx?VID=TFND"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TGHT</td>
+		<td>TIGHTYPE<A HREF="/typography/links/vendor.aspx?VID=TGHT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">THIN</td>
+		<td>Thinstroke Design LLC<A HREF="/typography/links/vendor.aspx?VID=THIN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TILD</td>
+		<td>Tilde, SIA<A HREF="/typography/links/vendor.aspx?VID=TILD"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TIMO</td>
+		<td>Tim Romano<A HREF="/typography/links/vendor.aspx?VID=TIMO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TIMR</td>
+		<td>Tim Rolands<A HREF="/typography/links/vendor.aspx?VID=TIMR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TINY</td>
+		<td>Tiny Type Co.<A HREF="/typography/links/vendor.aspx?VID=TINY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TIPO</td>
+		<td>Tipo<A HREF="/typography/links/vendor.aspx?VID=TIPO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TIRO</td>
+		<td>Tiro Typeworks<A HREF="/typography/links/vendor.aspx?VID=TIRO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TJS</td>
+		<td>Typejockeys<A HREF="/typography/links/vendor.aspx?VID=TJS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TLIN</td>
+		<td>Teeline Fonts<A HREF="/typography/links/vendor.aspx?VID=TLIN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TMF</td>
+		<td>The MicroFoundry<A HREF="/typography/links/vendor.aspx?VID=TMF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TMT</td>
+		<td>TypeMyType Comm. V.<A HREF="/typography/links/vendor.aspx?VID=TMT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TNTY</td>
+		<td>tntypography<A HREF="/typography/links/vendor.aspx?VID=TNTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TOPP</td>
+		<td>Toppan Printing Co., Ltd.<A HREF="/typography/links/vendor.aspx?VID=TOPP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPDP</td>
+		<td>Type Department<A HREF="/typography/links/vendor.aspx?VID=TPDP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPMA</td>
+		<td>typoma<A HREF="/typography/links/vendor.aspx?VID=TPMA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPSP</td>
+		<td>Type Supply<A HREF="/typography/links/vendor.aspx?VID=TPSP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPTA</td>
+		<td>TPTQ Arabic<A HREF="/typography/links/vendor.aspx?VID=TPTA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPTC</td>
+		<td>Test Pilot Collective<A HREF="/typography/links/vendor.aspx?VID=TPTC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TPTQ</td>
+		<td>Typotheque<A HREF="/typography/links/vendor.aspx?VID=TPTQ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TR</td>
+		<td>Type Revivals<A HREF="/typography/links/vendor.aspx?VID=TR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TRAF</td>
+		<td>Traffictype<A HREF="/typography/links/vendor.aspx?VID=TRAF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TREE</td>
+		<td>Treeflow<A HREF="/typography/links/vendor.aspx?VID=TREE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TS</td>
+		<td>TamilSoft Corporation<A HREF="/typography/links/vendor.aspx?VID=TS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TSPC</td>
+		<td>Typespec Ltd<A HREF="/typography/links/vendor.aspx?VID=TSPC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TSTY</td>
+		<td>Torleiv Georg Sverdrup<A HREF="/typography/links/vendor.aspx?VID=TSTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TT</td>
+		<td>TypeTogether<A HREF="/typography/links/vendor.aspx?VID=TT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TTG</td>
+		<td>Twardoch Typography<A HREF="/typography/links/vendor.aspx?VID=TTG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TTY</td>
+		<td>Tipotype<A HREF="/typography/links/vendor.aspx?VID=TTY"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYCU</td>
+		<td>TypeCulture<A HREF="/typography/links/vendor.aspx?VID=TYCU"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYFR</td>
+		<td>typographies.fr<A HREF="/typography/links/vendor.aspx?VID=TYFR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYME</td>
+		<td>type me! Font Foundry<A HREF="/typography/links/vendor.aspx?VID=TYME"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYPA</td>
+		<td>Typadelic<A HREF="/typography/links/vendor.aspx?VID=TYPA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYPE</td>
+		<td>Type Associates Pty Ltd<A HREF="/typography/links/vendor.aspx?VID=TYPE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYPO</td>
+		<td>Typodermic<A HREF="/typography/links/vendor.aspx?VID=TYPO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYPR</td>
+		<td>Type Project<A HREF="/typography/links/vendor.aspx?VID=TYPR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">TYRE</td>
+		<td>typerepublic<A HREF="/typography/links/vendor.aspx?VID=TYRE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">UA</td>
+		<td>UnAuthorized Type<A HREF="/typography/links/vendor.aspx?VID=UA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ULA</td>
+		<td>Montserrat Typeface<A HREF="/typography/links/vendor.aspx?VID=ULA"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">UNDT</td>
+		<td>ÜNDT<A HREF="/typography/links/vendor.aspx?VID=UNDT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">URW</td>
+		<td>URW++<A HREF="/typography/links/vendor.aspx?VID=URW"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">UT</td>
+		<td>Unitype Inc<A HREF="/typography/links/vendor.aspx?VID=UT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VINT</td>
+		<td>Vinterstille<A HREF="/typography/links/vendor.aspx?VID=VINT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VJ</td>
+		<td>eDESIGNzone<A HREF="/typography/links/vendor.aspx?VID=VJ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VKP</td>
+		<td>Vijay K. Patel<A HREF="/typography/links/vendor.aspx?VID=VKP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VLKF</td>
+		<td>Visualogik Technology & Design<A HREF="/typography/links/vendor.aspx?VID=VLKF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VLNL</td>
+		<td>VetteLetters.nl<A HREF="/typography/links/vendor.aspx?VID=VLNL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VMT</td>
+		<td>VMType<A HREF="/typography/links/vendor.aspx?VID=VMT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VOG</td>
+		<td>Martin Vogel<A HREF="/typography/links/vendor.aspx?VID=VOG"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VRED</td>
+		<td>Vred Letters<A HREF="/typography/links/vendor.aspx?VID=VRED"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VROM</td>
+		<td>Vladimir Romanov<A HREF="/typography/links/vendor.aspx?VID=VROM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VS</td>
+		<td>VorSicht GmbH<A HREF="/typography/links/vendor.aspx?VID=VS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VT</td>
+		<td>VISUALTYPE SRL<A HREF="/typography/links/vendor.aspx?VID=VT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">VTF</td>
+		<td>Velvetyne Type Foundry<A HREF="/typography/links/vendor.aspx?VID=VTF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">WAFO</td>
+		<td>Walden Font Co.<A HREF="/typography/links/vendor.aspx?VID=WAFO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">WASP</td>
+		<td>Wasp Barcode Technologies<A HREF="/typography/links/vendor.aspx?VID=WASP"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">WILL</td>
+		<td>Willerstorfer Font Foundry<A HREF="/typography/links/vendor.aspx?VID=WILL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">WL</td>
+		<td>Writ Large Fonts<A HREF="/typography/links/vendor.aspx?VID=WL"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">WM</td>
+		<td>Webmakers India<A HREF="/typography/links/vendor.aspx?VID=WM"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">XFC</td>
+		<td>Xerox Font Services<A HREF="/typography/links/vendor.aspx?VID=XFC"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">XOTH</td>
+		<td>Xoth Morello<A HREF="/typography/links/vendor.aspx?VID=XOTH"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">XYZ</td>
+		<td>XYZ Type LLC<A HREF="/typography/links/vendor.aspx?VID=XYZ"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">Y&Y</td>
+		<td>Y&Y, Inc.<A HREF="/typography/links/vendor.aspx?VID=Y%26Y"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YDS</td>
+		<td>Yellow Design Studio<A HREF="/typography/links/vendor.aspx?VID=YDS"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YN</td>
+		<td>Yanone<A HREF="/typography/links/vendor.aspx?VID=YN"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YOFF</td>
+		<td>Your Own Font Foundry<A HREF="/typography/links/vendor.aspx?VID=YOFF"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YOKO</td>
+		<td>Yokokaku<A HREF="/typography/links/vendor.aspx?VID=YOKO"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YOUR</td>
+		<td>YourFonts.com<A HREF="/typography/links/vendor.aspx?VID=YOUR"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">YWFT</td>
+		<td>YouWorkForThem<A HREF="/typography/links/vendor.aspx?VID=YWFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ZANE</td>
+		<td>Unrender<A HREF="/typography/links/vendor.aspx?VID=ZANE"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ZeGr</td>
+		<td>Zebra Font Factory<A HREF="/typography/links/vendor.aspx?VID=ZeGr"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">zeta</td>
+		<td>Tangram Studio<A HREF="/typography/links/vendor.aspx?VID=zeta"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+	<tr>
+		<td WIDTH="20%">ZSFT</td>
+		<td>Zsoft<A HREF="/typography/links/vendor.aspx?VID=ZSFT"><IMG SRC="/typography/links/info.gif" BORDER=0 WIDTH=22 HEIGHT=13 ALT="Registered vendor information"></A></td>
+	</tr>
+</table>
+
+</p>
+
+	<p><a href="#top" title="Top of page" class="detail"><img src="/typography/graphics/top_arrow.gif" border="0" hspace="5" />Top of page</a></p>
+</TD>
+</TR>
+</TABLE>
+
+	
+					</td>
+		
+				</tr>
+			</table>
+		<!--NOINDEX_START-->
+<br clear="all" style="line-height: 1px; overflow: hidden"><table id="msviFooter" width="100%" cellpadding="0" cellspacing="0"><tr valign="bottom"><td id="msviFooter2" style="filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#3F8CDA', gradientType='1')"><div id="msviLocalFooter"><nobr><a href="http://go.microsoft.com/?linkid=317027" target="_top">Manage Your Profile</a> |</nobr><wbr></wbr><nobr><a href="/typography/AboutMST.mspx" target="_top">Contact Microsoft Typography</a></nobr></div><div id="msviGlobalFooter"><span dir="ltr">&#169; 2017 Microsoft Corporation. All rights reserved.&nbsp;</span><nobr><a href="http://support.microsoft.com/contactus/?ws=mscom" target="_parent">Contact Us</a> |</nobr><wbr></wbr><nobr><a href="http://go.microsoft.com/?linkid=4412892" target="_parent">Terms of Use</a> |</nobr><wbr></wbr><nobr><a href="http://go.microsoft.com/?linkid=4412893" target="_parent">Trademarks</a> |</nobr><wbr></wbr><nobr><a href="http://go.microsoft.com/fwlink/?LinkId=248681" target="_parent">Privacy &amp; Cookies</a></nobr></div></td></tr></table><div style="display:none"><script type="text/javascript">var gDomain="m.webtrends.com";var gDcsId="dcsjwb9vb00000c932fd0rjc7_5p3t";var gFpc="WT_FPC";if(document.cookie.indexOf(gFpc+"=")==-1){document.write("<SCR"+"IPT TYPE='text/javascript' SRC='"+"http"+(window.location.protocol.indexOf('https:')==0?'s':'')+"://"+gDomain+"/"+gDcsId+"/wtid.js"+"'><\/SCR"+"IPT>");}</script><script src="/library/mnp/2/wt/js/wt.js" type="text/javascript"></script><noscript><img border="0" name="DCSIMG" width="1" height="1" src="https://m.webtrends.com/dcsjwb9vb00000c932fd0rjc7_5p3t/njs.gif?dcsuri=/nojavascript&WT.js=No"/></noscript></div><layer visibility="hide"><div style="display:none"><img alt="" width="0" height="0" border="0" hspace="0" vspace="0" src="https://c.microsoft.com/trans_pixel.asp?source=www&amp;TYPE=PV&amp;p=typography_links&amp;URI=%2ftypography%2flinks%2fvendorlist.aspx&amp;GUID=1F4FC18C-F71E-47FB-8FC9-612F8EE59C61&amp;lc=en-us"></div></layer>
+</BODY>
+</HTML>
