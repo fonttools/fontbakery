@@ -474,25 +474,13 @@ def registered_vendor_ids():
   """Get a list of vendor IDs from Microsoft's website."""
   import tempfile
   import requests
+  from bs4 import BeautifulSoup
   from pkg_resources import resource_filename
+
   registered_vendor_ids = {}
   CACHED = resource_filename('fontbakery',
                              'data/fontbakery-microsoft-vendorlist.cache')
   content = open(CACHED).read()
-  try:
-    url = 'https://www.microsoft.com/typography/links/vendorlist.aspx'
-    new_content = requests.get(url, auth=('user', 'pass')).content
-    if content != new_content:
-      print ("Cached Vendor ID data seems to diverge from data online."
-             "It may be good to update Fontbakery's cached data."
-             "Please report at: "
-             "https://github.com/googlefonts/fontbakery/issues/")
-  except:
-    # ignore this silently because it it not critical
-    # given our cached copy of the data
-    pass
-
-  from bs4 import BeautifulSoup
   soup = BeautifulSoup(content, 'html.parser')
   table = soup.find(id="VendorList")
   for row in table.findAll('tr'):
