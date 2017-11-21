@@ -732,6 +732,12 @@ class Section(object):
     """
     return self.add_test(func)
 
+  def list_tests(self):
+    tests = []
+    for test in self._tests:
+      tests.append("{} | {}".format(test.id, test.description))
+    return tests
+
 class Spec(object):
   def __init__(self
              , sections=None
