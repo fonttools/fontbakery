@@ -5,6 +5,7 @@
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
 from __future__ import absolute_import, print_function, unicode_literals
 
+import sys
 import logging
 import argparse
 import glob
@@ -104,7 +105,10 @@ def ArgumentParser(specification, spec_arg=True):
                       help='In a tty as stdout, don\'t render the progress indicators.')
 
   argument_parser.add_argument('-C', '--no-colors', default=False, action='store_true',
-                      help='No colors for tty output')
+                      help='No colors for tty output.')
+
+  argument_parser.add_argument('-L', '--list-tests', default=False, action='store_true',
+                      help='List the tests available in the selected specification.')
 
   argument_parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                       metavar= 'JSON_FILE',
@@ -186,6 +190,13 @@ def main(specification=None, values=None):
     add_spec_arg = True
   argument_parser = ArgumentParser(specification, spec_arg=add_spec_arg)
   args = argument_parser.parse_args()
+
+  if args.list_tests:
+    for section_name, section in specification._sections.items():
+      tests = section.list_tests()
+      sys.exit("Available tests on {} are:\n{}".format(section_name,
+                                                       "\n".join(tests)))
+
   runner = runner_factory(specification, args.fonts
                      , explicit_tests=args.checkid
                      , custom_order=args.order
