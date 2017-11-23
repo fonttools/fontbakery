@@ -177,28 +177,33 @@ The output is individual per-family reports, in json format, saved in subdirecto
 
 ### Mac OS X
 
+Minimal install procedure:
 ```sh
 # install os x developer tools and the homebrew package manager
 xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+brew install python;
 
-# install ots
-brew tap bramstein/webfonttools;
-brew update;
-brew install ots --HEAD;
-
-# install fontforge
-brew install python giflib libspiro icu4c;
-brew install fontforge --with-extra-tools --HEAD ;
-
-# install fontbakery
-easy_install pip;
+easy_install pip
 pip install fontbakery
 ```
 
 For upgrading to a newer version (if you already installed a previous version of fontbakery) you should do:
 ```
 pip install --upgrade fontbakery
+```
+
+Additional dependencies:
+
+```sh
+# install ots
+brew tap bramstein/webfonttools;
+brew update;
+brew install ots --HEAD;
+
+# install fontforge
+brew install giflib libspiro icu4c;
+brew install fontforge --with-extra-tools;
 ```
 
 ### GNU+Linux
@@ -298,7 +303,7 @@ git add setup.py
 git commit -m "Updating version in preparation for a new release"
 
 # install fontbakery on it and run our code tests
-pip install -e .
+pip install .
 pip install pytest
 pytest Lib/fontbakery --verbose
 
