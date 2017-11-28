@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import (absolute_import,
+                        print_function,
+                        unicode_literals,
+                        division)
 
 from fontbakery.testrunner import (
               INFO
@@ -1036,7 +1039,7 @@ def com_google_fonts_test_034(ttFont):
     if count == 0:
       yield FAIL, "CRITICAL: Found no glyph width data!"
     else:
-      expected_value = int(round(width_sum) / count)
+      expected_value = int(round(width_sum / count))
       if current_value == expected_value:
         yield PASS, "OS/2 xAvgCharWidth is correct."
       elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
