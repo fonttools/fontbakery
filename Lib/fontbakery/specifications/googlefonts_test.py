@@ -2239,7 +2239,8 @@ def test_id_164():
 
 def test_id_165():
   """ Familyname is unique according to namecheck.fontdata.com """
-  from fontbakery.specifications.googlefonts import com_google_fonts_test_165 as test
+  from fontbakery.specifications.googlefonts import (com_google_fonts_test_165 as test,
+                                                     familyname)
 
   print('Test INFO with an already used name...')
   # We dont FAIL because this is meant as a merely informative check
@@ -2247,12 +2248,12 @@ def test_id_165():
   # already have a public family name registered on the
   # namecheck.fontdata.com database.
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  status, message = list(test(ttFont))[-1]
+  status, message = list(test(ttFont, familyname(ttFont)))[-1]
   assert status == INFO
 
   print('Test PASS with a unique family name...')
   # Here we know that FamilySans has not been (and will not be)
   # registered as a real family.
   ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
-  status, message = list(test(ttFont))[-1]
+  status, message = list(test(ttFont, familyname(ttFont)))[-1]
   assert status == PASS

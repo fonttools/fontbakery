@@ -4768,6 +4768,33 @@ def com_google_fonts_test_164(ttFont):
     yield PASS, ("All copyright notice name entries on the"
                  " 'name' table are shorter than 500 characters.")
 
+FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
+@register_test
+@test(
+    id='com.google.fonts/test/165'
+  , rationale = """
+      We need to check names are not already used, and today the best
+      place to check that is http://namecheck.fontdata.com
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/494'
+  , conditions = ["familyname"]
+)
+def com_google_fonts_test_165(ttFont, familyname):
+  """ Familyname must be unique according to namecheck.fontdata.com """
+  import requests
+  url = "http://namecheck.fontdata.com/?q={}".format(familyname)
+  try:
+    response = requests.get(url, timeout=10)
+    data = response.content.decode("utf-8")
+    if "fonts by that exact name" in data:
+      yield INFO, ("The family name '{}' seem to be already in use.\n"
+                   "Please visit {} for more info.").format(familyname, url)
+    else:
+      yield PASS, "Font familyname seems to be unique."
+  except:
+    yield ERROR, ("Failed to access: '{}'.\n"
+                  "Please report this issue at:\n{}").format(url,
+                                                             FB_ISSUE_TRACKER)
 
 for section_name, section in specification._sections.items():
   print ("There is a total of {} tests on {}.".format(len(section._tests), section_name))
