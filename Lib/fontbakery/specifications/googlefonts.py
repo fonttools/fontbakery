@@ -4799,5 +4799,34 @@ def com_google_fonts_test_165(ttFont, familyname):
                   "Please report this issue at:\n{}").format(url,
                                                              FB_ISSUE_TRACKER)
 
+
+@register_test
+@test(
+    id='com.google.fonts/test/166'
+  , rationale = """
+      The git sha1 tagging and dev/release features of Source Foundry font-v
+       tool are awesome and we would love to consider upstreaming the approach
+       into fontmake someday. For now we only emit a WARN if a given font does
+       not yet follow the experimental versionin style, but at some point we
+       may start enforcing it.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1563'
+)
+def com_google_fonts_test_166(ttFont):
+  """ Check for font-v versioning """
+  from fontv.libfv import FontVersion
+
+  fv = FontVersion(ttFont.reader.file.name)
+  if fv.version and (fv.is_development or fv.is_release):
+    yield PASS, "Font version string looks GREAT!"
+  else:
+    yield INFO, ("Version string is: \"{}\"\n"
+                 "The version string must ideally include a git commit hash"
+                 " and eigther a 'dev' or a 'release' suffix such as in the"
+                 " example below:\n"
+                 "\"Version 1.3; git-0d08353-release\"").format(fv.version)
+
+
+
 for section_name, section in specification._sections.items():
   print ("There is a total of {} tests on {}.".format(len(section._tests), section_name))

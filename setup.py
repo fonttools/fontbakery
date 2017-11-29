@@ -55,7 +55,8 @@ setup(
         'unidecode',
         'protobuf',
         'bs4',
-        'fontTools'
+        'fontTools',
+        'font-v'
     ]
 )
 
