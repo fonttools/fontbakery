@@ -1458,7 +1458,7 @@ def com_google_fonts_test_040(ttFont, vmetrics):
     failed = True
     yield FAIL, Message("ascent",
                  ("OS/2.usWinAscent value"
-                  " should be greater than {}, but got"
+                  " should be equal or greater than {}, but got"
                   " {} instead").format(vmetrics['ymax'],
                                         ttFont['OS/2'].usWinAscent))
   # OS/2 usWinDescent:
@@ -1466,7 +1466,7 @@ def com_google_fonts_test_040(ttFont, vmetrics):
     failed = True
     yield FAIL, Message("descent",
                  ("OS/2.usWinDescent value"
-                  " should be greater than {}, but got"
+                  " should be equal or greater than {}, but got"
                   " {} instead").format(abs(vmetrics['ymin']),
                                         ttFont['OS/2'].usWinDescent))
   if not failed:
