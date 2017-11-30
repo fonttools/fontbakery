@@ -826,14 +826,14 @@ def test_id_040(mada_ttFonts):
 
   # Then we break it:
   print('Test FAIL with a bad OS/2.usWinAscent...')
-  ttFont['OS/2'].usWinAscent = vm['ymax'] + 1
+  ttFont['OS/2'].usWinAscent = vm['ymax'] - 1
   ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
   status, message = list(test(ttFont, vm))[-1]
   assert status == FAIL and message.code == "ascent"
 
   print('Test FAIL with a bad OS/2.usWinDescent...')
   ttFont['OS/2'].usWinAscent = vm['ymax']
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin']) + 1
+  ttFont['OS/2'].usWinDescent = abs(vm['ymin']) - 1
   status, message = list(test(ttFont, vm))[-1]
   assert status == FAIL and message.code == "descent"
 
