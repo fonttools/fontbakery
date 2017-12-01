@@ -4832,6 +4832,5 @@ def com_google_fonts_test_166(ttFont):
                  "").format(fv.get_version_string())
 
 
-
 for section_name, section in specification._sections.items():
   print ("There is a total of {} tests on {}.".format(len(section._tests), section_name))
