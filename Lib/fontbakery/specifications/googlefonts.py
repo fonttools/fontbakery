@@ -4820,7 +4820,7 @@ def com_google_fonts_test_166(ttFont):
   """ Check for font-v versioning """
   from fontv.libfv import FontVersion
 
-  fv = FontVersion(ttFont.reader.file.name)
+  fv = FontVersion(ttFont)
   if fv.version and (fv.is_development or fv.is_release):
     yield PASS, "Font version string looks GREAT!"
   else:
@@ -4828,7 +4828,8 @@ def com_google_fonts_test_166(ttFont):
                  "The version string must ideally include a git commit hash"
                  " and eigther a 'dev' or a 'release' suffix such as in the"
                  " example below:\n"
-                 "\"Version 1.3; git-0d08353-release\"").format(fv.version)
+                 "\"Version 1.3; git-0d08353-release\""
+                 "").format(fv.get_version_string())
 
 
 
