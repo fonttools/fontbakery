@@ -2257,3 +2257,26 @@ def test_id_165():
   ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
   status, message = list(test(ttFont, familyname(ttFont)))[-1]
   assert status == PASS
+
+
+def test_id_166():
+  """ Check for font-v versioning """
+  from fontbakery.specifications.googlefonts import com_google_fonts_test_166 as test
+  from fontbakery.constants import NAMEID_VERSION_STRING
+  from fontv.libfv import FontVersion
+
+  print('Test INFO for font that does not follow'
+        ' the suggested font-v versioning scheme ...')
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  status, message = list(test(ttFont))[-1]
+  assert status == INFO
+
+  print('Test PASS with one that follows the seggested scheme ...')
+  fv = FontVersion(ttFont)
+  fv.set_git_commit_sha1(development=True)
+  version_string = fv.get_version_string()
+  for record in ttFont['name'].names:
+    if record.nameID == NAMEID_VERSION_STRING:
+      record.string = version_string
+  status, message = list(test(ttFont))[-1]
+  assert status == PASS
