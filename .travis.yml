@@ -16,7 +16,7 @@ install:
 - cp /usr/lib/python2.7/dist-packages/fontforge.* /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages
 - pip install -e .
 - pip install git+https://github.com/behdad/fonttools.git
-- pip install -U git+https://github.com/source-foundry/font-v.git@libfv
+- pip install font-v
 - pip install pytest
 - pip install flake8
 - pip install pylint
