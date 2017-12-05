@@ -2763,14 +2763,27 @@ def com_google_fonts_test_073(ttFont):
 @register_test
 @test(
     id='com.google.fonts/test/074'
+  , rationale = """
+      The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
+      For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
+      string should be the same in CFF fonts which also have this
+      requirement in the OpenType spec.
+
+      Note:
+      A common place where we find non-ASCII strings is on name table
+      entries with NameID > 18, which are expressly for localising
+      the ASCII-only IDs into Hindi / Arabic / etc.
+    """
+  , request = "https://github.com/googlefonts/fontbakery/issues/1663"
 )
 def com_google_fonts_test_074(ttFont):
   """Are there non-ASCII characters in ASCII-only NAME table entries ?"""
+  from fontbakery.constants import (NAMEID_COPYRIGHT_NOTICE,
+                                    NAMEID_POSTSCRIPT_NAME)
   bad_entries = []
   for name in ttFont["name"].names:
-    # Items with NameID > 18 are expressly for localising
-    # the ASCII-only IDs into Hindi / Arabic / etc.
-    if name.nameID >= 0 and name.nameID <= 18:
+    if name.nameID == NAMEID_COPYRIGHT_NOTICE or \
+       name.nameID == NAMEID_POSTSCRIPT_NAME:
       string = name.string.decode(name.getEncoding())
       try:
         string.encode('ascii')
