@@ -2766,7 +2766,6 @@ def com_google_fonts_test_073(ttFont):
 )
 def com_google_fonts_test_074(ttFont):
   """Are there non-ASCII characters in ASCII-only NAME table entries ?"""
-  from unidecode import unidecode
   bad_entries = []
   for name in ttFont["name"].names:
     # Items with NameID > 18 are expressly for localising
@@ -2777,10 +2776,13 @@ def com_google_fonts_test_074(ttFont):
         string.encode('ascii')
       except:
         bad_entries.append(name)
-        yield INFO, ("Bad string at [nameID {}, '{}']:"
-                     " '{}'").format(name.nameID,
-                                     name.getEncoding(),
-                                     unidecode(string))
+        yield INFO, ("Bad string at"
+                     " [nameID {}, '{}']:"
+                     " '{}'"
+                     "").format(name.nameID,
+                                name.getEncoding(),
+                                string.encode("ascii",
+                                              errors='xmlcharrefreplace'))
   if len(bad_entries) > 0:
     yield FAIL, ("There are {} strings containing"
                  " non-ASCII characters in the ASCII-only"
