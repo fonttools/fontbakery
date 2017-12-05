@@ -2777,7 +2777,10 @@ def com_google_fonts_test_074(ttFont):
         string.encode('ascii')
       except:
         bad_entries.append(name)
-        yield INFO, "Bad string: '{}'".format(unidecode(string))
+        yield INFO, ("Bad string at [nameID {}, '{}']:"
+                     " '{}'").format(name.nameID,
+                                     name.getEncoding(),
+                                     unidecode(string))
   if len(bad_entries) > 0:
     yield FAIL, ("There are {} strings containing"
                  " non-ASCII characters in the ASCII-only"
