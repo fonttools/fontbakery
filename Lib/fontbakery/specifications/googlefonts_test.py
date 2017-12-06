@@ -979,7 +979,17 @@ def test_check_047():
 def test_check_048():
   """ Font has **proper** whitespace glyph names ? """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_048 as check
-  from fontbakery.utils import deleteGlyphEncodings
+
+  def deleteGlyphEncodings(font, cp):
+    """ This routine is used on to introduce errors
+        in a given font by removing specific entries
+        in the cmap tables.
+    """
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        for codepoint, name in subtable.cmap.items():
+          if codepoint == cp:
+            del subtable.cmap[codepoint]
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
