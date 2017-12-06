@@ -171,7 +171,7 @@ class FailedConditionError(FontBakeryRunnerError):
   be solved.
   """
   def __init__(self, condition, error, traceback, *args):
-    message = 'The condtion {0} had an error: {1}: {2}'.format(condition, type(error).__name__, error)
+    message = 'The condition {0} had an error: {1}: {2}'.format(condition, type(error).__name__, error)
     self.condition = condition
     self.error = error
     self.traceback = traceback
@@ -182,7 +182,7 @@ class MissingConditionError(FontBakeryRunnerError):
   be solved, most probably a typo.
   """
   def __init__(self, condition_name, error, traceback, *args):
-    message = 'The condtion named {0} is missing: {1}: {2}'.format(
+    message = 'The condition named {0} is missing: {1}: {2}'.format(
                               condition_name, type(error).__name__, error)
     self.error = error
     self.traceback = traceback

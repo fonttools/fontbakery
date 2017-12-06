@@ -1736,8 +1736,17 @@ def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
 )
 def com_google_fonts_check_048(ttFont):
   """Font has **proper** whitespace glyph names?"""
-  from fontbakery.utils import (getGlyphEncodings,
-                                getGlyph)
+  from fontbakery.utils import getGlyph
+
+  def getGlyphEncodings(font, names):
+    result = set()
+    for subtable in font['cmap'].tables:
+        if subtable.isUnicode():
+            for codepoint, name in subtable.cmap.items():
+                if name in names:
+                    result.add(codepoint)
+    return result
+
   if ttFont['post'].formatType == 3.0:
     yield SKIP, "Font has version 3 post table."
   else:
@@ -1779,8 +1788,35 @@ def com_google_fonts_check_048(ttFont):
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import (getGlyph
-                              , glyphHasInk)
+  from fontbakery.utils import getGlyph
+
+  def glyphHasInk(font, name):
+    """Checks if specified glyph has any ink.
+    That is, that it has at least one defined contour associated.
+    Composites are considered to have ink if any of their components have ink.
+    Args:
+        font:       the font
+        glyph_name: The name of the glyph to check for ink.
+    Returns:
+        True if the font has at least one contour associated with it.
+    """
+    glyph = font['glyf'].glyphs[name]
+    glyph.expand(font['glyf'])
+    if not glyph.isComposite():
+      if glyph.numberOfContours == 0:
+        return False
+      (coords, _, _) = glyph.getCoordinates(font['glyf'])
+      # you need at least 3 points to draw
+      return len(coords) > 2
+
+    # composite is blank if composed of blanks
+    # if you setup a font with cycles you are just a bad person
+    # Dave: lol, bad people exist, so put a recursion in this recursion
+    for glyph_name in glyph.getComponentNames(glyph.components):
+      if glyphHasInk(font, glyph_name):
+        return True
+    return False
+
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
     0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
@@ -1808,13 +1844,16 @@ def com_google_fonts_check_049(ttFont):
 )
 def com_google_fonts_check_050(ttFont):
   """Whitespace glyphs have coherent widths?"""
-  from fontbakery.utils import (getGlyph,
-                                getWidth)
+  from fontbakery.utils import getGlyph
+
+  def getGlyphWidth(font, glyph):
+    return font['hmtx'][glyph][0]
+
   space = getGlyph(ttFont, 0x0020)
   nbsp = getGlyph(ttFont, 0x00A0)
 
-  spaceWidth = getWidth(ttFont, space)
-  nbspWidth = getWidth(ttFont, nbsp)
+  spaceWidth = getGlyphWidth(ttFont, space)
+  nbspWidth = getGlyphWidth(ttFont, nbsp)
 
   if spaceWidth != nbspWidth or nbspWidth < 0:
     if nbspWidth > spaceWidth and spaceWidth >= 0:
@@ -3989,9 +4028,26 @@ def com_google_fonts_check_116(ttFont):
 def remote_styles(metadata):
   """Get a dictionary of TTFont objects of all font files of
      a given family as currently hosted at Google Fonts."""
+
+  def download_family_from_Google_Fonts(family_name):
+    """Return a zipfile containing a font family hosted on fonts.google.com"""
+    from zipfile import ZipFile
+    from fontbakery.utils import download_file
+    url_prefix = 'https://fonts.google.com/download?family='
+    url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
+    return ZipFile(download_file(url))
+
+  def fonts_from_zip(zipfile):
+    '''return a list of fontTools TTFonts'''
+    from fontTools.ttLib import TTFont
+    fonts = []
+    for file_name in zipfile.namelist():
+      if file_name.endswith(".ttf"):
+        fonts.append([file_name, TTFont(zipfile.open(file_name))])
+    return fonts
+
   from zipfile import BadZipfile
-  from fontbakery.utils import (download_family_from_Google_Fonts,
-                                fonts_from_zip)
+
   if (not listed_on_gfonts_api or
       not metadata):
     return None
@@ -4047,7 +4103,22 @@ def com_google_fonts_check_117(ttFont, gfonts_ttFont):
 )
 def com_google_fonts_check_118(ttFont, gfonts_ttFont):
   """Glyphs are similiar to Google Fonts version ?"""
-  from fontbakery.utils import glyphs_surface_area
+
+  def glyphs_surface_area(ttFont):
+    """Calculate the surface area of a glyph's ink"""
+    from fontTools.pens.areaPen import AreaPen
+    glyphs = {}
+    glyph_set = ttFont.getGlyphSet()
+    area_pen = AreaPen(glyph_set)
+
+    for glyph in glyph_set.keys():
+      glyph_set[glyph].draw(area_pen)
+
+      area = area_pen.value
+      area_pen.value = 0
+      glyphs[glyph] = area
+    return glyphs
+
   bad_glyphs = []
   these_glyphs = glyphs_surface_area(ttFont)
   gfonts_glyphs = glyphs_surface_area(gfonts_ttFont)
@@ -4081,7 +4152,30 @@ def com_google_fonts_check_118(ttFont, gfonts_ttFont):
 def com_google_fonts_check_119(ttFont, gfonts_ttFont):
   """TTFAutohint x-height increase value is same as in
      previous release on Google Fonts ?"""
-  from fontbakery.utils import ttfauto_fpgm_xheight_rounding
+
+  def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
+    """Find the value from the fpgm table which controls ttfautohint's
+    increase xheight parameter, '--increase-x-height'.
+    This implementation is based on ttfautohint v1.6.
+
+    This function has been tested on every font in the fonts/google repo
+    which has an fpgm table. Results have been stored in a spreadsheet:
+    http://tinyurl.com/jmlfmh3
+
+    For more information regarding the fpgm table read:
+    http://tinyurl.com/jzekfyx"""
+    import re
+    fpgm_tbl = '\n'.join(fpgm_tbl)
+    xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
+    warning = None
+    try:
+      xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
+    except AttributeError:
+      warning = ("No instruction for xheight rounding found"
+                 " on the {} font").format(which)
+      xheight_val = None
+    return (warning, xheight_val)
+
   inc_xheight = None
   gf_inc_xheight = None
 
