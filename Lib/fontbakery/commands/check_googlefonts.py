@@ -14,6 +14,7 @@ from fontbakery.commands.check_spec import (
 # to copy paste this kind of configuration, thus a central init for
 # the google/fonts repository is be good.
 GOOGLEFONTS_SPECIFICS = {}
+# runner_factory is needed for the fontbakery dashboard
 runner_factory = partial(super_runner_factory, specification, values=GOOGLEFONTS_SPECIFICS)
 main = partial(super_main, specification, values=GOOGLEFONTS_SPECIFICS)
 
