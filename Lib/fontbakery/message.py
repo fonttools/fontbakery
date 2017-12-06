@@ -5,13 +5,13 @@ from __future__ import absolute_import, print_function, unicode_literals, divisi
 class Message(object):
   def __init__(self, code, message):
     """
-      Status messages to be yielded by FontBakeryTest
+      Status messages to be yielded by FontBakeryCheck
 
-      code: (string|number) a test internal, unique code to describe a
+      code: (string|number) a check internal, unique code to describe a
             specific failure condition. A short string is preferred, it
             makes a better experience to read the code.
             Never use the same code at two different yields, this is meant
-            for unit testing to identify a specific condition of the test.
+            for unit testing to identify a specific condition of the check.
             A yield within a loop would (usually) have the same code for
             each iteration, unless there's a good reason not to do so.
 
