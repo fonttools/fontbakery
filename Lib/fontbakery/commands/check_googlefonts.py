@@ -5,16 +5,24 @@ from __future__ import absolute_import, print_function, unicode_literals
 from functools import partial
 from fontbakery.specifications.googlefonts import specification
 from fontbakery.commands.check_spec import (
-                                            runner_factory as super_runner_factory       
-                                          , main as super_main       
+                                            runner_factory as super_runner_factory
+                                          , main as super_main
                                           )
 
 # The values dict will probably get one or more specific blacklists
 # for the google font project. It would be good if it was not necessary
 # to copy paste this kind of configuration, thus a central init for
-# the google/fonts repository is be good.
+# the google/fonts repository is good.
 GOOGLEFONTS_SPECIFICS = {}
-# runner_factory is needed for the fontbakery dashboard
-runner_factory = partial(super_runner_factory, specification, values=GOOGLEFONTS_SPECIFICS)
+
+# runner_factory is used by the fontbakery dashboard.
+# It is here in order to have a single place from which
+# the spec is configured for the CLI and the worker.
+def runner_factory(fonts):
+    values = {}
+    values.update(GOOGLEFONTS_SPECIFICS)
+    values['fonts'] = fonts
+    return super_runner_factory(specification, values=values)
+
 main = partial(super_main, specification, values=GOOGLEFONTS_SPECIFICS)
 

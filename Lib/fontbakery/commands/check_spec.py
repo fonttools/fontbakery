@@ -6,9 +6,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
-import logging
 import argparse
-import glob
 from collections import OrderedDict
 
 from fontbakery.checkrunner import (
@@ -39,10 +37,6 @@ DEFAULT_LOG_LEVEL = WARN
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 
-argument_parser = argparse.ArgumentParser(description="Check TTF files"
-                                             " for common issues.",
-                                 formatter_class=argparse.RawTextHelpFormatter)
-
 def ArgumentParser(specification, spec_arg=True):
   argument_parser = argparse.ArgumentParser(description="Check TTF files"
                                                " against a specification.",
@@ -52,26 +46,8 @@ def ArgumentParser(specification, spec_arg=True):
     argument_parser.add_argument('specification',
         help='Module name, must define a fontbakery "specification".')
 
-  def get_fonts(pattern):
-    fonts_to_check = []
-    # use glob.glob to accept *.ttf
-    for fullpath in glob.glob(pattern):
-      if fullpath.endswith(".ttf"):
-        fonts_to_check.append(fullpath)
-      else:
-        logging.warning("Skipping '{}' as it does not seem "
-                          "to be valid TrueType font file.".format(fullpath))
-    return fonts_to_check
 
-
-  class MergeAction(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-      target = [item for l in values for item in l]
-      setattr(namespace, self.dest, target)
-
-  argument_parser.add_argument('fonts', nargs='+', type=get_fonts,
-                      action=MergeAction, help='font file path(s) to check.'
-                                         ' Wildcards like *.ttf are allowed.')
+  values_keys = specification.setup_argparse(argument_parser);
 
   argument_parser.add_argument('-c', '--checkid', action='append',
                       help='Explicit check-ids to be executed.\n'
@@ -147,7 +123,7 @@ def ArgumentParser(specification, spec_arg=True):
                       'collection against a selection of checks picked with `--checkid`.'
                       ''.format(', '.join(iterargs))
                       )
-  return argument_parser
+  return argument_parser, values_keys
 
 class ArgumentParserError(Exception): pass
 
@@ -161,7 +137,7 @@ def get_spec():
   argument_parser.add_argument('specification')
   try:
     args, unknown = argument_parser.parse_known_args()
-  except ArgumentParserError as e:
+  except ArgumentParserError:
     # silently fails, the main parser will show usage string.
     return Spec()
 
@@ -172,26 +148,23 @@ def get_spec():
   return imported.specification
 
 def runner_factory( specification
-                  , fonts
                   , explicit_checks=None
                   , custom_order=None
                   , values=None):
   """ Convenience CheckRunner factory. """
-  values_ = dict(fonts=fonts)
-  if values is not None:
-    values_.update(values)
-  return CheckRunner( specification, values_
+  return CheckRunner( specification, values
                     , explicit_checks=explicit_checks
                     , custom_order=custom_order
                     )
 
 def main(specification=None, values=None):
-  # this won't be used in check-googlefonts
+  # specification can be injected by e.g. check-googlefonts injects it's own spec
   add_spec_arg = False
   if specification is None:
     specification = get_spec()
     add_spec_arg = True
-  argument_parser = ArgumentParser(specification, spec_arg=add_spec_arg)
+
+  argument_parser, values_keys = ArgumentParser(specification, spec_arg=add_spec_arg)
   args = argument_parser.parse_args()
 
   if args.list_checks:
@@ -200,10 +173,21 @@ def main(specification=None, values=None):
       sys.exit("Available checks on {} are:\n{}".format(section_name,
                                                         "\n".join(checks)))
 
-  runner = runner_factory(specification, args.fonts
+  values_ = {}
+  if values is not None:
+    values_.update(values)
+
+  # values_keys are returned by specification.setup_argparse
+  # these are keys for custom arguments required by the spec.
+  if values_keys:
+    for key in values_keys:
+      if hasattr(args, key):
+        values_[key] = getattr(args, key)
+
+  runner = runner_factory(specification
                      , explicit_checks=args.checkid
                      , custom_order=args.order
-                     , values=values
+                     , values=values_
                      )
 
   # the most verbose loglevel wins
