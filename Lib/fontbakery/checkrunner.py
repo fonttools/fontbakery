@@ -1173,3 +1173,10 @@ class Spec(object):
       iterargs = tuple(tuple(item) for item in item['iterargs'])
       result.append((section, check, iterargs))
     return tuple(result)
+
+  def setup_argparse(self, argument_parser):
+    """
+    Set up custom arguments needed for this spec.
+    Return a list of keys that will be set to the `values` dictonary
+    """
+    pass
