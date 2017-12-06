@@ -5,9 +5,9 @@
 
 # [![Font Bakery](data/logo.png)](https://fontbakery.appspot.com)
 
-Font Bakery is a command-line tool for testing font projects. It runs checks on TrueType files, and Google Fonts related metadata files.
+Font Bakery is a command-line tool ensuring the quality of font projects. It runs checks on TrueType files, and Google Fonts related metadata files.
 
-If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run FontBakery on each commit, so that with each update your files are tested.
+If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run FontBakery on each commit, so that with each update all checks will be run on your files.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 
@@ -30,7 +30,7 @@ The web dashboard was initially developed in this repository, but later it was s
 
 All auxiliary scripts provided by fontbakery up to v0.3.2 have been moved into a separate python package called `gftools` (which stands for 'Google Fonts Tools') available at https://github.com/googlefonts/tools/ and at https://pypi.python.org/pypi/gftools
 
-Fontbakery (starting on the v0.3.3 release) is now solely focused on font family automated quality tests.
+Fontbakery (starting on the v0.3.3 release) is now solely focused on font family automated quality checks.
 
 Installing the latest version of the auxiliary scripts should be as easy as:
 ```
@@ -71,10 +71,10 @@ optional arguments:
 
 ### fontbakery check-googlefonts
 
-This is the central script to run the fontbakery test suite. It runs the
-tests (`specifications/googlefonts.py`) that we use for QA of https://github.com/google/fonts.
+This is the central script to run the FontBakery suite of checks. It runs the
+checks (`specifications/googlefonts.py`) that we use for QA of https://github.com/google/fonts.
 
-#### To run the tests on some fonts:
+#### To run the checks on some fonts:
 
     $ cd ~/path/to/fontproject/
     $ fontbakery check-googlefonts *.ttf
@@ -93,16 +93,16 @@ The check results will be saved to a file called `report.json`.
 
 ```
 $ fontbakery check-googlefonts \
-    -c com.google.fonts/test/034 \
-    -c com.google.fonts/test/044 \
-    -n -o "*test" -g "*test" \
+    -c com.google.fonts/check/034 \
+    -c com.google.fonts/check/044 \
+    -n -o "*check" -g "*check" \
     path/to/fonts/{apache,ofl,ufl}/*/*.ttf
 ```
 
- * `-c` selects a test by id
+ * `-c` selects a check by id
  * `-n` turns off the progress bar
- * `-o "*test"` change execution order to run each test for all fonts instead of all tests for each font.
- * `-g "*test"` creates a summary report per test
+ * `-o "*check"` change execution order to run each check for all fonts instead of all checks for each font.
+ * `-g "*check"` creates a summary report per check
 
 
 Here's the output of `fontbakery check-googlefonts -h`
@@ -127,12 +127,12 @@ optional arguments:
                         Use this option multiple times to select multiple checks.
   -v, --verbose         Shortcut for `-l PASS`.
   -l LOGLEVEL, --loglevel LOGLEVEL
-                        Report tests with a result of this status or higher.
+                        Report checks with a result of this status or higher.
                         One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
                         (default: WARN)
   -m LOGLEVEL_MESSAGES, --loglevel-messages LOGLEVEL_MESSAGES
                         Report log messages of this status or higher.
-                        Messages are all status lines within a test.
+                        Messages are all status lines within a check.
                         One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
                         (default: LOGLEVEL)
   -n, --no-progress     In a tty as stdout, don't render the progress indicators.
@@ -142,21 +142,21 @@ optional arguments:
                         Optional: collect results by ITERATED_ARG
                         In terminal output: create a summary counter for each ITERATED_ARG.
                         In json output: structure the document by ITERATED_ARG.
-                        One of: font, *test
+                        One of: font, *check
   -o ORDER, --order ORDER
                         Comma separated list of order arguments.
-                        The execution order is determined by the order of the test
+                        The execution order is determined by the order of the check
                         definitions and by the order of the iterable arguments.
                         A section defines its own order. `--order` can be used to
                         override the order of *all* sections.
                         Despite the ITERATED_ARGS there are two special
                         values available:
                         "*iterargs" -- all remainig ITERATED_ARGS
-                        "*test"     -- order by test
+                        "*check"     -- order by check
                         ITERATED_ARGS: font
-                        A sections default is equivalent to: "*iterargs, *test".
-                        A common use case is `-o "*test"` when testing the whole
-                        collection against a selection of tests picked with `--checkid`.
+                        A sections default is equivalent to: "*iterargs, *check".
+                        A common use case is `-o "*check"` when checking the whole
+                        collection against a selection of checks picked with `--checkid`.
 ```
 
 
@@ -164,7 +164,7 @@ optional arguments:
 
 There is a web dashboard that is used for monitoring the check-results of the full Google Fonts collection (or possibly other collections of font families). This tool was initialy developed in this repository, but later it was split out into its own git repo, now available at: https://github.com/googlefonts/fontbakery-dashboard
 
-### Automated testing of all Google Fonts
+### Automated checking of all Google Fonts
 
 If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, you have to have a full checkout of it, and then you can run:
 
@@ -244,7 +244,7 @@ export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
 
 ...where `$FONTBAKERY_GIT_REPO` should be the name of the directory where you checked out Font Bakery source code. Obviously, you can also use any other alternative way of making `FontValidator.exe` available in your system path.
 
-FontValidator includes some hinting instruction validation tests. These rely on a customized version of the Freetype library. In order to enable those, you'll need to use the custom build available in this repo by doing:
+FontValidator includes some hinting instruction validation checks. These rely on a customized version of the Freetype library. In order to enable those, you'll need to use the custom build available in this repo by doing:
 
 ```
 export LD_PRELOAD=$FONTBAKERY_GIT_REPO/prebuilt/custom_freetype/libfreetype.so
@@ -253,7 +253,7 @@ export LD_PRELOAD=$FONTBAKERY_GIT_REPO/prebuilt/custom_freetype/libfreetype.so
 The corresponding modified freetype source code is available at:
 https://github.com/felipesanches/freetype2
 
-If your vanilla system freetype is used instead, then all FontValidator tests will still be run, except for the hinting validation ones.
+If your vanilla system freetype is used instead, then all FontValidator checks will still be run, except for the hinting validation ones.
 
 ## Bash completion
 
@@ -325,17 +325,17 @@ git commit -m "Adding '-git' to version for the next release cycle"
 
 We keep setup.py with a '-git' suffix in the version number during development cycles (such as 'v0.3.2-git' meaning v0.3.2 plus further development changes).
 
-### Self-tests using pytest
+### Code tests using pytest
 
-Font Bakery check-googlefonts target provides a total of 125 tests for fonts and families according to the quality requirements of the Google Fonts team.
-In addition to a complete architectural overhaul, release 0.3.1 introduced a set of self-tests to assure the quality of the Font Bakery tests themselves. Such "testsuite for the testsuite" initially covered a third of the full set of tests and currently (as of version 0.3.2) covers a bit more than half of them (52.8%). Upcoming releases will aim at reaching 100% self-test coverage.
+Font Bakery check-googlefonts target provides a total of 125 checks for fonts and families according to the quality requirements of the Google Fonts team.
+In addition to a complete architectural overhaul, release 0.3.1 introduced a set of code tests to assure the quality of the Font Bakery suite of checks. Such "testsuite for the testsuite" initially covered a third of the full set of check and currently (as of version 0.3.2) covers a bit more than half of them (52.8%). Upcoming releases will aim at reaching 100% test coverage.
 
-In order to run the self-tests you need to have the pytest dependence installed and then run:
+In order to run the code tests you need to have the pytest dependence installed and then run:
 
 ```
 pytest Lib/fontbakery --verbose
 ```
 
-All future pull-requests adding new tests must also provide a corresponding self-test. Travis is configured to automatically run the self-tests and pull-requests cannot be merged if any self-test is failing.
+All future pull-requests adding new checks must also provide a corresponding code test. Travis is configured to automatically run the code tests and pull-requests cannot be merged if any test is failing.
 
 The Travis build logs can be seen at: https://travis-ci.org/googlefonts/fontbakery/

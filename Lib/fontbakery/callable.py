@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Font Bakery callable is the wrapper for your custom test code.
+Font Bakery callable is the wrapper for your custom check code.
 
 
 Separation of Concerns Disclaimer:
-While created specifically for testing fonts and font-families this
-module has no domain knowledge about fonts. It can be used for any kind
-of (document) testing. Please keep it so. It will be valuable for other
-domains as well.
-Domain specific knowledge should be encoded only in the Spec (Tests,
+While created specifically for running checks on fonts and font-families
+this module has no domain knowledge about fonts. It can be used for any
+kind of (document) checking. Please keep it so. It will be valuable for
+other domains as well.
+Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
@@ -141,53 +141,53 @@ class FontBakeryCondition(FontbakeryCallable):
     self.description, self.documentation = get_doc_desc(
                                         func, description, documentation)
 
-class FontBakeryTest(FontbakeryCallable):
+class FontBakeryCheck(FontbakeryCallable):
   def __init__(
        self,
-       testfunc,
+       checkfunc,
        id,
        description=None, # short text, this is mandatory
        name = None, # very short text
        conditions=None,
        # arguments_setup=None,
        documentation=None, # markdown?
-       rationale=None, # long text explaining why this test is needed. Using markdown, perhaps?
+       rationale=None, # long text explaining why this check is needed. Using markdown, perhaps?
        affects=None, # A list of tuples each indicating Browser/OS/Application
                      # and the affected versions range.
-       request=None, # An URL to the original request for implementation of this test.
+       request=None, # An URL to the original request for implementation of this check.
                      # This is typically a github issue tracker URL.
        example_failures=None, # A reference to some font or family that originally failed due to
-                              # the problems that this test tries to detect and report.
+                              # the problems that this check tries to detect and report.
        advancedMessageSetup=None,
        priority=None
        ):
-    """This is the base class for all tests. It will usually
-    not be used directly to create test instances, rather
+    """This is the base class for all checks. It will usually
+    not be used directly to create check instances, rather
     decorators which are factories will init this class.
 
     Arguments:
-    testfunc: callable, the test implementation itself.
+    checkfunc: callable, the check implementation itself.
 
     id: use reverse domain name notation as a namespace and a
     unique identifier (numbers or anything) but make sure that
     it **never** **ever** changes, that it is **unique until
     eternity**. This is meant to provide a way to track
     burn-down or regressions in a project over time and maybe
-    to identify changed/updated test implementations for partial
+    to identify changed/updated check implementations for partial
     spec re-evaluation (in contrast to full spec evaluation) if
-    the spec/test changed but not the font.
+    the spec/check changed but not the font.
 
     description: text, used as one line short description
     read by humans
 
     name: text, used as a short label read by humans, defaults
-    to testfunc.__name__
+    to checkfunc.__name__
 
     conditions: a list of condition names that must be all true
-    in order for this test to be executed. conditions are similar
-    to tests, because they also inspect the test subject and they
+    in order for this check to be executed. conditions are similar
+    to checks, because they also inspect the check subject and they
     also belong to the spec. However, they do not get reported
-    directly (there could be tests that report the result of a
+    directly (there could be checks that report the result of a
     condition). Conditions are **probably** registered and
     referenced by name (like "isVariableFont"). We may accept a
     python function for combining or negating a condition. It
@@ -197,17 +197,17 @@ class FontBakeryTest(FontbakeryCallable):
 
     NOTE: `arguments_setup` is postponed until we have a case where it's needed.
     arguments_setup: describes the arguments and position/keyword
-    of arguments `testfunc` expects. Used to override any arguments
-    inferred via inspection of `testfunc`.
-    `TestRunner._get_test_dependencies` will use this information
-    to prepare the arguments for this test.
+    of arguments `checkfunc` expects. Used to override any arguments
+    inferred via inspection of `checkfunc`.
+    `CheckRunner._get_check_dependencies` will use this information
+    to prepare the arguments for this check.
     TODO: flesh out the format.
 
     documentation: text, used as a detailed documentation,
     read by humans(I suggest to make it markdown formatted).
 
     advancedMessageSetup: depending on the instance of
-    AdvancedMessageType returned by the test, this is the
+    AdvancedMessageType returned by the check, this is the
     counterpart for it. Needed to make sense/use of an
     advancedMessage.
     TODO: Make a proposal for this.
@@ -216,15 +216,15 @@ class FontBakeryTest(FontbakeryCallable):
       looking at an advancedMessage.
     TODO: The naming is a bit odd.
 
-    priority: inherted from our legacy tests. Need to see if we
+    priority: inherited from our legacy checks. Need to see if we
     use this at all now.
     """
-    super(FontBakeryTest, self).__init__(testfunc)
+    super(FontBakeryCheck, self).__init__(checkfunc)
     self.id = id
-    self.name = testfunc.__name__ if name is None else name
+    self.name = checkfunc.__name__ if name is None else name
     self.conditions = conditions or []
     self.description, self.documentation = get_doc_desc(
-                                      testfunc, description, documentation)
+                                      checkfunc, description, documentation)
     if not self.description:
       raise TypeError('{} needs a description.'.format(type(self).__name__))
     # self._arguments_setup = arguments_setup
@@ -232,7 +232,7 @@ class FontBakeryTest(FontbakeryCallable):
     self._advancedMessageSetup = advancedMessageSetup
 
 def condition(*args, **kwds):
-  """Test wrapper, a factory for FontBakeryCondition
+  """Check wrapper, a factory for FontBakeryCondition
 
   Requires all arguments of FontBakeryCondition but not `func`
   which is passed via the decorator syntax.
@@ -247,12 +247,12 @@ def condition(*args, **kwds):
       return wraps(func)(FontBakeryCondition(func, *args, **kwds))
   return wrapper
 
-def test(*args, **kwds):
-  """Test wrapper, a factory for FontBakeryTest
+def check(*args, **kwds):
+  """Check wrapper, a factory for FontBakeryCheck
 
-  Requires all arguments of FontBakeryTest but not `testfunc`
+  Requires all arguments of FontBakeryCheck but not `checkfunc`
   which is passed via the decorator syntax.
   """
-  def wrapper(testfunc):
-    return wraps(testfunc)(FontBakeryTest(testfunc, *args, **kwds))
+  def wrapper(checkfunc):
+    return wraps(checkfunc)(FontBakeryCheck(checkfunc, *args, **kwds))
   return wrapper

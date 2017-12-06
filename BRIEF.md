@@ -116,14 +116,14 @@ The ultimate aim is a single master check script that all families pass.
 
 In order to make it as easy as possible for font designers to check their fonts with Font Bakery (see parts 2.1 and 2.2 above) we will develop a web checker that allows users to drop fonts on a web page and see the results of the checking. 
 
-A live report about the quality of a font project encourages test-driven-development for fonts. 
+A live report about the quality of a font project encourages "test-driven-development" for fonts. 
 Contracts can specify that projects must pass to be considered complete.
 
 A prototype for this is available at <https://fontbakery.appspot.com>
 
 #### 3.3 Web Dashboard
 
-In order to develop the collection to the point all families and fonts pass all tests, we will develop a web dashboard that shows their progress against this goal with a table with rows for families and columns for stages of development with relevant information. 
+In order to develop the collection to the point all families and fonts pass all checks, we will develop a web dashboard that shows their progress against this goal with a table with rows for families and columns for stages of development with relevant information. 
 
 Those stage cells may pop-up or link to more detailed information about that stage, such as 'burn down' charts showing the family's status towards being without any issues.
 Those stage cells will also indicate the aggregate progress of the collection towards being without any issues. 
@@ -189,8 +189,6 @@ Each tool should be structured table by table (not followed this)
 Each tool should operate on a single ttLib font object for each file (done)
 
 Each tool should use the Python standard library logging module (done)
-
-Each test should only have a single log entry (done)
 
 Each tool should only interact with UFOs using defcon, specifically the version of defcon that TruFont uses
 

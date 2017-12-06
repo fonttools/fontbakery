@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 Font Bakery reporters/terminal can report the events of the Font Bakery
-TestRunner Protocol to the terminal (or by pipe to files). It understands
+CheckRunner Protocol to the terminal (or by pipe to files). It understands
 both, the synchronous and asynchronous execution model.
 
 Separation of Concerns Disclaimer:
-While created specifically for testing fonts and font-families this
+While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
-of (document) testing. Please keep it so. It will be valuable for other
+of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Tests,
+Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
@@ -35,17 +35,17 @@ except ImportError:
 
 from fontbakery.reporters import FontbakeryReporter
 
-from fontbakery.testrunner import (
+from fontbakery.checkrunner import (
               DEBUG
             , INFO
             , WARN
             , ERROR
             , STARTSECTION
-            , STARTTEST
+            , STARTCHECK
             , SKIP
             , PASS
             , FAIL
-            , ENDTEST
+            , ENDCHECK
             , ENDSECTION
             , START
             , END
@@ -57,18 +57,18 @@ statuses = (
             , WARN
             , ERROR
             , STARTSECTION
-            , STARTTEST
+            , STARTCHECK
             , SKIP
             , PASS
             , FAIL
-            , ENDTEST
+            , ENDCHECK
             , ENDSECTION
             , START
             , END
             )
 # these are displayed in the result counters
-test_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
-test_statuses.sort(key=lambda s:s.weight, reverse=True)
+check_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
+check_statuses.sort(key=lambda s:s.weight, reverse=True)
 
 RED_STR =        '\033[1;31;40m{}\033[0m'.format
 RED_BACKGROUND = '\033[1;37;41m{}\033[0m'.format
@@ -127,7 +127,7 @@ UNICORN = r"""
                           >\  >
                       ,.-' >.'
                      <.'_.''
-              No test is failing.
+              No check is failing.
     <<Art by Colin J. Randall, cjr, 10mar02>>
 """
 
@@ -206,7 +206,7 @@ class TerminalProgress(FontbakeryReporter):
   def _register(self, event):
     super(TerminalProgress, self)._register(event)
     status, message, identity = event
-    if status == ENDTEST and self._print_progress:
+    if status == ENDCHECK and self._print_progress:
       self._set_progress_event(event)
 
   def _output(self, event):
@@ -228,7 +228,7 @@ class TerminalProgress(FontbakeryReporter):
 
     if status == START and status.weight >= self._structure_threshold:
       order = message
-      print('Start ... running {} individual test executions.'.format(len(order)))
+      print('Start ... running {} individual check executions.'.format(len(order)))
 
     if status == END and status.weight >= self._structure_threshold:
       if self._print_progress:
@@ -333,7 +333,7 @@ def _render_results_counter(counter,color=False):
   result = []
 
   seen = set()
-  for s in test_statuses:
+  for s in check_statuses:
     name = s.name
     seen.add(name)
     result.append(format(formatStatus(s, color=color), counter[name]))
@@ -347,11 +347,11 @@ def _render_results_counter(counter,color=False):
 
 class TerminalReporter(TerminalProgress):
   """
-  yield for each test
-  on endtest, make a summary of the test and yield that
+  yield for each check
+  on endcheck, make a summary of the check and yield that
   """
   def __init__(self, collect_results_by=None
-                   , test_threshold=None
+                   , check_threshold=None
                    , log_threshold=None
                    , **kwd):
     super(TerminalReporter, self).__init__(**kwd)
@@ -361,41 +361,41 @@ class TerminalReporter(TerminalProgress):
 
     # logs can occur at any point in the logging protocol
     # especially DEBUG, INFO, WARNING and ERROR
-    # FAIL, PASS and SKIP are only expected within tests though
+    # FAIL, PASS and SKIP are only expected within checks though
     # Log statuses have weights >= 0
     log_threshold = log_threshold if type(log_threshold) is not Status \
                                   else log_threshold.weight
     self._log_threshold = min(ERROR.weight + 1 , max(0, log_threshold))
 
-    # Use this to silence the output tests in async mode, it also activates
+    # Use this to silence the output checks in async mode, it also activates
     # async mode if turned off.
-    # You can't silence whole tests in sync output, as the events are
+    # You can't silence whole checks in sync output, as the events are
     # rendered as soon as they happen, you can however silence some log
     # messages in sync mode, use log_threshold for this.
     # default: no DEBUG output
-    test_threshold = test_threshold if type(test_threshold) is not Status \
-                                    else test_threshold.weight
-    self._test_threshold = min(ERROR.weight + 1, max(PASS.weight, test_threshold))
+    check_threshold = check_threshold if type(check_threshold) is not Status \
+                                    else check_threshold.weight
+    self._check_threshold = min(ERROR.weight + 1, max(PASS.weight, check_threshold))
 
     # if this is used we must use async rendering, otherwise we can't
-    # suppress the output of tests, because we only know the final
-    # status after ENDTEST.
-    self._render_async = self.is_async or test_threshold is not None
+    # suppress the output of checks, because we only know the final
+    # status after ENDCHECK.
+    self._render_async = self.is_async or check_threshold is not None
 
   def _register(self, event):
     super(TerminalReporter, self)._register(event)
-    status, message, (section, test, iterargs) = event
+    status, message, (section, check, iterargs) = event
 
-    if self.results_by and status == ENDTEST:
+    if self.results_by and status == ENDCHECK:
 
-      key = test.id if self.results_by == '*test' \
+      key = check.id if self.results_by == '*check' \
                       else dict(iterargs).get(self.results_by, None)
       if key not in self._collected_results:
         self._collected_results[key] = Counter()
       self._collected_results[key][message.name] += 1
 
   def _render_event_sync(self, print, event):
-    status, message, (section, test, iterargs) = event
+    status, message, (section, check, iterargs) = event
 
     structure_threshold = status.weight >= self._structure_threshold
 
@@ -407,10 +407,10 @@ class TerminalReporter(TerminalProgress):
     if status == STARTSECTION and structure_threshold:
       order = message
       print ('='*8, '{}'.format(section),'='*8)
-      print('{} tests in section'.format(len(order)))
+      print('{} checks in section'.format(len(order)))
       print()
 
-    if status == STARTTEST and structure_threshold:
+    if status == STARTCHECK and structure_threshold:
       if self.runner:
         formatted_iterargs = tuple(
             ('{0}[{1}]'.format(*item), self.runner.get_iterarg(*item))
@@ -424,10 +424,10 @@ class TerminalReporter(TerminalProgress):
         with_string = " with {}".format(formatted_iterargs)
 
       print('>> {}{}'.format(
-        highlight(CYAN_STR, test.id, use_color=self._use_color), with_string))
+        highlight(CYAN_STR, check.id, use_color=self._use_color), with_string))
 
       print('  ',
-        highlight(MAGENTA_STR, test.description, use_color=self._use_color))
+        highlight(MAGENTA_STR, check.description, use_color=self._use_color))
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
@@ -437,7 +437,7 @@ class TerminalReporter(TerminalProgress):
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
-    if status == ENDTEST and structure_threshold:
+    if status == ENDCHECK and structure_threshold:
       print('\n   Result: {}\n'.format(formatStatus(message, color=self._use_color)))
 
     if status == ENDSECTION and structure_threshold:
@@ -453,7 +453,7 @@ class TerminalReporter(TerminalProgress):
       if self.results_by:
         print('Collected results by', self.results_by)
         for key in self._collected_results:
-          if self.results_by == '*test':
+          if self.results_by == '*check':
             val = key
           elif key is not None and self.runner:
             val = self.runner.get_iterarg(self.results_by, key)
@@ -481,7 +481,7 @@ class TerminalReporter(TerminalProgress):
 
   def _render_event_async(self, print, event):
     status, message, identity = event
-    (section, test, iterargs) = identity
+    (section, check, iterargs) = identity
     key = self._get_key(identity)
     logs = self._event_buffers.get(key, None)
     if logs is None:
@@ -491,16 +491,16 @@ class TerminalReporter(TerminalProgress):
         , 'end': None
       }
 
-    # STARTSECTION, STARTTEST
+    # STARTSECTION, STARTCHECK
     if status.weight < 0 and status.weight % 2 == 0 :
       logs['start'] = event
-    # ENDTEST, ENDSECTION
+    # ENDCHECK, ENDSECTION
     elif status.weight < 0 and status.weight % 2 == 1 :
       logs['end'] = event
     else:
       logs['logs'].append(event)
 
-    if status == ENDTEST and message.weight >= self._test_threshold \
+    if status == ENDCHECK and message.weight >= self._check_threshold \
           or status == ENDSECTION:
       for e in [logs['start']] + logs['logs'] + [logs['end']]:
         self._render_event_sync(print, e)
@@ -509,7 +509,7 @@ class TerminalReporter(TerminalProgress):
       self._render_event_sync(print, event)
 
   def _render_event(self, *event):
-    status, message, (section, test, iterargs) = event
+    status, message, (section, check, iterargs) = event
     output = StringIO()
     print = partial(__builtin__.print, file=output)
 

@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 """
 Separation of Concerns Disclaimer:
-While created specifically for testing fonts and font-families this
+While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
-of (document) testing. Please keep it so. It will be valuable for other
+of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Tests,
+Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from __future__ import absolute_import, print_function, unicode_literals, division
 from collections import Counter
 
-from fontbakery.testrunner import (
+from fontbakery.checkrunner import (
               DEBUG
             , INFO
             , WARN
             , ERROR
             , STARTSECTION
-            , STARTTEST
+            , STARTCHECK
             , SKIP
             , PASS
             , FAIL
-            , ENDTEST
+            , ENDCHECK
             , ENDSECTION
             , START
             , END
@@ -33,7 +33,7 @@ class FontbakeryReporter(object):
     self._started = None
     self._ended = None
     self._order = None
-    self._results = [] # ENDTEST events in order of appearance
+    self._results = [] # ENDCHECK events in order of appearance
     self._indexes = {}
     self._tick = 0
     self._counter = Counter()
@@ -54,9 +54,9 @@ class FontbakeryReporter(object):
     return self._order
 
   def _get_key(self, identity):
-    section, test, iterargs = identity
+    section, check, iterargs = identity
     return ('{}'.format(section) if section else section
-          , '{}'.format(test) if test else test
+          , '{}'.format(check) if check else check
           , iterargs
           )
 
@@ -90,7 +90,7 @@ class FontbakeryReporter(object):
     if status == END:
       self._ended = event
 
-    if status == ENDTEST:
+    if status == ENDCHECK:
       self._results.append(event)
       self._counter[message.name] += 1
       self._counter['(not finished)'] -= 1

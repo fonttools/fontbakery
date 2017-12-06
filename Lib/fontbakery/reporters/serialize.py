@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 """
 Font Bakery reporters/serialize can report the events of the Font Bakery
-TestRunner Protocol to a serializeable document e.g. for usage with `json.dumps`.
+CheckRunner Protocol to a serializeable document e.g. for usage with `json.dumps`.
 
 Separation of Concerns Disclaimer:
-While created specifically for testing fonts and font-families this
+While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
-of (document) testing. Please keep it so. It will be valuable for other
+of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Tests,
+Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from __future__ import absolute_import, print_function, unicode_literals, division
 
-from fontbakery.testrunner import (
+from fontbakery.checkrunner import (
               DEBUG
             , INFO
             , WARN
             , ERROR
             , STARTSECTION
-            , STARTTEST
+            , STARTCHECK
             , SKIP
             , PASS
             , FAIL
-            , ENDTEST
+            , ENDCHECK
             , ENDSECTION
             , START
             , END
@@ -50,19 +50,19 @@ class SerializeReporter(FontbakeryReporter):
     # used when self._results_by is set
     # this way we minimize our knowledge of the specification
     self._max_cluster_by_index = None
-    self._observed_tests = {}
+    self._observed_checks = {}
 
   def _set_metadata(self, identity, item):
-    section, test, iterargs = identity
+    section, check, iterargs = identity
     # If section is None this is the main doc.
-    # If test is None this is `section`
-    # otherwise this `test`
+    # If check is None this is `section`
+    # otherwise this `check`
     pass
 
   def _register(self, event):
     super(SerializeReporter, self)._register(event)
     status, message, identity = event
-    section, test, iterargs = identity
+    section, check, iterargs = identity
     key = self._get_key(identity)
 
     # not item == True when item is empty
@@ -77,15 +77,15 @@ class SerializeReporter(FontbakeryReporter):
           # are structured differently.
           item['clusteredBy'] = self._results_by
       if status in (STARTSECTION, ENDSECTION):
-        item.update(dict(key=key, result=None, tests=[]))
-      if test:
+        item.update(dict(key=key, result=None, check=[]))
+      if check:
         item.update(dict(key=key, result=None, logs=[]))
         if self._results_by:
-          if self._results_by == '*test':
-            if test.id not in self._observed_tests:
-              self._observed_tests[test.id] = len(self._observed_tests)
-            index = self._observed_tests[test.id]
-            value = test.id
+          if self._results_by == '*check':
+            if check.id not in self._observed_checks:
+              self._observed_checks[check.id] = len(self._observed_checks)
+            index = self._observed_checks[check.id]
+            value = check.id
           else:
             index = dict(iterargs).get(self._results_by, None)
             value = None
@@ -97,7 +97,7 @@ class SerializeReporter(FontbakeryReporter):
 
           item['clustered'] = {
               'name': self._results_by
-            , 'index': index # None if this test did not require self.results_by
+            , 'index': index # None if this check did not require self.results_by
           }
           if value: # Not set if self.runner was not defined on initialization
             item['clustered']['value'] = value
@@ -105,7 +105,7 @@ class SerializeReporter(FontbakeryReporter):
 
     if status in (END, ENDSECTION):
       item['result'] = message # is a Counter
-    if status == ENDTEST:
+    if status == ENDCHECK:
       item['result'] = message.name # is a Status
     if status >= DEBUG:
       item['logs'].append(dict(
@@ -130,21 +130,21 @@ class SerializeReporter(FontbakeryReporter):
       sectionKey = self._get_key((section, None, None))
       sectionDoc = self._items[sectionKey]
 
-      test = self._items[key]
+      check = self._items[key]
       if self._results_by:
-        if not len(sectionDoc['tests']):
+        if not len(sectionDoc['checks']):
           clusterlen = self._max_cluster_by_index + 1
-          if self._results_by != '*test':
+          if self._results_by != '*check':
             # + 1 for rests bucket
             clusterlen += 1
-          sectionDoc['tests'] = [[] for _ in range(clusterlen)]
-        index = test['clustered']['index']
+          sectionDoc['checks'] = [[] for _ in range(clusterlen)]
+        index = check['clustered']['index']
         if index is None:
           # last element collects unclustered
           index = -1
-        sectionDoc['tests'][index].append(test)
+        sectionDoc['checks'][index].append(check)
       else:
-        sectionDoc['tests'].append(test)
+        sectionDoc['checks'].append(check)
       if sectionKey not in seen:
         seen.add(sectionKey)
         doc['sections'].append(sectionDoc)

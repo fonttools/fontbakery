@@ -47,7 +47,7 @@ class TestFontbakerySubcommands(unittest.TestCase):
     def test_check_googlefonts(self):
         self.check_script(['python', self.get_path('check-googlefonts'), self.example_font])
 
-    # We may someday add more targets here such as 'check-opentype' for generic OpenType spec tests
+    # We may someday add more targets here such as 'check-opentype' for generic OpenType spec checks
     # as discussed at https://github.com/googlefonts/fontbakery/issues/1625
 
 if __name__ == '__main__':

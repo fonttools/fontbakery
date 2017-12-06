@@ -11,9 +11,9 @@ import argparse
 import glob
 from collections import OrderedDict
 
-from fontbakery.testrunner import (
+from fontbakery.checkrunner import (
               distribute_generator
-            , TestRunner
+            , CheckRunner
             , Spec
             , DEBUG
             , INFO
@@ -89,14 +89,14 @@ def ArgumentParser(specification, spec_arg=True):
   argument_parser.add_argument('-l', '--loglevel', dest='loglevels', type=log_levels_get,
                       action='append',
                       metavar= 'LOGLEVEL',
-                      help='Report tests with a result of this status or higher.\n'
+                      help='Report checks with a result of this status or higher.\n'
                            'One of: {}.\n'
                            '(default: {})'.format(', '.join(log_levels.keys())
                                                    , DEFAULT_LOG_LEVEL.name))
 
   argument_parser.add_argument('-m', '--loglevel-messages', default=None, type=log_levels_get,
                       help=('Report log messages of this status or higher.\n'
-                            'Messages are all status lines within a test.\n'
+                            'Messages are all status lines within a check.\n'
                             'One of: {}.\n'
                             '(default: LOGLEVEL)'
                             ).format(', '.join(log_levels.keys())))
@@ -107,8 +107,8 @@ def ArgumentParser(specification, spec_arg=True):
   argument_parser.add_argument('-C', '--no-colors', default=False, action='store_true',
                       help='No colors for tty output.')
 
-  argument_parser.add_argument('-L', '--list-tests', default=False, action='store_true',
-                      help='List the tests available in the selected specification.')
+  argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
+                      help='List the checks available in the selected specification.')
 
   argument_parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                       metavar= 'JSON_FILE',
@@ -118,7 +118,7 @@ def ArgumentParser(specification, spec_arg=True):
 
 
 
-  gather_by_choices = iterargs + ['*test']
+  gather_by_choices = iterargs + ['*check']
   argument_parser.add_argument('-g','--gather-by', default=None,
                       metavar= 'ITERATED_ARG',
                       choices=gather_by_choices,
@@ -133,18 +133,18 @@ def ArgumentParser(specification, spec_arg=True):
     return order or None
   argument_parser.add_argument('-o','--order', default=None, type=parse_order,
                       help='Comma separated list of order arguments.\n'
-                      'The execution order is determined by the order of the test\n'
+                      'The execution order is determined by the order of the check\n'
                       'definitions and by the order of the iterable arguments.\n'
                       'A section defines its own order. `--order` can be used to\n'
                       'override the order of *all* sections.\n'
                       'Despite the ITERATED_ARGS there are two special\n'
                       'values available:\n'
                       '"*iterargs" -- all remainig ITERATED_ARGS\n'
-                      '"*test"     -- order by test\n'
+                      '"*check"     -- order by check\n'
                       'ITERATED_ARGS: {}\n'
-                      'A sections default is equivalent to: "*iterargs, *test".\n'
-                      'A common use case is `-o "*test"` when testing the whole \n'
-                      'collection against a selection of tests picked with `--checkid`.'
+                      'A sections default is equivalent to: "*iterargs, *check".\n'
+                      'A common use case is `-o "*check"` when checking the whole \n'
+                      'collection against a selection of checks picked with `--checkid`.'
                       ''.format(', '.join(iterargs))
                       )
   return argument_parser
@@ -171,16 +171,19 @@ def get_spec():
   # Fails with an attribute error if specification is undefined.
   return imported.specification
 
-def runner_factory(specification, fonts, explicit_tests=None, custom_order=None
-                                                        , values=None):
-  """ Convenience TestRunner factory. """
+def runner_factory( specification
+                  , fonts
+                  , explicit_checks=None
+                  , custom_order=None
+                  , values=None):
+  """ Convenience CheckRunner factory. """
   values_ = dict(fonts=fonts)
   if values is not None:
     values_.update(values)
-  return TestRunner( specification, values_
-                   , explicit_tests=explicit_tests
-                   , custom_order=custom_order
-                   )
+  return CheckRunner( specification, values_
+                    , explicit_checks=explicit_checks
+                    , custom_order=custom_order
+                    )
 
 def main(specification=None, values=None):
   # this won't be used in check-googlefonts
@@ -191,14 +194,14 @@ def main(specification=None, values=None):
   argument_parser = ArgumentParser(specification, spec_arg=add_spec_arg)
   args = argument_parser.parse_args()
 
-  if args.list_tests:
+  if args.list_checks:
     for section_name, section in specification._sections.items():
-      tests = section.list_tests()
-      sys.exit("Available tests on {} are:\n{}".format(section_name,
-                                                       "\n".join(tests)))
+      checks = section.list_checks()
+      sys.exit("Available checks on {} are:\n{}".format(section_name,
+                                                        "\n".join(checks)))
 
   runner = runner_factory(specification, args.fonts
-                     , explicit_tests=args.checkid
+                     , explicit_checks=args.checkid
                      , custom_order=args.order
                      , values=values
                      )
@@ -207,7 +210,7 @@ def main(specification=None, values=None):
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
-                       , test_threshold=loglevel
+                       , check_threshold=loglevel
                        , log_threshold=args.loglevel_messages or loglevel
                        , usecolor=not args.no_colors
                        , collect_results_by=args.gather_by

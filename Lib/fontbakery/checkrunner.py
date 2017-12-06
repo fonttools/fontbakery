@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Font Bakery TestRunner is the driver of a font bakery test suite.
+Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 
 
 Separation of Concerns Disclaimer:
-While created specifically for testing fonts and font-families this
+While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
-of (document) testing. Please keep it so. It will be valuable for other
+of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Tests,
+Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
@@ -26,8 +26,8 @@ class Status(object):
   """ If you create a custom Status symbol, please keep in mind that
   all statuses are registered globally and that can cause name collisions.
 
-  However, it's an intended use case for your tests to be able to yield
-  custom statuses. Interpreters of the test protocol will have to skip
+  However, it's an intended use case for your checks to be able to yield
+  custom statuses. Interpreters of the check protocol will have to skip
   statuses unknown to them or treat them in an otherwise non-fatal fashion.
   """
   def __new__(cls, name, weight=0):
@@ -78,7 +78,7 @@ class Status(object):
 
   __repr__ = __str__
 
-# Status messages of the test runner protocoll
+# Status messages of the check runner protocol
 
 # Structuring statuses
 #  * begin with "START" and "END"
@@ -87,37 +87,39 @@ class Status(object):
 #    weights, such that START.weight + 1 == END.weight
 #  * the bigger the weight the bigger is the structure, structuring on a macro-level
 #  * different structures can have the same weights, if they occur on the same level
-#  * ENDTEST is the biggest structuring status
+#  * ENDCHECK is the biggest structuring status
 #
 # Log statuses
 #  * have weights >= 0
 #  * the more important the status the bigger the weight
 #  * ERROR has the biggest weight
-#  * PASS is the lowest status a test can have,
-#    i.e.: a test run must at least yield one log that is >= PASS
+#  * PASS is the lowest status a check can have,
+#    i.e.: a check run must at least yield one log that is >= PASS
 #
-# From all the statuses that can occur within a test, the "worst" one
-# is defining for the test overall status:
+# From all the statuses that can occur within a check, the "worst" one
+# is defining for the check overall status:
 # ERROR > FAIL > WARN > SKIP > INFO > PASS > DEBUG
-# Anything from WARN to PASS does not make a test fail.
+# Anything from WARN to PASS does not make a check fail.
 # A result < PASS creates an ERROR. That means, DEBUG is not a valid
-# result of a test, nor is any of the structuring statuses.
-# A test with SKIP can't (MUST NOT) create any other event.
+# result of a check, nor is any of the structuring statuses.
+# A check with SKIP can't (MUST NOT) create any other event.
 
 # Log statuses
-# only between STARTTEST and ENDTEST:
+# only between STARTCHECK and ENDCHECK:
 DEBUG = Status('DEBUG', 0) # Silent by default
 INFO = Status('INFO', 2)
-WARN = Status('WARN', 4) # A test that results in WARN may indicate an error, but also may be OK
+WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, but also may be OK
 ERROR = Status('ERROR', 6) #  something a programmer must fix
 PASS = Status('PASS', 1)
  # SKIP is heavier than PASS because it's likely more interesting to
  # see what got skipped, to reveal blind spots.
 SKIP = Status('SKIP', 3)
-FAIL = Status('FAIL', 5) # a status of ERROR will make a test fail as well
+FAIL = Status('FAIL', 5) # a FAIL is a problem detected in the font or family
+
+# a status of ERROR will make a check fail as well
 
 
-# Start of the test-suite. Must be always the first message, even in async mode.
+# Start of the suite of checks. Must be always the first message, even in async mode.
 # Message is the full execution order of the whole spec
 START = Status('START', -6)
 # Only between START and END.
@@ -125,18 +127,18 @@ START = Status('START', -6)
 STARTSECTION = Status('STARTSECTION', -4)
 # Only between STARTSECTION and ENDSECTION.
 # Message is None.
-STARTTEST = Status('STARTTEST', -2)
-# Ends the last test started by STARTTEST.
-# Message the the result status of the whole test, one of PASS, SKIP, FAIL, ERROR.
-ENDTEST = Status('ENDTEST', -1)
+STARTCHECK = Status('STARTCHECK', -2)
+# Ends the last check started by STARTCHECK.
+# Message the the result status of the whole check, one of PASS, SKIP, FAIL, ERROR.
+ENDCHECK = Status('ENDCHECK', -1)
 # Ends the last section started by STARTSECTION.
 # Message is a Counter dictionary where the keys are Status.name of
-# the ENDTEST message. If serialized, some existing statuses may not be
+# the ENDCHECK message. If serialized, some existing statuses may not be
 # in the counter because they never occured in the section.
 ENDSECTION = Status('ENDSECTION', -3)
-# End of the test-suite. Must be always the last message, even in async mode.
+# End of the suite of checks. Must be always the last message, even in async mode.
 # Message is a counter as described in ENDSECTION, but with the collected
-# results of all tests in all sections.
+# results of all checks in all sections.
 END = Status('END', -5)
 
 class FontBakeryRunnerError(Exception):
@@ -157,15 +159,15 @@ class ProtocolViolationError(FontBakeryRunnerError):
     super(ProtocolViolationError, self).__init__(message, *args)
 
 
-class FailedTestError(FontBakeryRunnerError):
+class FailedCheckError(FontBakeryRunnerError):
   def __init__(self, error, traceback, *args):
     message = 'Failed with {0}: {1}'.format(type(error).__name__, error)
     self.error = error
     self.traceback = traceback
-    super(FailedTestError, self).__init__(message, *args)
+    super(FailedCheckError, self).__init__(message, *args)
 
 class FailedConditionError(FontBakeryRunnerError):
-  """ This is a serious problem with the test suite spec and it must
+  """ This is a serious problem with the check suite spec and it must
   be solved.
   """
   def __init__(self, condition, error, traceback, *args):
@@ -176,7 +178,7 @@ class FailedConditionError(FontBakeryRunnerError):
     super(FailedConditionError, self).__init__(message, *args)
 
 class MissingConditionError(FontBakeryRunnerError):
-  """ This is a serious problem with the test suite spec and it must
+  """ This is a serious problem with the check suite spec and it must
   be solved, most probably a typo.
   """
   def __init__(self, condition_name, error, traceback, *args):
@@ -187,9 +189,9 @@ class MissingConditionError(FontBakeryRunnerError):
     super(MissingConditionError, self).__init__(message, *args)
 
 class FailedDependenciesError(FontBakeryRunnerError):
-  def __init__(self, test, error, traceback, *args):
-    message = 'The test {0} had an error: {1}: {2}'.format(test, type(error).__name__, error)
-    self.test = test
+  def __init__(self, check, error, traceback, *args):
+    message = 'The check {0} had an error: {1}: {2}'.format(check, type(error).__name__, error)
+    self.check = check
     self.error = error
     self.traceback = traceback
     super(FailedDependenciesError, self).__init__(message, *args)
@@ -216,18 +218,18 @@ def get_traceback():
   del tb
   return result
 
-class TestRunner(object):
+class CheckRunner(object):
   def __init__(self, spec, values
              , values_can_override_spec_names=True
              , custom_order=None
-             , explicit_tests=None
+             , explicit_checks=None
              ):
     # TODO: transform all iterables that are list like to tuples
     # to make sure that they won't change anymore.
     # Also remove duplicates from list like iterables
 
     self._custom_order = custom_order
-    self._explicit_tests = explicit_tests
+    self._explicit_checks = explicit_checks
     self._iterargs = OrderedDict()
     for singular, plural in spec.iterargs.items():
       values[plural] = tuple(values[plural])
@@ -262,14 +264,14 @@ class TestRunner(object):
     return self._spec
 
   def _check_result(self, result):
-    """ Check that the test returned a well formed result:
+    """ Check that the check returned a well formed result:
           a tuple (<Status>, message)
 
         A boolean Status is allowd and will be transformed to:
         True <Status: PASS>, False <Status: FAIL>
 
-       Tests will be implemented by other parties. This is to
-       help implementors creating good tests, to spot erroneous
+       Checks will be implemented by other parties. This is to
+       help implementors creating good checks, to spot erroneous
        implementations early and to make it easier to handle
        the results tuple.
     """
@@ -297,8 +299,8 @@ class TestRunner(object):
 
     return result
 
-  def _exec_test_generator(self, gen):
-    """ Execute a generator returned by a test callable.
+  def _exec_check_generator(self, gen):
+    """ Execute a generator returned by a check callable.
        Yield each sub-result or, in case of an error, (FAIL, exception)
     """
     try:
@@ -311,18 +313,18 @@ class TestRunner(object):
         yield sub_result
     except Exception as e:
       tb = get_traceback()
-      error = FailedTestError(e, tb)
+      error = FailedCheckError(e, tb)
       yield (ERROR, error)
 
-  def _exec_test(self, test, args):
-    """ Yields test sub results.
+  def _exec_check(self, check, args):
+    """ Yields check sub results.
 
-    `test` must be a callable
+    `check` must be a callable
 
-    Each test result is a tuple of: (<Status>, mixed message)
+    Each check result is a tuple of: (<Status>, mixed message)
     `status`: must be an instance of Status.
           If one of the `status` entries in one of the results
-          is FAIL, the whole test is considered failed.
+          is FAIL, the whole check is considered failed.
           WARN is most likely a PASS in a non strict mode and a
           FAIL in a strict mode.
     `message`:
@@ -331,24 +333,24 @@ class TestRunner(object):
       * If it is a `string` it's a description of what passed
         or failed.
       * we'll think of an AdvancedMessageType as well, so that
-        we can connect the test result with more in depth
-        knowledge from the test definition.
+        we can connect the check result with more in depth
+        knowledge from the check definition.
     """
     try:
-      result = test(**args)
+      result = check(**args)
     except Exception as e:
       tb = get_traceback()
-      error = FailedTestError(e, tb)
+      error = FailedCheckError(e, tb)
       result = (FAIL, error)
 
-    # We allow the `test` callable to "yield" multiple
+    # We allow the `check` callable to "yield" multiple
     # times, instead of returning just once. That's
-    # a common thing for unit tests (testing multiple conditions
+    # a common thing for unit checks (checking multiple conditions
     # in one method) and a nice feature via yield. It will also
-    # help us to be better compatible with our old style tests
+    # help us to be better compatible with our old style checks
     # or with pyunittest-like tests.
     if isinstance(result, types.GeneratorType):
-      for sub_result in self._exec_test_generator(result):
+      for sub_result in self._exec_check_generator(result):
         yield self._check_result(sub_result)
     else:
       yield self._check_result(result)
@@ -526,9 +528,9 @@ class TestRunner(object):
       return True, stripped[1:].strip()
     return False, stripped
 
-  def _get_test_dependencies(self, test, iterargs):
+  def _get_check_dependencies(self, check, iterargs):
     unfulfilled_conditions = []
-    for condition in test.conditions:
+    for condition in check.conditions:
       negate, name = self._is_negated(condition)
       if name in self._values:
         # this is a handy way to set flags from the outside
@@ -543,70 +545,70 @@ class TestRunner(object):
       if not val:
         unfulfilled_conditions.append(condition)
     if unfulfilled_conditions:
-      # This will make the test neither pass nor fail
+      # This will make the check neither pass nor fail
       status = (SKIP, 'Unfulfilled Conditions: {}'.format(
                                     ', '.join(unfulfilled_conditions)))
       return (status, None)
 
     try:
-      return None, self._get_args(test, iterargs)
+      return None, self._get_args(check, iterargs)
     except Exception as error:
       tb = get_traceback()
-      status = (ERROR, FailedDependenciesError(test, error, tb))
+      status = (ERROR, FailedDependenciesError(check, error, tb))
       return (status, None)
 
-  def _run_test(self, test, iterargs):
+  def _run_check(self, check, iterargs):
     summary_status = None
-    # A test is more than just a function, it carries
+    # A check is more than just a function, it carries
     # a lot of meta-data for us, in this case we can use
-    # meta-data to learn how to call the test (via
+    # meta-data to learn how to call the check (via
     # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
     # inspection results).
-    skipped, args = self._get_test_dependencies(test, iterargs)
-    # FIXME: test is not a message
+    skipped, args = self._get_check_dependencies(check, iterargs)
+    # FIXME: check is not a message
     # so, to use it as a message, it should have a "message-interface"
     # TODO: describe generic "message-interface"
-    yield STARTTEST, None
+    yield STARTCHECK, None
     if skipped is not None:
       summary_status = skipped[0]
       # `skipped` is a normal result tuple (status, message)
       # where `status` is either FAIL for unmet dependencies
       # or SKIP for unmet conditions or ERROR. A status of SKIP is
-      # never a failed test.
+      # never a failed check.
       # ERROR is either a missing dependency or a condition that raised
       # an exception. This shouldn't happen when everyting is set up
       # correctly.
       yield skipped
     else:
-      for sub_result in self._exec_test(test, args):
+      for sub_result in self._exec_check(check, args):
         status, _ = sub_result
         if summary_status is None or status >= summary_status:
           summary_status = status
         yield sub_result
       # The only reason to yield this is to make it testable
-      # that a test ran to its end, or, if we start to allow
-      # nestable subtests. Otherwise, a STARTTEST would end the
-      # previous test implicitly.
+      # that a check ran to its end, or, if we start to allow
+      # nestable subchecks. Otherwise, a STARTCHECK would end the
+      # previous check implicitly.
       # We can also use it to display status updates to the user.
     if summary_status is None:
       summary_status = ERROR
-      yield ERROR, ('The check {} did not yield any status'.format(test))
+      yield ERROR, ('The check {} did not yield any status'.format(check))
     elif summary_status < PASS:
       summary_status = ERROR
       # got to yield it,so we can see it in the report
       yield ERROR, ('The most significant status of {} was only {} but the '
-                   'minimum is {}').format(test, summary_status, PASS)
+                   'minimum is {}').format(check, summary_status, PASS)
 
-    yield ENDTEST, summary_status
+    yield ENDCHECK, summary_status
 
   # old, more straight forward, but without a point to extract the order
   # def run(self):
   #   for section in self._spec.sections:
   #     yield STARTSECTION, section
-  #     for test, iterargs in section.execution_order(self._iterargs
+  #     for check, iterargs in section.execution_order(self._iterargs
   #                            , getConditionByName=self._spec.conditions.get):
-  #       for event in self._run_test(test, iterargs):
+  #       for event in self._run_check(check, iterargs):
   #         yield event;
   #     yield ENDSECTION, None
 
@@ -615,10 +617,10 @@ class TestRunner(object):
     order = self._cache.get('order', None)
     if order is None:
       order = []
-      # section, test, iterargs = identity
+      # section, check, iterargs = identity
       for identity in self._spec.execution_order(self._iterargs,
                                     custom_order=self._custom_order,
-                                    explicit_tests=self._explicit_tests):
+                                    explicit_checks=self._explicit_checks):
         order.append(identity)
       self._cache['order'] = order = tuple(order)
     return order
@@ -634,7 +636,7 @@ class TestRunner(object):
     return order
 
   def run(self, order=None):
-    testrun_summary = Counter()
+    checkrun_summary = Counter()
 
     if order is not None:
       order = self.check_order(order)
@@ -647,13 +649,13 @@ class TestRunner(object):
     oldsection = None
     section_order = None
     section_orders = []
-    for section, test, iterargs in order:
+    for section, check, iterargs in order:
       if oldsection != section:
         if oldsection is not None:
           section_orders.append((oldsection, tuple(section_order)))
         oldsection = section
         section_order = []
-      section_order.append((test, iterargs))
+      section_order.append((check, iterargs))
     if section is not None:
       section_orders.append((section, tuple(section_order)))
 
@@ -664,16 +666,16 @@ class TestRunner(object):
     for section, section_order in section_orders:
       section_summary = Counter()
       yield STARTSECTION, section_order, (section, None, None)
-      for test, iterargs in section_order:
-        for status, message in self._run_test(test, iterargs):
-          yield status, message, (section, test, iterargs);
-        # after _run_test the last status must be ENDTEST
-        assert status == ENDTEST
-        # message is the summary_status of the test when status is ENDTEST
+      for check, iterargs in section_order:
+        for status, message in self._run_check(check, iterargs):
+          yield status, message, (section, check, iterargs);
+        # after _run_check the last status must be ENDCHECK
+        assert status == ENDCHECK
+        # message is the summary_status of the check when status is ENDCHECK
         section_summary[message.name] += 1
       yield ENDSECTION, section_summary, (section, None, None)
-      testrun_summary.update(section_summary)
-    yield END, testrun_summary, (None, None, None)
+      checkrun_summary.update(section_summary)
+    yield END, checkrun_summary, (None, None, None)
 
 def distribute_generator(gen, targets_callbacks):
   for item in gen:
@@ -681,12 +683,12 @@ def distribute_generator(gen, targets_callbacks):
       target(item)
 
 class Section(object):
-  def __init__(self, name, tests=None, order=None, description=None):
+  def __init__(self, name, checks=None, order=None, description=None):
     self.name = name
     self.description = description
-    self._add_test_callbacks = []
-    self._tests = [] if tests is None else list(tests)
-    self._testid2index = {i:test.id for i, test in enumerate(self._tests)}
+    self._add_check_callbacks = []
+    self._checks = [] if checks is None else list(checks)
+    self._checkid2index = {i:check.id for i, check in enumerate(self._checks)}
     # a list of iterarg-names
     self._order = order or []
 
@@ -694,49 +696,49 @@ class Section(object):
     return '<Section: {0}>'.format(self.name)
 
   def __eq__(self, other):
-    """ True if other.tests has the same tests in the same order"""
-    return self._tests == other.tests
+    """ True if other.checks has the same checks in the same order"""
+    return self._checks == other.checks
 
   @property
   def order(self):
     return self._order[:]
 
   @property
-  def tests(self):
-    return self._tests
+  def checks(self):
+    return self._checks
 
-  def on_add_test(self, callback):
-    self._add_test_callbacks.append(callback)
+  def on_add_check(self, callback):
+    self._add_check_callbacks.append(callback)
 
-  def add_test(self, test):
+  def add_check(self, check):
     """
-    Please use rather `register_test` as a decorator.
+    Please use rather `register_check` as a decorator.
     """
-    for callback in self._add_test_callbacks:
-      callback(self, test)
-    self._testid2index[test.id] = len(self._tests)
-    self._tests.append(test)
-    return test
+    for callback in self._add_check_callbacks:
+      callback(self, check)
+    self._checkid2index[check.id] = len(self._checks)
+    self._checks.append(check)
+    return check
 
-  def get_test(self, test_id):
-    index = self._testid2index[test_id]
-    return self._tests[index]
+  def get_check(self, check_id):
+    index = self._checkid2index[check_id]
+    return self._checks[index]
 
-  def register_test(self, func):
+  def register_check(self, func):
     """
     # register in `special_section`
-    @my_section.register_test
-    @test(id='com.example.fontbakery/test/0')
-    def my_test():
+    @my_section.register_check
+    @check(id='com.example.fontbakery/check/0')
+    def my_check():
       yield PASS, 'example'
     """
-    return self.add_test(func)
+    return self.add_check(func)
 
-  def list_tests(self):
-    tests = []
-    for test in self._tests:
-      tests.append("{} | {}".format(test.id, test.description))
-    return tests
+  def list_checks(self):
+    checks = []
+    for check in self._checks:
+      checks.append("{} | {}".format(check.id, check.description))
+    return checks
 
 class Spec(object):
   def __init__(self
@@ -748,8 +750,8 @@ class Spec(object):
              , default_section=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
-          individual tests.
-          It makes no sense to have tests repeatedly, they yield the same
+          individual checks.
+          It makes no sense to have checks repeatedly, they yield the same
           results anyway, thus we don't allow this.
       iterargs: maping 'singular' variable names to the iterable in values
           e.g.: `{'font': 'fonts'}` in this case fonts must be iterable AND
@@ -808,7 +810,7 @@ class Spec(object):
     if conditions:
       self._add_dict_to_namespace('conditions', conditions)
 
-    self._test_registry = {}
+    self._check_registry = {}
     self._sections = OrderedDict()
     if sections:
       for section in sections:
@@ -877,7 +879,7 @@ class Spec(object):
     """
       Get all arguments or mandatory arguments of the item.
 
-      Item is a test or a condition, which means it can be dependent on
+      Item is a check or a condition, which means it can be dependent on
       more conditions, this climbs down all the way.
     """
     if not key in ('args', 'mandatoryArgs'):
@@ -907,16 +909,16 @@ class Spec(object):
     args = self._get_aggregate_args(item, 'mandatoryArgs')
     return tuple(sorted([arg for arg in args if arg in self.iterargs]))
 
-  def _analyze_tests(self, all_args, tests):
+  def _analyze_checks(self, all_args, checks):
     args = list(all_args)
     args.reverse()
-              #(test, signature, scope)
-    scopes = [(test, tuple(), tuple()) for test in tests]
+              #(check, signature, scope)
+    scopes = [(check, tuple(), tuple()) for check in checks]
     aggregatedArgs = {
-      'args': {test.name:self._get_aggregate_args(test, 'args')
-                                          for test in tests }
-    , 'mandatoryArgs': {test.name: self._get_aggregate_args(test, 'mandatoryArgs')
-                                          for test in tests }
+      'args': {check.name:self._get_aggregate_args(check, 'args')
+                                          for check in checks }
+    , 'mandatoryArgs': {check.name: self._get_aggregate_args(check, 'mandatoryArgs')
+                                          for check in checks }
     }
     saturated = []
     while args:
@@ -924,35 +926,35 @@ class Spec(object):
       # args_set must contain all current args, hence it's before the pop
       args_set = set(args)
       arg = args.pop()
-      for test, signature, scope in scopes:
-        if not len(aggregatedArgs['args'][test.name] & args_set):
-          # there's no args no more or no arguments of test are
+      for check, signature, scope in scopes:
+        if not len(aggregatedArgs['args'][check.name] & args_set):
+          # there's no args no more or no arguments of check are
           # in args
           target = saturated
-        elif arg == '*test' or arg in aggregatedArgs['mandatoryArgs'][test.name]:
+        elif arg == '*check' or arg in aggregatedArgs['mandatoryArgs'][check.name]:
           signature += (1, )
           scope += (arg, )
           target = new_scopes
         else:
-          # there's still a tail of args and test requires one of the
+          # there's still a tail of args and check requires one of the
           # args in tail but not the current arg
           signature += (0, )
           target = new_scopes
-        target.append((test, signature, scope))
+        target.append((check, signature, scope))
       scopes = new_scopes
     return saturated + scopes;
 
   def _execute_section(self, iterargs, section, items):
     if section is None:
       # base case: terminate recursion
-      for test, signature, scope in items:
-        yield test, []
+      for check, signature, scope in items:
+        yield check, []
     elif not section[0]:
       # no sectioning on this level
       for item in self._execute_scopes(iterargs, items):
         yield item
-    elif section[1] == '*test':
-      # enforce sectioning by test
+    elif section[1] == '*check':
+      # enforce sectioning by check
       for section_item in items:
         for item in self._execute_scopes(iterargs, [section_item]):
           yield item
@@ -960,8 +962,8 @@ class Spec(object):
       # section by gen_arg, i.e. ammend with changing arg.
       _, gen_arg = section
       for index in range(iterargs[gen_arg]):
-        for test, args in self._execute_scopes(iterargs, items):
-          yield test, [(gen_arg, index)] + args
+        for check, args in self._execute_scopes(iterargs, items):
+          yield check, [(gen_arg, index)] + args
 
   def _execute_scopes(self, iterargs, scopes):
     generators = []
@@ -969,7 +971,7 @@ class Spec(object):
     current_section = None
     last_section = None
     seen = set()
-    for test, signature, scope in scopes:
+    for check, signature, scope in scopes:
       if len(signature):
         # items are left
         if signature[0]:
@@ -991,7 +993,7 @@ class Spec(object):
           items = []
           seen.add(last_section)
         last_section = current_section
-      items.append((test, signature, scope))
+      items.append((check, signature, scope))
     # clean up left overs
     if len(items):
       generators.append(self._execute_section(iterargs, current_section, items))
@@ -1002,7 +1004,7 @@ class Spec(object):
   def _section_execution_order(self, section, iterargs
                              , reverse=False
                              , custom_order=None
-                             , explicit_tests=None):
+                             , explicit_checks=None):
     """
       order must:
         a) contain all variable args (we're appending missing ones)
@@ -1011,7 +1013,7 @@ class Spec(object):
       order may contain *iterargs otherwise it is appended
       to the end
 
-      order may contain "*test" otherwise, it is like *test is appended
+      order may contain "*check" otherwise, it is like *check is appended
       to the end (Not done explicitly though).
     """
     stack = custom_order[:] if custom_order is not None else section.order[:]
@@ -1034,82 +1036,82 @@ class Spec(object):
         continue
       full_order.append(item)
 
-    tests = [test for test in section.tests \
-                        if not explicit_tests or test.id in explicit_tests]
-    scopes = self._analyze_tests(full_order, tests)
-    key = lambda (test, signature, scope): signature
+    checks = [check for check in section.checks \
+                        if not explicit_checks or check.id in explicit_checks]
+    scopes = self._analyze_checks(full_order, checks)
+    key = lambda (check, signature, scope): signature
     scopes.sort(key=key, reverse=reverse)
 
-    for test, args in self._execute_scopes(iterargs, scopes):
+    for check, args in self._execute_scopes(iterargs, scopes):
       # this is the iterargs tuple that will be used as a key for caching
       # and so on. we could sort it, to ensure it yields in the same
       # cache locations always, but then again, it is already in a well
       # defined order, by clustering.
-      yield test, tuple(args)
+      yield check, tuple(args)
 
-  def execution_order(self, iterargs, custom_order=None, explicit_tests=None):
+  def execution_order(self, iterargs, custom_order=None, explicit_checks=None):
     # TODO: a custom_order per section may become necessary one day
-    explicit_tests = set() if not explicit_tests else set(explicit_tests)
+    explicit_checks = set() if not explicit_checks else set(explicit_checks)
     for _, section in self._sections.items():
-      for test, iterargs in self._section_execution_order(section, iterargs
+      for check, iterargs in self._section_execution_order(section, iterargs
                                           , custom_order=custom_order
-                                          , explicit_tests=explicit_tests):
-        yield (section, test, iterargs)
+                                          , explicit_checks=explicit_checks):
+        yield (section, check, iterargs)
 
-  def _register_test(self, section, func):
-    other_section = self._test_registry.get(func.id, None)
+  def _register_check(self, section, func):
+    other_section = self._check_registry.get(func.id, None)
     if other_section:
-      raise SetupError('Test {} is already registered in {}, tried to '
+      raise SetupError('Check {} is already registered in {}, tried to '
                        'register in {}.'.format(func, other_section, section))
-    self._test_registry[func.id] = section
+    self._check_registry[func.id] = section
 
-  def get_test(self, test_id):
-    section = self._test_registry[test_id]
-    return section.get_test(test_id), section
+  def get_check(self, check_id):
+    section = self._check_registry[check_id]
+    return section.get_check(check_id), section
 
   def add_section(self, section):
     key = '{}'.format(section)
     if key in self._sections:
       # the string representation of a section must be unique.
-      # string representations of section and test will be used as unique keys
+      # string representations of section and check will be used as unique keys
       if self._sections[key] is not section:
         raise SetupError('A section with key {} is already registered'.format(section))
       return
     self._sections[key] = section
-    section.on_add_test(self._register_test)
-    for test in section.tests:
-      self._register_test(section, test)
+    section.on_add_check(self._register_check)
+    for check in section.checks:
+      self._register_check(section, check)
 
   def _get_section(self, key):
     return self._sections[key]
 
-  def _add_test(self, section, func):
+  def _add_check(self, section, func):
     self.add_section(section)
-    section.add_test(func)
+    section.add_check(func)
     return func
 
-  def register_test(self, section=None, *args, **kwds):
+  def register_check(self, section=None, *args, **kwds):
     """
     Usage:
     # register in default section
-    @spec.register_test
-    @test(id='com.example.fontbakery/test/0')
-    def my_test():
+    @spec.register_check
+    @check(id='com.example.fontbakery/check/0')
+    def my_check():
       yield PASS, 'example'
 
     # register in `special_section` also register that section in the spec
-    @spec.register_test(special_section)
-    @test(id='com.example.fontbakery/test/0')
-    def my_test():
+    @spec.register_check(special_section)
+    @check(id='com.example.fontbakery/check/0')
+    def my_check():
       yield PASS, 'example'
 
     """
     if section and len(kwds) == 0 and callable(section):
       func = section
       section = self._default_section
-      return self._add_test(section, func)
+      return self._add_check(section, func)
     else:
-      return partial(self._add_test, section)
+      return partial(self._add_check, section)
 
   def _add_condition(self, condition, name=None):
     self.add_to_namespace('conditions', name or condition.name, condition)
@@ -1143,7 +1145,7 @@ class Spec(object):
     entries (dictionaries are not ordered usually)
     Otherwise it is valid JSON
     """
-    section, test, iterargs = identity
+    section, check, iterargs = identity
     values = map(
         # separators are without space, which is the default in JavaScript;
         # just in case we need to make these keys in JS.
@@ -1154,9 +1156,9 @@ class Spec(object):
         # and conveys insights on how the order came to be (clustering of
         # iterargs). `sorted(iterargs)` however is more robust over time,
         # the keys will be the same, even if the sorting order changes.
-      , ['{}'.format(section), test.id, sorted(iterargs)]
+      , ['{}'.format(section), check.id, sorted(iterargs)]
     )
-    return '{{"section":{},"test":{},"iterargs":{}}}'.format(*values)
+    return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
   def serialize_order(self, order):
     return map(self.serialize_identity, order)
@@ -1166,8 +1168,8 @@ class Spec(object):
     for item in serialized_order:
       item = json.loads(item)
       section = self._get_section(item['section'])
-      test, _ = self.get_test(item['test'])
+      check, _ = self.get_check(item['check'])
       # tuple of tuples instead list of lists
       iterargs = tuple(tuple(item) for item in item['iterargs'])
-      result.append((section, test, iterargs))
+      result.append((section, check, iterargs))
     return tuple(result)

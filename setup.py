@@ -28,14 +28,13 @@ setup(
     version='0.3.3',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
-                ' for testing font projects',
+                ' for ensuring the quality of font projects.',
     author='Font Bakery Authors: Dave Crossland, Felipe Sanches, Lasse Fister, Marc Foley, Vitaly Volkov',
     author_email='dave@lab6.com',
     package_dir={'': 'Lib'},
     packages=['fontbakery',
               'fontbakery.reporters',
               'fontbakery.specifications',
-              'fontbakery.testadapters',
               'fontbakery.commands'
               ],
     package_data={'fontbakery': ['data/*.cache']},

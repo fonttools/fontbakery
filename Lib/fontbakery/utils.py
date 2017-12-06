@@ -109,7 +109,7 @@ def getGlyphEncodings(font, names):
 
 
 def deleteGlyphEncodings(font, cp):
-    """ This routine is used on the pytest for test/048
+    """ This routine is used on the pytest for check/048
         to introduce errors in a given font by removing
         specific entries in the cmap tables.
     """
@@ -237,7 +237,7 @@ def version_is_newer(a, b):
   b = map(int, b.split("."))
   return a > b
 
-from fontbakery.testrunner import (PASS, FAIL)
+from fontbakery.checkrunner import (PASS, FAIL)
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
   value = getattr(ttFont[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
