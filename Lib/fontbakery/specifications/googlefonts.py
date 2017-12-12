@@ -1938,7 +1938,8 @@ def com_google_fonts_check_050(ttFont):
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
   REQUIRED_TABLES = set(["cmap", "head", "hhea", "hmtx",
-                         "maxp", "name", "OS/2", "post"])
+                         "maxp", "name", "OS/2", "post",
+                         "STAT"])
   OPTIONAL_TABLES = set(["cvt ", "fpgm", "loca", "prep",
                          "VORG", "EBDT", "EBLC", "EBSC",
                          "BASE", "GPOS", "GSUB", "JSTF",
@@ -1946,6 +1947,14 @@ def com_google_fonts_check_052(ttFont):
                          "LTSH", "PCLT", "VDMX", "vhea",
                          "vmtx"])
   # See https://github.com/googlefonts/fontbakery/issues/617
+  #
+  # Also, according to https://github.com/googlefonts/fontbakery/issues/1671
+  # STAT table is required on WebKit on MacOS 10.12
+  #
+  # We should collect the ratinable behind the need for each of the
+  # required tables above. Perhaps split it into individual checks
+  # with the correspondent rationales for each subset of required tables.
+
   tables = set(ttFont.reader.tables.keys())
   if OPTIONAL_TABLES & tables:
     optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
