@@ -1051,15 +1051,19 @@ def test_check_052():
   from fontbakery.specifications.googlefonts import com_google_fonts_check_052 as check
 
   required_tables = ["cmap", "head", "hhea", "hmtx",
-                     "maxp", "name", "OS/2", "post"]
+                     "maxp", "name", "OS/2", "post",
+                     "STAT"]
   optional_tables = ["cvt ", "fpgm", "loca", "prep",
                      "VORG", "EBDT", "EBLC", "EBSC",
                      "BASE", "GPOS", "GSUB", "JSTF",
                      "DSIG", "gasp", "hdmx", "kern",
                      "LTSH", "PCLT", "VDMX", "vhea",
                      "vmtx"]
-  # Our reference Mada Regular font is good here:
+  # Our reference Mada Regular font is good here
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # except that it lacks STAT, so we add a dummy one:
+  ttFont.reader.tables["STAT"] = "foo"
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
