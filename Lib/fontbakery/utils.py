@@ -135,16 +135,12 @@ def get_font_glyph_data(font):
 
 
 def get_FamilyProto_Message(path):
-  try:
-    from fontbakery.fonts_public_pb2 import FamilyProto
-    from google.protobuf import text_format
-    message = FamilyProto()
-    text_data = open(path, "rb").read()
-    text_format.Merge(text_data, message)
-    return message
-  except:
-    import sys
-    sys.exit("Needs protobuf.\n\nsudo pip install protobuf")
+  from fontbakery.fonts_public_pb2 import FamilyProto
+  from google.protobuf import text_format
+  message = FamilyProto()
+  text_data = open(path, "rb").read()
+  text_format.Merge(text_data, message)
+  return message
 
 
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
