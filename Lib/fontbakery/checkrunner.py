@@ -371,7 +371,13 @@ class CheckRunner(object):
       error = MissingConditionError(name, err, tb)
       return error, None
 
-    args = self._get_args(condition, iterargs, path)
+    try:
+      args = self._get_args(condition, iterargs, path)
+    except Exception as err:
+      tb = get_traceback()
+      error = FailedConditionError(condition, err, tb)
+      return error, None
+
     path.pop()
     try:
       return None, condition(**args)
