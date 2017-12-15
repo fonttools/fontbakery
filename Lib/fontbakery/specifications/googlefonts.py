@@ -1219,14 +1219,10 @@ def com_google_fonts_check_037(font):
       filtered_msgs += line + "\n"
     yield INFO, ("Microsoft Font Validator returned an error code."
                  " Output follows :\n\n{}\n").format(filtered_msgs)
-  except OSError:
+  except (OSError, IOError) as error:
     yield ERROR, ("Mono runtime and/or "
                   "Microsoft Font Validator are not available!")
-    return
-  except IOError:
-    yield ERROR, ("Mono runtime and/or "
-                  "Microsoft Font Validator are not available!")
-    return
+    raise error
 
   xml_report = open("{}.report.xml".format(font), "r").read()
   try:
