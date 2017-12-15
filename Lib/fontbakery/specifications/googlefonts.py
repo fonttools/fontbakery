@@ -1163,7 +1163,7 @@ def com_google_fonts_check_035(font):
       yield FAIL, "ftxvalidator output follows:\n\n{}\n".format(ftx_output)
 
   except subprocess.CalledProcessError as e:
-    yield INFO, ("ftxvalidator returned an error code. Output follows :"
+    yield WARN, ("ftxvalidator returned an error code. Output follows :"
                  "\n\n{}\n").format(e.output)
   except OSError:
     yield ERROR, "ftxvalidator is not available!"
