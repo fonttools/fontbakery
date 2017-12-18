@@ -1297,9 +1297,28 @@ def test_check_065():
   status, message = list(check(ttFont, lig, has_kinfo))[-1]
   assert status == WARN and message.code == "lacks-kern-info"
 
-# DEPRECATED: com.google.fonts/check/066
-# "Is there a "kern" table declared in the font?"
-# See: https://github.com/googlefonts/fontbakery/issues/1675
+
+def test_check_066():
+  """ Is there a "kern" table declared in the font ? """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_066 as check
+
+  # Our reference Mada Regular is known to be good
+  # (does not have a 'kern' table):
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the check:
+  print ("Test PASS with a font without a 'kern' table...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # add a fake 'kern' table:
+  ttFont["kern"] = "foo"
+
+  # and make sure the check emits an INFO message:
+  print ("Test INFO with a font containing a 'kern' table...")
+  status, message = list(check(ttFont))[-1]
+  assert status == INFO
+
 
 def test_check_067():
   """ Make sure family name does not begin with a digit. """
