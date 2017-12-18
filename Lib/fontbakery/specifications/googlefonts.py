@@ -2528,21 +2528,9 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
                    "all non-ligated sequences.")
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/066'
-)
-def com_google_fonts_check_066(ttFont):
-  """Is there a "kern" table declared in the font?
-
-     Fonts should have their kerning implemented in the GPOS table.
-  """
-
-  if "kern" in ttFont:
-    yield FAIL, "Font should not have a \"kern\" table"
-  else:
-    yield PASS, "Font does not declare a \"kern\" table."
-
+# DEPRECATED: com.google.fonts/check/066
+# "Is there a "kern" table declared in the font?"
+# See: https://github.com/googlefonts/fontbakery/issues/1675
 
 @register_check
 @check(
