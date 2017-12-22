@@ -25,7 +25,7 @@ def fontbakery_scripts():
 
 setup(
     name="fontbakery",
-    version='0.3.4',
+    version='0.3.4-git',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
                 ' for ensuring the quality of font projects.',
