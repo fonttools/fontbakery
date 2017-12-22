@@ -1,9 +1,19 @@
-* 0.3.4:
+Below are the most important changes from each release.
+A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
+
+* 0.3.4 (2017-Dec-22):
+  - FB Dashboard-related improvements.
+  - Added --list-checks command line switch to list all available checks
+  - check/052: WebKit in MacOS 10.12 requires 'STAT' tables
+  - restrict non-ASCII check to nameids 0 and 6 only
+  - Adopted font-v python module as a dependency for managing font version strings
+  - check/034: Changed calc of expected value for xAvgCharWidth
+  - new check/166: ensure familynames are unique (query namecheck.fontdata.com)
   - Nomenclature change: font tests are now called "checks"
                          code-tests are now "tests"
   - All IDs were updated to use the "check" keyword such as "com.google.fonts/check/001"
 
-* 0.3.3:
+* 0.3.3 (2017-Nov-23):
   - All auxiliary scripts have been moved into a separate python
     package called gftools (Google Fonts Tools) available at
     https://github.com/googlefonts/tools/ (source code repo on git) and at

@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright 2013 The Font Bakery Authors. All Rights Reserved.
+# Copyright 2017 The Font Bakery Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ def fontbakery_scripts():
 
 setup(
     name="fontbakery",
-    version='0.3.3',
+    version='0.3.4',
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
                 ' for ensuring the quality of font projects.',
