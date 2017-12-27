@@ -151,6 +151,7 @@ PLAT_ENC_ID__UCS2 = 1
 PLAT_ENC_ID__UCS4 = 10
 
 PLACEHOLDER_LICENSING_TEXT = {
+    'UFL.txt': u'Licensed under the Ubuntu Font Licence 1.0.',
     'OFL.txt': u'This Font Software is licensed under the SIL Open Font '
                'License, Version 1.1. This license is available with a FAQ '
                'at: http://scripts.sil.org/OFL',

@@ -779,26 +779,38 @@ def com_google_fonts_check_029(ttFont, license):
     yield PASS, "Licensing entry on name table is correctly set."
 
 
+@register_condition
+@condition
+def familyname(ttFont):
+  filename = os.path.split(ttFont.reader.file.name)[1]
+  filename_base = os.path.splitext(filename)[0]
+  return filename_base.split('-')[0]
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/030'
   , priority=CRITICAL
+  , conditions=['familyname']
 )
-def com_google_fonts_check_030(ttFont):
+def com_google_fonts_check_030(ttFont, familyname):
   """"License URL matches License text on name table?"""
   from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
                                     NAMEID_LICENSE_INFO_URL,
                                     PLACEHOLDER_LICENSING_TEXT)
+  LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
   LICENSE_URL = {
     'OFL.txt': u'http://scripts.sil.org/OFL',
-    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0'
+    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0',
+    'UFL.txt': u'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
   }
   LICENSE_NAME = {
     'OFL.txt': u'Open Font',
-    'LICENSE.txt': u'Apache'
+    'LICENSE.txt': u'Apache',
+    'UFL.txt': u'Ubuntu Font License'
   }
   detected_license = False
-  for license in ['OFL.txt', 'LICENSE.txt']:
+  for license in ['OFL.txt', 'LICENSE.txt', 'UFL.txt']:
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
     for nameRecord in ttFont['name'].names:
       string = nameRecord.string.decode(nameRecord.getEncoding())
@@ -807,38 +819,48 @@ def com_google_fonts_check_030(ttFont):
         detected_license = license
         break
 
-  found_good_entry = False
-  if detected_license:
-    failed = False
-    expected = LICENSE_URL[detected_license]
-    for nameRecord in ttFont['name'].names:
-      if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
-        string = nameRecord.string.decode(nameRecord.getEncoding())
-        if string == expected:
-          found_good_entry = True
-        else:
-          failed = True
-          yield FAIL, ("Licensing inconsistency in name table entries!"
-                       " NameID={} (LICENSE DESCRIPTION) indicates"
-                       " {} licensing, but NameID={} (LICENSE URL) has"
-                       " '{}'. Expected:"
-                       " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
-                                       LICENSE_NAME[detected_license],
-                                       NAMEID_LICENSE_INFO_URL,
-                                       string, expected)
-  if not found_good_entry:
-    yield FAIL, ("A License URL must be provided in the"
-                 " NameID {} (LICENSE INFO URL) entry."
-                 "").format(NAMEID_LICENSE_INFO_URL)
+  if detected_license == "UFL.txt" and familyname not in LEGACY_UFL_FAMILIES:
+    yield FAIL, ("The Ubuntu Font License is only acceptable on"
+                 " the Google Fonts collection for legacy font families"
+                 " that already adopted such license. New Families should"
+                 " use eigther Apache or Open Font License.")
   else:
-    if failed:
-      yield FAIL, ("Even though a valid license URL was seen in NAME table,"
-                   " there were also bad entries. Please review"
-                   " NameIDs {} (LICENSE DESCRIPTION) and {}"
-                   " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
-                                                  NAMEID_LICENSE_INFO_URL)
+    found_good_entry = False
+    if detected_license:
+      failed = False
+      expected = LICENSE_URL[detected_license]
+      for nameRecord in ttFont['name'].names:
+        if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
+          string = nameRecord.string.decode(nameRecord.getEncoding())
+          if string == expected:
+            found_good_entry = True
+          else:
+            failed = True
+            yield FAIL, ("Licensing inconsistency in name table entries!"
+                         " NameID={} (LICENSE DESCRIPTION) indicates"
+                         " {} licensing, but NameID={} (LICENSE URL) has"
+                         " '{}'. Expected:"
+                         " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
+                                         LICENSE_NAME[detected_license],
+                                         NAMEID_LICENSE_INFO_URL,
+                                         string, expected)
+    if not found_good_entry:
+      yield FAIL, ("A known license URL must be provided in the"
+                   " NameID {} (LICENSE INFO URL) entry."
+                   " Currently accepted licenses are Apache or"
+                   " Open Font License. For a small set of legacy"
+                   " families the Ubuntu Font License may be"
+                   " acceptable as well."
+                   "").format(NAMEID_LICENSE_INFO_URL)
     else:
-      yield PASS, "Font has a valid license URL in NAME table."
+      if failed:
+        yield FAIL, ("Even though a valid license URL was seen in NAME table,"
+                     " there were also bad entries. Please review"
+                     " NameIDs {} (LICENSE DESCRIPTION) and {}"
+                     " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
+                                                    NAMEID_LICENSE_INFO_URL)
+      else:
+        yield PASS, "Font has a valid license URL in NAME table."
 
 
 @register_check
@@ -4572,14 +4594,6 @@ def com_google_fonts_check_155(ttFont, font_metadata):
   if not failed:
     yield PASS, ("Copyright field for this font on METADATA.pb matches"
                  " copyright notice entries on the name table.")
-
-
-@register_condition
-@condition
-def familyname(ttFont):
-  filename = os.path.split(ttFont.reader.file.name)[1]
-  filename_base = os.path.splitext(filename)[0]
-  return filename_base.split('-')[0]
 
 
 @register_condition
