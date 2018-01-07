@@ -2288,7 +2288,7 @@ def test_check_166():
 
   print('Test PASS with one that follows the suggested scheme ...')
   fv = FontVersion(ttFont)
-  fv.set_git_commit_sha1(development=True)
+  fv.set_state_git_commit_sha1(development=True)
   version_string = fv.get_name_id5_version_string()
   for record in ttFont['name'].names:
     if record.nameID == NAMEID_VERSION_STRING:
