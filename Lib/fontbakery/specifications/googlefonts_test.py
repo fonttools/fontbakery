@@ -2286,10 +2286,10 @@ def test_check_166():
   status, message = list(check(ttFont))[-1]
   assert status == INFO
 
-  print('Test PASS with one that follows the seggested scheme ...')
+  print('Test PASS with one that follows the suggested scheme ...')
   fv = FontVersion(ttFont)
   fv.set_git_commit_sha1(development=True)
-  version_string = fv.get_version_string()
+  version_string = fv.get_name_id5_version_string()
   for record in ttFont['name'].names:
     if record.nameID == NAMEID_VERSION_STRING:
       record.string = version_string
