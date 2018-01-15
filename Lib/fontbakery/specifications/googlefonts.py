@@ -1987,17 +1987,18 @@ def com_google_fonts_check_052(ttFont):
   # a specific table providing a detailed description of the rationale
   # behind it.
 
-  tables = set(ttFont.reader.tables.keys())
-  if OPTIONAL_TABLES & tables:
-    optional_tables = [str(t) for t in (OPTIONAL_TABLES & tables)]
+  optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
+  if optional_tables:
     yield INFO, ("This font contains the following"
                  " optional tables [{}]").format(", ".join(optional_tables))
 
-  glyphs = set(["glyf"] if "glyf" in ttFont.keys() else ["CFF "])
-  if (REQUIRED_TABLES | glyphs) - tables:
-    missing_tables = [str(t) for t in (REQUIRED_TABLES | glyphs - tables)]
+  missing_tables = [req for req in REQUIRED_TABLES if req not in ttFont.keys()]
+  if "glyf" not in ttFont.keys() and "CFF " not in ttFont.keys():
+    missing_tables.append("CFF ' or 'glyf")
+
+  if missing_tables:
     yield FAIL, ("This font is missing the following required tables:"
-                 " [{}]").format(", ".join(missing_tables))
+                 " ['{}']").format("', '".join(missing_tables))
   else:
     yield PASS, "Font contains all required tables."
 
