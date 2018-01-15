@@ -286,6 +286,16 @@ def com_google_fonts_check_007(metadata):
 @register_check
 @check(
     id = 'com.google.fonts/check/008'
+  , affects = [('InDesign', 'unspecified')]
+  , rationale = """
+    Dave C Lemon (Adobe Type Team) recommends setting the underline
+    thickness to be consistent across the family.
+
+    If thicknesses are not family consistent, words set on the same line which
+    have different styles look strange.
+
+    See also: https://twitter.com/typenerd1/status/690361887926697986
+  """
 )
 def com_google_fonts_check_008(ttFonts):
   """Fonts have consistent underline thickness?"""
