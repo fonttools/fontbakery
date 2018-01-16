@@ -1966,8 +1966,7 @@ def com_google_fonts_check_050(ttFont):
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
   REQUIRED_TABLES = set(["cmap", "head", "hhea", "hmtx",
-                         "maxp", "name", "OS/2", "post",
-                         "STAT"])
+                         "maxp", "name", "OS/2", "post"])
   OPTIONAL_TABLES = set(["cvt ", "fpgm", "loca", "prep",
                          "VORG", "EBDT", "EBLC", "EBSC",
                          "BASE", "GPOS", "GSUB", "JSTF",
@@ -1975,9 +1974,6 @@ def com_google_fonts_check_052(ttFont):
                          "PCLT", "VDMX", "vhea", "vmtx",
                          "kern"])
   # See https://github.com/googlefonts/fontbakery/issues/617
-  #
-  # Also, according to https://github.com/googlefonts/fontbakery/issues/1671
-  # STAT table is required on WebKit on MacOS 10.12
   #
   # We should collect the rationale behind the need for each of the
   # required tables above. Perhaps split it into individual checks
@@ -1991,6 +1987,11 @@ def com_google_fonts_check_052(ttFont):
   if optional_tables:
     yield INFO, ("This font contains the following"
                  " optional tables [{}]").format(", ".join(optional_tables))
+
+  # According to https://github.com/googlefonts/fontbakery/issues/1671
+  # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
+  if "fvar" in ttFont.keys():
+    REQUIRED_TABLES.add("STAT")
 
   missing_tables = [req for req in REQUIRED_TABLES if req not in ttFont.keys()]
   if "glyf" not in ttFont.keys() and "CFF " not in ttFont.keys():
