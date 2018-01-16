@@ -1051,8 +1051,7 @@ def test_check_052():
   from fontbakery.specifications.googlefonts import com_google_fonts_check_052 as check
 
   required_tables = ["cmap", "head", "hhea", "hmtx",
-                     "maxp", "name", "OS/2", "post",
-                     "STAT"]
+                     "maxp", "name", "OS/2", "post"]
   optional_tables = ["cvt ", "fpgm", "loca", "prep",
                      "VORG", "EBDT", "EBLC", "EBSC",
                      "BASE", "GPOS", "GSUB", "JSTF",
@@ -1062,15 +1061,34 @@ def test_check_052():
   # Our reference Mada Regular font is good here
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
-  # except that it lacks STAT, so we add a dummy one:
-  ttFont.reader.tables["STAT"] = "foo"
-
   # So it must PASS the check:
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
-  # We now remove required tables one-by-one to validate the FAIL code-path:
+  # Now we test the special cases for variable fonts:
+
+  print ("Test FAIL with fvar but no STAT...")
+  # Note: A TTF with an fvar table but no STAT table
+  #       is probably a GX font. For now we're OK with
+  #       rejecting those by emitting a FAIL in this case.
+  #
+  # TODO: Maybe we could someday emit a more explicit
+  #       message to the users regarding that...
+  ttFont.reader.tables["fvar"] = "foo"
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  print ("Test PASS with STAT on a non-variable font...")
+  del ttFont.reader.tables["fvar"]
+  ttFont.reader.tables["STAT"] = "foo"
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # and finally remove what we've just added:
+  del ttFont.reader.tables["STAT"]
+
+  # Now we remove required tables one-by-one to validate the FAIL code-path:
   for required in required_tables:
     print ("Test FAIL with missing mandatory table {} ...".format(required))
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
