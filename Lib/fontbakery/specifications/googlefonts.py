@@ -403,18 +403,39 @@ def com_google_fonts_check_011(ttFonts):
 )
 def com_google_fonts_check_012(ttFonts):
   """Fonts have equal glyph names?"""
-  glyphs = None
-  failed = False
-  for ttFont in ttFonts:
-    if not glyphs:
-      glyphs = ttFont["glyf"].glyphs
-    if glyphs.keys() != ttFont["glyf"].glyphs.keys():
-      failed = True
+  fonts = list(ttFonts)
 
-  if failed:
-    yield FAIL, "Fonts have different glyph names."
-  else:
-    yield PASS, "Fonts have equal glyph names."
+  all_glyphnames = set()
+  for ttFont in fonts:
+    all_glyphnames |= set(ttFont["glyf"].glyphs.keys())
+
+  missing = {}
+  available = {}
+  for glyphname in all_glyphnames:
+    missing[glyphname] = []
+    available[glyphname] = []
+
+  failed = False
+  for ttFont in fonts:
+    fontname = ttFont.reader.file.name
+    stylename = style(fontname)
+    these_ones = set(ttFont["glyf"].glyphs.keys())
+    for glyphname in all_glyphnames:
+      if glyphname not in these_ones:
+        failed = True
+        missing[glyphname].append(stylename)
+      else:
+        available[glyphname].append(stylename)
+
+  for gn in missing.keys():
+    if missing[gn]:
+      yield FAIL, ("Glyphname '{}' is defined on {}"
+                   " but is missing on"
+                   " {}.").format(gn,
+                                  ', '.join(missing[gn]),
+                                  ', '.join(available[gn]))
+  if not failed:
+    yield PASS, "All font files have identical glyph names."
 
 
 @register_check
