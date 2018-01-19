@@ -283,6 +283,18 @@ def com_google_fonts_check_007(metadata):
     yield PASS, "Font designer field is not 'unknown'."
 
 
+@register_condition
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  from fontbakery.constants import STYLE_NAMES
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    stylename = os.path.splitext(filename)[0].split('-')[1]
+    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+      return stylename
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/008'
@@ -299,21 +311,29 @@ def com_google_fonts_check_007(metadata):
 )
 def com_google_fonts_check_008(ttFonts):
   """Fonts have consistent underline thickness?"""
+  underTs = {}
+  underlineThickness = None
   failed = False
-  uWeight = None
   for ttfont in ttFonts:
-    if uWeight is None:
-      uWeight = ttfont['post'].underlineThickness
-    if uWeight != ttfont['post'].underlineThickness:
+    fontname = ttfont.reader.file.name
+    #stylename = style(fontname)
+    ut = ttfont['post'].underlineThickness
+    underTs[fontname] = ut
+    if underlineThickness is None:
+      underlineThickness = ut
+    if ut != underlineThickness:
       failed = True
 
   if failed:
-    # FIXME: more info would be great! Which fonts are the outliers
-    yield FAIL, ("Thickness of the underline is not"
-                 " the same accross this family. In order to fix this,"
-                 " please make sure that the underlineThickness value"
-                 " is the same in the 'post' table of all of this family"
-                 " font files.")
+    msg = ("Thickness of the underline is not"
+           " the same accross this family. In order to fix this,"
+           " please make sure that the underlineThickness value"
+           " is the same in the 'post' table of all of this family"
+           " font files.\n"
+           "Detected underlineThickness values are:\n")
+    for style in underTs.keys():
+      msg += "\t{}: {}\n".format(style, underTs[style])
+    yield FAIL, msg
   else:
     yield PASS, "Fonts have consistent underline thickness."
 
@@ -644,18 +664,6 @@ def com_google_fonts_check_019(ttFont):
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"
                  " trademark symbols in name table entries of this font.")
-
-
-@register_condition
-@condition
-def style(font):
-  """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
-  filename = os.path.split(font)[-1]
-  if '-' in filename:
-    stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
-      return stylename
 
 
 @register_check
