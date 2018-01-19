@@ -374,27 +374,32 @@ def com_google_fonts_check_010(ttFonts):
 )
 def com_google_fonts_check_011(ttFonts):
   """Fonts have equal numbers of glyphs?"""
-  counts = {}
-  glyphs_count = None
+  fonts = list(ttFonts)
   failed = False
-  for ttfont in ttFonts:
-    this_count = len(ttfont['glyf'].glyphs)
-    if glyphs_count is None:
-      glyphs_count = this_count
-    if glyphs_count != this_count:
+  max_style = None
+  max_count = 0
+  for ttFont in fonts:
+    fontname = ttFont.reader.file.name
+    stylename = style(fontname)
+    this_count = len(ttFont['glyf'].glyphs)
+    if this_count > max_count:
+      max_count = this_count
+      max_style = stylename
+
+  for ttFont in fonts:
+    fontname = ttFont.reader.file.name
+    stylename = style(fontname)
+    this_count = len(ttFont['glyf'].glyphs)
+    if this_count != max_count:
       failed = True
-    counts[ttfont.reader.file.name] = this_count
-
-  if failed:
-    results_table = ""
-    for key in counts.keys():
-      results_table += "| {} | {} |\n".format(key,
-                                              counts[key])
-
-    yield FAIL, ("Fonts have different numbers of glyphs:\n\n"
-                 "{}".format(results_table))
-  else:
-    yield PASS, "Fonts have equal numbers of glyphs."
+      yield FAIL, ("{} has {} glyphs while"
+                   " {} has {} glyphs.").format(stylename,
+                                                this_count,
+                                                max_style,
+                                                max_count)
+  if not failed:
+    yield PASS, ("All font files in this family have"
+                 " an equal total ammount of glyphs.")
 
 
 @register_check
