@@ -2173,10 +2173,12 @@ def com_google_fonts_check_055(ttFont):
     if not is_valid_version_format(ventry):
       failed = True
       yield FAIL, Message("bad-version-strings",
-                          ("The NAMEID_VERSION_STRING (nameID={}) value must "
-                           "follow the pattern Version X.Y between 1.000 and 9.999."
-                           " Current value: {}").format(NAMEID_VERSION_STRING,
-                                                        ventry))
+                          ("The NAMEID_VERSION_STRING (nameID={}) value must"
+                           " follow the pattern \"Version X.Y\" with X.Y"
+                           " between 1.000 and 9.999."
+                           " Current version string is:"
+                           " \"{}\"").format(NAMEID_VERSION_STRING,
+                                             ventry))
   if not failed:
     yield PASS, "Version format in NAME table entries is correct."
 
