@@ -4228,7 +4228,7 @@ def remote_styles(metadata):
 
 @register_condition
 @condition
-def gfonts_ttFont(style, remote_styles):
+def api_gfonts_ttFont(style, remote_styles):
   """Get a TTFont object of a font downloaded from Google Fonts
      corresponding to the given TTFont object of
      a local font being checked.
@@ -4236,33 +4236,83 @@ def gfonts_ttFont(style, remote_styles):
   if remote_styles and style in remote_styles:
     return remote_styles[style]
 
+@register_condition
+@condition
+def github_gfonts_ttFont(ttFont, license):
+  """Get a TTFont object of a font downloaded
+     from Google Fonts git repository.
+  """
+  from fontbakery.utils import download_file
+  from fontTools.ttLib import TTFont
+  LICENSE_DIRECTORY = {
+    "OFL.txt": "ofl",
+    "UFL.txt": "ufl",
+    "APACHE.txt": "apache"
+  }
+  filename = os.path.split(ttFont.reader.file.name)[-1]
+  fontname = filename.split('-')[0].lower()
+  url = ("https://github.com/google/fonts/raw/master"
+         "/{}/{}/{}").format(LICENSE_DIRECTORY[license],
+                             fontname,
+                             filename)
+  return TTFont(download_file(url))
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/117'
-  , conditions=['gfonts_ttFont']
+  , conditions=['api_gfonts_ttFont',
+                'github_gfonts_ttFont']
 )
-def com_google_fonts_check_117(ttFont, gfonts_ttFont):
+def com_google_fonts_check_117(ttFont,
+                               api_gfonts_ttFont,
+                               github_gfonts_ttFont):
   """Version number has increased since previous release on Google Fonts?"""
   v_number = ttFont["head"].fontRevision
-  gfonts_v_number = gfonts_ttFont["head"].fontRevision
-  if v_number == gfonts_v_number:
+  api_gfonts_v_number = api_gfonts_ttFont["head"].fontRevision
+  github_gfonts_v_number = github_gfonts_ttFont["head"].fontRevision
+  failed = False
+
+  if v_number == api_gfonts_v_number:
+    failed = True
     yield FAIL, ("Version number {} is equal to"
                  " version on Google Fonts.").format(v_number)
-  elif v_number < gfonts_v_number:
+
+  if v_number < api_gfonts_v_number:
+    failed = True
     yield FAIL, ("Version number {} is less than"
-                 " version on Google Fonts ({}).").format(v_number,
-                                                          gfonts_v_number)
-  else:
+                 " version on Google Fonts ({})."
+                 "").format(v_number,
+                            api_gfonts_v_number)
+
+  if v_number == github_gfonts_v_number:
+    failed = True
+    yield FAIL, ("Version number {} is equal to"
+                 " version on Google Fonts GitHub repo."
+                 "").format(v_number)
+
+  if v_number < github_gfonts_v_number:
+    failed = True
+    yield FAIL, ("Version number {} is less than"
+                 " version on Google Fonts GitHub repo ({})."
+                 "").format(v_number,
+                            github_gfonts_v_number)
+
+  if not failed:
     yield PASS, ("Version number {} is greater than"
-                 " version on Google Fonts ({}).").format(v_number,
-                                                          gfonts_v_number)
+                 " version on Google Fonts GitHub ({})"
+                 " and production servers ({})."
+                 "").format(v_number,
+                            github_gfonts_v_number,
+                            api_gfonts_v_number)
+
 
 @register_check
 @check(
     id = 'com.google.fonts/check/118'
-  , conditions=['gfonts_ttFont']
+  , conditions=['api_gfonts_ttFont']
 )
-def com_google_fonts_check_118(ttFont, gfonts_ttFont):
+def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
   """Glyphs are similiar to Google Fonts version?"""
 
   def glyphs_surface_area(ttFont):
@@ -4282,12 +4332,12 @@ def com_google_fonts_check_118(ttFont, gfonts_ttFont):
 
   bad_glyphs = []
   these_glyphs = glyphs_surface_area(ttFont)
-  gfonts_glyphs = glyphs_surface_area(gfonts_ttFont)
+  gfonts_glyphs = glyphs_surface_area(api_gfonts_ttFont)
 
   shared_glyphs = set(these_glyphs) & set(gfonts_glyphs)
 
   this_upm = ttFont['head'].unitsPerEm
-  gfonts_upm = gfonts_ttFont['head'].unitsPerEm
+  gfonts_upm = api_gfonts_ttFont['head'].unitsPerEm
 
   for glyph in shared_glyphs:
     # Normalize area difference against comparison's upm
@@ -4308,9 +4358,9 @@ def com_google_fonts_check_118(ttFont, gfonts_ttFont):
 @register_check
 @check(
     id = 'com.google.fonts/check/119'
-  , conditions=['gfonts_ttFont']
+  , conditions=['api_gfonts_ttFont']
 )
-def com_google_fonts_check_119(ttFont, gfonts_ttFont):
+def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
   """TTFAutohint x-height increase value is same as in
      previous release on Google Fonts ?"""
 
@@ -4346,8 +4396,8 @@ def com_google_fonts_check_119(ttFont, gfonts_ttFont):
       ttfauto_fpgm_xheight_rounding(fpgm_tbl, "this fontfile")
     if msg: yield WARN, msg
 
-  if 'fpgm' in gfonts_ttFont:
-    gfonts_fpgm_tbl = gfonts_ttFont["fpgm"].program.getAssembly()
+  if 'fpgm' in api_gfonts_ttFont:
+    gfonts_fpgm_tbl = api_gfonts_ttFont["fpgm"].program.getAssembly()
     warn, gf_inc_xheight = \
       ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
     if msg: yield WARN, msg
@@ -4599,13 +4649,13 @@ def com_google_fonts_check_153(ttFont):
 @register_check
 @check(
     id = 'com.google.fonts/check/154'
-  , conditions=['gfonts_ttFont']
+  , conditions=['api_gfonts_ttFont']
 )
-def com_google_fonts_check_154(ttFont, gfonts_ttFont):
+def com_google_fonts_check_154(ttFont, api_gfonts_ttFont):
   """Check font has same encoded glyphs as version hosted on
   fonts.google.com"""
   cmap = ttFont['cmap'].getcmap(3, 1).cmap
-  gf_cmap = gfonts_ttFont['cmap'].getcmap(3, 1).cmap
+  gf_cmap = api_gfonts_ttFont['cmap'].getcmap(3, 1).cmap
   missing_codepoints = set(gf_cmap.keys()) - set(cmap.keys())
 
   if missing_codepoints:

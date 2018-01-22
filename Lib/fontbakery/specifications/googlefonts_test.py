@@ -2041,7 +2041,7 @@ def test_check_153(montserrat_ttFonts):
 def test_check_154(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
     from fontbakery.specifications.googlefonts import (com_google_fonts_check_154 as check,
-                                                       gfonts_ttFont,
+                                                       api_gfonts_ttFont,
                                                        remote_styles,
                                                        metadata)
     font = cabin_ttFonts[-1]
@@ -2050,7 +2050,7 @@ def test_check_154(cabin_ttFonts):
 
     meta = metadata("data/test/regression/cabin/")
     gfonts_remote_styles = remote_styles(meta)
-    gfont = gfonts_ttFont(str(style), gfonts_remote_styles)
+    gfont = api_gfonts_ttFont(str(style), gfonts_remote_styles)
 
     # Cabin font hosted on fonts.google.com contains
     # all the glyphs for the font in data/test/cabin
