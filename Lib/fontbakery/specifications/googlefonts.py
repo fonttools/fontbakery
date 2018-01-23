@@ -4711,6 +4711,21 @@ def familyname_with_spaces(ttFont):
     result += c
   result = result.strip()
 
+  def of_special_case(s):
+    """Special case for family names such as
+       MountainsofChristmas which would need to
+       have the "of" split apart from "Mountains".
+
+       See also: https://github.com/googlefonts/fontbakery/issues/1489
+       "Failure to handle font family with 3 words in it"
+    """
+    if s[-2:] == "of":
+      return s[:-2] + " of"
+    else:
+      return s
+
+  result = " ".join(map(of_special_case, result.split(" ")))
+
   if result[-3:] == "S C":
     return result[:-3] + "SC"
   else:
