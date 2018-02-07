@@ -1291,13 +1291,11 @@ def com_google_fonts_check_037(font):
     raise error
 
   xml_report = open("{}.report.xml".format(font), "r").read()
-  try:
-    os.remove("{}.report.xml".format(font))
-    os.remove("{}.report.html".format(font))
-  except:
-    # Treat failure to delete reports
-    # as non-critical. Silently move on.
-    pass
+
+  os.remove("{}.report.xml".format(font))
+  os.remove("{}.report.html".format(font))
+  fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
+  os.remove(fval_file)
 
   def report_message(msg, details):
     if details:
