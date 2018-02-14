@@ -77,7 +77,7 @@ class SerializeReporter(FontbakeryReporter):
           # are structured differently.
           item['clusteredBy'] = self._results_by
       if status in (STARTSECTION, ENDSECTION):
-        item.update(dict(key=key, result=None, check=[]))
+        item.update(dict(key=key, result=None, checks=[]))
       if check:
         item.update(dict(key=key, result=None, logs=[]))
         if self._results_by:
