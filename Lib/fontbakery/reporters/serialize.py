@@ -132,19 +132,19 @@ class SerializeReporter(FontbakeryReporter):
 
       check = self._items[key]
       if self._results_by:
-        if not len(sectionDoc['checks']):
+        if not len(sectionDoc['check']):
           clusterlen = self._max_cluster_by_index + 1
           if self._results_by != '*check':
             # + 1 for rests bucket
             clusterlen += 1
-          sectionDoc['checks'] = [[] for _ in range(clusterlen)]
+          sectionDoc['check'] = [[] for _ in range(clusterlen)]
         index = check['clustered']['index']
         if index is None:
           # last element collects unclustered
           index = -1
-        sectionDoc['checks'][index].append(check)
+        sectionDoc['check'][index].append(check)
       else:
-        sectionDoc['checks'].append(check)
+        sectionDoc['check'].append(check)
       if sectionKey not in seen:
         seen.add(sectionKey)
         doc['sections'].append(sectionDoc)
