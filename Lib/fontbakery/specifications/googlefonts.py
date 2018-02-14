@@ -1991,6 +1991,12 @@ def com_google_fonts_check_050(ttFont):
 # com.google.fonts/check/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
 
 
+@register_condition
+@condition
+def is_variable_font(ttFont):
+  return "fvar" in ttFont.keys()
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/052'
@@ -2020,9 +2026,9 @@ def com_google_fonts_check_052(ttFont):
     yield INFO, ("This font contains the following"
                  " optional tables [{}]").format(", ".join(optional_tables))
 
-  # According to https://github.com/googlefonts/fontbakery/issues/1671
-  # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
-  if "fvar" in ttFont.keys():
+  if is_variable_font(ttFont):
+    # According to https://github.com/googlefonts/fontbakery/issues/1671
+    # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
     REQUIRED_TABLES.add("STAT")
 
   missing_tables = [req for req in REQUIRED_TABLES if req not in ttFont.keys()]
@@ -5160,6 +5166,40 @@ def com_google_fonts_check_166(ttFont):
                  " example below:\n"
                  "\"Version 1.3; git-0d08353-release\""
                  "").format(fv.get_name_id5_version_string())
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/167'
+  , rationale = """
+    A variable font must have a default value of 400
+    in its mandatory 'wght' axis, corresponding to
+    the 'Regular' weight.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font']
+)
+def com_google_fonts_check_167(ttFont):
+  """ Varfont default value for wght axis is 400 (Regular). """
+
+  # TODO: split this out as a 'weight_axis' condition:
+  weight_axis = None
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "wght":
+      weight_axis = axis
+      break
+
+  if weight_axis is None:
+    # TODO: make this an independent check!
+    yield FAIL, "A mandatory 'whgt' axis was not found!"
+  else:
+    if weight_axis.defaultValue == 400:
+      yield PASS, "Default 'wght' value is 400."
+    else:
+      yield FAIL, ("Default value for 'wght' axis must be 400,"
+                   " corresponding to Regular."
+                   " Got a '{}' default value instead."
+                   "").format(weight_axis.defaultValue)
 
 
 for section_name, section in specification._sections.items():
