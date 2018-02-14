@@ -5168,6 +5168,14 @@ def com_google_fonts_check_166(ttFont):
                  "").format(fv.get_name_id5_version_string())
 
 
+@register_condition
+@condition
+def wght_axis(ttFont):
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "wght":
+      return axis
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/167'
@@ -5177,29 +5185,38 @@ def com_google_fonts_check_166(ttFont):
     the 'Regular' weight.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font']
+  , conditions=['is_variable_font',
+                'wght_axis']
 )
-def com_google_fonts_check_167(ttFont):
+def com_google_fonts_check_167(ttFont, wght_axis):
   """ Varfont default value for wght axis is 400 (Regular). """
 
-  # TODO: split this out as a 'weight_axis' condition:
-  weight_axis = None
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "wght":
-      weight_axis = axis
-      break
-
-  if weight_axis is None:
-    # TODO: make this an independent check!
-    yield FAIL, "A mandatory 'whgt' axis was not found!"
+  if wght_axis.defaultValue == 400:
+    yield PASS, "Default 'wght' value is 400."
   else:
-    if weight_axis.defaultValue == 400:
-      yield PASS, "Default 'wght' value is 400."
-    else:
-      yield FAIL, ("Default value for 'wght' axis must be 400,"
-                   " corresponding to Regular."
-                   " Got a '{}' default value instead."
-                   "").format(weight_axis.defaultValue)
+    yield FAIL, ("Default value for 'wght' axis must be 400,"
+                 " corresponding to Regular."
+                 " Got a '{}' default value instead."
+                 "").format(wght_axis.defaultValue)
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/168'
+  , rationale = """
+    All variable fonts must have a mandatory 'wght' axis.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font']
+)
+def com_google_fonts_check_168(ttFont, wght_axis):
+  """ Varfont must have a 'wght' axis. """
+
+  if wght_axis:
+    yield PASS, "Found the required 'wght' axis."
+  else:
+    yield FAIL, ("All variable fonts must have a mandatory"
+                 " 'wght' axis, but none was found.")
 
 
 for section_name, section in specification._sections.items():
