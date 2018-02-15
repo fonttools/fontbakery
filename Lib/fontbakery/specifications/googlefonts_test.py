@@ -2340,31 +2340,24 @@ def test_check_167():
 
 
 def test_check_168():
-  """ Varfont must have a 'wght' axis. """
+  """ Varfont default value for 'wdth' axis (width) is 100. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_168 as check,
-                                                     wght_axis)
+                                                     wdth_axis)
 
-  # Our reference varfont, CabinVFBeta.ttf
-  # does have a wght axis
+  # Our reference varfont, CabinVFBeta.ttf, has
+  # a bad default value on the wdth axis
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-  weight_axis = wght_axis(ttFont)
+  width_axis = wdth_axis(ttFont)
 
-  # So it must PASS the test
-  print('Test PASS with a bad default value...')
-  status, message = list(check(ttFont, weight_axis))[-1]
-  assert status == PASS
-
-  # But we can also delete it:
-  for i, axis in enumerate(ttFont["fvar"].axes):
-    if axis.axisTag == "wght":
-      del ttFont["fvar"].axes[i]
-
-  # here we let the condition try to find it again
-  # so that we test the condition code as well:
-  weight_axis =  wght_axis(ttFont)
-
-  # and then this must make the check FAIL:
-  print('Test FAIL when wght axis is not found...')
-  status, message = list(check(ttFont, weight_axis))[-1]
+  # So it must FAIL the test
+  print('Test FAIL with a bad default value...')
+  status, message = list(check(ttFont, width_axis))[-1]
   assert status == FAIL
 
+  # We then fix the default wdth value:
+  width_axis.defaultValue = 100
+
+  # and now this should PASS the test:
+  print('Test PASS with a default value = 400 on wght axis...')
+  status, message = list(check(ttFont, width_axis))[-1]
+  assert status == PASS

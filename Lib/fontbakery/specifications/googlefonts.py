@@ -5176,13 +5176,21 @@ def wght_axis(ttFont):
       return axis
 
 
+@register_condition
+@condition
+def wdth_axis(ttFont):
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "wdth":
+      return axis
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/167'
   , rationale = """
-    A variable font must have a default value of 400
-    in its mandatory 'wght' axis, corresponding to
-    the 'Regular' weight.
+    If a variable font has a 'wght' axis, then
+    its default value must be 400, corresponding
+    to the 'Regular' weight.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
@@ -5199,24 +5207,26 @@ def com_google_fonts_check_167(ttFont, wght_axis):
                  " Got a '{}' default value instead."
                  "").format(wght_axis.defaultValue)
 
-
 @register_check
 @check(
     id = 'com.google.fonts/check/168'
   , rationale = """
-    All variable fonts must have a mandatory 'wght' axis.
+    If a variable font has a 'wdth' axis, then
+    its default value must be 100.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font']
+  , conditions=['is_variable_font',
+                'wdth_axis']
 )
-def com_google_fonts_check_168(ttFont, wght_axis):
-  """ Varfont must have a 'wght' axis. """
+def com_google_fonts_check_168(ttFont, wdth_axis):
+  """ Varfont default value for wdth axis is 100. """
 
-  if wght_axis:
-    yield PASS, "Found the required 'wght' axis."
+  if wdth_axis.defaultValue == 100:
+    yield PASS, "Default 'wdth' value is 100."
   else:
-    yield FAIL, ("All variable fonts must have a mandatory"
-                 " 'wght' axis, but none was found.")
+    yield FAIL, ("Default value for 'wdth' axis must be 100."
+                 " Got {} as a default value instead."
+                 "").format(wdth_axis.defaultValue)
 
 
 for section_name, section in specification._sections.items():
