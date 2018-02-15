@@ -4697,7 +4697,10 @@ def com_google_fonts_check_155(ttFont, font_metadata):
 def familyname_with_spaces(ttFont):
   FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
                                    'PressStart2P': 'Press Start 2P',
-                                   'ABeeZee': 'ABeeZee'}
+                                   'ABeeZee': 'ABeeZee',
+                                   'IBMPlexMono': 'IBM Plex Mono',
+                                   'IBMPlexSans': 'IBM Plex Sans',
+                                   'IBMPlexSerif': 'IBM Plex Serif'}
   fname = familyname(ttFont)
   if fname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
     return FAMILY_WITH_SPACES_EXCEPTIONS[fname]
