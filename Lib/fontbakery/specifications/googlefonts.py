@@ -5203,6 +5203,14 @@ def ital_axis(ttFont):
       return axis
 
 
+@register_condition
+@condition
+def opsz_axis(ttFont):
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "opsz":
+      return axis
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/167'
@@ -5291,6 +5299,31 @@ def com_google_fonts_check_170(ttFont, ital_axis):
                  " Got {} as a default value instead."
                  "").format(ital_axis.defaultValue)
 
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/171'
+  , rationale = """
+    If a variable font has a 'opsz' axis, then
+    it is recommentat that its default value
+    be something between 9 and 13.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font',
+                'opsz_axis']
+)
+def com_google_fonts_check_171(ttFont, opsz_axis):
+  """ Varfont default value for 'opsz' (OpticalSize)
+      axis is between 9 and 13. """
+
+  if opsz_axis.defaultValue >= 9 and opsz_axis.defaultValue <= 13:
+    yield PASS, "Default 'opsz' value looks good."
+  else:
+    yield WARN, ("It is recommended that the default value"
+                 " for the 'opsz' (Optical Size) axis should"
+                 " be something between 9 and 13."
+                 " Got {} as a default value instead."
+                 "").format(opsz_axis.defaultValue)
 
 for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))

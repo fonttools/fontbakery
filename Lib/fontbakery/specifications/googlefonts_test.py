@@ -2403,3 +2403,45 @@ def test_check_170():
   print('Test PASS with a default value = 0 on ital axis...')
   status, message = list(check(ttFont, italic_axis))[-1]
   assert status == PASS
+
+
+def test_check_171():
+  """ Varfont default value for 'opsz' (Optical Size) axis
+      is between 9 and 13. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_171 as check,
+                                                     opsz_axis)
+  from fontTools.ttLib.tables._f_v_a_r import Axis
+
+  # Our reference varfont, CabinVFBeta.ttf, lacks an 'opsz' variation axis.
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+
+  # So we add one with a bad value:
+  new_axis = Axis()
+  new_axis.axisTag = "opsz"
+  new_axis.defaultValue = 8
+  ttFont["fvar"].axes.append(new_axis)
+
+  # then we test the ital_axis condition:
+  opticalsize_axis = opsz_axis(ttFont)
+
+  # So it must WARN the test
+  print('Test WARN with a bad default value...')
+  status, message = list(check(ttFont, opticalsize_axis))[-1]
+  assert status == WARN
+
+  # We try yet another bad value
+  opticalsize_axis.defaultValue = 14
+
+  # And it must also WARN the test
+  print('Test WARN with another bad default value...')
+  status, message = list(check(ttFont, opticalsize_axis))[-1]
+  assert status == WARN
+
+  # We then test with good default opsz values:
+  for value in [9, 10, 11, 12, 13]:
+    opticalsize_axis.defaultValue = value
+
+    # and now this should PASS the test:
+    print('Test PASS with a default value = {} on opsz axis...'.format(value))
+    status, message = list(check(ttFont, opticalsize_axis))[-1]
+    assert status == PASS
