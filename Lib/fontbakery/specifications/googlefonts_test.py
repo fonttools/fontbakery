@@ -2313,3 +2313,28 @@ def test_check_166():
       record.string = version_string
   status, message = list(check(ttFont))[-1]
   assert status == PASS
+
+
+def test_check_167():
+  """ Varfont default value for wght axis is 400 (Regular). """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_167 as check,
+                                                     wght_axis)
+
+  # Our reference varfont, CabinVFBeta.ttf, has
+  # a bad default value on the wght axis
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+  weight_axis = wght_axis(ttFont)
+
+  # So it must FAIL the test
+  print('Test FAIL with a bad default value...')
+  status, message = list(check(ttFont, weight_axis))[-1]
+  assert status == FAIL
+
+  # We then fix the default wght value:
+  weight_axis.defaultValue = 400
+
+  # and now this should PASS the test:
+  print('Test PASS with a default value = 400 on wght axis...')
+  status, message = list(check(ttFont, weight_axis))[-1]
+  assert status == PASS
+
