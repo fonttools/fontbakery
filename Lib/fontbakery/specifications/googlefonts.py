@@ -5184,6 +5184,22 @@ def wdth_axis(ttFont):
       return axis
 
 
+@register_condition
+@condition
+def slnt_axis(ttFont):
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "slnt":
+      return axis
+
+
+@register_condition
+@condition
+def ital_axis(ttFont):
+  for axis in ttFont["fvar"].axes:
+    if axis.axisTag == "ital":
+      return axis
+
+
 @register_check
 @check(
     id = 'com.google.fonts/check/167'
@@ -5219,7 +5235,7 @@ def com_google_fonts_check_167(ttFont, wght_axis):
                 'wdth_axis']
 )
 def com_google_fonts_check_168(ttFont, wdth_axis):
-  """ Varfont default value for wdth axis is 100. """
+  """ Varfont default value for 'wdth' (Width) axis is 100. """
 
   if wdth_axis.defaultValue == 100:
     yield PASS, "Default 'wdth' value is 100."
@@ -5227,6 +5243,50 @@ def com_google_fonts_check_168(ttFont, wdth_axis):
     yield FAIL, ("Default value for 'wdth' axis must be 100."
                  " Got {} as a default value instead."
                  "").format(wdth_axis.defaultValue)
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/169'
+  , rationale = """
+    If a variable font has a 'slnt' axis, then
+    its default value must be 0.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font',
+                'slnt_axis']
+)
+def com_google_fonts_check_169(ttFont, slnt_axis):
+  """ Varfont default value for 'slnt' (Slant) axis is zero. """
+
+  if slnt_axis.defaultValue == 0:
+    yield PASS, "Default 'slnt' value is 0."
+  else:
+    yield FAIL, ("Default value for 'slnt' axis must be zero."
+                 " Got {} as a default value instead."
+                 "").format(slnt_axis.defaultValue)
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/170'
+  , rationale = """
+    If a variable font has a 'ital' axis, then
+    its default value must be zero.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font',
+                'ital_axis']
+)
+def com_google_fonts_check_170(ttFont, ital_axis):
+  """ Varfont default value for 'ital' (Italic) axis is zero. """
+
+  if ital_axis.defaultValue == 0:
+    yield PASS, "Default 'ital' value is 0."
+  else:
+    yield FAIL, ("Default value for 'ital' axis must be zero."
+                 " Got {} as a default value instead."
+                 "").format(ital_axis.defaultValue)
 
 
 for section_name, section in specification._sections.items():

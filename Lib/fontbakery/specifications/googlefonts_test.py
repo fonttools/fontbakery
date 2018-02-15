@@ -2341,25 +2341,65 @@ def test_check_167():
   assert status == PASS
 
 
-def test_check_168():
-  """ Varfont default value for 'wdth' axis (width) is 100. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_168 as check,
-                                                     wdth_axis)
+def test_check_169():
+  """ Varfont default value for 'slnt' (Slant) axis is zero. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_169 as check,
+                                                     slnt_axis)
+  from fontTools.ttLib.tables._f_v_a_r import Axis
 
-  # Our reference varfont, CabinVFBeta.ttf, has
-  # a bad default value on the wdth axis
+  # Our reference varfont, CabinVFBeta.ttf, lacks a 'slnt' variation axis.
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-  width_axis = wdth_axis(ttFont)
+
+  # So we add one with a bad value:
+  new_axis = Axis()
+  new_axis.axisTag = "slnt"
+  new_axis.defaultValue = 123
+  ttFont["fvar"].axes.append(new_axis)
+
+  # then we test the slnt_axis condition:
+  slant_axis = slnt_axis(ttFont)
+
+  # And with this the test must FAIL
+  print('Test FAIL with a bad default value...')
+  status, message = list(check(ttFont, slant_axis))[-1]
+  assert status == FAIL
+
+  # We then fix the default slnt value:
+  slant_axis.defaultValue = 0
+
+  # and now this should PASS the test:
+  print('Test PASS with a default value = 0 on slnt axis...')
+  status, message = list(check(ttFont, slant_axis))[-1]
+  assert status == PASS
+
+
+def test_check_170():
+  """ Varfont default value for 'ital' (Italic) axis is zero. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_170 as check,
+                                                     ital_axis)
+  from fontTools.ttLib.tables._f_v_a_r import Axis
+
+  # Our reference varfont, CabinVFBeta.ttf, lacks an 'ital' variation axis.
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+
+  # So we add one with a bad value:
+  new_axis = Axis()
+  new_axis.axisTag = "ital"
+  new_axis.defaultValue = 123
+  ttFont["fvar"].axes.append(new_axis)
+
+  # then we test the ital_axis condition:
+  italic_axis = ital_axis(ttFont)
 
   # So it must FAIL the test
   print('Test FAIL with a bad default value...')
-  status, message = list(check(ttFont, width_axis))[-1]
+  status, message = list(check(ttFont, italic_axis))[-1]
   assert status == FAIL
 
-  # We then fix the default wdth value:
-  width_axis.defaultValue = 100
+  # We then fix the default ital value:
+  italic_axis.defaultValue = 0
 
   # and now this should PASS the test:
-  print('Test PASS with a default value = 400 on wght axis...')
-  status, message = list(check(ttFont, width_axis))[-1]
+  print('Test PASS with a default value = 0 on ital axis...')
+  status, message = list(check(ttFont, italic_axis))[-1]
   assert status == PASS
