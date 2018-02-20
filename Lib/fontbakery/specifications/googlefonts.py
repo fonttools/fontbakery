@@ -5171,159 +5171,224 @@ def com_google_fonts_check_166(ttFont):
                  "").format(fv.get_name_id5_version_string())
 
 
-@register_condition
-@condition
-def wght_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "wght":
-      return axis
+def get_instance_axis_value(ttFont, instance_name, axis_tag):
+  instance = None
+  for i in ttFont["fvar"].instances:
+    name = ttFont["name"].getDebugName(i.subfamilyNameID)
+    if name == instance_name:
+      instance = i
+      break
+
+  if instance:
+    for axis in ttFont["fvar"].axes:
+      if axis.axisTag == axis_tag:
+        return instance.coordinates[axis_tag]
 
 
 @register_condition
 @condition
-def wdth_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "wdth":
-      return axis
+def regular_wght_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Regular", "wght")
 
 
 @register_condition
 @condition
-def slnt_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "slnt":
-      return axis
+def bold_wght_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Bold", "wght")
 
 
 @register_condition
 @condition
-def ital_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "ital":
-      return axis
+def regular_wdth_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Regular", "wdth")
 
 
 @register_condition
 @condition
-def opsz_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "opsz":
-      return axis
+def regular_slnt_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Regular", "slnt")
+
+
+@register_condition
+@condition
+def regular_ital_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Regular", "ital")
+
+
+@register_condition
+@condition
+def regular_opsz_coord(ttFont):
+  return get_instance_axis_value(ttFont, "Regular", "opsz")
 
 
 @register_check
 @check(
     id = 'com.google.fonts/check/167'
   , rationale = """
-    If a variable font has a 'wght' axis, then
-    its default value must be 400, corresponding
-    to the 'Regular' weight.
+    According to the Open-Type spec's registered
+    design-variation tag 'wght' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
+
+    If a variable font has a 'wght' (Weight) axis, then the coordinate
+    of its 'Regular' instance is required to be 400.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
-                'wght_axis']
+                'regular_wght_coord']
 )
-def com_google_fonts_check_167(ttFont, wght_axis):
-  """ Varfont default value for wght axis is 400 (Regular). """
+def com_google_fonts_check_167(ttFont, regular_wght_coord):
+  """ The variable font 'wght' (Weight) axis coordinate
+      must be 400 on the 'Regular' instance. """
 
-  if wght_axis.defaultValue == 400:
-    yield PASS, "Default 'wght' value is 400."
+  if regular_wght_coord == 400:
+    yield PASS, "Regular:wght is 400."
   else:
-    yield FAIL, ("Default value for 'wght' axis must be 400,"
-                 " corresponding to Regular."
-                 " Got a '{}' default value instead."
-                 "").format(wght_axis.defaultValue)
+    yield FAIL, ("The 'wght' axis coordinate of"
+                 " the 'Regular' instance must be 400."
+                 " Got a '{}' coordinate instead."
+                 "").format(regular_wght_coord)
 
 @register_check
 @check(
     id = 'com.google.fonts/check/168'
   , rationale = """
-    If a variable font has a 'wdth' axis, then
-    its default value must be 100.
+    According to the Open-Type spec's registered
+    design-variation tag 'wdth' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
+
+    If a variable font has a 'wdth' (Width) axis, then the coordinate
+    of its 'Regular' instance is required to be 100.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
-                'wdth_axis']
+                'regular_wdth_coord']
 )
-def com_google_fonts_check_168(ttFont, wdth_axis):
-  """ Varfont default value for 'wdth' (Width) axis is 100. """
+def com_google_fonts_check_168(ttFont, regular_wdth_coord):
+  """ The variable font 'wdth' (Width) axis coordinate
+      must be 100 on the 'Regular' instance. """
 
-  if wdth_axis.defaultValue == 100:
-    yield PASS, "Default 'wdth' value is 100."
+  if regular_wdth_coord == 100:
+    yield PASS, "Regular:wdth is 100."
   else:
-    yield FAIL, ("Default value for 'wdth' axis must be 100."
+    yield FAIL, ("The 'wdth' coordinate of"
+                 " the 'Regular' instance must be 100."
                  " Got {} as a default value instead."
-                 "").format(wdth_axis.defaultValue)
+                 "").format(regular_wdth_coord)
 
 
 @register_check
 @check(
     id = 'com.google.fonts/check/169'
   , rationale = """
-    If a variable font has a 'slnt' axis, then
-    its default value must be 0.
+    According to the Open-Type spec's registered
+    design-variation tag 'slnt' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
+
+    If a variable font has a 'slnt' (Slant) axis, then the coordinate
+    of its 'Regular' instance is required to be zero.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
-                'slnt_axis']
+                'regular_slnt_coord']
 )
-def com_google_fonts_check_169(ttFont, slnt_axis):
-  """ Varfont default value for 'slnt' (Slant) axis is zero. """
+def com_google_fonts_check_169(ttFont, regular_slnt_coord):
+  """ The variable font 'slnt' (Slant) axis coordinate
+      must be zero on the 'Regular' instance. """
 
-  if slnt_axis.defaultValue == 0:
-    yield PASS, "Default 'slnt' value is 0."
+  if regular_slnt_coord == 0:
+    yield PASS, "Regular:slnt is zero."
   else:
-    yield FAIL, ("Default value for 'slnt' axis must be zero."
+    yield FAIL, ("The 'slnt' coordinate of"
+                 " the 'Regular' instance must be zero."
                  " Got {} as a default value instead."
-                 "").format(slnt_axis.defaultValue)
+                 "").format(regular_slnt_coord)
 
 
 @register_check
 @check(
     id = 'com.google.fonts/check/170'
   , rationale = """
-    If a variable font has a 'ital' axis, then
-    its default value must be zero.
+    According to the Open-Type spec's registered
+    design-variation tag 'ital' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
+
+    If a variable font has a 'ital' (Italic) axis, then the coordinate
+    of its 'Regular' instance is required to be zero.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
-                'ital_axis']
+                'regular_ital_coord']
 )
-def com_google_fonts_check_170(ttFont, ital_axis):
-  """ Varfont default value for 'ital' (Italic) axis is zero. """
+def com_google_fonts_check_170(ttFont, regular_ital_coord):
+  """ The variable font 'ital' (Italic) axis coordinate
+      must be zero on the 'Regular' instance. """
 
-  if ital_axis.defaultValue == 0:
-    yield PASS, "Default 'ital' value is 0."
+  if regular_ital_coord == 0:
+    yield PASS, "Regular:ital is zero."
   else:
-    yield FAIL, ("Default value for 'ital' axis must be zero."
+    yield FAIL, ("The 'ital' coordinate of"
+                 " the 'Regular' instance must be zero."
                  " Got {} as a default value instead."
-                 "").format(ital_axis.defaultValue)
+                 "").format(regular_ital_coord)
 
 
 @register_check
 @check(
     id = 'com.google.fonts/check/171'
   , rationale = """
-    If a variable font has a 'opsz' axis, then
-    it is recommentat that its default value
-    be something between 9 and 13.
+    According to the Open-Type spec's registered
+    design-variation tag 'opsz' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
+
+    If a variable font has a 'opsz' (Optical Size) axis, then the coordinate
+    of its 'Regular' instance is recommended to be a value in the range 9 to 13.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
   , conditions=['is_variable_font',
-                'opsz_axis']
+                'regular_opsz_coord']
 )
-def com_google_fonts_check_171(ttFont, opsz_axis):
-  """ Varfont default value for 'opsz' (OpticalSize)
-      axis is between 9 and 13. """
+def com_google_fonts_check_171(ttFont, regular_opsz_coord):
+  """ The variable font 'opsz' (Optical Size) axis coordinate
+      should be between 9 and 13 on the 'Regular' instance. """
 
-  if opsz_axis.defaultValue >= 9 and opsz_axis.defaultValue <= 13:
-    yield PASS, "Default 'opsz' value looks good."
+  if regular_opsz_coord >= 9 and regular_opsz_coord <= 13:
+    yield PASS, ("Regular:opsz coordinate ({})"
+                 " looks good.").format(regular_opsz_coord)
   else:
-    yield WARN, ("It is recommended that the default value"
-                 " for the 'opsz' (Optical Size) axis should"
-                 " be something between 9 and 13."
-                 " Got {} as a default value instead."
-                 "").format(opsz_axis.defaultValue)
+    yield WARN, ("The 'opsz' (Optical Size) coordinate"
+                 " on the 'Regular' instance is recommended"
+                 " to be a value in the range 9 to 13."
+                 " Got a '{}' coordinate instead."
+                 "").format(regular_opsz_coord)
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/172'
+  , rationale = """
+    The Open-Type spec's registered
+    design-variation tag 'wght' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
+    does not specify a required value for the 'Bold' instance of a variable font.
+    But Dave Crossland suggested that we should enforce a
+    required value of 700 in this case.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+  , conditions=['is_variable_font',
+                'bold_wght_coord']
+)
+def com_google_fonts_check_172(ttFont, bold_wght_coord):
+  """ The variable font 'wght' (Weight) axis coordinate
+      must be 700 on the 'Bold' instance. """
+
+  if bold_wght_coord == 700:
+    yield PASS, "Bold:wght is 700."
+  else:
+    yield FAIL, ("The 'wght' axis coordinate of"
+                 " the 'Bold' instance must be 700."
+                 " Got a '{}' coordinate instead."
+                 "").format(bold_wght_coord)
+
 
 for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))
