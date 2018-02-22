@@ -2567,7 +2567,9 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
           if not hasattr(pairpos, 'PairSet'):
             continue
           for pairvalue in pairpos.PairSet[i].PairValueRecord:
-            if pairvalue.SecondGlyph in ligatures[glyph]:
+            if (glyph in ligatures and
+                glyph in remaining and
+                pairvalue.SecondGlyph in ligatures[glyph]):
               del remaining[glyph]
 
   def ligatures_str(ligs):
