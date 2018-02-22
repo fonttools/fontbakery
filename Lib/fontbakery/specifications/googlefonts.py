@@ -5172,6 +5172,9 @@ def com_google_fonts_check_166(ttFont):
 
 
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
+  if not is_variable_font(ttFont):
+    return None
+
   instance = None
   for i in ttFont["fvar"].instances:
     name = ttFont["name"].getDebugName(i.subfamilyNameID)
