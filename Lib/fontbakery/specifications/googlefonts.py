@@ -5390,5 +5390,28 @@ def com_google_fonts_check_172(ttFont, bold_wght_coord):
                  "").format(bold_wght_coord)
 
 
+@register_check
+@check(
+    id = 'com.google.fonts/check/173'
+  , rationale = """
+      All advance width values in the Horizontal Metrics (htmx)
+      table must be strictly possitive.
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1720'
+)
+def com_google_fonts_check_173(ttFont):
+  """ Check that hmtx advance widths are not negative. """
+  failed = False
+  for glyphName in ttFont["hmtx"].metrics.keys():
+    advwidth, lsb = ttFont["hmtx"].metrics[glyphName]
+    if advwidth < 0:
+      failed = True
+      yield FAIL, ("glyph '{}' has a negative"
+                   " advance width value ({}).").format(glyphName,
+                                                        advwidth)
+  if not failed:
+    yield PASS, "All advance width values are greater than zero."
+
+
 for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))
