@@ -4248,6 +4248,9 @@ def github_gfonts_ttFont(ttFont, license):
   """Get a TTFont object of a font downloaded
      from Google Fonts git repository.
   """
+  if not license:
+    return
+
   from fontbakery.utils import download_file
   from fontTools.ttLib import TTFont
   LICENSE_DIRECTORY = {
