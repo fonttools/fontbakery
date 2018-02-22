@@ -2526,3 +2526,29 @@ def test_check_172():
   print('Test PASS with a good Bold:wght coordinage (700)...')
   status, message = list(check(ttFont, bold_weight_coord))[-1]
   assert status == PASS
+
+
+def test_check_173():
+  """ Check that hmtx advance widths are not negative. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_173 as check
+
+  # Our reference Cabin Regular is good
+  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+
+  # So it must PASS
+  print('Test PASS with a good font...')
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # We then add a negative advance width to an arbitrary glyph:
+  glyphNames = ttFont["hmtx"].metrics.keys()
+  index = 123 # that's an arbitrary one
+
+  advwidth, lsb = ttFont["hmtx"].metrics[glyphNames[index]]
+  advwidth = -50
+  ttFont["hmtx"].metrics[glyphNames[index]] = advwidth, lsb
+
+  # and now this should FAIL:
+  print('Test FAIL with a negative advance width on the hmtx table...')
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
