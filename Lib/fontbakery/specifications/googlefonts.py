@@ -3175,7 +3175,9 @@ def com_google_fonts_check_081(listed_on_gfonts_api):
     yield PASS, "Font is properly listed via Google Fonts API."
 
 
-@register_check
+# Temporarily disabled as requested at
+# https://github.com/googlefonts/fontbakery/issues/1728
+#@register_check
 @check(
     id = 'com.google.fonts/check/082'
   , conditions=['metadata']
