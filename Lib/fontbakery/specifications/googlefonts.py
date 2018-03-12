@@ -5382,23 +5382,39 @@ def com_google_fonts_check_172(ttFont, bold_wght_coord):
 @check(
     id = 'com.google.fonts/check/173'
   , rationale = """
-      All advance width values in the Horizontal Metrics (htmx)
-      table must be strictly possitive.
+      Advance width values in the Horizontal Metrics (htmx)
+      table cannot be negative since they are encoded as unsigned
+      16-bit values. But some programs may infer and report
+      a negative advance by looking up the x-coordinates of
+      the glyphs directly on the glyf table.
+
+      There are reports of broken versions of Glyphs.app causing
+      this kind of problem as reported at
+      https://github.com/googlefonts/fontbakery/issues/1720 and
+      https://github.com/fonttools/fonttools/pull/1198
+
+      This check detects and reports such malformed
+      glyf table entries.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1720'
 )
 def com_google_fonts_check_173(ttFont):
-  """ Check that hmtx advance widths are not negative. """
+  """ Check that advance widths cannot be inferred as negative. """
   failed = False
-  for glyphName in ttFont["hmtx"].metrics.keys():
-    advwidth, lsb = ttFont["hmtx"].metrics[glyphName]
+  for glyphName in ttFont["glyf"].glyphs:
+    coords = ttFont["glyf"][glyphName].coordinates
+    rightX = coords[-3][0]
+    leftX = coords[-4][0]
+    advwidth = rightX - leftX
     if advwidth < 0:
       failed = True
-      yield FAIL, ("glyph '{}' has a negative"
-                   " advance width value ({}).").format(glyphName,
-                                                        advwidth)
+      yield FAIL, ("glyph '{}' has bad coordinates on the glyf table,"
+                   " which may lead to the advance width to be"
+                   " interpreted as a negative"
+                   " value ({}).").format(glyph,
+                                          advwidth)
   if not failed:
-    yield PASS, "All advance width values are greater than zero."
+    yield PASS, "The x-coordinates of all glyphs look good."
 
 
 for section_name, section in specification._sections.items():
