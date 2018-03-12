@@ -595,8 +595,6 @@ def registered_vendor_ids():
 )
 def com_google_fonts_check_018(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID."""
-  from unidecode import unidecode
-  from fontbakery.constants import NAMEID_MANUFACTURER_NAME
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
     " You should set it to your own 4 character code,"
@@ -613,32 +611,12 @@ def com_google_fonts_check_018(ttFont, registered_vendor_ids):
     yield FAIL, Message("bad", ("OS/2 VendorID is '{}',"
                                 " a font editor default.").format(vid) +
                                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
-  elif len(registered_vendor_ids.keys()) > 0:
-    if vid not in registered_vendor_ids.keys():
-      yield WARN, Message("unknown", ("OS/2 VendorID value '{}' is not"
-                                      " a known registered id.").format(vid) +
-                                      SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
-    else:
-      failed = False
-      for name in ttFont['name'].names:
-        if name.nameID == NAMEID_MANUFACTURER_NAME:
-          manufacturer = name.string.decode(name.getEncoding()).strip()
-          if manufacturer != registered_vendor_ids[vid].strip():
-            failed = True
-            yield WARN, Message("mismatch",
-                                "VendorID '{}' and corresponding"
-                                " registered name '{}' does not"
-                                " match the value that is"
-                                " currently set"
-                                " on the font nameID"
-                                " {} (Manufacturer Name):"
-                                " '{}'".format(
-                                vid,
-                                unidecode(registered_vendor_ids[vid]).strip(),
-                                NAMEID_MANUFACTURER_NAME,
-                                unidecode(manufacturer)))
-      if not failed:
-        yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
+  elif vid not in registered_vendor_ids.keys():
+    yield WARN, Message("unknown", ("OS/2 VendorID value '{}' is not"
+                                    " a known registered id.").format(vid) +
+                                    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
+  else:
+    yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
 
 
 @register_check

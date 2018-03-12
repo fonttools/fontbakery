@@ -485,15 +485,10 @@ def test_check_018():
   """ Checking OS/2 achVendID """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_018 as check,
                                                      registered_vendor_ids)
-  from fontbakery.constants import NAMEID_MANUFACTURER_NAME
   registered_ids = registered_vendor_ids()
 
-  print('Test WARN with mismatching vendor id.')
-  # Our reference Cabin family is know to have mismatching value of
-  # Vendor ID ('STC ') and Manufacturer Name ('Eben Sorkin').
+  # Let's start with our reference Cabin Regular
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == WARN and message.code == "mismatch"
 
   print('Test FAIL with bad vid.')
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
@@ -513,12 +508,8 @@ def test_check_018():
   assert status == WARN and message.code == "unknown"
 
   print('Test PASS with good font.')
-  # we change the fields into a known good combination
-  # of vendor id and manufacturer name here:
+  # we now change the fields into a known good vendor id:
   ttFont['OS/2'].achVendID = "APPL"
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_MANUFACTURER_NAME:
-      ttFont['name'].names[i].string = "Apple".encode(name.getEncoding())
   status, message = list(check(ttFont, registered_ids))[-1]
   assert status == PASS
 
