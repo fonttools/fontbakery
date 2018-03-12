@@ -2529,7 +2529,7 @@ def test_check_172():
 
 
 def test_check_173():
-  """ Check that hmtx advance widths are not negative. """
+  """ Check that advance widths cannot be inferred as negative. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_173 as check
 
   # Our reference Cabin Regular is good
@@ -2540,15 +2540,18 @@ def test_check_173():
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
-  # We then add a negative advance width to an arbitrary glyph:
-  glyphNames = ttFont["hmtx"].metrics.keys()
-  index = 123 # that's an arbitrary one
+  # We then change values in an arbitrary glyph
+  # in the glyf table in order to cause the problem:
+  glyphName = "J"
+  coords = ttFont["glyf"].glyphs[glyphName].coordinates
 
-  advwidth, lsb = ttFont["hmtx"].metrics[glyphNames[index]]
-  advwidth = -50
-  ttFont["hmtx"].metrics[glyphNames[index]] = advwidth, lsb
+  rightSideX = coord[-3][0]
+  # leftSideX: (make right minus left a negative number)
+  coords[-4][0] = rightSideX + 1
+
+  ttFont["glyf"].glyphs[glyphName].coordinates = coords
 
   # and now this should FAIL:
-  print('Test FAIL with a negative advance width on the hmtx table...')
+  print('Test FAIL with bad coordinates on the glyf table...')
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
