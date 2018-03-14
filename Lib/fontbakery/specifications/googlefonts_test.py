@@ -2527,8 +2527,13 @@ def test_check_172():
   status, message = list(check(ttFont, bold_weight_coord))[-1]
   assert status == PASS
 
-
-def test_check_173():
+# Temporarily disabling this code-test since check/173 itself
+# is disabled waiting for an implementation targetting the
+# actual root cause of the issue.
+#
+# See also comments at googlefons.py as well as at
+# https://github.com/googlefonts/fontbakery/issues/1727
+def disabled_test_check_173():
   """ Check that advance widths cannot be inferred as negative. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_173 as check
 
@@ -2545,7 +2550,12 @@ def test_check_173():
   glyphName = "J"
   coords = ttFont["glyf"].glyphs[glyphName].coordinates
 
-  rightSideX = coord[-3][0]
+# Note: I thought this was the proper way to induce the
+# issue, but now I think I'll need to look more
+# carefully at sample files providedby MarcFoley
+# to see what's really at play here and how the relevant
+# data is encoded into the affected OpenType files.
+  rightSideX = coords[-3][0]
   # leftSideX: (make right minus left a negative number)
   coords[-4][0] = rightSideX + 1
 
@@ -2555,3 +2565,4 @@ def test_check_173():
   print('Test FAIL with bad coordinates on the glyf table...')
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
+

@@ -5400,7 +5400,14 @@ def com_google_fonts_check_172(ttFont, bold_wght_coord):
                  "").format(bold_wght_coord)
 
 
-@register_check
+# Disabling this check since the previous implementation was
+# bogus due to the way fonttools encodes the data into the TTF
+# files and the new attempt at targetting the real problem is
+# still not quite right.
+# FIXME: reimplement this addressing the actual root cause of the issue.
+# See also ongoing discussion at:
+# https://github.com/googlefonts/fontbakery/issues/1727
+#@register_check
 @check(
     id = 'com.google.fonts/check/173'
   , rationale = """
@@ -5433,7 +5440,7 @@ def com_google_fonts_check_173(ttFont):
       yield FAIL, ("glyph '{}' has bad coordinates on the glyf table,"
                    " which may lead to the advance width to be"
                    " interpreted as a negative"
-                   " value ({}).").format(glyph,
+                   " value ({}).").format(glyphName,
                                           advwidth)
   if not failed:
     yield PASS, "The x-coordinates of all glyphs look good."
