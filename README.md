@@ -153,22 +153,35 @@ This will create a folder called `check_results/` then run the `check-googlefont
 ### Mac OS X
 
 Minimal install procedure:
-```sh
+
+#### Step 1
+```
 # install os x developer tools and the homebrew package manager
 xcode-select --install;
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-brew install python;
-
-easy_install pip
-pip install fontbakery
 ```
+
+#### Step 2
+```
+# then instal python version 2 so that we don't rely
+# on the python interpreter originally shipped on MacOSX
+brew install python2;
+```
+
+#### Step 3
+```
+# and finally, use pip2 to install fontbakery
+pip2 install fontbakery
+```
+
+#### Upgrades
 
 For upgrading to a newer version (if you already installed a previous version of Font Bakery) you should do:
 ```
-pip install --upgrade fontbakery
+pip2 install --upgrade fontbakery
 ```
 
-Additional dependencies:
+#### Additional dependencies
 
 ```sh
 # install ots
