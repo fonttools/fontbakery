@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from fontbakery.callable import check, condition
-from fontbakery.checkrunner import ERROR, FAIL, PASS, Section, Spec
+from fontbakery.checkrunner import ERROR, FAIL, WARN, PASS, Section, Spec
 from fontbakery.constants import CRITICAL
 
 default_section = Section('Default')
@@ -86,6 +86,45 @@ def com_daltonmaag_check_ufolint(font):
         yield ERROR, "ufolint is not available!"
 
     yield PASS, "ufolint passed the UFO source."
+
+
+@register_check
+@check(id='com.daltonmaag/check/required-fields')
+def com_daltonmaag_check_required_fields(font):
+    """Check that required fields are present in the UFO fontinfo.
+
+    ufo2ft requires these info fields to compile a font binary: unitsPerEm,
+    ascender, descender, xHeight, capHeight and familyName.
+
+    It will warn unless these fields are present: postscriptUnderlineThickness,
+    postscriptUnderlinePosition
+    """
+    import defcon
+
+    req_missing = []
+    rec_missing = []
+    ufo = defcon.Font(font)
+
+    for required_field in [
+            "_unitsPerEm", "_ascender", "_descender", "_xHeight", "_capHeight",
+            "_familyName"
+    ]:
+        if ufo.info.__dict__.get(required_field) is None:
+            req_missing.append(required_field)
+
+    for optional_field in [
+            "_postscriptUnderlineThickness", "_postscriptUnderlinePosition"
+    ]:
+        if ufo.info.__dict__.get(optional_field) is None:
+            rec_missing.append(optional_field)
+
+    if req_missing:
+        yield FAIL, "Required field(s) missing: {}".format(req_missing)
+
+    if rec_missing:
+        yield WARN, "Recommended field(s) missing: {}".format(rec_missing)
+
+    yield PASS, "Required and recommended fields present."
 
 
 for section_name, section in specification._sections.items():
