@@ -55,7 +55,8 @@ setup(
         'protobuf',
         'bs4',
         'fontTools',
-        'font-v'
+        'font-v',
+        'defcon'
     ]
 )
 
