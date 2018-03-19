@@ -2,24 +2,12 @@
 #
 # This file has been automatically formatted with `yapf --style '
 # {based_on_style: google}'` and `docformatter`.
-from __future__ import (absolute_import, print_function, unicode_literals,
-                        division)
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from fontbakery.checkrunner import (INFO, WARN, ERROR, SKIP, PASS, FAIL,
-                                    Section, Spec)
-import os
-from fontbakery.callable import condition, check
-from fontbakery.message import Message
-from fontbakery.constants import (
-    # TODO: priority levels are not yet part of the new runner/reporters.
-    # How did we ever use this information?
-    # Check priority levels:
-    CRITICAL,
-    IMPORTANT
-    #     , NORMAL
-    #     , LOW
-    #     , TRIVIAL
-)
+from fontbakery.callable import check, condition
+from fontbakery.checkrunner import ERROR, FAIL, PASS, Section, Spec
+from fontbakery.constants import CRITICAL
 
 default_section = Section('Default')
 
@@ -68,8 +56,7 @@ class UFOSpec(Spec):
 specification = UFOSpec(
     default_section=default_section,
     iterargs={'font': 'fonts'},
-    derived_iterables={'ufo_sources': ('ufo_source', True)}
-)
+    derived_iterables={'ufo_sources': ('ufo_source', True)})
 
 register_check = specification.register_check
 register_condition = specification.register_condition
@@ -84,8 +71,8 @@ def ufo_source(font):
 
 
 @register_check
-@check(id='com.google.ufos/check/001', priority=CRITICAL)
-def com_google_ufos_check_001(font):
+@check(id='com.daltonmaag/check/ufolint', priority=CRITICAL)
+def com_daltonmaag_check_ufolint(font):
     """Run ufolint on UFO source directory."""
     import subprocess
     ufolint_cmd = ["ufolint", font]
