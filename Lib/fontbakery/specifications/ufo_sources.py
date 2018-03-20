@@ -149,7 +149,8 @@ def com_daltonmaag_check_unnecessary_fields(font):
 
     ufo2ft will generate these.
 
-    openTypeOS2CodePageRanges is exempted because it is useful to toggle a range when not _all_ the glyphs in that region are present.
+    openTypeOS2CodePageRanges is exempted because it is useful to toggle a
+    range when not _all_ the glyphs in that region are present.
 
     year is deprecated since UFO v2.
     """
@@ -177,10 +178,10 @@ def com_daltonmaag_check_unnecessary_fields(font):
 def com_daltonmaag_check_empty_fields(font):
     """Check that no empty fields are present in the UFO fontinfo.
 
-    The following fields are exempt because defcon always generates them:
-    postscriptBlueValues, postscriptOtherBlues, postscriptFamilyBlues,
-    postscriptFamilyOtherBlues, postscriptStemSnapH,
-    postscriptStemSnapV.
+    The following fields are exempt because defcon always generates
+    them: postscriptBlueValues, postscriptOtherBlues,
+    postscriptFamilyBlues, postscriptFamilyOtherBlues,
+    postscriptStemSnapH, postscriptStemSnapV.
     """
     import defcon
 
