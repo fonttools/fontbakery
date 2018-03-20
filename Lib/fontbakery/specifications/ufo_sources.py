@@ -93,38 +93,107 @@ def com_daltonmaag_check_ufolint(font):
 def com_daltonmaag_check_required_fields(font):
     """Check that required fields are present in the UFO fontinfo.
 
-    ufo2ft requires these info fields to compile a font binary: unitsPerEm,
-    ascender, descender, xHeight, capHeight and familyName.
-
-    It will warn unless these fields are present: postscriptUnderlineThickness,
-    postscriptUnderlinePosition
+    ufo2ft requires these info fields to compile a font binary:
+    unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """
     import defcon
 
-    req_missing = []
-    rec_missing = []
+    recommended_fields = []
     ufo = defcon.Font(font)
 
-    for required_field in [
-            "_unitsPerEm", "_ascender", "_descender", "_xHeight", "_capHeight",
-            "_familyName"
+    for field in [
+            "unitsPerEm", "ascender", "descender", "xHeight", "capHeight",
+            "familyName"
     ]:
-        if ufo.info.__dict__.get(required_field) is None:
-            req_missing.append(required_field)
+        if ufo.info.__dict__.get("_" + field) is None:
+            recommended_fields.append(field)
 
-    for optional_field in [
-            "_postscriptUnderlineThickness", "_postscriptUnderlinePosition"
+    if recommended_fields:
+        yield FAIL, "Required field(s) missing: {}".format(recommended_fields)
+
+    yield PASS, "Required fields present."
+
+
+@register_check
+@check(id='com.daltonmaag/check/recommended-fields')
+def com_daltonmaag_check_recommended_fields(font):
+    """Check that recommended fields are present in the UFO fontinfo.
+
+    This includes fields that should be in any production font.
+    """
+    import defcon
+
+    recommended_fields = []
+    ufo = defcon.Font(font)
+
+    for field in [
+            "postscriptUnderlineThickness", "postscriptUnderlinePosition",
+            "versionMajor", "versionMinor", "styleName", "copyright", "panose"
     ]:
-        if ufo.info.__dict__.get(optional_field) is None:
-            rec_missing.append(optional_field)
+        if ufo.info.__dict__.get("_" + field) is None:
+            recommended_fields.append(field)
 
-    if req_missing:
-        yield FAIL, "Required field(s) missing: {}".format(req_missing)
+    if recommended_fields:
+        yield WARN, "Recommended field(s) missing: {}".format(
+            recommended_fields)
 
-    if rec_missing:
-        yield WARN, "Recommended field(s) missing: {}".format(rec_missing)
+    yield PASS, "Recommended fields present."
 
-    yield PASS, "Required and recommended fields present."
+
+@register_check
+@check(id='com.daltonmaag/check/unnecessary-fields')
+def com_daltonmaag_check_unnecessary_fields(font):
+    """Check that no unnecessary fields are present in the UFO fontinfo.
+
+    ufo2ft will generate these.
+
+    openTypeOS2CodePageRanges is exempted because it is useful to toggle a range when not _all_ the glyphs in that region are present.
+
+    year is deprecated since UFO v2.
+    """
+    import defcon
+
+    unnecessary_fields = []
+    ufo = defcon.Font(font)
+
+    for field in [
+            "openTypeOS2UnicodeRanges", "openTypeNameUniqueID",
+            "openTypeNameVersion", "postscriptUniqueID", "year"
+    ]:
+        if ufo.info.__dict__.get("_" + field) is not None:
+            unnecessary_fields.append(field)
+
+    if unnecessary_fields:
+        yield WARN, "Unnecessary field(s) present: {}".format(
+            unnecessary_fields)
+
+    yield PASS, "Unnecessary fields omitted."
+
+
+@register_check
+@check(id='com.daltonmaag/check/empty-fields')
+def com_daltonmaag_check_empty_fields(font):
+    """Check that no empty fields are present in the UFO fontinfo.
+
+    The following fields are exempt because defcon always generates them:
+    postscriptBlueValues, postscriptOtherBlues, postscriptFamilyBlues,
+    postscriptFamilyOtherBlues, postscriptStemSnapH,
+    postscriptStemSnapV.
+    """
+    import defcon
+
+    empty_fields = []
+    ufo = defcon.Font(font)
+
+    for field in ["guidelines"]:
+        field_value = ufo.info.__dict__.get("_" + field)
+        if field_value is not None and len(field_value) == 0:
+            empty_fields.append(field)
+
+    if empty_fields:
+        yield WARN, "Empty field(s) present: {}".format(empty_fields)
+
+    yield PASS, "No empty fields."
 
 
 for section_name, section in specification._sections.items():
