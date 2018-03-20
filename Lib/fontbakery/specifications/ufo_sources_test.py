@@ -26,7 +26,7 @@ def test_check_required_fields(empty_ufo_font):
 
     print('Test FAIL with empty UFO.')
     c = list(check(ufo_path))
-    status, message = c[-1]
+    status, _ = c[-1]
     assert status == FAIL
 
     ufo.info.unitsPerEm = 1000
@@ -39,7 +39,7 @@ def test_check_required_fields(empty_ufo_font):
 
     print('Test PASS with almost empty UFO.')
     c = list(check(ufo_path))
-    status, message = c[-1]
+    status, _ = c[-1]
     assert status == PASS
 
 
@@ -50,7 +50,7 @@ def test_check_recommended_fields(empty_ufo_font):
 
     print('Test FAIL with empty UFO.')
     c = list(check(ufo_path))
-    status, message = c[-1]
+    status, _ = c[-1]
     assert status == WARN
 
     ufo.info.postscriptUnderlineThickness = 1000
@@ -64,5 +64,5 @@ def test_check_recommended_fields(empty_ufo_font):
 
     print('Test PASS with almost empty UFO.')
     c = list(check(ufo_path))
-    status, message = c[-1]
+    status, _ = c[-1]
     assert status == PASS
