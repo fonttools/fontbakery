@@ -5,11 +5,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from fontbakery.callable import check, condition
-from fontbakery.checkrunner import ERROR, FAIL, WARN, PASS, Section, Spec
-from fontbakery.constants import CRITICAL
+import os
 
-default_section = Section('Default')
+from fontbakery.callable import check, condition
+from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, Section, Spec
+from fontbakery.constants import CRITICAL
 
 
 class UFOSpec(Spec):
@@ -26,7 +26,9 @@ class UFOSpec(Spec):
             # use glob.glob to accept *.ufo
 
             for fullpath in glob.glob(pattern):
-                if fullpath.endswith(".ufo"):
+                fullpath_absolute = os.path.abspath(fullpath)
+                if fullpath_absolute.endswith(".ufo") and os.path.isdir(
+                        fullpath_absolute):
                     fonts_to_check.append(fullpath)
                 else:
                     logging.warning(
@@ -54,7 +56,7 @@ class UFOSpec(Spec):
 # This variable serves as an exportable anchor point, see e.g. the
 # Lib/fontbakery/commands/check_ufo_sources.py script.
 specification = UFOSpec(
-    default_section=default_section,
+    default_section=Section('Default'),
     iterargs={'font': 'fonts'},
     derived_iterables={'ufo_sources': ('ufo_source', True)})
 
