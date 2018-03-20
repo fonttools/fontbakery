@@ -130,7 +130,8 @@ def com_daltonmaag_check_recommended_fields(font):
 
     for field in [
             "postscriptUnderlineThickness", "postscriptUnderlinePosition",
-            "versionMajor", "versionMinor", "styleName", "copyright", "panose"
+            "versionMajor", "versionMinor", "styleName", "copyright",
+            "openTypeOS2Panose"
     ]:
         if ufo.info.__dict__.get("_" + field) is None:
             recommended_fields.append(field)
