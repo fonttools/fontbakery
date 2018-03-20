@@ -112,8 +112,8 @@ def com_daltonmaag_check_required_fields(font):
 
     if recommended_fields:
         yield FAIL, "Required field(s) missing: {}".format(recommended_fields)
-
-    yield PASS, "Required fields present."
+    else:
+        yield PASS, "Required fields present."
 
 
 @register_check
@@ -138,8 +138,8 @@ def com_daltonmaag_check_recommended_fields(font):
     if recommended_fields:
         yield WARN, "Recommended field(s) missing: {}".format(
             recommended_fields)
-
-    yield PASS, "Recommended fields present."
+    else:
+        yield PASS, "Recommended fields present."
 
 
 @register_check
@@ -168,8 +168,8 @@ def com_daltonmaag_check_unnecessary_fields(font):
     if unnecessary_fields:
         yield WARN, "Unnecessary field(s) present: {}".format(
             unnecessary_fields)
-
-    yield PASS, "Unnecessary fields omitted."
+    else:
+        yield PASS, "Unnecessary fields omitted."
 
 
 @register_check
@@ -194,8 +194,8 @@ def com_daltonmaag_check_empty_fields(font):
 
     if empty_fields:
         yield WARN, "Empty field(s) present: {}".format(empty_fields)
-
-    yield PASS, "No empty fields."
+    else:
+        yield PASS, "No empty fields."
 
 
 for section_name, section in specification._sections.items():
