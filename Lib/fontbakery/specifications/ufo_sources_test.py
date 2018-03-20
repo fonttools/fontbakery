@@ -36,7 +36,32 @@ def test_check_required_fields(empty_ufo_font):
     ufo.info.capHeight = 700
     ufo.info.familyName = "Test"
     ufo.save()
-    
+
+    print('Test PASS with almost empty UFO.')
+    c = list(check(ufo_path))
+    status, message = c[-1]
+    assert status == PASS
+
+
+def test_check_recommended_fields(empty_ufo_font):
+    from fontbakery.specifications.ufo_sources import (
+        com_daltonmaag_check_recommended_fields as check)
+    ufo, ufo_path = empty_ufo_font
+
+    print('Test FAIL with empty UFO.')
+    c = list(check(ufo_path))
+    status, message = c[-1]
+    assert status == WARN
+
+    ufo.info.postscriptUnderlineThickness = 1000
+    ufo.info.postscriptUnderlinePosition = 800
+    ufo.info.versionMajor = -200
+    ufo.info.versionMinor = 500
+    ufo.info.styleName = "700"
+    ufo.info.copyright = "Test"
+    ufo.info.openTypeOS2Panose = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    ufo.save()
+
     print('Test PASS with almost empty UFO.')
     c = list(check(ufo_path))
     status, message = c[-1]
