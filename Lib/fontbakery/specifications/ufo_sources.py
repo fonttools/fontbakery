@@ -165,28 +165,11 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
         yield PASS, "Unnecessary fields omitted."
 
 
-@register_check
-@check(id='com.daltonmaag/check/empty-fields')
-def com_daltonmaag_check_empty_fields(ufo_font):
-    """Check that no empty fields are present in the UFO fontinfo.
-
-    The following fields are exempt because defcon always generates
-    them: postscriptBlueValues, postscriptOtherBlues,
-    postscriptFamilyBlues, postscriptFamilyOtherBlues,
-    postscriptStemSnapH, postscriptStemSnapV.
-    """
-    empty_fields = []
-
-    for field in ["guidelines"]:
-        field_value = ufo_font.info.__dict__.get("_" + field)
-        if field_value is not None and len(field_value) == 0:
-            empty_fields.append(field)
-
-    if empty_fields:
-        yield WARN, "Empty field(s) present: {}".format(empty_fields)
-    else:
-        yield PASS, "No empty fields."
-
+# The following fields are always generated empty by defcon:
+# guidelines, postscriptBlueValues, postscriptOtherBlues,
+# postscriptFamilyBlues, postscriptFamilyOtherBlues,
+# postscriptStemSnapH, postscriptStemSnapV -- not sure if checking for that
+# is useful.
 
 for section_name, section in specification._sections.items():
     print("There is a total of {} checks on {}.".format(
