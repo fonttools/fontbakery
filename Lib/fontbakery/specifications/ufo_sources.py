@@ -86,8 +86,8 @@ def com_daltonmaag_check_ufolint(font):
                      "\n\n{}\n").format(e.output)
     except OSError:
         yield ERROR, "ufolint is not available!"
-
-    yield PASS, "ufolint passed the UFO source."
+    else:
+        yield PASS, "ufolint passed the UFO source."
 
 
 @register_check
