@@ -44,7 +44,7 @@ def test_check_required_fields(empty_ufo_font):
     ufo, ufo_path = empty_ufo_font
 
     print('Test FAIL with empty UFO.')
-    c = list(check(ufo_path))
+    c = list(check(ufo))
     status, _ = c[-1]
     assert status == FAIL
 
@@ -57,7 +57,7 @@ def test_check_required_fields(empty_ufo_font):
     ufo.save()
 
     print('Test PASS with almost empty UFO.')
-    c = list(check(ufo_path))
+    c = list(check(ufo))
     status, _ = c[-1]
     assert status == PASS
 
@@ -65,10 +65,10 @@ def test_check_required_fields(empty_ufo_font):
 def test_check_recommended_fields(empty_ufo_font):
     from fontbakery.specifications.ufo_sources import (
         com_daltonmaag_check_recommended_fields as check)
-    ufo, ufo_path = empty_ufo_font
+    ufo, _ = empty_ufo_font
 
-    print('Test FAIL with empty UFO.')
-    c = list(check(ufo_path))
+    print('Test WARN with empty UFO.')
+    c = list(check(ufo))
     status, _ = c[-1]
     assert status == WARN
 
@@ -82,6 +82,6 @@ def test_check_recommended_fields(empty_ufo_font):
     ufo.save()
 
     print('Test PASS with almost empty UFO.')
-    c = list(check(ufo_path))
+    c = list(check(ufo))
     status, _ = c[-1]
     assert status == PASS
