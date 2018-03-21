@@ -58,7 +58,7 @@ class UFOSpec(Spec):
 specification = UFOSpec(
     default_section=Section('Default'),
     iterargs={'font': 'fonts'},
-    derived_iterables={'ufo_sources': ('ufo_source', True)})
+    derived_iterables={'ufo_fonts': ('ufo_font', True)})
 
 register_check = specification.register_check
 register_condition = specification.register_condition
@@ -67,7 +67,7 @@ register_condition = specification.register_condition
 
 @register_condition
 @condition
-def ufo_source(font):
+def ufo_font(font):
     import defcon
     return defcon.Font(font)
 
@@ -92,22 +92,19 @@ def com_daltonmaag_check_ufolint(font):
 
 @register_check
 @check(id='com.daltonmaag/check/required-fields')
-def com_daltonmaag_check_required_fields(font):
+def com_daltonmaag_check_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo.
 
     ufo2ft requires these info fields to compile a font binary:
     unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """
-    import defcon
-
     recommended_fields = []
-    ufo = defcon.Font(font)
 
     for field in [
             "unitsPerEm", "ascender", "descender", "xHeight", "capHeight",
             "familyName"
     ]:
-        if ufo.info.__dict__.get("_" + field) is None:
+        if ufo_font.info.__dict__.get("_" + field) is None:
             recommended_fields.append(field)
 
     if recommended_fields:
@@ -118,22 +115,19 @@ def com_daltonmaag_check_required_fields(font):
 
 @register_check
 @check(id='com.daltonmaag/check/recommended-fields')
-def com_daltonmaag_check_recommended_fields(font):
+def com_daltonmaag_check_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo.
 
     This includes fields that should be in any production font.
     """
-    import defcon
-
     recommended_fields = []
-    ufo = defcon.Font(font)
 
     for field in [
             "postscriptUnderlineThickness", "postscriptUnderlinePosition",
             "versionMajor", "versionMinor", "styleName", "copyright",
             "openTypeOS2Panose"
     ]:
-        if ufo.info.__dict__.get("_" + field) is None:
+        if ufo_font.info.__dict__.get("_" + field) is None:
             recommended_fields.append(field)
 
     if recommended_fields:
@@ -145,7 +139,7 @@ def com_daltonmaag_check_recommended_fields(font):
 
 @register_check
 @check(id='com.daltonmaag/check/unnecessary-fields')
-def com_daltonmaag_check_unnecessary_fields(font):
+def com_daltonmaag_check_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo.
 
     ufo2ft will generate these.
@@ -155,16 +149,13 @@ def com_daltonmaag_check_unnecessary_fields(font):
 
     year is deprecated since UFO v2.
     """
-    import defcon
-
     unnecessary_fields = []
-    ufo = defcon.Font(font)
 
     for field in [
             "openTypeOS2UnicodeRanges", "openTypeNameUniqueID",
             "openTypeNameVersion", "postscriptUniqueID", "year"
     ]:
-        if ufo.info.__dict__.get("_" + field) is not None:
+        if ufo_font.info.__dict__.get("_" + field) is not None:
             unnecessary_fields.append(field)
 
     if unnecessary_fields:
@@ -176,7 +167,7 @@ def com_daltonmaag_check_unnecessary_fields(font):
 
 @register_check
 @check(id='com.daltonmaag/check/empty-fields')
-def com_daltonmaag_check_empty_fields(font):
+def com_daltonmaag_check_empty_fields(ufo_font):
     """Check that no empty fields are present in the UFO fontinfo.
 
     The following fields are exempt because defcon always generates
@@ -184,13 +175,10 @@ def com_daltonmaag_check_empty_fields(font):
     postscriptFamilyBlues, postscriptFamilyOtherBlues,
     postscriptStemSnapH, postscriptStemSnapV.
     """
-    import defcon
-
     empty_fields = []
-    ufo = defcon.Font(font)
 
     for field in ["guidelines"]:
-        field_value = ufo.info.__dict__.get("_" + field)
+        field_value = ufo_font.info.__dict__.get("_" + field)
         if field_value is not None and len(field_value) == 0:
             empty_fields.append(field)
 
