@@ -2,6 +2,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import os
+
 import defcon
 import pytest
 
@@ -17,6 +19,23 @@ def empty_ufo_font(tmpdir):
     ufo_path = str(tmpdir.join("empty_font.ufo"))
     ufo.save(ufo_path)
     return (ufo, ufo_path)
+
+
+def test_check_ufolint(empty_ufo_font):
+    from fontbakery.specifications.ufo_sources import (
+        com_daltonmaag_check_ufolint as check)
+    _, ufo_path = empty_ufo_font
+
+    print('Test PASS with empty UFO.')
+    c = list(check(ufo_path))
+    status, _ = c[-1]
+    assert status == PASS
+
+    print('Test FAIL with maimed UFO.')
+    os.remove(os.path.join(ufo_path, "metainfo.plist"))
+    c = list(check(ufo_path))
+    status, _ = c[-1]
+    assert status == FAIL
 
 
 def test_check_required_fields(empty_ufo_font):
