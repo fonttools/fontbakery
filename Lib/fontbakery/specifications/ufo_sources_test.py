@@ -7,8 +7,7 @@ import os
 import defcon
 import pytest
 
-from fontbakery.checkrunner import (DEBUG, ENDCHECK, ERROR, FAIL, INFO, PASS,
-                                    SKIP, WARN)
+from fontbakery.checkrunner import (DEBUG, ERROR, FAIL, INFO, PASS, SKIP, WARN)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
