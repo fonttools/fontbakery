@@ -82,3 +82,25 @@ def test_check_recommended_fields(empty_ufo_font):
     c = list(check(ufo))
     status, _ = c[-1]
     assert status == PASS
+
+
+def test_check_unnecessary_fields(empty_ufo_font):
+    from fontbakery.specifications.ufo_sources import (
+        com_daltonmaag_check_unnecessary_fields as check)
+    ufo, _ = empty_ufo_font
+
+    print('Test PASS with empty UFO.')
+    c = list(check(ufo))
+    status, _ = c[-1]
+    assert status == PASS
+
+    ufo.info.openTypeOS2UnicodeRanges = [1]
+    ufo.info.openTypeNameUniqueID = "aaa"
+    ufo.info.openTypeNameVersion = "1.000"
+    ufo.info.postscriptUniqueID = -1
+    ufo.info.year = 2018
+
+    print('Test WARN with unnecessary fields in UFO.')
+    c = list(check(ufo))
+    status, _ = c[-1]
+    assert status == WARN
