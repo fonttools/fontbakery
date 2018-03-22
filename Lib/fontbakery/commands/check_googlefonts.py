@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
+import sys
+
 from functools import partial
 from fontbakery.specifications.googlefonts import specification
 from fontbakery.commands.check_spec import (
@@ -26,3 +28,6 @@ def runner_factory(fonts):
 
 main = partial(super_main, specification, values=GOOGLEFONTS_SPECIFICS)
 
+
+if __name__ == '__main__':
+    sys.exit(main())
