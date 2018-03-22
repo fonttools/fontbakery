@@ -40,7 +40,7 @@ def test_check_ufolint(empty_ufo_font):
 def test_check_required_fields(empty_ufo_font):
     from fontbakery.specifications.ufo_sources import (
         com_daltonmaag_check_required_fields as check)
-    ufo, ufo_path = empty_ufo_font
+    ufo, _ = empty_ufo_font
 
     print('Test FAIL with empty UFO.')
     c = list(check(ufo))
@@ -94,7 +94,6 @@ def test_check_unnecessary_fields(empty_ufo_font):
     status, _ = c[-1]
     assert status == PASS
 
-    ufo.info.openTypeOS2UnicodeRanges = [1]
     ufo.info.openTypeNameUniqueID = "aaa"
     ufo.info.openTypeNameVersion = "1.000"
     ufo.info.postscriptUniqueID = -1

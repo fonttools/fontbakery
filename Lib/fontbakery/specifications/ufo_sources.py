@@ -144,16 +144,17 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
 
     ufo2ft will generate these.
 
-    openTypeOS2CodePageRanges is exempted because it is useful to toggle a
-    range when not _all_ the glyphs in that region are present.
+    openTypeOS2UnicodeRanges and openTypeOS2CodePageRanges are exempted
+    because it is useful to toggle a range when not _all_ the glyphs in that
+    region are present.
 
     year is deprecated since UFO v2.
     """
     unnecessary_fields = []
 
     for field in [
-            "openTypeOS2UnicodeRanges", "openTypeNameUniqueID",
-            "openTypeNameVersion", "postscriptUniqueID", "year"
+            "openTypeNameUniqueID", "openTypeNameVersion", "postscriptUniqueID",
+            "year"
     ]:
         if ufo_font.info.__dict__.get("_" + field) is not None:
             unnecessary_fields.append(field)
