@@ -20,7 +20,6 @@ from setuptools import setup
 
 def fontbakery_scripts():
   scripts = [os.path.join('bin', f) for f in os.listdir('bin') if f.startswith('fontbakery-')]
-  scripts.append(os.path.join('bin', 'fontbakery'))
   return scripts
 
 setup(
