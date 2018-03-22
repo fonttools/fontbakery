@@ -19,10 +19,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import os
-
-from fontTools.ttLib import TTFont
+import sys
 
 from fontbakery.utils import download_file, get_font_glyph_data
+from fontTools.ttLib import TTFont
 
 
 class JsonSetEncoder(json.JSONEncoder):
@@ -97,3 +97,7 @@ def main():
     with open(glyph_data_path, 'w') as glyph_file:
         json.dump(glyph_data, glyph_file, indent=4, cls=JsonSetEncoder)
     print('done')
+
+
+if __name__ == '__main__':
+    sys.exit(main())

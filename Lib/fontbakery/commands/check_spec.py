@@ -222,3 +222,5 @@ def main(specification=None, values=None):
     json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
 
 
+if __name__ == '__main__':
+    sys.exit(main())

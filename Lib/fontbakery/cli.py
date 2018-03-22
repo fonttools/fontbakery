@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
-import importlib
+import runpy
 import sys
 
 
@@ -19,8 +19,7 @@ def main(args=None):
         subcommand = subcommands[sys.argv[1]]
         sys.argv[0] += " " + sys.argv[1]
         del sys.argv[1]  # Make this indirection less visible for subcommands.
-        cmd = importlib.import_module(subcommand)
-        sys.exit(cmd.main())
+        runpy.run_module(subcommand, run_name='__main__')
     else:
         description = (
             "Run fontbakery subcommands. Subcommands have their own help "

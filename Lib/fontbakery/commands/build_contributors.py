@@ -4,6 +4,7 @@ import argparse
 import codecs
 import os
 import re
+import sys
 
 import git
 
@@ -50,3 +51,7 @@ def main():
         doc.write('\n'.join(contributors))
     print(('Finished generating CONTRIBUTORS.txts.'
            ' File saved at {}').format(folder))
+
+
+if __name__ == '__main__':
+    sys.exit(main())
