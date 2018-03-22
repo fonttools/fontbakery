@@ -7,6 +7,7 @@ import sys
 
 def main(args=None):
     subcommands = {
+        "build-contributors": "fontbakery.commands.build_contributors",
         "check-googlefonts": "fontbakery.commands.check_googlefonts",
         "check-specification": "fontbakery.commands.check_spec",
         "check-ufo-sources": "fontbakery.commands.check_ufo_sources"
