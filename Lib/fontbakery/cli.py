@@ -10,7 +10,8 @@ def main(args=None):
         "build-contributors": "fontbakery.commands.build_contributors",
         "check-googlefonts": "fontbakery.commands.check_googlefonts",
         "check-specification": "fontbakery.commands.check_spec",
-        "check-ufo-sources": "fontbakery.commands.check_ufo_sources"
+        "check-ufo-sources": "fontbakery.commands.check_ufo_sources",
+        "generate-glyphdata": "fontbakery.commands.generate_glyphdata"
     }
 
     if len(sys.argv) >= 2 and sys.argv[1] in subcommands:
