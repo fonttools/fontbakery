@@ -56,7 +56,8 @@ setup(
         'bs4',
         'fontTools',
         'font-v',
-        'defcon'
+        'defcon',
+        'ufolint',
     ]
 )
 
