@@ -1271,7 +1271,8 @@ def com_google_fonts_check_037(font):
   xml_report = open("{}.report.xml".format(font), "r").read()
 
   os.remove("{}.report.xml".format(font))
-  os.remove("{}.report.html".format(font))
+  if os.path.exists("{}.report.html".format(font)):
+    os.remove("{}.report.html".format(font))
   fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
   os.remove(fval_file)
 
