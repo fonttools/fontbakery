@@ -14,13 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import glob
 import os
 from setuptools import setup
 
-def fontbakery_scripts():
-  scripts = [os.path.join('bin', f) for f in os.listdir('bin') if f.startswith('fontbakery-')]
-  return scripts
 
 setup(
     name="fontbakery",
@@ -37,7 +33,6 @@ setup(
               'fontbakery.commands'
               ],
     package_data={'fontbakery': ['data/*.cache']},
-    scripts=fontbakery_scripts(),
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -73,5 +68,5 @@ for p in os.environ.get('PATH').split(':'):
         found_ttfautohint = True
 
 if not found_ttfautohint:
-    print ('WARNING: Command line tool `ttfautohint` is recommended. Install it with'
+    print('WARNING: Command line tool `ttfautohint` is recommended. Install it with'
            ' `apt-get install ttfautohint` or `brew install ttfautohint`')
