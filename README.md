@@ -293,8 +293,8 @@ git commit -m "Updating version in preparation for a new release"
 
 # install fontbakery on it and run our code tests
 pip install .
-pip install pytest
-pytest Lib/fontbakery --verbose
+pip install tox
+tox
 
 # crate the package
 python setup.py bdist_wheel
@@ -321,9 +321,9 @@ In addition to a complete architectural overhaul, release 0.3.1 introduced a set
 This "testsuite for the testsuite" initially covered a third of the full set of check and as of version 0.3.2 covers 53%.
 We aim to reach 100% test coverage.
 
-In order to run the code tests you need to have the pytest dependence installed and then run:
+In order to run the code tests you need to have the tox dependence installed and then run:
 
-    pytest Lib/fontbakery --verbose
+    tox
 
 All future pull-requests adding new checks must also provide a corresponding code test.
 Travis is configured to automatically run the code tests and pull-requests cannot be merged if any test is failing.
