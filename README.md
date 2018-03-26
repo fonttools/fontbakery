@@ -291,8 +291,7 @@ vim setup.py
 git add setup.py
 git commit -m "Updating version in preparation for a new release"
 
-# install fontbakery on it and run our code tests
-pip install .
+# Install tox and run our code tests
 pip install tox
 tox
 
