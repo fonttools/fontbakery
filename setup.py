@@ -25,7 +25,7 @@ def fontbakery_scripts():
 
 setup(
     name="fontbakery",
-    version='0.3.4-git',
+    use_scm_version=True,
     url='https://github.com/googlefonts/fontbakery/',
     description='Font Bakery is a set of command-line tools'
                 ' for ensuring the quality of font projects.',
@@ -47,6 +47,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7'
     ],
+    setup_requires=['setuptools_scm'],
     install_requires=[
         'lxml',
         'defusedxml',
