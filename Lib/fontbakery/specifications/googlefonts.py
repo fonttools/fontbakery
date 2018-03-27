@@ -5427,3 +5427,44 @@ def com_google_fonts_check_173(ttFont):
 
 for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))
+
+
+@register_check
+@check(
+    id = 'com.google.fonts/check/174'
+  , rationale = """
+    Google Fonts may serve static fonts which have been generated
+    from variable fonts.
+
+    This test will attempt to generate a static ttf using fontTool's
+    varLib mutator.
+
+    The target font will be the mean of each axis e.g:
+
+    VF font axes:
+    min weight, max weight = 400, 800
+    min width, max width = 50, 100
+
+    Target Instance:
+    weight = 600,
+    width = 75
+    """
+  , request = 'https://github.com/googlefonts/fontbakery/issues/1727'
+  , conditions=['is_variable_font',]
+)
+def com_google_fonts_check_174(ttFont):
+  """ Check a static ttf can be generated from a variable font. """
+  import tempfile
+  from fontTools.varLib import mutator
+
+  try:
+    loc = {k.axisTag: float((k.maxValue + k.minValue) / 2)
+           for k in ttFont['fvar'].axes}
+    with tempfile.NamedTemporaryFile() as instance:
+      font = mutator.instantiateVariableFont(ttFont, loc)
+      font.save(instance.name)
+      yield PASS, ("fontTools.varLib.mutator generated a static font "
+                   "instance")
+  except Exception as e:
+    yield FAIL, ("fontTools.varLib.mutator failed to generated a static font "
+                 "instance\n{}".format(repr(e)))
