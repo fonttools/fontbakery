@@ -5,9 +5,9 @@ from __future__ import absolute_import, print_function, unicode_literals
 import sys
 from functools import partial
 
-from fontbakery.commands.check_spec import main as super_main
-from fontbakery.commands.check_spec import \
-    runner_factory as super_runner_factory
+from fontbakery.commands.check_specification import main as super_main
+from fontbakery.commands.check_specification import (runner_factory as
+                                                     super_runner_factory)
 from fontbakery.specifications.ufo_sources import specification
 
 # The values dict will probably get one or more specific blacklists
