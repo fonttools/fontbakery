@@ -187,7 +187,7 @@ def test_check_001():
 
 def test_check_002():
   """ Fonts are all in the same directory. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_002 as check
+  from fontbakery.specifications.general import com_google_fonts_check_002 as check
   same_dir = [
     "data/test/cabin/Cabin-Thin.ttf",
     "data/test/cabin/Cabin-ExtraLight.ttf"
@@ -307,7 +307,7 @@ def test_check_007():
 
 def test_check_008(mada_ttFonts):
   """ Fonts have consistent underline thickness ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_008 as check
+  from fontbakery.specifications.post import com_google_fonts_check_008 as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
@@ -325,7 +325,7 @@ def test_check_008(mada_ttFonts):
 
 def test_check_009(mada_ttFonts):
   """ Fonts have consistent PANOSE proportion ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_009 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_009 as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
@@ -343,7 +343,7 @@ def test_check_009(mada_ttFonts):
 
 def test_check_010(mada_ttFonts):
   """ Fonts have consistent PANOSE family type ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_010 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_010 as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
@@ -394,7 +394,7 @@ def test_check_012(mada_ttFonts, cabin_ttFonts):
 
 def test_check_013(mada_ttFonts):
   """ Fonts have equal unicode encodings ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_013 as check
+  from fontbakery.specifications.cmap import com_google_fonts_check_013 as check
   from fontbakery.constants import (PLAT_ENC_ID__SYMBOL,
                                     PLAT_ENC_ID__UCS2)
   print('Test PASS with good family.')
@@ -417,7 +417,7 @@ def test_check_013(mada_ttFonts):
 
 def test_check_014(mada_ttFonts):
   """ Make sure all font files have the same version value. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_014 as check
+  from fontbakery.specifications.head import com_google_fonts_check_014 as check
 
   print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
@@ -436,7 +436,7 @@ def test_check_014(mada_ttFonts):
 
 def test_check_015():
   """ Font has post table version 2 ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_015 as check
+  from fontbakery.specifications.post import com_google_fonts_check_015 as check
 
   print('Test PASS with good font.')
   # our reference Mada family is know to be good here.
@@ -534,8 +534,8 @@ def test_check_019():
 
 def test_check_020():
   """ Checking OS/2 usWeightClass. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_020 as check,
-                                                     style)
+  from fontbakery.specifications.os2 import com_google_fonts_check_020 as check
+  from fontbakery.specifications.googlefonts import style
   print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
   font = "data/test/mada/Mada-Regular.ttf"
@@ -615,7 +615,7 @@ def test_check_031():
   """ Description strings in the name table
       must not contain copyright info.
   """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_031 as check
+  from fontbakery.specifications.name import com_google_fonts_check_031 as check
   from fontbakery.constants import NAMEID_DESCRIPTION
 
   print('Test PASS with a good font...')
@@ -638,7 +638,7 @@ def test_check_032():
   """ Description strings in the name table
       must not exceed 100 characters.
   """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_032 as check
+  from fontbakery.specifications.name import com_google_fonts_check_032 as check
   from fontbakery.constants import NAMEID_DESCRIPTION
 
   print('Test PASS with a good font...')
@@ -679,8 +679,8 @@ def results_contain(results, expected_status, expected_code):
 
 def test_check_033():
   """ Checking correctness of monospaced metadata. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_033 as check,
-                                                     monospace_stats)
+  from fontbakery.specifications.name import com_google_fonts_check_033 as check
+  from fontbakery.specifications.shared_conditions import monospace_stats
   from fontbakery.constants import (PANOSE_PROPORTION__ANY,
                                     PANOSE_PROPORTION__NO_FIT,
                                     PANOSE_PROPORTION__OLD_STYLE,
@@ -777,7 +777,7 @@ def test_check_033():
 
 def test_check_037():
   """ MS Font Validator checks """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_037 as check
+  from fontbakery.specifications.general import com_google_fonts_check_037 as check
 
   font = "data/test/mada/Mada-Regular.ttf"
   RASTER_EXCEPTION_MESSAGE = ("MS-FonVal: An exception occurred"
@@ -802,8 +802,9 @@ def test_check_037():
 
 def test_check_040(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_040 as check,
-                                                     vmetrics)
+  from fontbakery.specifications.os2 import com_google_fonts_check_040 as check
+  from fontbakery.specifications.shared_conditions import vmetrics
+
   # Our reference Mada Regular is know to be bad here.
   vm = vmetrics(mada_ttFonts)
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -831,7 +832,7 @@ def test_check_040(mada_ttFonts):
 
 def test_check_041():
   """ Checking Vertical Metric Linegaps. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_041 as check
+  from fontbakery.specifications.hhea import com_google_fonts_check_041 as check
 
   print('Test FAIL with non-zero hhea.lineGap...')
   # Our reference Mada Regular is know to be bad here.
@@ -859,7 +860,7 @@ def test_check_041():
 
 def test_check_042(mada_ttFonts):
   """ Checking OS/2 Metrics match hhea Metrics. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_042 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_042 as check
 
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -888,7 +889,7 @@ def test_check_042(mada_ttFonts):
 
 def test_check_043():
   """ Checking unitsPerEm value is reasonable. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_043 as check
+  from fontbakery.specifications.head import com_google_fonts_check_043 as check
 
   # In this test we'll forge several known-good and known-bad values.
   # We'll use Mada Regular to start with:
@@ -912,7 +913,7 @@ def test_check_043():
 
 def test_check_045():
   """ Does the font have a DSIG table ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_045 as check
+  from fontbakery.specifications.dsig import com_google_fonts_check_045 as check
 
   # Our reference Cabin Regular font is good (theres a DSIG table declared):
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
@@ -932,8 +933,9 @@ def test_check_045():
 
 def test_check_047():
   """ Font contains glyphs for whitespace characters ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_047 as check,
-                                                     missing_whitespace_chars)
+  from fontbakery.specifications.general import com_google_fonts_check_047 as check
+  from fontbakery.specifications.shared_conditions import missing_whitespace_chars
+
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
   missing = missing_whitespace_chars(ttFont)
@@ -969,7 +971,7 @@ def test_check_047():
 
 def test_check_048():
   """ Font has **proper** whitespace glyph names ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_048 as check
+  from fontbakery.specifications.general import com_google_fonts_check_048 as check
 
   def deleteGlyphEncodings(font, cp):
     """ This routine is used on to introduce errors
@@ -1039,7 +1041,7 @@ def test_check_048():
 
 def test_check_052():
   """ Font contains all required tables ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_052 as check
+  from fontbakery.specifications.general import com_google_fonts_check_052 as check
 
   required_tables = ["cmap", "head", "hhea", "hmtx",
                      "maxp", "name", "OS/2", "post"]
@@ -1108,7 +1110,7 @@ def test_check_052():
 
 def test_check_053():
   """ Are there unwanted tables ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_053 as check
+  from fontbakery.specifications.general import com_google_fonts_check_053 as check
 
   unwanted_tables = ["FFTM", "TTFA", "prop"]
   # Our reference Mada Regular font is good here:
@@ -1163,7 +1165,7 @@ def test_check_055():
 
 def test_check_057():
   """ Name table entries should not contain line-breaks. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_057 as check
+  from fontbakery.specifications.name import com_google_fonts_check_057 as check
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
@@ -1208,7 +1210,7 @@ def test_check_061():
 
 def test_check_063():
   """ Does GPOS table have kerning information ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_063 as check
+  from fontbakery.specifications.gpos import com_google_fonts_check_063 as check
 
   # Our reference Mada Regular is known to have kerning-info
   # exclusively on an extension subtable
@@ -1255,8 +1257,8 @@ def test_check_063():
 
 def test_check_064():
   """ Is there a caret position declared for every ligature ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_064 as check,
-                                                     ligatures)
+  from fontbakery.specifications.gdef import com_google_fonts_check_064 as check
+  from fontbakery.specifications.shared_conditions import ligatures
 
   # TODO: We currently lack a reference family that PASSes this check!
 
@@ -1283,9 +1285,9 @@ def test_check_064():
 
 def test_check_065():
   """ Is there kerning info for non-ligated sequences ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_065 as check,
-                                                     has_kerning_info,
-                                                     ligatures)
+  from fontbakery.specifications.gpos import (com_google_fonts_check_065 as check,
+                                                     has_kerning_info)
+  from fontbakery.specifications.shared_conditions import ligatures
   # Our reference Mada Medium is known to be good
   ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
   lig = ligatures(ttFont)
@@ -1309,7 +1311,7 @@ def test_check_065():
 
 def test_check_066():
   """ Is there a "kern" table declared in the font ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_066 as check
+  from fontbakery.specifications.kern import com_google_fonts_check_066 as check
 
   # Our reference Mada Regular is known to be good
   # (does not have a 'kern' table):
@@ -1355,7 +1357,7 @@ def test_check_067():
 
 def test_check_068():
   """ Does full font name begin with the font family name ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_068 as check
+  from fontbakery.specifications.name import com_google_fonts_check_068 as check
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME)
   # Our reference Mada Regular is known to be good
@@ -1428,7 +1430,7 @@ def assert_name_table_check_result(ttFont, index, name, check, value, expected_r
 
 def test_check_071():
   """ Font follows the family naming recommendations ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_071 as check
+  from fontbakery.specifications.name import com_google_fonts_check_071 as check
   from fontbakery.constants import (NAMEID_POSTSCRIPT_NAME,
                                     NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME,
@@ -2202,7 +2204,7 @@ def test_check_159():
 
 def test_check_163():
   """ Check font name is the same as family name. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_163 as check
+  from fontbakery.specifications.name import com_google_fonts_check_163 as check
   from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
                                     NAMEID_FONT_SUBFAMILY_NAME)
   # Our reference Cabin Regular is known to be good
@@ -2311,8 +2313,8 @@ def test_check_166():
 def test_check_167():
   """ The variable font 'wght' (Weight) axis coordinate
       must be 400 on the 'Regular' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_167 as check,
-                                                     regular_wght_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_167 as check
+  from fontbakery.specifications.shared_conditions import regular_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
   # a bad Regular:wght coordinate
@@ -2341,8 +2343,8 @@ def test_check_167():
 def test_check_168():
   """ The variable font 'wdth' (Width) axis coordinate
       must be 100 on the 'Regular' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_168 as check,
-                                                     regular_wdth_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_168 as check
+  from fontbakery.specifications.shared_conditions import regular_wdth_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
   # a bad Regular:wdth coordinate
@@ -2372,8 +2374,8 @@ def test_check_168():
 def test_check_169():
   """ The variable font 'slnt' (Slant) axis coordinate
       must be zero on the 'Regular' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_169 as check,
-                                                     regular_slnt_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_169 as check
+  from fontbakery.specifications.shared_conditions import regular_slnt_coord
   from fontTools.ttLib.tables._f_v_a_r import Axis
 
   # Our reference varfont, CabinVFBeta.ttf, lacks a 'slnt' variation axis.
@@ -2409,8 +2411,8 @@ def test_check_169():
 def test_check_170():
   """ The variable font 'ital' (Italic) axis coordinate
       must be zero on the 'Regular' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_170 as check,
-                                                     regular_ital_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_170 as check
+  from fontbakery.specifications.shared_conditions import regular_ital_coord
   from fontTools.ttLib.tables._f_v_a_r import Axis
 
   # Our reference varfont, CabinVFBeta.ttf, lacks an 'ital' variation axis.
@@ -2446,8 +2448,8 @@ def test_check_170():
 def test_check_171():
   """ The variable font 'opsz' (Optical Size) axis coordinate
       should be between 9 and 13 on the 'Regular' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_171 as check,
-                                                     regular_opsz_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_171 as check
+  from fontbakery.specifications.shared_conditions import regular_opsz_coord
   from fontTools.ttLib.tables._f_v_a_r import Axis
 
   # Our reference varfont, CabinVFBeta.ttf, lacks an 'opsz' variation axis.
@@ -2492,8 +2494,8 @@ def test_check_171():
 def test_check_172():
   """ The variable font 'wght' (Weight) axis coordinate
       must be 700 on the 'Bold' instance. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_172 as check,
-                                                     bold_wght_coord)
+  from fontbakery.specifications.fvar import com_google_fonts_check_172 as check
+  from fontbakery.specifications.shared_conditions import bold_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
   # a bad Bold:wght coordinate
