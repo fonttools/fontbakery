@@ -1,25 +1,27 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
+import pkgutil
 import runpy
 import sys
 
+import fontbakery.commands
+
 
 def main(args=None):
-    subcommands = {
-        "build-contributors": "fontbakery.commands.build_contributors",
-        "check-googlefonts": "fontbakery.commands.check_googlefonts",
-        "check-specification": "fontbakery.commands.check_spec",
-        "check-ufo-sources": "fontbakery.commands.check_ufo_sources",
-        "generate-glyphdata": "fontbakery.commands.generate_glyphdata"
-    }
+    subcommands = [
+        pkg[1].replace("_", "-")
+        for pkg in pkgutil.walk_packages(fontbakery.commands.__path__)
+    ]
 
     if len(sys.argv) >= 2 and sys.argv[1] in subcommands:
         # Relay to subcommand.
-        subcommand = subcommands[sys.argv[1]]
-        sys.argv[0] += " " + sys.argv[1]
+        subcommand = sys.argv[1]
+        subcommand_module = subcommand.replace("-", "_")
+        sys.argv[0] += " " + subcommand
         del sys.argv[1]  # Make this indirection less visible for subcommands.
-        runpy.run_module(subcommand, run_name='__main__')
+        runpy.run_module(
+            "fontbakery.commands." + subcommand_module, run_name='__main__')
     else:
         description = (
             "Run fontbakery subcommands. Subcommands have their own help "
@@ -31,7 +33,7 @@ def main(args=None):
             'subcommand',
             help="The subcommand to execute",
             nargs="?",
-            choices=subcommands.keys())
+            choices=subcommands)
         parser.add_argument(
             '--list-subcommands',
             action='store_true',
@@ -41,6 +43,6 @@ def main(args=None):
         args = parser.parse_args()
 
         if args.list_subcommands:
-            print(' '.join(subcommands.keys()))
+            print(' '.join(subcommands))
         else:
             parser.print_help()

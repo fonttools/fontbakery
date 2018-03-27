@@ -6,10 +6,8 @@ import sys
 
 from functools import partial
 from fontbakery.specifications.googlefonts import specification
-from fontbakery.commands.check_spec import (
-                                            runner_factory as super_runner_factory
-                                          , main as super_main
-                                          )
+from fontbakery.commands.check_specification import (
+    runner_factory as super_runner_factory, main as super_main)
 
 # The values dict will probably get one or more specific blacklists
 # for the google font project. It would be good if it was not necessary
