@@ -5,6 +5,9 @@ from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
 
+from .shared_conditions import seems_monospaced, monospace_stats
+# flake8 F401, F811:
+(seems_monospaced, monospace_stats)
 
 @check(id='com.google.fonts/check/041')
 def com_google_fonts_check_041(ttFont):

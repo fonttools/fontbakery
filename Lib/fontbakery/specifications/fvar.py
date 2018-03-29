@@ -4,6 +4,13 @@ from __future__ import (absolute_import, division, print_function,
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 
+from .shared_conditions import (is_variable_font
+            , regular_wght_coord, regular_wdth_coord, regular_slnt_coord
+            , regular_ital_coord, regular_opsz_coord, bold_wght_coord)
+# flake8 F401, F811:
+(is_variable_font
+            , regular_wght_coord, regular_wdth_coord, regular_slnt_coord
+            , regular_ital_coord, regular_opsz_coord, bold_wght_coord)
 
 @check(
     id='com.google.fonts/check/167',

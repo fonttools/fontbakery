@@ -5,6 +5,10 @@ from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
 
+from .shared_conditions import ligatures
+# flake8 F401, F811:
+(ligatures, )
+
 
 @check(
     id='com.google.fonts/check/064',

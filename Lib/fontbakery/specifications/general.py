@@ -8,8 +8,11 @@ from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
 
-from .shared_conditions import is_variable_font
-
+from .shared_conditions import is_variable_font, missing_whitespace_chars
+from .googlefonts_shared_conditions import whitelist_librebarcode, fontforge_check_results
+# flake8 F401, F811:
+(is_variable_font, missing_whitespace_chars, whitelist_librebarcode
+      , fontforge_check_results)
 
 @check(id='com.google.fonts/check/002', priority=CRITICAL)
 def com_google_fonts_check_002(fonts):

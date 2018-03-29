@@ -11,6 +11,7 @@ from fontbakery.checkrunner import Spec
 from fontbakery.checkrunner import get_module_specification \
                                         as super_get_module_specification
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
+from fontbakery.specifications.shared_conditions import ttFont
 
 class FontsSpec(Spec):
   def setup_argparse(self, argument_parser):
@@ -59,6 +60,7 @@ fonts_expected_value = ExpectedValue(
 def spec_factory(**kwds):
   spec = FontsSpec(
       iterargs={'font': 'fonts'}
+    , conditions={ttFont.name: ttFont}
     , derived_iterables={'ttFonts': ('ttFont', True)}
     , expected_values={fonts_expected_value.name: fonts_expected_value}
     , **kwds

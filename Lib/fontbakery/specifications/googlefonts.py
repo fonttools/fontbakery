@@ -29,49 +29,14 @@ from fontbakery.constants import(
 )
 
 from . import (general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
-               gdef, kern, glyf, prep, fvar, shared_conditions)
+               gdef, kern, glyf, prep, fvar, shared_conditions,
+               googlefonts_shared_conditions)
 
-default_section = Section('Default')
+style = googlefonts_shared_conditions.style
 
+from fontbakery.fonts_spec import spec_factory
 
-class FontsSpec(Spec):
-  def setup_argparse(self, argument_parser):
-    """
-    Set up custom arguments needed for this spec.
-    """
-    import glob
-    import logging
-    import argparse
-    def get_fonts(pattern):
-
-      fonts_to_check = []
-      # use glob.glob to accept *.ttf
-
-      for fullpath in glob.glob(pattern):
-        if fullpath.endswith(".ttf"):
-          fonts_to_check.append(fullpath)
-        else:
-          logging.warning("Skipping '{}' as it does not seem "
-                            "to be valid TrueType font file.".format(fullpath))
-      return fonts_to_check
-
-
-    class MergeAction(argparse.Action):
-      def __call__(self, parser, namespace, values, option_string=None):
-        target = [item for l in values for item in l]
-        setattr(namespace, self.dest, target)
-
-    argument_parser.add_argument('fonts', nargs='+', type=get_fonts,
-                        action=MergeAction, help='font file path(s) to check.'
-                                            ' Wildcards like *.ttf are allowed.')
-    return ('fonts', )
-
-specification = FontsSpec(
-    default_section=default_section
-  , iterargs={'font': 'fonts'}
-  , derived_iterables={'ttFonts': ('ttFont', True)}
-  #, sections=[]
-)
+specification = spec_factory(default_section=Section("Google Fonts"))
 
 register_check = specification.register_check
 register_condition = specification.register_condition
@@ -251,17 +216,7 @@ def com_google_fonts_check_007(metadata):
     yield PASS, "Font designer field is not 'unknown'."
 
 
-@register_condition
-@condition
-def style(font):
-  """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
-  filename = os.path.split(font)[-1]
-  if '-' in filename:
-    stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
-      return stylename
-
+register_condition(googlefonts_shared_conditions.style)
 
 register_check(post.com_google_fonts_check_008)
 
@@ -673,34 +628,7 @@ register_check(general.com_google_fonts_check_036)
 
 register_check(general.com_google_fonts_check_037)
 
-
-@register_condition
-@condition
-def fontforge_check_results(font):
-  if "adobeblank" in font:
-    return SKIP, ("Skipping AdobeBlank since"
-                  " this font is a very peculiar hack.")
-
-  import subprocess
-  cmd = (
-        'import fontforge, sys;'
-        'status = fontforge.open("{0}").validate();'
-        'sys.stdout.write(status.__str__());'.format
-        )
-
-  p = subprocess.Popen(['python', '-c', cmd(font)],
-                       stderr=subprocess.PIPE,
-                       stdout=subprocess.PIPE
-                      )
-  ret_val, ff_err_messages = p.communicate()
-  try:
-    return {
-      "validation_state": int(ret_val),
-      "ff_err_messages": ff_err_messages
-    }
-  except:
-    return None
-
+register_condition(googlefonts_shared_conditions.fontforge_check_results)
 
 register_check(general.com_google_fonts_check_038)
 
@@ -1038,22 +966,7 @@ def com_google_fonts_check_062(ttFont):
 
 register_condition(gpos.has_kerning_info)
 
-
-# TODO: Design special case handling for whitelists/blacklists
-# https://github.com/googlefonts/fontbakery/issues/1540
-@register_condition
-@condition
-def whitelist_librebarcode(font):
-  font_filenames = [
-    "LibreBarcode39-Regular.ttf",
-    "LibreBarcode39Text-Regular.ttf",
-    "LibreBarcode128-Regular.ttf",
-    "LibreBarcode128Text-Regular.ttf"
-  ]
-  for font_filename in font_filenames:
-    if font_filename in font:
-      return True
-
+register_condition(googlefonts_shared_conditions.whitelist_librebarcode)
 
 register_check(gpos.com_google_fonts_check_063)
 

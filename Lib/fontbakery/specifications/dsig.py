@@ -4,7 +4,6 @@ from __future__ import (absolute_import, division, print_function,
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS
 
-
 @check(id='com.google.fonts/check/045')
 def com_google_fonts_check_045(ttFont):
   """Does the font have a DSIG table?"""
