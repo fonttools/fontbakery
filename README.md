@@ -274,7 +274,7 @@ Then restart your Terminal or bash shell.
 
 ## Updating the distribution package
 
-Releases to PyPI are performed by updating the version metadata on `setup.py` and then running the following commands (with the proper version number and date):
+Releases to PyPI are performed by tagging a commit and then running the following commands (with the proper version number and date):
 
 ```
 # cleanup
@@ -286,32 +286,20 @@ rm venv/ -rf
 virtualenv venv
 . venv/bin/activate
 
-# Remove the '-git' suffix and bump up the version number on setup.py
-vim setup.py
-git add setup.py
-git commit -m "Updating version in preparation for a new release"
-
 # Install tox and run our code tests
 pip install tox
 tox
-
-# crate the package
-python setup.py bdist_wheel
 
 # Register a git tag for this release and publish it
 git tag -a v0.3.2 -m "Font Bakery version 0.3.2 (2017-Oct-11)"
 git push upstream --tags
 
+# crate the package
+python setup.py bdist_wheel
+
 # and finally upload the new package to PyPI
 twine upload dist/*
-
-# Then we append a '-git' suffix on setup.py
-vim setup.py
-git add setup.py
-git commit -m "Adding '-git' to version for the next release cycle"
 ```
-
-We keep setup.py with a `-git` suffix in the version number during development cycles (such as `v0.3.2-git` meaning v0.3.2 plus further development changes.)
 
 ## Code Testing
 
