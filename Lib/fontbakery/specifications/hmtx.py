@@ -6,6 +6,10 @@ from fontbakery.checkrunner import FAIL, PASS
 from fontbakery.message import Message
 
 
+from .shared_conditions import missing_whitespace_chars
+# flake8 F401, F811:
+(missing_whitespace_chars, )
+
 @check(
     id='com.google.fonts/check/050',
     conditions=['not missing_whitespace_chars'])

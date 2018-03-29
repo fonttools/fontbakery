@@ -5,6 +5,10 @@ from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
 
+from .shared_conditions import vmetrics
+from .googlefonts_shared_conditions import style
+# flake8 F401, F811:
+(vmetrics ,style)
 
 @check(id='com.google.fonts/check/009')
 def com_google_fonts_check_009(ttFonts):
