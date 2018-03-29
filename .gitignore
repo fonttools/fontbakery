@@ -20,3 +20,5 @@ bakery_cli/report/app/static/css/faces.css
 images/*
 fontbakery-check-results.json
 fontbakery-check-results.md
+.coverage
+htmlcov
