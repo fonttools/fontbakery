@@ -256,3 +256,42 @@ def check(*args, **kwds):
   def wrapper(checkfunc):
     return wraps(checkfunc)(FontBakeryCheck(checkfunc, *args, **kwds))
   return wrapper
+
+# ExpectedValue is not a callable, but it belongs next to check and condition
+_NOT_SET = object() # used as a marker
+class FontBakeryExpectedValue(object):
+  def __init__(self,
+                 name, # unique name in global namespace
+                 description=None, # short text, this is mandatory
+                 documentation=None, # markdown?
+                 default=_NOT_SET, # because None can be a valid default
+                 validator=None # function, see the docstring of `def validate`
+                 ):
+    self.name = name
+    self.description = description
+    self.documentation = documentation
+    self._default = (True, default) if default is not _NOT_SET else (False, None)
+    self._validator = validator
+
+  def __repr__(self):
+    return'<{0}:{1}>'.format(type(self).__name__, self.name)
+
+  @property
+  def has_default(self):
+    return self._default[0]
+
+  @property
+  def default(self):
+    has_default, value = self._default
+    if not has_default:
+      raise AttributeError('{} has no default value'.format(self))
+    return value
+
+  def validate(self, value):
+    """
+      returns (bool valid, string|None message)
+      If valid is True, message is None or can be ignored.
+      If valid is False, message should be a string describing what
+      is wrong with value.
+    """
+    return self._validator(value) if self._validator else (True, None)
