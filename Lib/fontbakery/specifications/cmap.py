@@ -3,6 +3,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS
+from .shared_conditions import ttFont
+
+# this silences flake8 (F401 'ttFont' imported but unused and
+# F811 redefinition of unused 'ttFont' from line 6), because we're not
+# really using ttFont, but it's needed for auto_register external to this module
+(ttFont, )
 
 
 @check(id='com.google.fonts/check/013')
