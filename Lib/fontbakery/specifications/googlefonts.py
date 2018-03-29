@@ -5460,9 +5460,9 @@ def com_google_fonts_check_174(ttFont):
   try:
     loc = {k.axisTag: float((k.maxValue + k.minValue) / 2)
            for k in ttFont['fvar'].axes}
-    with tempfile.NamedTemporaryFile() as instance:
+    with tempfile.TemporaryFile() as instance:
       font = mutator.instantiateVariableFont(ttFont, loc)
-      font.save(instance.name)
+      font.save(instance)
       yield PASS, ("fontTools.varLib.mutator generated a static font "
                    "instance")
   except Exception as e:
