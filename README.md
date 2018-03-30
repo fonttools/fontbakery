@@ -60,7 +60,7 @@ optional arguments:
 
 ### fontbakery check-googlefonts
 
-This is the central script to run the FontBakery suite of checks. 
+This is the central script to run the FontBakery suite of checks.
 It runs the checks (`specifications/googlefonts.py`) that we use for QA of <https://github.com/google/fonts>
 
 To run the checks on some fonts:
@@ -98,12 +98,12 @@ Here's the output of `fontbakery check-googlefonts -h`:
                                            [--json JSON_FILE] [-g ITERATED_ARG]
                                            [-o ORDER]
                                            arg_filepaths [arg_filepaths ...]
-    
+
     Check TTF files for common issues.
-    
+
     positional arguments:
       arg_filepaths         font file path(s) to check. Wildcards like *.ttf are allowed.
-    
+
     optional arguments:
       -h, --help            show this help message and exit
       -c CHECKID, --checkid CHECKID
@@ -239,7 +239,7 @@ FontValidator includes some hinting instruction validation checks.
 These rely on a customized version of the Freetype library.
 In order to enable those, you'll need to use the custom build available in this repo by doing:
 
-    export LD_PRELOAD=$FONTBAKERY_GIT_REPO/prebuilt/custom_freetype/libfreetype.so
+    export LD_PRELOAD=$FONTBAKERY_GIT_REPO/prebuilt/custom_freetype/lib/libfreetype.so
 
 The corresponding modified freetype source code is available at <https://github.com/felipesanches/freetype2>
 
@@ -247,7 +247,7 @@ If your vanilla system freetype is used instead, then all FontValidator checks w
 
 ## Bash completion
 
-Font Bakery comes with a minimal Bash completion script to help you to type the subcommands that follow directly after the `fontbakery` command by hitting the tab key. 
+Font Bakery comes with a minimal Bash completion script to help you to type the subcommands that follow directly after the `fontbakery` command by hitting the tab key.
 
 There's no special completion support for the arguments of the subcommands yet.
 
@@ -261,7 +261,7 @@ If you are using a python virtual environment (that is not a system-wide install
 
     $ . path-to/fontbakery/bin/bash-completion
 
-To install it, copy or symlink the `path-to/fontbakery/bin/bash_completion` file into your `bash_completion.d` directory as `fontbakery`. 
+To install it, copy or symlink the `path-to/fontbakery/bin/bash_completion` file into your `bash_completion.d` directory as `fontbakery`.
 Eg for GNU+Linux,
 
     ln -s path-to/fontbakery/bin/bash_completion /etc/bash_completion.d/fontbakery
