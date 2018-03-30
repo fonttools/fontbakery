@@ -11,7 +11,6 @@ from fontbakery.checkrunner import Spec
 from fontbakery.checkrunner import get_module_specification \
                                         as super_get_module_specification
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
-from fontbakery.specifications.shared_conditions import ttFont
 
 class FontsSpec(Spec):
   def setup_argparse(self, argument_parser):
@@ -45,12 +44,6 @@ class FontsSpec(Spec):
                                             ' Wildcards like *.ttf are allowed.')
     return ('fonts', )
 
-  def register_modules(self, *modules):
-    for module in modules:
-      specification = get_module_specification(module)
-      self.merge_specification(specification)
-
-
 fonts_expected_value = ExpectedValue(
       'fonts'
     , default=[]
@@ -58,6 +51,7 @@ fonts_expected_value = ExpectedValue(
 )
 
 def spec_factory(**kwds):
+  from fontbakery.specifications.shared_conditions import ttFont
   spec = FontsSpec(
       iterargs={'font': 'fonts'}
     , conditions={ttFont.name: ttFont}
@@ -66,6 +60,3 @@ def spec_factory(**kwds):
     , **kwds
   )
   return spec
-
-def get_module_specification(module, name=None):
-  return super_get_module_specification(spec_factory, module, name=name)

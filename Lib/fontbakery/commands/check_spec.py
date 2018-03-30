@@ -9,18 +9,11 @@ import sys
 import argparse
 from collections import OrderedDict
 
-# FIXME: the FontsSpec is specific for font files
-# but this command should not be specific. I.e. it is used for
-# the ufo_sources spec. `get_module_specification` is only used
-# when a module does not define it's own "specification" so there's no
-# problem at the moment, but the default is falling back to a generated
-# FontsSpec.
-from fontbakery.fonts_spec import get_module_specification
-
 from fontbakery.checkrunner import (
               distribute_generator
             , CheckRunner
             , Spec
+            , get_module_specification
             , DEBUG
             , INFO
             , WARN
@@ -152,7 +145,10 @@ def get_spec():
   from importlib import import_module
   # Fails with an appropriate ImportError.
   imported = import_module(args.specification, package=None)
-  return get_module_specification(imported)
+  specification = get_module_specification(imported)
+  if not specification:
+    raise Exception('Can\'t get a specification from {}.'.format(imported))
+  return specification
 
 def runner_factory( specification
                   , explicit_checks=None

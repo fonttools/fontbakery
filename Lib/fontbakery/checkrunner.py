@@ -1331,6 +1331,10 @@ class Spec(object):
         self.register_condition(item)
       elif isinstance(item, FontBakeryExpectedValue):
         self.register_expected_value(item)
+      elif isinstance(item, types.ModuleType):
+        specification = get_module_specification(item)
+        if specification:
+          self.merge_specification(specification)
       else:
         pass
 
@@ -1401,7 +1405,7 @@ class Spec(object):
     """
     pass
 
-def get_module_specification(spec_factory, module, name=None):
+def get_module_specification(module, name=None):
   """
   A helper to get or create a specification from a module.
   """
@@ -1411,7 +1415,9 @@ def get_module_specification(spec_factory, module, name=None):
   except AttributeError: # > 'module' object has no attribute 'specification'
     # try to create one on the fly.
     # e.g. module.__name__ == "fontbakery.specifications.cmap"
+    if 'spec_factory' not in module.__dict__:
+      return None
     default_section = Section(name or module.__name__)
-    specification = spec_factory(default_section=default_section)
+    specification = module.spec_factory(default_section=default_section)
     specification.auto_register(module.__dict__)
     return specification
