@@ -45,7 +45,7 @@ class FontsSpec(Spec):
                                             ' Wildcards like *.ttf are allowed.')
     return ('fonts', )
 
-  def register_modules(self, modules):
+  def register_modules(self, *modules):
     for module in modules:
       specification = get_module_specification(module)
       self.merge_specification(specification)

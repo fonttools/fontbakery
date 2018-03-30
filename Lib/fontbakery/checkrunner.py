@@ -743,6 +743,7 @@ class Section(object):
       if not self._add_check_callback(self, check):
         # rejected, skip!
         return False
+
     self._checkid2index[check.id] = len(self._checks)
     self._checks.append(check)
     return True
@@ -774,7 +775,7 @@ class Section(object):
   def list_checks(self):
     checks = []
     for check in self._checks:
-      checks.append("{} | {}".format(check.id, check.description))
+      checks.append("{} # {}".format(check.id, check.description))
     return checks
 
 class Spec(object):
@@ -953,10 +954,10 @@ class Spec(object):
     if missing_checks:
       message.append('missing checks: {};'.format(', '.join(missing_checks)))
     if unexpected_checks:
-      message.append('unexpected checks: {};'.format(', '.join(missing_checks)))
+      message.append('unexpected checks: {};'.format(', '.join(unexpected_checks)))
     if message:
-      raise SetupError('{} fails expected checks test:\n{}'.format(
-                                              self, '\n'.join(message)))
+      raise SetupError('Spec fails expected checks test:\n{}'.format(
+                                              '\n'.join(message)))
 
   def resolve_alias(self, original_name):
     name = original_name
@@ -1211,10 +1212,10 @@ class Spec(object):
     # TODO: a custom_order per section may become necessary one day
     explicit_checks = set() if not explicit_checks else set(explicit_checks)
     for _, section in self._sections.items():
-      for check, iterargs in self._section_execution_order(section, iterargs
+      for check, section_iterargs in self._section_execution_order(section, iterargs
                                           , custom_order=custom_order
                                           , explicit_checks=explicit_checks):
-        yield (section, check, iterargs)
+        yield (section, check, section_iterargs)
 
   def _register_check(self, section, func):
     other_section = self._check_registry.get(func.id, None)
@@ -1347,6 +1348,8 @@ class Spec(object):
     for section in specification.sections:
       key = '{}'.format(section)
       my_section = self._sections.get(key, None)
+      if not len(section.checks):
+        continue
       if my_section is None:
         # create a new section: don't change other module/specification contents
         my_section = section.clone()
