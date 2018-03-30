@@ -2926,10 +2926,6 @@ def com_google_fonts_check_173(ttFont):
 
 
 specification.auto_register(globals())
-specification_modules = (general, cmap, head, os2, post, name, hhea, dsig,
-                    hmtx, gpos, gdef, kern, glyf, prep, fvar, shared_conditions,
-                    googlefonts_shared_conditions)
-specification.register_modules(*specification_modules)
 
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
