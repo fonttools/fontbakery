@@ -7,6 +7,8 @@ from fontbakery.callable import check
 from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
+# used to inform get_module_specification whether and how to create a specification
+from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import is_variable_font, missing_whitespace_chars
 from .googlefonts_shared_conditions import whitelist_librebarcode, fontforge_check_results
