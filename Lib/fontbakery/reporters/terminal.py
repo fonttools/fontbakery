@@ -15,7 +15,6 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from __future__ import absolute_import, print_function, unicode_literals, division
 import sys, os
-from math import ceil
 from collections import Counter
 from functools import partial
 try:
@@ -35,7 +34,7 @@ except ImportError:
 
 from fontbakery.reporters import FontbakeryReporter
 
-from fontbakery.checkrunner import (
+from fontbakery.checkrunner import (  # NOQA
               DEBUG
             , INFO
             , WARN
@@ -263,7 +262,7 @@ class TerminalProgress(FontbakeryReporter):
     return index
 
   def _reset_progress(self, num_linebeaks):
-    BACKSPACE = u'\b'
+    # BACKSPACE = u'\b'
     TOLEFT = u'\u001b[1000D' # Move all the way left (max 1000 steps
     CLEARLINE = u'\u001b[2K'    # Clear the line
     UP =  '\u001b[1A' # moves cursor 1 up
@@ -315,7 +314,6 @@ class TerminalProgress(FontbakeryReporter):
     # NOTE: the color codes are not taking space in the tty, so we can't
     # just take the length of `spinner`.
     # 1 for the spinner + 1 for the separating space
-    len_prefix = 2;
     progressbar = self._draw_progressbar(columns, len_prefix=2)
     counter = _render_results_counter(self._counter, color=self._use_color)
 
@@ -407,7 +405,8 @@ class TerminalReporter(TerminalProgress):
     if status == STARTSECTION and structure_threshold:
       order = message
       print ('='*8, '{}'.format(section),'='*8)
-      print('{} checks in section'.format(len(order)))
+      print('{} {} in section'.format(len(order)
+                          , len(order) == 1 and 'check' or 'checks' ))
       print()
 
     if status == STARTCHECK and structure_threshold:
@@ -490,9 +489,10 @@ class TerminalReporter(TerminalProgress):
         , 'logs': []
         , 'end': None
       }
-
-    # STARTSECTION, STARTCHECK
-    if status.weight < 0 and status.weight % 2 == 0 :
+    if status is STARTSECTION:
+      self._render_event_sync(print, event)
+    # (STARTSECTION), STARTCHECK
+    elif status.weight < 0 and status.weight % 2 == 0 :
       logs['start'] = event
     # ENDCHECK, ENDSECTION
     elif status.weight < 0 and status.weight % 2 == 1 :
@@ -503,7 +503,8 @@ class TerminalReporter(TerminalProgress):
     if status == ENDCHECK and message.weight >= self._check_threshold \
           or status == ENDSECTION:
       for e in [logs['start']] + logs['logs'] + [logs['end']]:
-        self._render_event_sync(print, e)
+        if e is not None:
+          self._render_event_sync(print, e)
 
     if not section:
       self._render_event_sync(print, event)
