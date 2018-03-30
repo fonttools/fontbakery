@@ -4,6 +4,8 @@ from __future__ import (absolute_import, division, print_function,
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
+# used to inform get_module_specification whether and how to create a specification
+from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import ligatures
 from .googlefonts_shared_conditions import whitelist_librebarcode

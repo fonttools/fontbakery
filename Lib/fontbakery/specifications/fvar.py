@@ -3,6 +3,8 @@ from __future__ import (absolute_import, division, print_function,
 
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
+# used to inform get_module_specification whether and how to create a specification
+from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import (is_variable_font
             , regular_wght_coord, regular_wdth_coord, regular_slnt_coord
