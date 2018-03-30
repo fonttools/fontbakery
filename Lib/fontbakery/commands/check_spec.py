@@ -175,10 +175,12 @@ def main(specification=None, values=None):
   args = argument_parser.parse_args()
 
   if args.list_checks:
+    print('Available checks')
     for section_name, section in specification._sections.items():
       checks = section.list_checks()
-      sys.exit("Available checks on {} are:\n{}".format(section_name,
-                                                        "\n".join(checks)))
+      message = "# {}:\n  {}".format(section_name,"\n  ".join(checks))
+      print(message)
+    sys.exit()
 
   values_ = {}
   if values is not None:
