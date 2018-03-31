@@ -12,7 +12,6 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             , Section
-            , Spec
             )
 import os
 from fontbakery.callable import condition, check
@@ -370,8 +369,6 @@ def com_google_fonts_check_016(ttFont):
 @condition
 def registered_vendor_ids():
   """Get a list of vendor IDs from Microsoft's website."""
-  import tempfile
-  import requests
   from bs4 import BeautifulSoup
   from pkg_resources import resource_filename
 
@@ -514,9 +511,9 @@ def com_google_fonts_check_028(licenses):
 def com_google_fonts_check_029(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
-                                    NAMEID_LICENSE_INFO_URL,
+                                    # NAMEID_LICENSE_INFO_URL,
                                     PLACEHOLDER_LICENSING_TEXT,
-                                    NAMEID_STR,
+                                    # NAMEID_STR,
                                     PLATID_STR)
   from unidecode import unidecode
   failed = False
@@ -2665,7 +2662,6 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
                                     PLATFORM_ID__WINDOWS,
                                     STYLE_NAMES)
   failed = False
-  only_weight = get_only_weight(style)
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
   for name in ttFont['name'].names:
