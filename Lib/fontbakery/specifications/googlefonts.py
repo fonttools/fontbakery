@@ -32,7 +32,6 @@ from . import (general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
                gdef, kern, glyf, prep, fvar, shared_conditions,
                googlefonts_shared_conditions)
 
-style = googlefonts_shared_conditions.style
 
 from fontbakery.fonts_spec import spec_factory
 
@@ -49,6 +48,63 @@ def disable(func):
 
 
 # -------------------------------------------------------------------
+
+@condition
+def style(font):
+  """Determine font style from canonical filename."""
+  from fontbakery.constants import STYLE_NAMES
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    stylename = os.path.splitext(filename)[0].split('-')[1]
+    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+      return stylename
+  return None
+
+
+@condition(force=True)
+def expected_os2_weight(style):
+  """The weight name and the expected OS/2 usWeightClass value inferred from
+  the style part of the font name
+
+  The Google Font's API which serves the fonts can only serve
+  the following weights values with the corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
+  if not style:
+    return None
+  # Weight name to value mapping:
+  GF_API_WEIGHTS = {
+      "Thin": 250,
+      "ExtraLight": 275,
+      "Light": 300,
+      "Regular": 400,
+      "Medium": 500,
+      "SemiBold": 600,
+      "Bold": 700,
+      "ExtraBold": 800,
+      "Black": 900
+  }
+  if style == "Italic":
+    weight_name = "Regular"
+  elif style.endswith("Italic"):
+    weight_name = style.replace("Italic", "")
+  else:
+    weight_name = style
+
+  expected = GF_API_WEIGHTS[weight_name]
+  return weight_name, expected
 
 @check(
     id = 'com.google.fonts/check/001'

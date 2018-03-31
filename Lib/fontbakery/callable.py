@@ -134,12 +134,14 @@ class FontBakeryCondition(FontbakeryCallable):
        name = None, # very short text
        description = None, # short text
        documentation=None, # long text, markdown?
+       force=False
       ):
     super(FontBakeryCondition, self).__init__(func)
     # self.id = id
     self.name = func.__name__ if name is None else name
     self.description, self.documentation = get_doc_desc(
                                         func, description, documentation)
+    self.force = force
 
 class FontBakeryCheck(FontbakeryCallable):
   def __init__(
@@ -265,13 +267,15 @@ class FontBakeryExpectedValue(object):
                  description=None, # short text, this is mandatory
                  documentation=None, # markdown?
                  default=_NOT_SET, # because None can be a valid default
-                 validator=None # function, see the docstring of `def validate`
+                 validator=None, # function, see the docstring of `def validate`
+                 force=False
                  ):
     self.name = name
     self.description = description
     self.documentation = documentation
     self._default = (True, default) if default is not _NOT_SET else (False, None)
     self._validator = validator
+    self.force = force
 
   def __repr__(self):
     return'<{0}:{1}>'.format(type(self).__name__, self.name)

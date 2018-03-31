@@ -873,7 +873,7 @@ class Spec(object):
 
   def _add_dict_to_namespace(self, type, data):
     for key, value in data.items():
-      self.add_to_namespace(type, key, value)
+      self.add_to_namespace(type, key, value, force=getattr(value, 'force', False))
 
   def add_to_namespace(self, type, name, value, force=False):
     if type not in self._valid_namespace_types:
@@ -1283,7 +1283,8 @@ class Spec(object):
       return partial(self._add_check, section)
 
   def _add_condition(self, condition, name=None):
-    self.add_to_namespace('conditions', name or condition.name, condition)
+    self.add_to_namespace('conditions', name or condition.name, condition
+                                                    , force=condition.force)
     return condition
 
   def register_condition(self, *args, **kwds):
@@ -1309,7 +1310,8 @@ class Spec(object):
 
   def register_expected_value(self, expected_value, name=None):
     name = name or expected_value.name
-    self.add_to_namespace('expected_values', name, expected_value);
+    self.add_to_namespace('expected_values', name, expected_value
+                                            , force=expected_value.force)
     return True
 
   def auto_register(self, symbol_table):
@@ -1324,24 +1326,33 @@ class Spec(object):
           specification.auto_register(globals());
       OR maybe: specification.auto_register(sys.modules[__name__].__dict__);
     """
+    namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
+    namespace_items = []
+
     for key, item in symbol_table.items():
-      if isinstance(item, FontBakeryCheck):
+      if isinstance(item, namespace_types):
+        # register these after all modules have been registered. That way,
+        # "local" items can optionally force override items registered
+        # previously by modules.
+        namespace_items.append(item)
+      elif isinstance(item, FontBakeryCheck):
         self.register_check(item)
-      elif isinstance(item, FontBakeryCondition):
-        self.register_condition(item)
-      elif isinstance(item, FontBakeryExpectedValue):
-        self.register_expected_value(item)
       elif isinstance(item, types.ModuleType):
         specification = get_module_specification(item)
         if specification:
           self.merge_specification(specification)
-      else:
-        pass
+
+    for item in namespace_items:
+      if isinstance(item, FontBakeryCondition):
+        self.register_condition(item)
+      elif isinstance(item, FontBakeryExpectedValue):
+        self.register_expected_value(item)
 
   def merge_specification(self, specification):
     """
       Try to copy all contents from specification to self.
       Don't change any contents of specification ever!
+      (That means sections are cloned not used directly)
     """
     # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
     for ns_type in self._valid_namespace_types:
