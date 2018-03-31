@@ -8,9 +8,8 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import ligatures
-from .googlefonts_shared_conditions import whitelist_librebarcode
 # flake8 F401, F811:
-(ligatures, whitelist_librebarcode)
+(ligatures, )
 
 @condition
 def has_kerning_info(ttFont):
@@ -33,7 +32,8 @@ def has_kerning_info(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/063', conditions=['not whitelist_librebarcode'])
+    id='com.google.fonts/check/063'
+)
 def com_google_fonts_check_063(ttFont):
   """Does GPOS table have kerning information?"""
   if not has_kerning_info(ttFont):
