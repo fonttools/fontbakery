@@ -704,10 +704,11 @@ class Section(object):
     # a list of iterarg-names
     self._order = order or []
 
-  def clone(self):
+  def clone(self, filter_func=None):
+    checks = self.checks if not filter_func else filter(filter_func, self.checks)
     return Section(
               self.name
-            , checks=self.checks
+            , checks=checks
             , order=self.order
             , description=self.description
             )
@@ -748,12 +749,14 @@ class Section(object):
     self._checks.append(check)
     return True
 
-  def merge_section(self, section):
+  def merge_section(self, section, filter_func=None):
     """
     Add section.checks to self, if not skipped by self._add_check_callback.
     order, description, etc. are not updated.
     """
     for check in section.checks:
+      if filter_func and not filter_func(check):
+        continue;
       self.add_check(check)
 
   def get_check(self, check_id):
@@ -864,8 +867,12 @@ class Spec(object):
     self._default_section = default_section
     self.add_section(self._default_section)
 
-  _valid_namespace_types = {'iterargs', 'derived_iterables', 'aliases'
-                                        , 'conditions', 'expected_values'}
+  _valid_namespace_types = { 'iterargs': 'iterarg'
+                           , 'derived_iterables': 'derived_iterable'
+                           , 'aliases': 'alias'
+                           , 'conditions': 'condition'
+                           , 'expected_values': 'expected_value'
+                           }
 
   @property
   def sections(self):
@@ -1314,7 +1321,7 @@ class Spec(object):
                                             , force=expected_value.force)
     return True
 
-  def auto_register(self, symbol_table):
+  def auto_register(self, symbol_table, filter_func=None):
     """
       Get all items from the symbol_table dict and if they are
       a FontBakeryCheck or a FontBakeryCondition, register them in
@@ -1325,6 +1332,18 @@ class Spec(object):
       for the current module use:
           specification.auto_register(globals());
       OR maybe: specification.auto_register(sys.modules[__name__].__dict__);
+
+      if filter_func is defined it is called like:
+      filter_func(type, name_or_id, item)
+      where
+      type: one of check, module, condition, expected_value, iterarg,
+            derived_iterable, alias
+      name_or_id: the name at which the item will be registered.
+            if type == 'check': the check.id
+            if type == 'module': the module name (module.__name__)
+      item: the item to be registered
+      if filter_func returns a falsy value for an item, the item will
+      not be registered.
     """
     namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
     namespace_items = []
@@ -1336,30 +1355,48 @@ class Spec(object):
         # previously by modules.
         namespace_items.append(item)
       elif isinstance(item, FontBakeryCheck):
+        if filter_func and not filter_func('check', item.id, item):
+          continue
         self.register_check(item)
       elif isinstance(item, types.ModuleType):
+        if filter_func and not filter_func('module', item.__name__, item):
+          continue
         specification = get_module_specification(item)
         if specification:
-          self.merge_specification(specification)
+          self.merge_specification(specification, filter_func=filter_func)
 
     for item in namespace_items:
       if isinstance(item, FontBakeryCondition):
+        if filter_func and not filter_func('condition', item.name, item):
+          continue
         self.register_condition(item)
       elif isinstance(item, FontBakeryExpectedValue):
+        if filter_func and not filter_func('expected_value', item.name, item):
+          continue
         self.register_expected_value(item)
 
-  def merge_specification(self, specification):
+
+  def merge_specification(self, specification, filter_func=None):
     """
       Try to copy all contents from specification to self.
       Don't change any contents of specification ever!
       (That means sections are cloned not used directly)
+
+      filter_func: see description in auto_register
     """
     # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
     for ns_type in self._valid_namespace_types:
       # this will raise a NamespaceError if an item of specification.{ns_type}
       # is already registered.
-      self._add_dict_to_namespace(ns_type, getattr(specification, ns_type))
+      ns_dict = getattr(specification, ns_type)
+      if filter_func:
+        ns_type_singular = self._valid_namespace_types[ns_type]
+        ns_dict = {name:item for name,item in ns_dict.items()
+                        if filter_func(ns_type_singular, name, item)}
+      self._add_dict_to_namespace(ns_type, ns_dict)
 
+    check_filter_func = None if not filter_func else \
+                      lambda check: filter_func('check', check.id, check)
     for section in specification.sections:
       key = '{}'.format(section)
       my_section = self._sections.get(key, None)
@@ -1367,11 +1404,11 @@ class Spec(object):
         continue
       if my_section is None:
         # create a new section: don't change other module/specification contents
-        my_section = section.clone()
+        my_section = section.clone(check_filter_func)
         self.add_section(my_section)
       else:
         # order, description are not updated
-        my_section.merge_section(section)
+        my_section.merge_section(section, check_filter_func)
 
   def serialize_identity(self, identity):
     """ Return a json string that can also  be used as a key.
