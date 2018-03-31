@@ -578,7 +578,17 @@ class CheckRunner(object):
     # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
     # inspection results).
-    skipped, args = self._get_check_dependencies(check, iterargs)
+
+    skipped = None
+    if self._spec.check_filter:
+      iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
+      accepted, message = self._spec.check_filter(check.id, **iterargsDict)
+      if not accepted:
+        skipped = (SKIP, 'Filtered: {}'.format(message or ''))
+
+    if not skipped:
+      skipped, args = self._get_check_dependencies(check, iterargs)
+
     # FIXME: check is not a message
     # so, to use it as a message, it should have a "message-interface"
     # TODO: describe generic "message-interface"
@@ -789,7 +799,8 @@ class Spec(object):
              , conditions=None
              , aliases=None
              , expected_values=None
-             , default_section=None):
+             , default_section=None
+             , check_filter=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -866,6 +877,8 @@ class Spec(object):
       default_section = sections[0] if sections and len(sections) else Section('Default')
     self._default_section = default_section
     self.add_section(self._default_section)
+
+    self.check_filter = check_filter
 
   _valid_namespace_types = { 'iterargs': 'iterarg'
                            , 'derived_iterables': 'derived_iterable'
@@ -1375,7 +1388,6 @@ class Spec(object):
           continue
         self.register_expected_value(item)
 
-
   def merge_specification(self, specification, filter_func=None):
     """
       Try to copy all contents from specification to self.
@@ -1409,6 +1421,9 @@ class Spec(object):
       else:
         # order, description are not updated
         my_section.merge_section(section, check_filter_func)
+
+  def set_check_filter(self, check_filter):
+    self.check_filter = check_filter;
 
   def serialize_identity(self, identity):
     """ Return a json string that can also  be used as a key.
