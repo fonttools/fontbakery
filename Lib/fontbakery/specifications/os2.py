@@ -1,16 +1,15 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from fontbakery.callable import check
+from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import vmetrics
-from .googlefonts_shared_conditions import style
 # flake8 F401, F811:
-(vmetrics ,style)
+(vmetrics, )
 
 @check(id='com.google.fonts/check/009')
 def com_google_fonts_check_009(ttFonts):
@@ -55,52 +54,23 @@ def com_google_fonts_check_010(ttFonts):
   else:
     yield PASS, "Fonts have consistent PANOSE family type."
 
+@condition
+def expected_os2_weight():
+  """Return a tuple of weight name and expected OS/2 usWeightClass or None.
 
-@check(id='com.google.fonts/check/020', conditions=['style'])
-def com_google_fonts_check_020(ttFont, style):
-  """Checking OS/2 usWeightClass.
-
-  The Google Font's API which serves the fonts can only serve
-  the following weights values with the corresponding subfamily styles:
-
-  250, Thin
-  275, ExtraLight
-  300, Light
-  400, Regular
-  500, Medium
-  600, SemiBold
-  700, Bold
-  800, ExtraBold
-  900, Black
-
-  Thin is not set to 100 because of legacy Windows GDI issues:
-  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  use: @condition(force=True) in your spec to override this condition.
   """
-  # Weight name to value mapping:
-  GF_API_WEIGHTS = {
-      "Thin": 250,
-      "ExtraLight": 275,
-      "Light": 300,
-      "Regular": 400,
-      "Medium": 500,
-      "SemiBold": 600,
-      "Bold": 700,
-      "ExtraBold": 800,
-      "Black": 900
-  }
-  if style == "Italic":
-    weight_name = "Regular"
-  elif style.endswith("Italic"):
-    weight_name = style.replace("Italic", "")
-  else:
-    weight_name = style
+  return None
 
+@check(id='com.google.fonts/check/020', conditions=['expected_os2_weight'])
+def com_google_fonts_check_020(ttFont, expected_os2_weight):
+  """Checking OS/2 usWeightClass."""
+  weight_name, expected_value = expected_os2_weight
   value = ttFont['OS/2'].usWeightClass
-  expected = GF_API_WEIGHTS[weight_name]
-  if value != expected:
+  if value != expected_value:
     yield FAIL, ("OS/2 usWeightClass expected value for"
                  " '{}' is {} but this font has"
-                 " {}.").format(weight_name, expected, value)
+                 " {}.").format(weight_name, expected_value, value)
   else:
     yield PASS, "OS/2 usWeightClass value looks good!"
 

@@ -535,17 +535,19 @@ def test_check_019():
 def test_check_020():
   """ Checking OS/2 usWeightClass. """
   from fontbakery.specifications.os2 import com_google_fonts_check_020 as check
-  from fontbakery.specifications.googlefonts import style
+  from fontbakery.specifications.googlefonts import style, expected_os2_weight
+
+  exp_os2_weight = lambda font: expected_os2_weight(style(font))
   print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
   font = "data/test/mada/Mada-Regular.ttf"
-  status, message = list(check(TTFont(font), style(font)))[-1]
+  status, message = list(check(TTFont(font), exp_os2_weight(font)))[-1]
   assert status == FAIL
 
   print('Test PASS with a good font...')
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
-    status, message = list(check(TTFont(font), style(font)))[-1]
+    status, message = list(check(TTFont(font), exp_os2_weight(font)))[-1]
     assert status == PASS
 
 # DEPRECATED CHECKS:                                             | REPLACED BY:
