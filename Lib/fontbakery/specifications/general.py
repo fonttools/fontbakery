@@ -11,9 +11,8 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import is_variable_font, missing_whitespace_chars
-from .googlefonts_shared_conditions import whitelist_librebarcode
 # flake8 F401, F811:
-(is_variable_font, missing_whitespace_chars, whitelist_librebarcode)
+(is_variable_font, missing_whitespace_chars)
 
 @condition
 def fontforge_check_results(font):
@@ -212,130 +211,147 @@ def com_google_fonts_check_038(font, fontforge_check_results):
     yield PASS, "fontforge validation did not output any error message."
 
 
+@condition
+def fontforge_skip_checks():
+  """ return a bitmask of the checks to skip
+
+  E.g. to skip:
+    0x2: Contours are closed?
+    0x40: Glyph names referred to from glyphs present in the font
+    0x200: Font doesn't have invalid glyph names
+  do:
+    return 0x2 + 0x40 + 0x200
+
+  override with @condition(force=True) to customize this
+  """
+  return None
+
 @check(id='com.google.fonts/check/039', conditions=['fontforge_check_results'])
-def com_google_fonts_check_039(fontforge_check_results, whitelist_librebarcode):
+def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   """FontForge checks."""
 
-  def ff_check(description, condition, err_msg, ok_msg):
-    if condition is False:
-      return FAIL, "fontforge-check: {}".format(err_msg)
-    else:
-      return PASS, "fontforge-check: {}".format(ok_msg)
-
   validation_state = fontforge_check_results["validation_state"]
+  fontforge_checks = (
+      ("Contours are closed?",
+       0x2,
+       "Contours are not closed!", "Contours are closed.")
 
-  yield ff_check("Contours are closed?",
-                 bool(validation_state & 0x2) is False,
-                 "Contours are not closed!", "Contours are closed.")
+    , ("Contours do not intersect",
+       0x4,
+       "There are countour intersections!",
+       "Contours do not intersect.")
 
-  yield ff_check("Contours do not intersect",
-                 bool(validation_state & 0x4) is False,
-                 "There are countour intersections!",
-                 "Contours do not intersect.")
+    , ("Contours have correct directions",
+       0x8,
+       "Contours have incorrect directions!",
+       "Contours have correct directions.")
 
-  yield ff_check("Contours have correct directions",
-                 bool(validation_state & 0x8) is False,
-                 "Contours have incorrect directions!",
-                 "Contours have correct directions.")
+    , ("References in the glyph haven't been flipped",
+       0x10,
+       "References in the glyph have been flipped!",
+       "References in the glyph haven't been flipped.")
 
-  yield ff_check("References in the glyph haven't been flipped",
-                 bool(validation_state & 0x10) is False,
-                 "References in the glyph have been flipped!",
-                 "References in the glyph haven't been flipped.")
+    , ("Glyphs have points at extremas",
+       0x20,
+       "Glyphs do not have points at extremas!",
+       "Glyphs have points at extremas.")
 
-  if not whitelist_librebarcode:  # See: https://github.com/graphicore/librebarcode/issues/3
-    yield ff_check("Glyphs have points at extremas",
-                   bool(validation_state & 0x20) is False,
-                   "Glyphs do not have points at extremas!",
-                   "Glyphs have points at extremas.")
+    , ("Glyph names referred to from glyphs present in the font",
+       0x40,
+       "Glyph names referred to from glyphs"
+       " not present in the font!",
+       "Glyph names referred to from glyphs"
+       " present in the font.")
 
-  yield ff_check("Glyph names referred to from glyphs present in the font",
-                 bool(validation_state & 0x40) is False,
-                 "Glyph names referred to from glyphs"
-                 " not present in the font!",
-                 "Glyph names referred to from glyphs"
-                 " present in the font.")
+    , ("Points (or control points) are not too far apart",
+       0x40000,
+       "Points (or control points) are too far apart!",
+       "Points (or control points) are not too far apart.")
 
-  yield ff_check("Points (or control points) are not too far apart",
-                 bool(validation_state & 0x40000) is False,
-                 "Points (or control points) are too far apart!",
-                 "Points (or control points) are not too far apart.")
+    , ("Not more than 1,500 points in any glyph"
+       " (a PostScript limit)",
+       0x80,
+       "There are glyphs with more than 1,500 points!"
+       "Exceeds a PostScript limit.",
+       "Not more than 1,500 points in any glyph"
+       " (a PostScript limit).")
 
-  yield ff_check("Not more than 1,500 points in any glyph"
-                 " (a PostScript limit)",
-                 bool(validation_state & 0x80) is False,
-                 "There are glyphs with more than 1,500 points!"
-                 "Exceeds a PostScript limit.",
-                 "Not more than 1,500 points in any glyph"
-                 " (a PostScript limit).")
+    , ("PostScript has a limit of 96 hints in glyphs",
+       0x100,
+       "Exceeds PostScript limit of 96 hints per glyph",
+       "Font respects PostScript limit of 96 hints per glyph")
 
-  yield ff_check("PostScript has a limit of 96 hints in glyphs",
-                 bool(validation_state & 0x100) is False,
-                 "Exceeds PostScript limit of 96 hints per glyph",
-                 "Font respects PostScript limit of 96 hints per glyph")
+    , ("Font doesn't have invalid glyph names",
+       0x200,
+       "Font has invalid glyph names!",
+       "Font doesn't have invalid glyph names.")
 
-  if not whitelist_librebarcode:  # See: https://github.com/graphicore/librebarcode/issues/3
-    yield ff_check("Font doesn't have invalid glyph names",
-                   bool(validation_state & 0x200) is False,
-                   "Font has invalid glyph names!",
-                   "Font doesn't have invalid glyph names.")
+    , ("Glyphs have allowed numbers of points defined in maxp",
+       0x400,
+       "Glyphs exceed allowed numbers of points defined in maxp",
+       "Glyphs have allowed numbers of points defined in maxp.")
 
-  yield ff_check("Glyphs have allowed numbers of points defined in maxp",
-                 bool(validation_state & 0x400) is False,
-                 "Glyphs exceed allowed numbers of points defined in maxp",
-                 "Glyphs have allowed numbers of points defined in maxp.")
+    , ("Glyphs have allowed numbers of paths defined in maxp",
+       0x800,
+       "Glyphs exceed allowed numbers of paths defined in maxp!",
+       "Glyphs have allowed numbers of paths defined in maxp.")
 
-  yield ff_check("Glyphs have allowed numbers of paths defined in maxp",
-                 bool(validation_state & 0x800) is False,
-                 "Glyphs exceed allowed numbers of paths defined in maxp!",
-                 "Glyphs have allowed numbers of paths defined in maxp.")
+    , ("Composite glyphs have allowed numbers"
+       " of points defined in maxp?",
+       0x1000,
+       "Composite glyphs exceed allowed numbers"
+       " of points defined in maxp!",
+       "Composite glyphs have allowed numbers"
+       " of points defined in maxp.")
 
-  yield ff_check("Composite glyphs have allowed numbers"
-                 " of points defined in maxp?",
-                 bool(validation_state & 0x1000) is False,
-                 "Composite glyphs exceed allowed numbers"
-                 " of points defined in maxp!",
-                 "Composite glyphs have allowed numbers"
-                 " of points defined in maxp.")
+    , ("Composite glyphs have allowed numbers"
+       " of paths defined in maxp",
+       0x2000, "Composite glyphs exceed"
+       " allowed numbers of paths defined in maxp!", "Composite glyphs have"
+       " allowed numbers of paths defined in maxp.")
 
-  yield ff_check(
-      "Composite glyphs have allowed numbers"
-      " of paths defined in maxp",
-      bool(validation_state & 0x2000) is False, "Composite glyphs exceed"
-      " allowed numbers of paths defined in maxp!", "Composite glyphs have"
-      " allowed numbers of paths defined in maxp.")
+    , ("Glyphs instructions have valid lengths",
+       0x4000,
+       "Glyphs instructions have invalid lengths!",
+       "Glyphs instructions have valid lengths.")
 
-  yield ff_check("Glyphs instructions have valid lengths",
-                 bool(validation_state & 0x4000) is False,
-                 "Glyphs instructions have invalid lengths!",
-                 "Glyphs instructions have valid lengths.")
+    , ("Points in glyphs are integer aligned",
+       0x80000,
+       "Points in glyphs are not integer aligned!",
+       "Points in glyphs are integer aligned.")
 
-  yield ff_check("Points in glyphs are integer aligned",
-                 bool(validation_state & 0x80000) is False,
-                 "Points in glyphs are not integer aligned!",
-                 "Points in glyphs are integer aligned.")
+    # According to the opentype spec, if a glyph contains an anchor point
+    # for one anchor class in a subtable, it must contain anchor points
+    # for all anchor classes in the subtable. Even it, logically,
+    # they do not apply and are unnecessary.
+    , ("Glyphs have all required anchors.",
+       0x100000,
+       "Glyphs do not have all required anchors!",
+       "Glyphs have all required anchors.")
 
-  # According to the opentype spec, if a glyph contains an anchor point
-  # for one anchor class in a subtable, it must contain anchor points
-  # for all anchor classes in the subtable. Even it, logically,
-  # they do not apply and are unnecessary.
-  yield ff_check("Glyphs have all required anchors.",
-                 bool(validation_state & 0x100000) is False,
-                 "Glyphs do not have all required anchors!",
-                 "Glyphs have all required anchors.")
+    , ("Glyph names are unique?",
+       0x200000,
+       "Glyph names are not unique!", "Glyph names are unique.")
 
-  yield ff_check("Glyph names are unique?",
-                 bool(validation_state & 0x200000) is False,
-                 "Glyph names are not unique!", "Glyph names are unique.")
+    , ("Unicode code points are unique?",
+       0x400000,
+       "Unicode code points are not unique!",
+       "Unicode code points are unique.")
 
-  yield ff_check("Unicode code points are unique?",
-                 bool(validation_state & 0x400000) is False,
-                 "Unicode code points are not unique!",
-                 "Unicode code points are unique.")
+    , ("Do hints overlap?",
+       0x800000,
+       "Hints should NOT overlap!", "Hints do not overlap.")
+  )
 
-  yield ff_check("Do hints overlap?",
-                 bool(validation_state & 0x800000) is False,
-                 "Hints should NOT overlap!", "Hints do not overlap.")
+  for description, bit, err_msg, ok_msg in fontforge_checks:
+    if fontforge_skip_checks is not None and \
+                          bool(fontforge_skip_checks & bit) is not False:
+      yield SKIP, description
+    elif bool(validation_state & bit) is not False:
+      yield FAIL, "fontforge-check: {}".format(err_msg)
+    else:
+      yield PASS, "fontforge-check: {}".format(ok_msg)
+
 
 
 @check(id='com.google.fonts/check/046')
@@ -425,8 +441,6 @@ def com_google_fonts_check_048(ttFont):
 
 @check(
     id='com.google.fonts/check/049',
-    conditions=['not whitelist_librebarcode'
-               ]  # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""

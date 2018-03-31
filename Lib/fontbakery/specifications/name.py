@@ -9,9 +9,8 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import seems_monospaced, monospace_stats
-from .googlefonts_shared_conditions import whitelist_librebarcode
 # flake8 F401, F811:
-(seems_monospaced, monospace_stats, whitelist_librebarcode)
+(seems_monospaced, monospace_stats)
 
 @check(id='com.google.fonts/check/031', priority=CRITICAL)
 def com_google_fonts_check_031(ttFont):
@@ -55,8 +54,7 @@ def com_google_fonts_check_032(ttFont):
 
 @check(
     id='com.google.fonts/check/033',
-    # See: https://github.com/graphicore/librebarcode/issues/3
-    conditions=['monospace_stats', 'not whitelist_librebarcode'])
+    conditions=['monospace_stats'])
 def com_google_fonts_check_033(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
 

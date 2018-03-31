@@ -29,9 +29,10 @@ from fontbakery.constants import(
 )
 
 from . import (general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
-               gdef, kern, glyf, prep, fvar, shared_conditions,
-               googlefonts_shared_conditions)
+               gdef, kern, glyf, prep, fvar, shared_conditions) # NOQA
 
+(general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
+               gdef, kern, glyf, prep, fvar, shared_conditions)
 
 from fontbakery.fonts_spec import spec_factory
 
@@ -937,7 +938,6 @@ def com_google_fonts_check_067(ttFont):
 # TODO: extend this to check for availability of all required currency symbols.
 @check(
     id = 'com.google.fonts/check/070'
-  , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def com_google_fonts_check_070(ttFont):
   """Font has all expected currency sign characters?"""
@@ -2979,7 +2979,42 @@ def com_google_fonts_check_173(ttFont):
   if not failed:
     yield PASS, "The x-coordinates of all glyphs look good."
 
+def is_librebarcode(font):
+  font_filenames = [
+    "LibreBarcode39-Regular.ttf",
+    "LibreBarcode39Text-Regular.ttf",
+    "LibreBarcode128-Regular.ttf",
+    "LibreBarcode128Text-Regular.ttf",
+    "LibreBarcode39Extended-Regular.ttf",
+    "LibreBarcode39ExtendedText-Regular.ttf"
+  ]
+  for font_filename in font_filenames:
+    if font_filename in font:
+      return True
 
+@condition(force=True)
+def fontforge_skip_checks(font):
+  """Skip by fontforge reported issues for google fonts specific fonts."""
+  if is_librebarcode(font):
+    # see https://github.com/graphicore/librebarcode/issues/3
+    # 0x20: Glyphs have points at extremas
+    # 0x200: Font doesn't have invalid glyph names
+    return 0x20 + 0x200
+  return None
+
+def check_filter(checkid, font=None, **iterargs):
+  if font and is_librebarcode(font) and checkid in (
+        # See: https://github.com/graphicore/librebarcode/issues/3
+        'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
+      , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
+      , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
+      , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
+  ):
+    return False, ('LibreBarcode is blacklisted for this check, see '
+                  'https://github.com/graphicore/librebarcode/issues/3')
+  return True, None
+
+specification.set_check_filter(check_filter)
 
 specification.auto_register(globals())
 
