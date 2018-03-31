@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import os
 
-from fontbakery.callable import check
+from fontbakery.callable import check, condition
 from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
@@ -11,10 +11,36 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA
 
 from .shared_conditions import is_variable_font, missing_whitespace_chars
-from .googlefonts_shared_conditions import whitelist_librebarcode, fontforge_check_results
+from .googlefonts_shared_conditions import whitelist_librebarcode
 # flake8 F401, F811:
-(is_variable_font, missing_whitespace_chars, whitelist_librebarcode
-      , fontforge_check_results)
+(is_variable_font, missing_whitespace_chars, whitelist_librebarcode)
+
+@condition
+def fontforge_check_results(font):
+  if "adobeblank" in font:
+    return SKIP, ("Skipping AdobeBlank since"
+                  " this font is a very peculiar hack.")
+
+  import subprocess
+  cmd = (
+        'import fontforge, sys;'
+        'status = fontforge.open("{0}").validate();'
+        'sys.stdout.write(status.__str__());'.format
+        )
+
+  p = subprocess.Popen(['python', '-c', cmd(font)],
+                       stderr=subprocess.PIPE,
+                       stdout=subprocess.PIPE
+                      )
+  ret_val, ff_err_messages = p.communicate()
+  try:
+    return {
+      "validation_state": int(ret_val),
+      "ff_err_messages": ff_err_messages
+    }
+  except:
+    return None
+
 
 @check(id='com.google.fonts/check/002', priority=CRITICAL)
 def com_google_fonts_check_002(fonts):

@@ -19,31 +19,6 @@ def whitelist_librebarcode(font):
     if font_filename in font:
       return True
 
-@condition
-def fontforge_check_results(font):
-  if "adobeblank" in font:
-    return SKIP, ("Skipping AdobeBlank since"
-                  " this font is a very peculiar hack.")
-
-  import subprocess
-  cmd = (
-        'import fontforge, sys;'
-        'status = fontforge.open("{0}").validate();'
-        'sys.stdout.write(status.__str__());'.format
-        )
-
-  p = subprocess.Popen(['python', '-c', cmd(font)],
-                       stderr=subprocess.PIPE,
-                       stdout=subprocess.PIPE
-                      )
-  ret_val, ff_err_messages = p.communicate()
-  try:
-    return {
-      "validation_state": int(ret_val),
-      "ff_err_messages": ff_err_messages
-    }
-  except:
-    return None
 
 @condition
 def style(font):
