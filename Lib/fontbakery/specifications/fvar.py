@@ -6,13 +6,11 @@ from fontbakery.checkrunner import FAIL, PASS, WARN
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA
 
-from .shared_conditions import (is_variable_font
-            , regular_wght_coord, regular_wdth_coord, regular_slnt_coord
-            , regular_ital_coord, regular_opsz_coord, bold_wght_coord)
-# flake8 F401, F811:
-(is_variable_font
-            , regular_wght_coord, regular_wdth_coord, regular_slnt_coord
-            , regular_ital_coord, regular_opsz_coord, bold_wght_coord)
+spec_imports = [
+    ('.shared_conditions', ('is_variable_font'
+            , 'regular_wght_coord', 'regular_wdth_coord', 'regular_slnt_coord'
+            , 'regular_ital_coord', 'regular_opsz_coord', 'bold_wght_coord'))
+]
 
 @check(
     id='com.google.fonts/check/167',

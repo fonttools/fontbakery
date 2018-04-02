@@ -7,9 +7,9 @@ from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA
 
-from .shared_conditions import ligatures
-# flake8 F401, F811:
-(ligatures, )
+spec_imports = [
+    ('.shared_conditions', ('ligatures', ))
+]
 
 @check(
     id='com.google.fonts/check/064',

@@ -7,9 +7,9 @@ from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA
 
-from .shared_conditions import seems_monospaced, monospace_stats
-# flake8 F401, F811:
-(seems_monospaced, monospace_stats)
+spec_imports = [
+    ('.shared_conditions', ('seems_monospaced', 'monospace_stats'))
+]
 
 @check(id='com.google.fonts/check/041')
 def com_google_fonts_check_041(ttFont):

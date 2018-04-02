@@ -18,6 +18,7 @@ import types
 from collections import OrderedDict, Counter
 from functools import partial
 from itertools import chain
+import importlib
 import sys
 import traceback
 import json
@@ -1334,6 +1335,64 @@ class Spec(object):
                                             , force=expected_value.force)
     return True
 
+  def _get_package(self, symbol_table):
+    package = symbol_table.get('__package__', None)
+    if package is not None:
+      return package
+    name = symbol_table.get('__name__', None)
+    if name is None or not '.' in name:
+      return None
+    return name.rpartition('.')[0]
+
+  def _load_spec_imports(self, symbol_table):
+    """
+    spec_imports is a list of module names or tuples
+    of (module_name, names to import)
+    in the form of ('.', names) it behaces like:
+    from . import name1, name2, name3
+    or similarly
+    import .name1, .name2, .name3
+
+    i.e. "name" in names becomes ".name"
+    """
+    results = []
+    if 'spec_imports' not in symbol_table:
+      return results
+
+    # str for PY 3.x basetring for PY 2.x
+    is_string = lambda value: isinstance(value, \
+                        str if sys.version_info[0] == 3 else basestring) # NOQA
+
+    package = self._get_package(symbol_table)
+    spec_imports = symbol_table['spec_imports']
+
+    for item in spec_imports:
+      if is_string(item):
+        # import the whole module
+        module_name, names = (item, None)
+      else:
+        # expecting a 2 items tuple or list
+        # import only the names from the module
+        module_name, names = item
+
+      if '.' in module_name and len(set(module_name)) == 1  and names is not None:
+        # if you execute `from . import mod` from a module in the pkg package
+        # then you will end up importing pkg.mod
+        module_names = ['{}{}'.format(module_name, name) for name in names]
+        names = None
+      else:
+        module_names = [module_name]
+
+      for module_name in module_names:
+        print('module_name', module_name, 'names', names)
+        module = importlib.import_module(module_name, package=package)
+        if names is None:
+          results.append(module)
+        else:
+          # getattr raises AttributeError if not available (which is a good thing)!
+          results += [getattr(module, name) for name in names]
+    return results
+
   def auto_register(self, symbol_table, filter_func=None):
     """
       Get all items from the symbol_table dict and if they are
@@ -1358,10 +1417,11 @@ class Spec(object):
       if filter_func returns a falsy value for an item, the item will
       not be registered.
     """
+    all_items = symbol_table.values() + self._load_spec_imports(symbol_table)
     namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
     namespace_items = []
 
-    for key, item in symbol_table.items():
+    for item in all_items:
       if isinstance(item, namespace_types):
         # register these after all modules have been registered. That way,
         # "local" items can optionally force override items registered
