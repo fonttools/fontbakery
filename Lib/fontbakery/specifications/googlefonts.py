@@ -26,18 +26,15 @@ from fontbakery.constants import(
 #     , LOW
 #     , TRIVIAL
 )
-
-from . import (general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
-               gdef, kern, glyf, prep, fvar, shared_conditions) # NOQA
-
-(general, cmap, head, os2, post, name, hhea, dsig, hmtx, gpos,
-               gdef, kern, glyf, prep, fvar, shared_conditions)
-
 from fontbakery.fonts_spec import spec_factory
 
+spec_imports = (
+    ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
+       'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
+       'prep', 'fvar', 'shared_conditions')
+    ),
+)
 specification = spec_factory(default_section=Section("Google Fonts"))
-
-
 
 class Disabled(object):
   def __init__(self, func):

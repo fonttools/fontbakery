@@ -9,10 +9,11 @@ from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA
+from .shared_conditions import is_variable_font
 
-from .shared_conditions import is_variable_font, missing_whitespace_chars
-# flake8 F401, F811:
-(is_variable_font, missing_whitespace_chars)
+spec_imports = [
+    ('.shared_conditions', ('missing_whitespace_chars', ))
+]
 
 @condition
 def fontforge_check_results(font):
