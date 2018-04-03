@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import,
-                        print_function,
-                        unicode_literals,
-                        division)
+
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import map
+from builtins import hex
+from builtins import range
+from past.utils import old_div # NOQA
+from builtins import object
+
 
 from fontbakery.checkrunner import (
               INFO
@@ -428,7 +437,7 @@ def com_google_fonts_check_019(ttFont):
                      (u"\u00ae", '(r)'),
                      (u"\u2122", '(tm)')]
   for name in ttFont['name'].names:
-    string = unicode(name.string, encoding=name.getEncoding())
+    string = str(name.string, encoding=name.getEncoding())
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
@@ -1067,10 +1076,10 @@ def com_google_fonts_check_082(metadata):
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
                  " is OK, so we won't look for it at profiles.csv")
   else:
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     import csv
     try:
-      handle = urllib.urlopen(PROFILES_RAW_URL)
+      handle = urllib.request.urlopen(PROFILES_RAW_URL)
       designers = []
       for row in csv.reader(handle):
         if not row:

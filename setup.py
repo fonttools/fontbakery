@@ -58,6 +58,7 @@ setup(
         'font-v',
         'defcon',
         'ufolint',
+        'future',
     ]
 )
 
