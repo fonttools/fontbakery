@@ -5,6 +5,7 @@
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
 from __future__ import absolute_import, print_function, unicode_literals
 
+from builtins import filter
 import sys
 import argparse
 from collections import OrderedDict
@@ -13,6 +14,7 @@ from fontbakery.checkrunner import (
               distribute_generator
             , CheckRunner
             , Spec
+            , get_module_specification
             , DEBUG
             , INFO
             , WARN
@@ -144,8 +146,10 @@ def get_spec():
   from importlib import import_module
   # Fails with an appropriate ImportError.
   imported = import_module(args.specification, package=None)
-  # Fails with an attribute error if specification is undefined.
-  return imported.specification
+  specification = get_module_specification(imported)
+  if not specification:
+    raise Exception('Can\'t get a specification from {}.'.format(imported))
+  return specification
 
 def runner_factory( specification
                   , explicit_checks=None
@@ -168,10 +172,12 @@ def main(specification=None, values=None):
   args = argument_parser.parse_args()
 
   if args.list_checks:
+    print('Available checks')
     for section_name, section in specification._sections.items():
       checks = section.list_checks()
-      sys.exit("Available checks on {} are:\n{}".format(section_name,
-                                                        "\n".join(checks)))
+      message = "# {}:\n  {}".format(section_name,"\n  ".join(checks))
+      print(message)
+    sys.exit()
 
   values_ = {}
   if values is not None:

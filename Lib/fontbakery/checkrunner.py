@@ -14,13 +14,27 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
+from builtins import filter
+from builtins import map
+from builtins import range
+from past.builtins import basestring
+from builtins import object
+
+
 import types
 from collections import OrderedDict, Counter
 from functools import partial
 from itertools import chain
+import importlib
 import sys
 import traceback
 import json
+import logging
+
+from fontbakery.callable import ( FontBakeryCheck
+                                , FontBakeryCondition
+                                , FontBakeryExpectedValue
+                                )
 
 class Status(object):
   """ If you create a custom Status symbol, please keep in mind that
@@ -218,6 +232,16 @@ def get_traceback():
   del tb
   return result
 
+# TODO: this should be part of FontBakeryCheck and check.conditions
+# should be a tuple (negated, name)
+def is_negated(name):
+  stripped = name.strip()
+  if stripped.startswith('not '):
+    return True, stripped[4:].strip()
+  if stripped.startswith('!'):
+    return True, stripped[1:].strip()
+  return False, stripped
+
 class CheckRunner(object):
   def __init__(self, spec, values
              , values_can_override_spec_names=True
@@ -237,12 +261,18 @@ class CheckRunner(object):
 
     if not values_can_override_spec_names:
       for name in values:
-        if spec.has(name):
+        if spec.has(name) and spec.get_type(name) != 'expected_values':
+                # of course values can override expected_values, that's
+                # their purpose!.
           raise SetupError('Values entry "{}" collides with spec '\
                       'namespace as a {}'.format(name, spec.get_type(name)))
 
     self._spec = spec;
-    # spec.validate(values)?
+    self._spec.test_dependencies()
+    valid, message = self._spec.validate_values(values)
+    if not valid:
+      raise SetupError('Validation for spec of expected values failed:'
+                      '\n{}'.format(message))
     self._values = values;
 
     self._cache = {
@@ -287,7 +317,7 @@ class CheckRunner(object):
 
     status, message = result
     # Allow booleans, but there's no way to issue a WARNING
-    if isinstance(status, types.BooleanType):
+    if isinstance(status, bool):
       # normalize
       status = PASS if status else FAIL
       result = (status, message)
@@ -452,19 +482,6 @@ class CheckRunner(object):
       else:
         yield (iterargs, value)
 
-  def _resolve_alias(self, original_name):
-    name = original_name
-    seen = set()
-    path = []
-    while name in self._spec.aliases:
-      if name in seen:
-        raise CircularAliasError('Alias for "{}" has a circular reference'\
-                        ' in {}'.format(original_name, '->'.join(path)))
-      seen.add(name)
-      path.append(name)
-      name = self._spec.aliases[name]
-    return name
-
   def _get(self, name, iterargs, path, *args):
     iterargsDict = dict(iterargs)
     has_fallback = bool(len(args))
@@ -476,7 +493,7 @@ class CheckRunner(object):
       return self._values[name]
 
     original_name = name
-    name = self._resolve_alias(name)
+    name = self._spec.resolve_alias(name)
     if name != original_name and name in self._values:
       return self._values[name]
 
@@ -485,8 +502,14 @@ class CheckRunner(object):
     if name in self._values:
       return self._values[name]
 
-    if name in iterargsDict:
-      assert nametype == 'iterargs'
+    if nametype == 'expected_values':
+      # No need to validate
+      expected_value = self._spec.get(name)
+      if expected_value.has_default:
+        # has no default: fallback or MissingValueError
+        return expected_value.default
+
+    if nametype == 'iterargs' and name in iterargsDict:
       index = iterargsDict[name]
       plural = self._spec.get(name)
       return self._values[plural][index]
@@ -526,18 +549,10 @@ class CheckRunner(object):
           raise
     return args;
 
-  def _is_negated(self, name):
-    stripped = name.strip()
-    if stripped.startswith('not '):
-      return True, stripped[4:].strip()
-    if stripped.startswith('!'):
-      return True, stripped[1:].strip()
-    return False, stripped
-
   def _get_check_dependencies(self, check, iterargs):
     unfulfilled_conditions = []
     for condition in check.conditions:
-      negate, name = self._is_negated(condition)
+      negate, name = is_negated(condition)
       if name in self._values:
         # this is a handy way to set flags from the outside
         err, val = None, self._values[name]
@@ -571,7 +586,17 @@ class CheckRunner(object):
     # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
     # inspection results).
-    skipped, args = self._get_check_dependencies(check, iterargs)
+
+    skipped = None
+    if self._spec.check_filter:
+      iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
+      accepted, message = self._spec.check_filter(check.id, **iterargsDict)
+      if not accepted:
+        skipped = (SKIP, 'Filtered: {}'.format(message or ''))
+
+    if not skipped:
+      skipped, args = self._get_check_dependencies(check, iterargs)
+
     # FIXME: check is not a message
     # so, to use it as a message, it should have a "message-interface"
     # TODO: describe generic "message-interface"
@@ -668,7 +693,6 @@ class CheckRunner(object):
     # run
     yield START, order, (None, None, None)
     section = None
-    old_section = None
     for section, section_order in section_orders:
       section_summary = Counter()
       yield STARTSECTION, section_order, (section, None, None)
@@ -692,11 +716,20 @@ class Section(object):
   def __init__(self, name, checks=None, order=None, description=None):
     self.name = name
     self.description = description
-    self._add_check_callbacks = []
+    self._add_check_callback = None
     self._checks = [] if checks is None else list(checks)
     self._checkid2index = {i:check.id for i, check in enumerate(self._checks)}
     # a list of iterarg-names
     self._order = order or []
+
+  def clone(self, filter_func=None):
+    checks = self.checks if not filter_func else filter(filter_func, self.checks)
+    return Section(
+              self.name
+            , checks=checks
+            , order=self.order
+            , description=self.description
+            )
 
   def __repr__(self):
     return '<Section: {0}>'.format(self.name)
@@ -714,17 +747,35 @@ class Section(object):
     return self._checks
 
   def on_add_check(self, callback):
-    self._add_check_callbacks.append(callback)
+    if self._add_check_callback is not None:
+      # allow only one, otherwise, skipping registration in
+      # add_check becomes problematic, can't skip just for some
+      # callbacks.
+      raise Exception('{} already has an on_add_check callback'.format(self));
+    self._add_check_callback = callback;
 
   def add_check(self, check):
     """
     Please use rather `register_check` as a decorator.
     """
-    for callback in self._add_check_callbacks:
-      callback(self, check)
+    if self._add_check_callback is not None:
+      if not self._add_check_callback(self, check):
+        # rejected, skip!
+        return False
+
     self._checkid2index[check.id] = len(self._checks)
     self._checks.append(check)
-    return check
+    return True
+
+  def merge_section(self, section, filter_func=None):
+    """
+    Add section.checks to self, if not skipped by self._add_check_callback.
+    order, description, etc. are not updated.
+    """
+    for check in section.checks:
+      if filter_func and not filter_func(check):
+        continue;
+      self.add_check(check)
 
   def get_check(self, check_id):
     index = self._checkid2index[check_id]
@@ -738,12 +789,14 @@ class Section(object):
     def my_check():
       yield PASS, 'example'
     """
-    return self.add_check(func)
+    if not self.add_check(func):
+      raise SetupError('Can\'t add check {} to section {}.'.format(func, self))
+    return func
 
   def list_checks(self):
     checks = []
     for check in self._checks:
-      checks.append("{} | {}".format(check.id, check.description))
+      checks.append("{} # {}".format(check.id, check.description))
     return checks
 
 class Spec(object):
@@ -753,7 +806,9 @@ class Spec(object):
              , derived_iterables=None
              , conditions=None
              , aliases=None
-             , default_section=None):
+             , expected_values=None
+             , default_section=None
+             , check_filter=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -796,7 +851,7 @@ class Spec(object):
     We will:
       a) get all needed values/variable names from here
       b) add some validation, so that we know the values match
-         our expectations! These values must be treated asuser input!
+         our expectations! These values must be treated as user input!
     '''
     self._namespace = {}
 
@@ -816,6 +871,10 @@ class Spec(object):
     if conditions:
       self._add_dict_to_namespace('conditions', conditions)
 
+    self.expected_values = {}
+    if expected_values:
+      self._add_dict_to_namespace('expected_values', expected_values)
+
     self._check_registry = {}
     self._sections = OrderedDict()
     if sections:
@@ -827,23 +886,145 @@ class Spec(object):
     self._default_section = default_section
     self.add_section(self._default_section)
 
-  _valid_namespace_types = {'iterargs', 'derived_iterables', 'aliases'
-                                                          , 'conditions'}
+    self.check_filter = check_filter
+
+  _valid_namespace_types = { 'iterargs': 'iterarg'
+                           , 'derived_iterables': 'derived_iterable'
+                           , 'aliases': 'alias'
+                           , 'conditions': 'condition'
+                           , 'expected_values': 'expected_value'
+                           }
+
+  @property
+  def sections(self):
+    return self._sections.values()
 
   def _add_dict_to_namespace(self, type, data):
     for key, value in data.items():
-      self.add_to_namespace(type, key, value)
+      self.add_to_namespace(type, key, value, force=getattr(value, 'force', False))
 
   def add_to_namespace(self, type, name, value, force=False):
     if type not in self._valid_namespace_types:
       raise TypeError('Unknow type "{}" valid are: {}'.format(
                           type, ', '.join(self._valid_namespace_types)))
-    if name in self._namespace and not force:
-      raise NamespaceError('Name "{}" is already registered in "{}".' \
-                                                  .format(name, type))
+
+
+    if name in self._namespace:
+      registered_type = self._namespace[name]
+      registered_value = getattr(self, registered_type)[name]
+      if type == registered_type and registered_value == value:
+        # if the registered equals: skip silently. Registering the same
+        # value multiple times is allowed, so we can easily expand specifications
+        # that define (partly) the same entries
+        return
+
+      if not force:
+        raise NamespaceError('Name "{}" is already registered in "{}" '
+                      '(value: {}). Reqested registering in "{}" (value: {}).' \
+                      .format(name, registered_type, registered_value
+                                                                , type, value))
+      else:
+        # clean the old type up
+        del getattr(self, registered_type)[name]
+
     self._namespace[name] = type
     target = getattr(self, type)
     target[name] = value
+
+  def test_dependencies(self):
+    """ Raises SetupError if spec uses any names that are not declared
+    in the its namespace.
+    """
+    seen = set()
+    failed = []
+    # make this simple, collect all used names
+    for section_name, section in self._sections.items():
+      for check in section.checks:
+        dependencies = list(check.args)
+        if hasattr(check, 'conditions'):
+          dependencies += [name for negated, name in map(is_negated, check.conditions)]
+
+        while dependencies:
+          name = dependencies.pop()
+          if name in seen:
+            continue
+          seen.add(name)
+          if name not in self._namespace:
+            failed.append(name)
+            continue
+          # if this is a condition, expand its dependencies
+          condition = self.conditions.get(name, None)
+          if condition is not None:
+            dependencies += condition.args
+    if len(failed):
+      raise SetupError('Spec uses names that are not declared in '
+                      'its namespace: {}.'.format(', '.join(failed)))
+
+  def test_expected_checks(self, expected_check_ids, exclusive=False):
+    """ Self-test to make a sure spec maintainer is aware of changes in
+    the spec.
+    Raises SetupError if expected check ids are missing in the spec (removed)
+    If `exclusive=True` also raises SetupError if check ids are in the
+    spec that are not in expected_check_ids (newly added).
+
+    This is handy if `spec.auto_register` is used and the spec maintainer
+    is looking for a high level of control over the spec contents,
+    especially for a warning when the spec contents have changed after an
+    update.
+    """
+    expected_check_ids = set(expected_check_ids)
+    registered_checks = set(self._check_registry.keys())
+    missing_checks = expected_check_ids - registered_checks
+    unexpected_checks = None
+    if exclusive:
+      unexpected_checks = registered_checks - expected_check_ids
+    message = []
+    if missing_checks:
+      message.append('missing checks: {};'.format(', '.join(missing_checks)))
+    if unexpected_checks:
+      message.append('unexpected checks: {};'.format(', '.join(unexpected_checks)))
+    if message:
+      raise SetupError('Spec fails expected checks test:\n{}'.format(
+                                              '\n'.join(message)))
+
+  def resolve_alias(self, original_name):
+    name = original_name
+    seen = set()
+    path = []
+    while name in self.aliases:
+      if name in seen:
+        raise CircularAliasError('Alias for "{}" has a circular reference'\
+                        ' in {}'.format(original_name, '->'.join(path)))
+      seen.add(name)
+      path.append(name)
+      name = self.aliases[name]
+    return name
+
+  def validate_values(self, values):
+    """
+    Validate values if they are registered as expected_values and present.
+
+    * If they are not registered they shouldn't be used anywhere at all
+      because specification can self check (spec.check_dependencies) for
+      missing/undefined dependencies.
+
+    * If they are not present in values but registered as expected_values
+      either the expected value has a default value OR a request for that
+      name will raise a KeyError on runtime. We don't know if all expected
+      values are actually needed/used, thus this fails late.
+    """
+    format_message = '{}: {} (value: {})'.format;
+    messages = []
+    for name, value in values.items():
+      if name not in self.expected_values:
+        continue
+      valid, message = self.expected_values[name].validate(value)
+      if valid:
+        continue
+      messages.append(format_message(name, message, value))
+    if len(messages):
+      return False, '\n'.join(messages)
+    return True, None
 
   def get_type(self, name, *args):
     has_fallback = bool(args)
@@ -877,7 +1058,7 @@ class Spec(object):
     return target[name]
 
   def has(self, name):
-    marker_fallback = {}
+    marker_fallback = object()
     val = self.get(name, marker_fallback)
     return val is not marker_fallback
 
@@ -892,7 +1073,7 @@ class Spec(object):
       raise TypeError('key must be "args" or "mandatoryArgs", got {}').format(key)
     dependencies = list(getattr(item, key))
     if hasattr(item, 'conditions'):
-      dependencies += item.conditions
+      dependencies += [name for negated, name in map(is_negated, item.conditions)]
     args = set()
     while dependencies:
       name = dependencies.pop()
@@ -1045,7 +1226,7 @@ class Spec(object):
     checks = [check for check in section.checks \
                         if not explicit_checks or check.id in explicit_checks]
     scopes = self._analyze_checks(full_order, checks)
-    key = lambda (check, signature, scope): signature
+    key = lambda item: item[1] # check, signature, scope = item
     scopes.sort(key=key, reverse=reverse)
 
     for check, args in self._execute_scopes(iterargs, scopes):
@@ -1059,17 +1240,27 @@ class Spec(object):
     # TODO: a custom_order per section may become necessary one day
     explicit_checks = set() if not explicit_checks else set(explicit_checks)
     for _, section in self._sections.items():
-      for check, iterargs in self._section_execution_order(section, iterargs
+      for check, section_iterargs in self._section_execution_order(section, iterargs
                                           , custom_order=custom_order
                                           , explicit_checks=explicit_checks):
-        yield (section, check, iterargs)
+        yield (section, check, section_iterargs)
 
   def _register_check(self, section, func):
     other_section = self._check_registry.get(func.id, None)
     if other_section:
-      raise SetupError('Check {} is already registered in {}, tried to '
-                       'register in {}.'.format(func, other_section, section))
+      other_check = other_section.get_check(func.id)
+      if other_check is func:
+        if other_section is not section:
+          logging.debug('Check {} is already registered in {}, skipping '
+                        'register in {}.'.format(func, other_section, section))
+        return False # skipped
+      else:
+        raise SetupError('Check id "{}" is not unique! It is already registered '
+                       'in {} and registration for that id is now requested '
+                       'in {}. BUT the current check is a different object '
+                       'than the registered check.'.format(func, other_section, section))
     self._check_registry[func.id] = section
+    return True
 
   def get_check(self, check_id):
     section = self._check_registry[check_id]
@@ -1120,7 +1311,8 @@ class Spec(object):
       return partial(self._add_check, section)
 
   def _add_condition(self, condition, name=None):
-    self.add_to_namespace('conditions', name or condition.name, condition)
+    self.add_to_namespace('conditions', name or condition.name, condition
+                                                    , force=condition.force)
     return condition
 
   def register_condition(self, *args, **kwds):
@@ -1143,6 +1335,161 @@ class Spec(object):
       return self._add_condition(args[0])
     else:
       return partial(self._add_condition, *args, **kwds)
+
+  def register_expected_value(self, expected_value, name=None):
+    name = name or expected_value.name
+    self.add_to_namespace('expected_values', name, expected_value
+                                            , force=expected_value.force)
+    return True
+
+  def _get_package(self, symbol_table):
+    package = symbol_table.get('__package__', None)
+    if package is not None:
+      return package
+    name = symbol_table.get('__name__', None)
+    if name is None or not '.' in name:
+      return None
+    return name.rpartition('.')[0]
+
+  def _load_spec_imports(self, symbol_table):
+    """
+    spec_imports is a list of module names or tuples
+    of (module_name, names to import)
+    in the form of ('.', names) it behaces like:
+    from . import name1, name2, name3
+    or similarly
+    import .name1, .name2, .name3
+
+    i.e. "name" in names becomes ".name"
+    """
+    results = []
+    if 'spec_imports' not in symbol_table:
+      return results
+
+    # str for PY 3.x basetring for PY 2.x
+    is_string = lambda value: isinstance(value, \
+                        str if sys.version_info[0] == 3 else basestring) # NOQA
+
+    package = self._get_package(symbol_table)
+    spec_imports = symbol_table['spec_imports']
+
+    for item in spec_imports:
+      if is_string(item):
+        # import the whole module
+        module_name, names = (item, None)
+      else:
+        # expecting a 2 items tuple or list
+        # import only the names from the module
+        module_name, names = item
+
+      if '.' in module_name and len(set(module_name)) == 1  and names is not None:
+        # if you execute `from . import mod` from a module in the pkg package
+        # then you will end up importing pkg.mod
+        module_names = ['{}{}'.format(module_name, name) for name in names]
+        names = None
+      else:
+        module_names = [module_name]
+
+      for module_name in module_names:
+        module = importlib.import_module(module_name, package=package)
+        if names is None:
+          results.append(module)
+        else:
+          # getattr raises AttributeError if not available (which is a good thing)!
+          results += [getattr(module, name) for name in names]
+    return results
+
+  def auto_register(self, symbol_table, filter_func=None):
+    """
+      Get all items from the symbol_table dict and if they are
+      a FontBakeryCheck or a FontBakeryCondition, register them in
+      the default section.
+
+      for an imported module use:
+          specification.auto_register(module.__dict__)
+      for the current module use:
+          specification.auto_register(globals());
+      OR maybe: specification.auto_register(sys.modules[__name__].__dict__);
+
+      if filter_func is defined it is called like:
+      filter_func(type, name_or_id, item)
+      where
+      type: one of check, module, condition, expected_value, iterarg,
+            derived_iterable, alias
+      name_or_id: the name at which the item will be registered.
+            if type == 'check': the check.id
+            if type == 'module': the module name (module.__name__)
+      item: the item to be registered
+      if filter_func returns a falsy value for an item, the item will
+      not be registered.
+    """
+    all_items = list(symbol_table.values()) + self._load_spec_imports(symbol_table)
+    namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
+    namespace_items = []
+
+    for item in all_items:
+      if isinstance(item, namespace_types):
+        # register these after all modules have been registered. That way,
+        # "local" items can optionally force override items registered
+        # previously by modules.
+        namespace_items.append(item)
+      elif isinstance(item, FontBakeryCheck):
+        if filter_func and not filter_func('check', item.id, item):
+          continue
+        self.register_check(item)
+      elif isinstance(item, types.ModuleType):
+        if filter_func and not filter_func('module', item.__name__, item):
+          continue
+        specification = get_module_specification(item)
+        if specification:
+          self.merge_specification(specification, filter_func=filter_func)
+
+    for item in namespace_items:
+      if isinstance(item, FontBakeryCondition):
+        if filter_func and not filter_func('condition', item.name, item):
+          continue
+        self.register_condition(item)
+      elif isinstance(item, FontBakeryExpectedValue):
+        if filter_func and not filter_func('expected_value', item.name, item):
+          continue
+        self.register_expected_value(item)
+
+  def merge_specification(self, specification, filter_func=None):
+    """
+      Try to copy all contents from specification to self.
+      Don't change any contents of specification ever!
+      (That means sections are cloned not used directly)
+
+      filter_func: see description in auto_register
+    """
+    # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
+    for ns_type in self._valid_namespace_types:
+      # this will raise a NamespaceError if an item of specification.{ns_type}
+      # is already registered.
+      ns_dict = getattr(specification, ns_type)
+      if filter_func:
+        ns_type_singular = self._valid_namespace_types[ns_type]
+        ns_dict = {name:item for name,item in ns_dict.items()
+                        if filter_func(ns_type_singular, name, item)}
+      self._add_dict_to_namespace(ns_type, ns_dict)
+
+    check_filter_func = None if not filter_func else \
+                      lambda check: filter_func('check', check.id, check)
+    for section in specification.sections:
+      key = '{}'.format(section)
+      my_section = self._sections.get(key, None)
+      if not len(section.checks):
+        continue
+      if my_section is None:
+        # create a new section: don't change other module/specification contents
+        my_section = section.clone(check_filter_func)
+        self.add_section(my_section)
+      else:
+        # order, description are not updated
+        my_section.merge_section(section, check_filter_func)
+
+  def set_check_filter(self, check_filter):
+    self.check_filter = check_filter;
 
   def serialize_identity(self, identity):
     """ Return a json string that can also  be used as a key.
@@ -1186,3 +1533,20 @@ class Spec(object):
     Return a list of keys that will be set to the `values` dictonary
     """
     pass
+
+def get_module_specification(module, name=None):
+  """
+  A helper to get or create a specification from a module.
+  """
+  try:
+    # if specification is defined we just use it
+    return module.specification
+  except AttributeError: # > 'module' object has no attribute 'specification'
+    # try to create one on the fly.
+    # e.g. module.__name__ == "fontbakery.specifications.cmap"
+    if 'spec_factory' not in module.__dict__:
+      return None
+    default_section = Section(name or module.__name__)
+    specification = module.spec_factory(default_section=default_section)
+    specification.auto_register(module.__dict__)
+    return specification

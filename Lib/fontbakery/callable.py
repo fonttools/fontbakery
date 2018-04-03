@@ -13,6 +13,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
 from __future__ import absolute_import, print_function, unicode_literals
+from builtins import object
 import sys
 try:
   from inspect import getfullargspec as getargspec
@@ -86,14 +87,14 @@ def trim(docstring):
   # and split into a list of lines:
   lines = docstring.expandtabs().splitlines()
   # Determine minimum indentation (first line doesn't count):
-  indent = sys.maxint
+  indent = sys.maxsize
   for line in lines[1:]:
       stripped = line.lstrip()
       if stripped:
           indent = min(indent, len(line) - len(stripped))
   # Remove indentation (first line is special):
   trimmed = [lines[0].strip()]
-  if indent < sys.maxint:
+  if indent < sys.maxsize:
       for line in lines[1:]:
           trimmed.append(line[indent:].rstrip())
   # Strip off trailing and leading blank lines:
@@ -134,12 +135,14 @@ class FontBakeryCondition(FontbakeryCallable):
        name = None, # very short text
        description = None, # short text
        documentation=None, # long text, markdown?
+       force=False
       ):
     super(FontBakeryCondition, self).__init__(func)
     # self.id = id
     self.name = func.__name__ if name is None else name
     self.description, self.documentation = get_doc_desc(
                                         func, description, documentation)
+    self.force = force
 
 class FontBakeryCheck(FontbakeryCallable):
   def __init__(
@@ -256,3 +259,44 @@ def check(*args, **kwds):
   def wrapper(checkfunc):
     return wraps(checkfunc)(FontBakeryCheck(checkfunc, *args, **kwds))
   return wrapper
+
+# ExpectedValue is not a callable, but it belongs next to check and condition
+_NOT_SET = object() # used as a marker
+class FontBakeryExpectedValue(object):
+  def __init__(self,
+                 name, # unique name in global namespace
+                 description=None, # short text, this is mandatory
+                 documentation=None, # markdown?
+                 default=_NOT_SET, # because None can be a valid default
+                 validator=None, # function, see the docstring of `def validate`
+                 force=False
+                 ):
+    self.name = name
+    self.description = description
+    self.documentation = documentation
+    self._default = (True, default) if default is not _NOT_SET else (False, None)
+    self._validator = validator
+    self.force = force
+
+  def __repr__(self):
+    return'<{0}:{1}>'.format(type(self).__name__, self.name)
+
+  @property
+  def has_default(self):
+    return self._default[0]
+
+  @property
+  def default(self):
+    has_default, value = self._default
+    if not has_default:
+      raise AttributeError('{} has no default value'.format(self))
+    return value
+
+  def validate(self, value):
+    """
+      returns (bool valid, string|None message)
+      If valid is True, message is None or can be ignored.
+      If valid is False, message should be a string describing what
+      is wrong with value.
+    """
+    return self._validator(value) if self._validator else (True, None)

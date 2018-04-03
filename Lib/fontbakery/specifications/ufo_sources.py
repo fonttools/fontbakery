@@ -8,9 +8,9 @@ from __future__ import (absolute_import, division, print_function,
 import os
 
 from fontbakery.callable import check, condition
+from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, Section, Spec
 from fontbakery.constants import CRITICAL
-
 
 class UFOSpec(Spec):
 
@@ -52,13 +52,20 @@ class UFOSpec(Spec):
         return ('fonts',)
 
 
+fonts_expected_value = ExpectedValue(
+      'fonts'
+    , default=[]
+    , description='A list of the ufo file paths to check.'
+)
+
 # ----------------------------------------------------------------------------
 # This variable serves as an exportable anchor point, see e.g. the
 # Lib/fontbakery/commands/check_ufo_sources.py script.
 specification = UFOSpec(
     default_section=Section('Default'),
     iterargs={'font': 'fonts'},
-    derived_iterables={'ufo_fonts': ('ufo_font', True)})
+    derived_iterables={'ufo_fonts': ('ufo_font', True)},
+    expected_values={fonts_expected_value.name: fonts_expected_value})
 
 register_check = specification.register_check
 register_condition = specification.register_condition

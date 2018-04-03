@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import,
-                        print_function,
-                        unicode_literals,
-                        division)
+
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import map
+from builtins import hex
+from builtins import range
+from past.utils import old_div # NOQA
+from builtins import object
+
 
 from fontbakery.checkrunner import (
               INFO
@@ -12,7 +21,6 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             , Section
-            , Spec
             )
 import os
 from fontbakery.callable import condition, check
@@ -27,62 +35,83 @@ from fontbakery.constants import(
 #     , LOW
 #     , TRIVIAL
 )
+from fontbakery.fonts_spec import spec_factory
 
-default_section = Section('Default')
-
-
-class FontsSpec(Spec):
-  def setup_argparse(self, argument_parser):
-    """
-    Set up custom arguments needed for this spec.
-    """
-    import glob
-    import logging
-    import argparse
-    def get_fonts(pattern):
-
-      fonts_to_check = []
-      # use glob.glob to accept *.ttf
-
-      for fullpath in glob.glob(pattern):
-        if fullpath.endswith(".ttf"):
-          fonts_to_check.append(fullpath)
-        else:
-          logging.warning("Skipping '{}' as it does not seem "
-                            "to be valid TrueType font file.".format(fullpath))
-      return fonts_to_check
-
-
-    class MergeAction(argparse.Action):
-      def __call__(self, parser, namespace, values, option_string=None):
-        target = [item for l in values for item in l]
-        setattr(namespace, self.dest, target)
-
-    argument_parser.add_argument('fonts', nargs='+', type=get_fonts,
-                        action=MergeAction, help='font file path(s) to check.'
-                                            ' Wildcards like *.ttf are allowed.')
-    return ('fonts', )
-
-specification = FontsSpec(
-    default_section=default_section
-  , iterargs={'font': 'fonts'}
-  , derived_iterables={'ttFonts': ('ttFont', True)}
-  #, sections=[]
+spec_imports = (
+    ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
+       'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
+       'prep', 'fvar', 'shared_conditions')
+    ),
 )
+specification = spec_factory(default_section=Section("Google Fonts"))
 
-register_check = specification.register_check
-register_condition = specification.register_condition
+class Disabled(object):
+  def __init__(self, func):
+    self.func = func;
+
+def disable(func):
+  return Disabled(func)
+
 
 # -------------------------------------------------------------------
 
-@register_condition
 @condition
-def ttFont(font):
-  from fontTools.ttLib import TTFont
-  return TTFont(font)
+def style(font):
+  """Determine font style from canonical filename."""
+  from fontbakery.constants import STYLE_NAMES
+  filename = os.path.split(font)[-1]
+  if '-' in filename:
+    stylename = os.path.splitext(filename)[0].split('-')[1]
+    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+      return stylename
+  return None
 
 
-@register_check
+@condition(force=True)
+def expected_os2_weight(style):
+  """The weight name and the expected OS/2 usWeightClass value inferred from
+  the style part of the font name
+
+  The Google Font's API which serves the fonts can only serve
+  the following weights values with the corresponding subfamily styles:
+
+  250, Thin
+  275, ExtraLight
+  300, Light
+  400, Regular
+  500, Medium
+  600, SemiBold
+  700, Bold
+  800, ExtraBold
+  900, Black
+
+  Thin is not set to 100 because of legacy Windows GDI issues:
+  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
+  """
+  if not style:
+    return None
+  # Weight name to value mapping:
+  GF_API_WEIGHTS = {
+      "Thin": 250,
+      "ExtraLight": 275,
+      "Light": 300,
+      "Regular": 400,
+      "Medium": 500,
+      "SemiBold": 600,
+      "Bold": 700,
+      "ExtraBold": 800,
+      "Black": 900
+  }
+  if style == "Italic":
+    weight_name = "Regular"
+  elif style.endswith("Italic"):
+    weight_name = style.replace("Italic", "")
+  else:
+    weight_name = style
+
+  expected = GF_API_WEIGHTS[weight_name]
+  return weight_name, expected
+
 @check(
     id = 'com.google.fonts/check/001'
   , priority=CRITICAL
@@ -111,40 +140,6 @@ def com_google_fonts_check_001(font):
                                                '", "'.join(STYLE_NAMES))
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/002',
-    priority=CRITICAL
-)
-def com_google_fonts_check_002(fonts):
-  """Checking all files are in the same directory.
-
-     If the set of font files passed in the command line
-     is not all in the same directory, then we warn the user
-     since the tool will interpret the set of files
-     as belonging to a single family (and it is unlikely
-     that the user would store the files from a single family
-     spreaded in several separate directories).
-  """
-
-  directories = []
-  for target_file in fonts:
-    directory = os.path.dirname(target_file)
-    if directory not in directories:
-      directories.append(directory)
-
-  if len(directories) == 1:
-    yield PASS, "All files are in the same directory."
-  else:
-    yield FAIL, ("Not all fonts passed in the command line"
-                 " are in the same directory. This may lead to"
-                 " bad results as the tool will interpret all"
-                 " font files as belonging to a single"
-                 " font family. The detected directories are:"
-                 " {}".format(directories))
-
-
-@register_condition
 @condition
 def family_directory(fonts):
   """Get the path of font project directory."""
@@ -152,7 +147,6 @@ def family_directory(fonts):
     return os.path.dirname(fonts[0])
 
 
-@register_condition
 @condition
 def descfile(family_directory):
   """Get the path of the DESCRIPTION file of a given font project."""
@@ -162,7 +156,6 @@ def descfile(family_directory):
       return descfilepath
 
 
-@register_condition
 @condition
 def description(descfile):
   """Get the contents of the DESCRIPTION file of a font project."""
@@ -172,7 +165,6 @@ def description(descfile):
   return contents
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/003'
   , conditions=['description']
@@ -211,7 +203,6 @@ def com_google_fonts_check_003(description):
     yield PASS, "All links in the DESCRIPTION file look good!"
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/004'
   , conditions=['descfile']
@@ -231,7 +222,6 @@ def com_google_fonts_check_004(descfile):
     yield PASS, "{} is a propper HTML file.".format(descfile)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/005'
   , conditions=['description']
@@ -245,7 +235,6 @@ def com_google_fonts_check_005(description):
     yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/006'
   , conditions=['description']
@@ -259,7 +248,6 @@ def com_google_fonts_check_006(description):
     yield PASS, "DESCRIPTION.en_us.html is smaller than 1000 bytes."
 
 
-@register_condition
 @condition
 def metadata(family_directory):
   from fontbakery.utils import get_FamilyProto_Message
@@ -270,7 +258,6 @@ def metadata(family_directory):
       return get_FamilyProto_Message(pb_file)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/007'
   , conditions=['metadata']
@@ -283,112 +270,6 @@ def com_google_fonts_check_007(metadata):
     yield PASS, "Font designer field is not 'unknown'."
 
 
-@register_condition
-@condition
-def style(font):
-  """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
-  filename = os.path.split(font)[-1]
-  if '-' in filename:
-    stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
-      return stylename
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/008'
-  , affects = [('InDesign', 'unspecified')]
-  , rationale = """
-    Dave C Lemon (Adobe Type Team) recommends setting the underline
-    thickness to be consistent across the family.
-
-    If thicknesses are not family consistent, words set on the same line which
-    have different styles look strange.
-
-    See also: https://twitter.com/typenerd1/status/690361887926697986
-  """
-)
-def com_google_fonts_check_008(ttFonts):
-  """Fonts have consistent underline thickness?"""
-  underTs = {}
-  underlineThickness = None
-  failed = False
-  for ttfont in ttFonts:
-    fontname = ttfont.reader.file.name
-    #stylename = style(fontname)
-    ut = ttfont['post'].underlineThickness
-    underTs[fontname] = ut
-    if underlineThickness is None:
-      underlineThickness = ut
-    if ut != underlineThickness:
-      failed = True
-
-  if failed:
-    msg = ("Thickness of the underline is not"
-           " the same accross this family. In order to fix this,"
-           " please make sure that the underlineThickness value"
-           " is the same in the 'post' table of all of this family"
-           " font files.\n"
-           "Detected underlineThickness values are:\n")
-    for style in underTs.keys():
-      msg += "\t{}: {}\n".format(style, underTs[style])
-    yield FAIL, msg
-  else:
-    yield PASS, "Fonts have consistent underline thickness."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/009'
-)
-def com_google_fonts_check_009(ttFonts):
-  """Fonts have consistent PANOSE proportion?"""
-  failed = False
-  proportion = None
-  for ttFont in ttFonts:
-    if proportion is None:
-      proportion = ttFont['OS/2'].panose.bProportion
-    if proportion != ttFont['OS/2'].panose.bProportion:
-      failed = True
-
-  if failed:
-    yield FAIL, ("PANOSE proportion is not"
-                 " the same accross this family."
-                 " In order to fix this,"
-                 " please make sure that the panose.bProportion value"
-                 " is the same in the OS/2 table of all of this family"
-                 " font files.")
-  else:
-    yield PASS, "Fonts have consistent PANOSE proportion."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/010'
-)
-def com_google_fonts_check_010(ttFonts):
-  """Fonts have consistent PANOSE family type?"""
-  failed = False
-  familytype = None
-  for ttfont in ttFonts:
-    if familytype is None:
-      familytype = ttfont['OS/2'].panose.bFamilyType
-    if familytype != ttfont['OS/2'].panose.bFamilyType:
-      failed = True
-
-  if failed:
-    yield FAIL, ("PANOSE family type is not"
-                 " the same accross this family."
-                 " In order to fix this,"
-                 " please make sure that the panose.bFamilyType value"
-                 " is the same in the OS/2 table of all of this family"
-                 " font files.")
-  else:
-    yield PASS, "Fonts have consistent PANOSE family type."
-
-
-@register_check
 @check(
     id = 'com.google.fonts/check/011'
 )
@@ -422,7 +303,6 @@ def com_google_fonts_check_011(ttFonts):
                  " an equal total ammount of glyphs.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/012'
 )
@@ -463,75 +343,6 @@ def com_google_fonts_check_012(ttFonts):
     yield PASS, "All font files have identical glyph names."
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/013'
-)
-def com_google_fonts_check_013(ttFonts):
-  """Fonts have equal unicode encodings?"""
-  encoding = None
-  failed = False
-  for ttFont in ttFonts:
-    cmap = None
-    for table in ttFont['cmap'].tables:
-      if table.format == 4:
-        cmap = table
-        break
-    # Could a font lack a format 4 cmap table ?
-    # If we ever find one of those, it would crash the check here.
-    # Then we'd have to yield a FAIL regarding the missing table entry.
-    if not encoding:
-      encoding = cmap.platEncID
-    if encoding != cmap.platEncID:
-      failed = True
-  if failed:
-    yield FAIL, "Fonts have different unicode encodings."
-  else:
-    yield PASS, "Fonts have equal unicode encodings."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/014'
-)
-def com_google_fonts_check_014(ttFonts):
-  """Make sure all font files have the same version value."""
-  all_detected_versions = []
-  fontfile_versions = {}
-  for ttFont in ttFonts:
-    v = ttFont['head'].fontRevision
-    fontfile_versions[ttFont] = v
-
-    if v not in all_detected_versions:
-      all_detected_versions.append(v)
-  if len(all_detected_versions) != 1:
-    versions_list = ""
-    for v in fontfile_versions.keys():
-      versions_list += "* {}: {}\n".format(v.reader.file.name,
-                                           fontfile_versions[v])
-    yield WARN, ("version info differs among font"
-                 " files of the same font project.\n"
-                 "These were the version values found:\n"
-                 "{}").format(versions_list)
-  else:
-    yield PASS, "All font files have the same version."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/015'
-)
-def com_google_fonts_check_015(ttFont):
-  """Font has post table version 2?"""
-  if ttFont['post'].formatType != 2:
-    yield FAIL, ("Post table should be version 2 instead of {}."
-                 " More info at https://github.com/google/fonts/"
-                 "issues/215").format(ttFont['post'].formatType)
-  else:
-    yield PASS, "Font has post table version 2."
-
-
-@register_check
 @check(
     id = 'com.google.fonts/check/016'
 )
@@ -561,12 +372,9 @@ def com_google_fonts_check_016(ttFont):
 # com.google.fonts/check/161 - "Check name table: TYPOGRAPHIC_FAMILY_NAME entries."
 # com.google.fonts/check/162 - "Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."
 
-@register_condition
 @condition
 def registered_vendor_ids():
   """Get a list of vendor IDs from Microsoft's website."""
-  import tempfile
-  import requests
   from bs4 import BeautifulSoup
   from pkg_resources import resource_filename
 
@@ -588,7 +396,6 @@ def registered_vendor_ids():
   return registered_vendor_ids
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/018'
   , conditions=['registered_vendor_ids']
@@ -619,7 +426,6 @@ def com_google_fonts_check_018(ttFont, registered_vendor_ids):
     yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/019'
 )
@@ -631,7 +437,7 @@ def com_google_fonts_check_019(ttFont):
                      (u"\u00ae", '(r)'),
                      (u"\u2122", '(tm)')]
   for name in ttFont['name'].names:
-    string = unicode(name.string, encoding=name.getEncoding())
+    string = str(name.string, encoding=name.getEncoding())
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
@@ -644,56 +450,6 @@ def com_google_fonts_check_019(ttFont):
                  " trademark symbols in name table entries of this font.")
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/020'
-  , conditions=['style']
-)
-def com_google_fonts_check_020(ttFont, style):
-  """Checking OS/2 usWeightClass.
-
-  The Google Font's API which serves the fonts can only serve
-  the following weights values with the corresponding subfamily styles:
-
-  250, Thin
-  275, ExtraLight
-  300, Light
-  400, Regular
-  500, Medium
-  600, SemiBold
-  700, Bold
-  800, ExtraBold
-  900, Black
-
-  Thin is not set to 100 because of legacy Windows GDI issues:
-  https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
-  """
-  # Weight name to value mapping:
-  GF_API_WEIGHTS = {"Thin": 250,
-                    "ExtraLight": 275,
-                    "Light": 300,
-                    "Regular": 400,
-                    "Medium": 500,
-                    "SemiBold": 600,
-                    "Bold": 700,
-                    "ExtraBold": 800,
-                    "Black": 900}
-  if style == "Italic":
-    weight_name = "Regular"
-  elif style.endswith("Italic"):
-    weight_name = style.replace("Italic", "")
-  else:
-    weight_name = style
-
-  value = ttFont['OS/2'].usWeightClass
-  expected = GF_API_WEIGHTS[weight_name]
-  if value != expected:
-    yield FAIL, ("OS/2 usWeightClass expected value for"
-                 " '{}' is {} but this font has"
-                 " {}.").format(weight_name, expected, value)
-  else:
-    yield PASS, "OS/2 usWeightClass value looks good!"
-
 # DEPRECATED CHECKS:                                               | REPLACED BY:
 # com.google.fonts/check/??? - "Checking macStyle BOLD bit."       | com.google.fonts/check/131 - "Checking head.macStyle value."
 # com.google.fonts/check/021 - "Checking fsSelection REGULAR bit." | com.google.fonts/check/129 - "Checking OS/2.fsSelection value."
@@ -704,7 +460,7 @@ def com_google_fonts_check_020(ttFont, style):
 # com.google.fonts/check/026 - "Checking macStyle ITALIC bit."     | com.google.fonts/check/131 - "Checking head.macStyle value."
 # com.google.fonts/check/027 - "Checking fsSelection BOLD bit."    | com.google.fonts/check/129 - "Checking OS/2.fsSelection value."
 
-@register_condition
+
 @condition
 def licenses(family_directory):
   """Get a list of paths for every license
@@ -718,7 +474,6 @@ def licenses(family_directory):
   return licenses
 
 
-@register_condition
 @condition
 def license_path(licenses):
   """Get license path."""
@@ -726,7 +481,6 @@ def license_path(licenses):
   return licenses[0] if len(licenses) == 1 else None
 
 
-@register_condition
 @condition
 def license(license_path):
   """Get license filename."""
@@ -734,7 +488,6 @@ def license(license_path):
     return os.path.basename(license_path)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/028'
 )
@@ -756,7 +509,6 @@ def com_google_fonts_check_028(licenses):
     yield PASS, "Found license at '{}'".format(licenses[0])
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/029'
   , conditions=['license']
@@ -765,9 +517,9 @@ def com_google_fonts_check_028(licenses):
 def com_google_fonts_check_029(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
-                                    NAMEID_LICENSE_INFO_URL,
+                                    # NAMEID_LICENSE_INFO_URL,
                                     PLACEHOLDER_LICENSING_TEXT,
-                                    NAMEID_STR,
+                                    # NAMEID_STR,
                                     PLATID_STR)
   from unidecode import unidecode
   failed = False
@@ -801,7 +553,6 @@ def com_google_fonts_check_029(ttFont, license):
     yield PASS, "Licensing entry on name table is correctly set."
 
 
-@register_condition
 @condition
 def familyname(ttFont):
   filename = os.path.split(ttFont.reader.file.name)[1]
@@ -809,7 +560,6 @@ def familyname(ttFont):
   return filename_base.split('-')[0]
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/030'
   , priority=CRITICAL
@@ -885,1068 +635,6 @@ def com_google_fonts_check_030(ttFont, familyname):
         yield PASS, "Font has a valid license URL in NAME table."
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/031'
-  , priority=CRITICAL
-)
-def com_google_fonts_check_031(ttFont):
-  """Description strings in the name table
-  must not contain copyright info."""
-  from fontbakery.constants import NAMEID_DESCRIPTION
-  failed = False
-  for name in ttFont['name'].names:
-    if 'opyright' in name.string.decode(name.getEncoding())\
-       and name.nameID == NAMEID_DESCRIPTION:
-      failed = True
-
-  if failed:
-    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " should be removed (perhaps these were added by"
-                 " a longstanding FontLab Studio 5.x bug that"
-                 " copied copyright notices to them.)"
-                 "").format(NAMEID_DESCRIPTION)
-  else:
-    yield PASS, ("Description strings in the name table"
-                 " do not contain any copyright string.")
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/032'
-)
-def com_google_fonts_check_032(ttFont):
-  """Description strings in the name table
-     must not exceed 100 characters."""
-  from fontbakery.constants import NAMEID_DESCRIPTION
-  failed = False
-  for name in ttFont['name'].names:
-    if (name.nameID == NAMEID_DESCRIPTION and
-        len(name.string.decode(name.getEncoding())) > 100):
-      failed = True
-      break
-
-  if failed:
-    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " are longer than 100 characters"
-                 " and should be removed.").format(NAMEID_DESCRIPTION)
-  else:
-    yield PASS, "Description name records do not exceed 100 characters."
-
-
-@register_condition
-@condition
-def monospace_stats(ttFont):
-  """Returns a dict with data related to the set of glyphs
-     among which is a boolean indicating whether or not the
-     given font is trully monospaced. The source of truth for
-     if a font is monospaced is if at least 80% of all glyphs
-     have the same width.
-  """
-  glyphs = ttFont['glyf'].glyphs
-  width_occurrences = {}
-  width_max = 0
-  # count how many times a width occurs
-  for glyph_id in glyphs:
-      width = ttFont['hmtx'].metrics[glyph_id][0]
-      width_max = max(width, width_max)
-      try:
-          width_occurrences[width] += 1
-      except KeyError:
-          width_occurrences[width] = 1
-  # find the most_common_width
-  occurrences = 0
-  for width in width_occurrences.keys():
-      if width_occurrences[width] > occurrences:
-          occurrences = width_occurrences[width]
-          most_common_width = width
-  # if more than 80% of glyphs have the same width
-  # then the font is very likely considered to be monospaced
-  seems_monospaced = occurrences > 0.80 * len(glyphs)
-
-  return {
-    "seems_monospaced": seems_monospaced,
-    "width_max": width_max,
-    "most_common_width": most_common_width
-  }
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/033'
-  , conditions=['monospace_stats'
-              , 'not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
-)
-def com_google_fonts_check_033(ttFont, monospace_stats):
-  """Checking correctness of monospaced metadata.
-
-     There are various metadata in the OpenType spec to specify if
-     a font is monospaced or not. If the font is not trully monospaced,
-     then no monospaced metadata should be set (as sometimes
-     they mistakenly are...)
-
-     Monospace fonts must:
-
-     * post.isFixedWidth "Set to 0 if the font is proportionally spaced,
-       non-zero if the font is not proportionally spaced (monospaced)"
-       www.microsoft.com/typography/otspec/post.htm
-
-     * hhea.advanceWidthMax must be correct, meaning no glyph's
-      width value is greater.
-      www.microsoft.com/typography/otspec/hhea.htm
-
-     * OS/2.panose.bProportion must be set to 9 (monospace). Spec says:
-       "The PANOSE definition contains ten digits each of which currently
-       describes up to sixteen variations. Windows uses bFamilyType,
-       bSerifStyle and bProportion in the font mapper to determine
-       family type. It also uses bProportion to determine if the font
-       is monospaced."
-       www.microsoft.com/typography/otspec/os2.htm#pan
-       monotypecom-test.monotype.de/services/pan2
-
-     * OS/2.xAverageWidth must be set accurately.
-       "OS/2.xAverageWidth IS used when rendering monospaced fonts,
-       at least by Windows GDI"
-       http://typedrawers.com/discussion/comment/15397/#Comment_15397
-
-     Also we should report an error for glyphs not of average width
-  """
-  from fontbakery.constants import (IS_FIXED_WIDTH__MONOSPACED,
-                                    IS_FIXED_WIDTH__NOT_MONOSPACED,
-                                    PANOSE_PROPORTION__MONOSPACED,
-                                    PANOSE_PROPORTION__ANY)
-  failed = False
-  # Note: These values are read from the dict here only to
-  # reduce the max line length in the check implementation below:
-  seems_monospaced = monospace_stats["seems_monospaced"]
-  most_common_width = monospace_stats["most_common_width"]
-  width_max = monospace_stats['width_max']
-
-  if ttFont['hhea'].advanceWidthMax != width_max:
-    failed = True
-    yield FAIL, Message("bad-advanceWidthMax",
-                        ("Value of hhea.advanceWidthMax"
-                         " should be set to {} but got"
-                         " {} instead."
-                         "").format(width_max,
-                                    ttFont['hhea'].advanceWidthMax))
-  if seems_monospaced:
-    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__MONOSPACED:
-      failed = True
-      yield FAIL, Message("mono-bad-post-isFixedPitch",
-                          ("On monospaced fonts, the value of"
-                           " post.isFixedPitch must be set to {}"
-                           " (fixed width monospaced),"
-                           " but got {} instead."
-                           "").format(IS_FIXED_WIDTH__MONOSPACED,
-                                      ttFont['post'].isFixedPitch))
-
-    if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION__MONOSPACED:
-      failed = True
-      yield FAIL, Message("mono-bad-panose-proportion",
-                          ("On monospaced fonts, the value of"
-                           " OS/2.panose.bProportion must be set to {}"
-                           " (proportion: monospaced), but got"
-                           " {} instead."
-                           "").format(PANOSE_PROPORTION__MONOSPACED,
-                                      ttFont['OS/2'].panose.bProportion))
-
-    num_glyphs = len(ttFont['glyf'].glyphs)
-    unusually_spaced_glyphs = [
-      g for g in ttFont['glyf'].glyphs
-      if g not in ['.notdef', '.null', 'NULL']
-      and ttFont['hmtx'].metrics[g][0] != most_common_width
-    ]
-    outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
-    if outliers_ratio > 0:
-      failed = True
-      yield WARN, Message("mono-outliers",
-                          ("Font is monospaced but {} glyphs"
-                           " ({}%) have a different width."
-                           " You should check the widths of:"
-                           " {}").format(
-                             len(unusually_spaced_glyphs),
-                             100.0 * outliers_ratio,
-                             unusually_spaced_glyphs))
-    if not failed:
-      yield PASS, Message("mono-good",
-                          ("Font is monospaced and all"
-                           " related metadata look good."))
-  else:
-    # it is a non-monospaced font, so lets make sure
-    # that all monospace-related metadata is properly unset.
-
-    if ttFont['post'].isFixedPitch == IS_FIXED_WIDTH__MONOSPACED:
-      failed = True
-      yield FAIL, Message("bad-post-isFixedPitch",
-                          ("On non-monospaced fonts, the"
-                           " post.isFixedPitch value must be set to {}"
-                           " (not monospaced), but got {} instead."
-                           "").format(IS_FIXED_WIDTH__NOT_MONOSPACED,
-                                      ttFont['post'].isFixedPitch))
-
-    if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION__MONOSPACED:
-      failed = True
-      yield FAIL, Message("bad-panose-proportion",
-                          ("On non-monospaced fonts, the"
-                           " OS/2.panose.bProportion value can be set to "
-                           " any value except 9 (proportion: monospaced)"
-                           " which is the bad value we got in this font."))
-    if not failed:
-      yield PASS, Message("good",
-                          ("Font is not monospaced and"
-                           " all related metadata look good."))
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/034'
-)
-def com_google_fonts_check_034(ttFont):
-  """Check if OS/2 xAvgCharWidth is correct."""
-  current_value = ttFont['OS/2'].xAvgCharWidth
-  ACCEPTABLE_ERROR = 10 # This is how much we're willing to accept
-
-  if ttFont['OS/2'].version >= 3:
-    width_sum = 0
-    count = 0
-    for glyph_id in ttFont['glyf'].glyphs:
-      width = ttFont['hmtx'].metrics[glyph_id][0]
-      if width > 0:
-        count += 1
-        width_sum += width
-    if count == 0:
-      yield FAIL, "CRITICAL: Found no glyph width data!"
-    else:
-      expected_value = int(round(width_sum / count))
-      if current_value == expected_value:
-        yield PASS, "OS/2 xAvgCharWidth is correct."
-      elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
-        yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
-                     " {} which corresponds to the"
-                     " average of all glyph widths"
-                     " in the font. These are similar values, which"
-                     " may be a symptom of the slightly different"
-                     " calculation of the xAvgCharWidth value in"
-                     " font editors. There's further discussion on"
-                     " this at https://github.com/googlefonts/fontbakery"
-                     "/issues/1622").format(current_value,
-                                            expected_value)
-      else:
-        yield FAIL, ("OS/2 xAvgCharWidth is {} but should be "
-                     "{} which corresponds to the "
-                     "average of all glyph widths "
-                     "in the font").format(current_value,
-                                           expected_value)
-  else:
-    weightFactors = {'a': 64, 'b': 14, 'c': 27, 'd': 35,
-                     'e': 100, 'f': 20, 'g': 14, 'h': 42,
-                     'i': 63, 'j': 3, 'k': 6, 'l': 35,
-                     'm': 20, 'n': 56, 'o': 56, 'p': 17,
-                     'q': 4, 'r': 49, 's': 56, 't': 71,
-                     'u': 31, 'v': 10, 'w': 18, 'x': 3,
-                     'y': 18, 'z': 2, 'space': 166}
-    width_sum = 0
-    for glyph_id in ttFont['glyf'].glyphs:
-      width = ttFont['hmtx'].metrics[glyph_id][0]
-      if glyph_id in weightFactors.keys():
-        width_sum += (width*weightFactors[glyph_id])
-    expected_value = int(width_sum/1000.0 + 0.5)  # round to closest int
-
-    if current_value == expected_value:
-      yield PASS, "OS/2 xAvgCharWidth value is correct."
-    elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
-      yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
-                   " {} which corresponds to the weighted"
-                   " average of the widths of the latin"
-                   " lowercase glyphs in the font."
-                   " These are similar values, which"
-                   " may be a symptom of the slightly different"
-                   " calculation of the xAvgCharWidth value in"
-                   " font editors. There's further discussion on"
-                   " this at https://github.com/googlefonts/fontbakery"
-                   "/issues/1622").format(current_value,
-                                          expected_value)
-    else:
-      yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
-                   "{} which corresponds to the weighted "
-                   "average of the widths of the latin "
-                   "lowercase glyphs in "
-                   "the font").format(current_value,
-                                      expected_value)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/035'
-)
-def com_google_fonts_check_035(font):
-  """Checking with ftxvalidator."""
-  import plistlib
-  try:
-    import subprocess
-    ftx_cmd = ["ftxvalidator",
-               "-t", "all",  # execute all checks
-               font]
-    ftx_output = subprocess.check_output(ftx_cmd,
-                                         stderr=subprocess.STDOUT)
-
-    ftx_data = plistlib.readPlistFromString(ftx_output)
-    # we accept kATSFontTestSeverityInformation
-    # and kATSFontTestSeverityMinorError
-    if 'kATSFontTestSeverityFatalError' \
-       not in ftx_data['kATSFontTestResultKey']:
-      yield PASS, "ftxvalidator passed this file"
-    else:
-      ftx_cmd = ["ftxvalidator",
-                 "-T",  # Human-readable output
-                 "-r",  # Generate a full report
-                 "-t", "all",  # execute all checks
-                 font]
-      ftx_output = subprocess.check_output(ftx_cmd,
-                                           stderr=subprocess.STDOUT)
-      yield FAIL, "ftxvalidator output follows:\n\n{}\n".format(ftx_output)
-
-  except subprocess.CalledProcessError as e:
-    yield WARN, ("ftxvalidator returned an error code. Output follows :"
-                 "\n\n{}\n").format(e.output)
-  except OSError:
-    yield ERROR, "ftxvalidator is not available!"
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/036'
-)
-def com_google_fonts_check_036(font):
-  """Checking with ots-sanitize."""
-  try:
-    import subprocess
-    ots_output = subprocess.check_output(["ots-sanitize", font],
-                                         stderr=subprocess.STDOUT)
-    if ots_output != "" and "File sanitized successfully" not in ots_output:
-      yield FAIL, "ots-sanitize output follows:\n\n{}".format(ots_output)
-    else:
-      yield PASS, "ots-sanitize passed this file"
-  except subprocess.CalledProcessError as e:
-      yield FAIL, ("ots-sanitize returned an error code. Output follows :"
-                   "\n\n{}").format(e.output)
-  except OSError as e:
-    yield ERROR, ("ots-sanitize is not available!"
-                  " You really MUST check the fonts with this tool."
-                  " To install it, see"
-                  " https://github.com/googlefonts"
-                  "/gf-docs/blob/master/ProjectChecklist.md#ots"
-                  " Actual error message was: "
-                  "'{}'").format(e)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/037'
-)
-def com_google_fonts_check_037(font):
-  """Checking with Microsoft Font Validator."""
-  try:
-    import subprocess
-    fval_cmd = ["FontValidator.exe",
-                "-file", font,
-                "-all-tables",
-                "-report-in-font-dir",
-                "+raster-tests"]
-    subprocess.check_output(fval_cmd,
-                            stderr=subprocess.STDOUT)
-  except subprocess.CalledProcessError as e:
-    filtered_msgs = ""
-    for line in e.output.split("\n"):
-      if "Validating glyph with index" in line: continue
-      if "Table Test:" in line: continue
-      filtered_msgs += line + "\n"
-    yield INFO, ("Microsoft Font Validator returned an error code."
-                 " Output follows :\n\n{}\n").format(filtered_msgs)
-  except (OSError, IOError) as error:
-    yield ERROR, ("Mono runtime and/or "
-                  "Microsoft Font Validator are not available!")
-    raise error
-
-  xml_report = open("{}.report.xml".format(font), "r").read()
-
-  os.remove("{}.report.xml".format(font))
-  if os.path.exists("{}.report.html".format(font)):
-    os.remove("{}.report.html".format(font))
-  fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
-  os.remove(fval_file)
-
-  def report_message(msg, details):
-    if details:
-      return "MS-FonVal: {} DETAILS: {}".format(msg, details)
-    else:
-      return "MS-FonVal: {}".format(msg)
-
-  import defusedxml.lxml
-  doc = defusedxml.lxml.fromstring(xml_report)
-  already_reported = []
-  for report in doc.iter('Report'):
-    msg = report.get("Message")
-    details = report.get("Details")
-    if [msg, details] not in already_reported:
-      # avoid cluttering the output with tons of identical reports
-      already_reported.append([msg, details])
-
-      if report.get("ErrorType") == "P":
-        yield PASS, report_message(msg, details)
-      elif report.get("ErrorType") == "E":
-        yield FAIL, report_message(msg, details)
-      elif report.get("ErrorType") == "W":
-        yield WARN, report_message(msg, details)
-      else:
-        yield INFO, report_message(msg, details)
-
-
-@register_condition
-@condition
-def fontforge_check_results(font):
-  if "adobeblank" in font:
-    return SKIP, ("Skipping AdobeBlank since"
-                  " this font is a very peculiar hack.")
-
-  import subprocess
-  cmd = (
-        'import fontforge, sys;'
-        'status = fontforge.open("{0}").validate();'
-        'sys.stdout.write(status.__str__());'.format
-        )
-
-  p = subprocess.Popen(['python', '-c', cmd(font)],
-                       stderr=subprocess.PIPE,
-                       stdout=subprocess.PIPE
-                      )
-  ret_val, ff_err_messages = p.communicate()
-  try:
-    return {
-      "validation_state": int(ret_val),
-      "ff_err_messages": ff_err_messages
-    }
-  except:
-    return None
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/038'
-  , conditions=['fontforge_check_results']
-)
-def com_google_fonts_check_038(font, fontforge_check_results):
-  """FontForge validation outputs error messages?"""
-
-  filtered_err_msgs = ""
-  for line in fontforge_check_results["ff_err_messages"].split('\n'):
-    if 'The following table(s) in the font' \
-        ' have been ignored by FontForge' in line:
-      continue
-    if "Ignoring 'DSIG' digital signature table" in line:
-      continue
-    filtered_err_msgs += line + '\n'
-
-  if len(filtered_err_msgs.strip()) > 0:
-    yield FAIL, ("fontforge did print these messages to stderr:\n"
-                 "{}").format(filtered_err_msgs)
-  else:
-    yield PASS, "fontforge validation did not output any error message."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/039'
-  , conditions=['fontforge_check_results']
-)
-def com_google_fonts_check_039(fontforge_check_results,
-                              whitelist_librebarcode):
-  """FontForge checks."""
-
-  def ff_check(description, condition, err_msg, ok_msg):
-    if condition is False:
-      return FAIL, "fontforge-check: {}".format(err_msg)
-    else:
-      return PASS, "fontforge-check: {}".format(ok_msg)
-
-  validation_state = fontforge_check_results["validation_state"]
-
-  yield ff_check("Contours are closed?",
-           bool(validation_state & 0x2) is False,
-           "Contours are not closed!",
-           "Contours are closed.")
-
-  yield ff_check("Contours do not intersect",
-           bool(validation_state & 0x4) is False,
-           "There are countour intersections!",
-           "Contours do not intersect.")
-
-  yield ff_check("Contours have correct directions",
-           bool(validation_state & 0x8) is False,
-           "Contours have incorrect directions!",
-           "Contours have correct directions.")
-
-  yield ff_check("References in the glyph haven't been flipped",
-           bool(validation_state & 0x10) is False,
-           "References in the glyph have been flipped!",
-           "References in the glyph haven't been flipped.")
-
-  if not whitelist_librebarcode: # See: https://github.com/graphicore/librebarcode/issues/3
-    yield ff_check("Glyphs have points at extremas",
-             bool(validation_state & 0x20) is False,
-             "Glyphs do not have points at extremas!",
-             "Glyphs have points at extremas.")
-
-  yield ff_check("Glyph names referred to from glyphs present in the font",
-           bool(validation_state & 0x40) is False,
-           "Glyph names referred to from glyphs"
-           " not present in the font!",
-           "Glyph names referred to from glyphs"
-           " present in the font.")
-
-  yield ff_check("Points (or control points) are not too far apart",
-           bool(validation_state & 0x40000) is False,
-           "Points (or control points) are too far apart!",
-           "Points (or control points) are not too far apart.")
-
-  yield ff_check("Not more than 1,500 points in any glyph"
-           " (a PostScript limit)",
-           bool(validation_state & 0x80) is False,
-           "There are glyphs with more than 1,500 points!"
-           "Exceeds a PostScript limit.",
-           "Not more than 1,500 points in any glyph"
-           " (a PostScript limit).")
-
-  yield ff_check("PostScript has a limit of 96 hints in glyphs",
-           bool(validation_state & 0x100) is False,
-           "Exceeds PostScript limit of 96 hints per glyph",
-           "Font respects PostScript limit of 96 hints per glyph")
-
-  if not whitelist_librebarcode: # See: https://github.com/graphicore/librebarcode/issues/3
-    yield ff_check("Font doesn't have invalid glyph names",
-             bool(validation_state & 0x200) is False,
-             "Font has invalid glyph names!",
-             "Font doesn't have invalid glyph names.")
-
-  yield ff_check("Glyphs have allowed numbers of points defined in maxp",
-           bool(validation_state & 0x400) is False,
-           "Glyphs exceed allowed numbers of points defined in maxp",
-           "Glyphs have allowed numbers of points defined in maxp.")
-
-  yield ff_check("Glyphs have allowed numbers of paths defined in maxp",
-           bool(validation_state & 0x800) is False,
-           "Glyphs exceed allowed numbers of paths defined in maxp!",
-           "Glyphs have allowed numbers of paths defined in maxp.")
-
-  yield ff_check("Composite glyphs have allowed numbers"
-           " of points defined in maxp?",
-           bool(validation_state & 0x1000) is False,
-           "Composite glyphs exceed allowed numbers"
-           " of points defined in maxp!",
-           "Composite glyphs have allowed numbers"
-           " of points defined in maxp.")
-
-  yield ff_check("Composite glyphs have allowed numbers"
-           " of paths defined in maxp",
-           bool(validation_state & 0x2000) is False,
-           "Composite glyphs exceed"
-           " allowed numbers of paths defined in maxp!",
-           "Composite glyphs have"
-           " allowed numbers of paths defined in maxp.")
-
-  yield ff_check("Glyphs instructions have valid lengths",
-           bool(validation_state & 0x4000) is False,
-           "Glyphs instructions have invalid lengths!",
-           "Glyphs instructions have valid lengths.")
-
-  yield ff_check("Points in glyphs are integer aligned",
-           bool(validation_state & 0x80000) is False,
-           "Points in glyphs are not integer aligned!",
-           "Points in glyphs are integer aligned.")
-
-  # According to the opentype spec, if a glyph contains an anchor point
-  # for one anchor class in a subtable, it must contain anchor points
-  # for all anchor classes in the subtable. Even it, logically,
-  # they do not apply and are unnecessary.
-  yield ff_check("Glyphs have all required anchors.",
-           bool(validation_state & 0x100000) is False,
-           "Glyphs do not have all required anchors!",
-           "Glyphs have all required anchors.")
-
-  yield ff_check("Glyph names are unique?",
-           bool(validation_state & 0x200000) is False,
-           "Glyph names are not unique!",
-           "Glyph names are unique.")
-
-  yield ff_check("Unicode code points are unique?",
-           bool(validation_state & 0x400000) is False,
-           "Unicode code points are not unique!",
-           "Unicode code points are unique.")
-
-  yield ff_check("Do hints overlap?",
-           bool(validation_state & 0x800000) is False,
-           "Hints should NOT overlap!",
-           "Hinds do not overlap.")
-
-
-@register_condition
-@condition
-def vmetrics(ttFonts):
-  from fontbakery.utils import get_bounding_box
-  v_metrics = {"ymin": 0, "ymax": 0}
-  for ttFont in ttFonts:
-    font_ymin, font_ymax = get_bounding_box(ttFont)
-    v_metrics["ymin"] = min(font_ymin, v_metrics["ymin"])
-    v_metrics["ymax"] = max(font_ymax, v_metrics["ymax"])
-  return v_metrics
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/040'
-  , conditions=['vmetrics']
-)
-def com_google_fonts_check_040(ttFont, vmetrics):
-  """Checking OS/2 usWinAscent & usWinDescent.
-
-  A font's winAscent and winDescent values should be greater than the
-  head table's yMax, abs(yMin) values. If they are less than these
-  values, clipping can occur on Windows platforms,
-  https://github.com/RedHatBrand/Overpass/issues/33
-
-  If the font includes tall/deep writing systems such as Arabic or
-  Devanagari, the winAscent and winDescent can be greater than the yMax and
-  abs(yMin) to accommodate vowel marks.
-
-  When the win Metrics are significantly greater than the upm, the
-  linespacing can appear too loose. To counteract this, enabling the
-  OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the
-  OS/2 typo values instead. This means the font developer can control the
-  linespacing with the typo values, whilst avoiding clipping by setting
-  the win values to values greater than the yMax and abs(yMin)."""
-  failed = False
-
-  # OS/2 usWinAscent:
-  if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
-    failed = True
-    yield FAIL, Message("ascent",
-                 ("OS/2.usWinAscent value"
-                  " should be equal or greater than {}, but got"
-                  " {} instead").format(vmetrics['ymax'],
-                                        ttFont['OS/2'].usWinAscent))
-  # OS/2 usWinDescent:
-  if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
-    failed = True
-    yield FAIL, Message("descent",
-                 ("OS/2.usWinDescent value"
-                  " should be equal or greater than {}, but got"
-                  " {} instead").format(abs(vmetrics['ymin']),
-                                        ttFont['OS/2'].usWinDescent))
-  if not failed:
-    yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/041'
-)
-def com_google_fonts_check_041(ttFont):
-  """Checking Vertical Metric Linegaps."""
-  if ttFont["hhea"].lineGap != 0:
-    yield WARN, Message("hhea", "hhea lineGap is not equal to 0.")
-  elif ttFont["OS/2"].sTypoLineGap != 0:
-    yield WARN, Message("OS/2", "OS/2 sTypoLineGap is not equal to 0.")
-  else:
-    yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/042'
-)
-def com_google_fonts_check_042(ttFont):
-  """Checking OS/2 Metrics match hhea Metrics.
-
-  OS/2 and hhea vertical metric values should match. This will produce
-  the same linespacing on Mac, Linux and Windows.
-
-  Mac OS X uses the hhea values
-  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value."""
-
-  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
-  if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
-    yield FAIL, Message("ascender",
-                        "OS/2 sTypoAscender and hhea ascent must be equal.")
-  elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
-    yield FAIL, Message("descender",
-                        "OS/2 sTypoDescender and hhea descent must be equal.")
-  else:
-    yield PASS, ("OS/2.sTypoAscender/Descender"
-                 " match hhea.ascent/descent.")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/043'
-)
-def com_google_fonts_check_043(ttFont):
-  """Checking unitsPerEm value is reasonable."""
-  upem = ttFont['head'].unitsPerEm
-  target_upem = [2**i for i in range(4, 15)]
-  target_upem.insert(0, 1000)
-  if upem not in target_upem:
-    yield FAIL, ("The value of unitsPerEm at the head table"
-                 " must be either 1000 or a power of"
-                 " 2 between 16 to 16384."
-                 " Got '{}' instead.").format(upem)
-  else:
-    yield PASS, "unitsPerEm value on the 'head' table is reasonable."
-
-
-def get_version_from_name_entry(name):
-  string = name.string.decode(name.getEncoding())
-  # we ignore any comments that
-  # may be present in the version name entries
-  if ";" in string:
-    string = string.split(";")[0]
-  # and we also ignore
-  # the 'Version ' prefix
-  if "Version " in string:
-    string = string.split("Version ")[1]
-  return string.split('.')
-
-
-def parse_version_string(s):
-  """Tries to parse a version string as used
-     in ttf versioning metadata fields.
-     Example of expected format is:
-       'Version 01.003; Comments'
-  """
-  suffix = ''
-  # DC: I think this may be wrong, the ; isnt the only separator,
-  # anything not an int is ok
-  if ';' in s:
-    fields = s.split(';')
-    s = fields[0]
-    fields.pop(0)
-    suffix = ';'.join(fields)
-
-  substrings = s.split('.')
-  minor = substrings[-1]
-  if ' ' in substrings[-2]:
-    major = substrings[-2].split(' ')[-1]
-  else:
-    major = substrings[-2]
-
-  if suffix:
-    return major, minor, suffix
-  else:
-    return major, minor
-
-
-def get_expected_version(f):
-  from fontbakery.constants import NAMEID_VERSION_STRING
-  expected_version = parse_version_string(str(f["head"].fontRevision))
-  for name in f["name"].names:
-    if name.nameID == NAMEID_VERSION_STRING:
-      name_version = get_version_from_name_entry(name)
-      if expected_version is None:
-        expected_version = name_version
-      else:
-        if name_version > expected_version:
-          expected_version = name_version
-  return expected_version
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/044'
-)
-def com_google_fonts_check_044(ttFont):
-  """Checking font version fields."""
-  import re
-  from fontbakery.constants import NAMEID_VERSION_STRING
-  failed = False
-  try:
-    expected = get_expected_version(ttFont)
-  except:
-    expected = None
-    yield FAIL, "Failed to parse font version entries in the name table."
-
-  if expected is None:
-    failed = True
-    yield FAIL, ("Could not find any font versioning info on the head table"
-                 " or in the name table entries.")
-  else:
-    font_revision = str(ttFont['head'].fontRevision)
-    expected_str = "{}.{}".format(expected[0],
-                                  expected[1])
-    if font_revision != expected_str:
-      failed = True
-      yield FAIL, ("Font revision on the head table ({})"
-                   " differs from the expected value ({})."
-                   "").format(font_revision, expected)
-
-    expected_str = "Version {}.{}".format(expected[0],
-                                          expected[1])
-    for name in ttFont["name"].names:
-      if name.nameID == NAMEID_VERSION_STRING:
-        name_version = name.string.decode(name.getEncoding())
-        try:
-          # change "Version 1.007" to "1.007"
-          # (stripping out the "Version " prefix, if any)
-          version_stripped = r'(?<=[V|v]ersion )?([0-9]{1,4}\.[0-9]{1,5})'
-          version_without_comments = re.search(version_stripped,
-                                               name_version).group(0)
-        except:
-          failed = True
-          yield FAIL, ("Unable to parse font version info"
-                       " from this name table entry: '{}'").format(name)
-          continue
-
-        comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
-        if version_without_comments != expected_str:
-          # maybe the version strings differ only
-          # on floating-point error, so let's
-          # also give it a change by rounding and re-checking...
-
-          try:
-            rounded_string = round(float(version_without_comments), 3)
-            version = round(float(".".join(expected)), 3)
-            if rounded_string != version:
-              failed = True
-              if comments:
-                fix = "{};{}".format(expected_str, comments)
-              else:
-                fix = expected_str
-              yield FAIL, ("NAMEID_VERSION_STRING value '{}'"
-                           " does not match expected '{}'"
-                           "").format(name_version, fix)
-          except:
-            failed = True  # give up. it's definitely bad :(
-            yield FAIL, ("Unable to parse font version info"
-                         " from name table entries.")
-  if not failed:
-    yield PASS, "All font version fields look good."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/045'
-)
-def com_google_fonts_check_045(ttFont):
-  """Does the font have a DSIG table?"""
-  if "DSIG" in ttFont:
-    yield PASS, "Digital Signature (DSIG) exists."
-  else:
-    yield FAIL, ("This font lacks a digital signature (DSIG table)."
-                 " Some applications may require one (even if only a"
-                 " dummy placeholder) in order to work properly.")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/046'
-)
-def com_google_fonts_check_046(ttFont):
-  """Font contains the first few mandatory glyphs
-     (.null or NULL, CR and space)?"""
-  from fontbakery.utils import getGlyph
-
-  # It would be good to also check
-  # for .notdef (codepoint = unspecified)
-  null = getGlyph(ttFont, 0x0000)
-  CR = getGlyph(ttFont, 0x000D)
-  space = getGlyph(ttFont, 0x0020)
-
-  missing = []
-  if null is None: missing.append("0x0000")
-  if CR is None: missing.append("0x000D")
-  if space is None: missing.append("0x0020")
-  if missing != []:
-    yield WARN, ("Font is missing glyphs for"
-                 " the following mandatory codepoints:"
-                 " {}.").format(", ".join(missing))
-  else:
-    yield PASS, ("Font contains the first few mandatory glyphs"
-                 " (.null or NULL, CR and space).")
-
-
-@register_condition
-@condition
-def missing_whitespace_chars(ttFont):
-  from fontbakery.utils import getGlyph
-  space = getGlyph(ttFont, 0x0020)
-  nbsp = getGlyph(ttFont, 0x00A0)
-  # tab = getGlyph(ttFont, 0x0009)
-
-  missing = []
-  if space is None: missing.append("0x0020")
-  if nbsp is None: missing.append("0x00A0")
-  # fonts probably don't need an actual tab char
-  # if tab is None: missing.append("0x0009")
-  return missing
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/047'
-)
-def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
-  """Font contains glyphs for whitespace characters?"""
-  if missing_whitespace_chars != []:
-    yield FAIL, ("Whitespace glyphs missing for"
-                 " the following codepoints:"
-                 " {}.").format(", ".join(missing_whitespace_chars))
-  else:
-    yield PASS, "Font contains glyphs for whitespace characters."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/048'
-  , conditions=['not missing_whitespace_chars']
-)
-def com_google_fonts_check_048(ttFont):
-  """Font has **proper** whitespace glyph names?"""
-  from fontbakery.utils import getGlyph
-
-  def getGlyphEncodings(font, names):
-    result = set()
-    for subtable in font['cmap'].tables:
-        if subtable.isUnicode():
-            for codepoint, name in subtable.cmap.items():
-                if name in names:
-                    result.add(codepoint)
-    return result
-
-  if ttFont['post'].formatType == 3.0:
-    yield SKIP, "Font has version 3 post table."
-  else:
-    failed = False
-    space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
-    nbsp_enc = getGlyphEncodings(ttFont, ["uni00A0",
-                                          "nonbreakingspace",
-                                          "nbspace",
-                                          "nbsp"])
-    space = getGlyph(ttFont, 0x0020)
-    if 0x0020 not in space_enc:
-      failed = True
-      yield FAIL, Message("bad20",
-                          ("Glyph 0x0020 is called \"{}\":"
-                           " Change to \"space\""
-                           " or \"uni0020\"").format(space))
-
-    nbsp = getGlyph(ttFont, 0x00A0)
-    if 0x00A0 not in nbsp_enc:
-      if 0x00A0 in space_enc:
-        # This is OK.
-        # Some fonts use the same glyph for both space and nbsp.
-        pass
-      else:
-        failed = True
-        yield FAIL, Message("badA0",
-                            ("Glyph 0x00A0 is called \"{}\":"
-                             " Change to \"nbsp\""
-                             " or \"uni00A0\"").format(nbsp))
-
-    if failed is False:
-      yield PASS, "Font has **proper** whitespace glyph names."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/049'
-  , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
-)
-def com_google_fonts_check_049(ttFont):
-  """Whitespace glyphs have ink?"""
-  from fontbakery.utils import getGlyph
-
-  def glyphHasInk(font, name):
-    """Checks if specified glyph has any ink.
-    That is, that it has at least one defined contour associated.
-    Composites are considered to have ink if any of their components have ink.
-    Args:
-        font:       the font
-        glyph_name: The name of the glyph to check for ink.
-    Returns:
-        True if the font has at least one contour associated with it.
-    """
-    glyph = font['glyf'].glyphs[name]
-    glyph.expand(font['glyf'])
-    if not glyph.isComposite():
-      if glyph.numberOfContours == 0:
-        return False
-      (coords, _, _) = glyph.getCoordinates(font['glyf'])
-      # you need at least 3 points to draw
-      return len(coords) > 2
-
-    # composite is blank if composed of blanks
-    # if you setup a font with cycles you are just a bad person
-    # Dave: lol, bad people exist, so put a recursion in this recursion
-    for glyph_name in glyph.getComponentNames(glyph.components):
-      if glyphHasInk(font, glyph_name):
-        return True
-    return False
-
-  # code-points for all "whitespace" chars:
-  WHITESPACE_CHARACTERS = [
-    0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020,
-    0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002,
-    0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F,
-    0x3000, 0x180E, 0x200B, 0x2060, 0xFEFF
-  ]
-  failed = False
-  for codepoint in WHITESPACE_CHARACTERS:
-    g = getGlyph(ttFont, codepoint)
-    if g is not None and glyphHasInk(ttFont, g):
-      failed = True
-      yield FAIL, ("Glyph \"{}\" has ink."
-                   " It needs to be replaced by"
-                   " an empty glyph.").format(g)
-  if not failed:
-    yield PASS, "There is no whitespace glyph with ink."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/050'
-  , conditions=['not missing_whitespace_chars']
-)
-def com_google_fonts_check_050(ttFont):
-  """Whitespace glyphs have coherent widths?"""
-  from fontbakery.utils import getGlyph
-
-  def getGlyphWidth(font, glyph):
-    return font['hmtx'][glyph][0]
-
-  space = getGlyph(ttFont, 0x0020)
-  nbsp = getGlyph(ttFont, 0x00A0)
-
-  spaceWidth = getGlyphWidth(ttFont, space)
-  nbspWidth = getGlyphWidth(ttFont, nbsp)
-
-  if spaceWidth != nbspWidth or nbspWidth < 0:
-    if nbspWidth > spaceWidth and spaceWidth >= 0:
-      yield FAIL, Message("bad_space",
-                          ("space {} nbsp {}: Space advanceWidth"
-                           " needs to be fixed"
-                           " to {}.").format(spaceWidth,
-                                             nbspWidth,
-                                             nbspWidth))
-    else:
-      yield FAIL, Message("bad_nbsp",
-                          ("space {} nbsp {}: Nbsp advanceWidth"
-                           " needs to be fixed "
-                           "to {}").format(spaceWidth,
-                                           nbspWidth,
-                                           spaceWidth))
-  else:
-    yield PASS, "Whitespace glyphs have coherent widths."
-
-
 # DEPRECATED:
 # com.google.fonts/check/051 - "Checking with pyfontaine"
 #
@@ -1970,79 +658,6 @@ def com_google_fonts_check_050(ttFont):
 # com.google.fonts/check/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
 
 
-@register_condition
-@condition
-def is_variable_font(ttFont):
-  return "fvar" in ttFont.keys()
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/052'
-)
-def com_google_fonts_check_052(ttFont):
-  """Font contains all required tables?"""
-  REQUIRED_TABLES = set(["cmap", "head", "hhea", "hmtx",
-                         "maxp", "name", "OS/2", "post"])
-  OPTIONAL_TABLES = set(["cvt ", "fpgm", "loca", "prep",
-                         "VORG", "EBDT", "EBLC", "EBSC",
-                         "BASE", "GPOS", "GSUB", "JSTF",
-                         "DSIG", "gasp", "hdmx", "LTSH",
-                         "PCLT", "VDMX", "vhea", "vmtx",
-                         "kern"])
-  # See https://github.com/googlefonts/fontbakery/issues/617
-  #
-  # We should collect the rationale behind the need for each of the
-  # required tables above. Perhaps split it into individual checks
-  # with the correspondent rationales for each subset of required tables.
-  #
-  # check/066 (kern table) is a good example of a separate check for
-  # a specific table providing a detailed description of the rationale
-  # behind it.
-
-  optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
-  if optional_tables:
-    yield INFO, ("This font contains the following"
-                 " optional tables [{}]").format(", ".join(optional_tables))
-
-  if is_variable_font(ttFont):
-    # According to https://github.com/googlefonts/fontbakery/issues/1671
-    # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
-    REQUIRED_TABLES.add("STAT")
-
-  missing_tables = [req for req in REQUIRED_TABLES if req not in ttFont.keys()]
-  if "glyf" not in ttFont.keys() and "CFF " not in ttFont.keys():
-    missing_tables.append("CFF ' or 'glyf")
-
-  if missing_tables:
-    yield FAIL, ("This font is missing the following required tables:"
-                 " ['{}']").format("', '".join(missing_tables))
-  else:
-    yield PASS, "Font contains all required tables."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/053'
-)
-def com_google_fonts_check_053(ttFont):
-  """Are there unwanted tables?"""
-  UNWANTED_TABLES = set(['FFTM', 'TTFA', 'prop',
-                         'TSI0', 'TSI1', 'TSI2', 'TSI3'])
-  unwanted_tables_found = []
-  for table in ttFont.keys():
-    if table in UNWANTED_TABLES:
-      unwanted_tables_found.append(table)
-
-  if len(unwanted_tables_found) > 0:
-    yield FAIL, ("Unwanted tables were found"
-                 " in the font and should be removed:"
-                 " {}").format(", ".join(unwanted_tables_found))
-  else:
-    yield PASS, "There are no unwanted tables."
-
-
-@register_condition
 @condition
 def ttfautohint_stats(font):
   import re
@@ -2081,7 +696,6 @@ TTFAUTOHINT_MISSING_MSG = (
   "/googlefonts/gf-docs/blob/master"
   "/ProjectChecklist.md#ttfautohint")
 
-@register_check
 @check(
     id = 'com.google.fonts/check/054'
   , conditions=['ttfautohint_stats']
@@ -2133,7 +747,6 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
   yield INFO, results_table
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/055'
 )
@@ -2166,7 +779,6 @@ def com_google_fonts_check_055(ttFont):
     yield PASS, "Version format in NAME table entries is correct."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/056'
   , conditions=['ttfautohint_stats']
@@ -2235,107 +847,6 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
                                                           ttfa_version))
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/057'
-)
-def com_google_fonts_check_057(ttFont):
-  """Name table entries should not contain line-breaks."""
-  from fontbakery.constants import (NAMEID_STR,
-                                    PLATID_STR)
-  failed = False
-  for name in ttFont["name"].names:
-    string = name.string.decode(name.getEncoding())
-    if "\n" in string:
-      failed = True
-      yield FAIL, ("Name entry {} on platform {} contains"
-                   " a line-break.").format(NAMEID_STR[name.nameID],
-                                            PLATID_STR[name.platformID])
-  if not failed:
-    yield PASS, ("Name table entries are all single-line"
-                 " (no line-breaks found).")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/058'
-)
-def com_google_fonts_check_058(ttFont):
-  """Glyph names are all valid?"""
-  import re
-  bad_names = []
-  for _, glyphName in enumerate(ttFont.getGlyphOrder()):
-    if glyphName in [".null", ".notdef"]:
-      # These 2 names are explicit exceptions
-      # in the glyph naming rules
-      continue
-    if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
-      bad_names.append(glyphName)
-
-  if len(bad_names) == 0:
-    yield PASS, "Glyph names are all valid."
-  else:
-    yield FAIL, ("The following glyph names do not comply"
-                 " with naming conventions: {}"
-                 " A glyph name may be up to 31 characters in length,"
-                 " must be entirely comprised of characters from"
-                 " the following set:"
-                 " A-Z a-z 0-9 .(period) _(underscore). and must not"
-                 " start with a digit or period."
-                 " There are a few exceptions"
-                 " such as the special character \".notdef\"."
-                 " The glyph names \"twocents\", \"a1\", and \"_\""
-                 " are all valid, while \"2cents\""
-                 " and \".twocents\" are not.").format(bad_names)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/059'
-  , affects = [('Mac', 'unspecified')]
-  , rationale = """
-      Duplicate glyph names prevent font installation on Mac OS X.
-    """
-)
-def com_google_fonts_check_059(ttFont):
-  """Font contains unique glyph names?"""
-  import re
-  glyphs = []
-  duplicated_glyphIDs = []
-  for _, g in enumerate(ttFont.getGlyphOrder()):
-    glyphID = re.sub(r'#\w+', '', g)
-    if glyphID in glyphs:
-      duplicated_glyphIDs.append(glyphID)
-    else:
-      glyphs.append(glyphID)
-
-  if len(duplicated_glyphIDs) == 0:
-    yield PASS, "Font contains unique glyph names."
-  else:
-    yield FAIL, ("The following glyph IDs"
-                 " occur twice: {}").format(duplicated_glyphIDs)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/060'
-)
-def com_google_fonts_check_060(ttFont):
-  """No glyph is incorrectly named?"""
-  import re
-  bad_glyphIDs = []
-  for _, g in enumerate(ttFont.getGlyphOrder()):
-    if re.search(r'#\w+$', g):
-      glyphID = re.sub(r'#\w+', '', g)
-      bad_glyphIDs.append(glyphID)
-
-  if len(bad_glyphIDs) == 0:
-    yield PASS, "Font does not have any incorrectly named glyph."
-  else:
-    yield FAIL, ("The following glyph IDs"
-                 " are incorrectly named: {}").format(bad_glyphIDs)
-
-@register_check
 @check(
     id = 'com.google.fonts/check/061'
   , rationale = """
@@ -2360,7 +871,6 @@ def com_google_fonts_check_061(ttFont):
     yield PASS, "EPAR table present in font."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/062'
 )
@@ -2406,222 +916,6 @@ def com_google_fonts_check_062(ttFont):
                  " Try exporting the font with autohinting enabled.")
 
 
-@register_condition
-@condition
-def has_kerning_info(ttFont):
-  """ A font has kerning info if it has a GPOS table
-      containing at least one Pair Adjustment lookup
-      (eigther directly or through an extension subtable).
-  """
-  if not "GPOS" in ttFont:
-    return False
-
-  if not ttFont["GPOS"].table.LookupList:
-    return False
-
-  for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-    if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-      return True
-    elif lookup.LookupType == 9: # type 9 = Extension subtable
-      for ext in lookup.SubTable:
-        if ext.ExtensionLookupType == 2:  # type 2 = Pair Adjustment
-          return True
-
-
-# TODO: Design special case handling for whitelists/blacklists
-# https://github.com/googlefonts/fontbakery/issues/1540
-@register_condition
-@condition
-def whitelist_librebarcode(font):
-  font_filenames = [
-    "LibreBarcode39-Regular.ttf",
-    "LibreBarcode39Text-Regular.ttf",
-    "LibreBarcode128-Regular.ttf",
-    "LibreBarcode128Text-Regular.ttf"
-  ]
-  for font_filename in font_filenames:
-    if font_filename in font:
-      return True
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/063'
-  , conditions=['not whitelist_librebarcode']
-)
-def com_google_fonts_check_063(ttFont):
-  """Does GPOS table have kerning information?"""
-  if not has_kerning_info(ttFont):
-    yield WARN, "GPOS table lacks kerning information."
-  else:
-    yield PASS, "GPOS table has got kerning information."
-
-
-@register_condition
-@condition
-def ligatures(ttFont):
-  all_ligatures = {}
-  try:
-    if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
-      for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-          for subtable in lookup.SubTable:
-            for firstGlyph in subtable.ligatures.keys():
-              all_ligatures[firstGlyph] = []
-              for lig in subtable.ligatures[firstGlyph]:
-                if lig.Component[0] not in all_ligatures[firstGlyph]:
-                  all_ligatures[firstGlyph].append(lig.Component[0])
-    return all_ligatures
-  except:
-    return -1  # Indicate fontTools-related crash...
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/064'
-  , conditions = ['ligatures']
-  , rationale = """
-    All ligatures in a font must have corresponding caret (text cursor)
-    positions defined in the GDEF table, otherwhise, users may experience
-    issues with caret rendering.
-  """
-  , request = "https://github.com/googlefonts/fontbakery/issues/1225"
-)
-def com_google_fonts_check_064(ttFont, ligatures):
-  """Is there a caret position declared for every ligature?"""
-  if ligatures == -1:
-    yield FAIL, Message("malformed",
-                        "Failed to lookup ligatures."
-                        " This font file seems to be malformed."
-                        " For more info, read:"
-                        " https://github.com"
-                        "/googlefonts/fontbakery/issues/1596")
-  elif "GDEF" not in ttFont:
-    yield WARN, Message("GDEF-missing",
-                        ("GDEF table is missing, but it is mandatory"
-                         " to declare it on fonts that provide ligature"
-                         " glyphs because the caret (text cursor)"
-                         " positioning for each ligature must be"
-                         " provided in this table."))
-  else:
-    # TODO: After getting a sample of a good font,
-    #       resume the implementation of this routine:
-    lig_caret_list = ttFont["GDEF"].table.LigCaretList
-    if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
-      yield WARN, Message("lacks-caret-pos",
-                          ("This font lacks caret position values for"
-                           " ligature glyphs on its GDEF table."))
-    elif lig_caret_list.LigGlyphCount != len(ligatures):
-      yield WARN, Message("incomplete-caret-pos-data",
-                          ("It seems that this font lacks caret positioning"
-                           " values for some of its ligature glyphs on the"
-                           " GDEF table. There's a total of {} ligatures,"
-                           " but only {} sets of caret positioning"
-                           " values.").format(len(ligatures),
-                                              lig_caret_list.LigGlyphCount))
-    else:
-      # Should we also actually check each individual entry here?
-      yield PASS, "Looks good!"
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/065'
-  , rationale = """
-      Fonts with ligatures should have kerning on the corresponding
-      non-ligated sequences for text where ligatures aren't used
-      (eg https://github.com/impallari/Raleway/issues/14).
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1145'
-  , conditions = ['ligatures',
-                  'has_kerning_info']
-)
-def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
-  """Is there kerning info for non-ligated sequences?"""
-  remaining = ligatures
-  def look_for_nonligated_kern_info(table):
-    for pairpos in table.SubTable:
-      for i, glyph in enumerate(pairpos.Coverage.glyphs):
-        if glyph in ligatures.keys():
-          if not hasattr(pairpos, 'PairSet'):
-            continue
-          for pairvalue in pairpos.PairSet[i].PairValueRecord:
-            if (glyph in ligatures and
-                glyph in remaining and
-                pairvalue.SecondGlyph in ligatures[glyph]):
-              del remaining[glyph]
-
-  def ligatures_str(ligs):
-    result = []
-    for first in ligs:
-      result.extend(["{}_{}".format(first, second)
-                     for second in ligs[first]])
-    return result
-
-  if ligatures == -1:
-    yield FAIL, Message("malformed",
-                        "Failed to lookup ligatures."
-                        " This font file seems to be malformed."
-                        " For more info, read:"
-                        " https://github.com"
-                        "/googlefonts/fontbakery/issues/1596")
-  else:
-    for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-        look_for_nonligated_kern_info(lookup)
-      # elif lookup.LookupType == 9:
-      #   if lookup.SubTable[0].ExtensionLookupType == 2:
-      #     look_for_nonligated_kern_info(lookup.SubTable[0])
-
-    if remaining != {}:
-      yield WARN, Message("lacks-kern-info",
-                         ("GPOS table lacks kerning info for the following"
-                          " non-ligated sequences: "
-                          "{}").format(ligatures_str(remaining)))
-    else:
-      yield PASS, ("GPOS table provides kerning info for "
-                   "all non-ligated sequences.")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/066'
-  , request = "https://github.com/googlefonts/fontbakery/issues/1675"
-  , rationale = """
-      Even though, all fonts should have their kerning implemented
-      in the GPOS table, there may be kerning info at the kern table as well.
-
-      Some applications such as MS PowerPoint require kerning info on
-      the kern table. More specifically, they require a format 0 kern
-      subtable from a kern table version 0, which is the only one that
-      Windows understands (and which is also the simplest and more limited
-      of all the kern subtables).
-
-      Google Fonts ingests fonts made for download and use as desktops, and
-      does all web font optimizations in the serving pipeline (using libre
-      libraries that anyone can replicate.)
-
-      Ideally, TTFs intended for desktop users (and thus the ones intended
-      for Google Fonts) should have both KERN and GPOS tables.
-
-      Given all of the above, we currently treat kerning on a v0 kern table
-      as a good-to-have (but optional) feature.
-  """
-)
-def com_google_fonts_check_066(ttFont):
-  """Is there a "kern" table declared in the font?"""
-
-  if "kern" in ttFont:
-    yield INFO, ("Only a few programs may require the kerning"
-                 " info that this font provides on its \"kern\" table.")
-    # TODO: perhaps we should add code here to detect and emit an ERROR
-    #       if the kern table and subtable version and format are not zero,
-    #       as mentioned in the rationale above.
-  else:
-    yield PASS, "Font does not declare an optional \"kern\" table."
-
-
-@register_check
 @check(
     id = 'com.google.fonts/check/067'
 )
@@ -2644,84 +938,9 @@ def com_google_fonts_check_067(ttFont):
     yield PASS, "Font family name first character is not a digit."
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/068'
-)
-def com_google_fonts_check_068(ttFont):
-  """Does full font name begin with the font family name?"""
-  from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FULL_FONT_NAME)
-  familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
-  fullfontname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
-
-  if len(familyname) == 0:
-    yield FAIL, Message("no-font-family-name",
-                        ("Font lacks a NAMEID_FONT_FAMILY_NAME"
-                         " entry in the 'name' table."))
-  elif len(fullfontname) == 0:
-    yield FAIL, Message("no-full-font-name",
-                        ("Font lacks a NAMEID_FULL_FONT_NAME"
-                         " entry in the 'name' table."))
-  else:
-    # we probably should check all found values are equivalent.
-    # and, in that case, then performing the rest of the check
-    # with only the first occurences of the name entries
-    # will suffice:
-    fullfontname = fullfontname[0]
-    familyname = familyname[0]
-
-    if not fullfontname.startswith(familyname):
-      yield FAIL, Message("does-not",
-                          (" On the 'name' table, the full font name"
-                           " (NameID {} - FULL_FONT_NAME: '{}')"
-                           " does not begin with font family name"
-                           " (NameID {} - FONT_FAMILY_NAME:"
-                           " '{}')".format(NAMEID_FULL_FONT_NAME,
-                                           familyname,
-                                           NAMEID_FONT_FAMILY_NAME,
-                                           fullfontname)))
-    else:
-      yield PASS, "Full font name begins with the font family name."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/069'
-)
-def com_google_fonts_check_069(ttFont):
-  """Is there any unused data at the end of the glyf table?"""
-  if 'CFF ' in ttFont:
-    yield SKIP, "This check does not support CFF fonts."
-  else:
-    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
-    expected = len(ttFont['loca']) - 1
-    actual = len(ttFont['glyf'])
-    diff = actual - expected
-
-    # allow up to 3 bytes of padding
-    if diff > 3:
-      yield FAIL, ("Glyf table has unreachable data at"
-                   " the end of the table."
-                   " Expected glyf table length {}"
-                   " (from loca table), got length"
-                   " {} (difference: {})").format(expected, actual, diff)
-    elif diff < 0:
-      yield FAIL, ("Loca table references data beyond"
-                   " the end of the glyf table."
-                   " Expected glyf table length {}"
-                   " (from loca table), got length"
-                   " {} (difference: {})").format(expected, actual, diff)
-    else:
-      yield PASS, "There is no unused data at the end of the glyf table."
-
-
 # TODO: extend this to check for availability of all required currency symbols.
-@register_check
 @check(
     id = 'com.google.fonts/check/070'
-  , conditions=['not whitelist_librebarcode'] # See: https://github.com/graphicore/librebarcode/issues/3
 )
 def com_google_fonts_check_070(ttFont):
   """Font has all expected currency sign characters?"""
@@ -2757,180 +976,6 @@ def com_google_fonts_check_070(ttFont):
     yield PASS, "Font has all expected currency sign characters."
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/071'
-)
-def com_google_fonts_check_071(ttFont):
-  """Font follows the family naming recommendations?"""
-  # See http://forum.fontlab.com/index.php?topic=313.0
-  import re
-  from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_POSTSCRIPT_NAME,
-                                    NAMEID_FULL_FONT_NAME,
-                                    NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FONT_SUBFAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
-  bad_entries = []
-
-  # <Postscript name> may contain only a-zA-Z0-9
-  # and one hyphen
-  bad_psname = re.compile("[^A-Za-z0-9-]")
-  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if bad_psname.search(string):
-      bad_entries.append({'field': 'PostScript Name',
-                          'value': string,
-                          'rec': 'May contain only a-zA-Z0-9'
-                                 ' characters and an hyphen.'})
-    if string.count('-') > 1:
-      bad_entries.append({'field': 'Postscript Name',
-                          'value': string,
-                          'rec': 'May contain not more'
-                                 ' than a single hyphen'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME):
-    if len(string) >= 64:
-      bad_entries.append({'field': 'Full Font Name',
-                          'value': string,
-                          'rec': 'exceeds max length (63)'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME):
-    if len(string) >= 30:
-      bad_entries.append({'field': 'PostScript Name',
-                          'value': string,
-                          'rec': 'exceeds max length (29)'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
-    if len(string) >= 32:
-      bad_entries.append({'field': 'Family Name',
-                          'value': string,
-                          'rec': 'exceeds max length (31)'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_FONT_SUBFAMILY_NAME):
-    if len(string) >= 32:
-      bad_entries.append({'field': 'Style Name',
-                          'value': string,
-                          'rec': 'exceeds max length (31)'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME):
-    if len(string) >= 32:
-      bad_entries.append({'field': 'OT Family Name',
-                          'value': string,
-                          'rec': 'exceeds max length (31)'})
-
-  for string in get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME):
-    if len(string) >= 32:
-      bad_entries.append({'field': 'OT Style Name',
-                          'value': string,
-                          'rec': 'exceeds max length (31)'})
-  weight_value = None
-  if "OS/2" in ttFont:
-    field = "OS/2 usWeightClass"
-    weight_value = ttFont["OS/2"].usWeightClass
-  if "CFF " in ttFont:
-    field = "CFF Weight"
-    weight_value = ttFont["CFF "].Weight
-
-  if weight_value is not None:
-    # <Weight> value >= 250 and <= 900 in steps of 50
-    if weight_value % 50 != 0:
-      bad_entries.append({"field": field,
-                          'value': weight_value,
-                          "rec": "Value should ideally be a multiple of 50."})
-    full_info = " "
-    " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
-    " (unintentionally) returning the style-linked bold. Because of this,"
-    " you may wish to manually override the weightclass setting for all"
-    " extra light, ultra light or thin fonts'"
-    " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
-    if weight_value < 250:
-      bad_entries.append({"field": field,
-                          'value': weight_value,
-                          "rec": "Value should ideally be 250 or more." +
-                                 full_info})
-    if weight_value > 900:
-      bad_entries.append({"field": field,
-                          'value': weight_value,
-                          "rec": "Value should ideally be 900 or less."})
-  if len(bad_entries) > 0:
-    table = "| Field | Value | Recommendation |\n"
-    table += "|:----- |:----- |:-------------- |\n"
-    for bad in bad_entries:
-      table += "| {} | {} | {} |\n".format(bad["field"], bad["value"], bad["rec"])
-    yield INFO, ("Font does not follow "
-                 "some family naming recommendations:\n\n"
-                 "{}").format(table)
-  else:
-    yield PASS, "Font follows the family naming recommendations."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/072'
-)
-def com_google_fonts_check_072(ttFont):
-  """Font enables smart dropout control in "prep" table instructions?
-
-     B8 01 FF    PUSHW 0x01FF
-     85          SCANCTRL (unconditinally turn on
-                           dropout control mode)
-     B0 04       PUSHB 0x04
-     8D          SCANTYPE (enable smart dropout control)
-
-     Smart dropout control means activating rules 1, 2 and 5:
-     Rule 1: If a pixel's center falls within the glyph outline,
-             that pixel is turned on.
-     Rule 2: If a contour falls exactly on a pixel's center,
-             that pixel is turned on.
-     Rule 5: If a scan line between two adjacent pixel centers
-             (either vertical or horizontal) is intersected
-             by both an on-Transition contour and an off-Transition
-             contour and neither of the pixels was already turned on
-             by rules 1 and 2, turn on the pixel which is closer to
-             the midpoint between the on-Transition contour and
-             off-Transition contour. This is "Smart" dropout control.
-  """
-  instructions = b"\xb8\x01\xff\x85\xb0\x04\x8d"
-  if "CFF " in ttFont:
-    yield SKIP, "Not applicable to a CFF font."
-  else:
-    if ("prep" in ttFont and
-        instructions in ttFont["prep"].program.getBytecode()):
-      yield PASS, ("Program at 'prep' table contains instructions"
-                   " enabling smart dropout control.")
-    else:
-      yield WARN, ("Font does not contain TrueType instructions enabling"
-                   " smart dropout control in the 'prep' table program."
-                   " Please try exporting the font with autohinting enabled.")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/073'
-)
-def com_google_fonts_check_073(ttFont):
-  """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
-  hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
-  hmtx_advance_width_max = None
-  for g in ttFont['hmtx'].metrics.values():
-    if hmtx_advance_width_max is None:
-      hmtx_advance_width_max = max(0, g[0])
-    else:
-      hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
-
-  if hmtx_advance_width_max is None:
-    yield FAIL, "Failed to find advance width data in HMTX table!"
-  elif hmtx_advance_width_max != hhea_advance_width_max:
-    yield FAIL, ("AdvanceWidthMax mismatch: expected {} (from hmtx);"
-                 " got {} (from hhea)").format(hmtx_advance_width_max,
-                                               hhea_advance_width_max)
-  else:
-    yield PASS, ("MaxAdvanceWidth is consistent"
-                 " with values in the Hmtx and Hhea tables.")
-
-
-@register_check
 @check(
     id = 'com.google.fonts/check/074'
   , rationale = """
@@ -2975,146 +1020,6 @@ def com_google_fonts_check_074(ttFont):
                  " contain non-ASCII characteres.")
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/075'
-)
-def com_google_fonts_check_075(ttFont):
-  """Check for points out of bounds."""
-  failed = False
-  out_of_bounds = []
-  for glyphName in ttFont['glyf'].keys():
-    glyph = ttFont['glyf'][glyphName]
-    coords = glyph.getCoordinates(ttFont['glyf'])[0]
-    for x, y in coords:
-      if x < glyph.xMin or x > glyph.xMax or \
-         y < glyph.yMin or y > glyph.yMax or \
-         abs(x) > 32766 or abs(y) > 32766:
-        failed = True
-        out_of_bounds.append((glyphName, x, y))
-
-  if failed:
-      yield WARN, ("The following glyphs have coordinates which are"
-                   " out of bounds:\n{}\nThis happens a lot when points"
-                   " are not extremes, which is usually bad. However,"
-                   " fixing this alert by adding points on extremes may"
-                   " do more harm than good, especially with italics,"
-                   " calligraphic-script, handwriting, rounded and"
-                   " other fonts. So it is common to"
-                   " ignore this message".format(out_of_bounds))
-  else:
-      yield PASS, "All glyph paths have coordinates within bounds!"
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/076'
-)
-def com_google_fonts_check_076(ttFont):
-  """Check glyphs have unique unicode codepoints."""
-  failed = False
-  for subtable in ttFont['cmap'].tables:
-    if subtable.isUnicode():
-      codepoints = {}
-      for codepoint, name in subtable.cmap.items():
-        codepoints.setdefault(codepoint, set()).add(name)
-      for value in codepoints.keys():
-        if len(codepoints[value]) >= 2:
-          failed = True
-          yield FAIL, ("These glyphs carry the same"
-                       " unicode value {}:"
-                       " {}").format(value,
-                                     ", ".join(codepoints[value]))
-  if not failed:
-    yield PASS, "All glyphs have unique unicode codepoint assignments."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/077'
-)
-def com_google_fonts_check_077(ttFont):
-  """Check all glyphs have codepoints assigned."""
-  failed = False
-  for subtable in ttFont['cmap'].tables:
-    if subtable.isUnicode():
-      for item in subtable.cmap.items():
-        codepoint = item[0]
-        if codepoint is None:
-          failed = True
-          yield FAIL, ("Glyph {} lacks a unicode"
-                       " codepoint assignment").format(codepoint)
-  if not failed:
-    yield PASS, "All glyphs have a codepoint value assigned."
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/078'
-)
-def com_google_fonts_check_078(ttFont):
-  """Check that glyph names do not exceed max length."""
-  failed = False
-  for subtable in ttFont['cmap'].tables:
-    for item in subtable.cmap.items():
-      name = item[1]
-      if len(name) > 109:
-        failed = True
-        yield FAIL, ("Glyph name is too long:"
-                     " '{}'").format(name)
-  if not failed:
-    yield PASS, "No glyph names exceed max allowed length."
-
-
-@register_condition
-@condition
-def seems_monospaced(monospace_stats):
-  return monospace_stats['seems_monospaced']
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/079'
-  , conditions=['seems_monospaced']
-)
-def com_google_fonts_check_079(ttFont):
-  """Monospace font has hhea.advanceWidthMax
-     equal to each glyph's advanceWidth?
-  """
-
-  # hhea:advanceWidthMax is treated as source of truth here.
-  max_advw = ttFont['hhea'].advanceWidthMax
-  outliers = 0
-  zero_or_double_detected = False
-  glyphs = [
-    g for g in ttFont['glyf'].glyphs
-      if g not in ['.notdef', '.null', 'NULL']
-  ]
-  for glyph_id in glyphs:
-    width = ttFont['hmtx'].metrics[glyph_id][0]
-    if width != max_advw:
-      outliers += 1
-    if width == 0 or width == 2*max_advw:
-      zero_or_double_detected = True
-
-  if outliers > 0:
-    outliers_percentage = float(outliers) / len(ttFont['glyf'].glyphs)
-    yield WARN, ("This seems to be a monospaced font,"
-                 " so advanceWidth value should be the same"
-                 " across all glyphs, but {} % of them"
-                 " have a different value."
-                 "").format(round(100 * outliers_percentage, 2))
-    if zero_or_double_detected:
-      yield WARN, ("Double-width and/or zero-width glyphs"
-                   " were detected. These glyphs should be set"
-                   " to the same width as all others"
-                   " and then add GPOS single pos lookups"
-                   " that zeros/doubles the widths as needed.")
-  else:
-    yield PASS, ("hhea.advanceWidthMax is equal"
-                 " to all glyphs' advanceWidth in this monospaced font.")
-
-@register_check
 @check(
     id = 'com.google.fonts/check/080'
   , conditions=['metadata']
@@ -3129,8 +1034,6 @@ def com_google_fonts_check_080(metadata):
   else:
     yield PASS, "Designer is a simple short name"
 
-
-@register_condition
 @condition
 def listed_on_gfonts_api(metadata):
   if not metadata:
@@ -3141,7 +1044,7 @@ def listed_on_gfonts_api(metadata):
   r = requests.get(url)
   return r.status_code == 200
 
-@register_check
+
 @check(
     id = 'com.google.fonts/check/081'
   , conditions=['metadata']
@@ -3156,7 +1059,7 @@ def com_google_fonts_check_081(listed_on_gfonts_api):
 
 # Temporarily disabled as requested at
 # https://github.com/googlefonts/fontbakery/issues/1728
-#@register_check
+@disable
 @check(
     id = 'com.google.fonts/check/082'
   , conditions=['metadata']
@@ -3173,10 +1076,10 @@ def com_google_fonts_check_082(metadata):
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
                  " is OK, so we won't look for it at profiles.csv")
   else:
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     import csv
     try:
-      handle = urllib.urlopen(PROFILES_RAW_URL)
+      handle = urllib.request.urlopen(PROFILES_RAW_URL)
       designers = []
       for row in csv.reader(handle):
         if not row:
@@ -3194,7 +1097,6 @@ def com_google_fonts_check_082(metadata):
       yield WARN, "Failed to fetch \"{}\"".format(PROFILES_RAW_URL)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/083'
   , conditions=['metadata']
@@ -3215,7 +1117,6 @@ def com_google_fonts_check_083(metadata):
                  " unique \"full_name\" values.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/084'
   , conditions=['metadata']
@@ -3236,7 +1137,6 @@ def com_google_fonts_check_084(metadata):
                  " unique style:weight pairs.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/085'
   , conditions=['metadata']
@@ -3254,7 +1154,6 @@ def com_google_fonts_check_085(metadata):
                                licenses)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/086'
   , conditions=['metadata']
@@ -3274,7 +1173,6 @@ def com_google_fonts_check_086(metadata):
     yield PASS, "METADATA.pb contains \"menu\" and \"latin\" subsets."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/087'
   , conditions=['metadata']
@@ -3292,7 +1190,6 @@ def com_google_fonts_check_087(metadata):
     yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/088'
   , conditions=['metadata']
@@ -3311,7 +1208,7 @@ def com_google_fonts_check_088(metadata):
   else:
     yield PASS, "Copyright is consistent across family"
 
-@register_check
+
 @check(
     id = 'com.google.fonts/check/089'
   , conditions=['metadata']
@@ -3332,7 +1229,6 @@ def com_google_fonts_check_089(metadata):
                  " in all metadata \"fonts\" items.")
 
 
-@register_condition
 @condition
 def has_regular_style(metadata):
   fonts = metadata.fonts if metadata else []
@@ -3342,7 +1238,6 @@ def has_regular_style(metadata):
   return False
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/090'
   , conditions=['metadata']
@@ -3359,7 +1254,6 @@ def com_google_fonts_check_090(has_regular_style):
                  " as required by Google Fonts standards.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/091'
   , conditions=['metadata',
@@ -3378,7 +1272,6 @@ def com_google_fonts_check_091(metadata):
     yield PASS, "Regular has weight = 400."
 
 
-@register_condition
 @condition
 def font_metadata(ttFont):
   from fontbakery.utils import get_FamilyProto_Message
@@ -3397,7 +1290,6 @@ def font_metadata(ttFont):
       return f
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/092'
   , conditions=['font_metadata']
@@ -3425,7 +1317,6 @@ def com_google_fonts_check_092(ttFont, font_metadata):
                    " in METADATA.pb and on the"
                    " TTF file.").format(font_metadata.name)
 
-@register_check
 @check(
     id = 'com.google.fonts/check/093'
   , conditions=['font_metadata']
@@ -3458,7 +1349,6 @@ def com_google_fonts_check_093(ttFont, font_metadata):
                  " TTF file.").format(font_metadata.post_script_name)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/094'
   , conditions=['font_metadata']
@@ -3490,7 +1380,6 @@ def com_google_fonts_check_094(ttFont, font_metadata):
                      " TTF file.").format(full_fontname)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/095'
   , conditions=['font_metadata', 'style']
@@ -3531,7 +1420,6 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
                      " TTF file.").format(font_metadata.name)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/096'
   , conditions=['font_metadata']
@@ -3554,7 +1442,6 @@ def com_google_fonts_check_096(font_metadata):
                  " \"postScriptName\" have equivalent values.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/097'
   , conditions=['font_metadata']
@@ -3577,7 +1464,6 @@ def com_google_fonts_check_097(font_metadata):
                  " \"postScriptName\" have equivalent values.")
 
 
-@register_condition
 @condition
 def font_familynames(ttFont):
   from fontbakery.utils import get_name_entry_strings
@@ -3585,7 +1471,6 @@ def font_familynames(ttFont):
   return get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
 
 
-@register_condition
 @condition
 def typographic_familynames(ttFont):
   from fontbakery.utils import get_name_entry_strings
@@ -3593,7 +1478,6 @@ def typographic_familynames(ttFont):
   return get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
 
 
-@register_condition
 @condition
 def font_familyname(font_familynames):
   # This assumes that all familyname
@@ -3604,7 +1488,6 @@ def font_familyname(font_familynames):
   return font_familynames[0]
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/098'
   , conditions=['style',
@@ -3634,7 +1517,6 @@ def com_google_fonts_check_098(style,
                               font_familyname)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/099'
   , conditions=['style',
@@ -3668,7 +1550,6 @@ def com_google_fonts_check_099(style,
                               font_familyname)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/100'
   , conditions=['style', # This means the font filename
@@ -3689,7 +1570,6 @@ def com_google_fonts_check_100(ttFont,
                             expected)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/101'
   , conditions=['font_metadata',
@@ -3712,7 +1592,6 @@ def com_google_fonts_check_101(font_metadata,
                               font_familyname)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/102'
   , conditions=['font_metadata']
@@ -3735,7 +1614,6 @@ def com_google_fonts_check_102(font_metadata):
                  " '{}'").format(unidecode(font_metadata.copyright))
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/103'
   , conditions=['font_metadata']
@@ -3753,7 +1631,6 @@ def com_google_fonts_check_103(font_metadata):
                  " does not contain \"Reserved Font Name\".")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/104'
   , conditions=['font_metadata']
@@ -3767,7 +1644,6 @@ def com_google_fonts_check_104(font_metadata):
     yield PASS, "Copyright notice string is shorter than 500 chars."
 
 
-@register_condition
 @condition
 def canonical_filename(font_metadata):
   if not font_metadata:
@@ -3795,7 +1671,6 @@ def canonical_filename(font_metadata):
   return "{}-{}.ttf".format(familyname, style_weight)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/105'
   , conditions=['font_metadata', 'canonical_filename']
@@ -3811,7 +1686,6 @@ def com_google_fonts_check_105(font_metadata, canonical_filename):
     yield PASS, "Filename in METADATA.pb is set canonically."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/106'
   , conditions=['font_metadata']
@@ -3851,7 +1725,6 @@ def com_google_fonts_check_106(ttFont, font_metadata):
                      " matches font internals.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/107'
   , conditions=['font_metadata']
@@ -3898,7 +1771,6 @@ def com_google_fonts_check_107(ttFont, font_metadata):
                      " matches font internals.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/108'
   , conditions=['font_metadata']
@@ -3934,7 +1806,6 @@ def com_google_fonts_check_108(ttFont, font_metadata):
 
 # TODO: Design special case handling for whitelists/blacklists
 # https://github.com/googlefonts/fontbakery/issues/1540
-@register_condition
 @condition
 def whitelist_camelcased_familyname(font):
   familynames = [
@@ -3950,7 +1821,6 @@ def whitelist_camelcased_familyname(font):
       return True
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/109'
   , conditions=['font_metadata'
@@ -3967,7 +1837,6 @@ def com_google_fonts_check_109(font_metadata):
     yield PASS, "Font name is not camel-cased."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/110'
   , conditions=['metadata', # that's the family-wide metadata!
@@ -3985,7 +1854,6 @@ def com_google_fonts_check_110(metadata, font_metadata):
     yield PASS, "Font name is the same as family name."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/111'
   , conditions=['font_metadata']
@@ -4003,7 +1871,6 @@ def com_google_fonts_check_111(font_metadata):
     yield PASS, "Font weight has a canonical value."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/112'
   , conditions=['font_metadata']
@@ -4048,7 +1915,6 @@ def com_google_fonts_check_112(ttFont,
                  " weight specified at METADATA.pb")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/113'
   , conditions=['font_metadata']
@@ -4121,7 +1987,6 @@ def com_google_fonts_check_113(font_metadata):
 # can be safely deprecated.
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/115'
   , conditions=['font_metadata']
@@ -4155,7 +2020,6 @@ def com_google_fonts_check_115(ttFont, font_metadata):
       yield PASS, "Font styles are named canonically."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/116'
 )
@@ -4169,7 +2033,6 @@ def com_google_fonts_check_116(ttFont):
     yield PASS, "Font em size is equal to 1000."
 
 
-@register_condition
 @condition
 def remote_styles(metadata):
   """Get a dictionary of TTFont objects of all font files of
@@ -4213,7 +2076,7 @@ def remote_styles(metadata):
   except BadZipfile:
     return None
 
-@register_condition
+
 @condition
 def api_gfonts_ttFont(style, remote_styles):
   """Get a TTFont object of a font downloaded from Google Fonts
@@ -4223,7 +2086,7 @@ def api_gfonts_ttFont(style, remote_styles):
   if remote_styles and style in remote_styles:
     return remote_styles[style]
 
-@register_condition
+
 @condition
 def github_gfonts_ttFont(ttFont, license):
   """Get a TTFont object of a font downloaded
@@ -4248,7 +2111,6 @@ def github_gfonts_ttFont(ttFont, license):
   return TTFont(download_file(url))
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/117'
   , conditions=['api_gfonts_ttFont',
@@ -4297,7 +2159,6 @@ def com_google_fonts_check_117(ttFont,
                             api_gfonts_v_number)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/118'
   , conditions=['api_gfonts_ttFont']
@@ -4345,7 +2206,6 @@ def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
                  " comparison to the Google Fonts version.")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/119'
   , conditions=['api_gfonts_ttFont']
@@ -4412,7 +2272,6 @@ def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
 # com.google.fonts/check/127 "Repository contains METADATA.pb file ?"
 # com.google.fonts/check/128 "Copyright notice is consistent across all fonts in this family ?"
 
-@register_check
 @check(
     id = 'com.google.fonts/check/129'
   , conditions=['style']
@@ -4451,7 +2310,6 @@ def com_google_fonts_check_129(ttFont, style):
                         bitname="BOLD")
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/130'
   , conditions=['style']
@@ -4489,7 +2347,6 @@ def com_google_fonts_check_130(ttFont, style):
     yield PASS, "Value of post.italicAngle is {}.".format(value)
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/131'
   , conditions=['style']
@@ -4535,27 +2392,7 @@ def com_google_fonts_check_131(ttFont, style):
 # com.google.fonts/check/150 - "Checking Google Vietnamese glyph coverage."
 # com.google.fonts/check/151 - "Checking Google Extras glyph coverage."
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/152'
-)
-def com_google_fonts_check_152(ttFont):
-  """Name table strings must not contain 'Reserved Font Name'."""
-  failed = False
-  for entry in ttFont["name"].names:
-    string = entry.string.decode(entry.getEncoding())
-    if "reserved font name" in string.lower():
-      yield WARN, ("Name table entry (\"{}\")"
-                   " contains \"Reserved Font Name\"."
-                   " This is an error except in a few specific"
-                   " rare cases.").format(string)
-      failed = True
-  if not failed:
-    yield PASS, ("None of the name table strings"
-                 " contain \"Reserved Font Name\".")
 
-
-@register_check
 @check(
     id = 'com.google.fonts/check/153'
   , rationale = """
@@ -4636,7 +2473,6 @@ def com_google_fonts_check_153(ttFont):
       yield PASS, "All glyphs have the recommended amount of contours"
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/154'
   , conditions=['api_gfonts_ttFont']
@@ -4658,7 +2494,6 @@ def com_google_fonts_check_154(ttFont, api_gfonts_ttFont):
     yield PASS, ('Font has all the glyphs from the previous release')
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/155'
   , conditions=['font_metadata']
@@ -4684,7 +2519,6 @@ def com_google_fonts_check_155(ttFont, font_metadata):
                  " copyright notice entries on the name table.")
 
 
-@register_condition
 @condition
 def familyname_with_spaces(ttFont):
   FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
@@ -4741,7 +2575,6 @@ def get_only_weight(value):
     return value
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/156'
   , priority=IMPORTANT
@@ -4777,7 +2610,6 @@ def com_google_fonts_check_156(ttFont, style):
     yield PASS, "Font contains values for all mandatory name table entries."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/157'
   , priority=IMPORTANT
@@ -4823,7 +2655,6 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
     yield PASS, "FONT_FAMILY_NAME entries are all good."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/158'
   , priority=IMPORTANT
@@ -4837,7 +2668,6 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
                                     PLATFORM_ID__WINDOWS,
                                     STYLE_NAMES)
   failed = False
-  only_weight = get_only_weight(style)
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
   for name in ttFont['name'].names:
@@ -4879,7 +2709,6 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
     yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/159'
   , priority=IMPORTANT
@@ -4919,7 +2748,6 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
     yield PASS, "FULL_FONT_NAME entries are all good."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/160'
   , priority=IMPORTANT
@@ -4948,7 +2776,6 @@ def com_google_fonts_check_160(ttFont, style, familyname):
     yield PASS, "POSTCRIPT_NAME entries are all good."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/161'
   , priority=IMPORTANT
@@ -4986,7 +2813,6 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
     yield PASS, "TYPOGRAPHIC_FAMILY_NAME entries are all good."
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/162'
   , priority=IMPORTANT
@@ -5026,51 +2852,6 @@ def com_google_fonts_check_162(ttFont, style):
     yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
 
 
-@register_check
-@check(
-    id = 'com.google.fonts/check/163'
-  , rationale = """
-      According to a Glyphs tutorial (available at
-      https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
-      in order to make sure all versions of Windows recognize it as a valid
-      font file, we must make sure that the concatenated length of the
-      familyname (NAMEID_FONT_FAMILY_NAME) and style (NAMEID_FONT_SUBFAMILY_NAME)
-      strings in the name table do not exceed 20 characters.
-    """ # Somebody with access to Windows should make some experiments
-        # and confirm that this is really the case.
-  , affects = [('Windows', 'unspecified')]
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1488'
-  , example_failures = None
-)
-def com_google_fonts_check_163(ttFont):
-  """ Combined length of family and style must not exceed 20 characters. """
-  from unidecode import unidecode
-  from fontbakery.utils import (get_name_entries,
-                                get_name_entry_strings)
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FONT_SUBFAMILY_NAME,
-                                    PLATID_STR)
-  failed = False
-  for familyname in get_name_entries(ttFont, NAMEID_FONT_FAMILY_NAME):
-    # we'll only match family/style name entries with the same platform ID:
-    plat = familyname.platformID
-    familyname_str = familyname.string.decode(familyname.getEncoding())
-    for stylename_str in get_name_entry_strings(ttFont,
-                                                NAMEID_FONT_SUBFAMILY_NAME,
-                                                platformID=plat):
-      if len(familyname_str + stylename_str) > 20:
-        failed = True
-        yield WARN, ("The combined length of family and style"
-                     " exceeds 20 chars in the following '{}' entries:"
-                     " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
-                     "").format(PLATID_STR[plat],
-                                unidecode(familyname_str),
-                                unidecode(stylename_str))
-  if not failed:
-    yield PASS, "All name entries are good."
-
-
-@register_check
 @check(
     id = 'com.google.fonts/check/164'
   , rationale = """
@@ -5100,8 +2881,8 @@ def com_google_fonts_check_164(ttFont):
     yield PASS, ("All copyright notice name entries on the"
                  " 'name' table are shorter than 500 characters.")
 
+
 FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
-@register_check
 @check(
     id = 'com.google.fonts/check/165'
   , rationale = """
@@ -5128,8 +2909,6 @@ def com_google_fonts_check_165(ttFont, familyname):
                   "Please report this issue at:\n{}").format(url,
                                                              FB_ISSUE_TRACKER)
 
-
-@register_check
 @check(
     id = 'com.google.fonts/check/166'
   , rationale = """
@@ -5157,228 +2936,6 @@ def com_google_fonts_check_166(ttFont):
                  "").format(fv.get_name_id5_version_string())
 
 
-def get_instance_axis_value(ttFont, instance_name, axis_tag):
-  if not is_variable_font(ttFont):
-    return None
-
-  instance = None
-  for i in ttFont["fvar"].instances:
-    name = ttFont["name"].getDebugName(i.subfamilyNameID)
-    if name == instance_name:
-      instance = i
-      break
-
-  if instance:
-    for axis in ttFont["fvar"].axes:
-      if axis.axisTag == axis_tag:
-        return instance.coordinates[axis_tag]
-
-
-@register_condition
-@condition
-def regular_wght_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Regular", "wght")
-
-
-@register_condition
-@condition
-def bold_wght_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Bold", "wght")
-
-
-@register_condition
-@condition
-def regular_wdth_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Regular", "wdth")
-
-
-@register_condition
-@condition
-def regular_slnt_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Regular", "slnt")
-
-
-@register_condition
-@condition
-def regular_ital_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Regular", "ital")
-
-
-@register_condition
-@condition
-def regular_opsz_coord(ttFont):
-  return get_instance_axis_value(ttFont, "Regular", "opsz")
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/167'
-  , rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wght' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
-
-    If a variable font has a 'wght' (Weight) axis, then the coordinate
-    of its 'Regular' instance is required to be 400.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'regular_wght_coord']
-)
-def com_google_fonts_check_167(ttFont, regular_wght_coord):
-  """ The variable font 'wght' (Weight) axis coordinate
-      must be 400 on the 'Regular' instance. """
-
-  if regular_wght_coord == 400:
-    yield PASS, "Regular:wght is 400."
-  else:
-    yield FAIL, ("The 'wght' axis coordinate of"
-                 " the 'Regular' instance must be 400."
-                 " Got a '{}' coordinate instead."
-                 "").format(regular_wght_coord)
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/168'
-  , rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wdth' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
-
-    If a variable font has a 'wdth' (Width) axis, then the coordinate
-    of its 'Regular' instance is required to be 100.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'regular_wdth_coord']
-)
-def com_google_fonts_check_168(ttFont, regular_wdth_coord):
-  """ The variable font 'wdth' (Width) axis coordinate
-      must be 100 on the 'Regular' instance. """
-
-  if regular_wdth_coord == 100:
-    yield PASS, "Regular:wdth is 100."
-  else:
-    yield FAIL, ("The 'wdth' coordinate of"
-                 " the 'Regular' instance must be 100."
-                 " Got {} as a default value instead."
-                 "").format(regular_wdth_coord)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/169'
-  , rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'slnt' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
-
-    If a variable font has a 'slnt' (Slant) axis, then the coordinate
-    of its 'Regular' instance is required to be zero.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'regular_slnt_coord']
-)
-def com_google_fonts_check_169(ttFont, regular_slnt_coord):
-  """ The variable font 'slnt' (Slant) axis coordinate
-      must be zero on the 'Regular' instance. """
-
-  if regular_slnt_coord == 0:
-    yield PASS, "Regular:slnt is zero."
-  else:
-    yield FAIL, ("The 'slnt' coordinate of"
-                 " the 'Regular' instance must be zero."
-                 " Got {} as a default value instead."
-                 "").format(regular_slnt_coord)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/170'
-  , rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'ital' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
-
-    If a variable font has a 'ital' (Italic) axis, then the coordinate
-    of its 'Regular' instance is required to be zero.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'regular_ital_coord']
-)
-def com_google_fonts_check_170(ttFont, regular_ital_coord):
-  """ The variable font 'ital' (Italic) axis coordinate
-      must be zero on the 'Regular' instance. """
-
-  if regular_ital_coord == 0:
-    yield PASS, "Regular:ital is zero."
-  else:
-    yield FAIL, ("The 'ital' coordinate of"
-                 " the 'Regular' instance must be zero."
-                 " Got {} as a default value instead."
-                 "").format(regular_ital_coord)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/171'
-  , rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'opsz' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
-
-    If a variable font has a 'opsz' (Optical Size) axis, then the coordinate
-    of its 'Regular' instance is recommended to be a value in the range 9 to 13.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'regular_opsz_coord']
-)
-def com_google_fonts_check_171(ttFont, regular_opsz_coord):
-  """ The variable font 'opsz' (Optical Size) axis coordinate
-      should be between 9 and 13 on the 'Regular' instance. """
-
-  if regular_opsz_coord >= 9 and regular_opsz_coord <= 13:
-    yield PASS, ("Regular:opsz coordinate ({})"
-                 " looks good.").format(regular_opsz_coord)
-  else:
-    yield WARN, ("The 'opsz' (Optical Size) coordinate"
-                 " on the 'Regular' instance is recommended"
-                 " to be a value in the range 9 to 13."
-                 " Got a '{}' coordinate instead."
-                 "").format(regular_opsz_coord)
-
-
-@register_check
-@check(
-    id = 'com.google.fonts/check/172'
-  , rationale = """
-    The Open-Type spec's registered
-    design-variation tag 'wght' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
-    does not specify a required value for the 'Bold' instance of a variable font.
-    But Dave Crossland suggested that we should enforce a
-    required value of 700 in this case.
-    """
-  , request = 'https://github.com/googlefonts/fontbakery/issues/1707'
-  , conditions=['is_variable_font',
-                'bold_wght_coord']
-)
-def com_google_fonts_check_172(ttFont, bold_wght_coord):
-  """ The variable font 'wght' (Weight) axis coordinate
-      must be 700 on the 'Bold' instance. """
-
-  if bold_wght_coord == 700:
-    yield PASS, "Bold:wght is 700."
-  else:
-    yield FAIL, ("The 'wght' axis coordinate of"
-                 " the 'Bold' instance must be 700."
-                 " Got a '{}' coordinate instead."
-                 "").format(bold_wght_coord)
-
-
 # Disabling this check since the previous implementation was
 # bogus due to the way fonttools encodes the data into the TTF
 # files and the new attempt at targetting the real problem is
@@ -5386,7 +2943,7 @@ def com_google_fonts_check_172(ttFont, bold_wght_coord):
 # FIXME: reimplement this addressing the actual root cause of the issue.
 # See also ongoing discussion at:
 # https://github.com/googlefonts/fontbakery/issues/1727
-#@register_check
+@disable
 @check(
     id = 'com.google.fonts/check/173'
   , rationale = """
@@ -5424,7 +2981,184 @@ def com_google_fonts_check_173(ttFont):
   if not failed:
     yield PASS, "The x-coordinates of all glyphs look good."
 
+def is_librebarcode(font):
+  font_filenames = [
+    "LibreBarcode39-Regular.ttf",
+    "LibreBarcode39Text-Regular.ttf",
+    "LibreBarcode128-Regular.ttf",
+    "LibreBarcode128Text-Regular.ttf",
+    "LibreBarcode39Extended-Regular.ttf",
+    "LibreBarcode39ExtendedText-Regular.ttf"
+  ]
+  for font_filename in font_filenames:
+    if font_filename in font:
+      return True
 
+@condition(force=True)
+def fontforge_skip_checks(font):
+  """Skip by fontforge reported issues for google fonts specific fonts."""
+  if is_librebarcode(font):
+    # see https://github.com/graphicore/librebarcode/issues/3
+    # 0x20: Glyphs have points at extremas
+    # 0x200: Font doesn't have invalid glyph names
+    return 0x20 + 0x200
+  return None
+
+def check_filter(checkid, font=None, **iterargs):
+  if font and is_librebarcode(font) and checkid in (
+        # See: https://github.com/graphicore/librebarcode/issues/3
+        'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
+      , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
+      , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
+      , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
+  ):
+    return False, ('LibreBarcode is blacklisted for this check, see '
+                  'https://github.com/graphicore/librebarcode/issues/3')
+  return True, None
+
+specification.set_check_filter(check_filter)
+
+specification.auto_register(globals())
+
+# this is from the output of
+# $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
+expected_check_ids = [
+        'com.google.fonts/check/001' # Checking file is named canonically.
+      , 'com.google.fonts/check/002' # Checking all files are in the same directory.
+      , 'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
+      , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
+      , 'com.google.fonts/check/005' # DESCRIPTION.en_us.html must have more than 200 bytes.
+      , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
+      , 'com.google.fonts/check/007' # Font designer field in METADATA.pb must not be 'unknown'.
+      , 'com.google.fonts/check/008' # Fonts have consistent underline thickness?
+      , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
+      , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
+      , 'com.google.fonts/check/011' # Fonts have equal numbers of glyphs?
+      , 'com.google.fonts/check/012' # Fonts have equal glyph names?
+      , 'com.google.fonts/check/013' # Fonts have equal unicode encodings?
+      , 'com.google.fonts/check/014' # Make sure all font files have the same version value.
+      , 'com.google.fonts/check/015' # Font has post table version 2?
+      , 'com.google.fonts/check/016' # Checking OS/2 fsType.
+      , 'com.google.fonts/check/018' # Checking OS/2 achVendID.
+      , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
+      , 'com.google.fonts/check/020' # Checking OS/2 usWeightClass.
+      , 'com.google.fonts/check/028' # Check font has a license.
+      , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
+      , 'com.google.fonts/check/030' # "License URL matches License text on name table?
+      , 'com.google.fonts/check/031' # Description strings in the name table must not contain copyright info.
+      , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 100 characters.
+      , 'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
+      , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
+      , 'com.google.fonts/check/035' # Checking with ftxvalidator.
+      , 'com.google.fonts/check/036' # Checking with ots-sanitize.
+      , 'com.google.fonts/check/037' # Checking with Microsoft Font Validator.
+      , 'com.google.fonts/check/038' # FontForge validation outputs error messages?
+      , 'com.google.fonts/check/039' # FontForge checks.
+      , 'com.google.fonts/check/040' # Checking OS/2 usWinAscent & usWinDescent.
+      , 'com.google.fonts/check/041' # Checking Vertical Metric Linegaps.
+      , 'com.google.fonts/check/042' # Checking OS/2 Metrics match hhea Metrics.
+      , 'com.google.fonts/check/043' # Checking unitsPerEm value is reasonable.
+      , 'com.google.fonts/check/044' # Checking font version fields.
+      , 'com.google.fonts/check/045' # Does the font have a DSIG table?
+      , 'com.google.fonts/check/046' # Font contains the first few mandatory glyphs (.null or NULL, CR and space)?
+      , 'com.google.fonts/check/047' # Font contains glyphs for whitespace characters?
+      , 'com.google.fonts/check/048' # Font has **proper** whitespace glyph names?
+      , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
+      , 'com.google.fonts/check/050' # Whitespace glyphs have coherent widths?
+      , 'com.google.fonts/check/052' # Font contains all required tables?
+      , 'com.google.fonts/check/053' # Are there unwanted tables?
+      , 'com.google.fonts/check/054' # Show hinting filesize impact.
+      , 'com.google.fonts/check/055' # Version format is correct in 'name' table?
+      , 'com.google.fonts/check/056' # Font has old ttfautohint applied?
+      , 'com.google.fonts/check/057' # Name table entries should not contain line-breaks.
+      , 'com.google.fonts/check/058' # Glyph names are all valid?
+      , 'com.google.fonts/check/059' # Font contains unique glyph names?
+      , 'com.google.fonts/check/060' # No glyph is incorrectly named?
+      , 'com.google.fonts/check/061' # EPAR table present in font?
+      , 'com.google.fonts/check/062' # Is GASP table correctly set?
+      , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
+      , 'com.google.fonts/check/064' # Is there a caret position declared for every ligature?
+      , 'com.google.fonts/check/065' # Is there kerning info for non-ligated sequences?
+      , 'com.google.fonts/check/066' # Is there a "kern" table declared in the font?
+      , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
+      , 'com.google.fonts/check/068' # Does full font name begin with the font family name?
+      , 'com.google.fonts/check/069' # Is there any unused data at the end of the glyf table?
+      , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
+      , 'com.google.fonts/check/071' # Font follows the family naming recommendations?
+      , 'com.google.fonts/check/072' # Font enables smart dropout control in "prep" table instructions?
+      , 'com.google.fonts/check/073' # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
+      , 'com.google.fonts/check/074' # Are there non-ASCII characters in ASCII-only NAME table entries?
+      , 'com.google.fonts/check/075' # Check for points out of bounds.
+      , 'com.google.fonts/check/076' # Check glyphs have unique unicode codepoints.
+      , 'com.google.fonts/check/077' # Check all glyphs have codepoints assigned.
+      , 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
+      , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
+      , 'com.google.fonts/check/080' # METADATA.pb: Ensure designer simple short name.
+      , 'com.google.fonts/check/081' # METADATA.pb: Fontfamily is listed on Google Fonts API?
+      , 'com.google.fonts/check/083' # METADATA.pb: check if fonts field only has unique "full_name" values.
+      , 'com.google.fonts/check/084' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
+      , 'com.google.fonts/check/085' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
+      , 'com.google.fonts/check/086' # METADATA.pb should contain at least "menu" and "latin" subsets.
+      , 'com.google.fonts/check/087' # METADATA.pb subsets should be alphabetically ordered.
+      , 'com.google.fonts/check/088' # Copyright notice is the same in all fonts?
+      , 'com.google.fonts/check/089' # Check that METADATA family values are all the same.
+      , 'com.google.fonts/check/090' # According Google Fonts standards, families should have a Regular style.
+      , 'com.google.fonts/check/091' # Regular should be 400.
+      , 'com.google.fonts/check/092' # Checks METADATA.pb font.name field matches family name declared on the name table.
+      , 'com.google.fonts/check/093' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
+      , 'com.google.fonts/check/094' # METADATA.pb font.fullname value matches fullname declared on the name table?
+      , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
+      , 'com.google.fonts/check/096' # METADATA.pb family.full_name and family.post_script_name fields have equivalent values ?
+      , 'com.google.fonts/check/097' # METADATA.pb family.filename and family.post_script_name fields have equivalent values?
+      , 'com.google.fonts/check/098' # METADATA.pb font.name field contains font name in right format?
+      , 'com.google.fonts/check/099' # METADATA.pb font.full_name field contains font name in right format?
+      , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
+      , 'com.google.fonts/check/101' # METADATA.pb font.post_script_name field contains font name in right format?
+      , 'com.google.fonts/check/102' # Copyright notice on METADATA.pb matches canonical pattern?
+      , 'com.google.fonts/check/103' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
+      , 'com.google.fonts/check/104' # Copyright notice shouldn't exceed 500 chars.
+      , 'com.google.fonts/check/105' # Filename is set canonically in METADATA.pb?
+      , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
+      , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
+      , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
+      , 'com.google.fonts/check/109' # Check if fontname is not camel cased.
+      , 'com.google.fonts/check/110' # Check font name is the same as family name.
+      , 'com.google.fonts/check/111' # Check that font weight has a canonical value.
+      , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
+      , 'com.google.fonts/check/113' # Metadata weight matches postScriptName.
+      , 'com.google.fonts/check/115' # Font styles are named canonically?
+      , 'com.google.fonts/check/116' # Is font em size (ideally) equal to 1000?
+      , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
+      , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
+      , 'com.google.fonts/check/119' # TTFAutohint x-height increase value is same as in previous release on Google Fonts ?
+      , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
+      , 'com.google.fonts/check/130' # Checking post.italicAngle value.
+      , 'com.google.fonts/check/131' # Checking head.macStyle value.
+      , 'com.google.fonts/check/152' # Name table strings must not contain 'Reserved Font Name'.
+      , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
+      , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
+      , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
+      , 'com.google.fonts/check/156' # Font has all mandatory 'name' table entries ?
+      , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
+      , 'com.google.fonts/check/158' # Check name table: FONT_SUBFAMILY_NAME entries.
+      , 'com.google.fonts/check/159' # Check name table: FULL_FONT_NAME entries.
+      , 'com.google.fonts/check/160' # Check name table: POSTSCRIPT_NAME entries.
+      , 'com.google.fonts/check/161' # Check name table: TYPOGRAPHIC_FAMILY_NAME entries.
+      , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
+      , 'com.google.fonts/check/163' # Combined length of family and style must not exceed 20 characters.
+      , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
+      , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
+      , 'com.google.fonts/check/166' # Check for font-v versioning
+      , 'com.google.fonts/check/167' # The variable font 'wght' (Weight) axis coordinate must be 400 on the 'Regular' instance.
+      , 'com.google.fonts/check/168' # The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance.
+      , 'com.google.fonts/check/169' # The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance.
+      , 'com.google.fonts/check/170' # The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance.
+      , 'com.google.fonts/check/171' # The variable font 'opsz' (Optical Size) axis coordinate should be between 9 and 13 on the 'Regular' instance.
+      , 'com.google.fonts/check/172' # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
+]
+specification.test_expected_checks(expected_check_ids, exclusive=True)
+
+# FIXME: use logging.info or remove?
 for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))
 
