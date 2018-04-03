@@ -14,23 +14,22 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
 from __future__ import absolute_import, print_function, unicode_literals, division
+
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import object
+# using this to override print function somewhere
+import builtins
+
 import sys, os
 from collections import Counter
 from functools import partial
-try:
-  from cStringIO import StringIO
-except ImportError:
-  # Python 3
-  from StringIO import StringIO
+
+# Python 1/3
+from io import StringIO
 
 from time import time
-
-# using this to override print function somewhere
-try:
-  import __builtin__
-except ImportError:
-  # Python 3
-  import builtins as __builtin__
 
 from fontbakery.reporters import FontbakeryReporter
 
@@ -165,7 +164,8 @@ class ThrottledOut(object):
       progressbar, reset_progressbar = self._draw_progressbar();
       self._buffer.append(progressbar)
 
-    map(self._outFile.write, self._buffer)
+    for line in self._buffer:
+      self._outFile.write(line)
     #self._outFile.flush() needed?
     self._buffer = []
     if reset_progressbar:
@@ -223,7 +223,7 @@ class TerminalProgress(FontbakeryReporter):
 
   def _render_event(self, status, message, identity):
     output = StringIO()
-    print = partial(__builtin__.print, file=output)
+    print = partial(builtins.print, file=output)
 
     if status == START and status.weight >= self._structure_threshold:
       order = message
@@ -231,8 +231,8 @@ class TerminalProgress(FontbakeryReporter):
 
     if status == END and status.weight >= self._structure_threshold:
       if self._print_progress:
-        print(self._draw_progressbar().encode('utf-8'))
-      print()
+        print(self._draw_progressbar())#.encode('utf-8'))
+      print('')
       if self._unicorn and len(self._order) \
               and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
         unicorn = UNICORN
@@ -247,7 +247,8 @@ class TerminalProgress(FontbakeryReporter):
     if self._print_progress:
       # set/reset
       self._progressbar = list('.'*len(order))
-      map(self._set_progress_event, self._results)
+      for event in self._results:
+        self._set_progress_event(event)
 
   def _set_progress_event(self, event):
       _, status, identity = event;
@@ -300,7 +301,8 @@ class TerminalProgress(FontbakeryReporter):
 
     append('', len_prefix)
     append('[')
-    map(append, self._progressbar)
+    for item in self._progressbar:
+      append(item)
     append(']')
     percentstring = '{0:3d}%'.format(percent)
     append(percentstring, len(percentstring), ' ')
@@ -309,7 +311,7 @@ class TerminalProgress(FontbakeryReporter):
 
   def draw_progressbar(self):
     # tty size
-    rows, columns = map(int, os.popen('stty size', 'r').read().split())
+    rows, columns = list(map(int, os.popen('stty size', 'r').read().split()))
     # this is the amout of space the spinner takes when rendered in the tty
     # NOTE: the color codes are not taking space in the tty, so we can't
     # just take the length of `spinner`.
@@ -404,10 +406,10 @@ class TerminalReporter(TerminalProgress):
 
     if status == STARTSECTION and structure_threshold:
       order = message
-      print ('='*8, '{}'.format(section),'='*8)
+      print('='*8, '{}'.format(section),'='*8)
       print('{} {} in section'.format(len(order)
                           , len(order) == 1 and 'check' or 'checks' ))
-      print()
+      print('')
 
     if status == STARTCHECK and structure_threshold:
       if self.runner:
@@ -432,7 +434,7 @@ class TerminalReporter(TerminalProgress):
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold and structure_threshold:
       print(' * {}: {}'.format(formatStatus(status, color=self._use_color)
-                                               , message).encode('utf-8'))
+                                               , message))#.encode('utf-8'))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
@@ -440,15 +442,15 @@ class TerminalReporter(TerminalProgress):
       print('\n   Result: {}\n'.format(formatStatus(message, color=self._use_color)))
 
     if status == ENDSECTION and structure_threshold:
-      print()
+      print('')
       print('Section results:')
-      print()
+      print('')
       print(_render_results_counter(message, color=self._use_color))
-      print()
+      print('')
       print ('='*8, 'END {}'.format(section),'='*8)
 
     if status == END and structure_threshold:
-      print()
+      print('')
       if self.results_by:
         print('Collected results by', self.results_by)
         for key in self._collected_results:
@@ -463,12 +465,12 @@ class TerminalReporter(TerminalProgress):
           print('{}: {}'.format(self.results_by, val))
           print(_render_results_counter(self._collected_results[key],
                                                 color=self._use_color))
-          print()
+          print('')
 
       print('Total:')
-      print()
+      print('')
       print(_render_results_counter(message, color=self._use_color))
-      print()
+      print('')
 
       # same end message as parent
       text = super(TerminalReporter, self)._render_event(*event)
@@ -512,7 +514,7 @@ class TerminalReporter(TerminalProgress):
   def _render_event(self, *event):
     status, message, (section, check, iterargs) = event
     output = StringIO()
-    print = partial(__builtin__.print, file=output)
+    print = partial(builtins.print, file=output)
 
     if self._render_async:
       self._render_event_async(print, event)

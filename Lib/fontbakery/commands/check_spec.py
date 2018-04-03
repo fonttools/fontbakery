@@ -5,6 +5,7 @@
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
 from __future__ import absolute_import, print_function, unicode_literals
 
+from builtins import filter
 import sys
 import argparse
 from collections import OrderedDict

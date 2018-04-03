@@ -14,6 +14,13 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
+from builtins import filter
+from builtins import map
+from builtins import range
+from past.builtins import basestring
+from builtins import object
+
+
 import types
 from collections import OrderedDict, Counter
 from functools import partial
@@ -310,7 +317,7 @@ class CheckRunner(object):
 
     status, message = result
     # Allow booleans, but there's no way to issue a WARNING
-    if isinstance(status, types.BooleanType):
+    if isinstance(status, bool):
       # normalize
       status = PASS if status else FAIL
       result = (status, message)
@@ -1384,7 +1391,6 @@ class Spec(object):
         module_names = [module_name]
 
       for module_name in module_names:
-        print('module_name', module_name, 'names', names)
         module = importlib.import_module(module_name, package=package)
         if names is None:
           results.append(module)
@@ -1417,7 +1423,7 @@ class Spec(object):
       if filter_func returns a falsy value for an item, the item will
       not be registered.
     """
-    all_items = symbol_table.values() + self._load_spec_imports(symbol_table)
+    all_items = list(symbol_table.values()) + self._load_spec_imports(symbol_table)
     namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
     namespace_items = []
 
