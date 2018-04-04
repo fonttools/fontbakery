@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
 # used to inform get_module_specification whether and how to create a specification
-# from fontbakery.fonts_spec import spec_factory # NOQA
+from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 @check(id='com.google.fonts/check/069')
 def com_google_fonts_check_069(ttFont):
