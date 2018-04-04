@@ -2,6 +2,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
+from fontbakery.callable import check, condition
 from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
