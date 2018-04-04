@@ -6,7 +6,7 @@ from fontbakery.checkrunner import FAIL, PASS, WARN, INFO
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
-from fontbakery.fonts_spec import spec_factory # NOQA
+# from fontbakery.fonts_spec import spec_factory # NOQA
 
 spec_imports = [
     ('.shared_conditions', ('seems_monospaced', 'monospace_stats'))

@@ -5,12 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from future import standard_library
 standard_library.install_aliases()
-from builtins import str
-from builtins import map
-from builtins import hex
-from builtins import range
-from past.utils import old_div # NOQA
-from builtins import object
+from builtins import (str, map, hex, range, object)
 
 
 from fontbakery.checkrunner import (
@@ -47,7 +42,7 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 
 class Disabled(object):
   def __init__(self, func):
-    self.func = func;
+    self.func = func
 
 def disable(func):
   return Disabled(func)
@@ -1076,7 +1071,9 @@ def com_google_fonts_check_082(metadata):
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
                  " is OK, so we won't look for it at profiles.csv")
   else:
-    import urllib.request, urllib.parse, urllib.error
+    import urllib.request
+    import urllib.parse
+    import urllib.error
     import csv
     try:
       handle = urllib.request.urlopen(PROFILES_RAW_URL)
@@ -3163,7 +3160,6 @@ for section_name, section in specification._sections.items():
   print ("There is a total of {} checks on {}.".format(len(section._checks), section_name))
 
 
-@register_check
 @check(
     id = 'com.google.fonts/check/174'
   , rationale = """
