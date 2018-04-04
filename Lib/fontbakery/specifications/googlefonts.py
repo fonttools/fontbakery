@@ -1071,12 +1071,10 @@ def com_google_fonts_check_082(metadata):
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
                  " is OK, so we won't look for it at profiles.csv")
   else:
-    import urllib.request
-    import urllib.parse
-    import urllib.error
+    from urllib import request
     import csv
     try:
-      handle = urllib.request.urlopen(PROFILES_RAW_URL)
+      handle = request.urlopen(PROFILES_RAW_URL)
       designers = []
       for row in csv.reader(handle):
         if not row:
