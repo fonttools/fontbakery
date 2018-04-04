@@ -6,7 +6,7 @@ from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
-# from fontbakery.fonts_spec import spec_factory # NOQA
+from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 from .shared_conditions import is_variable_font
 
 spec_imports = [
