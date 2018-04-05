@@ -48,6 +48,8 @@ fonts_expected_value = ExpectedValue(
       'fonts'
     , default=[]
     , description='A list of the font file paths to check.'
+    , validator=lambda fonts: (True, None) if len(fonts) \
+                                    else (False, 'Value is empty.')
 )
 
 def spec_factory(**kwds):
