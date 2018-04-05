@@ -222,6 +222,9 @@ class CircularAliasError(FontBakeryRunnerError):
 class NamespaceError(FontBakeryRunnerError):
   pass
 
+class ValueValidationError(FontBakeryRunnerError):
+  pass
+
 def get_traceback():
   """
   Returns a string with a traceback as the python interpreter would
@@ -271,7 +274,7 @@ class CheckRunner(object):
     self._spec.test_dependencies()
     valid, message = self._spec.validate_values(values)
     if not valid:
-      raise SetupError('Validation for spec of expected values failed:'
+      raise ValueValidationError('Validation of expected values failed:'
                       '\n{}'.format(message))
     self._values = values;
 

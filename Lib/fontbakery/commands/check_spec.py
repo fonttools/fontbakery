@@ -13,6 +13,7 @@ from collections import OrderedDict
 from fontbakery.checkrunner import (
               distribute_generator
             , CheckRunner
+            , ValueValidationError
             , Spec
             , get_module_specification
             , DEBUG
@@ -190,11 +191,16 @@ def main(specification=None, values=None):
       if hasattr(args, key):
         values_[key] = getattr(args, key)
 
-  runner = runner_factory(specification
+  try:
+    runner = runner_factory(specification
                      , explicit_checks=args.checkid
                      , custom_order=args.order
                      , values=values_
                      )
+  except ValueValidationError as e:
+    print(e)
+    argument_parser.print_usage()
+    sys.exit()
 
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
