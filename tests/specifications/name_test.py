@@ -353,7 +353,16 @@ def test_check_071():
     status, message = list(check(ttFont))[-1]
     assert status == INFO
 
-# TODO: test_check_152
+
+def NOT_IMPLEMENTED_test_check_152():
+  """ Name table strings must not contain 'Reserved Font Name'. """
+  # from fontbakery.specifications.os2 import com_google_fonts_check_152 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN, "Name table entry contains 'Reserved Font Name'."
+  # - PASS
+
 
 def test_check_163():
   """ Check font name is the same as family name. """

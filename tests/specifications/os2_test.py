@@ -96,7 +96,25 @@ def test_check_020():
     status, message = list(check(TTFont(font), exp_os2_weight(font)))[-1]
     assert status == PASS
 
-# TODO: test_check_034
+
+def NOT_IMPLEMENTED_test_check_034():
+  """ Check if OS/2 xAvgCharWidth is correct. """
+  # from fontbakery.specifications.os2 import com_google_fonts_check_034 as check
+  # TODO: Implement-me!
+  #
+  # The code names below are not the best ones, but will do for now.
+  # I think this test could pretty well be split into two (one for each table version)
+  #
+  # code-paths:
+  # - FAIL, code="no-glyph"
+  # - PASS, code="v3+pass" "OS/2 xAvgCharWidth is correct."
+  # - WARN, code="v3+warn" "OS/2 xAvgCharWidth differs from expected value by a small ammount"
+  # - FAIL, code="v3+pass" ("OS/2 xAvgCharWidth differs from expected value")
+  # - PASS, code="old+pass" "OS/2 xAvgCharWidth is correct."
+  # - WARN, code="old+warn" "OS/2 xAvgCharWidth differs from expected value by a small ammount"
+  # - FAIL, code="old+pass" ("OS/2 xAvgCharWidth differs from expected value")
+  pass
+
 
 def test_check_040(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """

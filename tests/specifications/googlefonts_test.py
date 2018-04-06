@@ -438,9 +438,30 @@ def test_check_029(mada_ttFonts):
     status, message = list(check(ttFont, license))[-1]
     assert status == FAIL and message.code == 'missing'
 
-# TODO: test_check_030
-# TODO: test_check_050 (the original check itself has unclear semantics, so that needs to be reviewed first)
-# TODO: test_check_054
+
+def NOT_IMPLEMENTED_test_check_030():
+  """ License URL matches License text on name table? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_030 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, code="ufl"
+  # - FAIL, code="licensing-inconsistency"
+  # - FAIL, code="no-license-found"
+  # - FAIL, code="bad-entries"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_054():
+  """ Show hinting filesize impact. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_054 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN, code="ttfa-missing"
+  # - WARN, code="ttfa-bug"
+  # - INFO
+
 
 def test_check_055():
   """ Version format is correct in 'name' table ? """
@@ -472,7 +493,20 @@ def test_check_055():
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "no-version-string"
 
-# TODO: test_check_056
+
+def NOT_IMPLEMENTED_test_check_056():
+  """ Font has old ttfautohint applied? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_056 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, code="lacks-version-strings"
+  # - INFO, "Could not detect which version of ttfautohint was used in this font."
+  # - SKIP, TTFAUTOHINT_MISSING_MSG
+  # - WARN, "detected an old ttfa version"
+  # - PASS
+  # - FAIL, code="parse-error"
+
 
 def test_check_061():
   """ EPAR table present in font ? """
@@ -493,7 +527,20 @@ def test_check_061():
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
-# TODO: test_check_062
+
+def NOT_IMPLEMENTED_test_check_062():
+  """ Is GASP table correctly set? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_062 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "GASP.gaspRange method value have wrong type."
+  # - FAIL, "GASP does not have 0xFFFF gaspRange."
+  # - FAIL, "GASP should only have 0xFFFF gaspRange, but another one was also found."
+  # - WARN, "All flags in GASP range 0xFFFF (i.e. all font sizes) must be set to 1"
+  # - PASS, "GASP table is correctly set."
+  # - FAIL, "Font is missing the GASP table."
+
 
 def test_check_067():
   """ Make sure family name does not begin with a digit. """
@@ -539,7 +586,162 @@ def test_check_070():
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
 
-# FIXME: TODO: checks 072 to 093
+
+def NOT_IMPLEMENTED_test_check_074():
+  """ Are there non-ASCII characters in ASCII-only NAME table entries? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_074 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - INFO, "Bad string"
+  # - FAIL, "non-ASCII chars"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_080():
+  """ METADATA.pb: Ensure designer simple short name. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_080 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "'designer' key must be simple short name"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_081():
+  """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_081 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN, "Family not found via Google Fonts API."
+  # - PASS, "Font is properly listed via Google Fonts API."
+
+
+# FIXME: This check is currently disabled:
+# - Review and re-enable.
+# - Implement the test.
+def NOT_IMPLEMENTED_test_check_082():
+  """ METADATA.pb: Designer exists in Google Fonts profiles.csv? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_082 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # ...
+
+def NOT_IMPLEMENTED_test_check_083():
+  """ METADATA.pb: check if fonts field only has unique "full_name" values. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_083 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_084():
+  """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_084 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_085():
+  """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_085 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_086():
+  """ METADATA.pb should contain at least "menu" and "latin" subsets. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_086 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_087():
+  """ METADATA.pb subsets should be alphabetically ordered. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_087 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_088():
+  """ Copyright notice is the same in all fonts? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_088 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_089():
+  """ Check that METADATA family values are all the same. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_089 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_090():
+  """ According Google Fonts standards, families should have a Regular style. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_090 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_091():
+  """ Regular should be 400. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_091 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_092():
+  """ Checks METADATA.pb font.name field matches
+      family name declared on the name table. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_092 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Font lacks a FONT_FAMILY_NAME entry"
+  # - FAIL, "Unmatched family name in font"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_093():
+  """ Checks METADATA.pb font.post_script_name matches
+      postscript name declared on the name table. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_093 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Font lacks a POSTSCRIPT_NAME"
+  # - FAIL, "Unmatched postscript name in font"
+  # - PASS
+
 
 def test_check_094():
   """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
@@ -599,8 +801,28 @@ def test_check_095():
       assert status == FAIL
       ttFont["name"].names[i].string = good # restore good value
 
-# TODO: test_check_096
-# TODO: test_check_097
+
+def NOT_IMPLEMENTED_test_check_096():
+  """ METADATA.pb family.full_name and family.post_script_name
+      fields have equivalent values ? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_096 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "METADATA.pb full_name does not match post_script_name"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_097():
+  """ METADATA.pb family.filename and family.post_script_name
+      fields have equivalent values? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_097 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "METADATA.pb filename does not match post_script_name"
+  # - PASS
+
 
 MONTSERRAT_RIBBI = [
   "data/test/montserrat/Montserrat-Regular.ttf",
@@ -782,9 +1004,36 @@ def test_check_102():
   status, message = list(check(font_meta))[-1]
   assert status == PASS
 
-# TODO: test_check_103
-# TODO: test_check_104
-# TODO: test_check_105
+
+def NOT_IMPLEMENTED_test_check_103():
+  """ Copyright notice on METADATA.pb does not contain Reserved Font Name? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_103 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_104():
+  """ Copyright notice shouldn't exceed 500 chars. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_104 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_105():
+  """ Filename is set canonically in METADATA.pb? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_105 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
 
 def test_check_106():
   """ METADATA.pb font.style "italic" matches font internals ? """
@@ -875,6 +1124,7 @@ def test_check_107():
   # Not it's not! FAIL! :-D
   assert status == FAIL and message.code == "bad-macstyle"
 
+
 def test_check_108():
   """ METADATA.pb font.name and font.full_name fields match the values declared on the name table? """
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
@@ -913,6 +1163,7 @@ def test_check_108():
       assert status == FAIL and message.code == "familyname-mismatch"
       # and restore the good value:
       ttFont['name'].names[i].string = backup
+
 
 def test_check_109():
   """ Check if fontname is not camel cased. """
@@ -965,7 +1216,16 @@ def test_check_110():
   status, message = list(check(family_meta, font_meta))[-1]
   assert status == FAIL
 
-# TODO: test_check_111
+
+def NOT_IMPLEMENTED_test_check_111():
+  """ Check that font weight has a canonical value. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_111 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
 
 def test_check_112():
   """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
@@ -989,8 +1249,106 @@ def test_check_112():
     status, message = list(check(ttFont, font_meta))[-1]
     assert status == FAIL
 
-# TODO: test_check_113
-# FIXME: TODO: checks 115 to 131
+
+def NOT_IMPLEMENTED_test_check_113():
+  """ Metadata weight matches postScriptName. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_113 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "METADATA.pb: Font weight value is invalid."
+  # - FAIL, "METADATA.pb: Mismatch between postScriptName and weight value."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_115():
+  """ Font styles are named canonically? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_115 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - SKIP, "Applicable only to font styles declared as 'italic' or 'regular' on METADATA.pb."
+  # - FAIL, "Font style should be italic."
+  # - FAIL, "Font style should be normal."
+  # - PASS, "Font styles are named canonically."
+
+
+def NOT_IMPLEMENTED_test_check_116():
+  """ Is font em size (ideally) equal to 1000? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_116 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_117():
+  """ Version number has increased since previous release on Google Fonts? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_117 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Version number is equal to version on Google Fonts."
+  # - FAIL, "Version number is less than version on Google Fonts."
+  # - FAIL, "Version number is equal to version on Google Fonts GitHub repo."
+  # - FAIL, "Version number is less than version on Google Fonts GitHub repo."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_118():
+  """ Glyphs are similiar to Google Fonts version? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_118 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN, "Following glyphs differ greatly from Google Fonts version"
+  # - PASS, "Glyphs are similar"
+
+
+def NOT_IMPLEMENTED_test_check_119():
+  """ TTFAutohint x-height increase value is same as in
+      previous release on Google Fonts? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_119 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN ("fpgm" in ttFont)
+  # - WARN ("fpgm" in api_gfonts_ttFont)
+  # - FAIL, "TTFAutohint --increase-x-height should match the previous version's value"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_129():
+  """ Checking OS/2 fsSelection value. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_129 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # ...
+
+
+def NOT_IMPLEMENTED_test_check_130():
+  """ Checking post.italicAngle value. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_130 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "The value of post.italicAngle must be negative."
+  # - FAIL, "The value of post.italicAngle must not exceed 20 degrees."
+  # - FAIL, "Font is italic, so post.italicAngle should be non-zero."
+  # - FAIL, "Font is not italic, so post.italicAngle should be equal to zero."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_131():
+  """ Checking head.macStyle value. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_131 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # ...
+
 
 def test_check_153(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
@@ -1129,8 +1487,29 @@ def test_check_156():
         status, message = list(check(ttFont, style))[-1]
         assert status == FAIL
 
-# TODO: test_check_157
-# TODO: test_check_158
+
+def NOT_IMPLEMENTED_test_check_157():
+  """ Check name table: FONT_FAMILY_NAME entries. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_157 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Font should not have a certain name table entry."
+  # - FAIL, "Bad familyname value on a FONT_FAMILY_NAME entry."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_158():
+  """ Check name table: FONT_SUBFAMILY_NAME entries. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_158 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Style name inferred from filename is not canonical."
+  # - FAIL, "Font should not have a certain name table entry."
+  # - FAIL, "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
+  # - PASS
+
 
 def test_check_159():
   """ Check name table: FULL_FONT_NAME entries. """
@@ -1177,9 +1556,38 @@ def test_check_159():
       # restore it:
       ttFont["name"].names[index].string = backup
 
-# TODO: test_check_160
-# TODO: test_check_161
-# TODO: test_check_162
+
+def NOT_IMPLEMENTED_test_check_160():
+  """ Check name table: POSTSCRIPT_NAME entries. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_160 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_161():
+  """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_161 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN
+  # - FAIL
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_162():
+  """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_162 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN
+  # - FAIL
+  # - PASS
+
 
 def test_check_164():
   """ Length of copyright notice must not exceed 500 characters. """
@@ -1281,6 +1689,7 @@ def disabled_test_check_173():
   glyphName = "J"
   coords = ttFont["glyf"].glyphs[glyphName].coordinates
 
+# FIXME:
 # Note: I thought this was the proper way to induce the
 # issue, but now I think I'll need to look more
 # carefully at sample files providedby MarcFoley
