@@ -59,6 +59,9 @@ fonts_expected_value = ExpectedValue(
       'fonts'
     , default=[]
     , description='A list of the ufo file paths to check.'
+    , validator=lambda fonts: (True, None) if len(fonts) \
+                                    else (False, 'Value is empty.')
+
 )
 
 # ----------------------------------------------------------------------------

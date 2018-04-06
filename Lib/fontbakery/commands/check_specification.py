@@ -192,9 +192,6 @@ def main(specification=None, values=None):
         values_[key] = getattr(args, key)
 
   try:
-    if not args.fonts:
-      raise ValueValidationError, "No files to check specified."
-
     runner = runner_factory(specification
                      , explicit_checks=args.checkid
                      , custom_order=args.order
