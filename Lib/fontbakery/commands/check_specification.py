@@ -192,6 +192,9 @@ def main(specification=None, values=None):
         values_[key] = getattr(args, key)
 
   try:
+    if not args.fonts:
+      raise ValueValidationError, "No files to check specified."
+
     runner = runner_factory(specification
                      , explicit_checks=args.checkid
                      , custom_order=args.order
@@ -200,7 +203,7 @@ def main(specification=None, values=None):
   except ValueValidationError as e:
     print(e)
     argument_parser.print_usage()
-    sys.exit()
+    sys.exit(1)
 
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
