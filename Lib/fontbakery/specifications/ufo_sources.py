@@ -44,11 +44,14 @@ class UFOSpec(Spec):
 
         argument_parser.add_argument(
             'fonts',
-            nargs='+',
+            # To allow optional commands like "-L" to work without other input
+            # files:
+            nargs='*',
             type=get_fonts,
             action=MergeAction,
             help='font file path(s) to check.'
             ' Wildcards like *.ufo are allowed.')
+
         return ('fonts',)
 
 

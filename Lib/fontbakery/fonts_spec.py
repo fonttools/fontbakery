@@ -39,9 +39,15 @@ class FontsSpec(Spec):
         target = [item for l in values for item in l]
         setattr(namespace, self.dest, target)
 
-    argument_parser.add_argument('fonts', nargs='*', type=get_fonts,
-                        action=MergeAction, help='font file path(s) to check.'
-                                            ' Wildcards like *.ttf are allowed.')
+    argument_parser.add_argument(
+        'fonts',
+        # To allow optional commands like "-L" to work without other input 
+        # files:
+        nargs='*',
+        type=get_fonts,
+        action=MergeAction,
+        help='font file path(s) to check. Wildcards like *.ttf are allowed.')
+
     return ('fonts', )
 
 fonts_expected_value = ExpectedValue(
