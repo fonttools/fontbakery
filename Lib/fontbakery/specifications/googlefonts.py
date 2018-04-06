@@ -495,17 +495,6 @@ def com_google_fonts_check_016(ttFont):
     yield PASS, ("OS/2 fsType is properly set to zero "
                  "(80's DRM scheme is disabled).")
 
-# DEPRECATED CHECK:
-# com.google.fonts/check/017 - "Assure valid format for the main entries in the name table."
-#
-# REPLACED BY:
-# com.google.fonts/check/156 - "Font has all mandatory 'name' table entries?"
-# com.google.fonts/check/157 - "Check name table: FONT_FAMILY_NAME entries."
-# com.google.fonts/check/158 - "Check name table: FONT_SUBFAMILY_NAME entries."
-# com.google.fonts/check/159 - "Check name table: FULL_FONT_NAME entries."
-# com.google.fonts/check/160 - "Check name table: POSTSCRIPT_NAME entries."
-# com.google.fonts/check/161 - "Check name table: TYPOGRAPHIC_FAMILY_NAME entries."
-# com.google.fonts/check/162 - "Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."
 
 @condition
 def registered_vendor_ids():
@@ -583,17 +572,6 @@ def com_google_fonts_check_019(ttFont):
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"
                  " trademark symbols in name table entries of this font.")
-
-
-# DEPRECATED CHECKS:                                               | REPLACED BY:
-# com.google.fonts/check/??? - "Checking macStyle BOLD bit."       | com.google.fonts/check/131 - "Checking head.macStyle value."
-# com.google.fonts/check/021 - "Checking fsSelection REGULAR bit." | com.google.fonts/check/129 - "Checking OS/2.fsSelection value."
-# com.google.fonts/check/022 - "italicAngle <= 0 ?"                | com.google.fonts/check/130 - "Checking post.italicAngle value."
-# com.google.fonts/check/023 - "italicAngle is < 20 degrees?"      | com.google.fonts/check/130 - "Checking post.italicAngle value."
-# com.google.fonts/check/024 - "italicAngle matches font style?"   | com.google.fonts/check/130 - "Checking post.italicAngle value."
-# com.google.fonts/check/025 - "Checking fsSelection ITALIC bit."  | com.google.fonts/check/129 - "Checking OS/2.fsSelection value."
-# com.google.fonts/check/026 - "Checking macStyle ITALIC bit."     | com.google.fonts/check/131 - "Checking head.macStyle value."
-# com.google.fonts/check/027 - "Checking fsSelection BOLD bit."    | com.google.fonts/check/129 - "Checking OS/2.fsSelection value."
 
 
 @condition
@@ -727,10 +705,12 @@ def com_google_fonts_check_030(ttFont, familyname):
         break
 
   if detected_license == "UFL.txt" and familyname not in LEGACY_UFL_FAMILIES:
-    yield FAIL, ("The Ubuntu Font License is only acceptable on"
-                 " the Google Fonts collection for legacy font families"
-                 " that already adopted such license. New Families should"
-                 " use eigther Apache or Open Font License.")
+    yield FAIL, Message("ufl",
+                        ("The Ubuntu Font License is only acceptable on"
+                         " the Google Fonts collection for legacy font"
+                         " families that already adopted such license."
+                         " New Families should use eigther Apache or"
+                         " Open Font License."))
   else:
     found_good_entry = False
     if detected_license:
@@ -743,54 +723,35 @@ def com_google_fonts_check_030(ttFont, familyname):
             found_good_entry = True
           else:
             failed = True
-            yield FAIL, ("Licensing inconsistency in name table entries!"
-                         " NameID={} (LICENSE DESCRIPTION) indicates"
-                         " {} licensing, but NameID={} (LICENSE URL) has"
-                         " '{}'. Expected:"
-                         " '{}'").format(NAMEID_LICENSE_DESCRIPTION,
-                                         LICENSE_NAME[detected_license],
-                                         NAMEID_LICENSE_INFO_URL,
-                                         string, expected)
+            yield FAIL, Message("licensing-inconsistency",
+                                ("Licensing inconsistency in name table"
+                                 " entries! NameID={} (LICENSE DESCRIPTION)"
+                                 " indicates {} licensing, but NameID={}"
+                                 " (LICENSE URL) has '{}'. Expected: '{}'"
+                                 "").format(NAMEID_LICENSE_DESCRIPTION,
+                                            LICENSE_NAME[detected_license],
+                                            NAMEID_LICENSE_INFO_URL,
+                                            string, expected))
     if not found_good_entry:
-      yield FAIL, ("A known license URL must be provided in the"
-                   " NameID {} (LICENSE INFO URL) entry."
-                   " Currently accepted licenses are Apache or"
-                   " Open Font License. For a small set of legacy"
-                   " families the Ubuntu Font License may be"
-                   " acceptable as well."
-                   "").format(NAMEID_LICENSE_INFO_URL)
+      yield FAIL, Message("no-license-found",
+                          ("A known license URL must be provided in the"
+                           " NameID {} (LICENSE INFO URL) entry."
+                           " Currently accepted licenses are Apache or"
+                           " Open Font License. For a small set of legacy"
+                           " families the Ubuntu Font License may be"
+                           " acceptable as well."
+                           "").format(NAMEID_LICENSE_INFO_URL))
     else:
       if failed:
-        yield FAIL, ("Even though a valid license URL was seen in NAME table,"
-                     " there were also bad entries. Please review"
-                     " NameIDs {} (LICENSE DESCRIPTION) and {}"
-                     " (LICENSE INFO URL).").format(NAMEID_LICENSE_DESCRIPTION,
-                                                    NAMEID_LICENSE_INFO_URL)
+        yield FAIL, Message("bad-entries",
+                            ("Even though a valid license URL was seen in"
+                             " NAME table, there were also bad entries."
+                             " Please review NameIDs {} (LICENSE DESCRIPTION)"
+                             " and {} (LICENSE INFO URL)."
+                             "").format(NAMEID_LICENSE_DESCRIPTION,
+                                        NAMEID_LICENSE_INFO_URL))
       else:
         yield PASS, "Font has a valid license URL in NAME table."
-
-
-# DEPRECATED:
-# com.google.fonts/check/051 - "Checking with pyfontaine"
-#
-# Replaced by:
-# com.google.fonts/check/132 - "Checking Google Cyrillic Historical glyph coverage"
-# com.google.fonts/check/133 - "Checking Google Cyrillic Plus glyph coverage"
-# com.google.fonts/check/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage"
-# com.google.fonts/check/135 - "Checking Google Cyrillic Pro glyph coverage"
-# com.google.fonts/check/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage"
-# com.google.fonts/check/137 - "Checking Google Greek Archaic glyph coverage"
-# com.google.fonts/check/138 - "Checking Google Greek Coptic glyph coverage"
-# com.google.fonts/check/139 - "Checking Google Greek Core glyph coverage"
-# com.google.fonts/check/140 - "Checking Google Greek Expert glyph coverage"
-# com.google.fonts/check/141 - "Checking Google Greek Plus glyph coverage"
-# com.google.fonts/check/142 - "Checking Google Greek Pro glyph coverage"
-# com.google.fonts/check/143 - "Checking Google Latin Core glyph coverage"
-# com.google.fonts/check/144 - "Checking Google Latin Expert glyph coverage"
-# com.google.fonts/check/145 - "Checking Google Latin Plus glyph coverage"
-# com.google.fonts/check/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage"
-# com.google.fonts/check/147 - "Checking Google Latin Pro glyph coverage"
-# com.google.fonts/check/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage"
 
 
 @condition
@@ -842,16 +803,19 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
      but there's no fail scenario for this checker."""
 
   if "missing" in ttfautohint_stats:
-    yield WARN, TTFAUTOHINT_MISSING_MSG
+    yield WARN, Message("ttfa-missing",
+                        TTFAUTOHINT_MISSING_MSG)
     return
 
   if ttfautohint_stats["dehinted_size"] == 0:
-    yield WARN, ("ttfautohint --dehint reports that"
-                 " \"This font has already been processed with ttfautohint\"."
-                 " This is a bug in an old version of ttfautohint."
-                 " You'll need to upgrade it."
-                 " See https://github.com/googlefonts/fontbakery/"
-                 "issues/1043#issuecomment-249035069")
+    yield WARN, Message("ttfa-bug",
+                        ("ttfautohint --dehint reports that"
+                         " \"This font has already been processed"
+                         " with ttfautohint\"."
+                         " This is a bug in an old version of ttfautohint."
+                         " You'll need to upgrade it."
+                         " See https://github.com/googlefonts/fontbakery/"
+                         "issues/1043#issuecomment-249035069"))
     return
 
   hinted = ttfautohint_stats["hinted_size"]
@@ -2082,44 +2046,19 @@ def com_google_fonts_check_113(font_metadata):
       pair.append((k, weight))
 
   if not pair:
-    yield FAIL, ("METADATA.pb: Font weight"
-                 " does not match postScriptName")
+    yield FAIL, ("METADATA.pb: Font weight value ({})"
+                 " is invalid.").format(font_metadata.weight)
   elif not (font_metadata.post_script_name.endswith('-' + pair[0][0]) or
             font_metadata.post_script_name.endswith('-' + pair[1][0])):
-    yield FAIL, ("METADATA.pb: postScriptName (\"{}\")"
-                 " with weight {} must be"
-                 " ended with \"{}\" or \"{}\""
+    yield FAIL, ("METADATA.pb: Mismatch between postScriptName (\"{}\")"
+                 " and weight value ({}). The name must be"
+                 " ended with \"{}\" or \"{}\"."
                  "").format(font_metadata.post_script_name,
                             pair[0][1],
                             pair[0][0],
                             pair[1][0])
   else:
     yield PASS, "Weight value matches postScriptName."
-
-
-# DEPRECATED: com.google.fonts/check/114
-#
-# == Rationale ==
-# We need to assure coherence among the following pieces of info:
-#
-# (A) A given font canonical filename;
-# (B) Its ttFont["OS/2"].usWeightClass;
-# (C) The METADATA.pb font.weight field;
-# (D) Its name table entries.
-#
-# - Canonical filenames (A) are treated as the source of truth.
-# - com.google.fonts/check/001:  Makes sure (A) is good.
-# - com.google.fonts/check/020:  (B) is tied to (A)
-# - com.google.fonts/check/112:  (C) is tied to (B)
-# - multiple name table checks are crafted to tie (D) to (A)
-#
-# The original implementation of com.google.fonts/check/114
-# had a convoluted check linking together (B), (C) and (D).
-# That was a complex and error-prone implementation.
-#
-# Given checks 001, 020 and 112 discussed above,
-# it is clear that check/114 is redundant and thus
-# can be safely deprecated.
 
 
 @check(
@@ -2347,7 +2286,7 @@ def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
 )
 def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
   """TTFAutohint x-height increase value is same as in
-     previous release on Google Fonts ?"""
+     previous release on Google Fonts?"""
 
   def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
     """Find the value from the fpgm table which controls ttfautohint's
@@ -2396,16 +2335,6 @@ def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
     yield PASS, ("TTFAutohint --increase-x-height is the same as in"
                   " the previous Google Fonts release ({}).").format(inc_xheight)
 
-# The following upstream font project checks have been DEPRECATED:
-# com.google.fonts/check/120 "Each font in family project has matching glyph names ?"
-# com.google.fonts/check/121 "Glyphs have same number of contours across family ?"
-# com.google.fonts/check/122 "Glyphs have same number of points across family ?"
-# com.google.fonts/check/123 "Does this font folder contain COPYRIGHT file ?"
-# com.google.fonts/check/124 "Does this font folder contain a DESCRIPTION file ?"
-# com.google.fonts/check/125 "Does this font folder contain licensing files ?"
-# com.google.fonts/check/126 "Does font folder contain FONTLOG.txt ?"
-# com.google.fonts/check/127 "Repository contains METADATA.pb file ?"
-# com.google.fonts/check/128 "Copyright notice is consistent across all fonts in this family ?"
 
 @check(
     id = 'com.google.fonts/check/129'
@@ -2504,28 +2433,6 @@ def com_google_fonts_check_131(ttFont, style):
                         expected,
                         bitmask=MACSTYLE_BOLD,
                         bitname="BOLD")
-
-# DEPRECATED CHECKS:
-# com.google.fonts/check/132 - "Checking Cyrillic Historical glyph coverage."
-# com.google.fonts/check/133 - "Checking Google Cyrillic Plus glyph coverage."
-# com.google.fonts/check/134 - "Checking Google Cyrillic Plus (Localized Forms) glyph coverage."
-# com.google.fonts/check/135 - "Checking Google Cyrillic Pro glyph coverage."
-# com.google.fonts/check/136 - "Checking Google Greek Ancient Musical Symbols glyph coverage."
-# com.google.fonts/check/137 - "Checking Google Greek Archaic glyph coverage."
-# com.google.fonts/check/138 - "Checking Google Greek Coptic glyph coverage."
-# com.google.fonts/check/139 - "Checking Google Greek Core glyph coverage."
-# com.google.fonts/check/140 - "Checking Google Greek Expert glyph coverage."
-# com.google.fonts/check/141 - "Checking Google Greek Plus glyph coverage."
-# com.google.fonts/check/142 - "Checking Google Greek Pro glyph coverage."
-# com.google.fonts/check/143 - "Checking Google Latin Core glyph coverage."
-# com.google.fonts/check/144 - "Checking Google Latin Expert glyph coverage."
-# com.google.fonts/check/145 - "Checking Google Latin Plus glyph coverage."
-# com.google.fonts/check/146 - "Checking Google Latin Plus (Optional Glyphs) glyph coverage."
-# com.google.fonts/check/147 - "Checking Google Latin Pro glyph coverage."
-# com.google.fonts/check/148 - "Checking Google Latin Pro (Optional Glyphs) glyph coverage."
-# com.google.fonts/check/149 - "Checking Google Arabic glyph coverage."
-# com.google.fonts/check/150 - "Checking Google Vietnamese glyph coverage."
-# com.google.fonts/check/151 - "Checking Google Extras glyph coverage."
 
 
 @check(

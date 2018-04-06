@@ -20,8 +20,6 @@ def test_check_064():
   from fontbakery.specifications.gdef import com_google_fonts_check_064 as check
   from fontbakery.specifications.shared_conditions import ligatures
 
-  # TODO: We currently lack a reference family that PASSes this check!
-
   # Our reference Mada Medium is known to be bad
   ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
   lig = ligatures(ttFont)
@@ -40,4 +38,7 @@ def test_check_064():
   status, message = list(check(ttFont, lig))[-1]
   assert status == WARN and message.code == "GDEF-missing"
 
-  # TODO: test the WARN "incomplete-caret-pos-data" codepath
+  # TODO: test the following code-paths:
+  # - WARN "incomplete-caret-pos-data"
+  # - FAIL "malformed"
+  # - PASS (We currently lack a reference family that PASSes this check!)

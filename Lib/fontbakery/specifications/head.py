@@ -5,6 +5,8 @@ from builtins import range
 
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.message import Message
+
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
@@ -100,7 +102,8 @@ def get_expected_version(f):
           expected_version = name_version
   return expected_version
 
-
+# FIXME: This check has got too many FAIL code-paths.
+#        It may be possible to simplify this check code.
 @check(id='com.google.fonts/check/044')
 def com_google_fonts_check_044(ttFont):
   """Checking font version fields."""
@@ -111,20 +114,23 @@ def com_google_fonts_check_044(ttFont):
     expected = get_expected_version(ttFont)
   except:
     expected = None
-    yield FAIL, "Failed to parse font version entries in the name table."
-
+    yield FAIL, Message("parse",
+                        ("Failed to parse font version"
+                         " entries in the name table."))
   if expected is None:
     failed = True
-    yield FAIL, ("Could not find any font versioning info on the head table"
-                 " or in the name table entries.")
+    yield FAIL, Message("missing",
+                        ("Could not find any font versioning info on the"
+                         " head table or in the name table entries."))
   else:
     font_revision = str(ttFont['head'].fontRevision)
     expected_str = "{}.{}".format(expected[0], expected[1])
     if font_revision != expected_str:
       failed = True
-      yield FAIL, ("Font revision on the head table ({})"
-                   " differs from the expected value ({})."
-                   "").format(font_revision, expected)
+      yield FAIL, Message("differs",
+                          ("Font revision on the head table ({})"
+                           " differs from the expected value ({})."
+                           "").format(font_revision, expected))
 
     expected_str = "Version {}.{}".format(expected[0], expected[1])
     for name in ttFont["name"].names:
@@ -138,8 +144,10 @@ def com_google_fonts_check_044(ttFont):
                                                name_version).group(0)
         except:
           failed = True
-          yield FAIL, ("Unable to parse font version info"
-                       " from this name table entry: '{}'").format(name)
+          yield FAIL, Message("bad-entry",
+                              ("Unable to parse font version info"
+                               " from this name table entry:"
+                               " '{}'").format(name))
           continue
 
         comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
@@ -157,12 +165,14 @@ def com_google_fonts_check_044(ttFont):
                 fix = "{};{}".format(expected_str, comments)
               else:
                 fix = expected_str
-              yield FAIL, ("NAMEID_VERSION_STRING value '{}'"
-                           " does not match expected '{}'"
-                           "").format(name_version, fix)
+              yield FAIL, Message("mismatch",
+                                  ("NAMEID_VERSION_STRING value '{}'"
+                                   " does not match expected '{}'"
+                                   "").format(name_version, fix))
           except:
             failed = True  # give up. it's definitely bad :(
-            yield FAIL, ("Unable to parse font version info"
-                         " from name table entries.")
+            yield FAIL, Message("bad",
+                                ("Unable to parse font version info"
+                                 " from name table entries."))
   if not failed:
     yield PASS, "All font version fields look good."

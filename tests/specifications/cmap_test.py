@@ -52,3 +52,33 @@ def test_check_013(mada_ttFonts):
   print('Test FAIL with fonts that diverge on unicode encoding.')
   status, message = list(check(bad_ttFonts))[-1]
   assert status == FAIL
+
+
+def NOT_IMPLEMENTED_test_check_076():
+  """ Check glyphs have unique unicode codepoints. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_076 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Some glyphs carry the same unicode value."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_077():
+  """ Check all glyphs have codepoints assigned. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_077 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "A glyph lacks a unicode codepoint assignment."
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_078():
+  """ Check that glyph names do not exceed max length. """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_078 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "A glyph name is too long."
+  # - PASS

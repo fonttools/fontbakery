@@ -49,6 +49,7 @@ def test_check_014(mada_ttFonts):
   status, message = list(check(bad_ttFonts))[-1]
   assert status == WARN
 
+
 def test_check_043():
   """ Checking unitsPerEm value is reasonable. """
   from fontbakery.specifications.head import com_google_fonts_check_043 as check
@@ -71,5 +72,17 @@ def test_check_043():
     status, message = list(check(ttFont))[-1]
     assert status == FAIL
 
-# TODO: test_check_044
 
+def NOT_IMPLEMENTED_test_check_044():
+  """ Checking font version fields. """
+  # from fontbakery.specifications.general import com_google_fonts_check_044 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, code="parse"
+  # - FAIL, code="missing"
+  # - FAIL, code="differs"
+  # - FAIL, code="bad-entry"
+  # - FAIL, code="mismatch"
+  # - FAIL, code="bad"
+  # - PASS

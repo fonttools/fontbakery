@@ -34,8 +34,29 @@ def test_check_002():
   status, message = list(check(multiple_dirs))[-1]
   assert status == FAIL
 
-# TODO: test_check_035
-# TODO: test_check_036
+
+def NOT_IMPLEMENTED_test_check_035():
+  """ Checking with ftxvalidator. """
+  # from fontbakery.specifications.general import com_google_fonts_check_035 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS, "ftxvalidator passed this file."
+  # - FAIL, "ftxvalidator outputs to stderr."
+  # - WARN, "ftxvalidator returned an error code."
+  # - ERROR, "ftxvalidator is not available!"
+
+
+def NOT_IMPLEMENTED_test_check_036():
+  """ Checking with ots-sanitize. """
+  # from fontbakery.specifications.general import com_google_fonts_check_036 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # PASS, "ots-sanitize passed this file."
+  # FAIL, "ots-sanitize output..."
+  # ERROR, "ots-sanitize is not available!"
+
 
 def test_check_037():
   """ MS Font Validator checks """
@@ -59,9 +80,57 @@ def test_check_037():
   # which would mean FontValidator is not properly installed:
   assert status != ERROR
 
-# TODO: test_check_038
-# TODO: test_check_039
-# TODO: test_check_046
+
+def NOT_IMPLEMENTED_test_check_038():
+  """ FontForge validation outputs error messages? """
+  # from fontbakery.specifications.general import com_google_fonts_check_038 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # FAIL, "Fontforge printed messages to stderr."
+  # PASS, "Fontforge validation did not output any error message."
+
+
+def NOT_IMPLEMENTED_test_check_039():
+  """ FontForge checks. """
+  # from fontbakery.specifications.general import com_google_fonts_check_039 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS
+  # - SKIP
+  # - FAIL, "Contours are not closed!"
+  # - FAIL, "There are countour intersections!"
+  # - FAIL, "Contours have incorrect directions!"
+  # - FAIL, "References in the glyph have been flipped!"
+  # - FAIL, "Glyphs do not have points at extremas!"
+  # - FAIL, "Glyph names referred to from glyphs not present in the font!"
+  # - FAIL, "Points (or control points) are too far apart!"
+  # - FAIL, "There are glyphs with more than 1,500 points! Exceeds a PostScript limit."
+  # - FAIL, "Exceeds PostScript limit of 96 hints per glyph"
+  # - FAIL, "Font has invalid glyph names!"
+  # - FAIL, "Glyphs exceed allowed numbers of points defined in maxp"
+  # - FAIL, "Glyphs exceed allowed numbers of paths defined in maxp!"
+  # - FAIL, Composite glyphs exceed allowed numbers of points defined in maxp!"
+  # - FAIL, "Composite glyphs exceed allowed numbers of paths defined in maxp!"
+  # - FAIL, "Glyphs instructions have invalid lengths!"
+  # - FAIL, "Points in glyphs are not integer aligned!"
+  # - FAIL, "Glyphs do not have all required anchors!"
+  # - FAIL, "Glyph names are not unique!"
+  # - FAIL, "Unicode code points are not unique!"
+  # - FAIL, "Hints should NOT overlap!"
+
+
+def NOT_IMPLEMENTED_test_check_046():
+  """ Font contains the first few mandatory glyphs (.null or NULL, CR and
+  space)? """
+  # from fontbakery.specifications.general import com_google_fonts_check_046 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS, "Font contains the first few mandatory glyphs" 
+  # - WARN, "Font is missing glyphs for some mandatory codepoints"
+
 
 def test_check_047():
   """ Font contains glyphs for whitespace characters ? """
@@ -145,7 +214,16 @@ def test_check_048():
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "badA0"
 
-# TODO: test_check_049
+
+def NOT_IMPLEMENTED_test_check_049():
+  """ Whitespace glyphs have ink? """
+  # from fontbakery.specifications.general import com_google_fonts_check_049 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS, "There is no whitespace glyph with ink."
+  # - FAil, "Some glyphs have ink."
+
 
 def test_check_052():
   """ Font contains all required tables ? """
@@ -236,6 +314,32 @@ def test_check_053():
     status, message = list(check(ttFont))[-1]
     assert status == FAIL
 
-# TODO: test_check_058
-# TODO: test_check_059
-# TODO: test_check_060
+
+def NOT_IMPLEMENTED_test_check_058():
+  """ Glyph names are all valid? """
+  # from fontbakery.specifications.general import com_google_fonts_check_058 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Glyph names do not comply with naming conventions"
+  # - PASS, "Glyph names are all valid."
+
+
+def NOT_IMPLEMENTED_test_check_059():
+  """ Font contains unique glyph names? """
+  # from fontbakery.specifications.general import com_google_fonts_check_059 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS, "Font contains unique glyph names."
+  # - FAIL, "Glyph IDs occur twice"
+
+
+def NOT_IMPLEMENTED_test_check_060():
+  """ No glyph is incorrectly named? """
+  # from fontbakery.specifications.general import com_google_fonts_check_060 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - PASS, "Font does not have any incorrectly named glyph."
+  # - FAIL, "Some glyph IDs are incorrectly named."

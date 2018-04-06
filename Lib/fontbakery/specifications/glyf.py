@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from fontbakery.message import Message
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
 # used to inform get_module_specification whether and how to create a specification
@@ -19,17 +20,23 @@ def com_google_fonts_check_069(ttFont):
 
     # allow up to 3 bytes of padding
     if diff > 3:
-      yield FAIL, ("Glyf table has unreachable data at"
-                   " the end of the table."
-                   " Expected glyf table length {}"
-                   " (from loca table), got length"
-                   " {} (difference: {})").format(expected, actual, diff)
+      yield FAIL, Message("unreachable-data",
+                          ("Glyf table has unreachable data at"
+                           " the end of the table."
+                           " Expected glyf table length {}"
+                           " (from loca table), got length"
+                           " {} (difference: {})").format(expected,
+                                                          actual,
+                                                          diff))
     elif diff < 0:
-      yield FAIL, ("Loca table references data beyond"
-                   " the end of the glyf table."
-                   " Expected glyf table length {}"
-                   " (from loca table), got length"
-                   " {} (difference: {})").format(expected, actual, diff)
+      yield FAIL, Message("data-beyond-table-end",
+                          ("Loca table references data beyond"
+                           " the end of the glyf table."
+                           " Expected glyf table length {}"
+                           " (from loca table), got length"
+                           " {} (difference: {})").format(expected,
+                                                          actual,
+                                                          diff))
     else:
       yield PASS, "There is no unused data at the end of the glyf table."
 

@@ -42,3 +42,25 @@ def test_check_041():
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
+
+def NOT_IMPLEMENTED_test_check_073():
+  """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_073 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL, "Failed to find advance width data in HMTX table!"
+  # - FAIL, "AdvanceWidthMax mismatch"
+  # - PASS
+
+
+def NOT_IMPLEMENTED_test_check_079():
+  """ Monospace font has hhea.advanceWidthMax equal
+      to each glyph's advanceWidth? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_079 as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - WARN, "This seems to be a monospaced font."
+  # - WARN, "Double-width and/or zero-width glyphs were detected."
+  # - PASS

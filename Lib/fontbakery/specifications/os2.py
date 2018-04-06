@@ -90,7 +90,8 @@ def com_google_fonts_check_034(ttFont):
         count += 1
         width_sum += width
     if count == 0:
-      yield FAIL, "CRITICAL: Found no glyph width data!"
+      yield FAIL, Message("no-glyph",
+                          "CRITICAL: Found no glyph width data!")
     else:
       expected_value = int(round(width_sum / count))
       if current_value == expected_value:
