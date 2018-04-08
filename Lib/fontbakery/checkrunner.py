@@ -721,7 +721,7 @@ class Section(object):
     self.description = description
     self._add_check_callback = None
     self._checks = [] if checks is None else list(checks)
-    self._checkid2index = {i:check.id for i, check in enumerate(self._checks)}
+    self._checkid2index = {check.id:i for i, check in enumerate(self._checks)}
     # a list of iterarg-names
     self._order = order or []
 
