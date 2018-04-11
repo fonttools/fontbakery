@@ -15,8 +15,8 @@ def test_list_subcommands_has_all_scripts():
       for f in os.listdir(commands_dir)
       if (f.endswith(".py") and not f.startswith('_'))
   ]
-  subcommands = subprocess.check_output(['fontbakery',
-                                         '--list-subcommands']).split()
+  subcommands = subprocess.check_output(
+      ['fontbakery', '--list-subcommands']).decode().split()
   assert sorted(scripts) == sorted(subcommands)
 
 
