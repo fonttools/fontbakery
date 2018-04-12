@@ -716,6 +716,11 @@ def distribute_generator(gen, targets_callbacks):
       target(item)
 
 class Section(object):
+  """ An ordered set of checks.
+
+  Used to structure checks in a specification. A specification consists
+  of one or more sections.
+  """
   def __init__(self, name, checks=None, order=None, description=None):
     self.name = name
     self.description = description
@@ -1404,21 +1409,26 @@ class Spec(object):
 
   def auto_register(self, symbol_table, filter_func=None):
     """
-      Get all items from the symbol_table dict and if they are
-      a FontBakeryCheck or a FontBakeryCondition, register them in
-      the default section.
+      Register items from `symbol_table` in the specification.
 
-      for an imported module use:
-          specification.auto_register(module.__dict__)
-      for the current module use:
-          specification.auto_register(globals());
-      OR maybe: specification.auto_register(sys.modules[__name__].__dict__);
+      Get all items from `symbol_table` dict and from `symbol_table.spec_imports`
+      if it is present. If they an item is an instance of FontBakeryCheck,
+      FontBakeryCondition or FontBakeryExpectedValue and register it in
+      the default section.
+      If an item is a python module, try to get a spec using `get_module_specification(item)`
+      and then using `merge_specification`;
+
+      To register the current module use explicitly:
+        `specification.auto_register(globals())`
+        OR maybe: `specification.auto_register(sys.modules[__name__].__dict__)`
+      To register an imported module explicitly:
+        `specification.auto_register(module.__dict__)`
 
       if filter_func is defined it is called like:
       filter_func(type, name_or_id, item)
       where
-      type: one of check, module, condition, expected_value, iterarg,
-            derived_iterable, alias
+      type: one of "check", "module", "condition", "expected_value", "iterarg",
+            "derived_iterable", "alias"
       name_or_id: the name at which the item will be registered.
             if type == 'check': the check.id
             if type == 'module': the module name (module.__name__)
@@ -1458,12 +1468,15 @@ class Spec(object):
         self.register_expected_value(item)
 
   def merge_specification(self, specification, filter_func=None):
-    """
-      Try to copy all contents from specification to self.
-      Don't change any contents of specification ever!
-      (That means sections are cloned not used directly)
+    """Copy all namespace items from specification to self.
 
-      filter_func: see description in auto_register
+    Namespace items are: 'iterargs', 'derived_iterables', 'aliases',
+                         'conditions', 'expected_values'
+
+    Don't change any contents of specification ever!
+    That means sections are cloned not used directly
+
+    filter_func: see description in auto_register
     """
     # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
     for ns_type in self._valid_namespace_types:
@@ -1539,7 +1552,25 @@ class Spec(object):
 
 def get_module_specification(module, name=None):
   """
-  A helper to get or create a specification from a module.
+  Get or create a specification from a module and return it.
+
+  If the name `module.specification` is present the value of that is returned.
+  Otherwise, if the name `module.spec_factory` is present, a new specification
+  is created using `module.spec_factory` and then `specification.auto_register`
+  is called with the module namespace.
+  If neither name is defined, the module is not considered a specification-module
+  and None is returned.
+
+  TODO: describe the `name` argument and better define the signature of `spec_factory`.
+
+  The `module` argument is expected to behave like a python module.
+  The optional `name` argument is used when `spec_factory` is called to
+  give a name to the default section of the new spec. If name is not
+  present `module.__name__` is the fallback.
+
+  `spec_factory` is called like this:
+      `specification = module.spec_factory(default_section=default_section)`
+
   """
   try:
     # if specification is defined we just use it

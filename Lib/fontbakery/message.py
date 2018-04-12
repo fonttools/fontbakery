@@ -3,10 +3,9 @@
 from __future__ import absolute_import, print_function, unicode_literals, division
 
 class Message(object):
+  """Status messages to be yielded by FontBakeryCheck"""
   def __init__(self, code, message):
     """
-      Status messages to be yielded by FontBakeryCheck
-
       code: (string|number) a check internal, unique code to describe a
             specific failure condition. A short string is preferred, it
             makes a better experience to read the code.
