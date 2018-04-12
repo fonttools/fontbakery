@@ -608,14 +608,29 @@ def NOT_IMPLEMENTED_test_check_080():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_081():
+def test_check_081():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_081 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN, "Family not found via Google Fonts API."
-  # - PASS, "Font is properly listed via Google Fonts API."
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_081 as check,
+                                                     listed_on_gfonts_api,
+                                                     metadata,
+                                                     family_directory)
+
+  print ("Test WARN with a family that is not listed on Google Fonts...")
+  # Our reference FamilySans family is a just a generic example
+  # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  listed = listed_on_gfonts_api(metadata(family_directory(fonts)))
+  # For that reason, we expect to get a WARN in this case:
+  status, message = list(check(listed))[-1]
+  assert status == WARN
+
+  print ("Test PASS with a family that is available...")
+  # Our reference Merriweather family is available on the Google Fonts collection:
+  fonts = ["data/test/merriweather/Merriweather-Regular.ttf"]
+  listed = listed_on_gfonts_api(metadata(family_directory(fonts)))
+  # So it must PASS:
+  status, message = list(check(listed))[-1]
+  assert status == PASS
 
 
 # FIXME: This check is currently disabled:
@@ -629,24 +644,42 @@ def NOT_IMPLEMENTED_test_check_082():
   # code-paths:
   # ...
 
-def NOT_IMPLEMENTED_test_check_083():
+
+def test_check_083():
   """ METADATA.pb: check if fonts field only has unique "full_name" values. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_083 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_083 as check,
+                                                     metadata,
+                                                     family_directory)
+  print ("Test PASS with a good family...")
+  # Our reference FamilySans family is good:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  md = metadata(family_directory(fonts))
+  status, message = list(check(md))[-1]
+  assert status == PASS
+
+  # then duplicate a full_name entry to make it FAIL:
+  md.fonts[0].full_name = md.fonts[1].full_name
+  status, message = list(check(md))[-1]
+  assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_084():
+def test_check_084():
   """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_084 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_084 as check,
+                                                     metadata,
+                                                     family_directory)
+  print ("Test PASS with a good family...")
+  # Our reference FamilySans family is good:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  md = metadata(family_directory(fonts))
+  status, message = list(check(md))[-1]
+  assert status == PASS
+
+  # then duplicate a pair of style & weight entries to make it FAIL:
+  md.fonts[0].style = md.fonts[1].style
+  md.fonts[0].weight = md.fonts[1].weight
+  status, message = list(check(md))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_085():
