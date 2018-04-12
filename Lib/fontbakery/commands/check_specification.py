@@ -7,6 +7,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from builtins import filter
 import sys
+import os
 import argparse
 from collections import OrderedDict
 
@@ -47,7 +48,7 @@ def ArgumentParser(specification, spec_arg=True):
 
   if spec_arg:
     argument_parser.add_argument('specification',
-        help='Module name, must define a fontbakery "specification".')
+        help='File/Module name, must define a fontbakery "specification".')
 
 
   values_keys = specification.setup_argparse(argument_parser);
@@ -134,6 +135,47 @@ class ThrowingArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         raise ArgumentParserError(message)
 
+def get_module_from_file(filename):
+  # this is really annoying between python 2 and 3
+  # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+  imp = None
+  importlib_util = None
+  # filename = 'my/path/to/file.py'
+  # module_name = 'file_module.file_py'
+  module_name = 'file_module.{}'.format(os.path.basename(filename).replace('.', '_'))
+  try:
+    import importlib.util as importlib_util
+  except ImportError:
+    import imp
+
+  if importlib_util:
+    spec = importlib_util.spec_from_file_location(module_name, filename)
+    module = importlib_util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+  elif imp:
+    return imp.load_source(module_name, filename)
+
+def get_module(name):
+  imported = None
+  if os.path.isfile(name):
+    # This name could also be the name of a module, but if there's a
+    # file that we can load the file will win. Otherwise, it's still
+    # possible to change the directory
+    try:
+      imported = get_module_from_file(name)
+    except Exception as e:
+      print(e) # debugging.
+      # silenced, import_module will have a trial
+      # this will make it hard to debug, but we want inport_module
+      # to be the fallback.
+      pass
+  if not imported:
+    from importlib import import_module
+    # Fails with an appropriate ImportError.
+    imported = import_module(name, package=None)
+  return imported
+
 def get_spec():
   """ Prefetch the specification module, to fill some holes in the help text."""
   argument_parser = ThrowingArgumentParser(add_help=False)
@@ -143,10 +185,7 @@ def get_spec():
   except ArgumentParserError:
     # silently fails, the main parser will show usage string.
     return Spec()
-
-  from importlib import import_module
-  # Fails with an appropriate ImportError.
-  imported = import_module(args.specification, package=None)
+  imported = get_module(args.specification)
   specification = get_module_specification(imported)
   if not specification:
     raise Exception('Can\'t get a specification from {}.'.format(imported))
