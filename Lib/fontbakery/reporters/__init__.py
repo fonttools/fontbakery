@@ -74,10 +74,10 @@ class FontbakeryReporter(object):
     self._counter['(not finished)'] = length - len(self._results)
     self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
 
-  def _cleanup(self, (status, message, identity)):
+  def _cleanup(self, event):
     pass
 
-  def _output(self, (status, message, identity)):
+  def _output(self, event):
     pass
 
   def _register(self, event):
