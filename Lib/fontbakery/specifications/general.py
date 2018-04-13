@@ -144,7 +144,7 @@ def com_google_fonts_check_037(font):
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
     filtered_msgs = ""
-    for line in e.output.split("\n"):
+    for line in e.output.decode().split("\n"):
       if "Validating glyph with index" in line:
         continue
       if "Table Test:" in line:
