@@ -111,12 +111,12 @@ def test_example_checkrunner_based(cabin_regular_path):
 
   print('Test PASS ...')
   # run
-  for status, message, (section, check, iterargs) in runner.run():
+  for status, message, _ in runner.run():
     if status in check_statuses:
       last_check_message = message
     if status == ENDCHECK:
-     assert message == PASS
-     break
+      assert message == PASS
+      break
 
   # we could also reuse the `iterargs` that was assigned in the previous
   # for loop, but this here is more explicit
@@ -127,23 +127,23 @@ def test_example_checkrunner_based(cabin_regular_path):
   # prepare
   change_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION, 'failing entry')
   # run
-  for status, message, (section, check, iterargs) in runner.run():
+  for status, message, _ in runner.run():
     if status in check_statuses:
       last_check_message = message
     if status == ENDCHECK:
-     assert message == FAIL and last_check_message.code == 'wrong'
-     break
+      assert message == FAIL and last_check_message.code == 'wrong'
+      break
 
   print('Test missing entry ...')
   # prepare
   delete_name_table_id(ttFont, NAMEID_LICENSE_DESCRIPTION)
   # run
-  for status, message, (section, check, iterargs) in runner.run():
+  for status, message, _ in runner.run():
     if status in check_statuses:
       last_check_message = message
     if status == ENDCHECK:
-     assert message == FAIL and last_check_message.code == 'missing'
-     break
+      assert message == FAIL and last_check_message.code == 'missing'
+      break
 
 
 def test_check_001():
