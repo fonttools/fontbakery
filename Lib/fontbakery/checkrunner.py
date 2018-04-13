@@ -744,7 +744,10 @@ class Section(object):
 
   def __eq__(self, other):
     """ True if other.checks has the same checks in the same order"""
-    return self._checks == other.checks
+    if hasattr(other, "checks"):
+      return self._checks == other.checks
+    else:
+      return False
 
   @property
   def order(self):
