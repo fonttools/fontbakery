@@ -112,9 +112,10 @@ def test_check_048():
     """
     for subtable in font['cmap'].tables:
       if subtable.isUnicode():
-        for codepoint, name in subtable.cmap.items():
-          if codepoint == cp:
-            del subtable.cmap[codepoint]
+        subtable.cmap = {
+            codepoint: name for codepoint, name in subtable.cmap.items()
+            if codepoint != cp
+        }
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
