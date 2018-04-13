@@ -296,8 +296,8 @@ def description(descfile):
   """Get the contents of the DESCRIPTION file of a font project."""
   if not descfile:
     return
-  contents = open(descfile).read()
-  return contents
+  import io
+  return io.open(descfile, "r", encoding="utf-8").read()
 
 
 @check(
@@ -342,16 +342,15 @@ def com_google_fonts_check_003(description):
     id = 'com.google.fonts/check/004'
   , conditions=['descfile']
 )
-def com_google_fonts_check_004(descfile):
-  """Is this a propper HTML snippet?
+def com_google_fonts_check_004(descfile, description):
+  """Is this a proper HTML snippet?
 
   When packaging families for google/fonts, if there is no
   DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
   insert a dummy description file which contains invalid html.
   This file needs to either be replaced with an existing description file
   or edited by hand."""
-  data = open(descfile).read().decode("utf-8")
-  if "<p>" not in data or "</p>" not in data:
+  if "<p>" not in description or "</p>" not in description:
     yield FAIL, "{} does not look like a propper HTML snippet.".format(descfile)
   else:
     yield PASS, "{} is a propper HTML file.".format(descfile)
