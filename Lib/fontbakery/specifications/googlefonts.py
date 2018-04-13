@@ -640,7 +640,7 @@ def com_google_fonts_check_029(ttFont, license):
   for i, nameRecord in enumerate(ttFont["name"].names):
     if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
       entry_found = True
-      value = nameRecord.string.decode(nameRecord.getEncoding())
+      value = nameRecord.toUnicode()
       if value != placeholder:
         failed = True
         yield FAIL, Message("wrong", \
