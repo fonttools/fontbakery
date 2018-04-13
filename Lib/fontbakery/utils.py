@@ -60,7 +60,7 @@ def get_name_entry_strings(font,
                            encodingID=None,
                            langID=None):
   entries = get_name_entries(font, nameID, platformID, encodingID, langID)
-  return map(lambda e: e.string.decode(e.getEncoding()), entries)
+  return list(map(lambda e: e.string.decode(e.getEncoding()), entries))
 
 
 def name_entry_id(name):
