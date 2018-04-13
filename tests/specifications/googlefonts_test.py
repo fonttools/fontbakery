@@ -196,9 +196,8 @@ def test_check_003():
   status, message = list(check(good_desc))[-1]
   assert status == PASS
 
-  good_desc = unidecode(good_desc.decode("utf8")) + \
-     "<a href='http://example.com'>Good Link</a>" + \
-     "<a href='http://fonts.google.com'>Another Good One</a>"
+  good_desc += ("<a href='http://example.com'>Good Link</a>"
+                "<a href='http://fonts.google.com'>Another Good One</a>")
   print('Test PASS with description file that has good links...')
   status, message = list(check(good_desc))[-1]
   assert status == PASS
@@ -217,15 +216,17 @@ def test_check_003():
 def test_check_004():
   """ DESCRIPTION file is a propper HTML snippet ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_004 as check,
-                                                     descfile)
+                                                     descfile, description)
   good_descfile = descfile("data/test/nunito/")
+  good_desc = description(good_descfile)
   print('Test PASS with description file that contains a good HTML snippet...')
-  status, message = list(check(good_descfile))[-1]
+  status, message = list(check(good_descfile, good_desc))[-1]
   assert status == PASS
 
   bad_descfile = "data/test/cabin/FONTLOG.txt" # :-)
+  bad_desc = description(bad_descfile)
   print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
-  status, message = list(check(bad_descfile))[-1]
+  status, message = list(check(bad_descfile, bad_desc))[-1]
   assert status == FAIL
 
 
