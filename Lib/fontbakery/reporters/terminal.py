@@ -35,7 +35,7 @@ from time import time
 from fontbakery.reporters import FontbakeryReporter
 
 from fontbakery.checkrunner import (  # NOQA
-            , INFO
+              INFO
             , WARN
             , ERROR
             , STARTSECTION
