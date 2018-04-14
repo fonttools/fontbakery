@@ -19,12 +19,13 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import map
 from builtins import object
-# using this to override print function somewhere
-import builtins
-
-import sys, os
+import sys
+import os
 from collections import Counter
 from functools import partial
+
+# using this to override print function somewhere
+import builtins
 
 # Python 1/3
 from io import StringIO
@@ -34,7 +35,6 @@ from time import time
 from fontbakery.reporters import FontbakeryReporter
 
 from fontbakery.checkrunner import (  # NOQA
-              DEBUG
             , INFO
             , WARN
             , ERROR
@@ -155,13 +155,13 @@ class ThrottledOut(object):
       flush=True
 
     if flush:
-      self.flush();
+      self.flush()
 
   def flush(self, draw_progress=True):
     """call this at the very end, so that we can output the rest"""
     reset_progressbar = None
     if self._draw_progressbar and draw_progress:
-      progressbar, reset_progressbar = self._draw_progressbar();
+      progressbar, reset_progressbar = self._draw_progressbar()
       self._buffer.append(progressbar)
 
     for line in self._buffer:
@@ -251,10 +251,11 @@ class TerminalProgress(FontbakeryReporter):
         self._set_progress_event(event)
 
   def _set_progress_event(self, event):
-      _, status, identity = event;
+      _, status, identity = event
       index = self._get_index(identity)
-      self._progressbar[index] = formatStatus(status, status.name[0]
-                                                , color=self._use_color)
+      self._progressbar[index] = formatStatus(status,
+                                              status.name[0],
+                                              color=self._use_color)
 
   def _get_index(self, identity):
     index = super(TerminalProgress, self)._get_index(identity)
