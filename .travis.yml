@@ -1,9 +1,11 @@
 language: python
-python:
-  - "2.7"
-    env: TOXENV=py27,coverage
-  - "3.6"
-    env: TOXENV=py36,coverage
+
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27,coverage
+    - python: 3.6
+      env: TOXENV=py36,coverage
 
 branches:
   only:
