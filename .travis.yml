@@ -4,6 +4,8 @@ matrix:
   include:
     - python: 2.7
       env: TOXENV=py27,coverage
+    - python: 2.7
+      env: TOXENV=flake8,pylint LINT_ONLY=1
     - python: 3.6
       env: TOXENV=py36,coverage
     - python: 3.6
