@@ -1,9 +1,13 @@
 language: python
-python:
-  - "2.7"
-    env: TOXENV=py27,coverage
-  - "3.6"
-    env: TOXENV=py36,coverage
+
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27,coverage
+    - python: 3.6
+      env: TOXENV=py36,coverage
+    - python: 3.6
+      env: TOXENV=flake8,pylint LINT_ONLY=1
 
 branches:
   only:
@@ -11,26 +15,17 @@ branches:
   - /^v\d+\.\d+\.\d+/
 
 before_install:
-- sudo add-apt-repository --yes ppa:fontforge/fontforge
-- sudo apt-get update -qq
-- sudo apt-get -y install python-fontforge ttfautohint
-- sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
+- if [ -z "$LINT_ONLY" ]; then sudo add-apt-repository --yes ppa:fontforge/fontforge; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get update -qq; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get -y install python-fontforge ttfautohint; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil; fi
 - pip install --upgrade pip
 
 install:
 - export LD_LIBRARY_PATH=/usr/local/lib
 - export PATH=$PATH:prebuilt/fval/
 - export LD_PRELOAD=prebuilt/custom_freetype/lib/libfreetype.so
-- pip install -e .
-- pip install git+https://github.com/behdad/fonttools.git
 - pip install tox
-- pip install flake8
-- pip install pylint
 
 script:
-- flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
-- export WONT_FIX=invalid-name,bad-indentation,inconsistent-return-statements
-- export MAYBE_SOMEDAY=fixme,missing-docstring,too-many-locals,too-many-branches,too-many-statements,bad-continuation,unidiomatic-typecheck,logging-format-interpolation,too-many-nested-blocks,superfluous-parens,bare-except,undefined-loop-variable,too-many-instance-attributes,old-style-class,unnecessary-pass,unused-argument,consider-iterating-dictionary,attribute-defined-outside-init,too-many-boolean-expressions,too-many-arguments,wrong-import-order,bad-whitespace,pointless-string-statement,pointless-statement,redefined-builtin,global-statement,too-many-lines,global-variable-undefined,redefined-variable-type,multiple-statements,expression-not-assigned,too-many-format-args,deprecated-lambda,broad-except,no-self-use,no-name-in-module,abstract-method,no-member,line-too-long,trailing-newlines,duplicate-code,redefined-outer-name,trailing-whitespace,unused-variable,logging-not-lazy,undefined-variable,protected-access,anomalous-backslash-in-string,wrong-import-position,ungrouped-imports,singleton-comparison,misplaced-comparison-constant,consider-using-enumerate,used-before-assignment,too-few-public-methods,dangerous-default-value,unexpected-keyword-arg,len-as-condition,no-else-return,relative-import,not-callable,unsupported-membership-test
-- export PYLINT="pylint --disable=$WONT_FIX,$MAYBE_SOMEDAY"
-- "$PYLINT Lib/fontbakery/specifications/*.py"
 - tox
