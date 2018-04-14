@@ -7,7 +7,7 @@ matrix:
     - python: 3.6
       env: TOXENV=py36,coverage
     - python: 3.6
-      env: TOXENV=flake8,pylint
+      env: TOXENV=flake8,pylint LINT_ONLY=1
 
 branches:
   only:
@@ -15,10 +15,10 @@ branches:
   - /^v\d+\.\d+\.\d+/
 
 before_install:
-- [[ ! "${TOXENV}" =~ "lint" ]] && sudo add-apt-repository --yes ppa:fontforge/fontforge
-- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get update -qq
-- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get -y install python-fontforge ttfautohint
-- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
+- if [ -z "$LINT_ONLY" ]; then sudo add-apt-repository --yes ppa:fontforge/fontforge; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get update -qq; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get -y install python-fontforge ttfautohint; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil; fi
 - pip install --upgrade pip
 
 install:
