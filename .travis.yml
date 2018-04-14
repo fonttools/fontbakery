@@ -15,10 +15,10 @@ branches:
   - /^v\d+\.\d+\.\d+/
 
 before_install:
-- sudo add-apt-repository --yes ppa:fontforge/fontforge
-- sudo apt-get update -qq
-- sudo apt-get -y install python-fontforge ttfautohint
-- sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
+- [[ ! "${TOXENV}" =~ "lint" ]] && sudo add-apt-repository --yes ppa:fontforge/fontforge
+- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get update -qq
+- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get -y install python-fontforge ttfautohint
+- [[ ! "${TOXENV}" =~ "lint" ]] && sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
 - pip install --upgrade pip
 
 install:
