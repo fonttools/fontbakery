@@ -270,13 +270,13 @@ class CheckRunner(object):
           raise SetupError('Values entry "{}" collides with spec '\
                       'namespace as a {}'.format(name, spec.get_type(name)))
 
-    self._spec = spec;
+    self._spec = spec
     self._spec.test_dependencies()
     valid, message = self._spec.validate_values(values)
     if not valid:
       raise ValueValidationError('Validation of expected values failed:'
                       '\n{}'.format(message))
-    self._values = values;
+    self._values = values
 
     self._cache = {
       'conditions': {}
@@ -544,13 +544,13 @@ class CheckRunner(object):
     args = {}
     for name in item.args:
       if name in args:
-        continue;
+        continue
       try:
         args[name] = self._get(name, iterargs, path)
       except MissingValueError:
         if name not in item.optionalArgs:
           raise
-    return args;
+    return args
 
   def _get_check_dependencies(self, check, iterargs):
     unfulfilled_conditions = []
@@ -701,7 +701,7 @@ class CheckRunner(object):
       yield STARTSECTION, section_order, (section, None, None)
       for check, iterargs in section_order:
         for status, message in self._run_check(check, iterargs):
-          yield status, message, (section, check, iterargs);
+          yield status, message, (section, check, iterargs)
         # after _run_check the last status must be ENDCHECK
         assert status == ENDCHECK
         # message is the summary_status of the check when status is ENDCHECK
@@ -762,8 +762,8 @@ class Section(object):
       # allow only one, otherwise, skipping registration in
       # add_check becomes problematic, can't skip just for some
       # callbacks.
-      raise Exception('{} already has an on_add_check callback'.format(self));
-    self._add_check_callback = callback;
+      raise Exception('{} already has an on_add_check callback'.format(self))
+    self._add_check_callback = callback
 
   def add_check(self, check):
     """
@@ -785,7 +785,7 @@ class Section(object):
     """
     for check in section.checks:
       if filter_func and not filter_func(check):
-        continue;
+        continue
       self.add_check(check)
 
   def get_check(self, check_id):
@@ -1024,7 +1024,7 @@ class Spec(object):
       name will raise a KeyError on runtime. We don't know if all expected
       values are actually needed/used, thus this fails late.
     """
-    format_message = '{}: {} (value: {})'.format;
+    format_message = '{}: {} (value: {})'.format
     messages = []
     for name, value in values.items():
       if name not in self.expected_values:
@@ -1140,7 +1140,7 @@ class Spec(object):
           target = new_scopes
         target.append((check, signature, scope))
       scopes = new_scopes
-    return saturated + scopes;
+    return saturated + scopes
 
   def _execute_section(self, iterargs, section, items):
     if section is None:
@@ -1508,7 +1508,7 @@ class Spec(object):
         my_section.merge_section(section, check_filter_func)
 
   def set_check_filter(self, check_filter):
-    self.check_filter = check_filter;
+    self.check_filter = check_filter
 
   def serialize_identity(self, identity):
     """ Return a json string that can also  be used as a key.

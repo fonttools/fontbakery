@@ -15,16 +15,9 @@ from __future__ import absolute_import, print_function, unicode_literals, divisi
 
 from fontbakery.checkrunner import (
               DEBUG
-            , INFO
-            , WARN
-            , ERROR
             , STARTSECTION
-            , STARTCHECK
-            , SKIP
-            , PASS
-            , FAIL
-            , ENDCHECK
             , ENDSECTION
+            , ENDCHECK
             , START
             , END
             )

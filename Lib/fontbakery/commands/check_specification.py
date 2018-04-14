@@ -51,7 +51,7 @@ def ArgumentParser(specification, spec_arg=True):
         help='File/Module name, must define a fontbakery "specification".')
 
 
-  values_keys = specification.setup_argparse(argument_parser);
+  values_keys = specification.setup_argparse(argument_parser)
 
   argument_parser.add_argument('-c', '--checkid', action='append',
                       help='Explicit check-ids to be executed.\n'
