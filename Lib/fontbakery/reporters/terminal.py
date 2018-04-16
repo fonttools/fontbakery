@@ -210,7 +210,7 @@ class TerminalProgress(FontbakeryReporter):
 
   def _output(self, event):
     super(TerminalProgress, self)._output(event)
-    text = self._render_event(*event)
+    text = self._render_event(event)
     if text:
       self.stdout.write(text)
     elif self._print_progress:
@@ -221,7 +221,8 @@ class TerminalProgress(FontbakeryReporter):
       # this flush is only relevant when self.stdout is a ThrottledOut
       self.stdout.flush(False)
 
-  def _render_event(self, status, message, identity):
+  def _render_event(self, event):
+    status, message, (section, check, iterargs) = event
     output = StringIO()
     print = partial(builtins.print, file=output)
 
@@ -401,7 +402,7 @@ class TerminalReporter(TerminalProgress):
     structure_threshold = status.weight >= self._structure_threshold
 
     if status == START and structure_threshold:
-      text = super(TerminalReporter, self)._render_event(*event)
+      text = super(TerminalReporter, self)._render_event(event)
       if text:
         self.stdout.write(text)
 
@@ -474,7 +475,7 @@ class TerminalReporter(TerminalProgress):
       print('')
 
       # same end message as parent
-      text = super(TerminalReporter, self)._render_event(*event)
+      text = super(TerminalReporter, self)._render_event(event)
       if text:
         print(text)
 
@@ -512,7 +513,7 @@ class TerminalReporter(TerminalProgress):
     if not section:
       self._render_event_sync(print, event)
 
-  def _render_event(self, *event):
+  def _render_event(self, event):
     status, message, (section, check, iterargs) = event
     output = StringIO()
     print = partial(builtins.print, file=output)
