@@ -8,8 +8,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 
 from fontbakery.checkrunner import Spec
-from fontbakery.checkrunner import get_module_specification \
-                                        as super_get_module_specification
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 
 class FontsSpec(Spec):
@@ -30,7 +28,7 @@ class FontsSpec(Spec):
           fonts_to_check.append(fullpath)
         else:
           logging.warning("Skipping '{}' as it does not seem "
-                            "to be valid TrueType font file.".format(fullpath))
+                          "to be valid TrueType font file.".format(fullpath))
       return fonts_to_check
 
 
