@@ -28,7 +28,7 @@ from fontTools.ttLib import TTFont
 class JsonSetEncoder(json.JSONEncoder):
     """Serialise Set objects for json module."""
 
-    def default(self, obj):
+    def default(self, obj):  # pylint: disable=arguments-differ,method-hidden
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
