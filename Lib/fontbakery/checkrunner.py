@@ -231,7 +231,7 @@ def get_traceback():
   render it. Run this inside of the except block.
   """
   ex_type, ex, tb = sys.exc_info()
-  result = traceback.format_tb(tb)
+  result = traceback.format_tb(tb)[0]
   del tb
   return result
 
