@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from fontbakery.callable import condition
 # used to inform get_module_specification whether and how to create a specification
-from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import,cyclic-import
 
 @condition
 def ttFont(font):
