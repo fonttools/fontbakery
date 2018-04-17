@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals, division
 
+import io
+
+import defcon
+import ufo2ft
 import pytest
 from fontbakery.checkrunner import (
               DEBUG
@@ -74,11 +78,54 @@ def NOT_IMPLEMENTED_test_check_077():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_078():
+def test_check_078():
   """ Check that glyph names do not exceed max length. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_078 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, "A glyph name is too long."
-  # - PASS
+  from fontbakery.specifications.cmap import com_google_fonts_check_078 as check
+
+  # TTF
+  test_font = defcon.Font("data/test/test.ufo")
+  test_ttf = ufo2ft.compileTTF(test_font)
+  status, _ = list(check(test_ttf))[-1]
+  assert status == PASS
+
+  test_glyph = defcon.Glyph()
+  test_glyph.unicode = 0x1234
+  test_glyph.name = ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+  test_font.insertGlyph(test_glyph)
+
+  test_ttf = ufo2ft.compileTTF(test_font, useProductionNames=False)
+  status, _ = list(check(test_ttf))[-1]
+  assert status == FAIL
+
+  test_ttf = ufo2ft.compileTTF(test_font, useProductionNames=True)
+  status, _ = list(check(test_ttf))[-1]
+  assert status == PASS
+
+  # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+  test_ttf["post"].formatType = 3.0
+  test_file = io.BytesIO()
+  test_ttf.save(test_file)
+  test_ttf = TTFont(test_file)
+  status, message = list(check(test_ttf))[-1]
+  assert status == PASS
+  assert "format 3.0" in message
+
+  del test_font, test_ttf, test_file  # Prevent copypasta errors.
+
+  # CFF
+  test_font = defcon.Font("data/test/test.ufo")
+  test_otf = ufo2ft.compileOTF(test_font)
+  status, _ = list(check(test_otf))[-1]
+  assert status == PASS
+
+  test_font.insertGlyph(test_glyph)
+
+  test_otf = ufo2ft.compileOTF(test_font, useProductionNames=False)
+  status, _ = list(check(test_otf))[-1]
+  assert status == FAIL
+
+  test_otf = ufo2ft.compileOTF(test_font, useProductionNames=True)
+  status, _ = list(check(test_otf))[-1]
+  assert status == PASS
