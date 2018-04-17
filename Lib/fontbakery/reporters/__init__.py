@@ -42,6 +42,8 @@ class FontbakeryReporter(object):
     self.is_async = is_async
     self.runner = runner
 
+    self._worst_check_status = None
+
   def run(self, order=None):
     """
     self.runner must be present
@@ -95,6 +97,11 @@ class FontbakeryReporter(object):
       self._counter[message.name] += 1
       self._counter['(not finished)'] -= 1
 
+  @property
+  def worst_check_status(self):
+    """ Returns a status or None if there was no check result """
+    return self._worst_check_status
+
   def receive(self, event):
     status, message, identity = event
     if self._started is None and status != START:
@@ -104,6 +111,14 @@ class FontbakeryReporter(object):
       status, message, identity = event
       raise ProtocolViolationError('Received Event after status END: '\
                                         '{} {}.'.format(status, message))
+
+    if status is ENDCHECK and (self._worst_check_status is None \
+                           or self._worst_check_status < message):
+      # we only record ENDCHECK, because check runner may in the future
+      # have tools to upgrade/downgrade the actually worst status
+      # this should be future proof.
+      self._worst_check_status = message
+
     self._register(event)
     self._cleanup(event)
     self._output(event)
