@@ -157,20 +157,12 @@ def get_module_from_file(filename):
     return imp.load_source(module_name, filename)
 
 def get_module(name):
-  imported = None
   if os.path.isfile(name):
     # This name could also be the name of a module, but if there's a
     # file that we can load the file will win. Otherwise, it's still
     # possible to change the directory
-    try:
-      imported = get_module_from_file(name)
-    except Exception as e:
-      print(e) # debugging.
-      # silenced, import_module will have a trial
-      # this will make it hard to debug, but we want inport_module
-      # to be the fallback.
-      pass
-  if not imported:
+    imported = get_module_from_file(name)
+  else:
     from importlib import import_module
     # Fails with an appropriate ImportError.
     imported = import_module(name, package=None)
