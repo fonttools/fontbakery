@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ascender</key>
+	<integer>750</integer>
+	<key>capHeight</key>
+	<integer>700</integer>
+	<key>copyright</key>
+	<string></string>
+	<key>descender</key>
+	<integer>-250</integer>
+	<key>familyName</key>
+	<string>test</string>
+	<key>guidelines</key>
+	<array/>
+	<key>italicAngle</key>
+	<integer>0</integer>
+	<key>note</key>
+	<string></string>
+	<key>openTypeHeadCreated</key>
+	<string>2018/04/16 17:34:33</string>
+	<key>openTypeNameDesigner</key>
+	<string></string>
+	<key>openTypeNameDesignerURL</key>
+	<string></string>
+	<key>openTypeNameLicense</key>
+	<string></string>
+	<key>openTypeNameLicenseURL</key>
+	<string></string>
+	<key>openTypeNameManufacturer</key>
+	<string></string>
+	<key>openTypeNameManufacturerURL</key>
+	<string></string>
+	<key>postscriptBlueValues</key>
+	<array/>
+	<key>postscriptFamilyBlues</key>
+	<array/>
+	<key>postscriptFamilyOtherBlues</key>
+	<array/>
+	<key>postscriptOtherBlues</key>
+	<array/>
+	<key>postscriptStemSnapH</key>
+	<array/>
+	<key>postscriptStemSnapV</key>
+	<array/>
+	<key>postscriptUnderlinePosition</key>
+	<integer>-75</integer>
+	<key>postscriptUnderlineThickness</key>
+	<integer>51</integer>
+	<key>styleName</key>
+	<string>Regular</string>
+	<key>trademark</key>
+	<string></string>
+	<key>unitsPerEm</key>
+	<integer>1000</integer>
+	<key>versionMajor</key>
+	<integer>0</integer>
+	<key>versionMinor</key>
+	<integer>0</integer>
+	<key>xHeight</key>
+	<integer>500</integer>
+</dict>
+</plist>
