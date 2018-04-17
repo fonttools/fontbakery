@@ -624,7 +624,12 @@ def com_google_fonts_check_060(ttFont):
                  " are incorrectly named: {}").format(bad_glyphIDs)
 
 
-@check(id='com.google.fonts/check/078')
+# This check was originally ported from
+# Mekkablue Preflight Checks available at:
+# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
+@check(
+    id='com.google.fonts/check/078',
+    request='https://github.com/googlefonts/fontbakery/issues/735')
 def com_google_fonts_check_078(ttFont):
   """Check that glyph names do not exceed max length."""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(

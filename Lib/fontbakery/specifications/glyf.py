@@ -7,6 +7,7 @@ from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
+
 @check(id='com.google.fonts/check/069')
 def com_google_fonts_check_069(ttFont):
   """Is there any unused data at the end of the glyf table?"""
@@ -41,7 +42,12 @@ def com_google_fonts_check_069(ttFont):
       yield PASS, "There is no unused data at the end of the glyf table."
 
 
-@check(id='com.google.fonts/check/075')
+# This check was originally ported from
+# Mekkablue Preflight Checks available at:
+# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
+@check(
+    id='com.google.fonts/check/075',
+    request='https://github.com/googlefonts/fontbakery/issues/735')
 def com_google_fonts_check_075(ttFont):
   """Check for points out of bounds."""
   failed = False
