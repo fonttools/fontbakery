@@ -252,6 +252,8 @@ def main(specification=None, values=None):
     import json
     json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
 
+  # Fail and error let the command fail
+  return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
 
 if __name__ == '__main__':
     sys.exit(main())
