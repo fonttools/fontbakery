@@ -144,15 +144,24 @@ def NOT_IMPLEMENTED_test_check_039():
   # - FAIL, "Hints should NOT overlap!"
 
 
-def NOT_IMPLEMENTED_test_check_046():
+def test_check_046():
   """ Font contains the first few mandatory glyphs (.null or NULL, CR and
   space)? """
-  # from fontbakery.specifications.general import com_google_fonts_check_046 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS, "Font contains the first few mandatory glyphs" 
-  # - WARN, "Font is missing glyphs for some mandatory codepoints"
+  from fontbakery.specifications.general import com_google_fonts_check_046 as check
+
+  test_font = TTFont(os.path.join("data", "test", "Nunito", "Nunito-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  import fontTools.subset
+  subsetter = fontTools.subset.Subsetter()
+  subsetter.populate(glyphs="n")  # Arbitrarily remove everything except n.
+  subsetter.subset(test_font)
+  status, message = list(check(test_font))[-1]
+  assert status == WARN
+  assert "0x0000" in message
+  assert "0x000D" in message
+  assert "0x0020" in message
 
 
 def test_check_047():
