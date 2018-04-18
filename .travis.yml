@@ -25,7 +25,7 @@ before_install:
 
 install:
 - export LD_LIBRARY_PATH=/usr/local/lib
-- export PATH=$PATH:prebuilt/fval/
+- export PATH=$PATH:prebuilt/:prebuilt/fval/
 - export LD_PRELOAD=prebuilt/custom_freetype/lib/libfreetype.so
 - pip install tox
 
