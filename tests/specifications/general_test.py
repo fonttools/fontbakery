@@ -2,8 +2,10 @@
 from __future__ import absolute_import, print_function, unicode_literals, division
 
 import io
+import os
 
 import defcon
+import pytest
 import ufo2ft
 from fontTools.ttLib import TTFont
 
@@ -81,9 +83,17 @@ def test_check_037():
   for status, message in fval_results:
     assert RASTER_EXCEPTION_MESSAGE not in message
 
-  # and finaly, we make sure that there wasn't an ERROR
-  # which would mean FontValidator is not properly installed:
-  assert status != ERROR
+    # and finally, we make sure that there wasn't an ERROR
+    # which would mean FontValidator is not properly installed:
+    assert status != ERROR
+
+  # Simulate FontVal missing.
+  old_path = os.environ["PATH"]
+  os.environ["PATH"] = ""
+  with pytest.raises(OSError) as _:
+    status, message = list(check(font))[-1]
+    assert status == ERROR
+  os.environ["PATH"] = old_path
 
 
 def NOT_IMPLEMENTED_test_check_038():

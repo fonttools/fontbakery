@@ -157,38 +157,43 @@ def com_google_fonts_check_037(font):
                   "Microsoft Font Validator are not available!")
     raise error
 
-  xml_report = open("{}.report.xml".format(font), "r").read()
-
-  os.remove("{}.report.xml".format(font))
-  if os.path.exists("{}.report.html".format(font)):
-    os.remove("{}.report.html".format(font))
-  fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
-  os.remove(fval_file)
-
   def report_message(msg, details):
     if details:
       return "MS-FonVal: {} DETAILS: {}".format(msg, details)
     else:
       return "MS-FonVal: {}".format(msg)
 
-  import defusedxml.lxml
-  doc = defusedxml.lxml.fromstring(xml_report)
-  already_reported = []
-  for report in doc.iter('Report'):
-    msg = report.get("Message")
-    details = report.get("Details")
-    if [msg, details] not in already_reported:
-      # avoid cluttering the output with tons of identical reports
-      already_reported.append([msg, details])
+  xml_report_file = "{}.report.xml".format(font)
+  html_report_file = "{}.report.html".format(font)
+  fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
 
-      if report.get("ErrorType") == "P":
-        yield PASS, report_message(msg, details)
-      elif report.get("ErrorType") == "E":
-        yield FAIL, report_message(msg, details)
-      elif report.get("ErrorType") == "W":
-        yield WARN, report_message(msg, details)
-      else:
-        yield INFO, report_message(msg, details)
+  with open(xml_report_file, "rb") as xml_report:
+    import defusedxml.lxml
+    doc = defusedxml.lxml.parse(xml_report)
+    already_reported = []
+    for report in doc.iter('Report'):
+      msg = report.get("Message")
+      details = report.get("Details")
+      if [msg, details] not in already_reported:
+        # avoid cluttering the output with tons of identical reports
+        already_reported.append([msg, details])
+
+        if report.get("ErrorType") == "P":
+          yield PASS, report_message(msg, details)
+        elif report.get("ErrorType") == "E":
+          yield FAIL, report_message(msg, details)
+        elif report.get("ErrorType") == "W":
+          yield WARN, report_message(msg, details)
+        else:
+          yield INFO, report_message(msg, details)
+
+  os.remove(xml_report_file)
+  # FontVal internal detail: HTML report generated only on non-Windows due to
+  # Mono or the used HTML renderer not being able to render XML with a
+  # stylesheet directly. https://github.com/googlefonts/fontbakery/issues/1747
+  if os.path.exists(html_report_file):
+    os.remove(html_report_file)
+  os.remove(fval_file)
 
 
 @check(id='com.google.fonts/check/038', conditions=['fontforge_check_results'])
