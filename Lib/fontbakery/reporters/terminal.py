@@ -180,6 +180,9 @@ class TerminalProgress(FontbakeryReporter):
                    , structure_threshold=None
                    , usecolor=True
                    , unicorn=True
+                     # a tuple of structural statuses to be skipped
+                     # e.g. (STARTSECTION, ENDSECTION)
+                   , skip_status_report=None
                    , **kwd):
     super(TerminalProgress, self).__init__(**kwd)
 
@@ -195,6 +198,7 @@ class TerminalProgress(FontbakeryReporter):
 
     self._progressbar = []
     self._unicorn = unicorn
+    self._skip_status_report = skip_status_report or tuple()
 
     self._structure_threshold = min(START.weight, structure_threshold) \
                         or START.weight # if structure_threshold is None
@@ -226,11 +230,15 @@ class TerminalProgress(FontbakeryReporter):
     output = StringIO()
     print = partial(builtins.print, file=output)
 
-    if status == START and status.weight >= self._structure_threshold:
+    if not status.weight >= self._structure_threshold \
+                                      or status in self._skip_status_report:
+      return output.getvalue()
+
+    if status == START:
       order = message
       print('Start ... running {} individual check executions.'.format(len(order)))
 
-    if status == END and status.weight >= self._structure_threshold:
+    if status == END:
       if self._print_progress:
         print(self._draw_progressbar())#.encode('utf-8'))
       print('')
@@ -399,21 +407,23 @@ class TerminalReporter(TerminalProgress):
   def _render_event_sync(self, print, event):
     status, message, (section, check, iterargs) = event
 
-    structure_threshold = status.weight >= self._structure_threshold
+    if not status.weight >= self._structure_threshold \
+                                      or status in self._skip_status_report:
+      return
 
-    if status == START and structure_threshold:
+    if status == START:
       text = super(TerminalReporter, self)._render_event(event)
       if text:
         self.stdout.write(text)
 
-    if status == STARTSECTION and structure_threshold:
+    if status == STARTSECTION:
       order = message
       print('='*8, '{}'.format(section),'='*8)
       print('{} {} in section'.format(len(order)
                           , len(order) == 1 and 'check' or 'checks' ))
       print('')
 
-    if status == STARTCHECK and structure_threshold:
+    if status == STARTCHECK:
       if self.runner:
         formatted_iterargs = tuple(
             ('{0}[{1}]'.format(*item), self.runner.get_iterarg(*item))
@@ -434,16 +444,16 @@ class TerminalReporter(TerminalProgress):
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
-    if status.weight >= self._log_threshold and structure_threshold:
+    if status.weight >= self._log_threshold:
       print(' * {}: {}'.format(formatStatus(status, color=self._use_color)
                                                , message))#.encode('utf-8'))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
-    if status == ENDCHECK and structure_threshold:
+    if status == ENDCHECK:
       print('\n   Result: {}\n'.format(formatStatus(message, color=self._use_color)))
 
-    if status == ENDSECTION and structure_threshold:
+    if status == ENDSECTION:
       print('')
       print('Section results:')
       print('')
@@ -451,7 +461,7 @@ class TerminalReporter(TerminalProgress):
       print('')
       print ('='*8, 'END {}'.format(section),'='*8)
 
-    if status == END and structure_threshold:
+    if status == END:
       print('')
       if self.results_by:
         print('Collected results by', self.results_by)
@@ -479,7 +489,7 @@ class TerminalReporter(TerminalProgress):
       if text:
         print(text)
 
-    if status not in statuses and structure_threshold:
+    if status not in statuses:
       print('-'*8, status , '-'*8)
 
   def _render_event_async(self, print, event):

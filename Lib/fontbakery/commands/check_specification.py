@@ -24,6 +24,8 @@ from fontbakery.checkrunner import (
             , SKIP
             , PASS
             , FAIL
+            , STARTSECTION
+            , ENDSECTION
             )
 
 log_levels =  OrderedDict((s.name,s) for s in sorted((
@@ -86,6 +88,10 @@ def ArgumentParser(specification, spec_arg=True):
 
   argument_parser.add_argument('-C', '--no-colors', default=False, action='store_true',
                       help='No colors for tty output.')
+
+  argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
+                      help='Show section start and end info plus summary.')
+
 
   argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
                       help='List the checks available in the selected specification.')
@@ -241,6 +247,9 @@ def main(specification=None, values=None):
                        , log_threshold=args.loglevel_messages or loglevel
                        , usecolor=not args.no_colors
                        , collect_results_by=args.gather_by
+                       , skip_status_report=None if args.show_sections\
+                                                      else (STARTSECTION, ENDSECTION)
+
                        )
   reporters = [tr.receive]
   if args.json:
