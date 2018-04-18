@@ -1,7 +1,8 @@
 [run]
 # measure 'branch' coverage in addition to 'statement' coverage
-# See: http://coverage.readthedocs.org/en/coverage-4.0.3/branch.html#branch
+# See: http://coverage.readthedocs.org/en/latest/branch.html#branch
 branch = True
+parallel = True
 
 # list of directories or packages to measure
 source = fontbakery
@@ -11,6 +12,7 @@ source = fontbakery
 source =
     Lib/fontbakery
     .tox/*/Lib/python*/site-packages/fontbakery
+    .tox/*/Lib/site-packages/fontbakery
     .tox/pypy*/site-packages/fontbakery
 
 [report]
