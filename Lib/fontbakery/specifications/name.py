@@ -54,7 +54,8 @@ def com_google_fonts_check_032(ttFont):
 
 @check(
     id='com.google.fonts/check/033',
-    conditions=['monospace_stats'])
+    conditions=['monospace_stats',
+                'is_ttf'])
 def com_google_fonts_check_033(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
 
