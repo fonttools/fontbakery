@@ -54,15 +54,23 @@ def NOT_IMPLEMENTED_test_check_035():
   # - ERROR, "ftxvalidator is not available!"
 
 
-def NOT_IMPLEMENTED_test_check_036():
+def test_check_036():
   """ Checking with ots-sanitize. """
-  # from fontbakery.specifications.general import com_google_fonts_check_036 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # PASS, "ots-sanitize passed this file."
-  # FAIL, "ots-sanitize output..."
-  # ERROR, "ots-sanitize is not available!"
+  from fontbakery.specifications.general import com_google_fonts_check_036 as check
+
+  sanitary_font = os.path.join("data", "test", "cabin", "Cabin-Regular.ttf")
+  status, _ = list(check(sanitary_font))[-1]
+  assert status == PASS
+
+  bogus_font = os.path.join("data", "test", "cabinvfbeta", "CabinVFBeta.ttf")
+  status, _ = list(check(bogus_font))[-1]
+  assert status == FAIL
+
+  old_path = os.environ["PATH"]
+  os.environ["PATH"] = ""
+  status, _ = list(check(bogus_font))[-1]
+  assert status == ERROR
+  os.environ["PATH"] = old_path
 
 
 def test_check_037():

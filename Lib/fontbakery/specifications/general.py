@@ -114,7 +114,7 @@ def com_google_fonts_check_036(font):
   try:
     import subprocess
     ots_output = subprocess.check_output(
-        ["ots-sanitize", font], stderr=subprocess.STDOUT)
+        ["ots-sanitize", font], stderr=subprocess.STDOUT).decode()
     if ots_output != "" and "File sanitized successfully" not in ots_output:
       yield FAIL, "ots-sanitize output follows:\n\n{}".format(ots_output)
     else:
