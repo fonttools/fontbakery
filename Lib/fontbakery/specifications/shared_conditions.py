@@ -12,6 +12,16 @@ def ttFont(font):
 
 
 @condition
+def is_ttf(ttFont):
+  return 'glyf' in ttFont
+
+
+@condition
+def is_cff(ttFont):
+  return 'CFF ' in ttFont
+
+
+@condition
 def ligatures(ttFont):
   all_ligatures = {}
   try:

@@ -405,7 +405,8 @@ def com_google_fonts_check_007(metadata):
 
 
 @check(
-    id = 'com.google.fonts/check/011'
+    id = 'com.google.fonts/check/011',
+    conditions=['is_ttf']
 )
 def com_google_fonts_check_011(ttFonts):
   """Fonts have equal numbers of glyphs?"""
@@ -438,7 +439,8 @@ def com_google_fonts_check_011(ttFonts):
 
 
 @check(
-    id = 'com.google.fonts/check/012'
+    id = 'com.google.fonts/check/012',
+    conditions=['is_ttf']
 )
 def com_google_fonts_check_012(ttFonts):
   """Fonts have equal glyph names?"""
@@ -3003,6 +3005,7 @@ def com_google_fonts_check_166(ttFont):
       glyf table entries.
     """
   , request = 'https://github.com/googlefonts/fontbakery/issues/1720'
+  , conditions=['is_ttf']
 )
 def com_google_fonts_check_173(ttFont):
   """ Check that advance widths cannot be inferred as negative. """

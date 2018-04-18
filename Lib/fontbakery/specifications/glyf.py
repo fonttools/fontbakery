@@ -3,43 +3,42 @@ from __future__ import (absolute_import, division, print_function,
 
 from fontbakery.message import Message
 from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
+from fontbakery.checkrunner import FAIL, PASS, WARN
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 
-@check(id='com.google.fonts/check/069')
+@check(
+    id='com.google.fonts/check/069',
+    conditions=['is_ttf'])
 def com_google_fonts_check_069(ttFont):
   """Is there any unused data at the end of the glyf table?"""
-  if 'CFF ' in ttFont:
-    yield SKIP, "This check does not support CFF fonts."
-  else:
-    # -1 because https://www.microsoft.com/typography/otspec/loca.htm
-    expected = len(ttFont['loca']) - 1
-    actual = len(ttFont['glyf'])
-    diff = actual - expected
+  # -1 because https://www.microsoft.com/typography/otspec/loca.htm
+  expected = len(ttFont['loca']) - 1
+  actual = len(ttFont['glyf'])
+  diff = actual - expected
 
-    # allow up to 3 bytes of padding
-    if diff > 3:
-      yield FAIL, Message("unreachable-data",
-                          ("Glyf table has unreachable data at"
-                           " the end of the table."
-                           " Expected glyf table length {}"
-                           " (from loca table), got length"
-                           " {} (difference: {})").format(expected,
-                                                          actual,
-                                                          diff))
-    elif diff < 0:
-      yield FAIL, Message("data-beyond-table-end",
-                          ("Loca table references data beyond"
-                           " the end of the glyf table."
-                           " Expected glyf table length {}"
-                           " (from loca table), got length"
-                           " {} (difference: {})").format(expected,
-                                                          actual,
-                                                          diff))
-    else:
-      yield PASS, "There is no unused data at the end of the glyf table."
+  # allow up to 3 bytes of padding
+  if diff > 3:
+    yield FAIL, Message("unreachable-data",
+                        ("Glyf table has unreachable data at"
+                         " the end of the table."
+                         " Expected glyf table length {}"
+                         " (from loca table), got length"
+                         " {} (difference: {})").format(expected,
+                                                        actual,
+                                                        diff))
+  elif diff < 0:
+    yield FAIL, Message("data-beyond-table-end",
+                        ("Loca table references data beyond"
+                         " the end of the glyf table."
+                         " Expected glyf table length {}"
+                         " (from loca table), got length"
+                         " {} (difference: {})").format(expected,
+                                                        actual,
+                                                        diff))
+  else:
+    yield PASS, "There is no unused data at the end of the glyf table."
 
 
 # This check was originally ported from
@@ -47,6 +46,7 @@ def com_google_fonts_check_069(ttFont):
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
     id='com.google.fonts/check/075',
+    conditions=['is_ttf'],
     request='https://github.com/googlefonts/fontbakery/issues/735')
 def com_google_fonts_check_075(ttFont):
   """Check for points out of bounds."""

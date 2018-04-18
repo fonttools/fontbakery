@@ -441,6 +441,7 @@ def com_google_fonts_check_048(ttFont):
 
 @check(
     id='com.google.fonts/check/049',
+    conditions=['is_ttf']
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""

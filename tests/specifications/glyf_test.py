@@ -21,7 +21,6 @@ def NOT_IMPLEMENTED_test_check_069():
   # TODO: Implement-me!
   #
   # code-paths:
-  # - SKIP, "This check does not support CFF fonts."
   # - FAIL, code="unreachable-data"
   # - FAIL, code="data-beyond-table-end"
   # - PASS, "There is no unused data at the end of the glyf table."

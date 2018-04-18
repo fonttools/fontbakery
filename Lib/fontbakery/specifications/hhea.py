@@ -44,7 +44,10 @@ def com_google_fonts_check_073(ttFont):
                  " with values in the Hmtx and Hhea tables.")
 
 
-@check(id='com.google.fonts/check/079', conditions=['seems_monospaced'])
+@check(
+    id='com.google.fonts/check/079',
+    conditions=['seems_monospaced',
+                'is_ttf'])
 def com_google_fonts_check_079(ttFont):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
   advanceWidth?"""

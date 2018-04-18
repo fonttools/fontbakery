@@ -75,7 +75,9 @@ def com_google_fonts_check_020(ttFont, expected_os2_weight):
     yield PASS, "OS/2 usWeightClass value looks good!"
 
 
-@check(id='com.google.fonts/check/034')
+@check(
+    id='com.google.fonts/check/034',
+    conditions=['is_ttf'])
 def com_google_fonts_check_034(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
   current_value = ttFont['OS/2'].xAvgCharWidth
