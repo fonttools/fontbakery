@@ -257,17 +257,17 @@ def test_check_049():
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
-  # Test for whitespace character having composites (with ink).
+  print ("Test for whitespace character having composites (with ink).")
   test_font["cmap"].tables[0].cmap[0x0020] = "uni1E17"
   status, _ = list(check(test_font))[-1]
   assert status == FAIL
 
-  # Test for whitespace character having outlines (with ink).
+  print ("Test for whitespace character having outlines (with ink).")
   test_font["cmap"].tables[0].cmap[0x0020] = "scedilla"
   status, _ = list(check(test_font))[-1]
   assert status == FAIL
 
-  # Test for bad people (without ink).
+  print ("Test for whitespace character having composites (without ink).")
   import fontTools.pens.ttGlyphPen
   pen = fontTools.pens.ttGlyphPen.TTGlyphPen(test_font.getGlyphSet())
   pen.addComponent("space", (1, 0, 0, 1, 0, 0))
