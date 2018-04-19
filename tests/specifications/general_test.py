@@ -149,7 +149,7 @@ def test_check_046():
   space)? """
   from fontbakery.specifications.general import com_google_fonts_check_046 as check
 
-  test_font = TTFont(os.path.join("data", "test", "Nunito", "Nunito-Regular.ttf"))
+  test_font = TTFont(os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -338,7 +338,7 @@ def test_check_053():
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]
   assert status == PASS
- 
+
   # We now add unwanted tables one-by-one to validate the FAIL code-path:
   for unwanted in unwanted_tables:
     print ("Test FAIL with unwanted table {} ...".format(unwanted))
