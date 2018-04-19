@@ -248,14 +248,32 @@ def test_check_048():
   assert status == FAIL and message.code == "badA0"
 
 
-def NOT_IMPLEMENTED_test_check_049():
+def test_check_049():
   """ Whitespace glyphs have ink? """
-  # from fontbakery.specifications.general import com_google_fonts_check_049 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS, "There is no whitespace glyph with ink."
-  # - FAil, "Some glyphs have ink."
+  from fontbakery.specifications.general import com_google_fonts_check_049 as check
+
+  test_font = TTFont(
+      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  # Test for whitespace character having composites (with ink).
+  test_font["cmap"].tables[0].cmap[0x0020] = "uni1E17"
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
+
+  # Test for whitespace character having outlines (with ink).
+  test_font["cmap"].tables[0].cmap[0x0020] = "scedilla"
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
+
+  # Test for bad people (without ink).
+  import fontTools.pens.ttGlyphPen
+  pen = fontTools.pens.ttGlyphPen.TTGlyphPen(test_font.getGlyphSet())
+  pen.addComponent("space", (1, 0, 0, 1, 0, 0))
+  test_font["glyf"].glyphs["uni200B"] = pen.glyph()
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
 
 
 def test_check_052():
