@@ -568,7 +568,7 @@ def com_google_fonts_check_058(ttFont):
       # These 2 names are explicit exceptions
       # in the glyph naming rules
       continue
-    if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
+    if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,31}$', glyphName):
       bad_names.append(glyphName)
 
   if len(bad_names) == 0:

@@ -366,14 +366,29 @@ def test_check_053():
     assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_058():
+def test_check_058():
   """ Glyph names are all valid? """
-  # from fontbakery.specifications.general import com_google_fonts_check_058 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, "Glyph names do not comply with naming conventions"
-  # - PASS, "Glyph names are all valid."
+  from fontbakery.specifications.general import com_google_fonts_check_058 as check
+
+  test_font = TTFont(
+      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  bad_name1 = "a" * 32
+  bad_name2 = "3cents"
+  bad_name3 = ".threecents"
+  good_name1 = "b" * 31
+  test_font.glyphOrder[2] = bad_name1
+  test_font.glyphOrder[3] = bad_name2
+  test_font.glyphOrder[4] = bad_name3
+  test_font.glyphOrder[5] = good_name1
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+  assert bad_name1 in message
+  assert bad_name2 in message
+  assert bad_name3 in message
+  assert good_name1 not in message
 
 
 def NOT_IMPLEMENTED_test_check_059():
