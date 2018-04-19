@@ -379,8 +379,9 @@ def test_check_060():
   test_file = io.BytesIO()
   test_font.save(test_file)
   test_font = TTFont(test_file)
-  status, _ = list(check(test_font))[-1]
+  status, message = list(check(test_font))[-1]
   assert status == FAIL
+  assert "space" in message
 
 
 def test_check_078():
