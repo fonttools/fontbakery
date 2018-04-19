@@ -359,14 +359,28 @@ def NOT_IMPLEMENTED_test_check_059():
   # - FAIL, "Glyph IDs occur twice"
 
 
-def NOT_IMPLEMENTED_test_check_060():
-  """ No glyph is incorrectly named? """
-  # from fontbakery.specifications.general import com_google_fonts_check_060 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS, "Font does not have any incorrectly named glyph."
-  # - FAIL, "Some glyph IDs are incorrectly named."
+def test_check_060():
+  """Font contains duplicate glyph names?"""
+  from fontbakery.specifications.general import com_google_fonts_check_060 as check
+
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  test_font = TTFont(test_font_path)
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  # https://github.com/fonttools/fonttools/issues/149
+  glyph_names = test_font.getGlyphOrder()
+  glyph_names[2] = glyph_names[3]
+  # Load again, we changed the font directly.
+  test_font = TTFont(test_font_path)
+  test_font.setGlyphOrder(glyph_names)
+  _ = test_font['post']
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
 
 
 def test_check_078():

@@ -615,19 +615,19 @@ def com_google_fonts_check_059(ttFont):
 
 @check(id='com.google.fonts/check/060')
 def com_google_fonts_check_060(ttFont):
-  """No glyph is incorrectly named?"""
+  """Font contains duplicate glyph names?"""
   import re
   bad_glyphIDs = []
-  for _, g in enumerate(ttFont.getGlyphOrder()):
-    if re.search(r'#\w+$', g):
+  for g in ttFont.getGlyphOrder():
+    if re.search(r'#\w+$', g):  # fonttools renames duplicates with ...#1, etc.
       glyphID = re.sub(r'#\w+', '', g)
       bad_glyphIDs.append(glyphID)
 
   if len(bad_glyphIDs) == 0:
-    yield PASS, "Font does not have any incorrectly named glyph."
+    yield PASS, "Font does not contain duplicate glyph names."
   else:
-    yield FAIL, ("The following glyph IDs"
-                 " are incorrectly named: {}").format(bad_glyphIDs)
+    yield FAIL, ("The following glyphs have duplicate names:"
+                 " {}").format(bad_glyphIDs)
 
 
 # This check was originally ported from
