@@ -609,7 +609,7 @@ def com_google_fonts_check_059(ttFont):
   if len(duplicated_glyphIDs) == 0:
     yield PASS, "Font contains unique glyph names."
   else:
-    yield FAIL, ("The following glyph IDs"
+    yield FAIL, ("The following glyph names"
                  " occur twice: {}").format(duplicated_glyphIDs)
 
 
