@@ -391,14 +391,18 @@ def test_check_058():
   assert good_name1 not in message
 
 
-def NOT_IMPLEMENTED_test_check_059():
+def test_check_059():
   """ Font contains unique glyph names? """
-  # from fontbakery.specifications.general import com_google_fonts_check_059 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS, "Font contains unique glyph names."
-  # - FAIL, "Glyph IDs occur twice"
+  from fontbakery.specifications.general import com_google_fonts_check_059 as check
+
+  test_font = TTFont(
+      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  test_font.glyphOrder[2] = test_font.glyphOrder[3]
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_060():
