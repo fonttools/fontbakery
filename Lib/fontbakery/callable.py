@@ -13,8 +13,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
 from __future__ import absolute_import, print_function, unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+
 from builtins import object
 import sys
 try:  # Try to get the newer Python 3.x method...
