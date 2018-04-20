@@ -563,7 +563,7 @@ def com_google_fonts_check_058(ttFont):
   """Glyph names are all valid?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:
-    yield PASS, ("TrueType fonts with a format 3.0 post table contain no"
+    yield SKIP, ("TrueType fonts with a format 3.0 post table contain no"
                  " glyph names.")
   else:
     import re
@@ -603,7 +603,7 @@ def com_google_fonts_check_059(ttFont):
   """Font contains unique glyph names?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:
-    yield PASS, ("TrueType fonts with a format 3.0 post table contain no"
+    yield SKIP, ("TrueType fonts with a format 3.0 post table contain no"
                  " glyph names.")
   else:
     import re
