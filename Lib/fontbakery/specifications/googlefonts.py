@@ -18,7 +18,7 @@ from fontbakery.checkrunner import (
             , Section
             )
 import os
-from fontbakery.callable import condition, check
+from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.constants import(
         # TODO: priority levels are not yet part of the new runner/reporters.
@@ -177,14 +177,6 @@ expected_check_ids = [
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
-
-class Disabled(object):
-  def __init__(self, func):
-    self.func = func
-
-def disable(func):
-  return Disabled(func)
-
 
 
 # -------------------------------------------------------------------

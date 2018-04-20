@@ -300,3 +300,12 @@ class FontBakeryExpectedValue(object):
       is wrong with value.
     """
     return self._validator(value) if self._validator else (True, None)
+
+
+class Disabled(object):
+  def __init__(self, func):
+    self.func = func
+
+
+def disable(func):
+  return Disabled(func)
