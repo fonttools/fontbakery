@@ -24,6 +24,13 @@ def test_command_check_googlefonts():
   """Test if `fontbakery check-googlefonts` can run successfully`."""
   subprocess.check_output(["fontbakery", "check-googlefonts", "-h"])
 
+  test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  subprocess.check_output([
+      "fontbakery", "check-googlefonts", "-n", "-c",
+      "com.google.fonts/check/001", test_font
+  ])
+
   with pytest.raises(subprocess.CalledProcessError):
     subprocess.check_output(["fontbakery", "check-googlefonts"])
 
