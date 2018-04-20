@@ -398,8 +398,7 @@ def test_check_058():
   test_font.save(test_file)
   test_font = TTFont(test_file)
   status, message = list(check(test_font))[-1]
-  assert status == PASS
-  assert "format 3.0" in message
+  assert status == SKIP
 
 
 def test_check_059():
@@ -435,8 +434,7 @@ def test_check_059():
   test_font.save(test_file)
   test_font = TTFont(test_file)
   status, message = list(check(test_font))[-1]
-  assert status == PASS
-  assert "format 3.0" in message
+  assert status == SKIP
 
 
 def NOT_IMPLEMENTED_test_check_060():
