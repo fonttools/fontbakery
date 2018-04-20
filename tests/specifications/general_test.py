@@ -437,7 +437,7 @@ def test_check_059():
   assert status == SKIP
 
 
-def test_check_078():
+def DISABLED_test_check_078():
   """ Check that glyph names do not exceed max length. """
   from fontbakery.specifications.general import com_google_fonts_check_078 as check
 
