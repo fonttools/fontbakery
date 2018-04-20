@@ -199,9 +199,10 @@ class TerminalProgress(FontbakeryReporter):
     self._progressbar = []
     self._unicorn = unicorn
     self._skip_status_report = skip_status_report or tuple()
-
-    self._structure_threshold = min(START.weight, structure_threshold) \
-                        or START.weight # if structure_threshold is None
+    if structure_threshold:
+      self._structure_threshold = min(START.weight, structure_threshold)
+    else:
+      self._structure_threshold = START.weight
     if self._structure_threshold % 2:
       # always include the according START status
       self._structure_threshold -= 1
