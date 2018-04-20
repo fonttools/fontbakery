@@ -561,31 +561,36 @@ def com_google_fonts_check_053(ttFont):
 @check(id='com.google.fonts/check/058')
 def com_google_fonts_check_058(ttFont):
   """Glyph names are all valid?"""
-  import re
-  bad_names = []
-  for _, glyphName in enumerate(ttFont.getGlyphOrder()):
-    if glyphName in [".null", ".notdef"]:
-      # These 2 names are explicit exceptions
-      # in the glyph naming rules
-      continue
-    if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,31}$', glyphName):
-      bad_names.append(glyphName)
-
-  if len(bad_names) == 0:
-    yield PASS, "Glyph names are all valid."
+  if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
+      "post") and ttFont["post"].formatType == 3.0:
+    yield PASS, ("TrueType fonts with a format 3.0 post table contain no"
+                 " glyph names.")
   else:
-    yield FAIL, ("The following glyph names do not comply"
-                 " with naming conventions: {}"
-                 " A glyph name may be up to 31 characters in length,"
-                 " must be entirely comprised of characters from"
-                 " the following set:"
-                 " A-Z a-z 0-9 .(period) _(underscore). and must not"
-                 " start with a digit or period."
-                 " There are a few exceptions"
-                 " such as the special character \".notdef\"."
-                 " The glyph names \"twocents\", \"a1\", and \"_\""
-                 " are all valid, while \"2cents\""
-                 " and \".twocents\" are not.").format(bad_names)
+    import re
+    bad_names = []
+    for _, glyphName in enumerate(ttFont.getGlyphOrder()):
+      if glyphName in [".null", ".notdef"]:
+        # These 2 names are explicit exceptions
+        # in the glyph naming rules
+        continue
+      if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,31}$', glyphName):
+        bad_names.append(glyphName)
+
+    if len(bad_names) == 0:
+      yield PASS, "Glyph names are all valid."
+    else:
+      yield FAIL, ("The following glyph names do not comply"
+                   " with naming conventions: {}"
+                   " A glyph name may be up to 31 characters in length,"
+                   " must be entirely comprised of characters from"
+                   " the following set:"
+                   " A-Z a-z 0-9 .(period) _(underscore). and must not"
+                   " start with a digit or period."
+                   " There are a few exceptions"
+                   " such as the special character \".notdef\"."
+                   " The glyph names \"twocents\", \"a1\", and \"_\""
+                   " are all valid, while \"2cents\""
+                   " and \".twocents\" are not.").format(bad_names)
 
 
 @check(
@@ -596,21 +601,26 @@ def com_google_fonts_check_058(ttFont):
     """)
 def com_google_fonts_check_059(ttFont):
   """Font contains unique glyph names?"""
-  import re
-  glyphs = []
-  duplicated_glyphIDs = []
-  for _, g in enumerate(ttFont.getGlyphOrder()):
-    glyphID = re.sub(r'#\w+', '', g)
-    if glyphID in glyphs:
-      duplicated_glyphIDs.append(glyphID)
-    else:
-      glyphs.append(glyphID)
-
-  if len(duplicated_glyphIDs) == 0:
-    yield PASS, "Font contains unique glyph names."
+  if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
+      "post") and ttFont["post"].formatType == 3.0:
+    yield PASS, ("TrueType fonts with a format 3.0 post table contain no"
+                 " glyph names.")
   else:
-    yield FAIL, ("The following glyph names"
-                 " occur twice: {}").format(duplicated_glyphIDs)
+    import re
+    glyphs = []
+    duplicated_glyphIDs = []
+    for _, g in enumerate(ttFont.getGlyphOrder()):
+      glyphID = re.sub(r'#\w+', '', g)
+      if glyphID in glyphs:
+        duplicated_glyphIDs.append(glyphID)
+      else:
+        glyphs.append(glyphID)
+
+    if len(duplicated_glyphIDs) == 0:
+      yield PASS, "Font contains unique glyph names."
+    else:
+      yield FAIL, ("The following glyph names"
+                   " occur twice: {}").format(duplicated_glyphIDs)
 
 
 # This check was originally ported from

@@ -370,8 +370,9 @@ def test_check_058():
   """ Glyph names are all valid? """
   from fontbakery.specifications.general import com_google_fonts_check_058 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -390,19 +391,52 @@ def test_check_058():
   assert bad_name3 in message
   assert good_name1 not in message
 
+  # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+  test_font = TTFont(test_font_path)
+  test_font["post"].formatType = 3.0
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+  assert "format 3.0" in message
+
 
 def test_check_059():
   """ Font contains unique glyph names? """
   from fontbakery.specifications.general import com_google_fonts_check_059 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
-  test_font.glyphOrder[2] = test_font.glyphOrder[3]
-  status, _ = list(check(test_font))[-1]
+  # Fonttools renames duplicate glyphs with #1, #2, ... on load.
+  # Code snippet from https://github.com/fonttools/fonttools/issues/149.
+  glyph_names = test_font.getGlyphOrder()
+  glyph_names[2] = glyph_names[3]
+  # Load again, we changed the font directly.
+  test_font = TTFont(test_font_path)
+  test_font.setGlyphOrder(glyph_names)
+  test_font['post']  # Just access the data to make fonttools generate it.
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, message = list(check(test_font))[-1]
   assert status == FAIL
+  assert "space" in message
+
+  # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+  test_font = TTFont(test_font_path)
+  test_font.setGlyphOrder(glyph_names)
+  test_font["post"].formatType = 3.0
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+  assert "format 3.0" in message
 
 
 def test_check_078():
