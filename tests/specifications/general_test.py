@@ -405,16 +405,6 @@ def test_check_059():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_060():
-  """ No glyph is incorrectly named? """
-  # from fontbakery.specifications.general import com_google_fonts_check_060 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS, "Font does not have any incorrectly named glyph."
-  # - FAIL, "Some glyph IDs are incorrectly named."
-
-
 def test_check_078():
   """ Check that glyph names do not exceed max length. """
   from fontbakery.specifications.general import com_google_fonts_check_078 as check

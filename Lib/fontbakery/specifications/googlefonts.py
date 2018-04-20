@@ -92,7 +92,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/057' # Name table entries should not contain line-breaks.
       , 'com.google.fonts/check/058' # Glyph names are all valid?
       , 'com.google.fonts/check/059' # Font contains unique glyph names?
-      , 'com.google.fonts/check/060' # No glyph is incorrectly named?
       , 'com.google.fonts/check/061' # EPAR table present in font?
       , 'com.google.fonts/check/062' # Is GASP table correctly set?
       , 'com.google.fonts/check/063' # Does GPOS table have kerning information?

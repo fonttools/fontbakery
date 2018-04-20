@@ -613,23 +613,6 @@ def com_google_fonts_check_059(ttFont):
                  " occur twice: {}").format(duplicated_glyphIDs)
 
 
-@check(id='com.google.fonts/check/060')
-def com_google_fonts_check_060(ttFont):
-  """No glyph is incorrectly named?"""
-  import re
-  bad_glyphIDs = []
-  for _, g in enumerate(ttFont.getGlyphOrder()):
-    if re.search(r'#\w+$', g):
-      glyphID = re.sub(r'#\w+', '', g)
-      bad_glyphIDs.append(glyphID)
-
-  if len(bad_glyphIDs) == 0:
-    yield PASS, "Font does not have any incorrectly named glyph."
-  else:
-    yield FAIL, ("The following glyph IDs"
-                 " are incorrectly named: {}").format(bad_glyphIDs)
-
-
 # This check was originally ported from
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
