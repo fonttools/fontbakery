@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-from fontbakery.callable import check, condition
+from fontbakery.callable import check, condition, disable
 from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
 from fontbakery.constants import CRITICAL
 from fontbakery.message import Message
@@ -616,6 +616,8 @@ def com_google_fonts_check_059(ttFont):
 # This check was originally ported from
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
+# Disabled until we know the rationale.
+@disable
 @check(
     id='com.google.fonts/check/078',
     request='https://github.com/googlefonts/fontbakery/issues/735')
