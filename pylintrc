@@ -16,3 +16,4 @@ enable=
   bad-format-string,
   anomalous-backslash-in-string,
   bad-open-mode,
+  unused-import,
