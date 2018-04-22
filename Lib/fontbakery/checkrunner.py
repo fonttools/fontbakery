@@ -1081,7 +1081,7 @@ class Spec(object):
       more conditions, this climbs down all the way.
     """
     if not key in ('args', 'mandatoryArgs'):
-      raise TypeError('key must be "args" or "mandatoryArgs", got {}').format(key)
+      raise TypeError('key must be "args" or "mandatoryArgs", got {}'.format(key))
     dependencies = list(getattr(item, key))
     if hasattr(item, 'conditions'):
       dependencies += [name for negated, name in map(is_negated, item.conditions)]
