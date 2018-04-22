@@ -154,7 +154,7 @@ def com_google_fonts_check_037(font):
       filtered_msgs += line + "\n"
     yield INFO, ("Microsoft Font Validator returned an error code."
                  " Output follows :\n\n{}\n").format(filtered_msgs)
-  except (OSError, IOError) as error:
+  except OSError as error:
     yield ERROR, ("Mono runtime and/or "
                   "Microsoft Font Validator are not available!")
     raise error
