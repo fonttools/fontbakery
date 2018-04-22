@@ -252,7 +252,7 @@ def com_google_fonts_check_001(font):
   """
   from fontbakery.constants import STYLE_NAMES
 
-  file_path, filename = os.path.split(font)
+  _, filename = os.path.split(font)
   basename = os.path.splitext(filename)[0]
   # remove spaces in style names
   style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -630,7 +630,7 @@ def com_google_fonts_check_029(ttFont, license):
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
-  for i, nameRecord in enumerate(ttFont["name"].names):
+  for nameRecord in ttFont["name"].names:
     if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
       entry_found = True
       value = nameRecord.toUnicode()
@@ -2314,7 +2314,7 @@ def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
 
   if 'fpgm' in api_gfonts_ttFont:
     gfonts_fpgm_tbl = api_gfonts_ttFont["fpgm"].program.getAssembly()
-    warn, gf_inc_xheight = \
+    _, gf_inc_xheight = \
       ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
     if msg: yield WARN, msg
 
