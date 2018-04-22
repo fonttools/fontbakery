@@ -230,7 +230,7 @@ def get_traceback():
   Returns a string with a traceback as the python interpreter would
   render it. Run this inside of the except block.
   """
-  ex_type, ex, tb = sys.exc_info()
+  _, _, tb = sys.exc_info()
   result = traceback.format_tb(tb)[0]
   del tb
   return result
@@ -949,7 +949,7 @@ class Spec(object):
     seen = set()
     failed = []
     # make this simple, collect all used names
-    for section_name, section in self._sections.items():
+    for section in self._sections.values():
       for check in section.checks:
         dependencies = list(check.args)
         if hasattr(check, 'conditions'):
@@ -1145,7 +1145,7 @@ class Spec(object):
   def _execute_section(self, iterargs, section, items):
     if section is None:
       # base case: terminate recursion
-      for check, signature, scope in items:
+      for check, _, _ in items:
         yield check, []
     elif not section[0]:
       # no sectioning on this level
