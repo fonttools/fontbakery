@@ -98,7 +98,7 @@ def get_expected_version(f):
       if expected_version is None:
         expected_version = name_version
       elif name_version > expected_version:
-          expected_version = name_version
+        expected_version = name_version
       # else what?
   return expected_version
 
