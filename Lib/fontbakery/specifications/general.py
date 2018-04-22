@@ -73,6 +73,7 @@ def com_google_fonts_check_002(fonts):
 def com_google_fonts_check_035(font):
   """Checking with ftxvalidator."""
   import plistlib
+  import io
   try:
     import subprocess
     ftx_cmd = [
@@ -81,9 +82,10 @@ def com_google_fonts_check_035(font):
         "all",  # execute all checks
         font
     ]
-    ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
+    ftx_output = io.BytesIO(
+        subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT))
 
-    ftx_data = plistlib.readPlistFromString(ftx_output)
+    ftx_data = plistlib.readPlist(ftx_output)
     # we accept kATSFontTestSeverityInformation
     # and kATSFontTestSeverityMinorError
     if 'kATSFontTestSeverityFatalError' \
