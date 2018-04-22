@@ -198,11 +198,11 @@ def com_google_fonts_check_068(ttFont):
   familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
   fullfontname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
 
-  if len(familyname) == 0:
+  if not familyname:
     yield FAIL, Message("no-font-family-name",
                         ("Font lacks a NAMEID_FONT_FAMILY_NAME"
                          " entry in the 'name' table."))
-  elif len(fullfontname) == 0:
+  elif not fullfontname:
     yield FAIL, Message("no-full-font-name",
                         ("Font lacks a NAMEID_FULL_FONT_NAME"
                          " entry in the 'name' table."))
@@ -318,7 +318,7 @@ def com_google_fonts_check_071(ttFont):
 
   if weight_value is not None:
     # <Weight> value >= 250 and <= 900 in steps of 50
-    if weight_value % 50 != 0:
+    if weight_value % 50:
       bad_entries.append({
           "field": field,
           'value': weight_value,
@@ -345,7 +345,7 @@ def com_google_fonts_check_071(ttFont):
           'value': weight_value,
           "rec": "Value should ideally be 900 or less."
       })
-  if len(bad_entries) > 0:
+  if bad_entries:
     table = "| Field | Value | Recommendation |\n"
     table += "|:----- |:----- |:-------------- |\n"
     for bad in bad_entries:

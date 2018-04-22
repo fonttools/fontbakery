@@ -1314,7 +1314,7 @@ class Spec(object):
       yield PASS, 'example'
 
     """
-    if section and len(kwds) == 0 and callable(section):
+    if section and not kwds and callable(section):
       func = section
       section = self._default_section
       return self._add_check(section, func)
@@ -1342,7 +1342,7 @@ class Spec(object):
     def myCondition():
       return 123
     """
-    if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
+    if len(args) == 1 and not kwds and callable(args[0]):
       return self._add_condition(args[0])
     else:
       return partial(self._add_condition, *args, **kwds)

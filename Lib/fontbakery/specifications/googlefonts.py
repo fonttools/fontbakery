@@ -321,7 +321,7 @@ def com_google_fonts_check_003(description):
     except requests.exceptions.RequestException:
       broken_links.append(link)
 
-  if len(broken_links) > 0:
+  if broken_links:
     yield FAIL, ("The following links are broken"
                  " in the DESCRIPTION file:"
                  " '{}'").format("', '".join(broken_links))
@@ -850,7 +850,7 @@ def com_google_fonts_check_055(ttFont):
 
   failed = False
   version_entries = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
-  if len(version_entries) == 0:
+  if not version_entries:
     failed = True
     yield FAIL, Message("no-version-string",
                         ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
@@ -901,7 +901,7 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
 
   version_strings = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
   ttfa_version = ttfautohint_version(version_strings)
-  if len(version_strings) == 0:
+  if not version_strings:
     yield FAIL, Message("lacks-version-strings",
                         "This font file lacks mandatory "
                         "version strings in its name table.")
@@ -1024,7 +1024,7 @@ def com_google_fonts_check_067(ttFont):
       yield FAIL, ("Font family name '{}'"
                    " begins with a digit!").format(familyname)
       failed = True
-  if failed is False:
+  if not failed:
     yield PASS, "Font family name first character is not a digit."
 
 
@@ -1101,7 +1101,7 @@ def com_google_fonts_check_074(ttFont):
                                 name.getEncoding(),
                                 string.encode("ascii",
                                               errors='xmlcharrefreplace'))
-  if len(bad_entries) > 0:
+  if bad_entries:
     yield FAIL, ("There are {} strings containing"
                  " non-ASCII characters in the ASCII-only"
                  " NAME table entries.").format(len(bad_entries))
@@ -1160,7 +1160,7 @@ def com_google_fonts_check_082(metadata):
                       "fonts/blob/master/designers/profiles.csv")
   PROFILES_RAW_URL = ("https://raw.githubusercontent.com/google/"
                       "fonts/master/designers/profiles.csv")
-  if metadata.designer == "":
+  if not metadata.designer:
     yield FAIL, ("METADATA.pb field \"designer\" MUST NOT be empty!")
   elif metadata.designer == "Multiple Designers":
     yield SKIP, ("Found \"Multiple Designers\" at METADATA.pb, which"
@@ -1355,7 +1355,7 @@ def com_google_fonts_check_091(metadata):
   for f in metadata.fonts:
     if f.full_name.endswith("Regular") and f.weight != 400:
       badfonts.append("{} (weight: {})".format(f.filename, f.weight))
-  if len(badfonts) > 0:
+  if badfonts:
     yield FAIL, ("METADATA.pb: Regular font weight must be 400."
                  " Please fix these: {}").format(", ".join(badfonts))
   else:
@@ -1392,7 +1392,7 @@ def com_google_fonts_check_092(ttFont, font_metadata):
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
 
   familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
-  if len(familynames) == 0:
+  if not familynames:
     yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
                  " (nameID={}) in the name"
                  " table.").format(NAMEID_FONT_FAMILY_NAME)
@@ -1419,7 +1419,7 @@ def com_google_fonts_check_093(ttFont, font_metadata):
   from fontbakery.constants import NAMEID_POSTSCRIPT_NAME
 
   postscript_names = get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME)
-  if len(postscript_names) == 0:
+  if not postscript_names:
     failed = True
     yield FAIL, ("This font lacks a POSTSCRIPT_NAME"
                  " entry (nameID={}) in the "
@@ -1450,7 +1450,7 @@ def com_google_fonts_check_094(ttFont, font_metadata):
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
 
   full_fontnames = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
-  if len(full_fontnames) == 0:
+  if not full_fontnames:
     yield FAIL, Message("lacks-entry",
                         ("This font lacks a FULL_FONT_NAME"
                          " entry (nameID={}) in the"
@@ -1489,7 +1489,7 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
     font_familynames = get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
     nameid = NAMEID_TYPOGRAPHIC_FAMILY_NAME
 
-  if len(font_familynames) == 0:
+  if not font_familynames:
     yield FAIL, Message("lacks-entry",
                         ("This font lacks a {} entry"
                          " (nameID={}) in the"
@@ -1755,7 +1755,7 @@ def canonical_filename(font_metadata):
   familyname = font_metadata.name.replace(" ", "")
   style_weight = "{}{}".format(WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
                                style_names.get(font_metadata.style))
-  if style_weight == "":
+  if not style_weight:
     style_weight = "Regular"
   return "{}-{}.ttf".format(familyname, style_weight)
 
@@ -1788,7 +1788,7 @@ def com_google_fonts_check_106(ttFont, font_metadata):
     yield SKIP, "This check only applies to italic fonts."
   else:
     font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
-    if len(font_fullname) == 0:
+    if not font_fullname:
       yield SKIP, "Font lacks fullname entries in name table."
       # this fail scenario was already checked above
       # (passing those previous checks is a prerequisite for this one)
@@ -1830,7 +1830,7 @@ def com_google_fonts_check_107(ttFont, font_metadata):
   else:
     font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
     font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
-    if len(font_familyname) == 0 or len(font_fullname) == 0:
+    if not font_familyname or not font_fullname:
       yield SKIP, ("Font lacks familyname and/or"
                    " fullname entries in name table.")
       # FIXME: This is the same SKIP condition as in check/106
@@ -1950,7 +1950,7 @@ def com_google_fonts_check_110(metadata, font_metadata):
 def com_google_fonts_check_111(font_metadata):
   """Check that font weight has a canonical value."""
   first_digit = font_metadata.weight / 100
-  if (font_metadata.weight % 100) != 0 or \
+  if font_metadata.weight % 100 or \
      (first_digit < 1 or first_digit > 9):
    yield FAIL, ("METADATA.pb: The weight is declared"
                 " as {} which is not a "
@@ -2475,7 +2475,7 @@ def com_google_fonts_check_153(ttFont):
                            font_glyph_contours[glyph],
                            desired_glyph_contours[glyph]])
 
-    if len(bad_glyphs) > 0:
+    if bad_glyphs:
       cmap = ttFont['cmap'].getcmap(PLATFORM_ID__WINDOWS,
                                     PLAT_ENC_ID__UCS2).cmap
       bad_glyphs_name = [("Glyph name: {}\t"
@@ -2631,7 +2631,7 @@ def com_google_fonts_check_156(ttFont, style):
   failed = False
   # The font must have at least these name IDs:
   for nameId in required_nameIDs:
-    if len(get_name_entry_strings(ttFont, nameId)) == 0:
+    if not get_name_entry_strings(ttFont, nameId):
       failed = True
       yield FAIL, ("Font lacks entry with"
                    " nameId={} ({})").format(nameId,

@@ -211,7 +211,7 @@ def com_google_fonts_check_038(font, fontforge_check_results):
       continue
     filtered_err_msgs += line + '\n'
 
-  if len(filtered_err_msgs.strip()) > 0:
+  if filtered_err_msgs.strip():
     yield FAIL, ("fontforge did print these messages to stderr:\n"
                  "{}").format(filtered_err_msgs)
   else:
@@ -352,9 +352,9 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
 
   for description, bit, err_msg, ok_msg in fontforge_checks:
     if fontforge_skip_checks is not None and \
-                          bool(fontforge_skip_checks & bit) is not False:
+                          bool(fontforge_skip_checks & bit):
       yield SKIP, description
-    elif bool(validation_state & bit) is not False:
+    elif bool(validation_state & bit):
       yield FAIL, "fontforge-check: {}".format(err_msg)
     else:
       yield PASS, "fontforge-check: {}".format(ok_msg)
@@ -442,7 +442,7 @@ def com_google_fonts_check_048(ttFont):
                                       " Change to \"nbsp\""
                                       " or \"uni00A0\"").format(nbsp))
 
-    if failed is False:
+    if not failed:
       yield PASS, "Font has **proper** whitespace glyph names."
 
 
@@ -552,7 +552,7 @@ def com_google_fonts_check_053(ttFont):
     if table in UNWANTED_TABLES:
       unwanted_tables_found.append(table)
 
-  if len(unwanted_tables_found) > 0:
+  if unwanted_tables_found:
     yield FAIL, ("Unwanted tables were found"
                  " in the font and should be removed:"
                  " {}").format(", ".join(unwanted_tables_found))
@@ -578,7 +578,7 @@ def com_google_fonts_check_058(ttFont):
       if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,31}$', glyphName):
         bad_names.append(glyphName)
 
-    if len(bad_names) == 0:
+    if not bad_names:
       yield PASS, "Glyph names are all valid."
     else:
       yield FAIL, ("The following glyph names do not comply"
@@ -618,7 +618,7 @@ def com_google_fonts_check_059(ttFont):
       else:
         glyphs.append(glyphID)
 
-    if len(duplicated_glyphIDs) == 0:
+    if not duplicated_glyphIDs:
       yield PASS, "Font contains unique glyph names."
     else:
       yield FAIL, ("The following glyph names"

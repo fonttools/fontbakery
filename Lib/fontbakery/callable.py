@@ -241,7 +241,7 @@ def condition(*args, **kwds):
   Requires all arguments of FontBakeryCondition but not `func`
   which is passed via the decorator syntax.
   """
-  if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
+  if len(args) == 1 and not kwds and callable(args[0]):
     # used as `@decorator`
     func = args[0]
     return wraps(func)(FontBakeryCondition(func))
