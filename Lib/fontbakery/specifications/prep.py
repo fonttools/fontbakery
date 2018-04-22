@@ -32,12 +32,11 @@ def com_google_fonts_check_072(ttFont):
   instructions = b"\xb8\x01\xff\x85\xb0\x04\x8d"
   if "CFF " in ttFont:
     yield SKIP, "Not applicable to a CFF font."
-  else:
-    if ("prep" in ttFont and
+  elif ("prep" in ttFont and
         instructions in ttFont["prep"].program.getBytecode()):
       yield PASS, ("Program at 'prep' table contains instructions"
                    " enabling smart dropout control.")
-    else:
-      yield WARN, ("Font does not contain TrueType instructions enabling"
-                   " smart dropout control in the 'prep' table program."
-                   " Please try exporting the font with autohinting enabled.")
+  else:
+    yield WARN, ("Font does not contain TrueType instructions enabling"
+                  " smart dropout control in the 'prep' table program."
+                  " Please try exporting the font with autohinting enabled.")

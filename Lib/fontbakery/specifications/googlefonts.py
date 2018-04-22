@@ -733,17 +733,16 @@ def com_google_fonts_check_030(ttFont, familyname):
                            " families the Ubuntu Font License may be"
                            " acceptable as well."
                            "").format(NAMEID_LICENSE_INFO_URL))
+    elif failed:
+      yield FAIL, Message("bad-entries",
+                          ("Even though a valid license URL was seen in"
+                            " NAME table, there were also bad entries."
+                            " Please review NameIDs {} (LICENSE DESCRIPTION)"
+                            " and {} (LICENSE INFO URL)."
+                            "").format(NAMEID_LICENSE_DESCRIPTION,
+                                      NAMEID_LICENSE_INFO_URL))
     else:
-      if failed:
-        yield FAIL, Message("bad-entries",
-                            ("Even though a valid license URL was seen in"
-                             " NAME table, there were also bad entries."
-                             " Please review NameIDs {} (LICENSE DESCRIPTION)"
-                             " and {} (LICENSE INFO URL)."
-                             "").format(NAMEID_LICENSE_DESCRIPTION,
-                                        NAMEID_LICENSE_INFO_URL))
-      else:
-        yield PASS, "Font has a valid license URL in NAME table."
+      yield PASS, "Font has a valid license URL in NAME table."
 
 
 @condition
@@ -1397,16 +1396,15 @@ def com_google_fonts_check_092(ttFont, font_metadata):
     yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
                  " (nameID={}) in the name"
                  " table.").format(NAMEID_FONT_FAMILY_NAME)
+  elif font_metadata.name not in familynames:
+    yield FAIL, ("Unmatched family name in font:"
+                  " TTF has \"{}\" while METADATA.pb"
+                  " has \"{}\"").format(familynames[0],
+                                        font_metadata.name)
   else:
-    if font_metadata.name not in familynames:
-      yield FAIL, ("Unmatched family name in font:"
-                   " TTF has \"{}\" while METADATA.pb"
-                   " has \"{}\"").format(familynames[0],
-                                         font_metadata.name)
-    else:
-      yield PASS, ("Family name \"{}\" is identical"
-                   " in METADATA.pb and on the"
-                   " TTF file.").format(font_metadata.name)
+    yield PASS, ("Family name \"{}\" is identical"
+                  " in METADATA.pb and on the"
+                  " TTF file.").format(font_metadata.name)
 
 @check(
     id = 'com.google.fonts/check/093'
@@ -2075,15 +2073,14 @@ def com_google_fonts_check_115(ttFont, font_metadata):
   if font_metadata.style not in ["italic", "normal"]:
     yield SKIP, ("This check only applies to font styles declared"
                  " as \"italic\" or \"regular\" on METADATA.pb.")
+  elif is_italic() and font_metadata.style != "italic":
+    yield FAIL, ("The font style is {}"
+                  " but it should be italic").format(font_metadata.style)
+  elif not is_italic() and font_metadata.style != "normal":
+    yield FAIL, ("The font style is {}"
+                  " but it should be normal").format(font_metadata.style)
   else:
-    if is_italic() and font_metadata.style != "italic":
-      yield FAIL, ("The font style is {}"
-                   " but it should be italic").format(font_metadata.style)
-    elif not is_italic() and font_metadata.style != "normal":
-      yield FAIL, ("The font style is {}"
-                   " but it should be normal").format(font_metadata.style)
-    else:
-      yield PASS, "Font styles are named canonically."
+    yield PASS, "Font styles are named canonically."
 
 
 @check(
@@ -2389,15 +2386,14 @@ def com_google_fonts_check_130(ttFont, style):
 
   # Checking if italicAngle matches font style:
   if "Italic" in style:
-    if ttFont['post'].italicAngle == 0:
+    if not ttFont['post'].italicAngle:
       failed = True
       yield FAIL, ("Font is italic, so post.italicAngle"
                    " should be non-zero.")
-  else:
-    if ttFont["post"].italicAngle != 0:
-      failed = True
-      yield FAIL, ("Font is not italic, so post.italicAngle"
-                   " should be equal to zero.")
+  elif ttFont["post"].italicAngle:
+    failed = True
+    yield FAIL, ("Font is not italic, so post.italicAngle"
+                  " should be equal to zero.")
 
   if not failed:
     yield PASS, "Value of post.italicAngle is {}.".format(value)
@@ -2720,11 +2716,10 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
       elif name.platformID == PLATFORM_ID__WINDOWS:
         if style_with_spaces in ["Bold", "Bold Italic"]:
           expected_value = style_with_spaces
+        elif "Italic" in style:
+          expected_value = "Italic"
         else:
-          if "Italic" in style:
-            expected_value = "Italic"
-          else:
-            expected_value = "Regular"
+          expected_value = "Regular"
       else:
         yield FAIL, ("Font should not have a "
                      "{} entry!").format(name_entry_id(name))
