@@ -111,19 +111,19 @@ def get_doc_desc(func, description, documentation):
   doclines = doc.split('\n')
 
   if not description:
-    description = []
-    while len(doclines) and doclines[0]:
+    description_lines = []
+    while doclines and doclines[0]:
       # consume until first empty line
-      description.append(doclines[0])
+      description_lines.append(doclines[0])
       doclines = doclines[1:]
     # This removes line breaks
-    description = ' '.join(description)
+    description = ' '.join(description_lines)
 
   # remove preceding empty lines
-  while len(doclines) and not doclines[0]:
+  while doclines and not doclines[0]:
     doclines = doclines[1:]
 
-  if not documentation and len(doclines):
+  if not documentation and doclines:
     documentation = '\n'.join(doclines) or None
 
   return description, documentation

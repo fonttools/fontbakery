@@ -401,23 +401,23 @@ class CheckRunner(object):
       condition = self._spec.conditions[name]
     except KeyError as err:
       tb = get_traceback()
-      error = MissingConditionError(name, err, tb)
-      return error, None
+      error_missing_condition = MissingConditionError(name, err, tb)
+      return error_missing_condition, None
 
     try:
       args = self._get_args(condition, iterargs, path)
     except Exception as err:
       tb = get_traceback()
-      error = FailedConditionError(condition, err, tb)
-      return error, None
+      error_failed_condition = FailedConditionError(condition, err, tb)
+      return error_failed_condition, None
 
     path.pop()
     try:
       return None, condition(**args)
     except Exception as err:
       tb = get_traceback()
-      error = FailedConditionError(condition, err, tb)
-      return error, None
+      error_failed_condition = FailedConditionError(condition, err, tb)
+      return error_failed_condition, None
 
   def _filter_condition_used_iterargs(self, name, iterargs):
     allArgs = set()
