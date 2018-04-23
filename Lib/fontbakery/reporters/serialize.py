@@ -46,7 +46,6 @@ class SerializeReporter(FontbakeryReporter):
     self._observed_checks = {}
 
   def _set_metadata(self, identity, item):
-    section, check, iterargs = identity
     # If section is None this is the main doc.
     # If check is None this is `section`
     # otherwise this `check`
@@ -55,7 +54,7 @@ class SerializeReporter(FontbakeryReporter):
   def _register(self, event):
     super(SerializeReporter, self)._register(event)
     status, message, identity = event
-    section, check, iterargs = identity
+    _, check, iterargs = identity
     key = self._get_key(identity)
 
     # not item == True when item is empty
@@ -115,7 +114,6 @@ class SerializeReporter(FontbakeryReporter):
       return self._doc
     doc = self._items[self._get_key((None, None, None))]
     seen = set()
-    sectionorder = []
     # this puts all in the original order
     for identity in self._order:
       key = self._get_key(identity)

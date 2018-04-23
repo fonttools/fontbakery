@@ -83,7 +83,7 @@ class FontbakeryReporter(object):
     pass
 
   def _register(self, event):
-    status, message, identity = event
+    status, message, _ = event
     self._tick += 1
     if status == START:
       self._set_order(message)
@@ -103,12 +103,12 @@ class FontbakeryReporter(object):
     return self._worst_check_status
 
   def receive(self, event):
-    status, message, identity = event
+    status, message, _ = event
     if self._started is None and status != START:
       raise ProtocolViolationError('Received Event before status START: '\
                                       ' {} {}.'.format(status, message))
     if self._ended:
-      status, message, identity = event
+      status, message, _ = event
       raise ProtocolViolationError('Received Event after status END: '\
                                         '{} {}.'.format(status, message))
 

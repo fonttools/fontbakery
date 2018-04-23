@@ -97,9 +97,9 @@ def get_expected_version(f):
       name_version = get_version_from_name_entry(name)
       if expected_version is None:
         expected_version = name_version
-      else:
-        if name_version > expected_version:
-          expected_version = name_version
+      elif name_version > expected_version:
+        expected_version = name_version
+      # else what?
   return expected_version
 
 # FIXME: This check has got too many FAIL code-paths.

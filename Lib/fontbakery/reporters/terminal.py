@@ -209,7 +209,7 @@ class TerminalProgress(FontbakeryReporter):
 
   def _register(self, event):
     super(TerminalProgress, self)._register(event)
-    status, message, identity = event
+    status, _, _ = event
     if status == ENDCHECK and self._print_progress:
       self._set_progress_event(event)
 
@@ -227,7 +227,7 @@ class TerminalProgress(FontbakeryReporter):
       self.stdout.flush(False)
 
   def _render_event(self, event):
-    status, message, (section, check, iterargs) = event
+    status, message, _ = event
     output = StringIO()
     print = partial(builtins.print, file=output)
 
@@ -322,7 +322,7 @@ class TerminalProgress(FontbakeryReporter):
 
   def draw_progressbar(self):
     # tty size
-    rows, columns = list(map(int, os.popen('stty size', 'r').read().split()))
+    _, columns = list(map(int, os.popen('stty size', 'r').read().split()))
     # this is the amout of space the spinner takes when rendered in the tty
     # NOTE: the color codes are not taking space in the tty, so we can't
     # just take the length of `spinner`.
@@ -395,7 +395,7 @@ class TerminalReporter(TerminalProgress):
 
   def _register(self, event):
     super(TerminalReporter, self)._register(event)
-    status, message, (section, check, iterargs) = event
+    status, message, (_, check, iterargs) = event
 
     if self.results_by and status == ENDCHECK:
 
@@ -495,7 +495,7 @@ class TerminalReporter(TerminalProgress):
 
   def _render_event_async(self, print, event):
     status, message, identity = event
-    (section, check, iterargs) = identity
+    section = identity[0]
     key = self._get_key(identity)
     logs = self._event_buffers.get(key, None)
     if logs is None:
@@ -525,7 +525,6 @@ class TerminalReporter(TerminalProgress):
       self._render_event_sync(print, event)
 
   def _render_event(self, event):
-    status, message, (section, check, iterargs) = event
     output = StringIO()
     print = partial(builtins.print, file=output)
 

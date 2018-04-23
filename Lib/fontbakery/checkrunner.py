@@ -230,7 +230,7 @@ def get_traceback():
   Returns a string with a traceback as the python interpreter would
   render it. Run this inside of the except block.
   """
-  ex_type, ex, tb = sys.exc_info()
+  _, _, tb = sys.exc_info()
   result = traceback.format_tb(tb)[0]
   del tb
   return result
@@ -401,23 +401,23 @@ class CheckRunner(object):
       condition = self._spec.conditions[name]
     except KeyError as err:
       tb = get_traceback()
-      error = MissingConditionError(name, err, tb)
-      return error, None
+      error_missing_condition = MissingConditionError(name, err, tb)
+      return error_missing_condition, None
 
     try:
       args = self._get_args(condition, iterargs, path)
     except Exception as err:
       tb = get_traceback()
-      error = FailedConditionError(condition, err, tb)
-      return error, None
+      error_failed_condition = FailedConditionError(condition, err, tb)
+      return error_failed_condition, None
 
     path.pop()
     try:
       return None, condition(**args)
     except Exception as err:
       tb = get_traceback()
-      error = FailedConditionError(condition, err, tb)
-      return error, None
+      error_failed_condition = FailedConditionError(condition, err, tb)
+      return error_failed_condition, None
 
   def _filter_condition_used_iterargs(self, name, iterargs):
     allArgs = set()
@@ -949,7 +949,7 @@ class Spec(object):
     seen = set()
     failed = []
     # make this simple, collect all used names
-    for section_name, section in self._sections.items():
+    for section in self._sections.values():
       for check in section.checks:
         dependencies = list(check.args)
         if hasattr(check, 'conditions'):
@@ -1081,7 +1081,7 @@ class Spec(object):
       more conditions, this climbs down all the way.
     """
     if not key in ('args', 'mandatoryArgs'):
-      raise TypeError('key must be "args" or "mandatoryArgs", got {}').format(key)
+      raise TypeError('key must be "args" or "mandatoryArgs", got {}'.format(key))
     dependencies = list(getattr(item, key))
     if hasattr(item, 'conditions'):
       dependencies += [name for negated, name in map(is_negated, item.conditions)]
@@ -1145,7 +1145,7 @@ class Spec(object):
   def _execute_section(self, iterargs, section, items):
     if section is None:
       # base case: terminate recursion
-      for check, signature, scope in items:
+      for check, _, _ in items:
         yield check, []
     elif not section[0]:
       # no sectioning on this level
@@ -1314,7 +1314,7 @@ class Spec(object):
       yield PASS, 'example'
 
     """
-    if section and len(kwds) == 0 and callable(section):
+    if section and not kwds and callable(section):
       func = section
       section = self._default_section
       return self._add_check(section, func)
@@ -1342,7 +1342,7 @@ class Spec(object):
     def myCondition():
       return 123
     """
-    if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
+    if len(args) == 1 and not kwds and callable(args[0]):
       return self._add_condition(args[0])
     else:
       return partial(self._add_condition, *args, **kwds)

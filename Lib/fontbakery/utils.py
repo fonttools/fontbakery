@@ -158,10 +158,10 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
 
 
 def download_file(url):
+  from io import StringIO
   try:
-    from StringIO import StringIO
-  except ImportError:  # Python 3 uses the io module instead.
-    from io import StringIO
-  from urllib import urlopen
+    from urllib import urlopen  # Python 2
+  except ImportError:
+    from urllib.request import urlopen  # Python 3
   request = urlopen(url)
   return StringIO(request.read())
