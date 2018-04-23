@@ -8,39 +8,6 @@ from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 
-@check(
-    id='com.google.fonts/check/069',
-    conditions=['is_ttf'])
-def com_google_fonts_check_069(ttFont):
-  """Is there any unused data at the end of the glyf table?"""
-  # -1 because https://www.microsoft.com/typography/otspec/loca.htm
-  expected = len(ttFont['loca']) - 1
-  actual = len(ttFont['glyf'])
-  diff = actual - expected
-
-  # allow up to 3 bytes of padding
-  if diff > 3:
-    yield FAIL, Message("unreachable-data",
-                        ("Glyf table has unreachable data at"
-                         " the end of the table."
-                         " Expected glyf table length {}"
-                         " (from loca table), got length"
-                         " {} (difference: {})").format(expected,
-                                                        actual,
-                                                        diff))
-  elif diff < 0:
-    yield FAIL, Message("data-beyond-table-end",
-                        ("Loca table references data beyond"
-                         " the end of the glyf table."
-                         " Expected glyf table length {}"
-                         " (from loca table), got length"
-                         " {} (difference: {})").format(expected,
-                                                        actual,
-                                                        diff))
-  else:
-    yield PASS, "There is no unused data at the end of the glyf table."
-
-
 # This check was originally ported from
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
