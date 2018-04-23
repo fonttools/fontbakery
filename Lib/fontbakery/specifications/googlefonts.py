@@ -100,7 +100,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/066' # Is there a "kern" table declared in the font?
       , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
       , 'com.google.fonts/check/068' # Does full font name begin with the font family name?
-      , 'com.google.fonts/check/069' # Is there any unused data at the end of the glyf table?
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
       , 'com.google.fonts/check/071' # Font follows the family naming recommendations?
       , 'com.google.fonts/check/072' # Font enables smart dropout control in "prep" table instructions?

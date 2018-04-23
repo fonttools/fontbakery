@@ -15,16 +15,6 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 # from fontTools.ttLib import TTFont
 
-def NOT_IMPLEMENTED_test_check_069():
-  """ Is there any unused data at the end of the glyf table? """
-  # from fontbakery.specifications.general import com_google_fonts_check_069 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, code="unreachable-data"
-  # - FAIL, code="data-beyond-table-end"
-  # - PASS, "There is no unused data at the end of the glyf table."
-
 
 def NOT_IMPLEMENTED_test_check_075():
   """ Check for points out of bounds. """
