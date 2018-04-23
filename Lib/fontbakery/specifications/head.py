@@ -49,130 +49,67 @@ def com_google_fonts_check_043(ttFont):
     yield PASS, "unitsPerEm value on the 'head' table is reasonable."
 
 
-def get_version_from_name_entry(name):
-  string = name.string.decode(name.getEncoding())
-  # we ignore any comments that
-  # may be present in the version name entries
-  if ";" in string:
-    string = string.split(";")[0]
-  # and we also ignore
-  # the 'Version ' prefix
-  if "Version " in string:
-    string = string.split("Version ")[1]
-  return string.split('.')
+def parse_version_string(name):
+  # type: (str) -> Tuple[str, str]
+  """Parse a version string (name ID 5) and return (major, minor) strings.
 
-
-def parse_version_string(s):
-  """Tries to parse a version string as used in ttf versioning metadata fields.
-
-  Example of expected format is: 'Version 01.003; Comments'
+  Example of the expected format: 'Version 01.003; Comments'. Version
+  strings like "Version 1.3" will be post-processed into ("1", "003").
+  The parsed version numbers will therefore match in spirit, but not
+  necessarily in string form.
   """
-  suffix = ''
-  # DC: I think this may be wrong, the ; isnt the only separator,
-  # anything not an int is ok
-  if ';' in s:
-    fields = s.split(';')
-    s = fields[0]
-    fields.pop(0)
-    suffix = ';'.join(fields)
+  import re
 
-  substrings = s.split('.')
-  minor = substrings[-1]
-  if ' ' in substrings[-2]:
-    major = substrings[-2].split(' ')[-1]
-  else:
-    major = substrings[-2]
+  # We assume ";" is the universal delimiter here.
+  version_entry = name.split(";")[0]
 
-  if suffix:
-    return major, minor, suffix
-  else:
-    return major, minor
+  # Catch both "Version 1.234" and "1.234" but not "1x2.34". Note: search()
+  # will return the first match.
+  version_string = re.search(r"(?: |^)(\d+\.\d+)", version_entry)
+
+  if version_string is None:
+    raise ValueError("The version string didn't contain a number of the format"
+                     " major.minor.")
+
+  major, minor = version_string.group(1).split('.')
+  major = str(int(major))  # "01.123" -> "1.123"
+  minor = minor.zfill(3)  # "3.0" -> "3.000", but "3.123" -> "3.123"
+  return major, minor
 
 
-def get_expected_version(f):
-  from fontbakery.constants import NAMEID_VERSION_STRING
-  expected_version = parse_version_string(str(f["head"].fontRevision))
-  for name in f["name"].names:
-    if name.nameID == NAMEID_VERSION_STRING:
-      name_version = get_version_from_name_entry(name)
-      if expected_version is None:
-        expected_version = name_version
-      else:
-        if name_version > expected_version:
-          expected_version = name_version
-  return expected_version
-
-# FIXME: This check has got too many FAIL code-paths.
-#        It may be possible to simplify this check code.
 @check(id='com.google.fonts/check/044')
 def com_google_fonts_check_044(ttFont):
-  """Checking font version fields."""
-  import re
+  """Checking font version fields (head and name table)."""
+  head_version = parse_version_string(str(ttFont["head"].fontRevision))
+
+  # Compare the head version against the name ID 5 strings in all name records.
   from fontbakery.constants import NAMEID_VERSION_STRING
+  name_id_5_records = [
+      record for record in ttFont["name"].names
+      if record.nameID == NAMEID_VERSION_STRING
+  ]
+
   failed = False
-  try:
-    expected = get_expected_version(ttFont)
-  except:
-    expected = None
-    yield FAIL, Message("parse",
-                        ("Failed to parse font version"
-                         " entries in the name table."))
-  if expected is None:
+  if name_id_5_records:
+    for record in name_id_5_records:
+      try:
+        name_version = parse_version_string(record.toUnicode())
+        if name_version != head_version:
+          failed = True
+          yield FAIL, Message(
+              "mismatch",
+              "head version is {}, name version string for platform {},"
+              " encoding {}, is {}".format(head_version, record.platformID,
+                                           record.platEncID, name_version))
+      except ValueError:
+        failed = True
+        yield FAIL, Message("parse", "name version string for platform {},"
+                            " encoding {}, could not be parsed".format(
+                                record.platformID, record.platEncID))
+  else:
     failed = True
     yield FAIL, Message("missing",
-                        ("Could not find any font versioning info on the"
-                         " head table or in the name table entries."))
-  else:
-    font_revision = str(ttFont['head'].fontRevision)
-    expected_str = "{}.{}".format(expected[0], expected[1])
-    if font_revision != expected_str:
-      failed = True
-      yield FAIL, Message("differs",
-                          ("Font revision on the head table ({})"
-                           " differs from the expected value ({})."
-                           "").format(font_revision, expected))
+                        "There is no name ID 5 (version string) in the font.")
 
-    expected_str = "Version {}.{}".format(expected[0], expected[1])
-    for name in ttFont["name"].names:
-      if name.nameID == NAMEID_VERSION_STRING:
-        name_version = name.string.decode(name.getEncoding())
-        try:
-          # change "Version 1.007" to "1.007"
-          # (stripping out the "Version " prefix, if any)
-          version_stripped = r'(?<=[V|v]ersion )?([0-9]{1,4}\.[0-9]{1,5})'
-          version_without_comments = re.search(version_stripped,
-                                               name_version).group(0)
-        except:
-          failed = True
-          yield FAIL, Message("bad-entry",
-                              ("Unable to parse font version info"
-                               " from this name table entry:"
-                               " '{}'").format(name))
-          continue
-
-        comments = re.split(r'(?<=[0-9]{1})[;\s]', name_version)[-1]
-        if version_without_comments != expected_str:
-          # maybe the version strings differ only
-          # on floating-point error, so let's
-          # also give it a change by rounding and re-checking...
-
-          try:
-            rounded_string = round(float(version_without_comments), 3)
-            version = round(float(".".join(expected)), 3)
-            if rounded_string != version:
-              failed = True
-              if comments:
-                fix = "{};{}".format(expected_str, comments)
-              else:
-                fix = expected_str
-              yield FAIL, Message("mismatch",
-                                  ("NAMEID_VERSION_STRING value '{}'"
-                                   " does not match expected '{}'"
-                                   "").format(name_version, fix))
-          except:
-            failed = True  # give up. it's definitely bad :(
-            yield FAIL, Message("bad",
-                                ("Unable to parse font version info"
-                                 " from name table entries."))
   if not failed:
-    yield PASS, "All font version fields look good."
+    yield PASS, "All font version fields match."
