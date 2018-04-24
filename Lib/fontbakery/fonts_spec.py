@@ -24,7 +24,7 @@ class FontsSpec(Spec):
       # use glob.glob to accept *.ttf
 
       for fullpath in glob.glob(pattern):
-        if fullpath.endswith(".ttf"):
+        if fullpath.lower().endswith(".ttf"):
           fonts_to_check.append(fullpath)
         else:
           logging.warning("Skipping '{}' as it does not seem "
@@ -39,7 +39,7 @@ class FontsSpec(Spec):
 
     argument_parser.add_argument(
         'fonts',
-        # To allow optional commands like "-L" to work without other input 
+        # To allow optional commands like "-L" to work without other input
         # files:
         nargs='*',
         type=get_fonts,
