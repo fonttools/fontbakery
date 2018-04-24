@@ -28,7 +28,9 @@ def test_check_069():
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
-  # Always start with a fresh copy, as fT works lazily.
+  # Always start with a fresh copy, as fT works lazily. Accessing certain data
+  # can prevent the test from working because we rely on uninitialized
+  # behavior.
   test_font = TTFont(test_font_path)
   test_font["loca"].locations.pop()
   test_file = io.BytesIO()
