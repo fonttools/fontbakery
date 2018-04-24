@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals, division
 
+import os
+
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -43,15 +45,18 @@ def test_check_041():
   assert status == PASS
 
 
-def NOT_IMPLEMENTED_test_check_073():
+def test_check_073():
   """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_073 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, "Failed to find advance width data in HMTX table!"
-  # - FAIL, "AdvanceWidthMax mismatch"
-  # - PASS
+  from fontbakery.specifications.hhea import com_google_fonts_check_073 as check
+
+  test_font = TTFont(
+      os.path.join("data", "test", "familysans", "FamilySans-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  test_font["hmtx"].metrics["A"] = (1234567, 1234567)
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_079():

@@ -33,9 +33,7 @@ def com_google_fonts_check_073(ttFont):
     else:
       hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
 
-  if hmtx_advance_width_max is None:
-    yield FAIL, "Failed to find advance width data in HMTX table!"
-  elif hmtx_advance_width_max != hhea_advance_width_max:
+  if hmtx_advance_width_max != hhea_advance_width_max:
     yield FAIL, ("AdvanceWidthMax mismatch: expected {} (from hmtx);"
                  " got {} (from hhea)").format(hmtx_advance_width_max,
                                                hhea_advance_width_max)
