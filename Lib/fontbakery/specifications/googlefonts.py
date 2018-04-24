@@ -35,7 +35,7 @@ from fontbakery.fonts_spec import spec_factory
 spec_imports = (
     ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
        'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
-       'prep', 'fvar', 'shared_conditions')
+       'prep', 'fvar', 'shared_conditions', 'loca')
     ),
 )
 
@@ -174,6 +174,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/171' # The variable font 'opsz' (Optical Size) axis coordinate should be between 9 and 13 on the 'Regular' instance.
       , 'com.google.fonts/check/172' # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
       , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
+      , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
