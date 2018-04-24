@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals, division
 
+import io
 import os
 
 from fontTools.ttLib import TTFont
@@ -17,15 +18,34 @@ from fontbakery.checkrunner import (
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
-def NOT_IMPLEMENTED_test_check_069():
+def test_check_069():
   """ Is there any unused data at the end of the glyf table? """
-  # from fontbakery.specifications.general import com_google_fonts_check_069 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, code="unreachable-data"
-  # - FAIL, code="data-beyond-table-end"
-  # - PASS, "There is no unused data at the end of the glyf table."
+  from fontbakery.specifications.glyf import com_google_fonts_check_069 as check
+
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  test_font = TTFont(test_font_path)
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  # Always start with a fresh copy, as fT works lazily.
+  test_font = TTFont(test_font_path)
+  test_font["loca"].locations.pop()
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+  assert message.code == "unreachable-data"
+
+  test_font = TTFont(test_font_path)
+  test_font["loca"].locations.append(50000)
+  test_file = io.BytesIO()
+  test_font.save(test_file)
+  test_font = TTFont(test_file)
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+  assert message.code == "missing-data"
 
 
 def test_check_075():
