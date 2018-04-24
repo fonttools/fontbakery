@@ -2118,7 +2118,7 @@ def remote_styles(metadata):
     from fontTools.ttLib import TTFont
     fonts = []
     for file_name in zipfile.namelist():
-      if file_name.endswith(".ttf"):
+      if file_name.lower().endswith(".ttf"):
         fonts.append([file_name, TTFont(zipfile.open(file_name))])
     return fonts
 

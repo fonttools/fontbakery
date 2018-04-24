@@ -27,7 +27,7 @@ class UFOSpec(Spec):
 
             for fullpath in glob.glob(pattern):
                 fullpath_absolute = os.path.abspath(fullpath)
-                if fullpath_absolute.endswith(".ufo") and os.path.isdir(
+                if fullpath_absolute.lower().endswith(".ufo") and os.path.isdir(
                         fullpath_absolute):
                     fonts_to_check.append(fullpath)
                 else:
