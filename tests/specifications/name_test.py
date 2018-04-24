@@ -2,6 +2,8 @@
 from __future__ import absolute_import, print_function, unicode_literals, division
 from builtins import range
 
+import os
+
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -354,14 +356,18 @@ def test_check_071():
     assert status == INFO
 
 
-def NOT_IMPLEMENTED_test_check_152():
+def test_check_152():
   """ Name table strings must not contain 'Reserved Font Name'. """
-  # from fontbakery.specifications.os2 import com_google_fonts_check_152 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN, "Name table entry contains 'Reserved Font Name'."
-  # - PASS
+  from fontbakery.specifications.name import com_google_fonts_check_152 as check
+
+  test_font = TTFont(
+      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  test_font["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
+  status, _ = list(check(test_font))[-1]
+  assert status == WARN
 
 
 def test_check_163():
