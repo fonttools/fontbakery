@@ -360,10 +360,10 @@ def com_google_fonts_check_071(ttFont):
 
 @check(id='com.google.fonts/check/152')
 def com_google_fonts_check_152(ttFont):
-  """Name table strings must not contain 'Reserved Font Name'."""
+  """Name table strings must not contain the string 'Reserved Font Name'."""
   failed = False
   for entry in ttFont["name"].names:
-    string = entry.string.decode(entry.getEncoding())
+    string = entry.toUnicode()
     if "reserved font name" in string.lower():
       yield WARN, ("Name table entry (\"{}\")"
                    " contains \"Reserved Font Name\"."
