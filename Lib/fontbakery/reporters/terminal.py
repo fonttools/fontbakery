@@ -295,7 +295,9 @@ class TerminalProgress(FontbakeryReporter):
     needs_break = lambda count: columns and count > columns \
                                 and (count % (columns - right_margin))
 
-    status = type(b'status', (object,), dict(count=0,progressbar=[]))
+    # together with unicode_literals `str('status')` seems the best
+    # py2 and py3 compatible solution
+    status = type(str('status'), (object,), dict(count=0,progressbar=[]))
     def _append(status, item, length=1, separator=''):
       # * assuming a standard item will take one column in the tty
       # * length must not be bigger than columns (=very narrow columns)

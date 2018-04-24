@@ -102,12 +102,19 @@ def ArgumentParser(specification, spec_arg=True):
 
   iterargs = sorted(specification.iterargs.keys())
 
-
+  def commandline_unicode_arg(bytestring):
+    try:
+      # py2 has .decode
+      return bytestring.decode(sys.getfilesystemencoding())
+    except AttributeError:
+      # py3 should work with the original argument
+      return bytestring
 
   gather_by_choices = iterargs + ['*check']
   argument_parser.add_argument('-g','--gather-by', default=None,
                       metavar= 'ITERATED_ARG',
                       choices=gather_by_choices,
+                      type=commandline_unicode_arg,
                       help='Optional: collect results by ITERATED_ARG\n'
                       'In terminal output: create a summary counter for each ITERATED_ARG.\n'
                       'In json output: structure the document by ITERATED_ARG.\n'
