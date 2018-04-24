@@ -8,7 +8,7 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 spec_imports = [
-    ('.shared_conditions', ('seems_monospaced', 'monospace_stats'))
+    ('.shared_conditions', ('seems_monospaced', 'monospace_stats', 'is_ttf'))
 ]
 
 @check(id='com.google.fonts/check/041')
