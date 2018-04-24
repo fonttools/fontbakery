@@ -52,31 +52,34 @@ def com_google_fonts_check_079(ttFont):
 
   # hhea:advanceWidthMax is treated as source of truth here.
   max_advw = ttFont['hhea'].advanceWidthMax
-  outliers = 0
-  zero_or_double_detected = False
+  outliers = []
+  zero_or_double_width_outliers = []
   glyphs = [
       g for g in ttFont['glyf'].glyphs if g not in ['.notdef', '.null', 'NULL']
   ]
   for glyph_id in glyphs:
     width = ttFont['hmtx'].metrics[glyph_id][0]
     if width != max_advw:
-      outliers += 1
+      outliers.append(glyph_id)
     if width == 0 or width == 2 * max_advw:
-      zero_or_double_detected = True
+      zero_or_double_width_outliers.append(glyph_id)
 
-  if outliers > 0:
-    outliers_percentage = float(outliers) / len(ttFont['glyf'].glyphs)
-    yield WARN, ("This seems to be a monospaced font,"
-                 " so advanceWidth value should be the same"
-                 " across all glyphs, but {} % of them"
-                 " have a different value."
-                 "").format(round(100 * outliers_percentage, 2))
-    if zero_or_double_detected:
-      yield WARN, ("Double-width and/or zero-width glyphs"
-                   " were detected. These glyphs should be set"
-                   " to the same width as all others"
-                   " and then add GPOS single pos lookups"
-                   " that zeros/doubles the widths as needed.")
+  if outliers:
+    outliers_percentage = float(len(outliers)) / len(ttFont['glyf'].glyphs)
+    yield WARN, Message(
+        "should-be-monospaced", "This seems to be a monospaced font,"
+        " so advanceWidth value should be the same"
+        " across all glyphs, but {}% of them"
+        " have a different value: {}"
+        "".format(round(100 * outliers_percentage, 2), ", ".join(outliers)))
+    if zero_or_double_width_outliers:
+      yield WARN, Message("variable-monospaced",
+                          "Double-width and/or zero-width glyphs"
+                          " were detected. These glyphs should be set"
+                          " to the same width as all others"
+                          " and then add GPOS single pos lookups"
+                          " that zeros/doubles the widths as needed: {}".format(
+                              ", ".join(zero_or_double_width_outliers)))
   else:
     yield PASS, ("hhea.advanceWidthMax is equal"
                  " to all glyphs' advanceWidth in this monospaced font.")
