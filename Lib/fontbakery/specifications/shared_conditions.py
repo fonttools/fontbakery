@@ -82,10 +82,10 @@ def seems_monospaced(monospace_stats):
 
 @condition
 def missing_whitespace_chars(ttFont):
-  from fontbakery.utils import getGlyph
-  space = getGlyph(ttFont, 0x0020)
-  nbsp = getGlyph(ttFont, 0x00A0)
-  # tab = getGlyph(ttFont, 0x0009)
+  from fontbakery.utils import get_glyph_name
+  space = get_glyph_name(ttFont, 0x0020)
+  nbsp = get_glyph_name(ttFont, 0x00A0)
+  # tab = get_glyph_name(ttFont, 0x0009)
 
   missing = []
   if space is None: missing.append("0x0020")

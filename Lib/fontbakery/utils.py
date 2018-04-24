@@ -72,16 +72,14 @@ def name_entry_id(name):
                                   name.platformID)
 
 
-def getGlyph(font, uchar):
-    from fontbakery.constants import (PLATFORM_ID__WINDOWS,
-                                      PLAT_ENC_ID__UCS2,
-                                      PLAT_ENC_ID__UCS4)
-    for table in font['cmap'].tables:
-        if table.platformID == PLATFORM_ID__WINDOWS and\
-           table.platEncID in [PLAT_ENC_ID__UCS2,
-                               PLAT_ENC_ID__UCS4]:
-          if uchar in table.cmap:
-              return table.cmap[uchar]
+def get_glyph_name(font, codepoint):
+  # type: (fontTools.ttLib.TTFont, int) -> Optional[str]
+  next_best_cmap = font.getBestCmap()
+
+  if codepoint in next_best_cmap:
+    return next_best_cmap[codepoint]
+
+  return None
 
 
 def glyph_contour_count(font, name):

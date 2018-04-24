@@ -363,13 +363,13 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
 def com_google_fonts_check_046(ttFont):
   """Font contains the first few mandatory glyphs (.null or NULL, CR and
   space)?"""
-  from fontbakery.utils import getGlyph
+  from fontbakery.utils import get_glyph_name
 
   # It would be good to also check
   # for .notdef (codepoint = unspecified)
-  null = getGlyph(ttFont, 0x0000)
-  CR = getGlyph(ttFont, 0x000D)
-  space = getGlyph(ttFont, 0x0020)
+  null = get_glyph_name(ttFont, 0x0000)
+  CR = get_glyph_name(ttFont, 0x000D)
+  space = get_glyph_name(ttFont, 0x0020)
 
   missing = []
   if null is None:
@@ -403,7 +403,7 @@ def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
     conditions=['not missing_whitespace_chars'])
 def com_google_fonts_check_048(ttFont):
   """Font has **proper** whitespace glyph names?"""
-  from fontbakery.utils import getGlyph
+  from fontbakery.utils import get_glyph_name
 
   def getGlyphEncodings(font, names):
     result = set()
@@ -421,14 +421,14 @@ def com_google_fonts_check_048(ttFont):
     space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
     nbsp_enc = getGlyphEncodings(
         ttFont, ["uni00A0", "nonbreakingspace", "nbspace", "nbsp"])
-    space = getGlyph(ttFont, 0x0020)
+    space = get_glyph_name(ttFont, 0x0020)
     if 0x0020 not in space_enc:
       failed = True
       yield FAIL, Message("bad20", ("Glyph 0x0020 is called \"{}\":"
                                     " Change to \"space\""
                                     " or \"uni0020\"").format(space))
 
-    nbsp = getGlyph(ttFont, 0x00A0)
+    nbsp = get_glyph_name(ttFont, 0x00A0)
     if 0x00A0 not in nbsp_enc:
       if 0x00A0 in space_enc:
         # This is OK.
@@ -450,7 +450,7 @@ def com_google_fonts_check_048(ttFont):
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import getGlyph
+  from fontbakery.utils import get_glyph_name
 
   def glyphHasInk(font, name):
     """Checks if specified glyph has any ink.
@@ -489,7 +489,7 @@ def com_google_fonts_check_049(ttFont):
   ]
   failed = False
   for codepoint in WHITESPACE_CHARACTERS:
-    g = getGlyph(ttFont, codepoint)
+    g = get_glyph_name(ttFont, codepoint)
     if g is not None and glyphHasInk(ttFont, g):
       failed = True
       yield FAIL, ("Glyph \"{}\" has ink."
