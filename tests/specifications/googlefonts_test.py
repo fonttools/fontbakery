@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals, division
 
 import pytest
+import os
 
 from fontbakery.checkrunner import (
               DEBUG
@@ -187,7 +188,6 @@ def test_check_001():
 
 def test_check_003():
   """ Does DESCRIPTION file contain broken links ? """
-  from unidecode import unidecode
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_003 as check,
                                                      description,
                                                      descfile)
@@ -779,14 +779,21 @@ def NOT_IMPLEMENTED_test_check_093():
 
 def test_check_094():
   """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
-  from fontbakery.specifications.googlefonts import font_metadata
+  from fontbakery.specifications.googlefonts import font_metadata, metadata
   from fontbakery.specifications.googlefonts import com_google_fonts_check_094 as check
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
+  import os
 
   print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to be good here
-  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  font = "data/test/merriweather/Merriweather-Regular.ttf"
+  family_directory = os.path.split(font)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, font)
+  ttFont = TTFont(font)
+
+
+
   status, message = list(check(ttFont, font_meta))[-1]
   assert status == PASS
 
@@ -815,13 +822,16 @@ def test_check_095():
   """ METADATA.pb font.name value should be same as the family name declared on the name table. """
   from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_095 as check,
+                                                     metadata,
                                                      font_metadata,
                                                      style)
   print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to have good fullname metadata
   font = "data/test/merriweather/Merriweather-Regular.ttf"
   ttFont = TTFont(font)
-  font_meta = font_metadata(ttFont)
+  family_directory = os.path.split(font)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, font)
   font_style = style(font)
   status, message = list(check(ttFont, font_style, font_meta))[-1]
   assert status == PASS
@@ -885,14 +895,17 @@ def test_check_098():
   """ METADATA.pb font.name field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_098 as check,
                                                      style,
+                                                     metadata,
                                                      font_metadata,
                                                      font_familynames,
                                                      typographic_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(ttFont.reader.file.name)
-    font_meta = font_metadata(ttFont)
+    font_style = style(fontfile)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
     font_fnames = font_familynames(ttFont)
     font_tfnames = []
 
@@ -910,8 +923,10 @@ def test_check_098():
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(ttFont.reader.file.name)
-    font_meta = font_metadata(ttFont)
+    font_style = style(fontfile)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
     font_fnames = []
     font_tfnames = typographic_familynames(ttFont)
 
@@ -931,14 +946,17 @@ def test_check_099():
   """ METADATA.pb font.full_name field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_099 as check,
                                                      style,
+                                                     metadata,
                                                      font_metadata,
                                                      font_familynames,
                                                      typographic_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(ttFont.reader.file.name)
-    font_meta = font_metadata(ttFont)
+    font_style = style(fontfile)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
     font_fnames = font_familynames(ttFont)
     font_tfnames = []
 
@@ -956,8 +974,10 @@ def test_check_099():
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(ttFont.reader.file.name)
-    font_meta = font_metadata(ttFont)
+    font_style = style(fontfile)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
     font_fnames = []
     font_tfnames = typographic_familynames(ttFont)
 
@@ -976,33 +996,39 @@ def test_check_099():
 def test_check_100():
   """ METADATA.pb font.filename field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_100 as check,
+                                                     metadata,
                                                      font_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
-    ttFont = TTFont(fontfile)
-    font_meta = font_metadata(ttFont)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
 
     # So it must PASS the check:
     print ("Test PASS with a good font ({})...".format(fontfile))
-    status, message = list(check(ttFont, font_meta))[-1]
+    status, message = list(check(fontfile, font_meta))[-1]
     assert status == PASS
 
     # And fail if it finds a bad filename:
     font_meta.filename = "WrongFileName"
     print ("Test FAIL with a bad font ({})...".format(fontfile))
-    status, message = list(check(ttFont, font_meta))[-1]
+    status, message = list(check(fontfile, font_meta))[-1]
     assert status == FAIL
 
 
 def test_check_101():
   """ METADATA.pb font.post_script_name field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_101 as check,
+                                                     metadata,
                                                      font_metadata,
                                                      font_familynames)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
+
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
     ttFont = TTFont(fontfile)
-    font_meta = font_metadata(ttFont)
     font_fnames = font_familynames(ttFont)
 
     # So it must PASS the check:
@@ -1024,8 +1050,10 @@ def test_check_102():
                                                      font_metadata)
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must FAIL the check:
   print ("Test FAIL with a bad copyright notice string...")
@@ -1075,10 +1103,14 @@ def test_check_106():
                                     NAMEID_FONT_FAMILY_NAME,
                                     MACSTYLE_ITALIC)
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_106 as check,
+                                                     metadata,
                                                      font_metadata)
   # Our reference Merriweather Italic is known to good
-  ttFont = TTFont("data/test/merriweather/Merriweather-Italic.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/merriweather/Merriweather-Italic.ttf"
+  ttFont = TTFont(fontfile)
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must PASS:
   print ("Test PASS with a good font...")
@@ -1111,12 +1143,16 @@ def test_check_107():
                                     NAMEID_FONT_FAMILY_NAME,
                                     MACSTYLE_ITALIC)
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_107 as check,
+                                                     metadata,
                                                      font_metadata)
   # This one is pretty similar to check/106
   # You may want to take a quick look above...
   # Our reference Merriweather Regular is known to be good here.
-  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/merriweather/Merriweather-Regular.ttf"
+  ttFont = TTFont(fontfile)
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -1164,10 +1200,14 @@ def test_check_108():
   from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
                                     NAMEID_FONT_FAMILY_NAME)
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_108 as check,
+                                                     metadata,
                                                      font_metadata)
   # Our reference Merriweather Regular is known to be good here.
-  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/merriweather/Merriweather-Regular.ttf"
+  ttFont = TTFont(fontfile)
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -1205,8 +1245,10 @@ def test_check_109():
                                                      metadata,
                                                      font_metadata)
   # Our reference Cabin Regular is known to be good
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -1234,9 +1276,10 @@ def test_check_110():
                                                      metadata,
                                                      font_metadata)
   # Our reference Cabin Regular is known to be good
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(ttFont)
-  family_meta = metadata("data/test/cabin/")
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.split(fontfile)[0]
+  family_meta = metadata(family_directory)
+  font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -1264,11 +1307,14 @@ def NOT_IMPLEMENTED_test_check_111():
 def test_check_112():
   """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_112 as check,
+                                                     metadata,
                                                      font_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    font_meta = font_metadata(ttFont)
+    family_directory = os.path.split(fontfile)[0]
+    meta = metadata(family_directory)
+    font_meta = font_metadata(meta, fontfile)
 
     # So it must PASS the check:
     print ("Test PASS with a good font ({})...".format(fontfile))
@@ -1440,8 +1486,11 @@ def test_check_155():
                                                      metadata,
                                                      font_metadata)
   # Our reference Cabin Regular is known to be good
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  font_meta = font_metadata(ttFont)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(fontfile)
+  family_directory = os.path.split(fontfile)[0]
+  meta = metadata(family_directory)
+  font_meta = font_metadata(meta, fontfile)
 
   # So it must PASS the check:
   print ("Test PASS with a good METADATA.pb for this font...")
@@ -1665,15 +1714,17 @@ def test_check_165():
   # There may be frequent cases when fonts are being updated and thus
   # already have a public family name registered on the
   # namecheck.fontdata.com database.
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
-  status, message = list(check(ttFont, familyname(ttFont)))[-1]
+  font = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(font)
+  status, message = list(check(ttFont, familyname(font)))[-1]
   assert status == INFO
 
   print('Test PASS with a unique family name...')
   # Here we know that FamilySans has not been (and will not be)
   # registered as a real family.
-  ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
-  status, message = list(check(ttFont, familyname(ttFont)))[-1]
+  font = "data/test/familysans/FamilySans-Regular.ttf"
+  ttFont = TTFont(font)
+  status, message = list(check(ttFont, familyname(font)))[-1]
   assert status == PASS
 
 

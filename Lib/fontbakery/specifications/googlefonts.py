@@ -663,8 +663,8 @@ def com_google_fonts_check_029(ttFont, license):
 
 
 @condition
-def familyname(ttFont):
-  filename = os.path.split(ttFont.reader.file.name)[1]
+def familyname(font):
+  filename = os.path.split(font)[1]
   filename_base = os.path.splitext(filename)[0]
   return filename_base.split('-')[0]
 
@@ -1374,20 +1374,11 @@ def com_google_fonts_check_091(metadata):
 
 
 @condition
-def font_metadata(ttFont):
-  from fontbakery.utils import get_FamilyProto_Message
-
-  family_directory = os.path.dirname(ttFont.reader.file.name)
-  pb_file = os.path.join(family_directory, "METADATA.pb")
-  if not os.path.exists(pb_file):
-    return None
-  metadata = get_FamilyProto_Message(pb_file)
-
+def font_metadata(metadata, font):
   if not metadata:
-    return None
-
+    return
   for f in metadata.fonts:
-    if ttFont.reader.file.name.endswith(f.filename):
+    if font.endswith(f.filename):
       return f
 
 
@@ -1657,10 +1648,10 @@ def com_google_fonts_check_099(style,
                          # (source of truth here) is good
                 'font_metadata']
 )
-def com_google_fonts_check_100(ttFont,
-                              font_metadata):
+def com_google_fonts_check_100(font,
+                               font_metadata):
   """METADATA.pb font.filename field contains font name in right format?"""
-  expected = os.path.split(ttFont.reader.file.name)[1]
+  expected = os.path.split(font)[1]
   if font_metadata.filename == expected:
     yield PASS, ("METADATA.pb filename field contains"
                  " font name in right format.")
@@ -2565,23 +2556,22 @@ def com_google_fonts_check_155(ttFont, font_metadata):
 
 
 @condition
-def familyname_with_spaces(ttFont):
+def familyname_with_spaces(familyname):
   FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
                                    'PressStart2P': 'Press Start 2P',
                                    'ABeeZee': 'ABeeZee',
                                    'IBMPlexMono': 'IBM Plex Mono',
                                    'IBMPlexSans': 'IBM Plex Sans',
                                    'IBMPlexSerif': 'IBM Plex Serif'}
-  fname = familyname(ttFont)
-  if fname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
-    return FAMILY_WITH_SPACES_EXCEPTIONS[fname]
+  if familyname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
+    return FAMILY_WITH_SPACES_EXCEPTIONS[familyname]
 
-  result = ''
-  for c in fname:
+  result = []
+  for c in familyname:
     if c.isupper():
-      result += " "
-    result += c
-  result = result.strip()
+      result.append(" ")
+    result.append(c)
+  result = ''.join(result).strip()
 
   def of_special_case(s):
     """Special case for family names such as
