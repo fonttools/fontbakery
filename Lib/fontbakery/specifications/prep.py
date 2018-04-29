@@ -6,7 +6,9 @@ from fontbakery.checkrunner import PASS, SKIP, WARN
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
-@check(id='com.google.fonts/check/072')
+@check(
+  id = 'com.google.fonts/check/072'
+)
 def com_google_fonts_check_072(ttFont):
   """Font enables smart dropout control in "prep" table instructions?
 

@@ -10,8 +10,9 @@ spec_imports = [('.shared_conditions', ('missing_whitespace_chars',))]
 
 
 @check(
-    id='com.google.fonts/check/050',
-    conditions=['not missing_whitespace_chars'])
+  id = 'com.google.fonts/check/050',
+  conditions = ['not missing_whitespace_chars']
+)
 def com_google_fonts_check_050(ttFont):
   """Whitespace and non-breaking space have the same width?"""
   from fontbakery.utils import get_glyph_name

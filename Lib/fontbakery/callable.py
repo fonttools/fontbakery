@@ -150,20 +150,24 @@ class FontBakeryCheck(FontbakeryCallable):
        self,
        checkfunc,
        id,
+       advancedMessageSetup=None,
        description=None, # short text, this is mandatory
+       documentation=None,
        name = None, # very short text
        conditions=None,
        # arguments_setup=None,
-       documentation=None, # markdown?
        rationale=None, # long text explaining why this check is needed. Using markdown, perhaps?
-       affects=None, # A list of tuples each indicating Browser/OS/Application
-                     # and the affected versions range.
-       request=None, # An URL to the original request for implementation of this check.
-                     # This is typically a github issue tracker URL.
-       example_failures=None, # A reference to some font or family that originally failed due to
-                              # the problems that this check tries to detect and report.
-       advancedMessageSetup=None,
-       priority=None
+       misc_metadata=None, # miscelaneous free-form metadata fields
+                           # some of them may be promoted to first-class metadata fields
+                           # if they start being used by the check-runner.
+                           # Below are a few candidates for that:
+       #affects=None, # A list of tuples each indicating Browser/OS/Application
+       #              # and the affected versions range.
+       #request=None, # An URL to the original request for implementation of this check.
+       #              # This is typically a github issue tracker URL.
+       #example_failures=None, # A reference to some font or family that originally failed due to
+       #                       # the problems that this check tries to detect and report.
+       #priority=None
        ):
     """This is the base class for all checks. It will usually
     not be used directly to create check instances, rather

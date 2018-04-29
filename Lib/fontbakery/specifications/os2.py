@@ -11,7 +11,9 @@ spec_imports = [
     ('.shared_conditions', ('vmetrics', ))
 ]
 
-@check(id='com.google.fonts/check/009')
+@check(
+  id = 'com.google.fonts/check/009'
+)
 def com_google_fonts_check_009(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
@@ -33,7 +35,9 @@ def com_google_fonts_check_009(ttFonts):
     yield PASS, "Fonts have consistent PANOSE proportion."
 
 
-@check(id='com.google.fonts/check/010')
+@check(
+  id = 'com.google.fonts/check/010'
+)
 def com_google_fonts_check_010(ttFonts):
   """Fonts have consistent PANOSE family type?"""
   failed = False
@@ -62,7 +66,10 @@ def expected_os2_weight():
   """
   return None
 
-@check(id='com.google.fonts/check/020', conditions=['expected_os2_weight'])
+@check(
+  id = 'com.google.fonts/check/020',
+  conditions = ['expected_os2_weight']
+)
 def com_google_fonts_check_020(ttFont, expected_os2_weight):
   """Checking OS/2 usWeightClass."""
   weight_name, expected_value = expected_os2_weight
@@ -76,8 +83,9 @@ def com_google_fonts_check_020(ttFont, expected_os2_weight):
 
 
 @check(
-    id='com.google.fonts/check/034',
-    conditions=['is_ttf'])
+  id = 'com.google.fonts/check/034',
+  conditions = ['is_ttf']
+)
 def com_google_fonts_check_034(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
   current_value = ttFont['OS/2'].xAvgCharWidth
@@ -171,7 +179,10 @@ def com_google_fonts_check_034(ttFont):
                    "the font").format(current_value, expected_value)
 
 
-@check(id='com.google.fonts/check/040', conditions=['vmetrics'])
+@check(
+  id = 'com.google.fonts/check/040',
+  conditions = ['vmetrics']
+)
 def com_google_fonts_check_040(ttFont, vmetrics):
   """Checking OS/2 usWinAscent & usWinDescent.
 
@@ -213,7 +224,9 @@ def com_google_fonts_check_040(ttFont, vmetrics):
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
 
-@check(id='com.google.fonts/check/042')
+@check(
+  id = 'com.google.fonts/check/042'
+)
 def com_google_fonts_check_042(ttFont):
   """Checking OS/2 Metrics match hhea Metrics.
 

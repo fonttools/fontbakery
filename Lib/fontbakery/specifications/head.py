@@ -10,7 +10,9 @@ from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
-@check(id='com.google.fonts/check/014')
+@check(
+  id = 'com.google.fonts/check/014'
+)
 def com_google_fonts_check_014(ttFonts):
   """Make sure all font files have the same version value."""
   all_detected_versions = []
@@ -34,7 +36,9 @@ def com_google_fonts_check_014(ttFonts):
     yield PASS, "All font files have the same version."
 
 
-@check(id='com.google.fonts/check/043')
+@check(
+  id = 'com.google.fonts/check/043'
+)
 def com_google_fonts_check_043(ttFont):
   """Checking unitsPerEm value is reasonable."""
   upem = ttFont['head'].unitsPerEm
@@ -77,7 +81,9 @@ def parse_version_string(name):
   return major, minor
 
 
-@check(id='com.google.fonts/check/044')
+@check(
+  id = 'com.google.fonts/check/044'
+)
 def com_google_fonts_check_044(ttFont):
   """Checking font version fields (head and name table)."""
   head_version = parse_version_string(str(ttFont["head"].fontRevision))

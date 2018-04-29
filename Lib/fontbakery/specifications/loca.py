@@ -10,7 +10,9 @@ spec_imports = (
     ('.', ('shared_conditions', )),
 )
 
-@check(id='com.google.fonts/check/180')
+@check(
+  id = 'com.google.fonts/check/180'
+)
 def com_google_fonts_check_180(ttFont):
   """Does the number of glyphs in the loca table match the maxp table?"""
   if len(ttFont['loca']) < (ttFont['maxp'].numGlyphs + 1):
