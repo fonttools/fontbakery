@@ -33,7 +33,7 @@ def has_kerning_info(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/063'
+  id = 'com.google.fonts/check/063'
 )
 def com_google_fonts_check_063(ttFont):
   """Does GPOS table have kerning information?"""
@@ -44,14 +44,17 @@ def com_google_fonts_check_063(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/065',
-    rationale="""
-      Fonts with ligatures should have kerning on the corresponding
-      non-ligated sequences for text where ligatures aren't used
-      (eg https://github.com/impallari/Raleway/issues/14).
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1145',
-    conditions=['ligatures', 'has_kerning_info'])
+  id = 'com.google.fonts/check/065',
+  rationale = """
+    Fonts with ligatures should have kerning on the corresponding
+    non-ligated sequences for text where ligatures aren't used
+    (eg https://github.com/impallari/Raleway/issues/14).
+  """,
+  conditions = ['ligatures',
+                'has_kerning_info'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1145'
+  })
 def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?"""
   remaining = ligatures

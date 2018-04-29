@@ -13,17 +13,21 @@ spec_imports = [
 ]
 
 @check(
-    id='com.google.fonts/check/167',
-    rationale="""
+  id = 'com.google.fonts/check/167',
+  rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wght' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
     If a variable font has a 'wght' (Weight) axis, then the coordinate
     of its 'Regular' instance is required to be 400.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'regular_wght_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'regular_wght_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_167(ttFont, regular_wght_coord):
   """The variable font 'wght' (Weight) axis coordinate must be 400 on the
   'Regular' instance."""
@@ -38,17 +42,21 @@ def com_google_fonts_check_167(ttFont, regular_wght_coord):
 
 
 @check(
-    id='com.google.fonts/check/168',
-    rationale="""
+  id = 'com.google.fonts/check/168',
+  rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wdth' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
     If a variable font has a 'wdth' (Width) axis, then the coordinate
     of its 'Regular' instance is required to be 100.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'regular_wdth_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'regular_wdth_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_168(ttFont, regular_wdth_coord):
   """The variable font 'wdth' (Width) axis coordinate must be 100 on the
   'Regular' instance."""
@@ -63,17 +71,21 @@ def com_google_fonts_check_168(ttFont, regular_wdth_coord):
 
 
 @check(
-    id='com.google.fonts/check/169',
-    rationale="""
+  id = 'com.google.fonts/check/169',
+  rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'slnt' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
 
     If a variable font has a 'slnt' (Slant) axis, then the coordinate
     of its 'Regular' instance is required to be zero.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'regular_slnt_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'regular_slnt_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_169(ttFont, regular_slnt_coord):
   """The variable font 'slnt' (Slant) axis coordinate must be zero on the
   'Regular' instance."""
@@ -88,17 +100,21 @@ def com_google_fonts_check_169(ttFont, regular_slnt_coord):
 
 
 @check(
-    id='com.google.fonts/check/170',
-    rationale="""
+  id = 'com.google.fonts/check/170',
+  rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'ital' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
 
     If a variable font has a 'ital' (Italic) axis, then the coordinate
     of its 'Regular' instance is required to be zero.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'regular_ital_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'regular_ital_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_170(ttFont, regular_ital_coord):
   """The variable font 'ital' (Italic) axis coordinate must be zero on the
   'Regular' instance."""
@@ -113,17 +129,21 @@ def com_google_fonts_check_170(ttFont, regular_ital_coord):
 
 
 @check(
-    id='com.google.fonts/check/171',
-    rationale="""
+  id = 'com.google.fonts/check/171',
+  rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'opsz' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
 
     If a variable font has a 'opsz' (Optical Size) axis, then the coordinate
     of its 'Regular' instance is recommended to be a value in the range 9 to 13.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'regular_opsz_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'regular_opsz_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_171(ttFont, regular_opsz_coord):
   """The variable font 'opsz' (Optical Size) axis coordinate should be between
   9 and 13 on the 'Regular' instance."""
@@ -140,17 +160,21 @@ def com_google_fonts_check_171(ttFont, regular_opsz_coord):
 
 
 @check(
-    id='com.google.fonts/check/172',
-    rationale="""
+  id = 'com.google.fonts/check/172',
+  rationale = """
     The Open-Type spec's registered
     design-variation tag 'wght' available at
     https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
     does not specify a required value for the 'Bold' instance of a variable font.
     But Dave Crossland suggested that we should enforce a
     required value of 700 in this case.
-    """,
-    request='https://github.com/googlefonts/fontbakery/issues/1707',
-    conditions=['is_variable_font', 'bold_wght_coord'])
+  """,
+  conditions = ['is_variable_font',
+                'bold_wght_coord'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
+  }
+)
 def com_google_fonts_check_172(ttFont, bold_wght_coord):
   """The variable font 'wght' (Weight) axis coordinate must be 700 on the
   'Bold' instance."""

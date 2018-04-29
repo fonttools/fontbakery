@@ -11,7 +11,9 @@ spec_imports = [
     ('.shared_conditions', ('seems_monospaced', 'monospace_stats', 'is_ttf'))
 ]
 
-@check(id='com.google.fonts/check/041')
+@check(
+  id = 'com.google.fonts/check/041'
+)
 def com_google_fonts_check_041(ttFont):
   """Checking Vertical Metric Linegaps."""
   if ttFont["hhea"].lineGap != 0:
@@ -22,7 +24,9 @@ def com_google_fonts_check_041(ttFont):
     yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
 
 
-@check(id='com.google.fonts/check/073')
+@check(
+  id = 'com.google.fonts/check/073'
+)
 def com_google_fonts_check_073(ttFont):
   """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
   hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
@@ -43,9 +47,10 @@ def com_google_fonts_check_073(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/079',
-    conditions=['seems_monospaced',
-                'is_ttf'])
+  id = 'com.google.fonts/check/079',
+  conditions = ['seems_monospaced',
+                'is_ttf']
+)
 def com_google_fonts_check_079(ttFont):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
   advanceWidth?"""

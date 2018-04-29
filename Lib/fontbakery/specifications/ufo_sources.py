@@ -87,7 +87,12 @@ def ufo_font(font):
 
 
 @register_check
-@check(id='com.daltonmaag/check/ufolint', priority=CRITICAL)
+@check(
+  id = 'com.daltonmaag/check/ufolint',
+  misc_metadata = {
+    'priority': CRITICAL
+  }
+)
 def com_daltonmaag_check_ufolint(font):
   """Run ufolint on UFO source directory."""
   import subprocess
@@ -105,7 +110,9 @@ def com_daltonmaag_check_ufolint(font):
 
 
 @register_check
-@check(id='com.daltonmaag/check/required-fields')
+@check(
+  id = 'com.daltonmaag/check/ufo-required-fields'
+)
 def com_daltonmaag_check_required_fields(ufo_font):
   """Check that required fields are present in the UFO fontinfo.
 
@@ -128,7 +135,9 @@ def com_daltonmaag_check_required_fields(ufo_font):
 
 
 @register_check
-@check(id='com.daltonmaag/check/recommended-fields')
+@check(
+  id = 'com.daltonmaag/check/ufo-recommended-fields'
+)
 def com_daltonmaag_check_recommended_fields(ufo_font):
   """Check that recommended fields are present in the UFO fontinfo.
 
@@ -151,7 +160,9 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
 
 @register_check
-@check(id='com.daltonmaag/check/unnecessary-fields')
+@check(
+  id = 'com.daltonmaag/check/ufo-unnecessary-fields'
+)
 def com_daltonmaag_check_unnecessary_fields(ufo_font):
   """Check that no unnecessary fields are present in the UFO fontinfo.
 

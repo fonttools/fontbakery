@@ -10,8 +10,9 @@ from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-imp
 import fontTools.ttLib
 
 @check(
-    id='com.google.fonts/check/069',
-    conditions=['is_ttf'])
+  id = 'com.google.fonts/check/069',
+  conditions = ['is_ttf']
+)
 def com_google_fonts_check_069(ttFont):
   """Is there any unused data at the end of the glyf table?"""
   try:
@@ -45,9 +46,11 @@ def com_google_fonts_check_069(ttFont):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-    id='com.google.fonts/check/075',
-    conditions=['is_ttf'],
-    request='https://github.com/googlefonts/fontbakery/issues/735')
+  id = 'com.google.fonts/check/075',
+  conditions = ['is_ttf'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/735'
+  })
 def com_google_fonts_check_075(ttFont):
   """Check for points out of bounds."""
   failed = False

@@ -7,7 +7,9 @@ from fontbakery.checkrunner import FAIL, PASS
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 
-@check(id='com.google.fonts/check/013')
+@check(
+  id = 'com.google.fonts/check/013'
+)
 def com_google_fonts_check_013(ttFonts):
   """Fonts have equal unicode encodings?"""
   encoding = None
@@ -35,8 +37,11 @@ def com_google_fonts_check_013(ttFonts):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-    id='com.google.fonts/check/076',
-    request='https://github.com/googlefonts/fontbakery/issues/735')
+  id = 'com.google.fonts/check/076',
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/735'
+  }
+)
 def com_google_fonts_check_076(ttFont):
   """Check glyphs have unique unicode codepoints."""
   failed = False
@@ -59,8 +64,11 @@ def com_google_fonts_check_076(ttFont):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-    id='com.google.fonts/check/077',
-    request='https://github.com/googlefonts/fontbakery/issues/735')
+  id = 'com.google.fonts/check/077',
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/735'
+  }
+)
 def com_google_fonts_check_077(ttFont):
   """Check all glyphs have codepoints assigned."""
   failed = False

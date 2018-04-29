@@ -12,7 +12,12 @@ spec_imports = [
     ('.shared_conditions', ('seems_monospaced', 'monospace_stats'))
 ]
 
-@check(id='com.google.fonts/check/031', priority=CRITICAL)
+@check(
+  id = 'com.google.fonts/check/031',
+  misc_metadata = {
+    'priority': CRITICAL
+  }
+)
 def com_google_fonts_check_031(ttFont):
   """Description strings in the name table must not contain copyright info."""
   from fontbakery.constants import NAMEID_DESCRIPTION
@@ -33,7 +38,9 @@ def com_google_fonts_check_031(ttFont):
                  " do not contain any copyright string.")
 
 
-@check(id='com.google.fonts/check/032')
+@check(
+  id = 'com.google.fonts/check/032'
+)
 def com_google_fonts_check_032(ttFont):
   """Description strings in the name table must not exceed 100 characters."""
   from fontbakery.constants import NAMEID_DESCRIPTION
@@ -53,9 +60,10 @@ def com_google_fonts_check_032(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/033',
-    conditions=['monospace_stats',
-                'is_ttf'])
+  id = 'com.google.fonts/check/033',
+  conditions = ['monospace_stats',
+                'is_ttf']
+)
 def com_google_fonts_check_033(ttFont, monospace_stats):
   """Checking correctness of monospaced metadata.
 
@@ -172,7 +180,9 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
                                    " all related metadata look good."))
 
 
-@check(id='com.google.fonts/check/057')
+@check(
+  id = 'com.google.fonts/check/057'
+)
 def com_google_fonts_check_057(ttFont):
   """Name table entries should not contain line-breaks."""
   from fontbakery.constants import (NAMEID_STR, PLATID_STR)
@@ -189,7 +199,9 @@ def com_google_fonts_check_057(ttFont):
                  " (no line-breaks found).")
 
 
-@check(id='com.google.fonts/check/068')
+@check(
+  id = 'com.google.fonts/check/068'
+)
 def com_google_fonts_check_068(ttFont):
   """Does full font name begin with the font family name?"""
   from fontbakery.utils import get_name_entry_strings
@@ -226,7 +238,9 @@ def com_google_fonts_check_068(ttFont):
       yield PASS, "Full font name begins with the font family name."
 
 
-@check(id='com.google.fonts/check/071')
+@check(
+  id = 'com.google.fonts/check/071'
+)
 def com_google_fonts_check_071(ttFont):
   """Font follows the family naming recommendations?"""
   # See http://forum.fontlab.com/index.php?topic=313.0
@@ -358,7 +372,9 @@ def com_google_fonts_check_071(ttFont):
     yield PASS, "Font follows the family naming recommendations."
 
 
-@check(id='com.google.fonts/check/152')
+@check(
+  id = 'com.google.fonts/check/152'
+)
 def com_google_fonts_check_152(ttFont):
   """Name table strings must not contain the string 'Reserved Font Name'."""
   failed = False
@@ -376,21 +392,23 @@ def com_google_fonts_check_152(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/163',
-    rationale="""
-      According to a Glyphs tutorial (available at
-      https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
-      in order to make sure all versions of Windows recognize it as a valid
-      font file, we must make sure that the concatenated length of the
-      familyname (NAMEID_FONT_FAMILY_NAME) and style
-      (NAMEID_FONT_SUBFAMILY_NAME)
-      strings in the name table do not exceed 20 characters.
-      """,
+  id = 'com.google.fonts/check/163',
+  rationale = """
+    According to a Glyphs tutorial (available at
+    https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
+    in order to make sure all versions of Windows recognize it as a valid
+    font file, we must make sure that the concatenated length of the
+    familyname (NAMEID_FONT_FAMILY_NAME) and style
+    (NAMEID_FONT_SUBFAMILY_NAME)
+    strings in the name table do not exceed 20 characters.
+    """,
+  misc_metadata = {
     # Somebody with access to Windows should make some experiments
     # and confirm that this is really the case.
-    affects=[('Windows', 'unspecified')],
-    request='https://github.com/googlefonts/fontbakery/issues/1488',
-    example_failures=None)
+    'affects': [('Windows', 'unspecified')],
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1488',
+  }
+)
 def com_google_fonts_check_163(ttFont):
   """Combined length of family and style must not exceed 20 characters."""
   from unidecode import unidecode
