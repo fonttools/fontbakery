@@ -7,7 +7,8 @@ from fontbakery.checkrunner import PASS, SKIP, WARN
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 @check(
-  id = 'com.google.fonts/check/072'
+  id = 'com.google.fonts/check/072',
+  conditions = ['is_ttf']
 )
 def com_google_fonts_check_072(ttFont):
   """Font enables smart dropout control in "prep" table instructions?
@@ -31,15 +32,13 @@ def com_google_fonts_check_072(ttFont):
           the midpoint between the on-Transition contour and
           off-Transition contour. This is "Smart" dropout control.
   """
-  instructions = b"\xb8\x01\xff\x85\xb0\x04\x8d"
-  if "CFF " in ttFont:
-    yield SKIP, "Not applicable to a CFF font."
+  INSTRUCTIONS = b"\xb8\x01\xff\x85\xb0\x04\x8d"
+
+  if ("prep" in ttFont and
+      INSTRUCTIONS in ttFont["prep"].program.getBytecode()):
+    yield PASS, ("Program at 'prep' table contains instructions"
+                  " enabling smart dropout control.")
   else:
-    if ("prep" in ttFont and
-        instructions in ttFont["prep"].program.getBytecode()):
-      yield PASS, ("Program at 'prep' table contains instructions"
-                   " enabling smart dropout control.")
-    else:
-      yield WARN, ("Font does not contain TrueType instructions enabling"
-                   " smart dropout control in the 'prep' table program."
-                   " Please try exporting the font with autohinting enabled.")
+    yield WARN, ("Font does not contain TrueType instructions enabling"
+                  " smart dropout control in the 'prep' table program."
+                  " Please try exporting the font with autohinting enabled.")
