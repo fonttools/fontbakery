@@ -787,7 +787,7 @@ def test_check_094():
   print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to be good here
   font = "data/test/merriweather/Merriweather-Regular.ttf"
-  family_directory = os.path.split(font)[0]
+  family_directory = os.path.dirname(font)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, font)
   ttFont = TTFont(font)
@@ -829,7 +829,7 @@ def test_check_095():
   # Our reference Merriweather-Regular is know to have good fullname metadata
   font = "data/test/merriweather/Merriweather-Regular.ttf"
   ttFont = TTFont(font)
-  family_directory = os.path.split(font)[0]
+  family_directory = os.path.dirname(font)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, font)
   font_style = style(font)
@@ -903,7 +903,7 @@ def test_check_098():
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(fontfile)
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
     font_fnames = font_familynames(ttFont)
@@ -924,7 +924,7 @@ def test_check_098():
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(fontfile)
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
     font_fnames = []
@@ -954,7 +954,7 @@ def test_check_099():
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(fontfile)
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
     font_fnames = font_familynames(ttFont)
@@ -975,7 +975,7 @@ def test_check_099():
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
     font_style = style(fontfile)
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
     font_fnames = []
@@ -1000,7 +1000,7 @@ def test_check_100():
                                                      font_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
 
@@ -1025,7 +1025,7 @@ def test_check_101():
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
 
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
     ttFont = TTFont(fontfile)
@@ -1051,7 +1051,7 @@ def test_check_102():
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 
@@ -1108,7 +1108,7 @@ def test_check_106():
   # Our reference Merriweather Italic is known to good
   fontfile = "data/test/merriweather/Merriweather-Italic.ttf"
   ttFont = TTFont(fontfile)
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 
@@ -1150,7 +1150,7 @@ def test_check_107():
   # Our reference Merriweather Regular is known to be good here.
   fontfile = "data/test/merriweather/Merriweather-Regular.ttf"
   ttFont = TTFont(fontfile)
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 
@@ -1205,7 +1205,7 @@ def test_check_108():
   # Our reference Merriweather Regular is known to be good here.
   fontfile = "data/test/merriweather/Merriweather-Regular.ttf"
   ttFont = TTFont(fontfile)
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 
@@ -1246,7 +1246,7 @@ def test_check_109():
                                                      font_metadata)
   # Our reference Cabin Regular is known to be good
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 
@@ -1277,7 +1277,7 @@ def test_check_110():
                                                      font_metadata)
   # Our reference Cabin Regular is known to be good
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   family_meta = metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
@@ -1312,7 +1312,7 @@ def test_check_112():
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    family_directory = os.path.split(fontfile)[0]
+    family_directory = os.path.dirname(fontfile)
     meta = metadata(family_directory)
     font_meta = font_metadata(meta, fontfile)
 
@@ -1488,7 +1488,7 @@ def test_check_155():
   # Our reference Cabin Regular is known to be good
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
   ttFont = TTFont(fontfile)
-  family_directory = os.path.split(fontfile)[0]
+  family_directory = os.path.dirname(fontfile)
   meta = metadata(family_directory)
   font_meta = font_metadata(meta, fontfile)
 

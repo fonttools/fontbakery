@@ -186,7 +186,7 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 def style(font):
   """Determine font style from canonical filename."""
   from fontbakery.constants import STYLE_NAMES
-  filename = os.path.split(font)[-1]
+  filename = os.path.basename(font)
   if '-' in filename:
     stylename = os.path.splitext(filename)[0].split('-')[1]
     if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
@@ -255,7 +255,7 @@ def com_google_fonts_check_001(font):
   """
   from fontbakery.constants import STYLE_NAMES
 
-  file_path, filename = os.path.split(font)
+  filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]
   # remove spaces in style names
   style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
@@ -664,7 +664,7 @@ def com_google_fonts_check_029(ttFont, license):
 
 @condition
 def familyname(font):
-  filename = os.path.split(font)[1]
+  filename = os.path.basename(font)
   filename_base = os.path.splitext(filename)[0]
   return filename_base.split('-')[0]
 
@@ -1651,7 +1651,7 @@ def com_google_fonts_check_099(style,
 def com_google_fonts_check_100(font,
                                font_metadata):
   """METADATA.pb font.filename field contains font name in right format?"""
-  expected = os.path.split(font)[1]
+  expected = os.path.basename(font)
   if font_metadata.filename == expected:
     yield PASS, ("METADATA.pb filename field contains"
                  " font name in right format.")
@@ -2170,7 +2170,7 @@ def github_gfonts_ttFont(ttFont, license):
     "UFL.txt": "ufl",
     "APACHE.txt": "apache"
   }
-  filename = os.path.split(ttFont.reader.file.name)[-1]
+  filename = os.path.basename(ttFont.reader.file.name)
   fontname = filename.split('-')[0].lower()
   url = ("https://github.com/google/fonts/raw/master"
          "/{}/{}/{}").format(LICENSE_DIRECTORY[license],
