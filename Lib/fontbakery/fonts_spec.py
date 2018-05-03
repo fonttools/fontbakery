@@ -24,11 +24,11 @@ class FontsSpec(Spec):
       # use glob.glob to accept *.ttf
 
       for fullpath in glob.glob(pattern):
-        if fullpath.lower().endswith(".ttf"):
+        if fullpath.lower().rsplit(".", 1)[-1] in ("otf", "ttf"):
           fonts_to_check.append(fullpath)
         else:
           logging.warning("Skipping '{}' as it does not seem "
-                          "to be valid TrueType font file.".format(fullpath))
+                          "to be valid OpenType font file.".format(fullpath))
       return fonts_to_check
 
 
