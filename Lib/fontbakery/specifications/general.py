@@ -499,6 +499,10 @@ def com_google_fonts_check_049(ttFont):
     yield PASS, "There is no whitespace glyph with ink."
 
 
+@check(
+    id='com.google.fonts/check/052',
+    conditions=['is_ttf']
+)
 @check(id='com.google.fonts/check/052')
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
