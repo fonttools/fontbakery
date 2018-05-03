@@ -7,17 +7,20 @@ from fontbakery.checkrunner import FAIL, PASS
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 @check(
-    id='com.google.fonts/check/008',
-    affects=[('InDesign', 'unspecified')],
-    rationale="""
-    Dave C Lemon (Adobe Type Team) recommends setting the underline
-    thickness to be consistent across the family.
+  id = 'com.google.fonts/check/008',
+  rationale = """
+  Dave C Lemon (Adobe Type Team) recommends setting the underline
+  thickness to be consistent across the family.
 
-    If thicknesses are not family consistent, words set on the same line which
-    have different styles look strange.
+  If thicknesses are not family consistent, words set on the same line which
+  have different styles look strange.
 
-    See also: https://twitter.com/typenerd1/status/690361887926697986
-    """)
+  See also: https://twitter.com/typenerd1/status/690361887926697986
+  """,
+  misc_metadata = {
+    'affects': [('InDesign', 'unspecified')]
+  }
+)
 def com_google_fonts_check_008(ttFonts):
   """Fonts have consistent underline thickness?"""
   underTs = {}
@@ -47,7 +50,9 @@ def com_google_fonts_check_008(ttFonts):
     yield PASS, "Fonts have consistent underline thickness."
 
 
-@check(id='com.google.fonts/check/015')
+@check(
+  id = 'com.google.fonts/check/015'
+)
 def com_google_fonts_check_015(ttFont):
   """Font has correct post table version (2 for TTF, 3 for OTF)?"""
   formatType = ttFont['post'].formatType

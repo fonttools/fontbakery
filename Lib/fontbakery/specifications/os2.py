@@ -11,7 +11,9 @@ spec_imports = [
     ('.shared_conditions', ('vmetrics', ))
 ]
 
-@check(id='com.google.fonts/check/009')
+@check(
+  id = 'com.google.fonts/check/009'
+)
 def com_google_fonts_check_009(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
@@ -33,7 +35,9 @@ def com_google_fonts_check_009(ttFonts):
     yield PASS, "Fonts have consistent PANOSE proportion."
 
 
-@check(id='com.google.fonts/check/010')
+@check(
+  id = 'com.google.fonts/check/010'
+)
 def com_google_fonts_check_010(ttFonts):
   """Fonts have consistent PANOSE family type?"""
   failed = False
@@ -62,7 +66,10 @@ def expected_os2_weight():
   """
   return None
 
-@check(id='com.google.fonts/check/020', conditions=['expected_os2_weight'])
+@check(
+  id = 'com.google.fonts/check/020',
+  conditions = ['expected_os2_weight']
+)
 def com_google_fonts_check_020(ttFont, expected_os2_weight):
   """Checking OS/2 usWeightClass."""
   weight_name, expected_value = expected_os2_weight
@@ -76,44 +83,33 @@ def com_google_fonts_check_020(ttFont, expected_os2_weight):
 
 
 @check(
-    id='com.google.fonts/check/034',
-    conditions=['is_ttf'])
+  id = 'com.google.fonts/check/034',
+  conditions = ['is_ttf']
+)
 def com_google_fonts_check_034(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
   current_value = ttFont['OS/2'].xAvgCharWidth
-  ACCEPTABLE_ERROR = 10  # This is how much we're willing to accept
+  ACCEPTABLE_ERROR = 10  # Width deviation tolerance in font units
 
+  # Since version 3, the average is computed using _all_ glyphs in a font.
   if ttFont['OS/2'].version >= 3:
+    if not ttFont['hmtx'].metrics:  # May contain just '.notdef', which is valid.
+      yield FAIL, Message("missing-glyphs",
+                          "CRITICAL: Found no glyph width data in the hmtx table!")
+      return
+
     width_sum = 0
     count = 0
-    for glyph_id in ttFont['glyf'].glyphs:
+    for glyph_id in ttFont['glyf'].glyphs:  # At least .notdef must be present.
       width = ttFont['hmtx'].metrics[glyph_id][0]
+      # The OpenType spec doesn't exclude negative widths, but only positive
+      # widths seems to be the assumption in the wild?
       if width > 0:
         count += 1
         width_sum += width
-    if count == 0:
-      yield FAIL, Message("no-glyph",
-                          "CRITICAL: Found no glyph width data!")
-    else:
-      expected_value = int(round(width_sum / count))
-      if current_value == expected_value:
-        yield PASS, "OS/2 xAvgCharWidth is correct."
-      elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
-        yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
-                     " {} which corresponds to the"
-                     " average of all glyph widths"
-                     " in the font. These are similar values, which"
-                     " may be a symptom of the slightly different"
-                     " calculation of the xAvgCharWidth value in"
-                     " font editors. There's further discussion on"
-                     " this at https://github.com/googlefonts/fontbakery"
-                     "/issues/1622").format(current_value, expected_value)
-      else:
-        yield FAIL, ("OS/2 xAvgCharWidth is {} but should be "
-                     "{} which corresponds to the "
-                     "average of all glyph widths "
-                     "in the font").format(current_value, expected_value)
-  else:
+
+    expected_value = int(round(width_sum / count))
+  else:  # Version 2 and below only consider lowercase latin glyphs and space.
     weightFactors = {
         'a': 64,
         'b': 14,
@@ -143,35 +139,48 @@ def com_google_fonts_check_034(ttFont):
         'z': 2,
         'space': 166
     }
+    glyph_order = ttFont.getGlyphOrder()
+    if not all(character in glyph_order for character in weightFactors):
+      yield FAIL, Message("missing-glyphs",
+                          "Font is missing the required latin lowercase "
+                          "letters and/or space.")
+      return
+
     width_sum = 0
-    for glyph_id in ttFont['glyf'].glyphs:
+    for glyph_id in weightFactors:
       width = ttFont['hmtx'].metrics[glyph_id][0]
-      if glyph_id in weightFactors.keys():
-        width_sum += (width * weightFactors[glyph_id])
+      width_sum += (width * weightFactors[glyph_id])
+
     expected_value = int(width_sum / 1000.0 + 0.5)  # round to closest int
 
-    if current_value == expected_value:
-      yield PASS, "OS/2 xAvgCharWidth value is correct."
-    elif abs(current_value - expected_value) < ACCEPTABLE_ERROR:
-      yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
-                   " {} which corresponds to the weighted"
-                   " average of the widths of the latin"
-                   " lowercase glyphs in the font."
-                   " These are similar values, which"
-                   " may be a symptom of the slightly different"
-                   " calculation of the xAvgCharWidth value in"
-                   " font editors. There's further discussion on"
-                   " this at https://github.com/googlefonts/fontbakery"
-                   "/issues/1622").format(current_value, expected_value)
-    else:
-      yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
-                   "{} which corresponds to the weighted "
-                   "average of the widths of the latin "
-                   "lowercase glyphs in "
-                   "the font").format(current_value, expected_value)
+  difference = abs(current_value - expected_value)
+
+  # We accept matches and off-by-ones due to rounding as correct.
+  if current_value == expected_value or difference == 1:
+    yield PASS, "OS/2 xAvgCharWidth value is correct."
+  elif difference < ACCEPTABLE_ERROR:
+    yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
+                  " {} which corresponds to the weighted"
+                  " average of the widths of the latin"
+                  " lowercase glyphs in the font."
+                  " These are similar values, which"
+                  " may be a symptom of the slightly different"
+                  " calculation of the xAvgCharWidth value in"
+                  " font editors. There's further discussion on"
+                  " this at https://github.com/googlefonts/fontbakery"
+                  "/issues/1622").format(current_value, expected_value)
+  else:
+    yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
+                  "{} which corresponds to the weighted "
+                  "average of the widths of the latin "
+                  "lowercase glyphs in "
+                  "the font").format(current_value, expected_value)
 
 
-@check(id='com.google.fonts/check/040', conditions=['vmetrics'])
+@check(
+  id = 'com.google.fonts/check/040',
+  conditions = ['vmetrics']
+)
 def com_google_fonts_check_040(ttFont, vmetrics):
   """Checking OS/2 usWinAscent & usWinDescent.
 
@@ -213,7 +222,9 @@ def com_google_fonts_check_040(ttFont, vmetrics):
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
 
-@check(id='com.google.fonts/check/042')
+@check(
+  id = 'com.google.fonts/check/042'
+)
 def com_google_fonts_check_042(ttFont):
   """Checking OS/2 Metrics match hhea Metrics.
 

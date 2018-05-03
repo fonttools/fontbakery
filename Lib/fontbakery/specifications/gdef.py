@@ -12,14 +12,17 @@ spec_imports = [
 ]
 
 @check(
-    id='com.google.fonts/check/064',
-    conditions=['ligatures'],
-    rationale="""
+  id = 'com.google.fonts/check/064',
+  conditions = ['ligatures'],
+  rationale = """
     All ligatures in a font must have corresponding caret (text cursor)
     positions defined in the GDEF table, otherwhise, users may experience
     issues with caret rendering.
   """,
-    request="https://github.com/googlefonts/fontbakery/issues/1225")
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
+  }
+)
 def com_google_fonts_check_064(ttFont, ligatures):
   """Is there a caret position declared for every ligature?"""
   if ligatures == -1:

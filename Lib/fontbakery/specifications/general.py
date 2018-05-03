@@ -41,7 +41,12 @@ def fontforge_check_results(font):
     return None
 
 
-@check(id='com.google.fonts/check/002', priority=CRITICAL)
+@check(
+  id = 'com.google.fonts/check/002',
+  misc_metadata = {
+    'priority': CRITICAL
+  }
+)
 def com_google_fonts_check_002(fonts):
   """Checking all files are in the same directory.
 
@@ -69,7 +74,9 @@ def com_google_fonts_check_002(fonts):
                  " {}".format(directories))
 
 
-@check(id='com.google.fonts/check/035')
+@check(
+  id = 'com.google.fonts/check/035'
+)
 def com_google_fonts_check_035(font):
   """Checking with ftxvalidator."""
   import plistlib
@@ -108,7 +115,9 @@ def com_google_fonts_check_035(font):
     yield ERROR, "ftxvalidator is not available!"
 
 
-@check(id='com.google.fonts/check/036')
+@check(
+  id = 'com.google.fonts/check/036'
+)
 def com_google_fonts_check_036(font):
   """Checking with ots-sanitize."""
   try:
@@ -132,7 +141,9 @@ def com_google_fonts_check_036(font):
                   "'{}'").format(e)
 
 
-@check(id='com.google.fonts/check/037')
+@check(
+  id = 'com.google.fonts/check/037'
+)
 def com_google_fonts_check_037(font):
   """Checking with Microsoft Font Validator."""
   try:
@@ -196,7 +207,10 @@ def com_google_fonts_check_037(font):
   os.remove(fval_file)
 
 
-@check(id='com.google.fonts/check/038', conditions=['fontforge_check_results'])
+@check(
+  id = 'com.google.fonts/check/038',
+  conditions = ['fontforge_check_results']
+)
 def com_google_fonts_check_038(font, fontforge_check_results):
   """FontForge validation outputs error messages?"""
 
@@ -231,7 +245,10 @@ def fontforge_skip_checks():
   """
   return None
 
-@check(id='com.google.fonts/check/039', conditions=['fontforge_check_results'])
+@check(
+  id = 'com.google.fonts/check/039',
+  conditions = ['fontforge_check_results']
+)
 def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   """FontForge checks."""
 
@@ -358,8 +375,9 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
       yield PASS, "fontforge-check: {}".format(ok_msg)
 
 
-
-@check(id='com.google.fonts/check/046')
+@check(
+  id = 'com.google.fonts/check/046'
+)
 def com_google_fonts_check_046(ttFont):
   """Font contains the first few mandatory glyphs (.null or NULL, CR and
   space)?"""
@@ -387,7 +405,9 @@ def com_google_fonts_check_046(ttFont):
                  " (.null or NULL, CR and space).")
 
 
-@check(id='com.google.fonts/check/047')
+@check(
+  id = 'com.google.fonts/check/047'
+)
 def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
   if missing_whitespace_chars != []:
@@ -399,8 +419,9 @@ def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
 
 
 @check(
-    id='com.google.fonts/check/048',
-    conditions=['not missing_whitespace_chars'])
+  id = 'com.google.fonts/check/048',
+  conditions = ['not missing_whitespace_chars']
+)
 def com_google_fonts_check_048(ttFont):
   """Font has **proper** whitespace glyph names?"""
   from fontbakery.utils import get_glyph_name
@@ -445,8 +466,8 @@ def com_google_fonts_check_048(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/049',
-    conditions=['is_ttf']
+  id = 'com.google.fonts/check/049',
+  conditions = ['is_ttf']
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""
@@ -503,7 +524,6 @@ def com_google_fonts_check_049(ttFont):
     id='com.google.fonts/check/052',
     conditions=['is_ttf']
 )
-@check(id='com.google.fonts/check/052')
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
   REQUIRED_TABLES = set(
@@ -544,7 +564,9 @@ def com_google_fonts_check_052(ttFont):
     yield PASS, "Font contains all required tables."
 
 
-@check(id='com.google.fonts/check/053')
+@check(
+  id = 'com.google.fonts/check/053'
+)
 def com_google_fonts_check_053(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = set(
@@ -562,7 +584,9 @@ def com_google_fonts_check_053(ttFont):
     yield PASS, "There are no unwanted tables."
 
 
-@check(id='com.google.fonts/check/058')
+@check(
+  id = 'com.google.fonts/check/058'
+)
 def com_google_fonts_check_058(ttFont):
   """Glyph names are all valid?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
@@ -598,11 +622,14 @@ def com_google_fonts_check_058(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/059',
-    affects=[('Mac', 'unspecified')],
-    rationale="""
-      Duplicate glyph names prevent font installation on Mac OS X.
-    """)
+  id = 'com.google.fonts/check/059',
+  rationale = """
+    Duplicate glyph names prevent font installation on Mac OS X.
+  """,
+  misc_metadata={
+    'affects': [('Mac', 'unspecified')]
+  }
+)
 def com_google_fonts_check_059(ttFont):
   """Font contains unique glyph names?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
@@ -633,8 +660,11 @@ def com_google_fonts_check_059(ttFont):
 # Disabled until we know the rationale.
 @disable
 @check(
-    id='com.google.fonts/check/078',
-    request='https://github.com/googlefonts/fontbakery/issues/735')
+  id = 'com.google.fonts/check/078',
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/735'
+  }
+)
 def com_google_fonts_check_078(ttFont):
   """Check that glyph names do not exceed max length."""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
