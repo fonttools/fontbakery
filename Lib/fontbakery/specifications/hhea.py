@@ -55,7 +55,7 @@ def com_google_fonts_check_079(ttFont):
   outliers = []
   zero_or_double_width_outliers = []
   glyphs = [
-      g for g in ttFont['glyf'].glyphs if g not in ['.notdef', '.null', 'NULL']
+      g for g in ttFont.getGlyphSet() if g not in ['.notdef', '.null', 'NULL']
   ]
   for glyph_id in glyphs:
     width = ttFont['hmtx'].metrics[glyph_id][0]
@@ -65,7 +65,7 @@ def com_google_fonts_check_079(ttFont):
       zero_or_double_width_outliers.append(glyph_id)
 
   if outliers:
-    outliers_percentage = float(len(outliers)) / len(ttFont['glyf'].glyphs)
+    outliers_percentage = float(len(outliers)) / len(ttFont.getGlyphSet())
     yield WARN, Message(
         "should-be-monospaced", "This seems to be a monospaced font,"
         " so advanceWidth value should be the same"
