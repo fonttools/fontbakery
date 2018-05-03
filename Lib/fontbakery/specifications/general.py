@@ -548,7 +548,7 @@ def com_google_fonts_check_052(ttFont):
 def com_google_fonts_check_053(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = set(
-      ['FFTM', 'TTFA', 'prop', 'TSI0', 'TSI1', 'TSI2', 'TSI3'])
+      ['FFTM', 'TTFA', 'prop', 'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'])
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES:
