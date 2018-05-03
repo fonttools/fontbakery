@@ -49,10 +49,17 @@ def com_google_fonts_check_008(ttFonts):
 
 @check(id='com.google.fonts/check/015')
 def com_google_fonts_check_015(ttFont):
-  """Font has post table version 2?"""
-  if ttFont['post'].formatType != 2:
-    yield FAIL, ("Post table should be version 2 instead of {}."
-                 " More info at https://github.com/google/fonts/"
-                 "issues/215").format(ttFont['post'].formatType)
+  """Font has correct post table version (2 for TTF, 3 for OTF)?"""
+  formatType = ttFont['post'].formatType
+  if 'glyf' in ttFont:
+    # TTF
+    expected = 2
   else:
-    yield PASS, "Font has post table version 2."
+    # OTF
+    expected = 3
+  if formatType != expected:
+    yield FAIL, ("Post table should be version {} instead of {}."
+                 " More info at https://github.com/google/fonts/"
+                 "issues/215").format(expected, formatType)
+  else:
+    yield PASS, "Font has post table version {}.".format(expected)
