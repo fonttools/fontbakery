@@ -312,9 +312,6 @@ def com_google_fonts_check_071(ttFont):
   if "OS/2" in ttFont:
     field = "OS/2 usWeightClass"
     weight_value = ttFont["OS/2"].usWeightClass
-  if "CFF " in ttFont:
-    field = "CFF Weight"
-    weight_value = ttFont["CFF "].Weight
 
   if weight_value is not None:
     # <Weight> value >= 250 and <= 900 in steps of 50
