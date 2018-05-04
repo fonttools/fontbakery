@@ -53,14 +53,12 @@ def com_google_fonts_check_008(ttFonts):
 @check(
   id = 'com.google.fonts/check/015'
 )
-def com_google_fonts_check_015(ttFont):
+def com_google_fonts_check_015(ttFont, is_ttf):
   """Font has correct post table version (2 for TTF, 3 for OTF)?"""
   formatType = ttFont['post'].formatType
-  if 'glyf' in ttFont:
-    # TTF
+  if is_ttf:
     expected = 2
   else:
-    # OTF
     expected = 3
   if formatType != expected:
     yield FAIL, ("Post table should be version {} instead of {}."
