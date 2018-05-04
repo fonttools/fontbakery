@@ -56,12 +56,12 @@ def test_check_015():
   print('Test PASS with good font.')
   # our reference Mada family is know to be good here.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check(ttFont))[-1]
+  status, message = list(check(ttFont, 'glyf' in ttFont))[-1]
   assert status == PASS
 
   # modify the post table version
   ttFont['post'].formatType = 3
 
   print('Test FAIL with fonts that diverge on the fontRevision field value.')
-  status, message = list(check(ttFont))[-1]
+  status, message = list(check(ttFont, 'glyf' in ttFont))[-1]
   assert status == FAIL

@@ -47,12 +47,12 @@ def monospace_stats(ttFont):
      if a font is monospaced is if at least 80% of all glyphs
      have the same width.
   """
-  glyphs = ttFont['glyf'].glyphs
+  glyphs = ttFont.getGlyphSet()
   width_occurrences = {}
   width_max = 0
   # count how many times a width occurs
-  for glyph_id in glyphs:
-    width = ttFont['hmtx'].metrics[glyph_id][0]
+  for glyph_id in glyphs.keys():
+    width = glyphs[glyph_id].width
     width_max = max(width, width_max)
     try:
       width_occurrences[width] += 1
@@ -66,7 +66,7 @@ def monospace_stats(ttFont):
       most_common_width = width
   # if more than 80% of glyphs have the same width
   # then the font is very likely considered to be monospaced
-  seems_monospaced = occurrences > 0.80 * len(glyphs)
+  seems_monospaced = occurrences > 0.80 * len(glyphs.keys())
 
   return {
       "seems_monospaced": seems_monospaced,

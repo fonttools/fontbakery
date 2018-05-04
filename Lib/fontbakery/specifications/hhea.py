@@ -48,8 +48,7 @@ def com_google_fonts_check_073(ttFont):
 
 @check(
   id = 'com.google.fonts/check/079',
-  conditions = ['seems_monospaced',
-                'is_ttf']
+  conditions = ['seems_monospaced']
 )
 def com_google_fonts_check_079(ttFont):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
@@ -59,8 +58,9 @@ def com_google_fonts_check_079(ttFont):
   max_advw = ttFont['hhea'].advanceWidthMax
   outliers = []
   zero_or_double_width_outliers = []
+  glyphSet = ttFont.getGlyphSet().keys() # TODO: remove .keys() when fonttools is updated to 3.27
   glyphs = [
-      g for g in ttFont['glyf'].glyphs if g not in ['.notdef', '.null', 'NULL']
+      g for g in glyphSet if g not in ['.notdef', '.null', 'NULL']
   ]
   for glyph_id in glyphs:
     width = ttFont['hmtx'].metrics[glyph_id][0]
@@ -70,7 +70,7 @@ def com_google_fonts_check_079(ttFont):
       zero_or_double_width_outliers.append(glyph_id)
 
   if outliers:
-    outliers_percentage = float(len(outliers)) / len(ttFont['glyf'].glyphs)
+    outliers_percentage = float(len(outliers)) / len(glyphSet)
     yield WARN, Message(
         "should-be-monospaced", "This seems to be a monospaced font,"
         " so advanceWidth value should be the same"
