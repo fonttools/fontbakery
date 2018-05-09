@@ -26,6 +26,7 @@ from fontbakery.checkrunner import (
             , FAIL
             , STARTSECTION
             , ENDSECTION
+            , Status
             )
 
 log_levels =  OrderedDict((s.name,s) for s in sorted((
@@ -99,6 +100,10 @@ def ArgumentParser(specification, spec_arg=True):
   argument_parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                       metavar= 'JSON_FILE',
                       help='Write a json formatted report to JSON_FILE.')
+
+  argument_parser.add_argument('--ghmarkdown', default=False, type=argparse.FileType('w'),
+                      metavar= 'MD_FILE',
+                      help='Write a GitHub-Markdown formatted report to MD_FILE.')
 
   iterargs = sorted(specification.iterargs.keys())
 
@@ -259,7 +264,8 @@ def main(specification=None, values=None):
 
                        )
   reporters = [tr.receive]
-  if args.json:
+
+  if args.json or args.ghmarkdown:
     sr = SerializeReporter(runner=runner, collect_results_by=args.gather_by)
     reporters.append(sr.receive)
   distribute_generator(runner.run(), reporters)
@@ -267,6 +273,78 @@ def main(specification=None, values=None):
   if args.json:
     import json
     json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
+
+  if args.ghmarkdown:
+    data = sr.getdoc()
+    from random import randint
+    pass_emoticon = [":croissant:",
+                     ":cake:",
+                     ":doughnut:",
+                     ":bread:"][randint(0, 3)]
+    def emoticon(name):
+      return {'ERROR': ':broken_heart:',
+              'FAIL': ':fire:',
+              'WARN': ':warning:',
+              'INFO': ':information_source:',
+              'SKIP': ':zzz:',
+              'PASS': pass_emoticon,
+             }[name]
+
+    def html5_collapsible(summary, details):
+      return """
+<details>
+  <summary>{}</summary>
+{}
+</details>
+    """.format(summary, details)
+
+    def log_md(log):
+      return " * **{}:** {}\n".format(log["status"], log["message"])
+
+    def check_md(check):
+      checkid = check["key"][1].split(":")[1].split(">")[0]
+
+      logs = "".join(map(log_md, check["logs"]))
+      github_search_url = ("[{}](https://github.com/googlefonts/fontbakery/"
+                           "search?q={})").format(checkid, checkid)
+      return html5_collapsible("{} <b>{}:</b> {}".format(emoticon(check["result"]),
+                                                         check["result"],
+                                                         check["description"]),
+                               "\n* {}\n{}".format(github_search_url,
+                                                   logs))
+    summary_table = ("### Summary\n\n"
+                     "| {} ERROR | {} FAIL | {} WARN | {} SKIP | {} INFO | {} PASS |\n"
+                     "").format(*[emoticon(k) for k in ["ERROR","FAIL","WARN","SKIP","INFO","PASS"]]) + \
+                    ("|:-----:|:----:|:----:|:----:|:----:|:----:|\n"
+                     "| {}    | {}   | {} | {} | {} | {} |\n"
+                     "").format(*[data["result"][k] for k in ["ERROR","FAIL","WARN","SKIP","INFO","PASS"]])
+    checks = {}
+    family_checks = []
+    for section in data["sections"]:
+      for check in section["checks"]:
+        if args.loglevels and (args.loglevels[0] > Status(check["result"])):
+          continue
+
+        if check["key"][2] == (): # That's a family check!
+          family_checks.append(check)
+        else:
+          key = os.path.basename(check["filename"])
+          if key not in checks:
+            checks[key] = []
+          checks[key].append(check)
+
+    family_checks.sort(key=lambda c: c["result"])
+    md = html5_collapsible("<b>[{}] Family checks</b>".format(len(family_checks)),
+                           "".join(map(check_md, family_checks)) + "<br>")
+
+    for filename in checks.keys():
+      checks[filename].sort(key=lambda c: c["result"])
+      md += html5_collapsible("<b>[{}] {}</b>".format(len(checks[filename]),
+                                                      filename),
+                              "".join(map(check_md, checks[filename])) + "<br>")
+
+    md += "\n" + summary_table
+    args.ghmarkdown.write(md)
 
   # Fail and error let the command fail
   return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
