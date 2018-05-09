@@ -96,6 +96,11 @@ class SerializeReporter(FontbakeryReporter):
             item['clustered']['value'] = value
       self._set_metadata(identity, item)
 
+    if check:
+      item['description'] = check.description
+      if item["key"][2] != ():
+        item['filename'] = self.runner.get_iterarg(*item["key"][2][0])
+
     if status in (END, ENDSECTION):
       item['result'] = message # is a Counter
     if status == ENDCHECK:
