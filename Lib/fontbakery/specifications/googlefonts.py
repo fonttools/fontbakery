@@ -973,44 +973,46 @@ def com_google_fonts_check_061(ttFont):
   id = 'com.google.fonts/check/062'
 )
 def com_google_fonts_check_062(ttFont):
-  """Is GASP table correctly set?"""
+  """Is 'gasp' table set to optimize rendering?
+  
+  Traditionally version 0 GASP tables were set
+  so that font sizes below 8 ppem had no grid
+  fitting but did have antialiasing. From 9-16
+  ppem, just grid fitting. And fonts above
+  17ppem had both antialiasing and grid fitting
+  toggled on. The use of accelerated graphics
+  cards and higher resolution screens make this
+  approach obsolete. Microsoft's DirectWrite
+  pushed this even further with much improved
+  rendering built into the OS and apps. In this
+  scenario it makes sense to simply toggle all
+  4 flags ON for all font sizes.
+  """
   try:
     if not isinstance(ttFont["gasp"].gaspRange, dict):
-      yield FAIL, "GASP.gaspRange method value have wrong type."
+      yield FAIL, "'gasp' table has no values."
     else:
       failed = False
       if 0xFFFF not in ttFont["gasp"].gaspRange:
-        yield FAIL, "GASP does not have 0xFFFF gaspRange."
+        yield WARN, "'gasp' table does not have a value for all"
+                    " sizes (gaspRange 0xFFFF). It should be set to 1."
       else:
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
-            yield FAIL, ("GASP should only have 0xFFFF gaspRange,"
-                          " but {} gaspRange was also found."
-                          "").format(hex(key))
+            yield WARN, ("'gasp' table has a gaspRange of {} that"
+                         " may be unneccessary.").format(hex(key))
             failed = True
           else:
             value = ttFont["gasp"].gaspRange[key]
             if value != 0x0F:
               failed = True
-              yield WARN, (" All flags in GASP range 0xFFFF (i.e. all font"
-                           " sizes) must be set to 1.\n"
-                           " Rationale:\n"
-                           " Traditionally version 0 GASP tables were set"
-                           " so that font sizes below 8 ppem had no grid"
-                           " fitting but did have antialiasing. From 9-16"
-                           " ppem, just grid fitting. And fonts above"
-                           " 17ppem had both antialiasing and grid fitting"
-                           " toggled on. The use of accelerated graphics"
-                           " cards and higher resolution screens make this"
-                           " appraoch obsolete. Microsoft's DirectWrite"
-                           " pushed this even further with much improved"
-                           " rendering built into the OS and apps. In this"
-                           " scenario it makes sense to simply toggle all"
-                           " 4 flags ON for all font sizes.")
+              yield WARN, ("gaspRange {} value {} should be set"
+                           " to 1 (0x0F)").format(hex(key))
         if not failed:
-          yield PASS, "GASP table is correctly set."
+          yield PASS, "'gasp' table is correctly set, with one "
+                      "gaspRange:value of 0xFFFF:0x0F."
   except KeyError:
-    yield FAIL, ("Font is missing the GASP table."
+    yield FAIL, ("Font is missing the 'gasp' table."
                  " Try exporting the font with autohinting enabled.")
 
 
