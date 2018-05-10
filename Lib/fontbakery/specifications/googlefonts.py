@@ -93,7 +93,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/058' # Glyph names are all valid?
       , 'com.google.fonts/check/059' # Font contains unique glyph names?
       , 'com.google.fonts/check/061' # EPAR table present in font?
-      , 'com.google.fonts/check/062' # Is GASP table correctly set?
+      , 'com.google.fonts/check/062' # Is 'gasp' table correctly set?
       , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
       , 'com.google.fonts/check/064' # Is there a caret position declared for every ligature?
       , 'com.google.fonts/check/065' # Is there kerning info for non-ligated sequences?
@@ -975,7 +975,7 @@ def com_google_fonts_check_061(ttFont):
 def com_google_fonts_check_062(ttFont):
   """Is 'gasp' table set to optimize rendering?
   
-  Traditionally version 0 GASP tables were set
+  Traditionally version 0 'gasp' tables were set
   so that font sizes below 8 ppem had no grid
   fitting but did have antialiasing. From 9-16
   ppem, just grid fitting. And fonts above
@@ -1007,7 +1007,7 @@ def com_google_fonts_check_062(ttFont):
             if value != 0x0F:
               failed = True
               yield WARN, ("gaspRange {} value {} should be set"
-                           " to 1 (0x0F)").format(hex(key))
+                           " to 1 (0x0F)").format(hex(key), value)
         if not failed:
           yield PASS, "'gasp' table is correctly set, with one "
                       "gaspRange:value of 0xFFFF:0x0F."
