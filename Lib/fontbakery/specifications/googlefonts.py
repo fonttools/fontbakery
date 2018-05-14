@@ -994,8 +994,8 @@ def com_google_fonts_check_062(ttFont):
     else:
       failed = False
       if 0xFFFF not in ttFont["gasp"].gaspRange:
-        yield WARN, "'gasp' table does not have a value for all"
-                    " sizes (gaspRange 0xFFFF). It should be set to 1."
+        yield WARN, ("'gasp' table does not have a value for all"
+                     " sizes (gaspRange 0xFFFF). It should be set to 1.")
       else:
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
@@ -1007,10 +1007,10 @@ def com_google_fonts_check_062(ttFont):
             if value != 0x0F:
               failed = True
               yield WARN, ("gaspRange {} value {} should be set"
-                           " to 1 (0x0F)").format(hex(key), value)
+                           " to 0x0F.").format(hex(key), value)
         if not failed:
-          yield PASS, "'gasp' table is correctly set, with one "
-                      "gaspRange:value of 0xFFFF:0x0F."
+          yield PASS, ("'gasp' table is correctly set, with one "
+                       "gaspRange:value of 0xFFFF:0x0F.")
   except KeyError:
     yield FAIL, ("Font is missing the 'gasp' table."
                  " Try exporting the font with autohinting enabled.")
