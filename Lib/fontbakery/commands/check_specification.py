@@ -26,7 +26,6 @@ from fontbakery.checkrunner import (
             , FAIL
             , STARTSECTION
             , ENDSECTION
-            , Status
             )
 
 log_levels =  OrderedDict((s.name,s) for s in sorted((

@@ -106,6 +106,6 @@ class GHMarkdownReporter(SerializeReporter):
     if omitted:
       md += "\n" + \
             "**Note:** The following loglevels were omitted in this report:\n" + \
-            "".join(map(lambda o: "* **{}**\n".format(o), omitted))
+            "".join(map("* **{}**\n".format, omitted))
 
     return md
