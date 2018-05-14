@@ -820,15 +820,14 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
   dehinted = ttfautohint_stats["dehinted_size"]
   increase = hinted - dehinted
   change = float(hinted)/dehinted - 1
-  change = int(change*10000)/100.0  # round to 2 decimal pts percentage
 
   def filesize_formatting(s):
     if s < 1024:
       return "{} bytes".format(s)
     elif s < 1024*1024:
-      return "{}kb".format(s/1024)
+      return "{:.1f}kb".format(s/1024)
     else:
-      return "{}Mb".format(s/(1024*1024))
+      return "{:.1f}Mb".format(s/(1024*1024))
 
   hinted_size = filesize_formatting(hinted)
   dehinted_size = filesize_formatting(dehinted)
@@ -836,11 +835,11 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
 
   results_table = "Hinting filesize impact:\n\n"
   results_table += "|  | {} |\n".format(font)
-  results_table += "|:--- | ---:| ---:|\n"
+  results_table += "|:--- | ---:|\n"
   results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
   results_table += "| Hinted Size | {} |\n".format(hinted_size)
   results_table += "| Increase | {} |\n".format(increase)
-  results_table += "| Change   | {} % |\n".format(change)
+  results_table += "| Change   | {:.1f} % |\n".format(change)
   yield INFO, results_table
 
 
