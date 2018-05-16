@@ -294,7 +294,7 @@ tox
 git tag -a v0.4.0 -m "Font Bakery version 0.4.0 (2018-May-16)"
 git push upstream --tags
 
-# crate the package
+# create the package
 python setup.py bdist_wheel --universal
 
 # and finally upload the new package to PyPI
