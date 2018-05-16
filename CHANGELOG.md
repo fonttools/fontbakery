@@ -26,44 +26,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - Code-Test coverage:
     - We currently have code-tests covering 55% of Font Bakery's codebase.
 
-  - Changes to existing checks:
-    - **[com.google.fonts/check/008]:** Add rationale metadata &
-                                        List diverging underlineThickness values across a family.
-    - **[com.google.fonts/check/011]:** Display divergence on num of glyphs for all styles.
-    - **[com.google.fonts/check/012]:** Verbose listing of glyphnames mismatches across families.
-    - **[com.google.fonts/check/018]:** Do not require identical vendorid & manufacturer names anymore.
-    - **[com.google.fonts/check/030]:** Accept Ubuntu Font License for legacy families.
-    - **[com.google.fonts/check/037]:** Remove fval.xsl file after running FontValidator &
-                                    FontVal may not create a HTML report, so test for it before removing it.
-    - **[com.google.fonts/check/052]:** Reimplementation / Make STAT only required for variable fonts.
-    - **[com.google.fonts/check/053]:** Add TSI5 table (VTT or VOLT) as unwanted
-    - **[com.google.fonts/check/055]:** Add quotes to log message to remove ambiguity.
-    - **[com.google.fonts/check/058]** &
-      **[com.google.fonts/check/059]:** `SKIP` when post table format is 3.0, since they contain no glyph names in that table format.
-    - **[com.google.fonts/check/062]:** "Is 'gasp' table set to optimize rendering?"
-                                        - Improve wording of log-messages and check-results for better clarity.
-    - **[com.google.fonts/check/117]:** Check version increments also on github repo. Before we were only checking on prod servers.
-    - **[com.google.fonts/check/155]:** Added IBM Plex fonts to the list of exceptions of family names with spaces.
-    - **[com.google.fonts/check/165]** &
-      **[com.google.fonts/check/166]:** Refactoring of code dealing with font versioning (using font-v dependency).
-
-  - Miscelaneous code changes & bugfixes:
-    - Boilerplate code was added on the `tests/specifications/` directory documenting the requirements of all still
-      unimplemented code-tests in the hope of inviting new contributions. Feel free to pick a few and submmit pull requests!
-    - [condition familyname_with_spaces]: Added special case for handling font family names containing " of ".
-    - Implemented is_ttf & is_cff conditions, as suggested by Lasse at issue #1797.
-    - Improved MacOSX install instructions based on feedback from https://github.com/cadsondemak/Srisakdi/issues/5
-    - Support uppercase '.TTF' extension. Probably a need due to Windows filesystem quirks...
-    - Also support loading both TTF and OTF flavours for checking.
-    - move all free-form miscelaneous check metadata into a generic misc_metadata field (see issue #1584)
-    - Release procedures are now simplified with setuptools_scm
-    - Fixed some crashes (See issues #1709, #1723, #1722)
-
-  - Deprecated checks:
-    - **[com.google.fonts/check/060]:** "No glyph is incorrectly named?"
-                                        - The problem is already properly identified by other checks:
-                                          (com.google.fonts/check/058 and com.google.fonts/check/059).
-
   - New checks:
     - **[com.daltonmaag/check/ufolint]:** "Run ufolint on UFO source directory."
 
@@ -138,6 +100,32 @@ A more detailed list of changes is available in the corresponding milestones for
                                          - This test will attempt to generate a static ttf using
                                            fontTool's varLib mutator."
 
+  - Changes to existing checks:
+    - **[com.google.fonts/check/008]:** Add rationale metadata &
+                                        List diverging underlineThickness values across a family.
+    - **[com.google.fonts/check/011]:** Display divergence on num of glyphs for all styles.
+    - **[com.google.fonts/check/012]:** Verbose listing of glyphnames mismatches across families.
+    - **[com.google.fonts/check/018]:** Do not require identical vendorid & manufacturer names anymore.
+    - **[com.google.fonts/check/030]:** Accept Ubuntu Font License for legacy families.
+    - **[com.google.fonts/check/037]:** Remove fval.xsl file after running FontValidator &
+                                    FontVal may not create a HTML report, so test for it before removing it.
+    - **[com.google.fonts/check/052]:** Reimplementation / Make STAT only required for variable fonts.
+    - **[com.google.fonts/check/053]:** Add TSI5 table (VTT or VOLT) as unwanted
+    - **[com.google.fonts/check/055]:** Add quotes to log message to remove ambiguity.
+    - **[com.google.fonts/check/058]** &
+      **[com.google.fonts/check/059]:** `SKIP` when post table format is 3.0, since they contain no glyph names in that table format.
+    - **[com.google.fonts/check/062]:** "Is 'gasp' table set to optimize rendering?"
+                                        - Improve wording of log-messages and check-results for better clarity.
+    - **[com.google.fonts/check/117]:** Check version increments also on github repo. Before we were only checking on prod servers.
+    - **[com.google.fonts/check/155]:** Added IBM Plex fonts to the list of exceptions of family names with spaces.
+    - **[com.google.fonts/check/165]** &
+      **[com.google.fonts/check/166]:** Refactoring of code dealing with font versioning (using font-v dependency).
+
+  - Deprecated checks:
+    - **[com.google.fonts/check/060]:** "No glyph is incorrectly named?"
+                                        - The problem is already properly identified by other checks:
+                                          (com.google.fonts/check/058 and com.google.fonts/check/059).
+
   - Temporarily disabled checks:
     - **[com.google.fonts/check/078]:** "glyph names do not exceed max length". Disabled until we figure out the rationale.
     - **[com.google.fonts/check/082]:** We currently lack a profiles.csv file on the google/fonts git repo, after
@@ -147,6 +135,18 @@ A more detailed list of changes is available in the corresponding milestones for
     - **[com.google.fonts/check/173]:** (New but disabled) The initial implementation was bogus due to the way fonttools
                                         encodes the data into the TTF files and the new attempt at targetting the real
                                         problem is still not quite right.
+
+  - Miscelaneous code changes & bugfixes:
+    - Boilerplate code was added on the `tests/specifications/` directory documenting the requirements of all still
+      unimplemented code-tests in the hope of inviting new contributions. Feel free to pick a few and submmit pull requests!
+    - [condition familyname_with_spaces]: Added special case for handling font family names containing " of ".
+    - Implemented is_ttf & is_cff conditions, as suggested by Lasse at issue #1797.
+    - Improved MacOSX install instructions based on feedback from https://github.com/cadsondemak/Srisakdi/issues/5
+    - Support uppercase '.TTF' extension. Probably a need due to Windows filesystem quirks...
+    - Also support loading both TTF and OTF flavours for checking.
+    - move all free-form miscelaneous check metadata into a generic misc_metadata field (see issue #1584)
+    - Release procedures are now simplified with setuptools_scm
+    - Fixed some crashes (See issues #1709, #1723, #1722)
 
 * 0.3.4 (2017-Dec-22):
   - FB Dashboard-related improvements.
