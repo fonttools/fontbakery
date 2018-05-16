@@ -2,26 +2,26 @@
 
 Writing a custom Font Bakery specification can be a good start to either ensure the quality of a **single font project** or for a **font foundry** or otherwise **maintainer of a font library** to establish comprehensive quality standards and quality monitoring.
 
-Font Bakery comes with a set of checks that can be included into such a custom specifications according to the requirement of the author. These checks are mainly organized in specification modules named after OpenType tables and can be found at [`fontbakery.specifications.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications). Naturally, when you are deciding to include a specification or just a single check into your custom specification, sooner or later, you'll have to review it. Questions, remarks, improvements, additions, **more documentation** etc. are welcome contributions, please use our [issue tracker](https://github.com/googlefonts/fontbakery/issues) to contact us or send PRs.
+Font Bakery comes with a set of checks that can be included into such a custom specification according to the requirements of the author. These checks are mainly organized in specification modules named after OpenType tables and can be found at [`fontbakery.specifications.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications). Naturally, when you are deciding to include a specification or just a single check into your custom specification, sooner or later you'll have to review it. Questions, remarks, improvements, additions, **more documentation** etc. are all welcome contributions. Please use our [issue tracker](https://github.com/googlefonts/fontbakery/issues) to contact us or send **pull requests**.
 
-A Font Bakery Specification (an instance of the type `fontbakery.checkrunner.Spec`) is a container for the checks you want to run on your files. Usually a specification lives inside of a python module: one module contains one specification. You can either use one of the specifications that come with Font Bakery directly, located in [`fontbakery.specifications.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications) or create a custom specification by writing your own checks and adding existing checks.
+A Font Bakery Specification (an instance of the type `fontbakery.checkrunner.Spec`) is a container for the checks you want to run on your files. Usually a specification lives inside of a python module: one module contains one specification. You can either use one of the specifications that come with Font Bakery directly, located in [`fontbakery.specifications.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications) or you can create a custom specification by writing your own checks and then optionally adding a selection of the other checks offered by Font Bakery.
 
-[`fontbakery.specifications.googlefonts`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications/googlefonts.py) is a custom specification and can be interesting to inspect for inspiration.
+[`fontbakery.specifications.googlefonts`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications/googlefonts.py) is a custom specification and can be an interesting piece of code to inspect for some inspiration.
 
 ## From automatic discovery to full control
 
-To create your own specification we added tools that reduce boilerplate code to a minimum. These tools are fully optional, if more control over the creation of a specification is needed, it is possible. Enabled and disabled is this automatic discovery via the presence and value of special names in the module of the specification:
+To create your own specification we added tools that reduce boilerplate code to a minimum. These tools are fully optional. But it is possible to use them if you need more control over the creation of a specification. This automatic discovery can be enabledor disabled based on the presence (and value) of some special names in the module of the specification:
 
 * `specification`
 * `spec_factory`
 * `spec_imports`
 
-To get or create a a specification from a module the function `get_module_specification(module)` in `fontbakery.checkrunner` is used:
+To get or create a specification from a module, the function `get_module_specification(module)` in `fontbakery.checkrunner` is used:
 
 > If the name `module.specification` is present the value of that is returned.
 > Otherwise, if the name `module.spec_factory` is present, a new specification is created using `module.spec_factory` and then `specification.auto_register` is called with the module namespace.
 
-Thus, the presence of the name `specification` disables the automatic use of `spec_factory` plus `specification.auto_register`. But, you can consider calling `specification.auto_register(globals())` explicitly yourself near the end of your specification module or you register the specification contents yourself.
+Thus, the presence of the name `specification` disables the automatic use of `spec_factory` plus `specification.auto_register`. But you can consider calling `specification.auto_register(globals())` explicitly yourself near the end of your specification module or you can register the specification contents yourself.
 
 ```py
 # specification = Spec(...)
@@ -33,7 +33,7 @@ specification.auto_register(globals())
 
 Whether you call `auto_register` yourself or if it is called automatically for you, it is important to understand how it operates: It looks at all values of its `symbol_table` argument (a namespace dict as returned from `globals()` or `module.__dict__`) and at all values imported using `spec_imports` (described below) if present in `symbol_table`.
 
-If one of the items is an instance of one of `FontBakeryCheck`, `FontBakeryCondition`, `FontBakeryExpectedValue` the respective (public) interface methods : `specification.register_check`, `specification.specification` and `specification.register_expected_value` are called.
+If one of the items is an instance of one of `FontBakeryCheck`, `FontBakeryCondition`, `FontBakeryExpectedValue` the respective (public) interface methods: `specification.register_check`, `specification.specification` and `specification.register_expected_value` are called.
 
 If an item is a python module (an instance of `types.ModuleType`) it is tried to get a specification from that module using `sub_specification = get_module_specification(item)`. This, in many cases, invokes `get_module_specification` recursively, which itself calls `auto_register` when indicated (see above). That new sub-specification is then included into the current auto-registering specification using `specification.merge_specification(sub_specification)` (see below).
 
@@ -41,19 +41,19 @@ When you are calling `specification.auto_register` explicitly yourself, you can 
 
 Here is an example where [`filter_func` was needed due to a namespace clash.](https://github.com/googlefonts/fontbakery/pull/1770#issuecomment-380122216)
 
-If a `filter_func` argument is defined it is called like: `filter_func(type, name_or_id, item)` where:
+If a `filter_func` argument is defined it is called like `filter_func(type, name_or_id, item)` where:
 
-* `type`: one of `"check"`, `"module"`, `"condition"`, `"expected_value"`, `"iterarg"`, `"derived_iterable"`, `"alias"`
-* `name_or_id`: the name at which the item will be registered
+* `type` is one of `"check"`, `"module"`, `"condition"`, `"expected_value"`, `"iterarg"`, `"derived_iterable"`, `"alias"`
+* `name_or_id` is the name at which the item will be registered
 * * `if type == 'check'`: the `check.id`
 * * `if type == 'module'`: the module name (`module.__name__`)
-* `item`: the item to be registered
+* `item` is the item to be registered
 
 If `filter_func` returns a falsy value for an item, the item will not be registered.
 
 #### `spec_imports` used by `specification.auto_register`
 
-If `spec_imports` is defined in a module namespace, `specification.auto_register` will  use it to import modules and attributes of a module into the specification.
+If `spec_imports` is defined in a module namespace, `specification.auto_register` will use it to import modules and attributes of a module into the specification.
 
 You could also use just the regular python `import` statement, which puts imports into the current module namespace and by that makes them discoverable for `specification.auto_register`. However, with that approach static linters like [flake8](https://gitlab.com/pycqa/flake8) and [pylint](https://www.pylint.org/) will complain about unused imports in your specification. That's why we added `spec_imports`.
 
@@ -70,47 +70,51 @@ If an import instruction is not a string it is expected to be a two items iterab
 ```py
 # spec_imports examples
 
-# import relative to the current module the
-# modules shared_conditions and ufo_sources
-# this includes all of the shared_conditions
+# Import relative to the current module the
+# modules shared_conditions and ufo_sources.
+# This includes all of the shared_conditions
 # and ufo_sources specification into the
-# current specification
+# current specification:
 spec_imports = [".shared_conditions", ".ufo_sources"]
 
-# same result as above
+# The following is equivalent to the previous statement:
 spec_imports = [
     [".", ["shared_conditions", "ufo_sources"]]
 ]
 
-# also same as above
+# Also same as above:
 spec_imports = [
     ".shared_conditions",
     [".", [ "ufo_sources"]]
 ]
+```
 
-# example from fontbakery.specifications.googlefonts
-# this includes all of our Open Type specifications and some more into
-# the googlefonts specification
+```py
+# Here's an example copied from fontbakery.specifications.googlefonts
+# This includes all of our Open Type specifications and some more into
+# the googlefonts specification:
 spec_imports = (
     ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
        'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
        'prep', 'fvar', 'shared_conditions')
     ), # IMPORTANT: this must be a tuple, note the trailing comma
 )
+```
 
-# import just certain attributes from modules
-# also: using absolute import module names
+```py
+# Import just certain attributes from modules.
+# Also, using absolute import module names:
 spec_imports = [
-    # like in fontbakery.specifications.fvar
+    # like we do in fontbakery.specifications.fvar
     ('fontbakery.specifications.shared_conditions', ('is_variable_font',
             'regular_wght_coord', 'regular_wdth_coord', 'regular_slnt_coord',
             'regular_ital_coord', 'regular_opsz_coord', 'bold_wght_coord')),
-    # just as an example: import a check and a depenecy/condition of that
-    # check from the googlefonts specific spec.
+    # just as an example: import a check and a dependency/condition of
+    # that check from the googlefonts specific spec:
     ('fontbakery.specifications.googlefonts', (
-        #License URL matches License text on name table?
+        # "License URL matches License text on name table?"
         'com_google_fonts_check_030',
-        # this condition is a dependency of the check above
+        # This condition is a dependency of the check above:
         'familyname',
     ))
 ]
@@ -130,7 +134,7 @@ Optional argument `filter_func`: see description in `auto_register`.
 
 Self-test to make a sure spec maintainer is aware of changes in the spec.
 
-Raises `SetupError` if expected check ids are missing in the spec, e.g.  removed by an update.
+Raises `SetupError` if expected check ids are missing in the spec, e.g. removed by an update.
 If `exclusive=True` also raises `SetupError` if check ids are in the spec that are not in `expected_check_ids` e.g. newly added by an update.
 
 This is handy if `spec.auto_register` is used and the spec maintainer is looking for a high level of control over the spec contents, especially for a warning when the spec contents have changed after an update of a dependency specification but it also makes specification maintenance a bit more laborious.
@@ -157,7 +161,7 @@ Execute:
 # The example and other custom specs can be executed with this command:
 $ fontbakery check-specification ./path/to/my/example_spec.py ./path/to/fonts/*
 
-# Unless you have installed your spec as a package, then use:
+# But if you have installed your spec as a package, then use:
 $ fontbakery check-specification my_package.example_spec ./path/to/fonts/*
 ```
 
@@ -289,15 +293,18 @@ Since we have the `specification` reference we can also use the `expected_check_
 
 
 ```py
-# putting this at the top of the file can give
-# a guick overview
+# putting this at the top of the file
+# can give a guick overview:
 expected_check_ids = (
     'de.graphicore.fontbakery/examples/hello',
     'de.graphicore.fontbakery/examples/has-R'
 )
+```
+
+```py
 # this must be at the end of the module,
-# after all checks were added
-specification.expected_check_ids, exclusive=True)
+# after all checks were added:
+specification.test_expected_checks(expected_check_ids, exclusive=True)
 ```
 
 You can also explicitly import and merge a specification:
