@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 * 0.4.0 (2018-May-16):
   - Thanks a lot to all new/recent code contributors:
-    - **Chris Simpkins** ('@chrissimpkins`), Source Foundry
+    - **Chris Simpkins** (`@chrissimpkins`), Source Foundry
     - **Nikolaus Waxweiler** (`@madig`), Dalton Maag
     - **Jens Kutilek** (`@jenskutilek`), https://www.kutilek.de/
 
