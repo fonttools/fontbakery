@@ -291,21 +291,22 @@ pip install tox
 tox
 
 # Register a git tag for this release and publish it
-git tag -a v0.3.2 -m "Font Bakery version 0.3.2 (2017-Oct-11)"
+git tag -a v0.4.0 -m "Font Bakery version 0.4.0 (2018-May-16)"
 git push upstream --tags
 
 # crate the package
-python setup.py bdist_wheel
+python setup.py bdist_wheel --universal
 
 # and finally upload the new package to PyPI
+pip install twine
 twine upload dist/*
 ```
 
 ## Code Testing
 
-Font Bakery `check-googlefonts` provides over 125 checks for fonts and families according to the quality requirements of the Google Fonts team.
+Font Bakery `check-googlefonts` provides over 130 checks for fonts and families according to the quality requirements of the Google Fonts team.
 In addition to a complete architectural overhaul, release 0.3.1 introduced a set of code tests to assure the quality of the Font Bakery suite of checks.
-This "testsuite for the testsuite" initially covered a third of the full set of check and as of version 0.3.2 covers 53%.
+This "testsuite for the testsuite" initially covered a third of the full set of check and as of version 0.4.0 covers 55%.
 We aim to reach 100% test coverage.
 
 In order to run the code tests you need to have the tox dependence installed and then run:
