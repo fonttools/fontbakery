@@ -75,18 +75,21 @@ class GHMarkdownReporter(SerializeReporter):
     num_checks = 0
     for section in data["sections"]:
       num_checks += len(section["checks"])
-      for check in section["checks"]:
-        if self.omit_loglevel(check["result"]):
-          continue
+      for cluster in section["checks"]:
+        if not isinstance(cluster, list):
+          cluster = [cluster]
+        for check in cluster:
+          if self.omit_loglevel(check["result"]):
+            continue
 
-        if "filename" not in check.keys():
-          # That's a family check!
-          family_checks.append(check)
-        else:
-          key = os.path.basename(check["filename"])
-          if key not in checks:
-            checks[key] = []
-          checks[key].append(check)
+          if "filename" not in check.keys():
+            # That's a family check!
+            family_checks.append(check)
+          else:
+            key = os.path.basename(check["filename"])
+            if key not in checks:
+              checks[key] = []
+            checks[key].append(check)
 
     md = "## Fontbakery report\n\n"
 
