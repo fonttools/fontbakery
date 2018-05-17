@@ -74,10 +74,10 @@ class GHMarkdownReporter(SerializeReporter):
     data = self.getdoc()
     num_checks = 0
     for section in data["sections"]:
-      num_checks += len(section["checks"])
       for cluster in section["checks"]:
         if not isinstance(cluster, list):
           cluster = [cluster]
+        num_checks += len(cluster)
         for check in cluster:
           if self.omit_loglevel(check["result"]):
             continue
