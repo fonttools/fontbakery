@@ -45,12 +45,18 @@ class GHMarkdownReporter(SerializeReporter):
 
 
   def log_md(self, log):
-    return "* **{}:** {}\n".format(log["status"], log["message"])
+    if not self.omit_loglevel(log["status"]):
+      return "* **{}** [{}] {}\n".format(log["status"],
+                                          self.emoticon(log["status"]),
+                                          log["message"])
+    else:
+      return ""
 
 
   def check_md(self, check):
     checkid = check["key"][1].split(":")[1].split(">")[0]
 
+    check["logs"].sort(key=lambda c: c["status"])
     logs = "".join(map(self.log_md, check["logs"]))
     github_search_url = ("[{}](https://github.com/googlefonts/fontbakery/"
                          "search?q={})").format(checkid, checkid)
@@ -82,9 +88,12 @@ class GHMarkdownReporter(SerializeReporter):
             checks[key] = []
           checks[key].append(check)
 
-    family_checks.sort(key=lambda c: c["result"])
-    md = self.html5_collapsible("<b>[{}] Family checks</b>".format(len(family_checks)),
-                                "".join(map(self.check_md, family_checks)) + "<br>")
+    md = "## Fontbakery report\n\n"
+
+    if family_checks:
+      family_checks.sort(key=lambda c: c["result"])
+      md += self.html5_collapsible("<b>[{}] Family checks</b>".format(len(family_checks)),
+                                   "".join(map(self.check_md, family_checks)) + "<br>")
 
     for filename in checks.keys():
       checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
