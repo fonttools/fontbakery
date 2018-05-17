@@ -11,18 +11,11 @@ from fontbakery.checkrunner import Status
 
 LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS"]
 
-PASS_EMOJI = [
-  ":croissant:",
-  ":cake:",
-  ":doughnut:",
-  ":bread:"
-]
 
 class GHMarkdownReporter(SerializeReporter):
 
   def __init__(self, loglevels, **kwd):
     super(GHMarkdownReporter, self).__init__(**kwd)
-    self.pass_emoticon = PASS_EMOJI[randint(0, len(PASS_EMOJI)-1)]
     self.loglevels = loglevels
 
 
@@ -33,7 +26,7 @@ class GHMarkdownReporter(SerializeReporter):
       'WARN': ':warning:',
       'INFO': ':information_source:',
       'SKIP': ':zzz:',
-      'PASS': self.pass_emoticon,
+      'PASS': ':bread:',
     }[name]
 
 
@@ -46,9 +39,9 @@ class GHMarkdownReporter(SerializeReporter):
 
   def log_md(self, log):
     if not self.omit_loglevel(log["status"]):
-      return "* **{}** [{}] {}\n".format(log["status"],
-                                          self.emoticon(log["status"]),
-                                          log["message"])
+      return "* {} **{}** {}\n".format(self.emoticon(log["status"]),
+                                       log["status"],
+                                       log["message"])
     else:
       return ""
 
