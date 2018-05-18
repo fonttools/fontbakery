@@ -5,7 +5,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import map
 import os
-from random import randint
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import Status
 
