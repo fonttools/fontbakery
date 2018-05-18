@@ -239,6 +239,18 @@ def expected_os2_weight(style):
   expected = GF_API_WEIGHTS[weight_name]
   return weight_name, expected
 
+
+@condition(force=True)
+def os2_weight_warn():
+  return {"style": "ExtraLight",
+          "value": 250,
+          "message": ("A value of 250 for OS/2 usWeightClass is acceptable for TTFs"
+                      " (but not for OTFs), because it won't auto-bold (and blur)"
+                      " in Windows GDI apps. However, since OTFs will, and because"
+                      " we'd like to have OTFs and TTFs be as consistent as possible,"
+                      " we'd prefer ExtraLight to be 275 in both cases.")}
+
+
 @check(
   id = 'com.google.fonts/check/001',
   misc_metadata = {
