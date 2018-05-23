@@ -43,6 +43,14 @@ def test_command_check_specification():
     subprocess.check_output(["fontbakery", "check-specification"])
 
 
+def test_command_check_opentype():
+  """Test if `fontbakery check-opentype` can run successfully`."""
+  subprocess.check_output(["fontbakery", "check-opentype", "-h"])
+
+  with pytest.raises(subprocess.CalledProcessError):
+    subprocess.check_output(["fontbakery", "check-opentype"])
+
+
 def test_command_check_ufo_sources():
   """Test if `fontbakery check-ufo-sources` can run successfully`."""
   subprocess.check_output(["fontbakery", "check-ufo-sources", "-h"])
