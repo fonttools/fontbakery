@@ -84,7 +84,8 @@ def test_check_044():
   version_tests_good = {"Version 01.234": ("1", "234"),
     "1.234": ("1", "234"),
     "01.234; afjidfkdf 5.678": ("1", "234"),
-    "1.3": ("1", "003"),
+    "1.3": ("1", "300"),
+    "1.003": ("1", "003"),
     "3.000;NeWT;Nunito-Regular": ("3", "000"),
     "Something Regular Italic Version 1.234": ("1", "234")}
 
