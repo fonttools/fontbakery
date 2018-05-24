@@ -58,7 +58,7 @@ def parse_version_string(name):
   """Parse a version string (name ID 5) and return (major, minor) strings.
 
   Example of the expected format: 'Version 01.003; Comments'. Version
-  strings like "Version 1.3" will be post-processed into ("1", "003").
+  strings like "Version 1.3" will be post-processed into ("1", "300").
   The parsed version numbers will therefore match in spirit, but not
   necessarily in string form.
   """
@@ -77,7 +77,7 @@ def parse_version_string(name):
 
   major, minor = version_string.group(1).split('.')
   major = str(int(major))  # "01.123" -> "1.123"
-  minor = minor.zfill(3)  # "3.0" -> "3.000", but "3.123" -> "3.123"
+  minor = minor.ljust(3, '0')  # "3.0" -> "3.000", but "3.123" -> "3.123"
   return major, minor
 
 
