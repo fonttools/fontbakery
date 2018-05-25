@@ -17,10 +17,10 @@ from __future__ import absolute_import, print_function, unicode_literals, divisi
 
 from future import standard_library
 standard_library.install_aliases()
-from builtins import map
 from builtins import object
 import sys
 import os
+import subprocess
 from collections import Counter
 from functools import partial
 
@@ -324,7 +324,13 @@ class TerminalProgress(FontbakeryReporter):
 
   def draw_progressbar(self):
     # tty size
-    rows, columns = list(map(int, os.popen('stty size', 'r').read().split()))
+    if sys.platform == "win32":
+      mode = subprocess.Popen(
+          "mode", shell=True, stdout=subprocess.PIPE).stdout.readlines()
+      columns_entry = [s for s in mode if b"Columns" in s]
+      columns = int(columns_entry[0].split()[1])
+    else:
+      columns = int(os.popen('stty size').read().split()[1])
     # this is the amout of space the spinner takes when rendered in the tty
     # NOTE: the color codes are not taking space in the tty, so we can't
     # just take the length of `spinner`.
