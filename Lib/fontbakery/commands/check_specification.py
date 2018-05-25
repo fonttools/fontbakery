@@ -84,19 +84,18 @@ def ArgumentParser(specification, spec_arg=True):
                             '(default: LOGLEVEL)'
                             ).format(', '.join(log_levels.keys())))
 
-  argument_parser.add_argument(
-      '-n',
-      '--no-progress',
-      default=(True if sys.platform == "win32" else False),
-      action='store_true',
-      help='In a tty as stdout, don\'t render the progress indicators.')
+  if sys.platform != "win32":
+    argument_parser.add_argument(
+        '-n',
+        '--no-progress',
+        action='store_true',
+        help='In a tty as stdout, don\'t render the progress indicators.')
 
-  argument_parser.add_argument(
-      '-C',
-      '--no-colors',
-      default=(True if sys.platform == "win32" else False),
-      action='store_true',
-      help='No colors for tty output.')
+    argument_parser.add_argument(
+        '-C',
+        '--no-colors',
+        action='store_true',
+        help='No colors for tty output.')
 
   argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
                       help='Show section start and end info plus summary.')
@@ -258,6 +257,12 @@ def main(specification=None, values=None):
     print(e)
     argument_parser.print_usage()
     sys.exit(1)
+
+  # The default Windows Terminal just displays the escape codes. The argument
+  # parser above therefore has these options disabled.
+  if sys.platform == "win32":
+    args.no_progress = True
+    args.no_colors = True
 
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
