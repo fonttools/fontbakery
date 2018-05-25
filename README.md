@@ -142,6 +142,8 @@ Here's the output of `fontbakery check-googlefonts -h`:
                             A common use case is `-o "*check"` when checking the whole
                             collection against a selection of checks picked with `--checkid`.
 
+Note: on Windows, color and progress bar output is disabled because the standard Windows terminal displays the escape characters instead. Pull Requests to fix this are welcome.
+
 If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, checkout that repo and then run:
 
     sh bin/fontbakery-check-collection.sh path-to-collection-directory
