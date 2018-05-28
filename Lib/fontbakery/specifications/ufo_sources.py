@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# This file has been automatically formatted with `yapf --style '
-# {based_on_style: google}'` and `docformatter`.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
