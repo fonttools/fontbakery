@@ -1410,7 +1410,7 @@ class Spec(object):
           results += [getattr(module, name) for name in names]
     return results
 
-  def auto_register(self, symbol_table, filter_func=None):
+  def auto_register(self, symbol_table, filter_func=None, spec_imports=None):
     """
       Register items from `symbol_table` in the specification.
 
@@ -1420,6 +1420,8 @@ class Spec(object):
       the default section.
       If an item is a python module, try to get a spec using `get_module_specification(item)`
       and then using `merge_specification`;
+      If the spec_imports kwarg is given, it is used instead of the one taken from
+      the module namespace.
 
       To register the current module use explicitly:
         `specification.auto_register(globals())`
@@ -1439,6 +1441,9 @@ class Spec(object):
       if filter_func returns a falsy value for an item, the item will
       not be registered.
     """
+    if spec_imports:
+      symbol_table['spec_imports'] = spec_imports
+
     all_items = list(symbol_table.values()) + self._load_spec_imports(symbol_table)
     namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
     namespace_items = []
