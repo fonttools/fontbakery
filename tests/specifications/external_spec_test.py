@@ -3,6 +3,7 @@ from fontbakery.fonts_spec import spec_factory
 
 
 def check_filter(item_type, item_id, item):
+  # Filter out external tool checks for testing purposes.
   if item_type == "check" and item_id in (
       "com.google.fonts/check/035",  # ftxvalidator
       "com.google.fonts/check/036",  # ots-sanitize
