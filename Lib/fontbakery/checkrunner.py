@@ -250,6 +250,7 @@ class CheckRunner(object):
              , values_can_override_spec_names=True
              , custom_order=None
              , explicit_checks=None
+             , exclude_checks=None
              ):
     # TODO: transform all iterables that are list like to tuples
     # to make sure that they won't change anymore.
@@ -257,6 +258,7 @@ class CheckRunner(object):
 
     self._custom_order = custom_order
     self._explicit_checks = explicit_checks
+    self._exclude_checks = exclude_checks
     self._iterargs = OrderedDict()
     for singular, plural in spec.iterargs.items():
       values[plural] = tuple(values[plural])
@@ -654,7 +656,8 @@ class CheckRunner(object):
       # section, check, iterargs = identity
       for identity in self._spec.execution_order(self._iterargs,
                                     custom_order=self._custom_order,
-                                    explicit_checks=self._explicit_checks):
+                                    explicit_checks=self._explicit_checks,
+                                    exclude_checks=self._exclude_checks):
         order.append(identity)
       self._cache['order'] = order = tuple(order)
     return order
@@ -1202,7 +1205,8 @@ class Spec(object):
   def _section_execution_order(self, section, iterargs
                              , reverse=False
                              , custom_order=None
-                             , explicit_checks=None):
+                             , explicit_checks=None
+                             , exclude_checks=None):
     """
       order must:
         a) contain all variable args (we're appending missing ones)
@@ -1234,8 +1238,17 @@ class Spec(object):
         continue
       full_order.append(item)
 
-    checks = [check for check in section.checks \
-                        if not explicit_checks or check.id in explicit_checks]
+    if explicit_checks:
+      checks = [
+          check for check in section.checks if check.id in explicit_checks
+      ]
+    elif exclude_checks:
+      checks = [
+          check for check in section.checks if check.id not in exclude_checks
+      ]
+    else:
+      checks = [check for check in section.checks]
+
     scopes = self._analyze_checks(full_order, checks)
     key = lambda item: item[1] # check, signature, scope = item
     scopes.sort(key=key, reverse=reverse)
@@ -1247,13 +1260,17 @@ class Spec(object):
       # defined order, by clustering.
       yield check, tuple(args)
 
-  def execution_order(self, iterargs, custom_order=None, explicit_checks=None):
+  def execution_order(self, iterargs
+                      , custom_order=None
+                      , explicit_checks=None
+                      , exclude_checks=None):
     # TODO: a custom_order per section may become necessary one day
     explicit_checks = set() if not explicit_checks else set(explicit_checks)
     for _, section in self._sections.items():
       for check, section_iterargs in self._section_execution_order(section, iterargs
                                           , custom_order=custom_order
-                                          , explicit_checks=explicit_checks):
+                                          , explicit_checks=explicit_checks
+                                          , exclude_checks=exclude_checks):
         yield (section, check, section_iterargs)
 
   def _register_check(self, section, func):

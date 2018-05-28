@@ -56,10 +56,27 @@ def ArgumentParser(specification, spec_arg=True):
 
   values_keys = specification.setup_argparse(argument_parser)
 
-  argument_parser.add_argument('-c', '--checkid', action='append',
-                      help='Explicit check-ids to be executed.\n'
-                           'Use this option multiple times to select multiple checks.'
-                     )
+  select_group = argument_parser.add_mutually_exclusive_group()
+
+  select_group.add_argument(
+      "-c",
+      "--checkid",
+      action="append",
+      help=(
+          "Explicit check-ids to be executed. "
+          "Use this option multiple times to select multiple checks."
+      ),
+  )
+
+  select_group.add_argument(
+      "-x",
+      "--exclude-checkid",
+      action="append",
+      help=(
+          "Exclude check-ids from execution. "
+          "Use this option multiple times to exclude multiple checks."
+      ),
+  )
 
   def log_levels_get(key):
     if key in log_levels:
@@ -210,11 +227,13 @@ def get_spec():
 
 def runner_factory( specification
                   , explicit_checks=None
+                  , exclude_checks=None
                   , custom_order=None
                   , values=None):
   """ Convenience CheckRunner factory. """
   return CheckRunner( specification, values
                     , explicit_checks=explicit_checks
+                    , exclude_checks=exclude_checks
                     , custom_order=custom_order
                     )
 
@@ -250,6 +269,7 @@ def main(specification=None, values=None):
   try:
     runner = runner_factory(specification
                      , explicit_checks=args.checkid
+                     , exclude_checks=args.exclude_checkid
                      , custom_order=args.order
                      , values=values_
                      )
