@@ -1464,6 +1464,7 @@ class Spec(object):
       not be registered.
     """
     if spec_imports:
+      symbol_table = symbol_table.copy()  # Avoid messing with original table
       symbol_table['spec_imports'] = spec_imports
 
     all_items = list(symbol_table.values()) + self._load_spec_imports(symbol_table)
