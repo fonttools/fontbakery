@@ -1252,7 +1252,7 @@ class Spec(object):
           check for check in section.checks if check.id not in exclude_checks
       ]
     else:
-      checks = [check for check in section.checks]
+      checks = section.checks
 
     scopes = self._analyze_checks(full_order, checks)
     key = lambda item: item[1] # check, signature, scope = item
