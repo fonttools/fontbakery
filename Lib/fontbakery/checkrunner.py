@@ -256,6 +256,11 @@ class CheckRunner(object):
     # to make sure that they won't change anymore.
     # Also remove duplicates from list like iterables
 
+    if explicit_checks and exclude_checks:
+      raise APIViolationError(
+          "Specifying tests to include (explicit_checks) and "
+          "exclude (exclude_checks) is mutually exclusive.", None)
+
     self._custom_order = custom_order
     self._explicit_checks = explicit_checks
     self._exclude_checks = exclude_checks
