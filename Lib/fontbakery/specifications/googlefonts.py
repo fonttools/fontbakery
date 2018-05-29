@@ -986,7 +986,7 @@ def com_google_fonts_check_061(ttFont):
 )
 def com_google_fonts_check_062(ttFont):
   """Is 'gasp' table set to optimize rendering?
-  
+
   Traditionally version 0 'gasp' tables were set
   so that font sizes below 8 ppem had no grid
   fitting but did have antialiasing. From 9-16
@@ -3105,7 +3105,7 @@ def fontforge_skip_checks(font):
     return 0x20 + 0x200
   return None
 
-def check_filter(checkid, font=None, **iterargs):
+def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
         # See: https://github.com/graphicore/librebarcode/issues/3
         'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
@@ -3117,7 +3117,7 @@ def check_filter(checkid, font=None, **iterargs):
                   'https://github.com/graphicore/librebarcode/issues/3')
   return True, None
 
-specification.set_check_filter(check_filter)
+specification.check_skip_filter = check_skip_filter
 
 specification.auto_register(globals())
 
