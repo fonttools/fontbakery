@@ -32,3 +32,122 @@ def test_external_specification():
   assert "com.google.fonts/check/035" not in specification._check_registry.keys()
 
   assert len(specification.sections) > 1
+
+def test_spec_imports():
+  """
+    When a names array in spec_imports contained sub module names, the import
+    would fail.
+
+    https://github.com/googlefonts/fontbakery/issues/1886
+  """
+  def _test(spec_imports, expected_tests,expected_conditions=tuple()):
+    specification = spec_factory(default_section=Section("Testing"))
+    specification.auto_register({}, spec_imports=spec_imports)
+    specification.test_expected_checks(expected_tests)
+    if expected_conditions:
+      registered_conditions = specification.conditions.keys()
+      for name in expected_conditions:
+        assert name in registered_conditions, ('"{}" is expected to be '
+                                  'registered as a condition.'.format(name))
+
+  # this is in docs/writing specifications
+  spec_imports = [
+    ['fontbakery.specifications', ['cmap', 'head']]
+  ]
+  # Probe some tests
+  expected_tests = [
+      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/043"  # in head
+  ]
+  _test(spec_imports, expected_tests)
+
+
+  # the example from issue #1886
+  spec_imports = (
+    (
+        "fontbakery.specifications",
+        (
+            "general",
+            "cmap",
+            "head",
+            "os2",
+            "post",
+            "name",
+            "hhea",
+            "dsig",
+            "hmtx",
+            "gpos",
+            "gdef",
+            "kern",
+            "glyf",
+            "prep",
+            "fvar",
+            "shared_conditions",
+        ),
+    ),
+  )
+  # Probe some tests
+  expected_tests = [
+      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/043"  # in head
+  ]
+  _test(spec_imports, expected_tests)
+
+
+  # make sure the suggested workaround still works:
+  # https://github.com/googlefonts/fontbakery/issues/1886#issuecomment-392535435
+  spec_imports = (
+      "fontbakery.specifications.general",
+      "fontbakery.specifications.cmap",
+      "fontbakery.specifications.head",
+      "fontbakery.specifications.os2",
+      "fontbakery.specifications.post",
+      "fontbakery.specifications.name",
+      "fontbakery.specifications.hhea",
+      "fontbakery.specifications.dsig",
+      "fontbakery.specifications.hmtx",
+      "fontbakery.specifications.gpos",
+      "fontbakery.specifications.gdef",
+      "fontbakery.specifications.kern",
+      "fontbakery.specifications.glyf",
+      "fontbakery.specifications.prep",
+      "fontbakery.specifications.fvar",
+      "fontbakery.specifications.shared_conditions"
+  )
+  # Probe some tests
+  expected_tests = [
+      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/043"  # in head
+  ]
+  _test(spec_imports, expected_tests)
+
+
+  # cherry pick attributes from a module (instead of getting submodules)
+  # also from this is in docs/writing specifications
+  # Import just certain attributes from modules.
+  # Also, using absolute import module names:
+  spec_imports = [
+      # like we do in fontbakery.specifications.fvar
+      ('fontbakery.specifications.shared_conditions', ('is_variable_font',
+              'regular_wght_coord', 'regular_wdth_coord', 'regular_slnt_coord',
+              'regular_ital_coord', 'regular_opsz_coord', 'bold_wght_coord')),
+      # just as an example: import a check and a dependency/condition of
+      # that check from the googlefonts specific spec:
+      ('fontbakery.specifications.googlefonts', (
+          # "License URL matches License text on name table?"
+          'com_google_fonts_check_030',
+          # This condition is a dependency of the check above:
+          'familyname',
+      ))
+  ]
+  # Probe some tests
+  expected_tests = [
+      "com.google.fonts/check/030"  # in googlefonts
+  ]
+  expected_conditions = ('is_variable_font', 'regular_wght_coord',
+        'regular_wdth_coord', 'regular_slnt_coord', 'regular_ital_coord',
+        'regular_opsz_coord', 'bold_wght_coord', 'familyname')
+  _test(spec_imports, expected_tests, expected_conditions)
+
+
+

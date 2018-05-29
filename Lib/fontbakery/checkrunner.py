@@ -1428,8 +1428,18 @@ class Spec(object):
         if names is None:
           results.append(module)
         else:
-          # getattr raises AttributeError if not available (which is a good thing)!
-          results += [getattr(module, name) for name in names]
+          #  1. check if the imported module has an attribute by that name
+          #  2. if not, attempt to import a submodule with that name
+          #  3. if the attribute is not found, ImportError is raised.
+          #  …
+          for name in names:
+            try:
+              results.append(getattr(module, name))
+            except AttributeError:
+              # attempt to import a submodule with that name
+              sub_module_name = '.'.join([module_name, name])
+              sub_module = importlib.import_module(sub_module_name, package=package)
+              results.append(sub_module)
     return results
 
   def auto_register(self, symbol_table, filter_func=None, spec_imports=None):
