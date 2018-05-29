@@ -598,11 +598,11 @@ class CheckRunner(object):
     # inspection results).
 
     skipped = None
-    if self._spec.check_filter:
+    if self._spec.check_skip_filter:
       iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
-      accepted, message = self._spec.check_filter(check.id, **iterargsDict)
+      accepted, message = self._spec.check_skip_filter(check.id, **iterargsDict)
       if not accepted:
-        skipped = (SKIP, 'Filtered: {}'.format(message or ''))
+        skipped = (SKIP, 'Filtered: {}'.format(message or '(no message)'))
 
     if not skipped:
       skipped, args = self._get_check_dependencies(check, iterargs)
@@ -827,7 +827,7 @@ class Spec(object):
              , aliases=None
              , expected_values=None
              , default_section=None
-             , check_filter=None):
+             , check_skip_filter=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -905,7 +905,7 @@ class Spec(object):
     self._default_section = default_section
     self.add_section(self._default_section)
 
-    self.check_filter = check_filter
+    self._check_skip_filter = check_skip_filter
 
   _valid_namespace_types = { 'iterargs': 'iterarg'
                            , 'derived_iterables': 'derived_iterable'
@@ -1535,8 +1535,36 @@ class Spec(object):
         # order, description are not updated
         my_section.merge_section(section, check_filter_func)
 
-  def set_check_filter(self, check_filter):
-    self.check_filter = check_filter
+  @property
+  def check_skip_filter(self):
+    """ return the current check_skip_filter function or None """
+    return self._check_skip_filter
+
+  @check_skip_filter.setter
+  def check_skip_filter(self, check_skip_filter):
+    """ Set a check_skip_filter function.
+
+    A check_skip_filter has a signature like:
+
+    ```
+    def check_skip_filter(check_id: str, **iterargsDict : dict) \
+                                -> Tuple[accepted: bool, message: str]
+      …
+    ```
+
+    If present, this function is called just before a check
+    with `check_id` is executed. `iterargsDict` is a dictionary
+    containing key:value pairs of the "iterable arguments" that will be
+    applied for that check execution.
+
+    If the returned `accepted` is falsy, the check will be SKIPed using
+    `message` for reporting.
+
+    There's no full resolution of all check arguments at this point,
+    That can be achieved with the `conditions=[]` argument of the
+    check constructor/decorator. This is for more general filtering.
+    """
+    self._check_skip_filter = check_skip_filter
 
   def serialize_identity(self, identity):
     """ Return a json string that can also  be used as a key.
