@@ -22,9 +22,18 @@ setup(
     name="fontbakery",
     use_scm_version=True,
     url='https://github.com/googlefonts/fontbakery/',
-    description='Font Bakery is a set of command-line tools'
-                ' for ensuring the quality of font projects.',
-    author='Font Bakery Authors: Dave Crossland, Felipe Sanches, Lasse Fister, Marc Foley, Vitaly Volkov',
+    description='Well designed Font QA tool, written in Python 2+3',
+    long_description=('Font Bakery is a set of command-line tools'
+                      ' for ensuring the quality of font projects.'),
+    author=('Font Bakery authors and contributors:'
+            ' Dave Crossland,'
+            ' Felipe Sanches,'
+            ' Lasse Fister,'
+            ' Marc Foley,'
+            ' Nikolaus Waxweiler,'
+            ' Chris Simpkins,'
+            ' Jens Kutilek,'
+            ' Vitaly Volkov'),
     author_email='dave@lab6.com',
     package_dir={'': 'Lib'},
     packages=['fontbakery',
