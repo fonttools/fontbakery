@@ -1,7 +1,7 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.4.1 (2018-May-29)
+## 0.4.1 (2018-May-30)
 ### Release highlights & new features
   - Added shorthand for running checks on the opentype specification with `fontbakery check-opentype`.
   - Added `--exclude-checkid` argument (the opposite of `--checkid`).
