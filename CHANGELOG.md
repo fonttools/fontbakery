@@ -1,13 +1,42 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-* 0.4.0 (2018-May-16):
+## 0.4.1 (2018-May-29)
+### Release highlights & new features
+- Added shorthand for running checks on the opentype specification with `fontbakery check-opentype`.
+- Added `--exclude-checkid` argument (the opposite of `--checkid`).
+- Improvements to Windows support:
+  - Disable color output and progress bar on Windows by default since
+    the default Windows terminal doesn't cope too well with either.
+  - Also disable the progressbar on Windows.
+  - And, for that reason, `--no-progress` and `--no-colors` arguments
+    are not recognized anymore on Windows.
+- [checkrunner] rename `check_filter` into `check_skip_filter`, make it into a property.
+- [checkrunner] spec_imports: Try to import names as submodules if they are not attributes.
+
+### Changes to existing checks
+- **[com.google.fonts/check/044]:** Fixed the parsing of fontRevision on the 'head' table.
+
+### Code-Test coverage
+- We currently have code-tests covering 55% of Font Bakery's codebase.
+
+### Miscelaneous code changes & bugfixes
+- improvements to GHMarkdown output:
+  - filter the log messages within checks as well, instead of only their final status.
+  - and also order them and display the emojis.
+  - omit family checks section if empty (no results to display).
+- fix GHMarkdown reporter when using clustered checks (issue #1870).
+- Added loca table tests to the opentype specification.
+- General improvements to the checkrunner infrastructure.
+
+## 0.4.0 (2018-May-16)
+### Thanks!
   - Thanks a lot to all new/recent code contributors:
     - **Chris Simpkins** (`@chrissimpkins`), Source Foundry
     - **Nikolaus Waxweiler** (`@madig`), Dalton Maag
     - **Jens Kutilek** (`@jenskutilek`), https://www.kutilek.de/
 
-  - Release highlights & new features:
+### Release highlights & new features
     - First release supporting both `Python 2` and `Python 3` interpreters.
     - Automated linting and code-testing on Travis for both interpreters using tox.
     - Initial support for checking UFO sources.
@@ -23,10 +52,10 @@ A more detailed list of changes is available in the corresponding milestones for
       (available at https://github.com/googlefonts/fontbakery/blob/master/docs/writing-specifications.md)
       describing how to create Font Bakery specs with a customized set of checks.
 
-  - Code-Test coverage:
+### Code-Test coverage
     - We currently have code-tests covering 55% of Font Bakery's codebase.
 
-  - New checks:
+### New checks
     - **[com.daltonmaag/check/ufolint]:** "Run ufolint on UFO source directory."
 
     - **[com.daltonmaag/check/ufo-required-fields]:** "Check that required fields are present in the UFO fontinfo.
@@ -100,7 +129,7 @@ A more detailed list of changes is available in the corresponding milestones for
                                          - This test will attempt to generate a static ttf using
                                            fontTool's varLib mutator."
 
-  - Changes to existing checks:
+### Changes to existing checks
     - **[com.google.fonts/check/008]:** Add rationale metadata &
                                         List diverging underlineThickness values across a family.
     - **[com.google.fonts/check/011]:** Display divergence on num of glyphs for all styles.
@@ -121,7 +150,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - **[com.google.fonts/check/165]** &
       **[com.google.fonts/check/166]:** Refactoring of code dealing with font versioning (using font-v dependency).
 
-  - Deprecated checks:
+### Deprecated checks
     - **[com.google.fonts/check/060]:** "No glyph is incorrectly named?"
                                         - The problem is already properly identified by other checks:
                                           (com.google.fonts/check/058 and com.google.fonts/check/059).
@@ -136,7 +165,7 @@ A more detailed list of changes is available in the corresponding milestones for
                                         encodes the data into the TTF files and the new attempt at targetting the real
                                         problem is still not quite right.
 
-  - Miscelaneous code changes & bugfixes:
+### Miscelaneous code changes & bugfixes
     - Boilerplate code was added on the `tests/specifications/` directory documenting the requirements of all still
       unimplemented code-tests in the hope of inviting new contributions. Feel free to pick a few and submmit pull requests!
     - [condition familyname_with_spaces]: Added special case for handling font family names containing " of ".
@@ -148,7 +177,8 @@ A more detailed list of changes is available in the corresponding milestones for
     - Release procedures are now simplified with setuptools_scm
     - Fixed some crashes (See issues #1709, #1723, #1722)
 
-* 0.3.4 (2017-Dec-22):
+
+## 0.3.4 (2017-Dec-22)
   - FB Dashboard-related improvements.
   - Added --list-checks command line switch to list all available checks
   - check/052: WebKit in MacOS 10.12 requires 'STAT' tables
@@ -160,7 +190,8 @@ A more detailed list of changes is available in the corresponding milestones for
                          code-tests are now "tests"
   - All IDs were updated to use the "check" keyword such as "com.google.fonts/check/001"
 
-* 0.3.3 (2017-Nov-23):
+
+## 0.3.3 (2017-Nov-23)
   - All auxiliary scripts have been moved into a separate python
     package called gftools (Google Fonts Tools) available at
     https://github.com/googlefonts/tools/ (source code repo on git) and at
@@ -169,7 +200,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - new subcommand: list-italicangle (moved to gftools as well)
   - several bugfixes
 
-* 0.3.2 (2017-Oct-11):
+
+## 0.3.2 (2017-Oct-11)
   - Increased code testing now covering a bit more than half of the Google Fonts suite of checks (more code testing to be done on upcoming releases).
   - overall refactoring of all check implementations so that they're all self-contained
   - updated prebuilt FVal binary (built from proper sources)
@@ -183,14 +215,16 @@ A more detailed list of changes is available in the corresponding milestones for
   - deprecated the unified name table entries check (check/017) spliting it up into new individual per-entry checks (156 to 162)
   - overall bugfixing / code-quality improvements.
 
-* 0.3.1 (2017-Aug-11):
+
+## 0.3.1 (2017-Aug-11)
   - Emergencial release to address broken 0.3.0 packaging.
   - setup.py: Added modules that were missing in previous release
   - setup.py: Fix Windows pathnames
   - New check: com.google.fonts/check/155 ("Copyright notice name entry matches those on METADATA.pb ?")
   - Updated requirement: Changed Copyright Notice format requirement (regex) on com.google.fonts/check/102 ("METADATA.pb: Copyright notice matches canonical pattern ?")
 
-* 0.3.0 (2017-Aug-08):
+
+## 0.3.0 (2017-Aug-08)
   - New modular architecture for our framework of font checks. (see: https://github.com/googlefonts/fontbakery/issues/1388)
   - A total of 120 GoogleFonts checks.
   - 44 code tests covering approximately a third of the code. (See: https://github.com/googlefonts/fontbakery/issues/1413)
