@@ -18,7 +18,7 @@ def is_ttf(ttFont):
 
 @condition
 def is_cff(ttFont):
-  return 'CFF ' in ttFont
+  return 'CFF ' in ttFont or 'CFF2' in ttFont
 
 
 @condition
