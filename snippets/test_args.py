@@ -90,4 +90,3 @@ for module_name in help_text.keys():
 if failed:
   sys.exit("Some errors were detected in the command-line"
             " arguments of the Font Bakery scripts.")
-

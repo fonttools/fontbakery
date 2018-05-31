@@ -3126,4 +3126,3 @@ specification.test_expected_checks(expected_check_ids, exclusive=True)
 # FIXME: use logging.info or remove?
 for section_name, section in specification._sections.items():
   print ("{} checks on {}".format(len(section._checks), section_name))
-
