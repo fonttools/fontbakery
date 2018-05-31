@@ -23,7 +23,7 @@ def fontforge_check_results(font):
   import subprocess
   cmd = (
         'import fontforge, sys;'
-        'status = fontforge.open("{0}").validate();'
+        'status = fontforge.open("{}").validate();'
         'sys.stdout.write(status.__str__());'.format
         )
 
@@ -501,13 +501,13 @@ def com_google_fonts_check_049(ttFont):
 )
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
-  REQUIRED_TABLES = set(
-      ["cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"])
-  OPTIONAL_TABLES = set([
+  REQUIRED_TABLES = {
+      "cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"}
+  OPTIONAL_TABLES = {
       "cvt ", "fpgm", "loca", "prep", "VORG", "EBDT", "EBLC", "EBSC", "BASE",
       "GPOS", "GSUB", "JSTF", "DSIG", "gasp", "hdmx", "LTSH", "PCLT", "VDMX",
       "vhea", "vmtx", "kern"
-  ])
+  }
   # See https://github.com/googlefonts/fontbakery/issues/617
   #
   # We should collect the rationale behind the need for each of the
@@ -544,8 +544,8 @@ def com_google_fonts_check_052(ttFont):
 )
 def com_google_fonts_check_053(ttFont):
   """Are there unwanted tables?"""
-  UNWANTED_TABLES = set(
-      ['FFTM', 'TTFA', 'prop', 'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'])
+  UNWANTED_TABLES = {
+      'FFTM', 'TTFA', 'prop', 'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES:

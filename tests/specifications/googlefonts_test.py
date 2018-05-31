@@ -121,7 +121,7 @@ def test_example_checkrunner_based(cabin_regular_path):
 
   # we could also reuse the `iterargs` that was assigned in the previous
   # for loop, but this here is more explicit
-  iterargs = ((u'font', 0),)
+  iterargs = (('font', 0),)
   ttFont = runner.get('ttFont', iterargs)
 
   print('Test failing entry ...')

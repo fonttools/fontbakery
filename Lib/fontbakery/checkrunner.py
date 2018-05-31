@@ -68,7 +68,7 @@ class Status(object):
   __instances = {}
 
   def __str__(self):
-    return '<Status {0}>'.format(self.__name)
+    return '<Status {}>'.format(self.__name)
 
   @property
   def name(self):
@@ -175,7 +175,7 @@ class ProtocolViolationError(FontBakeryRunnerError):
 
 class FailedCheckError(FontBakeryRunnerError):
   def __init__(self, error, traceback, *args):
-    message = 'Failed with {0}: {1}'.format(type(error).__name__, error)
+    message = 'Failed with {}: {}'.format(type(error).__name__, error)
     self.error = error
     self.traceback = traceback
     super(FailedCheckError, self).__init__(message, *args)
@@ -185,7 +185,7 @@ class FailedConditionError(FontBakeryRunnerError):
   be solved.
   """
   def __init__(self, condition, error, traceback, *args):
-    message = 'The condition {0} had an error: {1}: {2}'.format(condition, type(error).__name__, error)
+    message = 'The condition {} had an error: {}: {}'.format(condition, type(error).__name__, error)
     self.condition = condition
     self.error = error
     self.traceback = traceback
@@ -196,7 +196,7 @@ class MissingConditionError(FontBakeryRunnerError):
   be solved, most probably a typo.
   """
   def __init__(self, condition_name, error, traceback, *args):
-    message = 'The condition named {0} is missing: {1}: {2}'.format(
+    message = 'The condition named {} is missing: {}: {}'.format(
                               condition_name, type(error).__name__, error)
     self.error = error
     self.traceback = traceback
@@ -204,7 +204,7 @@ class MissingConditionError(FontBakeryRunnerError):
 
 class FailedDependenciesError(FontBakeryRunnerError):
   def __init__(self, check, error, traceback, *args):
-    message = 'The check {0} had an error: {1}: {2}'.format(check, type(error).__name__, error)
+    message = 'The check {} had an error: {}: {}'.format(check, type(error).__name__, error)
     self.check = check
     self.error = error
     self.traceback = traceback
@@ -318,12 +318,12 @@ class CheckRunner(object):
     if not isinstance(result, tuple):
       return (FAIL, APIViolationError(
         'Result must be a tuple but '
-        'it is {0}.'.format(type(result)), result))
+        'it is {}.'.format(type(result)), result))
 
     if len(result) != 2:
       return (FAIL, APIViolationError(
         'Result must have 2 items, but it '
-        'has {0}.'.format(len(result)), result))
+        'has {}.'.format(len(result)), result))
 
     status, message = result
     # Allow booleans, but there's no way to issue a WARNING
@@ -335,7 +335,7 @@ class CheckRunner(object):
     if not isinstance(status, Status):
       return (FAIL, APIViolationError(
         'Result item `status` must be an instance of '
-        'Status, but it is {0} a {1}.'.format(status, type(status)), result))
+        'Status, but it is {} a {}.'.format(status, type(status)), result))
 
     return result
 
@@ -400,7 +400,7 @@ class CheckRunner(object):
       # top level call
       path = []
     if name in path:
-      raise CircularDependencyError('Condition "{0}" is a circular dependency in {1}'\
+      raise CircularDependencyError('Condition "{}" is a circular dependency in {}'\
                                   .format(name, ' -> '.join(path)))
     path.append(name)
 
@@ -748,7 +748,7 @@ class Section(object):
             )
 
   def __repr__(self):
-    return '<Section: {0}>'.format(self.name)
+    return '<Section: {}>'.format(self.name)
 
   def __eq__(self, other):
     """ True if other.checks has the same checks in the same order"""
@@ -1190,7 +1190,7 @@ class Spec(object):
       else:
         current_section = None
 
-      assert current_section not in seen, 'Scopes are badly sorted.{0} in {1}'.format(current_section, seen)
+      assert current_section not in seen, 'Scopes are badly sorted.{} in {}'.format(current_section, seen)
 
       if current_section != last_section:
         if len(items):

@@ -127,7 +127,7 @@ def get_font_glyph_data(font):
             font_data.append({
                 'unicode': uni_glyph,
                 'name': glyph_name,
-                'contours': set([contours])
+                'contours': {contours}
             })
     return font_data
 
