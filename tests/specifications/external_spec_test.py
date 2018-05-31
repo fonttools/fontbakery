@@ -148,6 +148,3 @@ def test_spec_imports():
         'regular_wdth_coord', 'regular_slnt_coord', 'regular_ital_coord',
         'regular_opsz_coord', 'bold_wght_coord', 'familyname')
   _test(spec_imports, expected_tests, expected_conditions)
-
-
-

@@ -148,4 +148,3 @@ class SerializeReporter(FontbakeryReporter):
         doc['sections'].append(sectionDoc)
     self._doc = doc
     return doc
-

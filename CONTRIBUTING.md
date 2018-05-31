@@ -27,4 +27,3 @@ We only assign an issue to someone when they are going to work on that issue soo
 We tag all issues with a priority tag, P0 for "urgent" through P5 for "someday-maybe"
 
 If you find a bug or have an idea, please create a new issue and we'll be happy to work with you on it!
-

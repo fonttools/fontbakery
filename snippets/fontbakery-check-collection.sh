@@ -27,4 +27,3 @@ do
 done
 
 cat $RESULTS_FOLDER/issues.txt
-
