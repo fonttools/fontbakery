@@ -43,7 +43,7 @@ class FontbakeryCallable(object):
     self._func = func
 
   def __repr__(self):
-    return'<{0}:{1}>'.format(type(self).__name__,
+    return'<{}:{}>'.format(type(self).__name__,
                 getattr(self, 'id',
                   getattr(self, 'name',
                     super(FontbakeryCallable, self).__repr__()
@@ -284,7 +284,7 @@ class FontBakeryExpectedValue(object):
     self.force = force
 
   def __repr__(self):
-    return'<{0}:{1}>'.format(type(self).__name__, self.name)
+    return'<{}:{}>'.format(type(self).__name__, self.name)
 
   @property
   def has_default(self):

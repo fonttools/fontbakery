@@ -275,8 +275,8 @@ class TerminalProgress(FontbakeryReporter):
 
   def _reset_progress(self, num_linebeaks):
     # BACKSPACE = u'\b'
-    TOLEFT = u'\u001b[1000D' # Move all the way left (max 1000 steps
-    CLEARLINE = u'\u001b[2K'    # Clear the line
+    TOLEFT = '\u001b[1000D' # Move all the way left (max 1000 steps
+    CLEARLINE = '\u001b[2K'    # Clear the line
     UP =  '\u001b[1A' # moves cursor 1 up
     reset = (CLEARLINE + UP) * num_linebeaks + TOLEFT
     return reset
@@ -317,7 +317,7 @@ class TerminalProgress(FontbakeryReporter):
     for item in self._progressbar:
       append(item)
     append(']')
-    percentstring = '{0:3d}%'.format(percent)
+    percentstring = '{:3d}%'.format(percent)
     append(percentstring, len(percentstring), ' ')
     return ''.join(progressbar)
 
@@ -435,7 +435,7 @@ class TerminalReporter(TerminalProgress):
     if status == STARTCHECK:
       if self.runner:
         formatted_iterargs = tuple(
-            ('{0}[{1}]'.format(*item), self.runner.get_iterarg(*item))
+            ('{}[{}]'.format(*item), self.runner.get_iterarg(*item))
                                                     for item in iterargs)
       else:
         formatted_iterargs = iterargs

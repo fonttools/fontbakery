@@ -564,9 +564,9 @@ def com_google_fonts_check_019(ttFont):
   """Substitute copyright, registered and trademark
      symbols in name table entries."""
   failed = False
-  replacement_map = [(u"\u00a9", '(c)'),
-                     (u"\u00ae", '(r)'),
-                     (u"\u2122", '(tm)')]
+  replacement_map = [("\u00a9", '(c)'),
+                     ("\u00ae", '(r)'),
+                     ("\u2122", '(tm)')]
   for name in ttFont['name'].names:
     string = str(name.string, encoding=name.getEncoding())
     for mark, ascii_repl in replacement_map:
@@ -695,14 +695,14 @@ def com_google_fonts_check_030(ttFont, familyname):
                                     PLACEHOLDER_LICENSING_TEXT)
   LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
   LICENSE_URL = {
-    'OFL.txt': u'http://scripts.sil.org/OFL',
-    'LICENSE.txt': u'http://www.apache.org/licenses/LICENSE-2.0',
-    'UFL.txt': u'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
+    'OFL.txt': 'http://scripts.sil.org/OFL',
+    'LICENSE.txt': 'http://www.apache.org/licenses/LICENSE-2.0',
+    'UFL.txt': 'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
   }
   LICENSE_NAME = {
-    'OFL.txt': u'Open Font',
-    'LICENSE.txt': u'Apache',
-    'UFL.txt': u'Ubuntu Font License'
+    'OFL.txt': 'Open Font',
+    'LICENSE.txt': 'Apache',
+    'UFL.txt': 'Ubuntu Font License'
   }
   detected_license = False
   for license in ['OFL.txt', 'LICENSE.txt', 'UFL.txt']:
