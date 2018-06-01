@@ -157,11 +157,8 @@ def test_check_046():
   subsetter = fontTools.subset.Subsetter()
   subsetter.populate(glyphs="n")  # Arbitrarily remove everything except n.
   subsetter.subset(test_font)
-  status, message = list(check(test_font))[-1]
+  status, _ = list(check(test_font))[-1]
   assert status == WARN
-  assert "0x0000" in message
-  assert "0x000D" in message
-  assert "0x0020" in message
 
 
 def test_check_047():
