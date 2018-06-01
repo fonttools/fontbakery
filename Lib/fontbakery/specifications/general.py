@@ -379,30 +379,33 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   id = 'com.google.fonts/check/046'
 )
 def com_google_fonts_check_046(ttFont):
-  """Font contains the first few mandatory glyphs (.null or NULL, CR and
-  space)?"""
-  from fontbakery.utils import get_glyph_name
+  """Font contains .notdef as first glyph?
 
-  # It would be good to also check
-  # for .notdef (codepoint = unspecified)
-  null = get_glyph_name(ttFont, 0x0000)
-  CR = get_glyph_name(ttFont, 0x000D)
-  space = get_glyph_name(ttFont, 0x0020)
+  The OpenType specification v1.8.2 recommends that the first glyph is the
+  .notdef glyph without a codepoint assigned and with a drawing.
 
-  missing = []
-  if null is None:
-    missing.append("0x0000")
-  if CR is None:
-    missing.append("0x000D")
-  if space is None:
-    missing.append("0x0020")
-  if missing != []:
-    yield WARN, ("Font is missing glyphs for"
-                 " the following mandatory codepoints:"
-                 " {}.").format(", ".join(missing))
+  https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
+
+  Pre-v1.8, it was recommended that a font should also contain a .null, CR and
+  space glyph. This might have been relevant for applications on MacOS 9.
+  """
+  from fontbakery.utils import glyph_has_ink
+
+  if (
+    ttFont.getGlyphOrder()[0] == ".notdef"
+    and ".notdef" not in ttFont.getBestCmap().values()
+    and glyph_has_ink(ttFont, ".notdef")
+  ):
+    yield PASS, (
+      "Font contains the .notdef glyph as the first glyph, it does "
+      "not have a Unicode value assigned and contains a drawing."
+    )
   else:
-    yield PASS, ("Font contains the first few mandatory glyphs"
-                 " (.null or NULL, CR and space).")
+    yield WARN, (
+      "Font should contain the .notdef glyph as the first glyph, "
+      "it should not have a Unicode value assigned and should "
+      "contain a drawing."
+    )
 
 
 @check(
