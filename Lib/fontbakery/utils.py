@@ -163,3 +163,33 @@ def download_file(url):
   from urllib import urlopen
   request = urlopen(url)
   return StringIO(request.read())
+
+
+def glyph_has_ink(font, name):
+  # type: (TTFont, Text) -> bool
+  """Checks if specified glyph has any ink.
+
+  That is, that it has at least one defined contour associated.
+  Composites are considered to have ink if any of their components have ink.
+  Args:
+      font:       the font
+      glyph_name: The name of the glyph to check for ink.
+  Returns:
+      True if the font has at least one contour associated with it.
+  """
+  glyph = font['glyf'].glyphs[name]
+  glyph.expand(font['glyf'])
+
+  if not glyph.isComposite():
+    if glyph.numberOfContours == 0:
+      return False
+    (coords, _, _) = glyph.getCoordinates(font['glyf'])
+    # you need at least 3 points to draw
+    return len(coords) > 2
+
+  # Check for ink in each sub-component.
+  for glyph_name in glyph.getComponentNames(glyph.components):
+    if glyph_has_ink(font, glyph_name):
+      return True
+
+  return False

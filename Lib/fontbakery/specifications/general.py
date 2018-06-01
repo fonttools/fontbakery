@@ -471,35 +471,7 @@ def com_google_fonts_check_048(ttFont):
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import get_glyph_name
-
-  def glyphHasInk(font, name):
-    """Checks if specified glyph has any ink.
-
-    That is, that it has at least one defined contour associated.
-    Composites are considered to have ink if any of their components have ink.
-    Args:
-        font:       the font
-        glyph_name: The name of the glyph to check for ink.
-    Returns:
-        True if the font has at least one contour associated with it.
-    """
-    glyph = font['glyf'].glyphs[name]
-    glyph.expand(font['glyf'])
-    if not glyph.isComposite():
-      if glyph.numberOfContours == 0:
-        return False
-      (coords, _, _) = glyph.getCoordinates(font['glyf'])
-      # you need at least 3 points to draw
-      return len(coords) > 2
-
-    # composite is blank if composed of blanks
-    # if you setup a font with cycles you are just a bad person
-    # Dave: lol, bad people exist, so put a recursion in this recursion
-    for glyph_name in glyph.getComponentNames(glyph.components):
-      if glyphHasInk(font, glyph_name):
-        return True
-    return False
+  from fontbakery.utils import get_glyph_name, glyph_has_ink
 
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
@@ -511,7 +483,7 @@ def com_google_fonts_check_049(ttFont):
   failed = False
   for codepoint in WHITESPACE_CHARACTERS:
     g = get_glyph_name(ttFont, codepoint)
-    if g is not None and glyphHasInk(ttFont, g):
+    if g is not None and glyph_has_ink(ttFont, g):
       failed = True
       yield FAIL, ("Glyph \"{}\" has ink."
                    " It needs to be replaced by"
