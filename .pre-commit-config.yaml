@@ -4,6 +4,7 @@ repos:
     rev: v1.3.0
     hooks:
     - id: end-of-file-fixer
+    - id: check-merge-conflict
 -   repo: https://github.com/asottile/pyupgrade
     rev: v1.2.0
     hooks:
