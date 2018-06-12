@@ -15,7 +15,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from builtins import object
-import sys
+import inspect
 try:  # Try to get the newer Python 3.x method...
   from inspect import getfullargspec as getargspec
 except ImportError:  # ...and fall back to the deprecated method in Python 2.
@@ -78,35 +78,9 @@ class FontbakeryCallable(object):
     """
     return self._func(*args, **kwds)
 
-# https://www.python.org/dev/peps/pep-0257/
-def trim(docstring):
-  """ trim docstrings """
-  if not docstring:
-      return ''
-  # Convert tabs to spaces (following the normal Python rules)
-  # and split into a list of lines:
-  lines = docstring.expandtabs().splitlines()
-  # Determine minimum indentation (first line doesn't count):
-  indent = sys.maxsize
-  for line in lines[1:]:
-      stripped = line.lstrip()
-      if stripped:
-          indent = min(indent, len(line) - len(stripped))
-  # Remove indentation (first line is special):
-  trimmed = [lines[0].strip()]
-  if indent < sys.maxsize:
-      for line in lines[1:]:
-          trimmed.append(line[indent:].rstrip())
-  # Strip off trailing and leading blank lines:
-  while trimmed and not trimmed[-1]:
-      trimmed.pop()
-  while trimmed and not trimmed[0]:
-      trimmed.pop(0)
-  # Return a single string:
-  return '\n'.join(trimmed)
-
 def get_doc_desc(func, description, documentation):
-  doc = trim(func.__doc__)
+  doc = inspect.getdoc(func) or ""
+
   doclines = doc.split('\n')
 
   if not description:
