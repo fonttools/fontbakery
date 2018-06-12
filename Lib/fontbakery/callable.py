@@ -24,6 +24,8 @@ except ImportError:  # ...and fall back to the deprecated method in Python 2.
 from functools import wraps
 
 def cached_getter(func):
+  """Decorate a property by executing it at instatiation time and cache the
+  result on the instance object."""
   @wraps(func)
   def wrapper(self):
     attribute = '_{}'.format(func.__name__)
