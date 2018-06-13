@@ -588,15 +588,61 @@ def test_check_070():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_074():
+def test_check_074():
   """ Are there non-ASCII characters in ASCII-only NAME table entries? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_074 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - INFO, "Bad string"
-  # - FAIL, "non-ASCII chars"
-  # - PASS
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_074 as check
+  from fontbakery.constants import (NAMEID_COPYRIGHT_NOTICE,
+                                    NAMEID_POSTSCRIPT_NAME)
+
+  # Our reference Merriweather Regular is known to be good
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+
+  # So it must PASS the check:
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  #  The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
+  #  For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
+  #  string should be the same in CFF fonts which also have this
+  #  requirement in the OpenType spec.
+
+  # Let's check detection of both. First nameId 6:
+  print ("Test FAIL with non-ascii on nameID 6 entry (Postscript name)...")
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_POSTSCRIPT_NAME:
+      ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # Then reload the good font
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+
+  # And check detection of a problem on nameId 0:
+  print ("Test FAIL with non-ascii on nameID 0 entry (Copyright notice)...")
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NAMEID_COPYRIGHT_NOTICE:
+      ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # Reload the good font once more:
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+
+  #  Note:
+  #  A common place where we find non-ASCII strings is on name table
+  #  entries with NameID > 18, which are expressly for localising
+  #  the ASCII-only IDs into Hindi / Arabic / etc.
+
+  # Let's check a good case of a non-ascii on the name table then!
+  # Choose an arbitrary name entry to mess up with:
+  index = 5
+
+  print ("Test PASS with non-ascii on entries with nameId > 18...")
+  ttFont['name'].names[index].nameID = 19
+  ttFont['name'].names[index].string = "Fantástico!".encode(encoding="utf-8")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
 
 
 def test_check_080():
