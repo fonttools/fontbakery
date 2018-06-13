@@ -612,8 +612,11 @@ def test_check_074():
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NAMEID_POSTSCRIPT_NAME:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  results = list(check(ttFont))
+  info_status, message = results[-2]
+  final_status, message = results[-1]
+  assert info_status == INFO
+  assert final_status == FAIL
 
   # Then reload the good font
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
@@ -623,8 +626,11 @@ def test_check_074():
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NAMEID_COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  results = list(check(ttFont))
+  info_status, message = results[-2]
+  final_status, message = results[-1]
+  assert info_status == INFO
+  assert final_status == FAIL
 
   # Reload the good font once more:
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
