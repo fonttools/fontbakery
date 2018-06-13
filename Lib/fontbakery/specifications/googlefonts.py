@@ -118,7 +118,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/085' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
       , 'com.google.fonts/check/086' # METADATA.pb should contain at least "menu" and "latin" subsets.
       , 'com.google.fonts/check/087' # METADATA.pb subsets should be alphabetically ordered.
-      , 'com.google.fonts/check/088' # Copyright notice is the same in all fonts?
+      , 'com.google.fonts/check/088' # METADATA.pb: Copyright notice is the same in all fonts?
       , 'com.google.fonts/check/089' # Check that METADATA family values are all the same.
       , 'com.google.fonts/check/090' # According Google Fonts standards, families should have a Regular style.
       , 'com.google.fonts/check/091' # Regular should be 400.
@@ -1309,7 +1309,7 @@ def com_google_fonts_check_087(metadata):
   conditions = ['metadata']
 )
 def com_google_fonts_check_088(metadata):
-  """Copyright notice is the same in all fonts?"""
+  """METADATA.pb: Copyright notice is the same in all fonts?"""
   copyright = None
   fail = False
   for f in metadata.fonts:
