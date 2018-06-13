@@ -712,14 +712,30 @@ def test_check_084():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_085():
+def test_check_085():
   """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_085 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_085 as check,
+                                                     family_directory,
+                                                     metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  md = metadata(family_directory(fonts))
+
+  good_licenses = ["APACHE2", "UFL", "OFL"]
+  some_bad_values = ["APACHE", "Apache", "Ufl", "Ofl", "Open Font License"]
+
+  for good in good_licenses:
+    print ("Test PASS: ".format(good))
+    md.license = good
+    status, message = list(check(md))[-1]
+    assert status == PASS
+
+  for bad in some_bad_values:
+    print ("Test FAIL: ".format(bad))
+    md.license = bad
+    status, message = list(check(md))[-1]
+    assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_086():
