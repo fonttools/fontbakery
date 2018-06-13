@@ -738,14 +738,42 @@ def test_check_085():
     assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_086():
+def test_check_086():
   """ METADATA.pb should contain at least "menu" and "latin" subsets. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_086 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_086 as check,
+                                                     family_directory,
+                                                     metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  md = metadata(family_directory(fonts))
+
+  good_cases = [
+    ["menu", "latin"],
+    ["menu", "cyrillic", "latin"],
+  ]
+
+  bad_cases = [
+    ["menu"],
+    ["latin"],
+    [""],
+    ["latin", "cyrillyc"],
+    ["khmer"]
+  ]
+
+  for good in good_cases:
+    print ("Test PASS: ".format(good))
+    del md.subsets[:]
+    md.subsets.extend(good)
+    status, message = list(check(md))[-1]
+    assert status == PASS
+
+  for bad in bad_cases:
+    print ("Test FAIL: ".format(bad))
+    del md.subsets[:]
+    md.subsets.extend(bad)
+    status, message = list(check(md))[-1]
+    assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_087():
