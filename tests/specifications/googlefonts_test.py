@@ -694,22 +694,21 @@ def test_check_081():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_081 as check,
                                                      listed_on_gfonts_api,
-                                                     family_metadata,
-                                                     family_directory)
+                                                     family_metadata)
 
   print ("Test WARN with a family that is not listed on Google Fonts...")
   # Our reference FamilySans family is a just a generic example
   # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  listed = listed_on_gfonts_api(family_metadata(family_directory(fonts)))
+  family_directory = "data/test/familysans/"
+  listed = listed_on_gfonts_api(family_metadata(family_directory))
   # For that reason, we expect to get a WARN in this case:
   status, message = list(check(listed))[-1]
   assert status == WARN
 
   print ("Test PASS with a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
-  fonts = ["data/test/merriweather/Merriweather-Regular.ttf"]
-  listed = listed_on_gfonts_api(family_metadata(family_directory(fonts)))
+  family_directory = "data/test/merriweather/"
+  listed = listed_on_gfonts_api(family_metadata(family_directory))
   # So it must PASS:
   status, message = list(check(listed))[-1]
   assert status == PASS
@@ -730,12 +729,11 @@ def NOT_IMPLEMENTED_test_check_082():
 def test_check_083():
   """ METADATA.pb: check if fonts field only has unique "full_name" values. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_083 as check,
-                                                     family_metadata,
-                                                     family_directory)
+                                                     family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
   status, message = list(check(md))[-1]
   assert status == PASS
 
@@ -748,12 +746,11 @@ def test_check_083():
 def test_check_084():
   """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_084 as check,
-                                                     family_metadata,
-                                                     family_directory)
+                                                     family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
   status, message = list(check(md))[-1]
   assert status == PASS
 
@@ -793,12 +790,11 @@ def test_check_085():
 def test_check_086():
   """ METADATA.pb should contain at least "menu" and "latin" subsets. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_086 as check,
-                                                     family_directory,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
 
   good_cases = [
     ["menu", "latin"],
@@ -831,12 +827,11 @@ def test_check_086():
 def test_check_087():
   """ METADATA.pb subsets should be alphabetically ordered. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_087 as check,
-                                                     family_directory,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
 
   good_cases = [
     ["latin", "menu"],
@@ -868,12 +863,11 @@ def test_check_087():
 def test_check_088():
   """ METADATA.pb: Copyright notice is the same in all fonts? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_088 as check,
-                                                     family_directory,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
 
   # We know its copyright notices are consistent, so the check should PASS:
   print("Test PASS: Consistent copyright notices on FamilySans...")
@@ -892,12 +886,11 @@ def test_check_088():
 def test_check_089():
   """ Check that METADATA.pb family values are all the same. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_089 as check,
-                                                     family_directory,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
 
   # We know its family name entries on METADATA.pb are consistent, so the check should PASS:
   print("Test PASS: Consistent family name...")
