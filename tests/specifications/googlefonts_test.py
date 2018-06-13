@@ -814,7 +814,7 @@ def test_check_087():
 
 
 def test_check_088():
-  """ Copyright notice is the same in all fonts? """
+  """ METADATA.pb: Copyright notice is the same in all fonts? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_088 as check,
                                                      family_directory,
                                                      metadata)
@@ -837,14 +837,28 @@ def test_check_088():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_089():
-  """ Check that METADATA family values are all the same. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_089 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+def test_check_089():
+  """ Check that METADATA.pb family values are all the same. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_089 as check,
+                                                     family_directory,
+                                                     metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  fonts = ["data/test/familysans/FamilySans-Regular.ttf"]
+  md = metadata(family_directory(fonts))
+
+  # We know its family name entries on METADATA.pb are consistent, so the check should PASS:
+  print("Test PASS: Consistent family name...")
+  status, message = list(check(md))[-1]
+  assert status == PASS
+
+  # Now we make them diverge:
+  md.fonts[1].name = md.fonts[0].name + " arbitrary suffix!" # to make it different
+
+  # And now the check must FAIL:
+  print("Test FAIL: With diverging Family name metadata entries...")
+  status, message = list(check(md))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_090():
