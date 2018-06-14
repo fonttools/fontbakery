@@ -1410,15 +1410,17 @@ def com_google_fonts_check_092(ttFont, font_metadata):
 
   familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
   if len(familynames) == 0:
-    yield FAIL, ("This font lacks a FONT_FAMILY_NAME entry"
-                 " (nameID={}) in the name"
-                 " table.").format(NAMEID_FONT_FAMILY_NAME)
+    yield FAIL, Message("missing",
+                        ("This font lacks a FONT_FAMILY_NAME entry"
+                         " (nameID={}) in the name"
+                         " table.").format(NAMEID_FONT_FAMILY_NAME))
   else:
     if font_metadata.name not in familynames:
-      yield FAIL, ("Unmatched family name in font:"
-                   " TTF has \"{}\" while METADATA.pb"
-                   " has \"{}\"").format(familynames[0],
-                                         font_metadata.name)
+      yield FAIL, Message("mismatch",
+                          ("Unmatched family name in font:"
+                           " TTF has \"{}\" while METADATA.pb"
+                           " has \"{}\"").format(familynames[0],
+                                                 font_metadata.name))
     else:
       yield PASS, ("Family name \"{}\" is identical"
                    " in METADATA.pb and on the"
@@ -1439,17 +1441,20 @@ def com_google_fonts_check_093(ttFont, font_metadata):
   postscript_names = get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME)
   if len(postscript_names) == 0:
     failed = True
-    yield FAIL, ("This font lacks a POSTSCRIPT_NAME"
-                 " entry (nameID={}) in the "
-                 "name table.").format(NAMEID_POSTSCRIPT_NAME)
+    yield FAIL, Message("missing",
+                        ("This font lacks a POSTSCRIPT_NAME"
+                         " entry (nameID={}) in the "
+                         "name table.").format(NAMEID_POSTSCRIPT_NAME))
   else:
     for psname in postscript_names:
       if psname != font_metadata.post_script_name:
         failed = True
-        yield FAIL, ("Unmatched postscript name in font:"
-                     " TTF has \"{}\" while METADATA.pb has"
-                     " \"{}\".").format(psname,
-                                        font_metadata.post_script_name)
+        yield FAIL, Message("mismatch",
+                            ("Unmatched postscript name in font:"
+                             " TTF has \"{}\" while METADATA.pb"
+                             " has \"{}\"."
+                             "").format(psname,
+                                        font_metadata.post_script_name))
   if not failed:
     yield PASS, ("Postscript name \"{}\" is identical"
                  " in METADATA.pb and on the"
