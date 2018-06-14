@@ -988,16 +988,36 @@ def test_check_092():
   # - FAIL, "Font lacks a FONT_FAMILY_NAME entry"
 
 
-def NOT_IMPLEMENTED_test_check_093():
+def test_check_093():
   """ Checks METADATA.pb font.post_script_name matches
       postscript name declared on the name table. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_093 as check
-  # TODO: Implement-me!
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_093 as check,
+                                                     font_metadata,
+                                                     family_metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  font = "data/test/familysans/FamilySans-Regular.ttf"
+  family_directory = "data/test/familysans/"
+  family_meta = family_metadata(family_directory)
+  font_meta = font_metadata(family_meta, font)
+  ttFont = TTFont(font)
+
+  # We know that Family Sans Regular is good here:
+  print("Test PASS...")
+  status, message = list(check(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  # Then cause it to fail:
+  font_meta.post_script_name = "Foo"
+  print("Test FAIL...")
+  status, message = list(check(ttFont, font_meta))[-1]
+  assert status == FAIL
+
+  # TODO: the failure-mode below seems more generic than the scope
+  #       of this individual check. This could become a check by itself!
   #
   # code-paths:
   # - FAIL, "Font lacks a POSTSCRIPT_NAME"
-  # - FAIL, "Unmatched postscript name in font"
-  # - PASS
 
 
 def test_check_094():
