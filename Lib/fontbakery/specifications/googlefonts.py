@@ -1357,11 +1357,11 @@ def has_regular_style(family_metadata):
   id = 'com.google.fonts/check/090',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_090(has_regular_style):
+def com_google_fonts_check_090(family_metadata):
   """METADATA.pb: According Google Fonts standards,
      families should have a Regular style.
   """
-  if has_regular_style:
+  if has_regular_style(family_metadata):
     yield PASS, "Family has a Regular style."
   else:
     yield FAIL, ("This family lacks a Regular"

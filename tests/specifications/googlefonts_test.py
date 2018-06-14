@@ -906,14 +906,29 @@ def test_check_089():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_090():
+def test_check_090():
   """ METADATA.pb: According Google Fonts standards, families should have a Regular style. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_090 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_090 as check,
+                                                     family_metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
+
+  # We know that Family Sans has got a regular declares in its METADATA.pb file, so the check should PASS:
+  print("Test PASS: Family Sans has regular style...")
+  status, message = list(check(md))[-1]
+  assert status == PASS
+
+  # We remove the regular:
+  for i, font in enumerate(md.fonts):
+    if font.filename == "FamilySans-Regular.ttf":
+      del md.fonts[i]
+
+  # and make sure the check now FAILs:
+  print("Test FAIL: METADATA.pb without a regular...")
+  status, message = list(check(md))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_091():
