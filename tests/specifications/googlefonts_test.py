@@ -979,13 +979,13 @@ def test_check_092():
   font_meta.name = "Foo"
   print("Test FAIL...")
   status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
   # TODO: the failure-mode below seems more generic than the scope
   #       of this individual check. This could become a check by itself!
   #
   # code-paths:
-  # - FAIL, "Font lacks a FONT_FAMILY_NAME entry"
+  # - FAIL code="missing", "Font lacks a FONT_FAMILY_NAME entry"
 
 
 def test_check_093():
@@ -1011,13 +1011,13 @@ def test_check_093():
   font_meta.post_script_name = "Foo"
   print("Test FAIL...")
   status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
   # TODO: the failure-mode below seems more generic than the scope
   #       of this individual check. This could become a check by itself!
   #
   # code-paths:
-  # - FAIL, "Font lacks a POSTSCRIPT_NAME"
+  # - FAIL code="missing", "Font lacks a POSTSCRIPT_NAME"
 
 
 def test_check_094():
@@ -1027,7 +1027,6 @@ def test_check_094():
   from fontbakery.constants import NAMEID_FULL_FONT_NAME
   import os
 
-  print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to be good here
   font = "data/test/merriweather/Merriweather-Regular.ttf"
   family_directory = os.path.dirname(font)
@@ -1035,8 +1034,7 @@ def test_check_094():
   font_meta = font_metadata(family_meta, font)
   ttFont = TTFont(font)
 
-
-
+  print('Test PASS with a good font...')
   status, message = list(check(ttFont, font_meta))[-1]
   assert status == PASS
 
