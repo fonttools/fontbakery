@@ -931,14 +931,29 @@ def test_check_090():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_091():
+def test_check_091():
   """ METADATA.pb: Regular should be 400. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_091 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_091 as check,
+                                                     family_metadata)
+
+  # Let's start with the METADATA.pb file from our reference FamilySans family:
+  family_directory = "data/test/familysans/"
+  md = family_metadata(family_directory)
+
+  # We know that Family Sans' Regular has a weight value equal to 400, so the check should PASS:
+  print("Test PASS: Family Sans has regular=400...")
+  status, message = list(check(md))[-1]
+  assert status == PASS
+
+  # The we change the value for its regular:
+  for i, font in enumerate(md.fonts):
+    if font.filename == "FamilySans-Regular.ttf":
+      md.fonts[i].weight = 500
+
+  # and make sure the check now FAILs:
+  print("Test FAIL: METADATA.pb without a regular...")
+  status, message = list(check(md))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_092():
