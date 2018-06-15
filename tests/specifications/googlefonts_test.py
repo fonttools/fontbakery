@@ -1087,15 +1087,67 @@ def test_check_095():
       ttFont["name"].names[i].string = good # restore good value
 
 
-def NOT_IMPLEMENTED_test_check_096():
+def test_check_096():
   """ METADATA.pb family.full_name and family.post_script_name
       fields have equivalent values ? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_096 as check
-  # TODO: Implement-me!
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_096 as check,
+                                                     font_metadata,
+                                                     family_metadata)
+
+  regular_font = "data/test/merriweather/Merriweather-Regular.ttf"
+  lightitalic_font = "data/test/merriweather/Merriweather-LightItalic.ttf"
+  family_meta = family_metadata("data/test/merriweather/")
+
+  regular_meta = font_metadata(family_meta, regular_font)
+  lightitalic_meta = font_metadata(family_meta, lightitalic_font)
+
+  print('Test PASS with good entries (Merriweather-LightItalic)...')
+  # Note:
+  #       post_script_name: "Merriweather-LightItalic"
+  #       full_name:        "Merriweather Light Italic"
+  status, message = list(check(lightitalic_meta))[-1]
+  assert status == PASS
+
+
+  # TODO: Verify why/whether "Regular" cannot be omited on font.full_name
+  #       There's some relevant info at:
+  #       https://github.com/googlefonts/fontbakery/issues/1517
   #
-  # code-paths:
-  # - FAIL, "METADATA.pb full_name does not match post_script_name"
-  # - PASS
+  # FIXME: com.google.fonts/check/094 ties the full_name values from the
+  #        METADATA.pb file and the internal name table entry (FULL_FONT_NAME)
+  #        to be strictly identical. So it seems that the test below is
+  #        actually wrong (as well as the current implementation):
+  #
+  print('Test FAIL with bad entries (Merriweather-Regular)...')
+  # Note:
+  #       post_script_name: "Merriweather-Regular"
+  #       full_name:        "Merriweather"
+  status, message = list(check(regular_meta))[-1]
+  assert status == FAIL
+
+
+  # fix the regular metadata:
+  regular_meta.full_name = "Merriweather Regular"
+
+
+  print('Test PASS with good entries (Merriweather-Regular after full_name fix)...')
+  # Note:
+  #       post_script_name: "Merriweather-Regular"
+  #       full_name:        "Merriweather Regular"
+  status, message = list(check(regular_meta))[-1]
+  assert status == PASS
+
+
+  # introduce an error in the metadata:
+  regular_meta.full_name = "MistakenFont Regular"
+
+
+  print('Test FAIL with a mismatch...')
+  # Note:
+  #       post_script_name: "Merriweather-Regular"
+  #       full_name:        "MistakenFont Regular"
+  status, message = list(check(regular_meta))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_097():
