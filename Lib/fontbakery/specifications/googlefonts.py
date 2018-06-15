@@ -124,10 +124,10 @@ expected_check_ids = [
       , 'com.google.fonts/check/091' # METADATA.pb: Regular should be 400.
       , 'com.google.fonts/check/092' # Checks METADATA.pb font.name field matches family name declared on the name table.
       , 'com.google.fonts/check/093' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
-      , 'com.google.fonts/check/094' # METADATA.pb font.fullname value matches fullname declared on the name table?
+      , 'com.google.fonts/check/094' # METADATA.pb font.full_name value matches fullname declared on the name table?
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
-      , 'com.google.fonts/check/096' # METADATA.pb family.full_name and family.post_script_name fields have equivalent values ?
-      , 'com.google.fonts/check/097' # METADATA.pb family.filename and family.post_script_name fields have equivalent values?
+      , 'com.google.fonts/check/096' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
+      , 'com.google.fonts/check/097' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
       , 'com.google.fonts/check/098' # METADATA.pb font.name field contains font name in right format?
       , 'com.google.fonts/check/099' # METADATA.pb font.full_name field contains font name in right format?
       , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
@@ -1466,7 +1466,7 @@ def com_google_fonts_check_093(ttFont, font_metadata):
   conditions = ['font_metadata']
 )
 def com_google_fonts_check_094(ttFont, font_metadata):
-  """METADATA.pb font.fullname value matches
+  """METADATA.pb font.full_name value matches
      fullname declared on the name table?
   """
   from fontbakery.utils import get_name_entry_strings
@@ -1487,7 +1487,7 @@ def com_google_fonts_check_094(ttFont, font_metadata):
                              " has \"{}\".").format(full_fontname,
                                                     font_metadata.full_name))
       else:
-        yield PASS, ("Full fontname \"{}\" is identical"
+        yield PASS, ("Font fullname \"{}\" is identical"
                      " in METADATA.pb and on the"
                      " TTF file.").format(full_fontname)
 
@@ -1537,7 +1537,7 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
   conditions = ['font_metadata']
 )
 def com_google_fonts_check_096(font_metadata):
-  """METADATA.pb family.full_name and family.post_script_name
+  """METADATA.pb font.full_name and font.post_script_name
      fields have equivalent values ?
   """
   import re
@@ -1545,13 +1545,13 @@ def com_google_fonts_check_096(font_metadata):
   post_script_name = regex.sub("", font_metadata.post_script_name)
   fullname = regex.sub("", font_metadata.full_name)
   if fullname != post_script_name:
-    yield FAIL, ("METADATA.pb full_name=\"{}\""
+    yield FAIL, ("METADATA.pb font full_name=\"{}\""
                  " does not match post_script_name ="
                  " \"{}\"").format(font_metadata.full_name,
                                    font_metadata.post_script_name)
   else:
-    yield PASS, ("METADATA.pb fields \"fullName\" and"
-                 " \"postScriptName\" have equivalent values.")
+    yield PASS, ("METADATA.pb font fields \"full_name\" and"
+                 " \"post_script_name\" have equivalent values.")
 
 
 @check(
@@ -1559,7 +1559,7 @@ def com_google_fonts_check_096(font_metadata):
   conditions = ['font_metadata']
 )
 def com_google_fonts_check_097(font_metadata):
-  """METADATA.pb family.filename and family.post_script_name
+  """METADATA.pb font.filename and font.post_script_name
      fields have equivalent values?
   """
   import re
@@ -1567,13 +1567,13 @@ def com_google_fonts_check_097(font_metadata):
   post_script_name = regex.sub("", font_metadata.post_script_name)
   filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
   if filename != post_script_name:
-    yield FAIL, ("METADATA.pb filename=\"{}\" does not match"
+    yield FAIL, ("METADATA.pb font filename=\"{}\" does not match"
                  " post_script_name=\"{}\"."
                  "").format(font_metadata.filename,
                             font_metadata.post_script_name)
   else:
-    yield PASS, ("METADATA.pb fields \"filename\" and"
-                 " \"postScriptName\" have equivalent values.")
+    yield PASS, ("METADATA.pb font fields \"filename\" and"
+                 " \"post_script_name\" have equivalent values.")
 
 
 @condition
