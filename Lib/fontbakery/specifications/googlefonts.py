@@ -1731,7 +1731,7 @@ def com_google_fonts_check_102(font_metadata):
   conditions = ['font_metadata']
 )
 def com_google_fonts_check_103(font_metadata):
-  """Copyright notice on METADATA.pb does not contain Reserved Font Name?"""
+  """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
   from unidecode import unidecode
   if "Reserved Font Name" in font_metadata.copyright:
     yield WARN, ("METADATA.pb: copyright field (\"{}\")"

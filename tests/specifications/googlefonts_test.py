@@ -1360,14 +1360,26 @@ def test_check_102():
   assert status == PASS
 
 
-def NOT_IMPLEMENTED_test_check_103():
-  """ Copyright notice on METADATA.pb does not contain Reserved Font Name? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_103 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN
-  # - PASS
+def test_check_103():
+  """ Copyright notice on METADATA.pb should not contain Reserved Font Name. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_103 as check,
+                                                     family_metadata,
+                                                     font_metadata)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.dirname(fontfile)
+  family_meta = family_metadata(family_directory)
+  font_meta = font_metadata(family_meta, fontfile)
+
+  print ("Test PASS with a good copyright notice string...")
+  status, message = list(check(font_meta))[-1]
+  assert status == PASS
+
+  # Then we make it bad:
+  font_meta.copyright += "Reserved Font Name"
+
+  print ("Test WARN with a notice containing 'Reserved Font Name'...")
+  status, message = list(check(font_meta))[-1]
+  assert status == WARN
 
 
 def NOT_IMPLEMENTED_test_check_104():
