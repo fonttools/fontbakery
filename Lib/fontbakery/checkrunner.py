@@ -1223,7 +1223,7 @@ class Spec(object):
       order may contain "*check" otherwise, it is like *check is appended
       to the end (Not done explicitly though).
     """
-    stack = custom_order[:] if custom_order is not None else section.order[:]
+    stack = list(custom_order) if custom_order is not None else list(section.order)
     if '*iterargs' not in stack:
       stack.append('*iterargs')
     stack.reverse()
