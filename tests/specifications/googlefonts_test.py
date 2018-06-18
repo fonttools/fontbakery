@@ -1382,14 +1382,25 @@ def test_check_103():
   assert status == WARN
 
 
-def NOT_IMPLEMENTED_test_check_104():
+def test_check_104():
   """ METADATA.pb: Copyright notice shouldn't exceed 500 chars. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_104 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_104 as check,
+                                                     family_metadata,
+                                                     font_metadata)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.dirname(fontfile)
+  family_meta = family_metadata(family_directory)
+  font_meta = font_metadata(family_meta, fontfile)
+
+  print ("Test PASS with a 500-char copyright notice string...")
+  font_meta.copyright = 500 * "x"
+  status, message = list(check(font_meta))[-1]
+  assert status == PASS
+
+  print ("Test FAIL with a 501-char copyright notice string...")
+  font_meta.copyright = 501 * "x"
+  status, message = list(check(font_meta))[-1]
+  assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_105():
