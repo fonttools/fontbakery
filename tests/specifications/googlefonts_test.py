@@ -1647,14 +1647,27 @@ def test_check_110():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_111():
+def test_check_111():
   """ METADATA.pb: Check that font weight has a canonical value. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_111 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_111 as check,
+                                                     family_metadata,
+                                                     font_metadata)
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  family_directory = os.path.dirname(fontfile)
+  family_meta = family_metadata(family_directory)
+  font_meta = font_metadata(family_meta, fontfile)
+
+  for w in [100, 200, 300, 400, 500, 600, 700, 800, 900]:
+    print ("Test PASS with a good weight value ({})...".format(w))
+    font_meta.weight = w
+    status, message = list(check(font_meta))[-1]
+    assert status == PASS
+
+  for w in [150, 250, 350, 450, 550, 650, 750, 850]:
+    print ("Test FAIL with a bad weight value ({})...".format(w))
+    font_meta.weight = w
+    status, message = list(check(font_meta))[-1]
+    assert status == FAIL
 
 
 def test_check_112():
