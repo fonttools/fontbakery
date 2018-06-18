@@ -1719,14 +1719,22 @@ def NOT_IMPLEMENTED_test_check_115():
   # - PASS, "Font styles are named canonically."
 
 
-def NOT_IMPLEMENTED_test_check_116():
+def test_check_116():
   """ Is font em size (ideally) equal to 1000? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_116 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN
-  # - PASS
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_116 as check
+
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(fontfile)
+
+  print ("Test PASS with unitsPerEm = 1000...")
+  ttFont["head"].unitsPerEm = 1000
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  print ("Test WARN with unitsPerEm = 1024...")
+  ttFont["head"].unitsPerEm = 1024
+  status, message = list(check(ttFont))[-1]
+  assert status == WARN
 
 
 def NOT_IMPLEMENTED_test_check_117():
