@@ -1782,17 +1782,38 @@ def NOT_IMPLEMENTED_test_check_129():
   # ...
 
 
-def NOT_IMPLEMENTED_test_check_130():
+def test_check_130():
   """ Checking post.italicAngle value. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_130 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, "The value of post.italicAngle must be negative."
-  # - FAIL, "The value of post.italicAngle must not exceed 20 degrees."
-  # - FAIL, "Font is italic, so post.italicAngle should be non-zero."
-  # - FAIL, "Font is not italic, so post.italicAngle should be equal to zero."
-  # - PASS
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_130 as check
+  from fontbakery.utils import assert_results_contain
+
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(fontfile)
+
+  # italic-angle, style, fail_message
+  test_cases = [
+    [1, "Italic", "positive"],
+    [0, "Regular", None], # This must PASS as it is a non-italic
+    [-21, "ThinItalic", ">20 degrees"],
+    [0, "Italic", "zero-italic"],
+    [-1,"ExtraBold", "non-zero-normal"]
+  ]
+
+  for value, style, expected_fail_msg in test_cases:
+    ttFont["post"].italicAngle = value
+    results = list(check(ttFont, style))
+
+    if expected_fail_msg:
+      print (("Test FAIL '{}' with"
+              " italic-angle:{} style:{}...").format(expected_fail_msg,
+                                                     value,
+                                                     style))
+      assert_results_contain(results, FAIL, expected_fail_msg)
+    else:
+      print (("Test PASS with"
+              " italic-angle:{} style:{}...").format(value, style))
+      status, message = results[-1]
+      assert status == PASS
 
 
 def NOT_IMPLEMENTED_test_check_131():

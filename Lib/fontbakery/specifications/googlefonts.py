@@ -2400,29 +2400,34 @@ def com_google_fonts_check_130(ttFont, style):
   # Checking that italicAngle <= 0
   if value > 0:
     failed = True
-    yield FAIL, ("The value of post.italicAngle must be"
-                " changed from {} to {}.").format(value, -value)
+    yield FAIL, Message("positive",
+                        ("The value of post.italicAngle must be"
+                         " changed from {} to {}.").format(value, -value))
 
   # Checking that italicAngle is less than 20 degrees:
   if abs(value) > 20:
     failed = True
-    yield FAIL, ("The value of post.italicAngle must be"
-                 " changed from {} to -20.").format(value)
+    yield FAIL, Message(">20 degrees",
+                        ("The value of post.italicAngle must be"
+                         " changed from {} to -20.").format(value))
 
   # Checking if italicAngle matches font style:
   if "Italic" in style:
     if ttFont['post'].italicAngle == 0:
       failed = True
-      yield FAIL, ("Font is italic, so post.italicAngle"
-                   " should be non-zero.")
+      yield FAIL, Message("zero-italic",
+                          ("Font is italic, so post.italicAngle"
+                           " should be non-zero."))
   else:
     if ttFont["post"].italicAngle != 0:
       failed = True
-      yield FAIL, ("Font is not italic, so post.italicAngle"
-                   " should be equal to zero.")
+      yield FAIL, Message("non-zero-normal",
+                          ("Font is not italic, so post.italicAngle"
+                           " should be equal to zero."))
 
   if not failed:
-    yield PASS, "Value of post.italicAngle is {}.".format(value)
+    yield PASS, ("Value of post.italicAngle is {}"
+                 " with style='{}'.").format(value, style)
 
 
 @check(

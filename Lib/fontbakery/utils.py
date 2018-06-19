@@ -193,3 +193,17 @@ def glyph_has_ink(font, name):
       return True
 
   return False
+
+
+def assert_results_contain(check_results, expected_status, expected_msgcode=None):
+  """
+  This helper function is useful when we want to make sure that
+  a certain log message is emited by a check but it can be in any
+  order among other log messages.
+  """
+  found = False
+  for status, message in check_results:
+    if status == expected_status and message.code == expected_msgcode:
+      found = True
+      break
+  assert(found)
