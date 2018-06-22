@@ -1816,13 +1816,44 @@ def test_check_130():
       assert status == PASS
 
 
-def NOT_IMPLEMENTED_test_check_131():
+def test_check_131():
   """ Checking head.macStyle value. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_131 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # ...
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_131 as check
+  from fontbakery.utils import assert_results_contain
+  from fontbakery.constants import (MACSTYLE_ITALIC,
+                                    MACSTYLE_BOLD)
+
+  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(fontfile)
+
+  # macStyle-value, style, expected
+  test_cases = [
+    [0, "Thin", PASS],
+    [0, "Bold", "bad-BOLD"],
+    [0, "Italic", "bad-ITALIC"],
+    [MACSTYLE_ITALIC, "Italic", PASS],
+    [MACSTYLE_ITALIC, "Thin", "bad-ITALIC"],
+    [MACSTYLE_BOLD, "Bold", PASS],
+    [MACSTYLE_BOLD, "Thin", "bad-BOLD"],
+    [MACSTYLE_BOLD|MACSTYLE_ITALIC, "BoldItalic", PASS]
+  ]
+
+  for macStyle_value, style, expected in test_cases:
+    ttFont["head"].macStyle = macStyle_value
+    results = list(check(ttFont, style))
+
+    if expected == PASS:
+      print (("Test PASS with"
+              " macStyle:{} style:{}...").format(macStyle_value,
+                                                 style))
+      status, message = results[-1]
+      assert status == PASS
+    else:
+      print (("Test FAIL '{}' with"
+              " macStyle:{} style:{}...").format(expected,
+                                                 macStyle_value,
+                                                 style))
+      assert_results_contain(results, FAIL, expected)
 
 
 def test_check_153(montserrat_ttFonts):

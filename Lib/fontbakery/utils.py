@@ -142,6 +142,7 @@ def get_FamilyProto_Message(path):
 
 
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
+  from fontbakery.message import Message
   from fontbakery.checkrunner import (PASS, FAIL)
   value = getattr(ttFont[table], attr)
   name_str = "{} {} {} bit".format(table, attr, bitname)
@@ -152,7 +153,8 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
       expected_str = "set"
     else:
       expected_str = "reset"
-    return FAIL, "{} should be {}.".format(name_str, expected_str)
+    return FAIL, Message("bad-{}".format(bitname),
+                         "{} should be {}.".format(name_str, expected_str))
 
 
 def download_file(url):

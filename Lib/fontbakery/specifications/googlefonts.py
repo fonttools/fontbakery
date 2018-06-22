@@ -2432,7 +2432,13 @@ def com_google_fonts_check_130(ttFont, style):
 
 @check(
   id = 'com.google.fonts/check/131',
-  conditions = ['style']
+  conditions = ['style'],
+  rationale = """
+  The values of the flags on the macStyle entry on the 'head' OpenType
+  table that describe whether a font is bold and/or italic
+  must be coherent with the actual style of the font as inferred
+  by its filename.
+  """
 )
 def com_google_fonts_check_131(ttFont, style):
   """Checking head.macStyle value."""
