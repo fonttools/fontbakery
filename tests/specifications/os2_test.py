@@ -168,32 +168,3 @@ def test_check_034():
   status, message = list(check(test_font))[-1]
   assert status == FAIL
   assert message.code == "missing-glyphs"
-
-
-def test_check_042(mada_ttFonts):
-  """ Checking OS/2 Metrics match hhea Metrics. """
-  from fontbakery.specifications.os2 import com_google_fonts_check_042 as check
-
-  # Our reference Mada Regular is know to be good here.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-
-  print("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # Now we break it:
-  print('Test FAIL with a bad OS/2.sTypoAscender font...')
-  correct = ttFont['hhea'].ascent
-  ttFont['OS/2'].sTypoAscender = correct + 1
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "ascender"
-
-  # Restore good value:
-  ttFont['OS/2'].sTypoAscender = correct
-
-  # And break it again, now on sTypoDescender value:
-  print('Test FAIL with a bad OS/2.sTypoDescender font...')
-  correct = ttFont['hhea'].descent
-  ttFont['OS/2'].sTypoDescender = correct + 1
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "descender"
