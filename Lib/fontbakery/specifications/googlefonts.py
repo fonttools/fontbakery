@@ -3146,6 +3146,29 @@ def com_google_fonts_check_040(ttFont, vmetrics):
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
 
+@check(
+  id = 'com.google.fonts/check/042'
+)
+def com_google_fonts_check_042(ttFont):
+  """Checking OS/2 Metrics match hhea Metrics.
+
+  OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, GNU/Linux and Windows.
+
+  Mac OS X uses the hhea values.
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
+  """
+  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
+  if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
+    yield FAIL, Message("ascender",
+                        "OS/2 sTypoAscender and hhea ascent must be equal.")
+  elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
+    yield FAIL, Message("descender",
+                        "OS/2 sTypoDescender and hhea descent must be equal.")
+  else:
+    yield PASS, ("OS/2.sTypoAscender/Descender" " match hhea.ascent/descent.")
+
+
 def is_librebarcode(font):
   font_filenames = [
     "LibreBarcode39-Regular.ttf",
