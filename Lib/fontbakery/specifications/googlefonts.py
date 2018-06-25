@@ -3100,6 +3100,52 @@ def com_google_fonts_check_174(ttFont):
     yield FAIL, ("fontTools.varLib.mutator failed to generated a static font "
                  "instance\n{}".format(repr(e)))
 
+
+@check(
+  id = 'com.google.fonts/check/040',
+  conditions = ['vmetrics']
+)
+def com_google_fonts_check_040(ttFont, vmetrics):
+  """Checking OS/2 usWinAscent & usWinDescent.
+
+  A font's winAscent and winDescent values should be greater than the
+  head table's yMax, abs(yMin) values. If they are less than these
+  values, clipping can occur on Windows platforms,
+  https://github.com/RedHatBrand/Overpass/issues/33
+
+  If the font includes tall/deep writing systems such as Arabic or
+  Devanagari, the winAscent and winDescent can be greater than the yMax and
+  abs(yMin) to accommodate vowel marks.
+
+  When the win Metrics are significantly greater than the upm, the
+  linespacing can appear too loose. To counteract this, enabling the
+  OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the
+  OS/2 typo values instead. This means the font developer can control the
+  linespacing with the typo values, whilst avoiding clipping by setting
+  the win values to values greater than the yMax and abs(yMin).
+  """
+  failed = False
+
+  # OS/2 usWinAscent:
+  if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
+    failed = True
+    yield FAIL, Message("ascent",
+                        ("OS/2.usWinAscent value"
+                         " should be equal or greater than {}, but got"
+                         " {} instead").format(vmetrics['ymax'],
+                                               ttFont['OS/2'].usWinAscent))
+  # OS/2 usWinDescent:
+  if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
+    failed = True
+    yield FAIL, Message(
+        "descent", ("OS/2.usWinDescent value"
+                    " should be equal or greater than {}, but got"
+                    " {} instead").format(
+                        abs(vmetrics['ymin']), ttFont['OS/2'].usWinDescent))
+  if not failed:
+    yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
+
+
 def is_librebarcode(font):
   font_filenames = [
     "LibreBarcode39-Regular.ttf",

@@ -170,36 +170,6 @@ def test_check_034():
   assert message.code == "missing-glyphs"
 
 
-def test_check_040(mada_ttFonts):
-  """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.specifications.os2 import com_google_fonts_check_040 as check
-  from fontbakery.specifications.shared_conditions import vmetrics
-
-  # Our reference Mada Regular is know to be bad here.
-  vm = vmetrics(mada_ttFonts)
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-
-  # But we fix it first to test the PASS code-path:
-  print('Test PASS with a good font...')
-  ttFont['OS/2'].usWinAscent = vm['ymax']
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == PASS
-
-  # Then we break it:
-  print('Test FAIL with a bad OS/2.usWinAscent...')
-  ttFont['OS/2'].usWinAscent = vm['ymax'] - 1
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == FAIL and message.code == "ascent"
-
-  print('Test FAIL with a bad OS/2.usWinDescent...')
-  ttFont['OS/2'].usWinAscent = vm['ymax']
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin']) - 1
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == FAIL and message.code == "descent"
-
-
 def test_check_042(mada_ttFonts):
   """ Checking OS/2 Metrics match hhea Metrics. """
   from fontbakery.specifications.os2 import com_google_fonts_check_042 as check
