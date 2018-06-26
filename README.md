@@ -211,6 +211,13 @@ Apple provides various font utilities, and `ftxvalidator` is especially useful a
 
 You must use your Apple ID to sign in to http://developer.apple.com and download `osxfonttools.dmg` and then:
 
+* downloaded `Font_Tools_for_Xcode_9.dmg`
+* double-clicked on `Font_Tools_for_Xcode_9.dmg`
+* double-clicked on `macOS Font Tools.pkg`
+* followed the GUI's instructions to install the tools (e.g. click "continue", "agree", "install", etc.)
+
+If you wish to run the installation process in Terminal, you can do it this way:
+
 ```sh
 cd ~/Downloads/ ;
 hdiutil attach osxfonttools.dmg ;
