@@ -86,7 +86,10 @@ class SerializeReporter(FontbakeryReporter):
               value = self.runner.get_iterarg(self._results_by, index)
 
           if index is not None:
-            self._max_cluster_by_index = max(index, self._max_cluster_by_index)
+            if self._max_cluster_by_index is not None:
+              self._max_cluster_by_index = max(index, self._max_cluster_by_index)
+            else:
+              self._max_cluster_by_index = index
 
           item['clustered'] = {
               'name': self._results_by
