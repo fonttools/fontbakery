@@ -192,6 +192,9 @@ pip2 install --upgrade fontbakery
 brew tap bramstein/webfonttools;
 brew update;
 brew install ots --HEAD;
+
+# if brew fails, try installing the binaries:
+# https://github.com/khaledhosny/ots/releases
 ```
 
 ##### FontForge
