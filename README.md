@@ -185,15 +185,39 @@ pip2 install --upgrade fontbakery
 
 #### Additional dependencies
 
+##### OTS: OpenType Sanitizer
+
 ```sh
 # install ots
 brew tap bramstein/webfonttools;
 brew update;
 brew install ots --HEAD;
+```
 
+##### FontForge
+
+```sh
 # install fontforge
 brew install giflib libspiro icu4c;
 brew install fontforge --with-extra-tools;
+```
+
+##### Apple OS X Font Tools
+
+Apple provides various font utilities, and `ftxvalidator` is especially useful as it runs the same checks that are run for users when they install a font using Font Book.
+
+You must use your Apple ID to sign in to http://developer.apple.com and download `osxfonttools.dmg` and then:
+
+```sh
+cd ~/Downloads/ ;
+hdiutil attach osxfonttools.dmg ;
+mkdir -p /tmp/ftx ;
+cd /tmp/ftx ;
+cp "/Volumes/OS X Font Tools/OS X Font Tools.pkg" . ;
+xar -xf "OS X Font Tools.pkg" ;
+cd fontTools.pkg/ ;
+cat Payload | gunzip -dc | cpio -i ;
+sudo mv ftx* /usr/local/bin/
 ```
 
 ### GNU+Linux
