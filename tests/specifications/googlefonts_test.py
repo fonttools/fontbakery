@@ -323,7 +323,7 @@ def test_check_016():
   """ Checking OS/2 fsType """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_016 as check
 
-  print('Test PASS with good font.')
+  print('Test PASS with good font without DRM.')
   # our reference Cabin family is know to be good here.
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
   status, message = list(check(ttFont))[-1]
@@ -332,7 +332,7 @@ def test_check_016():
   # modify the OS/2 fsType value to something different than zero:
   ttFont['OS/2'].fsType = 1
 
-  print('Test FAIL with fonts that diverge on the fontRevision field value.')
+  print('Test FAIL with fonts that enable DRM restrictions via non-zero fsType bits.')
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
 

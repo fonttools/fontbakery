@@ -491,16 +491,52 @@ def com_google_fonts_check_012(ttFonts):
 def com_google_fonts_check_016(ttFont):
   """Checking OS/2 fsType.
 
-  Fonts must have their fsType bit set to 0. This setting is known as
-  Installable Embedding,
-  https://www.microsoft.com/typography/otspec/os2.htm#fst"""
+  Fonts must have their fsType field set to zero.
+  This setting is known as Installable Embedding, meaning
+  that none of the DRM restrictions are enabled on the fonts.
 
-  if ttFont['OS/2'].fsType != 0:
-    yield FAIL, ("OS/2 fsType is a legacy DRM-related field from the 80's"
-                 " and must be zero (disabled) in all fonts.")
+  More info available at:
+  https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
+  """
+  value = ttFont['OS/2'].fsType
+  if value != 0:
+    FSTYPE_RESTRICTIONS = {
+      0x0002: ("* The font must not be modified, embedded or exchanged in"
+               " any manner without first obtaining permission of"
+               " the legal owner."),
+      0x0004: ("The font may be embedded, and temporarily loaded on the"
+               " remote system, but documents that use it must"
+               " not be editable."),
+      0x0008: ("The font may be embedded but must only be installed"
+               " temporarily on other systems."),
+      0x0100: ("The font may not be subsetted prior to embedding."),
+      0x0200: ("Only bitmaps contained in the font may be embedded."
+               " No outline data may be embedded.")
+    }
+    restrictions = ""
+    for bit_mask in FSTYPE_RESTRICTIONS.keys():
+      if value & bit_mask:
+        restrictions += FSTYPE_RESTRICTIONS[bit_mask]
+
+    if value & 0b1111110011110001:
+      restrictions += ("* There are reserved bits set,"
+                       " which indicates an invalid setting.")
+
+    yield FAIL, ("OS/2 fsType is a legacy DRM-related field.\n"
+                 "In this font it is set to {} meaning that:\n"
+                 "{}\n"
+                 "No such DRM restrictions can be enabled on the"
+                 " Google Fonts collection, so the fsType field"
+                 " must be set to zero (Installable Embedding) instead.\n"
+                 "Fonts with this setting indicate that they may be embedded"
+                 " and permanently installed on the remote system"
+                 " by an application.\n\n"
+                 " More detailed info is available at:\n"
+                 " https://docs.microsoft.com/en-us"
+                 "/typography/opentype/spec/os2#fstype"
+                 "").format(value, restrictions)
   else:
-    yield PASS, ("OS/2 fsType is properly set to zero "
-                 "(80's DRM scheme is disabled).")
+    yield PASS, ("OS/2 fsType is properly set to zero.")
 
 
 @condition
