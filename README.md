@@ -209,12 +209,12 @@ brew install fontforge --with-extra-tools;
 
 Apple provides various font utilities, and `ftxvalidator` is especially useful as it runs the same checks that are run for users when they install a font using Font Book.
 
-You must use your Apple ID to sign in to http://developer.apple.com and download `osxfonttools.dmg` and then:
+You must use your Apple ID to sign in to http://developer.apple.com and then:
 
-* downloaded `Font_Tools_for_Xcode_9.dmg`
-* double-clicked on `Font_Tools_for_Xcode_9.dmg`
-* double-clicked on `macOS Font Tools.pkg`
-* followed the GUI's instructions to install the tools (e.g. click "continue", "agree", "install", etc.)
+* download `Font_Tools_for_Xcode_9.dmg`
+* double-click on `Font_Tools_for_Xcode_9.dmg`
+* double-click on `macOS Font Tools.pkg`
+* follow the GUI's instructions to install the tools (e.g. click "continue", "agree", "install", etc.)
 
 If you wish to run the installation process in Terminal, you can do it this way:
 
