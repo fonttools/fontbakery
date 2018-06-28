@@ -10,8 +10,9 @@ It currently comes with checks for OpenType files, at 3 levels:
 Format specifications, distributor requirements, and custom checks. 
 
 The project was initiated by Dave Crossland in 2013 to accelerate the onboarding process for Google Fonts. 
-In 2017 Lasse Fister rewrote it into a modern, modular architecture suitable for both individuals and large distributors. 
-He also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
+In 2017 Lasse Fister rewrote it into a modern, modular architecture suitable for both individuals and large distributors. Felipe Sanches has maintained the check contents since 2016.
+
+Lasse also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
 A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines. See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw).
 
 Most of the checks are for OpenType binary files, and project metadata files. 
