@@ -18,6 +18,7 @@ from fontbakery.checkrunner import (
             , Section
             )
 import os
+from .shared_conditions import is_variable_font
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.constants import(
@@ -271,12 +272,25 @@ def com_google_fonts_check_001(font):
        Example-Roman-VF.ttf, Familyname-Italic-VF.ttf
   """
   from fontbakery.constants import STYLE_NAMES
+  from fontTools.ttLib import TTFont
 
   filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]
   # remove spaces in style names
-  style_file_names = [name.replace(' ', '') for name in STYLE_NAMES]
-  if '-' in basename and basename.split('-')[1] in style_file_names:
+  valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
+  valid_varfont_suffixes = ["VF",
+                            "Italic-VF",
+                            "Roman-VF"]
+
+  suffix = basename.split('-')
+  suffix.pop(0)
+  suffix = '-'.join(suffix)
+
+  if ('-' in basename and
+      (suffix in valid_varfont_suffixes
+       and is_variable_font(TTFont(font)))
+      or (suffix in valid_style_suffixes
+          and not is_variable_font(TTFont(font)))):
     yield PASS, "{} is named canonically.".format(font)
   else:
     yield FAIL, ('Style name used in "{}" is not canonical.'
