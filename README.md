@@ -3,65 +3,72 @@
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt)
 
-# [![Font Bakery](data/logo.png)](https://fontbakery.appspot.com)
+# [![Font Bakery](data/logo.png)](https://fontbakery.com)
 
-Font Bakery is a command-line tool ensuring the quality of font projects. It runs checks on TrueType files, and Google Fonts related metadata files.
+Font Bakery is a command-line tool for checking the quality of font projects. 
+It currently comes with checks for OpenType files, at 3 levels: 
+Format specifications, distributor requirements, and custom checks. 
+
+The project was initiated by Dave Crossland in 2013 to accelerate the onboarding process for Google Fonts. 
+In 2017 Lasse Fister rewrote it into a modern, modular architecture suitable for both individuals and large distributors. 
+He also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
+A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines. See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw).
+
+Font Bakery has an active community of contributors from foundries around the world, including Adobe Typekit, Dalton Maag, Google Fonts and Type Network.
+
+Most of the checks are for OpenType binary files, and project metadata files. 
+(Currently, the Google Fonts `METADATA.pb` files are supported.)
+
+To learn more about writing custom checks, see [docs/writing-specifications.md](https://github.com/googlefonts/fontbakery/blob/master/docs/writing-specifications.md)
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
 
-This project is currently maintained by Felipe Corrêa da Silva Sanches <juca@members.fsf.org>, with very frequent contributions from Lasse Fister, Marc Foley and Dave Crossland.
-
 Font Bakery is not an official Google project, and Google provides no support for it.
+However, throughout 2018 the project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
 
-## Command Line Tools
-
-Since v0.3.3 Font Bakery is solely focused on automated quality checking of font families.
-
-Font Bakery up to v0.3.2 provided some auxiliary scripts, and these have been moved into a separate "Google Fonts Tools" python package `gftools` at <https://github.com/googlefonts/tools> and packaged at <https://pypi.python.org/pypi/gftools>
-
-Installing the latest version of the auxiliary scripts should be as easy as:
-
-    pip install gftools --upgrade
+Font Bakery is available under the Apache 2.0 license.
 
 ## Web Usage
 
-A web dashboard for monitoring check-results of the full Google Fonts collection (or possibly other collections of font families) was initialy developed in this repository, but is now available at <https://github.com/googlefonts/fontbakery-dashboard>
-
-(There is an older drag-and-drop web app still hosted at <https://fontbakery.appspot.com> but this is not actively maintained.)
+A web dashboard for monitoring check-results of project collections is at <https://github.com/googlefonts/fontbakery-dashboard>
 
 ## Command Line Usage
 
-Install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install), and you will have a `fontbakery` command in your `$PATH`
+Install Font Bakery as a package, following the [installation instructions](https://github.com/googlefonts/fontbakery#install) below, and you will have a `fontbakery` command in your `$PATH`.
 
 This has several subcommands, described in the help function:
 
-```
-$ fontbakery -h
-usage: fontbakery [-h] [--list-subcommands] subcommand
-
-Run fontbakery subcommands:
-    build-contributors
-    check-collection
-    check-googlefonts
-    check-noto-version
-    check-specification
-    generate-glyphdata
-
-Subcommands have their own help messages. These are usually accessible with the -h/--help flag positioned after the subcommand.
-I.e.: fontbakery subcommand -h
-
-positional arguments:
-  subcommand          the subcommand to execute
-
-optional arguments:
-  -h, --help          show this help message and exit
-  --list-subcommands  print the list of subcommnds to stdout, separated by a space character. This is usually only used to generate the shell completion code.
-```
+    $ fontbakery -h
+    usage: fontbakery [-h] [--list-subcommands] subcommand
+    
+    Run fontbakery subcommands:
+        build-contributors
+        check-collection
+        check-googlefonts
+        check-noto-version
+        check-specification
+        generate-glyphdata
+    
+    Subcommands have their own help messages. These are usually 
+    accessible with the -h/--help flag positioned after the subcommand.
+    I.e.: fontbakery subcommand -h
+    
+    positional arguments:
+      subcommand          the subcommand to execute
+    
+    optional arguments:
+      -h, --help          show this help message and exit
+      --list-subcommands  print the list of subcommnds to stdout, separated 
+                          by a space character. This is usually only used to 
+                          generate the shell completion code.
 
 ### fontbakery check-googlefonts
 
-This is the central script to run the FontBakery suite of checks.
-It runs the checks (`specifications/googlefonts.py`) that we use for QA of <https://github.com/google/fonts>
+This is the command used by foundries checking their projects for Google Fonts 
+
+
+
+It runs the checks that we use  <https://github.com/google/fonts>`specifications/googlefonts.py`
 
 To run the checks on some fonts:
 
@@ -150,60 +157,69 @@ If you need to generate a list of all issues in a font family collection, such a
 
 This will create a folder called `check_results/` then run the `check-googlefonts` subcommand on every family, saving individual per-family reports in json format into subdirectories.
 
+#### Bash completion
+
+See [docs/bash-completion.md](https://github.com/googlefonts/fontbakery/blob/davelab6-docs/docs/bash-completion.md)
+
+#### Old Command Line Tools
+
+Since November 2017 (v0.3.3) Font Bakery is solely focused checking fonts.
+Before that (up to v0.3.2) it also provided some auxiliary scripts for fixing fonts. 
+
+Those tools are now a separate project, Google Fonts Tools, maintained at <https://github.com/googlefonts/tools> and packaged at <https://pypi.python.org/pypi/gftools>
+
+Installing the latest version of the auxiliary scripts should be as easy as:
+
+    pip install gftools --upgrade
+
+
 ## Install
 
-### Mac OS X
+### macOS
 
 Minimal install procedure:
 
-#### Step 1
-```
-# install os x developer tools and the homebrew package manager
-xcode-select --install;
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
-```
+1. Install macOS developer tools and the homebrew package manager:
 
-#### Step 2
-```
-# then instal python version 2 so that we don't rely
-# on the python interpreter originally shipped on MacOSX
-brew install python2;
-```
+    xcode-select --install;
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
-#### Step 3
-```
-# and finally, use pip2 to install fontbakery
-pip2 install fontbakery
-```
+2. Install Homebrew Python 2
+
+    brew install python2;
+
+
+3. Use pip2 to install fontbakery
+
+    pip2 install fontbakery
 
 #### Upgrades
 
-For upgrading to a newer version (if you already installed a previous version of Font Bakery) you should do:
-```
-pip2 install --upgrade fontbakery
-```
+If you already installed a previous version of Font Bakery, upgrade to a newer version with:
 
-#### Additional dependencies
+    pip2 install --upgrade fontbakery
+
+#### macOS Additional dependencies
 
 ##### OTS: OpenType Sanitizer
 
-```sh
-# install ots
-brew tap bramstein/webfonttools;
-brew update;
-brew install ots --HEAD;
+This checker is embedded in Chrome and Firefox, so it is important that font files pass OTS.
+If available, Font Bakery will wrap around OTS and run it as part of its standard checking.
+Install it with:
 
-# if brew fails, try installing the binaries:
-# https://github.com/khaledhosny/ots/releases
-```
+    brew tap bramstein/webfonttools;
+    brew update;
+    brew install ots --HEAD;
+
+If brew fails, try installing the binaries from <https://github.com/khaledhosny/ots/releases> and report an error on the Font Bakery issue tracker.
 
 ##### FontForge
 
-```sh
-# install fontforge
-brew install giflib libspiro icu4c;
-brew install fontforge --with-extra-tools;
-```
+FontForge has some font checking features, which Font Bakery will also wrap around and run, if available.
+Install it with:
+
+    brew install giflib libspiro icu4c;
+    brew install fontforge --with-extra-tools;
 
 ##### Apple OS X Font Tools
 
@@ -214,59 +230,68 @@ You must use your Apple ID to sign in to http://developer.apple.com and then:
 * download `Font_Tools_for_Xcode_9.dmg`
 * double-click on `Font_Tools_for_Xcode_9.dmg`
 * double-click on `macOS Font Tools.pkg`
-* follow the GUI's instructions to install the tools (e.g. click "continue", "agree", "install", etc.)
+* follow the instructions to install, clicking "continue", "agree", "install", etc
 
 If you wish to run the installation process in Terminal, you can do it this way:
 
-```sh
-cd ~/Downloads/ ;
-hdiutil attach osxfonttools.dmg ;
-mkdir -p /tmp/ftx ;
-cd /tmp/ftx ;
-cp "/Volumes/OS X Font Tools/OS X Font Tools.pkg" . ;
-xar -xf "OS X Font Tools.pkg" ;
-cd fontTools.pkg/ ;
-cat Payload | gunzip -dc | cpio -i ;
-sudo mv ftx* /usr/local/bin/
-```
+
+    cd ~/Downloads/ ;
+    hdiutil attach osxfonttools.dmg ;
+    mkdir -p /tmp/ftx ;
+    cd /tmp/ftx ;
+    cp "/Volumes/OS X Font Tools/OS X Font Tools.pkg" . ;
+    xar -xf "OS X Font Tools.pkg" ;
+    cd fontTools.pkg/ ;
+    cat Payload | gunzip -dc | cpio -i ;
+    sudo mv ftx* /usr/local/bin/ ;
+
+##### Microsoft Font Validator
+
+TODO - see [#1929](https://github.com/googlefonts/fontbakery/issues/1928)
 
 ### GNU+Linux
 
-```sh
-# install fontforge
-sudo add-apt-repository --yes ppa:fontforge/fontforge;
-sudo apt-get update -qq;
-sudo apt-get install python-fontforge
+To install:
 
-# install ots from source
-git clone https://github.com/khaledhosny/ots.git;
-cd ots;
-./autogen.sh;
-./configure;
-make CXXFLAGS=-DOTS_DEBUG;
-sudo make install;
-cd ..;
-rm -rf ots;
+    pip install fontbakery;
+    
+To upgrade:
 
-# install fontbakery
-pip install fontbakery
-```
+    pip install --upgrade fontbakery;
 
-For upgrading to a newer version (if you already installed a previous version of Font Bakery) you should do:
+#### GNU+Linux Additional Dependencies
 
-    pip install --upgrade fontbakery
+##### OTS
 
-## Microsoft Font Validator
+From source:
+
+    git clone https://github.com/khaledhosny/ots.git;
+    cd ots;
+    ./autogen.sh;
+    ./configure;
+    make CXXFLAGS=-DOTS_DEBUG;
+    sudo make install;
+    cd ..;
+    rm -rf ots;
+
+##### FontForge
+
+From a PPA on Ubuntu:
+
+    sudo add-apt-repository --yes ppa:fontforge/fontforge;
+    sudo apt-get update -qq;
+    sudo apt-get install python-fontforge
+
+##### Microsoft Font Validator
 
 A prebuilt binary of the Microsoft Font Validator is currently available at the `prebuilt/fval` directory in this repo.
 (The corresponding source code is available under a free license at https://github.com/Microsoft/Font-Validator).
 In order to enable this check, you'll need to have the mono runtime installed in your system.
 You'll also need to have `FontValidator.exe` available in the system path.
-One way to achieved would be:
+Try:
 
-
-    sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil
-    export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval
+    sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil;
+    export PATH=$PATH:$FONTBAKERY_GIT_REPO/prebuilt/fval;
 
 ...where `$FONTBAKERY_GIT_REPO` should be the name of the directory where you checked out Font Bakery source code.
 Obviously, you can also use any other alternative way of making `FontValidator.exe` available in your system path.
@@ -280,82 +305,3 @@ In order to enable those, you'll need to use the custom build available in this 
 The corresponding modified freetype source code is available at <https://github.com/felipesanches/freetype2>
 
 If your vanilla system freetype is used instead, then all FontValidator checks will still be run, except for the hinting validation ones.
-
-## Bash completion
-
-Font Bakery comes with a minimal Bash completion script to help you to type the subcommands that follow directly after the `fontbakery` command by hitting the tab key.
-
-There's no special completion support for the arguments of the subcommands yet.
-
-First, install `bash-completion` package.
-
-If you want to use the file directly in a running Bash shell:
-
-    $ source path-to/fontbakery/bin/bash-completion
-
-If you are using a python virtual environment (that is not a system-wide installation), run:
-
-    $ . path-to/fontbakery/bin/bash-completion
-
-To install it, copy or symlink the `path-to/fontbakery/bin/bash_completion` file into your `bash_completion.d` directory as `fontbakery`.
-Eg for GNU+Linux,
-
-    ln -s path-to/fontbakery/bin/bash_completion /etc/bash_completion.d/fontbakery
-
-On macOS the `bash_completion.d` directory may be `/sw/etc/bash_completion.d/fontbakery` or `/opt/local/etc/bash_completion.d/fontbakery`
-
-Then restart your Terminal or bash shell.
-
-# Developer Notes
-
-## Updating the distribution package
-
-Releases to PyPI are performed by tagging a commit and then running the following commands (with the proper version number and date):
-
-```
-# cleanup
-rm build/ -rf
-rm dist/ -rf
-rm venv/ -rf
-
-# create a fresh python virtual env
-virtualenv venv
-. venv/bin/activate
-
-# Install tox and run our code tests
-pip install tox
-tox
-
-# Register a git tag for this release and publish it
-git tag -a v0.4.0 -m "Font Bakery version 0.4.0 (2018-May-16)"
-git push upstream --tags
-
-# create the package
-python setup.py bdist_wheel --universal
-
-# and finally upload the new package to PyPI
-pip install twine
-twine upload dist/*
-```
-
-## Code Testing
-
-Font Bakery `check-googlefonts` provides over 130 checks for fonts and families according to the quality requirements of the Google Fonts team.
-In addition to a complete architectural overhaul, release 0.3.1 introduced a set of code tests to assure the quality of the Font Bakery suite of checks.
-This "testsuite for the testsuite" initially covered a third of the full set of check and as of version 0.4.1 covers 55%.
-We aim to reach 100% test coverage.
-
-In order to run the code tests you need to have the tox dependence installed and then run:
-
-    tox
-
-All future pull-requests adding new checks must also provide a corresponding code test.
-Travis is configured to automatically run the code tests and pull-requests cannot be merged if any test is failing.
-
-The Travis build logs can be seen at <https://travis-ci.org/googlefonts/fontbakery>
-
-## Cached Vendor ID data
-
-This project hosts a copy of the Microsoft's Vendor ID list at Lib/fontbakery/Lib/data/fontbakery-microsoft-vendorlist.cache
-
-This is meant only as a caching mechanism. The latest data can always be fetched from Microsoft's website directly at: <https://www.microsoft.com/typography/links/vendorlist.aspx>
