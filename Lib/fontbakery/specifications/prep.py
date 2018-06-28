@@ -41,4 +41,6 @@ def com_google_fonts_check_072(ttFont):
   else:
     yield FAIL, ("'prep' table does not contain TrueType "
                   " instructions enabling smart dropout control."
-                  " Please try exporting the font with autohinting enabled.")
+                  " To fix, export the font with autohinting enabled,"
+                  " or run ttfautohint on the font, or run the "
+                  " `gftools fix-nonhinting` script.")
