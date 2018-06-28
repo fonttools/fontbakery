@@ -36,9 +36,9 @@ def com_google_fonts_check_072(ttFont):
 
   if ("prep" in ttFont and
       INSTRUCTIONS in ttFont["prep"].program.getBytecode()):
-    yield PASS, ("Program at 'prep' table contains instructions"
+    yield PASS, ("'prep' table contains instructions"
                   " enabling smart dropout control.")
   else:
-    yield WARN, ("Font does not contain TrueType instructions enabling"
-                  " smart dropout control in the 'prep' table program."
+    yield FAIL, ("'prep' table does not contain TrueType "
+                  " instructions enabling smart dropout control."
                   " Please try exporting the font with autohinting enabled.")
