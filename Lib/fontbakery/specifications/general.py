@@ -90,7 +90,10 @@ def com_google_fonts_check_035(font):
     ]
     ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
 
-    ftx_data = plistlib.readPlistFromString(ftx_output)
+    try:
+      ftx_data = plistlib.readPlistFromString(ftx_output)
+    except AttributeError:
+      ftx_data = plistlib.readPlistFromBytes(ftx_output)  # for python3
     # we accept kATSFontTestSeverityInformation
     # and kATSFontTestSeverityMinorError
     if 'kATSFontTestSeverityFatalError' \
