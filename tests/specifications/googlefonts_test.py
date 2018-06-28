@@ -151,37 +151,42 @@ def test_check_001():
   """ Files are named canonically. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
   canonical_names = [
-    "data/test/cabin/Cabin-Thin.ttf",
-    "data/test/cabin/Cabin-ExtraLight.ttf",
-    "data/test/cabin/Cabin-Light.ttf",
-    "data/test/cabin/Cabin-Regular.ttf",
-    "data/test/cabin/Cabin-Medium.ttf",
-    "data/test/cabin/Cabin-SemiBold.ttf",
-    "data/test/cabin/Cabin-Bold.ttf",
-    "data/test/cabin/Cabin-ExtraBold.ttf",
-    "data/test/cabin/Cabin-Black.ttf",
-    "data/test/cabin/Cabin-ThinItalic.ttf",
-    "data/test/cabin/Cabin-ExtraLightItalic.ttf",
-    "data/test/cabin/Cabin-LightItalic.ttf",
-    "data/test/cabin/Cabin-Italic.ttf",
-    "data/test/cabin/Cabin-MediumItalic.ttf",
-    "data/test/cabin/Cabin-SemiBoldItalic.ttf",
-    "data/test/cabin/Cabin-BoldItalic.ttf",
-    "data/test/cabin/Cabin-ExtraBoldItalic.ttf",
-    "data/test/cabin/Cabin-BlackItalic.ttf"
+    "data/test/montserrat/Montserrat-Thin.ttf",
+    "data/test/montserrat/Montserrat-ExtraLight.ttf",
+    "data/test/montserrat/Montserrat-Light.ttf",
+    "data/test/montserrat/Montserrat-Regular.ttf",
+    "data/test/montserrat/Montserrat-Medium.ttf",
+    "data/test/montserrat/Montserrat-SemiBold.ttf",
+    "data/test/montserrat/Montserrat-Bold.ttf",
+    "data/test/montserrat/Montserrat-ExtraBold.ttf",
+    "data/test/montserrat/Montserrat-Black.ttf",
+    "data/test/montserrat/Montserrat-ThinItalic.ttf",
+    "data/test/montserrat/Montserrat-ExtraLightItalic.ttf",
+    "data/test/montserrat/Montserrat-LightItalic.ttf",
+    "data/test/montserrat/Montserrat-Italic.ttf",
+    "data/test/montserrat/Montserrat-MediumItalic.ttf",
+    "data/test/montserrat/Montserrat-SemiBoldItalic.ttf",
+    "data/test/montserrat/Montserrat-BoldItalic.ttf",
+    "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",
+    "data/test/montserrat/Montserrat-BlackItalic.ttf",
+    "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
+    "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
+    "data/test/cabinvfbeta/Cabin-VF.ttf"
   ]
   non_canonical_names = [
-    "data/test/cabin/Cabin.ttf",
-    "data/test/cabin/Cabin-semibold.ttf"
+    "data/test/montserrat/Montserrat/Montserrat.ttf",
+    "data/test/montserrat/Montserrat-semibold.ttf",
+    "data/test/cabinvfbeta/CabinVFBeta-Italic.ttf",
+    "data/test/cabinvfbeta/CabinVFBeta.ttf",
   ]
 
-  print('Test PASS ...')
   for canonical in canonical_names:
+    print('Test PASS with "{}" ...'.format(canonical))
     status, message = list(check(canonical))[-1]
     assert status == PASS
 
-  print('Test FAIL ...')
   for non_canonical in non_canonical_names:
+    print('Test FAIL with "{}" ...'.format(non_canonical))
     status, message = list(check(non_canonical))[-1]
     assert status == FAIL
 

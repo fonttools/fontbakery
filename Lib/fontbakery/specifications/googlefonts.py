@@ -263,7 +263,12 @@ def com_google_fonts_check_001(font):
   A font's filename must be composed in the following manner:
   <familyname>-<stylename>.ttf
 
-  e.g Nunito-Regular.ttf, Oswald-BoldItalic.ttf
+  e.g. Nunito-Regular.ttf, Oswald-BoldItalic.ttf
+
+  Variable fonts must use the "-VF" suffix such:
+
+  e.g. Roboto-VF.ttf, Barlow-VF.ttf,
+       Example-Roman-VF.ttf, Familyname-Italic-VF.ttf
   """
   from fontbakery.constants import STYLE_NAMES
 
