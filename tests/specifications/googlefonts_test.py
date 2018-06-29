@@ -2289,3 +2289,22 @@ def test_check_042(mada_ttFonts):
   ttFont['OS/2'].sTypoDescender = correct + 1
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "descender"
+
+
+def test_check_072():
+  """ Font enables smart dropout control in "prep" table instructions? """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_072 as check
+
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  # - PASS, "Program at 'prep' table contains instructions enabling smart dropout control."
+  test_font = TTFont(test_font_path)
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  # - FAIL, "Font does not contain TrueType instructions enabling
+  #          smart dropout control in the 'prep' table program."
+  import array
+  test_font["prep"].program.bytecode = array.array('B', [0])
+  status, _ = list(check(test_font))[-1]
+  assert status == FAIL

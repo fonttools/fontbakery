@@ -19,7 +19,6 @@ spec_imports = ((
         "gdef",
         "kern",
         "glyf",
-        "prep",
         "fvar",
         "shared_conditions",
     ),
