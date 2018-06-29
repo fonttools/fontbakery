@@ -338,23 +338,6 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
 
-  for w in range(0, 1000, 50):
-    ttFont["OS/2"].usWeightClass = w
-    if w < 250 or w > 900:
-      print ("Test FAIL: Weight out of acceptable range of values (from 250 to 900)...")
-      status, message = list(check(ttFont))[-1]
-      assert status == INFO
-    else:
-      print ("Test PASS: Weight value is between 250 and 900 (including the extreme values)...")
-      status, message = list(check(ttFont))[-1]
-      assert status == PASS
-
-  for w in [251, 275, 325, 425, 775, 825, 899]:
-    ttFont["OS/2"].usWeightClass = w
-    print ("Test FAIL: Weight value is not multiple of 50...")
-    status, message = list(check(ttFont))[-1]
-    assert status == INFO
-
 
 def test_check_152():
   """ Name table strings must not contain 'Reserved Font Name'. """
