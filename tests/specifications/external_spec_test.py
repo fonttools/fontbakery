@@ -80,7 +80,6 @@ def test_spec_imports():
             "gdef",
             "kern",
             "glyf",
-            "prep",
             "fvar",
             "shared_conditions",
         ),
@@ -110,7 +109,6 @@ def test_spec_imports():
       "fontbakery.specifications.gdef",
       "fontbakery.specifications.kern",
       "fontbakery.specifications.glyf",
-      "fontbakery.specifications.prep",
       "fontbakery.specifications.fvar",
       "fontbakery.specifications.shared_conditions"
   )
