@@ -322,40 +322,7 @@ def com_google_fonts_check_071(ttFont):
           'value': string,
           'rec': 'exceeds max length (31)'
       })
-  weight_value = None
-  if "OS/2" in ttFont:
-    field = "OS/2 usWeightClass"
-    weight_value = ttFont["OS/2"].usWeightClass
 
-  if weight_value is not None:
-    # <Weight> value >= 250 and <= 900 in steps of 50
-    if weight_value % 50 != 0:
-      bad_entries.append({
-          "field": field,
-          'value': weight_value,
-          "rec": "Value should ideally be a multiple of 50."
-      })
-    full_info = " "
-    " 'Having a weightclass of 100 or 200 can result in a \"smear bold\" or"
-    " (unintentionally) returning the style-linked bold. Because of this,"
-    " you may wish to manually override the weightclass setting for all"
-    " extra light, ultra light or thin fonts'"
-    " - http://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html"
-    if weight_value < 250:
-      bad_entries.append({
-          "field":
-          field,
-          'value':
-          weight_value,
-          "rec":
-          "Value should ideally be 250 or more." + full_info
-      })
-    if weight_value > 900:
-      bad_entries.append({
-          "field": field,
-          'value': weight_value,
-          "rec": "Value should ideally be 900 or less."
-      })
   if len(bad_entries) > 0:
     table = "| Field | Value | Recommendation |\n"
     table += "|:----- |:----- |:-------------- |\n"
