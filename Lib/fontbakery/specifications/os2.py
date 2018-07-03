@@ -58,47 +58,6 @@ def com_google_fonts_check_010(ttFonts):
   else:
     yield PASS, "Fonts have consistent PANOSE family type."
 
-@condition
-def expected_os2_weight():
-  """Return a tuple of weight name and expected OS/2 usWeightClass or None.
-
-  use: @condition(force=True) in your spec to override this condition.
-  """
-  return None
-
-@condition
-def os2_weight_warn():
-  """ This can be used to specify special cases in which we want to
-      just warn the user about a mismatching os2 weight value
-      instead of failing the check.
-
-  use: @condition(force=True) in your spec to override this condition.
-  """
-  return None
-
-
-@check(
-  id = 'com.google.fonts/check/020',
-  conditions = ['expected_os2_weight']
-)
-def com_google_fonts_check_020(ttFont,
-                               expected_os2_weight,
-                               os2_weight_warn):
-  """Checking OS/2 usWeightClass."""
-  weight_name, expected_value = expected_os2_weight
-  value = ttFont['OS/2'].usWeightClass
-  if value != expected_value:
-    if os2_weight_warn and \
-       weight_name == os2_weight_warn["style"] and \
-       value == os2_weight_warn["value"]:
-      yield WARN, os2_weight_warn["message"]
-    else:
-      yield FAIL, ("OS/2 usWeightClass expected value for"
-                   " '{}' is {} but this font has"
-                   " {}.").format(weight_name, expected_value, value)
-  else:
-    yield PASS, "OS/2 usWeightClass value looks good!"
-
 
 @check(
   id = 'com.google.fonts/check/034',

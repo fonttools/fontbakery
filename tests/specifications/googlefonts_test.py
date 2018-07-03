@@ -393,6 +393,32 @@ def test_check_019():
   assert status == PASS
 
 
+def test_check_020():
+  """ Checking OS/2 usWeightClass. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_020 as check,
+                                                     style)
+  # Our reference Mada Regular is know to be bad here.
+  font = "data/test/mada/Mada-Regular.ttf"
+  print("Test FAIL with bad font '{}' ...".format(font))
+  ttFont = TTFont(font)
+  status, message = list(check(font, ttFont, style(font)))[-1]
+  assert status == FAIL
+
+  # All fonts in our reference Cabin family are know to be good here.
+  for font in cabin_fonts:
+    print("Test PASS with good font '{}' ...".format(font))
+    ttFont = TTFont(font)
+    status, message = list(check(font, ttFont, style(font)))[-1]
+    assert status == PASS
+
+  font = "data/test/mada/Mada-ExtraLight.ttf"
+  ttFont = TTFont(font)
+  ttFont["OS/2"].usWeightClass = 250
+  print("Test WARN with a bad ExtraLight:250 ...")
+  status, message = list(check(font, ttFont, style(font)))[-1]
+  assert status == WARN
+
+
 def test_check_028():
   """ Check font project has a license. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_028 as check,
