@@ -630,18 +630,22 @@ def com_google_fonts_check_019(ttFont):
 )
 def com_google_fonts_check_020(font, ttFont, style):
   """Checking OS/2 usWeightClass."""
-#  from fontbakery.specifications.shared_conditions import is_ttf
+  from fontbakery.specifications.shared_conditions import is_ttf
 
   weight_name, expected_value = expected_os2_weight(style)
   value = ttFont['OS/2'].usWeightClass
 
   if value != expected_value:
-    if weight_name == 'ExtraLight' and value == 250:
-      yield WARN, ("A value of 250 for OS/2 usWeightClass is acceptable for TTFs"
-                   " (but not for OTFs), because it won't auto-bold (and blur)"
-                   " in Windows GDI apps. However, since OTFs will, and because"
-                   " we'd like to have OTFs and TTFs be as consistent as possible,"
-                   " we'd prefer ExtraLight to be 275 in both cases.")
+
+    if is_ttf(ttFont) and \
+       (weight_name == 'Thin' and value == 100) or \
+       (weight_name == 'ExtraLight' and value == 200):
+      yield WARN, ("{}:{} is OK on TTFs, but OTF files with those values"
+                   " will cause bluring on Windows."
+                   " GlyphsApp users must set a Instance Custom Parameter"
+                   " for the Thin and ExtraLight styles to 250 and 275,"
+                   " so that if OTFs are exported then it will not"
+                   " blur on Windows.")
     else:
       yield FAIL, ("OS/2 usWeightClass expected value for"
                    " '{}' is {} but this font has"

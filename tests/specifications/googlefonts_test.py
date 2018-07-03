@@ -411,12 +411,22 @@ def test_check_020():
     status, message = list(check(font, ttFont, style(font)))[-1]
     assert status == PASS
 
-  font = "data/test/mada/Mada-ExtraLight.ttf"
+  font = "data/test/montserrat/Montserrat-Thin.ttf"
   ttFont = TTFont(font)
-  ttFont["OS/2"].usWeightClass = 250
-  print("Test WARN with a bad ExtraLight:250 ...")
+  ttFont["OS/2"].usWeightClass = 100
+  print("Test WARN with a Thin:100 TTF...")
   status, message = list(check(font, ttFont, style(font)))[-1]
   assert status == WARN
+
+  font = "data/test/montserrat/Montserrat-ExtraLight.ttf"
+  ttFont = TTFont(font)
+  ttFont["OS/2"].usWeightClass = 200
+  print("Test WARN with an ExtraLight:200 TTF...")
+  status, message = list(check(font, ttFont, style(font)))[-1]
+  assert status == WARN
+
+  # TODO: test FAIL with a Thin:100 OTF
+  # TODO: test FAIL with an ExtraLight:200 OTF
 
 
 def test_check_028():
