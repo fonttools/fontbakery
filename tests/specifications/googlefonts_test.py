@@ -374,6 +374,9 @@ def test_check_018():
   status, message = list(check(ttFont, registered_ids))[-1]
   assert status == PASS
 
+  print('As of July 2018, MLAG: "Michael LaGattuta" must show up in the list...')
+  assert "MLAG" in registered_ids
+
 
 def test_check_019():
   """ Substitute copyright, registered and trademark
