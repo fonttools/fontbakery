@@ -558,15 +558,25 @@ def registered_vendor_ids():
                              'data/fontbakery-microsoft-vendorlist.cache')
   content = open(CACHED).read()
   soup = BeautifulSoup(content, 'html.parser')
-  table = soup.find(id="VendorList")
-  for row in table.findAll('tr'):
-    cells = row.findAll('td')
-    # pad the code to make sure it is a 4 char string,
-    # otherwise eg "CF  " will not be matched to "CF"
-    code = cells[0].string.strip()
-    code = code + (4 - len(code)) * ' '
-    labels = [label for label in cells[1].stripped_strings]
-    registered_vendor_ids[code] = labels[0]
+
+  IDs = [chr(c + ord('a')) for c in range(ord('z') - ord('a') + 1)]
+  IDs.append("vendor-id-and-name-list")
+
+  for section_id in IDs:
+    section = soup.find('h2', {'id': section_id})
+    table = section.find_next_sibling('table')
+    if not table: continue
+
+    #print ("table: '{}'".format(table))
+    for row in table.findAll('tr'):
+      #print("ROW: '{}'".format(row))
+      cells = row.findAll('td')
+      # pad the code to make sure it is a 4 char string,
+      # otherwise eg "CF  " will not be matched to "CF"
+      code = cells[0].string.strip()
+      code = code + (4 - len(code)) * ' '
+      labels = [label for label in cells[1].stripped_strings]
+      registered_vendor_ids[code] = labels[0]
 
   return registered_vendor_ids
 
