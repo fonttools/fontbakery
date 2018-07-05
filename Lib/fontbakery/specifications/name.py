@@ -39,27 +39,6 @@ def com_google_fonts_check_031(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/032'
-)
-def com_google_fonts_check_032(ttFont):
-  """Description strings in the name table must not exceed 100 characters."""
-  from fontbakery.constants import NAMEID_DESCRIPTION
-  failed = False
-  for name in ttFont['name'].names:
-    if (name.nameID == NAMEID_DESCRIPTION and
-        len(name.string.decode(name.getEncoding())) > 100):
-      failed = True
-      break
-
-  if failed:
-    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " are longer than 100 characters"
-                 " and should be removed.").format(NAMEID_DESCRIPTION)
-  else:
-    yield PASS, "Description name records do not exceed 100 characters."
-
-
-@check(
   id = 'com.google.fonts/check/033',
   conditions = ['monospace_stats',
                 'is_ttf']

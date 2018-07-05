@@ -41,39 +41,6 @@ def test_check_031():
   assert status == FAIL
 
 
-def test_check_032():
-  """ Description strings in the name table
-      must not exceed 100 characters.
-  """
-  from fontbakery.specifications.name import com_google_fonts_check_032 as check
-  from fontbakery.constants import NAMEID_DESCRIPTION
-
-  print('Test PASS with a good font...')
-  # Our reference Mada Regular is know to be good here.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # Here we add strings to NAMEID_DESCRIPTION with exactly 100 chars,
-  # so it should still PASS:
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_DESCRIPTION:
-      ttFont['name'].names[i].string = ('a' * 100).encode(name.getEncoding())
-
-  print('Test PASS with a 100 char string...')
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # And here we make the strings longer than 100 chars in order to FAIL the check:
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_DESCRIPTION:
-      ttFont['name'].names[i].string = ('a' * 101).encode(name.getEncoding())
-
-  print('Test FAIL with a bad font...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL
-
-
 # If we ever reuse this helper function,
 # then move it into fontbakery.utils:
 def results_contain(results, expected_status, expected_code):
