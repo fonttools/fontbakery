@@ -254,72 +254,72 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   validation_state = fontforge_check_results["validation_state"]
   fontforge_checks = (
       ("Contours are closed?",
-       0x2,
+       0x2, FAIL,
        "Contours are not closed!", "Contours are closed.")
 
     , ("Contours do not intersect",
-       0x4,
+       0x4, WARN,
        "There are countour intersections!",
        "Contours do not intersect.")
 
     , ("Contours have correct directions",
-       0x8,
+       0x8, WARN,
        "Contours have incorrect directions!",
        "Contours have correct directions.")
 
     , ("References in the glyph haven't been flipped",
-       0x10,
+       0x10, FAIL,
        "References in the glyph have been flipped!",
        "References in the glyph haven't been flipped.")
 
     , ("Glyphs have points at extremas",
-       0x20,
+       0x20, WARN,
        "Glyphs do not have points at extremas!",
        "Glyphs have points at extremas.")
 
     , ("Glyph names referred to from glyphs present in the font",
-       0x40,
+       0x40, FAIL,
        "Glyph names referred to from glyphs"
        " not present in the font!",
        "Glyph names referred to from glyphs"
        " present in the font.")
 
     , ("Points (or control points) are not too far apart",
-       0x40000,
+       0x40000, FAIL,
        "Points (or control points) are too far apart!",
        "Points (or control points) are not too far apart.")
 
     , ("Not more than 1,500 points in any glyph"
        " (a PostScript limit)",
-       0x80,
+       0x80, FAIL,
        "There are glyphs with more than 1,500 points!"
        "Exceeds a PostScript limit.",
        "Not more than 1,500 points in any glyph"
        " (a PostScript limit).")
 
     , ("PostScript has a limit of 96 hints in glyphs",
-       0x100,
+       0x100, FAIL,
        "Exceeds PostScript limit of 96 hints per glyph",
        "Font respects PostScript limit of 96 hints per glyph")
 
     , ("Font doesn't have invalid glyph names",
-       0x200,
+       0x200, FAIL,
        "Font has invalid glyph names!",
        "Font doesn't have invalid glyph names.")
 
     , ("Glyphs have allowed numbers of points defined in maxp",
-       0x400,
+       0x400, FAIL,
        "Glyphs exceed allowed numbers of points defined in maxp",
        "Glyphs have allowed numbers of points defined in maxp.")
 
     , ("Glyphs have allowed numbers of paths defined in maxp",
-       0x800,
+       0x800, FAIL,
        "Glyphs exceed allowed numbers of paths defined in maxp!",
        "Glyphs have allowed numbers of paths defined in maxp.")
 
     , ("Composite glyphs have allowed numbers"
        " of points defined in maxp?",
-       0x1000,
+       0x1000, FAIL,
        "Composite glyphs exceed allowed numbers"
        " of points defined in maxp!",
        "Composite glyphs have allowed numbers"
@@ -327,17 +327,19 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
 
     , ("Composite glyphs have allowed numbers"
        " of paths defined in maxp",
-       0x2000, "Composite glyphs exceed"
-       " allowed numbers of paths defined in maxp!", "Composite glyphs have"
+       0x2000, FAIL,
+       "Composite glyphs exceed"
+       " allowed numbers of paths defined in maxp!",
+       "Composite glyphs have"
        " allowed numbers of paths defined in maxp.")
 
     , ("Glyphs instructions have valid lengths",
-       0x4000,
+       0x4000, FAIL,
        "Glyphs instructions have invalid lengths!",
        "Glyphs instructions have valid lengths.")
 
     , ("Points in glyphs are integer aligned",
-       0x80000,
+       0x80000, FAIL,
        "Points in glyphs are not integer aligned!",
        "Points in glyphs are integer aligned.")
 
@@ -346,30 +348,32 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
     # for all anchor classes in the subtable. Even it, logically,
     # they do not apply and are unnecessary.
     , ("Glyphs have all required anchors.",
-       0x100000,
+       0x100000, FAIL,
        "Glyphs do not have all required anchors!",
        "Glyphs have all required anchors.")
 
     , ("Glyph names are unique?",
-       0x200000,
-       "Glyph names are not unique!", "Glyph names are unique.")
+       0x200000, FAIL,
+       "Glyph names are not unique!",
+       "Glyph names are unique.")
 
     , ("Unicode code points are unique?",
-       0x400000,
+       0x400000, FAIL,
        "Unicode code points are not unique!",
        "Unicode code points are unique.")
 
     , ("Do hints overlap?",
-       0x800000,
-       "Hints should NOT overlap!", "Hints do not overlap.")
+       0x800000, FAIL,
+       "Hints should NOT overlap!",
+       "Hints do not overlap.")
   )
 
-  for description, bit, err_msg, ok_msg in fontforge_checks:
+  for description, bit, failure_status_override, fail_msg, ok_msg in fontforge_checks:
     if fontforge_skip_checks is not None and \
-                          bool(fontforge_skip_checks & bit) is not False:
+       bool(fontforge_skip_checks & bit) is not False:
       yield SKIP, description
     elif bool(validation_state & bit) is not False:
-      yield FAIL, "fontforge-check: {}".format(err_msg)
+      yield failure_status_override, "fontforge-check: {}".format(fail_msg)
     else:
       yield PASS, "fontforge-check: {}".format(ok_msg)
 
