@@ -499,7 +499,7 @@ def NOT_IMPLEMENTED_test_check_030():
 
 def test_check_032():
   """ Description strings in the name table
-      must not exceed 100 characters.
+      must not exceed 200 characters.
   """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_032 as check
   from fontbakery.constants import NAMEID_DESCRIPTION
@@ -514,20 +514,21 @@ def test_check_032():
   # so it should still PASS:
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NAMEID_DESCRIPTION:
-      ttFont['name'].names[i].string = ('a' * 100).encode(name.getEncoding())
+      ttFont['name'].names[i].string = ('a' * 200).encode(name.getEncoding())
 
-  print('Test PASS with a 100 char string...')
+  print('Test PASS with a 200 char string...')
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
-  # And here we make the strings longer than 100 chars in order to FAIL the check:
+  # And here we make the strings longer than 200 chars
+  # in order to make the check emit a WARN:
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NAMEID_DESCRIPTION:
-      ttFont['name'].names[i].string = ('a' * 101).encode(name.getEncoding())
+      ttFont['name'].names[i].string = ('a' * 201).encode(name.getEncoding())
 
-  print('Test FAIL with a bad font...')
+  print('Test WARN with a too long description string...')
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == WARN
 
 
 def NOT_IMPLEMENTED_test_check_054():
