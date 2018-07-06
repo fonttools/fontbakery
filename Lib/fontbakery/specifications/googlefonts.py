@@ -66,7 +66,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
       , 'com.google.fonts/check/030' # "License URL matches License text on name table?
       , 'com.google.fonts/check/031' # Description strings in the name table must not contain copyright info.
-      , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 100 characters.
+      , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
       , 'com.google.fonts/check/035' # Checking with ftxvalidator.
@@ -848,24 +848,39 @@ def com_google_fonts_check_030(ttFont, familyname):
 
 
 @check(
-  id = 'com.google.fonts/check/032'
+  id = 'com.google.fonts/check/032',
+  rationale = """
+  An old FontLab version had a bug which caused it to store
+  copyright notices in nameID 10 entries.
+
+  In order to detect those and distinguish them from actual
+  legitimate usage of this name table entry, we expect that
+  such strings do not exceed a reasonable length of 200 chars.
+
+  Longer strings are likely instances of the FontLab bug.
+  """
 )
 def com_google_fonts_check_032(ttFont):
-  """Description strings in the name table must not exceed 100 characters."""
+  """Description strings in the name table must not exceed 200 characters."""
   from fontbakery.constants import NAMEID_DESCRIPTION
   failed = False
   for name in ttFont['name'].names:
     if (name.nameID == NAMEID_DESCRIPTION and
-        len(name.string.decode(name.getEncoding())) > 100):
+        len(name.string.decode(name.getEncoding())) > 200):
       failed = True
       break
 
   if failed:
-    yield FAIL, ("Namerecords with ID={} (NAMEID_DESCRIPTION)"
-                 " are longer than 100 characters"
-                 " and should be removed.").format(NAMEID_DESCRIPTION)
+    yield WARN, ("A few name table entries with ID={} (NAMEID_DESCRIPTION)"
+                 " are longer than 200 characters."
+                 " Please check whether those entries are copyright notices"
+                 " mistakenly stored in the description string entries by"
+                 " a bug in an old FontLab version."
+                 " If that's the case, then such copyright notices must be"
+                 " removed from these entries."
+                 "").format(NAMEID_DESCRIPTION)
   else:
-    yield PASS, "Description name records do not exceed 100 characters."
+    yield PASS, "All description name records have reasonably small lengths."
 
 
 @condition
