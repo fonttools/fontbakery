@@ -110,7 +110,7 @@ def NOT_IMPLEMENTED_test_check_038():
   # TODO: Implement-me!
   #
   # code-paths:
-  # FAIL, "Fontforge printed messages to stderr."
+  # WARN, "Fontforge printed messages to stderr."
   # PASS, "Fontforge validation did not output any error message."
 
 

@@ -223,10 +223,12 @@ def com_google_fonts_check_038(font, fontforge_check_results):
     filtered_err_msgs += line + '\n'
 
   if len(filtered_err_msgs.strip()) > 0:
-    yield FAIL, ("fontforge did print these messages to stderr:\n"
+    yield WARN, ("FontForge seems to dislike certain aspects of this font file."
+                 " The actual meaning of the log messages below is not always"
+                 " clear and may require further investigation.\n\n"
                  "{}").format(filtered_err_msgs)
   else:
-    yield PASS, "fontforge validation did not output any error message."
+    yield PASS, "FontForge validation did not output any error message."
 
 
 @condition
