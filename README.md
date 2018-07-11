@@ -35,7 +35,7 @@ See [INSTALL.md](https://github.com/googlefonts/fontbakery/blob/master/INSTALL.m
 
 ## Usage
 
-See [USAGE.md](https://github.com/googlefonts/fontbakery/blob/master/USAGE.md)
+See [docs/USAGE.md](https://github.com/googlefonts/fontbakery/blob/master/docs/USAGE.md)
 
 ## Web Dashboard
 
