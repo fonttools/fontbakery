@@ -636,7 +636,8 @@ def com_google_fonts_check_019(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/020'
+  id = 'com.google.fonts/check/020',
+  conditions=['style']
 )
 def com_google_fonts_check_020(font, ttFont, style):
   """Checking OS/2 usWeightClass."""
