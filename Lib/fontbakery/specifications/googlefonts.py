@@ -906,7 +906,7 @@ def ttfautohint_stats(font):
   ttfa_output = subprocess.check_output(ttfa_cmd,
                                         stderr=subprocess.STDOUT)
   installed_ttfa = re.search(r'ttfautohint ([^-\n]*)(-.*)?\n',
-                             ttfa_output).group(1)
+                             ttfa_output.decode('utf-8')).group(1)
 
   return {
     "dehinted_size": dehinted_size,
