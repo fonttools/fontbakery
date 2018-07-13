@@ -1033,8 +1033,8 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
         return results.group(1)
 
   def installed_version_is_newer(installed, used):
-    installed = map(int, installed.split("."))
-    used = map(int, used.split("."))
+    installed = list(map(int, installed.split(".")))
+    used = list(map(int, used.split(".")))
     return installed > used
 
   version_strings = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
