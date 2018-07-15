@@ -130,3 +130,10 @@ In order to enable those, you'll need to use the custom build available in this 
 The corresponding modified freetype source code is available at <https://github.com/felipesanches/freetype2>
 
 If your vanilla system freetype is used instead, then all FontValidator checks will still be run, except for the hinting validation ones.
+
+##### Remote ftxvalidator
+
+The script available at `prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator` let's you execute the Mac OS tool `ftxvalidator` on a remote host. It is designed as a drop in replacement to be put in your `/usr/local/bin` directory.
+
+In order to use it you must also add your client's ssh public key to `.ssh/authorized_keys` on the remote machine.
+
