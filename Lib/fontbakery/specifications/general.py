@@ -145,6 +145,21 @@ def com_google_fonts_check_036(font):
 )
 def com_google_fonts_check_037(font):
   """Checking with Microsoft Font Validator."""
+
+  # In some cases we want to override the severity level of
+  # certain checks in FontValidator:
+  downgrade_to_warn = [
+    "The xAvgCharWidth field does not equal the calculated value",
+    "There are undefined bits set in fsSelection field",
+    "Misoriented contour"
+  ]
+
+  # Some other checks we want to completely disable:
+  disabled_fval_checks = [
+    "Validating glyph with index",
+    "Table Test:"
+  ]
+
   try:
     import subprocess
     fval_cmd = [
@@ -155,10 +170,9 @@ def com_google_fonts_check_037(font):
   except subprocess.CalledProcessError as e:
     filtered_msgs = ""
     for line in e.output.decode().split("\n"):
-      if "Validating glyph with index" in line:
-        continue
-      if "Table Test:" in line:
-        continue
+      for substring in disabled_fval_checks:
+        if substring in line:
+          continue
       filtered_msgs += line + "\n"
     yield INFO, ("Microsoft Font Validator returned an error code."
                  " Output follows :\n\n{}\n").format(filtered_msgs)
@@ -191,7 +205,11 @@ def com_google_fonts_check_037(font):
         if report.get("ErrorType") == "P":
           yield PASS, report_message(msg, details)
         elif report.get("ErrorType") == "E":
-          yield FAIL, report_message(msg, details)
+          status = FAIL
+          for substring in downgrade_to_warn:
+            if substring in msg:
+              status = WARN
+          yield status, report_message(msg, details)
         elif report.get("ErrorType") == "W":
           yield WARN, report_message(msg, details)
         else:
