@@ -707,26 +707,26 @@ def com_google_fonts_check_ttx_roundtrip(font):
       sys.stdout = self.original_stdout
 
   logger = TTXLogger()
-  try:
-    ttFont.saveXML(font + ".xml")
-  except:
+  ttFont.saveXML(font + ".xml")
+  export_error_msgs = logger.msgs
+
+  if len(export_error_msgs):
     failed = True
     yield INFO, ("While converting TTF into an XML file,"
                  " ttx emited the messages listed below.")
-    for msg in logger.msgs:
-      yield WARN, msg.strip()
-  logger.restore()
+    for msg in export_error_msgs:
+      yield FAIL, msg.strip()
 
-  logger = TTXLogger()
-  try:
-    f = ttx.TTFont()
-    f.importXML(font + ".xml")
-  except:
+  f = ttx.TTFont()
+  f.importXML(font + ".xml")
+  import_error_msgs = [msg for msg in logger.msgs if msg not in export_error_msgs]
+
+  if len(import_error_msgs):
     failed = True
     yield INFO, ("While importing an XML file and converting it back to TTF,"
                  " ttx emited the messages listed below.")
-    for msg in logger.msgs:
-      yield WARN, msg.strip()
+    for msg in import_error_msgs:
+      yield FAIL, msg.strip()
   logger.restore()
 
   if not failed:
