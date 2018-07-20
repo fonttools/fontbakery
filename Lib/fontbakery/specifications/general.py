@@ -677,3 +677,57 @@ def com_google_fonts_check_078(ttFont):
         yield FAIL, ("Glyph name is too long:" " '{}'").format(name)
     if not failed:
       yield PASS, "No glyph names exceed max allowed length."
+
+
+@check(
+  id = 'com.google.fonts/check/ttx-roundtrip'
+)
+def com_google_fonts_check_ttx_roundtrip(font):
+  """Checking with fontTools.ttx"""
+  from fontTools import ttx
+  import sys
+  ttFont = ttx.TTFont(font)
+  failed = False
+
+  class TTXLogger(object):
+    msgs = []
+
+    def __init__(self):
+      self.original_stderr = sys.stderr
+      self.original_stdout = sys.stdout
+      sys.stderr = self
+      sys.stdout = self
+
+    def write(self, data):
+      if data not in self.msgs:
+        self.msgs.append(data)
+
+    def restore(self):
+      sys.stderr = self.original_stderr
+      sys.stdout = self.original_stdout
+
+  logger = TTXLogger()
+  try:
+    ttFont.saveXML(font + ".xml")
+  except:
+    failed = True
+    yield INFO, ("While converting TTF into an XML file,"
+                 " ttx emited the messages listed below.")
+    for msg in logger.msgs:
+      yield WARN, msg.strip()
+  logger.restore()
+
+  logger = TTXLogger()
+  try:
+    f = ttx.TTFont()
+    f.importXML(font + ".xml")
+  except:
+    failed = True
+    yield INFO, ("While importing an XML file and converting it back to TTF,"
+                 " ttx emited the messages listed below.")
+    for msg in logger.msgs:
+      yield WARN, msg.strip()
+  logger.restore()
+
+  if not failed:
+    yield PASS, "Hey! It all looks good!"

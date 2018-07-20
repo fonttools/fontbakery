@@ -176,6 +176,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/172' # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
       , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
       , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
+      , 'com.google.fonts/check/ttx-roundtrip' # Checking with fontTools.ttx
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
