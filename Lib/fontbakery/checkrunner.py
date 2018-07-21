@@ -1291,7 +1291,7 @@ class Spec(object):
     return section.get_check(check_id), section
 
   def add_section(self, section):
-    key = f'{section}'
+    key = str(section)
     if key in self._sections:
       # the string representation of a section must be unique.
       # string representations of section and check will be used as unique keys
@@ -1580,7 +1580,7 @@ class Spec(object):
         # and conveys insights on how the order came to be (clustering of
         # iterargs). `sorted(iterargs)` however is more robust over time,
         # the keys will be the same, even if the sorting order changes.
-      , [f'{section}', check.id, sorted(iterargs)]
+      , [str(section), check.id, sorted(iterargs)]
     )
     return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
