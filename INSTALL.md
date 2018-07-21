@@ -9,20 +9,20 @@ Minimal install procedure:
     xcode-select --install;
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
-2. Install Homebrew Python 2
+2. Install Homebrew Python 3
 
-    brew install python2;
+    brew install python
 
 
-3. Use pip2 to install fontbakery
+3. Use pip3 to install fontbakery
 
-    pip2 install fontbakery
+    pip3 install fontbakery
 
 #### Upgrades
 
 If you already installed a previous version of Font Bakery, upgrade to a newer version with:
 
-    pip2 install --upgrade fontbakery
+    pip3 install --upgrade fontbakery
 
 #### macOS Additional dependencies
 

@@ -12,14 +12,8 @@ Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from builtins import object
 import inspect
-try:  # Try to get the newer Python 3.x method...
-  from inspect import getfullargspec as getargspec
-except ImportError:  # ...and fall back to the deprecated method in Python 2.
-  from inspect import getargspec
 
 from functools import wraps
 
@@ -59,7 +53,7 @@ class FontbakeryCallable(object):
   @property
   @cached_getter
   def mandatoryArgs(self):
-    argspec = getargspec(self._func)  # noqa pylint: disable=deprecated-method
+    argspec = inspect.getfullargspec(self._func)
     args = argspec.args[:-len(argspec.defaults)] \
              if argspec.defaults is not None else argspec.args
 
@@ -68,7 +62,7 @@ class FontbakeryCallable(object):
   @property
   @cached_getter
   def optionalArgs(self):
-    argspec = getargspec(self._func)  # noqa pylint: disable=deprecated-method
+    argspec = inspect.getfullargspec(self._func)
     return tuple(argspec.args[-len(argspec.defaults):] \
              if argspec.defaults is not None else [])
 

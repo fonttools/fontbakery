@@ -12,12 +12,9 @@ Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from builtins import filter
 from builtins import map
 from builtins import range
-from past.builtins import basestring
 from builtins import object
 
 
@@ -1399,9 +1396,7 @@ class Spec(object):
     if 'spec_imports' not in symbol_table:
       return results
 
-    # str for PY 3.x basetring for PY 2.x
-    is_string = lambda value: isinstance(value, \
-                        str if sys.version_info[0] == 3 else basestring) # NOQA
+    is_string = lambda value: isinstance(value, str) # NOQA
 
     package = self._get_package(symbol_table)
     spec_imports = symbol_table['spec_imports']

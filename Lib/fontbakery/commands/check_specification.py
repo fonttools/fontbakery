@@ -3,12 +3,11 @@
 
 # usage:
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
-from __future__ import absolute_import, print_function, unicode_literals
-
 from builtins import filter
-import sys
-import os
 import argparse
+import importlib.util
+import os
+import sys
 from collections import OrderedDict
 
 from fontbakery.checkrunner import (
@@ -178,25 +177,13 @@ class ThrowingArgumentParser(argparse.ArgumentParser):
         raise ArgumentParserError(message)
 
 def get_module_from_file(filename):
-  # this is really annoying between python 2 and 3
-  # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-  imp = None
-  importlib_util = None
   # filename = 'my/path/to/file.py'
   # module_name = 'file_module.file_py'
   module_name = 'file_module.{}'.format(os.path.basename(filename).replace('.', '_'))
-  try:
-    import importlib.util as importlib_util
-  except ImportError:
-    import imp
-
-  if importlib_util:
-    spec = importlib_util.spec_from_file_location(module_name, filename)
-    module = importlib_util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-  elif imp:
-    return imp.load_source(module_name, filename)
+  spec = importlib.util.spec_from_file_location(module_name, filename)
+  module = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(module)
+  return module
 
 def get_module(name):
   if os.path.isfile(name):
