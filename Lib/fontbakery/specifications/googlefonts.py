@@ -1198,12 +1198,12 @@ def com_google_fonts_check_070(ttFont):
   for codepoint, charname in OPTIONAL.items():
     if not font_has_char(ttFont, codepoint):
       failed = True
-      yield WARN, "Font lacks \"%s\" character (unicode: 0x%04X)" % (charname, codepoint)
+      yield WARN, "Font lacks \"{}\" character (unicode: 0x{:04X})".format(charname, codepoint)
 
   for codepoint, charname in MANDATORY.items():
     if not font_has_char(ttFont, codepoint):
       failed = True
-      yield FAIL, "Font lacks \"%s\" character (unicode: 0x%04X)" % (charname, codepoint)
+      yield FAIL, "Font lacks \"{}\" character (unicode: 0x{:04X})".format(charname, codepoint)
 
   if not failed:
     yield PASS, "Font has all expected currency sign characters."
@@ -2253,7 +2253,7 @@ def remote_styles(family_metadata):
     from zipfile import ZipFile
     from fontbakery.utils import download_file
     url_prefix = 'https://fonts.google.com/download?family='
-    url = '%s%s' % (url_prefix, family_name.replace(' ', '+'))
+    url = '{}{}'.format(url_prefix, family_name.replace(' ', '+'))
     return ZipFile(download_file(url))
 
   def fonts_from_zip(zipfile):
