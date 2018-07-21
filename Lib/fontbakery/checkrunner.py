@@ -12,12 +12,6 @@ Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-from builtins import filter
-from builtins import map
-from builtins import range
-from builtins import object
-
-
 import types
 from collections import OrderedDict, Counter
 from functools import partial

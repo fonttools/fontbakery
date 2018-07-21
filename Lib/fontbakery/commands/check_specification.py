@@ -3,7 +3,6 @@
 
 # usage:
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
-from builtins import filter
 import argparse
 import importlib.util
 import os

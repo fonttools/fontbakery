@@ -13,11 +13,6 @@ Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-from __future__ import absolute_import, print_function, unicode_literals, division
-
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
 import sys
 import os
 import subprocess

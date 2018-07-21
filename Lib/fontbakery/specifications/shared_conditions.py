@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from fontbakery.callable import condition
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import,cyclic-import

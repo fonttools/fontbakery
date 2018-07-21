@@ -12,7 +12,6 @@ Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-from builtins import object
 import inspect
 
 from functools import wraps

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals, division
-
 class Message(object):
   """Status messages to be yielded by FontBakeryCheck"""
   def __init__(self, code, message):
