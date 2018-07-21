@@ -1520,8 +1520,7 @@ class Spec(object):
     check_filter_func = None if not filter_func else \
                       lambda check: filter_func('check', check.id, check)
     for section in specification.sections:
-      key = f'{section}'
-      my_section = self._sections.get(key, None)
+      my_section = self._sections.get(str(section), None)
       if not len(section.checks):
         continue
       if my_section is None:
