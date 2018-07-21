@@ -853,13 +853,13 @@ def test_check_085():
   some_bad_values = ["APACHE", "Apache", "Ufl", "Ofl", "Open Font License"]
 
   for good in good_licenses:
-    print (f"Test PASS: ")
+    print("Test PASS: ".format(good))
     md.license = good
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in some_bad_values:
-    print (f"Test FAIL: ")
+    print("Test FAIL: ".format(bad))
     md.license = bad
     status, message = list(check(md))[-1]
     assert status == FAIL
@@ -888,14 +888,14 @@ def test_check_086():
   ]
 
   for good in good_cases:
-    print (f"Test PASS: ")
+    print("Test PASS: ".format(good))
     del md.subsets[:]
     md.subsets.extend(good)
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in bad_cases:
-    print (f"Test FAIL: ")
+    print("Test FAIL: ".format(bad))
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
@@ -924,14 +924,14 @@ def test_check_087():
   ]
 
   for good in good_cases:
-    print (f"Test PASS: ")
+    print("Test PASS: ".format(good))
     del md.subsets[:]
     md.subsets.extend(good)
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in bad_cases:
-    print (f"Test FAIL: ")
+    print("Test FAIL: ".format(bad))
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
