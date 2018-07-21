@@ -22,7 +22,7 @@ setup(
     name="fontbakery",
     use_scm_version=True,
     url='https://github.com/googlefonts/fontbakery/',
-    description='Well designed Font QA tool, written in Python 2+3',
+    description='Well designed Font QA tool, written in Python 3',
     long_description=('Font Bakery is a set of command-line tools'
                       ' for ensuring the quality of font projects.'),
     author=('Font Bakery authors and contributors:'
@@ -47,11 +47,11 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3 :: Only',
     ],
+    python_requires='>=3.6',
     setup_requires=['setuptools_scm'],
     install_requires=[
         'lxml',

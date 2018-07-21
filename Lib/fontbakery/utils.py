@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # Copyright 2016 The Fontbakery Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -158,10 +158,7 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
 
 
 def download_file(url):
-  try:
-    from StringIO import StringIO
-  except ImportError:  # Python 3 uses the io module instead.
-    from io import StringIO
+  from io import StringIO
   from urllib import urlopen
   request = urlopen(url)
   return StringIO(request.read())
