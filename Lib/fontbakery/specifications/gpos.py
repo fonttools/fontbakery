@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message

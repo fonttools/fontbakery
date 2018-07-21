@@ -64,7 +64,6 @@ setup(
         'font-v',
         'defcon',
         'ufolint',
-        'future',
     ],
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],

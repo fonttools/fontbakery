@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals, division
-
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
 import os
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import Status

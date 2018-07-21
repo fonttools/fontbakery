@@ -168,9 +168,6 @@ $ fontbakery check-specification my_package.example_spec ./path/to/fonts/*
 Commented line by line:
 
 ```py
-# To ensure a minimum compatibility with python versions > 3
-from __future__ import (absolute_import,
-               division,print_function, unicode_literals)
 # We are going to define checks and conditons
 from fontbakery.callable import check, condition
 # All possible statuses a check can yield, in order of

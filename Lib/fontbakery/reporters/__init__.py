@@ -8,7 +8,6 @@ domains as well.
 Domain specific knowledge should be encoded only in the Spec (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
-from __future__ import absolute_import, print_function, unicode_literals, division
 from collections import Counter
 
 from fontbakery.checkrunner import (

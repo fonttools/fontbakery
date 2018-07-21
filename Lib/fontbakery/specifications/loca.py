@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from fontbakery.callable import check
 from fontbakery.checkrunner import PASS, FAIL
 # used to inform get_module_specification whether and how to create a specification
