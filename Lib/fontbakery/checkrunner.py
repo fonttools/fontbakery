@@ -1390,13 +1390,11 @@ class Spec(object):
     if 'spec_imports' not in symbol_table:
       return results
 
-    is_string = lambda value: isinstance(value, str) # NOQA
-
     package = self._get_package(symbol_table)
     spec_imports = symbol_table['spec_imports']
 
     for item in spec_imports:
-      if is_string(item):
+      if isinstance(item, str):
         # import the whole module
         module_name, names = (item, None)
       else:
