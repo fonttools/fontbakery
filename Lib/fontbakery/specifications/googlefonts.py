@@ -281,7 +281,7 @@ def com_google_fonts_check_001(font):
        and is_variable_font(TTFont(font)))
       or (suffix in valid_style_suffixes
           and not is_variable_font(TTFont(font)))):
-    yield PASS, "{} is named canonically.".format(font)
+    yield PASS, f"{font} is named canonically."
   else:
     yield FAIL, ('Style name used in "{}" is not canonical.'
                  ' You should rebuild the font using'
@@ -330,7 +330,7 @@ def com_google_fonts_check_003(description):
     if link.startswith("mailto:") and \
        "@" in link and \
        "." in link.split("@")[1]:
-      yield INFO, ("Found an email address: {}".format(link))
+      yield INFO, (f"Found an email address: {link}")
       continue
 
     try:
@@ -366,9 +366,9 @@ def com_google_fonts_check_004(descfile, description):
   This file needs to either be replaced with an existing description file
   or edited by hand."""
   if "<p>" not in description or "</p>" not in description:
-    yield FAIL, "{} does not look like a propper HTML snippet.".format(descfile)
+    yield FAIL, f"{descfile} does not look like a propper HTML snippet."
   else:
-    yield PASS, "{} is a propper HTML file.".format(descfile)
+    yield PASS, f"{descfile} is a propper HTML file."
 
 
 @check(
@@ -414,7 +414,7 @@ def family_metadata(family_directory):
 def com_google_fonts_check_007(family_metadata):
   """Font designer field in METADATA.pb must not be 'unknown'."""
   if family_metadata.designer.lower() == 'unknown':
-    yield FAIL, "Font designer field is '{}'.".format(family_metadata.designer)
+    yield FAIL, f"Font designer field is '{family_metadata.designer}'."
   else:
     yield PASS, "Font designer field is not 'unknown'."
 
@@ -609,7 +609,7 @@ def com_google_fonts_check_018(ttFont, registered_vendor_ids):
                                     " a known registered id.").format(vid) +
                                     SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   else:
-    yield PASS, "OS/2 VendorID '{}' looks good!".format(vid)
+    yield PASS, f"OS/2 VendorID '{vid}' looks good!"
 
 
 @check(
@@ -956,7 +956,7 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
 
   def filesize_formatting(s):
     if s < 1024:
-      return "{} bytes".format(s)
+      return f"{s} bytes"
     elif s < 1024*1024:
       return "{:.1f}kb".format(s/1024)
     else:
@@ -967,12 +967,12 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
   increase = filesize_formatting(increase)
 
   results_table = "Hinting filesize impact:\n\n"
-  results_table += "|  | {} |\n".format(font)
+  results_table += f"|  | {font} |\n"
   results_table += "|:--- | ---:|\n"
-  results_table += "| Dehinted Size | {} |\n".format(dehinted_size)
-  results_table += "| Hinted Size | {} |\n".format(hinted_size)
-  results_table += "| Increase | {} |\n".format(increase)
-  results_table += "| Change   | {:.1f} % |\n".format(change)
+  results_table += f"| Dehinted Size | {dehinted_size} |\n"
+  results_table += f"| Hinted Size | {hinted_size} |\n"
+  results_table += f"| Increase | {increase} |\n"
+  results_table += f"| Change   | {change:.1f} % |\n"
   yield INFO, results_table
 
 
@@ -1198,12 +1198,12 @@ def com_google_fonts_check_070(ttFont):
   for codepoint, charname in OPTIONAL.items():
     if not font_has_char(ttFont, codepoint):
       failed = True
-      yield WARN, "Font lacks \"{}\" character (unicode: 0x{:04X})".format(charname, codepoint)
+      yield WARN, f"Font lacks \"{charname}\" character (unicode: 0x{codepoint:04X})"
 
   for codepoint, charname in MANDATORY.items():
     if not font_has_char(ttFont, codepoint):
       failed = True
-      yield FAIL, "Font lacks \"{}\" character (unicode: 0x{:04X})".format(charname, codepoint)
+      yield FAIL, f"Font lacks \"{charname}\" character (unicode: 0x{codepoint:04X})"
 
   if not failed:
     yield PASS, "Font has all expected currency sign characters."
@@ -1330,7 +1330,7 @@ def com_google_fonts_check_082(family_metadata):
         yield PASS, ("Found designer \"{}\""
                      " at profiles.csv").format(family_metadata.designer)
     except:
-      yield WARN, "Failed to fetch \"{}\"".format(PROFILES_RAW_URL)
+      yield WARN, f"Failed to fetch \"{PROFILES_RAW_URL}\""
 
 
 @check(
@@ -1363,7 +1363,7 @@ def com_google_fonts_check_084(family_metadata):
   """
   pairs = {}
   for f in family_metadata.fonts:
-    styleweight = "{}:{}".format(f.style, f.weight)
+    styleweight = f"{f.style}:{f.weight}"
     pairs[styleweight] = 1
   if len(set(pairs.keys())) != len(family_metadata.fonts):
     yield FAIL, ("Found duplicated style:weight pair"
@@ -1500,7 +1500,7 @@ def com_google_fonts_check_091(family_metadata):
   badfonts = []
   for f in family_metadata.fonts:
     if f.full_name.endswith("Regular") and f.weight != 400:
-      badfonts.append("{} (weight: {})".format(f.filename, f.weight))
+      badfonts.append(f"{f.filename} (weight: {f.weight})")
   if len(badfonts) > 0:
     yield FAIL, ("METADATA.pb: Regular font weight must be 400."
                  " Please fix these: {}").format(", ".join(badfonts))
@@ -1901,7 +1901,7 @@ def canonical_filename(font_metadata):
                                style_names.get(font_metadata.style))
   if style_weight == "":
     style_weight = "Regular"
-  return "{}-{}.ttf".format(familyname, style_weight)
+  return f"{familyname}-{style_weight}.ttf"
 
 
 @check(
@@ -2954,7 +2954,7 @@ def com_google_fonts_check_160(ttFont, style, familyname):
   failed = False
   for name in ttFont['name'].names:
     if name.nameID == NAMEID_POSTSCRIPT_NAME:
-      expected_value = "{}-{}".format(familyname, style)
+      expected_value = f"{familyname}-{style}"
 
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
@@ -3091,7 +3091,7 @@ def com_google_fonts_check_165(ttFont, familyname):
   """ Familyname must be unique according to namecheck.fontdata.com """
   FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
   import requests
-  url = "http://namecheck.fontdata.com/?q={}".format(familyname)
+  url = f"http://namecheck.fontdata.com/?q={familyname}"
   try:
     response = requests.get(url, timeout=10)
     data = response.content.decode("utf-8")

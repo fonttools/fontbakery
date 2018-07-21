@@ -145,16 +145,16 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
   from fontbakery.message import Message
   from fontbakery.checkrunner import (PASS, FAIL)
   value = getattr(ttFont[table], attr)
-  name_str = "{} {} {} bit".format(table, attr, bitname)
+  name_str = f"{table} {attr} {bitname} bit"
   if bool(value & bitmask) == expected:
-    return PASS, "{} is properly set.".format(name_str)
+    return PASS, f"{name_str} is properly set."
   else:
     if expected:
       expected_str = "set"
     else:
       expected_str = "reset"
-    return FAIL, Message("bad-{}".format(bitname),
-                         "{} should be {}.".format(name_str, expected_str))
+    return FAIL, Message(f"bad-{bitname}",
+                         f"{name_str} should be {expected_str}.")
 
 
 def download_file(url):

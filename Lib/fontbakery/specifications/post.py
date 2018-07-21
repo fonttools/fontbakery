@@ -65,4 +65,4 @@ def com_google_fonts_check_015(ttFont, is_ttf):
                  " More info at https://github.com/google/fonts/"
                  "issues/215").format(expected, formatType)
   else:
-    yield PASS, "Font has post table version {}.".format(expected)
+    yield PASS, f"Font has post table version {expected}."

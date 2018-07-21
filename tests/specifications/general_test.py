@@ -33,11 +33,11 @@ def test_check_002():
     "data/test/mada/Mada-Regular.ttf",
     "data/test/cabin/Cabin-ExtraLight.ttf"
   ]
-  print('Test PASS with same dir: {}'.format(same_dir))
+  print(f'Test PASS with same dir: {same_dir}')
   status, message = list(check(same_dir))[-1]
   assert status == PASS
 
-  print('Test FAIL with multiple dirs: {}'.format(multiple_dirs))
+  print(f'Test FAIL with multiple dirs: {multiple_dirs}')
   status, message = list(check(multiple_dirs))[-1]
   assert status == FAIL
 
@@ -316,7 +316,7 @@ def test_check_052():
   del ttFont.reader.tables["STAT"]
   # Now we remove required tables one-by-one to validate the FAIL code-path:
   for required in required_tables:
-    print ("Test FAIL with missing mandatory table {} ...".format(required))
+    print (f"Test FAIL with missing mandatory table {required} ...")
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     if required in ttFont.reader.tables:
       del ttFont.reader.tables[required]
@@ -331,7 +331,7 @@ def test_check_052():
 
   # Then re-insert them one by one to validate the INFO code-path:
   for optional in optional_tables:
-    print ("Test INFO with optional table {} ...".format(required))
+    print (f"Test INFO with optional table {required} ...")
     ttFont.reader.tables[optional] = "foo"
     # and ensure that the second to last logged message is an
     # INFO status informing the user about it:
@@ -356,7 +356,7 @@ def test_check_053():
 
   # We now add unwanted tables one-by-one to validate the FAIL code-path:
   for unwanted in unwanted_tables:
-    print ("Test FAIL with unwanted table {} ...".format(unwanted))
+    print (f"Test FAIL with unwanted table {unwanted} ...")
     ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
     ttFont.reader.tables[unwanted] = "foo"
     status, message = list(check(ttFont))[-1]

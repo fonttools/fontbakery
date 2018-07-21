@@ -22,7 +22,7 @@ def cached_getter(func):
   result on the instance object."""
   @wraps(func)
   def wrapper(self):
-    attribute = '_{}'.format(func.__name__)
+    attribute = f'_{func.__name__}'
     value = getattr(self, attribute, None)
     if value is None:
       value = func(self)
@@ -261,7 +261,7 @@ class FontBakeryExpectedValue(object):
   def default(self):
     has_default, value = self._default
     if not has_default:
-      raise AttributeError('{} has no default value'.format(self))
+      raise AttributeError(f'{self} has no default value')
     return value
 
   def validate(self, value):

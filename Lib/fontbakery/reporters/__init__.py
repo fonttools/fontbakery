@@ -57,8 +57,8 @@ class FontbakeryReporter(object):
 
   def _get_key(self, identity):
     section, check, iterargs = identity
-    return ('{}'.format(section) if section else section
-          , '{}'.format(check) if check else check
+    return (f'{section}' if section else section
+          , f'{check}' if check else check
           , iterargs
           )
 

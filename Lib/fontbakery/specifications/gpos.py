@@ -73,7 +73,7 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
   def ligatures_str(ligs):
     result = []
     for first in ligs:
-      result.extend(["{}_{}".format(first, second) for second in ligs[first]])
+      result.extend([f"{first}_{second}" for second in ligs[first]])
     return result
 
   if ligatures == -1:

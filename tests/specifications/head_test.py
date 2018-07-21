@@ -61,14 +61,14 @@ def test_check_043():
 
   for good_value in [1000, 16, 32, 64, 128, 256,
                      512, 1024, 2048, 4096, 8192, 16384]:
-    print("Test PASS with a good value of unitsPerEm = {} ...".format(good_value))
+    print(f"Test PASS with a good value of unitsPerEm = {good_value} ...")
     ttFont['head'].unitsPerEm = good_value
     status, _ = list(check(ttFont))[-1]
     assert status == PASS
 
   # These are arbitrarily chosen bad values:
   for bad_value in [0, 1, 2, 4, 8, 10, 100, 10000, 32768]:
-    print("Test FAIL with a bad value of unitsPerEm = {} ...".format(bad_value))
+    print(f"Test FAIL with a bad value of unitsPerEm = {bad_value} ...")
     ttFont['head'].unitsPerEm = bad_value
     status, message = list(check(ttFont))[-1]
     assert status == FAIL

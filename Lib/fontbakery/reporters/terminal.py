@@ -317,7 +317,7 @@ class TerminalProgress(FontbakeryReporter):
     for item in self._progressbar:
       append(item)
     append(']')
-    percentstring = '{:3d}%'.format(percent)
+    percentstring = f'{percent:3d}%'
     append(percentstring, len(percentstring), ' ')
     return ''.join(progressbar)
 
@@ -343,7 +343,7 @@ class TerminalProgress(FontbakeryReporter):
     if self._use_color:
       spinner = GREEN_STR(spinner)
 
-    rendered = '\n{0}\n\n{2} {1}\n'.format(counter, progressbar, spinner)
+    rendered = f'\n{counter}\n\n{spinner} {progressbar}\n'
     num_linebeaks = rendered.count('\n')
     return rendered, self._reset_progress(num_linebeaks)
 
@@ -427,7 +427,7 @@ class TerminalReporter(TerminalProgress):
 
     if status == STARTSECTION:
       order = message
-      print('='*8, '{}'.format(section),'='*8)
+      print('='*8, f'{section}','='*8)
       print('{} {} in section'.format(len(order)
                           , len(order) == 1 and 'check' or 'checks' ))
       print('')
@@ -443,7 +443,7 @@ class TerminalReporter(TerminalProgress):
       # Omit printing of iterargs when there's none of them:
       with_string = ""
       if formatted_iterargs != ():
-        with_string = " with {}".format(formatted_iterargs)
+        with_string = f" with {formatted_iterargs}"
 
       print('>> {}{}'.format(
         highlight(CYAN_STR, check.id, use_color=self._use_color), with_string))
@@ -468,7 +468,7 @@ class TerminalReporter(TerminalProgress):
       print('')
       print(_render_results_counter(message, color=self._use_color))
       print('')
-      print ('='*8, 'END {}'.format(section),'='*8)
+      print ('='*8, f'END {section}','='*8)
 
     if status == END:
       print('')
@@ -482,8 +482,8 @@ class TerminalReporter(TerminalProgress):
           elif key is not None:
             val = key
           else:
-            val = '(not using "{}")'.format(self.results_by)
-          print('{}: {}'.format(self.results_by, val))
+            val = f'(not using "{self.results_by}")'
+          print(f'{self.results_by}: {val}')
           print(_render_results_counter(self._collected_results[key],
                                                 color=self._use_color))
           print('')
